@@ -10,6 +10,8 @@ import {
 
 import tseslint from 'typescript-eslint'
 
+const docsRoot = `${import.meta.dirname}/apps/docs`
+
 const config = await defineConfig({
   autoFrameworks: false,
   detection: { libraries: false },
@@ -78,7 +80,16 @@ export default [
   {
     files: ['apps/docs/**/*.astro'],
     rules: {
-      'better-tailwindcss/no-unknown-classes': ['error', { ignore: ['^ui-'] }]
+      'better-tailwindcss/no-unknown-classes': ['error', {
+        entryPoint: `${docsRoot}/src/styles/global.css`,
+        ignore: ['^docs-', '^ui-']
+      }]
+    },
+    settings: {
+      'better-tailwindcss': {
+        cwd: docsRoot,
+        entryPoint: `${docsRoot}/src/styles/global.css`
+      }
     }
   }
 ]

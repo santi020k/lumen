@@ -10,8 +10,8 @@ const lumenNames = new Set<string>(lumenComponentNames)
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 const valueDefaultTags = ['Checkbox', 'DatePicker', 'Input', 'InputOTP', 'Slider', 'Switch', 'Textarea']
 const valueDefaultPattern = new RegExp(`<(${valueDefaultTags.join('|')})([^>]*?) value="`, 'g')
-const stylesImport = `import '@santi020k/lumen-astro/styles.css'`
 const astroPackageImportPattern = /import\s*\{([\S\s]*?)\}\s*from '@santi020k\/lumen-astro'/
+
 const runtimeComponents = new Set([
   'AlertDialog',
   'Carousel',
@@ -31,6 +31,7 @@ const runtimeComponents = new Set([
   'Toggle',
   'ToggleGroup'
 ])
+
 const runtimeAttributePattern = /\bdata-ui-(?:alert-dialog|carousel|command|combobox|dialog|drawer|dropdown-menu|hover-card|menubar|navigation-menu|popover|radio-group|sheet|sonner|tabs|toast|toggle)/
 
 export const splitExample = (raw: string) => {
@@ -63,12 +64,8 @@ const toAstroSnippet = (raw: string): string => {
   let nextFrontmatter = frontmatter
   const includeRuntime = needsRuntime(body)
 
-  if (!nextFrontmatter.includes(stylesImport)) {
-    nextFrontmatter = `${nextFrontmatter}\n${stylesImport}`
-  }
-
-  nextFrontmatter = astroPackageImportPattern.test(nextFrontmatter)
-    ? nextFrontmatter.replace(astroPackageImportPattern, (_match, imports: string) => {
+  if (astroPackageImportPattern.test(nextFrontmatter)) {
+    nextFrontmatter = nextFrontmatter.replace(astroPackageImportPattern, (_match, imports: string) => {
       const names = imports
         .split(',')
         .map(name => name.trim())
@@ -78,9 +75,9 @@ const toAstroSnippet = (raw: string): string => {
 
       return `import { ${names.join(', ')} } from '@santi020k/lumen-astro'`
     })
-    : includeRuntime
-      ? `import { UIPrimitives } from '@santi020k/lumen-astro'\n${nextFrontmatter}`
-      : nextFrontmatter
+  } else if (includeRuntime) {
+    nextFrontmatter = `import { UIPrimitives } from '@santi020k/lumen-astro'\n${nextFrontmatter}`
+  }
 
   const nextBody = includeRuntime && !body.includes('<UIPrimitives') ? `<UIPrimitives />\n\n${body}` : body
 
@@ -109,11 +106,10 @@ export const toReactSnippet = (body: string): string => {
     .map(line => (line ? `    ${line}` : line))
     .join('\n')
 
-  return `${importLine}\n${stylesImport}\n\nexport const Example = () => (\n  <>\n${indented}\n  </>\n)\n`
+  return `${importLine}\n\nexport const Example = () => (\n  <>\n${indented}\n  </>\n)\n`
 }
 
 const elementsHeader = `<script type="module">
-  import '@santi020k/lumen-astro/styles.css'
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
 
   defineLumenElements()
@@ -139,7 +135,6 @@ export const toElementsSnippet = (body: string): string => {
 
 const reactOverrides: Record<string, string> = {
   Sonner: `import { Button, Sonner } from '@santi020k/lumen-react'
-${stylesImport}
 
 export const Example = () => (
   <>

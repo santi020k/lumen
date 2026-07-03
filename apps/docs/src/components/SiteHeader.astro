@@ -8,14 +8,18 @@ import LumenLogo from './LumenLogo.astro'
   border-line bg-canvas/90 sticky top-0 z-40 border-b backdrop-blur-sm
 ">
   <div class="
-    mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-3
+    mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4
+    px-5 py-3
     sm:px-8
   ">
     <a class="text-ink flex items-center gap-2.5 no-underline" href="/">
       <LumenLogo markClass="size-8" />
       <Badge variant="outline">v0.1</Badge>
     </a>
-    <nav class="flex items-center gap-3 text-sm font-bold" aria-label="Site">
+    <nav
+      class="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2 text-sm font-bold"
+      aria-label="Site"
+    >
       <a class="
         text-ink-soft
         hover:text-ink
@@ -29,8 +33,21 @@ import LumenLogo from './LumenLogo.astro'
       <a class="
         text-ink-soft
         hover:text-ink
+        max-sm:hidden
         no-underline
       " href="https://github.com/santi020k/lumen">GitHub</a>
+      <label class="sr-only" for="site-color-theme">Color theme</label>
+      <select
+        id="site-color-theme"
+        class="ui-theme-select"
+        data-theme-select
+        aria-label="Color theme"
+      >
+        <option value="santi020k-light">Santi020k Light</option>
+        <option value="santi020k-dark">Santi020k Dark</option>
+        <option value="lumen-light">Lumen Light</option>
+        <option value="lumen-dark">Lumen Dark</option>
+      </select>
       <Button
         class="ui-theme-toggle"
         size="icon"

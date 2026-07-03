@@ -1,9 +1,8 @@
 ---
-import { ClientRouter } from 'astro:transitions'
-
 import '../styles/global.css'
 
 import { UIPrimitives } from '@santi020k/lumen-astro'
+import { ClientRouter } from 'astro:transitions'
 
 import SiteHeader from '../components/SiteHeader.astro'
 
@@ -26,23 +25,37 @@ const { description, title } = Astro.props
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" />
     <title>{title}</title>
     <ClientRouter />
     <script is:inline>
       const themeStorageKey = 'lumen-theme'
+      const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark']
+      const themeAliases = {
+        dark: 'lumen-dark',
+        light: 'lumen-light'
+      }
+
+      const normalizeTheme = theme => {
+        if (colorThemes.includes(theme)) return theme
+
+        return themeAliases[theme] ?? null
+      }
 
       const getStoredTheme = () => {
-  try {
-    const storedTheme = localStorage.getItem(themeStorageKey)
+        try {
+          const storedTheme = localStorage.getItem(themeStorageKey)
 
-    return storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : undefined
-  } catch {
-    
-  }
-}
+          return normalizeTheme(storedTheme)
+        } catch {
+          return null
+        }
+      }
 
       const getSystemTheme = () => (
-        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'santi020k-dark' : 'santi020k-light'
       )
 
       document.documentElement.dataset.theme = getStoredTheme() ?? getSystemTheme()
@@ -84,34 +97,65 @@ const { description, title } = Astro.props
 <script>
   let docsNavigationScrollPosition: { left: number, top: number } | undefined
 
-  type ColorTheme = 'dark' | 'light'
+  const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark'] as const
+
+  type ColorTheme = typeof colorThemes[number]
+  type LegacyColorTheme = 'dark' | 'light'
 
   const themeStorageKey = 'lumen-theme'
 
+  const themeAliases = {
+    dark: 'lumen-dark',
+    light: 'lumen-light'
+  } satisfies Record<LegacyColorTheme, ColorTheme>
+
   const themeColors = {
-    dark: '#111827',
-    light: '#f8fafc'
+    'lumen-dark': '#111827',
+    'lumen-light': '#f8fafc',
+    'santi020k-dark': '#110c1d',
+    'santi020k-light': '#f8f6fd'
   } satisfies Record<ColorTheme, string>
 
-  const isColorTheme = (theme: string | undefined): theme is ColorTheme => (
-    theme === 'dark' || theme === 'light'
+  const themeLabels = {
+    'lumen-dark': 'Lumen Dark',
+    'lumen-light': 'Lumen Light',
+    'santi020k-dark': 'Santi020k Dark',
+    'santi020k-light': 'Santi020k Light'
+  } satisfies Record<ColorTheme, string>
+
+  const isColorTheme = (theme: string | null | undefined): theme is ColorTheme => (
+    colorThemes.includes(theme as ColorTheme)
   )
 
-  const getStoredTheme = (): ColorTheme | undefined => {
-    try {
-      const storedTheme = localStorage.getItem(themeStorageKey) ?? undefined
+  const normalizeTheme = (theme: string | null | undefined): ColorTheme | null => {
+    if (isColorTheme(theme)) return theme
 
-      return isColorTheme(storedTheme) ? storedTheme : undefined
+    return theme === 'dark' || theme === 'light' ? themeAliases[theme] : null
+  }
+
+  const getStoredTheme = (): ColorTheme | null => {
+    try {
+      const storedTheme = localStorage.getItem(themeStorageKey)
+
+      return normalizeTheme(storedTheme)
     } catch {
-      return undefined
+      return null
     }
   }
 
   const getSystemTheme = (): ColorTheme => (
-    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'santi020k-dark' : 'santi020k-light'
   )
 
   const getPreferredTheme = (): ColorTheme => getStoredTheme() ?? getSystemTheme()
+
+  const getToggledTheme = (theme: ColorTheme): ColorTheme => {
+    if (theme === 'lumen-light') return 'lumen-dark'
+
+    if (theme === 'lumen-dark') return 'lumen-light'
+
+    return theme === 'santi020k-light' ? 'santi020k-dark' : 'santi020k-light'
+  }
 
   const setThemeColor = (theme: ColorTheme, targetDocument = document) => {
     targetDocument
@@ -120,18 +164,24 @@ const { description, title } = Astro.props
   }
 
   const syncThemeToggles = (theme: ColorTheme, targetDocument = document) => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark'
-    const label = `Switch to ${nextTheme} theme`
+    const nextTheme = getToggledTheme(theme)
+    const label = `Switch to ${themeLabels[nextTheme]}`
 
     for (const toggle of targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle]')) {
-    toggle.dataset.themeToggle = theme
+      toggle.dataset.themeToggle = theme
 
-    toggle.setAttribute('aria-label', label)
+      toggle.setAttribute('aria-label', label)
 
-    toggle.setAttribute('title', label)
+      toggle.setAttribute('title', label)
 
-    toggle.querySelector('[data-theme-toggle-label]')?.replaceChildren(label)
+      toggle.querySelector('[data-theme-toggle-label]')?.replaceChildren(label)
+    }
   }
+
+  const syncThemeSelects = (theme: ColorTheme, targetDocument = document) => {
+    for (const select of targetDocument.querySelectorAll<HTMLSelectElement>('[data-theme-select]')) {
+      select.value = theme
+    }
   }
 
   const applyTheme = (theme: ColorTheme, targetDocument = document) => {
@@ -140,6 +190,8 @@ const { description, title } = Astro.props
     setThemeColor(theme, targetDocument)
 
     syncThemeToggles(theme, targetDocument)
+
+    syncThemeSelects(theme, targetDocument)
   }
 
   const isDocsNavigation = (sourceElement: unknown) => (
@@ -153,12 +205,28 @@ const { description, title } = Astro.props
   document.addEventListener('click', event => {
     const toggle = event.target instanceof Element
       ? event.target.closest<HTMLElement>('[data-theme-toggle]')
-      : undefined
+      : null
 
     if (!toggle) return
 
     const currentTheme = getPreferredTheme()
-    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
+    const nextTheme = getToggledTheme(currentTheme)
+
+    localStorage.setItem(themeStorageKey, nextTheme)
+
+    applyTheme(nextTheme)
+  })
+
+  document.addEventListener('change', event => {
+    const select = event.target instanceof Element
+      ? event.target.closest<HTMLSelectElement>('[data-theme-select]')
+      : null
+
+    if (!select) return
+
+    const nextTheme = normalizeTheme(select.value)
+
+    if (!nextTheme) return
 
     localStorage.setItem(themeStorageKey, nextTheme)
 

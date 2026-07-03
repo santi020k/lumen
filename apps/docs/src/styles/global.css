@@ -1,13 +1,68 @@
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/theme/typography.css";
 
 @source "../../../../packages/astro/components";
 @source "../../../../packages/react/src";
 @source "../../../../packages/elements/src";
 
+:root {
+  --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
 :root,
-:root[data-theme="light"] {
+:root[data-theme="santi020k-light"] {
   color-scheme: light;
+  --app-font-sans: var(--santi020k-font-sans);
+  --app-font-display: var(--santi020k-font-display);
+  --theme-bg: 268 20% 98%;
+  --canvas: 268 20% 98%;
+  --surface: 268 20% 100%;
+  --surface-muted: 268 20% 96%;
+  --surface-strong: 268 15% 90%;
+  --line: 268 15% 84%;
+  --ink: 268 10% 20%;
+  --ink-soft: 268 8% 36%;
+  --ink-muted: 268 6% 28%;
+  --brand: 264 92% 47%;
+  --brand-solid: 264 92% 42%;
+  --brand-soft: 264 60% 94%;
+  --accent: 264 95% 57%;
+  --glow: 264 95% 70%;
+  --success: 134 61% 41%;
+  --warning: 35 85% 41%;
+  --danger: 6 63% 46%;
+}
+
+:root[data-theme="santi020k-dark"] {
+  color-scheme: dark;
+  --app-font-sans: var(--santi020k-font-sans);
+  --app-font-display: var(--santi020k-font-display);
+  --theme-bg: 260 43% 8%;
+  --canvas: 260 43% 8%;
+  --surface: 260 30% 12%;
+  --surface-muted: 260 25% 15%;
+  --surface-strong: 260 20% 21%;
+  --line: 260 15% 30%;
+  --ink: 260 10% 88%;
+  --ink-soft: 260 8% 72%;
+  --ink-muted: 260 6% 56%;
+  --brand: 264 90% 58%;
+  --brand-solid: 264 90% 52%;
+  --brand-soft: 264 45% 18%;
+  --accent: 264 90% 68%;
+  --glow: 264 85% 50%;
+  --success: 169 24% 59%;
+  --warning: 40 78% 60%;
+  --danger: 3 79% 65%;
+}
+
+:root[data-theme="light"],
+:root[data-theme="lumen-light"] {
+  color-scheme: light;
+  --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
   --theme-bg: 210 24% 98%;
   --canvas: 210 24% 98%;
   --surface: 0 0% 100%;
@@ -27,8 +82,11 @@
   --danger: 0 84% 60%;
 }
 
-:root[data-theme="dark"] {
+:root[data-theme="dark"],
+:root[data-theme="lumen-dark"] {
   color-scheme: dark;
+  --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
   --theme-bg: 220 23% 9%;
   --canvas: 220 23% 9%;
   --surface: 220 18% 13%;
@@ -64,8 +122,8 @@
   --color-success: hsl(var(--success));
   --color-warning: hsl(var(--warning));
   --color-danger: hsl(var(--danger));
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--app-font-sans);
+  --font-display: var(--app-font-display);
   --animate-shimmer: shimmer 3s linear infinite;
 }
 
@@ -115,6 +173,25 @@ pre code {
 
 .ui-theme-toggle {
   flex: 0 0 auto;
+}
+
+.ui-theme-select {
+  min-height: 2.5rem;
+  max-width: min(38vw, 10rem);
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--surface) / 0.9);
+  color: hsl(var(--ink));
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+}
+
+.ui-theme-select:hover {
+  border-color: hsl(var(--brand) / 0.48);
 }
 
 .ui-theme-toggle__icon {
@@ -167,12 +244,16 @@ pre code {
   content: "";
 }
 
-:root[data-theme="dark"] .ui-theme-toggle__sun {
+:root[data-theme="dark"] .ui-theme-toggle__sun,
+:root[data-theme="lumen-dark"] .ui-theme-toggle__sun,
+:root[data-theme="santi020k-dark"] .ui-theme-toggle__sun {
   opacity: 1;
   transform: rotate(0deg) scale(0.72);
 }
 
-:root[data-theme="dark"] .ui-theme-toggle__moon {
+:root[data-theme="dark"] .ui-theme-toggle__moon,
+:root[data-theme="lumen-dark"] .ui-theme-toggle__moon,
+:root[data-theme="santi020k-dark"] .ui-theme-toggle__moon {
   opacity: 0;
   transform: rotate(16deg) scale(0.62);
 }
