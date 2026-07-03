@@ -19,7 +19,6 @@
   "dependencies": {
     "@astrojs/mdx": "catalog:",
     "@astrojs/sitemap": "catalog:",
-    "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-astro": "workspace:^",
     "@santi020k/lumen-core": "workspace:^",
     "@tailwindcss/vite": "catalog:",
@@ -28,6 +27,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "catalog:",
+    "@astrojs/ts-plugin": "catalog:",
     "sharp": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

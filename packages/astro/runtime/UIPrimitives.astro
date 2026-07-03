@@ -1,6 +1,4 @@
 ---
- 
-
 /**
  * Astro UI primitives controller.
  *
@@ -19,9 +17,11 @@
     '[tabindex]:not([tabindex="-1"])'
   ].join(',')
 
+  const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
+
   const getFocusable = (root: ParentNode): HTMLElement[] =>
     [...root.querySelectorAll<HTMLElement>(focusableSelector)]
-      .filter(el => !el.hasAttribute('hidden') && el.offsetParent !== null)
+      .filter(element => !element.hasAttribute('hidden') && element.offsetParent !== null)
 
   const getPanel = (trigger: HTMLElement): HTMLElement | null => {
     const controls = trigger.getAttribute('aria-controls')
@@ -31,6 +31,23 @@
     }
 
     return trigger.nextElementSibling instanceof HTMLElement ? trigger.nextElementSibling : null
+  }
+
+  const getLoopedIndex = (
+    key: string,
+    currentIndex: number,
+    itemCount: number,
+    forwardKeys: readonly string[]
+  ): number => {
+    const lastIndex = itemCount - 1
+
+    if (key === 'Home') return 0
+
+    if (key === 'End') return lastIndex
+
+    if (forwardKeys.includes(key)) return (currentIndex + 1) % itemCount
+
+    return (currentIndex - 1 + itemCount) % itemCount
   }
 
   const setOpen = (trigger: HTMLElement, panel: HTMLElement, open: boolean): void => {
@@ -54,272 +71,269 @@
   }
 
   const initDisclosures = (scope: ParentNode): void => {
-    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]')) {
-    const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
+    for (const root of scope.querySelectorAll<HTMLElement>(disclosureSelector)) {
+      const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
 
-    if (!trigger) continue
+      if (!trigger) continue
 
-    const panel = getPanel(trigger)
+      const panel = getPanel(trigger)
 
-    if (!panel || trigger.dataset.uiBound === 'true') continue
+      if (!panel || trigger.dataset.uiBound === 'true') continue
 
-    trigger.dataset.uiBound = 'true'
+      trigger.dataset.uiBound = 'true'
 
-    trigger.setAttribute('aria-haspopup', trigger.getAttribute('aria-haspopup') ?? 'menu')
+      trigger.setAttribute('aria-haspopup', trigger.getAttribute('aria-haspopup') ?? 'menu')
 
-    setOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
+      setOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
 
-    trigger.addEventListener('click', () => {
-      setOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
-    })
+      trigger.addEventListener('click', () => {
+        setOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
+      })
 
-    trigger.addEventListener('keydown', event => {
-      if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return
+      trigger.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return
 
-      event.preventDefault()
+        event.preventDefault()
 
-      setOpen(trigger, panel, true)
+        setOpen(trigger, panel, true)
 
-      getFocusable(panel)[0]?.focus()
-    })
+        getFocusable(panel)[0]?.focus()
+      })
 
-    if (root.hasAttribute('data-ui-hover-card')) {
-      root.addEventListener('mouseenter', () => setOpen(trigger, panel, true))
+      if (root.hasAttribute('data-ui-hover-card')) {
+        root.addEventListener('mouseenter', () => setOpen(trigger, panel, true))
 
-      root.addEventListener('mouseleave', () => setOpen(trigger, panel, false))
+        root.addEventListener('mouseleave', () => setOpen(trigger, panel, false))
+      }
     }
-  }
   }
 
   const initDialogs = (scope: ParentNode): void => {
     for (const dialog of scope.querySelectorAll<HTMLDialogElement>('[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet]')) {
-    if (dialog.dataset.uiBound === 'true') continue
+      if (dialog.dataset.uiBound === 'true') continue
 
-    dialog.dataset.uiBound = 'true'
+      dialog.dataset.uiBound = 'true'
 
-    dialog.setAttribute('aria-modal', 'true')
+      dialog.setAttribute('aria-modal', 'true')
 
-    dialog.setAttribute('role', dialog.hasAttribute('data-ui-alert-dialog') ? 'alertdialog' : 'dialog')
+      dialog.setAttribute('role', dialog.hasAttribute('data-ui-alert-dialog') ? 'alertdialog' : 'dialog')
 
-    dialog.addEventListener('click', event => {
-      if (event.target === dialog && !dialog.hasAttribute('data-ui-alert-dialog')) {
-        dialog.close()
-      }
-    })
+      dialog.addEventListener('click', event => {
+        if (event.target === dialog && !dialog.hasAttribute('data-ui-alert-dialog')) {
+          dialog.close()
+        }
+      })
 
-    dialog.addEventListener('close', () => {
-      const triggerId = dialog.dataset.uiLastTrigger
-      const trigger = triggerId ? document.getElementById(triggerId) : null
+      dialog.addEventListener('close', () => {
+        const triggerId = dialog.dataset.uiLastTrigger
+        const trigger = triggerId ? document.getElementById(triggerId) : null
 
-      if (trigger instanceof HTMLElement) {
-        trigger.focus({ preventScroll: true })
-      }
-    })
-  }
+        if (trigger instanceof HTMLElement) {
+          trigger.focus({ preventScroll: true })
+        }
+      })
+    }
 
     for (const trigger of scope.querySelectorAll<HTMLElement>('[data-ui-dialog-trigger], [data-ui-alert-dialog-trigger], [data-ui-drawer-trigger], [data-ui-sheet-trigger]')) {
-    if (trigger.dataset.uiBound === 'true') continue
+      if (trigger.dataset.uiBound === 'true') continue
 
-    trigger.dataset.uiBound = 'true'
+      trigger.dataset.uiBound = 'true'
 
-    trigger.setAttribute('aria-haspopup', 'dialog')
+      trigger.setAttribute('aria-haspopup', 'dialog')
 
-    trigger.addEventListener('click', () => {
-      const targetId =
-        trigger.dataset.uiDialogTrigger ??
-        trigger.dataset.uiAlertDialogTrigger ??
-        trigger.dataset.uiDrawerTrigger ??
-        trigger.dataset.uiSheetTrigger
+      trigger.addEventListener('click', () => {
+        const targetId =
+          trigger.dataset.uiDialogTrigger ??
+          trigger.dataset.uiAlertDialogTrigger ??
+          trigger.dataset.uiDrawerTrigger ??
+          trigger.dataset.uiSheetTrigger
 
-      if (!targetId) return
+        if (!targetId) return
 
-      const dialog = document.getElementById(targetId)
+        const dialog = document.getElementById(targetId)
 
-      if (!(dialog instanceof HTMLDialogElement)) return
+        if (!(dialog instanceof HTMLDialogElement)) return
 
-      if (!trigger.id) {
-        trigger.id = `ui-trigger-${crypto.randomUUID()}`
-      }
+        if (!trigger.id) {
+          trigger.id = `ui-trigger-${crypto.randomUUID()}`
+        }
 
-      dialog.dataset.uiLastTrigger = trigger.id
+        dialog.dataset.uiLastTrigger = trigger.id
 
-      dialog.showModal()
+        dialog.showModal()
 
-      getFocusable(dialog)[0]?.focus({ preventScroll: true })
-    })
-  }
+        getFocusable(dialog)[0]?.focus({ preventScroll: true })
+      })
+    }
 
     for (const closeButton of scope.querySelectorAll<HTMLElement>('[data-ui-dialog-close], [data-ui-alert-dialog-close], [data-ui-drawer-close], [data-ui-sheet-close]')) {
-    if (closeButton.dataset.uiBound === 'true') continue
+      if (closeButton.dataset.uiBound === 'true') continue
 
-    closeButton.dataset.uiBound = 'true'
+      closeButton.dataset.uiBound = 'true'
 
-    closeButton.addEventListener('click', () => {
-      closeButton.closest<HTMLDialogElement>('dialog')?.close()
-    })
-  }
+      closeButton.addEventListener('click', () => {
+        closeButton.closest<HTMLDialogElement>('dialog')?.close()
+      })
+    }
   }
 
   const initTabs = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tabs]')) {
-    if (root.dataset.uiBound === 'true') continue
+      if (root.dataset.uiBound === 'true') continue
 
-    root.dataset.uiBound = 'true'
+      root.dataset.uiBound = 'true'
 
-    const tabs = [...root.querySelectorAll<HTMLElement>('[role="tab"]')]
-    const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
+      const tabs = [...root.querySelectorAll<HTMLElement>('[role="tab"]')]
+      const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
 
-    if (!tabs.length || !panels.length) continue
+      if (!tabs.length || !panels.length) continue
 
-    const activate = (tab: HTMLElement): void => {
-      for (const item of tabs) {
-      const selected = item === tab
+      const activate = (tab: HTMLElement): void => {
+        for (const item of tabs) {
+          const selected = item === tab
+          const panelId = item.getAttribute('aria-controls')
+          const panel = panelId ? document.getElementById(panelId) : null
 
-      item.setAttribute('aria-selected', String(selected))
+          item.setAttribute('aria-selected', String(selected))
 
-      item.tabIndex = selected ? 0 : -1
+          item.tabIndex = selected ? 0 : -1
 
-      const panelId = item.getAttribute('aria-controls')
-      const panel = panelId ? document.getElementById(panelId) : null
+          if (panel) {
+            panel.hidden = !selected
+          }
+        }
+      }
 
-      if (panel) {
-        panel.hidden = !selected
+      const initiallySelected = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]
+
+      if (initiallySelected) activate(initiallySelected)
+
+      for (const [index, tab] of tabs.entries()) {
+        tab.addEventListener('click', () => activate(tab))
+
+        tab.addEventListener('keydown', event => {
+          const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+
+          if (!keys.includes(event.key)) return
+
+          event.preventDefault()
+
+          const nextTab = tabs[getLoopedIndex(event.key, index, tabs.length, ['ArrowRight'])]
+
+          if (nextTab) {
+            activate(nextTab)
+
+            nextTab.focus()
+          }
+        })
       }
     }
-    }
-
-    const initiallySelected = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]
-
-    if (initiallySelected) activate(initiallySelected)
-
-    for (const [index, tab] of tabs.entries()) {
-    tab.addEventListener('click', () => activate(tab))
-
-    tab.addEventListener('keydown', event => {
-      const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
-
-      if (!keys.includes(event.key)) return
-
-      event.preventDefault()
-
-      const lastIndex = tabs.length - 1
-
-      const nextIndex = event.key === 'Home' ? 0 :
-        event.key === 'End' ? lastIndex :
-          event.key === 'ArrowRight' ? (index + 1) % tabs.length :
-            (index - 1 + tabs.length) % tabs.length
-
-      const nextTab = tabs[nextIndex]
-
-      if (nextTab) {
-        activate(nextTab)
-
-        nextTab.focus()
-      }
-    })
-  }
-  }
   }
 
   const initRovingGroups = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-menubar], [data-ui-navigation-menu], [data-ui-radio-group], [data-ui-toggle-group]')) {
-    if (root.dataset.uiBound === 'true') continue
+      if (root.dataset.uiBound === 'true') continue
 
-    root.dataset.uiBound = 'true'
+      root.dataset.uiBound = 'true'
 
-    const items = [...root.querySelectorAll<HTMLElement>('button, a[href], input[type="radio"], [role="menuitem"], [role="radio"]')]
+      const items = [...root.querySelectorAll<HTMLElement>('button, a[href], input[type="radio"], [role="menuitem"], [role="radio"]')]
 
-    if (!items.length) continue
+      if (!items.length) continue
 
-    for (const [index, item] of items.entries()) {
-    item.tabIndex = index === 0 ? 0 : -1
+      for (const [index, item] of items.entries()) {
+        item.tabIndex = index === 0 ? 0 : -1
 
-    item.addEventListener('keydown', event => {
-      const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']
+        item.addEventListener('keydown', event => {
+          const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']
 
-      if (!keys.includes(event.key)) return
+          if (!keys.includes(event.key)) return
 
-      event.preventDefault()
+          event.preventDefault()
 
-      const lastIndex = items.length - 1
+          for (const nextItem of items) {
+            nextItem.tabIndex = -1
+          }
 
-      const nextIndex = event.key === 'Home' ? 0 :
-        event.key === 'End' ? lastIndex :
-          event.key === 'ArrowRight' || event.key === 'ArrowDown' ? (index + 1) % items.length :
-            (index - 1 + items.length) % items.length
+          const nextItem = items[getLoopedIndex(event.key, index, items.length, ['ArrowRight', 'ArrowDown'])]
 
-      for (const nextItem of items) { nextItem.tabIndex = -1 }
+          if (nextItem) {
+            nextItem.tabIndex = 0
 
-      const nextItem = items[nextIndex]
-
-      if (nextItem) {
-        nextItem.tabIndex = 0
-
-        nextItem.focus()
+            nextItem.focus()
+          }
+        })
       }
-    })
-  }
-  }
+    }
   }
 
   const initToggles = (scope: ParentNode): void => {
     for (const toggle of scope.querySelectorAll<HTMLButtonElement>('[data-ui-toggle]')) {
-    if (toggle.dataset.uiBound === 'true') continue
+      if (toggle.dataset.uiBound === 'true') continue
 
-    toggle.dataset.uiBound = 'true'
+      toggle.dataset.uiBound = 'true'
 
-    toggle.addEventListener('click', () => {
-      const pressed = toggle.getAttribute('aria-pressed') !== 'true'
+      toggle.addEventListener('click', () => {
+        const pressed = toggle.getAttribute('aria-pressed') !== 'true'
 
-      toggle.setAttribute('aria-pressed', String(pressed))
+        toggle.setAttribute('aria-pressed', String(pressed))
 
-      toggle.classList.toggle('ui-toggle--pressed', pressed)
-    })
-  }
+        toggle.classList.toggle('ui-toggle--pressed', pressed)
+      })
+    }
   }
 
   const initCommand = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-command], [data-ui-combobox]')) {
-    if (root.dataset.uiBound === 'true') continue
+      if (root.dataset.uiBound === 'true') continue
 
-    const input = root.querySelector<HTMLInputElement>('input[type="search"], input[type="text"], input:not([type])')
+      const input = root.querySelector<HTMLInputElement>('input[type="search"], input[type="text"], input:not([type])')
 
-    if (!input) continue
+      if (!input) continue
 
-    root.dataset.uiBound = 'true'
+      root.dataset.uiBound = 'true'
 
-    const items = [...root.querySelectorAll<HTMLElement>('[data-ui-command-item], [role="option"], option')]
+      const items = [...root.querySelectorAll<HTMLElement>('[data-ui-command-item], [role="option"], option')]
 
-    input.addEventListener('input', () => {
-      const query = input.value.trim().toLowerCase()
+      input.addEventListener('input', () => {
+        const query = input.value.trim().toLowerCase()
 
-      for (const item of items) {
-      const text = item.textContent?.toLowerCase() ?? ''
+        for (const item of items) {
+          const text = item.textContent?.toLowerCase() ?? ''
 
-      item.hidden = Boolean(query) && !text.includes(query)
+          item.hidden = Boolean(query) && !text.includes(query)
+        }
+      })
     }
-    })
-  }
   }
 
   const initCarousel = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-carousel]')) {
-    if (root.dataset.uiBound === 'true') continue
+      if (root.dataset.uiBound === 'true') continue
 
-    const viewport = root.querySelector<HTMLElement>('[data-ui-carousel-viewport]')
+      const viewport = root.querySelector<HTMLElement>('[data-ui-carousel-viewport]')
 
-    if (!viewport) continue
+      if (!viewport) continue
 
-    root.dataset.uiBound = 'true'
+      root.dataset.uiBound = 'true'
 
-    for (const button of root.querySelectorAll<HTMLElement>('[data-ui-carousel-prev]')) {
-    button.addEventListener('click', () => viewport.scrollBy({ left: -viewport.clientWidth, behavior: 'smooth' }))
+      for (const button of root.querySelectorAll<HTMLElement>('[data-ui-carousel-prev]')) {
+        button.addEventListener('click', () => viewport.scrollBy({ behavior: 'smooth', left: -viewport.clientWidth }))
+      }
+
+      for (const button of root.querySelectorAll<HTMLElement>('[data-ui-carousel-next]')) {
+        button.addEventListener('click', () => viewport.scrollBy({ behavior: 'smooth', left: viewport.clientWidth }))
+      }
+    }
   }
 
-    for (const button of root.querySelectorAll<HTMLElement>('[data-ui-carousel-next]')) {
-    button.addEventListener('click', () => viewport.scrollBy({ left: viewport.clientWidth, behavior: 'smooth' }))
-  }
-  }
+  const getToastVariantClass = (variant: string | undefined): string => {
+    if (variant === 'success') return 'ui-toast--success'
+
+    if (variant === 'warning') return 'ui-toast--warning'
+
+    if (variant === 'destructive') return 'ui-toast--destructive'
+
+    return ''
   }
 
   const initToasts = (): void => {
@@ -328,15 +342,27 @@
     document.documentElement.dataset.uiToastsBound = 'true'
 
     document.addEventListener('ui:toast', event => {
-      const detail = event instanceof CustomEvent ? event.detail as { title?: string, description?: string, variant?: string } : {}
+      const detail = event instanceof CustomEvent ? event.detail as { description?: string, title?: string, variant?: string } : {}
       const viewport = document.querySelector<HTMLElement>('[data-ui-sonner]') ?? document.body
       const toast = document.createElement('aside')
+      const title = document.createElement('strong')
+      const variantClass = getToastVariantClass(detail.variant)
 
-      toast.className = `ui-toast ${detail.variant === 'success' ? 'ui-toast--success' : detail.variant === 'warning' ? 'ui-toast--warning' : detail.variant === 'destructive' ? 'ui-toast--destructive' : ''}`
+      toast.className = variantClass ? `ui-toast ${variantClass}` : 'ui-toast'
 
       toast.setAttribute('role', detail.variant === 'destructive' ? 'alert' : 'status')
 
-      toast.innerHTML = `<strong>${detail.title ?? 'Notification'}</strong>${detail.description ? `<p>${detail.description}</p>` : ''}`
+      title.textContent = detail.title ?? 'Notification'
+
+      toast.append(title)
+
+      if (detail.description) {
+        const description = document.createElement('p')
+
+        description.textContent = detail.description
+
+        toast.append(description)
+      }
 
       viewport.append(toast)
 
@@ -367,17 +393,19 @@
 
     if (!(target instanceof Node)) return
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]')) {
-    if (!root.contains(target)) {
-      closeDisclosure(root)
+    for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
+      if (!root.contains(target)) {
+        closeDisclosure(root)
+      }
     }
-  }
   })
 
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return
 
-    document.querySelectorAll<HTMLElement>('[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]').forEach(closeDisclosure)
+    for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
+      closeDisclosure(root)
+    }
   })
 
   document.addEventListener('astro:page-load', () => initUiPrimitives())

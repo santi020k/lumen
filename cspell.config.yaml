@@ -4,13 +4,22 @@ words:
   - astrojs
   - commitizen
   - commitlint
+  - dogfooded
   - esbuild
+  - inputmode
+  - jsdom
+  - knip
   - Lumen
+  - maxlength
   - santi020k
+  - scroller
+  - shadcn
   - sonner
   - turborepo
+  - undici
   - unrs
   - vite
+  - vitejs
   - vitest
   - workspaces
 ignorePaths:

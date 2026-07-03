@@ -3,11 +3,11 @@
   "workspaces": {
     ".": {
       "ignoreDependencies": [
-        "tailwindcss",
-        "wrangler"
+        "tailwindcss"
       ],
       "project": [
-        "*.js"
+        "*.js",
+        "scripts/*.mjs"
       ]
     },
     "apps/docs": {
@@ -23,8 +23,6 @@
     },
     "packages/astro": {
       "entry": [
-        "index.ts",
-        "runtime/UIPrimitives.astro",
         "components/**/*.astro"
       ],
       "project": [
@@ -32,36 +30,23 @@
       ]
     },
     "packages/core": {
-      "entry": [
-        "src/index.ts"
-      ],
       "project": [
         "src/**/*.ts"
       ]
     },
     "packages/elements": {
-      "entry": [
-        "src/index.ts",
-        "src/define.ts"
-      ],
       "project": [
         "src/**/*.ts"
       ]
     },
     "packages/lumen": {
-      "entry": [
-        "src/index.ts"
-      ],
       "project": [
         "src/**/*.ts"
       ]
     },
     "packages/react": {
-      "entry": [
-        "src/index.tsx"
-      ],
       "project": [
-        "src/**/*.tsx"
+        "src/**/*.{ts,tsx}"
       ]
     }
   }

@@ -22,18 +22,15 @@
     "build": "astro sync && tsc -p tsconfig.json --noEmit",
     "dev": "astro sync --watch",
     "typecheck": "astro sync && tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests",
-    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "test": "vitest run index.test.ts",
+    "test:coverage": "vitest run --coverage index.test.ts",
     "lint": "eslint . --no-warn-ignored",
     "lint:fix": "eslint . --fix --no-warn-ignored",
     "clean": "rm -rf .astro coverage"
   },
-  "dependencies": {
-    "@santi020k/lumen-core": "workspace:^"
-  },
   "devDependencies": {
-    "@astrojs/check": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
+    "@santi020k/lumen-core": "workspace:^",
     "astro": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

@@ -3,6 +3,7 @@ dist
 .astro
 .turbo
 .eslintcache
+.cspellcache
 coverage
 playwright-report
 test-results
