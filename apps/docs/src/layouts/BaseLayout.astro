@@ -6,16 +6,18 @@ import '../styles/global.css'
 import { UIPrimitives } from '@santi020k/lumen-astro'
 
 import SiteHeader from '../components/SiteHeader.astro'
+import { getSocialImageUrl } from '../lib/social-image'
 
 interface Props {
   description: string
+  socialImage?: string
   title: string
 }
 
-const { description, title } = Astro.props
+const { description, socialImage, title } = Astro.props
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
-const socialImageUrl = new URL('/icon-512.png', Astro.site)
+const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialImage)
 ---
 
 <html lang="en">
@@ -31,10 +33,15 @@ const socialImageUrl = new URL('/icon-512.png', Astro.site)
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={title} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
