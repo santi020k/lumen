@@ -4,25 +4,28 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'aside'> {
   class?: string
   className?: string
+  glass?: boolean
   surface?: 'default' | 'glass'
 }
 
 const {
   class: classProp = '',
   className = '',
+  glass = false,
   surface = 'default',
   ...rest
 } = Astro.props
 
 const passthrough = rest as Record<string, unknown>
+const resolvedSurface = glass || surface === 'glass' ? 'glass' : surface
 ---
 
 <aside
-  data-surface={surface}
+  data-surface={resolvedSurface}
   data-ui-hover-card
   class:list={[
     'ui-hover-card',
-    surface === 'glass' && 'ui-hover-card--glass',
+    resolvedSurface === 'glass' && 'ui-hover-card--glass',
     classProp,
     className
   ]}

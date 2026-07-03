@@ -31,7 +31,10 @@ import { toSlug } from '../../../lib/routes'
             <Card class="h-full space-y-2 p-5" variant="interactive">
               <div class="flex items-center justify-between gap-3">
                 <h3 class="text-base font-bold text-ink">{component.name}</h3>
-                <Badge variant="outline">{category}</Badge>
+                <div class="flex flex-wrap justify-end gap-2">
+                  <Badge variant="outline">{category}</Badge>
+                  {component.glass && <Badge variant="outline">Glass</Badge>}
+                </div>
               </div>
               <p class="text-sm/6 text-ink-soft">{component.summary}</p>
             </Card>

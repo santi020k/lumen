@@ -31,18 +31,18 @@ describe('@santi020k/lumen-elements', () => {
     expect([...card.classList]).toEqual(['ui-card'])
   })
 
-  test('applies glass variant and surface classes', () => {
+  test('applies glass attribute classes', () => {
     defineLumenElements(customElements)
 
     const card = document.createElement('lumen-card')
     const dialog = document.createElement('lumen-dialog')
 
-    card.setAttribute('variant', 'glass')
-    dialog.setAttribute('surface', 'glass')
+    card.setAttribute('glass', '')
+    dialog.setAttribute('glass', '')
     document.body.append(card, dialog)
 
     expect(card.classList.contains('ui-card--glass')).toBe(true)
     expect(dialog.classList.contains('ui-dialog--glass')).toBe(true)
-    expect(dialog.getAttribute('surface')).toBe('glass')
+    expect(dialog.getAttribute('surface')).toBe('default')
   })
 })

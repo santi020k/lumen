@@ -40,11 +40,11 @@ The package ships the complete Astro primitive catalog plus a small progressive-
 ## Glass surfaces
 
 Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a
-variant, while overlays and navigation primitives use a surface prop so semantic variants remain
-available.
+boolean prop, and overlays or navigation primitives use the same prop while preserving semantic
+variants. The older `variant="glass"` and `surface="glass"` forms remain supported.
 
 ```astro
-<Card variant="glass">Glass card</Card>
-<Dialog surface="glass">Glass dialog</Dialog>
-<Popover surface="glass">Glass popover</Popover>
+<Card glass>Glass card</Card>
+<Dialog glass>Glass dialog</Dialog>
+<Popover glass>Glass popover</Popover>
 ```

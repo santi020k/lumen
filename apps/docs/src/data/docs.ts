@@ -1,9 +1,25 @@
 export interface ComponentDoc {
+  apiReference: ComponentApiRow[]
   name: string
   category: 'Actions' | 'Data display' | 'Feedback' | 'Forms' | 'Layout' | 'Navigation' | 'Overlays'
+  glass?: boolean
   summary: string
   example: string
 }
+
+export interface ComponentApiRow {
+  attribute: string
+  defaultValue: string
+  description: string
+  values: string
+}
+
+type ComponentDocTuple = readonly [
+  name: string,
+  category: ComponentDoc['category'],
+  summary: string,
+  example: string
+]
 
 export interface InstallCommand {
   command: string
@@ -34,10 +50,18 @@ export interface GlassSurfaceExample {
   lang: 'astro' | 'html' | 'tsx'
 }
 
+export interface ThemeSetup {
+  code: string
+  description: string
+  label: string
+  lang: 'css' | 'html' | 'ts'
+}
+
 export const docNavigation = [
   ['Introduction', '/docs#introduction'],
   ['Install and use', '/docs#installation'],
   ['Global styles', '/docs#global-styles'],
+  ['Themes', '/docs#themes'],
   ['Glassmorphism', '/docs#glassmorphism'],
   ['Packages', '/docs#packages'],
   ['Runtime', '/docs#runtime'],
@@ -126,38 +150,125 @@ import { App } from './App'`,
   }
 ]
 
+export const themeSetups: ThemeSetup[] = [
+  {
+    code: `<html data-theme="light">
+  <body>...</body>
+</html>
+
+<html data-theme="dark">
+  <body>...</body>
+</html>`,
+    description: 'Use no data-theme or data-theme="light" for the default light theme. Set data-theme="dark" for the built-in dark theme.',
+    label: 'Default themes',
+    lang: 'html'
+  },
+  {
+    code: `const nextTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+  ? 'dark'
+  : 'light'
+
+document.documentElement.dataset.theme = nextTheme`,
+    description: 'Switch themes by updating document.documentElement.dataset.theme; Lumen components read the CSS variables from the root element.',
+    label: 'Runtime switch',
+    lang: 'ts'
+  },
+  {
+    code: `@import "@santi020k/lumen-astro/styles.css";
+
+:root[data-theme="santi020k-light"] {
+  color-scheme: light;
+  --canvas: 268 20% 98%;
+  --surface: 268 20% 100%;
+  --surface-muted: 268 20% 96%;
+  --surface-strong: 268 15% 90%;
+  --line: 268 15% 84%;
+  --ink: 268 10% 20%;
+  --ink-soft: 268 8% 36%;
+  --ink-muted: 268 6% 28%;
+  --brand: 264 92% 47%;
+  --brand-solid: 264 92% 42%;
+  --brand-soft: 264 60% 94%;
+  --accent: 264 95% 57%;
+  --success: 134 61% 41%;
+  --warning: 35 85% 41%;
+  --danger: 6 63% 46%;
+}
+
+:root[data-theme="santi020k-dark"] {
+  color-scheme: dark;
+  --canvas: 260 43% 8%;
+  --surface: 260 30% 12%;
+  --surface-muted: 260 25% 15%;
+  --surface-strong: 260 20% 21%;
+  --line: 260 15% 30%;
+  --ink: 260 10% 88%;
+  --ink-soft: 260 8% 72%;
+  --ink-muted: 260 6% 56%;
+  --brand: 264 90% 58%;
+  --brand-solid: 264 90% 52%;
+  --brand-soft: 264 45% 18%;
+  --accent: 264 90% 68%;
+  --success: 169 24% 59%;
+  --warning: 40 78% 60%;
+  --danger: 3 79% 65%;
+}`,
+    description: 'The docs site uses santi020k-light and santi020k-dark as a custom example theme family. Copy the token shape and adapt values for your own brand.',
+    label: 'Custom theme',
+    lang: 'css'
+  }
+]
+
 export const glassSurfaceExamples: GlassSurfaceExample[] = [
   {
-    code: `<Card variant="glass">
+    code: `<Card glass>
   <h2>Launch window</h2>
   <p>Glass cards use shared blur, border, highlight, and fallback tokens.</p>
 </Card>`,
-    description: 'Use the glass variant for standalone content surfaces.',
+    description: 'Use the glass prop for standalone content surfaces.',
     label: 'Astro card',
     lang: 'astro'
   },
   {
-    code: `<Popover surface="glass">
+    code: `<Popover glass>
   <Button variant="outline" data-ui-trigger>Invite</Button>
   <div>
     <Label for="email">Email</Label>
     <Input id="email" type="email" />
   </div>
 </Popover>`,
-    description: 'Use the surface prop for overlays so semantic variants stay available.',
+    description: 'Use the same glass prop for overlays without changing their semantics.',
     label: 'Overlay surface',
     lang: 'astro'
   },
   {
-    code: `<lumen-card variant="glass">
+    code: `<lumen-card glass>
   <h2>Production</h2>
   <p>Custom elements use the same class contract.</p>
 </lumen-card>`,
-    description: 'Elements support the same glass classes through attributes.',
+    description: 'Elements support glass with a boolean attribute.',
     label: 'Elements',
     lang: 'html'
   }
 ]
+
+export const glassComponentNames = [
+  'AlertDialog',
+  'Card',
+  'ContextMenu',
+  'Dialog',
+  'Drawer',
+  'DropdownMenu',
+  'HoverCard',
+  'Menubar',
+  'NavigationMenu',
+  'Popover',
+  'Sheet',
+  'Sidebar',
+  'Toast'
+] as const
+
+const glassComponentNameSet = new Set<string>(glassComponentNames)
 
 export const frameworkSetups: FrameworkSetup[] = [
   {
@@ -203,7 +314,194 @@ export const runtimeFeatures = [
   ['Toasts and carousel controls', 'Document-level behavior for transient feedback and slide navigation.']
 ] as const
 
-export const componentDocs: ComponentDoc[] = [
+const apiRow = (
+  attribute: string,
+  values: string,
+  defaultValue: string,
+  description: string
+): ComponentApiRow => ({
+  attribute,
+  defaultValue,
+  description,
+  values
+})
+
+const commonApiRows = [
+  apiRow('class, className', 'string', '""', 'Merges custom classes with the generated ui-* root classes.'),
+  apiRow('...native attributes', 'HTML attributes', '-', 'Forwards standard attributes to the root element unless the component consumes them.')
+] as const
+
+const surfaceApiRow = apiRow(
+  'surface',
+  '"default" | "glass"',
+  '"default"',
+  'Compatibility alias for glass surface treatment.'
+)
+
+const glassApiRow = apiRow(
+  'glass',
+  'boolean',
+  'false',
+  'Applies the tokenized glass surface treatment with backdrop-filter fallbacks.'
+)
+
+const disclosureTriggerApiRow = apiRow(
+  'data-ui-trigger',
+  'boolean attribute',
+  '-',
+  'Marks the child trigger that opens and closes the adjacent disclosure panel.'
+)
+
+const dialogTriggerApiRows = (name: string) => [
+  apiRow('id', 'string', '-', 'Connects the dialog surface to a matching trigger attribute value.'),
+  apiRow(`data-ui-${name}-trigger`, 'target id', '-', 'Marks an external trigger and points it at the dialog id.'),
+  apiRow(`data-ui-${name}-close`, 'boolean attribute', '-', 'Marks a child control that closes the nearest dialog.')
+] as const
+
+const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]>> = {
+  Alert: [
+    apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the alert tone.')
+  ],
+  AlertDialog: [
+    surfaceApiRow,
+    ...dialogTriggerApiRows('alert-dialog')
+  ],
+  AspectRatio: [
+    apiRow('ratio', 'CSS aspect-ratio value', '"16 / 9"', 'Sets the preferred width-to-height ratio for the frame.')
+  ],
+  Attachment: [
+    apiRow('href', 'string', '-', 'Renders the root as a link when provided; otherwise renders an article.')
+  ],
+  Avatar: [
+    apiRow('src', 'string', '-', 'Shows an image when present.'),
+    apiRow('alt', 'string', '""', 'Accessible text for the image.'),
+    apiRow('fallback', 'string', '-', 'Fallback text shown when no image source is provided.')
+  ],
+  Badge: [
+    apiRow('variant', '"default" | "secondary" | "outline" | "destructive" | "success" | "warning"', '"default"', 'Controls the badge tone.')
+  ],
+  Bubble: [
+    apiRow('from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the bubble for the message author.')
+  ],
+  Button: [
+    apiRow('variant', '"default" | "secondary" | "outline" | "ghost" | "link" | "destructive"', '"default"', 'Controls the button emphasis.'),
+    apiRow('size', '"default" | "sm" | "lg" | "icon"', '"default"', 'Controls button height, padding, and icon-only sizing.'),
+    apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
+  ],
+  Card: [
+    apiRow('as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'),
+    apiRow('variant', '"default" | "muted" | "interactive" | "glass"', '"default"', 'Controls the card surface and affordance; variant="glass" is kept as a compatibility alias.')
+  ],
+  Carousel: [
+    apiRow('data-ui-carousel-viewport', 'boolean attribute', '-', 'Marks the scrollable slide viewport.'),
+    apiRow('data-ui-carousel-prev, data-ui-carousel-next', 'boolean attribute', '-', 'Marks child controls that move the viewport backward or forward.')
+  ],
+  Checkbox: [
+    apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
+    apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
+  ],
+  Combobox: [
+    apiRow('list', 'string', 'required', 'Connects the input to the generated datalist id.'),
+    apiRow('label', 'string', '-', 'Adds a visible label above the input.'),
+    apiRow('options', 'string[]', '[]', 'Creates datalist options from strings.'),
+    apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
+  ],
+  Command: [
+    apiRow('data-ui-command-item', 'boolean attribute', '-', 'Marks filterable command items for the runtime.')
+  ],
+  ContextMenu: [
+    surfaceApiRow
+  ],
+  DatePicker: [
+    apiRow('type', 'HTML input type', '"date"', 'Sets the native input type.')
+  ],
+  Dialog: [
+    surfaceApiRow,
+    ...dialogTriggerApiRows('dialog')
+  ],
+  Direction: [
+    apiRow('dir', '"ltr" | "rtl" | "auto"', '"ltr"', 'Sets text and layout direction for the subtree.')
+  ],
+  Drawer: [
+    surfaceApiRow,
+    ...dialogTriggerApiRows('drawer')
+  ],
+  DropdownMenu: [
+    surfaceApiRow,
+    disclosureTriggerApiRow
+  ],
+  HoverCard: [
+    surfaceApiRow,
+    disclosureTriggerApiRow
+  ],
+  Input: [
+    apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
+  ],
+  InputOTP: [
+    apiRow('length', 'number', '6', 'Sets the default maxlength for the one-time code.'),
+    apiRow('maxlength', 'number', 'length', 'Overrides the native maximum character count.'),
+    apiRow('inputmode', 'HTML inputmode value', '"numeric"', 'Hints the preferred on-screen keyboard.')
+  ],
+  Marker: [
+    apiRow('variant', '"default" | "success" | "warning" | "danger"', '"default"', 'Controls the marker tone.')
+  ],
+  Menubar: [
+    surfaceApiRow
+  ],
+  Message: [
+    apiRow('from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the message for the author.')
+  ],
+  NativeSelect: [
+    apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
+    apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.')
+  ],
+  NavigationMenu: [
+    surfaceApiRow
+  ],
+  Popover: [
+    surfaceApiRow,
+    disclosureTriggerApiRow
+  ],
+  Progress: [
+    apiRow('value', 'number', '0', 'Sets the current progress value, clamped between 0 and max.'),
+    apiRow('max', 'number', '100', 'Sets the upper bound for progress.')
+  ],
+  Select: [
+    apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
+    apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.')
+  ],
+  Separator: [
+    apiRow('orientation', '"horizontal" | "vertical"', '"horizontal"', 'Sets the separator direction.')
+  ],
+  Sheet: [
+    surfaceApiRow,
+    ...dialogTriggerApiRows('sheet')
+  ],
+  Sidebar: [
+    surfaceApiRow
+  ],
+  Slider: [
+    apiRow('type', 'HTML input type', '"range"', 'Sets the native input type.')
+  ],
+  Switch: [
+    apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
+    apiRow('role', 'ARIA role', '"switch"', 'Sets the switch role on the checkbox input.'),
+    apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
+  ],
+  Textarea: [
+    apiRow('rows', 'number', '4', 'Sets the visible text rows.')
+  ],
+  Toast: [
+    apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the toast tone.'),
+    surfaceApiRow
+  ],
+  Toggle: [
+    apiRow('pressed', 'boolean', 'false', 'Sets the initial pressed state.'),
+    apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
+  ]
+}
+
+export const componentDocs: ComponentDoc[] = ([
   ['Accordion', 'Layout', 'Stacks collapsible content sections.', '<Accordion><details open><summary>Billing</summary><p>Invoices and payment methods.</p></details></Accordion>'],
   ['Alert', 'Feedback', 'Surfaces contextual status messages.', '<Alert><strong>Project synced.</strong><p>Your tokens are available.</p></Alert>'],
   ['AlertDialog', 'Overlays', 'Confirms destructive or high-commitment actions.', '<Button data-ui-alert-dialog-trigger="delete-project">Delete</Button><AlertDialog id="delete-project"><h2>Delete this project?</h2><Button data-ui-alert-dialog-close>Cancel</Button></AlertDialog>'],
@@ -216,7 +514,7 @@ export const componentDocs: ComponentDoc[] = [
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
   ['ButtonGroup', 'Actions', 'Groups related button actions.', '<ButtonGroup><Button variant="secondary">Back</Button><Button>Publish</Button></ButtonGroup>'],
   ['Calendar', 'Forms', 'Presents a calendar surface for date selection.', '<Calendar aria-label="Choose a delivery date" />'],
-  ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card variant="glass"><h2>Starter</h2><p>For personal projects.</p></Card>'],
+  ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card glass><h2>Starter</h2><p>For personal projects.</p></Card>'],
   ['Carousel', 'Layout', 'Displays a horizontal sequence of slides.', '<Carousel aria-label="Featured templates"><article>Dashboard</article><article>Portfolio</article></Carousel>'],
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
@@ -226,7 +524,7 @@ export const componentDocs: ComponentDoc[] = [
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
   ['DataTable', 'Data display', 'Styles dense tabular data and records.', '<DataTable><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Docs</td><td>Ready</td></tr></tbody></table></DataTable>'],
   ['DatePicker', 'Forms', 'Provides a styled date input.', '<DatePicker name="launchDate" aria-label="Launch date" />'],
-  ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog" surface="glass"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
+  ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog" glass><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
   ['Direction', 'Layout', 'Controls directional layout and text flow.', '<Direction dir="rtl"><p>Localized content</p></Direction>'],
   ['Drawer', 'Overlays', 'Slides in supporting navigation, filters, or task panels.', '<Button data-ui-drawer-trigger="filters-drawer">Open filters</Button><Drawer id="filters-drawer"><p>Filter controls</p><Button data-ui-drawer-close>Close</Button></Drawer>'],
   ['DropdownMenu', 'Overlays', 'Shows compact actions from a trigger.', '<DropdownMenu><Button data-ui-trigger>More</Button><div role="menu"><button role="menuitem">Rename</button></div></DropdownMenu>'],
@@ -246,7 +544,7 @@ export const componentDocs: ComponentDoc[] = [
   ['NativeSelect', 'Forms', 'Styles the browser-native select element.', '<NativeSelect name="plan" options={["Free", "Pro", "Team"]} />'],
   ['NavigationMenu', 'Navigation', 'Builds grouped top-level navigation.', '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
-  ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover surface="glass"><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
+  ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover glass><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
   ['RadioGroup', 'Forms', 'Groups mutually exclusive options.', '<RadioGroup><label><input type="radio" name="theme" value="light" /> Light</label><label><input type="radio" name="theme" value="dark" /> Dark</label></RadioGroup>'],
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],
@@ -268,6 +566,17 @@ export const componentDocs: ComponentDoc[] = [
   ['ToggleGroup', 'Actions', 'Groups related toggles.', '<ToggleGroup><Toggle>Day</Toggle><Toggle pressed>Week</Toggle><Toggle>Month</Toggle></ToggleGroup>'],
   ['Tooltip', 'Overlays', 'Adds concise helper text to compact controls.', '<Tooltip><button aria-label="Save changes">Save</button><span role="tooltip">Save changes</span></Tooltip>'],
   ['Typography', 'Data display', 'Applies Lumen text rhythm to article content.', '<Typography><h1>Release notes</h1><p>Lumen now includes production documentation.</p></Typography>']
-].map(([name, category, summary, example]) => ({ name, category, summary, example })) as ComponentDoc[]
+] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
+  apiReference: [
+    ...(glassComponentNameSet.has(name) ? [glassApiRow] : []),
+    ...(apiReferenceByComponent[name] ?? []),
+    ...commonApiRows
+  ],
+  glass: glassComponentNameSet.has(name),
+  name,
+  category,
+  summary,
+  example
+}))
 
 export const componentCategories = [...new Set(componentDocs.map(component => component.category))].sort()

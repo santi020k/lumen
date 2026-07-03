@@ -48,6 +48,7 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
     <div class="flex flex-wrap items-center gap-3">
       <h1 class="text-4xl font-black text-ink">{component.name}</h1>
       <Badge variant="secondary">{component.category}</Badge>
+      {component.glass && <Badge variant="outline">Glass</Badge>}
     </div>
     <p class="max-w-2xl text-lg/8 text-ink-soft">{component.summary}</p>
   </div>
@@ -62,6 +63,49 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
   <section class="mt-8 space-y-3" aria-labelledby="usage-title">
     <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="usage-title">Usage</h2>
     <CodeTabs groupId={`code-${toSlug(component.name)}`} snippets={snippets} />
+  </section>
+
+  <section class="mt-10 space-y-3" aria-labelledby="api-title">
+    <div class="space-y-2">
+      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="api-title">API reference</h2>
+      <p class="max-w-2xl text-sm/7 text-ink-soft">
+        Lumen-specific props and runtime attributes for the Astro primitive. React props follow the
+        same names; Elements use equivalent kebab-case attributes where custom elements expose them.
+      </p>
+    </div>
+    <div class="overflow-x-auto rounded-xl border border-line bg-surface">
+      <table class="w-full min-w-176 border-collapse text-left text-sm">
+        <thead class="
+          bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
+          uppercase
+        ">
+          <tr>
+            <th class="border-b border-line px-4 py-3">Attribute</th>
+            <th class="border-b border-line px-4 py-3">Values</th>
+            <th class="border-b border-line px-4 py-3">Default</th>
+            <th class="border-b border-line px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          {component.apiReference.map(row => (
+            <tr>
+              <th class="
+                w-48 px-4 py-3 align-top font-mono text-xs font-bold text-ink
+              " scope="row">
+                {row.attribute}
+              </th>
+              <td class="
+                w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
+              ">{row.values}</td>
+              <td class="
+                w-28 px-4 py-3 align-top font-mono text-xs text-ink-soft
+              ">{row.defaultValue}</td>
+              <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <Separator class="my-10" />

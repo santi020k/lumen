@@ -3,7 +3,10 @@ import { describe, expect, test } from 'vitest'
 import {
   componentDocs,
   frameworkSetups,
-  globalStyleSetups
+  glassComponentNames,
+  glassSurfaceExamples,
+  globalStyleSetups,
+  themeSetups
 } from './docs'
 
 const staleAttributePatterns = [
@@ -25,6 +28,22 @@ describe('component docs snippets', () => {
     }
   })
 
+  test('include API reference rows for every component', () => {
+    for (const component of componentDocs) {
+      expect(component.apiReference.length).toBeGreaterThan(0)
+      expect(component.apiReference.map(row => row.attribute)).toContain('class, className')
+      expect(component.apiReference.map(row => row.attribute)).toContain('...native attributes')
+    }
+
+    const buttonAttributes = componentDocs
+      .find(component => component.name === 'Button')
+      ?.apiReference
+      .map(row => row.attribute)
+
+    expect(buttonAttributes).toContain('variant')
+    expect(buttonAttributes).toContain('size')
+  })
+
   test('document installation and usage for each framework target', () => {
     expect(frameworkSetups.map(setup => setup.id)).toEqual(['astro', 'react', 'elements'])
 
@@ -42,5 +61,28 @@ describe('component docs snippets', () => {
   test('documents the stylesheet as a one-time global setup', () => {
     expect(globalStyleSetups.map(setup => setup.label)).toEqual(['Tailwind CSS', 'Astro layout', 'App entry'])
     expect(globalStyleSetups.map(setup => setup.code).join('\n')).toContain('@santi020k/lumen-astro/styles.css')
+  })
+
+  test('documents built-in and example theme setup', () => {
+    const themeExamples = themeSetups.map(setup => `${setup.description}\n${setup.code}`).join('\n')
+
+    expect(themeSetups.map(setup => setup.label)).toEqual(['Default themes', 'Runtime switch', 'Custom theme'])
+    expect(themeExamples).toContain('data-theme')
+    expect(themeExamples).toContain('light')
+    expect(themeExamples).toContain('dark')
+    expect(themeExamples).toContain('santi020k-light')
+    expect(themeExamples).toContain('santi020k-dark')
+  })
+
+  test('documents glass support without making it a theme', () => {
+    const glassDocs = componentDocs.filter(component => component.glass)
+    const glassExampleCode = glassSurfaceExamples.map(example => example.code).join('\n')
+
+    expect(glassDocs.map(component => component.name)).toEqual([...glassComponentNames])
+    expect(glassDocs.every(component => component.apiReference.some(row => row.attribute === 'glass'))).toBe(true)
+    expect(glassExampleCode).toContain('<Card glass>')
+    expect(glassExampleCode).toContain('<Popover glass>')
+    expect(glassExampleCode).toContain('<lumen-card glass>')
+    expect(glassExampleCode).not.toContain('data-theme')
   })
 })

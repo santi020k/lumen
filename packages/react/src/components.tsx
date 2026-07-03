@@ -24,6 +24,12 @@ type Orientation = 'horizontal' | 'vertical'
 
 type SurfaceVariant = 'default' | 'glass'
 
+interface SurfaceProps {
+  'data-surface'?: SurfaceVariant
+  glass?: boolean
+  surface?: SurfaceVariant
+}
+
 export interface Option {
   disabled?: boolean
   label: string
@@ -37,6 +43,12 @@ const emptyStringOptions: string[] = []
 
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
   variant === defaultVariant ? false : `${base}--${variant}`
+
+const resolveSurface = (surface: SurfaceVariant, glass?: boolean): SurfaceVariant =>
+  glass || surface === 'glass' ? 'glass' : surface
+
+const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: boolean) =>
+  resolveSurface(surface, glass) === 'glass' && `${base}--glass`
 
 const normalizeOption = (option: SelectOption): Option =>
   typeof option === 'string' ? { label: option, value: option } : option
@@ -75,18 +87,16 @@ export const Alert = ({ className, variant = 'default', ...props }: AlertProps) 
   />
 )
 
-export interface AlertDialogProps extends ComponentPropsWithoutRef<'dialog'> {
-  surface?: SurfaceVariant
-}
+export interface AlertDialogProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
-export const AlertDialog = ({ className, surface = 'default', ...props }: AlertDialogProps) => (
+export const AlertDialog = ({ className, glass = false, surface = 'default', ...props }: AlertDialogProps) => (
   <dialog
     className={composeClassName(
       'ui-dialog ui-alert-dialog',
-      surface === 'glass' && 'ui-dialog--glass',
+      glassSurfaceClass('ui-dialog', surface, glass),
       className
     )}
-    data-surface={surface}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-alert-dialog
     {...props}
   />
@@ -198,6 +208,7 @@ export const Calendar = ({ className, ...props }: CalendarProps) => (
 export type CardProps<T extends ElementType = 'div'> = PrimitiveProps & {
   'data-variant'?: CardVariant
   as?: T
+  glass?: boolean
   uiClassName?: string
   variant?: CardVariant
 }
@@ -205,6 +216,7 @@ export type CardProps<T extends ElementType = 'div'> = PrimitiveProps & {
 export const Card = <T extends ElementType = 'div'>({
   as,
   className,
+  glass = false,
   variant = 'default',
   ...props
 }: CardProps<T>) => (
@@ -213,7 +225,7 @@ export const Card = <T extends ElementType = 'div'>({
     className={composeClassName(
       variant === 'muted' && 'ui-card--muted',
       variant === 'interactive' && 'ui-card--interactive',
-      variant === 'glass' && 'ui-card--glass',
+      (glass || variant === 'glass') && 'ui-card--glass',
       className
     )}
     data-variant={variant}
@@ -272,14 +284,12 @@ export const Command = ({ className, ...props }: CommandProps) => (
   <div className={composeClassName('ui-command', className)} data-ui-command {...props} />
 )
 
-export interface ContextMenuProps extends ComponentPropsWithoutRef<'menu'> {
-  surface?: SurfaceVariant
-}
+export interface ContextMenuProps extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}
 
-export const ContextMenu = ({ className, surface = 'default', ...props }: ContextMenuProps) => (
+export const ContextMenu = ({ className, glass = false, surface = 'default', ...props }: ContextMenuProps) => (
   <menu
-    className={composeClassName('ui-menu', surface === 'glass' && 'ui-menu--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     {...props}
   />
 )
@@ -294,14 +304,12 @@ export const DatePicker = ({ className, type = 'date', ...props }: DatePickerPro
   <input className={composeClassName('ui-input ui-date-picker', className)} type={type} {...props} />
 )
 
-export interface DialogProps extends ComponentPropsWithoutRef<'dialog'> {
-  surface?: SurfaceVariant
-}
+export interface DialogProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
-export const Dialog = ({ className, surface = 'default', ...props }: DialogProps) => (
+export const Dialog = ({ className, glass = false, surface = 'default', ...props }: DialogProps) => (
   <dialog
-    className={composeClassName('ui-dialog', surface === 'glass' && 'ui-dialog--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-dialog', glassSurfaceClass('ui-dialog', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-dialog
     {...props}
   />
@@ -312,27 +320,23 @@ export const Direction = ({ className, dir = 'ltr', ...props }: DirectionProps) 
   <div className={composeClassName('ui-direction', className)} dir={dir} {...props} />
 )
 
-export interface DrawerProps extends ComponentPropsWithoutRef<'dialog'> {
-  surface?: SurfaceVariant
-}
+export interface DrawerProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
-export const Drawer = ({ className, surface = 'default', ...props }: DrawerProps) => (
+export const Drawer = ({ className, glass = false, surface = 'default', ...props }: DrawerProps) => (
   <dialog
-    className={composeClassName('ui-drawer', surface === 'glass' && 'ui-drawer--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-drawer', glassSurfaceClass('ui-drawer', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-drawer
     {...props}
   />
 )
 
-export interface DropdownMenuProps extends ComponentPropsWithoutRef<'menu'> {
-  surface?: SurfaceVariant
-}
+export interface DropdownMenuProps extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}
 
-export const DropdownMenu = ({ className, surface = 'default', ...props }: DropdownMenuProps) => (
+export const DropdownMenu = ({ className, glass = false, surface = 'default', ...props }: DropdownMenuProps) => (
   <menu
-    className={composeClassName('ui-menu', surface === 'glass' && 'ui-menu--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-dropdown-menu
     {...props}
   />
@@ -348,14 +352,12 @@ export const Field = ({ className, ...props }: FieldProps) => (
   <div className={composeClassName('ui-field', className)} {...props} />
 )
 
-export interface HoverCardProps extends ComponentPropsWithoutRef<'aside'> {
-  surface?: SurfaceVariant
-}
+export interface HoverCardProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}
 
-export const HoverCard = ({ className, surface = 'default', ...props }: HoverCardProps) => (
+export const HoverCard = ({ className, glass = false, surface = 'default', ...props }: HoverCardProps) => (
   <aside
-    className={composeClassName('ui-hover-card', surface === 'glass' && 'ui-hover-card--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-hover-card', glassSurfaceClass('ui-hover-card', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-hover-card
     {...props}
   />
@@ -420,14 +422,12 @@ export const Marker = ({ className, variant = 'default', ...props }: MarkerProps
   />
 )
 
-export interface MenubarProps extends ComponentPropsWithoutRef<'nav'> {
-  surface?: SurfaceVariant
-}
+export interface MenubarProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}
 
-export const Menubar = ({ className, surface = 'default', ...props }: MenubarProps) => (
+export const Menubar = ({ className, glass = false, surface = 'default', ...props }: MenubarProps) => (
   <nav
-    className={composeClassName('ui-menubar', surface === 'glass' && 'ui-menubar--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-menubar', glassSurfaceClass('ui-menubar', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-menubar
     {...props}
   />
@@ -484,18 +484,16 @@ export const NativeSelect = ({
   )
 }
 
-export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'> {
-  surface?: SurfaceVariant
-}
+export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}
 
-export const NavigationMenu = ({ className, surface = 'default', ...props }: NavigationMenuProps) => (
+export const NavigationMenu = ({ className, glass = false, surface = 'default', ...props }: NavigationMenuProps) => (
   <nav
     className={composeClassName(
       'ui-navigation-menu',
-      surface === 'glass' && 'ui-navigation-menu--glass',
+      glassSurfaceClass('ui-navigation-menu', surface, glass),
       className
     )}
-    data-surface={surface}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-navigation-menu
     {...props}
   />
@@ -506,14 +504,12 @@ export const Pagination = ({ 'aria-label': ariaLabel = 'Pagination', className, 
   <nav aria-label={ariaLabel} className={composeClassName('ui-pagination', className)} {...props} />
 )
 
-export interface PopoverProps extends ComponentPropsWithoutRef<'div'> {
-  surface?: SurfaceVariant
-}
+export interface PopoverProps extends ComponentPropsWithoutRef<'div'>, SurfaceProps {}
 
-export const Popover = ({ className, surface = 'default', ...props }: PopoverProps) => (
+export const Popover = ({ className, glass = false, surface = 'default', ...props }: PopoverProps) => (
   <div
-    className={composeClassName('ui-popover', surface === 'glass' && 'ui-popover--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-popover', glassSurfaceClass('ui-popover', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-popover
     {...props}
   />
@@ -574,27 +570,23 @@ export const Separator = ({ className, orientation = 'horizontal', ...props }: S
   />
 )
 
-export interface SheetProps extends ComponentPropsWithoutRef<'dialog'> {
-  surface?: SurfaceVariant
-}
+export interface SheetProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
-export const Sheet = ({ className, surface = 'default', ...props }: SheetProps) => (
+export const Sheet = ({ className, glass = false, surface = 'default', ...props }: SheetProps) => (
   <dialog
-    className={composeClassName('ui-sheet', surface === 'glass' && 'ui-sheet--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-sheet', glassSurfaceClass('ui-sheet', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     data-ui-sheet
     {...props}
   />
 )
 
-export interface SidebarProps extends ComponentPropsWithoutRef<'aside'> {
-  surface?: SurfaceVariant
-}
+export interface SidebarProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}
 
-export const Sidebar = ({ className, surface = 'default', ...props }: SidebarProps) => (
+export const Sidebar = ({ className, glass = false, surface = 'default', ...props }: SidebarProps) => (
   <aside
-    className={composeClassName('ui-sidebar', surface === 'glass' && 'ui-sidebar--glass', className)}
-    data-surface={surface}
+    className={composeClassName('ui-sidebar', glassSurfaceClass('ui-sidebar', surface, glass), className)}
+    data-surface={resolveSurface(surface, glass)}
     {...props}
   />
 )
@@ -657,20 +649,19 @@ export const Textarea = ({ className, rows = 4, ...props }: TextareaProps) => (
   <textarea className={composeClassName('ui-textarea', className)} rows={rows} {...props} />
 )
 
-export interface ToastProps extends ComponentPropsWithoutRef<'aside'> {
-  surface?: SurfaceVariant
+export interface ToastProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {
   variant?: AlertVariant
 }
 
-export const Toast = ({ className, surface = 'default', variant = 'default', ...props }: ToastProps) => (
+export const Toast = ({ className, glass = false, surface = 'default', variant = 'default', ...props }: ToastProps) => (
   <aside
     className={composeClassName(
       'ui-toast',
       variantClass('ui-toast', variant),
-      surface === 'glass' && 'ui-toast--glass',
+      glassSurfaceClass('ui-toast', surface, glass),
       className
     )}
-    data-surface={surface}
+    data-surface={resolveSurface(surface, glass)}
     data-variant={variant}
     {...props}
   />
