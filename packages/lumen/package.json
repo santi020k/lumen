@@ -6,6 +6,7 @@
   },
   "description": "Umbrella package for the Lumen multi-framework primitive UI system.",
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -29,6 +30,11 @@
   },
   "dependencies": {
     "@santi020k/lumen-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=22.18.0"

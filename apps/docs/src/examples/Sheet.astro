@@ -1,0 +1,13 @@
+---
+import {
+  Button,
+  Sheet
+} from '@santi020k/lumen-astro'
+---
+
+<Button variant="outline" data-ui-sheet-trigger="ex-sheet">Open details</Button>
+<Sheet id="ex-sheet">
+  <h2>Deployment details</h2>
+  <p>Build 128 deployed from main in 42s.</p>
+  <Button variant="ghost" data-ui-sheet-close>Close</Button>
+</Sheet>

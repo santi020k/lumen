@@ -1,0 +1,16 @@
+---
+import {
+  Avatar,
+  Bubble,
+  Message
+} from '@santi020k/lumen-astro'
+---
+
+<Message from="assistant">
+  <Avatar fallback="LU" />
+  <Bubble>Lumen components are installed and ready.</Bubble>
+</Message>
+<Message from="user">
+  <Avatar fallback="SM" />
+  <Bubble from="user">Show me the Button docs.</Bubble>
+</Message>

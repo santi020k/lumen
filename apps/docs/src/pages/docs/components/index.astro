@@ -1,0 +1,43 @@
+---
+import { Badge, Card } from '@santi020k/lumen-astro'
+
+import { componentCategories, componentDocs } from '../../../data/docs'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+import { toSlug } from '../../../lib/routes'
+---
+
+<DocsLayout
+  description="Browse all Lumen UI components with live previews and usage examples for Astro, React, and Web Components."
+  title="Components - Lumen UI"
+>
+  <div class="mb-10 space-y-3">
+    <h1 class="text-4xl font-black text-ink">Components</h1>
+    <p class="max-w-2xl text-lg/8 text-ink-soft">
+      {componentDocs.length} primitives, each documented with a live preview and code for
+      Astro, React, and Web Components.
+    </p>
+  </div>
+
+  {componentCategories.map(category => (
+    <section class="mb-10 space-y-4" aria-label={category}>
+      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase">{category}</h2>
+      <div class="
+        grid gap-4
+        md:grid-cols-2
+        xl:grid-cols-3
+      ">
+        {componentDocs.filter(component => component.category === category).map(component => (
+          <a class="no-underline" href={`/docs/components/${toSlug(component.name)}`}>
+            <Card class="h-full space-y-2 p-5" variant="interactive">
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="text-base font-bold text-ink">{component.name}</h3>
+                <Badge variant="outline">{category}</Badge>
+              </div>
+              <p class="text-sm/6 text-ink-soft">{component.summary}</p>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+</DocsLayout>

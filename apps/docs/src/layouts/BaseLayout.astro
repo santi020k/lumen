@@ -1,0 +1,58 @@
+---
+import '../styles/global.css'
+
+import { UIPrimitives } from '@santi020k/lumen-astro'
+
+import SiteHeader from '../components/SiteHeader.astro'
+
+interface Props {
+  description: string
+  title: string
+}
+
+const { description, title } = Astro.props
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <script is:inline>
+      const storedTheme = localStorage.getItem('lumen-theme')
+
+      if (storedTheme === 'light' || storedTheme === 'dark') {
+        document.documentElement.dataset.theme = storedTheme
+      }
+    </script>
+  </head>
+  <body>
+    <UIPrimitives />
+    <SiteHeader />
+    <slot />
+    <footer class="border-t border-line">
+      <div class="
+        mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between
+        gap-3 px-5 py-6 text-sm text-ink-soft
+        sm:px-8
+      ">
+        <p>Lumen UI. Built with its own primitives.</p>
+        <div class="flex gap-4 font-bold">
+          <a class="
+            text-ink-soft no-underline
+            hover:text-ink
+          " href="/docs">Docs</a>
+          <a class="
+            text-ink-soft no-underline
+            hover:text-ink
+          " href="/docs/components">Components</a>
+          <a class="
+            text-ink-soft no-underline
+            hover:text-ink
+          " href="https://github.com/santi020k/lumen">GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

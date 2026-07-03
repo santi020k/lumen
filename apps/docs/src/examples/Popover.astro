@@ -1,0 +1,20 @@
+---
+import {
+  Button,
+  Field,
+  Input,
+  Label,
+  Popover
+} from '@santi020k/lumen-astro'
+---
+
+<Popover>
+  <Button variant="outline" data-ui-trigger>Invite teammates</Button>
+  <div>
+    <Field>
+      <Label for="ex-invite">Email address</Label>
+      <Input id="ex-invite" type="email" placeholder="teammate@example.com" />
+    </Field>
+    <Button size="sm">Send invite</Button>
+  </div>
+</Popover>

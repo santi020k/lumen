@@ -1,0 +1,37 @@
+---
+import { Tabs } from '@santi020k/lumen-astro'
+import { Code } from 'astro:components'
+
+import type { FrameworkSnippet } from '../lib/snippets'
+
+interface Props {
+  groupId: string
+  snippets: FrameworkSnippet[]
+}
+
+const { groupId, snippets } = Astro.props
+---
+
+<Tabs class="docs-code-tabs">
+  <div role="tablist" aria-label="Framework">
+    {snippets.map((snippet, index) => (
+      <button
+        aria-controls={`${groupId}-panel-${index}`}
+        aria-selected={index === 0 ? 'true' : 'false'}
+        id={`${groupId}-tab-${index}`}
+        role="tab"
+      >{snippet.label}</button>
+    ))}
+  </div>
+  {snippets.map((snippet, index) => (
+    <section
+      aria-labelledby={`${groupId}-tab-${index}`}
+      class="docs-code-panel"
+      hidden={index !== 0}
+      id={`${groupId}-panel-${index}`}
+      role="tabpanel"
+    >
+      <Code code={snippet.code} lang={snippet.lang} theme="one-dark-pro" />
+    </section>
+  ))}
+</Tabs>

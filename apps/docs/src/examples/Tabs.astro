@@ -1,0 +1,16 @@
+---
+import { Tabs } from '@santi020k/lumen-astro'
+---
+
+<Tabs>
+  <div role="tablist" aria-label="Package targets">
+    <button id="ex-tab-astro" role="tab" aria-controls="ex-panel-astro" aria-selected="true">Astro</button>
+    <button id="ex-tab-react" role="tab" aria-controls="ex-panel-react">React</button>
+  </div>
+  <section id="ex-panel-astro" role="tabpanel" aria-labelledby="ex-tab-astro">
+    <p>All primitives are available as Astro components.</p>
+  </section>
+  <section id="ex-panel-react" role="tabpanel" aria-labelledby="ex-tab-react" hidden>
+    <p>The same API surface is available in React.</p>
+  </section>
+</Tabs>

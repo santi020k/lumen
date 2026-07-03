@@ -1,0 +1,16 @@
+---
+import {
+  AlertDialog,
+  Button
+} from '@santi020k/lumen-astro'
+---
+
+<Button variant="destructive" data-ui-alert-dialog-trigger="ex-alert-dialog">Delete project</Button>
+<AlertDialog id="ex-alert-dialog">
+  <h2>Delete this project?</h2>
+  <p>This action cannot be undone. The project and its deployments will be removed.</p>
+  <footer>
+    <Button variant="ghost" data-ui-alert-dialog-close>Cancel</Button>
+    <Button variant="destructive" data-ui-alert-dialog-close>Delete</Button>
+  </footer>
+</AlertDialog>

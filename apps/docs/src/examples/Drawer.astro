@@ -1,0 +1,14 @@
+---
+import {
+  Button,
+  Checkbox,
+  Drawer
+} from '@santi020k/lumen-astro'
+---
+
+<Button variant="outline" data-ui-drawer-trigger="ex-drawer">Open filters</Button>
+<Drawer id="ex-drawer">
+  <h2>Filters</h2>
+  <label><Checkbox name="stable" /> Stable packages only</label>
+  <Button variant="ghost" data-ui-drawer-close>Close</Button>
+</Drawer>

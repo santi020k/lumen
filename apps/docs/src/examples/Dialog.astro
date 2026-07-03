@@ -1,0 +1,22 @@
+---
+import {
+  Button,
+  Dialog,
+  Field,
+  Input,
+  Label
+} from '@santi020k/lumen-astro'
+---
+
+<Button data-ui-dialog-trigger="ex-dialog">Edit profile</Button>
+<Dialog id="ex-dialog">
+  <h2>Edit profile</h2>
+  <Field>
+    <Label for="ex-dialog-name">Display name</Label>
+    <Input id="ex-dialog-name" placeholder="Santiago" />
+  </Field>
+  <footer>
+    <Button variant="ghost" data-ui-dialog-close>Cancel</Button>
+    <Button data-ui-dialog-close>Save changes</Button>
+  </footer>
+</Dialog>

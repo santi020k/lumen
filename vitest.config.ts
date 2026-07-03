@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'node:url'
 
-import { defineConfig, defineProject } from 'vitest/config'
+import { defineConfig } from 'vitest/config'
+
+import type { TestProjectConfiguration } from 'vitest/config'
 
 const root = fileURLToPath(new URL('.', import.meta.url))
 
@@ -12,6 +14,21 @@ const alias = {
 }
 
 const coverageReporters = process.env.CI ? ['text', 'lcov'] : ['text', 'html']
+
+const project = (
+  name: string,
+  path: string,
+  overrides: Record<string, unknown> = {}
+): TestProjectConfiguration => ({
+  extends: true,
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+    name,
+    root: `${root}/${path}`,
+    ...overrides
+  }
+})
 
 export default defineConfig({
   resolve: {
@@ -33,70 +50,12 @@ export default defineConfig({
     },
     includeTaskLocation: true,
     projects: [
-      defineProject({
-        test: {
-          environment: 'node',
-          include: ['src/**/*.test.ts'],
-          name: 'core',
-          root: `${root}/packages/core`
-        }
-      }),
-      defineProject({
-        resolve: {
-          alias
-        },
-        test: {
-          environment: 'node',
-          include: ['src/**/*.test.ts'],
-          name: 'lumen',
-          root: `${root}/packages/lumen`
-        }
-      }),
-      defineProject({
-        resolve: {
-          alias
-        },
-        test: {
-          environment: 'node',
-          include: ['src/**/*.test.ts'],
-          name: 'react',
-          root: `${root}/packages/react`
-        }
-      }),
-      defineProject({
-        resolve: {
-          alias
-        },
-        test: {
-          environment: 'jsdom',
-          include: ['src/**/*.test.ts'],
-          name: 'elements',
-          root: `${root}/packages/elements`
-        }
-      }),
-      defineProject({
-        resolve: {
-          alias
-        },
-        test: {
-          environment: 'node',
-          include: ['*.test.ts'],
-          name: 'astro',
-          root: `${root}/packages/astro`
-        }
-      }),
-      defineProject({
-        resolve: {
-          alias
-        },
-        test: {
-          environment: 'node',
-          include: ['src/**/*.test.ts'],
-          name: 'docs',
-          passWithNoTests: true,
-          root: `${root}/apps/docs`
-        }
-      })
+      project('core', 'packages/core'),
+      project('lumen', 'packages/lumen'),
+      project('react', 'packages/react'),
+      project('elements', 'packages/elements', { environment: 'jsdom' }),
+      project('astro', 'packages/astro', { include: ['*.test.ts'] }),
+      project('docs', 'apps/docs', { passWithNoTests: true })
     ],
     restoreMocks: true
   }

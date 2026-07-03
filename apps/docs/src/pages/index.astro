@@ -1,156 +1,160 @@
 ---
-import '../styles/global.css'
-
 import {
   Badge,
   Button,
   Card,
+  Field,
   Input,
+  Label,
+  Marker,
+  Progress,
   Separator,
-  Tabs,
-  UIPrimitives
+  Switch,
+  Toggle,
+  ToggleGroup
 } from '@santi020k/lumen-astro'
-import { lumenComponentNames, lumenPackages } from '@santi020k/lumen-core'
+import { lumenComponentNames } from '@santi020k/lumen-core'
 
-const previewComponents = lumenComponentNames.slice(0, 24)
+import { componentCategories, componentDocs } from '../data/docs'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { toSlug } from '../lib/routes'
+
+const highlights = [
+  ['Semantic first', 'Real buttons, dialogs, tables, and forms. Accessibility comes from the markup, not a wrapper div.'],
+  ['One class contract', 'Every target shares the same ui-* stylesheet driven by design tokens, so screens look identical across frameworks.'],
+  ['No framework runtime', 'A single progressive-enhancement script powers dialogs, menus, tabs, and toasts in about 4 KB.']
+] as const
+
+const featured = componentDocs.slice(0, 12)
 ---
 
-<html lang="en" data-theme="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Lumen is a multi-framework primitive UI system for Astro, React, and Web Components."
-    />
-    <title>Lumen UI</title>
-  </head>
-  <body>
-    <UIPrimitives />
-    <main class="
-      mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-14 px-5 py-8
-      sm:px-8
-      lg:py-10
+<BaseLayout
+  description="Lumen is a multi-framework primitive UI system with 64 components for Astro, React, and Web Components, documented with live examples."
+  title="Lumen UI - Primitives for Astro, React, and Web Components"
+>
+  <main class="
+    mx-auto flex w-full max-w-7xl flex-col gap-16 px-5 py-12
+    sm:px-8
+  ">
+    <section class="
+      grid gap-10
+      lg:grid-cols-[1.05fr_0.95fr] lg:items-center
     ">
-      <nav class="
-        flex items-center justify-between gap-4 border-b border-line pb-4
-      ">
-        <a class="text-sm font-black tracking-wide text-ink no-underline" href="/">Lumen UI</a>
-        <div class="flex flex-wrap gap-3 text-sm font-bold">
-          <a class="
-            text-ink-soft no-underline
-            hover:text-ink
-          " href="/docs">Docs</a>
-          <a class="
-            text-ink-soft no-underline
-            hover:text-ink
-          " href="/docs/components">Components</a>
+      <div class="space-y-6">
+        <div class="flex flex-wrap gap-2">
+          <Badge>{lumenComponentNames.length} components</Badge>
+          <Badge variant="secondary">Astro</Badge>
+          <Badge variant="secondary">React</Badge>
+          <Badge variant="secondary">Web Components</Badge>
         </div>
-      </nav>
-
-      <section class="
-        grid gap-8
-        lg:grid-cols-[1.05fr_0.95fr] lg:items-center
-      ">
-        <div class="space-y-6">
-          <Badge>Astro primitives</Badge>
-          <div class="space-y-4">
-            <h1 class="
-              max-w-3xl text-5xl/tight font-black text-ink
-              sm:text-7xl/tight
-            ">Documentation for a portable UI system.</h1>
-            <p class="max-w-2xl text-lg/8 text-ink-soft">
-              Lumen ships semantic primitives for Astro today, with React and Web Component
-              adapters growing around the same shared tokens and component metadata.
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-3">
-            <a class="ui-button ui-button--default-size ui-button--default" href="/docs">Get started</a>
-            <a class="ui-button ui-button--default-size ui-button--secondary" href="/docs/components">Open reference</a>
-          </div>
+        <h1 class="
+          max-w-3xl text-5xl/tight font-black text-ink
+          sm:text-6xl/tight
+        ">Write it once. Ship it in any framework.</h1>
+        <p class="max-w-2xl text-lg/8 text-ink-soft">
+          Lumen is a primitive UI system built on semantic markup and shared design tokens.
+          The same component, the same classes, the same behavior, in Astro, React, and
+          standards-based custom elements.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a class="
+            ui-button ui-button--lg ui-button--default no-underline
+          " href="/docs">Get started</a>
+          <a class="
+            ui-button ui-button--lg ui-button--secondary no-underline
+          " href="/docs/components">Browse components</a>
         </div>
+        <p class="font-mono text-sm text-ink-muted">pnpm add @santi020k/lumen-astro</p>
+      </div>
 
-        <Card class="
-          grid gap-5 p-6
-          sm:p-7
-        ">
-          <div class="flex items-center justify-between gap-4">
-            <div>
-              <p class="ui-label">Component preview</p>
-              <p class="text-sm text-ink-soft">Astro primitives composed with standard form markup.</p>
-            </div>
-            <Badge variant="secondary">Astro</Badge>
+      <Card class="
+        grid gap-5 p-6
+        sm:p-7
+      ">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold text-ink">Everything below is Lumen</p>
+            <p class="text-sm text-ink-soft">This site is built with its own primitives.</p>
           </div>
-          <form class="grid gap-3">
-            <label class="ui-label" for="email">Email</label>
-            <Input id="email" placeholder="you@example.com" type="email" />
-            <Button type="button">Subscribe</Button>
-          </form>
+          <Marker variant="success">Live</Marker>
+        </div>
+        <ToggleGroup aria-label="Billing interval">
+          <Toggle>Monthly</Toggle>
+          <Toggle pressed>Yearly</Toggle>
+        </ToggleGroup>
+        <Field>
+          <Label for="hero-email">Work email</Label>
+          <Input id="hero-email" type="email" placeholder="you@example.com" />
+        </Field>
+        <label class="flex items-center gap-2 text-sm text-ink-soft">
+          <Switch name="hero-updates" checked /> Send me release notes
+        </label>
+        <Progress value={72} aria-label="Onboarding progress" />
+        <div class="flex gap-3">
+          <Button>Create workspace</Button>
+          <Button variant="ghost">Skip for now</Button>
+        </div>
+      </Card>
+    </section>
+
+    <section class="
+      grid gap-4
+      md:grid-cols-3
+    " aria-label="Why Lumen">
+      {highlights.map(([title, description]) => (
+        <Card class="space-y-2 p-6" variant="muted">
+          <h2 class="text-base font-bold text-ink">{title}</h2>
+          <p class="text-sm/6 text-ink-soft">{description}</p>
         </Card>
-      </section>
+      ))}
+    </section>
 
-      <section class="grid gap-6">
+    <section class="space-y-6" aria-labelledby="catalog-title">
+      <div class="flex flex-wrap items-end justify-between gap-4">
         <div class="space-y-2">
-          <p class="
-            text-sm font-semibold tracking-[0.22em] text-brand uppercase
-          ">Packages</p>
-          <h2 class="text-3xl font-bold text-ink">Framework entry points</h2>
+          <p class="text-sm font-semibold tracking-[0.22em] text-brand uppercase">Component reference</p>
+          <h2 class="text-3xl font-bold text-ink" id="catalog-title">
+            Live previews, code in three flavors
+          </h2>
+          <p class="max-w-2xl text-sm/7 text-ink-soft">
+            Every component page renders the real thing and shows matching Astro, React, and
+            custom-element usage side by side. {componentCategories.join(', ')}.
+          </p>
         </div>
-        <div class="
-          grid gap-4
-          md:grid-cols-2
-          lg:grid-cols-3
-        ">
-          {lumenPackages.map(pkg => (
-            <Card class="p-5">
-              <p class="ui-label">{pkg.packageName}</p>
-              <p class="mt-2 text-sm/6 text-ink-soft">{pkg.name} package for the {pkg.runtime} target.</p>
+        <a class="
+          ui-button ui-button--default-size ui-button--outline no-underline
+        " href="/docs/components">See all {componentDocs.length}</a>
+      </div>
+      <div class="
+        grid gap-4
+        md:grid-cols-2
+        xl:grid-cols-4
+      ">
+        {featured.map(component => (
+          <a class="no-underline" href={`/docs/components/${toSlug(component.name)}`}>
+            <Card class="h-full space-y-2 p-5" variant="interactive">
+              <h3 class="text-sm font-bold text-ink">{component.name}</h3>
+              <p class="text-sm/6 text-ink-soft">{component.summary}</p>
             </Card>
-          ))}
-        </div>
-      </section>
+          </a>
+        ))}
+      </div>
+    </section>
 
-      <section class="grid gap-6">
-        <div class="space-y-2">
-          <p class="
-            text-sm font-semibold tracking-[0.22em] text-brand uppercase
-          ">Components</p>
-          <h2 class="text-3xl font-bold text-ink">Complete Astro catalog</h2>
-        </div>
-        <Tabs>
-          <div role="tablist" aria-label="Component targets">
-            <button id="tab-astro" role="tab" aria-controls="panel-astro" aria-selected="true">Astro</button>
-            <button id="tab-react" role="tab" aria-controls="panel-react">React</button>
-            <button id="tab-elements" role="tab" aria-controls="panel-elements">Elements</button>
-          </div>
-          <Card id="panel-astro" role="tabpanel" aria-labelledby="tab-astro" class="
-            mt-4 p-5
-          ">
-            <div class="flex flex-wrap gap-2">
-              {previewComponents.map(component => <Badge variant="outline">{component}</Badge>)}
-            </div>
-            <Separator class="my-5" />
-            <p class="text-sm/7 text-ink-soft">
-              The Astro package includes all {lumenComponentNames.length} primitives with install,
-              setup, and component usage examples in the documentation.
-            </p>
-          </Card>
-          <Card id="panel-react" role="tabpanel" aria-labelledby="tab-react" class="
-            mt-4 p-5
-          ">
-            <p class="text-sm/7 text-ink-soft">
-              React starts with Button, Card, and Input while the API stabilizes.
-            </p>
-          </Card>
-          <Card id="panel-elements" role="tabpanel" aria-labelledby="tab-elements" class="
-            mt-4 p-5
-          ">
-            <p class="text-sm/7 text-ink-soft">
-              Web Components start with custom element registration for card and button primitives.
-            </p>
-          </Card>
-        </Tabs>
-      </section>
-    </main>
-  </body>
-</html>
+    <Separator />
+
+    <section class="
+      grid gap-6 text-center
+    " aria-label="Get started">
+      <h2 class="text-3xl font-bold text-ink">Start with the framework you already use.</h2>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a class="
+          ui-button ui-button--lg ui-button--default no-underline
+        " href="/docs">Read the docs</a>
+        <a class="
+          ui-button ui-button--lg ui-button--outline no-underline
+        " href="https://github.com/santi020k/lumen">Star on GitHub</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

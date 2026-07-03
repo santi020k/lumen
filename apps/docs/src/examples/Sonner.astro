@@ -1,0 +1,17 @@
+---
+import {
+  Button,
+  Sonner
+} from '@santi020k/lumen-astro'
+---
+
+<Sonner aria-label="Notifications" />
+<Button variant="outline" data-ex-toast-trigger>Show toast</Button>
+
+<script>
+  document.querySelector('[data-ex-toast-trigger]')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('ui:toast', {
+      detail: { description: 'Your changes are live.', title: 'Saved', variant: 'success' }
+    }))
+  })
+</script>

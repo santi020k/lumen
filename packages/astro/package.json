@@ -6,6 +6,7 @@
   },
   "description": "Astro components and progressive-enhancement runtime for Lumen UI.",
   "type": "module",
+  "sideEffects": false,
   "types": "./index.d.ts",
   "exports": {
     ".": {
