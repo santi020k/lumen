@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest'
 import {
   lumen,
   lumenComponentNames,
+  lumenGlass,
   lumenPackages
 } from './index.js'
 
@@ -15,6 +16,7 @@ describe('@santi020k/lumen umbrella package', () => {
     })
 
     expect(lumenComponentNames).toContain('Button')
+    expect(lumenGlass.blur).toBe('18px')
 
     expect(lumenPackages.some(pkg => pkg.packageName === lumen.packageName)).toBe(true)
   })

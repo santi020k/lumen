@@ -36,3 +36,15 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 ```
 
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.
+
+## Glass surfaces
+
+Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a
+variant, while overlays and navigation primitives use a surface prop so semantic variants remain
+available.
+
+```astro
+<Card variant="glass">Glass card</Card>
+<Dialog surface="glass">Glass dialog</Dialog>
+<Popover surface="glass">Glass popover</Popover>
+```

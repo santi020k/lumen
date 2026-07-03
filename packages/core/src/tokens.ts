@@ -20,5 +20,16 @@ export const lumenColors = {
   warning: '38 92% 50%'
 } as const
 
+export const lumenGlass = {
+  bg: '0 0% 100% / 0.64',
+  bgStrong: '0 0% 100% / 0.78',
+  bgSubtle: '0 0% 100% / 0.46',
+  blur: '18px',
+  border: '220 30% 100% / 0.58',
+  highlight: '0 0% 100% / 0.72',
+  saturate: '1.35',
+  shadow: '0 20px 60px hsl(222 47% 11% / 0.16)'
+} as const
+
 export const composeClassName = (...classes: (boolean | null | string | undefined)[]) =>
   classes.filter(Boolean).join(' ')

@@ -33,7 +33,12 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-alert'
   },
-  AlertDialog: { baseClassName: 'ui-dialog ui-alert-dialog', defaults: { 'data-ui-alert-dialog': '' }, tagName: 'lumen-alert-dialog' },
+  AlertDialog: {
+    attributeClasses: { surface: { glass: 'ui-dialog--glass' } },
+    baseClassName: 'ui-dialog ui-alert-dialog',
+    defaults: { 'data-ui-alert-dialog': '', surface: 'default' },
+    tagName: 'lumen-alert-dialog'
+  },
   AspectRatio: { baseClassName: 'ui-aspect-ratio', tagName: 'lumen-aspect-ratio' },
   Attachment: { baseClassName: 'ui-attachment', tagName: 'lumen-attachment' },
   Avatar: { baseClassName: 'ui-avatar', tagName: 'lumen-avatar' },
@@ -87,6 +92,7 @@ const elementConfigs = {
   Card: {
     attributeClasses: {
       variant: {
+        glass: 'ui-card--glass',
         interactive: 'ui-card--interactive',
         muted: 'ui-card--muted'
       }
@@ -101,16 +107,41 @@ const elementConfigs = {
   Collapsible: { baseClassName: 'ui-collapsible', defaults: { 'data-ui-collapsible': '' }, tagName: 'lumen-collapsible' },
   Combobox: { baseClassName: 'ui-combobox', defaults: { 'data-ui-combobox': '' }, tagName: 'lumen-combobox' },
   Command: { baseClassName: 'ui-command', defaults: { 'data-ui-command': '' }, tagName: 'lumen-command' },
-  ContextMenu: { baseClassName: 'ui-menu', tagName: 'lumen-context-menu' },
+  ContextMenu: {
+    attributeClasses: { surface: { glass: 'ui-menu--glass' } },
+    baseClassName: 'ui-menu',
+    defaults: { surface: 'default' },
+    tagName: 'lumen-context-menu'
+  },
   DataTable: { baseClassName: 'ui-data-table', tagName: 'lumen-data-table' },
   DatePicker: { baseClassName: 'ui-input ui-date-picker', defaults: { type: 'date' }, tagName: 'lumen-date-picker' },
-  Dialog: { baseClassName: 'ui-dialog', defaults: { 'data-ui-dialog': '' }, tagName: 'lumen-dialog' },
+  Dialog: {
+    attributeClasses: { surface: { glass: 'ui-dialog--glass' } },
+    baseClassName: 'ui-dialog',
+    defaults: { 'data-ui-dialog': '', surface: 'default' },
+    tagName: 'lumen-dialog'
+  },
   Direction: { baseClassName: 'ui-direction', defaults: { dir: 'ltr' }, tagName: 'lumen-direction' },
-  Drawer: { baseClassName: 'ui-drawer', defaults: { 'data-ui-drawer': '' }, tagName: 'lumen-drawer' },
-  DropdownMenu: { baseClassName: 'ui-menu', defaults: { 'data-ui-dropdown-menu': '' }, tagName: 'lumen-dropdown-menu' },
+  Drawer: {
+    attributeClasses: { surface: { glass: 'ui-drawer--glass' } },
+    baseClassName: 'ui-drawer',
+    defaults: { 'data-ui-drawer': '', surface: 'default' },
+    tagName: 'lumen-drawer'
+  },
+  DropdownMenu: {
+    attributeClasses: { surface: { glass: 'ui-menu--glass' } },
+    baseClassName: 'ui-menu',
+    defaults: { 'data-ui-dropdown-menu': '', surface: 'default' },
+    tagName: 'lumen-dropdown-menu'
+  },
   Empty: { baseClassName: 'ui-empty', tagName: 'lumen-empty' },
   Field: { baseClassName: 'ui-field', tagName: 'lumen-field' },
-  HoverCard: { baseClassName: 'ui-hover-card', defaults: { 'data-ui-hover-card': '' }, tagName: 'lumen-hover-card' },
+  HoverCard: {
+    attributeClasses: { surface: { glass: 'ui-hover-card--glass' } },
+    baseClassName: 'ui-hover-card',
+    defaults: { 'data-ui-hover-card': '', surface: 'default' },
+    tagName: 'lumen-hover-card'
+  },
   Input: { baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: { baseClassName: 'ui-input-otp', defaults: { inputmode: 'numeric', maxlength: '6', pattern: '[0-9]*', type: 'text' }, tagName: 'lumen-input-otp' },
@@ -129,7 +160,12 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-marker'
   },
-  Menubar: { baseClassName: 'ui-menubar', defaults: { 'data-ui-menubar': '' }, tagName: 'lumen-menubar' },
+  Menubar: {
+    attributeClasses: { surface: { glass: 'ui-menubar--glass' } },
+    baseClassName: 'ui-menubar',
+    defaults: { 'data-ui-menubar': '', surface: 'default' },
+    tagName: 'lumen-menubar'
+  },
   Message: {
     attributeClasses: {
       from: {
@@ -143,9 +179,19 @@ const elementConfigs = {
   },
   MessageScroller: { baseClassName: 'ui-message-scroller', tagName: 'lumen-message-scroller' },
   NativeSelect: { baseClassName: 'ui-select', tagName: 'lumen-native-select' },
-  NavigationMenu: { baseClassName: 'ui-navigation-menu', defaults: { 'data-ui-navigation-menu': '' }, tagName: 'lumen-navigation-menu' },
+  NavigationMenu: {
+    attributeClasses: { surface: { glass: 'ui-navigation-menu--glass' } },
+    baseClassName: 'ui-navigation-menu',
+    defaults: { 'data-ui-navigation-menu': '', surface: 'default' },
+    tagName: 'lumen-navigation-menu'
+  },
   Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
-  Popover: { baseClassName: 'ui-popover', defaults: { 'data-ui-popover': '' }, tagName: 'lumen-popover' },
+  Popover: {
+    attributeClasses: { surface: { glass: 'ui-popover--glass' } },
+    baseClassName: 'ui-popover',
+    defaults: { 'data-ui-popover': '', surface: 'default' },
+    tagName: 'lumen-popover'
+  },
   Progress: { baseClassName: 'ui-progress', defaults: { role: 'progressbar' }, tagName: 'lumen-progress' },
   RadioGroup: { baseClassName: 'ui-radio-group', defaults: { 'data-ui-radio-group': '' }, tagName: 'lumen-radio-group' },
   Resizable: { baseClassName: 'ui-resizable', tagName: 'lumen-resizable' },
@@ -162,8 +208,18 @@ const elementConfigs = {
     defaults: { orientation: 'horizontal' },
     tagName: 'lumen-separator'
   },
-  Sheet: { baseClassName: 'ui-sheet', defaults: { 'data-ui-sheet': '' }, tagName: 'lumen-sheet' },
-  Sidebar: { baseClassName: 'ui-sidebar', tagName: 'lumen-sidebar' },
+  Sheet: {
+    attributeClasses: { surface: { glass: 'ui-sheet--glass' } },
+    baseClassName: 'ui-sheet',
+    defaults: { 'data-ui-sheet': '', surface: 'default' },
+    tagName: 'lumen-sheet'
+  },
+  Sidebar: {
+    attributeClasses: { surface: { glass: 'ui-sidebar--glass' } },
+    baseClassName: 'ui-sidebar',
+    defaults: { surface: 'default' },
+    tagName: 'lumen-sidebar'
+  },
   Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
   Slider: { baseClassName: 'ui-slider', defaults: { type: 'range' }, tagName: 'lumen-slider' },
   Sonner: { baseClassName: 'ui-sonner', defaults: { 'data-ui-sonner': '' }, tagName: 'lumen-sonner' },
@@ -174,6 +230,9 @@ const elementConfigs = {
   Textarea: { baseClassName: 'ui-textarea', defaults: { rows: '4' }, tagName: 'lumen-textarea' },
   Toast: {
     attributeClasses: {
+      surface: {
+        glass: 'ui-toast--glass'
+      },
       variant: {
         destructive: 'ui-toast--destructive',
         success: 'ui-toast--success',
@@ -181,7 +240,7 @@ const elementConfigs = {
       }
     },
     baseClassName: 'ui-toast',
-    defaults: { variant: 'default' },
+    defaults: { surface: 'default', variant: 'default' },
     tagName: 'lumen-toast'
   },
   Toggle: {
@@ -202,6 +261,7 @@ const observedAttributeNames = [
   'orientation',
   'pressed',
   'size',
+  'surface',
   'variant'
 ]
 

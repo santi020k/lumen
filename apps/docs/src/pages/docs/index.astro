@@ -4,7 +4,13 @@ import { Code } from 'astro:components'
 import { Badge, Card } from '@santi020k/lumen-astro'
 
 import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
-import { frameworkPackages, frameworkSetups, globalStyleSetups, runtimeFeatures } from '../../data/docs'
+import {
+  frameworkPackages,
+  frameworkSetups,
+  glassSurfaceExamples,
+  globalStyleSetups,
+  runtimeFeatures
+} from '../../data/docs'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 ---
 
@@ -48,6 +54,50 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
           <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
         </Card>
       ))}
+    </div>
+  </section>
+
+  <section class="mt-12 space-y-4" id="glassmorphism" aria-labelledby="glassmorphism-title">
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold text-ink" id="glassmorphism-title">Glassmorphism surfaces</h2>
+      <p class="max-w-2xl text-sm/7 text-ink-soft">
+        Lumen includes reusable glass tokens, utility classes, component variants, and fallbacks for
+        browsers without backdrop-filter support.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]
+    ">
+      <div
+        class="
+          min-h-64 rounded-xl border border-line p-6
+        "
+        style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
+      >
+        <Card class="max-w-sm space-y-3 p-5" variant="glass">
+          <Badge variant="outline">Glass</Badge>
+          <h3 class="text-xl font-black text-ink">Translucent by design</h3>
+          <p class="text-sm/7 text-ink-soft">
+            Shared tokens control blur, saturation, borders, highlights, and shadow depth across
+            light and dark themes.
+          </p>
+        </Card>
+      </div>
+      <div class="
+        grid gap-4
+        lg:grid-cols-3
+      ">
+        {glassSurfaceExamples.map(example => (
+          <Card class="space-y-3 p-5" variant="muted">
+            <div class="space-y-1">
+              <h3 class="text-base font-bold text-ink">{example.label}</h3>
+              <p class="text-sm/6 text-ink-soft">{example.description}</p>
+            </div>
+            <Code code={example.code} lang={example.lang} theme="one-dark-pro" />
+          </Card>
+        ))}
+      </div>
     </div>
   </section>
 

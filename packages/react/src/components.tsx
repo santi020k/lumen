@@ -14,13 +14,15 @@ type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
 
 type ButtonVariant = 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
 
-type CardVariant = 'default' | 'interactive' | 'muted'
+type CardVariant = 'default' | 'glass' | 'interactive' | 'muted'
 
 type MessageFrom = 'assistant' | 'user'
 
 type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
 
 type Orientation = 'horizontal' | 'vertical'
+
+type SurfaceVariant = 'default' | 'glass'
 
 export interface Option {
   disabled?: boolean
@@ -73,9 +75,21 @@ export const Alert = ({ className, variant = 'default', ...props }: AlertProps) 
   />
 )
 
-export type AlertDialogProps = ComponentPropsWithoutRef<'dialog'>
-export const AlertDialog = ({ className, ...props }: AlertDialogProps) => (
-  <dialog className={composeClassName('ui-dialog ui-alert-dialog', className)} data-ui-alert-dialog {...props} />
+export interface AlertDialogProps extends ComponentPropsWithoutRef<'dialog'> {
+  surface?: SurfaceVariant
+}
+
+export const AlertDialog = ({ className, surface = 'default', ...props }: AlertDialogProps) => (
+  <dialog
+    className={composeClassName(
+      'ui-dialog ui-alert-dialog',
+      surface === 'glass' && 'ui-dialog--glass',
+      className
+    )}
+    data-surface={surface}
+    data-ui-alert-dialog
+    {...props}
+  />
 )
 
 export interface AspectRatioProps extends ComponentPropsWithoutRef<'div'> {
@@ -199,6 +213,7 @@ export const Card = <T extends ElementType = 'div'>({
     className={composeClassName(
       variant === 'muted' && 'ui-card--muted',
       variant === 'interactive' && 'ui-card--interactive',
+      variant === 'glass' && 'ui-card--glass',
       className
     )}
     data-variant={variant}
@@ -257,9 +272,16 @@ export const Command = ({ className, ...props }: CommandProps) => (
   <div className={composeClassName('ui-command', className)} data-ui-command {...props} />
 )
 
-export type ContextMenuProps = ComponentPropsWithoutRef<'menu'>
-export const ContextMenu = ({ className, ...props }: ContextMenuProps) => (
-  <menu className={composeClassName('ui-menu', className)} {...props} />
+export interface ContextMenuProps extends ComponentPropsWithoutRef<'menu'> {
+  surface?: SurfaceVariant
+}
+
+export const ContextMenu = ({ className, surface = 'default', ...props }: ContextMenuProps) => (
+  <menu
+    className={composeClassName('ui-menu', surface === 'glass' && 'ui-menu--glass', className)}
+    data-surface={surface}
+    {...props}
+  />
 )
 
 export type DataTableProps = ComponentPropsWithoutRef<'div'>
@@ -272,9 +294,17 @@ export const DatePicker = ({ className, type = 'date', ...props }: DatePickerPro
   <input className={composeClassName('ui-input ui-date-picker', className)} type={type} {...props} />
 )
 
-export type DialogProps = ComponentPropsWithoutRef<'dialog'>
-export const Dialog = ({ className, ...props }: DialogProps) => (
-  <dialog className={composeClassName('ui-dialog', className)} data-ui-dialog {...props} />
+export interface DialogProps extends ComponentPropsWithoutRef<'dialog'> {
+  surface?: SurfaceVariant
+}
+
+export const Dialog = ({ className, surface = 'default', ...props }: DialogProps) => (
+  <dialog
+    className={composeClassName('ui-dialog', surface === 'glass' && 'ui-dialog--glass', className)}
+    data-surface={surface}
+    data-ui-dialog
+    {...props}
+  />
 )
 
 export type DirectionProps = ComponentPropsWithoutRef<'div'>
@@ -282,14 +312,30 @@ export const Direction = ({ className, dir = 'ltr', ...props }: DirectionProps) 
   <div className={composeClassName('ui-direction', className)} dir={dir} {...props} />
 )
 
-export type DrawerProps = ComponentPropsWithoutRef<'dialog'>
-export const Drawer = ({ className, ...props }: DrawerProps) => (
-  <dialog className={composeClassName('ui-drawer', className)} data-ui-drawer {...props} />
+export interface DrawerProps extends ComponentPropsWithoutRef<'dialog'> {
+  surface?: SurfaceVariant
+}
+
+export const Drawer = ({ className, surface = 'default', ...props }: DrawerProps) => (
+  <dialog
+    className={composeClassName('ui-drawer', surface === 'glass' && 'ui-drawer--glass', className)}
+    data-surface={surface}
+    data-ui-drawer
+    {...props}
+  />
 )
 
-export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'>
-export const DropdownMenu = ({ className, ...props }: DropdownMenuProps) => (
-  <menu className={composeClassName('ui-menu', className)} data-ui-dropdown-menu {...props} />
+export interface DropdownMenuProps extends ComponentPropsWithoutRef<'menu'> {
+  surface?: SurfaceVariant
+}
+
+export const DropdownMenu = ({ className, surface = 'default', ...props }: DropdownMenuProps) => (
+  <menu
+    className={composeClassName('ui-menu', surface === 'glass' && 'ui-menu--glass', className)}
+    data-surface={surface}
+    data-ui-dropdown-menu
+    {...props}
+  />
 )
 
 export type EmptyProps = ComponentPropsWithoutRef<'section'>
@@ -302,9 +348,17 @@ export const Field = ({ className, ...props }: FieldProps) => (
   <div className={composeClassName('ui-field', className)} {...props} />
 )
 
-export type HoverCardProps = ComponentPropsWithoutRef<'aside'>
-export const HoverCard = ({ className, ...props }: HoverCardProps) => (
-  <aside className={composeClassName('ui-hover-card', className)} data-ui-hover-card {...props} />
+export interface HoverCardProps extends ComponentPropsWithoutRef<'aside'> {
+  surface?: SurfaceVariant
+}
+
+export const HoverCard = ({ className, surface = 'default', ...props }: HoverCardProps) => (
+  <aside
+    className={composeClassName('ui-hover-card', surface === 'glass' && 'ui-hover-card--glass', className)}
+    data-surface={surface}
+    data-ui-hover-card
+    {...props}
+  />
 )
 
 export type InputProps = ComponentPropsWithoutRef<'input'>
@@ -366,9 +420,17 @@ export const Marker = ({ className, variant = 'default', ...props }: MarkerProps
   />
 )
 
-export type MenubarProps = ComponentPropsWithoutRef<'nav'>
-export const Menubar = ({ className, ...props }: MenubarProps) => (
-  <nav className={composeClassName('ui-menubar', className)} data-ui-menubar {...props} />
+export interface MenubarProps extends ComponentPropsWithoutRef<'nav'> {
+  surface?: SurfaceVariant
+}
+
+export const Menubar = ({ className, surface = 'default', ...props }: MenubarProps) => (
+  <nav
+    className={composeClassName('ui-menubar', surface === 'glass' && 'ui-menubar--glass', className)}
+    data-surface={surface}
+    data-ui-menubar
+    {...props}
+  />
 )
 
 export interface MessageProps extends ComponentPropsWithoutRef<'article'> {
@@ -422,9 +484,21 @@ export const NativeSelect = ({
   )
 }
 
-export type NavigationMenuProps = ComponentPropsWithoutRef<'nav'>
-export const NavigationMenu = ({ className, ...props }: NavigationMenuProps) => (
-  <nav className={composeClassName('ui-navigation-menu', className)} data-ui-navigation-menu {...props} />
+export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'> {
+  surface?: SurfaceVariant
+}
+
+export const NavigationMenu = ({ className, surface = 'default', ...props }: NavigationMenuProps) => (
+  <nav
+    className={composeClassName(
+      'ui-navigation-menu',
+      surface === 'glass' && 'ui-navigation-menu--glass',
+      className
+    )}
+    data-surface={surface}
+    data-ui-navigation-menu
+    {...props}
+  />
 )
 
 export type PaginationProps = ComponentPropsWithoutRef<'nav'>
@@ -432,9 +506,17 @@ export const Pagination = ({ 'aria-label': ariaLabel = 'Pagination', className, 
   <nav aria-label={ariaLabel} className={composeClassName('ui-pagination', className)} {...props} />
 )
 
-export type PopoverProps = ComponentPropsWithoutRef<'div'>
-export const Popover = ({ className, ...props }: PopoverProps) => (
-  <div className={composeClassName('ui-popover', className)} data-ui-popover {...props} />
+export interface PopoverProps extends ComponentPropsWithoutRef<'div'> {
+  surface?: SurfaceVariant
+}
+
+export const Popover = ({ className, surface = 'default', ...props }: PopoverProps) => (
+  <div
+    className={composeClassName('ui-popover', surface === 'glass' && 'ui-popover--glass', className)}
+    data-surface={surface}
+    data-ui-popover
+    {...props}
+  />
 )
 
 export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {
@@ -492,14 +574,29 @@ export const Separator = ({ className, orientation = 'horizontal', ...props }: S
   />
 )
 
-export type SheetProps = ComponentPropsWithoutRef<'dialog'>
-export const Sheet = ({ className, ...props }: SheetProps) => (
-  <dialog className={composeClassName('ui-sheet', className)} data-ui-sheet {...props} />
+export interface SheetProps extends ComponentPropsWithoutRef<'dialog'> {
+  surface?: SurfaceVariant
+}
+
+export const Sheet = ({ className, surface = 'default', ...props }: SheetProps) => (
+  <dialog
+    className={composeClassName('ui-sheet', surface === 'glass' && 'ui-sheet--glass', className)}
+    data-surface={surface}
+    data-ui-sheet
+    {...props}
+  />
 )
 
-export type SidebarProps = ComponentPropsWithoutRef<'aside'>
-export const Sidebar = ({ className, ...props }: SidebarProps) => (
-  <aside className={composeClassName('ui-sidebar', className)} {...props} />
+export interface SidebarProps extends ComponentPropsWithoutRef<'aside'> {
+  surface?: SurfaceVariant
+}
+
+export const Sidebar = ({ className, surface = 'default', ...props }: SidebarProps) => (
+  <aside
+    className={composeClassName('ui-sidebar', surface === 'glass' && 'ui-sidebar--glass', className)}
+    data-surface={surface}
+    {...props}
+  />
 )
 
 export type SkeletonProps = ComponentPropsWithoutRef<'div'>
@@ -561,12 +658,19 @@ export const Textarea = ({ className, rows = 4, ...props }: TextareaProps) => (
 )
 
 export interface ToastProps extends ComponentPropsWithoutRef<'aside'> {
+  surface?: SurfaceVariant
   variant?: AlertVariant
 }
 
-export const Toast = ({ className, variant = 'default', ...props }: ToastProps) => (
+export const Toast = ({ className, surface = 'default', variant = 'default', ...props }: ToastProps) => (
   <aside
-    className={composeClassName('ui-toast', variantClass('ui-toast', variant), className)}
+    className={composeClassName(
+      'ui-toast',
+      variantClass('ui-toast', variant),
+      surface === 'glass' && 'ui-toast--glass',
+      className
+    )}
+    data-surface={surface}
     data-variant={variant}
     {...props}
   />

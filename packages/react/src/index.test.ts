@@ -6,6 +6,7 @@ import {
   type ButtonProps,
   Card,
   type CardProps,
+  Dialog,
   Input,
   type InputProps,
   lumenComponentNames
@@ -24,14 +25,21 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('supports polymorphic cards and variants', () => {
-    const card = Card({ as: 'section', className: 'custom-card', variant: 'interactive' }) as ReactElement<
+    const card = Card({ as: 'section', className: 'custom-card', variant: 'glass' }) as ReactElement<
       CardProps<'section'> & { uiClassName: string }
     >
 
     expect(card.props.as).toBe('section')
-    expect(card.props.className).toBe('ui-card--interactive custom-card')
-    expect(card.props['data-variant']).toBe('interactive')
+    expect(card.props.className).toBe('ui-card--glass custom-card')
+    expect(card.props['data-variant']).toBe('glass')
     expect(card.props.uiClassName).toBe('ui-card')
+  })
+
+  test('supports glass overlay surfaces', () => {
+    const dialog = Dialog({ className: 'custom-dialog', surface: 'glass' }) as ReactElement
+
+    expect(dialog.props.className).toBe('ui-dialog ui-dialog--glass custom-dialog')
+    expect(dialog.props['data-surface']).toBe('glass')
   })
 
   test('defaults inputs to text fields', () => {

@@ -5,6 +5,7 @@ import {
   lumenColors,
   lumenComponentNames,
   lumenDarkTheme,
+  lumenGlass,
   lumenLightTheme,
   lumenPackages,
   lumenThemeAttribute
@@ -34,6 +35,8 @@ describe('lumen theme tokens', () => {
     expect(lumenDarkTheme).toBe('dark')
     expect(lumenLightTheme).toBe('light')
     expect(lumenColors.brand).toMatch(/^\d+ \d+% \d+%$/)
+    expect(lumenGlass.blur).toBe('18px')
+    expect(lumenGlass.bg).toContain('/')
   })
 
   test('composes class names from truthy values only', () => {

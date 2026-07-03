@@ -27,10 +27,18 @@ export interface GlobalStyleSetup {
   lang: 'astro' | 'css' | 'ts'
 }
 
+export interface GlassSurfaceExample {
+  code: string
+  description: string
+  label: string
+  lang: 'astro' | 'html' | 'tsx'
+}
+
 export const docNavigation = [
   ['Introduction', '/docs#introduction'],
   ['Install and use', '/docs#installation'],
   ['Global styles', '/docs#global-styles'],
+  ['Glassmorphism', '/docs#glassmorphism'],
   ['Packages', '/docs#packages'],
   ['Runtime', '/docs#runtime'],
   ['Components', '/docs/components']
@@ -118,6 +126,39 @@ import { App } from './App'`,
   }
 ]
 
+export const glassSurfaceExamples: GlassSurfaceExample[] = [
+  {
+    code: `<Card variant="glass">
+  <h2>Launch window</h2>
+  <p>Glass cards use shared blur, border, highlight, and fallback tokens.</p>
+</Card>`,
+    description: 'Use the glass variant for standalone content surfaces.',
+    label: 'Astro card',
+    lang: 'astro'
+  },
+  {
+    code: `<Popover surface="glass">
+  <Button variant="outline" data-ui-trigger>Invite</Button>
+  <div>
+    <Label for="email">Email</Label>
+    <Input id="email" type="email" />
+  </div>
+</Popover>`,
+    description: 'Use the surface prop for overlays so semantic variants stay available.',
+    label: 'Overlay surface',
+    lang: 'astro'
+  },
+  {
+    code: `<lumen-card variant="glass">
+  <h2>Production</h2>
+  <p>Custom elements use the same class contract.</p>
+</lumen-card>`,
+    description: 'Elements support the same glass classes through attributes.',
+    label: 'Elements',
+    lang: 'html'
+  }
+]
+
 export const frameworkSetups: FrameworkSetup[] = [
   {
     id: 'astro',
@@ -175,7 +216,7 @@ export const componentDocs: ComponentDoc[] = [
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
   ['ButtonGroup', 'Actions', 'Groups related button actions.', '<ButtonGroup><Button variant="secondary">Back</Button><Button>Publish</Button></ButtonGroup>'],
   ['Calendar', 'Forms', 'Presents a calendar surface for date selection.', '<Calendar aria-label="Choose a delivery date" />'],
-  ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card><h2>Starter</h2><p>For personal projects.</p></Card>'],
+  ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card variant="glass"><h2>Starter</h2><p>For personal projects.</p></Card>'],
   ['Carousel', 'Layout', 'Displays a horizontal sequence of slides.', '<Carousel aria-label="Featured templates"><article>Dashboard</article><article>Portfolio</article></Carousel>'],
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
@@ -185,7 +226,7 @@ export const componentDocs: ComponentDoc[] = [
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
   ['DataTable', 'Data display', 'Styles dense tabular data and records.', '<DataTable><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Docs</td><td>Ready</td></tr></tbody></table></DataTable>'],
   ['DatePicker', 'Forms', 'Provides a styled date input.', '<DatePicker name="launchDate" aria-label="Launch date" />'],
-  ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
+  ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog" surface="glass"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
   ['Direction', 'Layout', 'Controls directional layout and text flow.', '<Direction dir="rtl"><p>Localized content</p></Direction>'],
   ['Drawer', 'Overlays', 'Slides in supporting navigation, filters, or task panels.', '<Button data-ui-drawer-trigger="filters-drawer">Open filters</Button><Drawer id="filters-drawer"><p>Filter controls</p><Button data-ui-drawer-close>Close</Button></Drawer>'],
   ['DropdownMenu', 'Overlays', 'Shows compact actions from a trigger.', '<DropdownMenu><Button data-ui-trigger>More</Button><div role="menu"><button role="menuitem">Rename</button></div></DropdownMenu>'],
@@ -205,7 +246,7 @@ export const componentDocs: ComponentDoc[] = [
   ['NativeSelect', 'Forms', 'Styles the browser-native select element.', '<NativeSelect name="plan" options={["Free", "Pro", "Team"]} />'],
   ['NavigationMenu', 'Navigation', 'Builds grouped top-level navigation.', '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
-  ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
+  ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover surface="glass"><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
   ['RadioGroup', 'Forms', 'Groups mutually exclusive options.', '<RadioGroup><label><input type="radio" name="theme" value="light" /> Light</label><label><input type="radio" name="theme" value="dark" /> Dark</label></RadioGroup>'],
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],

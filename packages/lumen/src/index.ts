@@ -1,8 +1,15 @@
 export {
   type LumenComponentName,
+  composeClassName,
   lumenComponentNames,
+  lumenColors,
+  lumenDarkTheme,
+  lumenGlass,
+  lumenLightTheme,
   lumenPackages,
-  type LumenPackageTarget} from '@santi020k/lumen-core'
+  type LumenPackageTarget,
+  lumenThemeAttribute
+} from '@santi020k/lumen-core'
 
 export const lumen = {
   name: 'Lumen',

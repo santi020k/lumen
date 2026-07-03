@@ -7,6 +7,7 @@ export {
   composeClassName,
   lumenColors,
   lumenDarkTheme,
+  lumenGlass,
   lumenLightTheme,
   lumenThemeAttribute
 } from './tokens.js'

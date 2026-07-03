@@ -5,7 +5,7 @@ interface Props extends HTMLAttributes<'div'> {
   as?: 'article' | 'div' | 'section'
   class?: string
   className?: string
-  variant?: 'default' | 'interactive' | 'muted'
+  variant?: 'default' | 'glass' | 'interactive' | 'muted'
 }
 
 const {
@@ -25,6 +25,7 @@ const passthrough = rest as Record<string, unknown>
     'ui-card',
     variant === 'muted' && 'ui-card--muted',
     variant === 'interactive' && 'ui-card--interactive',
+    variant === 'glass' && 'ui-card--glass',
     classProp,
     className
   ]}
