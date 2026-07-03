@@ -36,32 +36,32 @@ import LumenLogo from './LumenLogo.astro'
         max-sm:hidden
         no-underline
       " href="https://github.com/santi020k/lumen">GitHub</a>
-      <label class="sr-only" for="site-color-theme">Color theme</label>
-      <select
-        id="site-color-theme"
-        class="ui-theme-select"
-        data-theme-select
-        aria-label="Color theme"
-      >
-        <option value="santi020k-light">Santi020k Light</option>
-        <option value="santi020k-dark">Santi020k Dark</option>
-        <option value="lumen-light">Lumen Light</option>
-        <option value="lumen-dark">Lumen Dark</option>
-      </select>
-      <Button
-        class="ui-theme-toggle"
-        size="icon"
-        variant="outline"
-        data-theme-toggle
-        aria-label="Switch color theme"
-        title="Switch color theme"
-      >
-        <span class="ui-theme-toggle__icon" aria-hidden="true">
-          <span class="ui-theme-toggle__sun"></span>
-          <span class="ui-theme-toggle__moon"></span>
-        </span>
-        <span class="sr-only" data-theme-toggle-label>Switch color theme</span>
-      </Button>
+      <div class="ui-theme-controls" aria-label="Theme controls">
+        <label class="sr-only" for="site-color-theme">Theme</label>
+        <select
+          id="site-color-theme"
+          class="ui-theme-select"
+          data-theme-select
+          aria-label="Theme"
+        >
+          <option value="santi020k">Santi020k</option>
+          <option value="lumen">Lumen</option>
+        </select>
+        <Button
+          class="ui-theme-toggle"
+          size="icon"
+          variant="outline"
+          data-theme-toggle
+          aria-label="Switch color mode"
+          title="Switch color mode"
+        >
+          <span class="ui-theme-toggle__icon" aria-hidden="true">
+            <span class="ui-theme-toggle__sun"></span>
+            <span class="ui-theme-toggle__moon"></span>
+          </span>
+          <span class="sr-only" data-theme-toggle-label>Switch color mode</span>
+        </Button>
+      </div>
     </nav>
   </div>
 </header>

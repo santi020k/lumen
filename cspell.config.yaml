@@ -6,13 +6,17 @@ words:
   - commitlint
   - dogfooded
   - esbuild
+  - glassmorphism
   - inputmode
   - jsdom
   - knip
+  - labelledby
+  - linecap
   - Lumen
   - maxlength
   - santi020k
   - scroller
+  - Segoe
   - shadcn
   - sonner
   - turborepo
@@ -21,6 +25,7 @@ words:
   - vite
   - vitejs
   - vitest
+  - wordmark
   - workspaces
 ignorePaths:
   - node_modules

@@ -21,10 +21,22 @@ The monorepo layers framework adapters around a shared core:
 pnpm add @santi020k/lumen-astro
 ```
 
+Import the stylesheet once from your global CSS file, root layout, or app entry.
+
+```css
+@import "@santi020k/lumen-astro/styles.css";
+```
+
+With Tailwind, keep it in the same shared CSS entry:
+
+```css
+@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";
+```
+
 ```astro
 ---
 import { Button, Card, Input } from '@santi020k/lumen-astro'
-import '@santi020k/lumen-astro/styles.css'
 ---
 
 <Card>

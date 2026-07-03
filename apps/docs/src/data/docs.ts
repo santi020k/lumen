@@ -20,9 +20,17 @@ export interface FrameworkSetup {
   usage: string
 }
 
+export interface GlobalStyleSetup {
+  code: string
+  description: string
+  label: string
+  lang: 'astro' | 'css' | 'ts'
+}
+
 export const docNavigation = [
   ['Introduction', '/docs#introduction'],
   ['Install and use', '/docs#installation'],
+  ['Global styles', '/docs#global-styles'],
   ['Packages', '/docs#packages'],
   ['Runtime', '/docs#runtime'],
   ['Components', '/docs/components']
@@ -44,7 +52,6 @@ export const installCommands = buildInstallCommands('@santi020k/lumen-astro')
 
 const astroUsage = `---
 import { Button, Card, Input } from '@santi020k/lumen-astro'
-import '@santi020k/lumen-astro/styles.css'
 ---
 
 <Card>
@@ -54,7 +61,6 @@ import '@santi020k/lumen-astro/styles.css'
 </Card>`
 
 const reactUsage = `import { Button, Card, Input } from '@santi020k/lumen-react'
-import '@santi020k/lumen-astro/styles.css'
 
 export function SubscribeForm() {
   return (
@@ -67,7 +73,6 @@ export function SubscribeForm() {
 }`
 
 const elementsUsage = `<script type="module">
-  import '@santi020k/lumen-astro/styles.css'
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
 
   defineLumenElements()
@@ -79,13 +84,47 @@ const elementsUsage = `<script type="module">
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>`
 
+export const globalStyleSetups: GlobalStyleSetup[] = [
+  {
+    code: `@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";`,
+    description: 'Use this in your main Tailwind CSS entry, such as src/styles/global.css or app.css.',
+    label: 'Tailwind CSS',
+    lang: 'css'
+  },
+  {
+    code: `---
+import '@santi020k/lumen-astro/styles.css'
+---
+
+<html lang="en">
+  <body>
+    <slot />
+  </body>
+</html>`,
+    description: 'Use this in an Astro root layout when you do not already have a shared CSS entry.',
+    label: 'Astro layout',
+    lang: 'astro'
+  },
+  {
+    code: `import '@santi020k/lumen-astro/styles.css'
+
+import { createRoot } from 'react-dom/client'
+
+import { App } from './App'`,
+    description: 'Use this in a bundled app entry, such as main.tsx, main.ts, or client.ts.',
+    label: 'App entry',
+    lang: 'ts'
+  }
+]
+
 export const frameworkSetups: FrameworkSetup[] = [
   {
     id: 'astro',
     installCommands,
     label: 'Astro',
     lang: 'astro',
-    note: 'Import the standalone stylesheet once. Mount UIPrimitives once near your root layout only when you use interactive primitives.',
+    note: 'After the stylesheet is loaded globally, import components where you use them. Mount UIPrimitives once near your root layout only when you use interactive primitives.',
     packageName: '@santi020k/lumen-astro',
     usage: astroUsage
   },
@@ -94,7 +133,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the React adapter with the shared standalone stylesheet package, then import primitives directly in your components.',
+    note: 'Install the React adapter with the shared stylesheet package, load the stylesheet globally, then import primitives directly in your components.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -103,7 +142,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the custom-elements adapter with the shared standalone stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid.',
+    note: 'Install the custom-elements adapter with the shared stylesheet package, load the stylesheet globally, register Lumen elements once, and use lumen-* tags anywhere HTML is valid.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }

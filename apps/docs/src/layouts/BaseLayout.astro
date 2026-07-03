@@ -33,6 +33,7 @@ const { description, title } = Astro.props
     <script is:inline>
       const themeStorageKey = 'lumen-theme'
       const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark']
+
       const themeAliases = {
         dark: 'lumen-dark',
         light: 'lumen-light'
@@ -65,28 +66,25 @@ const { description, title } = Astro.props
     <UIPrimitives />
     <SiteHeader />
     <slot />
-    <footer class="border-line border-t">
+    <footer class="border-t border-line">
       <div class="
-        text-ink-soft mx-auto flex w-full max-w-7xl flex-wrap items-center
-        justify-between gap-3 px-5 py-6 text-sm
+        mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between
+        gap-3 px-5 py-6 text-sm text-ink-soft
         sm:px-8
       ">
         <p>Lumen UI. Built with its own primitives.</p>
         <div class="flex gap-4 font-bold">
           <a class="
-            text-ink-soft
+            text-ink-soft no-underline
             hover:text-ink
-            no-underline
           " href="/docs">Docs</a>
           <a class="
-            text-ink-soft
+            text-ink-soft no-underline
             hover:text-ink
-            no-underline
           " href="/docs/components">Components</a>
           <a class="
-            text-ink-soft
+            text-ink-soft no-underline
             hover:text-ink
-            no-underline
           " href="https://github.com/santi020k/lumen">GitHub</a>
         </div>
       </div>
@@ -96,10 +94,13 @@ const { description, title } = Astro.props
 
 <script>
   let docsNavigationScrollPosition: { left: number, top: number } | undefined
-
   const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark'] as const
 
+  const themeFamilies = ['santi020k', 'lumen'] as const
   type ColorTheme = typeof colorThemes[number]
+  type ThemeFamily = typeof themeFamilies[number]
+  type ThemeMode = 'dark' | 'light'
+
   type LegacyColorTheme = 'dark' | 'light'
 
   const themeStorageKey = 'lumen-theme'
@@ -116,13 +117,6 @@ const { description, title } = Astro.props
     'santi020k-light': '#f8f6fd'
   } satisfies Record<ColorTheme, string>
 
-  const themeLabels = {
-    'lumen-dark': 'Lumen Dark',
-    'lumen-light': 'Lumen Light',
-    'santi020k-dark': 'Santi020k Dark',
-    'santi020k-light': 'Santi020k Light'
-  } satisfies Record<ColorTheme, string>
-
   const isColorTheme = (theme: string | null | undefined): theme is ColorTheme => (
     colorThemes.includes(theme as ColorTheme)
   )
@@ -132,6 +126,22 @@ const { description, title } = Astro.props
 
     return theme === 'dark' || theme === 'light' ? themeAliases[theme] : null
   }
+
+  const isThemeFamily = (themeFamily: string | null | undefined): themeFamily is ThemeFamily => (
+    themeFamilies.includes(themeFamily as ThemeFamily)
+  )
+
+  const getThemeFamily = (theme: ColorTheme): ThemeFamily => (
+    theme.startsWith('lumen') ? 'lumen' : 'santi020k'
+  )
+
+  const getThemeMode = (theme: ColorTheme): ThemeMode => (
+    theme.endsWith('dark') ? 'dark' : 'light'
+  )
+
+  const getTheme = (themeFamily: ThemeFamily, mode: ThemeMode): ColorTheme => (
+    `${themeFamily}-${mode}` as ColorTheme
+  )
 
   const getStoredTheme = (): ColorTheme | null => {
     try {
@@ -150,11 +160,9 @@ const { description, title } = Astro.props
   const getPreferredTheme = (): ColorTheme => getStoredTheme() ?? getSystemTheme()
 
   const getToggledTheme = (theme: ColorTheme): ColorTheme => {
-    if (theme === 'lumen-light') return 'lumen-dark'
+    const nextMode = getThemeMode(theme) === 'dark' ? 'light' : 'dark'
 
-    if (theme === 'lumen-dark') return 'lumen-light'
-
-    return theme === 'santi020k-light' ? 'santi020k-dark' : 'santi020k-light'
+    return getTheme(getThemeFamily(theme), nextMode)
   }
 
   const setThemeColor = (theme: ColorTheme, targetDocument = document) => {
@@ -165,7 +173,7 @@ const { description, title } = Astro.props
 
   const syncThemeToggles = (theme: ColorTheme, targetDocument = document) => {
     const nextTheme = getToggledTheme(theme)
-    const label = `Switch to ${themeLabels[nextTheme]}`
+    const label = `Switch to ${getThemeMode(nextTheme)} mode`
 
     for (const toggle of targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle]')) {
       toggle.dataset.themeToggle = theme
@@ -180,7 +188,7 @@ const { description, title } = Astro.props
 
   const syncThemeSelects = (theme: ColorTheme, targetDocument = document) => {
     for (const select of targetDocument.querySelectorAll<HTMLSelectElement>('[data-theme-select]')) {
-      select.value = theme
+      select.value = getThemeFamily(theme)
     }
   }
 
@@ -224,9 +232,17 @@ const { description, title } = Astro.props
 
     if (!select) return
 
-    const nextTheme = normalizeTheme(select.value)
+    const currentTheme = getPreferredTheme()
+    const selectedFamily = select.value
+    const nextTheme = isThemeFamily(selectedFamily)
+      ? getTheme(selectedFamily, getThemeMode(currentTheme))
+      : normalizeTheme(selectedFamily)
 
-    if (!nextTheme) return
+    if (!nextTheme) {
+      syncThemeSelects(currentTheme)
+
+      return
+    }
 
     localStorage.setItem(themeStorageKey, nextTheme)
 

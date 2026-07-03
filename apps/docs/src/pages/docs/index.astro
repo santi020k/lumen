@@ -1,8 +1,10 @@
 ---
+import { Code } from 'astro:components'
+
 import { Badge, Card } from '@santi020k/lumen-astro'
 
 import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
-import { frameworkPackages, frameworkSetups, runtimeFeatures } from '../../data/docs'
+import { frameworkPackages, frameworkSetups, globalStyleSetups, runtimeFeatures } from '../../data/docs'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 ---
 
@@ -23,6 +25,30 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
   <section class="space-y-4" id="installation" aria-labelledby="install-title">
     <h2 class="text-2xl font-bold text-ink" id="install-title">Install and use</h2>
     <FrameworkSetupTabs setups={frameworkSetups} />
+  </section>
+
+  <section class="mt-12 space-y-4" id="global-styles" aria-labelledby="global-styles-title">
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold text-ink" id="global-styles-title">Add styles once</h2>
+      <p class="max-w-2xl text-sm/7 text-ink-soft">
+        Lumen ships standalone CSS, so you do not need to import it in every component. Load it once
+        from your global CSS file, root layout, or app entry; Tailwind configuration is optional.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-3
+    ">
+      {globalStyleSetups.map(setup => (
+        <Card class="space-y-3 p-5" variant="muted">
+          <div class="space-y-1">
+            <h3 class="text-base font-bold text-ink">{setup.label}</h3>
+            <p class="text-sm/6 text-ink-soft">{setup.description}</p>
+          </div>
+          <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+        </Card>
+      ))}
+    </div>
   </section>
 
   <section class="mt-12 space-y-4" id="packages" aria-labelledby="packages-title">
