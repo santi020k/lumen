@@ -28,29 +28,45 @@ const previewComponents = lumenComponentNames.slice(0, 24)
   <body>
     <UIPrimitives />
     <main class="
-      mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-16 px-5 py-10
+      mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-14 px-5 py-8
       sm:px-8
-      lg:py-16
+      lg:py-10
     ">
+      <nav class="
+        flex items-center justify-between gap-4 border-b border-line pb-4
+      ">
+        <a class="text-sm font-black tracking-wide text-ink no-underline" href="/">Lumen UI</a>
+        <div class="flex flex-wrap gap-3 text-sm font-bold">
+          <a class="
+            text-ink-soft no-underline
+            hover:text-ink
+          " href="/docs">Docs</a>
+          <a class="
+            text-ink-soft no-underline
+            hover:text-ink
+          " href="/docs/components">Components</a>
+        </div>
+      </nav>
+
       <section class="
         grid gap-8
         lg:grid-cols-[1.05fr_0.95fr] lg:items-center
       ">
         <div class="space-y-6">
-          <Badge>Lumen UI</Badge>
+          <Badge>Astro primitives</Badge>
           <div class="space-y-4">
             <h1 class="
-              max-w-3xl text-5xl/tight font-black tracking-tight text-ink
+              max-w-3xl text-5xl/tight font-black text-ink
               sm:text-7xl/tight
-            ">Lumen UI</h1>
+            ">Documentation for a portable UI system.</h1>
             <p class="max-w-2xl text-lg/8 text-ink-soft">
-              Multi-framework primitives for Astro, React, and Web Components, with production
-              docs for installation, setup, and every Astro component.
+              Lumen ships semantic primitives for Astro today, with React and Web Component
+              adapters growing around the same shared tokens and component metadata.
             </p>
           </div>
           <div class="flex flex-wrap gap-3">
-            <a class="ui-button ui-button--default-size ui-button--default" href="/docs">Install Lumen</a>
-            <a class="ui-button ui-button--default-size ui-button--secondary" href="/docs/components">Components</a>
+            <a class="ui-button ui-button--default-size ui-button--default" href="/docs">Get started</a>
+            <a class="ui-button ui-button--default-size ui-button--secondary" href="/docs/components">Open reference</a>
           </div>
         </div>
 
@@ -60,8 +76,8 @@ const previewComponents = lumenComponentNames.slice(0, 24)
         ">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <p class="ui-label">Newsletter demo</p>
-              <p class="text-sm text-ink-soft">Astro package imported from the workspace.</p>
+              <p class="ui-label">Component preview</p>
+              <p class="text-sm text-ink-soft">Astro primitives composed with standard form markup.</p>
             </div>
             <Badge variant="secondary">Astro</Badge>
           </div>
@@ -78,7 +94,7 @@ const previewComponents = lumenComponentNames.slice(0, 24)
           <p class="
             text-sm font-semibold tracking-[0.22em] text-brand uppercase
           ">Packages</p>
-          <h2 class="text-3xl font-bold text-ink">Final architecture</h2>
+          <h2 class="text-3xl font-bold text-ink">Framework entry points</h2>
         </div>
         <div class="
           grid gap-4
@@ -99,7 +115,7 @@ const previewComponents = lumenComponentNames.slice(0, 24)
           <p class="
             text-sm font-semibold tracking-[0.22em] text-brand uppercase
           ">Components</p>
-          <h2 class="text-3xl font-bold text-ink">Astro catalog seeded</h2>
+          <h2 class="text-3xl font-bold text-ink">Complete Astro catalog</h2>
         </div>
         <Tabs>
           <div role="tablist" aria-label="Component targets">

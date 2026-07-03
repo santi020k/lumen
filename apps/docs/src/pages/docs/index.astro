@@ -8,26 +8,38 @@ import {
   UIPrimitives
 } from '@santi020k/lumen-astro'
 
-import { componentDocs, frameworkPackages, installCommands } from '../../data/docs'
+import {
+  componentDocs,
+  docNavigation,
+  frameworkPackages,
+  installCommands,
+  runtimeFeatures
+} from '../../data/docs'
 
-const firstExample = `---
-import { Button, Card, Input, UIPrimitives } from '@santi020k/lumen-astro'
-import '@santi020k/lumen-astro/styles.css'
----
+const firstExample = [
+  '---',
+  "import { Button, Card, Input, UIPrimitives } from '@santi020k/lumen-astro'",
+  "import '@santi020k/lumen-astro/styles.css'",
+  '---',
+  '',
+  '<UIPrimitives />',
+  '',
+  '<Card>',
+  '  <label for="email">Email</label>',
+  '  <Input id="email" type="email" placeholder="you@example.com" />',
+  '  <Button>Subscribe</Button>',
+  '</Card>'
+].join('\n')
 
-<UIPrimitives />
-
-<Card>
-  <label for="email">Email</label>
-  <Input id="email" type="email" placeholder="you@example.com" />
-  <Button>Subscribe</Button>
-</Card>`
+const themeExample = `<Layout theme="dark">
+  <UIPrimitives />
+  <slot />
+</Layout>`
 
 const runtimeExample = `<UIPrimitives />
 
-<!-- Include once near the root of your Astro layout.
-It enables dialogs, popovers, tabs, menus, command filtering,
-carousels, toasts, and other progressive interactions. -->`
+<!-- Include once near the root layout. It wires up
+interactive primitives without changing your markup model. -->`
 ---
 
 <html lang="en" data-theme="dark">
@@ -51,106 +63,168 @@ carousels, toasts, and other progressive interactions. -->`
         </div>
       </nav>
 
-      <section data-docs="hero">
-        <Badge>Production docs</Badge>
-        <h1>Install Lumen and build with the primitives that actually ship.</h1>
-        <p>
-          Lumen is a multi-framework primitive UI system. The Astro package is the complete
-          implementation today, with React and Web Component adapters growing around the shared core.
-        </p>
-      </section>
+      <div data-docs="layout">
+        <aside data-docs="sidebar" aria-label="On this page">
+          <p>Documentation</p>
+          {docNavigation.map(([label, href]) => <a href={href}>{label}</a>)}
+        </aside>
 
-      <section data-docs="grid three" aria-labelledby="install">
-        <div data-docs="section-heading">
-          <p>Install</p>
-          <h2 id="install">Add the Astro package</h2>
-        </div>
-        {installCommands.map(item => (
-          <Card data-docs="card">
-            <p data-docs="eyebrow">{item.label}</p>
-            <pre><code>{item.command}</code></pre>
-          </Card>
-        ))}
-      </section>
-
-      <section data-docs="band" aria-labelledby="setup">
-        <div data-docs="section-heading">
-          <p>Setup</p>
-          <h2 id="setup">Import styles and runtime once</h2>
-        </div>
-        <div data-docs="two-column">
-          <Card data-docs="card">
-            <h3>Use in an Astro page</h3>
+        <div data-docs="content">
+          <section id="introduction" data-docs="hero">
+            <Badge>Astro first</Badge>
+            <h1>Build Astro interfaces with readable primitives.</h1>
             <p>
-              Import components from <code>@santi020k/lumen-astro</code>, include the shared CSS,
-              and render <code>UIPrimitives</code> near the top of the layout.
+              Lumen is a multi-framework UI system centered on semantic markup, portable styles,
+              and small progressive enhancement. The Astro package is the production-ready surface
+              today; React and Web Components follow the same shared core.
             </p>
-            <pre><code>{firstExample}</code></pre>
-          </Card>
-          <Card data-docs="card">
-            <h3>Runtime behavior</h3>
-            <p>
-              Most primitives are semantic HTML and CSS. Interactive patterns use a small
-              progressive-enhancement runtime so the markup stays readable and portable.
-            </p>
-            <pre><code>{runtimeExample}</code></pre>
-          </Card>
-        </div>
-      </section>
-
-      <section data-docs="grid two" aria-labelledby="packages">
-        <div data-docs="section-heading">
-          <p>Packages</p>
-          <h2 id="packages">Choose the right entry point</h2>
-        </div>
-        {frameworkPackages.map(([name, packageName, description]) => (
-          <Card data-docs="card">
-            <div data-docs="card-header">
-              <h3>{name}</h3>
-              <Badge variant="secondary">{packageName}</Badge>
+            <div data-docs="hero-actions">
+              <a class="ui-button ui-button--default-size ui-button--default" href="#installation">
+                Install package
+              </a>
+              <a class="ui-button ui-button--default-size ui-button--secondary" href="/docs/components">
+                Browse components
+              </a>
             </div>
-            <p>{description}</p>
-          </Card>
-        ))}
-      </section>
+          </section>
 
-      <section data-docs="band" aria-labelledby="usage">
-        <div data-docs="section-heading">
-          <p>Usage</p>
-          <h2 id="usage">Component catalog</h2>
-        </div>
-        <div data-docs="callout">
-          <p>
-            The Astro package exports {componentDocs.length} primitives. Each component accepts normal
-            HTML attributes in addition to its documented variants, so you can add ids, ARIA attributes,
-            form names, data attributes, and classes as needed.
-          </p>
-          <a class="ui-button ui-button--default-size ui-button--default" href="/docs/components">
-            View every component
-          </a>
-        </div>
-      </section>
+          <section id="installation" data-docs="band" aria-labelledby="installation-title">
+            <div data-docs="section-heading">
+              <p>Installation</p>
+              <h2 id="installation-title">Add the Astro package</h2>
+              <span>Install the framework package your application uses. For Astro projects, start here.</span>
+            </div>
+            <div data-docs="install-grid">
+              {installCommands.map(item => (
+                <Card data-docs="card command-card">
+                  <p data-docs="eyebrow">{item.label}</p>
+                  <pre><code>{item.command}</code></pre>
+                </Card>
+              ))}
+            </div>
+          </section>
 
-      <section data-docs="band" aria-labelledby="production">
-        <div data-docs="section-heading">
-          <p>Production</p>
-          <h2 id="production">Release checklist</h2>
+          <section id="setup" data-docs="band" aria-labelledby="setup-title">
+            <div data-docs="section-heading">
+              <p>Setup</p>
+              <h2 id="setup-title">Import styles and mount the runtime</h2>
+              <span>
+                Components render as normal Astro components. The global CSS and runtime should be
+                included once from a shared layout.
+              </span>
+            </div>
+            <div data-docs="two-column">
+              <Card data-docs="card">
+                <h3>Use components in a page</h3>
+                <p>
+                  Import from <code>@santi020k/lumen-astro</code> and compose primitives with your
+                  own labels, headings, form names, and ARIA attributes.
+                </p>
+                <pre><code>{firstExample}</code></pre>
+              </Card>
+              <Card data-docs="card">
+                <h3>Set the theme on the document</h3>
+                <p>
+                  Lumen supports <code>data-theme="light"</code> and <code>data-theme="dark"</code>.
+                  Put the attribute on the root document so every primitive receives the same tokens.
+                </p>
+                <pre><code>{themeExample}</code></pre>
+              </Card>
+            </div>
+          </section>
+
+          <section id="packages" data-docs="band" aria-labelledby="packages-title">
+            <div data-docs="section-heading">
+              <p>Packages</p>
+              <h2 id="packages-title">Choose the right entry point</h2>
+              <span>The package graph keeps framework adapters separate while sharing tokens and metadata.</span>
+            </div>
+            <div data-docs="package-grid">
+              {frameworkPackages.map(([name, packageName, status, description]) => (
+                <Card data-docs="card package-card">
+                  <div data-docs="card-header">
+                    <h3>{name}</h3>
+                    <Badge variant={status === 'Complete' ? 'default' : 'secondary'}>{status}</Badge>
+                  </div>
+                  <p data-docs="package-name">{packageName}</p>
+                  <p>{description}</p>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          <section id="runtime" data-docs="band" aria-labelledby="runtime-title">
+            <div data-docs="section-heading">
+              <p>Runtime</p>
+              <h2 id="runtime-title">Progressive behavior without a framework lock-in</h2>
+              <span>
+                Most primitives are HTML and CSS. Interactive patterns opt into a small document runtime.
+              </span>
+            </div>
+            <div data-docs="runtime-panel">
+              <Card data-docs="card">
+                <h3>Mount once near the root</h3>
+                <p>
+                  <code>UIPrimitives</code> attaches behavior for primitives that need client-side state.
+                  Static components such as Badge, Card, Table, Typography, and Separator remain plain markup.
+                </p>
+                <pre><code>{runtimeExample}</code></pre>
+              </Card>
+              <div data-docs="feature-list">
+                {runtimeFeatures.map(([feature, description]) => (
+                  <article>
+                    <h3>{feature}</h3>
+                    <p>{description}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section data-docs="band" aria-labelledby="catalog-title">
+            <div data-docs="section-heading">
+              <p>Catalog</p>
+              <h2 id="catalog-title">{componentDocs.length} Astro primitives</h2>
+              <span>
+                Each component accepts normal HTML attributes alongside documented variants, so forms,
+                accessibility, analytics hooks, and test selectors stay explicit.
+              </span>
+            </div>
+            <div data-docs="callout">
+              <p>
+                The component reference includes categorized examples for actions, forms, overlays,
+                navigation, layout, feedback, and data display.
+              </p>
+              <a class="ui-button ui-button--default-size ui-button--default" href="/docs/components">
+                Open reference
+              </a>
+            </div>
+          </section>
+
+          <section id="production" data-docs="band" aria-labelledby="production-title">
+            <div data-docs="section-heading">
+              <p>Production</p>
+              <h2 id="production-title">Implementation checklist</h2>
+              <span>Use this list before shipping a page that depends on Lumen primitives.</span>
+            </div>
+            <Card data-docs="card">
+              <ul data-docs="checklist">
+                <li>Install only the framework adapter your app renders.</li>
+                <li>Import <code>@santi020k/lumen-astro/styles.css</code> from a shared layout or global stylesheet.</li>
+                <li>Render <code>UIPrimitives</code> once per Astro document layout.</li>
+                <li>Keep form labels, names, ids, descriptions, and ARIA attributes explicit.</li>
+                <li>Use semantic HTML inside composition components such as Card, Field, Table, and Dialog.</li>
+                <li>Run <code>pnpm run build</code>, <code>pnpm run typecheck</code>, and relevant tests before release.</li>
+              </ul>
+              <Separator />
+              <p>
+                Package manifests document export maps for maintainers. Product teams should start
+                here, then use the component reference while building pages.
+              </p>
+            </Card>
+          </section>
         </div>
-        <Card data-docs="card">
-          <ul data-docs="checklist">
-            <li>Install only the framework package your app uses.</li>
-            <li>Render <code>UIPrimitives</code> once per Astro document layout.</li>
-            <li>Keep form labels, names, ids, and ARIA attributes explicit.</li>
-            <li>Use semantic HTML inside composition components such as Card, Field, Table, and Dialog.</li>
-            <li>Run <code>pnpm run build</code> and <code>pnpm run typecheck</code> before publishing changes.</li>
-          </ul>
-          <Separator />
-          <p>
-            User-facing docs should start with installation, setup, and component usage. Package export
-            maps remain documented in each package manifest for maintainers.
-          </p>
-        </Card>
-      </section>
+      </div>
     </main>
   </body>
 </html>

@@ -5,6 +5,16 @@ export interface ComponentDoc {
   example: string
 }
 
+export const docNavigation = [
+  ['Introduction', '/docs#introduction'],
+  ['Installation', '/docs#installation'],
+  ['Setup', '/docs#setup'],
+  ['Packages', '/docs#packages'],
+  ['Runtime', '/docs#runtime'],
+  ['Production', '/docs#production'],
+  ['Components', '/docs/components']
+] as const
+
 export const installCommands = [
   { label: 'pnpm', command: 'pnpm add @santi020k/lumen-astro' },
   { label: 'npm', command: 'npm install @santi020k/lumen-astro' },
@@ -12,10 +22,17 @@ export const installCommands = [
 ] as const
 
 export const frameworkPackages = [
-  ['Astro', '@santi020k/lumen-astro', 'Complete component catalog, shared CSS, and UIPrimitives runtime.'],
-  ['React', '@santi020k/lumen-react', 'Early adapter with Button, Card, and Input.'],
-  ['Web Components', '@santi020k/lumen-elements', 'Early adapter with lumen-button and lumen-card custom elements.'],
-  ['Core', '@santi020k/lumen-core', 'Shared tokens, component metadata, and helper utilities for adapters.']
+  ['Astro', '@santi020k/lumen-astro', 'Complete', 'Full component catalog, shared CSS, and the UIPrimitives runtime.'],
+  ['React', '@santi020k/lumen-react', 'Preview', 'Button, Card, and Input while the adapter API stabilizes.'],
+  ['Web Components', '@santi020k/lumen-elements', 'Preview', 'Standards-based custom elements for button and card primitives.'],
+  ['Core', '@santi020k/lumen-core', 'Shared', 'Design tokens, component metadata, and small adapter utilities.']
+] as const
+
+export const runtimeFeatures = [
+  ['Dialogs and sheets', 'Trigger, dismiss, escape-key, and focus behavior for modal surfaces.'],
+  ['Menus and popovers', 'Lightweight disclosure patterns for contextual actions and floating content.'],
+  ['Tabs and command lists', 'Progressively enhanced keyboard navigation and client-side filtering.'],
+  ['Toasts and carousel controls', 'Document-level behavior for transient feedback and slide navigation.']
 ] as const
 
 export const componentDocs: ComponentDoc[] = [
