@@ -5,41 +5,46 @@ import LumenLogo from './LumenLogo.astro'
 ---
 
 <header class="
-  sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur-sm
+  border-line bg-canvas/90 sticky top-0 z-40 border-b backdrop-blur-sm
 ">
   <div class="
     mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-3
     sm:px-8
   ">
-    <a class="flex items-center gap-2.5 text-ink no-underline" href="/">
+    <a class="text-ink flex items-center gap-2.5 no-underline" href="/">
       <LumenLogo markClass="size-8" />
       <Badge variant="outline">v0.1</Badge>
     </a>
-    <nav class="flex items-center gap-4 text-sm font-bold" aria-label="Site">
+    <nav class="flex items-center gap-3 text-sm font-bold" aria-label="Site">
       <a class="
-        text-ink-soft no-underline
+        text-ink-soft
         hover:text-ink
+        no-underline
       " href="/docs">Docs</a>
       <a class="
-        text-ink-soft no-underline
+        text-ink-soft
         hover:text-ink
+        no-underline
       " href="/docs/components">Components</a>
       <a class="
-        text-ink-soft no-underline
+        text-ink-soft
         hover:text-ink
+        no-underline
       " href="https://github.com/santi020k/lumen">GitHub</a>
-      <Button size="sm" variant="outline" data-theme-toggle aria-label="Toggle color theme">Theme</Button>
+      <Button
+        class="ui-theme-toggle"
+        size="icon"
+        variant="outline"
+        data-theme-toggle
+        aria-label="Switch color theme"
+        title="Switch color theme"
+      >
+        <span class="ui-theme-toggle__icon" aria-hidden="true">
+          <span class="ui-theme-toggle__sun"></span>
+          <span class="ui-theme-toggle__moon"></span>
+        </span>
+        <span class="sr-only" data-theme-toggle-label>Switch color theme</span>
+      </Button>
     </nav>
   </div>
 </header>
-
-<script>
-  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-    const root = document.documentElement
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
-
-    root.dataset.theme = next
-
-    localStorage.setItem('lumen-theme', next)
-  })
-</script>

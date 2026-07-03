@@ -98,7 +98,7 @@ export const Attachment = ({ className, href, ...props }: AttachmentProps) => {
   const nextClassName = composeClassName('ui-attachment', className)
 
   return href
-    ? <a className={nextClassName} href={href} {...props as ComponentPropsWithoutRef<'a'>} />
+    ? <a className={nextClassName} href={href} {...props} />
     : <article className={nextClassName} {...props} />
 }
 

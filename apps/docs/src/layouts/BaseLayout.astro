@@ -1,8 +1,9 @@
 ---
+import { ClientRouter } from 'astro:transitions'
+
 import '../styles/global.css'
 
 import { UIPrimitives } from '@santi020k/lumen-astro'
-import { ClientRouter } from 'astro:transitions'
 
 import SiteHeader from '../components/SiteHeader.astro'
 
@@ -29,15 +30,17 @@ const { description, title } = Astro.props
     <ClientRouter />
     <script is:inline>
       const themeStorageKey = 'lumen-theme'
-      const getStoredTheme = () => {
-        try {
-          const storedTheme = localStorage.getItem(themeStorageKey)
 
-          return storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : undefined
-        } catch {
-          return undefined
-        }
-      }
+      const getStoredTheme = () => {
+  try {
+    const storedTheme = localStorage.getItem(themeStorageKey)
+
+    return storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : undefined
+  } catch {
+    
+  }
+}
+
       const getSystemTheme = () => (
         window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
       )
@@ -49,25 +52,28 @@ const { description, title } = Astro.props
     <UIPrimitives />
     <SiteHeader />
     <slot />
-    <footer class="border-t border-line">
+    <footer class="border-line border-t">
       <div class="
-        mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between
-        gap-3 px-5 py-6 text-sm text-ink-soft
+        text-ink-soft mx-auto flex w-full max-w-7xl flex-wrap items-center
+        justify-between gap-3 px-5 py-6 text-sm
         sm:px-8
       ">
         <p>Lumen UI. Built with its own primitives.</p>
         <div class="flex gap-4 font-bold">
           <a class="
-            text-ink-soft no-underline
+            text-ink-soft
             hover:text-ink
+            no-underline
           " href="/docs">Docs</a>
           <a class="
-            text-ink-soft no-underline
+            text-ink-soft
             hover:text-ink
+            no-underline
           " href="/docs/components">Components</a>
           <a class="
-            text-ink-soft no-underline
+            text-ink-soft
             hover:text-ink
+            no-underline
           " href="https://github.com/santi020k/lumen">GitHub</a>
         </div>
       </div>
@@ -81,6 +87,7 @@ const { description, title } = Astro.props
   type ColorTheme = 'dark' | 'light'
 
   const themeStorageKey = 'lumen-theme'
+
   const themeColors = {
     dark: '#111827',
     light: '#f8fafc'
@@ -116,17 +123,22 @@ const { description, title } = Astro.props
     const nextTheme = theme === 'dark' ? 'light' : 'dark'
     const label = `Switch to ${nextTheme} theme`
 
-    targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle]').forEach(toggle => {
-      toggle.dataset.themeToggle = theme
-      toggle.setAttribute('aria-label', label)
-      toggle.setAttribute('title', label)
-      toggle.querySelector('[data-theme-toggle-label]')?.replaceChildren(label)
-    })
+    for (const toggle of targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle]')) {
+    toggle.dataset.themeToggle = theme
+
+    toggle.setAttribute('aria-label', label)
+
+    toggle.setAttribute('title', label)
+
+    toggle.querySelector('[data-theme-toggle-label]')?.replaceChildren(label)
+  }
   }
 
   const applyTheme = (theme: ColorTheme, targetDocument = document) => {
     targetDocument.documentElement.dataset.theme = theme
+
     setThemeColor(theme, targetDocument)
+
     syncThemeToggles(theme, targetDocument)
   }
 
@@ -149,6 +161,7 @@ const { description, title } = Astro.props
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
 
     localStorage.setItem(themeStorageKey, nextTheme)
+
     applyTheme(nextTheme)
   })
 

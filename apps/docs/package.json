@@ -21,6 +21,7 @@
     "@astrojs/sitemap": "catalog:",
     "@santi020k/lumen-astro": "workspace:^",
     "@santi020k/lumen-core": "workspace:^",
+    "@santi020k/theme": "^1.0.2",
     "@tailwindcss/vite": "catalog:",
     "astro": "catalog:",
     "tailwindcss": "catalog:"
