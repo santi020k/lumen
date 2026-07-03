@@ -1,0 +1,22 @@
+version: "0.2"
+language: en
+words:
+  - astrojs
+  - commitizen
+  - commitlint
+  - esbuild
+  - Lumen
+  - santi020k
+  - sonner
+  - turborepo
+  - unrs
+  - vite
+  - vitest
+  - workspaces
+ignorePaths:
+  - node_modules
+  - dist
+  - coverage
+  - pnpm-lock.yaml
+  - .astro
+  - .turbo

@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'details'> {
+  class?: string
+  className?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  ...rest
+} = Astro.props
+
+const passthrough = rest as Record<string, unknown>
+---
+
+<details
+  data-ui-collapsible
+  class:list={[
+    'ui-collapsible',
+    classProp,
+    className
+  ]}
+  {...passthrough}
+>
+  <slot />
+</details>

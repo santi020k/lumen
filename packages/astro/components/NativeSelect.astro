@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Option {
+  disabled?: boolean
+  label: string
+  value: string
+}
+
+interface Props extends HTMLAttributes<'select'> {
+  class?: string
+  className?: string
+  options?: Option[]
+}
+
+const { class: classProp = '', className = '', options = [], ...rest } = Astro.props
+const passthrough = rest as Record<string, unknown>
+---
+
+<select class:list={['ui-select', classProp, className]} {...passthrough}>
+  <slot />
+  {options.map(option => (
+    <option disabled={option.disabled} value={option.value}>{option.label}</option>
+  ))}
+</select>

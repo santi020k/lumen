@@ -1,0 +1,115 @@
+---
+import '../styles/global.css'
+
+import {
+  Badge,
+  Button,
+  Card,
+  Input,
+  Separator,
+  Tabs,
+  UIPrimitives
+} from '@santi020k/lumen-astro'
+import { lumenComponentNames, lumenPackages } from '@santi020k/lumen-core'
+
+const previewComponents = lumenComponentNames.slice(0, 24)
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Lumen is a multi-framework primitive UI system for Astro, React, and Web Components."
+    />
+    <title>Lumen UI</title>
+  </head>
+  <body>
+    <UIPrimitives />
+    <main class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-16 px-5 py-10 sm:px-8 lg:py-16">
+      <section class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div class="space-y-6">
+          <Badge>Lumen UI</Badge>
+          <div class="space-y-4">
+            <h1 class="max-w-3xl text-5xl/tight font-black tracking-tight text-ink sm:text-7xl/tight">
+              Multi-framework primitives with a quiet glass system.
+            </h1>
+            <p class="max-w-2xl text-lg/8 text-ink-soft">
+              Lumen starts with Astro, then grows into React and standards-based Web Components
+              around a shared core.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <Button>Install Lumen</Button>
+            <Button variant="secondary">Read docs</Button>
+          </div>
+        </div>
+
+        <Card class="grid gap-5 p-6 sm:p-7">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-ink">Newsletter demo</p>
+              <p class="text-sm text-ink-soft">Astro package imported from the workspace.</p>
+            </div>
+            <Badge variant="secondary">Astro</Badge>
+          </div>
+          <form class="grid gap-3">
+            <label class="text-sm font-semibold text-ink" for="email">Email</label>
+            <Input id="email" placeholder="you@example.com" type="email" />
+            <Button type="button">Subscribe</Button>
+          </form>
+        </Card>
+      </section>
+
+      <section class="grid gap-6">
+        <div class="space-y-2">
+          <p class="text-sm font-semibold uppercase tracking-[0.22em] text-brand">Packages</p>
+          <h2 class="text-3xl font-bold text-ink">Final architecture</h2>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {lumenPackages.map(pkg => (
+            <Card class="p-5">
+              <p class="text-sm font-semibold text-ink">{pkg.packageName}</p>
+              <p class="mt-2 text-sm/6 text-ink-soft">{pkg.name} package for the {pkg.runtime} target.</p>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section class="grid gap-6">
+        <div class="space-y-2">
+          <p class="text-sm font-semibold uppercase tracking-[0.22em] text-brand">Components</p>
+          <h2 class="text-3xl font-bold text-ink">Astro catalog seeded</h2>
+        </div>
+        <Tabs>
+          <div role="tablist" aria-label="Component targets">
+            <button id="tab-astro" role="tab" aria-controls="panel-astro" aria-selected="true">Astro</button>
+            <button id="tab-react" role="tab" aria-controls="panel-react">React</button>
+            <button id="tab-elements" role="tab" aria-controls="panel-elements">Elements</button>
+          </div>
+          <Card id="panel-astro" role="tabpanel" aria-labelledby="tab-astro" class="mt-4 p-5">
+            <div class="flex flex-wrap gap-2">
+              {previewComponents.map(component => <Badge variant="outline">{component}</Badge>)}
+            </div>
+            <Separator class="my-5" />
+            <p class="text-sm/7 text-ink-soft">
+              The Astro package includes all {lumenComponentNames.length} primitives copied from the local
+              website implementation.
+            </p>
+          </Card>
+          <Card id="panel-react" role="tabpanel" aria-labelledby="tab-react" class="mt-4 p-5">
+            <p class="text-sm/7 text-ink-soft">
+              React starts with Button, Card, and Input while the API stabilizes.
+            </p>
+          </Card>
+          <Card id="panel-elements" role="tabpanel" aria-labelledby="tab-elements" class="mt-4 p-5">
+            <p class="text-sm/7 text-ink-soft">
+              Web Components start with custom element registration for card and button primitives.
+            </p>
+          </Card>
+        </Tabs>
+      </section>
+    </main>
+  </body>
+</html>

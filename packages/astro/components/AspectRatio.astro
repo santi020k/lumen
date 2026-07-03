@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  ratio?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  ratio = '16 / 9',
+  ...rest
+} = Astro.props
+
+const passthrough = rest as Record<string, unknown>
+---
+
+<div
+  style={`aspect-ratio: ${ratio}`}
+  class:list={[
+    'ui-aspect-ratio',
+    classProp,
+    className
+  ]}
+  {...passthrough}
+>
+  <slot />
+</div>

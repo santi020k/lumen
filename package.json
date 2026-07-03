@@ -1,0 +1,69 @@
+{
+  "name": "@santi020k/lumen-root",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @santi020k/lumen-docs dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
+    "lint": "pnpm run lint:repo && turbo run lint",
+    "lint:repo": "eslint . --cache --no-warn-ignored",
+    "lint:fix": "pnpm run lint:repo:fix && turbo run lint:fix",
+    "lint:repo:fix": "eslint . --cache --fix --no-warn-ignored",
+    "lint:spell": "cspell \"**\" --gitignore --cache --show-suggestions --show-context",
+    "lint:knip": "knip",
+    "validate": "pnpm run build && pnpm run typecheck && pnpm run test && pnpm run lint",
+    "ok": "pnpm install --frozen-lockfile && pnpm run validate",
+    "changeset": "changeset",
+    "version-packages": "changeset version && pnpm install --lockfile-only",
+    "release": "pnpm run build && changeset publish",
+    "docs:dev": "pnpm --filter @santi020k/lumen-docs dev",
+    "docs:build": "pnpm --filter @santi020k/lumen-docs build",
+    "docs:preview": "pnpm --filter @santi020k/lumen-docs preview",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "prepare": "husky",
+    "pre-commit": "lint-staged",
+    "pre-push": "pnpm run typecheck && pnpm run test && pnpm run lint",
+    "commit": "cz"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "catalog:",
+    "@changesets/cli": "catalog:",
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "@santi020k/eslint-config-basic": "catalog:",
+    "@types/node": "catalog:",
+    "typescript-eslint": "catalog:",
+    "commitizen": "catalog:",
+    "cspell": "catalog:",
+    "cz-conventional-changelog": "catalog:",
+    "eslint": "catalog:",
+    "husky": "catalog:",
+    "knip": "catalog:",
+    "lint-staged": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "lint-staged": {
+    "*.{astro,js,mjs,ts,tsx,mts}": [
+      "eslint --fix --no-warn-ignored"
+    ],
+    "*.{json,jsonc,md,yml,yaml}": [
+      "eslint --fix --no-warn-ignored"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

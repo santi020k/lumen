@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  max?: number
+  value?: number
+}
+
+const { class: classProp = '', className = '', max = 100, value = 0, ...rest } = Astro.props
+const percentage = Math.min(100, Math.max(0, (value / max) * 100))
+const passthrough = rest as Record<string, unknown>
+---
+
+<div
+  aria-valuemax={max}
+  aria-valuemin="0"
+  aria-valuenow={value}
+  class:list={['ui-progress', classProp, className]}
+  role="progressbar"
+  {...passthrough}
+>
+  <span class="ui-progress__bar" style={`width: ${percentage}%`}></span>
+</div>

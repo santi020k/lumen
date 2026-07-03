@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'article'> {
+  class?: string
+  className?: string
+  from?: 'user' | 'assistant'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  from = 'assistant',
+  ...rest
+} = Astro.props
+
+const passthrough = rest as Record<string, unknown>
+---
+
+<article
+  data-from={from}
+  class:list={[
+    'ui-bubble',
+    from === 'user' && 'ui-bubble--user',
+    classProp,
+    className
+  ]}
+  {...passthrough}
+>
+  <slot />
+</article>

@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'input'> {
+  class?: string
+  className?: string
+  label?: string
+  list: string
+  options?: string[]
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  label,
+  list,
+  options = [],
+  type = 'text',
+  ...rest
+} = Astro.props
+
+const passthrough = rest as Record<string, unknown>
+---
+
+<label class:list={['ui-combobox', classProp, className]} data-ui-combobox>
+  {label && <span class="ui-label">{label}</span>}
+  <input class="ui-input" list={list} type={type} {...passthrough} />
+  <datalist id={list}>
+    {options.map(option => <option value={option} />)}
+  </datalist>
+</label>

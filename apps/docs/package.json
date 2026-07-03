@@ -1,0 +1,39 @@
+{
+  "name": "@santi020k/lumen-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Documentation website for Lumen UI.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "typecheck": "astro check",
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "lint": "eslint . --no-warn-ignored",
+    "lint:fix": "eslint . --fix --no-warn-ignored",
+    "clean": "rm -rf dist .astro coverage"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "catalog:",
+    "@astrojs/sitemap": "catalog:",
+    "@santi020k/lumen": "workspace:^",
+    "@santi020k/lumen-astro": "workspace:^",
+    "@santi020k/lumen-core": "workspace:^",
+    "@tailwindcss/vite": "catalog:",
+    "astro": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "sharp": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@10.32.1"
+}

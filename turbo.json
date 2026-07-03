@@ -1,0 +1,61 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["CI", "NPM_TOKEN", "NODE_AUTH_TOKEN", "VITEST"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".astro/**"],
+      "outputLogs": "errors-only"
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputLogs": "errors-only"
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "outputLogs": "errors-only"
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "outputLogs": "errors-only"
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputLogs": "errors-only"
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "outputLogs": "errors-only"
+    },
+    "check": {
+      "dependsOn": ["^build"],
+      "outputLogs": "errors-only"
+    },
+    "preview": {
+      "cache": false,
+      "persistent": true
+    },
+    "//#lint:repo": {
+      "outputLogs": "errors-only"
+    },
+    "//#lint:spell": {
+      "outputLogs": "errors-only"
+    },
+    "//#lint:knip": {
+      "dependsOn": ["^build"],
+      "outputLogs": "errors-only"
+    },
+    "clean": {
+      "cache": false
+    }
+  },
+  "futureFlags": {
+    "errorsOnlyShowHash": true
+  }
+}

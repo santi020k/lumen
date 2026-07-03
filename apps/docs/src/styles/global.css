@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --theme-bg: 268 20% 98%;
+  --canvas: 268 20% 98%;
+  --surface: 268 20% 100%;
+  --surface-muted: 268 20% 96%;
+  --surface-strong: 268 15% 90%;
+  --line: 268 15% 84%;
+  --ink: 268 10% 20%;
+  --ink-soft: 268 8% 36%;
+  --ink-muted: 268 6% 28%;
+  --brand: 264 92% 47%;
+  --brand-solid: 264 92% 42%;
+  --brand-soft: 264 60% 94%;
+  --accent: 264 95% 57%;
+  --glow: 264 95% 70%;
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --danger: 0 84% 60%;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --theme-bg: 260 43% 8%;
+  --canvas: 260 43% 8%;
+  --surface: 260 30% 12%;
+  --surface-muted: 260 25% 15%;
+  --surface-strong: 260 20% 21%;
+  --line: 260 15% 30%;
+  --ink: 260 10% 88%;
+  --ink-soft: 260 8% 72%;
+  --ink-muted: 260 6% 56%;
+  --brand: 264 90% 58%;
+  --brand-solid: 264 90% 52%;
+  --brand-soft: 264 45% 18%;
+  --accent: 264 90% 68%;
+  --glow: 264 85% 50%;
+  --success: 142 71% 45%;
+  --warning: 38 92% 55%;
+  --danger: 0 84% 65%;
+}
+
+@theme {
+  --color-canvas: hsl(var(--canvas));
+  --color-surface: hsl(var(--surface));
+  --color-surface-muted: hsl(var(--surface-muted));
+  --color-surface-strong: hsl(var(--surface-strong));
+  --color-line: hsl(var(--line));
+  --color-ink: hsl(var(--ink));
+  --color-ink-soft: hsl(var(--ink-soft));
+  --color-ink-muted: hsl(var(--ink-muted));
+  --color-brand: hsl(var(--brand));
+  --color-brand-solid: hsl(var(--brand-solid));
+  --color-brand-soft: hsl(var(--brand-soft));
+  --color-accent: hsl(var(--accent));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+  --color-danger: hsl(var(--danger));
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+  --animate-shimmer: shimmer 3s linear infinite;
+}
+
+html {
+  background: hsl(var(--theme-bg));
+  color: hsl(var(--ink));
+  font-family: var(--font-sans);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 10% 0%, hsl(var(--glow) / 0.14), transparent 26rem),
+    radial-gradient(circle at 88% 12%, hsl(var(--accent) / 0.11), transparent 28rem),
+    hsl(var(--theme-bg));
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

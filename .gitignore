@@ -1,0 +1,12 @@
+node_modules
+dist
+.astro
+.turbo
+.eslintcache
+coverage
+playwright-report
+test-results
+.DS_Store
+*.log
+.env
+.env.*

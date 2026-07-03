@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+type HTMLInputAttributes = HTMLAttributes<'input'>
+
+interface Props extends Omit<HTMLInputAttributes, 'type'> {
+  class?: string
+  className?: string
+}
+
+const { class: classProp = '', className = '', role = 'switch', ...rest } = Astro.props
+const passthrough = rest as Record<string, unknown>
+---
+
+<input
+  class:list={['ui-switch', classProp, className]}
+  role={role}
+  type="checkbox"
+  {...passthrough}
+/>

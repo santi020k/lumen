@@ -1,0 +1,48 @@
+core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/core/**'
+          - 'packages/lumen/**'
+
+astro:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/astro/**'
+
+react:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/react/**'
+
+elements:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/elements/**'
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/docs/**'
+          - '*.md'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'pnpm-lock.yaml'
+          - 'pnpm-workspace.yaml'
+          - 'apps/*/package.json'
+          - 'packages/*/package.json'
+
+skip-changelog:
+  - head-branch:
+      - 'chore/*'
+      - 'ci/*'
+      - 'docs/*'
+      - 'renovate/*'
+      - 'dependabot/*'

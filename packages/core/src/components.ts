@@ -1,0 +1,82 @@
+export const lumenComponentNames = [
+  'Accordion',
+  'Alert',
+  'AlertDialog',
+  'AspectRatio',
+  'Attachment',
+  'Avatar',
+  'Badge',
+  'Breadcrumb',
+  'Bubble',
+  'Button',
+  'ButtonGroup',
+  'Calendar',
+  'Card',
+  'Carousel',
+  'Chart',
+  'Checkbox',
+  'Collapsible',
+  'Combobox',
+  'Command',
+  'ContextMenu',
+  'DataTable',
+  'DatePicker',
+  'Dialog',
+  'Direction',
+  'Drawer',
+  'DropdownMenu',
+  'Empty',
+  'Field',
+  'HoverCard',
+  'Input',
+  'InputGroup',
+  'InputOTP',
+  'Item',
+  'Kbd',
+  'Label',
+  'Marker',
+  'Menubar',
+  'Message',
+  'MessageScroller',
+  'NativeSelect',
+  'NavigationMenu',
+  'Pagination',
+  'Popover',
+  'Progress',
+  'RadioGroup',
+  'Resizable',
+  'ScrollArea',
+  'Select',
+  'Separator',
+  'Sheet',
+  'Sidebar',
+  'Skeleton',
+  'Slider',
+  'Sonner',
+  'Spinner',
+  'Switch',
+  'Table',
+  'Tabs',
+  'Textarea',
+  'Toast',
+  'Toggle',
+  'ToggleGroup',
+  'Tooltip',
+  'Typography'
+] as const
+
+export type LumenComponentName = typeof lumenComponentNames[number]
+
+export interface LumenPackageTarget {
+  name: string
+  packageName: string
+  runtime: 'astro' | 'core' | 'elements' | 'react' | 'umbrella'
+}
+
+export const lumenPackages = [
+  { name: 'Lumen', packageName: '@santi020k/lumen', runtime: 'umbrella' },
+  { name: 'Lumen Core', packageName: '@santi020k/lumen-core', runtime: 'core' },
+  { name: 'Lumen Astro', packageName: '@santi020k/lumen-astro', runtime: 'astro' },
+  { name: 'Lumen React', packageName: '@santi020k/lumen-react', runtime: 'react' },
+  { name: 'Lumen Elements', packageName: '@santi020k/lumen-elements', runtime: 'elements' }
+] as const satisfies readonly LumenPackageTarget[]

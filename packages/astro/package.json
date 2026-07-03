@@ -1,0 +1,61 @@
+{
+  "name": "@santi020k/lumen-astro",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Astro components and progressive-enhancement runtime for Lumen UI.",
+  "type": "module",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.ts"
+    },
+    "./components/*": "./components/*.astro",
+    "./runtime": "./runtime/UIPrimitives.astro",
+    "./styles.css": "./styles/lumen.css",
+    "./package.json": "./package.json"
+  },
+  "files": ["components", "runtime", "styles", "index.d.ts", "index.ts", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "astro sync && tsc -p tsconfig.json --noEmit",
+    "dev": "astro sync --watch",
+    "typecheck": "astro sync && tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "lint": "eslint . --no-warn-ignored",
+    "lint:fix": "eslint . --fix --no-warn-ignored",
+    "clean": "rm -rf .astro coverage"
+  },
+  "dependencies": {
+    "@santi020k/lumen-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "@astrojs/ts-plugin": "catalog:",
+    "astro": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": ">=5"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/lumen.git",
+    "directory": "packages/astro"
+  },
+  "homepage": "https://lumen.santi020k.com",
+  "bugs": {
+    "url": "https://github.com/santi020k/lumen/issues"
+  },
+  "author": {
+    "name": "Santiago Molina",
+    "url": "https://santi020k.com"
+  },
+  "license": "MIT"
+}

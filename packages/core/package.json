@@ -1,0 +1,60 @@
+{
+  "name": "@santi020k/lumen-core",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Shared tokens, metadata, and behavior helpers for Lumen UI packages.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js"
+    },
+    "./components": {
+      "types": "./dist/components.d.ts",
+      "import": "./dist/components.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "lint": "eslint . --no-warn-ignored",
+    "lint:fix": "eslint . --fix --no-warn-ignored",
+    "clean": "rm -rf dist coverage"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/lumen.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://lumen.santi020k.com",
+  "bugs": {
+    "url": "https://github.com/santi020k/lumen/issues"
+  },
+  "author": {
+    "name": "Santiago Molina",
+    "url": "https://santi020k.com"
+  },
+  "license": "MIT"
+}

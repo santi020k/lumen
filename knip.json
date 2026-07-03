@@ -1,0 +1,68 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "ignoreDependencies": [
+        "tailwindcss",
+        "wrangler"
+      ],
+      "project": [
+        "*.js"
+      ]
+    },
+    "apps/docs": {
+      "entry": [
+        "src/pages/**/*.astro"
+      ],
+      "ignoreDependencies": [
+        "tailwindcss"
+      ],
+      "project": [
+        "src/**/*.{astro,ts}"
+      ]
+    },
+    "packages/astro": {
+      "entry": [
+        "index.ts",
+        "runtime/UIPrimitives.astro",
+        "components/**/*.astro"
+      ],
+      "project": [
+        "**/*.{astro,ts}"
+      ]
+    },
+    "packages/core": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "project": [
+        "src/**/*.ts"
+      ]
+    },
+    "packages/elements": {
+      "entry": [
+        "src/index.ts",
+        "src/define.ts"
+      ],
+      "project": [
+        "src/**/*.ts"
+      ]
+    },
+    "packages/lumen": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "project": [
+        "src/**/*.ts"
+      ]
+    },
+    "packages/react": {
+      "entry": [
+        "src/index.tsx"
+      ],
+      "project": [
+        "src/**/*.tsx"
+      ]
+    }
+  }
+}

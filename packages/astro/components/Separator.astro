@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'hr'> {
+  class?: string
+  className?: string
+  orientation?: 'horizontal' | 'vertical'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  orientation = 'horizontal',
+  ...rest
+} = Astro.props
+
+const passthrough = rest as Record<string, unknown>
+---
+
+<hr
+  aria-orientation={orientation}
+  class:list={[
+    'ui-separator',
+    orientation === 'horizontal' && 'ui-separator--horizontal',
+    orientation === 'vertical' && 'ui-separator--vertical',
+    classProp,
+    className
+  ]}
+  data-orientation={orientation}
+  {...passthrough}
+/>

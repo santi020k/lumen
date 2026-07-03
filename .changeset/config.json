@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.5/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "santi020k/lumen" }],
+  "commit": false,
+  "fixed": [],
+  "linked": [
+    [
+      "@santi020k/lumen",
+      "@santi020k/lumen-core",
+      "@santi020k/lumen-astro",
+      "@santi020k/lumen-react",
+      "@santi020k/lumen-elements"
+    ]
+  ],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}
