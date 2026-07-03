@@ -131,7 +131,10 @@ const featured = componentDocs.slice(0, 12)
         {featured.map(component => (
           <a class="no-underline" href={`/docs/components/${toSlug(component.name)}`}>
             <Card class="h-full space-y-2 p-5" variant="interactive">
-              <h3 class="text-sm font-bold text-ink">{component.name}</h3>
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="text-sm font-bold text-ink">{component.name}</h3>
+                {component.glass && <Badge variant="outline">Glass</Badge>}
+              </div>
               <p class="text-sm/6 text-ink-soft">{component.summary}</p>
             </Card>
           </a>

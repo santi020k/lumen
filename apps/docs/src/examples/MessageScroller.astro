@@ -1,19 +1,35 @@
 ---
 import {
+  Avatar,
   Bubble,
   Message,
   MessageScroller
 } from '@santi020k/lumen-astro'
 ---
 
-<MessageScroller aria-label="Conversation">
+<MessageScroller aria-label="Conversation" style="max-height: 14rem;">
   <Message>
-    <Bubble>Build finished in 42s.</Bubble>
+    <Avatar fallback="LU" />
+    <Bubble>Lumen components are installed and ready.</Bubble>
+  </Message>
+  <Message from="user">
+    <Avatar fallback="SM" />
+    <Bubble from="user">Show me the Button docs.</Bubble>
   </Message>
   <Message>
-    <Bubble>Preview deployed.</Bubble>
+    <Avatar fallback="LU" />
+    <Bubble>The Button primitive includes variants for common product actions.</Bubble>
+  </Message>
+  <Message from="user">
+    <Avatar fallback="SM" />
+    <Bubble from="user">Can I pair it with an icon?</Bubble>
   </Message>
   <Message>
-    <Bubble>Release v0.1.0 published.</Bubble>
+    <Avatar fallback="LU" />
+    <Bubble>Yes. Use the button for the action and place the icon beside the label.</Bubble>
+  </Message>
+  <Message from="user">
+    <Avatar fallback="SM" />
+    <Bubble from="user">Perfect, ship the example.</Bubble>
   </Message>
 </MessageScroller>

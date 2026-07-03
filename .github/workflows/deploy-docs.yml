@@ -21,6 +21,17 @@ permissions:
   contents: read
   deployments: write
 
+concurrency:
+  group: deploy-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME || 'lumen' }}
+  CLOUDFLARE_PAGES_PRODUCTION_BRANCH: ${{ vars.CLOUDFLARE_PAGES_PRODUCTION_BRANCH || 'main' }}
+  DOCS_DIST_DIR: apps/docs/dist
+  NODE_VERSION: 22.x
+  PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || 'https://lumen.santi020k.com' }}
+
 jobs:
   build-and-deploy:
     name: Build and deploy docs
@@ -36,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
       - name: Install dependencies
@@ -46,11 +57,17 @@ jobs:
         run: pnpm run docs:build
 
       - name: Deploy to Cloudflare Pages
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
         run: |
-          PROJECT_NAME="${CLOUDFLARE_PAGES_PROJECT_NAME:-lumen-docs}"
-          pnpm exec wrangler pages deploy apps/docs/dist --project-name="$PROJECT_NAME" --branch=${{ github.ref_name }}
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+
+          DEPLOY_BRANCH="${GITHUB_REF_NAME}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            DEPLOY_BRANCH="$CLOUDFLARE_PAGES_PRODUCTION_BRANCH"
+          fi
+
+          pnpm exec wrangler pages deploy "$DOCS_DIST_DIR" --project-name="$CLOUDFLARE_PAGES_PROJECT_NAME" --branch="$DEPLOY_BRANCH"

@@ -6,6 +6,7 @@ words:
   - commitlint
   - dogfooded
   - esbuild
+  - geolocation
   - glassmorphism
   - inputmode
   - jsdom
@@ -14,6 +15,7 @@ words:
   - linecap
   - Lumen
   - maxlength
+  - nosniff
   - santi020k
   - scroller
   - Segoe

@@ -27,6 +27,8 @@
     "docs:dev": "pnpm --filter @santi020k/lumen-docs dev",
     "docs:build": "pnpm --filter @santi020k/lumen-docs build",
     "docs:preview": "pnpm --filter @santi020k/lumen-docs preview",
+    "docs:pages:dev": "pnpm run docs:build && pnpm exec wrangler pages dev apps/docs/dist",
+    "docs:deploy": "pnpm run docs:build && pnpm exec wrangler pages deploy apps/docs/dist --project-name=lumen --branch=main",
     "clean": "turbo run clean && rm -rf node_modules",
     "prepare": "husky",
     "pre-commit": "lint-staged",

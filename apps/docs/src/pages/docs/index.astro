@@ -13,31 +13,92 @@ import {
   themeSetups
 } from '../../data/docs'
 import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const frameworkHighlights = [
+  ['Astro', 'Reference implementation', '@santi020k/lumen-astro'],
+  ['React', 'Adapter primitives', '@santi020k/lumen-react'],
+  ['Elements', 'Custom elements', '@santi020k/lumen-elements']
+] as const
+
+const setupSteps = [
+  ['1', 'Install a target package', 'Start with Astro, React, or Elements and keep the shared CSS package in play.'],
+  ['2', 'Load styles once', 'Import the standalone stylesheet from a global CSS file, root layout, or app entry.'],
+  ['3', 'Use the same contract', 'Markup, tokens, glass surfaces, and runtime behavior stay aligned across targets.']
+] as const
 ---
 
 <DocsLayout
   description="Install and use Lumen UI, a multi-framework primitive component system for Astro, React, and Elements."
   title="Getting started - Lumen UI"
 >
-  <div class="mb-10 space-y-4" id="introduction">
-    <Badge>Getting started</Badge>
-    <h1 class="max-w-2xl text-4xl/tight font-black text-ink">One primitive system, three framework targets.</h1>
-    <p class="max-w-2xl text-lg/8 text-ink-soft">
-      Lumen centers on semantic markup, one standalone stylesheet driven by design tokens, and a
-      small progressive-enhancement runtime. Pick your framework below; the markup and class
-      contract stay the same everywhere.
-    </p>
+  <section class="docs-hero" id="introduction" aria-labelledby="intro-title">
+    <div class="docs-hero__content">
+      <Badge>Getting started</Badge>
+      <h1 class="text-4xl/tight font-black text-ink sm:text-5xl/tight" id="intro-title">
+        One primitive system, three framework targets.
+      </h1>
+      <p class="max-w-2xl text-lg/8 text-ink-soft">
+        Lumen centers on semantic markup, one standalone stylesheet driven by design tokens, and a
+        small progressive-enhancement runtime. Pick your framework below; the markup and class
+        contract stay the same everywhere.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a class="ui-button ui-button--default-size ui-button--default no-underline" href="#installation">Install Lumen</a>
+        <a class="ui-button ui-button--default-size ui-button--outline no-underline" href="/docs/components">Browse components</a>
+      </div>
+    </div>
+    <div class="docs-hero__preview" aria-label="Framework support overview">
+      <div class="docs-hero__surface">
+        <div class="docs-hero__bar">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="docs-hero__grid">
+          {frameworkHighlights.map(([name, label, packageName]) => (
+            <div class="docs-framework-tile">
+              <span>{name}</span>
+              <strong>{label}</strong>
+              <code>{packageName}</code>
+            </div>
+          ))}
+        </div>
+        <div class="docs-token-strip" aria-label="Theme token examples">
+          <span style="--swatch: hsl(var(--brand));"></span>
+          <span style="--swatch: hsl(var(--accent));"></span>
+          <span style="--swatch: hsl(var(--success));"></span>
+          <span style="--swatch: hsl(var(--warning));"></span>
+          <span style="--swatch: hsl(var(--danger));"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="docs-step-grid" aria-label="Setup overview">
+    {setupSteps.map(([step, title, description]) => (
+      <div class="docs-step">
+        <span>{step}</span>
+        <div>
+          <h2>{title}</h2>
+          <p>{description}</p>
+        </div>
+      </div>
+    ))}
   </div>
 
-  <section class="space-y-4" id="installation" aria-labelledby="install-title">
-    <h2 class="text-2xl font-bold text-ink" id="install-title">Install and use</h2>
+  <section class="docs-section" id="installation" aria-labelledby="install-title">
+    <div class="docs-section-heading">
+      <p>Start here</p>
+      <h2 id="install-title">Install and use</h2>
+    </div>
     <FrameworkSetupTabs setups={frameworkSetups} />
   </section>
 
-  <section class="mt-12 space-y-4" id="global-styles" aria-labelledby="global-styles-title">
-    <div class="space-y-2">
-      <h2 class="text-2xl font-bold text-ink" id="global-styles-title">Add styles once</h2>
-      <p class="max-w-2xl text-sm/7 text-ink-soft">
+  <section class="docs-section" id="global-styles" aria-labelledby="global-styles-title">
+    <div class="docs-section-heading">
+      <p>Shared stylesheet</p>
+      <h2 id="global-styles-title">Add styles once</h2>
+      <p>
         Lumen ships standalone CSS, so you do not need to import it in every component. Load it once
         from your global CSS file, root layout, or app entry; Tailwind configuration is optional.
       </p>
@@ -47,21 +108,24 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
       lg:grid-cols-3
     ">
       {globalStyleSetups.map(setup => (
-        <Card class="space-y-3 p-5" variant="muted">
+        <Card class="docs-example-card" variant="muted">
           <div class="space-y-1">
             <h3 class="text-base font-bold text-ink">{setup.label}</h3>
             <p class="text-sm/6 text-ink-soft">{setup.description}</p>
           </div>
-          <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+          <div class="docs-code-compact">
+            <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+          </div>
         </Card>
       ))}
     </div>
   </section>
 
-  <section class="mt-12 space-y-4" id="themes" aria-labelledby="themes-title">
-    <div class="space-y-2">
-      <h2 class="text-2xl font-bold text-ink" id="themes-title">Themes</h2>
-      <p class="max-w-2xl text-sm/7 text-ink-soft">
+  <section class="docs-section" id="themes" aria-labelledby="themes-title">
+    <div class="docs-section-heading">
+      <p>Token contract</p>
+      <h2 id="themes-title">Themes</h2>
+      <p>
         Lumen reads color tokens from the root data-theme attribute. The standalone stylesheet ships
         default light and dark themes; the santi020k theme shown in these docs is a custom example
         built with the same token contract.
@@ -72,21 +136,24 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
       lg:grid-cols-3
     ">
       {themeSetups.map(setup => (
-        <Card class="space-y-3 p-5" variant="muted">
+        <Card class="docs-example-card" variant="muted">
           <div class="space-y-1">
             <h3 class="text-base font-bold text-ink">{setup.label}</h3>
             <p class="text-sm/6 text-ink-soft">{setup.description}</p>
           </div>
-          <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+          <div class="docs-code-compact">
+            <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+          </div>
         </Card>
       ))}
     </div>
   </section>
 
-  <section class="mt-12 space-y-4" id="glassmorphism" aria-labelledby="glassmorphism-title">
-    <div class="space-y-2">
-      <h2 class="text-2xl font-bold text-ink" id="glassmorphism-title">Glassmorphism surfaces</h2>
-      <p class="max-w-2xl text-sm/7 text-ink-soft">
+  <section class="docs-section" id="glassmorphism" aria-labelledby="glassmorphism-title">
+    <div class="docs-section-heading">
+      <p>Surface system</p>
+      <h2 id="glassmorphism-title">Glassmorphism surfaces</h2>
+      <p>
         Lumen includes reusable glass tokens, utility classes, boolean component props, and fallbacks
         for browsers without backdrop-filter support.
       </p>
@@ -96,7 +163,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
       xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]
     ">
       <div
-        class="min-h-64 rounded-xl border border-line p-6"
+        class="docs-glass-demo"
         style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
       >
         <Card class="max-w-sm space-y-3 p-5" glass>
@@ -113,26 +180,31 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
         lg:grid-cols-3
       ">
         {glassSurfaceExamples.map(example => (
-          <Card class="space-y-3 p-5" variant="muted">
+          <Card class="docs-example-card" variant="muted">
             <div class="space-y-1">
               <h3 class="text-base font-bold text-ink">{example.label}</h3>
               <p class="text-sm/6 text-ink-soft">{example.description}</p>
             </div>
-            <Code code={example.code} lang={example.lang} theme="one-dark-pro" />
+            <div class="docs-code-compact">
+              <Code code={example.code} lang={example.lang} theme="one-dark-pro" />
+            </div>
           </Card>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="mt-12 space-y-4" id="packages" aria-labelledby="packages-title">
-    <h2 class="text-2xl font-bold text-ink" id="packages-title">Packages</h2>
+  <section class="docs-section" id="packages" aria-labelledby="packages-title">
+    <div class="docs-section-heading">
+      <p>Package map</p>
+      <h2 id="packages-title">Packages</h2>
+    </div>
     <div class="
       grid gap-4
       md:grid-cols-2
     ">
       {frameworkPackages.map(([name, packageName, status, description]) => (
-        <Card class="space-y-2 p-5">
+        <Card class="docs-package-card">
           <div class="flex items-center justify-between gap-3">
             <h3 class="text-base font-bold text-ink">{name}</h3>
             <Badge variant={status === 'Complete' ? 'success' : 'outline'}>{status}</Badge>
@@ -144,18 +216,21 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
     </div>
   </section>
 
-  <section class="mt-12 space-y-4" id="runtime" aria-labelledby="runtime-title">
-    <h2 class="text-2xl font-bold text-ink" id="runtime-title">Progressive-enhancement runtime</h2>
-    <p class="max-w-2xl text-sm/7 text-ink-soft">
-      Interactive primitives are wired up by a single UIPrimitives include. Static components do not
-      need it; behavior attaches to semantic markup and data attributes when the runtime is mounted.
-    </p>
+  <section class="docs-section" id="runtime" aria-labelledby="runtime-title">
+    <div class="docs-section-heading">
+      <p>Behavior layer</p>
+      <h2 id="runtime-title">Progressive-enhancement runtime</h2>
+      <p>
+        Interactive primitives are wired up by a single UIPrimitives include. Static components do not
+        need it; behavior attaches to semantic markup and data attributes when the runtime is mounted.
+      </p>
+    </div>
     <div class="
       grid gap-4
       md:grid-cols-2
     ">
       {runtimeFeatures.map(([feature, description]) => (
-        <Card class="space-y-1 p-5" variant="muted">
+        <Card class="docs-runtime-card" variant="muted">
           <h3 class="text-sm font-bold text-ink">{feature}</h3>
           <p class="text-sm/6 text-ink-soft">{description}</p>
         </Card>
@@ -163,9 +238,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
     </div>
   </section>
 
-  <section class="mt-12 space-y-3" aria-labelledby="next-title">
-    <h2 class="text-2xl font-bold text-ink" id="next-title">Next steps</h2>
-    <p class="text-sm/7 text-ink-soft">
+  <section class="docs-next" aria-labelledby="next-title">
+    <h2 id="next-title">Next steps</h2>
+    <p>
       Every component page includes a live preview plus code for all three targets.
     </p>
     <a class="ui-button ui-button--default-size ui-button--default no-underline" href="/docs/components">Browse the component reference</a>

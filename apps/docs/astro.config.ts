@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config'
 
 export default defineConfig({
   integrations: [mdx(), sitemap()],
-  site: 'https://lumen.santi020k.com',
+  site: process.env.PUBLIC_SITE_URL ?? 'https://lumen.santi020k.com',
   vite: {
     plugins: [tailwindcss()]
   }

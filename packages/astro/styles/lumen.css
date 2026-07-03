@@ -1330,10 +1330,14 @@
 
 .ui-message {
   display: flex;
+  width: fit-content;
   max-width: min(44rem, 100%);
+  flex-direction: row;
   align-items: flex-start;
   gap: 0.5rem;
+  border: 1px solid hsl(var(--line) / 0.34);
   border-radius: var(--ui-radius-lg);
+  background: hsl(var(--surface-muted) / 0.62);
   color: hsl(var(--ink-soft));
   padding: 0.75rem;
   font-size: 0.875rem;
@@ -1342,14 +1346,23 @@
 .ui-message--user {
   flex-direction: row-reverse;
   margin-inline-start: auto;
+  border-color: hsl(var(--brand) / 0.16);
+  background: hsl(var(--brand) / 0.07);
+}
+
+.ui-message > .ui-avatar {
+  flex: 0 0 auto;
 }
 
 .ui-message > .ui-bubble {
+  min-width: 0;
   margin-inline-start: 0;
 }
 
-.ui-message--assistant {
-  background: hsl(var(--surface-muted) / 0.55);
+.ui-message--user > .ui-bubble {
+  border-color: hsl(var(--brand) / 0.34);
+  background: hsl(var(--surface) / 0.88);
+  color: hsl(var(--ink));
 }
 
 .ui-message-scroller {

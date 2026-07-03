@@ -166,6 +166,246 @@ pre code {
   white-space: pre;
 }
 
+.docs-hero {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding: 0.5rem 0 2.5rem;
+}
+
+.docs-hero__content {
+  display: grid;
+  gap: 1rem;
+}
+
+.docs-hero__preview {
+  min-width: 0;
+}
+
+.docs-hero__surface {
+  overflow: hidden;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(135deg, hsl(var(--surface) / 0.94), hsl(var(--surface-muted) / 0.82)),
+    radial-gradient(circle at 78% 8%, hsl(var(--brand) / 0.18), transparent 34%);
+  box-shadow: 0 1.25rem 3rem hsl(var(--ink) / 0.08);
+}
+
+.docs-hero__bar {
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid hsl(var(--line));
+}
+
+.docs-hero__bar span {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 999px;
+  background: hsl(var(--ink-muted) / 0.28);
+}
+
+.docs-hero__grid {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.docs-framework-tile {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.5rem;
+  background: hsl(var(--surface) / 0.72);
+}
+
+.docs-framework-tile span {
+  width: max-content;
+  border-radius: 999px;
+  background: hsl(var(--brand-soft));
+  color: hsl(var(--brand-solid));
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 0.375rem 0.5rem;
+}
+
+.docs-framework-tile strong {
+  color: hsl(var(--ink));
+  font-size: 0.95rem;
+}
+
+.docs-framework-tile code {
+  width: 100%;
+  overflow: hidden;
+  color: hsl(var(--ink-soft));
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs-token-strip {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1rem 1rem;
+}
+
+.docs-token-strip span {
+  flex: 1;
+  height: 0.625rem;
+  border-radius: 999px;
+  background: var(--swatch);
+}
+
+.docs-step-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+}
+
+.docs-step {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.5rem;
+  background: hsl(var(--surface) / 0.78);
+}
+
+.docs-step > span {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: hsl(var(--brand));
+  color: hsl(var(--surface));
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.docs-step h2 {
+  color: hsl(var(--ink));
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.docs-step p {
+  color: hsl(var(--ink-soft));
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0.25rem 0 0;
+}
+
+.docs-section {
+  display: grid;
+  gap: 1rem;
+  margin-top: 3rem;
+  scroll-margin-top: 6rem;
+}
+
+.docs-section-heading {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 44rem;
+}
+
+.docs-section-heading > p:first-child {
+  color: hsl(var(--brand-solid));
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.docs-section-heading h2,
+.docs-next h2 {
+  color: hsl(var(--ink));
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.docs-section-heading p:not(:first-child),
+.docs-next p {
+  color: hsl(var(--ink-soft));
+  font-size: 0.925rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.docs-example-card,
+.docs-package-card,
+.docs-runtime-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1rem;
+}
+
+.docs-example-card {
+  min-height: 100%;
+}
+
+.docs-code-compact {
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.docs-code-compact pre {
+  max-height: 16rem;
+  padding: 0.875rem;
+}
+
+.docs-code-panel pre {
+  max-height: 24rem;
+}
+
+.docs-glass-demo {
+  min-height: 16rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.docs-next {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 3rem;
+  padding: 1.25rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, hsl(var(--surface)), hsl(var(--brand-soft) / 0.55));
+}
+
+.docs-next .ui-button {
+  width: max-content;
+}
+
+@media (min-width: 640px) {
+  .docs-step-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .docs-hero {
+    grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+    padding-top: 1rem;
+  }
+}
+
 :focus-visible {
   outline: 2px solid hsl(var(--brand));
   outline-offset: 4px;
