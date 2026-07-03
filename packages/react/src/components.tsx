@@ -28,11 +28,16 @@ export interface Option {
   value: string
 }
 
-const emptyOptions: Option[] = []
+type SelectOption = Option | string
+
+const emptyOptions: SelectOption[] = []
 const emptyStringOptions: string[] = []
 
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
   variant === defaultVariant ? false : `${base}--${variant}`
+
+const normalizeOption = (option: SelectOption): Option =>
+  typeof option === 'string' ? { label: option, value: option } : option
 
 type PrimitiveProps = ComponentPropsWithoutRef<'div'> & {
   [key: string]: unknown
@@ -53,7 +58,7 @@ const Primitive = ({
 
 export type AccordionProps = ComponentPropsWithoutRef<'div'>
 export const Accordion = ({ className, ...props }: AccordionProps) => (
-  <div className={composeClassName('ui-accordion space-y-2', className)} {...props} />
+  <div className={composeClassName('ui-accordion', className)} {...props} />
 )
 
 export interface AlertProps extends ComponentPropsWithoutRef<'aside'> {
@@ -89,9 +94,13 @@ export interface AttachmentProps extends ComponentPropsWithoutRef<'article'> {
   href?: string
 }
 
-export const Attachment = ({ className, href, ...props }: AttachmentProps) => (
-  <article className={composeClassName('ui-attachment', className)} data-href={href} {...props} />
-)
+export const Attachment = ({ className, href, ...props }: AttachmentProps) => {
+  const nextClassName = composeClassName('ui-attachment', className)
+
+  return href
+    ? <a className={nextClassName} href={href} {...props as ComponentPropsWithoutRef<'a'>} />
+    : <article className={nextClassName} {...props} />
+}
 
 export interface AvatarProps extends ComponentPropsWithoutRef<'span'> {
   alt?: string
@@ -380,19 +389,38 @@ export const MessageScroller = ({ className, ...props }: MessageScrollerProps) =
 )
 
 export interface NativeSelectProps extends ComponentPropsWithoutRef<'select'> {
-  options?: Option[]
+  options?: SelectOption[]
+  placeholder?: string
 }
 
-export const NativeSelect = ({ children, className, options = emptyOptions, ...props }: NativeSelectProps) => (
-  <select className={composeClassName('ui-select', className)} {...props}>
-    {children}
-    {options.map(option => (
-      <option disabled={option.disabled} key={option.value} value={option.value}>
-        {option.label}
-      </option>
-    ))}
-  </select>
-)
+export const NativeSelect = ({
+  children,
+  className,
+  defaultValue,
+  options = emptyOptions,
+  placeholder,
+  value,
+  ...props
+}: NativeSelectProps) => {
+  const placeholderDefaultValue = placeholder && value === undefined && defaultValue === undefined ? '' : undefined
+
+  return (
+    <select
+      className={composeClassName('ui-select', className)}
+      defaultValue={defaultValue ?? placeholderDefaultValue}
+      value={value}
+      {...props}
+    >
+      {placeholder && <option disabled value="">{placeholder}</option>}
+      {children}
+      {options.map(normalizeOption).map(option => (
+        <option disabled={option.disabled} key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  )
+}
 
 export type NavigationMenuProps = ComponentPropsWithoutRef<'nav'>
 export const NavigationMenu = ({ className, ...props }: NavigationMenuProps) => (
@@ -415,13 +443,15 @@ export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export const Progress = ({ className, max = 100, value = 0, ...props }: ProgressProps) => {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100))
+  const safeMax = max > 0 ? max : 100
+  const safeValue = Math.min(safeMax, Math.max(0, value))
+  const percentage = (safeValue / safeMax) * 100
 
   return (
     <div
-      aria-valuemax={max}
+      aria-valuemax={safeMax}
       aria-valuemin={0}
-      aria-valuenow={value}
+      aria-valuenow={safeValue}
       className={composeClassName('ui-progress', className)}
       role="progressbar"
       {...props}
@@ -488,9 +518,27 @@ export const Sonner = ({ className, ...props }: SonnerProps) => (
 )
 
 export type SpinnerProps = ComponentPropsWithoutRef<'span'>
-export const Spinner = ({ 'aria-hidden': ariaHidden = true, className, ...props }: SpinnerProps) => (
-  <span aria-hidden={ariaHidden} className={composeClassName('ui-spinner', className)} {...props} />
-)
+export const Spinner = ({
+  'aria-hidden': ariaHidden,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  className,
+  role,
+  ...props
+}: SpinnerProps) => {
+  const isAccessible = Boolean(ariaLabel || ariaLabelledby)
+
+  return (
+    <span
+      aria-hidden={ariaHidden ?? (isAccessible ? undefined : true)}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      className={composeClassName('ui-spinner', className)}
+      role={role ?? (isAccessible ? 'status' : undefined)}
+      {...props}
+    />
+  )
+}
 
 export type SwitchProps = Omit<ComponentPropsWithoutRef<'input'>, 'type'>
 export const Switch = ({ className, role = 'switch', ...props }: SwitchProps) => (

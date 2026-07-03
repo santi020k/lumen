@@ -7,29 +7,84 @@ export interface FrameworkSnippet {
 }
 
 const lumenNames = new Set<string>(lumenComponentNames)
-
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-
 const valueDefaultTags = ['Checkbox', 'DatePicker', 'Input', 'InputOTP', 'Slider', 'Switch', 'Textarea']
-
 const valueDefaultPattern = new RegExp(`<(${valueDefaultTags.join('|')})([^>]*?) value="`, 'g')
+const stylesImport = `import '@santi020k/lumen-astro/styles.css'`
+const astroPackageImportPattern = /import\s*\{([\S\s]*?)\}\s*from '@santi020k\/lumen-astro'/
+const runtimeComponents = new Set([
+  'AlertDialog',
+  'Carousel',
+  'Combobox',
+  'Command',
+  'Dialog',
+  'Drawer',
+  'DropdownMenu',
+  'HoverCard',
+  'Menubar',
+  'NavigationMenu',
+  'Popover',
+  'RadioGroup',
+  'Sheet',
+  'Sonner',
+  'Tabs',
+  'Toggle',
+  'ToggleGroup'
+])
+const runtimeAttributePattern = /\bdata-ui-(?:alert-dialog|carousel|command|combobox|dialog|drawer|dropdown-menu|hover-card|menubar|navigation-menu|popover|radio-group|sheet|sonner|tabs|toast|toggle)/
 
 export const splitExample = (raw: string) => {
   const match = /^---\n([\S\s]*?)\n---\n\n?([\S\s]*)$/.exec(raw.trim())
+  const frontmatter = match?.[1]
+  const body = match?.[2]
 
-  if (!match) return { body: raw.trim(), frontmatter: '' }
+  if (frontmatter === undefined || body === undefined) return { body: raw.trim(), frontmatter: '' }
 
-  return { body: match[2].trim(), frontmatter: match[1].trim() }
+  return { body: body.trim(), frontmatter: frontmatter.trim() }
 }
 
 export const usedComponents = (body: string): string[] => {
   const used = new Set<string>()
 
   for (const match of body.matchAll(/<([A-Z][A-Za-z]*)\b/g)) {
-    if (lumenNames.has(match[1])) used.add(match[1])
+    const name = match[1]
+
+    if (name !== undefined && lumenNames.has(name)) used.add(name)
   }
 
   return [...used].sort((a, b) => a.localeCompare(b))
+}
+
+const needsRuntime = (body: string) =>
+  runtimeAttributePattern.test(body) || usedComponents(body).some(component => runtimeComponents.has(component))
+
+const toAstroSnippet = (raw: string): string => {
+  const { body, frontmatter } = splitExample(raw)
+  let nextFrontmatter = frontmatter
+  const includeRuntime = needsRuntime(body)
+
+  if (!nextFrontmatter.includes(stylesImport)) {
+    nextFrontmatter = `${nextFrontmatter}\n${stylesImport}`
+  }
+
+  nextFrontmatter = astroPackageImportPattern.test(nextFrontmatter)
+    ? nextFrontmatter.replace(astroPackageImportPattern, (_match, imports: string) => {
+      const names = imports
+        .split(',')
+        .map(name => name.trim())
+        .filter(Boolean)
+
+      if (includeRuntime && !names.includes('UIPrimitives')) names.push('UIPrimitives')
+
+      return `import { ${names.join(', ')} } from '@santi020k/lumen-astro'`
+    })
+    : includeRuntime
+      ? `import { UIPrimitives } from '@santi020k/lumen-astro'\n${nextFrontmatter}`
+      : nextFrontmatter
+
+  const nextBody = includeRuntime && !body.includes('<UIPrimitives') ? `<UIPrimitives />\n\n${body}` : body
+
+  return `---\n${nextFrontmatter.trim()}\n---\n\n${nextBody.trim()}\n`
 }
 
 const toReactBody = (body: string) =>
@@ -39,6 +94,8 @@ const toReactBody = (body: string) =>
     .replaceAll(/(?<=\s)for=/g, 'htmlFor=')
     .replaceAll(/(?<=\s)checked(?=[\s/>])/g, 'defaultChecked')
     .replaceAll(/(?<=\s)stroke-width=/g, 'strokeWidth=')
+    .replaceAll(/(?<=\s)stop-color=/g, 'stopColor=')
+    .replaceAll(/(?<=\s)stop-opacity=/g, 'stopOpacity=')
     .replaceAll(/(?<=\s)maxlength=/g, 'maxLength=')
     .replaceAll(/(?<=\s)inputmode=/g, 'inputMode=')
     .replaceAll(/(?<=\s)tabindex=/g, 'tabIndex=')
@@ -46,15 +103,17 @@ const toReactBody = (body: string) =>
 export const toReactSnippet = (body: string): string => {
   const components = usedComponents(body)
   const importLine = `import { ${components.join(', ')} } from '@santi020k/lumen-react'`
+
   const indented = toReactBody(body)
     .split('\n')
     .map(line => (line ? `    ${line}` : line))
     .join('\n')
 
-  return `${importLine}\n\nexport const Example = () => (\n  <>\n${indented}\n  </>\n)\n`
+  return `${importLine}\n${stylesImport}\n\nexport const Example = () => (\n  <>\n${indented}\n  </>\n)\n`
 }
 
 const elementsHeader = `<script type="module">
+  import '@santi020k/lumen-astro/styles.css'
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
 
   defineLumenElements()
@@ -80,6 +139,7 @@ export const toElementsSnippet = (body: string): string => {
 
 const reactOverrides: Record<string, string> = {
   Sonner: `import { Button, Sonner } from '@santi020k/lumen-react'
+${stylesImport}
 
 export const Example = () => (
   <>
@@ -117,7 +177,7 @@ export const buildSnippets = (name: string, raw: string): FrameworkSnippet[] => 
   const { body } = splitExample(raw)
 
   return [
-    { code: `${raw.trim()}\n`, label: 'Astro', lang: 'astro' },
+    { code: toAstroSnippet(raw), label: 'Astro', lang: 'astro' },
     { code: reactOverrides[name] ?? toReactSnippet(body), label: 'React', lang: 'tsx' },
     { code: elementsOverrides[name] ?? toElementsSnippet(body), label: 'Elements', lang: 'html' }
   ]

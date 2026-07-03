@@ -1,10 +1,12 @@
 ---
-import { Badge, Card, Separator } from '@santi020k/lumen-astro'
+import { Badge, Separator } from '@santi020k/lumen-astro'
+
+import type { InferGetStaticPropsType } from 'astro'
 
 import CodeTabs from '../../../components/CodeTabs.astro'
 import { componentDocs } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
-import { exampleComponents, exampleSources } from '../../../lib/examples'
+import { getExample } from '../../../lib/examples'
 import { toSlug } from '../../../lib/routes'
 import { buildSnippets } from '../../../lib/snippets'
 
@@ -14,16 +16,18 @@ export const getStaticPaths = () =>
     props: { component }
   }))
 
+type Props = InferGetStaticPropsType<typeof getStaticPaths>
+
 const { component } = Astro.props
-const Example = exampleComponents[component.name]
-const snippets = buildSnippets(component.name, exampleSources[component.name])
+const { component: Example, source } = getExample(component.name)
+const snippets = buildSnippets(component.name, source)
 const index = componentDocs.findIndex(entry => entry.name === component.name)
 const previous = index > 0 ? componentDocs[index - 1] : undefined
 const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undefined
 ---
 
 <DocsLayout
-  description={`${component.name}: ${component.summary} Usage examples for Astro, React, and Web Components.`}
+  description={`${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
   title={`${component.name} - Lumen UI`}
 >
   <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
@@ -50,9 +54,9 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
 
   <section class="space-y-3" aria-labelledby="preview-title">
     <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="preview-title">Preview</h2>
-    <Card class="docs-preview">
+    <div class="docs-preview">
       <Example />
-    </Card>
+    </div>
   </section>
 
   <section class="mt-8 space-y-3" aria-labelledby="usage-title">

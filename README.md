@@ -2,7 +2,11 @@
 
 Lumen is a multi-framework primitive UI system from Santiago Molina.
 
-The monorepo starts with the Astro primitives dogfooded in `private-website`, then layers framework adapters around a shared core:
+The Astro package is the primary implementation: install it, import one standalone CSS file, and
+mount one optional progressive-enhancement runtime for interactive primitives. Consumers do not need
+Tailwind configuration for Lumen components to render.
+
+The monorepo layers framework adapters around a shared core:
 
 - `@santi020k/lumen` - umbrella package and package map
 - `@santi020k/lumen-core` - tokens, component metadata, class composition, and shared behavior helpers
@@ -10,6 +14,25 @@ The monorepo starts with the Astro primitives dogfooded in `private-website`, th
 - `@santi020k/lumen-react` - React components
 - `@santi020k/lumen-elements` - standards-based Web Components
 - `apps/docs` - Astro documentation and demo site
+
+## Quick Start
+
+```bash
+pnpm add @santi020k/lumen-astro
+```
+
+```astro
+---
+import { Button, Card, Input } from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles.css'
+---
+
+<Card>
+  <label for="email">Email</label>
+  <Input id="email" type="email" placeholder="you@example.com" />
+  <Button>Subscribe</Button>
+</Card>
+```
 
 ## Development
 

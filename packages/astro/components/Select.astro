@@ -7,19 +7,27 @@ interface Option {
   value: string
 }
 
+type SelectOption = Option | string
+
 interface Props extends HTMLAttributes<'select'> {
   class?: string
   className?: string
-  options?: Option[]
+  options?: SelectOption[]
+  placeholder?: string
 }
 
-const { class: classProp = '', className = '', options = [], ...rest } = Astro.props
+const { class: classProp = '', className = '', options = [], placeholder, ...rest } = Astro.props
+const hasValue = Object.hasOwn(rest, 'value')
+const normalizedOptions = options.map(option =>
+  typeof option === 'string' ? { label: option, value: option } : option
+)
 const passthrough = rest as Record<string, unknown>
 ---
 
 <select class:list={['ui-select', classProp, className]} {...passthrough}>
+  {placeholder && <option disabled selected={!hasValue} value="">{placeholder}</option>}
   <slot />
-  {options.map(option => (
+  {normalizedOptions.map(option => (
     <option disabled={option.disabled} value={option.value}>{option.label}</option>
   ))}
 </select>

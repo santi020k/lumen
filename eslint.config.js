@@ -73,4 +73,12 @@ const config = await defineConfig({
   ...tseslint.configs.disableTypeChecked
 })
 
-export default config
+export default [
+  ...config,
+  {
+    files: ['apps/docs/**/*.astro'],
+    rules: {
+      'better-tailwindcss/no-unknown-classes': ['error', { ignore: ['^ui-'] }]
+    }
+  }
+]

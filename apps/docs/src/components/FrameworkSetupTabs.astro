@@ -1,0 +1,51 @@
+---
+import { Code } from 'astro:components'
+
+import { Tabs } from '@santi020k/lumen-astro'
+
+import type { FrameworkSetup } from '../data/docs'
+
+interface Props {
+  setups: FrameworkSetup[]
+}
+
+const { setups } = Astro.props
+---
+
+<Tabs>
+  <div role="tablist" aria-label="Framework setup">
+    {setups.map((setup, index) => (
+      <button
+        aria-controls={`setup-panel-${setup.id}`}
+        aria-selected={index === 0 ? 'true' : 'false'}
+        id={`setup-tab-${setup.id}`}
+        role="tab"
+      >{setup.label}</button>
+    ))}
+  </div>
+  {setups.map((setup, index) => (
+    <section
+      aria-labelledby={`setup-tab-${setup.id}`}
+      class="space-y-4 docs-code-panel"
+      hidden={index !== 0}
+      id={`setup-panel-${setup.id}`}
+      role="tabpanel"
+    >
+      <div class="
+        grid gap-3
+        md:grid-cols-3
+      ">
+        {setup.installCommands.map(install => (
+          <div class="space-y-2">
+            <p class="
+              text-xs font-black tracking-[0.14em] text-ink-muted uppercase
+            ">{install.label}</p>
+            <Code code={install.command} lang="bash" theme="one-dark-pro" />
+          </div>
+        ))}
+      </div>
+      <p class="text-sm/7 text-ink-soft">{setup.note}</p>
+      <Code code={setup.usage} lang={setup.lang} theme="one-dark-pro" />
+    </section>
+  ))}
+</Tabs>

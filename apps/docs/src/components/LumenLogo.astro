@@ -1,0 +1,115 @@
+---
+interface Props {
+  class?: string
+  markClass?: string
+  showText?: boolean
+}
+
+const {
+  class: className = '',
+  markClass = 'size-8',
+  showText = true
+} = Astro.props
+---
+
+<span class:list={['inline-flex items-center gap-2.5', className]}>
+  <svg
+    class:list={['shrink-0', markClass]}
+    viewBox="0 0 64 64"
+    role={showText ? undefined : 'img'}
+    aria-hidden={showText ? 'true' : undefined}
+    aria-label={showText ? undefined : 'Lumen UI'}
+  >
+    <defs>
+      <linearGradient id="lumen-logo-field" x1="8" x2="56" y1="4" y2="62">
+        <stop stop-color="hsl(222 47% 12%)" />
+        <stop offset="0.48" stop-color="hsl(208 64% 13%)" />
+        <stop offset="1" stop-color="hsl(220 44% 8%)" />
+      </linearGradient>
+      <linearGradient id="lumen-logo-aurora" x1="9" x2="53" y1="10" y2="56">
+        <stop stop-color="hsl(var(--brand))" stop-opacity="0.62" />
+        <stop offset="0.52" stop-color="hsl(var(--accent))" stop-opacity="0.22" />
+        <stop offset="1" stop-color="hsl(var(--brand-solid))" stop-opacity="0.08" />
+      </linearGradient>
+      <linearGradient id="lumen-logo-glass" x1="17" x2="53" y1="12" y2="53">
+        <stop stop-color="hsl(210 40% 99%)" />
+        <stop offset="0.48" stop-color="hsl(193 84% 92%)" />
+        <stop offset="1" stop-color="hsl(178 78% 82%)" />
+      </linearGradient>
+      <linearGradient id="lumen-logo-beam" x1="29" x2="51" y1="44" y2="20">
+        <stop stop-color="hsl(var(--accent))" />
+        <stop offset="0.56" stop-color="hsl(199 94% 88%)" />
+        <stop offset="1" stop-color="hsl(var(--glow))" />
+      </linearGradient>
+      <linearGradient id="lumen-logo-lens" x1="43" x2="55" y1="18" y2="30">
+        <stop stop-color="hsl(47 100% 82%)" />
+        <stop offset="0.52" stop-color="hsl(var(--glow))" />
+        <stop offset="1" stop-color="hsl(24 94% 55%)" />
+      </linearGradient>
+      <filter id="lumen-logo-shadow" x="-18%" y="-18%" width="136%" height="136%">
+        <feDropShadow dx="0" dy="4" flood-color="hsl(220 44% 4%)" flood-opacity="0.3" stdDeviation="4" />
+      </filter>
+      <filter id="lumen-logo-glow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="2.2" />
+        <feColorMatrix
+          in="blur"
+          result="glow"
+          type="matrix"
+          values="1 0 0 0 0.15  0 1 0 0 0.78  0 0 1 0 0.82  0 0 0 0.72 0"
+        />
+        <feMerge>
+          <feMergeNode in="glow" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="64" height="64" rx="15" fill="url(#lumen-logo-field)" />
+    <rect x="4" y="4" width="56" height="56" rx="13" fill="url(#lumen-logo-aurora)" opacity="0.72" />
+    <rect x="4.75" y="4.75" width="54.5" height="54.5" rx="12.25" fill="none" stroke="hsl(210 40% 98%)" stroke-opacity="0.16" stroke-width="1.5" />
+    <g filter="url(#lumen-logo-shadow)">
+      <path
+        d="M21.5 13.4v27.2c0 5.2 4.2 9.4 9.4 9.4h20"
+        fill="none"
+        stroke="url(#lumen-logo-glass)"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="8.4"
+      />
+      <path
+        d="M21.5 13.4v27.2c0 5.2 4.2 9.4 9.4 9.4h20"
+        fill="none"
+        stroke="hsl(210 40% 98%)"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.25"
+        opacity="0.58"
+      />
+    </g>
+    <path
+      d="M29.5 42.6 47.6 24.5"
+      fill="none"
+      filter="url(#lumen-logo-glow)"
+      stroke="url(#lumen-logo-beam)"
+      stroke-linecap="round"
+      stroke-width="5.4"
+    />
+    <path
+      d="m48 17.3 6.5 6.5-6.5 6.5-6.5-6.5Z"
+      fill="url(#lumen-logo-lens)"
+      filter="url(#lumen-logo-glow)"
+    />
+    <path
+      d="m45.2 23.8 2.8-2.8 2.8 2.8"
+      fill="none"
+      stroke="hsl(45 100% 94%)"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.1"
+      opacity="0.78"
+    />
+  </svg>
+
+  {showText && (
+    <span class="text-sm font-black tracking-wide text-ink">Lumen UI</span>
+  )}
+</span>

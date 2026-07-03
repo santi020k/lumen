@@ -17,14 +17,29 @@ const {
 const passthrough = rest as Record<string, unknown>
 ---
 
-<article
-  data-href={href}
-  class:list={[
-    'ui-attachment',
-    classProp,
-    className
-  ]}
-  {...passthrough}
->
-  <slot />
-</article>
+{href
+  ? (
+      <a
+        href={href}
+        class:list={[
+          'ui-attachment',
+          classProp,
+          className
+        ]}
+        {...passthrough}
+      >
+        <slot />
+      </a>
+    )
+  : (
+      <article
+        class:list={[
+          'ui-attachment',
+          classProp,
+          className
+        ]}
+        {...passthrough}
+      >
+        <slot />
+      </article>
+    )}

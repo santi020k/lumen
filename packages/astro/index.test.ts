@@ -42,6 +42,6 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(packageJson.exports['./styles.css']).toBe('./styles/lumen.css')
 
     await expect(readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')).resolves.toContain('<script>')
-    await expect(readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')).resolves.toContain('@utility ui-button')
+    await expect(readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')).resolves.toContain('.ui-button')
   })
 })

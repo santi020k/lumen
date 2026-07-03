@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
 
+@source "../../../../packages/astro/components";
+@source "../../../../packages/react/src";
+@source "../../../../packages/elements/src";
+
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
@@ -109,29 +113,39 @@ pre code {
   outline-offset: 4px;
 }
 
-.docs-code-panel pre {
-  border: 1px solid hsl(var(--line));
-  border-radius: 0.9rem;
-  font-size: 0.85rem;
-  line-height: 1.65;
-  padding: 1.1rem 1.3rem;
+@utility docs-code-tabs {
+  --docs-code-tabs: 1;
 }
 
-.docs-preview {
+@utility docs-code-panel {
+  & pre {
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.9rem;
+    font-size: 0.85rem;
+    line-height: 1.65;
+    padding: 1.1rem 1.3rem;
+  }
+}
+
+@utility docs-preview {
   display: flow-root;
   min-height: 9rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.75rem;
+  background: hsl(var(--surface));
   padding: 2.25rem 2rem;
-}
+  box-shadow: 0 1px 2px hsl(var(--ink) / 0.04);
 
-.docs-preview > * + * {
-  margin-top: 0.85rem;
-}
+  & > * + * {
+    margin-top: 0.85rem;
+  }
 
-.docs-preview .ui-button + .ui-button,
-.docs-preview .ui-badge + .ui-badge,
-.docs-preview .ui-marker + .ui-marker,
-.docs-preview .ui-avatar + .ui-avatar,
-.docs-preview .ui-toggle + .ui-toggle {
-  margin-top: 0;
-  margin-left: 0.6rem;
+  & .ui-button + .ui-button,
+  & .ui-badge + .ui-badge,
+  & .ui-marker + .ui-marker,
+  & .ui-avatar + .ui-avatar,
+  & .ui-toggle + .ui-toggle {
+    margin-top: 0;
+    margin-left: 0.6rem;
+  }
 }

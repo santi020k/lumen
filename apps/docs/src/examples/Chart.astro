@@ -2,9 +2,29 @@
 import { Chart } from '@santi020k/lumen-astro'
 ---
 
-<Chart>
+<Chart aria-labelledby="chart-revenue-title">
+  <header>
+    <div>
+      <h3 id="chart-revenue-title">Revenue</h3>
+      <p>Last five quarters</p>
+    </div>
+    <strong data-ui-chart-value>$128.4K</strong>
+  </header>
   <svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend">
-    <path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="2" />
+    <defs>
+      <linearGradient id="chart-revenue-fill" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="currentColor" stop-opacity="0.22" />
+        <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+    <path d="M0 35 L30 26 L60 18 L90 22 L120 8 L120 40 L0 40 Z" fill="url(#chart-revenue-fill)" />
+    <path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" />
+    <g fill="currentColor">
+      <circle cx="30" cy="26" r="1.6" />
+      <circle cx="60" cy="18" r="1.6" />
+      <circle cx="90" cy="22" r="1.6" />
+      <circle cx="120" cy="8" r="1.6" />
+    </g>
   </svg>
-  <figcaption>Revenue trend, last five quarters</figcaption>
+  <figcaption>Revenue is up 42% since Q1 after a temporary Q4 dip.</figcaption>
 </Chart>

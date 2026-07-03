@@ -2,6 +2,7 @@
 import '../styles/global.css'
 
 import { UIPrimitives } from '@santi020k/lumen-astro'
+import { ClientRouter } from 'astro:transitions'
 
 import SiteHeader from '../components/SiteHeader.astro'
 
@@ -13,18 +14,35 @@ interface Props {
 const { description, title } = Astro.props
 ---
 
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8fafc" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>{title}</title>
+    <ClientRouter />
     <script is:inline>
-      const storedTheme = localStorage.getItem('lumen-theme')
+      const themeStorageKey = 'lumen-theme'
+      const getStoredTheme = () => {
+        try {
+          const storedTheme = localStorage.getItem(themeStorageKey)
 
-      if (storedTheme === 'light' || storedTheme === 'dark') {
-        document.documentElement.dataset.theme = storedTheme
+          return storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : undefined
+        } catch {
+          return undefined
+        }
       }
+      const getSystemTheme = () => (
+        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      )
+
+      document.documentElement.dataset.theme = getStoredTheme() ?? getSystemTheme()
     </script>
   </head>
   <body>
@@ -56,3 +74,120 @@ const { description, title } = Astro.props
     </footer>
   </body>
 </html>
+
+<script>
+  let docsNavigationScrollPosition: { left: number, top: number } | undefined
+
+  type ColorTheme = 'dark' | 'light'
+
+  const themeStorageKey = 'lumen-theme'
+  const themeColors = {
+    dark: '#111827',
+    light: '#f8fafc'
+  } satisfies Record<ColorTheme, string>
+
+  const isColorTheme = (theme: string | undefined): theme is ColorTheme => (
+    theme === 'dark' || theme === 'light'
+  )
+
+  const getStoredTheme = (): ColorTheme | undefined => {
+    try {
+      const storedTheme = localStorage.getItem(themeStorageKey) ?? undefined
+
+      return isColorTheme(storedTheme) ? storedTheme : undefined
+    } catch {
+      return undefined
+    }
+  }
+
+  const getSystemTheme = (): ColorTheme => (
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  )
+
+  const getPreferredTheme = (): ColorTheme => getStoredTheme() ?? getSystemTheme()
+
+  const setThemeColor = (theme: ColorTheme, targetDocument = document) => {
+    targetDocument
+      .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      ?.setAttribute('content', themeColors[theme])
+  }
+
+  const syncThemeToggles = (theme: ColorTheme, targetDocument = document) => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    const label = `Switch to ${nextTheme} theme`
+
+    targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle]').forEach(toggle => {
+      toggle.dataset.themeToggle = theme
+      toggle.setAttribute('aria-label', label)
+      toggle.setAttribute('title', label)
+      toggle.querySelector('[data-theme-toggle-label]')?.replaceChildren(label)
+    })
+  }
+
+  const applyTheme = (theme: ColorTheme, targetDocument = document) => {
+    targetDocument.documentElement.dataset.theme = theme
+    setThemeColor(theme, targetDocument)
+    syncThemeToggles(theme, targetDocument)
+  }
+
+  const isDocsNavigation = (sourceElement: unknown) => (
+    sourceElement instanceof Element && Boolean(sourceElement.closest('[data-docs-nav]'))
+  )
+
+  const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+
+  applyTheme(getPreferredTheme())
+
+  document.addEventListener('click', event => {
+    const toggle = event.target instanceof Element
+      ? event.target.closest<HTMLElement>('[data-theme-toggle]')
+      : undefined
+
+    if (!toggle) return
+
+    const currentTheme = getPreferredTheme()
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+    localStorage.setItem(themeStorageKey, nextTheme)
+    applyTheme(nextTheme)
+  })
+
+  preferredColorScheme.addEventListener('change', () => {
+    if (getStoredTheme()) return
+
+    applyTheme(getSystemTheme())
+  })
+
+  document.addEventListener('astro:before-preparation', event => {
+    if (!('sourceElement' in event) || !isDocsNavigation(event.sourceElement)) {
+      docsNavigationScrollPosition = undefined
+
+      return
+    }
+
+    docsNavigationScrollPosition = {
+      left: window.scrollX,
+      top: window.scrollY
+    }
+  })
+
+  document.addEventListener('astro:before-swap', event => {
+    if (!('newDocument' in event)) return
+
+    applyTheme(getPreferredTheme(), event.newDocument)
+  })
+
+  document.addEventListener('astro:after-swap', () => {
+    applyTheme(getPreferredTheme())
+
+    if (!docsNavigationScrollPosition) return
+
+    window.scrollTo({
+      behavior: 'instant',
+      left: docsNavigationScrollPosition.left,
+      top: docsNavigationScrollPosition.top
+    })
+
+    docsNavigationScrollPosition = undefined
+  })
+</script>

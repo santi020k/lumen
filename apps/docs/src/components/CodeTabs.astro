@@ -1,6 +1,7 @@
 ---
-import { Tabs } from '@santi020k/lumen-astro'
 import { Code } from 'astro:components'
+
+import { Tabs } from '@santi020k/lumen-astro'
 
 import type { FrameworkSnippet } from '../lib/snippets'
 
@@ -12,7 +13,7 @@ interface Props {
 const { groupId, snippets } = Astro.props
 ---
 
-<Tabs class="docs-code-tabs">
+<Tabs>
   <div role="tablist" aria-label="Framework">
     {snippets.map((snippet, index) => (
       <button

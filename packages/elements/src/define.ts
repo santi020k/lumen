@@ -20,7 +20,7 @@ const mergeClassNames = (...classNames: (boolean | string | null | undefined)[])
   classNames.filter(Boolean).flatMap(className => String(className).split(/\s+/).filter(Boolean))
 
 const elementConfigs = {
-  Accordion: { baseClassName: 'ui-accordion space-y-2', tagName: 'lumen-accordion' },
+  Accordion: { baseClassName: 'ui-accordion', tagName: 'lumen-accordion' },
   Alert: {
     attributeClasses: {
       variant: {
@@ -167,7 +167,7 @@ const elementConfigs = {
   Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
   Slider: { baseClassName: 'ui-slider', defaults: { type: 'range' }, tagName: 'lumen-slider' },
   Sonner: { baseClassName: 'ui-sonner', defaults: { 'data-ui-sonner': '' }, tagName: 'lumen-sonner' },
-  Spinner: { baseClassName: 'ui-spinner', defaults: { 'aria-hidden': 'true' }, tagName: 'lumen-spinner' },
+  Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
   Switch: { baseClassName: 'ui-switch', defaults: { role: 'switch', type: 'checkbox' }, tagName: 'lumen-switch' },
   Table: { baseClassName: 'ui-table-wrap', tagName: 'lumen-table' },
   Tabs: { baseClassName: 'ui-tabs', defaults: { 'data-ui-tabs': '' }, tagName: 'lumen-tabs' },

@@ -1,6 +1,7 @@
 ---
 import { componentCategories, componentDocs } from '../data/docs'
 import { toSlug } from '../lib/routes'
+
 import BaseLayout from './BaseLayout.astro'
 
 interface Props {
@@ -30,7 +31,7 @@ const isCurrent = (href: string) => currentPath === href
       lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)]
       lg:overflow-y-auto lg:pr-2 lg:pb-8
     " aria-label="Documentation">
-      <nav class="grid gap-6 text-sm">
+      <nav class="grid gap-6 text-sm" data-docs-nav>
         <div class="grid gap-1">
           <p class="
             mb-1 text-xs font-black tracking-[0.14em] text-ink-muted uppercase
@@ -39,8 +40,13 @@ const isCurrent = (href: string) => currentPath === href
             <a
               aria-current={isCurrent(href) ? 'page' : undefined}
               class:list={[
-                'rounded px-2 py-1 no-underline hover:text-ink',
-                isCurrent(href) ? 'bg-brand-soft font-bold text-ink' : 'text-ink-soft'
+                `
+                  rounded-sm px-2 py-1 no-underline
+                  hover:text-ink
+                `,
+                isCurrent(href) ? 'bg-brand-soft font-bold text-ink' : `
+                  text-ink-soft
+                `
               ]}
               href={href}
             >{label}</a>
@@ -49,14 +55,16 @@ const isCurrent = (href: string) => currentPath === href
         {componentCategories.map(category => (
           <div class="grid gap-1">
             <p class="
-              mb-1 text-xs font-black tracking-[0.14em] text-ink-muted
-              uppercase
+              mb-1 text-xs font-black tracking-[0.14em] text-ink-muted uppercase
             ">{category}</p>
             {componentDocs.filter(component => component.category === category).map(component => (
               <a
                 aria-current={isCurrent(`/docs/components/${toSlug(component.name)}`) ? 'page' : undefined}
                 class:list={[
-                  'rounded px-2 py-1 no-underline hover:text-ink',
+                  `
+                    rounded-sm px-2 py-1 no-underline
+                    hover:text-ink
+                  `,
                   isCurrent(`/docs/components/${toSlug(component.name)}`)
                     ? 'bg-brand-soft font-bold text-ink'
                     : 'text-ink-soft'
