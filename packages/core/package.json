@@ -29,8 +29,8 @@
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run src/index.test.ts",
-    "test:coverage": "vitest run --coverage src/index.test.ts",
+    "test": "vitest run --config ../../vitest.config.ts --project core",
+    "test:coverage": "vitest run --config ../../vitest.config.ts --project core --coverage",
     "lint": "eslint . --no-warn-ignored",
     "lint:fix": "eslint . --fix --no-warn-ignored",
     "clean": "rm -rf dist coverage"

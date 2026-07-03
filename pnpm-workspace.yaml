@@ -45,7 +45,7 @@ peerDependencyRules:
 
 overrides:
   fast-uri: ^4.0.0
-  undici: ^8.5.0
+  undici: ^7.25.0
   vite: ^8.1.0
 
 allowBuilds:

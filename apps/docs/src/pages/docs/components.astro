@@ -1,0 +1,105 @@
+---
+import '../../styles/global.css'
+
+import {
+  Badge,
+  Card,
+  UIPrimitives
+} from '@santi020k/lumen-astro'
+
+import { componentCategories, componentDocs } from '../../data/docs'
+
+const importsExample = `---
+import {
+  Button,
+  Card,
+  Dialog,
+  Field,
+  Input,
+  Label,
+  UIPrimitives
+} from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles.css'
+---`
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Usage examples for every Lumen Astro component exported by @santi020k/lumen-astro."
+    />
+    <title>Components - Lumen UI</title>
+  </head>
+  <body>
+    <UIPrimitives />
+    <main data-docs="shell">
+      <nav data-docs="nav" aria-label="Documentation">
+        <a data-docs="brand" href="/">Lumen UI</a>
+        <div data-docs="nav-links">
+          <a href="/docs">Getting started</a>
+          <a href="/docs/components">Components</a>
+        </div>
+      </nav>
+
+      <section data-docs="hero compact">
+        <Badge>Astro catalog</Badge>
+        <h1>Usage examples for every exported component.</h1>
+        <p>
+          These examples show the intended composition style for the complete Astro package. Import only
+          the components used by each page, then rely on standard HTML attributes for accessibility,
+          forms, and integration hooks.
+        </p>
+      </section>
+
+      <section data-docs="band" aria-labelledby="imports">
+        <div data-docs="section-heading">
+          <p>Imports</p>
+          <h2 id="imports">Start from the package barrel</h2>
+        </div>
+        <Card data-docs="card">
+          <pre><code>{importsExample}</code></pre>
+        </Card>
+      </section>
+
+      <section data-docs="band" aria-labelledby="categories">
+        <div data-docs="section-heading">
+          <p>Browse</p>
+          <h2 id="categories">Categories</h2>
+        </div>
+        <div data-docs="pill-list">
+          {componentCategories.map(category => (
+            <a href={`#${category.toLowerCase().replaceAll(' ', '-')}`}>{category}</a>
+          ))}
+        </div>
+      </section>
+
+      {componentCategories.map(category => (
+        <section data-docs="band" aria-labelledby={category.toLowerCase().replaceAll(' ', '-')}>
+          <div data-docs="section-heading">
+            <p>{category}</p>
+            <h2 id={category.toLowerCase().replaceAll(' ', '-')}>
+              {componentDocs.filter(component => component.category === category).length} components
+            </h2>
+          </div>
+          <div data-docs="component-grid">
+            {componentDocs
+              .filter(component => component.category === category)
+              .map(component => (
+                <Card data-docs="component-card">
+                  <div data-docs="card-header">
+                    <h3>{component.name}</h3>
+                    <Badge variant="outline">{component.category}</Badge>
+                  </div>
+                  <p>{component.summary}</p>
+                  <pre><code>{component.example}</code></pre>
+                </Card>
+              ))}
+          </div>
+        </section>
+      ))}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,156 @@
+---
+import '../../styles/global.css'
+
+import {
+  Badge,
+  Card,
+  Separator,
+  UIPrimitives
+} from '@santi020k/lumen-astro'
+
+import { componentDocs, frameworkPackages, installCommands } from '../../data/docs'
+
+const firstExample = `---
+import { Button, Card, Input, UIPrimitives } from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles.css'
+---
+
+<UIPrimitives />
+
+<Card>
+  <label for="email">Email</label>
+  <Input id="email" type="email" placeholder="you@example.com" />
+  <Button>Subscribe</Button>
+</Card>`
+
+const runtimeExample = `<UIPrimitives />
+
+<!-- Include once near the root of your Astro layout.
+It enables dialogs, popovers, tabs, menus, command filtering,
+carousels, toasts, and other progressive interactions. -->`
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Install and use Lumen UI, a multi-framework primitive component system for Astro, React, and Web Components."
+    />
+    <title>Docs - Lumen UI</title>
+  </head>
+  <body>
+    <UIPrimitives />
+    <main data-docs="shell">
+      <nav data-docs="nav" aria-label="Documentation">
+        <a data-docs="brand" href="/">Lumen UI</a>
+        <div data-docs="nav-links">
+          <a href="/docs">Getting started</a>
+          <a href="/docs/components">Components</a>
+        </div>
+      </nav>
+
+      <section data-docs="hero">
+        <Badge>Production docs</Badge>
+        <h1>Install Lumen and build with the primitives that actually ship.</h1>
+        <p>
+          Lumen is a multi-framework primitive UI system. The Astro package is the complete
+          implementation today, with React and Web Component adapters growing around the shared core.
+        </p>
+      </section>
+
+      <section data-docs="grid three" aria-labelledby="install">
+        <div data-docs="section-heading">
+          <p>Install</p>
+          <h2 id="install">Add the Astro package</h2>
+        </div>
+        {installCommands.map(item => (
+          <Card data-docs="card">
+            <p data-docs="eyebrow">{item.label}</p>
+            <pre><code>{item.command}</code></pre>
+          </Card>
+        ))}
+      </section>
+
+      <section data-docs="band" aria-labelledby="setup">
+        <div data-docs="section-heading">
+          <p>Setup</p>
+          <h2 id="setup">Import styles and runtime once</h2>
+        </div>
+        <div data-docs="two-column">
+          <Card data-docs="card">
+            <h3>Use in an Astro page</h3>
+            <p>
+              Import components from <code>@santi020k/lumen-astro</code>, include the shared CSS,
+              and render <code>UIPrimitives</code> near the top of the layout.
+            </p>
+            <pre><code>{firstExample}</code></pre>
+          </Card>
+          <Card data-docs="card">
+            <h3>Runtime behavior</h3>
+            <p>
+              Most primitives are semantic HTML and CSS. Interactive patterns use a small
+              progressive-enhancement runtime so the markup stays readable and portable.
+            </p>
+            <pre><code>{runtimeExample}</code></pre>
+          </Card>
+        </div>
+      </section>
+
+      <section data-docs="grid two" aria-labelledby="packages">
+        <div data-docs="section-heading">
+          <p>Packages</p>
+          <h2 id="packages">Choose the right entry point</h2>
+        </div>
+        {frameworkPackages.map(([name, packageName, description]) => (
+          <Card data-docs="card">
+            <div data-docs="card-header">
+              <h3>{name}</h3>
+              <Badge variant="secondary">{packageName}</Badge>
+            </div>
+            <p>{description}</p>
+          </Card>
+        ))}
+      </section>
+
+      <section data-docs="band" aria-labelledby="usage">
+        <div data-docs="section-heading">
+          <p>Usage</p>
+          <h2 id="usage">Component catalog</h2>
+        </div>
+        <div data-docs="callout">
+          <p>
+            The Astro package exports {componentDocs.length} primitives. Each component accepts normal
+            HTML attributes in addition to its documented variants, so you can add ids, ARIA attributes,
+            form names, data attributes, and classes as needed.
+          </p>
+          <a class="ui-button ui-button--default-size ui-button--default" href="/docs/components">
+            View every component
+          </a>
+        </div>
+      </section>
+
+      <section data-docs="band" aria-labelledby="production">
+        <div data-docs="section-heading">
+          <p>Production</p>
+          <h2 id="production">Release checklist</h2>
+        </div>
+        <Card data-docs="card">
+          <ul data-docs="checklist">
+            <li>Install only the framework package your app uses.</li>
+            <li>Render <code>UIPrimitives</code> once per Astro document layout.</li>
+            <li>Keep form labels, names, ids, and ARIA attributes explicit.</li>
+            <li>Use semantic HTML inside composition components such as Card, Field, Table, and Dialog.</li>
+            <li>Run <code>pnpm run build</code> and <code>pnpm run typecheck</code> before publishing changes.</li>
+          </ul>
+          <Separator />
+          <p>
+            User-facing docs should start with installation, setup, and component usage. Package export
+            maps remain documented in each package manifest for maintainers.
+          </p>
+        </Card>
+      </section>
+    </main>
+  </body>
+</html>
