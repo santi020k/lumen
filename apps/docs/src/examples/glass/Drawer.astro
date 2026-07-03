@@ -1,0 +1,15 @@
+---
+import {
+  Button,
+  Checkbox,
+  Drawer
+} from '@santi020k/lumen-astro'
+---
+
+<Button variant="outline" data-ui-drawer-trigger="ex-drawer-glass">Open glass filters</Button>
+<Drawer id="ex-drawer-glass" glass>
+  <h2>Filters</h2>
+  <p>The glass drawer blurs the page content it slides over.</p>
+  <label><Checkbox name="stable-glass" /> Stable packages only</label>
+  <Button variant="ghost" data-ui-drawer-close>Close</Button>
+</Drawer>

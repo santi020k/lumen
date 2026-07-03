@@ -1,0 +1,16 @@
+---
+import {
+  Button,
+  Dialog
+} from '@santi020k/lumen-astro'
+---
+
+<Button variant="outline" data-ui-dialog-trigger="ex-dialog-glass">Open glass dialog</Button>
+<Dialog id="ex-dialog-glass" glass>
+  <h2>Glass surface</h2>
+  <p>The glass dialog blurs and saturates the page content behind it while it is open.</p>
+  <footer>
+    <Button variant="ghost" data-ui-dialog-close>Cancel</Button>
+    <Button data-ui-dialog-close>Done</Button>
+  </footer>
+</Dialog>

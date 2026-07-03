@@ -1,7 +1,7 @@
 ---
-import { Code } from 'astro:components'
-
 import { Tabs } from '@santi020k/lumen-astro'
+
+import CodeBlock from './CodeBlock.astro'
 
 import type { FrameworkSnippet } from '../lib/snippets'
 
@@ -32,7 +32,7 @@ const { groupId, snippets } = Astro.props
       id={`${groupId}-panel-${index}`}
       role="tabpanel"
     >
-      <Code code={snippet.code} lang={snippet.lang} theme="one-dark-pro" />
+      <CodeBlock code={snippet.code} lang={snippet.lang} />
     </section>
   ))}
 </Tabs>

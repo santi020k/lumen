@@ -1,7 +1,7 @@
 ---
-import { Code } from 'astro:components'
-
 import { Tabs } from '@santi020k/lumen-astro'
+
+import CodeBlock from './CodeBlock.astro'
 
 import type { FrameworkSetup } from '../data/docs'
 
@@ -40,12 +40,12 @@ const { setups } = Astro.props
             <p class="
               text-xs font-black tracking-[0.14em] text-ink-muted uppercase
             ">{install.label}</p>
-            <Code code={install.command} lang="bash" theme="one-dark-pro" />
+            <CodeBlock code={install.command} lang="bash" />
           </div>
         ))}
       </div>
       <p class="text-sm/7 text-ink-soft">{setup.note}</p>
-      <Code code={setup.usage} lang={setup.lang} theme="one-dark-pro" />
+      <CodeBlock code={setup.usage} lang={setup.lang} />
     </section>
   ))}
 </Tabs>

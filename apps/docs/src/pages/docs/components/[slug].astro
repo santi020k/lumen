@@ -6,7 +6,7 @@ import type { InferGetStaticPropsType } from 'astro'
 import CodeTabs from '../../../components/CodeTabs.astro'
 import { componentDocs } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
-import { getExample } from '../../../lib/examples'
+import { getExample, getGlassExample } from '../../../lib/examples'
 import { toSlug } from '../../../lib/routes'
 import { buildSnippets } from '../../../lib/snippets'
 
@@ -21,6 +21,9 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 const { component } = Astro.props
 const { component: Example, source } = getExample(component.name)
 const snippets = buildSnippets(component.name, source)
+const glassExample = component.glass ? getGlassExample(component.name) : undefined
+const GlassExample = glassExample?.component
+const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.source) : undefined
 const index = componentDocs.findIndex(entry => entry.name === component.name)
 const previous = index > 0 ? componentDocs[index - 1] : undefined
 const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undefined
@@ -64,6 +67,22 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
     <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="usage-title">Usage</h2>
     <CodeTabs groupId={`code-${toSlug(component.name)}`} snippets={snippets} />
   </section>
+
+  {GlassExample && glassSnippets && (
+    <section class="mt-10 space-y-3" aria-labelledby="glass-title">
+      <div class="space-y-2">
+        <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="glass-title">Glass</h2>
+        <p class="max-w-2xl text-sm/7 text-ink-soft">
+          Add the glass prop to apply the shared blur, saturation, border, and highlight tokens.
+          Glass reads best over vivid content, so place the surface above imagery or color.
+        </p>
+      </div>
+      <div class="docs-preview">
+        <GlassExample />
+      </div>
+      <CodeTabs groupId={`code-${toSlug(component.name)}-glass`} snippets={glassSnippets} />
+    </section>
+  )}
 
   <section class="mt-10 space-y-3" aria-labelledby="api-title">
     <div class="space-y-2">

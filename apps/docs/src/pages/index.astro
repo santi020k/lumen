@@ -15,9 +15,13 @@ import {
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
-import { componentCategories, componentDocs } from '../data/docs'
+import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
+import { componentCategories, componentDocs, frameworkSetups } from '../data/docs'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { toSlug } from '../lib/routes'
+
+const componentCount = lumenComponentNames.length
+const installCommand = 'pnpm add @santi020k/lumen-astro'
 
 const highlights = [
   ['Semantic first', 'Real buttons, dialogs, tables, and forms. Accessibility comes from the markup, not a wrapper div.'],
@@ -29,7 +33,7 @@ const featured = componentDocs.slice(0, 12)
 ---
 
 <BaseLayout
-  description="Lumen is a multi-framework primitive UI system with 64 components for Astro, React, and Web Components, documented with live examples."
+  description={`Lumen is a multi-framework primitive UI system with ${componentCount} components for Astro, React, and Web Components, documented with live examples.`}
   title="Lumen UI - Primitives for Astro, React, and Web Components"
 >
   <main class="
@@ -42,7 +46,7 @@ const featured = componentDocs.slice(0, 12)
     ">
       <div class="space-y-6">
         <div class="flex flex-wrap gap-2">
-          <Badge>{lumenComponentNames.length} components</Badge>
+          <Badge>{componentCount} components</Badge>
           <Badge variant="secondary">Astro</Badge>
           <Badge variant="secondary">React</Badge>
           <Badge variant="secondary">Web Components</Badge>
@@ -60,7 +64,20 @@ const featured = componentDocs.slice(0, 12)
           <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">Get started</a>
           <a class="ui-button ui-button--lg ui-button--secondary no-underline" href="/docs/components">Browse components</a>
         </div>
-        <p class="font-mono text-sm text-ink-muted">pnpm add @santi020k/lumen-astro</p>
+        <button
+          class="
+            inline-flex cursor-pointer items-center gap-2.5 rounded-md border
+            border-line px-3 py-2 font-mono text-sm text-ink-muted
+            transition-colors
+            hover:border-ink-muted hover:text-ink
+          "
+          data-copy-command={installCommand}
+          type="button"
+        >
+          <span aria-hidden="true">{installCommand}</span>
+          <span class="text-xs font-bold" data-copy-feedback>Copy</span>
+          <span class="sr-only">Copy install command: {installCommand}</span>
+        </button>
       </div>
 
       <Card class="
@@ -105,6 +122,22 @@ const featured = componentDocs.slice(0, 12)
       ))}
     </section>
 
+    <section class="space-y-6" aria-labelledby="usage-title">
+      <div class="space-y-2">
+        <p class="
+          text-sm font-semibold tracking-[0.22em] text-brand uppercase
+        ">Proof, not promises</p>
+        <h2 class="text-3xl font-bold text-ink" id="usage-title">
+          The same component in every framework
+        </h2>
+        <p class="max-w-2xl text-sm/7 text-ink-soft">
+          Install the adapter for your stack and write the same markup. Same classes,
+          same tokens, same behavior.
+        </p>
+      </div>
+      <FrameworkSetupTabs setups={frameworkSetups} />
+    </section>
+
     <section class="space-y-6" aria-labelledby="catalog-title">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div class="space-y-2">
@@ -121,7 +154,7 @@ const featured = componentDocs.slice(0, 12)
         </div>
         <a class="
           ui-button ui-button--default-size ui-button--outline no-underline
-        " href="/docs/components">See all {componentDocs.length}</a>
+        " href="/docs/components">See all {componentCount}</a>
       </div>
       <div class="
         grid gap-4
@@ -153,3 +186,27 @@ const featured = componentDocs.slice(0, 12)
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  document.addEventListener('click', event => {
+    const button = event.target instanceof Element
+      ? event.target.closest<HTMLButtonElement>('[data-copy-command]')
+      : null
+
+    const command = button?.dataset.copyCommand
+
+    if (!button || command === undefined) return
+
+    void navigator.clipboard.writeText(command).then(() => {
+      const feedback = button.querySelector('[data-copy-feedback]')
+
+      if (!feedback) return
+
+      feedback.textContent = 'Copied!'
+
+      setTimeout(() => {
+        feedback.textContent = 'Copy'
+      }, 2000)
+    })
+  })
+</script>

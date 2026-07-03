@@ -148,7 +148,7 @@ export const themeSetups: ThemeSetup[] = [
 <html data-theme="dark">
   <body>...</body>
 </html>`,
-    description: 'Use no data-theme or data-theme="light" for the default light theme. Set data-theme="dark" for the built-in dark theme.',
+    description: 'Omit data-theme or set data-theme="light" for the default light theme; set data-theme="dark" for the built-in dark theme.',
     label: 'Default themes',
     lang: 'html'
   },
@@ -158,7 +158,7 @@ export const themeSetups: ThemeSetup[] = [
   : 'light'
 
 document.documentElement.dataset.theme = nextTheme`,
-    description: 'Switch themes by updating document.documentElement.dataset.theme; Lumen components read the CSS variables from the root element.',
+    description: 'Switch themes by updating document.documentElement.dataset.theme; components read the CSS variables from the root element.',
     label: 'Runtime switch',
     lang: 'ts'
   },
@@ -169,40 +169,22 @@ document.documentElement.dataset.theme = nextTheme`,
   color-scheme: light;
   --canvas: 268 20% 98%;
   --surface: 268 20% 100%;
-  --surface-muted: 268 20% 96%;
-  --surface-strong: 268 15% 90%;
-  --line: 268 15% 84%;
   --ink: 268 10% 20%;
-  --ink-soft: 268 8% 36%;
-  --ink-muted: 268 6% 28%;
   --brand: 264 92% 47%;
-  --brand-solid: 264 92% 42%;
-  --brand-soft: 264 60% 94%;
   --accent: 264 95% 57%;
-  --success: 134 61% 41%;
-  --warning: 35 85% 41%;
-  --danger: 6 63% 46%;
+  /* ...override the remaining tokens */
 }
 
 :root[data-theme="santi020k-dark"] {
   color-scheme: dark;
   --canvas: 260 43% 8%;
   --surface: 260 30% 12%;
-  --surface-muted: 260 25% 15%;
-  --surface-strong: 260 20% 21%;
-  --line: 260 15% 30%;
   --ink: 260 10% 88%;
-  --ink-soft: 260 8% 72%;
-  --ink-muted: 260 6% 56%;
   --brand: 264 90% 58%;
-  --brand-solid: 264 90% 52%;
-  --brand-soft: 264 45% 18%;
   --accent: 264 90% 68%;
-  --success: 169 24% 59%;
-  --warning: 40 78% 60%;
-  --danger: 3 79% 65%;
+  /* ...override the remaining tokens */
 }`,
-    description: 'The docs site uses santi020k-light and santi020k-dark as a custom example theme family. Copy the token shape and adapt values for your own brand.',
+    description: 'These docs run santi020k-light and santi020k-dark, a custom theme family built on the same token contract. Copy the shape and adapt the values to your brand.',
     label: 'Custom theme',
     lang: 'css'
   }
@@ -212,7 +194,7 @@ export const glassSurfaceExamples: GlassSurfaceExample[] = [
   {
     code: `<Card glass>
   <h2>Launch window</h2>
-  <p>Glass cards use shared blur, border, highlight, and fallback tokens.</p>
+  <p>Shared glass tokens.</p>
 </Card>`,
     description: 'Use the glass prop for standalone content surfaces.',
     label: 'Astro card',
@@ -220,10 +202,11 @@ export const glassSurfaceExamples: GlassSurfaceExample[] = [
   },
   {
     code: `<Popover glass>
-  <Button variant="outline" data-ui-trigger>Invite</Button>
+  <Button data-ui-trigger>
+    Invite
+  </Button>
   <div>
-    <Label for="email">Email</Label>
-    <Input id="email" type="email" />
+    <Input type="email" />
   </div>
 </Popover>`,
     description: 'Use the same glass prop for overlays without changing their semantics.',
@@ -233,7 +216,7 @@ export const glassSurfaceExamples: GlassSurfaceExample[] = [
   {
     code: `<lumen-card glass>
   <h2>Production</h2>
-  <p>Custom elements use the same class contract.</p>
+  <p>Same class contract.</p>
 </lumen-card>`,
     description: 'Elements support glass with a boolean attribute.',
     label: 'Elements',
@@ -265,7 +248,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands,
     label: 'Astro',
     lang: 'astro',
-    note: 'After the stylesheet is loaded globally, import components where you use them. Mount UIPrimitives once near your root layout only when you use interactive primitives.',
+    note: 'With the stylesheet loaded globally, import components where you use them. Mount UIPrimitives once near your root layout only if you use interactive primitives.',
     packageName: '@santi020k/lumen-astro',
     usage: astroUsage
   },
@@ -274,7 +257,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the React adapter with the shared stylesheet package, load the stylesheet globally, then import primitives directly. React exposes the styled markup and data contract; wire app behavior for behavior-heavy primitives.',
+    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract; wire app state for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -283,7 +266,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the custom-elements adapter with the shared stylesheet package, load the stylesheet globally, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Wire app behavior for behavior-heavy primitives.',
+    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Wire app state for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -503,7 +486,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
   ['ButtonGroup', 'Actions', 'Groups related button actions.', '<ButtonGroup><Button variant="secondary">Back</Button><Button>Publish</Button></ButtonGroup>'],
   ['Calendar', 'Forms', 'Presents a calendar surface for date selection.', '<Calendar aria-label="Choose a delivery date" />'],
-  ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card glass><h2>Starter</h2><p>For personal projects.</p></Card>'],
+  ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card><h2>Starter</h2><p>For personal projects.</p></Card>'],
   ['Carousel', 'Layout', 'Displays a horizontal sequence of slides.', '<Carousel aria-label="Featured templates"><article>Dashboard</article><article>Portfolio</article></Carousel>'],
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
@@ -513,7 +496,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
   ['DataTable', 'Data display', 'Styles dense tabular data and records.', '<DataTable><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Docs</td><td>Ready</td></tr></tbody></table></DataTable>'],
   ['DatePicker', 'Forms', 'Provides a styled date input.', '<DatePicker name="launchDate" aria-label="Launch date" />'],
-  ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog" glass><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
+  ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
   ['Direction', 'Layout', 'Controls directional layout and text flow.', '<Direction dir="rtl"><p>Localized content</p></Direction>'],
   ['Drawer', 'Overlays', 'Slides in supporting navigation, filters, or task panels.', '<Button data-ui-drawer-trigger="filters-drawer">Open filters</Button><Drawer id="filters-drawer"><p>Filter controls</p><Button data-ui-drawer-close>Close</Button></Drawer>'],
   ['DropdownMenu', 'Overlays', 'Shows compact actions from a trigger.', '<DropdownMenu><Button data-ui-trigger>More</Button><div role="menu"><button role="menuitem">Rename</button></div></DropdownMenu>'],
@@ -533,7 +516,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['NativeSelect', 'Forms', 'Styles the browser-native select element.', '<NativeSelect name="plan" options={["Free", "Pro", "Team"]} />'],
   ['NavigationMenu', 'Navigation', 'Builds grouped top-level navigation.', '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
-  ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover glass><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
+  ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
   ['RadioGroup', 'Forms', 'Groups mutually exclusive options.', '<RadioGroup><label><input type="radio" name="theme" value="light" /> Light</label><label><input type="radio" name="theme" value="dark" /> Dark</label></RadioGroup>'],
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],

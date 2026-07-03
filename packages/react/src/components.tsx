@@ -213,7 +213,6 @@ export type CardProps<T extends ElementType = 'div'> = PrimitiveProps & {
   'data-variant'?: CardVariant
   as?: T
   glass?: boolean
-  uiClassName?: string
   variant?: CardVariant
 }
 
@@ -233,8 +232,8 @@ export const Card = <T extends ElementType = 'div'>({
       className
     )}
     data-variant={variant}
-    uiClassName="ui-card"
     {...props}
+    uiClassName="ui-card"
   />
 )
 

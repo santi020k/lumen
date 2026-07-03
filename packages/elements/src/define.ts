@@ -1,4 +1,5 @@
 import {
+  composeClassName,
   type LumenComponentName,
   lumenComponentNames
 } from '@santi020k/lumen-core'
@@ -17,7 +18,7 @@ const registry = new Set<string>()
 const appliedClassNames = new WeakMap<HTMLElement, string[]>()
 
 const mergeClassNames = (...classNames: (boolean | string | null | undefined)[]) =>
-  classNames.filter(Boolean).flatMap(className => String(className).split(/\s+/).filter(Boolean))
+  composeClassName(...classNames).split(/\s+/).filter(Boolean)
 
 const elementConfigs = {
   Accordion: { baseClassName: 'ui-accordion', tagName: 'lumen-accordion' },

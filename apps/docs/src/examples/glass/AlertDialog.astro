@@ -1,0 +1,16 @@
+---
+import {
+  AlertDialog,
+  Button
+} from '@santi020k/lumen-astro'
+---
+
+<Button variant="destructive" data-ui-alert-dialog-trigger="ex-alert-dialog-glass">Delete project</Button>
+<AlertDialog id="ex-alert-dialog-glass" glass>
+  <h2>Delete this project?</h2>
+  <p>The glass surface blurs the page behind the dialog while you confirm.</p>
+  <footer>
+    <Button variant="ghost" data-ui-alert-dialog-close>Cancel</Button>
+    <Button variant="destructive" data-ui-alert-dialog-close>Delete</Button>
+  </footer>
+</AlertDialog>

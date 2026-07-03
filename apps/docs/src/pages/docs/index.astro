@@ -1,10 +1,10 @@
 ---
-import { Code } from 'astro:components'
-
 import { Badge, Card } from '@santi020k/lumen-astro'
 
+import CodeBlock from '../../components/CodeBlock.astro'
 import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
 import {
+  componentDocs,
   frameworkPackages,
   frameworkSetups,
   glassSurfaceExamples,
@@ -20,11 +20,20 @@ const frameworkHighlights = [
   ['Elements', 'Custom elements', '@santi020k/lumen-elements']
 ] as const
 
-const setupSteps = [
-  ['1', 'Install a target package', 'Start with Astro, React, or Elements and keep the shared CSS package in play.'],
-  ['2', 'Load styles once', 'Import the standalone stylesheet from a global CSS file, root layout, or app entry.'],
-  ['3', 'Use the same contract', 'Markup, tokens, glass surfaces, and runtime behavior stay aligned across targets.']
+const heroStats = [
+  [String(componentDocs.length), 'components'],
+  ['3', 'framework targets'],
+  ['1', 'shared stylesheet']
 ] as const
+
+const setupSteps = [
+  ['1', 'Install a target package', 'Add Astro, React, or Elements; every target shares the same stylesheet package.'],
+  ['2', 'Load styles once', 'Import the standalone stylesheet from a global CSS file, root layout, or app entry.'],
+  ['3', 'Build on one contract', 'Markup, tokens, glass surfaces, and runtime behavior stay identical across targets.']
+] as const
+
+const basicThemeSetups = themeSetups.slice(0, 2)
+const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme')
 ---
 
 <DocsLayout
@@ -41,9 +50,8 @@ const setupSteps = [
         One primitive system, three framework targets.
       </h1>
       <p class="max-w-2xl text-lg/8 text-ink-soft">
-        Lumen centers on semantic markup, one standalone stylesheet driven by design tokens, and a
-        small progressive-enhancement runtime. Pick your framework below; the markup and class
-        contract stay the same everywhere.
+        Semantic markup, one token-driven stylesheet, and a small progressive-enhancement
+        runtime. Pick a framework below; the markup and class contract stay the same everywhere.
       </p>
       <div class="flex flex-wrap gap-3">
         <a class="
@@ -52,6 +60,14 @@ const setupSteps = [
         <a class="
           ui-button ui-button--default-size ui-button--outline no-underline
         " href="/docs/components">Browse components</a>
+      </div>
+      <div class="docs-hero__stats" role="list" aria-label="Library overview">
+        {heroStats.map(([value, label]) => (
+          <div role="listitem">
+            <strong>{value}</strong>
+            <span>{label}</span>
+          </div>
+        ))}
       </div>
     </div>
     <div class="docs-hero__preview" aria-label="Framework support overview">
@@ -106,8 +122,8 @@ const setupSteps = [
       <p>Shared stylesheet</p>
       <h2 id="global-styles-title">Add styles once</h2>
       <p>
-        Lumen ships standalone CSS, so you do not need to import it in every component. Load it once
-        from your global CSS file, root layout, or app entry; Tailwind configuration is optional.
+        Lumen ships standalone CSS. Load it once from a global CSS file, root layout, or app
+        entry; Tailwind configuration is optional.
       </p>
     </div>
     <div class="
@@ -121,7 +137,7 @@ const setupSteps = [
             <p class="text-sm/6 text-ink-soft">{setup.description}</p>
           </div>
           <div class="docs-code-compact">
-            <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+            <CodeBlock code={setup.code} lang={setup.lang} />
           </div>
         </Card>
       ))}
@@ -133,27 +149,44 @@ const setupSteps = [
       <p>Token contract</p>
       <h2 id="themes-title">Themes</h2>
       <p>
-        Lumen reads color tokens from the root data-theme attribute. The standalone stylesheet ships
-        default light and dark themes; the santi020k theme shown in these docs is a custom example
-        built with the same token contract.
+        Color tokens live on the root data-theme attribute. Light and dark ship built in, and any
+        brand can be expressed through the same token contract.
       </p>
     </div>
     <div class="
       grid gap-4
-      lg:grid-cols-3
+      lg:grid-cols-2
     ">
-      {themeSetups.map(setup => (
+      {basicThemeSetups.map(setup => (
         <Card class="docs-example-card" variant="muted">
           <div class="space-y-1">
             <h3 class="text-base font-bold text-ink">{setup.label}</h3>
             <p class="text-sm/6 text-ink-soft">{setup.description}</p>
           </div>
           <div class="docs-code-compact">
-            <Code code={setup.code} lang={setup.lang} theme="one-dark-pro" />
+            <CodeBlock code={setup.code} lang={setup.lang} />
           </div>
         </Card>
       ))}
     </div>
+    {customThemeSetup && (
+      <Card class="docs-theme-feature" variant="muted">
+        <div class="docs-theme-feature__intro">
+          <h3 class="text-base font-bold text-ink">{customThemeSetup.label}</h3>
+          <p class="text-sm/6 text-ink-soft">{customThemeSetup.description}</p>
+          <div class="docs-token-strip docs-token-strip--flush" aria-label="Theme token examples">
+            <span style="--swatch: hsl(var(--brand));"></span>
+            <span style="--swatch: hsl(var(--accent));"></span>
+            <span style="--swatch: hsl(var(--success));"></span>
+            <span style="--swatch: hsl(var(--warning));"></span>
+            <span style="--swatch: hsl(var(--danger));"></span>
+          </div>
+        </div>
+        <div class="docs-code-compact">
+          <CodeBlock code={customThemeSetup.code} lang={customThemeSetup.lang} />
+        </div>
+      </Card>
+    )}
   </section>
 
   <section class="docs-section" id="glassmorphism" aria-labelledby="glassmorphism-title">
@@ -161,43 +194,38 @@ const setupSteps = [
       <p>Surface system</p>
       <h2 id="glassmorphism-title">Glassmorphism surfaces</h2>
       <p>
-        Lumen includes reusable glass tokens, utility classes, boolean component props, and fallbacks
-        for browsers without backdrop-filter support.
+        Glass is a surface treatment, not a theme: shared tokens control blur, saturation, borders,
+        and highlights, with fallbacks for browsers without backdrop-filter support.
       </p>
+    </div>
+    <div
+      class="docs-glass-demo"
+      style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
+    >
+      <Card class="max-w-sm space-y-3 p-5" glass>
+        <Badge variant="outline">Glass</Badge>
+        <h3 class="text-xl font-black text-ink">Translucent by design</h3>
+        <p class="text-sm/7 text-ink-soft">
+          Shared tokens control blur, saturation, borders, highlights, and shadow depth across
+          light and dark themes.
+        </p>
+      </Card>
     </div>
     <div class="
       grid gap-4
-      xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]
+      md:grid-cols-3
     ">
-      <div
-        class="docs-glass-demo"
-        style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
-      >
-        <Card class="max-w-sm space-y-3 p-5" glass>
-          <Badge variant="outline">Glass</Badge>
-          <h3 class="text-xl font-black text-ink">Translucent by design</h3>
-          <p class="text-sm/7 text-ink-soft">
-            Shared tokens control blur, saturation, borders, highlights, and shadow depth across
-            light and dark themes.
-          </p>
+      {glassSurfaceExamples.map(example => (
+        <Card class="docs-example-card" variant="muted">
+          <div class="space-y-1">
+            <h3 class="text-base font-bold text-ink">{example.label}</h3>
+            <p class="text-sm/6 text-ink-soft">{example.description}</p>
+          </div>
+          <div class="docs-code-compact">
+            <CodeBlock code={example.code} lang={example.lang} />
+          </div>
         </Card>
-      </div>
-      <div class="
-        grid gap-4
-        lg:grid-cols-3
-      ">
-        {glassSurfaceExamples.map(example => (
-          <Card class="docs-example-card" variant="muted">
-            <div class="space-y-1">
-              <h3 class="text-base font-bold text-ink">{example.label}</h3>
-              <p class="text-sm/6 text-ink-soft">{example.description}</p>
-            </div>
-            <div class="docs-code-compact">
-              <Code code={example.code} lang={example.lang} theme="one-dark-pro" />
-            </div>
-          </Card>
-        ))}
-      </div>
+      ))}
     </div>
   </section>
 
@@ -228,8 +256,8 @@ const setupSteps = [
       <p>Behavior layer</p>
       <h2 id="runtime-title">Progressive-enhancement runtime</h2>
       <p>
-        Interactive primitives are wired up by a single UIPrimitives include. Static components do not
-        need it; behavior attaches to semantic markup and data attributes when the runtime is mounted.
+        One UIPrimitives include wires up every interactive primitive. Static components never need
+        it; behavior attaches to semantic markup and data attributes when the runtime is mounted.
       </p>
     </div>
     <div class="
@@ -250,6 +278,9 @@ const setupSteps = [
     <p>
       Every component page includes a live preview plus code for all three targets.
     </p>
-    <a class="ui-button ui-button--default-size ui-button--default no-underline" href="/docs/components">Browse the component reference</a>
+    <div class="flex flex-wrap gap-3">
+      <a class="ui-button ui-button--default-size ui-button--default no-underline" href="/docs/components">Browse the component reference</a>
+      <a class="ui-button ui-button--default-size ui-button--outline no-underline" href="https://github.com/santi020k/lumen">View on GitHub</a>
+    </div>
   </section>
 </DocsLayout>

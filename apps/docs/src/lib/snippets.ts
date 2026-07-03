@@ -84,9 +84,29 @@ const toAstroSnippet = (raw: string): string => {
   return `---\n${nextFrontmatter.trim()}\n---\n\n${nextBody.trim()}\n`
 }
 
+const toCssCamelCase = (property: string) =>
+  property.replaceAll(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase())
+
+const toReactStyleObject = (css: string) => {
+  const declarations = css
+    .split(';')
+    .map(declaration => declaration.trim())
+    .filter(Boolean)
+    .map((declaration) => {
+      const separatorIndex = declaration.indexOf(':')
+      const property = toCssCamelCase(declaration.slice(0, separatorIndex).trim())
+      const value = declaration.slice(separatorIndex + 1).trim()
+
+      return `${property}: '${value}'`
+    })
+
+  return `{{ ${declarations.join(', ')} }}`
+}
+
 const toReactBody = (body: string) =>
   body
     .replaceAll(valueDefaultPattern, '<$1$2 defaultValue="')
+    .replaceAll(/(?<=\s)style="([^"]*)"/g, (_match, css: string) => `style=${toReactStyleObject(css)}`)
     .replaceAll(/(?<=\s)class=/g, 'className=')
     .replaceAll(/(?<=\s)for=/g, 'htmlFor=')
     .replaceAll(/(?<=\s)checked(?=[\s/>])/g, 'defaultChecked')

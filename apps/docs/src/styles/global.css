@@ -252,10 +252,39 @@ pre code {
   white-space: nowrap;
 }
 
+.docs-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2.25rem;
+  margin-top: 0.5rem;
+}
+
+.docs-hero__stats > div {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.docs-hero__stats strong {
+  color: hsl(var(--ink));
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.docs-hero__stats span {
+  color: hsl(var(--ink-muted));
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
 .docs-token-strip {
   display: flex;
   gap: 0.5rem;
   padding: 0 1rem 1rem;
+}
+
+.docs-token-strip--flush {
+  padding: 0;
 }
 
 .docs-token-strip span {
@@ -368,14 +397,39 @@ pre code {
   min-height: 100%;
 }
 
+.docs-example-card .docs-code-compact {
+  margin-top: auto;
+}
+
 .docs-code-compact {
-  overflow: hidden;
-  border-radius: 0.5rem;
+  min-width: 0;
 }
 
 .docs-code-compact pre {
-  max-height: 16rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
   padding: 0.875rem;
+}
+
+.docs-theme-feature {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.docs-theme-feature__intro {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  max-width: 28rem;
+}
+
+@media (min-width: 1024px) {
+  .docs-theme-feature {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: start;
+  }
 }
 
 .docs-code-panel pre {
@@ -388,7 +442,9 @@ pre code {
 }
 
 .docs-glass-demo {
-  min-height: 16rem;
+  display: grid;
+  align-items: center;
+  min-height: 14rem;
   border: 1px solid hsl(var(--line));
   border-radius: 0.5rem;
   padding: 1.5rem;
@@ -551,12 +607,202 @@ pre code {
 
 @utility docs-code-panel {
   & pre {
-    border: 1px solid hsl(var(--line));
-    border-radius: 0.9rem;
     font-size: 0.85rem;
     line-height: 1.65;
     padding: 1.1rem 1.3rem;
   }
+}
+
+/* ─── Mac-style code block (santi020k VS Code theme) ─────────────────────── */
+
+.docs-code-block {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid hsl(var(--line));
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 30px hsl(var(--ink) / 0.06);
+}
+
+.docs-code-block__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid hsl(var(--line));
+  background: hsl(var(--surface-muted) / 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.docs-code-block__dots {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+}
+
+.docs-code-block__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  opacity: 0.7;
+  transition: opacity 150ms ease;
+}
+
+.docs-code-block:hover .docs-code-block__dot {
+  opacity: 1;
+}
+
+.docs-code-block__dot--red {
+  background: #ff5f56;
+}
+
+.docs-code-block__dot--yellow {
+  background: #ffbd2e;
+}
+
+.docs-code-block__dot--green {
+  background: #27c93f;
+}
+
+.docs-code-block__meta {
+  position: absolute;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 50%;
+  overflow: hidden;
+  color: hsl(var(--ink-muted));
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transform: translateX(-50%);
+}
+
+.docs-code-block__lang {
+  padding: 0.1rem 0.45rem;
+  border: 1px solid hsl(var(--brand) / 0.25);
+  border-radius: 0.3rem;
+  background: hsl(var(--brand) / 0.1);
+  color: hsl(var(--brand));
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.docs-code-block__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs-code-block__copy {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border: 1px solid hsl(var(--line) / 0.7);
+  border-radius: 0.4rem;
+  background: hsl(var(--surface) / 0.5);
+  color: hsl(var(--ink-muted));
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.docs-code-block__copy:hover {
+  border-color: hsl(var(--brand) / 0.4);
+  background: hsl(var(--surface));
+  color: hsl(var(--brand));
+  transform: scale(1.05);
+}
+
+.docs-code-block__copy:active {
+  transform: scale(0.95);
+}
+
+.docs-code-block__copy:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: 2px;
+}
+
+.docs-code-block__copy svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.docs-code-block__check-icon {
+  display: none;
+}
+
+.docs-code-block__copy--copied {
+  border-color: hsl(var(--success) / 0.5);
+  background: hsl(var(--success) / 0.1);
+  color: hsl(var(--success));
+}
+
+.docs-code-block__copy--copied .docs-code-block__copy-icon {
+  display: none;
+}
+
+.docs-code-block__copy--copied .docs-code-block__check-icon {
+  display: block;
+}
+
+/* Shiki dual-theme switching: santi020k light/dark VS Code themes */
+.docs-code-block pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border: 0;
+  border-radius: 0;
+  background-color: var(--shiki-light-bg);
+}
+
+.docs-code-block pre:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: -2px;
+}
+
+.docs-code-block code {
+  display: block;
+  min-width: 100%;
+  font-variant-ligatures: none;
+}
+
+.docs-code-block code,
+.docs-code-block code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+:root[data-theme="dark"] .docs-code-block pre,
+:root[data-theme="lumen-dark"] .docs-code-block pre,
+:root[data-theme="santi020k-dark"] .docs-code-block pre {
+  background-color: var(--shiki-dark-bg);
+}
+
+:root[data-theme="dark"] .docs-code-block code,
+:root[data-theme="dark"] .docs-code-block code span,
+:root[data-theme="lumen-dark"] .docs-code-block code,
+:root[data-theme="lumen-dark"] .docs-code-block code span,
+:root[data-theme="santi020k-dark"] .docs-code-block code,
+:root[data-theme="santi020k-dark"] .docs-code-block code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
 }
 
 @utility docs-preview {
