@@ -12,6 +12,7 @@ interface Props extends HTMLAttributes<'input'> {
 const {
   class: classProp = '',
   className = '',
+  id,
   label,
   list,
   options = [],
@@ -19,13 +20,25 @@ const {
   ...rest
 } = Astro.props
 
+const inputId = id ?? `${list}-input`
 const passthrough = rest as Record<string, unknown>
 ---
 
-<label class:list={['ui-combobox', classProp, className]} data-ui-combobox>
-  {label && <span class="ui-label">{label}</span>}
-  <input class="ui-input" list={list} type={type} {...passthrough} />
-  <datalist id={list}>
-    {options.map(option => <option value={option} />)}
-  </datalist>
-</label>
+<div class:list={['ui-combobox', classProp, className]} data-ui-combobox>
+  {label && <label class="ui-label" for={inputId}>{label}</label>}
+  <input
+    aria-autocomplete="list"
+    aria-controls={list}
+    aria-expanded="false"
+    class="ui-input"
+    id={inputId}
+    role="combobox"
+    type={type}
+    {...passthrough}
+  />
+  <div class="ui-combobox__list" hidden id={list} role="listbox">
+    {options.map(option => (
+      <button data-ui-combobox-option data-value={option} role="option" type="button">{option}</button>
+    ))}
+  </div>
+</div>

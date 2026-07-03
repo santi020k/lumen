@@ -282,8 +282,78 @@
     }
   }
 
+  const getVisibleItems = (items: HTMLElement[]): HTMLElement[] =>
+    items.filter(item => !item.hidden && item.offsetParent !== null)
+
+  const closeCombobox = (root: HTMLElement): void => {
+    const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
+    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
+
+    if (!input || !listbox) return
+
+    input.setAttribute('aria-expanded', 'false')
+
+    listbox.hidden = true
+
+    listbox.dataset.state = 'closed'
+  }
+
+  const openCombobox = (root: HTMLElement): void => {
+    const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
+    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
+
+    if (!input || !listbox) return
+
+    input.setAttribute('aria-expanded', 'true')
+
+    listbox.hidden = false
+
+    listbox.dataset.state = 'open'
+  }
+
+  const filterItems = (input: HTMLInputElement, items: HTMLElement[]): void => {
+    const query = input.value.trim().toLowerCase()
+
+    for (const item of items) {
+      const text = item.textContent?.toLowerCase() ?? ''
+
+      item.hidden = Boolean(query) && !text.includes(query)
+    }
+  }
+
+  const selectComboboxOption = (root: HTMLElement, option: HTMLElement): void => {
+    const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
+
+    if (!input) return
+
+    input.value = option.dataset.value ?? option.textContent?.trim() ?? ''
+
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+
+    input.dispatchEvent(new Event('change', { bubbles: true }))
+
+    closeCombobox(root)
+
+    input.focus({ preventScroll: true })
+  }
+
+  const focusLoopedOption = (
+    items: HTMLElement[],
+    currentItem: HTMLElement,
+    key: string
+  ): void => {
+    const visibleItems = getVisibleItems(items)
+
+    if (!visibleItems.length) return
+
+    const currentIndex = visibleItems.indexOf(currentItem)
+    const nextItem = visibleItems[getLoopedIndex(key, Math.max(0, currentIndex), visibleItems.length, ['ArrowDown'])]
+
+    nextItem?.focus()
+  }
+
   const initCommand = (scope: ParentNode): void => {
-    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-command], [data-ui-combobox]')) {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-command]')) {
       if (root.dataset.uiBound === 'true') continue
 
       const input = root.querySelector<HTMLInputElement>('input[type="search"], input[type="text"], input:not([type])')
@@ -295,14 +365,91 @@
       const items = [...root.querySelectorAll<HTMLElement>('[data-ui-command-item], [role="option"], option')]
 
       input.addEventListener('input', () => {
-        const query = input.value.trim().toLowerCase()
-
-        for (const item of items) {
-          const text = item.textContent?.toLowerCase() ?? ''
-
-          item.hidden = Boolean(query) && !text.includes(query)
-        }
+        filterItems(input, items)
       })
+    }
+  }
+
+  const initComboboxes = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
+      const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
+
+      if (!input || !listbox) continue
+
+      root.dataset.uiBound = 'true'
+
+      const items = [...listbox.querySelectorAll<HTMLElement>('[role="option"]')]
+
+      closeCombobox(root)
+
+      input.addEventListener('focus', () => openCombobox(root))
+
+      input.addEventListener('input', () => {
+        filterItems(input, items)
+
+        openCombobox(root)
+      })
+
+      input.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeCombobox(root)
+
+          return
+        }
+
+        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') return
+
+        const visibleItems = getVisibleItems(items)
+
+        if (!visibleItems.length) return
+
+        event.preventDefault()
+
+        openCombobox(root)
+
+        if (event.key === 'Enter') {
+          selectComboboxOption(root, visibleItems[0])
+
+          return
+        }
+
+        const targetIndex = event.key === 'ArrowUp' ? visibleItems.length - 1 : 0
+
+        visibleItems[targetIndex]?.focus()
+      })
+
+      for (const item of items) {
+        item.tabIndex = -1
+
+        item.addEventListener('click', () => selectComboboxOption(root, item))
+
+        item.addEventListener('keydown', event => {
+          if (event.key === 'Escape') {
+            closeCombobox(root)
+
+            input.focus({ preventScroll: true })
+
+            return
+          }
+
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+
+            selectComboboxOption(root, item)
+
+            return
+          }
+
+          if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
+
+          event.preventDefault()
+
+          focusLoopedOption(items, item, event.key)
+        })
+      }
     }
   }
 
@@ -383,6 +530,8 @@
 
     initCommand(scope)
 
+    initComboboxes(scope)
+
     initCarousel(scope)
 
     initToasts()
@@ -398,6 +547,12 @@
         closeDisclosure(root)
       }
     }
+
+    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
+      if (!root.contains(target)) {
+        closeCombobox(root)
+      }
+    }
   })
 
   document.addEventListener('keydown', event => {
@@ -405,6 +560,10 @@
 
     for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
       closeDisclosure(root)
+    }
+
+    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
+      closeCombobox(root)
     }
   })
 

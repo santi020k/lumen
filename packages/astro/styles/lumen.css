@@ -537,6 +537,53 @@
   gap: 0.45rem;
 }
 
+.ui-combobox {
+  position: relative;
+  width: min(100%, 34rem);
+}
+
+.ui-combobox > .ui-input {
+  width: 100%;
+}
+
+.ui-combobox__list {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  display: grid;
+  width: 100%;
+  max-height: min(16rem, 50vh);
+  overflow-y: auto;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius);
+  background: hsl(var(--surface));
+  box-shadow: var(--ui-shadow-md);
+  padding: 0.35rem;
+}
+
+.ui-combobox__list[hidden] {
+  display: none;
+}
+
+.ui-combobox__list [role="option"] {
+  border: 0;
+  border-radius: var(--ui-radius-sm);
+  background: transparent;
+  color: hsl(var(--ink-soft));
+  cursor: pointer;
+  font: inherit;
+  padding: 0.65rem 0.75rem;
+  text-align: start;
+}
+
+.ui-combobox__list [role="option"]:is(:hover, :focus-visible),
+.ui-combobox__list [role="option"][aria-selected="true"] {
+  background: hsl(var(--brand-soft));
+  color: hsl(var(--brand-solid));
+  outline: none;
+}
+
 .ui-field > p,
 .ui-field > small {
   margin: 0;
@@ -1348,6 +1395,10 @@
   margin-inline-start: auto;
   border-color: hsl(var(--brand) / 0.16);
   background: hsl(var(--brand) / 0.07);
+}
+
+.ui-message--assistant {
+  margin-inline-end: auto;
 }
 
 .ui-message > .ui-avatar {

@@ -34,7 +34,7 @@ const runtimeComponents = new Set([
 
 const runtimeAttributePattern = /\bdata-ui-(?:alert-dialog|carousel|command|combobox|dialog|drawer|dropdown-menu|hover-card|menubar|navigation-menu|popover|radio-group|sheet|sonner|tabs|toast|toggle)/
 
-export const splitExample = (raw: string) => {
+const splitExample = (raw: string) => {
   const match = /^---\n([\S\s]*?)\n---\n\n?([\S\s]*)$/.exec(raw.trim())
   const frontmatter = match?.[1]
   const body = match?.[2]
@@ -44,7 +44,7 @@ export const splitExample = (raw: string) => {
   return { body: body.trim(), frontmatter: frontmatter.trim() }
 }
 
-export const usedComponents = (body: string): string[] => {
+const usedComponents = (body: string): string[] => {
   const used = new Set<string>()
 
   for (const match of body.matchAll(/<([A-Z][A-Za-z]*)\b/g)) {
@@ -97,7 +97,7 @@ const toReactBody = (body: string) =>
     .replaceAll(/(?<=\s)inputmode=/g, 'inputMode=')
     .replaceAll(/(?<=\s)tabindex=/g, 'tabIndex=')
 
-export const toReactSnippet = (body: string): string => {
+const toReactSnippet = (body: string): string => {
   const components = usedComponents(body)
   const importLine = `import { ${components.join(', ')} } from '@santi020k/lumen-react'`
 
@@ -115,7 +115,7 @@ const elementsHeader = `<script type="module">
   defineLumenElements()
 </script>`
 
-export const toElementsSnippet = (body: string): string => {
+const toElementsSnippet = (body: string): string => {
   let output = body
 
   for (const name of usedComponents(body)) {
@@ -157,13 +157,23 @@ export const Example = () => (
 const elementsOverrides: Record<string, string> = {
   Combobox: `${elementsHeader}
 
-<lumen-combobox>
-  <input class="ui-input" list="ex-frameworks" placeholder="Search frameworks" />
-  <datalist id="ex-frameworks">
-    <option value="Astro"></option>
-    <option value="React"></option>
-    <option value="Web Components"></option>
-  </datalist>
+<lumen-combobox data-ui-combobox>
+  <label class="ui-label" for="ex-frameworks-input">Framework</label>
+  <input
+    aria-autocomplete="list"
+    aria-controls="ex-frameworks"
+    aria-expanded="false"
+    class="ui-input"
+    id="ex-frameworks-input"
+    placeholder="Search frameworks"
+    role="combobox"
+    type="text"
+  />
+  <div class="ui-combobox__list" hidden id="ex-frameworks" role="listbox">
+    <button data-ui-combobox-option data-value="Astro" role="option" type="button">Astro</button>
+    <button data-ui-combobox-option data-value="React" role="option" type="button">React</button>
+    <button data-ui-combobox-option data-value="Web Components" role="option" type="button">Web Components</button>
+  </div>
 </lumen-combobox>
 `
 }

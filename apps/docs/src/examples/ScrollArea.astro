@@ -1,10 +1,18 @@
 ---
 import { ScrollArea } from '@santi020k/lumen-astro'
+
+const updates = [
+  'Semantic markup stays portable across Astro, React, and Web Components.',
+  'Tokenized styles keep color, spacing, and radius decisions consistent.',
+  'Progressive enhancement adds behavior without a framework runtime.',
+  'Standalone CSS works without requiring Tailwind configuration from consumers.',
+  'Accessible focus states and keyboard paths are part of every primitive.',
+  'Component metadata powers the documentation and package map.',
+  'The Astro package remains the reference implementation.',
+  'Adapters share the same ui-* class contract.'
+]
 ---
 
-<ScrollArea>
-  <p>Lumen keeps markup semantic and portable across frameworks.</p>
-  <p>Styles live in one shared stylesheet driven by design tokens.</p>
-  <p>Progressive enhancement adds behavior without a framework runtime.</p>
-  <p>Astro, React, and Web Components share the same class contract.</p>
+<ScrollArea aria-label="Release notes" style="max-height: 10rem;">
+  {updates.map(update => <p>{update}</p>)}
 </ScrollArea>

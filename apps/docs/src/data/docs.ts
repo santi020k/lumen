@@ -7,7 +7,7 @@ export interface ComponentDoc {
   example: string
 }
 
-export interface ComponentApiRow {
+interface ComponentApiRow {
   attribute: string
   defaultValue: string
   description: string
@@ -21,7 +21,7 @@ type ComponentDocTuple = readonly [
   example: string
 ]
 
-export interface InstallCommand {
+interface InstallCommand {
   command: string
   label: 'npm' | 'pnpm' | 'yarn'
 }
@@ -57,17 +57,6 @@ export interface ThemeSetup {
   lang: 'css' | 'html' | 'ts'
 }
 
-export const docNavigation = [
-  ['Introduction', '/docs#introduction'],
-  ['Install and use', '/docs#installation'],
-  ['Global styles', '/docs#global-styles'],
-  ['Themes', '/docs#themes'],
-  ['Glassmorphism', '/docs#glassmorphism'],
-  ['Packages', '/docs#packages'],
-  ['Runtime', '/docs#runtime'],
-  ['Components', '/docs/components']
-] as const
-
 const packageManagerCommands = [
   ['pnpm', 'pnpm add'],
   ['npm', 'npm install'],
@@ -80,7 +69,7 @@ const buildInstallCommands = (...packages: string[]): InstallCommand[] =>
     label
   }))
 
-export const installCommands = buildInstallCommands('@santi020k/lumen-astro')
+const installCommands = buildInstallCommands('@santi020k/lumen-astro')
 
 const astroUsage = `---
 import { Button, Card, Input } from '@santi020k/lumen-astro'
@@ -285,7 +274,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the React adapter with the shared stylesheet package, load the stylesheet globally, then import primitives directly in your components.',
+    note: 'Install the React adapter with the shared stylesheet package, load the stylesheet globally, then import primitives directly. React exposes the styled markup and data contract; wire app behavior for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -294,7 +283,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the custom-elements adapter with the shared stylesheet package, load the stylesheet globally, register Lumen elements once, and use lumen-* tags anywhere HTML is valid.',
+    note: 'Install the custom-elements adapter with the shared stylesheet package, load the stylesheet globally, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Wire app behavior for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -302,8 +291,8 @@ export const frameworkSetups: FrameworkSetup[] = [
 
 export const frameworkPackages = [
   ['Astro', '@santi020k/lumen-astro', 'Complete', 'Full component catalog, shared CSS, and the UIPrimitives runtime.'],
-  ['React', '@santi020k/lumen-react', 'Complete', 'React components for the full primitive catalog using the shared class contract.'],
-  ['Elements', '@santi020k/lumen-elements', 'Complete', 'Standards-based custom elements for the full primitive catalog.'],
+  ['React', '@santi020k/lumen-react', 'Adapter', 'React components for the full primitive catalog using the shared class and data contract.'],
+  ['Elements', '@santi020k/lumen-elements', 'Adapter', 'Standards-based custom elements for the full primitive catalog using the shared class and data contract.'],
   ['Core', '@santi020k/lumen-core', 'Shared', 'Design tokens, component metadata, and small adapter utilities.']
 ] as const
 
@@ -401,9 +390,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
   ],
   Combobox: [
-    apiRow('list', 'string', 'required', 'Connects the input to the generated datalist id.'),
+    apiRow('list', 'string', 'required', 'Sets the id for the generated listbox and connects it to the combobox input.'),
     apiRow('label', 'string', '-', 'Adds a visible label above the input.'),
-    apiRow('options', 'string[]', '[]', 'Creates datalist options from strings.'),
+    apiRow('options', 'string[]', '[]', 'Creates selectable listbox options from strings.'),
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
   ],
   Command: [
@@ -505,9 +494,9 @@ export const componentDocs: ComponentDoc[] = ([
   ['Accordion', 'Layout', 'Stacks collapsible content sections.', '<Accordion><details open><summary>Billing</summary><p>Invoices and payment methods.</p></details></Accordion>'],
   ['Alert', 'Feedback', 'Surfaces contextual status messages.', '<Alert><strong>Project synced.</strong><p>Your tokens are available.</p></Alert>'],
   ['AlertDialog', 'Overlays', 'Confirms destructive or high-commitment actions.', '<Button data-ui-alert-dialog-trigger="delete-project">Delete</Button><AlertDialog id="delete-project"><h2>Delete this project?</h2><Button data-ui-alert-dialog-close>Cancel</Button></AlertDialog>'],
-  ['AspectRatio', 'Layout', 'Keeps media and embeds in a predictable ratio.', '<AspectRatio ratio="16/9"><img src="/preview.png" alt="Product preview" /></AspectRatio>'],
-  ['Attachment', 'Data display', 'Displays a file attachment with metadata.', '<Attachment href="/files/report.pdf" name="report.pdf" size="248 KB" />'],
-  ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/avatar.jpg" alt="Santiago Molina">SM</Avatar>'],
+  ['AspectRatio', 'Layout', 'Keeps media and embeds in a predictable ratio.', '<AspectRatio ratio="16/9"><img src="/logo.svg" alt="Lumen logo" /></AspectRatio>'],
+  ['Attachment', 'Data display', 'Displays a file attachment with metadata.', '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>2 KB</span></Attachment>'],
+  ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'],
   ['Badge', 'Data display', 'Labels status, type, plan, or count information.', '<Badge variant="secondary">Astro</Badge>'],
   ['Breadcrumb', 'Navigation', 'Shows page hierarchy and parent navigation.', '<Breadcrumb><a href="/docs">Docs</a><span>Components</span></Breadcrumb>'],
   ['Bubble', 'Data display', 'Frames chat messages and short comments.', '<Bubble from="user">Can you summarize the release?</Bubble>'],
@@ -519,7 +508,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
   ['Collapsible', 'Layout', 'Shows and hides one optional content region.', '<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>'],
-  ['Combobox', 'Forms', 'Combines text entry and option selection.', '<Combobox><Input role="combobox" aria-expanded="false" placeholder="Search package" /><div role="listbox"><button role="option">Astro</button></div></Combobox>'],
+  ['Combobox', 'Forms', 'Combines text entry and option selection.', '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Web Components"]} placeholder="Search package" />'],
   ['Command', 'Navigation', 'Builds command palettes and filterable action lists.', '<Command><Input placeholder="Type a command..." /><button data-ui-command-item>Open docs</button></Command>'],
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
   ['DataTable', 'Data display', 'Styles dense tabular data and records.', '<DataTable><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Docs</td><td>Ready</td></tr></tbody></table></DataTable>'],

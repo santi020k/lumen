@@ -14,11 +14,8 @@
       "entry": [
         "src/pages/**/*.astro"
       ],
-      "ignoreDependencies": [
-        "tailwindcss"
-      ],
       "project": [
-        "src/**/*.{astro,ts}"
+        "src/**/*.{astro,css,ts}"
       ]
     },
     "packages/astro": {

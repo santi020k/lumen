@@ -170,12 +170,14 @@ pre code {
   display: grid;
   gap: 2rem;
   align-items: center;
+  min-width: 0;
   padding: 0.5rem 0 2.5rem;
 }
 
 .docs-hero__content {
   display: grid;
   gap: 1rem;
+  min-width: 0;
 }
 
 .docs-hero__preview {
@@ -183,6 +185,7 @@ pre code {
 }
 
 .docs-hero__surface {
+  max-width: 100%;
   overflow: hidden;
   border: 1px solid hsl(var(--line));
   border-radius: 0.5rem;
@@ -215,6 +218,7 @@ pre code {
 .docs-framework-tile {
   display: grid;
   gap: 0.35rem;
+  min-width: 0;
   padding: 1rem;
   border: 1px solid hsl(var(--line));
   border-radius: 0.5rem;
@@ -238,6 +242,8 @@ pre code {
 }
 
 .docs-framework-tile code {
+  display: block;
+  min-width: 0;
   width: 100%;
   overflow: hidden;
   color: hsl(var(--ink-soft));
@@ -274,6 +280,10 @@ pre code {
   border: 1px solid hsl(var(--line));
   border-radius: 0.5rem;
   background: hsl(var(--surface) / 0.78);
+}
+
+.docs-step > div {
+  min-width: 0;
 }
 
 .docs-step > span {
@@ -370,6 +380,11 @@ pre code {
 
 .docs-code-panel pre {
   max-height: 24rem;
+}
+
+.docs-code-panel,
+.docs-code-panel > div {
+  min-width: 0;
 }
 
 .docs-glass-demo {

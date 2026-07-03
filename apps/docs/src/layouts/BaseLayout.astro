@@ -1,8 +1,9 @@
 ---
+import { ClientRouter } from 'astro:transitions'
+
 import '../styles/global.css'
 
 import { UIPrimitives } from '@santi020k/lumen-astro'
-import { ClientRouter } from 'astro:transitions'
 
 import SiteHeader from '../components/SiteHeader.astro'
 
@@ -95,10 +96,12 @@ const { description, title } = Astro.props
 <script>
   let docsNavigationScrollPosition: { left: number, top: number } | undefined
   const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark'] as const
-
   const themeFamilies = ['santi020k', 'lumen'] as const
+
   type ColorTheme = typeof colorThemes[number]
+
   type ThemeFamily = typeof themeFamilies[number]
+
   type ThemeMode = 'dark' | 'light'
 
   type LegacyColorTheme = 'dark' | 'light'
@@ -234,6 +237,7 @@ const { description, title } = Astro.props
 
     const currentTheme = getPreferredTheme()
     const selectedFamily = select.value
+
     const nextTheme = isThemeFamily(selectedFamily)
       ? getTheme(selectedFamily, getThemeMode(currentTheme))
       : normalizeTheme(selectedFamily)

@@ -5,6 +5,10 @@ import type {
   ElementType,
   ReactNode
 } from 'react'
+import {
+  useMemo,
+  useState
+} from 'react'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
@@ -263,21 +267,109 @@ export interface ComboboxProps extends ComponentPropsWithoutRef<'input'> {
 
 export const Combobox = ({
   className,
+  defaultValue,
+  id,
   label,
   list,
+  onBlur,
+  onChange,
+  onFocus,
+  onKeyDown,
   options = emptyStringOptions,
   type = 'text',
+  value: valueProp,
   wrapperClassName,
   ...props
-}: ComboboxProps) => (
-  <label className={composeClassName('ui-combobox', wrapperClassName)} data-ui-combobox>
-    {label && <span className="ui-label">{label}</span>}
-    <input className={composeClassName('ui-input', className)} list={list} type={type} {...props} />
-    <datalist id={list}>
-      {options.map(option => <option key={option} value={option} />)}
-    </datalist>
-  </label>
-)
+}: ComboboxProps) => {
+  const inputId = id ?? `${list}-input`
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState(() => String(defaultValue ?? ''))
+  const renderedValue = valueProp ?? value
+  const query = String(renderedValue).trim().toLowerCase()
+
+  const visibleOptions = useMemo(
+    () => options.filter(option => !query || option.toLowerCase().includes(query)),
+    [options, query]
+  )
+
+  const selectOption = (option: string) => {
+    if (valueProp === undefined) {
+      setValue(option)
+    }
+
+    setOpen(false)
+  }
+
+  return (
+    <div
+      className={composeClassName('ui-combobox', wrapperClassName)}
+      data-ui-combobox
+      onBlur={event => {
+        const nextTarget = event.relatedTarget
+
+        if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
+          setOpen(false)
+        }
+      }}
+    >
+      {label && <label className="ui-label" htmlFor={inputId}>{label}</label>}
+      <input
+        aria-autocomplete="list"
+        aria-controls={list}
+        aria-expanded={open}
+        className={composeClassName('ui-input', className)}
+        id={inputId}
+        role="combobox"
+        type={type}
+        value={renderedValue}
+        onBlur={onBlur}
+        onChange={event => {
+          if (valueProp === undefined) {
+            setValue(event.currentTarget.value)
+          }
+
+          setOpen(true)
+
+          onChange?.(event)
+        }}
+        onFocus={event => {
+          setOpen(true)
+
+          onFocus?.(event)
+        }}
+        onKeyDown={event => {
+          if (event.key === 'Escape') {
+            setOpen(false)
+          }
+
+          if (event.key === 'Enter' && visibleOptions[0]) {
+            event.preventDefault()
+
+            selectOption(visibleOptions[0])
+          }
+
+          onKeyDown?.(event)
+        }}
+        {...props}
+      />
+      <div className="ui-combobox__list" hidden={!open} id={list} role="listbox">
+        {visibleOptions.map(option => (
+          <button
+            data-ui-combobox-option
+            data-value={option}
+            key={option}
+            role="option"
+            type="button"
+            onClick={() => { selectOption(option); }}
+            onMouseDown={event => { event.preventDefault(); }}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export type CommandProps = ComponentPropsWithoutRef<'div'>
 export const Command = ({ className, ...props }: CommandProps) => (

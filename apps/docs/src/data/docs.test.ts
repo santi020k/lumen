@@ -1,3 +1,17 @@
+import {
+  existsSync,
+  readdirSync,
+  readFileSync
+} from 'node:fs'
+import {
+  dirname,
+  extname,
+  join
+} from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { lumenComponentNames } from '@santi020k/lumen-core'
+
 import { describe, expect, test } from 'vitest'
 
 import {
@@ -19,7 +33,45 @@ const staleAttributePatterns = [
   'data-command-item'
 ]
 
+const dataDirectory = dirname(fileURLToPath(import.meta.url))
+const examplesDirectory = join(dataDirectory, '..', 'examples')
+const publicDirectory = join(dataDirectory, '..', '..', 'public')
+
+const exampleFileNames = readdirSync(examplesDirectory)
+  .filter(fileName => fileName.endsWith('.astro'))
+  .map(fileName => fileName.replace('.astro', ''))
+
+const sortByName = (names: readonly string[]) => [...names].sort((a, b) => a.localeCompare(b))
+
 describe('component docs snippets', () => {
+  test('document every canonical component exactly once', () => {
+    expect(componentDocs.map(component => component.name)).toEqual([...lumenComponentNames])
+  })
+
+  test('include a live example file for every documented component', () => {
+    expect(sortByName(exampleFileNames)).toEqual(sortByName(lumenComponentNames))
+  })
+
+  test('only link to existing public assets from examples', () => {
+    const localAssetPattern = /\b(?:href|src)="([^"]+)"/g
+
+    for (const fileName of readdirSync(examplesDirectory).filter(file => file.endsWith('.astro'))) {
+      const source = readFileSync(join(examplesDirectory, fileName), 'utf8')
+
+      for (const match of source.matchAll(localAssetPattern)) {
+        const target = match[1]
+
+        if (!target?.startsWith('/')) continue
+
+        const assetPath = target.replace(/[?#].*$/, '')
+
+        if (!extname(assetPath)) continue
+
+        expect(existsSync(join(publicDirectory, assetPath))).toBe(true)
+      }
+    }
+  })
+
   test('use the public data-ui runtime attribute contract', () => {
     const examples = componentDocs.map(component => component.example).join('\n')
 
