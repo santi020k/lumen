@@ -4,22 +4,32 @@ words:
   - astrojs
   - commitizen
   - commitlint
+  - contenteditable
   - dogfooded
+  - dropzone
   - esbuild
   - geolocation
   - glassmorphism
+  - hashkey
   - inputmode
   - jsdom
   - knip
   - labelledby
   - linecap
+  - llms
   - Lumen
   - maxlength
   - nosniff
+  - overscan
+  - readwrite
   - santi020k
   - scroller
   - Segoe
+  - Shiki
+  - shiki
   - sonner
+  - Stackframe
+  - treegrid
   - turborepo
   - undici
   - unrs

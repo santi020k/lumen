@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'input'> {
+  class?: string
+  className?: string
+}
+
+const { class: classProp = '', className = '', type = 'color', ...rest } = Astro.props
+const passthrough = rest as Record<string, unknown>
+---
+
+<input class:list={['ui-color-picker', classProp, className]} type={type} {...passthrough} />

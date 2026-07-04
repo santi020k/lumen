@@ -43,8 +43,10 @@ const elementConfigs = {
     defaults: { 'data-ui-alert-dialog': '', surface: 'default' },
     tagName: 'lumen-alert-dialog'
   },
+  Agenda: { baseClassName: 'ui-agenda', tagName: 'lumen-agenda' },
   AspectRatio: { baseClassName: 'ui-aspect-ratio', tagName: 'lumen-aspect-ratio' },
   Attachment: { baseClassName: 'ui-attachment', tagName: 'lumen-attachment' },
+  Autocomplete: { baseClassName: 'ui-input ui-autocomplete', defaults: { role: 'combobox', type: 'search' }, tagName: 'lumen-autocomplete' },
   Avatar: { baseClassName: 'ui-avatar', tagName: 'lumen-avatar' },
   Badge: {
     attributeClasses: {
@@ -114,6 +116,7 @@ const elementConfigs = {
   Collapsible: { baseClassName: 'ui-collapsible', defaults: { 'data-ui-collapsible': '' }, tagName: 'lumen-collapsible' },
   Combobox: { baseClassName: 'ui-combobox', defaults: { 'data-ui-combobox': '' }, tagName: 'lumen-combobox' },
   Command: { baseClassName: 'ui-command', defaults: { 'data-ui-command': '' }, tagName: 'lumen-command' },
+  ColorPicker: { baseClassName: 'ui-color-picker', defaults: { type: 'color' }, tagName: 'lumen-color-picker' },
   ContextMenu: {
     attributeClasses: {
       glass: { true: 'ui-menu--glass' },
@@ -125,6 +128,7 @@ const elementConfigs = {
   },
   DataTable: { baseClassName: 'ui-data-table', tagName: 'lumen-data-table' },
   DatePicker: { baseClassName: 'ui-input ui-date-picker', defaults: { type: 'date' }, tagName: 'lumen-date-picker' },
+  DateRangePicker: { baseClassName: 'ui-date-range-picker', defaults: { 'data-ui-date-range-picker': '' }, tagName: 'lumen-date-range-picker' },
   Dialog: {
     attributeClasses: {
       glass: { true: 'ui-dialog--glass' },
@@ -167,6 +171,7 @@ const elementConfigs = {
   Input: { baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: { baseClassName: 'ui-input-otp', defaults: { inputmode: 'numeric', maxlength: '6', pattern: '[0-9]*', type: 'text' }, tagName: 'lumen-input-otp' },
+  NumberField: { baseClassName: 'ui-input ui-number-field', defaults: { type: 'number' }, tagName: 'lumen-number-field' },
   Item: { baseClassName: 'ui-item', tagName: 'lumen-item' },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
   Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
@@ -226,7 +231,10 @@ const elementConfigs = {
   Progress: { baseClassName: 'ui-progress', defaults: { role: 'progressbar' }, tagName: 'lumen-progress' },
   RadioGroup: { baseClassName: 'ui-radio-group', defaults: { 'data-ui-radio-group': '' }, tagName: 'lumen-radio-group' },
   Resizable: { baseClassName: 'ui-resizable', tagName: 'lumen-resizable' },
+  RichTextEditor: { baseClassName: 'ui-rich-text-editor', defaults: { 'data-ui-rich-text-editor': '' }, tagName: 'lumen-rich-text-editor' },
   ScrollArea: { baseClassName: 'ui-scroll-area', tagName: 'lumen-scroll-area' },
+  Schedule: { baseClassName: 'ui-schedule', defaults: { 'data-ui-schedule': '' }, tagName: 'lumen-schedule' },
+  SearchField: { baseClassName: 'ui-input ui-search-field', defaults: { type: 'search' }, tagName: 'lumen-search-field' },
   Select: { baseClassName: 'ui-select', tagName: 'lumen-select' },
   Separator: {
     attributeClasses: {
@@ -264,7 +272,10 @@ const elementConfigs = {
   Switch: { baseClassName: 'ui-switch', defaults: { role: 'switch', type: 'checkbox' }, tagName: 'lumen-switch' },
   Table: { baseClassName: 'ui-table-wrap', tagName: 'lumen-table' },
   Tabs: { baseClassName: 'ui-tabs', defaults: { 'data-ui-tabs': '' }, tagName: 'lumen-tabs' },
+  TagGroup: { baseClassName: 'ui-tag-group', defaults: { role: 'list' }, tagName: 'lumen-tag-group' },
   Textarea: { baseClassName: 'ui-textarea', defaults: { rows: '4' }, tagName: 'lumen-textarea' },
+  ThemeBuilder: { baseClassName: 'ui-theme-builder', defaults: { 'data-ui-theme-builder': '' }, tagName: 'lumen-theme-builder' },
+  TimeField: { baseClassName: 'ui-input ui-time-field', defaults: { type: 'time' }, tagName: 'lumen-time-field' },
   Toast: {
     attributeClasses: {
       glass: {
@@ -292,7 +303,10 @@ const elementConfigs = {
   },
   ToggleGroup: { baseClassName: 'ui-toggle-group', defaults: { 'data-ui-toggle-group': '' }, tagName: 'lumen-toggle-group' },
   Tooltip: { baseClassName: 'ui-tooltip', tagName: 'lumen-tooltip' },
-  Typography: { baseClassName: 'ui-typography', tagName: 'lumen-typography' }
+  Tree: { baseClassName: 'ui-tree', defaults: { role: 'tree' }, tagName: 'lumen-tree' },
+  TreeGrid: { baseClassName: 'ui-tree-grid', defaults: { role: 'treegrid' }, tagName: 'lumen-tree-grid' },
+  Typography: { baseClassName: 'ui-typography', tagName: 'lumen-typography' },
+  VirtualList: { baseClassName: 'ui-virtual-list', defaults: { 'data-ui-virtual-list': '' }, tagName: 'lumen-virtual-list' }
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [
@@ -396,8 +410,10 @@ export const lumenElementDefinitions = elementDefinitions
 export const LumenAccordionElement = elementClasses.Accordion
 export const LumenAlertElement = elementClasses.Alert
 export const LumenAlertDialogElement = elementClasses.AlertDialog
+export const LumenAgendaElement = elementClasses.Agenda
 export const LumenAspectRatioElement = elementClasses.AspectRatio
 export const LumenAttachmentElement = elementClasses.Attachment
+export const LumenAutocompleteElement = elementClasses.Autocomplete
 export const LumenAvatarElement = elementClasses.Avatar
 export const LumenBadgeElement = elementClasses.Badge
 export const LumenBreadcrumbElement = elementClasses.Breadcrumb
@@ -412,9 +428,11 @@ export const LumenCheckboxElement = elementClasses.Checkbox
 export const LumenCollapsibleElement = elementClasses.Collapsible
 export const LumenComboboxElement = elementClasses.Combobox
 export const LumenCommandElement = elementClasses.Command
+export const LumenColorPickerElement = elementClasses.ColorPicker
 export const LumenContextMenuElement = elementClasses.ContextMenu
 export const LumenDataTableElement = elementClasses.DataTable
 export const LumenDatePickerElement = elementClasses.DatePicker
+export const LumenDateRangePickerElement = elementClasses.DateRangePicker
 export const LumenDialogElement = elementClasses.Dialog
 export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
@@ -425,6 +443,7 @@ export const LumenHoverCardElement = elementClasses.HoverCard
 export const LumenInputElement = elementClasses.Input
 export const LumenInputGroupElement = elementClasses.InputGroup
 export const LumenInputOTPElement = elementClasses.InputOTP
+export const LumenNumberFieldElement = elementClasses.NumberField
 export const LumenItemElement = elementClasses.Item
 export const LumenKbdElement = elementClasses.Kbd
 export const LumenLabelElement = elementClasses.Label
@@ -439,7 +458,10 @@ export const LumenPopoverElement = elementClasses.Popover
 export const LumenProgressElement = elementClasses.Progress
 export const LumenRadioGroupElement = elementClasses.RadioGroup
 export const LumenResizableElement = elementClasses.Resizable
+export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
+export const LumenScheduleElement = elementClasses.Schedule
+export const LumenSearchFieldElement = elementClasses.SearchField
 export const LumenSelectElement = elementClasses.Select
 export const LumenSeparatorElement = elementClasses.Separator
 export const LumenSheetElement = elementClasses.Sheet
@@ -451,9 +473,15 @@ export const LumenSpinnerElement = elementClasses.Spinner
 export const LumenSwitchElement = elementClasses.Switch
 export const LumenTableElement = elementClasses.Table
 export const LumenTabsElement = elementClasses.Tabs
+export const LumenTagGroupElement = elementClasses.TagGroup
 export const LumenTextareaElement = elementClasses.Textarea
+export const LumenThemeBuilderElement = elementClasses.ThemeBuilder
+export const LumenTimeFieldElement = elementClasses.TimeField
 export const LumenToastElement = elementClasses.Toast
 export const LumenToggleElement = elementClasses.Toggle
 export const LumenToggleGroupElement = elementClasses.ToggleGroup
 export const LumenTooltipElement = elementClasses.Tooltip
+export const LumenTreeElement = elementClasses.Tree
+export const LumenTreeGridElement = elementClasses.TreeGrid
 export const LumenTypographyElement = elementClasses.Typography
+export const LumenVirtualListElement = elementClasses.VirtualList

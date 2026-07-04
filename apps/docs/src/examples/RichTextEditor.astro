@@ -1,0 +1,13 @@
+---
+import { Button, ButtonGroup, RichTextEditor } from '@santi020k/lumen-astro'
+---
+
+<RichTextEditor>
+  <div role="toolbar" aria-label="Editor toolbar">
+    <ButtonGroup>
+      <Button data-ui-editor-command="bold" type="button">Bold</Button>
+      <Button data-ui-editor-command="italic" type="button" variant="secondary">Italic</Button>
+    </ButtonGroup>
+  </div>
+  <div contenteditable="true">Draft release notes...</div>
+</RichTextEditor>

@@ -85,8 +85,10 @@
 :where(
   .ui-accordion,
   .ui-alert,
+  .ui-agenda,
   .ui-aspect-ratio,
   .ui-attachment,
+  .ui-autocomplete,
   .ui-avatar,
   .ui-badge,
   .ui-bubble,
@@ -100,8 +102,10 @@
   .ui-collapsible,
   .ui-combobox,
   .ui-command,
+  .ui-color-picker,
   .ui-dialog,
   .ui-drawer,
+  .ui-date-range-picker,
   .ui-empty,
   .ui-field,
   .ui-input,
@@ -120,7 +124,10 @@
   .ui-progress,
   .ui-radio-group,
   .ui-resizable,
+  .ui-rich-text-editor,
   .ui-scroll-area,
+  .ui-schedule,
+  .ui-search-field,
   .ui-select,
   .ui-separator,
   .ui-sheet,
@@ -132,18 +139,24 @@
   .ui-switch,
   .ui-table-wrap,
   .ui-tabs,
+  .ui-tag-group,
   .ui-textarea,
+  .ui-theme-builder,
+  .ui-time-field,
   .ui-toast,
   .ui-toggle,
   .ui-toggle-group,
   .ui-tooltip,
-  .ui-typography
+  .ui-tree,
+  .ui-tree-grid,
+  .ui-typography,
+  .ui-virtual-list
 ) {
   box-sizing: border-box;
   font-family: var(--ui-font);
 }
 
-:where(.ui-button, .ui-input, .ui-select, .ui-textarea, .ui-checkbox, .ui-switch, .ui-toggle, .ui-slider):focus-visible {
+:where(.ui-button, .ui-input, .ui-select, .ui-textarea, .ui-checkbox, .ui-switch, .ui-toggle, .ui-slider, .ui-color-picker):focus-visible {
   outline: 2px solid hsl(var(--brand));
   outline-offset: 2px;
 }
@@ -1630,6 +1643,188 @@
 .ui-typography :where(a) {
   color: hsl(var(--brand-solid));
   text-underline-offset: 0.25rem;
+}
+
+.ui-agenda,
+.ui-schedule,
+.ui-rich-text-editor,
+.ui-theme-builder,
+.ui-tree,
+.ui-tree-grid,
+.ui-virtual-list,
+.ui-date-range-picker {
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-lg);
+  background: hsl(var(--surface));
+  color: hsl(var(--ink));
+  box-shadow: var(--ui-shadow-sm);
+}
+
+.ui-agenda,
+.ui-schedule,
+.ui-rich-text-editor,
+.ui-theme-builder {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.ui-agenda :where(header, [data-ui-agenda-header]),
+.ui-schedule :where(header, [data-ui-schedule-header]),
+.ui-rich-text-editor :where([role="toolbar"], [data-ui-editor-toolbar]),
+.ui-theme-builder :where(header, [data-ui-theme-header]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ui-agenda :where(ol, ul),
+.ui-schedule :where(ol, ul),
+.ui-tag-group {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-agenda :where(li, [data-ui-agenda-item]),
+.ui-schedule :where(li, [data-ui-schedule-event]),
+.ui-schedule :where([data-ui-schedule-slot]),
+.ui-tree :where([role="treeitem"]),
+.ui-tree-grid :where([role="row"]),
+.ui-virtual-list > * {
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--surface-muted) / 0.52);
+  padding: 0.75rem;
+}
+
+.ui-schedule :where([data-ui-schedule-slot]) {
+  min-height: 5rem;
+}
+
+.ui-schedule :where([data-ui-schedule-slot][data-state="drag-over"]) {
+  border-color: hsl(var(--brand) / 0.58);
+  background: hsl(var(--brand-soft));
+}
+
+.ui-schedule :where([data-ui-schedule-event][draggable="true"]) {
+  cursor: grab;
+}
+
+.ui-schedule {
+  overflow: auto;
+}
+
+.ui-schedule :where([data-ui-schedule-grid]) {
+  display: grid;
+  min-width: 42rem;
+  grid-template-columns: repeat(var(--ui-schedule-columns, 7), minmax(7rem, 1fr));
+  gap: 0.5rem;
+}
+
+.ui-date-range-picker {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.ui-color-picker {
+  width: 2.75rem;
+  height: 2.5rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--surface));
+  padding: 0.2rem;
+  cursor: pointer;
+}
+
+.ui-autocomplete,
+.ui-number-field,
+.ui-search-field,
+.ui-time-field {
+  min-width: 0;
+}
+
+.ui-tag-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ui-tag-group :where([role="listitem"], [data-ui-tag]) {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 999px;
+  background: hsl(var(--brand-soft));
+  color: hsl(var(--ink));
+  padding: 0.25rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.ui-tag-group :where([data-ui-tag-remove]) {
+  display: inline-flex;
+  width: 1.15rem;
+  height: 1.15rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: hsl(var(--ink) / 0.1);
+  color: hsl(var(--ink-soft));
+  cursor: pointer;
+  font: inherit;
+}
+
+.ui-rich-text-editor :where([contenteditable="true"], textarea, [data-ui-editor-content]) {
+  min-height: 12rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--canvas));
+  padding: 1rem;
+  line-height: 1.65;
+}
+
+.ui-theme-builder :where([data-ui-swatch]) {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: 999px;
+  background: var(--ui-swatch, hsl(var(--brand)));
+}
+
+.ui-theme-builder :where([data-ui-theme-output]) {
+  width: 100%;
+  min-height: 8rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--canvas));
+  color: hsl(var(--ink));
+  padding: 0.75rem;
+  font: 0.8125rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.ui-tree,
+.ui-tree-grid,
+.ui-virtual-list {
+  display: grid;
+  gap: 0.35rem;
+  max-height: var(--ui-list-height, 22rem);
+  overflow: auto;
+  padding: 0.5rem;
+}
+
+.ui-tree :where([aria-selected="true"], [data-selected="true"]),
+.ui-tree-grid :where([aria-selected="true"], [data-selected="true"]) {
+  border-color: hsl(var(--brand) / 0.44);
+  background: hsl(var(--brand-soft));
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

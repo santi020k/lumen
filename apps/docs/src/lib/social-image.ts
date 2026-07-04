@@ -15,7 +15,7 @@ export const getSocialImageSlug = (pathname: string) => pathname
   .map(segment => encodeURIComponent(safeDecodeURIComponent(segment)).replaceAll('%', '~'))
   .join('--')
 
-export const getSocialImagePath = (pathname: string) => {
+const getSocialImagePath = (pathname: string) => {
   const slug = getSocialImageSlug(pathname)
 
   return `/og/pages/${slug || 'index'}.webp`

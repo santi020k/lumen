@@ -15,9 +15,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./registry": {
+      "types": "./dist/registry.d.ts",
+      "import": "./dist/registry.js"
+    },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": ["bin", "dist", "README.md", "LICENSE"],
+  "bin": {
+    "lumen": "./bin/lumen.mjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -32,6 +39,7 @@
     "@santi020k/lumen-core": "workspace:^"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

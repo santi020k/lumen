@@ -1,4 +1,13 @@
 export {
+  addLumenRegistryItem,
+  getLumenRegistryItem,
+  type LumenAddOptions,
+  type LumenAddResult,
+  type LumenRegistry,
+  lumenRegistry,
+  type LumenRegistryItem
+} from './registry.js'
+export {
   composeClassName,
   lumenColors,
   type LumenComponentName,

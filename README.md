@@ -57,3 +57,13 @@ pnpm run validate
 ## Package Strategy
 
 The `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.
+
+## Agent and Registry Surfaces
+
+Lumen includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and
+[registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the
+component catalog, setup rules, recipes, and installable file groups. The current roadmap lives in
+[docs/feature-roadmap.md](docs/feature-roadmap.md).
+
+The umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for
+listing recipes, showing recipe contents, and printing install commands.

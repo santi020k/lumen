@@ -101,15 +101,44 @@ Register custom elements once, then use `lumen-*` tags in HTML.
 
 The shared catalog includes:
 
-`Accordion`, `Alert`, `AlertDialog`, `AspectRatio`, `Attachment`, `Avatar`, `Badge`, `Breadcrumb`,
-`Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`, `Carousel`, `Chart`, `Checkbox`,
-`Collapsible`, `Combobox`, `Command`, `ContextMenu`, `DataTable`, `DatePicker`, `Dialog`,
-`Direction`, `Drawer`, `DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Input`, `InputGroup`,
-`InputOTP`, `Item`, `Kbd`, `Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`,
-`NativeSelect`, `NavigationMenu`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`,
-`ScrollArea`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`, `Slider`, `Sonner`, `Spinner`,
-`Switch`, `Table`, `Tabs`, `Textarea`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, and
-`Typography`.
+`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,
+`Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,
+`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Combobox`, `Command`, `ColorPicker`,
+`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
+`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
+`Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
+`NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
+`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
+`Slider`, `Sonner`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
+`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and
+`VirtualList`.
+
+## Product Recipes
+
+- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
+  event planning screens. Mark slots with `data-ui-schedule-slot` and events with
+  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.
+- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
+  collection workflows. `Tree` and `TreeGrid` use roving keyboard focus, and `VirtualList` emits
+  `ui:virtual-list-range` as the rendered range changes.
+- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export
+  tools. Add `data-ui-theme-export` and `data-ui-theme-output` to copy the current CSS token block.
+- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
+  Controls with `data-ui-editor-command` dispatch browser editing commands and emit
+  `ui:editor-command`.
+- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
+  and `TagGroup` when forms need more than plain text inputs.
+
+## Registry Helper
+
+`@santi020k/lumen` exports typed recipe metadata from `@santi020k/lumen/registry`. The package also
+ships a small `lumen` binary:
+
+```bash
+lumen list
+lumen show scheduler
+lumen install
+```
 
 Before inventing a wrapper or custom class pattern, check the component source in
 `packages/astro/components`. Astro is the reference implementation for props, class names, data

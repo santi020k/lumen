@@ -473,6 +473,245 @@
     }
   }
 
+  const initSchedules = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-schedule]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      for (const event of root.querySelectorAll<HTMLElement>('[data-ui-schedule-event]')) {
+        event.draggable = event.draggable || event.dataset.uiDraggable === 'true'
+
+        event.addEventListener('dragstart', dragEvent => {
+          dragEvent.dataTransfer?.setData('text/plain', event.id || event.textContent?.trim() || '')
+
+          root.dataset.uiDragging = 'true'
+        })
+
+        event.addEventListener('dragend', () => {
+          delete root.dataset.uiDragging
+        })
+      }
+
+      for (const dropzone of root.querySelectorAll<HTMLElement>('[data-ui-schedule-slot]')) {
+        dropzone.addEventListener('dragover', event => {
+          event.preventDefault()
+
+          dropzone.dataset.state = 'drag-over'
+        })
+
+        dropzone.addEventListener('dragleave', () => {
+          delete dropzone.dataset.state
+        })
+
+        dropzone.addEventListener('drop', event => {
+          event.preventDefault()
+
+          delete dropzone.dataset.state
+
+          const draggedId = event.dataTransfer?.getData('text/plain')
+          const dragged = draggedId ? document.getElementById(draggedId) : null
+
+          if (dragged instanceof HTMLElement) {
+            dropzone.append(dragged)
+          }
+
+          root.dispatchEvent(new CustomEvent('ui:schedule-change', {
+            bubbles: true,
+            detail: {
+              eventId: draggedId,
+              slot: dropzone.dataset.uiScheduleSlot
+            }
+          }))
+        })
+      }
+    }
+  }
+
+  const initTreeCollections = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[role="tree"], [role="treegrid"]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const items = [...root.querySelectorAll<HTMLElement>('[role="treeitem"], [role="row"]')]
+
+      if (!items.length) continue
+
+      root.dataset.uiBound = 'true'
+
+      for (const [index, item] of items.entries()) {
+        item.tabIndex = index === 0 ? 0 : -1
+
+        item.addEventListener('keydown', event => {
+          const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', ' ']
+
+          if (!keys.includes(event.key)) return
+
+          if ((event.key === 'ArrowRight' || event.key === 'Enter' || event.key === ' ') && item.hasAttribute('aria-expanded')) {
+            event.preventDefault()
+
+            item.setAttribute('aria-expanded', 'true')
+
+            return
+          }
+
+          if (event.key === 'ArrowLeft' && item.hasAttribute('aria-expanded')) {
+            event.preventDefault()
+
+            item.setAttribute('aria-expanded', 'false')
+
+            return
+          }
+
+          if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
+
+          event.preventDefault()
+
+          for (const nextItem of items) {
+            nextItem.tabIndex = -1
+          }
+
+          const nextItem = items[getLoopedIndex(event.key, index, items.length, ['ArrowDown'])]
+
+          if (nextItem) {
+            nextItem.tabIndex = 0
+
+            nextItem.focus()
+          }
+        })
+      }
+    }
+  }
+
+  const initVirtualLists = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-virtual-list]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const items = [...root.children].filter((child): child is HTMLElement => child instanceof HTMLElement)
+
+      if (!items.length) continue
+
+      root.dataset.uiBound = 'true'
+
+      const overscan = Number(root.dataset.uiOverscan ?? 4)
+      const itemSize = Number(root.dataset.uiItemSize ?? 44)
+
+      const update = (): void => {
+        const visibleCount = Math.ceil(root.clientHeight / itemSize) + overscan
+        const startIndex = Math.max(0, Math.floor(root.scrollTop / itemSize) - overscan)
+        const endIndex = startIndex + visibleCount
+
+        for (const [index, item] of items.entries()) {
+          item.hidden = index < startIndex || index > endIndex
+        }
+
+        root.dispatchEvent(new CustomEvent('ui:virtual-list-range', {
+          bubbles: true,
+          detail: {
+            endIndex: Math.min(items.length - 1, endIndex),
+            startIndex
+          }
+        }))
+      }
+
+      root.addEventListener('scroll', update, { passive: true })
+
+      update()
+    }
+  }
+
+  const initTagGroups = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('.ui-tag-group, [data-ui-tag-group]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      for (const button of root.querySelectorAll<HTMLElement>('[data-ui-tag-remove]')) {
+        button.addEventListener('click', () => {
+          const tag = button.closest<HTMLElement>('[data-ui-tag], [role="listitem"]')
+
+          tag?.remove()
+
+          root.dispatchEvent(new CustomEvent('ui:tag-remove', {
+            bubbles: true,
+            detail: {
+              value: tag?.dataset.value ?? tag?.textContent?.trim()
+            }
+          }))
+        })
+      }
+    }
+  }
+
+  const initRichTextEditors = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-rich-text-editor]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      for (const control of root.querySelectorAll<HTMLElement>('[data-ui-editor-command]')) {
+        control.addEventListener('click', () => {
+          const command = control.dataset.uiEditorCommand
+
+          if (!command) return
+
+          document.execCommand(command)
+
+          root.dispatchEvent(new CustomEvent('ui:editor-command', {
+            bubbles: true,
+            detail: { command }
+          }))
+        })
+      }
+    }
+  }
+
+  const initThemeBuilders = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-theme-builder]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      const exportButton = root.querySelector<HTMLElement>('[data-ui-theme-export]')
+      const output = root.querySelector<HTMLTextAreaElement | HTMLOutputElement>('[data-ui-theme-output]')
+
+      exportButton?.addEventListener('click', async () => {
+        const target = root.dataset.uiThemeTarget ? document.querySelector<HTMLElement>(root.dataset.uiThemeTarget) : document.documentElement
+        const styles = getComputedStyle(target ?? document.documentElement)
+
+        const tokens = [
+          'canvas',
+          'surface',
+          'surface-muted',
+          'surface-strong',
+          'line',
+          'ink',
+          'ink-soft',
+          'ink-muted',
+          'brand',
+          'brand-solid',
+          'brand-soft',
+          'accent',
+          'success',
+          'warning',
+          'danger'
+        ]
+
+        const css = `:root {\n${tokens.map(token => `  --${token}: ${styles.getPropertyValue(`--${token}`).trim()};`).join('\n')}\n}`
+
+        if (output) {
+          output.value = css
+        }
+
+        await navigator.clipboard?.writeText(css).catch(() => null)
+
+        root.dispatchEvent(new CustomEvent('ui:theme-export', {
+          bubbles: true,
+          detail: { css }
+        }))
+      })
+    }
+  }
+
   const getToastVariantClass = (variant: string | undefined): string => {
     if (variant === 'success') return 'ui-toast--success'
 
@@ -533,6 +772,18 @@
     initComboboxes(scope)
 
     initCarousel(scope)
+
+    initSchedules(scope)
+
+    initTreeCollections(scope)
+
+    initVirtualLists(scope)
+
+    initTagGroups(scope)
+
+    initRichTextEditors(scope)
+
+    initThemeBuilders(scope)
 
     initToasts()
   }

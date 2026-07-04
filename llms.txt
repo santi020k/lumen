@@ -1,0 +1,38 @@
+# Lumen UI
+
+Lumen is a multi-framework primitive UI system with Astro as the reference implementation.
+
+Use these files first when generating, reviewing, or migrating apps that use Lumen:
+
+- README.md: public overview and package strategy.
+- docs/ai-usage.md: AI-focused setup, package selection, and component selection.
+- docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.
+- registry/lumen.registry.json: installable component, recipe, and documentation manifest.
+- packages/core/src/components.ts: authoritative shared component catalog.
+- packages/astro/components: reference component markup and prop shapes.
+- packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.
+
+Default usage:
+
+```astro
+---
+import { Button, Card, Input } from '@santi020k/lumen-astro'
+import { UIPrimitives } from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles.css'
+---
+
+<UIPrimitives />
+<Card>
+  <label for="email">Email</label>
+  <Input id="email" type="email" />
+  <Button>Subscribe</Button>
+</Card>
+```
+
+Rules for agents:
+
+- Prefer Astro unless the user explicitly targets React or Web Components.
+- Do not require Tailwind configuration for Lumen components.
+- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, accent, success, warning, danger.
+- Mount `UIPrimitives` once for interactive Astro primitives.
+- Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.

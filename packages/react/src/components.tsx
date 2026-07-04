@@ -106,6 +106,11 @@ export const AlertDialog = ({ className, glass = false, surface = 'default', ...
   />
 )
 
+export type AgendaProps = ComponentPropsWithoutRef<'section'>
+export const Agenda = ({ className, ...props }: AgendaProps) => (
+  <section className={composeClassName('ui-agenda', className)} {...props} />
+)
+
 export interface AspectRatioProps extends ComponentPropsWithoutRef<'div'> {
   ratio?: string
 }
@@ -121,6 +126,20 @@ export const AspectRatio = ({ className, ratio = '16 / 9', style, ...props }: As
 export interface AttachmentProps extends ComponentPropsWithoutRef<'article'> {
   href?: string
 }
+
+export interface AutocompleteProps extends ComponentPropsWithoutRef<'input'> {
+  list: string
+}
+
+export const Autocomplete = ({ className, type = 'search', ...props }: AutocompleteProps) => (
+  <input
+    aria-autocomplete="list"
+    className={composeClassName('ui-input ui-autocomplete', className)}
+    role="combobox"
+    type={type}
+    {...props}
+  />
+)
 
 export const Attachment = ({ className, href, ...props }: AttachmentProps) => {
   const nextClassName = composeClassName('ui-attachment', className)
@@ -385,6 +404,11 @@ export const ContextMenu = ({ className, glass = false, surface = 'default', ...
   />
 )
 
+export type ColorPickerProps = ComponentPropsWithoutRef<'input'>
+export const ColorPicker = ({ className, type = 'color', ...props }: ColorPickerProps) => (
+  <input className={composeClassName('ui-color-picker', className)} type={type} {...props} />
+)
+
 export type DataTableProps = ComponentPropsWithoutRef<'div'>
 export const DataTable = ({ className, ...props }: DataTableProps) => (
   <div className={composeClassName('ui-data-table', className)} {...props} />
@@ -393,6 +417,11 @@ export const DataTable = ({ className, ...props }: DataTableProps) => (
 export type DatePickerProps = ComponentPropsWithoutRef<'input'>
 export const DatePicker = ({ className, type = 'date', ...props }: DatePickerProps) => (
   <input className={composeClassName('ui-input ui-date-picker', className)} type={type} {...props} />
+)
+
+export type DateRangePickerProps = ComponentPropsWithoutRef<'div'>
+export const DateRangePicker = ({ className, ...props }: DateRangePickerProps) => (
+  <div className={composeClassName('ui-date-range-picker', className)} data-ui-date-range-picker {...props} />
 )
 
 export interface DialogProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
@@ -484,6 +513,11 @@ export const InputOTP = ({
     type="text"
     {...props}
   />
+)
+
+export type NumberFieldProps = ComponentPropsWithoutRef<'input'>
+export const NumberField = ({ className, type = 'number', ...props }: NumberFieldProps) => (
+  <input className={composeClassName('ui-input ui-number-field', className)} type={type} {...props} />
 )
 
 export type ItemProps = ComponentPropsWithoutRef<'div'>
@@ -640,9 +674,24 @@ export const Resizable = ({ className, ...props }: ResizableProps) => (
   <div className={composeClassName('ui-resizable', className)} {...props} />
 )
 
+export type RichTextEditorProps = ComponentPropsWithoutRef<'section'>
+export const RichTextEditor = ({ className, ...props }: RichTextEditorProps) => (
+  <section className={composeClassName('ui-rich-text-editor', className)} data-ui-rich-text-editor {...props} />
+)
+
 export type ScrollAreaProps = ComponentPropsWithoutRef<'div'>
 export const ScrollArea = ({ className, ...props }: ScrollAreaProps) => (
   <div className={composeClassName('ui-scroll-area', className)} {...props} />
+)
+
+export type ScheduleProps = ComponentPropsWithoutRef<'section'>
+export const Schedule = ({ className, ...props }: ScheduleProps) => (
+  <section className={composeClassName('ui-schedule', className)} data-ui-schedule {...props} />
+)
+
+export type SearchFieldProps = ComponentPropsWithoutRef<'input'>
+export const SearchField = ({ className, type = 'search', ...props }: SearchFieldProps) => (
+  <input className={composeClassName('ui-input ui-search-field', className)} type={type} {...props} />
 )
 
 export type SelectProps = NativeSelectProps
@@ -735,9 +784,24 @@ export const Tabs = ({ className, ...props }: TabsProps) => (
   <div className={composeClassName('ui-tabs', className)} data-ui-tabs {...props} />
 )
 
+export type TagGroupProps = ComponentPropsWithoutRef<'div'>
+export const TagGroup = ({ className, role = 'list', ...props }: TagGroupProps) => (
+  <div className={composeClassName('ui-tag-group', className)} role={role} {...props} />
+)
+
 export type TextareaProps = ComponentPropsWithoutRef<'textarea'>
 export const Textarea = ({ className, rows = 4, ...props }: TextareaProps) => (
   <textarea className={composeClassName('ui-textarea', className)} rows={rows} {...props} />
+)
+
+export type ThemeBuilderProps = ComponentPropsWithoutRef<'section'>
+export const ThemeBuilder = ({ className, ...props }: ThemeBuilderProps) => (
+  <section className={composeClassName('ui-theme-builder', className)} data-ui-theme-builder {...props} />
+)
+
+export type TimeFieldProps = ComponentPropsWithoutRef<'input'>
+export const TimeField = ({ className, type = 'time', ...props }: TimeFieldProps) => (
+  <input className={composeClassName('ui-input ui-time-field', className)} type={type} {...props} />
 )
 
 export interface ToastProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {
@@ -782,7 +846,22 @@ export const Tooltip = ({ className, ...props }: TooltipProps) => (
   <span className={composeClassName('ui-tooltip', className)} {...props} />
 )
 
+export type TreeProps = ComponentPropsWithoutRef<'div'>
+export const Tree = ({ className, role = 'tree', ...props }: TreeProps) => (
+  <div className={composeClassName('ui-tree', className)} role={role} {...props} />
+)
+
+export type TreeGridProps = ComponentPropsWithoutRef<'div'>
+export const TreeGrid = ({ className, role = 'treegrid', ...props }: TreeGridProps) => (
+  <div className={composeClassName('ui-tree-grid', className)} role={role} {...props} />
+)
+
 export type TypographyProps = ComponentPropsWithoutRef<'div'>
 export const Typography = ({ className, ...props }: TypographyProps) => (
   <div className={composeClassName('ui-typography', className)} {...props} />
+)
+
+export type VirtualListProps = ComponentPropsWithoutRef<'div'>
+export const VirtualList = ({ className, ...props }: VirtualListProps) => (
+  <div className={composeClassName('ui-virtual-list', className)} data-ui-virtual-list {...props} />
 )

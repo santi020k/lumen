@@ -38,6 +38,7 @@
     },
     "packages/lumen": {
       "project": [
+        "bin/*.mjs",
         "src/**/*.ts"
       ]
     },
