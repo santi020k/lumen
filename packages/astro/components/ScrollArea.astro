@@ -4,11 +4,13 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  glass?: boolean
 }
 
 const {
   class: classProp = '',
   className = '',
+  glass = false,
   ...rest
 } = Astro.props
 
@@ -18,6 +20,7 @@ const passthrough = rest as Record<string, unknown>
 <div
   class:list={[
     'ui-scroll-area',
+    glass && 'ui-scroll-area--glass',
     classProp,
     className
   ]}

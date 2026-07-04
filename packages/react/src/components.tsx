@@ -58,6 +58,8 @@ const resolveSurface = (surface: SurfaceVariant, glass?: boolean): SurfaceVarian
 const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: boolean) =>
   resolveSurface(surface, glass) === 'glass' && `${base}--glass`
 
+const glassClass = (base: string, glass?: boolean) => glass && `${base}--glass`
+
 const normalizeOption = (option: SelectOption): Option =>
   typeof option === 'string' ? { label: option, value: option } : option
 
@@ -84,12 +86,13 @@ export const Accordion = ({ className, ...props }: AccordionProps) => (
 )
 
 export interface AlertProps extends ComponentPropsWithoutRef<'aside'> {
+  glass?: boolean
   variant?: AlertVariant
 }
 
-export const Alert = ({ className, variant = 'default', ...props }: AlertProps) => (
+export const Alert = ({ className, glass = false, variant = 'default', ...props }: AlertProps) => (
   <aside
-    className={composeClassName('ui-alert', variantClass('ui-alert', variant), className)}
+    className={composeClassName('ui-alert', variantClass('ui-alert', variant), glassClass('ui-alert', glass), className)}
     data-variant={variant}
     {...props}
   />
@@ -110,9 +113,11 @@ export const AlertDialog = ({ className, glass = false, surface = 'default', ...
   />
 )
 
-export type AgendaProps = ComponentPropsWithoutRef<'section'>
-export const Agenda = ({ className, ...props }: AgendaProps) => (
-  <section className={composeClassName('ui-agenda', className)} {...props} />
+export interface AgendaProps extends ComponentPropsWithoutRef<'section'> {
+  glass?: boolean
+}
+export const Agenda = ({ className, glass = false, ...props }: AgendaProps) => (
+  <section className={composeClassName('ui-agenda', glassClass('ui-agenda', glass), className)} {...props} />
 )
 
 export interface AspectRatioProps extends ComponentPropsWithoutRef<'div'> {
@@ -128,6 +133,7 @@ export const AspectRatio = ({ className, ratio = '16 / 9', style, ...props }: As
 )
 
 export interface AttachmentProps extends ComponentPropsWithoutRef<'article'> {
+  glass?: boolean
   href?: string
 }
 
@@ -145,8 +151,8 @@ export const Autocomplete = ({ className, type = 'search', ...props }: Autocompl
   />
 )
 
-export const Attachment = ({ className, href, ...props }: AttachmentProps) => {
-  const nextClassName = composeClassName('ui-attachment', className)
+export const Attachment = ({ className, glass = false, href, ...props }: AttachmentProps) => {
+  const nextClassName = composeClassName('ui-attachment', glassClass('ui-attachment', glass), className)
 
   return href
     ? <a className={nextClassName} href={href} {...props} />
@@ -185,11 +191,12 @@ export const Breadcrumb = ({ 'aria-label': ariaLabel = 'Breadcrumb', className, 
 
 export interface BubbleProps extends ComponentPropsWithoutRef<'article'> {
   from?: MessageFrom
+  glass?: boolean
 }
 
-export const Bubble = ({ className, from = 'assistant', ...props }: BubbleProps) => (
+export const Bubble = ({ className, from = 'assistant', glass = false, ...props }: BubbleProps) => (
   <article
-    className={composeClassName('ui-bubble', from === 'user' && 'ui-bubble--user', className)}
+    className={composeClassName('ui-bubble', from === 'user' && 'ui-bubble--user', glassClass('ui-bubble', glass), className)}
     data-from={from}
     {...props}
   />
@@ -227,9 +234,11 @@ export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
   <div className={composeClassName('ui-button-group', className)} {...props} />
 )
 
-export type CalendarProps = ComponentPropsWithoutRef<'div'>
-export const Calendar = ({ className, ...props }: CalendarProps) => (
-  <div className={composeClassName('ui-calendar', className)} {...props} />
+export interface CalendarProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Calendar = ({ className, glass = false, ...props }: CalendarProps) => (
+  <div className={composeClassName('ui-calendar', glassClass('ui-calendar', glass), className)} {...props} />
 )
 
 export type CardProps<T extends ElementType = 'div'> = PrimitiveProps & {
@@ -260,14 +269,18 @@ export const Card = <T extends ElementType = 'div'>({
   />
 )
 
-export type CarouselProps = ComponentPropsWithoutRef<'section'>
-export const Carousel = ({ className, ...props }: CarouselProps) => (
-  <section className={composeClassName('ui-carousel', className)} data-ui-carousel {...props} />
+export interface CarouselProps extends ComponentPropsWithoutRef<'section'> {
+  glass?: boolean
+}
+export const Carousel = ({ className, glass = false, ...props }: CarouselProps) => (
+  <section className={composeClassName('ui-carousel', glassClass('ui-carousel', glass), className)} data-ui-carousel {...props} />
 )
 
-export type ChartProps = ComponentPropsWithoutRef<'figure'>
-export const Chart = ({ className, ...props }: ChartProps) => (
-  <figure className={composeClassName('ui-chart', className)} {...props} />
+export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
+  glass?: boolean
+}
+export const Chart = ({ className, glass = false, ...props }: ChartProps) => (
+  <figure className={composeClassName('ui-chart', glassClass('ui-chart', glass), className)} {...props} />
 )
 
 export type CheckboxProps = Omit<ComponentPropsWithoutRef<'input'>, 'type'>
@@ -492,9 +505,11 @@ export const Combobox = ({
   )
 }
 
-export type CommandProps = ComponentPropsWithoutRef<'div'>
-export const Command = ({ className, ...props }: CommandProps) => (
-  <div className={composeClassName('ui-command', className)} data-ui-command {...props} />
+export interface CommandProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Command = ({ className, glass = false, ...props }: CommandProps) => (
+  <div className={composeClassName('ui-command', glassClass('ui-command', glass), className)} data-ui-command {...props} />
 )
 
 export interface ContextMenuProps extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}
@@ -512,9 +527,11 @@ export const ColorPicker = ({ className, type = 'color', ...props }: ColorPicker
   <input className={composeClassName('ui-color-picker', className)} type={type} {...props} />
 )
 
-export type DataTableProps = ComponentPropsWithoutRef<'div'>
-export const DataTable = ({ className, ...props }: DataTableProps) => (
-  <div className={composeClassName('ui-data-table', className)} {...props} />
+export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const DataTable = ({ className, glass = false, ...props }: DataTableProps) => (
+  <div className={composeClassName('ui-data-table', glassClass('ui-data-table', glass), className)} {...props} />
 )
 
 export type DatePickerProps = ComponentPropsWithoutRef<'input'>
@@ -565,14 +582,18 @@ export const DropdownMenu = ({ className, glass = false, surface = 'default', ..
   />
 )
 
-export type EmptyProps = ComponentPropsWithoutRef<'section'>
-export const Empty = ({ className, ...props }: EmptyProps) => (
-  <section className={composeClassName('ui-empty', className)} {...props} />
+export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
+  glass?: boolean
+}
+export const Empty = ({ className, glass = false, ...props }: EmptyProps) => (
+  <section className={composeClassName('ui-empty', glassClass('ui-empty', glass), className)} {...props} />
 )
 
-export type FieldProps = ComponentPropsWithoutRef<'div'>
-export const Field = ({ className, ...props }: FieldProps) => (
-  <div className={composeClassName('ui-field', className)} {...props} />
+export interface FieldProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Field = ({ className, glass = false, ...props }: FieldProps) => (
+  <div className={composeClassName('ui-field', glassClass('ui-field', glass), className)} {...props} />
 )
 
 export interface HoverCardProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}
@@ -623,9 +644,11 @@ export const NumberField = ({ className, type = 'number', ...props }: NumberFiel
   <input className={composeClassName('ui-input ui-number-field', className)} type={type} {...props} />
 )
 
-export type ItemProps = ComponentPropsWithoutRef<'div'>
-export const Item = ({ className, ...props }: ItemProps) => (
-  <div className={composeClassName('ui-item', className)} {...props} />
+export interface ItemProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Item = ({ className, glass = false, ...props }: ItemProps) => (
+  <div className={composeClassName('ui-item', glassClass('ui-item', glass), className)} {...props} />
 )
 
 export type KbdProps = ComponentPropsWithoutRef<'kbd'>
@@ -673,9 +696,11 @@ export const Message = ({ className, from = 'assistant', ...props }: MessageProp
   />
 )
 
-export type MessageScrollerProps = ComponentPropsWithoutRef<'div'>
-export const MessageScroller = ({ className, ...props }: MessageScrollerProps) => (
-  <div className={composeClassName('ui-message-scroller', className)} {...props} />
+export interface MessageScrollerProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const MessageScroller = ({ className, glass = false, ...props }: MessageScrollerProps) => (
+  <div className={composeClassName('ui-message-scroller', glassClass('ui-message-scroller', glass), className)} {...props} />
 )
 
 export interface NativeSelectProps extends ComponentPropsWithoutRef<'select'> {
@@ -777,19 +802,25 @@ export const Resizable = ({ className, ...props }: ResizableProps) => (
   <div className={composeClassName('ui-resizable', className)} {...props} />
 )
 
-export type RichTextEditorProps = ComponentPropsWithoutRef<'section'>
-export const RichTextEditor = ({ className, ...props }: RichTextEditorProps) => (
-  <section className={composeClassName('ui-rich-text-editor', className)} data-ui-rich-text-editor {...props} />
+export interface RichTextEditorProps extends ComponentPropsWithoutRef<'section'> {
+  glass?: boolean
+}
+export const RichTextEditor = ({ className, glass = false, ...props }: RichTextEditorProps) => (
+  <section className={composeClassName('ui-rich-text-editor', glassClass('ui-rich-text-editor', glass), className)} data-ui-rich-text-editor {...props} />
 )
 
-export type ScrollAreaProps = ComponentPropsWithoutRef<'div'>
-export const ScrollArea = ({ className, ...props }: ScrollAreaProps) => (
-  <div className={composeClassName('ui-scroll-area', className)} {...props} />
+export interface ScrollAreaProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const ScrollArea = ({ className, glass = false, ...props }: ScrollAreaProps) => (
+  <div className={composeClassName('ui-scroll-area', glassClass('ui-scroll-area', glass), className)} {...props} />
 )
 
-export type ScheduleProps = ComponentPropsWithoutRef<'section'>
-export const Schedule = ({ className, ...props }: ScheduleProps) => (
-  <section className={composeClassName('ui-schedule', className)} data-ui-schedule {...props} />
+export interface ScheduleProps extends ComponentPropsWithoutRef<'section'> {
+  glass?: boolean
+}
+export const Schedule = ({ className, glass = false, ...props }: ScheduleProps) => (
+  <section className={composeClassName('ui-schedule', glassClass('ui-schedule', glass), className)} data-ui-schedule {...props} />
 )
 
 export type SearchFieldProps = ComponentPropsWithoutRef<'input'>
@@ -877,14 +908,18 @@ export const Switch = ({ className, role = 'switch', ...props }: SwitchProps) =>
   <input className={composeClassName('ui-switch', className)} role={role} type="checkbox" {...props} />
 )
 
-export type TableProps = ComponentPropsWithoutRef<'div'>
-export const Table = ({ className, ...props }: TableProps) => (
-  <div className={composeClassName('ui-table-wrap', className)} {...props} />
+export interface TableProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Table = ({ className, glass = false, ...props }: TableProps) => (
+  <div className={composeClassName('ui-table-wrap', glassClass('ui-table-wrap', glass), className)} {...props} />
 )
 
-export type TabsProps = ComponentPropsWithoutRef<'div'>
-export const Tabs = ({ className, ...props }: TabsProps) => (
-  <div className={composeClassName('ui-tabs', className)} data-ui-tabs {...props} />
+export interface TabsProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Tabs = ({ className, glass = false, ...props }: TabsProps) => (
+  <div className={composeClassName('ui-tabs', glassClass('ui-tabs', glass), className)} data-ui-tabs {...props} />
 )
 
 export type TagGroupProps = ComponentPropsWithoutRef<'div'>
@@ -897,9 +932,11 @@ export const Textarea = ({ className, rows = 4, ...props }: TextareaProps) => (
   <textarea className={composeClassName('ui-textarea', className)} rows={rows} {...props} />
 )
 
-export type ThemeBuilderProps = ComponentPropsWithoutRef<'section'>
-export const ThemeBuilder = ({ className, ...props }: ThemeBuilderProps) => (
-  <section className={composeClassName('ui-theme-builder', className)} data-ui-theme-builder {...props} />
+export interface ThemeBuilderProps extends ComponentPropsWithoutRef<'section'> {
+  glass?: boolean
+}
+export const ThemeBuilder = ({ className, glass = false, ...props }: ThemeBuilderProps) => (
+  <section className={composeClassName('ui-theme-builder', glassClass('ui-theme-builder', glass), className)} data-ui-theme-builder {...props} />
 )
 
 export type TimeFieldProps = ComponentPropsWithoutRef<'input'>
@@ -949,14 +986,18 @@ export const Tooltip = ({ className, ...props }: TooltipProps) => (
   <span className={composeClassName('ui-tooltip', className)} {...props} />
 )
 
-export type TreeProps = ComponentPropsWithoutRef<'div'>
-export const Tree = ({ className, role = 'tree', ...props }: TreeProps) => (
-  <div className={composeClassName('ui-tree', className)} role={role} {...props} />
+export interface TreeProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const Tree = ({ className, glass = false, role = 'tree', ...props }: TreeProps) => (
+  <div className={composeClassName('ui-tree', glassClass('ui-tree', glass), className)} role={role} {...props} />
 )
 
-export type TreeGridProps = ComponentPropsWithoutRef<'div'>
-export const TreeGrid = ({ className, role = 'treegrid', ...props }: TreeGridProps) => (
-  <div className={composeClassName('ui-tree-grid', className)} role={role} {...props} />
+export interface TreeGridProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const TreeGrid = ({ className, glass = false, role = 'treegrid', ...props }: TreeGridProps) => (
+  <div className={composeClassName('ui-tree-grid', glassClass('ui-tree-grid', glass), className)} role={role} {...props} />
 )
 
 export type TypographyProps = ComponentPropsWithoutRef<'div'>
@@ -964,7 +1005,9 @@ export const Typography = ({ className, ...props }: TypographyProps) => (
   <div className={composeClassName('ui-typography', className)} {...props} />
 )
 
-export type VirtualListProps = ComponentPropsWithoutRef<'div'>
-export const VirtualList = ({ className, ...props }: VirtualListProps) => (
-  <div className={composeClassName('ui-virtual-list', className)} data-ui-virtual-list {...props} />
+export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
+  glass?: boolean
+}
+export const VirtualList = ({ className, glass = false, ...props }: VirtualListProps) => (
+  <div className={composeClassName('ui-virtual-list', glassClass('ui-virtual-list', glass), className)} data-ui-virtual-list {...props} />
 )

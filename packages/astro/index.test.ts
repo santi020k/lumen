@@ -44,4 +44,27 @@ describe('@santi020k/lumen-astro package surface', () => {
     await expect(readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')).resolves.toContain('<script>')
     await expect(readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')).resolves.toContain('.ui-button')
   })
+
+  test('ships glass styles for overlay and structural surfaces', async () => {
+    const css = await readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+
+    expect(css).toContain('.ui-dialog--glass')
+    expect(css).toContain('.ui-alert--glass')
+    expect(css).toContain('.ui-table-wrap--glass')
+    expect(css).toContain('@supports not ((backdrop-filter: blur(1px))')
+  })
+
+  test('ships the code primitive markup and standalone styles', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/Code.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(component).toContain("variant = 'inline'")
+    expect(component).toContain('data-ui-code-copy')
+    expect(component).toContain('Copy code to clipboard')
+    expect(styles).toContain('.ui-code--inline')
+    expect(styles).toContain('.ui-code--block')
+    expect(styles).toContain('.ui-code__copy')
+  })
 })

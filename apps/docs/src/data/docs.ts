@@ -225,19 +225,41 @@ export const glassSurfaceExamples: GlassSurfaceExample[] = [
 ]
 
 export const glassComponentNames = [
+  'Alert',
   'AlertDialog',
+  'Agenda',
+  'Attachment',
+  'Bubble',
+  'Calendar',
   'Card',
+  'Carousel',
+  'Chart',
+  'Command',
   'ContextMenu',
+  'DataTable',
   'Dialog',
   'Drawer',
   'DropdownMenu',
+  'Empty',
+  'Field',
   'HoverCard',
+  'Item',
   'Menubar',
+  'MessageScroller',
   'NavigationMenu',
   'Popover',
+  'RichTextEditor',
+  'ScrollArea',
+  'Schedule',
   'Sheet',
   'Sidebar',
-  'Toast'
+  'Table',
+  'Tabs',
+  'ThemeBuilder',
+  'Toast',
+  'Tree',
+  'TreeGrid',
+  'VirtualList'
 ] as const
 
 const glassComponentNameSet = new Set<string>(glassComponentNames)
@@ -372,6 +394,14 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
     apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
   ],
+  Code: [
+    apiRow('variant', '"inline" | "block"', '"inline"', 'Switches between inline code and a framed code block.'),
+    apiRow('language', 'string', '-', 'Labels the code language in block headers.'),
+    apiRow('label', 'string', '-', 'Adds a compact filename or title to the block header.'),
+    apiRow('copy', 'boolean', 'false', 'Shows a copy button when UIPrimitives is mounted.'),
+    apiRow('highlighted', 'boolean', 'false', 'Allows a pre-highlighted pre/code tree, such as Shiki output, to render directly.'),
+    apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.')
+  ],
   Combobox: [
     apiRow('list', 'string', 'required', 'Sets the id for the generated listbox and connects it to the combobox input.'),
     apiRow('label', 'string', '-', 'Adds a visible label above the input.'),
@@ -493,6 +523,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
   ['Collapsible', 'Layout', 'Shows and hides one optional content region.', '<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>'],
+  ['Code', 'Data display', 'Renders inline code and framed code blocks with theme-aware palettes.', '<Code variant="block" language="ts" label="theme.ts" copy>const theme = "lumen";\nconst accent = "hsl(var(--accent))";</Code>'],
   ['Combobox', 'Forms', 'Combines text entry and option selection.', '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Web Components"]} placeholder="Search package" />'],
   ['Command', 'Navigation', 'Builds command palettes and filterable action lists.', '<Command><Input placeholder="Type a command..." /><button data-ui-command-item>Open docs</button></Command>'],
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],

@@ -4,12 +4,14 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'article'> {
   class?: string
   className?: string
+  glass?: boolean
   href?: string
 }
 
 const {
   class: classProp = '',
   className = '',
+  glass = false,
   href,
   ...rest
 } = Astro.props
@@ -23,6 +25,7 @@ const passthrough = rest as Record<string, unknown>
         href={href}
         class:list={[
           'ui-attachment',
+          glass && 'ui-attachment--glass',
           classProp,
           className
         ]}
@@ -35,6 +38,7 @@ const passthrough = rest as Record<string, unknown>
       <article
         class:list={[
           'ui-attachment',
+          glass && 'ui-attachment--glass',
           classProp,
           className
         ]}

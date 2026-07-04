@@ -36,13 +36,31 @@ describe('@santi020k/lumen-elements', () => {
 
     const card = document.createElement('lumen-card')
     const dialog = document.createElement('lumen-dialog')
+    const table = document.createElement('lumen-table')
 
     card.setAttribute('glass', '')
     dialog.setAttribute('glass', '')
-    document.body.append(card, dialog)
+    table.setAttribute('glass', '')
+    document.body.append(card, dialog, table)
 
     expect(card.classList.contains('ui-card--glass')).toBe(true)
     expect(dialog.classList.contains('ui-dialog--glass')).toBe(true)
+    expect(table.classList.contains('ui-table-wrap--glass')).toBe(true)
     expect(dialog.getAttribute('surface')).toBe('default')
+  })
+
+  test('applies code defaults and variant classes', () => {
+    defineLumenElements(customElements)
+
+    const inlineCode = document.createElement('lumen-code')
+    const blockCode = document.createElement('lumen-code')
+
+    blockCode.setAttribute('variant', 'block')
+    document.body.append(inlineCode, blockCode)
+
+    expect([...inlineCode.classList].sort()).toEqual(['ui-code', 'ui-code--inline'].sort())
+    expect(inlineCode.getAttribute('data-code-theme')).toBe('auto')
+    expect(inlineCode.getAttribute('variant')).toBe('inline')
+    expect(blockCode.classList.contains('ui-code--block')).toBe(true)
   })
 })

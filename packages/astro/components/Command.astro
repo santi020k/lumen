@@ -4,11 +4,13 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  glass?: boolean
 }
 
 const {
   class: classProp = '',
   className = '',
+  glass = false,
   ...rest
 } = Astro.props
 
@@ -19,6 +21,7 @@ const passthrough = rest as Record<string, unknown>
   data-ui-command
   class:list={[
     'ui-command',
+    glass && 'ui-command--glass',
     classProp,
     className
   ]}

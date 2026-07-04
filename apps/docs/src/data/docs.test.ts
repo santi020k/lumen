@@ -131,6 +131,7 @@ describe('component docs snippets', () => {
     const glassExampleCode = glassSurfaceExamples.map(example => example.code).join('\n')
 
     expect(glassDocs.map(component => component.name)).toEqual([...glassComponentNames])
+    expect(glassComponentNames.length).toBeGreaterThanOrEqual(30)
     expect(glassDocs.every(component => component.apiReference.some(row => row.attribute === 'glass'))).toBe(true)
     expect(glassExampleCode).toContain('<Card glass>')
     expect(glassExampleCode).toContain('<Popover glass>')

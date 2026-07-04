@@ -16,6 +16,7 @@ const runtimeComponents = new Set([
   'AlertDialog',
   'Carousel',
   'Combobox',
+  'Code',
   'Command',
   'Dialog',
   'Drawer',
@@ -175,6 +176,24 @@ export const Example = () => (
 }
 
 const elementsOverrides: Record<string, string> = {
+  Code: `${elementsHeader}
+
+<lumen-code data-code-theme="auto" variant="block">
+  <figcaption class="ui-code__header">
+    <span class="ui-code__dots" aria-hidden="true">
+      <span class="ui-code__dot ui-code__dot--red"></span>
+      <span class="ui-code__dot ui-code__dot--yellow"></span>
+      <span class="ui-code__dot ui-code__dot--green"></span>
+    </span>
+    <span class="ui-code__meta">
+      <span class="ui-code__language">ts</span>
+      <span class="ui-code__label">theme.ts</span>
+    </span>
+  </figcaption>
+  <pre><code>const theme = "lumen";
+const accent = "hsl(var(--accent))";</code></pre>
+</lumen-code>
+`,
   Combobox: `${elementsHeader}
 
 <lumen-combobox data-ui-combobox>

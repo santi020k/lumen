@@ -5,12 +5,14 @@ interface Props extends HTMLAttributes<'article'> {
   class?: string
   className?: string
   from?: 'user' | 'assistant'
+  glass?: boolean
 }
 
 const {
   class: classProp = '',
   className = '',
   from = 'assistant',
+  glass = false,
   ...rest
 } = Astro.props
 
@@ -22,6 +24,7 @@ const passthrough = rest as Record<string, unknown>
   class:list={[
     'ui-bubble',
     from === 'user' && 'ui-bubble--user',
+    glass && 'ui-bubble--glass',
     classProp,
     className
   ]}

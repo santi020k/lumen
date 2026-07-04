@@ -34,7 +34,7 @@ const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
   class="docs-code-block"
   copy
   highlighted
-  label={title}
+  label={title ?? ''}
   language={language}
   variant="block"
 >

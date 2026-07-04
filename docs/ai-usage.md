@@ -103,7 +103,7 @@ The shared catalog includes:
 
 `Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,
 `Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,
-`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Combobox`, `Command`, `ColorPicker`,
+`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
 `Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
