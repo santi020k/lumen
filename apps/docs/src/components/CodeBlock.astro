@@ -1,10 +1,9 @@
 ---
 import { Code } from 'astro:components'
 
-import type { ComponentProps } from 'astro/types'
+import { santi020kShikiThemes } from '@santi020k/theme/shiki'
 
-import santi020kDark from '../lib/shiki/santi020k-dark.json'
-import santi020kLight from '../lib/shiki/santi020k-light.json'
+import type { ComponentProps } from 'astro/types'
 
 type CodeProps = ComponentProps<typeof Code>
 
@@ -14,11 +13,9 @@ interface Props {
   title?: string
 }
 
-// JSON imports widen literal fields (e.g. `type: "dark"` becomes `string`), so the
-// VS Code theme payloads need a double assertion to satisfy the highlighter theme types.
 const themes = {
-  dark: santi020kDark,
-  light: santi020kLight
+  dark: santi020kShikiThemes.dark,
+  light: santi020kShikiThemes.light
 } as unknown as NonNullable<CodeProps['themes']>
 
 const { code, lang = 'plaintext', title } = Astro.props

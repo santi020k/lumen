@@ -34,8 +34,8 @@ catalogs:
       specifier: ^2.1.1
       version: 2.1.1
     '@santi020k/theme':
-      specifier: ^1.0.2
-      version: 1.0.2
+      specifier: ^1.1.0
+      version: 1.1.0
     '@tailwindcss/vite':
       specifier: ^4.3.1
       version: 4.3.2
@@ -186,7 +186,7 @@ importers:
         version: link:../../packages/core
       '@santi020k/theme':
         specifier: 'catalog:'
-        version: 1.0.2
+        version: 1.1.0
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.3.2(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
@@ -3046,8 +3046,8 @@ packages:
     resolution: {integrity: sha512-yQ1fIkRH0yT4lBlNWf4Pllpx1D6qu+keMPkOvD96tn01uIbgps2HvTARLjsMApjmiDv1wjkNdVXXPB7UzTHCcA==}
     engines: {node: '>=22.18.0'}
 
-  '@santi020k/theme@1.0.2':
-    resolution: {integrity: sha512-qXuCxBgMB2raoef5JBBw5nvbPwL1wUrBkBBA2etwZUPnC6RpC+lHzxYCnCucrLYsYd3Hg2Lrkzih5A8iAA4pwQ==}
+  '@santi020k/theme@1.1.0':
+    resolution: {integrity: sha512-ByCV7Sa7jBdSimYHyciq23uo3RO0cVHZN2w61S2ES2A40T304TgO6bojgPkCxe8hDDxjXABBqJPlxn8jHgv/Zg==}
     engines: {node: '>=22.18.0'}
 
   '@shikijs/core@4.3.1':
@@ -11604,7 +11604,7 @@ snapshots:
 
   '@santi020k/theme-core@1.0.0': {}
 
-  '@santi020k/theme@1.0.2':
+  '@santi020k/theme@1.1.0':
     dependencies:
       '@santi020k/theme-core': 1.0.0
 
