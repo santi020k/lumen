@@ -992,6 +992,146 @@
     }
   }
 
+  const closeContextMenu = (menu: HTMLElement): void => {
+    if (menu.dataset.state !== 'open') return
+
+    menu.dataset.state = 'closed'
+
+    menu.hidden = true
+  }
+
+  const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
+    for (const other of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
+      if (other !== menu) closeContextMenu(other)
+    }
+
+    menu.hidden = false
+
+    menu.style.position = 'fixed'
+
+    menu.style.zIndex = '60'
+
+    menu.dataset.state = 'open'
+
+    const rect = menu.getBoundingClientRect()
+    const left = Math.max(8, Math.min(x, window.innerWidth - rect.width - 8))
+    const top = Math.max(8, Math.min(y, window.innerHeight - rect.height - 8))
+
+    menu.style.left = `${left}px`
+
+    menu.style.top = `${top}px`
+
+    getFocusable(menu)[0]?.focus()
+  }
+
+  /**
+   * Context menus stay inert (statically visible) unless an element points at
+   * them with data-ui-context-menu-trigger="<menu id>". With a trigger bound,
+   * the menu hides until right-click / Shift+F10 opens it at the pointer.
+   */
+  const initContextMenus = (scope: ParentNode): void => {
+    for (const target of scope.querySelectorAll<HTMLElement>('[data-ui-context-menu-trigger]')) {
+      if (target.dataset.uiBound === 'true') continue
+
+      target.dataset.uiBound = 'true'
+
+      const menuId = target.getAttribute('data-ui-context-menu-trigger')
+      const menu = menuId ? document.getElementById(menuId) : null
+
+      if (!menu) continue
+
+      menu.hidden = true
+
+      menu.dataset.state = 'closed'
+
+      target.addEventListener('contextmenu', event => {
+        event.preventDefault()
+
+        openContextMenuAt(menu, event.clientX, event.clientY)
+      })
+
+      target.addEventListener('keydown', event => {
+        if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return
+
+        event.preventDefault()
+
+        const rect = target.getBoundingClientRect()
+
+        openContextMenuAt(menu, rect.left + 16, rect.top + 16)
+      })
+
+      menu.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeContextMenu(menu)
+
+          target.focus()
+
+          return
+        }
+
+        if (!['ArrowDown', 'ArrowUp', 'End', 'Home'].includes(event.key)) return
+
+        const items = getFocusable(menu)
+
+        if (items.length === 0) return
+
+        event.preventDefault()
+
+        const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+
+        items[getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])]?.focus()
+      })
+
+      menu.addEventListener('click', event => {
+        if (event.target instanceof HTMLElement && event.target.closest('[role="menuitem"]')) {
+          closeContextMenu(menu)
+        }
+      })
+    }
+  }
+
+  /**
+   * Date range pickers keep the two native date inputs consistent: the end
+   * input cannot go before the start, and vice versa.
+   */
+  const initDateRangePickers = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-date-range-picker]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      const inputs = root.querySelectorAll<HTMLInputElement>('input[type="date"]')
+      const start = inputs[0]
+      const end = inputs[inputs.length - 1]
+
+      if (!start || !end || start === end) continue
+
+      const syncRange = (): void => {
+        if (start.value) {
+          end.min = start.value
+        } else {
+          end.removeAttribute('min')
+        }
+
+        if (end.value) {
+          start.max = end.value
+        } else {
+          start.removeAttribute('max')
+        }
+
+        if (start.value && end.value && end.value < start.value) {
+          end.value = start.value
+        }
+      }
+
+      start.addEventListener('change', syncRange)
+
+      end.addEventListener('change', syncRange)
+
+      syncRange()
+    }
+  }
+
   const getToastVariantClass = (variant: string | undefined): string => {
     if (variant === 'success') return 'ui-toast--success'
 
@@ -1073,6 +1213,10 @@
 
     initTooltips(scope)
 
+    initContextMenus(scope)
+
+    initDateRangePickers(scope)
+
     initGlassTracking(scope)
 
     initToasts()
@@ -1094,6 +1238,12 @@
         closeCombobox(root)
       }
     }
+
+    for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
+      if (!menu.contains(target)) {
+        closeContextMenu(menu)
+      }
+    }
   })
 
   document.addEventListener('keydown', event => {
@@ -1105,6 +1255,10 @@
 
     for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
       closeCombobox(root)
+    }
+
+    for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
+      closeContextMenu(menu)
     }
   })
 

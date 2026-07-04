@@ -15,10 +15,12 @@ const {
 } = Astro.props
 
 const passthrough = rest as Record<string, unknown>
+const isValidRatio = /^\d+(\.\d+)?(\s*\/\s*\d+(\.\d+)?)?$/.test(ratio.trim())
+const safeRatio = isValidRatio ? ratio.trim() : '16 / 9'
 ---
 
 <div
-  style={`aspect-ratio: ${ratio}`}
+  style={`aspect-ratio: ${safeRatio}`}
   class:list={[
     'ui-aspect-ratio',
     classProp,

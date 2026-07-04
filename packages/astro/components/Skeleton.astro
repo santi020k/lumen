@@ -7,20 +7,29 @@ interface Props extends HTMLAttributes<'div'> {
 }
 
 const {
+  'aria-hidden': ariaHidden,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
   class: classProp = '',
   className = '',
+  role,
   ...rest
 } = Astro.props
 
+const isAccessible = Boolean(ariaLabel || ariaLabelledby)
 const passthrough = rest as Record<string, unknown>
 ---
 
 <div
+  aria-hidden={ariaHidden ?? (isAccessible ? undefined : 'true')}
+  aria-label={ariaLabel}
+  aria-labelledby={ariaLabelledby}
   class:list={[
     'ui-skeleton',
     classProp,
     className
   ]}
+  role={role ?? (isAccessible ? 'status' : undefined)}
   {...passthrough}
 >
   <slot />

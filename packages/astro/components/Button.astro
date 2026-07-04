@@ -21,6 +21,7 @@ const {
 } = Astro.props
 
 const passthrough = rest as Record<string, unknown>
+const isDisabled = Boolean(disabled) || loading
 ---
 
 <button
@@ -36,13 +37,13 @@ const passthrough = rest as Record<string, unknown>
     size === 'sm' && 'ui-button--sm',
     size === 'lg' && 'ui-button--lg',
     size === 'icon' && 'ui-button--icon',
-    disabled && 'ui-button--disabled',
+    isDisabled && 'ui-button--disabled',
     loading && 'ui-button--loading',
     classProp,
     className
   ]}
   aria-busy={loading || undefined}
-  disabled={disabled}
+  disabled={isDisabled || undefined}
   type={type}
   {...passthrough}
 >

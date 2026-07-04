@@ -10,11 +10,16 @@ import { toSlug } from '../../../lib/routes'
   description="Browse all Lumen UI components with live previews and usage examples for Astro, React, and Elements."
   title="Components - Lumen UI"
 >
-  <div class="mb-10 space-y-3">
+  <div class="docs-components-hero mb-10 space-y-3">
+    <div class="flex flex-wrap gap-2">
+      <Badge>{componentDocs.length} primitives</Badge>
+      <Badge variant="outline">{componentDocs.filter(component => component.glass).length} glass surfaces</Badge>
+    </div>
     <h1 class="text-4xl font-black text-ink">Components</h1>
     <p class="max-w-2xl text-lg/8 text-ink-soft">
       {componentDocs.length} primitives, each documented with a live preview and code for
-      Astro, React, and Elements.
+      Astro, React, and Elements. Glass-capable surfaces use the same tokenized blur,
+      highlight, and border treatment across targets.
     </p>
   </div>
 

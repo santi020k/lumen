@@ -2,8 +2,15 @@
 import { ContextMenu } from '@santi020k/lumen-astro'
 ---
 
-<ContextMenu aria-label="Project actions">
-  <button role="menuitem">Duplicate</button>
-  <button role="menuitem">Rename</button>
-  <button role="menuitem">Delete</button>
+<div
+  data-ui-context-menu-trigger="ex-context-menu"
+  style="border: 1px dashed hsl(var(--line)); border-radius: 0.5rem; padding: 2rem; text-align: center;"
+  tabindex="0"
+>
+  Right-click (or press Shift+F10) inside this area
+</div>
+<ContextMenu aria-label="Project actions" id="ex-context-menu">
+  <button role="menuitem" type="button">Duplicate</button>
+  <button role="menuitem" type="button">Rename</button>
+  <button role="menuitem" type="button">Delete</button>
 </ContextMenu>

@@ -37,7 +37,7 @@ const featured = componentDocs.slice(0, 12)
   title="Lumen UI - Primitives for Astro, React, and Web Components"
 >
   <main class="
-    mx-auto flex w-full max-w-7xl flex-col gap-16 px-5 py-12
+    docs-home-shell mx-auto flex w-full max-w-7xl flex-col gap-16 px-5 py-12
     sm:px-8
   ">
     <section class="
@@ -80,8 +80,8 @@ const featured = componentDocs.slice(0, 12)
         </button>
       </div>
 
-      <Card class="
-        grid gap-5 p-6
+      <Card glass="strong" class="
+        docs-home-showcase grid gap-5 p-6
         sm:p-7
       ">
         <div class="flex items-center justify-between gap-4">
@@ -95,7 +95,7 @@ const featured = componentDocs.slice(0, 12)
           <Toggle>Monthly</Toggle>
           <Toggle pressed>Yearly</Toggle>
         </ToggleGroup>
-        <Field>
+        <Field glass="subtle" class="p-4">
           <Label for="hero-email">Work email</Label>
           <Input id="hero-email" type="email" placeholder="you@example.com" />
         </Field>

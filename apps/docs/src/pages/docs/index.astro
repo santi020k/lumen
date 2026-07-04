@@ -1,5 +1,16 @@
 ---
-import { Badge, Card } from '@santi020k/lumen-astro'
+import {
+  Badge,
+  Card,
+  Field,
+  Input,
+  Label,
+  Marker,
+  Progress,
+  Switch,
+  Toggle,
+  ToggleGroup
+} from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../components/CodeBlock.astro'
 import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
@@ -71,12 +82,32 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       </div>
     </div>
     <div class="docs-hero__preview" aria-label="Framework support overview">
-      <div class="docs-hero__surface">
+      <Card class="docs-hero__surface" glass="strong">
         <div class="docs-hero__bar">
           <span></span>
           <span></span>
           <span></span>
         </div>
+        <div class="docs-hero__showcase-head">
+          <div>
+            <p>Glass system</p>
+            <strong>Built from Lumen primitives</strong>
+          </div>
+          <Marker variant="success">Live</Marker>
+        </div>
+        <ToggleGroup aria-label="Framework target">
+          <Toggle pressed>Astro</Toggle>
+          <Toggle>React</Toggle>
+          <Toggle>Elements</Toggle>
+        </ToggleGroup>
+        <Field class="docs-hero__field" glass="subtle">
+          <Label for="docs-workspace">Workspace</Label>
+          <Input id="docs-workspace" placeholder="lumen-labs" value="lumen-labs" />
+        </Field>
+        <label class="docs-hero__switch">
+          <Switch name="docs-glass-release" checked /> Ship glass surfaces
+        </label>
+        <Progress value={84} aria-label="Glass system coverage" />
         <div class="docs-hero__grid">
           {frameworkHighlights.map(([name, label, packageName]) => (
             <div class="docs-framework-tile">
@@ -93,19 +124,19 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
           <span style="--swatch: hsl(var(--warning));"></span>
           <span style="--swatch: hsl(var(--danger));"></span>
         </div>
-      </div>
+      </Card>
     </div>
   </section>
 
   <div class="docs-step-grid" aria-label="Setup overview">
     {setupSteps.map(([step, title, description]) => (
-      <div class="docs-step">
+      <Card as="article" class="docs-step" variant="muted">
         <span>{step}</span>
         <div>
           <h2>{title}</h2>
           <p>{description}</p>
         </div>
-      </div>
+      </Card>
     ))}
   </div>
 
@@ -273,7 +304,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
     </div>
   </section>
 
-  <section class="docs-next" aria-labelledby="next-title">
+  <Card as="section" class="docs-next" variant="muted" aria-labelledby="next-title">
     <h2 id="next-title">Next steps</h2>
     <p>
       Every component page includes a live preview plus code for all three targets.
@@ -286,5 +317,5 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         ui-button ui-button--default-size ui-button--outline no-underline
       " href="https://github.com/santi020k/lumen">View on GitHub</a>
     </div>
-  </section>
+  </Card>
 </DocsLayout>

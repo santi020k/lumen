@@ -10,10 +10,5 @@ const { class: classProp = '', className = '', rows = 4, ...rest } = Astro.props
 const passthrough = rest as Record<string, unknown>
 ---
 
-<textarea
-  class:list={['ui-textarea', classProp, className]}
-  rows={rows}
-  {...passthrough}
->
-  <slot />
-</textarea>
+{/* Slot must stay inline: whitespace inside <textarea> becomes its value and hides the placeholder. */}
+<textarea class:list={['ui-textarea', classProp, className]} rows={rows} {...passthrough}><slot /></textarea>

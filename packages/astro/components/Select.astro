@@ -1,34 +1,15 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+/**
+ * Select is an alias of NativeSelect: both render a styled native <select>.
+ * Keeping a single implementation avoids the two files drifting apart.
+ */
+import type { ComponentProps } from 'astro/types'
 
-interface Option {
-  disabled?: boolean
-  label: string
-  value: string
-}
+import NativeSelect from './NativeSelect.astro'
 
-type SelectOption = Option | string
+type Props = ComponentProps<typeof NativeSelect>
 
-interface Props extends Omit<HTMLAttributes<'select'>, 'size'> {
-  class?: string
-  className?: string
-  size?: 'default' | 'lg' | 'sm'
-  options?: SelectOption[]
-  placeholder?: string
-}
-
-const { class: classProp = '', className = '', options = [], placeholder, size = 'default', ...rest } = Astro.props
-const hasValue = Object.hasOwn(rest, 'value')
-const normalizedOptions = options.map(option =>
-  typeof option === 'string' ? { label: option, value: option } : option
-)
-const passthrough = rest as Record<string, unknown>
+const props = Astro.props as Props
 ---
 
-<select class:list={['ui-select', size === 'sm' && 'ui-select--sm', size === 'lg' && 'ui-select--lg', classProp, className]} {...passthrough}>
-  {placeholder && <option disabled selected={!hasValue} value="">{placeholder}</option>}
-  <slot />
-  {normalizedOptions.map(option => (
-    <option disabled={option.disabled} value={option.value}>{option.label}</option>
-  ))}
-</select>
+<NativeSelect {...props}><slot /></NativeSelect>

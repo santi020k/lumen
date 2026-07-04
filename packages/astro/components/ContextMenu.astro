@@ -20,8 +20,13 @@ const passthrough = rest as Record<string, unknown>
 const resolvedSurface = glass || surface === 'glass' ? 'glass' : surface
 ---
 
+{/* Point an element at this menu with data-ui-context-menu-trigger="<menu id>"
+    to get right-click / Shift+F10 open behavior from the runtime. Without a
+    trigger the menu renders statically. */}
 <menu
   data-surface={resolvedSurface}
+  data-ui-context-menu
+  role="menu"
   class:list={[
     'ui-menu',
     resolvedSurface === 'glass' && 'ui-menu--glass',

@@ -23,6 +23,7 @@ const resolvedSurface = glass || surface === 'glass' ? 'glass' : surface
 <dialog
   data-surface={resolvedSurface}
   data-ui-alert-dialog
+  role="alertdialog"
   class:list={[
     'ui-dialog ui-alert-dialog',
     resolvedSurface === 'glass' && 'ui-dialog--glass',

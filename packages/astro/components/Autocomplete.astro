@@ -11,10 +11,11 @@ const { class: classProp = '', className = '', type = 'search', ...rest } = Astr
 const passthrough = rest as Record<string, unknown>
 ---
 
+{/* No explicit role: an input with a `list` attribute already has native combobox
+    semantics, and the browser manages aria-expanded for the datalist popup. */}
 <input
   aria-autocomplete="list"
   class:list={['ui-input', 'ui-autocomplete', classProp, className]}
-  role="combobox"
   type={type}
   {...passthrough}
 />
