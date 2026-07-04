@@ -147,6 +147,24 @@ code {
   padding: 0.08rem 0.28rem;
 }
 
+.ui-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.ui-code--inline {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--ui-code-border);
+  border-radius: 0.35rem;
+  background: var(--ui-code-inline-bg);
+  color: var(--ui-code-inline-fg);
+  font-size: 0.86em;
+  font-weight: 650;
+  line-height: 1.25;
+  padding: 0.08em 0.34em;
+  vertical-align: baseline;
+}
+
 pre {
   margin: 0;
   overflow-x: auto;
@@ -164,6 +182,46 @@ pre code {
   color: inherit;
   padding: 0;
   white-space: pre;
+}
+
+.ui-code--block pre {
+  border: 0;
+  border-radius: 0;
+  background: var(--ui-code-bg);
+  padding: 1rem 1.25rem;
+}
+
+.ui-code--block code {
+  display: block;
+  min-width: 100%;
+  border-radius: 0;
+  background: transparent;
+  color: var(--shiki-light, var(--ui-code-fg));
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-variant-ligatures: none;
+  line-height: 1.65;
+  padding: 0;
+  white-space: pre;
+}
+
+.ui-code--block code span {
+  color: var(--shiki-light, var(--ui-code-token, var(--ui-code-fg)));
+  font-style: var(--shiki-light-font-style, var(--ui-code-token-font-style, normal));
+  font-weight: var(--shiki-light-font-weight, inherit);
+  text-decoration: var(--shiki-light-text-decoration, none);
+}
+
+:root[data-theme="dark"] .ui-code--block code,
+:root[data-theme="dark"] .ui-code--block code span,
+:root[data-theme="lumen-dark"] .ui-code--block code,
+:root[data-theme="lumen-dark"] .ui-code--block code span,
+:root[data-theme="santi020k-dark"] .ui-code--block code,
+:root[data-theme="santi020k-dark"] .ui-code--block code span {
+  color: var(--shiki-dark, var(--shiki-light, var(--ui-code-token, var(--ui-code-fg))));
+  font-style: var(--shiki-dark-font-style, var(--shiki-light-font-style, var(--ui-code-token-font-style, normal)));
+  font-weight: var(--shiki-dark-font-weight, var(--shiki-light-font-weight, inherit));
+  text-decoration: var(--shiki-dark-text-decoration, var(--shiki-light-text-decoration, none));
 }
 
 .docs-hero {

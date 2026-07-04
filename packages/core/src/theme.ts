@@ -80,6 +80,65 @@ export const createThemePalette = (
   warning: '38 92% 50%'
 })
 
+export interface LumenThemeFromHueOptions {
+  accentHue?: number
+  scheme?: 'dark' | 'light'
+}
+
+const normalizeHue = (hue: number): number => ((Math.round(hue) % 360) + 360) % 360
+
+/**
+ * Derives a complete token set from a single brand hue.
+ * Neutral surfaces pick up a faint tint of the hue; the accent sits 150deg
+ * away on the wheel. Status colors stay fixed for recognizability.
+ * Mirrored by the ThemeBuilder runtime enhancement in lumen-astro.
+ */
+export const createThemeFromHue = (
+  hue: number,
+  options: LumenThemeFromHueOptions = {}
+): LumenThemeTokens => {
+  const h = normalizeHue(hue)
+  const accentHue = normalizeHue(options.accentHue ?? h + 150)
+
+  if (options.scheme === 'dark') {
+    return {
+      accent: `${accentHue} 70% 48%`,
+      brand: `${h} 88% 60%`,
+      'brand-soft': `${h} 80% 16%`,
+      'brand-solid': `${h} 88% 46%`,
+      canvas: `${h} 24% 8%`,
+      danger: '0 84% 65%',
+      ink: `${h} 20% 96%`,
+      'ink-muted': `${h} 10% 58%`,
+      'ink-soft': `${h} 14% 77%`,
+      line: `${h} 14% 26%`,
+      success: '142 69% 45%',
+      surface: `${h} 18% 11%`,
+      'surface-muted': `${h} 16% 15%`,
+      'surface-strong': `${h} 14% 22%`,
+      warning: '38 92% 55%'
+    }
+  }
+
+  return {
+    accent: `${accentHue} 70% 40%`,
+    brand: `${h} 85% 53%`,
+    'brand-soft': `${h} 90% 96%`,
+    'brand-solid': `${h} 85% 45%`,
+    canvas: `${h} 20% 99%`,
+    danger: '0 84% 60%',
+    ink: `${h} 40% 11%`,
+    'ink-muted': `${h} 10% 48%`,
+    'ink-soft': `${h} 14% 32%`,
+    line: `${h} 14% 86%`,
+    success: '142 71% 36%',
+    surface: `${h} 20% 100%`,
+    'surface-muted': `${h} 16% 96%`,
+    'surface-strong': `${h} 14% 91%`,
+    warning: '38 92% 50%'
+  }
+}
+
 const hslToRgb = (value: string): [number, number, number] => {
   const [hue = 0, saturation = 0, lightness = 0] = value
     .replaceAll('%', '')

@@ -3,6 +3,11 @@
  * Import once with: import "@santi020k/lumen-astro/styles.css"
  */
 
+/* Cascade layers: consumer (unlayered) CSS always wins over Lumen styles.
+ * Layer order also guarantees glass variants beat component base styles. */
+@layer lumen.tokens, lumen.base, lumen.components, lumen.glass;
+
+@layer lumen.tokens {
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
@@ -81,7 +86,9 @@
     0 16px 40px hsl(0 0% 0% / 0.34),
     0 40px 96px hsl(0 0% 0% / 0.38);
 }
+}
 
+@layer lumen.base {
 @keyframes ui-shimmer {
   from {
     background-position: 200% 0;
@@ -177,7 +184,9 @@
   outline: 2px solid hsl(var(--brand));
   outline-offset: 2px;
 }
+}
 
+@layer lumen.components {
 .panel-surface {
   background: hsl(var(--surface) / 0.96);
   border: 1px solid hsl(var(--line));
@@ -2112,7 +2121,9 @@
   border-color: hsl(var(--brand) / 0.44);
   background: hsl(var(--brand-soft));
 }
+}
 
+@layer lumen.glass {
 /* ---------------------------------------------------------------------------
  * Liquid Glass layer
  * Declared after component base styles so glass variants win the cascade.
@@ -2322,6 +2333,7 @@
     box-shadow: var(--ui-shadow-lg);
   }
 }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -2337,5 +2349,334 @@
   .card-interactive:hover,
   .ui-card--interactive:hover {
     transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion: overlay entry/exit animations
+ * Uses @starting-style + allow-discrete; prefers-reduced-motion collapses
+ * every transition via the global override at the end of this file.
+ * ------------------------------------------------------------------------- */
+
+@layer lumen.components {
+  .ui-dialog,
+  .ui-alert-dialog {
+    transition:
+      opacity 200ms ease,
+      transform 220ms cubic-bezier(0.32, 0.72, 0, 1),
+      overlay 220ms ease allow-discrete,
+      display 220ms ease allow-discrete;
+  }
+
+  .ui-dialog:not([open]),
+  .ui-alert-dialog:not([open]) {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 0.75rem)) scale(0.97);
+  }
+
+  @starting-style {
+    .ui-dialog[open],
+    .ui-alert-dialog[open] {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 0.75rem)) scale(0.97);
+    }
+  }
+
+  .ui-drawer {
+    transition:
+      opacity 200ms ease,
+      transform 260ms cubic-bezier(0.32, 0.72, 0, 1),
+      overlay 260ms ease allow-discrete,
+      display 260ms ease allow-discrete;
+  }
+
+  .ui-drawer:not([open]) {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  @starting-style {
+    .ui-drawer[open] {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+  }
+
+  .ui-sheet {
+    transition:
+      opacity 200ms ease,
+      transform 260ms cubic-bezier(0.32, 0.72, 0, 1),
+      overlay 260ms ease allow-discrete,
+      display 260ms ease allow-discrete;
+  }
+
+  .ui-sheet:not([open]) {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  @starting-style {
+    .ui-sheet[open] {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+
+  .ui-dialog::backdrop,
+  .ui-alert-dialog::backdrop,
+  .ui-drawer::backdrop,
+  .ui-sheet::backdrop {
+    transition:
+      opacity 200ms ease,
+      overlay 260ms ease allow-discrete,
+      display 260ms ease allow-discrete;
+  }
+
+  :is(.ui-dialog, .ui-alert-dialog, .ui-drawer, .ui-sheet):not([open])::backdrop {
+    opacity: 0;
+  }
+
+  @starting-style {
+    :is(.ui-dialog, .ui-alert-dialog, .ui-drawer, .ui-sheet)[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  .ui-popover > :where(div, section, article, form, [role="dialog"]),
+  .ui-hover-card > :where(div, section, article, [role="tooltip"]),
+  .ui-menu[data-ui-dropdown-menu] > [role="menu"],
+  .ui-combobox__list {
+    transition:
+      opacity 140ms ease,
+      transform 160ms cubic-bezier(0.32, 0.72, 0, 1),
+      display 160ms ease allow-discrete;
+  }
+
+  .ui-popover > :where(div, section, article, form, [role="dialog"])[data-state="closed"],
+  .ui-hover-card > :where(div, section, article, [role="tooltip"])[data-state="closed"],
+  .ui-menu[data-ui-dropdown-menu] > [role="menu"][data-state="closed"],
+  .ui-combobox__list[data-state="closed"] {
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+  }
+
+  @starting-style {
+    .ui-popover > :where(div, section, article, form, [role="dialog"])[data-state="open"],
+    .ui-hover-card > :where(div, section, article, [role="tooltip"])[data-state="open"],
+    .ui-menu[data-ui-dropdown-menu] > [role="menu"][data-state="open"],
+    .ui-combobox__list[data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+  }
+
+  .ui-sonner .ui-toast {
+    transition:
+      opacity 200ms ease,
+      transform 220ms cubic-bezier(0.32, 0.72, 0, 1),
+      display 220ms ease allow-discrete;
+  }
+
+  .ui-sonner .ui-toast[data-state="closed"] {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+
+  @starting-style {
+    .ui-sonner .ui-toast {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * States and sizes
+ * ------------------------------------------------------------------------- */
+
+@layer lumen.components {
+  .ui-input[aria-invalid="true"],
+  .ui-textarea[aria-invalid="true"],
+  .ui-select[aria-invalid="true"],
+  .ui-input-otp[aria-invalid="true"] {
+    border-color: hsl(var(--danger) / 0.6);
+    box-shadow:
+      inset 0 1px 2px hsl(222 47% 11% / 0.04),
+      0 0 0 3px hsl(var(--danger) / 0.14);
+  }
+
+  .ui-input[aria-invalid="true"]:focus-visible,
+  .ui-textarea[aria-invalid="true"]:focus-visible,
+  .ui-select[aria-invalid="true"]:focus-visible {
+    outline-color: hsl(var(--danger));
+  }
+
+  .ui-input-group:has(> [aria-invalid="true"]) {
+    border-color: hsl(var(--danger) / 0.6);
+  }
+
+  .ui-field > [data-ui-field-error],
+  .ui-field__error {
+    margin: 0;
+    color: hsl(var(--danger));
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .ui-checkbox:indeterminate {
+    border-color: hsl(var(--brand-solid));
+    background-color: hsl(var(--brand-solid));
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 8h8' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 0.78rem 0.78rem;
+  }
+
+  .ui-button[aria-busy="true"],
+  .ui-button--loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .ui-input--sm,
+  .ui-select--sm {
+    min-height: 2.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .ui-input--lg,
+  .ui-select--lg {
+    min-height: 3.25rem;
+    font-size: 1rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Container queries: components respond to their container, not the viewport
+ * ------------------------------------------------------------------------- */
+
+@layer lumen.components {
+  .ui-sidebar {
+    container: ui-sidebar / inline-size;
+  }
+
+  @container ui-sidebar (max-width: 13rem) {
+    a {
+      padding: 0.45rem 0.5rem;
+      font-size: 0.8125rem;
+    }
+  }
+
+  .ui-schedule {
+    container: ui-schedule / inline-size;
+  }
+
+  @container ui-schedule (max-width: 40rem) {
+    [data-ui-schedule-grid] {
+      min-width: 100%;
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .ui-carousel {
+    container: ui-carousel / inline-size;
+  }
+
+  @container ui-carousel (max-width: 24rem) {
+    [data-ui-carousel-viewport] > * {
+      min-width: 100%;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Top-layer mode for floating surfaces
+ * The runtime promotes panels to [popover] and wires anchor-name /
+ * position-anchor inline when the browser supports CSS anchor positioning.
+ * Unsupported browsers keep the absolute-position fallback above.
+ * ------------------------------------------------------------------------- */
+
+@layer lumen.components {
+  .ui-popover > [popover],
+  .ui-hover-card > [popover],
+  .ui-menu[data-ui-dropdown-menu] > [popover][role="menu"] {
+    position: fixed;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    inset: auto;
+    width: max-content;
+    margin: 0.5rem 0 0;
+  }
+
+  .ui-popover > [popover]:not(:popover-open),
+  .ui-hover-card > [popover]:not(:popover-open),
+  .ui-menu[data-ui-dropdown-menu] > [popover][role="menu"]:not(:popover-open) {
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+  }
+
+  .ui-tooltip [role="tooltip"][popover] {
+    position: fixed;
+    position-area: block-start;
+    position-try-fallbacks: flip-block;
+    inset: auto;
+    margin: 0 0 0.45rem;
+    transform: none;
+    transition:
+      opacity 140ms ease,
+      display 140ms ease allow-discrete;
+  }
+
+  .ui-tooltip [role="tooltip"][popover]:popover-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @starting-style {
+    .ui-tooltip [role="tooltip"][popover]:popover-open {
+      opacity: 0;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Glass extensions: intensity on wrapper components + pointer-tracked
+ * specular highlight (opt-in via data-ui-glass-track).
+ * ------------------------------------------------------------------------- */
+
+@layer lumen.glass {
+  .ui-popover--glass:is(.ui-glass-subtle, .ui-glass-strong),
+  .ui-hover-card--glass:is(.ui-glass-subtle, .ui-glass-strong),
+  .ui-menu--glass[data-ui-dropdown-menu]:is(.ui-glass-subtle, .ui-glass-strong) {
+    border-color: transparent;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .ui-popover--glass.ui-glass-subtle > :where(div, section, article, form, [role="dialog"]),
+  .ui-hover-card--glass.ui-glass-subtle > :where(div, section, article, [role="tooltip"]),
+  .ui-menu--glass.ui-glass-subtle[data-ui-dropdown-menu] > [role="menu"] {
+    background:
+      radial-gradient(140% 100% at 12% -8%, hsl(var(--glass-highlight)) 0%, transparent 38%),
+      radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 40%),
+      hsl(var(--glass-bg-subtle));
+  }
+
+  .ui-popover--glass.ui-glass-strong > :where(div, section, article, form, [role="dialog"]),
+  .ui-hover-card--glass.ui-glass-strong > :where(div, section, article, [role="tooltip"]),
+  .ui-menu--glass.ui-glass-strong[data-ui-dropdown-menu] > [role="menu"] {
+    background:
+      radial-gradient(140% 100% at 12% -8%, hsl(var(--glass-highlight)) 0%, transparent 46%),
+      radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 48%),
+      hsl(var(--glass-bg-strong));
+  }
+
+  :is(.ui-glass, .ui-glass-subtle, .ui-glass-strong, [class*="--glass"])[data-ui-glass-track] {
+    background:
+      radial-gradient(24rem 24rem at var(--glass-x, 12%) var(--glass-y, -8%), hsl(var(--glass-highlight)) 0%, transparent 42%),
+      radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 44%),
+      hsl(var(--glass-bg));
   }
 }

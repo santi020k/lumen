@@ -4,7 +4,7 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'aside'> {
   class?: string
   className?: string
-  glass?: boolean
+  glass?: boolean | 'subtle' | 'strong'
   surface?: 'default' | 'glass'
   variant?: 'default' | 'destructive' | 'success' | 'warning'
 }
@@ -31,6 +31,8 @@ const resolvedSurface = glass || surface === 'glass' ? 'glass' : surface
     variant === 'success' && 'ui-toast--success',
     variant === 'warning' && 'ui-toast--warning',
     resolvedSurface === 'glass' && 'ui-toast--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong',
     classProp,
     className
   ]}

@@ -5,7 +5,7 @@ interface Props extends HTMLAttributes<'div'> {
   as?: 'article' | 'div' | 'section'
   class?: string
   className?: string
-  glass?: boolean
+  glass?: boolean | 'subtle' | 'strong'
   variant?: 'default' | 'glass' | 'interactive' | 'muted'
 }
 
@@ -29,6 +29,8 @@ const isGlass = glass || variant === 'glass'
     variant === 'muted' && 'ui-card--muted',
     variant === 'interactive' && 'ui-card--interactive',
     isGlass && 'ui-card--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong',
     classProp,
     className
   ]}

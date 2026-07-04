@@ -1,17 +1,24 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-interface Props extends HTMLAttributes<'input'> {
+interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
   class?: string
   className?: string
+  size?: 'default' | 'lg' | 'sm'
 }
 
-const { class: classProp = '', className = '', type = 'text', ...rest } = Astro.props
+const { class: classProp = '', className = '', size = 'default', type = 'text', ...rest } = Astro.props
 const passthrough = rest as Record<string, unknown>
 ---
 
 <input
-  class:list={['ui-input', classProp, className]}
+  class:list={[
+    'ui-input',
+    size === 'sm' && 'ui-input--sm',
+    size === 'lg' && 'ui-input--lg',
+    classProp,
+    className
+  ]}
   type={type}
   {...passthrough}
 />

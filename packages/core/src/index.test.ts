@@ -11,6 +11,7 @@ import {
   createDataViewStorageKey,
   createScheduleSlots,
   createScheduleStorageKey,
+  createThemeFromHue,
   createThemePalette,
   expandRecurringScheduleEvent,
   exportThemeCss,
@@ -33,6 +34,7 @@ import {
   parseScheduleEvents,
   parseThemeCss,
   pinDataViewColumn,
+  renderLumenCodeHtml,
   resizeScheduleEvent,
   resizeScheduleEvents,
   saveDataViewState,
@@ -41,7 +43,6 @@ import {
   serializeDataViewState,
   serializeScheduleEvents,
   suggestReadableInk,
-  renderLumenCodeHtml,
   toggleDataViewSelection,
   tokenizeLumenCode,
   tuneThemeContrast,
@@ -279,13 +280,27 @@ describe('lumen product helpers', () => {
   })
 })
 
+  test('derives a full palette from a single hue', () => {
+    const light = createThemeFromHue(280)
+    const dark = createThemeFromHue(280, { scheme: 'dark' })
+    const wrapped = createThemeFromHue(-80)
+
+    expect(light.brand).toBe('280 85% 53%')
+    expect(light.accent).toBe('70 70% 40%')
+    expect(light['surface-muted']).toBe('280 16% 96%')
+    expect(dark.canvas).toBe('280 24% 8%')
+    expect(dark.brand).toBe('280 88% 60%')
+    expect(wrapped.brand).toBe('280 85% 53%')
+    expect(scoreThemeContrast(light).wcagAA).toBe(true)
+  })
+
 describe('lumen theme tokens', () => {
   test('keeps the public theme constants explicit', () => {
     expect(lumenThemeAttribute).toBe('data-theme')
     expect(lumenDarkTheme).toBe('dark')
     expect(lumenLightTheme).toBe('light')
     expect(lumenColors.brand).toMatch(/^\d+ \d+% \d+%$/)
-    expect(lumenGlass.blur).toBe('18px')
+    expect(lumenGlass.blur).toBe('22px')
     expect(lumenGlass.bg).toContain('/')
   })
 

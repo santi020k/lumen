@@ -37,9 +37,11 @@ type Orientation = 'horizontal' | 'vertical'
 
 type SurfaceVariant = 'default' | 'glass'
 
+export type LumenGlassProp = boolean | 'subtle' | 'strong'
+
 interface SurfaceProps {
   'data-surface'?: SurfaceVariant
-  glass?: boolean
+  glass?: LumenGlassProp
   surface?: SurfaceVariant
 }
 
@@ -57,13 +59,17 @@ const emptyStringOptions: string[] = []
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
   variant === defaultVariant ? false : `${base}--${variant}`
 
-const resolveSurface = (surface: SurfaceVariant, glass?: boolean): SurfaceVariant =>
+const resolveSurface = (surface: SurfaceVariant, glass?: LumenGlassProp): SurfaceVariant =>
   glass || surface === 'glass' ? 'glass' : surface
 
-const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: boolean) =>
-  resolveSurface(surface, glass) === 'glass' && `${base}--glass`
+const glassIntensityClass = (glass?: LumenGlassProp) =>
+  glass === 'subtle' ? 'ui-glass-subtle' : glass === 'strong' && 'ui-glass-strong'
 
-const glassClass = (base: string, glass?: boolean) => glass && `${base}--glass`
+const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: LumenGlassProp) =>
+  resolveSurface(surface, glass) === 'glass' && composeClassName(`${base}--glass`, glassIntensityClass(glass))
+
+const glassClass = (base: string, glass?: LumenGlassProp) =>
+  Boolean(glass) && composeClassName(`${base}--glass`, glassIntensityClass(glass))
 
 const normalizeOption = (option: SelectOption): Option =>
   typeof option === 'string' ? { label: option, value: option } : option
@@ -91,7 +97,7 @@ export const Accordion = ({ className, ...props }: AccordionProps) => (
 )
 
 export interface AlertProps extends ComponentPropsWithoutRef<'aside'> {
-  glass?: boolean
+  glass?: LumenGlassProp
   variant?: AlertVariant
 }
 
@@ -119,7 +125,7 @@ export const AlertDialog = ({ className, glass = false, surface = 'default', ...
 )
 
 export interface AgendaProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Agenda = ({ className, glass = false, ...props }: AgendaProps) => (
   <section className={composeClassName('ui-agenda', glassClass('ui-agenda', glass), className)} {...props} />
@@ -138,7 +144,7 @@ export const AspectRatio = ({ className, ratio = '16 / 9', style, ...props }: As
 )
 
 export interface AttachmentProps extends ComponentPropsWithoutRef<'article'> {
-  glass?: boolean
+  glass?: LumenGlassProp
   href?: string
 }
 
@@ -196,7 +202,7 @@ export const Breadcrumb = ({ 'aria-label': ariaLabel = 'Breadcrumb', className, 
 
 export interface BubbleProps extends ComponentPropsWithoutRef<'article'> {
   from?: MessageFrom
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 
 export const Bubble = ({ className, from = 'assistant', glass = false, ...props }: BubbleProps) => (
@@ -208,30 +214,38 @@ export const Bubble = ({ className, from = 'assistant', glass = false, ...props 
 )
 
 export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
+  loading?: boolean
   size?: ButtonSize
   variant?: ButtonVariant
 }
 
 export const Button = ({
+  children,
   className,
   disabled,
+  loading = false,
   size = 'default',
   type = 'button',
   variant = 'default',
   ...props
 }: ButtonProps) => (
   <button
+    aria-busy={loading || undefined}
     className={composeClassName(
       'ui-button',
       `ui-button--${variant}`,
       size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`,
       disabled && 'ui-button--disabled',
+      loading && 'ui-button--loading',
       className
     )}
     disabled={disabled}
     type={type}
     {...props}
-  />
+  >
+    {loading && <span aria-hidden="true" className="ui-spinner" />}
+    {children}
+  </button>
 )
 
 export type ButtonGroupProps = ComponentPropsWithoutRef<'div'>
@@ -240,7 +254,7 @@ export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
 )
 
 export interface CalendarProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Calendar = ({ className, glass = false, ...props }: CalendarProps) => (
   <div className={composeClassName('ui-calendar', glassClass('ui-calendar', glass), className)} {...props} />
@@ -249,7 +263,7 @@ export const Calendar = ({ className, glass = false, ...props }: CalendarProps) 
 export type CardProps<T extends ElementType = 'div'> = PrimitiveProps & {
   'data-variant'?: CardVariant
   as?: T
-  glass?: boolean
+  glass?: LumenGlassProp
   variant?: CardVariant
 }
 
@@ -265,7 +279,7 @@ export const Card = <T extends ElementType = 'div'>({
     className={composeClassName(
       variant === 'muted' && 'ui-card--muted',
       variant === 'interactive' && 'ui-card--interactive',
-      (glass || variant === 'glass') && 'ui-card--glass',
+      (glass || variant === 'glass') && composeClassName('ui-card--glass', glassIntensityClass(glass)),
       className
     )}
     data-variant={variant}
@@ -275,14 +289,14 @@ export const Card = <T extends ElementType = 'div'>({
 )
 
 export interface CarouselProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Carousel = ({ className, glass = false, ...props }: CarouselProps) => (
   <section className={composeClassName('ui-carousel', glassClass('ui-carousel', glass), className)} data-ui-carousel {...props} />
 )
 
 export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Chart = ({ className, glass = false, ...props }: ChartProps) => (
   <figure className={composeClassName('ui-chart', glassClass('ui-chart', glass), className)} {...props} />
@@ -321,6 +335,74 @@ const renderCodeToken = (token: LumenCodeToken) => {
 const renderCodeChildren = (code: string | undefined, children: ReactNode, language?: string) =>
   code === undefined ? children : tokenizeLumenCode(code, language).map(renderCodeToken)
 
+const renderCodeCopyButton = () => (
+  <button
+    aria-label="Copy code to clipboard"
+    className="ui-code__copy"
+    data-ui-code-copy
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      className="ui-code__copy-icon"
+      fill="none"
+      focusable="false"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect height="14" rx="2" ry="2" width="14" x="8" y="8" />
+      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+    </svg>
+    <svg
+      aria-hidden="true"
+      className="ui-code__check-icon"
+      fill="none"
+      focusable="false"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  </button>
+)
+
+interface CodeHeaderOptions {
+  copy: boolean
+  label: ReactNode
+  language: string | undefined
+}
+
+const renderCodeHeader = ({
+  copy,
+  label,
+  language
+}: CodeHeaderOptions) => {
+  if (!copy && !label && !language) return null
+
+  return (
+    <figcaption className="ui-code__header">
+      <span aria-hidden="true" className="ui-code__dots">
+        <span className="ui-code__dot ui-code__dot--red" />
+        <span className="ui-code__dot ui-code__dot--yellow" />
+        <span className="ui-code__dot ui-code__dot--green" />
+      </span>
+      <span className="ui-code__meta">
+        {language && <span className="ui-code__language">{language}</span>}
+        {label && <span className="ui-code__label">{label}</span>}
+      </span>
+      {copy && renderCodeCopyButton()}
+    </figcaption>
+  )
+}
+
 export const Code = ({
   children,
   className,
@@ -336,8 +418,6 @@ export const Code = ({
   const codeChildren = renderCodeChildren(code, children, language)
 
   if (variant === 'block') {
-    const showHeader = Boolean(copy || label || language)
-
     return (
       <figure
         className={composeClassName('ui-code ui-code--block', className)}
@@ -346,57 +426,7 @@ export const Code = ({
         data-ui-code
         {...props}
       >
-        {showHeader && (
-          <figcaption className="ui-code__header">
-            <span aria-hidden="true" className="ui-code__dots">
-              <span className="ui-code__dot ui-code__dot--red" />
-              <span className="ui-code__dot ui-code__dot--yellow" />
-              <span className="ui-code__dot ui-code__dot--green" />
-            </span>
-            <span className="ui-code__meta">
-              {language && <span className="ui-code__language">{language}</span>}
-              {label && <span className="ui-code__label">{label}</span>}
-            </span>
-            {copy && (
-              <button
-                aria-label="Copy code to clipboard"
-                className="ui-code__copy"
-                data-ui-code-copy
-                type="button"
-              >
-                <svg
-                  aria-hidden="true"
-                  className="ui-code__copy-icon"
-                  fill="none"
-                  focusable="false"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect height="14" rx="2" ry="2" width="14" x="8" y="8" />
-                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                </svg>
-                <svg
-                  aria-hidden="true"
-                  className="ui-code__check-icon"
-                  fill="none"
-                  focusable="false"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-              </button>
-            )}
-          </figcaption>
-        )}
+        {renderCodeHeader({ copy, label, language })}
         {highlighted ? children : <pre><code>{codeChildren}</code></pre>}
       </figure>
     )
@@ -528,7 +558,7 @@ export const Combobox = ({
 }
 
 export interface CommandProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Command = ({ className, glass = false, ...props }: CommandProps) => (
   <div className={composeClassName('ui-command', glassClass('ui-command', glass), className)} data-ui-command {...props} />
@@ -550,7 +580,7 @@ export const ColorPicker = ({ className, type = 'color', ...props }: ColorPicker
 )
 
 export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const DataTable = ({ className, glass = false, ...props }: DataTableProps) => (
   <div className={composeClassName('ui-data-table', glassClass('ui-data-table', glass), className)} {...props} />
@@ -605,14 +635,14 @@ export const DropdownMenu = ({ className, glass = false, surface = 'default', ..
 )
 
 export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Empty = ({ className, glass = false, ...props }: EmptyProps) => (
   <section className={composeClassName('ui-empty', glassClass('ui-empty', glass), className)} {...props} />
 )
 
 export interface FieldProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Field = ({ className, glass = false, ...props }: FieldProps) => (
   <div className={composeClassName('ui-field', glassClass('ui-field', glass), className)} {...props} />
@@ -629,9 +659,20 @@ export const HoverCard = ({ className, glass = false, surface = 'default', ...pr
   />
 )
 
-export type InputProps = ComponentPropsWithoutRef<'input'>
-export const Input = ({ className, type = 'text', ...props }: InputProps) => (
-  <input className={composeClassName('ui-input', className)} type={type} {...props} />
+export interface InputProps extends Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
+  size?: 'default' | 'lg' | 'sm'
+}
+export const Input = ({ className, size = 'default', type = 'text', ...props }: InputProps) => (
+  <input
+    className={composeClassName(
+      'ui-input',
+      size === 'sm' && 'ui-input--sm',
+      size === 'lg' && 'ui-input--lg',
+      className
+    )}
+    type={type}
+    {...props}
+  />
 )
 
 export type InputGroupProps = ComponentPropsWithoutRef<'div'>
@@ -667,7 +708,7 @@ export const NumberField = ({ className, type = 'number', ...props }: NumberFiel
 )
 
 export interface ItemProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Item = ({ className, glass = false, ...props }: ItemProps) => (
   <div className={composeClassName('ui-item', glassClass('ui-item', glass), className)} {...props} />
@@ -719,7 +760,7 @@ export const Message = ({ className, from = 'assistant', ...props }: MessageProp
 )
 
 export interface MessageScrollerProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const MessageScroller = ({ className, glass = false, ...props }: MessageScrollerProps) => (
   <div className={composeClassName('ui-message-scroller', glassClass('ui-message-scroller', glass), className)} {...props} />
@@ -825,21 +866,21 @@ export const Resizable = ({ className, ...props }: ResizableProps) => (
 )
 
 export interface RichTextEditorProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const RichTextEditor = ({ className, glass = false, ...props }: RichTextEditorProps) => (
   <section className={composeClassName('ui-rich-text-editor', glassClass('ui-rich-text-editor', glass), className)} data-ui-rich-text-editor {...props} />
 )
 
 export interface ScrollAreaProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const ScrollArea = ({ className, glass = false, ...props }: ScrollAreaProps) => (
   <div className={composeClassName('ui-scroll-area', glassClass('ui-scroll-area', glass), className)} {...props} />
 )
 
 export interface ScheduleProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Schedule = ({ className, glass = false, ...props }: ScheduleProps) => (
   <section className={composeClassName('ui-schedule', glassClass('ui-schedule', glass), className)} data-ui-schedule {...props} />
@@ -931,14 +972,14 @@ export const Switch = ({ className, role = 'switch', ...props }: SwitchProps) =>
 )
 
 export interface TableProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Table = ({ className, glass = false, ...props }: TableProps) => (
   <div className={composeClassName('ui-table-wrap', glassClass('ui-table-wrap', glass), className)} {...props} />
 )
 
 export interface TabsProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Tabs = ({ className, glass = false, ...props }: TabsProps) => (
   <div className={composeClassName('ui-tabs', glassClass('ui-tabs', glass), className)} data-ui-tabs {...props} />
@@ -955,7 +996,7 @@ export const Textarea = ({ className, rows = 4, ...props }: TextareaProps) => (
 )
 
 export interface ThemeBuilderProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const ThemeBuilder = ({ className, glass = false, ...props }: ThemeBuilderProps) => (
   <section className={composeClassName('ui-theme-builder', glassClass('ui-theme-builder', glass), className)} data-ui-theme-builder {...props} />
@@ -1009,14 +1050,14 @@ export const Tooltip = ({ className, ...props }: TooltipProps) => (
 )
 
 export interface TreeProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const Tree = ({ className, glass = false, role = 'tree', ...props }: TreeProps) => (
   <div className={composeClassName('ui-tree', glassClass('ui-tree', glass), className)} role={role} {...props} />
 )
 
 export interface TreeGridProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const TreeGrid = ({ className, glass = false, role = 'treegrid', ...props }: TreeGridProps) => (
   <div className={composeClassName('ui-tree-grid', glassClass('ui-tree-grid', glass), className)} role={role} {...props} />
@@ -1028,7 +1069,7 @@ export const Typography = ({ className, ...props }: TypographyProps) => (
 )
 
 export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: boolean
+  glass?: LumenGlassProp
 }
 export const VirtualList = ({ className, glass = false, ...props }: VirtualListProps) => (
   <div className={composeClassName('ui-virtual-list', glassClass('ui-virtual-list', glass), className)} data-ui-virtual-list {...props} />

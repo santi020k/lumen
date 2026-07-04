@@ -21,7 +21,11 @@ const mergeClassNames = (...classNames: (boolean | string | null | undefined)[])
   composeClassName(...classNames).split(/\s+/).filter(Boolean)
 
 const glassAttributeClasses = (className: string) => ({
-  glass: { true: className },
+  glass: {
+    strong: `${className} ui-glass-strong`,
+    subtle: `${className} ui-glass-subtle`,
+    true: className
+  },
   surface: { glass: className }
 })
 
@@ -29,7 +33,7 @@ const elementConfigs = {
   Accordion: { baseClassName: 'ui-accordion', tagName: 'lumen-accordion' },
   Alert: {
     attributeClasses: {
-      glass: { true: 'ui-alert--glass' },
+      glass: { strong: 'ui-alert--glass ui-glass-strong', subtle: 'ui-alert--glass ui-glass-subtle', true: 'ui-alert--glass' },
       variant: {
         destructive: 'ui-alert--destructive',
         success: 'ui-alert--success',
@@ -42,7 +46,7 @@ const elementConfigs = {
   },
   AlertDialog: {
     attributeClasses: {
-      glass: { true: 'ui-dialog--glass' },
+      glass: { strong: 'ui-dialog--glass ui-glass-strong', subtle: 'ui-dialog--glass ui-glass-subtle', true: 'ui-dialog--glass' },
       surface: { glass: 'ui-dialog--glass' }
     },
     baseClassName: 'ui-dialog ui-alert-dialog',
@@ -92,7 +96,8 @@ const elementConfigs = {
         lg: 'ui-button--lg',
         sm: 'ui-button--sm'
       },
-      disabled: { true: 'ui-button--disabled' }
+      disabled: { true: 'ui-button--disabled' },
+      loading: { true: 'ui-button--loading' }
     },
     baseClassName: 'ui-button',
     defaults: { role: 'button', size: 'default', tabindex: '0', variant: 'default' },
@@ -104,6 +109,8 @@ const elementConfigs = {
   Card: {
     attributeClasses: {
       glass: {
+        strong: 'ui-card--glass ui-glass-strong',
+        subtle: 'ui-card--glass ui-glass-subtle',
         true: 'ui-card--glass'
       },
       variant: {
@@ -136,7 +143,7 @@ const elementConfigs = {
   ColorPicker: { baseClassName: 'ui-color-picker', defaults: { type: 'color' }, tagName: 'lumen-color-picker' },
   ContextMenu: {
     attributeClasses: {
-      glass: { true: 'ui-menu--glass' },
+      glass: { strong: 'ui-menu--glass ui-glass-strong', subtle: 'ui-menu--glass ui-glass-subtle', true: 'ui-menu--glass' },
       surface: { glass: 'ui-menu--glass' }
     },
     baseClassName: 'ui-menu',
@@ -148,7 +155,7 @@ const elementConfigs = {
   DateRangePicker: { baseClassName: 'ui-date-range-picker', defaults: { 'data-ui-date-range-picker': '' }, tagName: 'lumen-date-range-picker' },
   Dialog: {
     attributeClasses: {
-      glass: { true: 'ui-dialog--glass' },
+      glass: { strong: 'ui-dialog--glass ui-glass-strong', subtle: 'ui-dialog--glass ui-glass-subtle', true: 'ui-dialog--glass' },
       surface: { glass: 'ui-dialog--glass' }
     },
     baseClassName: 'ui-dialog',
@@ -158,7 +165,7 @@ const elementConfigs = {
   Direction: { baseClassName: 'ui-direction', defaults: { dir: 'ltr' }, tagName: 'lumen-direction' },
   Drawer: {
     attributeClasses: {
-      glass: { true: 'ui-drawer--glass' },
+      glass: { strong: 'ui-drawer--glass ui-glass-strong', subtle: 'ui-drawer--glass ui-glass-subtle', true: 'ui-drawer--glass' },
       surface: { glass: 'ui-drawer--glass' }
     },
     baseClassName: 'ui-drawer',
@@ -167,7 +174,7 @@ const elementConfigs = {
   },
   DropdownMenu: {
     attributeClasses: {
-      glass: { true: 'ui-menu--glass' },
+      glass: { strong: 'ui-menu--glass ui-glass-strong', subtle: 'ui-menu--glass ui-glass-subtle', true: 'ui-menu--glass' },
       surface: { glass: 'ui-menu--glass' }
     },
     baseClassName: 'ui-menu',
@@ -178,14 +185,14 @@ const elementConfigs = {
   Field: { attributeClasses: glassAttributeClasses('ui-field--glass'), baseClassName: 'ui-field', tagName: 'lumen-field' },
   HoverCard: {
     attributeClasses: {
-      glass: { true: 'ui-hover-card--glass' },
+      glass: { strong: 'ui-hover-card--glass ui-glass-strong', subtle: 'ui-hover-card--glass ui-glass-subtle', true: 'ui-hover-card--glass' },
       surface: { glass: 'ui-hover-card--glass' }
     },
     baseClassName: 'ui-hover-card',
     defaults: { 'data-ui-hover-card': '', surface: 'default' },
     tagName: 'lumen-hover-card'
   },
-  Input: { baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
+  Input: { attributeClasses: { size: { lg: 'ui-input--lg', sm: 'ui-input--sm' } }, baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: { baseClassName: 'ui-input-otp', defaults: { inputmode: 'numeric', maxlength: '6', pattern: '[0-9]*', type: 'text' }, tagName: 'lumen-input-otp' },
   NumberField: { baseClassName: 'ui-input ui-number-field', defaults: { type: 'number' }, tagName: 'lumen-number-field' },
@@ -206,7 +213,7 @@ const elementConfigs = {
   },
   Menubar: {
     attributeClasses: {
-      glass: { true: 'ui-menubar--glass' },
+      glass: { strong: 'ui-menubar--glass ui-glass-strong', subtle: 'ui-menubar--glass ui-glass-subtle', true: 'ui-menubar--glass' },
       surface: { glass: 'ui-menubar--glass' }
     },
     baseClassName: 'ui-menubar',
@@ -225,10 +232,10 @@ const elementConfigs = {
     tagName: 'lumen-message'
   },
   MessageScroller: { attributeClasses: glassAttributeClasses('ui-message-scroller--glass'), baseClassName: 'ui-message-scroller', tagName: 'lumen-message-scroller' },
-  NativeSelect: { baseClassName: 'ui-select', tagName: 'lumen-native-select' },
+  NativeSelect: { attributeClasses: { size: { lg: 'ui-select--lg', sm: 'ui-select--sm' } }, baseClassName: 'ui-select', tagName: 'lumen-native-select' },
   NavigationMenu: {
     attributeClasses: {
-      glass: { true: 'ui-navigation-menu--glass' },
+      glass: { strong: 'ui-navigation-menu--glass ui-glass-strong', subtle: 'ui-navigation-menu--glass ui-glass-subtle', true: 'ui-navigation-menu--glass' },
       surface: { glass: 'ui-navigation-menu--glass' }
     },
     baseClassName: 'ui-navigation-menu',
@@ -238,7 +245,7 @@ const elementConfigs = {
   Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
   Popover: {
     attributeClasses: {
-      glass: { true: 'ui-popover--glass' },
+      glass: { strong: 'ui-popover--glass ui-glass-strong', subtle: 'ui-popover--glass ui-glass-subtle', true: 'ui-popover--glass' },
       surface: { glass: 'ui-popover--glass' }
     },
     baseClassName: 'ui-popover',
@@ -252,7 +259,7 @@ const elementConfigs = {
   ScrollArea: { attributeClasses: glassAttributeClasses('ui-scroll-area--glass'), baseClassName: 'ui-scroll-area', tagName: 'lumen-scroll-area' },
   Schedule: { attributeClasses: glassAttributeClasses('ui-schedule--glass'), baseClassName: 'ui-schedule', defaults: { 'data-ui-schedule': '' }, tagName: 'lumen-schedule' },
   SearchField: { baseClassName: 'ui-input ui-search-field', defaults: { type: 'search' }, tagName: 'lumen-search-field' },
-  Select: { baseClassName: 'ui-select', tagName: 'lumen-select' },
+  Select: { attributeClasses: { size: { lg: 'ui-select--lg', sm: 'ui-select--sm' } }, baseClassName: 'ui-select', tagName: 'lumen-select' },
   Separator: {
     attributeClasses: {
       orientation: {
@@ -266,7 +273,7 @@ const elementConfigs = {
   },
   Sheet: {
     attributeClasses: {
-      glass: { true: 'ui-sheet--glass' },
+      glass: { strong: 'ui-sheet--glass ui-glass-strong', subtle: 'ui-sheet--glass ui-glass-subtle', true: 'ui-sheet--glass' },
       surface: { glass: 'ui-sheet--glass' }
     },
     baseClassName: 'ui-sheet',
@@ -275,7 +282,7 @@ const elementConfigs = {
   },
   Sidebar: {
     attributeClasses: {
-      glass: { true: 'ui-sidebar--glass' },
+      glass: { strong: 'ui-sidebar--glass ui-glass-strong', subtle: 'ui-sidebar--glass ui-glass-subtle', true: 'ui-sidebar--glass' },
       surface: { glass: 'ui-sidebar--glass' }
     },
     baseClassName: 'ui-sidebar',

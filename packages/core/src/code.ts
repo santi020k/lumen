@@ -81,7 +81,6 @@ const jsTypes = new Set([
 
 const jsTokenPattern = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b\d[\d._]*\b|\b[A-Za-z_$][\w$]*\b|[=+\-*%<>!?:.,;()[\]{}|&/]+/g
 const leadingWhitespacePattern = /^[\t ]*/
-
 const normalizeLanguage = (language = '') => language.trim().toLowerCase()
 const startsWithIdentifierPattern = /^[A-Za-z_$]/
 const startsWithNumberPattern = /^\d/
@@ -92,6 +91,7 @@ export const normalizeLumenCode = (code: string) => {
   const lines = code.replaceAll(/\r\n?/g, '\n').split('\n')
 
   while (lines[0]?.trim() === '') lines.shift()
+
   while (lines.at(-1)?.trim() === '') lines.pop()
 
   const indentation = lines
@@ -105,11 +105,14 @@ export const normalizeLumenCode = (code: string) => {
 
 const getTokenKind = (value: string): LumenCodeTokenKind | undefined => {
   if (startsWithCommentPattern.exec(value)) return 'comment'
+
   if (startsWithStringPattern.exec(value)) return 'string'
+
   if (startsWithNumberPattern.exec(value)) return 'accent'
 
   if (startsWithIdentifierPattern.exec(value)) {
     if (jsKeywords.has(value)) return 'keyword'
+
     if (jsTypes.has(value)) return 'type'
 
     return undefined
@@ -131,10 +134,11 @@ export const tokenizeLumenCode = (code: string, language = ''): LumenCodeToken[]
   if (!shouldTokenizeJs) return source ? [{ start: 0, value: source }] : []
 
   for (const match of source.matchAll(jsTokenPattern)) {
-    const index = match.index ?? offset
-    const value = match[0] ?? ''
+    const index = match.index
+    const value = match[0]
 
     push(source.slice(offset, index), offset)
+
     push(value, index, getTokenKind(value))
 
     offset = index + value.length

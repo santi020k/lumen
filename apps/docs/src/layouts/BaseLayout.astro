@@ -117,7 +117,8 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 </html>
 
 <script>
-  let docsNavigationScrollPosition: { left: number, top: number } | undefined
+  let shouldScrollDocsContentToTop = false
+  let docsSidebarScrollTop = 0
   const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark'] as const
   const themeFamilies = ['santi020k', 'lumen'] as const
 
@@ -234,6 +235,10 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     sourceElement instanceof Element && Boolean(sourceElement.closest('[data-docs-nav]'))
   )
 
+  const getDocsSidebar = (targetDocument = document): HTMLElement | null => (
+    targetDocument.querySelector('[data-docs-sidebar]')
+  )
+
   const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
 
   applyTheme(getPreferredTheme())
@@ -286,15 +291,14 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 
   document.addEventListener('astro:before-preparation', event => {
     if (!('sourceElement' in event) || !isDocsNavigation(event.sourceElement)) {
-      docsNavigationScrollPosition = undefined
+      shouldScrollDocsContentToTop = false
+      docsSidebarScrollTop = 0
 
       return
     }
 
-    docsNavigationScrollPosition = {
-      left: window.scrollX,
-      top: window.scrollY
-    }
+    shouldScrollDocsContentToTop = true
+    docsSidebarScrollTop = getDocsSidebar()?.scrollTop ?? 0
   })
 
   document.addEventListener('astro:before-swap', event => {
@@ -306,14 +310,21 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   document.addEventListener('astro:after-swap', () => {
     applyTheme(getPreferredTheme())
 
-    if (!docsNavigationScrollPosition) return
+    if (!shouldScrollDocsContentToTop) return
 
     window.scrollTo({
       behavior: 'instant',
-      left: docsNavigationScrollPosition.left,
-      top: docsNavigationScrollPosition.top
+      left: 0,
+      top: 0
     })
 
-    docsNavigationScrollPosition = undefined
+    const docsSidebar = getDocsSidebar()
+
+    if (docsSidebar) {
+      docsSidebar.scrollTop = docsSidebarScrollTop
+    }
+
+    shouldScrollDocsContentToTop = false
+    docsSidebarScrollTop = 0
   })
 </script>

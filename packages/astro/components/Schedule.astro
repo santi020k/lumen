@@ -4,13 +4,13 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'section'> {
   class?: string
   className?: string
-  glass?: boolean
+  glass?: boolean | 'subtle' | 'strong'
 }
 
 const { class: classProp = '', className = '', glass = false, ...rest } = Astro.props
 const passthrough = rest as Record<string, unknown>
 ---
 
-<section class:list={['ui-schedule', glass && 'ui-schedule--glass', classProp, className]} data-ui-schedule {...passthrough}>
+<section class:list={['ui-schedule', glass && 'ui-schedule--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong', classProp, className]} data-ui-schedule {...passthrough}>
   <slot />
 </section>

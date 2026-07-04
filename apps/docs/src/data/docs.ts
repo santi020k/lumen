@@ -334,9 +334,9 @@ const surfaceApiRow = apiRow(
 
 const glassApiRow = apiRow(
   'glass',
-  'boolean',
+  'boolean | "subtle" | "strong"',
   'false',
-  'Applies the tokenized glass surface treatment with backdrop-filter fallbacks.'
+  'Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; "subtle" and "strong" adjust the fill intensity.'
 )
 
 const disclosureTriggerApiRow = apiRow(
@@ -380,6 +380,7 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Button: [
     apiRow('variant', '"default" | "secondary" | "outline" | "ghost" | "link" | "destructive"', '"default"', 'Controls the button emphasis.'),
     apiRow('size', '"default" | "sm" | "lg" | "icon"', '"default"', 'Controls button height, padding, and icon-only sizing.'),
+    apiRow('loading', 'boolean', 'false', 'Shows a spinner, sets aria-busy, and blocks pointer interaction while pending.'),
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
   ],
   Card: [
@@ -438,7 +439,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     disclosureTriggerApiRow
   ],
   Input: [
-    apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
+    apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.'),
+    apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the field height and font size.')
   ],
   InputOTP: [
     apiRow('length', 'number', '6', 'Sets the default maxlength for the one-time code.'),

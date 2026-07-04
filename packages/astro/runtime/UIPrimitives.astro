@@ -19,9 +19,31 @@
 
   const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
 
+  /**
+   * Top-layer mode: when the browser supports both the Popover API and CSS
+   * anchor positioning, floating panels are promoted to [popover] so they
+   * escape overflow clipping and get collision-aware placement via
+   * position-try-fallbacks. Other browsers keep the absolute fallback.
+   */
+  const supportsAnchoredPopovers =
+    typeof HTMLElement !== 'undefined' &&
+    'showPopover' in HTMLElement.prototype &&
+    typeof CSS !== 'undefined' &&
+    CSS.supports('anchor-name: --ui-anchor') &&
+    CSS.supports('position-area: block-end')
+
+  let uiAnchorCount = 0
+
+  const nextAnchorName = (): string => `--ui-anchor-${++uiAnchorCount}`
+
+  const isElementVisible = (element: HTMLElement): boolean =>
+    typeof element.checkVisibility === 'function'
+      ? element.checkVisibility()
+      : element.offsetParent !== null
+
   const getFocusable = (root: ParentNode): HTMLElement[] =>
     [...root.querySelectorAll<HTMLElement>(focusableSelector)]
-      .filter(element => !element.hasAttribute('hidden') && element.offsetParent !== null)
+      .filter(element => !element.hasAttribute('hidden') && isElementVisible(element))
 
   const getPanel = (trigger: HTMLElement): HTMLElement | null => {
     const controls = trigger.getAttribute('aria-controls')
@@ -53,7 +75,19 @@
   const setOpen = (trigger: HTMLElement, panel: HTMLElement, open: boolean): void => {
     trigger.setAttribute('aria-expanded', String(open))
 
-    panel.hidden = !open
+    if (panel.hasAttribute('popover')) {
+      try {
+        if (open) {
+          panel.showPopover()
+        } else {
+          panel.hidePopover()
+        }
+      } catch {
+        /* popover already in requested state */
+      }
+    } else {
+      panel.hidden = !open
+    }
 
     panel.dataset.state = open ? 'open' : 'closed'
   }
@@ -84,6 +118,18 @@
 
       trigger.setAttribute('aria-haspopup', trigger.getAttribute('aria-haspopup') ?? 'menu')
 
+      if (supportsAnchoredPopovers) {
+        const anchorName = nextAnchorName()
+
+        panel.hidden = false
+
+        panel.setAttribute('popover', 'manual')
+
+        trigger.style.setProperty('anchor-name', anchorName)
+
+        panel.style.setProperty('position-anchor', anchorName)
+      }
+
       setOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
 
       trigger.addEventListener('click', () => {
@@ -100,11 +146,135 @@
         getFocusable(panel)[0]?.focus()
       })
 
+      panel.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          event.preventDefault()
+
+          setOpen(trigger, panel, false)
+
+          trigger.focus({ preventScroll: true })
+
+          return
+        }
+
+        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
+
+        const items = getFocusable(panel)
+
+        if (!items.length) return
+
+        event.preventDefault()
+
+        const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+        const nextItem = items[getLoopedIndex(event.key, Math.max(0, currentIndex), items.length, ['ArrowDown'])]
+
+        nextItem?.focus()
+      })
+
       if (root.hasAttribute('data-ui-hover-card')) {
         root.addEventListener('mouseenter', () => setOpen(trigger, panel, true))
 
         root.addEventListener('mouseleave', () => setOpen(trigger, panel, false))
       }
+    }
+  }
+
+  const initTooltips = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('.ui-tooltip, [data-ui-tooltip]')) {
+      if (root.dataset.uiTooltipBound === 'true') continue
+
+      const tip = root.querySelector<HTMLElement>('[role="tooltip"]')
+
+      if (!tip) continue
+
+      root.dataset.uiTooltipBound = 'true'
+
+      if (supportsAnchoredPopovers) {
+        const anchorName = nextAnchorName()
+
+        tip.setAttribute('popover', 'manual')
+
+        root.style.setProperty('anchor-name', anchorName)
+
+        tip.style.setProperty('position-anchor', anchorName)
+
+        let showTimer = 0
+
+        const show = (delay: number): void => {
+          window.clearTimeout(showTimer)
+
+          showTimer = window.setTimeout(() => {
+            try {
+              tip.showPopover()
+            } catch {
+              /* already open */
+            }
+          }, delay)
+        }
+
+        const hide = (): void => {
+          window.clearTimeout(showTimer)
+
+          try {
+            tip.hidePopover()
+          } catch {
+            /* already closed */
+          }
+        }
+
+        root.addEventListener('mouseenter', () => show(250))
+
+        root.addEventListener('mouseleave', hide)
+
+        root.addEventListener('focusin', () => show(0))
+
+        root.addEventListener('focusout', hide)
+
+        root.addEventListener('keydown', event => {
+          if (event.key === 'Escape') hide()
+        })
+      } else {
+        /* WCAG 1.4.13: hover/focus tooltips must be dismissible with Escape. */
+        root.addEventListener('keydown', event => {
+          if (event.key !== 'Escape') return
+
+          tip.style.visibility = 'hidden'
+        })
+
+        root.addEventListener('mouseleave', () => {
+          tip.style.removeProperty('visibility')
+        })
+
+        root.addEventListener('focusout', () => {
+          tip.style.removeProperty('visibility')
+        })
+      }
+    }
+  }
+
+  const initGlassTracking = (scope: ParentNode): void => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    for (const element of scope.querySelectorAll<HTMLElement>('[data-ui-glass-track]')) {
+      if (element.dataset.uiGlassBound === 'true') continue
+
+      element.dataset.uiGlassBound = 'true'
+
+      element.addEventListener('pointermove', event => {
+        const rect = element.getBoundingClientRect()
+
+        if (!rect.width || !rect.height) return
+
+        element.style.setProperty('--glass-x', `${(((event.clientX - rect.left) / rect.width) * 100).toFixed(1)}%`)
+
+        element.style.setProperty('--glass-y', `${(((event.clientY - rect.top) / rect.height) * 100).toFixed(1)}%`)
+      })
+
+      element.addEventListener('pointerleave', () => {
+        element.style.removeProperty('--glass-x')
+
+        element.style.removeProperty('--glass-y')
+      })
     }
   }
 
@@ -729,6 +899,60 @@
 
       const exportButton = root.querySelector<HTMLElement>('[data-ui-theme-export]')
       const output = root.querySelector<HTMLTextAreaElement | HTMLOutputElement>('[data-ui-theme-output]')
+      const hueInput = root.querySelector<HTMLInputElement>('[data-ui-theme-hue]')
+
+      hueInput?.addEventListener('input', () => {
+        const hue = ((Number(hueInput.value) % 360) + 360) % 360
+
+        if (Number.isNaN(hue)) return
+
+        const target = root.dataset.uiThemeTarget
+          ? document.querySelector<HTMLElement>(root.dataset.uiThemeTarget)
+          : document.documentElement
+
+        if (!target) return
+
+        const isDark = document.documentElement.dataset.theme?.includes('dark') ?? false
+        const accentHue = (hue + 150) % 360
+        const tokens: Record<string, string> = isDark
+          ? {
+              accent: `${accentHue} 70% 48%`,
+              brand: `${hue} 88% 60%`,
+              'brand-soft': `${hue} 80% 16%`,
+              'brand-solid': `${hue} 88% 46%`,
+              canvas: `${hue} 24% 8%`,
+              ink: `${hue} 20% 96%`,
+              'ink-muted': `${hue} 10% 58%`,
+              'ink-soft': `${hue} 14% 77%`,
+              line: `${hue} 14% 26%`,
+              surface: `${hue} 18% 11%`,
+              'surface-muted': `${hue} 16% 15%`,
+              'surface-strong': `${hue} 14% 22%`
+            }
+          : {
+              accent: `${accentHue} 70% 40%`,
+              brand: `${hue} 85% 53%`,
+              'brand-soft': `${hue} 90% 96%`,
+              'brand-solid': `${hue} 85% 45%`,
+              canvas: `${hue} 20% 99%`,
+              ink: `${hue} 40% 11%`,
+              'ink-muted': `${hue} 10% 48%`,
+              'ink-soft': `${hue} 14% 32%`,
+              line: `${hue} 14% 86%`,
+              surface: `${hue} 20% 100%`,
+              'surface-muted': `${hue} 16% 96%`,
+              'surface-strong': `${hue} 14% 91%`
+            }
+
+        for (const [token, value] of Object.entries(tokens)) {
+          target.style.setProperty(`--${token}`, value)
+        }
+
+        root.dispatchEvent(new CustomEvent('ui:theme-change', {
+          bubbles: true,
+          detail: { hue, tokens }
+        }))
+      })
 
       exportButton?.addEventListener('click', async () => {
         const target = root.dataset.uiThemeTarget ? document.querySelector<HTMLElement>(root.dataset.uiThemeTarget) : document.documentElement
@@ -808,7 +1032,11 @@
 
       viewport.append(toast)
 
-      window.setTimeout(() => toast.remove(), 5000)
+      window.setTimeout(() => {
+        toast.dataset.state = 'closed'
+
+        window.setTimeout(() => toast.remove(), 240)
+      }, 5000)
     })
   }
 
@@ -842,6 +1070,10 @@
     initRichTextEditors(scope)
 
     initThemeBuilders(scope)
+
+    initTooltips(scope)
+
+    initGlassTracking(scope)
 
     initToasts()
   }

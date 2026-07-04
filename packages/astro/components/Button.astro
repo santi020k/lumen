@@ -4,6 +4,7 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'button'> {
   class?: string
   className?: string
+  loading?: boolean
   size?: 'default' | 'sm' | 'lg' | 'icon'
   variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
 }
@@ -12,6 +13,7 @@ const {
   class: classProp = '',
   className = '',
   disabled,
+  loading = false,
   size = 'default',
   type = 'button',
   variant = 'default',
@@ -35,12 +37,15 @@ const passthrough = rest as Record<string, unknown>
     size === 'lg' && 'ui-button--lg',
     size === 'icon' && 'ui-button--icon',
     disabled && 'ui-button--disabled',
+    loading && 'ui-button--loading',
     classProp,
     className
   ]}
+  aria-busy={loading || undefined}
   disabled={disabled}
   type={type}
   {...passthrough}
 >
+  {loading && <span aria-hidden="true" class="ui-spinner"></span>}
   <slot />
 </button>

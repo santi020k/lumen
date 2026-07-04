@@ -21,14 +21,19 @@ export const lumenColors = {
 } as const
 
 export const lumenGlass = {
-  bg: '0 0% 100% / 0.64',
-  bgStrong: '0 0% 100% / 0.78',
-  bgSubtle: '0 0% 100% / 0.46',
-  blur: '18px',
-  border: '220 30% 100% / 0.58',
-  highlight: '0 0% 100% / 0.72',
-  saturate: '1.35',
-  shadow: '0 20px 60px hsl(222 47% 11% / 0.16)'
+  bg: '0 0% 100% / 0.55',
+  bgStrong: '0 0% 100% / 0.72',
+  bgSubtle: '0 0% 100% / 0.38',
+  blur: '22px',
+  border: '220 30% 100% / 0.55',
+  brightness: '1.05',
+  edge: '0 0% 100% / 0.9',
+  edgeSoft: '0 0% 100% / 0.34',
+  highlight: '0 0% 100% / 0.85',
+  refraction: '221 83% 53% / 0.08',
+  saturate: '1.7',
+  shade: '222 47% 11% / 0.07',
+  shadow: '0 1px 2px hsl(222 47% 11% / 0.08), 0 12px 32px hsl(222 47% 11% / 0.12), 0 32px 80px hsl(222 47% 11% / 0.14)'
 } as const
 
 export const composeClassName = (...classes: (boolean | null | string | undefined)[]) =>

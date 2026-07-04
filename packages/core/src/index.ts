@@ -60,11 +60,13 @@ export {
   scheduleEventsOverlap,
   serializeScheduleEvents} from './schedule.js'
 export {
+  createThemeFromHue,
   createThemePalette,
   exportThemeCss,
   getContrastRatio,
   type LumenContrastScore,
   type LumenThemeContrastSuggestion,
+  type LumenThemeFromHueOptions,
   type LumenThemeTokens,
   lumenTokenNames,
   mergeThemeTokens,

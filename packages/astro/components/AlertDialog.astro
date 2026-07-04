@@ -4,7 +4,7 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'dialog'> {
   class?: string
   className?: string
-  glass?: boolean
+  glass?: boolean | 'subtle' | 'strong'
   surface?: 'default' | 'glass'
 }
 
@@ -26,6 +26,8 @@ const resolvedSurface = glass || surface === 'glass' ? 'glass' : surface
   class:list={[
     'ui-dialog ui-alert-dialog',
     resolvedSurface === 'glass' && 'ui-dialog--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong',
     classProp,
     className
   ]}
