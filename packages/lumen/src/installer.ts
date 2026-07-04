@@ -1,5 +1,7 @@
 import {
+  access,
   mkdir,
+  readFile,
   writeFile
 } from 'node:fs/promises'
 import {
@@ -9,6 +11,8 @@ import {
 
 import {
   getLumenRegistryItem,
+  type LumenRegistry,
+  type LumenRegistryFile,
   type LumenRegistryItem
 } from './registry.js'
 
@@ -18,14 +22,27 @@ interface LumenRecipeFile {
 }
 
 export interface LumenAddOptions {
+  conflict?: 'error' | 'merge' | 'overwrite' | 'skip'
   cwd?: string
   dryRun?: boolean
+  force?: boolean
+  merge?: (conflict: LumenMergeConflict) => string
+  registry?: LumenRegistry
+}
+
+export interface LumenMergeConflict {
+  existing: string
+  incoming: string
+  path: string
 }
 
 export interface LumenAddResult {
+  added: string[]
   dryRun: boolean
   files: string[]
   item: LumenRegistryItem
+  merged: string[]
+  skipped: string[]
 }
 
 const recipeFiles: Record<string, LumenRecipeFile[]> = {
@@ -205,13 +222,40 @@ Use @santi020k/lumen-astro for Astro apps, import @santi020k/lumen-astro/styles.
 }
 
 const getFilesForItem = (item: LumenRegistryItem): LumenRecipeFile[] =>
-  recipeFiles[item.name] ?? []
+  recipeFiles[item.name] ??
+  item.files
+    ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
+    .map(file => ({
+      path: file.path,
+      source: file.source
+    })) ??
+  []
+
+const fileExists = async (path: string): Promise<boolean> => {
+  try {
+    await access(path)
+
+    return true
+  } catch {
+    return false
+  }
+}
+
+const mergeFileSource = ({
+  existing,
+  incoming,
+  path
+}: LumenMergeConflict): string => {
+  if (existing.includes(incoming.trim())) return existing
+
+  return `${existing.trimEnd()}\n\n/* Lumen merge: ${path} */\n${incoming}`
+}
 
 export const addLumenRegistryItem = async (
   name: string,
   options: LumenAddOptions = {}
 ): Promise<LumenAddResult> => {
-  const item = getLumenRegistryItem(name)
+  const item = options.registry?.items.find(registryItem => registryItem.name === name) ?? getLumenRegistryItem(name)
 
   if (!item) {
     throw new Error(`Unknown Lumen registry item: ${name}`)
@@ -224,19 +268,52 @@ export const addLumenRegistryItem = async (
     throw new Error(`Registry item cannot be installed yet: ${name}`)
   }
 
+  const added: string[] = []
+  const conflict = options.force ? 'overwrite' : options.conflict ?? 'skip'
+  const merged: string[] = []
+  const skipped: string[] = []
+
   for (const file of files) {
     const target = join(cwd, file.path)
+    const exists = await fileExists(target)
+
+    if (exists && conflict === 'error') {
+      throw new Error(`Refusing to overwrite existing file: ${file.path}`)
+    }
+
+    if (exists && conflict === 'skip') {
+      skipped.push(file.path)
+
+      continue
+    }
+
+    const source = exists && conflict === 'merge'
+      ? (options.merge ?? mergeFileSource)({
+        existing: await readFile(target, 'utf8'),
+        incoming: file.source,
+        path: file.path
+      })
+      : file.source
 
     if (!options.dryRun) {
       await mkdir(dirname(target), { recursive: true })
 
-      await writeFile(target, file.source, 'utf8')
+      await writeFile(target, source, 'utf8')
+    }
+
+    if (exists && conflict === 'merge') {
+      merged.push(file.path)
+    } else {
+      added.push(file.path)
     }
   }
 
   return {
+    added,
     dryRun: Boolean(options.dryRun),
     files: files.map(file => file.path),
-    item
+    item,
+    merged,
+    skipped
   }
 }

@@ -118,14 +118,31 @@ The shared catalog includes:
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.
+  Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from
+  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and
+  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with
+  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any
+  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for
+  snap-to-grid resize handles.
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
   collection workflows. `Tree` and `TreeGrid` use roving keyboard focus, and `VirtualList` emits
-  `ui:virtual-list-range` as the rendered range changes.
+  `ui:virtual-list-range` as the rendered range changes. Use `createDataViewState`,
+  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for
+  saved views, filtering, sorting, pagination, and virtualization math. Use
+  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should
+  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,
+  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when
+  connecting dense views to router state or server-backed data.
 - Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export
   tools. Add `data-ui-theme-export` and `data-ui-theme-output` to copy the current CSS token block.
+  Use `createThemePalette`, `exportThemeCss`, `parseThemeCss`, and `scoreThemeContrast` for theme
+  import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`, and
+  `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
   Controls with `data-ui-editor-command` dispatch browser editing commands and emit
-  `ui:editor-command`.
+  `ui:editor-command`. For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external
+  editor package in the app and bridge toolbar buttons through the emitted command event instead of
+  adding the editor engine to Lumen.
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
   and `TagGroup` when forms need more than plain text inputs.
 
@@ -137,6 +154,14 @@ ships a small `lumen` binary:
 ```bash
 lumen list
 lumen show scheduler
+lumen add scheduler
+lumen add scheduler --dry-run
+lumen add scheduler --fail-on-conflict
+lumen add scheduler --force
+lumen add scheduler --merge
+lumen list --registry ./registry/lumen.registry.json
+lumen add custom-recipe --registry ./registry/custom.registry.json
+lumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token "$TOKEN"
 lumen install
 ```
 

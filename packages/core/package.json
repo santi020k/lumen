@@ -23,6 +23,18 @@
       "types": "./dist/components.d.ts",
       "import": "./dist/components.js"
     },
+    "./data": {
+      "types": "./dist/data.d.ts",
+      "import": "./dist/data.js"
+    },
+    "./schedule": {
+      "types": "./dist/schedule.d.ts",
+      "import": "./dist/schedule.js"
+    },
+    "./theme": {
+      "types": "./dist/theme.d.ts",
+      "import": "./dist/theme.js"
+    },
     "./package.json": "./package.json"
   },
   "files": ["dist", "README.md", "LICENSE"],

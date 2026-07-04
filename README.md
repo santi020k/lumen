@@ -66,4 +66,7 @@ component catalog, setup rules, recipes, and installable file groups. The curren
 [docs/feature-roadmap.md](docs/feature-roadmap.md).
 
 The umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for
-listing recipes, showing recipe contents, and printing install commands.
+listing recipes, showing recipe contents, printing install commands, loading alternate registry
+manifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge
+incoming recipe files with existing files, `--fail-on-conflict` for CI, or `--registry-token` /
+`LUMEN_REGISTRY_TOKEN` for private remote registries.

@@ -1,21 +1,38 @@
 import {
   addLumenRegistryItem,
   getLumenRegistryItem,
-  lumenRegistry
-} from './registry.js'
+  loadLumenRegistry,
+  type LumenRegistry,
+  lumenRegistry,
+  type LumenRegistryItem} from './registry.js'
 
 const args = process.argv.slice(2)
 const [command = 'help', name] = args
 const dryRun = args.includes('--dry-run')
+const failOnConflict = args.includes('--fail-on-conflict')
+const force = args.includes('--force')
+const merge = args.includes('--merge')
 const cwdIndex = args.indexOf('--cwd')
 const cwd = cwdIndex >= 0 ? args[cwdIndex + 1] : undefined
+const registryIndex = args.indexOf('--registry')
+const registrySource = registryIndex >= 0 ? args[registryIndex + 1] : undefined
+const registryTokenIndex = args.indexOf('--registry-token')
+const registryToken = registryTokenIndex >= 0 ? args[registryTokenIndex + 1] : process.env.LUMEN_REGISTRY_TOKEN
+let conflict: 'error' | 'merge' | 'skip' = 'skip'
 
-const formatList = () => lumenRegistry.items
+if (failOnConflict) {
+  conflict = 'error'
+} else if (merge) {
+  conflict = 'merge'
+}
+
+const formatList = (registry: LumenRegistry = lumenRegistry) => registry.items
   .map(item => `${item.name} (${item.type})`)
   .join('\n')
 
-const formatItem = (itemName: string) => {
-  const item = getLumenRegistryItem(itemName)
+const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) => {
+  const item: LumenRegistryItem | undefined =
+    registry.items.find(registryItem => registryItem.name === itemName) ?? getLumenRegistryItem(itemName)
 
   if (!item) {
     process.exitCode = 1
@@ -32,7 +49,7 @@ const formatItem = (itemName: string) => {
   }
 
   if (item.files?.length) {
-    lines.push(`files: ${item.files.join(', ')}`)
+    lines.push(`files: ${item.files.map(file => typeof file === 'string' ? file : file.path).join(', ')}`)
   }
 
   return lines.join('\n')
@@ -50,26 +67,43 @@ const help = [
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
   '  --dry-run              Print files without writing them',
+  '  --fail-on-conflict     Exit if a target recipe file already exists',
+  '  --force                Overwrite existing recipe files',
+  '  --merge                Merge recipe files with existing files',
+  '  --registry <source>    Load list/show data from a local or remote registry JSON file',
+  '  --registry-token <key> Use a bearer token for private remote registries',
   ''
 ].join('\n')
 
 const run = async () => {
   let output = help
 
+  const registry = registrySource
+    ? await loadLumenRegistry(registrySource, registryToken ? { token: registryToken } : {})
+    : lumenRegistry
+
   if (command === 'list') {
-    output = formatList()
+    output = formatList(registry)
   }
 
   if (command === 'show' && name) {
-    output = formatItem(name)
+    output = formatItem(name, registry)
   }
 
   if (command === 'add' && name) {
-    const result = await addLumenRegistryItem(name, { cwd, dryRun })
+    const result = await addLumenRegistryItem(name, {
+      ...(cwd ? { cwd } : {}),
+      conflict,
+      dryRun,
+      force,
+      registry
+    })
 
     output = [
       `${result.dryRun ? 'Would add' : 'Added'} ${result.item.name}`,
-      ...result.files.map(file => `- ${file}`)
+      ...result.added.map(file => `- ${file}`),
+      ...result.merged.map(file => `- merged existing ${file}`),
+      ...result.skipped.map(file => `- skipped existing ${file}`)
     ].join('\n')
   }
 
@@ -80,7 +114,7 @@ const run = async () => {
   process.stdout.write(`${output}\n`)
 }
 
-run().catch(error => {
+run().catch((error: unknown) => {
   process.exitCode = 1
 
   process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`)
