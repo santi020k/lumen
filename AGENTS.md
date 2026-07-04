@@ -17,8 +17,9 @@ the other packages adapt or expose shared pieces.
 - `packages/lumen` is the umbrella package and public package map.
 - `apps/docs` is the Astro documentation and demo site.
 
-Use [README.md](README.md) for the public overview and [docs/brand-guidelines.md](docs/brand-guidelines.md)
-for voice and visual guidance.
+Use [README.md](README.md) for the public overview, [docs/ai-usage.md](docs/ai-usage.md) for
+AI-facing consumption examples, and [docs/brand-guidelines.md](docs/brand-guidelines.md) for voice
+and visual guidance.
 
 ## Working Rules
 
@@ -67,7 +68,7 @@ before release-oriented work or broad cross-package changes.
 
 - The root README explains what Lumen is and how to start.
 - Package READMEs explain package-specific install and usage details.
+- AI usage examples for downstream app generation live in [docs/ai-usage.md](docs/ai-usage.md).
 - Brand guidance lives only in [docs/brand-guidelines.md](docs/brand-guidelines.md).
 - Contributor workflow lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 - Tool-specific AI files should be tiny pointers back to this file.
-

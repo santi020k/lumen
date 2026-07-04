@@ -9,7 +9,7 @@ const safeDecodeURIComponent = (value: string) => {
 }
 
 export const getSocialImageSlug = (pathname: string) => pathname
-  .replace(/^\/+|\/+$/g, '')
+  .replaceAll(/^\/+|\/+$/g, '')
   .split('/')
   .filter(Boolean)
   .map(segment => encodeURIComponent(safeDecodeURIComponent(segment)).replaceAll('%', '~'))

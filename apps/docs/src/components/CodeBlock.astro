@@ -1,10 +1,10 @@
 ---
 import { Code } from 'astro:components'
 
+import type { ComponentProps } from 'astro/types'
+
 import santi020kDark from '../lib/shiki/santi020k-dark.json'
 import santi020kLight from '../lib/shiki/santi020k-light.json'
-
-import type { ComponentProps } from 'astro/types'
 
 type CodeProps = ComponentProps<typeof Code>
 
@@ -15,11 +15,11 @@ interface Props {
 }
 
 // JSON imports widen literal fields (e.g. `type: "dark"` becomes `string`), so the
-// VS Code theme payloads need a double assertion to satisfy Shiki's theme types.
+// VS Code theme payloads need a double assertion to satisfy the highlighter theme types.
 const themes = {
   dark: santi020kDark,
   light: santi020kLight
-} as unknown as CodeProps['themes']
+} as unknown as NonNullable<CodeProps['themes']>
 
 const { code, lang = 'plaintext', title } = Astro.props
 const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
@@ -79,15 +79,18 @@ const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
 <script>
   const COPIED_CLASS = 'docs-code-block__copy--copied'
   const RESET_DELAY = 2000
-
   let liveRegion: HTMLElement | undefined
 
   const getLiveRegion = () => {
     if (!liveRegion) {
       liveRegion = document.createElement('div')
+
       liveRegion.setAttribute('aria-live', 'polite')
+
       liveRegion.setAttribute('aria-atomic', 'true')
+
       liveRegion.className = 'sr-only'
+
       document.body.append(liveRegion)
     }
 
@@ -104,8 +107,9 @@ const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
 
     if (!codeElement) return
 
-    void navigator.clipboard.writeText((codeElement as HTMLElement).innerText).then(() => {
+    navigator.clipboard.writeText((codeElement as HTMLElement).innerText).then(() => {
       button.classList.add(COPIED_CLASS)
+
       button.setAttribute('aria-label', 'Code copied!')
 
       const region = getLiveRegion()
@@ -114,9 +118,13 @@ const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
 
       setTimeout(() => {
         region.textContent = ''
+
         button.classList.remove(COPIED_CLASS)
+
         button.setAttribute('aria-label', 'Copy code to clipboard')
       }, RESET_DELAY)
-    })
+
+      return null
+    }).catch(() => null)
   })
 </script>

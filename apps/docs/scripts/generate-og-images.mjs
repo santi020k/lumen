@@ -12,7 +12,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
 const outputDirectory = path.join(root, 'public', 'og', 'pages')
 const force = process.env.FORCE_OG === '1'
-
 const specs = []
 
 const addPage = (pathname, props) => {
@@ -56,6 +55,7 @@ const generateOne = async ({ outputPath, props }) => {
   const buffer = await renderOgCard(props)
 
   await fsp.mkdir(path.dirname(outputPath), { recursive: true })
+
   await fsp.writeFile(outputPath, buffer)
 
   process.stdout.write(`  write ${path.relative(root, outputPath)}\n`)
@@ -64,10 +64,10 @@ const generateOne = async ({ outputPath, props }) => {
 const pending = force ? specs : specs.filter(spec => !fs.existsSync(spec.outputPath))
 const start = performance.now()
 
-console.log(`\nGenerating ${pending.length}/${specs.length} OG images...\n`)
+process.stdout.write(`\nGenerating ${pending.length}/${specs.length} OG images...\n`)
 
 await Promise.all(pending.map(generateOne))
 
 const elapsed = ((performance.now() - start) / 1000).toFixed(2)
 
-console.log(`\nDone in ${elapsed}s\n`)
+process.stdout.write(`\nDone in ${elapsed}s\n`)

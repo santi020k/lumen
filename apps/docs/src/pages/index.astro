@@ -124,9 +124,7 @@ const featured = componentDocs.slice(0, 12)
 
     <section class="space-y-6" aria-labelledby="usage-title">
       <div class="space-y-2">
-        <p class="
-          text-sm font-semibold tracking-[0.22em] text-brand uppercase
-        ">Proof, not promises</p>
+        <p class="text-sm font-semibold tracking-[0.22em] text-brand uppercase">Proof, not promises</p>
         <h2 class="text-3xl font-bold text-ink" id="usage-title">
           The same component in every framework
         </h2>
@@ -197,16 +195,18 @@ const featured = componentDocs.slice(0, 12)
 
     if (!button || command === undefined) return
 
-    void navigator.clipboard.writeText(command).then(() => {
+    navigator.clipboard.writeText(command).then(() => {
       const feedback = button.querySelector('[data-copy-feedback]')
 
-      if (!feedback) return
+      if (!feedback) return null
 
       feedback.textContent = 'Copied!'
 
       setTimeout(() => {
         feedback.textContent = 'Copy'
       }, 2000)
-    })
+
+      return null
+    }).catch(() => null)
   })
 </script>

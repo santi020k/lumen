@@ -20,6 +20,7 @@ Use this map to find the source of truth before changing code or docs.
 | Add or rename a component | `packages/core/src/components.ts` | `packages/astro/components`, `apps/docs/src/examples` |
 | Change shared tokens | `packages/core/src/tokens.ts` | `packages/astro/styles/lumen.css`, `apps/docs/src/styles/global.css` |
 | Update Astro behavior | `packages/astro` | `packages/astro/index.test.ts`, docs examples |
+| Improve AI consumption guidance | `docs/ai-usage.md` | package READMEs, `AGENTS.md` |
 | Update docs navigation | `apps/docs/src/lib/routes.ts` | `apps/docs/src/data/docs.ts` |
 | Change release behavior | `.github/workflows`, `.changeset` | `scripts/check-publish-dry-run.mjs` |
 
@@ -28,5 +29,5 @@ Use this map to find the source of truth before changing code or docs.
 - Public overview: [README.md](../README.md)
 - Contributor loop: [CONTRIBUTING.md](../CONTRIBUTING.md)
 - AI agent guide: [AGENTS.md](../AGENTS.md)
+- AI usage examples: [docs/ai-usage.md](ai-usage.md)
 - Brand guidance: [docs/brand-guidelines.md](brand-guidelines.md)
-

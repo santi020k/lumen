@@ -1,0 +1,136 @@
+# AI Usage Guide
+
+Use this guide when an AI agent is building an app with Lumen or updating examples that teach
+another agent how to use the library.
+
+## Pick the Right Package
+
+Start with Astro unless the user explicitly asks for another framework.
+
+| App Target | Install | Import Components From | Load Styles From |
+| --- | --- | --- | --- |
+| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |
+| React | `@santi020k/lumen-react @santi020k/lumen-astro` | `@santi020k/lumen-react` | `@santi020k/lumen-astro/styles.css` |
+| Web Components | `@santi020k/lumen-elements @santi020k/lumen-astro` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-astro/styles.css` |
+| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
+
+`@santi020k/lumen` is the umbrella package map. Prefer the framework package for component imports.
+
+## Minimal Setup
+
+Import the stylesheet once in the app's global CSS, root layout, or app entry.
+
+```css
+@import "@santi020k/lumen-astro/styles.css";
+```
+
+If Tailwind is present, keep both imports in the same shared CSS entry.
+
+```css
+@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";
+```
+
+Astro apps should mount `UIPrimitives` once in the root layout when using interactive primitives
+such as dialogs, menus, popovers, tabs, carousels, command lists, toggles, or toasts.
+
+```astro
+---
+import { UIPrimitives } from '@santi020k/lumen-astro'
+---
+
+<UIPrimitives />
+```
+
+## Astro Default
+
+Use direct named imports from `@santi020k/lumen-astro`.
+
+```astro
+---
+import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
+---
+
+<Card>
+  <Label for="email">Email</Label>
+  <Input id="email" type="email" placeholder="you@example.com" />
+  <Button type="submit">Subscribe</Button>
+</Card>
+```
+
+## React
+
+React components share the same visual classes and data attributes as Astro components, but the
+Astro progressive-enhancement runtime is not a React behavior layer. For behavior-heavy primitives,
+wire the expected React-side state and keyboard interactions in the application.
+
+```tsx
+import '@santi020k/lumen-astro/styles.css'
+import { Button, Card, Input, Label } from '@santi020k/lumen-react'
+
+export function SubscribeForm() {
+  return (
+    <Card>
+      <Label htmlFor="email">Email</Label>
+      <Input id="email" type="email" placeholder="you@example.com" />
+      <Button type="submit">Subscribe</Button>
+    </Card>
+  )
+}
+```
+
+## Web Components
+
+Register custom elements once, then use `lumen-*` tags in HTML.
+
+```html
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<lumen-card>
+  <label for="email">Email</label>
+  <lumen-input id="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-button type="submit">Subscribe</lumen-button>
+</lumen-card>
+```
+
+## Component Selection
+
+The shared catalog includes:
+
+`Accordion`, `Alert`, `AlertDialog`, `AspectRatio`, `Attachment`, `Avatar`, `Badge`, `Breadcrumb`,
+`Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`, `Carousel`, `Chart`, `Checkbox`,
+`Collapsible`, `Combobox`, `Command`, `ContextMenu`, `DataTable`, `DatePicker`, `Dialog`,
+`Direction`, `Drawer`, `DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Input`, `InputGroup`,
+`InputOTP`, `Item`, `Kbd`, `Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`,
+`NativeSelect`, `NavigationMenu`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`,
+`ScrollArea`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`, `Slider`, `Sonner`, `Spinner`,
+`Switch`, `Table`, `Tabs`, `Textarea`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, and
+`Typography`.
+
+Before inventing a wrapper or custom class pattern, check the component source in
+`packages/astro/components`. Astro is the reference implementation for props, class names, data
+attributes, and accessible markup.
+
+## Styling Rules for Generated Code
+
+- Do not require consumers to configure Tailwind for Lumen components.
+- Prefer component props and composition before adding custom CSS.
+- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,
+  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,
+  `accent`, `success`, `warning`, and `danger`.
+- Use `glass` as a boolean prop or attribute for glass surfaces when supported.
+- Preserve semantic labels, keyboard paths, focus states, and native form attributes.
+
+## When Editing This Repo
+
+- Shared contracts belong in `packages/core`.
+- Astro implementation and standalone CSS belong in `packages/astro`.
+- React-specific primitives belong in `packages/react`.
+- Web Component-specific primitives belong in `packages/elements`.
+- Update the relevant package README when public usage changes.
+- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component
+  contracts change.

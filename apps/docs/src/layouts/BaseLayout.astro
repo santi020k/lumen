@@ -15,7 +15,6 @@ interface Props {
 }
 
 const { description, socialImage, title } = Astro.props
-
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialImage)
 ---
@@ -56,15 +55,18 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
       const themeStorageKey = 'lumen-theme'
       const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark']
 
-      const themeAliases = {
-        dark: 'lumen-dark',
-        light: 'lumen-light'
+      const getLegacyTheme = theme => {
+        if (theme === 'dark') return 'lumen-dark'
+
+        if (theme === 'light') return 'lumen-light'
+
+        return null
       }
 
       const normalizeTheme = theme => {
         if (colorThemes.includes(theme)) return theme
 
-        return themeAliases[theme] ?? null
+        return getLegacyTheme(theme)
       }
 
       const getStoredTheme = () => {
@@ -129,17 +131,19 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 
   const themeStorageKey = 'lumen-theme'
 
-  const themeAliases = {
-    dark: 'lumen-dark',
-    light: 'lumen-light'
-  } satisfies Record<LegacyColorTheme, ColorTheme>
+  const getLegacyTheme = (theme: LegacyColorTheme): ColorTheme => (
+    theme === 'dark' ? 'lumen-dark' : 'lumen-light'
+  )
 
-  const themeColors = {
-    'lumen-dark': '#111827',
-    'lumen-light': '#f8fafc',
-    'santi020k-dark': '#110c1d',
-    'santi020k-light': '#f8f6fd'
-  } satisfies Record<ColorTheme, string>
+  const getThemeColor = (theme: ColorTheme): string => {
+    if (theme === 'lumen-dark') return '#111827'
+
+    if (theme === 'lumen-light') return '#f8fafc'
+
+    if (theme === 'santi020k-dark') return '#110c1d'
+
+    return '#f8f6fd'
+  }
 
   const isColorTheme = (theme: string | null | undefined): theme is ColorTheme => (
     colorThemes.includes(theme as ColorTheme)
@@ -148,7 +152,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   const normalizeTheme = (theme: string | null | undefined): ColorTheme | null => {
     if (isColorTheme(theme)) return theme
 
-    return theme === 'dark' || theme === 'light' ? themeAliases[theme] : null
+    return theme === 'dark' || theme === 'light' ? getLegacyTheme(theme) : null
   }
 
   const isThemeFamily = (themeFamily: string | null | undefined): themeFamily is ThemeFamily => (
@@ -192,7 +196,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   const setThemeColor = (theme: ColorTheme, targetDocument = document) => {
     targetDocument
       .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-      ?.setAttribute('content', themeColors[theme])
+      ?.setAttribute('content', getThemeColor(theme))
   }
 
   const syncThemeToggles = (theme: ColorTheme, targetDocument = document) => {
