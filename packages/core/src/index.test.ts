@@ -19,6 +19,7 @@ import {
   getVirtualRange,
   loadDataViewState,
   loadScheduleEvents,
+  lumenCodeTokenClassNames,
   lumenColors,
   lumenComponentNames,
   lumenDarkTheme,
@@ -27,6 +28,7 @@ import {
   lumenPackages,
   lumenThemeAttribute,
   moveScheduleEvent,
+  normalizeLumenCode,
   parseDataViewState,
   parseScheduleEvents,
   parseThemeCss,
@@ -39,7 +41,9 @@ import {
   serializeDataViewState,
   serializeScheduleEvents,
   suggestReadableInk,
+  renderLumenCodeHtml,
   toggleDataViewSelection,
+  tokenizeLumenCode,
   tuneThemeContrast,
   unpinDataViewColumn
 } from './index.js'
@@ -59,6 +63,32 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-react',
       '@santi020k/lumen-elements'
     ])
+  })
+})
+
+describe('lumen code helpers', () => {
+  test('normalizes multiline code indentation', () => {
+    expect(normalizeLumenCode(`
+      const theme = "lumen";
+      const accent = "hsl(var(--accent))";
+    `)).toBe('const theme = "lumen";\nconst accent = "hsl(var(--accent))";')
+  })
+
+  test('tokenizes and escapes lightweight JavaScript code', () => {
+    const html = renderLumenCodeHtml('const label = "<lumen>";', 'ts')
+
+    expect(tokenizeLumenCode('const label = "<lumen>";', 'ts')).toEqual([
+      { kind: 'keyword', start: 0, value: 'const' },
+      { start: 5, value: ' ' },
+      { start: 6, value: 'label' },
+      { start: 11, value: ' ' },
+      { kind: 'symbol', start: 12, value: '=' },
+      { start: 13, value: ' ' },
+      { kind: 'string', start: 14, value: '"<lumen>"' },
+      { kind: 'symbol', start: 23, value: ';' }
+    ])
+    expect(html).toContain(lumenCodeTokenClassNames.string)
+    expect(html).toContain('&lt;lumen&gt;')
   })
 })
 

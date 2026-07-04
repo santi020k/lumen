@@ -23,6 +23,10 @@
       "types": "./dist/components.d.ts",
       "import": "./dist/components.js"
     },
+    "./code": {
+      "types": "./dist/code.d.ts",
+      "import": "./dist/code.js"
+    },
     "./data": {
       "types": "./dist/data.d.ts",
       "import": "./dist/data.js"

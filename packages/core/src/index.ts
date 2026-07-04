@@ -1,4 +1,12 @@
 export {
+  type LumenCodeToken,
+  lumenCodeTokenClassNames,
+  type LumenCodeTokenKind,
+  normalizeLumenCode,
+  renderLumenCodeHtml,
+  tokenizeLumenCode
+} from './code.js'
+export {
   type LumenComponentName,
   lumenComponentNames,
   lumenPackages,

@@ -1,25 +1,13 @@
 ---
 import { Code } from '@santi020k/lumen-astro'
 
-const tokenClass = {
-  keyword: 'ui-code__token--keyword',
-  string: 'ui-code__token--string',
-  symbol: 'ui-code__token--symbol'
-}
-
-type TokenKind = keyof typeof tokenClass
-
-const token = (kind: TokenKind, value: string) => `<span class="${tokenClass[kind]}">${value}</span>`
-
-const themeExample = [
-  `${token('keyword', 'const')} theme ${token('symbol', '=')} ${token('string', '"lumen"')};`,
-  `${token('keyword', 'const')} accent ${token('symbol', '=')} ${token('string', '"hsl(var(--accent))"')};`
-].join('\n')
+const themeExample = `
+  const theme = "lumen";
+  const accent = "hsl(var(--accent))";
+`
 ---
 
 <div class="grid gap-4">
   <p>Apply the current theme with <Code>data-theme</Code> on the root element.</p>
-  <Code copy highlighted label="theme.ts" language="ts" variant="block">
-    <pre><code set:html={themeExample} /></pre>
-  </Code>
+  <Code code={themeExample} copy label="theme.ts" language="ts" variant="block" />
 </div>

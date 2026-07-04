@@ -31,6 +31,9 @@ export {
   getVirtualRange,
   loadDataViewState,
   loadScheduleEvents,
+  type LumenCodeToken,
+  lumenCodeTokenClassNames,
+  type LumenCodeTokenKind,
   lumenColors,
   type LumenComponentName,
   lumenComponentNames,
@@ -62,6 +65,7 @@ export {
   lumenTokenNames,
   mergeThemeTokens,
   moveScheduleEvent,
+  normalizeLumenCode,
   paginateDataRecords,
   parseDataViewState,
   parseScheduleEvents,
@@ -77,7 +81,9 @@ export {
   serializeScheduleEvents,
   sortDataRecords,
   suggestReadableInk,
+  renderLumenCodeHtml,
   toggleDataViewSelection,
+  tokenizeLumenCode,
   tuneThemeContrast,
   unpinDataViewColumn
 } from '@santi020k/lumen-core'

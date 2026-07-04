@@ -59,7 +59,9 @@ describe('@santi020k/lumen-react', () => {
   test('renders inline and block code primitives', () => {
     const inlineCode = Code({ children: 'const answer = 42', className: 'custom-code' }) as ReactElement
     const blockCode = Code({
-      children: 'console.log(answer)',
+      code: `
+        const answer = "42";
+      `,
       copy: true,
       label: 'Example',
       language: 'ts',
@@ -74,6 +76,11 @@ describe('@santi020k/lumen-react', () => {
     const headerChildren = headerProps.children as ReactElement[]
     const copyButton = headerChildren[2] as ReactElement<Record<string, unknown>>
     const copyButtonProps = copyButton.props
+    const pre = blockChildren[1] as ReactElement<Record<string, unknown>>
+    const codeElement = pre.props.children as ReactElement<Record<string, unknown>>
+    const tokenChildren = codeElement.props.children as (ReactElement<Record<string, unknown>> | string)[]
+    const keyword = tokenChildren[0] as ReactElement<Record<string, unknown>>
+    const stringToken = tokenChildren[6] as ReactElement<Record<string, unknown>>
 
     expect(inlineCode.type).toBe('code')
     expect(inlineProps.className).toBe('ui-code ui-code--inline custom-code')
@@ -86,6 +93,8 @@ describe('@santi020k/lumen-react', () => {
     expect(blockProps['data-ui-code']).toBe(true)
     expect(header.type).toBe('figcaption')
     expect(copyButtonProps['data-ui-code-copy']).toBe(true)
+    expect(keyword.props.className).toBe('ui-code__token--keyword')
+    expect(stringToken.props.className).toBe('ui-code__token--string')
   })
 
   test('defaults inputs to text fields', () => {

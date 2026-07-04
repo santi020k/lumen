@@ -60,6 +60,8 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
     ])
 
+    expect(component).toContain('code?: string')
+    expect(component).toContain('renderLumenCodeHtml')
     expect(component).toContain("variant = 'inline'")
     expect(component).toContain('data-ui-code-copy')
     expect(component).toContain('Copy code to clipboard')

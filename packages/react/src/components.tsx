@@ -1,4 +1,9 @@
-import { composeClassName } from '@santi020k/lumen-core'
+import {
+  composeClassName,
+  type LumenCodeToken,
+  lumenCodeTokenClassNames,
+  tokenizeLumenCode
+} from '@santi020k/lumen-core'
 
 import type {
   ComponentPropsWithoutRef,
@@ -294,6 +299,7 @@ export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
 )
 
 export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
+  code?: string
   copy?: boolean
   highlighted?: boolean
   label?: ReactNode
@@ -302,9 +308,23 @@ export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
   variant?: CodeVariant
 }
 
+const renderCodeToken = (token: LumenCodeToken) => {
+  if (!token.kind) return token.value
+
+  return (
+    <span className={lumenCodeTokenClassNames[token.kind]} key={`${token.start}-${token.kind}`}>
+      {token.value}
+    </span>
+  )
+}
+
+const renderCodeChildren = (code: string | undefined, children: ReactNode, language?: string) =>
+  code === undefined ? children : tokenizeLumenCode(code, language).map(renderCodeToken)
+
 export const Code = ({
   children,
   className,
+  code,
   copy = false,
   highlighted = false,
   label,
@@ -313,6 +333,8 @@ export const Code = ({
   variant = 'inline',
   ...props
 }: CodeProps) => {
+  const codeChildren = renderCodeChildren(code, children, language)
+
   if (variant === 'block') {
     const showHeader = Boolean(copy || label || language)
 
@@ -375,7 +397,7 @@ export const Code = ({
             )}
           </figcaption>
         )}
-        {highlighted ? children : <pre><code>{children}</code></pre>}
+        {highlighted ? children : <pre><code>{codeChildren}</code></pre>}
       </figure>
     )
   }
@@ -387,7 +409,7 @@ export const Code = ({
       data-language={language}
       {...props}
     >
-      {children}
+      {code ?? children}
     </code>
   )
 }

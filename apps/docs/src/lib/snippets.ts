@@ -155,6 +155,17 @@ const toElementsSnippet = (body: string): string => {
 }
 
 const reactOverrides: Record<string, string> = {
+  Code: `import { Code } from '@santi020k/lumen-react'
+
+const themeExample = \`
+  const theme = "lumen";
+  const accent = "hsl(var(--accent))";
+\`
+
+export const Example = () => (
+  <Code code={themeExample} copy label="theme.ts" language="ts" variant="block" />
+)
+`,
   Sonner: `import { Button, Sonner } from '@santi020k/lumen-react'
 
 export const Example = () => (
