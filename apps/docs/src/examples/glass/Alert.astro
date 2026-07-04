@@ -2,9 +2,13 @@
 import { Alert } from '@santi020k/lumen-astro'
 ---
 
-<div class="docs-glass-demo">
+<div class="docs-glass-demo docs-glass-demo--stack">
   <Alert glass>
     <strong>Glass tokens synced.</strong>
-    <p>Blur, border, highlight, and shadow values come from the shared theme contract.</p>
+    <p>Blur, saturation, specular edge, and shadow values come from the shared theme contract.</p>
+  </Alert>
+  <Alert variant="success" glass>
+    <strong>Deployed to production.</strong>
+    <p>Status variants keep their tint on top of the frosted surface.</p>
   </Alert>
 </div>

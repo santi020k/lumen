@@ -5,8 +5,12 @@ import { Button, ButtonGroup, RichTextEditor } from '@santi020k/lumen-astro'
 <div class="docs-glass-demo">
   <RichTextEditor glass>
     <div role="toolbar" aria-label="Formatting">
-      <ButtonGroup><Button>B</Button><Button>I</Button></ButtonGroup>
+      <ButtonGroup>
+        <Button size="sm" variant="secondary">B</Button>
+        <Button size="sm" variant="secondary">I</Button>
+        <Button size="sm" variant="secondary">Link</Button>
+      </ButtonGroup>
     </div>
-    <div contenteditable="true">Draft glass release notes...</div>
+    <div contenteditable="true">Draft the glass release notes... the editing area stays translucent so the backdrop glows through.</div>
   </RichTextEditor>
 </div>

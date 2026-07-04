@@ -1,10 +1,14 @@
 ---
-import { Chart } from '@santi020k/lumen-astro'
+import { Badge, Chart } from '@santi020k/lumen-astro'
 ---
 
 <div class="docs-glass-demo">
   <Chart aria-label="Glass adoption" glass>
-    <header><h3>Coverage</h3><strong data-ui-chart-value>94%</strong></header>
+    <header>
+      <h3>Coverage</h3>
+      <strong data-ui-chart-value>94%</strong>
+      <Badge variant="success">+6 pts</Badge>
+    </header>
     <svg viewBox="0 0 120 40" role="img" aria-label="Coverage trend">
       <path d="M0 34 L24 28 L48 22 L72 18 L96 12 L120 7" fill="none" stroke="currentColor" stroke-width="3" />
     </svg>

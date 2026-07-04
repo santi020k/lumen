@@ -5,9 +5,11 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Button variant="outline" data-ui-sheet-trigger="ex-sheet-glass">Open glass details</Button>
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Button variant="outline" data-ui-sheet-trigger="ex-sheet-glass">Open glass details</Button>
+</div>
 <Sheet id="ex-sheet-glass" glass>
   <h2>Deployment details</h2>
-  <p>The glass sheet blurs the page content it slides over.</p>
+  <p>The glass sheet slides in as a full-height lens: page content stays visible, blurred and saturated.</p>
   <Button variant="ghost" data-ui-sheet-close>Close</Button>
 </Sheet>

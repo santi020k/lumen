@@ -1,11 +1,12 @@
 ---
-import { Command, Input } from '@santi020k/lumen-astro'
+import { Command, Input, Kbd } from '@santi020k/lumen-astro'
 ---
 
 <div class="docs-glass-demo">
   <Command glass>
     <Input placeholder="Type a command..." />
-    <button data-ui-command-item>Open glass docs</button>
-    <button data-ui-command-item>Copy setup snippet</button>
+    <button data-ui-command-item>Open glass docs <Kbd>G</Kbd></button>
+    <button data-ui-command-item>Copy setup snippet <Kbd>C</Kbd></button>
+    <button data-ui-command-item>Toggle dark theme <Kbd>D</Kbd></button>
   </Command>
 </div>

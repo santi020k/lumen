@@ -5,10 +5,12 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Button variant="outline" data-ui-dialog-trigger="ex-dialog-glass">Open glass dialog</Button>
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Button variant="outline" data-ui-dialog-trigger="ex-dialog-glass">Open glass dialog</Button>
+</div>
 <Dialog id="ex-dialog-glass" glass>
   <h2>Glass surface</h2>
-  <p>The glass dialog blurs and saturates the page content behind it while it is open.</p>
+  <p>While open, the dialog blurs and saturates the page behind it, and its backdrop adds a soft brand-tinted dim.</p>
   <footer>
     <Button variant="ghost" data-ui-dialog-close>Cancel</Button>
     <Button data-ui-dialog-close>Done</Button>

@@ -5,10 +5,12 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Button variant="destructive" data-ui-alert-dialog-trigger="ex-alert-dialog-glass">Delete project</Button>
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Button variant="destructive" data-ui-alert-dialog-trigger="ex-alert-dialog-glass">Delete project</Button>
+</div>
 <AlertDialog id="ex-alert-dialog-glass" glass>
   <h2>Delete this project?</h2>
-  <p>The glass surface blurs the page behind the dialog while you confirm.</p>
+  <p>The glass pane reads as a lens: the page behind it stays visible but blurred and dimmed.</p>
   <footer>
     <Button variant="ghost" data-ui-alert-dialog-close>Cancel</Button>
     <Button variant="destructive" data-ui-alert-dialog-close>Delete</Button>

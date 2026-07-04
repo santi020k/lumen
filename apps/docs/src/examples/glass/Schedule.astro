@@ -3,11 +3,12 @@ import { Schedule } from '@santi020k/lumen-astro'
 ---
 
 <div class="docs-glass-demo">
-  <Schedule glass>
+  <Schedule glass style="--ui-schedule-columns: 3;">
     <header><h2>Launch week</h2></header>
-    <div data-ui-schedule-grid>
+    <div data-ui-schedule-grid style="min-width: 0;">
       <article data-ui-schedule-event>Glass API review</article>
       <article data-ui-schedule-event>Docs publish</article>
+      <article data-ui-schedule-event>Retro + demo</article>
     </div>
   </Schedule>
 </div>

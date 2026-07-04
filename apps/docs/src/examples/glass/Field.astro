@@ -1,11 +1,12 @@
 ---
-import { Field, Input, Label } from '@santi020k/lumen-astro'
+import { Button, Field, Input, Label } from '@santi020k/lumen-astro'
 ---
 
-<div class="docs-glass-demo">
-  <Field glass>
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Field glass style="min-width: min(100%, 22rem); padding: 1.25rem; border-radius: 0.75rem;">
     <Label for="glass-workspace">Workspace</Label>
     <Input id="glass-workspace" placeholder="Lumen Labs" />
-    <p>Form groups can sit on frosted panels without extra wrapper classes.</p>
+    <p>Inputs inside a glass field pick up translucent chrome automatically.</p>
+    <Button size="sm">Save</Button>
   </Field>
 </div>

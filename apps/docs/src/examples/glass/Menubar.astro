@@ -2,10 +2,8 @@
 import { Menubar } from '@santi020k/lumen-astro'
 ---
 
-<div style="position: relative; overflow: hidden; padding: 2.5rem 2rem; border-radius: 1rem; background: linear-gradient(120deg, hsl(var(--brand)), hsl(var(--accent)) 55%, hsl(var(--warning)));">
-  <span style="position: absolute; top: -3rem; right: 10%; width: 11rem; height: 11rem; border-radius: 999px; background: hsl(var(--danger) / 0.85);"></span>
-  <span style="position: absolute; bottom: -3.5rem; left: 6%; width: 13rem; height: 13rem; border-radius: 999px; background: hsl(var(--warning) / 0.9);"></span>
-  <Menubar aria-label="Application" glass style="position: relative;">
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Menubar aria-label="Application" glass>
     <button role="menuitem">File</button>
     <button role="menuitem">Edit</button>
     <button role="menuitem">View</button>

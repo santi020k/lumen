@@ -6,10 +6,13 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Button variant="outline" data-ui-drawer-trigger="ex-drawer-glass">Open glass filters</Button>
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Button variant="outline" data-ui-drawer-trigger="ex-drawer-glass">Open glass filters</Button>
+</div>
 <Drawer id="ex-drawer-glass" glass>
   <h2>Filters</h2>
   <p>The glass drawer blurs the page content it slides over.</p>
   <label><Checkbox name="stable-glass" /> Stable packages only</label>
+  <label><Checkbox name="glass-only" /> Glass-capable surfaces only</label>
   <Button variant="ghost" data-ui-drawer-close>Close</Button>
 </Drawer>

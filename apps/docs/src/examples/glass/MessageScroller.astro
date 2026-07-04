@@ -3,8 +3,9 @@ import { Bubble, Message, MessageScroller } from '@santi020k/lumen-astro'
 ---
 
 <div class="docs-glass-demo">
-  <MessageScroller glass style="--ui-list-height: 12rem;">
-    <Message><Bubble>Shared CSS keeps the frame frosted.</Bubble></Message>
-    <Message from="user"><Bubble from="user">The messages remain normal components.</Bubble></Message>
+  <MessageScroller glass style="--ui-list-height: 13rem;">
+    <Message><Bubble>The scroller frame is frosted; bubbles inside go translucent too.</Bubble></Message>
+    <Message from="user"><Bubble from="user">So the whole thread reads as one pane of glass?</Bubble></Message>
+    <Message><Bubble>Exactly - one backdrop-filter on the frame, tokenized tints inside.</Bubble></Message>
   </MessageScroller>
 </div>

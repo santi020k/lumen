@@ -2,8 +2,11 @@
 import { Bubble } from '@santi020k/lumen-astro'
 ---
 
-<div class="docs-glass-demo">
+<div class="docs-glass-demo docs-glass-demo--stack">
   <Bubble glass>
-    The assistant bubble can sit on a busy background without losing the shared glass treatment.
+    Frosted bubbles stay readable over busy artwork: the backdrop is blurred, saturated, and edge-lit.
+  </Bubble>
+  <Bubble from="user" glass>
+    And the user variant keeps its accent tint on the same surface.
   </Bubble>
 </div>

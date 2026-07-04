@@ -1,10 +1,16 @@
 ---
-import { Item } from '@santi020k/lumen-astro'
+import { Badge, Item } from '@santi020k/lumen-astro'
 ---
 
-<div class="docs-glass-demo">
+<div class="docs-glass-demo docs-glass-demo--stack">
   <Item glass>
     <strong>Glass coverage</strong>
     <span>Expanded to layout, data, and feedback surfaces.</span>
+    <Badge variant="success">Done</Badge>
+  </Item>
+  <Item glass>
+    <strong>Dark theme pass</strong>
+    <span>Edge and highlight tokens tuned per theme.</span>
+    <Badge variant="outline">In review</Badge>
   </Item>
 </div>

@@ -442,12 +442,58 @@ pre code {
 }
 
 .docs-glass-demo {
+  position: relative;
+  isolation: isolate;
   display: grid;
   align-items: center;
-  min-height: 14rem;
+  min-height: 16rem;
+  overflow: hidden;
   border: 1px solid hsl(var(--line));
-  border-radius: 0.5rem;
-  padding: 1.5rem;
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  background:
+    repeating-linear-gradient(90deg, hsl(var(--ink) / 0.05) 0 1px, transparent 1px 22px),
+    radial-gradient(38rem 24rem at 8% -14%, hsl(var(--brand) / 0.6), transparent 56%),
+    radial-gradient(32rem 22rem at 106% 18%, hsl(var(--accent) / 0.55), transparent 60%),
+    radial-gradient(28rem 24rem at 46% 122%, hsl(var(--warning) / 0.45), transparent 62%),
+    linear-gradient(160deg, hsl(var(--canvas)), hsl(var(--surface-muted)));
+}
+
+.docs-glass-demo::before,
+.docs-glass-demo::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 999px;
+}
+
+.docs-glass-demo::before {
+  top: -3.5rem;
+  right: 10%;
+  width: 11rem;
+  height: 11rem;
+  background: linear-gradient(140deg, hsl(var(--danger) / 0.85), hsl(var(--warning) / 0.8));
+}
+
+.docs-glass-demo::after {
+  bottom: -4rem;
+  left: 7%;
+  width: 13rem;
+  height: 13rem;
+  background: linear-gradient(310deg, hsl(var(--accent) / 0.85), hsl(var(--brand) / 0.8));
+}
+
+.docs-glass-demo > * {
+  position: relative;
+}
+
+.docs-glass-demo--float {
+  align-items: start;
+  min-height: 21rem;
+}
+
+.docs-glass-demo--stack {
+  gap: 0.75rem;
 }
 
 .docs-next {
