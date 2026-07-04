@@ -114,6 +114,17 @@ const elementConfigs = {
   Chart: { baseClassName: 'ui-chart', tagName: 'lumen-chart' },
   Checkbox: { baseClassName: 'ui-checkbox', defaults: { type: 'checkbox' }, tagName: 'lumen-checkbox' },
   Collapsible: { baseClassName: 'ui-collapsible', defaults: { 'data-ui-collapsible': '' }, tagName: 'lumen-collapsible' },
+  Code: {
+    attributeClasses: {
+      variant: {
+        block: 'ui-code--block',
+        inline: 'ui-code--inline'
+      }
+    },
+    baseClassName: 'ui-code',
+    defaults: { 'data-code-theme': 'auto', variant: 'inline' },
+    tagName: 'lumen-code'
+  },
   Combobox: { baseClassName: 'ui-combobox', defaults: { 'data-ui-combobox': '' }, tagName: 'lumen-combobox' },
   Command: { baseClassName: 'ui-command', defaults: { 'data-ui-command': '' }, tagName: 'lumen-command' },
   ColorPicker: { baseClassName: 'ui-color-picker', defaults: { type: 'color' }, tagName: 'lumen-color-picker' },
@@ -426,6 +437,7 @@ export const LumenCarouselElement = elementClasses.Carousel
 export const LumenChartElement = elementClasses.Chart
 export const LumenCheckboxElement = elementClasses.Checkbox
 export const LumenCollapsibleElement = elementClasses.Collapsible
+export const LumenCodeElement = elementClasses.Code
 export const LumenComboboxElement = elementClasses.Combobox
 export const LumenCommandElement = elementClasses.Command
 export const LumenColorPickerElement = elementClasses.ColorPicker

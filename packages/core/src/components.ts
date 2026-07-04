@@ -18,6 +18,7 @@ export const lumenComponentNames = [
   'Chart',
   'Checkbox',
   'Collapsible',
+  'Code',
   'Combobox',
   'Command',
   'ContextMenu',

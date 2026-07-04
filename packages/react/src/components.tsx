@@ -20,6 +20,10 @@ type ButtonVariant = 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 
 
 type CardVariant = 'default' | 'glass' | 'interactive' | 'muted'
 
+type CodeTheme = 'auto' | 'lumen' | 'santi020k'
+
+type CodeVariant = 'block' | 'inline'
+
 type MessageFrom = 'assistant' | 'user'
 
 type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
@@ -275,6 +279,105 @@ export type CollapsibleProps = ComponentPropsWithoutRef<'details'>
 export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
   <details className={composeClassName('ui-collapsible', className)} data-ui-collapsible {...props} />
 )
+
+export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
+  copy?: boolean
+  highlighted?: boolean
+  label?: ReactNode
+  language?: string
+  theme?: CodeTheme
+  variant?: CodeVariant
+}
+
+export const Code = ({
+  children,
+  className,
+  copy = false,
+  highlighted = false,
+  label,
+  language,
+  theme = 'auto',
+  variant = 'inline',
+  ...props
+}: CodeProps) => {
+  if (variant === 'block') {
+    const showHeader = Boolean(copy || label || language)
+
+    return (
+      <figure
+        className={composeClassName('ui-code ui-code--block', className)}
+        data-code-theme={theme}
+        data-language={language}
+        data-ui-code
+        {...props}
+      >
+        {showHeader && (
+          <figcaption className="ui-code__header">
+            <span aria-hidden="true" className="ui-code__dots">
+              <span className="ui-code__dot ui-code__dot--red" />
+              <span className="ui-code__dot ui-code__dot--yellow" />
+              <span className="ui-code__dot ui-code__dot--green" />
+            </span>
+            <span className="ui-code__meta">
+              {language && <span className="ui-code__language">{language}</span>}
+              {label && <span className="ui-code__label">{label}</span>}
+            </span>
+            {copy && (
+              <button
+                aria-label="Copy code to clipboard"
+                className="ui-code__copy"
+                data-ui-code-copy
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="ui-code__copy-icon"
+                  fill="none"
+                  focusable="false"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect height="14" rx="2" ry="2" width="14" x="8" y="8" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  className="ui-code__check-icon"
+                  fill="none"
+                  focusable="false"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              </button>
+            )}
+          </figcaption>
+        )}
+        {highlighted ? children : <pre><code>{children}</code></pre>}
+      </figure>
+    )
+  }
+
+  return (
+    <code
+      className={composeClassName('ui-code ui-code--inline', className)}
+      data-code-theme={theme}
+      data-language={language}
+      {...props}
+    >
+      {children}
+    </code>
+  )
+}
 
 export interface ComboboxProps extends ComponentPropsWithoutRef<'input'> {
   label?: ReactNode

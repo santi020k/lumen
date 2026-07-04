@@ -1,127 +1,47 @@
 ---
-import { Code } from 'astro:components'
+import { Code as AstroCode } from 'astro:components'
 
+import { Code } from '@santi020k/lumen-astro'
 import { santi020kShikiThemes } from '@santi020k/theme/shiki'
 
 import type { ComponentProps } from 'astro/types'
 
-type CodeProps = ComponentProps<typeof Code>
+import { lumenShikiThemes } from '../lib/lumen-shiki-themes'
+
+type AstroCodeProps = ComponentProps<typeof AstroCode>
 
 interface Props {
   code: string
-  lang?: CodeProps['lang']
+  lang?: AstroCodeProps['lang']
   title?: string
 }
 
-const themes = {
+const santi020kThemes = {
   dark: santi020kShikiThemes.dark,
   light: santi020kShikiThemes.light
-} as unknown as NonNullable<CodeProps['themes']>
+} as unknown as NonNullable<AstroCodeProps['themes']>
+
+const lumenThemes = {
+  dark: lumenShikiThemes.dark,
+  light: lumenShikiThemes.light
+} as unknown as NonNullable<AstroCodeProps['themes']>
 
 const { code, lang = 'plaintext', title } = Astro.props
 const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
 ---
 
-<figure class="docs-code-block" data-code-block>
-  <figcaption class="docs-code-block__header">
-    <span class="docs-code-block__dots" aria-hidden="true">
-      <span class="docs-code-block__dot docs-code-block__dot--red"></span>
-      <span class="docs-code-block__dot docs-code-block__dot--yellow"></span>
-      <span class="docs-code-block__dot docs-code-block__dot--green"></span>
-    </span>
-    <span class="docs-code-block__meta">
-      <span class="docs-code-block__lang">{language}</span>
-      {title && <span class="docs-code-block__title">{title}</span>}
-    </span>
-    <button
-      aria-label="Copy code to clipboard"
-      class="docs-code-block__copy"
-      data-code-copy
-      type="button"
-    >
-      <svg
-        aria-hidden="true"
-        class="docs-code-block__copy-icon"
-        fill="none"
-        focusable="false"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect height="14" rx="2" ry="2" width="14" x="8" y="8"></rect>
-        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
-      </svg>
-      <svg
-        aria-hidden="true"
-        class="docs-code-block__check-icon"
-        fill="none"
-        focusable="false"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M20 6 9 17l-5-5"></path>
-      </svg>
-    </button>
-  </figcaption>
-  <Code code={code} defaultColor={false} lang={lang} themes={themes} />
-</figure>
-
-<script>
-  const COPIED_CLASS = 'docs-code-block__copy--copied'
-  const RESET_DELAY = 2000
-  let liveRegion: HTMLElement | undefined
-
-  const getLiveRegion = () => {
-    if (!liveRegion) {
-      liveRegion = document.createElement('div')
-
-      liveRegion.setAttribute('aria-live', 'polite')
-
-      liveRegion.setAttribute('aria-atomic', 'true')
-
-      liveRegion.className = 'sr-only'
-
-      document.body.append(liveRegion)
-    }
-
-    return liveRegion
-  }
-
-  document.addEventListener('click', event => {
-    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-code-copy]')
-
-    if (!button) return
-
-    const block = button.closest('[data-code-block]')
-    const codeElement = block?.querySelector('pre code')
-
-    if (!codeElement) return
-
-    navigator.clipboard.writeText((codeElement as HTMLElement).innerText).then(() => {
-      button.classList.add(COPIED_CLASS)
-
-      button.setAttribute('aria-label', 'Code copied!')
-
-      const region = getLiveRegion()
-
-      region.textContent = 'Code copied to clipboard'
-
-      setTimeout(() => {
-        region.textContent = ''
-
-        button.classList.remove(COPIED_CLASS)
-
-        button.setAttribute('aria-label', 'Copy code to clipboard')
-      }, RESET_DELAY)
-
-      return null
-    }).catch(() => null)
-  })
-</script>
+<Code
+  class="docs-code-block"
+  copy
+  highlighted
+  label={title}
+  language={language}
+  variant="block"
+>
+  <div class="docs-code-block__variant docs-code-block__variant--santi020k">
+    <AstroCode code={code} defaultColor={false} lang={lang} themes={santi020kThemes} />
+  </div>
+  <div class="docs-code-block__variant docs-code-block__variant--lumen">
+    <AstroCode code={code} defaultColor={false} lang={lang} themes={lumenThemes} />
+  </div>
+</Code>

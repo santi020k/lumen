@@ -311,6 +311,62 @@
     listbox.dataset.state = 'open'
   }
 
+  let codeCopyLiveRegion: HTMLElement | undefined
+
+  const getCodeCopyLiveRegion = (): HTMLElement => {
+    if (codeCopyLiveRegion) return codeCopyLiveRegion
+
+    codeCopyLiveRegion = document.createElement('div')
+    codeCopyLiveRegion.setAttribute('aria-atomic', 'true')
+    codeCopyLiveRegion.setAttribute('aria-live', 'polite')
+    codeCopyLiveRegion.style.position = 'absolute'
+    codeCopyLiveRegion.style.width = '1px'
+    codeCopyLiveRegion.style.height = '1px'
+    codeCopyLiveRegion.style.overflow = 'hidden'
+    codeCopyLiveRegion.style.clipPath = 'inset(50%)'
+    codeCopyLiveRegion.style.whiteSpace = 'nowrap'
+
+    document.body.append(codeCopyLiveRegion)
+
+    return codeCopyLiveRegion
+  }
+
+  const initCodeCopy = (scope: ParentNode): void => {
+    for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-code-copy]')) {
+      if (button.dataset.uiCodeCopyBound === 'true') continue
+
+      button.dataset.uiCodeCopyBound = 'true'
+
+      button.addEventListener('click', async () => {
+        const root = button.closest<HTMLElement>('[data-ui-code]')
+        const code = root?.querySelector<HTMLElement>('pre code, code')
+        const text = code?.innerText ?? code?.textContent
+
+        if (!text || !navigator.clipboard) return
+
+        try {
+          await navigator.clipboard.writeText(text)
+        } catch {
+          return
+        }
+
+        button.classList.add('ui-code__copy--copied')
+
+        button.setAttribute('aria-label', 'Code copied!')
+
+        getCodeCopyLiveRegion().textContent = 'Code copied to clipboard'
+
+        window.setTimeout(() => {
+          button.classList.remove('ui-code__copy--copied')
+
+          button.setAttribute('aria-label', 'Copy code to clipboard')
+
+          getCodeCopyLiveRegion().textContent = ''
+        }, 2000)
+      })
+    }
+  }
+
   const filterItems = (input: HTMLInputElement, items: HTMLElement[]): void => {
     const query = input.value.trim().toLowerCase()
 
@@ -770,6 +826,8 @@
     initCommand(scope)
 
     initComboboxes(scope)
+
+    initCodeCopy(scope)
 
     initCarousel(scope)
 
