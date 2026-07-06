@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
@@ -12,15 +14,13 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-button-group'
+], classProp, className)
 ---
 
 <div
-  class:list={[
-    'ui-button-group',
-    classProp,
-    className
-  ]}
+  class:list={classList}
   {...passthrough}
 >
   <slot />

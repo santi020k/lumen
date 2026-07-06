@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'aside'> {
@@ -16,22 +18,20 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
----
-
-<aside
-  data-variant={variant}
-  class:list={[
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
     'ui-alert',
     variant === 'destructive' && 'ui-alert--destructive',
     variant === 'success' && 'ui-alert--success',
     variant === 'warning' && 'ui-alert--warning',
     glass && 'ui-alert--glass',
     glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong',
-    classProp,
-    className
-  ]}
+    glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
+---
+
+<aside
+  data-variant={variant}
+  class:list={classList}
   {...passthrough}
 >
   <slot />

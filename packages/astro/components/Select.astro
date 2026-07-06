@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Option {
@@ -44,18 +46,16 @@ const triggerId = `${selectId}-trigger`
 const listId = `${selectId}-listbox`
 const placeholderText = placeholder ?? 'Select an option'
 const triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText
-const passthrough = rest as Record<string, unknown>
----
-
-<div
-  class:list={[
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
     'ui-select-field',
     glass && 'ui-select-field--glass',
     glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong',
-    classProp,
-    className
-  ]}
+    glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
+---
+
+<div
+  class:list={classList}
   data-placeholder={hasSelectedValue ? 'false' : 'true'}
   data-ui-glass-track={glass ? true : undefined}
   data-ui-select

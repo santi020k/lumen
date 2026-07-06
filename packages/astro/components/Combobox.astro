@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'input'> {
@@ -6,8 +8,16 @@ interface Props extends HTMLAttributes<'input'> {
   className?: string
   label?: string
   list: string
-  options?: string[]
+  options?: ComboboxOption[]
 }
+
+interface Option {
+  disabled?: boolean
+  label: string
+  value: string
+}
+
+type ComboboxOption = Option | string
 
 const {
   class: classProp = '',
@@ -21,10 +31,14 @@ const {
 } = Astro.props
 
 const inputId = id ?? `${list}-input`
-const passthrough = rest as Record<string, unknown>
+const normalizedOptions = options.map(option =>
+  typeof option === 'string' ? { label: option, value: option } : option
+)
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-combobox'
+], classProp, className)
 ---
 
-<div class:list={['ui-combobox', classProp, className]} data-ui-combobox>
+<div class:list={classList} data-ui-combobox>
   {label && <label class="ui-label" for={inputId}>{label}</label>}
   <input
     aria-autocomplete="list"
@@ -37,8 +51,17 @@ const passthrough = rest as Record<string, unknown>
     {...passthrough}
   />
   <div class="ui-combobox__list" hidden id={list} role="listbox">
-    {options.map(option => (
-      <button data-ui-combobox-option data-value={option} role="option" type="button">{option}</button>
+    {normalizedOptions.map(option => (
+      <button
+        aria-disabled={option.disabled ? 'true' : undefined}
+        data-ui-combobox-option
+        data-value={option.value}
+        disabled={option.disabled}
+        role="option"
+        type="button"
+      >
+        {option.label}
+      </button>
     ))}
   </div>
 </div>

@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
@@ -8,9 +10,10 @@ interface Props extends HTMLAttributes<'div'> {
 }
 
 const { class: classProp = '', className = '', glass = false, ...rest } = Astro.props
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-virtual-list', glass && 'ui-virtual-list--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
 ---
 
-<div class:list={['ui-virtual-list', glass && 'ui-virtual-list--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong', classProp, className]} data-ui-virtual-list {...passthrough}>
+<div class:list={classList} data-ui-virtual-list {...passthrough}>
   <slot />
 </div>

@@ -42,6 +42,8 @@ import {
   renderLumenCodeHtml,
   resizeScheduleEvent,
   resizeScheduleEvents,
+  resolveLumenAstroProps,
+  resolveLumenGlass,
   saveDataViewState,
   saveScheduleEvents,
   scoreThemeContrast,
@@ -339,5 +341,30 @@ describe('lumen theme tokens', () => {
     expect(composeClassName('ui-button', false, null, undefined, 'ui-button--default')).toBe(
       'ui-button ui-button--default'
     )
+  })
+
+  test('resolves Astro class lists and passthrough props without reordering classes', () => {
+    const rest = { 'aria-label': 'Revenue', id: 'chart' }
+    const resolved = resolveLumenAstroProps(rest, [
+      'ui-chart',
+      'ui-chart--glass',
+      false
+    ], 'custom-class', 'custom-name')
+
+    expect(resolved.classList).toEqual([
+      'ui-chart',
+      'ui-chart--glass',
+      false,
+      'custom-class',
+      'custom-name'
+    ])
+    expect(resolved.passthrough).toBe(rest)
+  })
+
+  test('resolves deprecated surface aliases to the glass prop shape', () => {
+    expect(resolveLumenGlass()).toBe(false)
+    expect(resolveLumenGlass(false, 'glass')).toBe(true)
+    expect(resolveLumenGlass('subtle', 'default')).toBe('subtle')
+    expect(resolveLumenGlass('strong', 'glass')).toBe('strong')
   })
 })

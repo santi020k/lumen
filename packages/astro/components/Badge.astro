@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'span'> {
@@ -14,22 +16,20 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
----
-
-<span
-  data-variant={variant}
-  class:list={[
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
     'ui-badge',
     variant === 'default' && 'ui-badge--default',
     variant === 'secondary' && 'ui-badge--secondary',
     variant === 'outline' && 'ui-badge--outline',
     variant === 'destructive' && 'ui-badge--destructive',
     variant === 'success' && 'ui-badge--success',
-    variant === 'warning' && 'ui-badge--warning',
-    classProp,
-    className
-  ]}
+    variant === 'warning' && 'ui-badge--warning'
+], classProp, className)
+---
+
+<span
+  data-variant={variant}
+  class:list={classList}
   {...passthrough}
 >
   <slot />

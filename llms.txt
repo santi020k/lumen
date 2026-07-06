@@ -32,7 +32,13 @@ import '@santi020k/lumen-astro/styles.css'
 Rules for agents:
 
 - Prefer Astro unless the user explicitly targets React or Web Components.
+- In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.
 - Do not require Tailwind configuration for Lumen components.
 - Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, accent, success, warning, danger.
 - Mount `UIPrimitives` once for interactive Astro primitives.
+- Use `glass` for glass surfaces. Overlay `surface="glass"` is a deprecated compatibility alias that maps to `glass`.
 - Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.
+- Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.
+- Runtime CustomEvents used by `UIPrimitives`: `ui-datatable-selectionchange` from `[data-ui-datatable]` with `{ values }`; `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.
+- Add `data-ui-form` to forms that should reflect `required`, `pattern`, `min`, `max`, `type`, and custom `setCustomValidity()` state into Field error slots on blur and submit. Use `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or `data-error-custom` to override browser validation messages.
+- Toasts use `Sonner` viewports with `placement` and `maxCount`. With `UIPrimitives`, use `window.LumenToast.create(detail)`, `.update(id, detail)`, and `.dismiss(id?)`, or dispatch the matching document events. Runtime toast `detail` supports `title`, `description`, `variant`, `duration`, `placement`, and `action`.

@@ -1,13 +1,81 @@
 ---
 import {
+  Button,
   Field,
   Input,
   Label
 } from '@santi020k/lumen-astro'
 ---
 
-<Field>
-  <Label for="ex-email">Email</Label>
-  <Input aria-describedby="ex-email-hint" id="ex-email" placeholder="you@example.com" type="email" />
-  <p id="ex-email-hint">We only use this for release notes.</p>
-</Field>
+<form data-ui-form data-ex-validated-form style="display: grid; gap: 1rem; max-width: 26rem;">
+  <Field>
+    <Label for="ex-email">Email</Label>
+    <Input
+      data-error-required="Add an email address."
+      id="ex-email"
+      name="email"
+      placeholder="you@example.com"
+      required
+      type="email"
+    />
+    <p data-ui-field-hint>We only use this for release notes.</p>
+    <p data-ui-field-error hidden></p>
+  </Field>
+
+  <Field>
+    <Label for="ex-workspace">Workspace slug</Label>
+    <Input
+      data-error-pattern="Use lowercase letters, numbers, and hyphens only."
+      id="ex-workspace"
+      name="workspace"
+      pattern="[a-z0-9-]+"
+      placeholder="lumen-team"
+      required
+    />
+    <p data-ui-field-hint>Lowercase letters, numbers, and hyphens.</p>
+    <p data-ui-field-error hidden></p>
+  </Field>
+
+  <Field>
+    <Label for="ex-invite">Invite code</Label>
+    <Input
+      data-error-custom="Use LUMEN-2026 for the preview."
+      id="ex-invite"
+      name="inviteCode"
+      placeholder="LUMEN-2026"
+      required
+    />
+    <p data-ui-field-hint>Preview access is limited to approved invites.</p>
+    <p data-ui-field-error hidden></p>
+  </Field>
+
+  <Button type="submit">Request access</Button>
+  <p data-ex-form-status aria-live="polite" style="margin: 0;"></p>
+</form>
+
+<script>
+  const form = document.querySelector('[data-ex-validated-form]')
+  const status = document.querySelector('[data-ex-form-status]')
+
+  form?.addEventListener('ui:validate', event => {
+    const control = event instanceof CustomEvent ? event.detail?.control : null
+
+    if (!(control instanceof HTMLInputElement) || control.name !== 'inviteCode') return
+
+    control.setCustomValidity(!control.value || control.value === 'LUMEN-2026'
+      ? ''
+      : 'Use LUMEN-2026 for the preview.')
+  })
+
+  form?.addEventListener('submit', event => {
+    event.preventDefault()
+  })
+
+  form?.addEventListener('ui:invalid', () => {
+    if (status) status.textContent = 'Resolve the highlighted fields.'
+  })
+
+  form?.addEventListener('ui:valid', () => {
+    if (status) status.textContent = 'Form is ready to submit.'
+  })
+</script>

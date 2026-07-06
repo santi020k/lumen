@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'article'> {
@@ -16,21 +18,19 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+          'ui-attachment',
+          glass && 'ui-attachment--glass',
+          glass === 'subtle' && 'ui-glass-subtle',
+          glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
 ---
 
 {href
   ? (
       <a
         href={href}
-        class:list={[
-          'ui-attachment',
-          glass && 'ui-attachment--glass',
-          glass === 'subtle' && 'ui-glass-subtle',
-          glass === 'strong' && 'ui-glass-strong',
-          classProp,
-          className
-        ]}
+        class:list={classList}
         {...passthrough}
       >
         <slot />
@@ -38,14 +38,7 @@ const passthrough = rest as Record<string, unknown>
     )
   : (
       <article
-        class:list={[
-          'ui-attachment',
-          glass && 'ui-attachment--glass',
-          glass === 'subtle' && 'ui-glass-subtle',
-          glass === 'strong' && 'ui-glass-strong',
-          classProp,
-          className
-        ]}
+        class:list={classList}
         {...passthrough}
       >
         <slot />

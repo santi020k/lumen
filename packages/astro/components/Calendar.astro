@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends Omit<HTMLAttributes<'div'>, 'value'> {
@@ -89,7 +91,6 @@ const monthIso = formatIsoMonth(monthDate)
 const todayIso = formatIsoDate(todayUtc)
 const firstWeekday = (monthDate.getUTCDay() + 6) % 7
 const firstCell = addDays(monthDate, -firstWeekday)
-const daysInMonth = getDaysInMonth(monthDate)
 const visibleDates = Array.from({ length: 42 }, (_, index) => addDays(firstCell, index))
 const firstSelectableDate = visibleDates.find(date =>
   date.getUTCMonth() === monthDate.getUTCMonth() &&
@@ -106,19 +107,17 @@ const focusIso = selectedDate && formatIsoMonth(selectedDate) === monthIso
 const weekdays = Array.from({ length: 7 }, (_, index) =>
   weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))
 )
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-calendar',
+    glass && 'ui-calendar--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
 ---
 
 <div
   aria-disabled={disabled ? 'true' : undefined}
-  class:list={[
-    'ui-calendar',
-    glass && 'ui-calendar--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong',
-    classProp,
-    className
-  ]}
+  class:list={classList}
   data-ui-calendar
   data-ui-calendar-initial-month={monthIso}
   data-ui-calendar-max={maxDate ? formatIsoDate(maxDate) : undefined}

@@ -32,6 +32,27 @@
 
   const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
 
+  const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
+
+  const formControlSelector = [
+    'input:not([type="hidden"])',
+    'select',
+    'textarea'
+  ].join(',')
+
+  const validityMessageAttributes = [
+    ['valueMissing', 'data-error-required'],
+    ['typeMismatch', 'data-error-type'],
+    ['patternMismatch', 'data-error-pattern'],
+    ['tooShort', 'data-error-too-short'],
+    ['tooLong', 'data-error-too-long'],
+    ['rangeUnderflow', 'data-error-min'],
+    ['rangeOverflow', 'data-error-max'],
+    ['stepMismatch', 'data-error-step'],
+    ['badInput', 'data-error-bad-input'],
+    ['customError', 'data-error-custom']
+  ] as const
+
   /**
    * Top-layer mode: when the browser supports both the Popover API and CSS
    * anchor positioning, floating panels are promoted to [popover] so they
@@ -196,10 +217,23 @@
       if (root.dataset.uiTooltipBound === 'true') continue
 
       const tip = root.querySelector<HTMLElement>('[role="tooltip"]')
+      const trigger = root.querySelector<HTMLElement>('[data-ui-tooltip-trigger], [data-ui-trigger], button, a[href], input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])')
 
       if (!tip) continue
 
       root.dataset.uiTooltipBound = 'true'
+
+      if (trigger && !trigger.closest('[role="tooltip"]')) {
+        if (!tip.id) {
+          tip.id = `ui-tooltip-${crypto.randomUUID()}`
+        }
+
+        const describedBy = new Set((trigger.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean))
+
+        describedBy.add(tip.id)
+
+        trigger.setAttribute('aria-describedby', [...describedBy].join(' '))
+      }
 
       if (supportsAnchoredPopovers) {
         const anchorName = nextAnchorName()
@@ -379,6 +413,90 @@
     return element.id
   }
 
+  const getFieldRoot = (control: HTMLElement): HTMLElement | null =>
+    control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+
+  const isNativeFormControl = (element: EventTarget | null): element is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement =>
+    element instanceof HTMLInputElement ||
+    element instanceof HTMLSelectElement ||
+    element instanceof HTMLTextAreaElement
+
+  const getValidationMessage = (
+    control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+    field: HTMLElement | null
+  ): string => {
+    const validity = control.validity
+
+    for (const [validityKey, attributeName] of validityMessageAttributes) {
+      if (!validity[validityKey]) continue
+
+      return control.getAttribute(attributeName) ??
+        field?.getAttribute(attributeName) ??
+        control.validationMessage
+    }
+
+    return control.validationMessage
+  }
+
+  const setFieldValidity = (
+    control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+    invalid: boolean,
+    message = ''
+  ): void => {
+    const field = getFieldRoot(control)
+
+    if (invalid) {
+      control.setAttribute('aria-invalid', 'true')
+      control.dataset.uiValidationInvalid = 'true'
+    } else if (control.dataset.uiValidationInvalid === 'true') {
+      control.removeAttribute('aria-invalid')
+      delete control.dataset.uiValidationInvalid
+    }
+
+    if (!field) return
+
+    field.dataset.invalid = String(invalid)
+
+    for (const error of field.querySelectorAll<HTMLElement>(fieldErrorSelector)) {
+      error.dataset.uiValidationErrorBound = 'true'
+      error.hidden = !invalid
+      error.textContent = invalid ? message : ''
+    }
+  }
+
+  const validateControl = (
+    control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+    form: HTMLFormElement
+  ): boolean => {
+    form.dispatchEvent(new CustomEvent('ui:validate', {
+      bubbles: true,
+      detail: { control, form, value: control.value }
+    }))
+
+    const invalid = !control.validity.valid
+    const message = invalid ? getValidationMessage(control, getFieldRoot(control)) : ''
+
+    setFieldValidity(control, invalid, message)
+
+    return !invalid
+  }
+
+  const getFormControls = (form: HTMLFormElement): Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> =>
+    [...form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(formControlSelector)]
+      .filter(control => control.form === form && !control.disabled)
+
+  const validateForm = (form: HTMLFormElement): Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> => {
+    const invalidControls: Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = []
+
+    for (const control of getFormControls(form)) {
+      if (!validateControl(control, form)) {
+        invalidControls.push(control)
+      }
+    }
+
+    return invalidControls
+  }
+
   const initFields = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('.ui-field, [data-ui-field]')) {
       if (root.dataset.uiFieldBound === 'true') continue
@@ -400,6 +518,53 @@
       if (describedBy.length) {
         control.setAttribute('aria-describedby', describedBy.join(' '))
       }
+    }
+  }
+
+  const initForms = (scope: ParentNode): void => {
+    for (const form of scope.querySelectorAll<HTMLFormElement>('form[data-ui-form]')) {
+      if (form.dataset.uiFormBound === 'true') continue
+
+      form.dataset.uiFormBound = 'true'
+      form.noValidate = true
+
+      form.addEventListener('focusout', event => {
+        if (!isNativeFormControl(event.target) || event.target.form !== form) return
+
+        const valid = validateControl(event.target, form)
+
+        form.dispatchEvent(new CustomEvent(valid ? 'ui:valid' : 'ui:invalid', {
+          bubbles: true,
+          detail: valid
+            ? { control: event.target, form }
+            : { control: event.target, controls: [event.target], form }
+        }))
+      })
+
+      form.addEventListener('submit', event => {
+        const invalidControls = validateForm(form)
+
+        if (invalidControls.length) {
+          event.preventDefault()
+
+          const firstInvalid = invalidControls[0]
+
+          form.dispatchEvent(new CustomEvent('ui:invalid', {
+            bubbles: true,
+            detail: { control: firstInvalid, controls: invalidControls, form }
+          }))
+
+          firstInvalid?.focus({ preventScroll: true })
+          firstInvalid?.reportValidity()
+
+          return
+        }
+
+        form.dispatchEvent(new CustomEvent('ui:valid', {
+          bubbles: true,
+          detail: { controls: getFormControls(form), form }
+        }))
+      })
     }
   }
 
@@ -509,7 +674,7 @@
   }
 
   const getVisibleItems = (items: HTMLElement[]): HTMLElement[] =>
-    items.filter(item => !item.hidden && item.offsetParent !== null)
+    items.filter(item => !item.hidden && item.offsetParent !== null && !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true')
 
   const closeCombobox = (root: HTMLElement): void => {
     const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
@@ -1327,6 +1492,272 @@
       })
     }
   }
+
+  /* cspell:ignore Datatable datatable */
+  /* eslint-disable @stylistic/padding-line-between-statements, no-nested-ternary, unicorn/no-array-for-each, unicorn/prefer-string-replace-all */
+  const getDataTableSortValue = (cell: HTMLTableCellElement | undefined): string =>
+    cell?.dataset.sortValue ?? cell?.textContent?.trim() ?? ''
+
+  const compareDataTableValues = (value: string, other: string, sortType: string | undefined): number => {
+    const numericValue = Number(value.replace(/,/g, ''))
+    const numericOther = Number(other.replace(/,/g, ''))
+    const useNumeric = sortType === 'number' || (
+      sortType !== 'string' &&
+      value.trim() !== '' &&
+      other.trim() !== '' &&
+      Number.isFinite(numericValue) &&
+      Number.isFinite(numericOther)
+    )
+
+    if (useNumeric) {
+      return numericValue - numericOther
+    }
+
+    return value.localeCompare(other, undefined, { numeric: true, sensitivity: 'base' })
+  }
+
+  const sortDataTableRows = (
+    table: HTMLTableElement,
+    header: HTMLTableCellElement,
+    columnIndex: number,
+    direction: 'ascending' | 'descending' | 'none'
+  ): void => {
+    const body = table.tBodies[0]
+
+    if (!body) return
+
+    const rows = [...body.rows]
+    const sortType = header.dataset.uiDatatableSortType
+
+    rows.sort((row, other) => {
+      if (direction === 'none') {
+        return Number(row.dataset.uiDatatableIndex ?? '0') - Number(other.dataset.uiDatatableIndex ?? '0')
+      }
+
+      const result = compareDataTableValues(
+        getDataTableSortValue(row.cells[columnIndex]),
+        getDataTableSortValue(other.cells[columnIndex]),
+        sortType
+      )
+
+      return (direction === 'ascending' ? result : -result) ||
+        Number(row.dataset.uiDatatableIndex ?? '0') - Number(other.dataset.uiDatatableIndex ?? '0')
+    })
+
+    rows.forEach(row => body.append(row))
+  }
+
+  const updateDataTableSort = (
+    root: HTMLElement,
+    table: HTMLTableElement,
+    header: HTMLTableCellElement,
+    direction: 'ascending' | 'descending' | 'none'
+  ): void => {
+    for (const item of table.querySelectorAll<HTMLTableCellElement>('thead th[aria-sort]')) {
+      item.setAttribute('aria-sort', item === header ? direction : 'none')
+      item.dataset.sort = item === header ? direction : 'none'
+    }
+
+    root.dataset.uiDatatableSortDirection = direction
+
+    if (direction === 'none') {
+      delete root.dataset.uiDatatableSortColumn
+    } else {
+      root.dataset.uiDatatableSortColumn = header.dataset.uiDatatableColumn ?? ''
+    }
+  }
+
+  const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void => {
+    const headers = [...table.querySelectorAll<HTMLTableCellElement>('thead th')].filter(header =>
+      header.dataset.uiDatatableSortable === 'true' ||
+      header.dataset.sortable === 'true' ||
+      header.hasAttribute('data-sortable')
+    )
+
+    for (const header of headers) {
+      if (header.dataset.uiDatatableSortBound === 'true') continue
+
+      const row = header.parentElement
+      const columnIndex = row ? [...row.children].indexOf(header) : -1
+
+      if (columnIndex < 0) continue
+
+      header.dataset.uiDatatableSortBound = 'true'
+      header.dataset.uiDatatableColumn = String(columnIndex)
+      header.setAttribute('aria-sort', 'none')
+
+      const button = document.createElement('button')
+
+      button.type = 'button'
+      button.className = 'ui-data-table__sort'
+      button.dataset.uiDatatableSort = ''
+
+      while (header.firstChild) {
+        button.append(header.firstChild)
+      }
+
+      header.append(button)
+
+      button.addEventListener('click', () => {
+        const currentColumn = root.dataset.uiDatatableSortColumn
+        const currentDirection = header.getAttribute('aria-sort')
+        const nextDirection = currentColumn !== String(columnIndex) || currentDirection === 'none'
+          ? 'ascending'
+          : currentDirection === 'ascending'
+            ? 'descending'
+            : 'none'
+
+        updateDataTableSort(root, table, header, nextDirection)
+        sortDataTableRows(table, header, columnIndex, nextDirection)
+      })
+    }
+
+    const body = table.tBodies[0]
+
+    if (!body) return
+
+    ;[...body.rows].forEach((row, index) => {
+      row.dataset.uiDatatableIndex = row.dataset.uiDatatableIndex ?? String(index)
+    })
+  }
+
+  const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] =>
+    [...(table.tBodies[0]?.rows ?? [])]
+
+  const getDataTableRowValue = (row: HTMLTableRowElement, index: number): string =>
+    row.dataset.value ?? row.id ?? String(index)
+
+  const syncDataTableSelection = (
+    root: HTMLElement,
+    table: HTMLTableElement,
+    selectAll: HTMLInputElement,
+    dispatch = false
+  ): void => {
+    const rows = getDataTableRows(table)
+    const selectedValues: string[] = []
+
+    rows.forEach((row, index) => {
+      const checkbox = row.querySelector<HTMLInputElement>('[data-ui-datatable-row-select]')
+      const selected = checkbox?.checked === true
+
+      row.setAttribute('aria-selected', String(selected))
+
+      if (selected) {
+        row.dataset.state = 'selected'
+        selectedValues.push(getDataTableRowValue(row, index))
+      } else {
+        delete row.dataset.state
+      }
+    })
+
+    selectAll.checked = rows.length > 0 && selectedValues.length === rows.length
+    selectAll.indeterminate = selectedValues.length > 0 && selectedValues.length < rows.length
+
+    const name = root.dataset.uiDatatableName
+    let inputs = root.querySelector<HTMLElement>('[data-ui-datatable-inputs]')
+
+    if (name) {
+      if (!inputs) {
+        inputs = document.createElement('div')
+        inputs.hidden = true
+        inputs.dataset.uiDatatableInputs = ''
+        root.append(inputs)
+      }
+
+      inputs.replaceChildren(...selectedValues.map(value => {
+        const input = document.createElement('input')
+
+        input.type = 'hidden'
+        input.name = name
+        input.value = value
+
+        return input
+      }))
+    } else {
+      inputs?.replaceChildren()
+    }
+
+    if (dispatch) {
+      root.dispatchEvent(new CustomEvent('ui-datatable-selectionchange', {
+        bubbles: true,
+        detail: { values: selectedValues }
+      }))
+    }
+  }
+
+  const initDataTableSelection = (root: HTMLElement, table: HTMLTableElement): void => {
+    if (root.dataset.uiDatatableSelectable !== 'true' || root.dataset.uiDatatableSelectionBound === 'true') return
+
+    const headRow = table.tHead?.rows[0]
+    const body = table.tBodies[0]
+
+    if (!headRow || !body) return
+
+    root.dataset.uiDatatableSelectionBound = 'true'
+
+    const headerCell = document.createElement('th')
+    const selectAll = document.createElement('input')
+
+    headerCell.className = 'ui-data-table__selection'
+    headerCell.scope = 'col'
+    selectAll.type = 'checkbox'
+    selectAll.className = 'ui-data-table__checkbox'
+    selectAll.dataset.uiDatatableSelectAll = ''
+    selectAll.setAttribute('aria-label', 'Select all rows')
+    headerCell.append(selectAll)
+    headRow.prepend(headerCell)
+
+    getDataTableRows(table).forEach((row, index) => {
+      row.dataset.uiDatatableRow = ''
+      row.dataset.value = getDataTableRowValue(row, index)
+
+      const cell = document.createElement('td')
+      const checkbox = document.createElement('input')
+      const selected = row.dataset.state === 'selected' || row.getAttribute('aria-selected') === 'true'
+
+      cell.className = 'ui-data-table__selection'
+      checkbox.type = 'checkbox'
+      checkbox.className = 'ui-data-table__checkbox'
+      checkbox.dataset.uiDatatableRowSelect = ''
+      checkbox.checked = selected
+      checkbox.defaultChecked = selected
+      checkbox.setAttribute('aria-label', `Select row ${index + 1}`)
+      checkbox.addEventListener('change', () => syncDataTableSelection(root, table, selectAll, true))
+
+      cell.append(checkbox)
+      row.prepend(cell)
+    })
+
+    selectAll.addEventListener('change', () => {
+      for (const checkbox of table.querySelectorAll<HTMLInputElement>('[data-ui-datatable-row-select]')) {
+        checkbox.checked = selectAll.checked
+      }
+
+      syncDataTableSelection(root, table, selectAll, true)
+    })
+
+    root.closest('form')?.addEventListener('reset', () => {
+      window.setTimeout(() => syncDataTableSelection(root, table, selectAll, true))
+    })
+
+    syncDataTableSelection(root, table, selectAll)
+  }
+
+  const initDataTables = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-datatable]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const table = root.querySelector<HTMLTableElement>('table')
+
+      if (!table) continue
+
+      root.dataset.uiBound = 'true'
+
+      initDataTableSelection(root, table)
+      initDataTableSorting(root, table)
+    }
+  }
+  /* eslint-enable @stylistic/padding-line-between-statements, no-nested-ternary, unicorn/no-array-for-each, unicorn/prefer-string-replace-all */
 
   const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
   const calendarMonthPattern = /^\d{4}-\d{2}$/
@@ -2192,41 +2623,316 @@
     return ''
   }
 
+  type ToastPlacement =
+    | 'bottom-center'
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'top-center'
+    | 'top-left'
+    | 'top-right'
+
+  type ToastAction = {
+    event?: string
+    label?: string
+    onClick?: (event: MouseEvent, toast: HTMLElement) => void
+    value?: unknown
+  }
+
+  type ToastDetail = {
+    action?: ToastAction
+    description?: string
+    duration?: number
+    id?: string
+    max?: number
+    placement?: ToastPlacement
+    title?: string
+    variant?: string
+  }
+
+  type ToastApi = {
+    create: (detail: ToastDetail) => string
+    dismiss: (id?: string) => void
+    update: (id: string, detail: ToastDetail) => void
+  }
+
+  const defaultToastDuration = 5000
+  const defaultToastMax = 5
+  const toastTimers = new WeakMap<HTMLElement, {
+    cleanup: () => void
+    duration: number
+    remaining: number
+    startedAt: number
+    timer: number
+  }>()
+
+  const isToastPlacement = (placement: string | undefined): placement is ToastPlacement =>
+    placement === 'top-left' ||
+    placement === 'top-center' ||
+    placement === 'top-right' ||
+    placement === 'bottom-left' ||
+    placement === 'bottom-center' ||
+    placement === 'bottom-right'
+
+  const getToastPlacement = (placement: string | undefined): ToastPlacement =>
+    isToastPlacement(placement) ? placement : 'bottom-right'
+
+  const getToastViewport = (placement: string | undefined): HTMLElement => {
+    const resolvedPlacement = getToastPlacement(placement)
+    const shouldUseAnyViewport = placement === undefined
+    const existing = document.querySelector<HTMLElement>(`[data-ui-sonner][data-placement="${resolvedPlacement}"]`) ??
+      (shouldUseAnyViewport ? document.querySelector<HTMLElement>('[data-ui-sonner]') : null)
+
+    if (existing) {
+      existing.dataset.placement = existing.dataset.placement ?? resolvedPlacement
+      existing.setAttribute('aria-live', existing.getAttribute('aria-live') ?? 'polite')
+      existing.setAttribute('aria-atomic', existing.getAttribute('aria-atomic') ?? 'false')
+
+      return existing
+    }
+
+    const viewport = document.createElement('div')
+
+    viewport.className = 'ui-sonner'
+    viewport.dataset.uiSonner = ''
+    viewport.dataset.placement = resolvedPlacement
+    viewport.setAttribute('aria-live', 'polite')
+    viewport.setAttribute('aria-atomic', 'false')
+    viewport.setAttribute('aria-label', 'Notifications')
+
+    document.body.append(viewport)
+
+    return viewport
+  }
+
+  const clearToastTimer = (toast: HTMLElement): void => {
+    const timer = toastTimers.get(toast)
+
+    if (!timer) return
+
+    window.clearTimeout(timer.timer)
+    timer.cleanup()
+    toastTimers.delete(toast)
+  }
+
+  const dismissToast = (toast: HTMLElement): void => {
+    clearToastTimer(toast)
+
+    toast.dataset.state = 'closed'
+
+    window.setTimeout(() => toast.remove(), 240)
+  }
+
+  const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
+    clearToastTimer(toast)
+
+    if (!Number.isFinite(duration) || duration <= 0) return
+
+    const timerState = {
+      cleanup: () => {},
+      duration,
+      remaining: duration,
+      startedAt: Date.now(),
+      timer: 0
+    }
+
+    const start = (): void => {
+      timerState.startedAt = Date.now()
+      timerState.timer = window.setTimeout(() => dismissToast(toast), timerState.remaining)
+    }
+
+    const pause = (): void => {
+      window.clearTimeout(timerState.timer)
+      timerState.remaining = Math.max(0, timerState.remaining - (Date.now() - timerState.startedAt))
+    }
+
+    const resume = (): void => {
+      if (timerState.remaining > 0) start()
+    }
+
+    timerState.cleanup = () => {
+      toast.removeEventListener('mouseenter', pause)
+      toast.removeEventListener('mouseleave', resume)
+      toast.removeEventListener('focusin', pause)
+      toast.removeEventListener('focusout', resume)
+    }
+
+    toast.addEventListener('mouseenter', pause)
+    toast.addEventListener('mouseleave', resume)
+    toast.addEventListener('focusin', pause)
+    toast.addEventListener('focusout', resume)
+
+    toastTimers.set(toast, timerState)
+    start()
+  }
+
+  const setToastContent = (toast: HTMLElement, detail: ToastDetail): void => {
+    const title = detail.title ?? toast.dataset.title ?? 'Notification'
+    const description = detail.description ?? toast.dataset.description ?? ''
+    const variant = detail.variant ?? toast.dataset.variant ?? 'default'
+    const variantClass = getToastVariantClass(variant)
+
+    toast.className = variantClass ? `ui-toast ${variantClass}` : 'ui-toast'
+    toast.dataset.variant = variant
+    toast.dataset.title = title
+    toast.dataset.description = description
+    toast.setAttribute('role', variant === 'destructive' ? 'alert' : 'status')
+    toast.setAttribute('aria-live', variant === 'destructive' ? 'assertive' : 'polite')
+
+    toast.replaceChildren()
+
+    const body = document.createElement('div')
+    const heading = document.createElement('strong')
+
+    body.className = 'ui-toast__body'
+    heading.textContent = title
+    body.append(heading)
+
+    if (description) {
+      const text = document.createElement('p')
+
+      text.textContent = description
+      body.append(text)
+    }
+
+    toast.append(body)
+
+    if (detail.action?.label) {
+      const action = document.createElement('button')
+
+      action.className = 'ui-button ui-button--secondary ui-button--sm ui-toast__action'
+      action.type = 'button'
+      action.textContent = detail.action.label
+      action.addEventListener('click', event => {
+        detail.action?.onClick?.(event, toast)
+
+        toast.dispatchEvent(new CustomEvent(detail.action?.event ?? 'ui:toast-action', {
+          bubbles: true,
+          detail: { id: toast.id, value: detail.action?.value }
+        }))
+
+        dismissToast(toast)
+      })
+
+      toast.append(action)
+    }
+
+    const dismiss = document.createElement('button')
+
+    dismiss.className = 'ui-toast__dismiss'
+    dismiss.type = 'button'
+    dismiss.setAttribute('aria-label', 'Dismiss notification')
+    dismiss.textContent = 'Dismiss'
+    dismiss.addEventListener('click', () => dismissToast(toast))
+
+    toast.append(dismiss)
+  }
+
   const initToasts = (): void => {
     if (document.documentElement.dataset.uiToastsBound === 'true') return
 
     document.documentElement.dataset.uiToastsBound = 'true'
 
-    document.addEventListener('ui:toast', event => {
-      const detail = event instanceof CustomEvent ? event.detail as { description?: string, title?: string, variant?: string } : {}
-      const viewport = document.querySelector<HTMLElement>('[data-ui-sonner]') ?? document.body
-      const toast = document.createElement('aside')
-      const title = document.createElement('strong')
-      const variantClass = getToastVariantClass(detail.variant)
+    const createToast = (detail: ToastDetail): string => {
+      const viewport = getToastViewport(detail.placement)
+      const id = detail.id ?? `ui-toast-${crypto.randomUUID()}`
+      const duration = detail.duration ?? defaultToastDuration
+      const max = detail.max ?? Number(viewport.dataset.uiToastMax ?? defaultToastMax)
+      const existingToast = document.getElementById(id)
 
-      toast.className = variantClass ? `ui-toast ${variantClass}` : 'ui-toast'
+      if (existingToast instanceof HTMLElement && existingToast.hasAttribute('data-ui-toast')) {
+        existingToast.dataset.state = 'open'
+        setToastContent(existingToast, detail)
+        viewport.append(existingToast)
+        scheduleToastDismiss(existingToast, duration)
 
-      toast.setAttribute('role', detail.variant === 'destructive' ? 'alert' : 'status')
-
-      title.textContent = detail.title ?? 'Notification'
-
-      toast.append(title)
-
-      if (detail.description) {
-        const description = document.createElement('p')
-
-        description.textContent = detail.description
-
-        toast.append(description)
+        return id
       }
 
+      const toast = document.createElement('aside')
+
+      toast.id = id
+      toast.dataset.uiToast = ''
+      toast.dataset.state = 'open'
+      toast.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return
+
+        event.preventDefault()
+        dismissToast(toast)
+      })
+
+      setToastContent(toast, detail)
+
       viewport.append(toast)
+      scheduleToastDismiss(toast, duration)
 
-      window.setTimeout(() => {
-        toast.dataset.state = 'closed'
+      const toasts = [...viewport.querySelectorAll<HTMLElement>('[data-ui-toast]')]
 
-        window.setTimeout(() => toast.remove(), 240)
-      }, 5000)
+      for (const staleToast of toasts.slice(0, Math.max(0, toasts.length - max))) {
+        dismissToast(staleToast)
+      }
+
+      return id
+    }
+
+    const updateToast = (id: string, detail: ToastDetail): void => {
+      const toast = document.getElementById(id)
+
+      if (!(toast instanceof HTMLElement) || !toast.hasAttribute('data-ui-toast')) return
+
+      setToastContent(toast, { ...detail, id })
+
+      if (detail.duration !== undefined) {
+        scheduleToastDismiss(toast, detail.duration)
+      }
+    }
+
+    const dismissToastById = (id?: string): void => {
+      const selector = id ? `#${CSS.escape(id)}` : '[data-ui-toast]'
+
+      for (const toast of document.querySelectorAll<HTMLElement>(selector)) {
+        if (toast.hasAttribute('data-ui-toast')) {
+          dismissToast(toast)
+        }
+      }
+    }
+
+    const api: ToastApi = {
+      create: createToast,
+      dismiss: dismissToastById,
+      update: updateToast
+    }
+
+    ;(window as Window & { LumenToast?: ToastApi }).LumenToast = api
+
+    for (const viewport of document.querySelectorAll<HTMLElement>('[data-ui-sonner]')) {
+      viewport.dataset.placement = getToastPlacement(viewport.dataset.placement)
+      viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')
+      viewport.setAttribute('aria-atomic', viewport.getAttribute('aria-atomic') ?? 'false')
+    }
+
+    for (const toast of document.querySelectorAll<HTMLElement>('[data-ui-toast], .ui-toast')) {
+      toast.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return
+
+        event.preventDefault()
+        dismissToast(toast)
+      })
+    }
+
+    document.addEventListener('ui:toast', event => {
+      createToast(event instanceof CustomEvent ? event.detail as ToastDetail : {})
+    })
+
+    document.addEventListener('ui:toast-update', event => {
+      const detail = event instanceof CustomEvent ? event.detail as ToastDetail : {}
+
+      if (detail.id) updateToast(detail.id, detail)
+    })
+
+    document.addEventListener('ui:toast-dismiss', event => {
+      const detail = event instanceof CustomEvent ? event.detail as { id?: string } : {}
+
+      dismissToastById(detail.id)
     })
   }
 
@@ -2234,6 +2940,8 @@
     initDialogs(scope)
 
     initFields(scope)
+
+    initForms(scope)
 
     initDisclosures(scope)
 
@@ -2252,6 +2960,8 @@
     initResizableGroups(scope)
 
     initInputOtpFields(scope)
+
+    initDataTables(scope)
 
     initCalendars(scope)
 
@@ -2283,59 +2993,67 @@
     initToasts()
   }
 
-  document.addEventListener('click', event => {
-    const target = event.target
+  const lumenWindow = window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }
 
-    if (!(target instanceof Node)) return
+  lumenWindow.LumenInitUiPrimitives = initUiPrimitives
 
-    for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
-      if (!root.contains(target)) {
+  if (document.documentElement.dataset.uiPrimitivesGlobalBound !== 'true') {
+    document.documentElement.dataset.uiPrimitivesGlobalBound = 'true'
+
+    document.addEventListener('click', event => {
+      const target = event.target
+
+      if (!(target instanceof Node)) return
+
+      for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
+        if (!root.contains(target)) {
+          closeDisclosure(root)
+        }
+      }
+
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
+        if (!root.contains(target)) {
+          closeCombobox(root)
+        }
+      }
+
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
+        if (!root.contains(target)) {
+          closeSelect(root)
+        }
+      }
+
+      for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
+        if (!menu.contains(target)) {
+          closeContextMenu(menu)
+        }
+      }
+    })
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return
+
+      for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
         closeDisclosure(root)
       }
-    }
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
-      if (!root.contains(target)) {
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
         closeCombobox(root)
       }
-    }
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
-      if (!root.contains(target)) {
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
         closeSelect(root)
       }
-    }
 
-    for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
-      if (!menu.contains(target)) {
+      for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
         closeContextMenu(menu)
       }
-    }
-  })
+    })
 
-  document.addEventListener('keydown', event => {
-    if (event.key !== 'Escape') return
+    document.addEventListener('astro:page-load', () => lumenWindow.LumenInitUiPrimitives?.())
 
-    for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
-      closeDisclosure(root)
-    }
-
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
-      closeCombobox(root)
-    }
-
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
-      closeSelect(root)
-    }
-
-    for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
-      closeContextMenu(menu)
-    }
-  })
-
-  document.addEventListener('astro:page-load', () => initUiPrimitives())
-
-  document.addEventListener('astro:after-swap', () => initUiPrimitives())
+    document.addEventListener('astro:after-swap', () => lumenWindow.LumenInitUiPrimitives?.())
+  }
 
   initUiPrimitives()
 </script>

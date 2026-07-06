@@ -41,7 +41,8 @@ The package ships the complete Astro primitive catalog plus a small progressive-
 
 Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a
 boolean prop, and overlays or navigation primitives use the same prop while preserving semantic
-variants. The older `variant="glass"` and `surface="glass"` forms remain supported.
+variants. The older `variant="glass"` form remains supported for cards. Overlay
+`surface="glass"` props are deprecated compatibility aliases that map to `glass`.
 
 ```astro
 <Card glass>Glass card</Card>

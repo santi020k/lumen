@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Option {
@@ -22,10 +24,11 @@ const hasValue = Object.hasOwn(rest, 'value')
 const normalizedOptions = options.map(option =>
   typeof option === 'string' ? { label: option, value: option } : option
 )
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', size === 'sm' && 'ui-select--sm', size === 'lg' && 'ui-select--lg'
+], classProp, className)
 ---
 
-<select class:list={['ui-select', size === 'sm' && 'ui-select--sm', size === 'lg' && 'ui-select--lg', classProp, className]} {...passthrough}>
+<select class:list={classList} {...passthrough}>
   {placeholder && <option disabled selected={!hasValue} value="">{placeholder}</option>}
   <slot />
   {normalizedOptions.map(option => (

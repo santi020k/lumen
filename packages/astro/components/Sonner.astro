@@ -1,27 +1,37 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  maxCount?: number
+  placement?: 'bottom-center' | 'bottom-left' | 'bottom-right' | 'top-center' | 'top-left' | 'top-right'
 }
 
 const {
+  'aria-atomic': ariaAtomic = 'false',
+  'aria-live': ariaLive = 'polite',
   class: classProp = '',
   className = '',
+  maxCount,
+  placement = 'bottom-right',
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-sonner'
+], classProp, className)
 ---
 
 <div
+  aria-atomic={ariaAtomic}
+  aria-live={ariaLive}
   data-ui-sonner
-  class:list={[
-    'ui-sonner',
-    classProp,
-    className
-  ]}
+  data-ui-toast-max={maxCount}
+  data-placement={placement}
+  class:list={classList}
   {...passthrough}
 >
   <slot />

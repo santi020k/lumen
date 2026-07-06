@@ -33,10 +33,10 @@ export function SubscribeForm() {
 }
 ```
 
-React components emit the same `ui-*` classes and `data-ui-*` attributes as the Astro primitives.
-Astro remains the reference package for the bundled progressive-enhancement runtime; wire equivalent
-client behavior in your React app for behavior-heavy primitives such as dialogs, menus, tabs, and
-toasts.
+React is Lumen's visual adapter layer plus headless behavior hooks. The components emit the same
+`ui-*` classes and `data-ui-*` attributes as Astro, while hooks such as `useDialog`, `usePopover`,
+`useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip` track the Astro runtime's
+ARIA, keyboard, Escape, dismissal, and toast controller semantics for React applications.
 
 ## Glass surfaces
 

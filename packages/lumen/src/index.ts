@@ -1,5 +1,6 @@
 export {
   addLumenRegistryItem,
+  getLumenRegistryEntries,
   getLumenRegistryItem,
   loadLumenRegistry,
   type LumenAddOptions,
@@ -7,6 +8,8 @@ export {
   type LumenMergeConflict,
   type LumenRegistry,
   lumenRegistry,
+  type LumenRegistryComponent,
+  type LumenRegistryEntry,
   type LumenRegistryFile,
   type LumenRegistryItem,
   type LumenRegistryLoadOptions

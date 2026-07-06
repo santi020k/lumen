@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'button'> {
@@ -20,12 +22,8 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
 const isDisabled = Boolean(disabled) || loading
----
-
-<button
-  class:list={[
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
     'ui-button',
     variant === 'default' && 'ui-button--default',
     variant === 'destructive' && 'ui-button--destructive',
@@ -38,10 +36,12 @@ const isDisabled = Boolean(disabled) || loading
     size === 'lg' && 'ui-button--lg',
     size === 'icon' && 'ui-button--icon',
     isDisabled && 'ui-button--disabled',
-    loading && 'ui-button--loading',
-    classProp,
-    className
-  ]}
+    loading && 'ui-button--loading'
+], classProp, className)
+---
+
+<button
+  class:list={classList}
   aria-busy={loading || undefined}
   disabled={isDisabled || undefined}
   type={type}

@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 type HTMLInputAttributes = HTMLAttributes<'input'>
@@ -9,11 +11,12 @@ interface Props extends Omit<HTMLInputAttributes, 'type'> {
 }
 
 const { class: classProp = '', className = '', ...rest } = Astro.props
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-checkbox'
+], classProp, className)
 ---
 
 <input
-  class:list={['ui-checkbox', classProp, className]}
+  class:list={classList}
   type="checkbox"
   {...passthrough}
 />

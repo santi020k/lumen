@@ -11,9 +11,30 @@ import type {
   ReactNode
 } from 'react'
 import {
+  createContext,
+  useContext,
   useMemo,
   useState
 } from 'react'
+
+import {
+  type DialogOptions,
+  type DropdownMenuController,
+  type DropdownMenuOptions,
+  type PopoverController,
+  type PopoverOptions,
+  type SelectOptions,
+  type TabsController,
+  type TabsOptions,
+  type TooltipController,
+  type TooltipOptions,
+  useDialog,
+  useDropdownMenu,
+  usePopover,
+  useSelect,
+  useTabs,
+  useTooltip
+} from './hooks.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
@@ -36,6 +57,8 @@ type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
 type Orientation = 'horizontal' | 'vertical'
 
 type SurfaceVariant = 'default' | 'glass'
+
+type EventHandler<Event> = (event: Event) => void
 
 export type LumenGlassProp = boolean | 'subtle' | 'strong'
 
@@ -74,6 +97,15 @@ const glassClass = (base: string, glass?: LumenGlassProp) =>
 const normalizeOption = (option: SelectOption): Option =>
   typeof option === 'string' ? { label: option, value: option } : option
 
+const composeHandlers = <Event,>(
+  userHandler: EventHandler<Event> | undefined,
+  lumenHandler: EventHandler<Event> | undefined
+) => (event: Event) => {
+  userHandler?.(event)
+
+  lumenHandler?.(event)
+}
+
 type PrimitiveProps = ComponentPropsWithoutRef<'div'> & {
   [key: string]: unknown
   as?: ElementType
@@ -89,6 +121,19 @@ const Primitive = ({
   const safeClassName = typeof className === 'string' ? className : undefined
 
   return <Tag className={composeClassName(uiClassName, safeClassName)} {...props} />
+}
+
+const DropdownMenuContext = createContext<DropdownMenuController | null>(null)
+const PopoverContext = createContext<PopoverController | null>(null)
+const TabsContext = createContext<TabsController | null>(null)
+const TooltipContext = createContext<TooltipController | null>(null)
+
+const useRequiredContext = <Value,>(context: Value | null, componentName: string): Value => {
+  if (!context) {
+    throw new Error(`${componentName} must be used inside its matching Lumen root component.`)
+  }
+
+  return context
 }
 
 export type AccordionProps = ComponentPropsWithoutRef<'div'>
@@ -109,20 +154,36 @@ export const Alert = ({ className, glass = false, variant = 'default', ...props 
   />
 )
 
-export interface AlertDialogProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
+export type AlertDialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>
 
-export const AlertDialog = ({ className, glass = false, surface = 'default', ...props }: AlertDialogProps) => (
-  <dialog
-    className={composeClassName(
-      'ui-dialog ui-alert-dialog',
-      glassSurfaceClass('ui-dialog', surface, glass),
-      className
-    )}
-    data-surface={resolveSurface(surface, glass)}
-    data-ui-alert-dialog
-    {...props}
-  />
-)
+export const AlertDialog = ({
+  className,
+  defaultOpen,
+  glass = false,
+  onClick,
+  onClose,
+  onOpenChange,
+  open,
+  surface = 'default',
+  ...props
+}: AlertDialogProps) => {
+  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })
+
+  return (
+    <dialog
+      {...dialog.dialogProps}
+      {...props}
+      className={composeClassName(
+        'ui-dialog ui-alert-dialog',
+        glassSurfaceClass('ui-dialog', surface, glass),
+        className
+      )}
+      data-surface={resolveSurface(surface, glass)}
+      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
+      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
+    />
+  )
+}
 
 export interface AgendaProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
@@ -596,16 +657,32 @@ export const DateRangePicker = ({ className, ...props }: DateRangePickerProps) =
   <div className={composeClassName('ui-date-range-picker', className)} data-ui-date-range-picker {...props} />
 )
 
-export interface DialogProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
+export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>
 
-export const Dialog = ({ className, glass = false, surface = 'default', ...props }: DialogProps) => (
-  <dialog
-    className={composeClassName('ui-dialog', glassSurfaceClass('ui-dialog', surface, glass), className)}
-    data-surface={resolveSurface(surface, glass)}
-    data-ui-dialog
-    {...props}
-  />
-)
+export const Dialog = ({
+  className,
+  defaultOpen,
+  glass = false,
+  onClick,
+  onClose,
+  onOpenChange,
+  open,
+  surface = 'default',
+  ...props
+}: DialogProps) => {
+  const dialog = useDialog({ defaultOpen, onOpenChange, open })
+
+  return (
+    <dialog
+      {...dialog.dialogProps}
+      {...props}
+      className={composeClassName('ui-dialog', glassSurfaceClass('ui-dialog', surface, glass), className)}
+      data-surface={resolveSurface(surface, glass)}
+      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
+      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
+    />
+  )
+}
 
 export type DirectionProps = ComponentPropsWithoutRef<'div'>
 export const Direction = ({ className, dir = 'ltr', ...props }: DirectionProps) => (
@@ -623,16 +700,63 @@ export const Drawer = ({ className, glass = false, surface = 'default', ...props
   />
 )
 
-export interface DropdownMenuProps extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}
+export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> & SurfaceProps & Omit<DropdownMenuOptions, 'id'>
 
-export const DropdownMenu = ({ className, glass = false, surface = 'default', ...props }: DropdownMenuProps) => (
-  <menu
-    className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
-    data-surface={resolveSurface(surface, glass)}
-    data-ui-dropdown-menu
-    {...props}
-  />
-)
+export const DropdownMenu = ({
+  children,
+  className,
+  defaultOpen,
+  glass = false,
+  onOpenChange,
+  open,
+  surface = 'default',
+  ...props
+}: DropdownMenuProps) => {
+  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })
+
+  return (
+    <DropdownMenuContext.Provider value={menu}>
+      <menu
+        {...menu.rootProps}
+        {...props}
+        className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
+        data-surface={resolveSurface(surface, glass)}
+        data-ui-dropdown-menu
+      >
+        {children}
+      </menu>
+    </DropdownMenuContext.Provider>
+  )
+}
+
+export type DropdownMenuTriggerProps = ComponentPropsWithoutRef<'button'>
+export const DropdownMenuTrigger = ({ onClick, onKeyDown, ...props }: DropdownMenuTriggerProps) => {
+  const menu = useRequiredContext(useContext(DropdownMenuContext), 'DropdownMenuTrigger')
+
+  return (
+    <button
+      {...menu.triggerProps}
+      {...props}
+      onClick={composeHandlers(onClick, menu.triggerProps.onClick)}
+      onKeyDown={composeHandlers(onKeyDown, menu.triggerProps.onKeyDown)}
+    />
+  )
+}
+
+export type DropdownMenuContentProps = ComponentPropsWithoutRef<'div'>
+export const DropdownMenuContent = ({ className, onKeyDown, ...props }: DropdownMenuContentProps) => {
+  const menu = useRequiredContext(useContext(DropdownMenuContext), 'DropdownMenuContent')
+
+  return (
+    <div
+      {...menu.panelProps}
+      {...props}
+      className={composeClassName('ui-menu__content', className)}
+      onKeyDown={composeHandlers(onKeyDown, menu.panelProps.onKeyDown)}
+      role={props.role ?? 'menu'}
+    />
+  )
+}
 
 export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
@@ -820,16 +944,61 @@ export const Pagination = ({ 'aria-label': ariaLabel = 'Pagination', className, 
   <nav aria-label={ariaLabel} className={composeClassName('ui-pagination', className)} {...props} />
 )
 
-export interface PopoverProps extends ComponentPropsWithoutRef<'div'>, SurfaceProps {}
+export type PopoverProps = ComponentPropsWithoutRef<'div'> & SurfaceProps & Omit<PopoverOptions, 'id'>
 
-export const Popover = ({ className, glass = false, surface = 'default', ...props }: PopoverProps) => (
-  <div
-    className={composeClassName('ui-popover', glassSurfaceClass('ui-popover', surface, glass), className)}
-    data-surface={resolveSurface(surface, glass)}
-    data-ui-popover
-    {...props}
-  />
-)
+export const Popover = ({
+  children,
+  className,
+  defaultOpen,
+  glass = false,
+  onOpenChange,
+  open,
+  surface = 'default',
+  ...props
+}: PopoverProps) => {
+  const popover = usePopover({ defaultOpen, onOpenChange, open })
+
+  return (
+    <PopoverContext.Provider value={popover}>
+      <div
+        {...popover.rootProps}
+        {...props}
+        className={composeClassName('ui-popover', glassSurfaceClass('ui-popover', surface, glass), className)}
+        data-surface={resolveSurface(surface, glass)}
+        data-ui-popover
+      >
+        {children}
+      </div>
+    </PopoverContext.Provider>
+  )
+}
+
+export type PopoverTriggerProps = ComponentPropsWithoutRef<'button'>
+export const PopoverTrigger = ({ onClick, onKeyDown, ...props }: PopoverTriggerProps) => {
+  const popover = useRequiredContext(useContext(PopoverContext), 'PopoverTrigger')
+
+  return (
+    <button
+      {...popover.triggerProps}
+      {...props}
+      onClick={composeHandlers(onClick, popover.triggerProps.onClick)}
+      onKeyDown={composeHandlers(onKeyDown, popover.triggerProps.onKeyDown)}
+    />
+  )
+}
+
+export type PopoverPanelProps = ComponentPropsWithoutRef<'div'>
+export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
+  const popover = useRequiredContext(useContext(PopoverContext), 'PopoverPanel')
+
+  return (
+    <div
+      {...popover.panelProps}
+      {...props}
+      onKeyDown={composeHandlers(onKeyDown, popover.panelProps.onKeyDown)}
+    />
+  )
+}
 
 export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {
   max?: number
@@ -891,8 +1060,86 @@ export const SearchField = ({ className, type = 'search', ...props }: SearchFiel
   <input className={composeClassName('ui-input ui-search-field', className)} type={type} {...props} />
 )
 
-export type SelectProps = NativeSelectProps
-export const Select = (props: SelectProps) => <NativeSelect {...props} />
+export interface SelectProps extends Omit<
+  NativeSelectProps,
+  'defaultValue' | 'disabled' | 'id' | 'name' | 'onChange' | 'options' | 'placeholder' | 'required' | 'size' | 'value'
+>, SelectOptions {
+  glass?: LumenGlassProp
+  onChange?: ComponentPropsWithoutRef<'select'>['onChange']
+  size?: 'default' | 'lg' | 'md' | 'sm'
+}
+
+export const Select = ({
+  children,
+  className,
+  defaultValue,
+  disabled = false,
+  glass = false,
+  id,
+  name,
+  onChange,
+  onValueChange,
+  options = emptyOptions,
+  placeholder,
+  required = false,
+  size = 'default',
+  value,
+  ...props
+}: SelectProps) => {
+  const select = useSelect({
+    defaultValue,
+    disabled,
+    id,
+    name,
+    onValueChange,
+    options,
+    placeholder,
+    required,
+    value
+  })
+
+  const sizeClass = size === 'sm' ? 'ui-select--sm' : size === 'lg' ? 'ui-select--lg' : false
+
+  return (
+    <div
+      {...select.rootProps}
+      className={composeClassName('ui-select-field', glassClass('ui-select-field', glass), className)}
+      data-ui-glass-track={glass ? true : undefined}
+    >
+      <select
+        {...select.nativeSelectProps}
+        {...props}
+        className={composeClassName('ui-select ui-select__native', sizeClass)}
+        onChange={composeHandlers(onChange, select.nativeSelectProps.onChange)}
+      >
+        {placeholder && <option data-ui-select-placeholder disabled value="">{placeholder}</option>}
+        {children}
+        {select.options.map(option => (
+          <option disabled={option.disabled} key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+
+      <div {...select.controlProps} className="ui-select__control">
+        <button
+          {...select.triggerProps}
+          className={composeClassName('ui-select ui-select__trigger', sizeClass)}
+        >
+          <span data-ui-select-value>{select.triggerText}</span>
+        </button>
+
+        <div {...select.listProps} className="ui-select__list">
+          {select.options.map(option => (
+            <button key={option.value} {...select.getOptionProps(option)}>
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export interface SeparatorProps extends ComponentPropsWithoutRef<'hr'> {
   orientation?: Orientation
@@ -978,12 +1225,64 @@ export const Table = ({ className, glass = false, ...props }: TableProps) => (
   <div className={composeClassName('ui-table-wrap', glassClass('ui-table-wrap', glass), className)} {...props} />
 )
 
-export interface TabsProps extends ComponentPropsWithoutRef<'div'> {
+export interface TabsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue' | 'id' | 'onChange'>, Omit<TabsOptions, 'id'> {
   glass?: LumenGlassProp
 }
-export const Tabs = ({ className, glass = false, ...props }: TabsProps) => (
-  <div className={composeClassName('ui-tabs', glassClass('ui-tabs', glass), className)} data-ui-tabs {...props} />
-)
+export const Tabs = ({
+  children,
+  className,
+  defaultValue,
+  glass = false,
+  onValueChange,
+  orientation,
+  value,
+  ...props
+}: TabsProps) => {
+  const tabs = useTabs({ defaultValue, onValueChange, orientation, value })
+
+  return (
+    <TabsContext.Provider value={tabs}>
+      <div
+        {...tabs.rootProps}
+        {...props}
+        className={composeClassName('ui-tabs', glassClass('ui-tabs', glass), className)}
+      >
+        {children}
+      </div>
+    </TabsContext.Provider>
+  )
+}
+
+export type TabsListProps = ComponentPropsWithoutRef<'div'>
+export const TabsList = ({ ...props }: TabsListProps) => {
+  const tabs = useRequiredContext(useContext(TabsContext), 'TabsList')
+
+  return <div {...tabs.listProps} {...props} />
+}
+
+export interface TabsTriggerProps extends ComponentPropsWithoutRef<'button'> {
+  value: string
+}
+export const TabsTrigger = ({ onClick, onKeyDown, value, ...props }: TabsTriggerProps) => {
+  const tabs = useRequiredContext(useContext(TabsContext), 'TabsTrigger')
+
+  return (
+    <button
+      {...tabs.getTriggerProps(value, props)}
+      onClick={composeHandlers(onClick, tabs.getTriggerProps(value).onClick)}
+      onKeyDown={composeHandlers(onKeyDown, tabs.getTriggerProps(value).onKeyDown)}
+    />
+  )
+}
+
+export interface TabsPanelProps extends ComponentPropsWithoutRef<'div'> {
+  value: string
+}
+export const TabsPanel = ({ value, ...props }: TabsPanelProps) => {
+  const tabs = useRequiredContext(useContext(TabsContext), 'TabsPanel')
+
+  return <div {...tabs.getPanelProps(value, props)} />
+}
 
 export type TagGroupProps = ComponentPropsWithoutRef<'div'>
 export const TagGroup = ({ className, role = 'list', ...props }: TagGroupProps) => (
@@ -1011,8 +1310,17 @@ export interface ToastProps extends ComponentPropsWithoutRef<'aside'>, SurfacePr
   variant?: AlertVariant
 }
 
-export const Toast = ({ className, glass = false, surface = 'default', variant = 'default', ...props }: ToastProps) => (
+export const Toast = ({
+  'aria-live': ariaLive,
+  className,
+  glass = false,
+  role,
+  surface = 'default',
+  variant = 'default',
+  ...props
+}: ToastProps) => (
   <aside
+    aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}
     className={composeClassName(
       'ui-toast',
       variantClass('ui-toast', variant),
@@ -1020,7 +1328,9 @@ export const Toast = ({ className, glass = false, surface = 'default', variant =
       className
     )}
     data-surface={resolveSurface(surface, glass)}
+    data-ui-toast
     data-variant={variant}
+    role={role ?? (variant === 'destructive' ? 'alert' : 'status')}
     {...props}
   />
 )
@@ -1044,10 +1354,43 @@ export const ToggleGroup = ({ className, ...props }: ToggleGroupProps) => (
   <div className={composeClassName('ui-toggle-group', className)} data-ui-toggle-group {...props} />
 )
 
-export type TooltipProps = ComponentPropsWithoutRef<'span'>
-export const Tooltip = ({ className, ...props }: TooltipProps) => (
-  <span className={composeClassName('ui-tooltip', className)} {...props} />
-)
+export type TooltipProps = ComponentPropsWithoutRef<'span'> & Omit<TooltipOptions, 'id'>
+export const Tooltip = ({
+  children,
+  className,
+  defaultOpen,
+  delay,
+  onKeyDown,
+  onMouseEnter,
+  onMouseLeave,
+  onOpenChange,
+  open,
+  ...props
+}: TooltipProps) => {
+  const tooltip = useTooltip({ defaultOpen, delay, onOpenChange, open })
+
+  return (
+    <TooltipContext.Provider value={tooltip}>
+      <span
+        {...tooltip.rootProps}
+        {...props}
+        className={composeClassName('ui-tooltip', className)}
+        onKeyDown={composeHandlers(onKeyDown, tooltip.rootProps.onKeyDown)}
+        onMouseEnter={composeHandlers(onMouseEnter, tooltip.rootProps.onMouseEnter)}
+        onMouseLeave={composeHandlers(onMouseLeave, tooltip.rootProps.onMouseLeave)}
+      >
+        {children}
+      </span>
+    </TooltipContext.Provider>
+  )
+}
+
+export type TooltipContentProps = ComponentPropsWithoutRef<'span'>
+export const TooltipContent = ({ ...props }: TooltipContentProps) => {
+  const tooltip = useRequiredContext(useContext(TooltipContext), 'TooltipContent')
+
+  return <span {...tooltip.tooltipProps} {...props} />
+}
 
 export interface TreeProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp

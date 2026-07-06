@@ -2,17 +2,57 @@
 import {
   DataTable
 } from '@santi020k/lumen-astro'
+
+const columns: Array<{
+  header: string
+  key: string
+  sort?: 'number' | 'string'
+  sortable?: boolean
+}> = [
+  { header: 'Package', key: 'package', sortable: true },
+  { header: 'Target', key: 'target' },
+  { header: 'Downloads', key: 'downloads', sort: 'number', sortable: true }
+]
+
+const rows = [
+  {
+    downloads: { label: '24,800', sortValue: 24800 },
+    package: '@santi020k/lumen-astro',
+    rowValue: 'astro',
+    target: 'Astro'
+  },
+  {
+    downloads: { label: '8,450', sortValue: 8450 },
+    package: '@santi020k/lumen-react',
+    rowValue: 'react',
+    target: 'React'
+  },
+  {
+    downloads: { label: '5,120', sortValue: 5120 },
+    package: '@santi020k/lumen-elements',
+    rowValue: 'elements',
+    target: 'Custom elements'
+  }
+]
 ---
 
-<DataTable>
-  <table>
-    <thead>
-      <tr><th>Package</th><th>Target</th><th>Status</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>@santi020k/lumen-astro</td><td>Astro</td><td>Stable</td></tr>
-      <tr><td>@santi020k/lumen-react</td><td>React</td><td>Preview</td></tr>
-      <tr><td>@santi020k/lumen-elements</td><td>Custom elements</td><td>Preview</td></tr>
-    </tbody>
-  </table>
-</DataTable>
+<div class="example-stack" data-data-table-example>
+  <p aria-live="polite">
+    <strong data-selected-count>0</strong> selected
+  </p>
+
+  <DataTable columns={columns} name="packages" rows={rows} selectable />
+</div>
+
+<script>
+  for (const example of document.querySelectorAll<HTMLElement>('[data-data-table-example]')) {
+    const table = example.querySelector('[data-ui-datatable]')
+    const count = example.querySelector('[data-selected-count]')
+
+    table?.addEventListener('ui-datatable-selectionchange', event => {
+      if (!(event instanceof CustomEvent) || !count) return
+
+      count.textContent = String(event.detail.values.length)
+    })
+  }
+</script>

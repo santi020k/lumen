@@ -1,10 +1,15 @@
 ---
+import { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'aside'> {
   class?: string
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+  /**
+   * @deprecated Use `glass` instead. `surface="glass"` maps to `glass={true}`.
+   */
   surface?: 'default' | 'glass'
 }
 
@@ -16,20 +21,18 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
-const resolvedSurface = glass || surface === 'glass' ? 'glass' : surface
+const resolvedGlass = resolveLumenGlass(glass, surface)
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-sidebar',
+    resolvedGlass && 'ui-sidebar--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
 ---
 
 <aside
-  data-surface={resolvedSurface}
-  class:list={[
-    'ui-sidebar',
-    resolvedSurface === 'glass' && 'ui-sidebar--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong',
-    classProp,
-    className
-  ]}
+  data-surface={resolvedGlass ? 'glass' : 'default'}
+  class:list={classList}
   {...passthrough}
 >
   <slot />

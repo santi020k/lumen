@@ -3,6 +3,8 @@ export interface ComponentDoc {
   name: string
   category: 'Actions' | 'Data display' | 'Feedback' | 'Forms' | 'Layout' | 'Navigation' | 'Overlays'
   glass?: boolean
+  keyboardInteractions?: KeyboardInteractionRow[]
+  runtimeEvents?: RuntimeEventRow[]
   summary: string
   example: string
 }
@@ -12,6 +14,18 @@ interface ComponentApiRow {
   defaultValue: string
   description: string
   values: string
+}
+
+export interface KeyboardInteractionRow {
+  action: string
+  key: string
+}
+
+export interface RuntimeEventRow {
+  detail: string
+  name: string
+  target: string
+  when: string
 }
 
 type ComponentDocTuple = readonly [
@@ -329,7 +343,7 @@ const surfaceApiRow = apiRow(
   'surface',
   '"default" | "glass"',
   '"default"',
-  'Compatibility alias for glass surface treatment.'
+  'Deprecated alias for glass; surface="glass" maps to glass={true}.'
 )
 
 const glassApiRow = apiRow(
@@ -351,6 +365,177 @@ const dialogTriggerApiRows = (name: string) => [
   apiRow(`data-ui-${name}-trigger`, 'target id', '-', 'Marks an external trigger and points it at the dialog id.'),
   apiRow(`data-ui-${name}-close`, 'boolean attribute', '-', 'Marks a child control that closes the nearest dialog.')
 ] as const
+
+const keyboardRows = (...rows: [key: string, action: string][]): KeyboardInteractionRow[] =>
+  rows.map(([key, action]) => ({ action, key }))
+
+const disclosureKeyboardInteractions = keyboardRows(
+  ['ArrowDown, Enter, Space on trigger', 'Open the panel and move focus to the first focusable item.'],
+  ['Escape in panel', 'Close the panel and return focus to the trigger.'],
+  ['ArrowDown, ArrowUp in panel', 'Move focus through focusable panel items, wrapping at the ends.'],
+  ['Home, End in panel', 'Move focus to the first or last focusable panel item.']
+)
+
+const rovingGroupKeyboardInteractions = keyboardRows(
+  ['ArrowRight, ArrowDown', 'Move roving focus to the next item, wrapping at the end.'],
+  ['ArrowLeft, ArrowUp', 'Move roving focus to the previous item, wrapping at the start.'],
+  ['Home, End', 'Move roving focus to the first or last item.']
+)
+
+const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardInteractionRow[]>> = {
+  Calendar: keyboardRows(
+    ['Enter, Space on a day', 'Select the focused day, update the hidden input, and dispatch native input and change events from that input.'],
+    ['ArrowRight, ArrowLeft', 'Move day focus by one day.'],
+    ['ArrowDown, ArrowUp', 'Move day focus by one week.'],
+    ['Home, End', 'Move focus to the first or last day in the current week row.'],
+    ['PageDown, PageUp', 'Move focus to the same date in the next or previous month.']
+  ),
+  Combobox: keyboardRows(
+    ['Escape in input or option', 'Close the listbox. Escape on an option also returns focus to the input.'],
+    ['ArrowDown, ArrowUp in input', 'Open the listbox and move focus to the first or last visible option.'],
+    ['Enter in input', 'Select the first visible option.'],
+    ['Enter, Space on an option', 'Select the focused option.'],
+    ['ArrowDown, ArrowUp on an option', 'Move focus through visible options, wrapping at the ends.'],
+    ['Home, End on an option', 'Move focus to the first or last visible option.']
+  ),
+  ContextMenu: keyboardRows(
+    ['ContextMenu, Shift+F10 on trigger', 'Open the linked menu near the trigger and focus the first focusable menu item.'],
+    ['Escape in menu', 'Close the menu and return focus to the trigger.'],
+    ['ArrowDown, ArrowUp in menu', 'Move focus through focusable menu items, wrapping at the ends.'],
+    ['Home, End in menu', 'Move focus to the first or last focusable menu item.']
+  ),
+  DropdownMenu: disclosureKeyboardInteractions,
+  InputOTP: keyboardRows(
+    ['ArrowLeft, ArrowRight', 'Move the native input selection one position left or right and sync the visible segments.'],
+    ['Home, End', 'Move the native input selection to the start or end of the current value and sync the visible segments.']
+  ),
+  Menubar: rovingGroupKeyboardInteractions,
+  NavigationMenu: rovingGroupKeyboardInteractions,
+  RadioGroup: rovingGroupKeyboardInteractions,
+  Resizable: keyboardRows(
+    ['ArrowLeft, ArrowRight on a horizontal handle', 'Resize the leading panel by 2 percentage points, or 10 with Shift held.'],
+    ['ArrowUp, ArrowDown on a vertical handle', 'Resize the leading panel by 2 percentage points, or 10 with Shift held.'],
+    ['Home, End on a handle', 'Resize the leading panel to its configured minimum or maximum size.']
+  ),
+  Select: keyboardRows(
+    ['Printable key on trigger or option', 'Open the listbox and focus the next enabled option whose text starts with the typed buffer.'],
+    ['Escape on trigger or option', 'Close the listbox. Escape on an option also returns focus to the trigger.'],
+    ['ArrowDown, ArrowUp on trigger', 'Open the listbox and focus the next or previous enabled option.'],
+    ['Home, End on trigger', 'Open the listbox and focus the first or last enabled option.'],
+    ['Enter, Space on trigger', 'Open the listbox and focus the selected option, or the first enabled option.'],
+    ['Enter, Space on an option', 'Select the focused option, sync the native select, and dispatch native input and change events from the select.'],
+    ['ArrowDown, ArrowUp on an option', 'Move focus through enabled options, wrapping at the ends.'],
+    ['Home, End on an option', 'Move focus to the first or last enabled option.']
+  ),
+  Tabs: keyboardRows(
+    ['ArrowRight', 'Activate and focus the next tab, wrapping at the end.'],
+    ['ArrowLeft', 'Activate and focus the previous tab, wrapping at the start.'],
+    ['Home, End', 'Activate and focus the first or last tab.']
+  ),
+  Toast: keyboardRows(
+    ['Escape in a toast', 'Dismiss the focused toast.']
+  ),
+  ToggleGroup: rovingGroupKeyboardInteractions
+}
+
+export const runtimeEvents: RuntimeEventRow[] = [
+  {
+    detail: '{ values: string[] }',
+    name: 'ui-datatable-selectionchange',
+    target: 'DataTable root ([data-ui-datatable])',
+    when: 'Fires after a selectable DataTable row checkbox, select-all checkbox, or form reset changes the selected row values.'
+  },
+  {
+    detail: '{ eventId: string | undefined, slot: string | undefined }',
+    name: 'ui:schedule-change',
+    target: 'Schedule root ([data-ui-schedule])',
+    when: 'Fires after a draggable schedule event is dropped on a [data-ui-schedule-slot] drop zone.'
+  },
+  {
+    detail: '{ startIndex: number, endIndex: number }',
+    name: 'ui:virtual-list-range',
+    target: 'VirtualList root ([data-ui-virtual-list])',
+    when: 'Fires when the virtual list calculates its visible range on initialization or scroll.'
+  },
+  {
+    detail: '{ value: string | undefined }',
+    name: 'ui:tag-remove',
+    target: 'TagGroup root (.ui-tag-group or [data-ui-tag-group])',
+    when: 'Fires after a [data-ui-tag-remove] control removes its closest tag or list item.'
+  },
+  {
+    detail: '{ command: string }',
+    name: 'ui:editor-command',
+    target: 'RichTextEditor root ([data-ui-rich-text-editor])',
+    when: 'Fires after a [data-ui-editor-command] control runs document.execCommand(command).'
+  },
+  {
+    detail: '{ hue: number, tokens: Record<string, string> }',
+    name: 'ui:theme-change',
+    target: 'ThemeBuilder root ([data-ui-theme-builder])',
+    when: 'Fires after the [data-ui-theme-hue] input updates generated theme tokens on the target element.'
+  },
+  {
+    detail: '{ css: string }',
+    name: 'ui:theme-export',
+    target: 'ThemeBuilder root ([data-ui-theme-builder])',
+    when: 'Fires after a [data-ui-theme-export] control writes the current token CSS to the output and clipboard when available.'
+  },
+  {
+    detail: '{ control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, form: HTMLFormElement, value: string }',
+    name: 'ui:validate',
+    target: 'Form ([data-ui-form])',
+    when: 'Fires before the runtime reads native validity so custom validators can call control.setCustomValidity(message).'
+  },
+  {
+    detail: '{ control?: HTMLElement, controls?: HTMLElement[], form: HTMLFormElement }',
+    name: 'ui:invalid',
+    target: 'Form ([data-ui-form])',
+    when: 'Fires after blur or submit validation finds one or more invalid controls.'
+  },
+  {
+    detail: '{ control?: HTMLElement, controls?: HTMLElement[], form: HTMLFormElement }',
+    name: 'ui:valid',
+    target: 'Form ([data-ui-form])',
+    when: 'Fires after blur or submit validation finds the checked control or form valid.'
+  },
+  {
+    detail: '{ id?: string, title?: string, description?: string, variant?: string, duration?: number, placement?: string, action?: { label: string } }',
+    name: 'ui:toast',
+    target: 'Document',
+    when: 'Creates a programmatic toast in the matching Sonner viewport.'
+  },
+  {
+    detail: '{ id: string, title?: string, description?: string, variant?: string, duration?: number }',
+    name: 'ui:toast-update',
+    target: 'Document',
+    when: 'Updates a programmatic toast created by ui:toast or window.LumenToast.create(detail).'
+  },
+  {
+    detail: '{ id?: string }',
+    name: 'ui:toast-dismiss',
+    target: 'Document',
+    when: 'Dismisses one programmatic toast by id, or all runtime toasts when id is omitted.'
+  },
+  {
+    detail: '{ id: string, value?: unknown }',
+    name: 'ui:toast-action',
+    target: 'Toast ([data-ui-toast])',
+    when: 'Fires after a programmatic toast action button is pressed unless the action specifies a custom event name.'
+  }
+]
+
+const runtimeEventsByComponent: Partial<Record<string, readonly RuntimeEventRow[]>> = {
+  DataTable: runtimeEvents.filter(event => event.name === 'ui-datatable-selectionchange'),
+  Field: runtimeEvents.filter(event => event.name === 'ui:validate' || event.name === 'ui:invalid' || event.name === 'ui:valid'),
+  RichTextEditor: runtimeEvents.filter(event => event.name === 'ui:editor-command'),
+  Schedule: runtimeEvents.filter(event => event.name === 'ui:schedule-change'),
+  Sonner: runtimeEvents.filter(event => event.name === 'ui:toast' || event.name === 'ui:toast-update' || event.name === 'ui:toast-dismiss'),
+  TagGroup: runtimeEvents.filter(event => event.name === 'ui:tag-remove'),
+  ThemeBuilder: runtimeEvents.filter(event => event.name === 'ui:theme-change' || event.name === 'ui:theme-export'),
+  Toast: runtimeEvents.filter(event => event.name === 'ui:toast' || event.name === 'ui:toast-update' || event.name === 'ui:toast-dismiss' || event.name === 'ui:toast-action'),
+  VirtualList: runtimeEvents.filter(event => event.name === 'ui:virtual-list-range')
+}
 
 const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]>> = {
   Alert: [
@@ -407,7 +592,7 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Combobox: [
     apiRow('list', 'string', 'required', 'Sets the id for the generated listbox and connects it to the combobox input.'),
     apiRow('label', 'string', '-', 'Adds a visible label above the input.'),
-    apiRow('options', 'string[]', '[]', 'Creates selectable listbox options from strings.'),
+    apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates selectable listbox options from strings or value/label objects.'),
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
   ],
   Command: [
@@ -437,6 +622,12 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   HoverCard: [
     surfaceApiRow,
     disclosureTriggerApiRow
+  ],
+  Field: [
+    apiRow('controlId', 'string', '-', 'Connects the field to a control elsewhere in the field root.'),
+    apiRow('describedBy', 'space-separated ids', '-', 'Adds ids to the control aria-describedby value.'),
+    apiRow('data-ui-form', 'boolean attribute', '-', 'Opts a form into native Constraint Validation API enhancement.'),
+    apiRow('data-error-required, data-error-pattern, data-error-min, data-error-max, data-error-custom', 'string', '-', 'Overrides browser validationMessage text for matching constraints.')
   ],
   Input: [
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.'),
@@ -478,12 +669,19 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Separator: [
     apiRow('orientation', '"horizontal" | "vertical"', '"horizontal"', 'Sets the separator direction.')
   ],
+  RichTextEditor: [
+    apiRow('data-ui-editor-command', 'bold | italic | underline | insertUnorderedList | insertOrderedList | createLink | unlink | formatBlock | removeFormat', '-', 'Marks toolbar controls that call document.execCommand(command) and emit ui:editor-command.')
+  ],
   Sheet: [
     surfaceApiRow,
     ...dialogTriggerApiRows('sheet')
   ],
   Sidebar: [
     surfaceApiRow
+  ],
+  Sonner: [
+    apiRow('placement', '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', '"bottom-right"', 'Positions the toast viewport.'),
+    apiRow('maxCount', 'number', '5', 'Limits the number of runtime toasts kept in the viewport.')
   ],
   Slider: [
     apiRow('type', 'HTML input type', '"range"', 'Sets the native input type.')
@@ -498,6 +696,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   Toast: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the toast tone.'),
+    apiRow('window.LumenToast.create(detail)', 'function', '-', 'Creates a runtime toast and returns its id. Also available through document ui:toast.'),
+    apiRow('window.LumenToast.update(id, detail)', 'function', '-', 'Updates the title, description, variant, action, or duration for a runtime toast.'),
+    apiRow('window.LumenToast.dismiss(id?)', 'function', '-', 'Dismisses one runtime toast, or all runtime toasts when id is omitted.'),
     surfaceApiRow
   ],
   Toggle: [
@@ -516,7 +717,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Autocomplete', 'Forms', 'Captures searchable text connected to suggestions.', '<Autocomplete list="cities" placeholder="Search city" /><datalist id="cities"><option value="Bogota" /></datalist>'],
   ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'],
   ['Badge', 'Data display', 'Labels status, type, plan, or count information.', '<Badge variant="secondary">Astro</Badge>'],
-  ['Breadcrumb', 'Navigation', 'Shows page hierarchy and parent navigation.', '<Breadcrumb><a href="/docs">Docs</a><span>Components</span></Breadcrumb>'],
+  ['Breadcrumb', 'Navigation', 'Shows page hierarchy and parent navigation.', '<Breadcrumb><ol><li><a href="/docs">Docs</a></li><li><span aria-current="page">Components</span></li></ol></Breadcrumb>'],
   ['Bubble', 'Data display', 'Frames chat messages and short comments.', '<Bubble from="user">Can you summarize the release?</Bubble>'],
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
   ['ButtonGroup', 'Actions', 'Groups related button actions.', '<ButtonGroup><Button variant="secondary">Back</Button><Button>Publish</Button></ButtonGroup>'],
@@ -527,7 +728,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
   ['Collapsible', 'Layout', 'Shows and hides one optional content region.', '<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>'],
   ['Code', 'Data display', 'Renders inline code and framed code blocks with theme-aware palettes.', '<Code code={`const theme = "lumen";\nconst accent = "hsl(var(--accent))";`} variant="block" language="ts" label="theme.ts" copy />'],
-  ['Combobox', 'Forms', 'Combines text entry and option selection.', '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Web Components"]} placeholder="Search package" />'],
+  ['Combobox', 'Forms', 'Combines text entry and option selection.', '<Combobox label="Framework" list="framework-options" options={["Astro", { label: "React", value: "react" }, { label: "Vue", value: "vue", disabled: true }]} placeholder="Search package" />'],
   ['Command', 'Navigation', 'Builds command palettes and filterable action lists.', '<Command><Input placeholder="Type a command..." /><button data-ui-command-item>Open docs</button></Command>'],
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
   ['ColorPicker', 'Forms', 'Captures a color token or brand swatch value.', '<ColorPicker name="brand" aria-label="Brand color" value="#2563eb" />'],
@@ -559,7 +760,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
   ['RadioGroup', 'Forms', 'Groups mutually exclusive options.', '<RadioGroup><label><input type="radio" name="theme" value="light" /> Light</label><label><input type="radio" name="theme" value="dark" /> Dark</label></RadioGroup>'],
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],
-  ['RichTextEditor', 'Forms', 'Frames rich text toolbar and editing compositions.', '<RichTextEditor><div role="toolbar"><ButtonGroup><Button>B</Button><Button>I</Button></ButtonGroup></div><div contenteditable="true">Draft release notes...</div></RichTextEditor>'],
+  ['RichTextEditor', 'Forms', 'Frames rich text toolbar and editing compositions.', '<RichTextEditor><div role="toolbar"><ButtonGroup><Button data-ui-editor-command="bold">B</Button><Button data-ui-editor-command="italic">I</Button></ButtonGroup></div><div contenteditable="true">Draft release notes...</div></RichTextEditor>'],
   ['ScrollArea', 'Layout', 'Provides a styled scroll container.', '<ScrollArea style="max-height: 18rem"><p>Long release notes...</p></ScrollArea>'],
   ['Schedule', 'Data display', 'Displays calendar events across day, week, or resource grids.', '<Schedule><header><h2>Launch week</h2></header><div data-ui-schedule-grid><article data-ui-schedule-event>Planning</article><article data-ui-schedule-event>Ship</article></div></Schedule>'],
   ['SearchField', 'Forms', 'Captures search queries with native search semantics.', '<SearchField name="q" placeholder="Search docs" />'],
@@ -593,8 +794,10 @@ export const componentDocs: ComponentDoc[] = ([
     ...commonApiRows
   ],
   glass: glassComponentNameSet.has(name),
+  ...(keyboardInteractionsByComponent[name] ? { keyboardInteractions: [...keyboardInteractionsByComponent[name]] } : {}),
   name,
   category,
+  ...(runtimeEventsByComponent[name] ? { runtimeEvents: [...runtimeEventsByComponent[name]] } : {}),
   summary,
   example
 }))

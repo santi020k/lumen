@@ -12,8 +12,8 @@ import {
 import {
   getLumenRegistryItem,
   type LumenRegistry,
+  type LumenRegistryEntry,
   type LumenRegistryFile,
-  type LumenRegistryItem
 } from './registry.js'
 
 interface LumenRecipeFile {
@@ -40,7 +40,7 @@ export interface LumenAddResult {
   added: string[]
   dryRun: boolean
   files: string[]
-  item: LumenRegistryItem
+  item: LumenRegistryEntry
   merged: string[]
   skipped: string[]
 }
@@ -221,15 +221,34 @@ Use @santi020k/lumen-astro for Astro apps, import @santi020k/lumen-astro/styles.
   ]
 }
 
-const getFilesForItem = (item: LumenRegistryItem): LumenRecipeFile[] =>
-  recipeFiles[item.name] ??
-  item.files
-    ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
-    .map(file => ({
-      path: file.path,
-      source: file.source
-    })) ??
-  []
+const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+
+const createComponentFile = (name: string): LumenRecipeFile => ({
+  path: `src/lumen/${toKebabCase(name)}.astro`,
+  source: `---
+import { ${name} as Lumen${name} } from '@santi020k/lumen-astro'
+
+const props = Astro.props
+---
+
+<Lumen${name} {...props}>
+  <slot />
+</Lumen${name}>
+`
+})
+
+const getFilesForItem = (item: LumenRegistryEntry): LumenRecipeFile[] => {
+  if (item.type === 'component') return [createComponentFile(item.name)]
+
+  return recipeFiles[item.name] ??
+    item.files
+      ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
+      .map(file => ({
+        path: file.path,
+        source: file.source
+      })) ??
+    []
+}
 
 const fileExists = async (path: string): Promise<boolean> => {
   try {
@@ -255,7 +274,7 @@ export const addLumenRegistryItem = async (
   name: string,
   options: LumenAddOptions = {}
 ): Promise<LumenAddResult> => {
-  const item = options.registry?.items.find(registryItem => registryItem.name === name) ?? getLumenRegistryItem(name)
+  const item = getLumenRegistryItem(name, options.registry)
 
   if (!item) {
     throw new Error(`Unknown Lumen registry item: ${name}`)

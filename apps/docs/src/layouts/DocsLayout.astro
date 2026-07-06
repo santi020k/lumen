@@ -3,6 +3,7 @@ import { componentCategories, componentDocs } from '../data/docs'
 import { toSlug } from '../lib/routes'
 
 import BaseLayout from './BaseLayout.astro'
+import DocsSearch from '../components/DocsSearch.astro'
 
 interface Props {
   description: string
@@ -26,6 +27,9 @@ const isCurrent = (href: string) => currentPath === href
     sm:px-8
     lg:grid-cols-[15rem_minmax(0,1fr)]
   ">
+    <div class="lg:col-span-2">
+      <DocsSearch />
+    </div>
     <aside class="
       hidden
       lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)]

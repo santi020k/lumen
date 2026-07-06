@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'nav'> {
@@ -12,16 +14,14 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-pagination'
+], classProp, className)
 ---
 
 <nav
   aria-label="Pagination"
-  class:list={[
-    'ui-pagination',
-    classProp,
-    className
-  ]}
+  class:list={classList}
   {...passthrough}
 >
   <slot />

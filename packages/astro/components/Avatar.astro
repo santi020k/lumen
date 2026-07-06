@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'span'> {
@@ -18,17 +20,17 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const hasDefaultSlot = Astro.slots.has('default')
+const fallbackText = fallback ?? (!src && !hasDefaultSlot ? '?' : undefined)
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-avatar'
+], classProp, className)
 ---
 
 <span
-  class:list={[
-    'ui-avatar',
-    classProp,
-    className
-  ]}
+  class:list={classList}
   {...passthrough}
 >
-  {src ? <img alt={alt} src={src} /> : fallback && <span>{fallback}</span>}
+  {src ? <img alt={alt} src={src} /> : fallbackText && <span aria-hidden={fallback ? undefined : 'true'}>{fallbackText}</span>}
   <slot />
 </span>

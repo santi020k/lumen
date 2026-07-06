@@ -1,10 +1,11 @@
 import {
   addLumenRegistryItem,
+  getLumenRegistryEntries,
   getLumenRegistryItem,
   loadLumenRegistry,
   type LumenRegistry,
   lumenRegistry,
-  type LumenRegistryItem} from './registry.js'
+  type LumenRegistryEntry} from './registry.js'
 
 const args = process.argv.slice(2)
 const [command = 'help', name] = args
@@ -26,13 +27,13 @@ if (failOnConflict) {
   conflict = 'merge'
 }
 
-const formatList = (registry: LumenRegistry = lumenRegistry) => registry.items
+const formatList = (registry: LumenRegistry = lumenRegistry) => getLumenRegistryEntries(registry)
   .map(item => `${item.name} (${item.type})`)
   .join('\n')
 
 const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) => {
-  const item: LumenRegistryItem | undefined =
-    registry.items.find(registryItem => registryItem.name === itemName) ?? getLumenRegistryItem(itemName)
+  const item: LumenRegistryEntry | undefined =
+    getLumenRegistryItem(itemName, registry)
 
   if (!item) {
     process.exitCode = 1
@@ -44,8 +45,20 @@ const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) =
     `${item.name} (${item.type})`
   ]
 
-  if (item.components?.length) {
+  if ('description' in item) {
+    lines.push(item.description)
+  }
+
+  if ('category' in item) {
+    lines.push(`category: ${item.category}`)
+  }
+
+  if ('components' in item && Array.isArray(item.components) && item.components.length) {
     lines.push(`components: ${item.components.join(', ')}`)
+  }
+
+  if ('dependencies' in item && item.dependencies.length) {
+    lines.push(`dependencies: ${item.dependencies.join(', ')}`)
   }
 
   if (item.files?.length) {
@@ -61,7 +74,7 @@ const help = [
   'Commands:',
   '  lumen list             List registry items',
   '  lumen show <name>      Show components and files for an item',
-  '  lumen add <name>       Install a recipe into the current project',
+  '  lumen add <name>       Install a recipe or component into the current project',
   '  lumen install          Print install commands',
   '',
   'Options:',

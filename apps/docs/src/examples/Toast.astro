@@ -1,20 +1,71 @@
 ---
-import { Toast } from '@santi020k/lumen-astro'
+import {
+  Button,
+  Sonner,
+  Toast
+} from '@santi020k/lumen-astro'
 ---
 
-<Toast>
-  <strong>Build complete</strong>
-  <p>lumen-docs deployed to production.</p>
+<Sonner aria-label="Top notifications" placement="top-right" maxCount={3} />
+<Sonner aria-label="Bottom notifications" placement="bottom-left" maxCount={3} />
+
+<div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+  <Button data-ex-toast-create>Action toast</Button>
+  <Button data-ex-toast-bottom variant="outline">Bottom toast</Button>
+  <Button data-ex-toast-update variant="secondary">Update</Button>
+  <Button data-ex-toast-dismiss variant="ghost">Dismiss</Button>
+</div>
+
+<Toast variant="success" style="max-width: 24rem;">
+  <strong>Static fallback</strong>
+  <p>This toast remains readable without JavaScript.</p>
 </Toast>
-<Toast variant="success">
-  <strong>Saved</strong>
-  <p>Your changes are live.</p>
-</Toast>
-<Toast variant="warning">
-  <strong>Slow build</strong>
-  <p>Build took longer than 5 minutes.</p>
-</Toast>
-<Toast variant="destructive">
-  <strong>Build failed</strong>
-  <p>Type error in Button.astro.</p>
-</Toast>
+
+<script>
+  const lumenWindow = window as Window & {
+    LumenToast?: {
+      create: (detail: Record<string, unknown>) => string
+      dismiss: (id?: string) => void
+      update: (id: string, detail: Record<string, unknown>) => void
+    }
+  }
+  let activeToastId = ''
+
+  document.querySelector('[data-ex-toast-create]')?.addEventListener('click', () => {
+    activeToastId = lumenWindow.LumenToast?.create({
+      action: { label: 'Undo', value: 'deploy' },
+      description: 'lumen-docs deployed to production.',
+      duration: 8000,
+      placement: 'top-right',
+      title: 'Build complete',
+      variant: 'success'
+    }) ?? ''
+  })
+
+  document.querySelector('[data-ex-toast-bottom]')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('ui:toast', {
+      detail: {
+        description: 'This notification uses the bottom-left viewport.',
+        duration: 4000,
+        placement: 'bottom-left',
+        title: 'Queued',
+        variant: 'warning'
+      }
+    }))
+  })
+
+  document.querySelector('[data-ex-toast-update]')?.addEventListener('click', () => {
+    if (!activeToastId) return
+
+    lumenWindow.LumenToast?.update(activeToastId, {
+      description: 'The build was promoted after verification.',
+      title: 'Promotion complete',
+      variant: 'default'
+    })
+  })
+
+  document.querySelector('[data-ex-toast-dismiss]')?.addEventListener('click', () => {
+    lumenWindow.LumenToast?.dismiss(activeToastId)
+    activeToastId = ''
+  })
+</script>

@@ -1,5 +1,5 @@
 ---
-import { renderLumenCodeHtml } from '@santi020k/lumen-core'
+import { renderLumenCodeHtml, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
@@ -31,7 +31,14 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-code',
+  'ui-code--block'
+], classProp, className)
+const { classList: inlineClassList } = resolveLumenAstroProps(rest, [
+  'ui-code',
+  'ui-code--inline'
+], classProp, className)
 const shouldShowHeader = variant === 'block' && Boolean(copy || label || language)
 const hasCode = code !== undefined
 const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
@@ -39,12 +46,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
 
 {variant === 'block' ? (
   <figure
-    class:list={[
-      'ui-code',
-      'ui-code--block',
-      classProp,
-      className
-    ]}
+    class:list={blockClassList}
     data-code-theme={theme}
     data-language={language}
     data-ui-code
@@ -111,12 +113,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
   </figure>
 ) : (
   <code
-    class:list={[
-      'ui-code',
-      'ui-code--inline',
-      classProp,
-      className
-    ]}
+    class:list={inlineClassList}
     data-code-theme={theme}
     data-language={language}
     {...passthrough}

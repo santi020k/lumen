@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
@@ -12,14 +14,15 @@ const { class: classProp = '', className = '', max = 100, value = 0, ...rest } =
 const safeMax = max > 0 ? max : 100
 const safeValue = Math.min(safeMax, Math.max(0, value))
 const percentage = (safeValue / safeMax) * 100
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-progress'
+], classProp, className)
 ---
 
 <div
   aria-valuemax={safeMax}
   aria-valuemin="0"
   aria-valuenow={safeValue}
-  class:list={['ui-progress', classProp, className]}
+  class:list={classList}
   role="progressbar"
   {...passthrough}
 >

@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
@@ -19,20 +21,18 @@ const {
   ...rest
 } = Astro.props
 
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-field',
+    glass && 'ui-field--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong'
+], classProp, className)
 const fieldDescribedBy = [ariaDescribedby, describedBy].filter(Boolean).join(' ') || undefined
 ---
 
 <div
   aria-describedby={ariaDescribedby}
-  class:list={[
-    'ui-field',
-    glass && 'ui-field--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong',
-    classProp,
-    className
-  ]}
+  class:list={classList}
   data-ui-field
   data-ui-field-control={controlId}
   data-ui-field-describedby={fieldDescribedBy}

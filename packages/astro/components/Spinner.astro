@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'span'> {
@@ -17,18 +19,16 @@ const {
 } = Astro.props
 
 const isAccessible = Boolean(ariaLabel || ariaLabelledby)
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-spinner'
+], classProp, className)
 ---
 
 <span
   aria-hidden={ariaHidden ?? (isAccessible ? undefined : 'true')}
   aria-label={ariaLabel}
   aria-labelledby={ariaLabelledby}
-  class:list={[
-    'ui-spinner',
-    classProp,
-    className
-  ]}
+  class:list={classList}
   role={role ?? (isAccessible ? 'status' : undefined)}
   {...passthrough}
 >

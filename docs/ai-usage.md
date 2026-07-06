@@ -32,7 +32,8 @@ If Tailwind is present, keep both imports in the same shared CSS entry.
 ```
 
 Astro apps should mount `UIPrimitives` once in the root layout when using interactive primitives
-such as dialogs, menus, popovers, tabs, carousels, command lists, toggles, or toasts.
+such as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or
+toasts.
 
 ```astro
 ---
@@ -60,9 +61,10 @@ import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 
 ## React
 
-React components share the same visual classes and data attributes as Astro components, but the
-Astro progressive-enhancement runtime is not a React behavior layer. For behavior-heavy primitives,
-wire the expected React-side state and keyboard interactions in the application.
+React components share the same visual classes and data attributes as Astro components. For
+behavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,
+`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track
+the Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.
 
 ```tsx
 import '@santi020k/lumen-astro/styles.css'
@@ -144,15 +146,55 @@ The shared catalog includes:
   editor package in the app and bridge toolbar buttons through the emitted command event instead of
   adding the editor engine to Lumen.
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
-  and `TagGroup` when forms need more than plain text inputs.
+  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that
+  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.
+  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add
+  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or
+  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call
+  `control.setCustomValidity(message)` before the runtime reads validity, and listen for
+  `ui:invalid` or `ui:valid` on the form for submission state.
+- Use `Sonner` plus `Toast` for transient feedback. Static `<Toast>` markup works without
+  JavaScript. With `UIPrimitives`, create toasts with `window.LumenToast.create(detail)` or
+  `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`, update them with
+  `window.LumenToast.update(id, detail)` or `ui:toast-update`, and dismiss them with
+  `window.LumenToast.dismiss(id)` or `ui:toast-dismiss`. `detail` supports `title`, `description`,
+  `variant`, `duration`, `placement`, and `action: { label, value }`. Destructive toasts use
+  `role="alert"`; other variants use `role="status"`. Runtime toasts pause their timeout on hover
+  or focus, and Escape dismisses the focused toast.
+
+## Runtime CustomEvents
+
+When `UIPrimitives` is mounted, the Astro runtime uses these CustomEvents:
+
+| Event | Target | Detail | Fires When |
+| --- | --- | --- | --- |
+| `ui-datatable-selectionchange` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |
+| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |
+| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
+| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |
+| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string }` | A `[data-ui-editor-command]` control runs `document.execCommand(command)`. |
+| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, tokens: Record<string, string> }` | The `[data-ui-theme-hue]` input updates generated tokens. |
+| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css: string }` | A `[data-ui-theme-export]` control writes token CSS to the output and clipboard when available. |
+| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |
+| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |
+| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |
+| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in a `Sonner` viewport. |
+| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |
+| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |
+| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |
 
 ## Registry Helper
 
-`@santi020k/lumen` exports typed recipe metadata from `@santi020k/lumen/registry`. The package also
-ships a small `lumen` binary:
+`@santi020k/lumen` exports typed component, recipe, and documentation metadata from
+`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components
+are addressable by name, including kebab-case aliases such as `data-table`:
 
 ```bash
 lumen list
+lumen show Button
+lumen show data-table
+lumen add Button
+lumen add data-table
 lumen show scheduler
 lumen add scheduler
 lumen add scheduler --dry-run
@@ -177,6 +219,7 @@ attributes, and accessible markup.
   `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,
   `accent`, `success`, `warning`, and `danger`.
 - Use `glass` as a boolean prop or attribute for glass surfaces when supported.
+- Do not generate `surface="glass"` for overlays; it is a deprecated alias that maps to `glass`.
 - Preserve semantic labels, keyboard paths, focus states, and native form attributes.
 
 ## Figma Handoff

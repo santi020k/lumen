@@ -51,6 +51,14 @@ export {
   type LumenFigmaVariableMode
 } from './figma.js'
 export {
+  type LumenAstroPropsResult,
+  type LumenClassValue,
+  type LumenGlass,
+  type LumenSurfaceAlias,
+  resolveLumenAstroProps,
+  resolveLumenGlass
+} from './props.js'
+export {
   canPlaceScheduleEvent,
   createScheduleSlots,
   createScheduleStorageKey,

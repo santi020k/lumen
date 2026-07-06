@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'input'> {
@@ -7,7 +9,8 @@ interface Props extends HTMLAttributes<'input'> {
 }
 
 const { class: classProp = '', className = '', type = 'search', ...rest } = Astro.props
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input', 'ui-search-field'
+], classProp, className)
 ---
 
-<input class:list={['ui-input', 'ui-search-field', classProp, className]} type={type} {...passthrough} />
+<input class:list={classList} type={type} {...passthrough} />

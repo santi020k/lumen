@@ -3,6 +3,7 @@ import { Badge, Separator } from '@santi020k/lumen-astro'
 
 import type { InferGetStaticPropsType } from 'astro'
 
+import CodeBlock from '../../../components/CodeBlock.astro'
 import CodeTabs from '../../../components/CodeTabs.astro'
 import { componentDocs } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
@@ -21,6 +22,8 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 const { component } = Astro.props
 const { component: Example, source } = getExample(component.name)
 const snippets = buildSnippets(component.name, source)
+const installCommand = 'pnpm add @santi020k/lumen-astro'
+const registryCommand = `lumen add ${component.name}`
 const glassExample = component.glass ? getGlassExample(component.name) : undefined
 const GlassExample = glassExample?.component
 const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.source) : undefined
@@ -66,6 +69,23 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
   <section class="mt-8 space-y-3" aria-labelledby="usage-title">
     <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="usage-title">Usage</h2>
     <CodeTabs groupId={`code-${toSlug(component.name)}`} snippets={snippets} />
+  </section>
+
+  <section class="mt-10 space-y-3" aria-labelledby="install-title">
+    <div class="space-y-2">
+      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="install-title">Install</h2>
+      <p class="max-w-2xl text-sm/7 text-ink-soft">
+        Install the Astro package, then add this component from the Lumen registry when you want a
+        local wrapper in your app.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-2
+    ">
+      <CodeBlock code={installCommand} lang="bash" title="Package" />
+      <CodeBlock code={registryCommand} lang="bash" title="Registry" />
+    </div>
   </section>
 
   {GlassExample && glassSnippets && (
@@ -128,6 +148,86 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
       </table>
     </div>
   </section>
+
+  {component.keyboardInteractions && (
+    <section class="mt-10 space-y-3" aria-labelledby="keyboard-title">
+      <div class="space-y-2">
+        <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="keyboard-title">Keyboard interactions</h2>
+        <p class="max-w-2xl text-sm/7 text-ink-soft">
+          Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
+        </p>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-line bg-surface">
+        <table class="w-full min-w-144 border-collapse text-left text-sm">
+          <thead class="
+            bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
+            uppercase
+          ">
+            <tr>
+              <th class="border-b border-line px-4 py-3">Key</th>
+              <th class="border-b border-line px-4 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {component.keyboardInteractions.map(row => (
+              <tr>
+                <th class="
+                  w-72 px-4 py-3 align-top font-mono text-xs font-bold text-ink
+                " scope="row">
+                  {row.key}
+                </th>
+                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.action}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
+
+  {component.runtimeEvents && (
+    <section class="mt-10 space-y-3" aria-labelledby="runtime-events-title">
+      <div class="space-y-2">
+        <h2 class="
+          text-sm font-black tracking-[0.14em] text-ink-muted uppercase
+        " id="runtime-events-title">Runtime events</h2>
+        <p class="max-w-2xl text-sm/7 text-ink-soft">
+          CustomEvents dispatched by the Astro UIPrimitives runtime for this component.
+        </p>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-line bg-surface">
+        <table class="w-full min-w-176 border-collapse text-left text-sm">
+          <thead class="
+            bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
+            uppercase
+          ">
+            <tr>
+              <th class="border-b border-line px-4 py-3">Event</th>
+              <th class="border-b border-line px-4 py-3">Target</th>
+              <th class="border-b border-line px-4 py-3">Detail</th>
+              <th class="border-b border-line px-4 py-3">When</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {component.runtimeEvents.map(row => (
+              <tr>
+                <th class="
+                  w-56 px-4 py-3 align-top font-mono text-xs font-bold text-ink
+                " scope="row">
+                  {row.name}
+                </th>
+                <td class="w-64 px-4 py-3 align-top text-sm/6 text-ink-soft">{row.target}</td>
+                <td class="
+                  w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
+                ">{row.detail}</td>
+                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.when}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
 
   <Separator class="my-10" />
 

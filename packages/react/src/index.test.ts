@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import * as React from 'react'
 import { describe, expect, test } from 'vitest'
 
 import {
@@ -15,8 +16,66 @@ import {
   type InputProps,
   lumenComponentNames,
   Table,
-  type TableProps
+  type TableProps,
+  ToastProvider,
+  useDropdownMenu,
+  usePopover,
+  useSelect,
+  useTabs,
+  useTooltip
 } from './index.js'
+
+interface ReactInternals {
+  __CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE: {
+    H: unknown
+  }
+}
+
+const withHookDispatcher = <Value,>(callback: () => Value): Value => {
+  const internals = (React as unknown as ReactInternals).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
+  const previousDispatcher = internals.H
+  const states: unknown[] = []
+  const refs: { current: unknown }[] = []
+  let stateIndex = 0
+  let refIndex = 0
+  let idIndex = 0
+
+  internals.H = {
+    useCallback: (value: unknown) => value,
+    useContext: (context: { _currentValue?: unknown }) => context._currentValue,
+    useEffect: () => {},
+    useId: () => `test-${++idIndex}`,
+    useMemo: (factory: () => unknown) => factory(),
+    useRef: (initialValue: unknown) => {
+      const index = refIndex++
+      refs[index] ??= { current: initialValue }
+
+      return refs[index]
+    },
+    useState: (initialValue: unknown) => {
+      const index = stateIndex++
+
+      states[index] ??= typeof initialValue === 'function'
+        ? (initialValue as () => unknown)()
+        : initialValue
+
+      return [
+        states[index],
+        (nextValue: unknown) => {
+          states[index] = typeof nextValue === 'function'
+            ? (nextValue as (previous: unknown) => unknown)(states[index])
+            : nextValue
+        }
+      ]
+    }
+  }
+
+  try {
+    return callback()
+  } finally {
+    internals.H = previousDispatcher
+  }
+}
 
 describe('@santi020k/lumen-react', () => {
   test('exports shared metadata', () => {
@@ -42,7 +101,7 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('supports glass overlay surfaces', () => {
-    const dialog = Dialog({ className: 'custom-dialog', glass: true }) as ReactElement<DialogProps>
+    const dialog = withHookDispatcher(() => Dialog({ className: 'custom-dialog', glass: true }) as ReactElement<DialogProps>)
 
     expect(dialog.props.className).toBe('ui-dialog ui-dialog--glass custom-dialog')
     expect(dialog.props['data-surface']).toBe('glass')
@@ -102,5 +161,80 @@ describe('@santi020k/lumen-react', () => {
 
     expect(input.props.className).toBe('ui-input custom-input')
     expect(input.props.type).toBe('text')
+  })
+
+  test('exposes disclosure semantics for popovers and dropdown menus', () => {
+    const popover = withHookDispatcher(() => usePopover({ defaultOpen: true }))
+    const dropdown = withHookDispatcher(() => useDropdownMenu({ defaultOpen: false }))
+
+    expect(popover.triggerProps['aria-haspopup']).toBe('menu')
+    expect(popover.triggerProps['aria-expanded']).toBe(true)
+    expect(popover.panelProps.hidden).toBe(false)
+    expect(popover.panelProps['data-state']).toBe('open')
+
+    expect(dropdown.triggerProps['aria-haspopup']).toBe('menu')
+    expect(dropdown.triggerProps['aria-expanded']).toBe(false)
+    expect(dropdown.panelProps.hidden).toBe(true)
+    expect(dropdown.panelProps['data-state']).toBe('closed')
+  })
+
+  test('exposes tabs roving aria state', () => {
+    const tabs = withHookDispatcher(() => useTabs({ defaultValue: 'overview' }))
+    const overview = tabs.getTriggerProps('overview')
+    const settings = tabs.getTriggerProps('settings')
+    const panel = tabs.getPanelProps('overview')
+
+    expect(tabs.rootProps['data-ui-tabs']).toBe(true)
+    expect(tabs.listProps.role).toBe('tablist')
+    expect(overview['aria-selected']).toBe(true)
+    expect(overview.tabIndex).toBe(0)
+    expect(settings['aria-selected']).toBe(false)
+    expect(settings.tabIndex).toBe(-1)
+    expect(panel.role).toBe('tabpanel')
+    expect(panel.hidden).toBe(false)
+  })
+
+  test('exposes select listbox state and option selection', () => {
+    const select = withHookDispatcher(() => useSelect({
+      defaultValue: 'beta',
+      options: ['Alpha', { label: 'Beta', value: 'beta' }],
+      placeholder: 'Pick one',
+      required: true
+    }))
+    const option = select.getOptionProps({ label: 'Beta', value: 'beta' })
+
+    expect(select.rootProps['data-ui-select']).toBe(true)
+    expect(select.rootProps['data-placeholder']).toBe('false')
+    expect(select.triggerProps.role).toBe('combobox')
+    expect(select.triggerProps['aria-haspopup']).toBe('listbox')
+    expect(select.triggerProps['aria-required']).toBe(true)
+    expect(select.triggerText).toBe('Beta')
+    expect(select.listProps.role).toBe('listbox')
+    expect(option.role).toBe('option')
+    expect(option['aria-selected']).toBe(true)
+  })
+
+  test('exposes tooltip escape-dismissable aria state', () => {
+    const tooltip = withHookDispatcher(() => useTooltip({ defaultOpen: true }))
+
+    expect(tooltip.rootProps['data-ui-tooltip']).toBe(true)
+    expect(tooltip.rootProps['aria-describedby']).toMatch(/^ui-tooltip-/)
+    expect(tooltip.tooltipProps.role).toBe('tooltip')
+    expect(tooltip.tooltipProps.hidden).toBe(false)
+  })
+
+  test('exposes toast provider controller api', () => {
+    const provider = withHookDispatcher(() => ToastProvider({ maxCount: 2, placement: 'top-right' }) as ReactElement<{
+      value: {
+        create: (detail: { title: string }) => string
+        dismiss: (id?: string) => void
+        update: (id: string, detail: { title: string }) => void
+      }
+    }>)
+    const id = provider.props.value.create({ title: 'Saved' })
+
+    expect(id).toMatch(/^ui-toast-/)
+    expect(provider.props.value.update).toBeTypeOf('function')
+    expect(provider.props.value.dismiss).toBeTypeOf('function')
   })
 })

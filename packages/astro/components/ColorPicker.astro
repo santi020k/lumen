@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'input'> {
@@ -7,7 +9,8 @@ interface Props extends HTMLAttributes<'input'> {
 }
 
 const { class: classProp = '', className = '', type = 'color', ...rest } = Astro.props
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-color-picker'
+], classProp, className)
 ---
 
-<input class:list={['ui-color-picker', classProp, className]} type={type} {...passthrough} />
+<input class:list={classList} type={type} {...passthrough} />

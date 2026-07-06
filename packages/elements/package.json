@@ -46,7 +46,7 @@
     "jsdom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "axe-core": "^4.10.3"
+    "axe-core": "catalog:"
   },
   "engines": {
     "node": ">=22.18.0"

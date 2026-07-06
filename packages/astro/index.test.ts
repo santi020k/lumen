@@ -4,6 +4,8 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import { describe, expect, test } from 'vitest'
 
+/* cspell:ignore datatable */
+
 const packageRoot = new URL('.', import.meta.url)
 
 describe('@santi020k/lumen-astro package surface', () => {
@@ -153,6 +155,29 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-calendar td[aria-selected="true"]')
   })
 
+  test('ships DataTable as a static table enhanced with sorting and selection', async () => {
+    const [component, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(component).toContain('columns?: DataTableColumn[]')
+    expect(component).toContain('rows?: DataTableRow[]')
+    expect(component).toContain('selectable?: boolean')
+    expect(component).toContain('data-ui-datatable')
+    expect(component).toContain('data-ui-datatable-sortable')
+    expect(component).toContain('data-sort-value')
+    expect(component).toContain('<slot />')
+    expect(component).not.toContain('ui-data-table__sort')
+    expect(runtime).toContain('const initDataTables = (scope: ParentNode): void =>')
+    expect(runtime).toContain("header.setAttribute('aria-sort', 'none')")
+    expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui-datatable-selectionchange'")
+    expect(runtime).toContain("input.type = 'hidden'")
+    expect(styles).toContain('.ui-data-table__sort')
+    expect(styles).toContain('.ui-data-table tbody tr[data-state="selected"]')
+  })
+
   test('keeps accessibility and sanitization guards in component sources', async () => {
     const [aspectRatio, avatar, field, runtime] = await Promise.all([
       readFile(new URL('./components/AspectRatio.astro', packageRoot), 'utf8'),
@@ -166,5 +191,50 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(avatar).toContain('fallback && <span>{fallback}</span>')
     expect(field).toContain(`data-ui-field-${'described' + 'by'}={fieldDescribedBy}`)
     expect(runtime).toContain(`control.setAttribute('aria-${'described' + 'by'}'`)
+  })
+
+  test('enhances native form validation through Field error slots', async () => {
+    const [runtime, styles] = await Promise.all([
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(runtime).toContain("form[data-ui-form]")
+    expect(runtime).toContain("form.dispatchEvent(new CustomEvent('ui:validate'")
+    expect(runtime).toContain("form.dispatchEvent(new CustomEvent('ui:invalid'")
+    expect(runtime).toContain("form.dispatchEvent(new CustomEvent('ui:valid'")
+    expect(runtime).toContain("'data-error-required'")
+    expect(runtime).toContain("'data-error-pattern'")
+    expect(runtime).toContain("'data-error-custom'")
+    expect(runtime).toContain("control.setAttribute('aria-invalid', 'true')")
+    expect(runtime).toContain('firstInvalid?.focus({ preventScroll: true })')
+    expect(styles).toContain('.ui-field > [data-ui-field-error]')
+  })
+
+  test('ships mature toast runtime API, ARIA, and placement styles', async () => {
+    const [toast, sonner, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(toast).toContain('data-ui-toast')
+    expect(toast).toContain("variant === 'destructive' ? 'alert' : 'status'")
+    expect(sonner).toContain('placement?:')
+    expect(sonner).toContain('maxCount?: number')
+    expect(runtime).toContain('type ToastApi =')
+    expect(runtime).toContain('create: createToast')
+    expect(runtime).toContain('dismiss: dismissToastById')
+    expect(runtime).toContain('update: updateToast')
+    expect(runtime).toContain("document.addEventListener('ui:toast'")
+    expect(runtime).toContain("document.addEventListener('ui:toast-update'")
+    expect(runtime).toContain("document.addEventListener('ui:toast-dismiss'")
+    expect(runtime).toContain("'ui:toast-action'")
+    expect(runtime).toContain("toast.addEventListener('mouseenter', pause)")
+    expect(runtime).toContain("event.key !== 'Escape'")
+    expect(styles).toContain('.ui-sonner[data-placement^="top"]')
+    expect(styles).toContain('.ui-sonner[data-placement$="center"]')
+    expect(styles).toContain('.ui-toast__action')
   })
 })

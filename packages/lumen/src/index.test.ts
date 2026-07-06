@@ -9,21 +9,17 @@ import {
   writeFile
 } from 'node:fs/promises'
 import {
-  createServer,
-  type IncomingMessage,
-  type ServerResponse
-} from 'node:http'
-import {
   tmpdir
 } from 'node:os'
 import {
   join
 } from 'node:path'
 
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 
 import {
   addLumenRegistryItem,
+  getLumenRegistryEntries,
   getLumenRegistryItem,
   loadLumenRegistry,
   lumen,
@@ -41,12 +37,12 @@ describe('@santi020k/lumen umbrella package', () => {
     })
 
     expect(lumenComponentNames).toContain('Button')
-    expect(lumenGlass.blur).toBe('18px')
+    expect(lumenGlass.blur).toBe('22px')
 
     expect(lumenPackages.some(pkg => pkg.packageName === lumen.packageName)).toBe(true)
   })
 
-  test('exports registry recipes for product surfaces', () => {
+  test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
       'all-components',
       'advanced-fields',
@@ -54,15 +50,32 @@ describe('@santi020k/lumen umbrella package', () => {
       'data-collections',
       'theme-builder',
       'rich-text-editor',
-      'ai-docs'
+      'ai-docs',
+      'figma-design-to-code'
     ])
 
-    expect(getLumenRegistryItem('scheduler')?.components).toEqual([
-      'Schedule',
-      'Agenda',
-      'Calendar',
-      'DatePicker'
-    ])
+    expect(getLumenRegistryItem('scheduler')).toMatchObject({
+      components: [
+        'Schedule',
+        'Agenda',
+        'Calendar',
+        'DatePicker'
+      ]
+    })
+
+    expect(lumenRegistry.components.map(component => component.name)).toEqual(lumenComponentNames)
+    expect(getLumenRegistryEntries()).toHaveLength(lumenRegistry.items.length + lumenComponentNames.length)
+
+    const dataTable = getLumenRegistryItem('data-table')
+
+    expect(dataTable?.type).toBe('component')
+    expect(dataTable).toMatchObject({
+      category: 'Data display',
+      dependencies: ['styles', 'runtime'],
+      description: 'Styles dense tabular data and records.',
+      name: 'DataTable'
+    })
+    expect(dataTable?.files).toContain('packages/astro/runtime/UIPrimitives.astro')
   })
 
   test('installs registry recipes into a target directory', async () => {
@@ -99,6 +112,35 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test('installs registry components into a target directory', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-component-add-'))
+
+    try {
+      const dryRun = await addLumenRegistryItem('data-table', { cwd, dryRun: true })
+
+      expect(dryRun.item.name).toBe('DataTable')
+      expect(dryRun.files).toEqual(['src/lumen/data-table.astro'])
+      expect(existsSync(join(cwd, 'src/lumen/data-table.astro'))).toBe(false)
+
+      const result = await addLumenRegistryItem('DataTable', { cwd })
+      const source = await readFile(join(cwd, 'src/lumen/data-table.astro'), 'utf8')
+
+      expect(result.added).toEqual(['src/lumen/data-table.astro'])
+      expect(source).toContain("import { DataTable as LumenDataTable } from '@santi020k/lumen-astro'")
+      expect(source).toContain('<LumenDataTable {...props}>')
+
+      await writeFile(join(cwd, 'src/lumen/data-table.astro'), 'custom', 'utf8')
+
+      const skipped = await addLumenRegistryItem('data-table', { cwd })
+
+      expect(skipped.added).toEqual([])
+      expect(skipped.skipped).toEqual(['src/lumen/data-table.astro'])
+      await expect(readFile(join(cwd, 'src/lumen/data-table.astro'), 'utf8')).resolves.toBe('custom')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
   test('rejects unknown install items', async () => {
     await expect(addLumenRegistryItem('missing')).rejects.toThrow('Unknown Lumen registry item')
   })
@@ -110,6 +152,14 @@ describe('@santi020k/lumen umbrella package', () => {
     try {
       await writeFile(registryPath, JSON.stringify({
         description: 'Test registry',
+        components: [{
+          category: 'Actions',
+          dependencies: ['styles'],
+          description: 'Custom button wrapper.',
+          files: ['packages/astro/components/Button.astro', 'packages/astro/styles/lumen.css'],
+          name: 'Button',
+          type: 'component'
+        }],
         items: [{ name: 'custom', type: 'recipe', components: ['Button'] }],
         name: 'test',
         packages: ['@santi020k/lumen-astro'],
@@ -120,6 +170,38 @@ describe('@santi020k/lumen umbrella package', () => {
 
       expect(registry.name).toBe('test')
       expect(registry.items[0]?.name).toBe('custom')
+      expect(registry.components?.[0]?.name).toBe('Button')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('installs components from external registry manifests', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-component-'))
+
+    try {
+      const result = await addLumenRegistryItem('custom-card', {
+        cwd,
+        registry: {
+          components: [{
+            category: 'Layout',
+            dependencies: ['styles'],
+            description: 'Custom card wrapper.',
+            files: ['packages/astro/components/Card.astro', 'packages/astro/styles/lumen.css'],
+            name: 'CustomCard',
+            type: 'component'
+          }],
+          description: 'Test registry',
+          items: [],
+          name: 'test',
+          packages: ['@santi020k/lumen-astro'],
+          version: 1
+        }
+      })
+
+      expect(result.item.name).toBe('CustomCard')
+      expect(result.added).toEqual(['src/lumen/custom-card.astro'])
+      await expect(readFile(join(cwd, 'src/lumen/custom-card.astro'), 'utf8')).resolves.toContain('LumenCustomCard')
     } finally {
       await rm(cwd, { force: true, recursive: true })
     }
@@ -197,46 +279,34 @@ describe('@santi020k/lumen umbrella package', () => {
   test('loads authenticated remote registry manifests', async () => {
     const registry = JSON.stringify({
       description: 'Private registry',
+      components: [{
+        category: 'Actions',
+        dependencies: ['styles'],
+        description: 'Private button.',
+        files: ['packages/astro/components/Button.astro'],
+        name: 'PrivateButton',
+        type: 'component'
+      }],
       items: [{ name: 'private', type: 'recipe' }],
       name: 'private',
       packages: ['@santi020k/lumen-astro'],
       version: 1
     })
-    const server = createServer((request: IncomingMessage, response: ServerResponse) => {
-      if (request.headers.authorization !== 'Bearer secret') {
-        response.writeHead(401)
-        response.end('Unauthorized')
+    const fetch = vi.spyOn(globalThis, 'fetch').mockImplementation((_url, init) => {
+      expect(_url).toBe('https://registry.example/lumen.json')
+      expect(new Headers(init?.headers).get('authorization')).toBe('Bearer secret')
 
-        return
-      }
-
-      response.setHeader('content-type', 'application/json')
-      response.end(registry)
+      return Promise.resolve(new Response(registry, {
+        headers: { 'content-type': 'application/json' }
+      }))
+    })
+    const loaded = await loadLumenRegistry('https://registry.example/lumen.json', {
+      token: 'secret'
     })
 
-    await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
-
-    try {
-      const address = server.address()
-      const port = typeof address === 'object' && address ? address.port : 0
-      const loaded = await loadLumenRegistry(`http://127.0.0.1:${port}/registry.json`, {
-        token: 'secret'
-      })
-
-      expect(loaded.name).toBe('private')
-      expect(loaded.items[0]?.name).toBe('private')
-    } finally {
-      await new Promise<void>((resolve, reject) => {
-        server.close(error => {
-          if (error) {
-            reject(error)
-
-            return
-          }
-
-          resolve()
-        })
-      })
-    }
+    expect(fetch).toHaveBeenCalledOnce()
+    expect(loaded.name).toBe('private')
+    expect(loaded.components?.[0]?.name).toBe('PrivateButton')
+    expect(loaded.items[0]?.name).toBe('private')
   })
 })

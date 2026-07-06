@@ -1,4 +1,6 @@
 ---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
@@ -18,12 +20,13 @@ const {
   pattern = '[0-9]*',
   ...rest
 } = Astro.props
-const passthrough = rest as Record<string, unknown>
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input-otp-field'
+], classProp, className)
 const segments = Array.from({ length: Math.max(1, Number(length) || 6) }, (_, index) => index)
 ---
 
 <div
-  class:list={['ui-input-otp-field', classProp, className]}
+  class:list={classList}
   data-ui-input-otp
   data-ui-input-otp-length={segments.length}
 >
