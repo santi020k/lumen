@@ -948,6 +948,7 @@ export const ToastProvider = ({
       const next = current.some(toast => toast.id === record.id)
         ? current.map(toast => toast.id === record.id ? record : toast)
         : [...current, record]
+
       const samePlacement = next.filter(toast => toast.placement === record.placement)
 
       const staleIds = samePlacement

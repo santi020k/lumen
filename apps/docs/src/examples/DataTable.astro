@@ -3,12 +3,12 @@ import {
   DataTable
 } from '@santi020k/lumen-astro'
 
-const columns: Array<{
+const columns: {
   header: string
   key: string
   sort?: 'number' | 'string'
   sortable?: boolean
-}> = [
+}[] = [
   { header: 'Package', key: 'package', sortable: true },
   { header: 'Target', key: 'target' },
   { header: 'Downloads', key: 'downloads', sort: 'number', sortable: true }
@@ -36,7 +36,7 @@ const rows = [
 ]
 ---
 
-<div class="example-stack" data-data-table-example>
+<div class="docs-example-stack" data-data-table-example>
   <p aria-live="polite">
     <strong data-selected-count>0</strong> selected
   </p>

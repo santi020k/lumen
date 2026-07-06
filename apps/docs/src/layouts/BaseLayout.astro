@@ -292,12 +292,14 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   document.addEventListener('astro:before-preparation', event => {
     if (!('sourceElement' in event) || !isDocsNavigation(event.sourceElement)) {
       shouldScrollDocsContentToTop = false
+
       docsSidebarScrollTop = 0
 
       return
     }
 
     shouldScrollDocsContentToTop = true
+
     docsSidebarScrollTop = getDocsSidebar()?.scrollTop ?? 0
   })
 
@@ -325,6 +327,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     }
 
     shouldScrollDocsContentToTop = false
+
     docsSidebarScrollTop = 0
   })
 </script>

@@ -1,5 +1,7 @@
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
+import { toSlug } from '../lib/routes'
+
 import {
   componentDocs,
   frameworkSetups,
@@ -8,7 +10,6 @@ import {
   runtimeEvents,
   themeSetups
 } from './docs'
-import { toSlug } from '../lib/routes'
 
 export interface DocsSearchItem {
   category: string
@@ -24,8 +25,8 @@ const canonicalComponentNames = new Set<string>(lumenComponentNames)
 const normalizeKeywords = (...values: string[]): string =>
   values
     .join(' ')
-    .replace(/["'{}[\]|,]/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replaceAll(/["'{}[\]|,]/g, ' ')
+    .replaceAll(/\s+/g, ' ')
     .trim()
     .toLowerCase()
 

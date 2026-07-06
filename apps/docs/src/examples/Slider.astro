@@ -18,10 +18,12 @@ import { Slider } from '@santi020k/lumen-astro'
   if (slider && output) {
     const updateValue = () => {
       output.value = slider.value
+
       output.textContent = slider.value
     }
 
     updateValue()
+
     slider.addEventListener('input', updateValue)
   }
 </script>

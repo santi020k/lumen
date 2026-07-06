@@ -12,6 +12,7 @@
     "apps/**/*.astro",
     "packages/**/*.ts",
     "packages/**/*.d.ts",
-    "packages/**/*.tsx"
+    "packages/**/*.tsx",
+    "tests/**/*.ts"
   ]
 }

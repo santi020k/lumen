@@ -29,6 +29,7 @@ import {
       update: (id: string, detail: Record<string, unknown>) => void
     }
   }
+
   let activeToastId = ''
 
   document.querySelector('[data-ex-toast-create]')?.addEventListener('click', () => {
@@ -66,6 +67,7 @@ import {
 
   document.querySelector('[data-ex-toast-dismiss]')?.addEventListener('click', () => {
     lumenWindow.LumenToast?.dismiss(activeToastId)
+
     activeToastId = ''
   })
 </script>

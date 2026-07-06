@@ -143,7 +143,7 @@ body {
     linear-gradient(180deg, hsl(var(--theme-bg)), hsl(var(--canvas)));
 }
 
-.site-header {
+.docs-site-header {
   position: sticky;
   top: 0;
   z-index: 40;
@@ -163,7 +163,7 @@ body {
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
 }
 
-.site-header__inner {
+.docs-site-header__inner {
   position: relative;
 }
 

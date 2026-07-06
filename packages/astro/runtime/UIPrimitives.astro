@@ -31,7 +31,6 @@
   ].join(',')
 
   const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
-
   const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
 
   const formControlSelector = [
@@ -447,9 +446,11 @@
 
     if (invalid) {
       control.setAttribute('aria-invalid', 'true')
+
       control.dataset.uiValidationInvalid = 'true'
     } else if (control.dataset.uiValidationInvalid === 'true') {
       control.removeAttribute('aria-invalid')
+
       delete control.dataset.uiValidationInvalid
     }
 
@@ -459,7 +460,9 @@
 
     for (const error of field.querySelectorAll<HTMLElement>(fieldErrorSelector)) {
       error.dataset.uiValidationErrorBound = 'true'
+
       error.hidden = !invalid
+
       error.textContent = invalid ? message : ''
     }
   }
@@ -526,6 +529,7 @@
       if (form.dataset.uiFormBound === 'true') continue
 
       form.dataset.uiFormBound = 'true'
+
       form.noValidate = true
 
       form.addEventListener('focusout', event => {
@@ -555,6 +559,7 @@
           }))
 
           firstInvalid?.focus({ preventScroll: true })
+
           firstInvalid?.reportValidity()
 
           return
@@ -708,13 +713,21 @@
     if (codeCopyLiveRegion) return codeCopyLiveRegion
 
     codeCopyLiveRegion = document.createElement('div')
+
     codeCopyLiveRegion.setAttribute('aria-atomic', 'true')
+
     codeCopyLiveRegion.setAttribute('aria-live', 'polite')
+
     codeCopyLiveRegion.style.position = 'absolute'
+
     codeCopyLiveRegion.style.width = '1px'
+
     codeCopyLiveRegion.style.height = '1px'
+
     codeCopyLiveRegion.style.overflow = 'hidden'
+
     codeCopyLiveRegion.style.clipPath = 'inset(50%)'
+
     codeCopyLiveRegion.style.whiteSpace = 'nowrap'
 
     document.body.append(codeCopyLiveRegion)
@@ -829,13 +842,18 @@
         const item = document.createElement('button')
 
         item.type = 'button'
+
         item.role = 'option'
+
         item.dataset.uiSelectOption = ''
+
         item.dataset.value = option.value
+
         item.textContent = option.label
 
         if (option.disabled) {
           item.disabled = true
+
           item.setAttribute('aria-disabled', 'true')
         }
 
@@ -1034,10 +1052,15 @@
       renderSelectOptions(select, listbox)
 
       control.hidden = false
+
       select.dataset.uiEnhanced = 'true'
+
       select.tabIndex = -1
+
       select.setAttribute('aria-hidden', 'true')
+
       trigger.disabled = select.disabled
+
       trigger.setAttribute('aria-haspopup', 'listbox')
 
       for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) {
@@ -1104,6 +1127,7 @@
       }
 
       syncSelectValue(root)
+
       closeSelect(root)
 
       trigger.addEventListener('click', () => {
@@ -1132,7 +1156,9 @@
         openSelect(root)
 
         if (event.key === 'Enter' || event.key === ' ') {
-          ;(getSelectedSelectItem(root) ?? getEnabledSelectItems(root)[0])?.focus()
+          ;
+
+(getSelectedSelectItem(root) ?? getEnabledSelectItems(root)[0])?.focus()
 
           return
         }
@@ -1191,11 +1217,13 @@
 
   const normalizeSizes = (sizes: number[], count: number): number[] => {
     const fallbackSize = 100 / Math.max(1, count)
+
     const usableSizes = Array.from({ length: count }, (_, index) => {
       const size = sizes[index] ?? fallbackSize
 
       return Number.isFinite(size) && size > 0 ? size : fallbackSize
     })
+
     const total = usableSizes.reduce((sum, size) => sum + size, 0)
 
     if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
@@ -1216,6 +1244,7 @@
       if (panes.length < 2) continue
 
       root.dataset.uiBound = 'true'
+
       root.dataset.uiResizableEnhanced = 'true'
 
       const direction = root.dataset.orientation === 'vertical' ? 'vertical' : 'horizontal'
@@ -1224,25 +1253,29 @@
       const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
       const minSizes = parseNumberList(root.dataset.uiResizableMinSize, panes.length, 12)
       const maxSizes = parseNumberList(root.dataset.uiResizableMaxSize, panes.length, 88)
+
       const initialSizes = normalizeSizes(
         parseNumberList(root.dataset.uiResizableDefaultSizes, panes.length, 100 / panes.length),
         panes.length
       )
-      const handleTemplate = root.querySelector<HTMLTemplateElement>(':scope > [data-ui-resizable-handle-template]')
 
-      let sizes = [...initialSizes]
+      const handleTemplate = root.querySelector<HTMLTemplateElement>(':scope > [data-ui-resizable-handle-template]')
+    let sizes = [...initialSizes]
 
       const applySizes = (): void => {
-        panes.forEach((pane, index) => {
-          pane.dataset.uiResizablePanel = ''
-          pane.style.setProperty('--ui-resizable-size', `${sizes[index]}%`)
-        })
+        for (const [index, pane] of panes.entries()) {
+        pane.dataset.uiResizablePanel = ''
+
+        pane.style.setProperty('--ui-resizable-size', `${sizes[index]}%`)
+      }
 
         for (const handle of root.querySelectorAll<HTMLElement>('[data-ui-resizable-handle]')) {
           const index = Number.parseInt(handle.dataset.index ?? '0', 10)
 
           handle.setAttribute('aria-valuemin', String(Math.round(minSizes[index] ?? 0)))
+
           handle.setAttribute('aria-valuemax', String(Math.round(maxSizes[index] ?? 100)))
+
           handle.setAttribute('aria-valuenow', String(Math.round(sizes[index] ?? 0)))
         }
       }
@@ -1255,108 +1288,123 @@
         const paneSize = Math.min(max, Math.max(min, nextSize))
 
         sizes[index] = paneSize
+
         sizes[nextIndex] = total - paneSize
 
         applySizes()
       }
 
-      panes.forEach((pane, index) => {
-        pane.dataset.uiResizablePanel = ''
+      for (const [index, pane] of panes.entries()) {
+      pane.dataset.uiResizablePanel = ''
 
-        if (index >= panes.length - 1) return
+      if (index >= panes.length - 1) continue
 
-        const handleFromTemplate = handleTemplate?.content
-          .querySelector<HTMLButtonElement>('[data-ui-resizable-handle]')
-          ?.cloneNode(true)
-        const handle = handleFromTemplate instanceof HTMLButtonElement
-          ? handleFromTemplate
-          : document.createElement('button')
+      const handleFromTemplate = handleTemplate?.content
+        .querySelector<HTMLButtonElement>('[data-ui-resizable-handle]')
+        ?.cloneNode(true)
 
-        handle.type = 'button'
-        handle.className = 'ui-resizable__handle'
-        handle.dataset.uiResizableHandle = ''
-        handle.dataset.index = String(index)
-        handle.tabIndex = 0
-        handle.setAttribute('aria-label', `Resize panel ${index + 1}`)
-        handle.setAttribute('role', 'separator')
-        handle.setAttribute('aria-orientation', separatorOrientation)
+      const handle = handleFromTemplate instanceof HTMLButtonElement
+        ? handleFromTemplate
+        : document.createElement('button')
 
-        pane.after(handle)
+      handle.type = 'button'
 
-        let startPosition = 0
-        let startSize = 0
-        let containerSize = 1
+      handle.className = 'ui-resizable__handle'
 
-        handle.addEventListener('pointerdown', event => {
-          if (event.button !== 0) return
+      handle.dataset.uiResizableHandle = ''
 
-          event.preventDefault()
+      handle.dataset.index = String(index)
 
-          startPosition = event[axis]
-          startSize = sizes[index]
-          containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty])
+      handle.tabIndex = 0
 
-          root.dataset.resizing = 'true'
-          handle.dataset.active = 'true'
-          handle.setPointerCapture(event.pointerId)
-        })
+      handle.setAttribute('aria-label', `Resize panel ${index + 1}`)
 
-        handle.addEventListener('pointermove', event => {
-          if (handle.dataset.active !== 'true') return
+      handle.setAttribute('role', 'separator')
 
-          const delta = ((event[axis] - startPosition) / containerSize) * 100
+      handle.setAttribute('aria-orientation', separatorOrientation)
 
-          resizePair(index, startSize + delta)
-        })
+      pane.after(handle)
 
-        handle.addEventListener('pointerup', event => {
-          if (handle.dataset.active !== 'true') return
+      let startPosition = 0
+      let startSize = 0
+      let containerSize = 1
 
-          delete handle.dataset.active
-          delete root.dataset.resizing
+      handle.addEventListener('pointerdown', event => {
+        if (event.button !== 0) return
 
-          handle.releasePointerCapture(event.pointerId)
-        })
+        event.preventDefault()
 
-        handle.addEventListener('dblclick', () => {
-          if (root.dataset.uiResizableReset !== 'true') return
+        startPosition = event[axis]
 
-          sizes = [...initialSizes]
+        startSize = sizes[index]
 
-          applySizes()
-        })
+        containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty])
 
-        handle.addEventListener('keydown', event => {
-          const step = event.shiftKey ? 10 : 2
-          const keyDeltas: Record<string, number> = direction === 'horizontal'
-            ? { ArrowLeft: -step, ArrowRight: step }
-            : { ArrowDown: step, ArrowUp: -step }
+        root.dataset.resizing = 'true'
 
-          if (event.key === 'Home') {
-            event.preventDefault()
+        handle.dataset.active = 'true'
 
-            resizePair(index, minSizes[index] ?? 0)
-
-            return
-          }
-
-          if (event.key === 'End') {
-            event.preventDefault()
-
-            resizePair(index, maxSizes[index] ?? 100)
-
-            return
-          }
-
-          const delta = keyDeltas[event.key]
-
-          if (delta === undefined) return
-
-          event.preventDefault()
-
-          resizePair(index, sizes[index] + delta)
-        })
+        handle.setPointerCapture(event.pointerId)
       })
+
+      handle.addEventListener('pointermove', event => {
+        if (handle.dataset.active !== 'true') return
+
+        const delta = ((event[axis] - startPosition) / containerSize) * 100
+
+        resizePair(index, startSize + delta)
+      })
+
+      handle.addEventListener('pointerup', event => {
+        if (handle.dataset.active !== 'true') return
+
+        delete handle.dataset.active
+
+        delete root.dataset.resizing
+
+        handle.releasePointerCapture(event.pointerId)
+      })
+
+      handle.addEventListener('dblclick', () => {
+        if (root.dataset.uiResizableReset !== 'true') return
+
+        sizes = [...initialSizes]
+
+        applySizes()
+      })
+
+      handle.addEventListener('keydown', event => {
+        const step = event.shiftKey ? 10 : 2
+
+        const keyDeltas: Record<string, number> = direction === 'horizontal'
+          ? { ArrowLeft: -step, ArrowRight: step }
+          : { ArrowDown: step, ArrowUp: -step }
+
+        if (event.key === 'Home') {
+          event.preventDefault()
+
+          resizePair(index, minSizes[index] ?? 0)
+
+          return
+        }
+
+        if (event.key === 'End') {
+          event.preventDefault()
+
+          resizePair(index, maxSizes[index] ?? 100)
+
+          return
+        }
+
+        const delta = keyDeltas[event.key]
+
+        if (delta === undefined) return
+
+        event.preventDefault()
+
+        resizePair(index, sizes[index] + delta)
+      })
+    }
 
       applySizes()
     }
@@ -1364,7 +1412,7 @@
 
   const sanitizeOtpValue = (input: HTMLInputElement, value: string, length: number): string => {
     const numericOnly = input.inputMode === 'numeric' || input.getAttribute('pattern') === '[0-9]*'
-    const normalized = numericOnly ? value.replace(/\D/g, '') : value.replace(/\s/g, '')
+    const normalized = numericOnly ? value.replaceAll(/\D/g, '') : value.replaceAll(/\s/g, '')
 
     return normalized.slice(0, length)
   }
@@ -1394,24 +1442,27 @@
         const activeIndex = Math.min(length - 1, Math.max(0, input.selectionStart ?? value.length))
 
         root.dataset.disabled = input.disabled ? 'true' : 'false'
+
         root.dataset.invalid = input.getAttribute('aria-invalid') === 'true' ? 'true' : 'false'
 
-        segments.forEach((segment, index) => {
-          const char = segment.querySelector<HTMLElement>('[data-ui-input-otp-char]')
+        for (const [index, segment] of segments.entries()) {
+        const char = segment.querySelector<HTMLElement>('[data-ui-input-otp-char]')
 
-          segment.disabled = input.disabled
-          segment.dataset.active = String(document.activeElement === input && index === activeIndex)
+        segment.disabled = input.disabled
 
-          if (char) {
-            char.textContent = value[index] ?? '\u00a0'
-          }
-        })
+        segment.dataset.active = String(document.activeElement === input && index === activeIndex)
+
+        if (char) {
+          char.textContent = value[index] ?? '\u00a0'
+        }
+      }
       }
 
       const setSelection = (index: number): void => {
         const position = Math.min(input.value.length, Math.max(0, index))
 
         input.focus({ preventScroll: true })
+
         input.setSelectionRange(position, position)
 
         syncSegments()
@@ -1419,8 +1470,11 @@
 
       const setValue = (value: string): void => {
         input.value = sanitizeOtpValue(input, value, length)
+
         input.setSelectionRange(input.value.length, input.value.length)
+
         input.dispatchEvent(new Event('input', { bubbles: true }))
+
         input.dispatchEvent(new Event('change', { bubbles: true }))
 
         syncSegments()
@@ -1435,10 +1489,15 @@
       syncSegments()
 
       input.addEventListener('input', syncSegments)
+
       input.addEventListener('change', syncSegments)
+
       input.addEventListener('focus', syncSegments)
+
       input.addEventListener('blur', syncSegments)
+
       input.addEventListener('click', syncSegments)
+
       input.addEventListener('keyup', syncSegments)
 
       input.addEventListener('keydown', event => {
@@ -1487,9 +1546,9 @@
         window.setTimeout(syncSegments)
       })
 
-      segments.forEach((segment, index) => {
-        segment.addEventListener('click', () => setSelection(index))
-      })
+      for (const [index, segment] of segments.entries()) {
+      segment.addEventListener('click', () => setSelection(index))
+    }
     }
   }
 
@@ -1786,8 +1845,10 @@
 
   const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
   const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
+
   const addCalendarDays = (date: Date, days: number): Date =>
     new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
+
   const getCalendarDaysInMonth = (date: Date): number =>
     new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
 
@@ -1906,18 +1967,22 @@
     const max = parseCalendarDate(root.dataset.uiCalendarMax)
     const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
     const todayIso = formatCalendarDate(getCalendarToday())
+
     const month = parseCalendarMonth(root.dataset.uiCalendarMonth) ??
       (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : null) ??
       getCalendarToday()
+
     const visibleMonth = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1))
     const focusDate = getCalendarFocusDate(root, visibleMonth, min, max, requestedFocusDate)
     const focusIso = formatCalendarDate(focusDate)
     const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
+
     const monthLabel = new Intl.DateTimeFormat(locale, {
       month: 'long',
       timeZone: 'UTC',
       year: 'numeric'
     }).format(visibleMonth)
+
     const dayLabel = new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'long',
@@ -1925,14 +1990,18 @@
       weekday: 'long',
       year: 'numeric'
     })
+
     const weekdayLabel = new Intl.DateTimeFormat(locale, {
       timeZone: 'UTC',
       weekday: 'short'
     })
+
     const table = grid instanceof HTMLTableElement ? grid : null
 
     root.dataset.uiCalendarMonth = formatCalendarMonth(visibleMonth)
+
     label.textContent = monthLabel
+
     syncCalendarNavigation(root, visibleMonth, min, max)
 
     const header = document.createElement('thead')
@@ -1944,7 +2013,9 @@
       const cell = document.createElement('th')
 
       cell.scope = 'col'
+
       cell.role = 'columnheader'
+
       cell.textContent = weekdayLabel.format(new Date(Date.UTC(2026, 0, 5 + index)))
 
       headerRow.append(cell)
@@ -1967,11 +2038,17 @@
         const unavailable = isCalendarDateDisabled(root, date, min, max)
 
         cell.role = 'gridcell'
+
         cell.tabIndex = !unavailable && dateIso === focusIso ? 0 : -1
+
         cell.textContent = String(date.getUTCDate())
+
         cell.dataset.date = dateIso
+
         cell.dataset.uiCalendarDay = ''
+
         cell.setAttribute('aria-label', dayLabel.format(date))
+
         cell.setAttribute('aria-selected', String(selectedIso === dateIso))
 
         if (unavailable) {
@@ -2019,10 +2096,13 @@
     if (isCalendarDateDisabled(root, nextDate, min, max)) return
 
     input.value = formatCalendarDate(nextDate)
+
     root.dataset.uiCalendarValue = input.value
+
     root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
 
     input.dispatchEvent(new Event('input', { bubbles: true }))
+
     input.dispatchEvent(new Event('change', { bubbles: true }))
 
     renderCalendar(root, nextDate, true)
@@ -2040,6 +2120,7 @@
 
   const moveCalendarFocus = (root: HTMLElement, currentDate: Date, key: string): void => {
     const column = (currentDate.getUTCDay() + 6) % 7
+
     const keyOffsets: Record<string, number> = {
       ArrowDown: 7,
       ArrowLeft: -1,
@@ -2152,6 +2233,7 @@
       input.form?.addEventListener('reset', () => {
         window.setTimeout(() => {
           root.dataset.uiCalendarValue = input.value
+
           root.dataset.uiCalendarMonth = root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
 
           renderCalendar(root)
@@ -2395,6 +2477,7 @@
 
         const isDark = document.documentElement.dataset.theme?.includes('dark') ?? false
         const accentHue = (hue + 150) % 360
+
         const tokens: Record<string, string> = isDark
           ? {
               accent: `${accentHue} 70% 48%`,
@@ -2657,6 +2740,7 @@
 
   const defaultToastDuration = 5000
   const defaultToastMax = 5
+
   const toastTimers = new WeakMap<HTMLElement, {
     cleanup: () => void
     duration: number
@@ -2679,12 +2763,15 @@
   const getToastViewport = (placement: string | undefined): HTMLElement => {
     const resolvedPlacement = getToastPlacement(placement)
     const shouldUseAnyViewport = placement === undefined
+
     const existing = document.querySelector<HTMLElement>(`[data-ui-sonner][data-placement="${resolvedPlacement}"]`) ??
       (shouldUseAnyViewport ? document.querySelector<HTMLElement>('[data-ui-sonner]') : null)
 
     if (existing) {
       existing.dataset.placement = existing.dataset.placement ?? resolvedPlacement
+
       existing.setAttribute('aria-live', existing.getAttribute('aria-live') ?? 'polite')
+
       existing.setAttribute('aria-atomic', existing.getAttribute('aria-atomic') ?? 'false')
 
       return existing
@@ -2693,10 +2780,15 @@
     const viewport = document.createElement('div')
 
     viewport.className = 'ui-sonner'
+
     viewport.dataset.uiSonner = ''
+
     viewport.dataset.placement = resolvedPlacement
+
     viewport.setAttribute('aria-live', 'polite')
+
     viewport.setAttribute('aria-atomic', 'false')
+
     viewport.setAttribute('aria-label', 'Notifications')
 
     document.body.append(viewport)
@@ -2710,7 +2802,9 @@
     if (!timer) return
 
     window.clearTimeout(timer.timer)
+
     timer.cleanup()
+
     toastTimers.delete(toast)
   }
 
@@ -2737,11 +2831,13 @@
 
     const start = (): void => {
       timerState.startedAt = Date.now()
+
       timerState.timer = window.setTimeout(() => dismissToast(toast), timerState.remaining)
     }
 
     const pause = (): void => {
       window.clearTimeout(timerState.timer)
+
       timerState.remaining = Math.max(0, timerState.remaining - (Date.now() - timerState.startedAt))
     }
 
@@ -2751,17 +2847,24 @@
 
     timerState.cleanup = () => {
       toast.removeEventListener('mouseenter', pause)
+
       toast.removeEventListener('mouseleave', resume)
+
       toast.removeEventListener('focusin', pause)
+
       toast.removeEventListener('focusout', resume)
     }
 
     toast.addEventListener('mouseenter', pause)
+
     toast.addEventListener('mouseleave', resume)
+
     toast.addEventListener('focusin', pause)
+
     toast.addEventListener('focusout', resume)
 
     toastTimers.set(toast, timerState)
+
     start()
   }
 
@@ -2772,10 +2875,15 @@
     const variantClass = getToastVariantClass(variant)
 
     toast.className = variantClass ? `ui-toast ${variantClass}` : 'ui-toast'
+
     toast.dataset.variant = variant
+
     toast.dataset.title = title
+
     toast.dataset.description = description
+
     toast.setAttribute('role', variant === 'destructive' ? 'alert' : 'status')
+
     toast.setAttribute('aria-live', variant === 'destructive' ? 'assertive' : 'polite')
 
     toast.replaceChildren()
@@ -2784,13 +2892,16 @@
     const heading = document.createElement('strong')
 
     body.className = 'ui-toast__body'
+
     heading.textContent = title
+
     body.append(heading)
 
     if (description) {
       const text = document.createElement('p')
 
       text.textContent = description
+
       body.append(text)
     }
 
@@ -2800,8 +2911,11 @@
       const action = document.createElement('button')
 
       action.className = 'ui-button ui-button--secondary ui-button--sm ui-toast__action'
+
       action.type = 'button'
+
       action.textContent = detail.action.label
+
       action.addEventListener('click', event => {
         detail.action?.onClick?.(event, toast)
 
@@ -2819,9 +2933,13 @@
     const dismiss = document.createElement('button')
 
     dismiss.className = 'ui-toast__dismiss'
+
     dismiss.type = 'button'
+
     dismiss.setAttribute('aria-label', 'Dismiss notification')
+
     dismiss.textContent = 'Dismiss'
+
     dismiss.addEventListener('click', () => dismissToast(toast))
 
     toast.append(dismiss)
@@ -2841,8 +2959,11 @@
 
       if (existingToast instanceof HTMLElement && existingToast.hasAttribute('data-ui-toast')) {
         existingToast.dataset.state = 'open'
+
         setToastContent(existingToast, detail)
+
         viewport.append(existingToast)
+
         scheduleToastDismiss(existingToast, duration)
 
         return id
@@ -2851,18 +2972,23 @@
       const toast = document.createElement('aside')
 
       toast.id = id
+
       toast.dataset.uiToast = ''
+
       toast.dataset.state = 'open'
+
       toast.addEventListener('keydown', event => {
         if (event.key !== 'Escape') return
 
         event.preventDefault()
+
         dismissToast(toast)
       })
 
       setToastContent(toast, detail)
 
       viewport.append(toast)
+
       scheduleToastDismiss(toast, duration)
 
       const toasts = [...viewport.querySelectorAll<HTMLElement>('[data-ui-toast]')]
@@ -2906,7 +3032,9 @@
 
     for (const viewport of document.querySelectorAll<HTMLElement>('[data-ui-sonner]')) {
       viewport.dataset.placement = getToastPlacement(viewport.dataset.placement)
+
       viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')
+
       viewport.setAttribute('aria-atomic', viewport.getAttribute('aria-atomic') ?? 'false')
     }
 
@@ -2915,6 +3043,7 @@
         if (event.key !== 'Escape') return
 
         event.preventDefault()
+
         dismissToast(toast)
       })
     }

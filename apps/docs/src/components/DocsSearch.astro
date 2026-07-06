@@ -56,7 +56,7 @@ const searchJson = JSON.stringify(docsSearchIndex)
   }
 
   const normalizeSearchText = (value: string): string =>
-    value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    value.toLowerCase().normalize('NFKD').replaceAll(/[\u0300-\u036f]/g, '')
 
   const scoreSearchItem = (item: SearchItem, query: string): number => {
     const title = normalizeSearchText(item.title)
@@ -71,8 +71,11 @@ const searchJson = JSON.stringify(docsSearchIndex)
     let score = 1
 
     if (title === query) score += 80
+
     if (title.startsWith(query)) score += 45
+
     if (title.includes(query)) score += 25
+
     if (category.includes(query)) score += 12
 
     score += tokens.reduce((sum, token) => sum + (keywords.includes(token) ? 4 : 0), 0)
@@ -94,14 +97,19 @@ const searchJson = JSON.stringify(docsSearchIndex)
       root.dataset.docsSearchBound = 'true'
 
       let activeIndex = -1
+
       const getOptions = (): HTMLAnchorElement[] =>
         [...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')]
 
       const closeResults = (): void => {
         results.hidden = true
+
         results.classList.add('hidden')
+
         input.setAttribute('aria-expanded', 'false')
+
         input.removeAttribute('aria-activedescendant')
+
         activeIndex = -1
       }
 
@@ -116,17 +124,19 @@ const searchJson = JSON.stringify(docsSearchIndex)
 
         activeIndex = (index + options.length) % options.length
 
-        options.forEach((option, optionIndex) => {
-          const selected = optionIndex === activeIndex
+        for (const [optionIndex, option] of options.entries()) {
+        const selected = optionIndex === activeIndex
 
-          option.setAttribute('aria-selected', String(selected))
-          option.dataset.active = selected ? 'true' : 'false'
-        })
+        option.setAttribute('aria-selected', String(selected))
+
+        option.dataset.active = selected ? 'true' : 'false'
+      }
 
         const activeOption = options[activeIndex]
 
         if (activeOption) {
           input.setAttribute('aria-activedescendant', activeOption.id)
+
           activeOption.scrollIntoView({ block: 'nearest' })
         }
       }
@@ -153,43 +163,59 @@ const searchJson = JSON.stringify(docsSearchIndex)
           const empty = document.createElement('p')
 
           empty.className = 'px-3 py-2 text-sm text-ink-soft'
+
           empty.textContent = 'No results found.'
+
           results.append(empty)
+
           results.hidden = false
+
           results.classList.remove('hidden')
+
           input.setAttribute('aria-expanded', 'true')
 
           return
         }
 
-        matchedResults.forEach((item, index) => {
-          const option = document.createElement('a')
-          const meta = document.createElement('span')
-          const title = document.createElement('strong')
-          const description = document.createElement('span')
+        for (const [index, item] of matchedResults.entries()) {
+        const option = document.createElement('a')
+        const meta = document.createElement('span')
+        const title = document.createElement('strong')
+        const description = document.createElement('span')
 
-          option.id = `docs-search-option-${index}`
-          option.href = item.href
-          option.className = 'grid gap-1 rounded-md px-3 py-2 text-left no-underline hover:bg-brand-soft'
-          option.setAttribute('role', 'option')
-          option.setAttribute('aria-selected', 'false')
+        option.id = `docs-search-option-${index}`
 
-          meta.className = 'text-xs font-bold text-ink-muted'
-          meta.textContent = `${item.type} / ${item.category}`
+        option.href = item.href
 
-          title.className = 'text-sm font-bold text-ink'
-          title.textContent = item.title
+        option.className = 'grid gap-1 rounded-md px-3 py-2 text-left no-underline hover:bg-brand-soft'
 
-          description.className = 'line-clamp-2 text-xs/5 text-ink-soft'
-          description.textContent = item.description
+        option.setAttribute('role', 'option')
 
-          option.append(meta, title, description)
-          results.append(option)
-        })
+        option.setAttribute('aria-selected', 'false')
+
+        meta.className = 'text-xs font-bold text-ink-muted'
+
+        meta.textContent = `${item.type} / ${item.category}`
+
+        title.className = 'text-sm font-bold text-ink'
+
+        title.textContent = item.title
+
+        description.className = 'line-clamp-2 text-xs/5 text-ink-soft'
+
+        description.textContent = item.description
+
+        option.append(meta, title, description)
+
+        results.append(option)
+      }
 
         results.hidden = false
+
         results.classList.remove('hidden')
+
         input.setAttribute('aria-expanded', 'true')
+
         setActiveOption(0)
       }
 

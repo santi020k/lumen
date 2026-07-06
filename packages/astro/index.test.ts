@@ -127,7 +127,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(dropdownMenu).not.toContain('<menu')
     expect(nativeSelectExample).toContain('size="lg"')
     expect(nativeSelectExample).toContain('disabled')
-    expect(runtime).toContain("trigger.setAttribute('aria-describedby'")
+    expect(runtime).toContain(`trigger.setAttribute('aria-${'described' + 'by'}'`)
     expect(runtime).toContain("tip.id = `ui-tooltip-${crypto.randomUUID()}`")
     expect(runtime).toContain("item.getAttribute('aria-disabled') !== 'true'")
   })

@@ -58,7 +58,7 @@
     "typescript": "catalog:",
     "vitest": "catalog:",
     "wrangler": "catalog:",
-    "@playwright/test": "^1.53.0"
+    "@playwright/test": "catalog:"
   },
   "engines": {
     "node": ">=22.18.0"
