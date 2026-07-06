@@ -51,6 +51,32 @@ type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
 type CodeVariant = 'block' | 'inline'
 
+type DataTableCell =
+  | boolean
+  | null
+  | number
+  | string
+  | undefined
+  | {
+    label?: boolean | null | number | string
+    sortValue?: boolean | null | number | string
+    value?: boolean | null | number | string
+  }
+
+interface DataTableColumn {
+  header?: string
+  key: string
+  label?: string
+  sort?: 'number' | 'string'
+  sortable?: boolean
+}
+
+type DataTableRow = Record<string, DataTableCell> & {
+  id?: number | string
+  rowValue?: number | string
+  value?: number | string
+}
+
 type MessageFrom = 'assistant' | 'user'
 
 type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
@@ -97,6 +123,26 @@ const glassClass = (base: string, glass?: LumenGlassProp) =>
 
 const normalizeOption = (option: SelectOption): Option =>
   typeof option === 'string' ? { label: option, value: option } : option
+
+const isDataTableCellObject = (
+  cell: DataTableCell
+): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> =>
+  typeof cell === 'object' && cell !== null
+
+const formatDataTableCell = (cell: DataTableCell): string => {
+  const value = isDataTableCellObject(cell) ? cell.label ?? cell.value : cell
+
+  return value === undefined || value === null ? '' : String(value)
+}
+
+const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
+  if (!isDataTableCellObject(cell) || cell.sortValue === undefined || cell.sortValue === null) return undefined
+
+  return String(cell.sortValue)
+}
+
+const getDataTableRowValue = (row: DataTableRow, index: number): string =>
+  String(row.rowValue ?? row.value ?? row.id ?? index)
 
 const composeHandlers = <Event,>(
   userHandler: EventHandler<Event> | undefined,
@@ -642,10 +688,62 @@ export const ColorPicker = ({ className, type = 'color', ...props }: ColorPicker
 )
 
 export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
+  columns?: DataTableColumn[]
   glass?: LumenGlassProp
+  name?: string
+  rows?: DataTableRow[]
+  selectable?: boolean
 }
-export const DataTable = ({ className, glass = false, ...props }: DataTableProps) => (
-  <div className={composeClassName('ui-data-table', glassClass('ui-data-table', glass), className)} {...props} />
+export const DataTable = ({
+  children,
+  className,
+  columns = [],
+  glass = false,
+  name,
+  rows = [],
+  selectable = false,
+  ...props
+}: DataTableProps) => (
+  <div
+    className={composeClassName('ui-data-table', glassClass('ui-data-table', glass), className)}
+    data-ui-datatable
+    data-ui-datatable-name={name}
+    data-ui-datatable-selectable={selectable ? 'true' : undefined}
+    data-ui-glass-track={glass ? true : undefined}
+    {...props}
+  >
+    {columns.length > 0
+      ? (
+        <table>
+          <thead>
+            <tr>
+              {columns.map(column => (
+                <th
+                  data-ui-datatable-sort-type={column.sort}
+                  data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
+                  key={column.key}
+                  scope="col"
+                >
+                  {column.header ?? column.label ?? column.key}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr data-ui-datatable-row data-value={getDataTableRowValue(row, rowIndex)} key={getDataTableRowValue(row, rowIndex)}>
+                {columns.map(column => (
+                  <td data-sort-value={getDataTableSortValue(row[column.key])} key={column.key}>
+                    {formatDataTableCell(row[column.key])}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )
+      : children}
+  </div>
 )
 
 export type DatePickerProps = ComponentPropsWithoutRef<'input'>
@@ -1430,7 +1528,21 @@ export const Typography = ({ className, ...props }: TypographyProps) => (
 
 export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
+  itemSize?: number | string
+  overscan?: number | string
 }
-export const VirtualList = ({ className, glass = false, ...props }: VirtualListProps) => (
-  <div className={composeClassName('ui-virtual-list', glassClass('ui-virtual-list', glass), className)} data-ui-virtual-list {...props} />
+export const VirtualList = ({
+  className,
+  glass = false,
+  itemSize,
+  overscan,
+  ...props
+}: VirtualListProps) => (
+  <div
+    className={composeClassName('ui-virtual-list', glassClass('ui-virtual-list', glass), className)}
+    data-ui-item-size={itemSize}
+    data-ui-overscan={overscan}
+    data-ui-virtual-list
+    {...props}
+  />
 )

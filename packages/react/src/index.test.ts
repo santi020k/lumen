@@ -11,6 +11,8 @@ import {
   Card,
   type CardProps,
   Code,
+  DataTable,
+  type DataTableProps,
   Dialog,
   type DialogProps,
   Input,
@@ -19,6 +21,8 @@ import {
   Table,
   type TableProps,
   ToastProvider,
+  VirtualList,
+  type VirtualListProps,
   useDropdownMenu,
   usePopover,
   useSelect,
@@ -162,6 +166,44 @@ describe('@santi020k/lumen-react', () => {
 
     expect(input.props.className).toBe('ui-input custom-input')
     expect(input.props.type).toBe('text')
+  })
+
+  test('renders data display runtime contracts', () => {
+    const table = DataTable({
+      columns: [
+        { key: 'name', sortable: true },
+        { key: 'count', sort: 'number', sortable: true }
+      ],
+      name: 'rows',
+      rows: [
+        { count: { sortValue: 2, value: '2' }, id: 'beta', name: 'Beta' },
+        { count: { sortValue: 1, value: '1' }, id: 'alpha', name: 'Alpha' }
+      ],
+      selectable: true
+    }) as ReactElement<DataTableProps>
+    const tableProps = table.props as DataTableProps & {
+      children: ReactElement<Record<string, unknown>>
+    }
+    const renderedTable = tableProps.children
+    const tableChildren = renderedTable.props.children as ReactElement<Record<string, unknown>>[]
+    const thead = tableChildren[0] as ReactElement<Record<string, unknown>>
+    const tbody = tableChildren[1] as ReactElement<Record<string, unknown>>
+    const headerRow = thead.props.children as ReactElement<Record<string, unknown>>
+    const headers = headerRow.props.children as ReactElement<Record<string, unknown>>[]
+    const rows = tbody.props.children as ReactElement<Record<string, unknown>>[]
+    const firstRowCells = rows[0]?.props.children as ReactElement<Record<string, unknown>>[]
+    const virtualList = VirtualList({ itemSize: 48, overscan: 2 }) as ReactElement<VirtualListProps>
+
+    expect(tableProps['data-ui-datatable']).toBe(true)
+    expect(tableProps['data-ui-datatable-name']).toBe('rows')
+    expect(tableProps['data-ui-datatable-selectable']).toBe('true')
+    expect(headers[0]?.props['data-ui-datatable-sortable']).toBe('true')
+    expect(headers[1]?.props['data-ui-datatable-sort-type']).toBe('number')
+    expect(rows[0]?.props['data-value']).toBe('beta')
+    expect(firstRowCells[1]?.props['data-sort-value']).toBe('2')
+    expect(virtualList.props['data-ui-virtual-list']).toBe(true)
+    expect(virtualList.props['data-ui-item-size']).toBe(48)
+    expect(virtualList.props['data-ui-overscan']).toBe(2)
   })
 
   test('exposes disclosure semantics for popovers and dropdown menus', () => {

@@ -281,6 +281,101 @@ describe('@santi020k/lumen-elements', () => {
     expect(trigger?.textContent).toBe('Business')
   })
 
+  test('data table selects rows, submits values, and sorts columns', () => {
+    const selectionEvents: string[][] = []
+
+    document.body.innerHTML = `
+      <form id="orders-form">
+        <lumen-data-table selectable name="orders">
+          <table>
+            <thead>
+              <tr>
+                <th data-ui-datatable-sortable="true">Name</th>
+                <th data-ui-datatable-sortable="true" data-ui-datatable-sort-type="number">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-value="beta"><td>Beta</td><td data-sort-value="2">2</td></tr>
+              <tr data-value="alpha"><td>Alpha</td><td data-sort-value="1">1</td></tr>
+            </tbody>
+          </table>
+        </lumen-data-table>
+      </form>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-data-table')
+    const form = document.querySelector<HTMLFormElement>('#orders-form')
+    const rowChecks = [...document.querySelectorAll<HTMLInputElement>('[data-ui-datatable-row-select]')]
+    const selectAll = document.querySelector<HTMLInputElement>('[data-ui-datatable-select-all]')
+    const sortButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-ui-datatable-sort]')]
+
+    root?.addEventListener('ui-datatable-selectionchange', event => {
+      selectionEvents.push((event as CustomEvent<{ values: string[] }>).detail.values)
+    })
+
+    expect(rowChecks).toHaveLength(2)
+    expect(selectAll?.checked).toBe(false)
+    expect(root?.getAttribute('data-ui-datatable')).toBe('')
+
+    rowChecks[1]?.click()
+
+    expect(selectionEvents).toEqual([['alpha']])
+    expect(rowChecks[1]?.closest('tr')?.dataset.state).toBe('selected')
+    expect(new FormData(form!).getAll('orders')).toEqual(['alpha'])
+
+    selectAll?.click()
+
+    expect(selectAll?.checked).toBe(true)
+    expect(new FormData(form!).getAll('orders')).toEqual(['beta', 'alpha'])
+
+    sortButtons[1]?.click()
+
+    expect(root?.dataset.uiDatatableSortDirection).toBe('ascending')
+    expect(document.querySelector<HTMLTableSectionElement>('tbody')?.rows[0]?.dataset.value).toBe('alpha')
+
+    sortButtons[1]?.click()
+
+    expect(root?.dataset.uiDatatableSortDirection).toBe('descending')
+    expect(document.querySelector<HTMLTableSectionElement>('tbody')?.rows[0]?.dataset.value).toBe('beta')
+  })
+
+  test('virtual list emits visible ranges and hides offscreen items', () => {
+    const ranges: Array<{ endIndex: number, startIndex: number }> = []
+    const root = document.createElement('lumen-virtual-list')
+
+    root.setAttribute('data-ui-item-size', '44')
+    root.setAttribute('data-ui-overscan', '0')
+
+    Object.defineProperty(root, 'clientHeight', {
+      configurable: true,
+      value: 88
+    })
+
+    for (const label of ['One', 'Two', 'Three', 'Four', 'Five', 'Six']) {
+      const item = document.createElement('div')
+
+      item.textContent = label
+
+      root.append(item)
+    }
+
+    root.addEventListener('ui:virtual-list-range', event => {
+      ranges.push((event as CustomEvent<{ endIndex: number, startIndex: number }>).detail)
+    })
+
+    document.body.append(root)
+
+    expect(ranges[0]).toEqual({ endIndex: 2, startIndex: 0 })
+    expect(root.children[3]?.hasAttribute('hidden')).toBe(true)
+
+    root.scrollTop = 88
+    root.dispatchEvent(new Event('scroll'))
+
+    expect(ranges.at(-1)).toEqual({ endIndex: 4, startIndex: 2 })
+    expect(root.children[0]?.hasAttribute('hidden')).toBe(true)
+    expect(root.children[2]?.hasAttribute('hidden')).toBe(false)
+  })
+
   test('tooltip wires aria-describedby and dismisses with Escape', () => {
     vi.useFakeTimers()
 

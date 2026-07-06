@@ -41,6 +41,17 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:image:alt" content={title} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Lumen UI",
+      "url": "https://lumen.santi020k.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://lumen.santi020k.com/docs?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    })} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />

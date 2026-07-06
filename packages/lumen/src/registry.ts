@@ -1275,10 +1275,10 @@ export const getLumenRegistryItem = (
   registry: LumenRegistry = lumenRegistry
 ): LumenRegistryEntry | undefined => {
   const normalizedName = normalizeRegistryEntryName(name)
+  const entries = getLumenRegistryEntries(registry)
 
-  return getLumenRegistryEntries(registry).find(item =>
-    item.name === name || normalizeRegistryEntryName(item.name) === normalizedName
-  )
+  return entries.find(item => item.name === name) ??
+    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName)
 }
 
 const isLumenRegistry = (value: unknown): value is LumenRegistry => {

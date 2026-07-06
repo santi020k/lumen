@@ -677,18 +677,20 @@ const getFilesForItem = (
     return targetRecipeFiles
   }
 
+  const inlineFiles = item.files
+    ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
+    .map(file => ({
+      path: file.path,
+      source: file.source
+    })) ?? []
+
+  if (inlineFiles.length > 0) return inlineFiles
+
   if (item.type === 'recipe') {
     throw new Error(`Registry recipe "${item.name}" does not have ${target} starter files yet.`)
   }
 
-  return recipeFiles[item.name] ??
-    item.files
-      ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
-      .map(file => ({
-        path: file.path,
-        source: file.source
-      })) ??
-    []
+  return []
 }
 
 const fileExists = async (path: string): Promise<boolean> => {

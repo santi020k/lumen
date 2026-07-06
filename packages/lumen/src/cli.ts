@@ -135,7 +135,7 @@ const help = [
   '  --merge                Merge recipe files with existing files',
   '  --registry <source>    Load list/show data from a local or remote registry JSON file',
   '  --registry-token <key> Use a bearer token for private remote registries',
-  '  --target <framework>   Generate component wrappers for astro, react, or elements',
+  '  --target <framework>   Generate wrappers or recipe starters for astro, react, or elements',
   ''
 ].join('\n')
 

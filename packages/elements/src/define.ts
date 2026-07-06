@@ -1,5 +1,6 @@
 import {
   composeClassName,
+  getVirtualRange,
   type LumenComponentName,
   lumenComponentNames
 } from '@santi020k/lumen-core'
@@ -15,6 +16,8 @@ type ToastPlacement =
   | 'top-right'
 
 type ToastVariant = string
+
+type DataTableSortDirection = 'ascending' | 'descending' | 'none'
 
 export interface ToastAction {
   event?: string
@@ -205,7 +208,7 @@ const elementConfigs = {
     defaults: { surface: 'default' },
     tagName: 'lumen-context-menu'
   },
-  DataTable: { attributeClasses: glassAttributeClasses('ui-data-table--glass'), baseClassName: 'ui-data-table', tagName: 'lumen-data-table' },
+  DataTable: { attributeClasses: glassAttributeClasses('ui-data-table--glass'), baseClassName: 'ui-data-table', defaults: { 'data-ui-datatable': '' }, tagName: 'lumen-data-table' },
   DatePicker: { baseClassName: 'ui-input ui-date-picker', defaults: { type: 'date' }, tagName: 'lumen-date-picker' },
   DateRangePicker: { baseClassName: 'ui-date-range-picker', defaults: { 'data-ui-date-range-picker': '' }, tagName: 'lumen-date-range-picker' },
   Dialog: {
@@ -442,6 +445,45 @@ const getLoopedIndex = (
   if (forwardKeys.includes(key)) return (currentIndex + 1) % itemCount
 
   return (currentIndex - 1 + itemCount) % itemCount
+}
+
+const getDataTableSortValue = (cell: HTMLTableCellElement | undefined): string =>
+  cell?.dataset.sortValue ?? cell?.textContent?.trim() ?? ''
+
+const compareDataTableValues = (value: string, other: string, sortType: string | undefined): number => {
+  const numericValue = Number(value.replaceAll(',', ''))
+  const numericOther = Number(other.replaceAll(',', ''))
+  const useNumeric = sortType === 'number' || (
+    sortType !== 'string' &&
+    value.trim() !== '' &&
+    other.trim() !== '' &&
+    Number.isFinite(numericValue) &&
+    Number.isFinite(numericOther)
+  )
+
+  if (useNumeric) {
+    return numericValue - numericOther
+  }
+
+  return value.localeCompare(other, undefined, { numeric: true, sensitivity: 'base' })
+}
+
+const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] =>
+  [...(table.tBodies[0]?.rows ?? [])]
+
+const getDataTableRowValue = (row: HTMLTableRowElement, index: number): string =>
+  row.dataset.value ?? row.id ?? String(index)
+
+const getNextDataTableSortDirection = (
+  currentColumn: string | undefined,
+  columnIndex: number,
+  currentDirection: string | null
+): DataTableSortDirection => {
+  if (currentColumn !== String(columnIndex) || currentDirection === 'none') return 'ascending'
+
+  if (currentDirection === 'ascending') return 'descending'
+
+  return 'none'
 }
 
 const getControlledPanel = (trigger: HTMLElement): HTMLElement | null => {
@@ -1646,6 +1688,376 @@ class LumenSelectBehaviorElement extends LumenElement {
   }
 }
 
+class LumenDataTableBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    if (this.hasAttribute('selectable') && this.dataset.uiDatatableSelectable !== 'true') {
+      this.dataset.uiDatatableSelectable = 'true'
+    }
+
+    if (this.hasAttribute('name') && !this.dataset.uiDatatableName) {
+      this.dataset.uiDatatableName = this.getAttribute('name') ?? ''
+    }
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    this.setupDataTable(this.abortController.signal)
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+
+  private setupDataTable(signal: AbortSignal): void {
+    const table = this.querySelector<HTMLTableElement>('table')
+
+    if (!table) return
+
+    this.setupSelection(table, signal)
+
+    this.setupSorting(table, signal)
+  }
+
+  private setupSorting(table: HTMLTableElement, signal: AbortSignal): void {
+    const body = table.tBodies[0]
+
+    if (!body) return
+
+    for (const [index, row] of [...body.rows].entries()) {
+      row.dataset.uiDatatableIndex = row.dataset.uiDatatableIndex ?? String(index)
+    }
+
+    const headers = [...table.querySelectorAll<HTMLTableCellElement>('thead th')].filter(header =>
+      header.dataset.uiDatatableSortable === 'true' ||
+      header.dataset.sortable === 'true' ||
+      header.hasAttribute('data-sortable')
+    )
+
+    for (const header of headers) {
+      const row = header.parentElement
+      const columnIndex = row ? [...row.children].indexOf(header) : -1
+
+      if (columnIndex < 0) continue
+
+      header.dataset.uiDatatableColumn = String(columnIndex)
+      header.setAttribute('aria-sort', header.getAttribute('aria-sort') ?? 'none')
+
+      const button = this.ensureSortButton(header)
+
+      button.addEventListener('click', () => {
+        const nextDirection = getNextDataTableSortDirection(
+          this.dataset.uiDatatableSortColumn,
+          columnIndex,
+          header.getAttribute('aria-sort')
+        )
+
+        this.updateSort(table, header, nextDirection)
+
+        this.sortRows(table, header, columnIndex, nextDirection)
+      }, { signal })
+    }
+  }
+
+  private ensureSortButton(header: HTMLTableCellElement): HTMLButtonElement {
+    const existing = header.querySelector<HTMLButtonElement>('[data-ui-datatable-sort]')
+
+    if (existing) return existing
+
+    const button = document.createElement('button')
+
+    button.type = 'button'
+
+    button.className = 'ui-data-table__sort'
+
+    button.dataset.uiDatatableSort = ''
+
+    while (header.firstChild) {
+      button.append(header.firstChild)
+    }
+
+    header.append(button)
+
+    return button
+  }
+
+  private updateSort(
+    table: HTMLTableElement,
+    header: HTMLTableCellElement,
+    direction: DataTableSortDirection
+  ): void {
+    for (const item of table.querySelectorAll<HTMLTableCellElement>('thead th[aria-sort]')) {
+      item.setAttribute('aria-sort', item === header ? direction : 'none')
+
+      item.dataset.sort = item === header ? direction : 'none'
+    }
+
+    this.dataset.uiDatatableSortDirection = direction
+
+    if (direction === 'none') {
+      delete this.dataset.uiDatatableSortColumn
+    } else {
+      this.dataset.uiDatatableSortColumn = header.dataset.uiDatatableColumn ?? ''
+    }
+  }
+
+  private sortRows(
+    table: HTMLTableElement,
+    header: HTMLTableCellElement,
+    columnIndex: number,
+    direction: DataTableSortDirection
+  ): void {
+    const body = table.tBodies[0]
+
+    if (!body) return
+
+    const rows = [...body.rows]
+    const sortType = header.dataset.uiDatatableSortType
+
+    rows.sort((row, other) => {
+      if (direction === 'none') {
+        return Number(row.dataset.uiDatatableIndex ?? '0') - Number(other.dataset.uiDatatableIndex ?? '0')
+      }
+
+      const result = compareDataTableValues(
+        getDataTableSortValue(row.cells[columnIndex]),
+        getDataTableSortValue(other.cells[columnIndex]),
+        sortType
+      )
+
+      return (direction === 'ascending' ? result : -result) ||
+        Number(row.dataset.uiDatatableIndex ?? '0') - Number(other.dataset.uiDatatableIndex ?? '0')
+    })
+
+    for (const row of rows) {
+      body.append(row)
+    }
+  }
+
+  private setupSelection(table: HTMLTableElement, signal: AbortSignal): void {
+    const selectable = this.dataset.uiDatatableSelectable === 'true' || this.hasAttribute('selectable')
+
+    if (!selectable) return
+
+    const headRow = table.tHead?.rows[0]
+    const body = table.tBodies[0]
+
+    if (!headRow || !body) return
+
+    const selectAll = this.ensureSelectAll(headRow)
+
+    for (const [index, row] of getDataTableRows(table).entries()) {
+      const checkbox = this.ensureRowSelect(row, index)
+
+      checkbox.addEventListener('change', () => { this.syncSelection(table, selectAll, true); }, { signal })
+    }
+
+    selectAll.addEventListener('change', () => {
+      for (const checkbox of table.querySelectorAll<HTMLInputElement>('[data-ui-datatable-row-select]')) {
+        checkbox.checked = selectAll.checked
+      }
+
+      this.syncSelection(table, selectAll, true)
+    }, { signal })
+
+    this.closest('form')?.addEventListener('reset', () => {
+      globalThis.setTimeout(() => { this.syncSelection(table, selectAll, true); })
+    }, { signal })
+
+    this.syncSelection(table, selectAll)
+  }
+
+  private ensureSelectAll(headRow: HTMLTableRowElement): HTMLInputElement {
+    const existing = headRow.querySelector<HTMLInputElement>('[data-ui-datatable-select-all]')
+
+    if (existing) return existing
+
+    const headerCell = document.createElement('th')
+    const selectAll = document.createElement('input')
+
+    headerCell.className = 'ui-data-table__selection'
+
+    headerCell.scope = 'col'
+
+    selectAll.type = 'checkbox'
+
+    selectAll.className = 'ui-data-table__checkbox'
+
+    selectAll.dataset.uiDatatableSelectAll = ''
+
+    selectAll.setAttribute('aria-label', 'Select all rows')
+
+    headerCell.append(selectAll)
+
+    headRow.prepend(headerCell)
+
+    return selectAll
+  }
+
+  private ensureRowSelect(row: HTMLTableRowElement, index: number): HTMLInputElement {
+    const existing = row.querySelector<HTMLInputElement>('[data-ui-datatable-row-select]')
+
+    row.dataset.uiDatatableRow = ''
+
+    row.dataset.value = getDataTableRowValue(row, index)
+
+    if (existing) return existing
+
+    const cell = document.createElement('td')
+    const checkbox = document.createElement('input')
+    const selected = row.dataset.state === 'selected' || row.getAttribute('aria-selected') === 'true'
+
+    cell.className = 'ui-data-table__selection'
+
+    checkbox.type = 'checkbox'
+
+    checkbox.className = 'ui-data-table__checkbox'
+
+    checkbox.dataset.uiDatatableRowSelect = ''
+
+    checkbox.checked = selected
+
+    checkbox.defaultChecked = selected
+
+    checkbox.setAttribute('aria-label', `Select row ${index + 1}`)
+
+    cell.append(checkbox)
+
+    row.prepend(cell)
+
+    return checkbox
+  }
+
+  private syncSelection(
+    table: HTMLTableElement,
+    selectAll: HTMLInputElement,
+    dispatch = false
+  ): void {
+    const rows = getDataTableRows(table)
+    const selectedValues: string[] = []
+
+    for (const [index, row] of rows.entries()) {
+      const checkbox = row.querySelector<HTMLInputElement>('[data-ui-datatable-row-select]')
+      const selected = checkbox?.checked === true
+
+      row.setAttribute('aria-selected', String(selected))
+
+      if (selected) {
+        row.dataset.state = 'selected'
+
+        selectedValues.push(getDataTableRowValue(row, index))
+      } else {
+        delete row.dataset.state
+      }
+    }
+
+    selectAll.checked = rows.length > 0 && selectedValues.length === rows.length
+
+    selectAll.indeterminate = selectedValues.length > 0 && selectedValues.length < rows.length
+
+    this.syncSelectionInputs(selectedValues)
+
+    if (dispatch) {
+      this.dispatchEvent(new CustomEvent('ui-datatable-selectionchange', {
+        bubbles: true,
+        detail: { values: selectedValues }
+      }))
+    }
+  }
+
+  private syncSelectionInputs(selectedValues: string[]): void {
+    const name = this.dataset.uiDatatableName
+    let inputs = this.querySelector<HTMLElement>('[data-ui-datatable-inputs]')
+
+    if (name) {
+      if (!inputs) {
+        inputs = document.createElement('div')
+
+        inputs.hidden = true
+
+        inputs.dataset.uiDatatableInputs = ''
+
+        this.append(inputs)
+      }
+
+      inputs.replaceChildren(...selectedValues.map(value => {
+        const input = document.createElement('input')
+
+        input.type = 'hidden'
+
+        input.name = name
+
+        input.value = value
+
+        return input
+      }))
+    } else {
+      inputs?.replaceChildren()
+    }
+  }
+}
+
+class LumenVirtualListBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    this.setupVirtualList(this.abortController.signal)
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+
+  private setupVirtualList(signal: AbortSignal): void {
+    const items = [...this.children].filter((child): child is HTMLElement => child instanceof HTMLElement)
+
+    if (!items.length) return
+
+    const update = (): void => {
+      const overscan = this.getNumberAttribute('data-ui-overscan', 'overscan', 4)
+      const itemSize = this.getNumberAttribute('data-ui-item-size', 'item-size', 44)
+      const range = getVirtualRange(this.scrollTop, this.clientHeight, itemSize, items.length, overscan)
+
+      for (const [index, item] of items.entries()) {
+        item.hidden = index < range.startIndex || index > range.endIndex
+      }
+
+      this.dispatchEvent(new CustomEvent('ui:virtual-list-range', {
+        bubbles: true,
+        detail: range
+      }))
+    }
+
+    this.addEventListener('scroll', update, { passive: true, signal })
+
+    update()
+  }
+
+  private getNumberAttribute(dataAttribute: string, attribute: string, fallback: number): number {
+    const value = Number(this.getAttribute(dataAttribute) ?? this.getAttribute(attribute) ?? fallback)
+
+    return Number.isFinite(value) && value > 0 ? value : fallback
+  }
+}
+
 class LumenTooltipBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private showTimer: ReturnType<typeof globalThis.setTimeout> | undefined
@@ -1785,6 +2197,7 @@ const createLumenBehaviorElementClass = (
 
 const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenElement>> = {
   AlertDialog: LumenDialogBehaviorElement,
+  DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
@@ -1792,7 +2205,8 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   Sonner: LumenSonnerBehaviorElement,
   Tabs: LumenTabsBehaviorElement,
   Toast: LumenToastBehaviorElement,
-  Tooltip: LumenTooltipBehaviorElement
+  Tooltip: LumenTooltipBehaviorElement,
+  VirtualList: LumenVirtualListBehaviorElement
 }
 
 const elementClasses = Object.fromEntries(

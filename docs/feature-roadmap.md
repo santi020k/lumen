@@ -12,7 +12,8 @@ surface; React and Web Components expose the same class and data contracts.
 - Registry API and CLI: `@santi020k/lumen/registry` exports typed recipe metadata, and the `lumen`
   binary can list registry items, show recipe contents, print install commands, add recipe starter
   files, and generate component wrappers with `lumen add <item>`. Add supports `--target astro`,
-  `--target react`, and `--target elements` for component wrappers; `--dry-run`, `--cwd`,
+  `--target react`, and `--target elements` for component wrappers and bundled recipe starters;
+  `--dry-run`, `--cwd`,
   conflict-safe skips, `--force`, `--fail-on-conflict`, and `--merge` for deterministic
   conflict-aware installs; and alternate local, remote, and token-authenticated private manifests
   with `--registry` when items provide inline `{ path, source }` file entries.
