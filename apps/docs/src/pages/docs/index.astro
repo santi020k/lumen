@@ -45,6 +45,27 @@ const setupSteps = [
 
 const basicThemeSetups = themeSetups.slice(0, 2)
 const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme')
+const figmaLibraryUrl = 'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
+const figmaFileKey = 'luQW2pTQ3jGGxSFPAAsfa9'
+
+const figmaDetails = [
+  [
+    'Variables',
+    'Color includes 15 semantic tokens with Light and Dark modes. Radius includes sm, md, and lg values.'
+  ],
+  [
+    'Library pages',
+    'Cover, Foundations, and Components keep the design file easy to scan during handoff.'
+  ],
+  [
+    'Component variants',
+    'Button, Badge, Input, Field, Card, Alert, Checkbox, Switch, Tabs, and Avatar mirror code props where possible.'
+  ],
+  [
+    'Code workflow',
+    'Use the file as the source for Figma variables, component review, and future Code Connect mappings.'
+  ]
+] as const
 ---
 
 <DocsLayout
@@ -218,6 +239,52 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         </div>
       </Card>
     )}
+  </section>
+
+  <section class="docs-section" id="figma" aria-labelledby="figma-title">
+    <div class="docs-section-heading">
+      <p>Design handoff</p>
+      <h2 id="figma-title">Figma library</h2>
+      <p>
+        Lumen has a Figma library for semantic variables and component review. The library follows
+        the same token contract as the code, so handoff can stay centered on names like
+        <code>brand</code>, <code>surface</code>, <code>line</code>, and <code>ink</code> instead
+        of copied hex values.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]
+    ">
+      <Card class="docs-example-card" variant="muted">
+        <Badge>Library file</Badge>
+        <h3 class="text-base font-bold text-ink">Lumen UI Library</h3>
+        <p class="text-sm/6 text-ink-soft">
+          Open the shared Figma file when you need token references, component variants, or a
+          design-to-code handoff surface.
+        </p>
+        <p class="font-mono text-xs text-ink-muted">File key: {figmaFileKey}</p>
+        <div class="flex flex-wrap gap-3">
+          <a class="
+            ui-button ui-button--default-size ui-button--default no-underline
+          " href={figmaLibraryUrl}>Open in Figma</a>
+          <a class="
+            ui-button ui-button--default-size ui-button--outline no-underline
+          " href="https://github.com/santi020k/lumen/blob/main/docs/figma.md">Read Figma notes</a>
+        </div>
+      </Card>
+      <div class="
+        grid gap-3
+        sm:grid-cols-2
+      ">
+        {figmaDetails.map(([title, description]) => (
+          <Card class="docs-example-card" variant="muted">
+            <h3 class="text-sm font-bold text-ink">{title}</h3>
+            <p class="text-sm/6 text-ink-soft">{description}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
   </section>
 
   <section class="docs-section" id="glassmorphism" aria-labelledby="glassmorphism-title">

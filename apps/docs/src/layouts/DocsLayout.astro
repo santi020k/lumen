@@ -15,6 +15,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '')
 
 const gettingStarted = [
   ['Introduction', '/docs'],
+  ['Figma', '/docs#figma'],
   ['Components', '/docs/components'],
   ['Theme playground', '/docs/theme-playground']
 ] as const
@@ -99,7 +100,10 @@ const isCurrent = (href: string) => currentPath === href
       </nav>
     </aside>
     <main class="min-w-0 pb-16">
-      <div class="mb-8 lg:hidden">
+      <div class="
+        mb-8
+        lg:hidden
+      ">
         <DocsSearch
           class="max-w-2xl"
           inputId="docs-mobile-search-input"

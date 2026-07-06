@@ -276,10 +276,35 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     <Card class="theme-playground__export" variant="muted">
       <div class="theme-playground__section-heading">
         <p>Export</p>
-        <h2>Copy CSS</h2>
+        <h2>Copy tokens</h2>
       </div>
+      <Field class="theme-playground__field">
+        <Label id="theme-export-format-label">Format</Label>
+        <ButtonGroup aria-labelledby="theme-export-format-label" class="
+          theme-playground__export-formats
+        ">
+          <Button
+            aria-pressed="true"
+            data-theme-export-format="css"
+            type="button"
+            variant="secondary"
+          >CSS</Button>
+          <Button
+            aria-pressed="false"
+            data-theme-export-format="figma"
+            type="button"
+            variant="outline"
+          >Figma</Button>
+          <Button
+            aria-pressed="false"
+            data-theme-export-format="tokens"
+            type="button"
+            variant="outline"
+          >JSON</Button>
+        </ButtonGroup>
+      </Field>
       <Textarea
-        aria-label="Generated theme CSS"
+        aria-label="Generated theme export"
         class="theme-playground__css"
         data-ui-theme-output
         readonly
@@ -294,9 +319,13 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
   import {
     createThemeFromHue,
     exportThemeCss,
+    exportThemeDesignTokens,
+    exportThemeFigmaVariables,
     type LumenThemeTokens,
     lumenTokenNames
   } from '@santi020k/lumen-core'
+
+  type ExportFormat = 'css' | 'figma' | 'tokens'
 
   type ThemeMode = 'generated' | 'manual'
 
@@ -312,6 +341,33 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
   const buildThemeCss = (tokens: LumenThemeTokens, scheme: ThemeScheme): string =>
     exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
+
+  const buildThemeExport = (
+    tokens: LumenThemeTokens,
+    scheme: ThemeScheme,
+    format: ExportFormat
+  ): string => {
+    if (format === 'figma') {
+      return JSON.stringify(exportThemeFigmaVariables(tokens, {
+        collectionName: 'Lumen',
+        modeName: scheme === 'dark' ? 'Dark' : 'Light'
+      }), null, 2)
+    }
+
+    if (format === 'tokens') {
+      return JSON.stringify(exportThemeDesignTokens(tokens), null, 2)
+    }
+
+    return buildThemeCss(tokens, scheme)
+  }
+
+  const getExportButtonLabel = (format: ExportFormat): string => {
+    if (format === 'figma') return 'Copy Figma JSON'
+
+    if (format === 'tokens') return 'Copy token JSON'
+
+    return 'Copy CSS'
+  }
 
   const normalizeHex = (value: string): string | null => {
     const hex = value.trim().replace(/^#/, '')
@@ -407,10 +463,12 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     const secondaryColor = root.querySelector<HTMLInputElement>('[data-theme-secondary-color]')
     const secondaryHex = root.querySelector<HTMLInputElement>('[data-theme-secondary-hex]')
     const exportButton = root.querySelector<HTMLButtonElement>('[data-theme-export]')
+    const exportFormatButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-theme-export-format]')]
     const schemeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-theme-scheme]')]
 
     if (!preview || !output || !brandHue || !accentHue) return
 
+    let exportFormat: ExportFormat = 'css'
     let mode: ThemeMode = 'generated'
     let scheme: ThemeScheme = 'light'
 
@@ -442,7 +500,9 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
       applyTokens(preview, tokens, scheme)
 
-      output.value = buildThemeCss(tokens, scheme)
+      output.value = buildThemeExport(tokens, scheme, exportFormat)
+
+      exportButton?.replaceChildren(getExportButtonLabel(exportFormat))
 
       root.dispatchEvent(new CustomEvent('ui:theme-change', {
         bubbles: true,
@@ -505,6 +565,28 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
     bindHexInputs(secondaryColor, secondaryHex)
 
+    for (const button of exportFormatButtons) {
+      button.addEventListener('click', () => {
+        const nextFormat = button.dataset.themeExportFormat
+
+        if (nextFormat !== 'css' && nextFormat !== 'figma' && nextFormat !== 'tokens') return
+
+        exportFormat = nextFormat
+
+        for (const option of exportFormatButtons) {
+          const isPressed = option === button
+
+          option.setAttribute('aria-pressed', String(isPressed))
+
+          option.classList.toggle('ui-button--secondary', isPressed)
+
+          option.classList.toggle('ui-button--outline', !isPressed)
+        }
+
+        update()
+      })
+    }
+
     for (const button of modeButtons) {
       button.addEventListener('click', () => {
         const nextMode = button.dataset.themeMode
@@ -544,7 +626,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
       root.dispatchEvent(new CustomEvent('ui:theme-export', {
         bubbles: true,
-        detail: { css: output.value }
+        detail: { format: exportFormat, value: output.value }
       }))
     })
 
@@ -710,6 +792,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
       0 2px 8px hsl(var(--brand) / 0.36);
   }
 
+  .theme-playground__export-formats,
   .theme-playground__scheme-toggle {
     width: fit-content;
   }
