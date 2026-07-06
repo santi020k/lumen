@@ -3,6 +3,10 @@
 Lumen can meet Figma at two levels: semantic theme tokens for design variables, and Code Connect for
 published component libraries.
 
+For the reverse direction — implementing Figma designs with Lumen components — see
+[figma-design-to-code.md](figma-design-to-code.md) and the machine-readable mapping in
+[`registry/figma-design-map.json`](../registry/figma-design-map.json).
+
 ## Theme Tokens
 
 Use `@santi020k/lumen-core/figma` to export the shared semantic colors in formats that Figma-oriented

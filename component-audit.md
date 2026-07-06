@@ -17,11 +17,8 @@ The bar for examples (per your choice): each main example should demonstrate eve
 **C3 — Behavior-implying names with no behavior.** These render a styled container only; either add runtime support or document them explicitly as styling shells:
 
 - `ContextMenu` — no right-click wiring at all; the example renders a permanently visible menu, which misrepresents the component.
-- `Resizable` — no handle, no drag runtime (CSS only).
 - `DateRangePicker` — no start ≤ end linkage between the two inputs.
 - `DataTable` — no sorting/selection despite the name (vs plain `Table`).
-- `InputOTP` — `length` only sets `maxlength`; no segmented boxes.
-- `Calendar` — static; no month navigation or day selection.
 
 **C4 — Accessibility defaults worth fixing in the components:**
 
@@ -69,7 +66,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | DatePicker | ✅ | ✅ | Fine (native). |
 | TimeField | ✅ | ✅ | Fine (native). |
 | DateRangePicker | ❗ | ✅ | Layout shell only — no range linkage (C3). |
-| InputOTP | ⚠️ | ✅ | `length` under-delivers (C3); consider segmented rendering or rename docs expectation. |
+| InputOTP | ✅ | ✅ | Native one-time-code input enhanced into segmented boxes. |
 | Field | ⚠️ | ✅ | Add `aria-describedby` wiring for hint text (C4). |
 | Label | ✅ | ✅ | Fine. |
 
@@ -100,7 +97,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | AspectRatio | ⚠️ | ⚠️ | Unvalidated style interpolation (C7); example could show a second ratio. |
 | Separator | ✅ | ⚠️ | Example missing `orientation="vertical"`. |
 | ScrollArea | ✅ | ✅ | Great example. |
-| Resizable | ❗ | ⚠️ | No drag runtime/handle (C3); example implies panes that don't resize. |
+| Resizable | ✅ | ✅ | Split-panel runtime adds draggable, keyboard-accessible handles. |
 | Sidebar | ✅ | ✅ | Fine. |
 | Item | ✅ | ✅ | Fine. |
 | Empty | ✅ | ✅ | Fine. |
@@ -133,7 +130,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | Kbd | ✅ | ✅ | Fine. |
 | Code | ✅ | ✅ | Richest component; example covers inline + block/copy/label. `theme` variants unshown (minor). |
 | Chart | ✅ | ✅ | Static by design; example is exemplary. |
-| Calendar | ⚠️ | ✅ | Static shell (C3); fine if documented as such. |
+| Calendar | ✅ | ✅ | Runtime-enhanced month grid with navigation, selection, bounds, keyboard grid support, and form participation. |
 | Tree | ✅ | ⚠️ | Keyboard runtime exists, but example is 2 flat items — show nesting with `role="group"`, `aria-level`. |
 | TreeGrid | ✅ | ⚠️ | Example is a single row — add header row and levels. |
 | VirtualList | ✅ | ⚠️ | Example has 3 rows, which defeats the point — generate 100+ rows to demo virtualization. |

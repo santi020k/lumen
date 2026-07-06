@@ -1,23 +1,116 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-interface Props extends HTMLAttributes<'div'> {
+interface Props extends Omit<HTMLAttributes<'div'>, 'value'> {
   class?: string
   className?: string
+  disabled?: boolean
   glass?: boolean | 'subtle' | 'strong'
+  max?: string
+  min?: string
+  month?: string
+  name?: string
+  value?: string
 }
+
+const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/
+const isoMonthPattern = /^\d{4}-\d{2}$/
+const weekdayFormatter = new Intl.DateTimeFormat('en', { timeZone: 'UTC', weekday: 'short' })
+const monthFormatter = new Intl.DateTimeFormat('en', { month: 'long', timeZone: 'UTC', year: 'numeric' })
+const dayFormatter = new Intl.DateTimeFormat('en', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+  weekday: 'long',
+  year: 'numeric'
+})
+
+const parseIsoDate = (date: string | undefined): Date | undefined => {
+  if (!date || !isoDatePattern.test(date)) return undefined
+
+  const [year, month, day] = date.split('-').map(Number)
+  const parsed = new Date(Date.UTC(year, month - 1, day))
+
+  return parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day
+    ? parsed
+    : undefined
+}
+
+const parseIsoMonth = (date: string | undefined): Date | undefined => {
+  if (!date || !isoMonthPattern.test(date)) return undefined
+
+  const [year, month] = date.split('-').map(Number)
+  const parsed = new Date(Date.UTC(year, month - 1, 1))
+
+  return parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1
+    ? parsed
+    : undefined
+}
+
+const formatIsoDate = (date: Date): string => date.toISOString().slice(0, 10)
+const formatIsoMonth = (date: Date): string => date.toISOString().slice(0, 7)
+const addDays = (date: Date, days: number): Date =>
+  new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
+const getDaysInMonth = (date: Date): number =>
+  new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
+const isBefore = (date: Date, limit: Date | undefined): boolean =>
+  Boolean(limit && formatIsoDate(date) < formatIsoDate(limit))
+const isAfter = (date: Date, limit: Date | undefined): boolean =>
+  Boolean(limit && formatIsoDate(date) > formatIsoDate(limit))
 
 const {
   class: classProp = '',
   className = '',
+  disabled = false,
   glass = false,
+  id,
+  max,
+  min,
+  month,
+  name,
+  value,
   ...rest
 } = Astro.props
 
+const today = new Date()
+const todayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
+const selectedDate = parseIsoDate(value)
+const minDate = parseIsoDate(min)
+const maxDate = parseIsoDate(max)
+const selectedIso = selectedDate ? formatIsoDate(selectedDate) : ''
+const monthDate = parseIsoMonth(month) ??
+  (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : undefined) ??
+  new Date(Date.UTC(todayUtc.getUTCFullYear(), todayUtc.getUTCMonth(), 1))
+const calendarId = id ?? `ui-calendar-${Math.random().toString(36).slice(2)}`
+const labelId = `${calendarId}-label`
+const monthIso = formatIsoMonth(monthDate)
+const todayIso = formatIsoDate(todayUtc)
+const firstWeekday = (monthDate.getUTCDay() + 6) % 7
+const firstCell = addDays(monthDate, -firstWeekday)
+const daysInMonth = getDaysInMonth(monthDate)
+const visibleDates = Array.from({ length: 42 }, (_, index) => addDays(firstCell, index))
+const firstSelectableDate = visibleDates.find(date =>
+  date.getUTCMonth() === monthDate.getUTCMonth() &&
+  !isBefore(date, minDate) &&
+  !isAfter(date, maxDate)
+)
+const focusIso = selectedDate && formatIsoMonth(selectedDate) === monthIso
+  ? selectedIso
+  : todayUtc.getUTCMonth() === monthDate.getUTCMonth() && todayUtc.getUTCFullYear() === monthDate.getUTCFullYear()
+    ? todayIso
+    : firstSelectableDate
+      ? formatIsoDate(firstSelectableDate)
+      : formatIsoDate(monthDate)
+const weekdays = Array.from({ length: 7 }, (_, index) =>
+  weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))
+)
 const passthrough = rest as Record<string, unknown>
 ---
 
 <div
+  aria-disabled={disabled ? 'true' : undefined}
   class:list={[
     'ui-calendar',
     glass && 'ui-calendar--glass',
@@ -26,7 +119,80 @@ const passthrough = rest as Record<string, unknown>
     classProp,
     className
   ]}
+  data-ui-calendar
+  data-ui-calendar-initial-month={monthIso}
+  data-ui-calendar-max={maxDate ? formatIsoDate(maxDate) : undefined}
+  data-ui-calendar-min={minDate ? formatIsoDate(minDate) : undefined}
+  data-ui-calendar-month={monthIso}
+  data-ui-calendar-value={selectedIso || undefined}
+  data-disabled={disabled ? 'true' : undefined}
+  data-ui-glass-track={glass ? true : undefined}
+  id={calendarId}
   {...passthrough}
 >
-  <slot />
+  <input
+    data-ui-calendar-input
+    disabled={disabled || undefined}
+    name={name}
+    type="hidden"
+    value={selectedIso}
+  />
+
+  <div class="ui-calendar__header">
+    <button
+      aria-label="Previous month"
+      class="ui-calendar__nav"
+      data-ui-calendar-prev
+      disabled={disabled || undefined}
+      type="button"
+    >
+      <span aria-hidden="true">&lsaquo;</span>
+    </button>
+    <strong class="ui-calendar__label" data-ui-calendar-label id={labelId}>{monthFormatter.format(monthDate)}</strong>
+    <button
+      aria-label="Next month"
+      class="ui-calendar__nav"
+      data-ui-calendar-next
+      disabled={disabled || undefined}
+      type="button"
+    >
+      <span aria-hidden="true">&rsaquo;</span>
+    </button>
+  </div>
+
+  <table aria-labelledby={labelId} class="ui-calendar__grid" data-ui-calendar-grid role="grid">
+    <thead>
+      <tr role="row">
+        {weekdays.map(weekday => <th role="columnheader" scope="col">{weekday}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {Array.from({ length: 6 }, (_, rowIndex) => (
+        <tr role="row">
+          {visibleDates.slice(rowIndex * 7, rowIndex * 7 + 7).map(date => {
+            const dateIso = formatIsoDate(date)
+            const outside = date.getUTCMonth() !== monthDate.getUTCMonth()
+            const unavailable = disabled || isBefore(date, minDate) || isAfter(date, maxDate)
+
+            return (
+              <td
+                aria-disabled={unavailable ? 'true' : undefined}
+                aria-label={dayFormatter.format(date)}
+                aria-selected={selectedIso === dateIso ? 'true' : 'false'}
+                data-date={dateIso}
+                data-outside={outside ? 'true' : undefined}
+                data-selected={selectedIso === dateIso ? 'true' : undefined}
+                data-today={todayIso === dateIso ? 'true' : undefined}
+                data-ui-calendar-day
+                role="gridcell"
+                tabindex={!unavailable && focusIso === dateIso ? '0' : '-1'}
+              >
+                {date.getUTCDate()}
+              </td>
+            )
+          })}
+        </tr>
+      ))}
+    </tbody>
+  </table>
 </div>

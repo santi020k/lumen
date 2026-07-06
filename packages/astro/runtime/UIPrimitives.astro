@@ -1015,6 +1015,720 @@
     }
   }
 
+  const parseNumberList = (value: string | undefined, count: number, fallback: number): number[] => {
+    const values = (value ?? '')
+      .split(',')
+      .map(item => Number.parseFloat(item.trim()))
+      .filter(Number.isFinite)
+
+    return Array.from({ length: count }, (_, index) => values[index] ?? values[0] ?? fallback)
+  }
+
+  const normalizeSizes = (sizes: number[], count: number): number[] => {
+    const fallbackSize = 100 / Math.max(1, count)
+    const usableSizes = Array.from({ length: count }, (_, index) => {
+      const size = sizes[index] ?? fallbackSize
+
+      return Number.isFinite(size) && size > 0 ? size : fallbackSize
+    })
+    const total = usableSizes.reduce((sum, size) => sum + size, 0)
+
+    if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
+
+    return usableSizes.map(size => (size / total) * 100)
+  }
+
+  const initResizableGroups = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-resizable]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const panes = [...root.children].filter((child): child is HTMLElement =>
+        child instanceof HTMLElement &&
+        !child.hasAttribute('data-ui-resizable-handle') &&
+        !child.hasAttribute('data-ui-resizable-handle-template')
+      )
+
+      if (panes.length < 2) continue
+
+      root.dataset.uiBound = 'true'
+      root.dataset.uiResizableEnhanced = 'true'
+
+      const direction = root.dataset.orientation === 'vertical' ? 'vertical' : 'horizontal'
+      const separatorOrientation = direction === 'horizontal' ? 'vertical' : 'horizontal'
+      const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
+      const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
+      const minSizes = parseNumberList(root.dataset.uiResizableMinSize, panes.length, 12)
+      const maxSizes = parseNumberList(root.dataset.uiResizableMaxSize, panes.length, 88)
+      const initialSizes = normalizeSizes(
+        parseNumberList(root.dataset.uiResizableDefaultSizes, panes.length, 100 / panes.length),
+        panes.length
+      )
+      const handleTemplate = root.querySelector<HTMLTemplateElement>(':scope > [data-ui-resizable-handle-template]')
+
+      let sizes = [...initialSizes]
+
+      const applySizes = (): void => {
+        panes.forEach((pane, index) => {
+          pane.dataset.uiResizablePanel = ''
+          pane.style.setProperty('--ui-resizable-size', `${sizes[index]}%`)
+        })
+
+        for (const handle of root.querySelectorAll<HTMLElement>('[data-ui-resizable-handle]')) {
+          const index = Number.parseInt(handle.dataset.index ?? '0', 10)
+
+          handle.setAttribute('aria-valuemin', String(Math.round(minSizes[index] ?? 0)))
+          handle.setAttribute('aria-valuemax', String(Math.round(maxSizes[index] ?? 100)))
+          handle.setAttribute('aria-valuenow', String(Math.round(sizes[index] ?? 0)))
+        }
+      }
+
+      const resizePair = (index: number, nextSize: number): void => {
+        const nextIndex = index + 1
+        const total = sizes[index] + sizes[nextIndex]
+        const min = Math.max(minSizes[index] ?? 0, total - (maxSizes[nextIndex] ?? 100))
+        const max = Math.min(maxSizes[index] ?? 100, total - (minSizes[nextIndex] ?? 0))
+        const paneSize = Math.min(max, Math.max(min, nextSize))
+
+        sizes[index] = paneSize
+        sizes[nextIndex] = total - paneSize
+
+        applySizes()
+      }
+
+      panes.forEach((pane, index) => {
+        pane.dataset.uiResizablePanel = ''
+
+        if (index >= panes.length - 1) return
+
+        const handleFromTemplate = handleTemplate?.content
+          .querySelector<HTMLButtonElement>('[data-ui-resizable-handle]')
+          ?.cloneNode(true)
+        const handle = handleFromTemplate instanceof HTMLButtonElement
+          ? handleFromTemplate
+          : document.createElement('button')
+
+        handle.type = 'button'
+        handle.className = 'ui-resizable__handle'
+        handle.dataset.uiResizableHandle = ''
+        handle.dataset.index = String(index)
+        handle.tabIndex = 0
+        handle.setAttribute('aria-label', `Resize panel ${index + 1}`)
+        handle.setAttribute('role', 'separator')
+        handle.setAttribute('aria-orientation', separatorOrientation)
+
+        pane.after(handle)
+
+        let startPosition = 0
+        let startSize = 0
+        let containerSize = 1
+
+        handle.addEventListener('pointerdown', event => {
+          if (event.button !== 0) return
+
+          event.preventDefault()
+
+          startPosition = event[axis]
+          startSize = sizes[index]
+          containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty])
+
+          root.dataset.resizing = 'true'
+          handle.dataset.active = 'true'
+          handle.setPointerCapture(event.pointerId)
+        })
+
+        handle.addEventListener('pointermove', event => {
+          if (handle.dataset.active !== 'true') return
+
+          const delta = ((event[axis] - startPosition) / containerSize) * 100
+
+          resizePair(index, startSize + delta)
+        })
+
+        handle.addEventListener('pointerup', event => {
+          if (handle.dataset.active !== 'true') return
+
+          delete handle.dataset.active
+          delete root.dataset.resizing
+
+          handle.releasePointerCapture(event.pointerId)
+        })
+
+        handle.addEventListener('dblclick', () => {
+          if (root.dataset.uiResizableReset !== 'true') return
+
+          sizes = [...initialSizes]
+
+          applySizes()
+        })
+
+        handle.addEventListener('keydown', event => {
+          const step = event.shiftKey ? 10 : 2
+          const keyDeltas: Record<string, number> = direction === 'horizontal'
+            ? { ArrowLeft: -step, ArrowRight: step }
+            : { ArrowDown: step, ArrowUp: -step }
+
+          if (event.key === 'Home') {
+            event.preventDefault()
+
+            resizePair(index, minSizes[index] ?? 0)
+
+            return
+          }
+
+          if (event.key === 'End') {
+            event.preventDefault()
+
+            resizePair(index, maxSizes[index] ?? 100)
+
+            return
+          }
+
+          const delta = keyDeltas[event.key]
+
+          if (delta === undefined) return
+
+          event.preventDefault()
+
+          resizePair(index, sizes[index] + delta)
+        })
+      })
+
+      applySizes()
+    }
+  }
+
+  const sanitizeOtpValue = (input: HTMLInputElement, value: string, length: number): string => {
+    const numericOnly = input.inputMode === 'numeric' || input.getAttribute('pattern') === '[0-9]*'
+    const normalized = numericOnly ? value.replace(/\D/g, '') : value.replace(/\s/g, '')
+
+    return normalized.slice(0, length)
+  }
+
+  const initInputOtpFields = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-input-otp]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const input = root.querySelector<HTMLInputElement>('[data-ui-input-otp-native]')
+      const segments = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-input-otp-segment]')]
+
+      if (!input || segments.length === 0) continue
+
+      root.dataset.uiBound = 'true'
+
+      const length = Number.parseInt(root.dataset.uiInputOtpLength ?? '', 10) || segments.length
+
+      input.dataset.uiEnhanced = 'true'
+
+      const syncSegments = (): void => {
+        const value = sanitizeOtpValue(input, input.value, length)
+
+        if (input.value !== value) {
+          input.value = value
+        }
+
+        const activeIndex = Math.min(length - 1, Math.max(0, input.selectionStart ?? value.length))
+
+        root.dataset.disabled = input.disabled ? 'true' : 'false'
+        root.dataset.invalid = input.getAttribute('aria-invalid') === 'true' ? 'true' : 'false'
+
+        segments.forEach((segment, index) => {
+          const char = segment.querySelector<HTMLElement>('[data-ui-input-otp-char]')
+
+          segment.disabled = input.disabled
+          segment.dataset.active = String(document.activeElement === input && index === activeIndex)
+
+          if (char) {
+            char.textContent = value[index] ?? '\u00a0'
+          }
+        })
+      }
+
+      const setSelection = (index: number): void => {
+        const position = Math.min(input.value.length, Math.max(0, index))
+
+        input.focus({ preventScroll: true })
+        input.setSelectionRange(position, position)
+
+        syncSegments()
+      }
+
+      const setValue = (value: string): void => {
+        input.value = sanitizeOtpValue(input, value, length)
+        input.setSelectionRange(input.value.length, input.value.length)
+        input.dispatchEvent(new Event('input', { bubbles: true }))
+        input.dispatchEvent(new Event('change', { bubbles: true }))
+
+        syncSegments()
+      }
+
+      const segmentsRoot = root.querySelector<HTMLElement>('[data-ui-input-otp-segments]')
+
+      if (segmentsRoot) {
+        segmentsRoot.hidden = false
+      }
+
+      syncSegments()
+
+      input.addEventListener('input', syncSegments)
+      input.addEventListener('change', syncSegments)
+      input.addEventListener('focus', syncSegments)
+      input.addEventListener('blur', syncSegments)
+      input.addEventListener('click', syncSegments)
+      input.addEventListener('keyup', syncSegments)
+
+      input.addEventListener('keydown', event => {
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault()
+
+          setSelection((input.selectionStart ?? input.value.length) - 1)
+
+          return
+        }
+
+        if (event.key === 'ArrowRight') {
+          event.preventDefault()
+
+          setSelection((input.selectionStart ?? input.value.length) + 1)
+
+          return
+        }
+
+        if (event.key === 'Home') {
+          event.preventDefault()
+
+          setSelection(0)
+
+          return
+        }
+
+        if (event.key === 'End') {
+          event.preventDefault()
+
+          setSelection(input.value.length)
+        }
+      })
+
+      input.addEventListener('paste', event => {
+        const pasted = event.clipboardData?.getData('text') ?? ''
+
+        if (!pasted) return
+
+        event.preventDefault()
+
+        setValue(pasted)
+      })
+
+      input.form?.addEventListener('reset', () => {
+        window.setTimeout(syncSegments)
+      })
+
+      segments.forEach((segment, index) => {
+        segment.addEventListener('click', () => setSelection(index))
+      })
+    }
+  }
+
+  const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
+  const calendarMonthPattern = /^\d{4}-\d{2}$/
+
+  const parseCalendarDate = (value: string | null | undefined): Date | null => {
+    if (!value || !calendarDatePattern.test(value)) return null
+
+    const [year, month, day] = value.split('-').map(Number)
+    const date = new Date(Date.UTC(year, month - 1, day))
+
+    return date.getUTCFullYear() === year &&
+      date.getUTCMonth() === month - 1 &&
+      date.getUTCDate() === day
+      ? date
+      : null
+  }
+
+  const parseCalendarMonth = (value: string | null | undefined): Date | null => {
+    if (!value || !calendarMonthPattern.test(value)) return null
+
+    const [year, month] = value.split('-').map(Number)
+    const date = new Date(Date.UTC(year, month - 1, 1))
+
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ? date : null
+  }
+
+  const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
+  const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
+  const addCalendarDays = (date: Date, days: number): Date =>
+    new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
+  const getCalendarDaysInMonth = (date: Date): number =>
+    new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
+
+  const addCalendarMonths = (date: Date, months: number): Date => {
+    const year = date.getUTCFullYear()
+    const month = date.getUTCMonth() + months
+    const day = date.getUTCDate()
+    const targetMonth = new Date(Date.UTC(year, month, 1))
+    const daysInTargetMonth = getCalendarDaysInMonth(targetMonth)
+
+    return new Date(Date.UTC(
+      targetMonth.getUTCFullYear(),
+      targetMonth.getUTCMonth(),
+      Math.min(day, daysInTargetMonth)
+    ))
+  }
+
+  const compareCalendarDates = (date: Date, other: Date | null): number => {
+    if (!other) return 0
+
+    return formatCalendarDate(date).localeCompare(formatCalendarDate(other))
+  }
+
+  const isCalendarDateDisabled = (
+    root: HTMLElement,
+    date: Date,
+    min: Date | null,
+    max: Date | null
+  ): boolean =>
+    root.dataset.disabled === 'true' ||
+    compareCalendarDates(date, min) < 0 ||
+    compareCalendarDates(date, max) > 0
+
+  const clampCalendarDate = (date: Date, min: Date | null, max: Date | null): Date => {
+    if (min && compareCalendarDates(date, min) < 0) return min
+
+    if (max && compareCalendarDates(date, max) > 0) return max
+
+    return date
+  }
+
+  const getCalendarLocale = (): string => document.documentElement.lang || navigator.language || 'en'
+
+  const getCalendarToday = (): Date => {
+    const today = new Date()
+
+    return new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
+  }
+
+  const getCalendarGridStart = (month: Date): Date =>
+    addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
+
+  const getCalendarFocusDate = (
+    root: HTMLElement,
+    month: Date,
+    min: Date | null,
+    max: Date | null,
+    requestedDate?: Date | null
+  ): Date => {
+    const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
+    const today = getCalendarToday()
+    const candidates = [requestedDate, selectedDate, today, month]
+
+    for (const candidate of candidates) {
+      if (
+        candidate &&
+        formatCalendarMonth(candidate) === formatCalendarMonth(month) &&
+        !isCalendarDateDisabled(root, candidate, min, max)
+      ) {
+        return candidate
+      }
+    }
+
+    for (let index = 0; index < getCalendarDaysInMonth(month); index += 1) {
+      const date = addCalendarDays(month, index)
+
+      if (!isCalendarDateDisabled(root, date, min, max)) return date
+    }
+
+    return month
+  }
+
+  const syncCalendarNavigation = (
+    root: HTMLElement,
+    month: Date,
+    min: Date | null,
+    max: Date | null
+  ): void => {
+    const previous = root.querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')
+    const next = root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
+    const disabled = root.dataset.disabled === 'true'
+    const previousMonthLastDay = addCalendarDays(month, -1)
+    const nextMonthFirstDay = addCalendarMonths(month, 1)
+
+    if (previous) {
+      previous.disabled = disabled || compareCalendarDates(previousMonthLastDay, min) < 0
+    }
+
+    if (next) {
+      next.disabled = disabled || compareCalendarDates(nextMonthFirstDay, max) > 0
+    }
+  }
+
+  const renderCalendar = (
+    root: HTMLElement,
+    requestedFocusDate?: Date | null,
+    shouldFocus = false
+  ): void => {
+    const label = root.querySelector<HTMLElement>('[data-ui-calendar-label]')
+    const grid = root.querySelector<HTMLElement>('[data-ui-calendar-grid]')
+
+    if (!label || !grid) return
+
+    const locale = getCalendarLocale()
+    const min = parseCalendarDate(root.dataset.uiCalendarMin)
+    const max = parseCalendarDate(root.dataset.uiCalendarMax)
+    const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
+    const todayIso = formatCalendarDate(getCalendarToday())
+    const month = parseCalendarMonth(root.dataset.uiCalendarMonth) ??
+      (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : null) ??
+      getCalendarToday()
+    const visibleMonth = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1))
+    const focusDate = getCalendarFocusDate(root, visibleMonth, min, max, requestedFocusDate)
+    const focusIso = formatCalendarDate(focusDate)
+    const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
+    const monthLabel = new Intl.DateTimeFormat(locale, {
+      month: 'long',
+      timeZone: 'UTC',
+      year: 'numeric'
+    }).format(visibleMonth)
+    const dayLabel = new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'long',
+      timeZone: 'UTC',
+      weekday: 'long',
+      year: 'numeric'
+    })
+    const weekdayLabel = new Intl.DateTimeFormat(locale, {
+      timeZone: 'UTC',
+      weekday: 'short'
+    })
+    const table = grid instanceof HTMLTableElement ? grid : null
+
+    root.dataset.uiCalendarMonth = formatCalendarMonth(visibleMonth)
+    label.textContent = monthLabel
+    syncCalendarNavigation(root, visibleMonth, min, max)
+
+    const header = document.createElement('thead')
+    const headerRow = document.createElement('tr')
+
+    headerRow.role = 'row'
+
+    for (let index = 0; index < 7; index += 1) {
+      const cell = document.createElement('th')
+
+      cell.scope = 'col'
+      cell.role = 'columnheader'
+      cell.textContent = weekdayLabel.format(new Date(Date.UTC(2026, 0, 5 + index)))
+
+      headerRow.append(cell)
+    }
+
+    header.append(headerRow)
+
+    const body = document.createElement('tbody')
+    const firstCell = getCalendarGridStart(visibleMonth)
+
+    for (let rowIndex = 0; rowIndex < 6; rowIndex += 1) {
+      const row = document.createElement('tr')
+
+      row.role = 'row'
+
+      for (let columnIndex = 0; columnIndex < 7; columnIndex += 1) {
+        const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex)
+        const dateIso = formatCalendarDate(date)
+        const cell = document.createElement('td')
+        const unavailable = isCalendarDateDisabled(root, date, min, max)
+
+        cell.role = 'gridcell'
+        cell.tabIndex = !unavailable && dateIso === focusIso ? 0 : -1
+        cell.textContent = String(date.getUTCDate())
+        cell.dataset.date = dateIso
+        cell.dataset.uiCalendarDay = ''
+        cell.setAttribute('aria-label', dayLabel.format(date))
+        cell.setAttribute('aria-selected', String(selectedIso === dateIso))
+
+        if (unavailable) {
+          cell.setAttribute('aria-disabled', 'true')
+        }
+
+        if (formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth)) {
+          cell.dataset.outside = 'true'
+        }
+
+        if (dateIso === todayIso) {
+          cell.dataset.today = 'true'
+        }
+
+        if (selectedIso === dateIso) {
+          cell.dataset.selected = 'true'
+        }
+
+        row.append(cell)
+      }
+
+      body.append(row)
+    }
+
+    if (table) {
+      table.replaceChildren(header, body)
+    } else {
+      grid.replaceChildren(header, body)
+    }
+
+    if (shouldFocus) {
+      root.querySelector<HTMLElement>(`[data-ui-calendar-day][data-date="${focusIso}"]`)?.focus({ preventScroll: true })
+    }
+  }
+
+  const selectCalendarDate = (root: HTMLElement, date: Date): void => {
+    const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+
+    if (!input || root.dataset.disabled === 'true') return
+
+    const min = parseCalendarDate(root.dataset.uiCalendarMin)
+    const max = parseCalendarDate(root.dataset.uiCalendarMax)
+    const nextDate = clampCalendarDate(date, min, max)
+
+    if (isCalendarDateDisabled(root, nextDate, min, max)) return
+
+    input.value = formatCalendarDate(nextDate)
+    root.dataset.uiCalendarValue = input.value
+    root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
+
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    input.dispatchEvent(new Event('change', { bubbles: true }))
+
+    renderCalendar(root, nextDate, true)
+  }
+
+  const focusCalendarDate = (root: HTMLElement, date: Date): void => {
+    const min = parseCalendarDate(root.dataset.uiCalendarMin)
+    const max = parseCalendarDate(root.dataset.uiCalendarMax)
+    const nextDate = clampCalendarDate(date, min, max)
+
+    root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
+
+    renderCalendar(root, nextDate, true)
+  }
+
+  const moveCalendarFocus = (root: HTMLElement, currentDate: Date, key: string): void => {
+    const column = (currentDate.getUTCDay() + 6) % 7
+    const keyOffsets: Record<string, number> = {
+      ArrowDown: 7,
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      End: 6 - column,
+      Home: -column
+    }
+
+    if (key === 'PageDown' || key === 'PageUp') {
+      focusCalendarDate(root, addCalendarMonths(currentDate, key === 'PageDown' ? 1 : -1))
+
+      return
+    }
+
+    const offset = keyOffsets[key]
+
+    if (offset === undefined) return
+
+    focusCalendarDate(root, addCalendarDays(currentDate, offset))
+  }
+
+  const initCalendars = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-calendar]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+
+      if (!input) continue
+
+      root.dataset.uiBound = 'true'
+
+      renderCalendar(root)
+
+      root.querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')?.addEventListener('click', () => {
+        const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
+
+        if (!month) return
+
+        const nextMonth = addCalendarMonths(month, -1)
+
+        root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
+
+        renderCalendar(root, nextMonth, true)
+      })
+
+      root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')?.addEventListener('click', () => {
+        const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
+
+        if (!month) return
+
+        const nextMonth = addCalendarMonths(month, 1)
+
+        root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
+
+        renderCalendar(root, nextMonth, true)
+      })
+
+      root.addEventListener('click', event => {
+        const target = event.target
+
+        if (!(target instanceof Element)) return
+
+        const cell = target.closest<HTMLElement>('[data-ui-calendar-day]')
+
+        if (!cell || !root.contains(cell) || cell.getAttribute('aria-disabled') === 'true') return
+
+        const date = parseCalendarDate(cell.dataset.date)
+
+        if (date) {
+          selectCalendarDate(root, date)
+        }
+      })
+
+      root.addEventListener('keydown', event => {
+        const target = event.target
+
+        if (!(target instanceof HTMLElement) || !target.hasAttribute('data-ui-calendar-day')) return
+
+        const date = parseCalendarDate(target.dataset.date)
+
+        if (!date) return
+
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+
+          selectCalendarDate(root, date)
+
+          return
+        }
+
+        if (
+          event.key !== 'ArrowDown' &&
+          event.key !== 'ArrowLeft' &&
+          event.key !== 'ArrowRight' &&
+          event.key !== 'ArrowUp' &&
+          event.key !== 'End' &&
+          event.key !== 'Home' &&
+          event.key !== 'PageDown' &&
+          event.key !== 'PageUp'
+        ) {
+          return
+        }
+
+        event.preventDefault()
+
+        moveCalendarFocus(root, date, event.key)
+      })
+
+      input.form?.addEventListener('reset', () => {
+        window.setTimeout(() => {
+          root.dataset.uiCalendarValue = input.value
+          root.dataset.uiCalendarMonth = root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
+
+          renderCalendar(root)
+        })
+      })
+    }
+  }
+
   const initCarousel = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-carousel]')) {
       if (root.dataset.uiBound === 'true') continue
@@ -1534,6 +2248,12 @@
     initComboboxes(scope)
 
     initSelects(scope)
+
+    initResizableGroups(scope)
+
+    initInputOtpFields(scope)
+
+    initCalendars(scope)
 
     initCodeCopy(scope)
 

@@ -89,6 +89,70 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-select__list')
   })
 
+  test('ships Resizable as an enhanced split panel with accessible handles', async () => {
+    const [component, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/Resizable.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(component).toContain('data-ui-resizable')
+    expect(component).toContain('data-ui-resizable-handle')
+    expect(component).toContain('data-ui-resizable-default-sizes')
+    expect(component).toContain('direction')
+    expect(runtime).toContain('const initResizableGroups = (scope: ParentNode): void =>')
+    expect(runtime).toContain("handle.setAttribute('role', 'separator')")
+    expect(runtime).toContain("handle.addEventListener('pointerdown'")
+    expect(runtime).toContain("event.key === 'Home'")
+    expect(styles).toContain('.ui-resizable__handle')
+    expect(styles).toContain('[data-ui-resizable-panel]')
+  })
+
+  test('ships InputOTP as a native input enhanced into segments', async () => {
+    const [component, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/InputOTP.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(component).toContain('autocomplete')
+    expect(component).toContain('data-ui-input-otp-native')
+    expect(component).toContain('data-ui-input-otp-segment')
+    expect(runtime).toContain('const initInputOtpFields = (scope: ParentNode): void =>')
+    expect(runtime).toContain('const sanitizeOtpValue = (input: HTMLInputElement')
+    expect(runtime).toContain("input.addEventListener('paste'")
+    expect(runtime).toContain("input.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(styles).toContain('.ui-input-otp__segments')
+    expect(styles).toContain('.ui-input-otp__native[data-ui-enhanced="true"]')
+  })
+
+  test('ships Calendar as a form-backed ARIA grid with runtime month navigation', async () => {
+    const [component, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/Calendar.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(component).toContain('value?: string')
+    expect(component).toContain('month?: string')
+    expect(component).toContain('min?: string')
+    expect(component).toContain('max?: string')
+    expect(component).toContain('name?: string')
+    expect(component).toContain('data-ui-calendar-input')
+    expect(component).toContain('data-ui-calendar-prev')
+    expect(component).toContain('data-ui-calendar-next')
+    expect(component).toContain('role="grid"')
+    expect(component).toContain('role="gridcell"')
+    expect(component).toContain('aria-selected={selectedIso === dateIso')
+    expect(runtime).toContain('const initCalendars = (scope: ParentNode): void =>')
+    expect(runtime).toContain("input.dispatchEvent(new Event('input', { bubbles: true }))")
+    expect(runtime).toContain("input.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(runtime).toContain("event.key !== 'PageDown'")
+    expect(runtime).toContain('new Intl.DateTimeFormat(locale')
+    expect(styles).toContain('.ui-calendar__nav')
+    expect(styles).toContain('.ui-calendar td[aria-selected="true"]')
+  })
+
   test('keeps accessibility and sanitization guards in component sources', async () => {
     const [aspectRatio, avatar, field, runtime] = await Promise.all([
       readFile(new URL('./components/AspectRatio.astro', packageRoot), 'utf8'),

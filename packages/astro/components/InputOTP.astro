@@ -1,21 +1,57 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-interface Props extends HTMLAttributes<'input'> {
+interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
   class?: string
   className?: string
   length?: number
 }
 
-const { class: classProp = '', className = '', length = 6, maxlength = length, inputmode = 'numeric', ...rest } = Astro.props
+const {
+  autocomplete = 'one-time-code',
+  class: classProp = '',
+  className = '',
+  disabled = false,
+  inputmode = 'numeric',
+  length = 6,
+  maxlength = length,
+  pattern = '[0-9]*',
+  ...rest
+} = Astro.props
 const passthrough = rest as Record<string, unknown>
+const segments = Array.from({ length: Math.max(1, Number(length) || 6) }, (_, index) => index)
 ---
 
-<input
-  class:list={['ui-input-otp', classProp, className]}
-  inputmode={inputmode}
-  maxlength={maxlength}
-  pattern="[0-9]*"
-  type="text"
-  {...passthrough}
-/>
+<div
+  class:list={['ui-input-otp-field', classProp, className]}
+  data-ui-input-otp
+  data-ui-input-otp-length={segments.length}
+>
+  <input
+    autocomplete={autocomplete}
+    class="ui-input-otp ui-input-otp__native"
+    data-ui-input-otp-native
+    disabled={disabled}
+    inputmode={inputmode}
+    maxlength={maxlength}
+    pattern={pattern}
+    type="text"
+    {...passthrough}
+  />
+
+  <div class="ui-input-otp__segments" data-ui-input-otp-segments hidden>
+    {segments.map(index => (
+      <button
+        aria-hidden="true"
+        class="ui-input-otp__segment"
+        data-index={index}
+        data-ui-input-otp-segment
+        disabled={disabled}
+        tabindex="-1"
+        type="button"
+      >
+        <span data-ui-input-otp-char>&nbsp;</span>
+      </button>
+    ))}
+  </div>
+</div>

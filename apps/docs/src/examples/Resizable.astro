@@ -1,8 +1,26 @@
 ---
-import { Resizable } from '@santi020k/lumen-astro'
+import {
+  Kbd,
+  Resizable
+} from '@santi020k/lumen-astro'
 ---
 
-<Resizable>
-  <div>Navigation</div>
-  <div>Editor</div>
+<Resizable
+  aria-label="Workspace panes"
+  defaultSizes={[28, 44, 28]}
+  minSize={[18, 24, 18]}
+  style="height: 18rem;"
+>
+  <aside>
+    <strong>Navigation</strong>
+    <p>Projects, files, and saved views.</p>
+  </aside>
+  <main>
+    <strong>Editor</strong>
+    <p>Drag a separator or focus it and use <Kbd>Arrow Left</Kbd> / <Kbd>Arrow Right</Kbd>.</p>
+  </main>
+  <section>
+    <strong>Preview</strong>
+    <p>Double-click a separator to reset pane sizes.</p>
+  </section>
 </Resizable>

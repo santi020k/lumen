@@ -4,24 +4,52 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  defaultSizes?: number[]
+  direction?: 'horizontal' | 'vertical'
+  maxSize?: number | number[]
+  minSize?: number | number[]
+  resetOnDoubleClick?: boolean
 }
 
 const {
   class: classProp = '',
   className = '',
+  defaultSizes,
+  direction = 'horizontal',
+  maxSize,
+  minSize,
+  resetOnDoubleClick = true,
   ...rest
 } = Astro.props
 
 const passthrough = rest as Record<string, unknown>
+const serializeSize = (value: number | number[] | undefined) =>
+  Array.isArray(value) ? value.join(',') : value
 ---
 
 <div
   class:list={[
     'ui-resizable',
+    direction === 'vertical' && 'ui-resizable--vertical',
     classProp,
     className
   ]}
+  data-orientation={direction}
+  data-ui-resizable
+  data-ui-resizable-default-sizes={defaultSizes?.join(',')}
+  data-ui-resizable-max-size={serializeSize(maxSize)}
+  data-ui-resizable-min-size={serializeSize(minSize)}
+  data-ui-resizable-reset={resetOnDoubleClick ? 'true' : undefined}
   {...passthrough}
 >
   <slot />
+  <template data-ui-resizable-handle-template>
+    <button
+      class="ui-resizable__handle"
+      data-ui-resizable-handle
+      role="separator"
+      tabindex="0"
+      type="button"
+    ></button>
+  </template>
 </div>

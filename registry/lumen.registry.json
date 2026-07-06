@@ -49,6 +49,11 @@
       "name": "ai-docs",
       "type": "documentation",
       "files": ["llms.txt", "docs/ai-usage.md", "docs/feature-roadmap.md"]
+    },
+    {
+      "name": "figma-design-to-code",
+      "type": "documentation",
+      "files": ["registry/figma-design-map.json", "docs/figma-design-to-code.md", "docs/figma.md"]
     }
   ]
 }

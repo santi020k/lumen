@@ -71,4 +71,7 @@ before release-oriented work or broad cross-package changes.
 - AI usage examples for downstream app generation live in [docs/ai-usage.md](docs/ai-usage.md).
 - Brand guidance lives only in [docs/brand-guidelines.md](docs/brand-guidelines.md).
 - Contributor workflow lives in [CONTRIBUTING.md](CONTRIBUTING.md).
+- Figma workflows: implementing Figma designs with Lumen follows
+  [docs/figma-design-to-code.md](docs/figma-design-to-code.md); token export to Figma lives in
+  [docs/figma.md](docs/figma.md).
 - Tool-specific AI files should be tiny pointers back to this file.

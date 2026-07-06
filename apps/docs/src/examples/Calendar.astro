@@ -1,16 +1,48 @@
 ---
-import { Calendar } from '@santi020k/lumen-astro'
+import {
+  Calendar,
+  Field,
+  Label
+} from '@santi020k/lumen-astro'
 ---
 
-<Calendar aria-label="July 2026">
-  <strong>July 2026</strong>
-  <table>
-    <thead>
-      <tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-      <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
-    </tbody>
-  </table>
-</Calendar>
+<div style="display: grid; gap: 1rem; max-width: 42rem;">
+  <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));">
+    <Field>
+      <Label id="ex-calendar-basic-label">Project month</Label>
+      <Calendar aria-labelledby="ex-calendar-basic-label" month="2026-07" />
+    </Field>
+
+    <Field>
+      <Label id="ex-calendar-selected-label">Selected milestone</Label>
+      <Calendar aria-labelledby="ex-calendar-selected-label" value="2026-07-14" />
+    </Field>
+  </div>
+
+  <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));">
+    <Field>
+      <Label id="ex-calendar-bounds-label">Booking window</Label>
+      <Calendar
+        aria-labelledby="ex-calendar-bounds-label"
+        max="2026-07-24"
+        min="2026-07-08"
+        month="2026-07"
+      />
+    </Field>
+
+    <form style="display: grid; gap: 0.75rem;">
+      <Field>
+        <Label id="ex-calendar-form-label">Delivery date</Label>
+        <Calendar
+          aria-labelledby="ex-calendar-form-label"
+          max="2026-08-31"
+          min="2026-07-01"
+          month="2026-07"
+          name="deliveryDate"
+          value="2026-07-20"
+        />
+      </Field>
+      <button class="ui-button ui-button--default ui-button--default-size" type="submit">Save date</button>
+    </form>
+  </div>
+</div>
