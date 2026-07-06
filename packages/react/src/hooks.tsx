@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context, react-refresh/only-export-components -- This package supports React 18 and intentionally keeps public hooks, context provider, and small helper components together in one library module. */
 import { composeClassName } from '@santi020k/lumen-core'
 
 import {
@@ -6,9 +7,9 @@ import {
   type Dispatch,
   type KeyboardEvent,
   type MouseEvent,
-  type MutableRefObject,
   type ReactNode,
   type Ref,
+  type RefObject,
   type SetStateAction,
   useCallback,
   useContext,
@@ -85,13 +86,13 @@ interface DisclosureController {
   close: () => void
   open: boolean
   panelProps: LumenProps<'div'>
-  panelRef: MutableRefObject<HTMLElement | null>
+  panelRef: RefObject<HTMLElement | null>
   rootProps: LumenProps<'div'>
-  rootRef: MutableRefObject<HTMLElement | null>
+  rootRef: RefObject<HTMLElement | null>
   setOpen: Dispatch<SetStateAction<boolean>>
   toggle: () => void
   triggerProps: LumenProps<'button'>
-  triggerRef: MutableRefObject<HTMLElement | null>
+  triggerRef: RefObject<HTMLElement | null>
 }
 
 export interface DialogOptions extends DisclosureOptions {
@@ -102,20 +103,20 @@ export interface DialogController {
   close: () => void
   closeProps: LumenProps<'button'>
   dialogProps: LumenProps<'dialog'>
-  dialogRef: MutableRefObject<HTMLDialogElement | null>
+  dialogRef: RefObject<HTMLDialogElement | null>
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   triggerProps: LumenProps<'button'>
-  triggerRef: MutableRefObject<HTMLElement | null>
+  triggerRef: RefObject<HTMLElement | null>
 }
 
-export interface PopoverOptions extends DisclosureOptions {}
+export type PopoverOptions = DisclosureOptions
 
-export interface PopoverController extends DisclosureController {}
+export type PopoverController = DisclosureController
 
-export interface DropdownMenuOptions extends DisclosureOptions {}
+export type DropdownMenuOptions = DisclosureOptions
 
-export interface DropdownMenuController extends DisclosureController {}
+export type DropdownMenuController = DisclosureController
 
 export interface TabsOptions {
   defaultValue?: string | undefined
@@ -130,7 +131,7 @@ export interface TabsController {
   getTriggerProps: (value: string, props?: ComponentPropsWithRef<'button'>) => LumenProps<'button'>
   listProps: LumenProps<'div'>
   rootProps: LumenProps<'div'>
-  rootRef: MutableRefObject<HTMLElement | null>
+  rootRef: RefObject<HTMLElement | null>
   setValue: Dispatch<SetStateAction<string>>
   value: string
 }
@@ -164,7 +165,7 @@ export interface SelectController {
   open: boolean
   options: SelectOption[]
   rootProps: LumenProps<'div'>
-  rootRef: MutableRefObject<HTMLElement | null>
+  rootRef: RefObject<HTMLElement | null>
   selectOption: (value: string) => void
   selectedOption: SelectOption | undefined
   setOpen: Dispatch<SetStateAction<boolean>>
@@ -290,7 +291,7 @@ const focusTrigger = (trigger: HTMLElement | null): void => {
 
 const useOutsideClose = (
   open: boolean,
-  refs: MutableRefObject<HTMLElement | null>[],
+  refs: RefObject<HTMLElement | null>[],
   onClose: () => void
 ): void => {
   useEffect(() => {
@@ -579,6 +580,7 @@ const normalizeOption = (option: SelectOptionInput): SelectOption =>
 const isPrintableKey = (event: KeyboardEvent): boolean =>
   event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
 
+/* eslint-disable complexity -- Select owns the native select, ARIA listbox props, and keyboard/typeahead behavior as one public hook contract. */
 export const useSelect = ({
   defaultValue = '',
   disabled = false,
@@ -831,6 +833,7 @@ export const useSelect = ({
     value: selectedValue
   }
 }
+/* eslint-enable complexity */
 
 export const useTooltip = ({
   defaultOpen = false,
@@ -990,6 +993,7 @@ export const ToastProvider = ({
     <ToastContext.Provider value={api}>
       {children}
       {placements.map(item => (
+        // eslint-disable-next-line no-use-before-define -- ToastViewport is kept with the toast rendering helpers below.
         <ToastViewport
           key={item}
           maxCount={maxCount}
@@ -1035,7 +1039,8 @@ const ToastViewport = ({
     data-ui-toast-max={maxCount}
   >
     {toasts.map(toast => (
-      <ToastItem
+      // eslint-disable-next-line no-use-before-define -- ToastItem is declared with the toast rendering helpers below.
+        <ToastItem
         key={toast.id}
         onDismiss={() => { removeToast(toast.id); }}
         toast={toast}

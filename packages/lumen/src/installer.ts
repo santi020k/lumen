@@ -270,6 +270,61 @@ const mergeFileSource = ({
   return `${existing.trimEnd()}\n\n/* Lumen merge: ${path} */\n${incoming}`
 }
 
+const getConflictMode = (options: LumenAddOptions) =>
+  options.force ? 'overwrite' : options.conflict ?? 'skip'
+
+const getInstallSource = async (
+  file: LumenRecipeFile,
+  target: string,
+  exists: boolean,
+  options: LumenAddOptions,
+  conflict: NonNullable<LumenAddOptions['conflict']>
+) => {
+  if (!exists || conflict !== 'merge') return file.source
+
+  return (options.merge ?? mergeFileSource)({
+    existing: await readFile(target, 'utf8'),
+    incoming: file.source,
+    path: file.path
+  })
+}
+
+const writeInstallFile = async (
+  target: string,
+  source: string,
+  dryRun: boolean | undefined
+) => {
+  if (dryRun) return
+
+  await mkdir(dirname(target), { recursive: true })
+
+  await writeFile(target, source, 'utf8')
+}
+
+type InstallFileOutcome = 'added' | 'merged' | 'skipped'
+
+const installRegistryFile = async (
+  file: LumenRecipeFile,
+  cwd: string,
+  options: LumenAddOptions,
+  conflict: NonNullable<LumenAddOptions['conflict']>
+): Promise<InstallFileOutcome> => {
+  const target = join(cwd, file.path)
+  const exists = await fileExists(target)
+
+  if (exists && conflict === 'error') {
+    throw new Error(`Refusing to overwrite existing file: ${file.path}`)
+  }
+
+  if (exists && conflict === 'skip') return 'skipped'
+
+  const source = await getInstallSource(file, target, exists, options, conflict)
+
+  await writeInstallFile(target, source, options.dryRun)
+
+  return exists && conflict === 'merge' ? 'merged' : 'added'
+}
+
 export const addLumenRegistryItem = async (
   name: string,
   options: LumenAddOptions = {}
@@ -288,39 +343,20 @@ export const addLumenRegistryItem = async (
   }
 
   const added: string[] = []
-  const conflict = options.force ? 'overwrite' : options.conflict ?? 'skip'
+  const conflict = getConflictMode(options)
   const merged: string[] = []
   const skipped: string[] = []
 
   for (const file of files) {
-    const target = join(cwd, file.path)
-    const exists = await fileExists(target)
+    const outcome = await installRegistryFile(file, cwd, options, conflict)
 
-    if (exists && conflict === 'error') {
-      throw new Error(`Refusing to overwrite existing file: ${file.path}`)
-    }
-
-    if (exists && conflict === 'skip') {
+    if (outcome === 'skipped') {
       skipped.push(file.path)
 
       continue
     }
 
-    const source = exists && conflict === 'merge'
-      ? (options.merge ?? mergeFileSource)({
-        existing: await readFile(target, 'utf8'),
-        incoming: file.source,
-        path: file.path
-      })
-      : file.source
-
-    if (!options.dryRun) {
-      await mkdir(dirname(target), { recursive: true })
-
-      await writeFile(target, source, 'utf8')
-    }
-
-    if (exists && conflict === 'merge') {
+    if (outcome === 'merged') {
       merged.push(file.path)
     } else {
       added.push(file.path)

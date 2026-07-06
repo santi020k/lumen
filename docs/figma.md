@@ -7,6 +7,18 @@ For the reverse direction â€” implementing Figma designs with Lumen components â
 [figma-design-to-code.md](figma-design-to-code.md) and the machine-readable mapping in
 [`registry/figma-design-map.json`](../registry/figma-design-map.json).
 
+## Figma Library File
+
+The Lumen Figma library lives at
+[Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
+`luQW2pTQ3jGGxSFPAAsfa9`). It contains the variable collections `Color` (15 semantic tokens with
+Light and Dark modes) and `Radius` (sm/md/lg), plus pages for Cover, Foundations (token swatches),
+and Components. Variables carry Web code syntax (`var(--token)`) and values matching
+`packages/astro/styles/lumen.css`. Components with variable-bound fills, strokes, and radii:
+`Button` (Variant x Size, 18 variants), `Badge` (6), `Input` (3 sizes), `Field`, `Card`, `Alert`
+(4), `Checkbox` (2), `Switch` (2), `Tabs`, and `Avatar`. Variant names mirror the code component
+props, so `Variant=Destructive, Size=Sm` corresponds to `<Button variant="destructive" size="sm" />`.
+
 ## Theme Tokens
 
 Use `@santi020k/lumen-core/figma` to export the shared semantic colors in formats that Figma-oriented

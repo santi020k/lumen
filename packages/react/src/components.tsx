@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen React keeps React 18 peer support, so React 19 context shorthand and use() are not available. */
 import {
   composeClassName,
   type LumenCodeToken,
@@ -128,7 +129,7 @@ const PopoverContext = createContext<PopoverController | null>(null)
 const TabsContext = createContext<TabsController | null>(null)
 const TooltipContext = createContext<TooltipController | null>(null)
 
-const useRequiredContext = <Value,>(context: Value | null, componentName: string): Value => {
+const requireContext = <Value,>(context: Value | null, componentName: string): Value => {
   if (!context) {
     throw new Error(`${componentName} must be used inside its matching Lumen root component.`)
   }
@@ -731,7 +732,7 @@ export const DropdownMenu = ({
 
 export type DropdownMenuTriggerProps = ComponentPropsWithoutRef<'button'>
 export const DropdownMenuTrigger = ({ onClick, onKeyDown, ...props }: DropdownMenuTriggerProps) => {
-  const menu = useRequiredContext(useContext(DropdownMenuContext), 'DropdownMenuTrigger')
+  const menu = requireContext(useContext(DropdownMenuContext), 'DropdownMenuTrigger')
 
   return (
     <button
@@ -739,13 +740,14 @@ export const DropdownMenuTrigger = ({ onClick, onKeyDown, ...props }: DropdownMe
       {...props}
       onClick={composeHandlers(onClick, menu.triggerProps.onClick)}
       onKeyDown={composeHandlers(onKeyDown, menu.triggerProps.onKeyDown)}
+      type={props.type ?? 'button'}
     />
   )
 }
 
 export type DropdownMenuContentProps = ComponentPropsWithoutRef<'div'>
 export const DropdownMenuContent = ({ className, onKeyDown, ...props }: DropdownMenuContentProps) => {
-  const menu = useRequiredContext(useContext(DropdownMenuContext), 'DropdownMenuContent')
+  const menu = requireContext(useContext(DropdownMenuContext), 'DropdownMenuContent')
 
   return (
     <div
@@ -975,7 +977,7 @@ export const Popover = ({
 
 export type PopoverTriggerProps = ComponentPropsWithoutRef<'button'>
 export const PopoverTrigger = ({ onClick, onKeyDown, ...props }: PopoverTriggerProps) => {
-  const popover = useRequiredContext(useContext(PopoverContext), 'PopoverTrigger')
+  const popover = requireContext(useContext(PopoverContext), 'PopoverTrigger')
 
   return (
     <button
@@ -983,13 +985,14 @@ export const PopoverTrigger = ({ onClick, onKeyDown, ...props }: PopoverTriggerP
       {...props}
       onClick={composeHandlers(onClick, popover.triggerProps.onClick)}
       onKeyDown={composeHandlers(onKeyDown, popover.triggerProps.onKeyDown)}
+      type={props.type ?? 'button'}
     />
   )
 }
 
 export type PopoverPanelProps = ComponentPropsWithoutRef<'div'>
 export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
-  const popover = useRequiredContext(useContext(PopoverContext), 'PopoverPanel')
+  const popover = requireContext(useContext(PopoverContext), 'PopoverPanel')
 
   return (
     <div
@@ -1069,6 +1072,14 @@ export interface SelectProps extends Omit<
   size?: 'default' | 'lg' | 'md' | 'sm'
 }
 
+const getSelectSizeClass = (size: SelectProps['size']) => {
+  if (size === 'sm') return 'ui-select--sm'
+
+  if (size === 'lg') return 'ui-select--lg'
+
+  return false
+}
+
 export const Select = ({
   children,
   className,
@@ -1098,7 +1109,7 @@ export const Select = ({
     value
   })
 
-  const sizeClass = size === 'sm' ? 'ui-select--sm' : size === 'lg' ? 'ui-select--lg' : false
+  const sizeClass = getSelectSizeClass(size)
 
   return (
     <div
@@ -1125,16 +1136,21 @@ export const Select = ({
         <button
           {...select.triggerProps}
           className={composeClassName('ui-select ui-select__trigger', sizeClass)}
+          type={select.triggerProps.type ?? 'button'}
         >
           <span data-ui-select-value>{select.triggerText}</span>
         </button>
 
         <div {...select.listProps} className="ui-select__list">
-          {select.options.map(option => (
-            <button key={option.value} {...select.getOptionProps(option)}>
-              {option.label}
-            </button>
-          ))}
+          {select.options.map(option => {
+            const optionProps = select.getOptionProps(option)
+
+            return (
+              <button key={option.value} {...optionProps} type={optionProps.type ?? 'button'}>
+                {option.label}
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>
@@ -1255,7 +1271,7 @@ export const Tabs = ({
 
 export type TabsListProps = ComponentPropsWithoutRef<'div'>
 export const TabsList = ({ ...props }: TabsListProps) => {
-  const tabs = useRequiredContext(useContext(TabsContext), 'TabsList')
+  const tabs = requireContext(useContext(TabsContext), 'TabsList')
 
   return <div {...tabs.listProps} {...props} />
 }
@@ -1264,13 +1280,14 @@ export interface TabsTriggerProps extends ComponentPropsWithoutRef<'button'> {
   value: string
 }
 export const TabsTrigger = ({ onClick, onKeyDown, value, ...props }: TabsTriggerProps) => {
-  const tabs = useRequiredContext(useContext(TabsContext), 'TabsTrigger')
+  const tabs = requireContext(useContext(TabsContext), 'TabsTrigger')
 
   return (
     <button
       {...tabs.getTriggerProps(value, props)}
       onClick={composeHandlers(onClick, tabs.getTriggerProps(value).onClick)}
       onKeyDown={composeHandlers(onKeyDown, tabs.getTriggerProps(value).onKeyDown)}
+      type={props.type ?? 'button'}
     />
   )
 }
@@ -1279,7 +1296,7 @@ export interface TabsPanelProps extends ComponentPropsWithoutRef<'div'> {
   value: string
 }
 export const TabsPanel = ({ value, ...props }: TabsPanelProps) => {
-  const tabs = useRequiredContext(useContext(TabsContext), 'TabsPanel')
+  const tabs = requireContext(useContext(TabsContext), 'TabsPanel')
 
   return <div {...tabs.getPanelProps(value, props)} />
 }
@@ -1387,7 +1404,7 @@ export const Tooltip = ({
 
 export type TooltipContentProps = ComponentPropsWithoutRef<'span'>
 export const TooltipContent = ({ ...props }: TooltipContentProps) => {
-  const tooltip = useRequiredContext(useContext(TooltipContext), 'TooltipContent')
+  const tooltip = requireContext(useContext(TooltipContext), 'TooltipContent')
 
   return <span {...tooltip.tooltipProps} {...props} />
 }

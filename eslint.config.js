@@ -48,7 +48,14 @@ const config = await defineConfig({
   tsconfigRootDir: import.meta.dirname,
   typescript: {
     projectService: {
-      allowDefaultProject: ['*.js', '*.mjs', '*.cjs', '**/*.config.ts', '**/*.config.js'],
+      allowDefaultProject: [
+        '*.js',
+        '*.mjs',
+        '*.cjs',
+        '**/*.config.ts',
+        '**/*.config.js',
+        'tests/visual/components.spec.ts'
+      ],
       defaultProject: 'tsconfig.eslint.json'
     }
   },
@@ -63,6 +70,15 @@ const config = await defineConfig({
   },
   rules: {
     'better-tailwindcss/no-unknown-classes': 'off'
+  },
+  ...tseslint.configs.disableTypeChecked
+}, {
+  files: ['tests/visual/**/*.ts'],
+  languageOptions: {
+    parserOptions: {
+      project: false,
+      projectService: false
+    }
   },
   ...tseslint.configs.disableTypeChecked
 }, {

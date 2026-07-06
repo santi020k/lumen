@@ -29,6 +29,7 @@ words:
   - santi020k
   - scroller
   - Segoe
+  - selectionchange
   - shiki
   - Shiki
   - sonner
@@ -36,13 +37,18 @@ words:
   - treegrid
   - turborepo
   - undici
+  - unlayered
+  - unshown
   - unrs
+  - viewports
   - vite
   - vitejs
   - vitest
   - WCAG
   - wordmark
   - workspaces
+ignoreRegExpList:
+  - "luQW2pTQ3jGGxSFPAAsfa9"
 ignorePaths:
   - node_modules
   - dist

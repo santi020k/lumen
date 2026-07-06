@@ -35,8 +35,37 @@ Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
 ```
 
 Elements emit the same `ui-*` classes and `data-ui-*` attributes as the Astro primitives. Astro
-remains the reference package for the bundled progressive-enhancement runtime; wire equivalent client
-behavior in your app for behavior-heavy primitives such as dialogs, menus, tabs, and toasts.
+remains the reference package, and the Web Components adapter now carries matching light-DOM
+behavior for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip: ARIA state, keyboard
+navigation, Escape/outside dismissal, focus return/trapping, native select form participation, and
+the document-level toast controller events.
+
+## Interactive behavior
+
+Registering the elements wires behavior-heavy primitives without a framework runtime. Dialog,
+Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip track the Astro runtime's ARIA, keyboard,
+Escape, dismissal, and toast controller semantics while keeping markup declarative and
+Declarative-Shadow-DOM friendly.
+
+```html
+<script type="module">
+  import { defineLumenElements, LumenToast } from '@santi020k/lumen-elements'
+
+  defineLumenElements()
+
+  LumenToast.create({
+    title: 'Saved',
+    description: 'Your changes are live.',
+    variant: 'success'
+  })
+</script>
+
+<lumen-sonner data-placement="bottom-right"></lumen-sonner>
+```
+
+You can also use the shared document events: dispatch `ui:toast` to create, `ui:toast-update` to
+update, and `ui:toast-dismiss` to dismiss runtime toasts. Toast actions emit `ui:toast-action`
+unless an action supplies a custom event name.
 
 ## Glass surfaces
 

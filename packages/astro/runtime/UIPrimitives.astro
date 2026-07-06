@@ -8,6 +8,7 @@
 ---
 
 <script>
+  /* eslint-disable complexity, unicorn/consistent-function-scoping -- The runtime keeps stateful DOM handlers close to each primitive so Astro consumers do not need a framework runtime. */
   const focusableSelector = [
     'a[href]',
     'button:not([disabled])',
@@ -2740,6 +2741,7 @@
 
   const defaultToastDuration = 5000
   const defaultToastMax = 5
+  const noop = (): void => undefined
 
   const toastTimers = new WeakMap<HTMLElement, {
     cleanup: () => void
@@ -2822,7 +2824,7 @@
     if (!Number.isFinite(duration) || duration <= 0) return
 
     const timerState = {
-      cleanup: () => {},
+      cleanup: noop,
       duration,
       remaining: duration,
       startedAt: Date.now(),

@@ -3,7 +3,7 @@ import { SearchField } from '@santi020k/lumen-astro'
 
 import { docsSearchIndex } from '../data/search'
 
-const searchJson = JSON.stringify(docsSearchIndex)
+const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
 ---
 
 <div class="docs-search relative max-w-2xl" data-docs-search>
@@ -30,7 +30,7 @@ const searchJson = JSON.stringify(docsSearchIndex)
     data-docs-search-results
     hidden
   ></div>
-  <script is:inline type="application/json" data-docs-search-index set:html={searchJson} />
+  <script is:inline type="application/json" data-docs-search-index set:html={searchJson}></script>
 </div>
 
 <script>
@@ -41,6 +41,12 @@ const searchJson = JSON.stringify(docsSearchIndex)
     keywords: string
     title: string
     type: string
+  }
+
+  interface DocsSearchState {
+    activeIndex: number
+    input: HTMLInputElement
+    results: HTMLElement
   }
 
   const getDocsSearchIndex = (): SearchItem[] => {
@@ -83,6 +89,181 @@ const searchJson = JSON.stringify(docsSearchIndex)
     return score
   }
 
+  const isSearchNavigationKey = (key: string): boolean =>
+    key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter'
+
+  const getSearchOptions = (results: HTMLElement): HTMLAnchorElement[] =>
+    [...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')]
+
+  const openSearchResults = (state: DocsSearchState): void => {
+    state.results.hidden = false
+
+    state.results.classList.remove('hidden')
+
+    state.input.setAttribute('aria-expanded', 'true')
+  }
+
+  const closeSearchResults = (state: DocsSearchState): void => {
+    state.results.hidden = true
+
+    state.results.classList.add('hidden')
+
+    state.input.setAttribute('aria-expanded', 'false')
+
+    state.input.removeAttribute('aria-activedescendant')
+
+    state.activeIndex = -1
+  }
+
+  const setActiveSearchOption = (state: DocsSearchState, index: number): void => {
+    const options = getSearchOptions(state.results)
+
+    if (!options.length) {
+      closeSearchResults(state)
+
+      return
+    }
+
+    state.activeIndex = (index + options.length) % options.length
+
+    for (const [optionIndex, option] of options.entries()) {
+      const selected = optionIndex === state.activeIndex
+
+      option.setAttribute('aria-selected', String(selected))
+
+      option.dataset.active = selected ? 'true' : 'false'
+    }
+
+    const activeOption = options[state.activeIndex]
+
+    if (activeOption) {
+      state.input.setAttribute('aria-activedescendant', activeOption.id)
+
+      activeOption.scrollIntoView({ block: 'nearest' })
+    }
+  }
+
+  const createSearchOption = (item: SearchItem, index: number): HTMLAnchorElement => {
+    const option = document.createElement('a')
+    const meta = document.createElement('span')
+    const title = document.createElement('strong')
+    const description = document.createElement('span')
+
+    option.id = `docs-search-option-${index}`
+
+    option.href = item.href
+
+    option.className = 'grid gap-1 rounded-md px-3 py-2 text-left no-underline hover:bg-brand-soft'
+
+    option.setAttribute('role', 'option')
+
+    option.setAttribute('aria-selected', 'false')
+
+    meta.className = 'text-xs font-bold text-ink-muted'
+
+    meta.textContent = `${item.type} / ${item.category}`
+
+    title.className = 'text-sm font-bold text-ink'
+
+    title.textContent = item.title
+
+    description.className = 'line-clamp-2 text-xs/5 text-ink-soft'
+
+    description.textContent = item.description
+
+    option.append(meta, title, description)
+
+    return option
+  }
+
+  const renderEmptySearchResults = (state: DocsSearchState): void => {
+    const empty = document.createElement('p')
+
+    empty.className = 'px-3 py-2 text-sm text-ink-soft'
+
+    empty.textContent = 'No results found.'
+
+    state.results.append(empty)
+
+    openSearchResults(state)
+  }
+
+  const getMatchedSearchItems = (index: SearchItem[], query: string): SearchItem[] =>
+    index
+      .map(item => ({ item, score: scoreSearchItem(item, query) }))
+      .filter(result => result.score > 0)
+      .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
+      .slice(0, 8)
+      .map(result => result.item)
+
+  const renderSearchResults = (state: DocsSearchState, index: SearchItem[]): void => {
+    const query = normalizeSearchText(state.input.value.trim())
+
+    state.results.replaceChildren()
+
+    if (query.length < 2) {
+      closeSearchResults(state)
+
+      return
+    }
+
+    const matchedResults = getMatchedSearchItems(index, query)
+
+    if (!matchedResults.length) {
+      renderEmptySearchResults(state)
+
+      return
+    }
+
+    for (const [resultIndex, item] of matchedResults.entries()) {
+      state.results.append(createSearchOption(item, resultIndex))
+    }
+
+    openSearchResults(state)
+
+    setActiveSearchOption(state, 0)
+  }
+
+  const handleSearchKeyDown = (
+    event: KeyboardEvent,
+    state: DocsSearchState,
+    index: SearchItem[]
+  ): void => {
+    if (event.key === 'Escape') {
+      closeSearchResults(state)
+
+      return
+    }
+
+    if (!isSearchNavigationKey(event.key)) return
+
+    if (state.results.hidden && event.key !== 'Enter') {
+      renderSearchResults(state, index)
+
+      return
+    }
+
+    const options = getSearchOptions(state.results)
+
+    if (!options.length) return
+
+    event.preventDefault()
+
+    if (event.key === 'ArrowDown') {
+      setActiveSearchOption(state, state.activeIndex + 1)
+
+      return
+    }
+
+    if (event.key === 'ArrowUp') {
+      setActiveSearchOption(state, state.activeIndex - 1)
+
+      return
+    }
+
+    options[Math.max(0, state.activeIndex)]?.click()
+  }
+
   const initDocsSearch = (): void => {
     const index = getDocsSearchIndex()
 
@@ -96,174 +277,23 @@ const searchJson = JSON.stringify(docsSearchIndex)
 
       root.dataset.docsSearchBound = 'true'
 
-      let activeIndex = -1
+      const state: DocsSearchState = { activeIndex: -1, input, results }
 
-      const getOptions = (): HTMLAnchorElement[] =>
-        [...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')]
-
-      const closeResults = (): void => {
-        results.hidden = true
-
-        results.classList.add('hidden')
-
-        input.setAttribute('aria-expanded', 'false')
-
-        input.removeAttribute('aria-activedescendant')
-
-        activeIndex = -1
-      }
-
-      const setActiveOption = (index: number): void => {
-        const options = getOptions()
-
-        if (!options.length) {
-          closeResults()
-
-          return
-        }
-
-        activeIndex = (index + options.length) % options.length
-
-        for (const [optionIndex, option] of options.entries()) {
-        const selected = optionIndex === activeIndex
-
-        option.setAttribute('aria-selected', String(selected))
-
-        option.dataset.active = selected ? 'true' : 'false'
-      }
-
-        const activeOption = options[activeIndex]
-
-        if (activeOption) {
-          input.setAttribute('aria-activedescendant', activeOption.id)
-
-          activeOption.scrollIntoView({ block: 'nearest' })
-        }
-      }
-
-      const renderResults = (): void => {
-        const query = normalizeSearchText(input.value.trim())
-
-        results.replaceChildren()
-
-        if (query.length < 2) {
-          closeResults()
-
-          return
-        }
-
-        const matchedResults = index
-          .map(item => ({ item, score: scoreSearchItem(item, query) }))
-          .filter(result => result.score > 0)
-          .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
-          .slice(0, 8)
-          .map(result => result.item)
-
-        if (!matchedResults.length) {
-          const empty = document.createElement('p')
-
-          empty.className = 'px-3 py-2 text-sm text-ink-soft'
-
-          empty.textContent = 'No results found.'
-
-          results.append(empty)
-
-          results.hidden = false
-
-          results.classList.remove('hidden')
-
-          input.setAttribute('aria-expanded', 'true')
-
-          return
-        }
-
-        for (const [index, item] of matchedResults.entries()) {
-        const option = document.createElement('a')
-        const meta = document.createElement('span')
-        const title = document.createElement('strong')
-        const description = document.createElement('span')
-
-        option.id = `docs-search-option-${index}`
-
-        option.href = item.href
-
-        option.className = 'grid gap-1 rounded-md px-3 py-2 text-left no-underline hover:bg-brand-soft'
-
-        option.setAttribute('role', 'option')
-
-        option.setAttribute('aria-selected', 'false')
-
-        meta.className = 'text-xs font-bold text-ink-muted'
-
-        meta.textContent = `${item.type} / ${item.category}`
-
-        title.className = 'text-sm font-bold text-ink'
-
-        title.textContent = item.title
-
-        description.className = 'line-clamp-2 text-xs/5 text-ink-soft'
-
-        description.textContent = item.description
-
-        option.append(meta, title, description)
-
-        results.append(option)
-      }
-
-        results.hidden = false
-
-        results.classList.remove('hidden')
-
-        input.setAttribute('aria-expanded', 'true')
-
-        setActiveOption(0)
-      }
-
-      input.addEventListener('input', renderResults)
+      input.addEventListener('input', () => {
+        renderSearchResults(state, index)
+      })
 
       input.addEventListener('focus', () => {
-        if (input.value.trim().length >= 2) renderResults()
+        if (input.value.trim().length >= 2) renderSearchResults(state, index)
       })
 
       input.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          closeResults()
-
-          return
-        }
-
-        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') return
-
-        if (results.hidden && event.key !== 'Enter') {
-          renderResults()
-
-          return
-        }
-
-        const options = getOptions()
-
-        if (!options.length) return
-
-        event.preventDefault()
-
-        if (event.key === 'ArrowDown') {
-          setActiveOption(activeIndex + 1)
-
-          return
-        }
-
-        if (event.key === 'ArrowUp') {
-          setActiveOption(activeIndex - 1)
-
-          return
-        }
-
-        options[Math.max(0, activeIndex)]?.click()
+        handleSearchKeyDown(event, state, index)
       })
 
       document.addEventListener('click', event => {
         if (event.target instanceof Node && !root.contains(event.target)) {
-          closeResults()
+          closeSearchResults(state)
         }
       })
     }

@@ -63,9 +63,7 @@ export const serializeDataViewState = (state: LumenDataViewState): string => {
   return params.toString()
 }
 
-export const parseDataViewState = (value: string): LumenDataViewState => {
-  const params = new URLSearchParams(value)
-  const sort = params.get('sort')
+const parseDataViewFilters = (params: URLSearchParams): Record<string, string> => {
   const filters: Record<string, string> = {}
 
   for (const [key, filterValue] of params.entries()) {
@@ -74,21 +72,31 @@ export const parseDataViewState = (value: string): LumenDataViewState => {
     }
   }
 
+  return filters
+}
+
+const parseDataViewSort = (sort: null | string): LumenDataViewState['sort'] => {
+  if (!sort) return undefined
+
+  return {
+    direction: sort.endsWith(':desc') ? 'desc' : 'asc',
+    key: sort.split(':')[0] ?? ''
+  }
+}
+
+export const parseDataViewState = (value: string): LumenDataViewState => {
+  const params = new URLSearchParams(value)
+  const sort = params.get('sort')
+  const parsedSort = parseDataViewSort(sort)
+
   return createDataViewState({
-    filters,
+    filters: parseDataViewFilters(params),
     page: Number(params.get('page') ?? 1),
     pageSize: Number(params.get('pageSize') ?? 25),
     pinnedColumns: params.get('pinned')?.split(',').filter(Boolean) ?? [],
     query: params.get('q') ?? '',
     selectedIds: params.get('selected')?.split(',').filter(Boolean) ?? [],
-    ...(sort
-      ? {
-        sort: {
-          direction: sort.endsWith(':desc') ? 'desc' : 'asc',
-          key: sort.split(':')[0] ?? ''
-        }
-      }
-      : {})
+    ...(parsedSort ? { sort: parsedSort } : {})
   })
 }
 
@@ -109,21 +117,24 @@ export const getVirtualRange = (
   }
 }
 
+const recordMatchesQuery = (record: LumenDataRecord, query: string): boolean => {
+  if (!query) return true
+
+  return Object.values(record)
+    .some(value => String(value ?? '').toLowerCase().includes(query))
+}
+
+const recordMatchesFilters = (record: LumenDataRecord, filters: LumenDataViewState['filters']): boolean =>
+  Object.entries(filters)
+    .every(([key, value]) => !value || String(record[key] ?? '') === value)
+
 export const filterDataRecords = <T extends LumenDataRecord>(
   records: readonly T[],
   state: Pick<LumenDataViewState, 'filters' | 'query'>
 ): T[] => {
   const query = state.query.trim().toLowerCase()
 
-  return records.filter(record => {
-    const matchesQuery = !query || Object.values(record)
-      .some(value => String(value ?? '').toLowerCase().includes(query))
-
-    const matchesFilters = Object.entries(state.filters)
-      .every(([key, value]) => !value || String(record[key] ?? '') === value)
-
-    return matchesQuery && matchesFilters
-  })
+  return records.filter(record => recordMatchesQuery(record, query) && recordMatchesFilters(record, state.filters))
 }
 
 export const sortDataRecords = <T extends LumenDataRecord>(

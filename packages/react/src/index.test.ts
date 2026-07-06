@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-react/no-unnecessary-use-prefix -- The mock dispatcher mirrors React's internal hook method names. */
 import type { ReactElement } from 'react'
 import * as React from 'react'
 import { describe, expect, test } from 'vitest'
@@ -43,7 +44,7 @@ const withHookDispatcher = <Value,>(callback: () => Value): Value => {
   internals.H = {
     useCallback: (value: unknown) => value,
     useContext: (context: { _currentValue?: unknown }) => context._currentValue,
-    useEffect: () => {},
+    useEffect: () => null,
     useId: () => `test-${++idIndex}`,
     useMemo: (factory: () => unknown) => factory(),
     useRef: (initialValue: unknown) => {

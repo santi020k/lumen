@@ -39,7 +39,8 @@ for (const theme of ['light', 'dark'] as const) {
         document.documentElement.dataset.theme = themeName
       }, theme)
 
-      await page.waitForLoadState('networkidle')
+      await expect(page.locator('main')).toBeVisible()
+      await expect(page.getByText('An error occurred.', { exact: true })).toHaveCount(0)
 
       await expect(page).toHaveScreenshot(`${slug}-${theme}.png`, {
         fullPage: true

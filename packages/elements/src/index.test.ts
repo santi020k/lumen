@@ -1,12 +1,39 @@
 // @vitest-environment jsdom
 
-import { describe, expect, test } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import {
   defineLumenElements,
   LumenButtonElement,
-  LumenCardElement
-} from './index.js'
+  LumenCardElement,
+  LumenToast} from './index.js'
+
+const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
+  element.dispatchEvent(new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    key,
+    ...init
+  }))
+}
+
+beforeAll(() => {
+  Object.defineProperty(HTMLElement.prototype, 'checkVisibility', {
+    configurable: true,
+    value: () => true
+  })
+
+  defineLumenElements(customElements)
+})
+
+beforeEach(() => {
+  document.body.innerHTML = ''
+  defineLumenElements(customElements)
+})
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe('@santi020k/lumen-elements', () => {
   test('registers custom elements once', () => {
@@ -18,8 +45,6 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('applies primitive classes when elements connect', () => {
-    defineLumenElements(customElements)
-
     const button = document.createElement('lumen-button')
     const card = document.createElement('lumen-card')
 
@@ -32,8 +57,6 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('applies glass attribute classes', () => {
-    defineLumenElements(customElements)
-
     const card = document.createElement('lumen-card')
     const dialog = document.createElement('lumen-dialog')
     const table = document.createElement('lumen-table')
@@ -50,8 +73,6 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('applies code defaults and variant classes', () => {
-    defineLumenElements(customElements)
-
     const inlineCode = document.createElement('lumen-code')
     const blockCode = document.createElement('lumen-code')
 
@@ -62,5 +83,275 @@ describe('@santi020k/lumen-elements', () => {
     expect(inlineCode.getAttribute('data-code-theme')).toBe('auto')
     expect(inlineCode.getAttribute('variant')).toBe('inline')
     expect(blockCode.classList.contains('ui-code--block')).toBe(true)
+  })
+
+  test('dialog triggers manage focus, Escape, outside click, and return focus', () => {
+    document.body.innerHTML = `
+      <button id="open-dialog" data-ui-dialog-trigger="profile-dialog">Edit profile</button>
+      <lumen-dialog id="profile-dialog">
+        <input id="profile-name" />
+        <button id="profile-save" data-ui-dialog-close>Save</button>
+      </lumen-dialog>
+    `
+
+    const trigger = document.querySelector<HTMLButtonElement>('#open-dialog')
+    const dialog = document.querySelector<HTMLElement>('#profile-dialog')
+    const input = document.querySelector<HTMLInputElement>('#profile-name')
+    const save = document.querySelector<HTMLButtonElement>('#profile-save')
+
+    expect(dialog?.hidden).toBe(true)
+
+    trigger?.click()
+
+    expect(dialog?.hidden).toBe(false)
+    expect(dialog?.dataset.state).toBe('open')
+    expect(document.activeElement).toBe(input)
+
+    save?.focus()
+    press(dialog!, 'Tab')
+    expect(document.activeElement).toBe(input)
+
+    press(dialog!, 'Escape')
+    expect(dialog?.hidden).toBe(true)
+    expect(dialog?.dataset.state).toBe('closed')
+    expect(document.activeElement).toBe(trigger)
+
+    trigger?.click()
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+    expect(dialog?.hidden).toBe(true)
+  })
+
+  test('popover and dropdown disclosure listeners clean up across reconnects', () => {
+    document.body.innerHTML = `
+      <lumen-popover id="popover">
+        <button id="popover-trigger" data-ui-trigger aria-controls="popover-panel">Open</button>
+        <div id="popover-panel" hidden>
+          <button id="popover-first">First</button>
+          <button id="popover-second">Second</button>
+        </div>
+      </lumen-popover>
+      <lumen-dropdown-menu>
+        <button id="menu-trigger" data-ui-trigger aria-controls="menu-panel">Actions</button>
+        <div id="menu-panel" hidden><button id="menu-item">Rename</button></div>
+      </lumen-dropdown-menu>
+    `
+
+    const popover = document.querySelector<HTMLElement>('#popover')
+    const trigger = document.querySelector<HTMLButtonElement>('#popover-trigger')
+    const panel = document.querySelector<HTMLElement>('#popover-panel')
+    const first = document.querySelector<HTMLButtonElement>('#popover-first')
+    const second = document.querySelector<HTMLButtonElement>('#popover-second')
+    const menuTrigger = document.querySelector<HTMLButtonElement>('#menu-trigger')
+    const menuPanel = document.querySelector<HTMLElement>('#menu-panel')
+
+    trigger?.click()
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true')
+    expect(panel?.hidden).toBe(false)
+
+    press(trigger as HTMLElement, 'ArrowDown')
+    expect(document.activeElement).toBe(first)
+
+    press(panel!, 'ArrowDown')
+    expect(document.activeElement).toBe(second)
+
+    press(panel!, 'Escape')
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(trigger)
+
+    trigger?.click()
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    expect(panel?.hidden).toBe(true)
+
+    popover?.remove()
+    document.body.append(popover!)
+    trigger?.click()
+    expect(panel?.hidden).toBe(false)
+    trigger?.click()
+    expect(panel?.hidden).toBe(true)
+
+    menuTrigger?.click()
+    expect(menuPanel?.hidden).toBe(false)
+  })
+
+  test('tabs use roving tabindex with arrow, Home, and End navigation', () => {
+    document.body.innerHTML = `
+      <lumen-tabs>
+        <div role="tablist">
+          <button id="tab-one" role="tab" aria-selected="true" aria-controls="panel-one">One</button>
+          <button id="tab-two" role="tab" aria-selected="false" aria-controls="panel-two">Two</button>
+          <button id="tab-three" role="tab" aria-selected="false" aria-controls="panel-three">Three</button>
+        </div>
+        <section id="panel-one" role="tabpanel">One panel</section>
+        <section id="panel-two" role="tabpanel" hidden>Two panel</section>
+        <section id="panel-three" role="tabpanel" hidden>Three panel</section>
+      </lumen-tabs>
+    `
+
+    const first = document.querySelector<HTMLButtonElement>('#tab-one')
+    const second = document.querySelector<HTMLButtonElement>('#tab-two')
+    const third = document.querySelector<HTMLButtonElement>('#tab-three')
+
+    press(first as HTMLElement, 'ArrowRight')
+    expect(second?.getAttribute('aria-selected')).toBe('true')
+    expect(second?.tabIndex).toBe(0)
+    expect(document.querySelector<HTMLElement>('#panel-two')?.hidden).toBe(false)
+
+    press(second as HTMLElement, 'End')
+    expect(third?.getAttribute('aria-selected')).toBe('true')
+
+    press(third as HTMLElement, 'Home')
+    expect(first?.getAttribute('aria-selected')).toBe('true')
+  })
+
+  test('select enhances native select markup with listbox keyboard interaction', () => {
+    const changes: string[] = []
+
+    document.body.innerHTML = `
+      <label for="plan-select">Plan</label>
+      <lumen-select>
+        <select id="plan-select" name="plan" data-ui-select-native required>
+          <option data-ui-select-placeholder disabled selected value="">Choose a plan</option>
+          <option value="free">Free</option>
+          <option value="pro">Pro</option>
+          <option value="team" disabled>Team</option>
+        </select>
+        <div data-ui-select-control hidden>
+          <button data-ui-select-trigger type="button"><span data-ui-select-value></span></button>
+          <div data-ui-select-list hidden role="listbox"></div>
+        </div>
+      </lumen-select>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-select')
+    const select = document.querySelector<HTMLSelectElement>('#plan-select')
+    const trigger = document.querySelector<HTMLButtonElement>('[data-ui-select-trigger]')
+    const listbox = document.querySelector<HTMLElement>('[data-ui-select-list]')
+
+    select?.addEventListener('change', () => {
+      changes.push(select.value)
+    })
+
+    expect(trigger?.getAttribute('aria-label')).toBe('Plan')
+    expect(trigger?.getAttribute('aria-required')).toBe('true')
+    expect(listbox?.querySelectorAll('[data-ui-select-option]')).toHaveLength(3)
+    expect(root?.dataset.placeholder).toBe('true')
+
+    press(trigger as HTMLElement, 'ArrowDown')
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true')
+    expect(listbox?.hidden).toBe(false)
+    expect(document.activeElement?.textContent).toBe('Pro')
+
+    press(listbox!, 'p')
+    expect(document.activeElement?.textContent).toBe('Pro')
+
+    press(document.activeElement as HTMLElement, 'Enter')
+    expect(select?.value).toBe('pro')
+    expect(changes).toEqual(['pro'])
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false')
+    expect(root?.dataset.placeholder).toBe('false')
+    expect(document.querySelector('[aria-selected="true"]')?.textContent).toBe('Pro')
+
+    trigger?.click()
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    expect(listbox?.hidden).toBe(true)
+  })
+
+  test('select creates native form controls for plain option markup', () => {
+    document.body.innerHTML = `
+      <form id="billing">
+        <lumen-select name="plan" required>
+          <option value="starter">Starter</option>
+          <option value="business">Business</option>
+        </lumen-select>
+      </form>
+    `
+
+    const select = document.querySelector<HTMLSelectElement>('lumen-select select')
+    const trigger = document.querySelector<HTMLButtonElement>('[data-ui-select-trigger]')
+    const business = [...document.querySelectorAll<HTMLElement>('[data-ui-select-option]')]
+      .find(item => item.dataset.value === 'business')
+
+    business?.click()
+
+    expect(select?.name).toBe('plan')
+    expect(select?.required).toBe(true)
+    expect(select?.value).toBe('business')
+    expect(new FormData(document.querySelector<HTMLFormElement>('#billing')!).get('plan')).toBe('business')
+    expect(trigger?.textContent).toBe('Business')
+  })
+
+  test('tooltip wires aria-describedby and dismisses with Escape', () => {
+    vi.useFakeTimers()
+
+    document.body.innerHTML = `
+      <lumen-tooltip>
+        <button id="tip-trigger" data-ui-tooltip-trigger>Help</button>
+        <span role="tooltip">Helpful text</span>
+      </lumen-tooltip>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-tooltip')
+    const trigger = document.querySelector<HTMLButtonElement>('#tip-trigger')
+    const tip = document.querySelector<HTMLElement>('[role="tooltip"]')
+
+    expect(trigger?.getAttribute('aria-describedby')).toBe(tip?.id)
+
+    press(root!, 'Escape')
+    expect(tip?.style.visibility).toBe('hidden')
+
+    root?.dispatchEvent(new Event('mouseenter'))
+    vi.advanceTimersByTime(250)
+    expect(tip?.style.visibility).toBe('')
+  })
+
+  test('toast controller creates, updates, dismisses, limits stacks, and pauses duration', () => {
+    vi.useFakeTimers()
+
+    document.body.innerHTML = '<lumen-sonner data-placement="top-right" data-ui-toast-max="2"></lumen-sonner>'
+
+    const actionEvents: CustomEvent<{ id: string, value?: unknown }>[] = []
+    document.body.addEventListener('ui:toast-action', event => {
+      actionEvents.push(event as CustomEvent<{ id: string, value?: unknown }>)
+    })
+
+    const firstId = LumenToast.create({ duration: 1000, id: 'first', title: 'First' })
+    const secondId = LumenToast.create({ id: 'second', title: 'Second' })
+    const thirdId = LumenToast.create({
+      action: { label: 'Undo', value: 'third-action' },
+      id: 'third',
+      title: 'Third',
+      variant: 'success'
+    })
+
+    expect(firstId).toBe('first')
+    expect(secondId).toBe('second')
+    expect(thirdId).toBe('third')
+    expect(document.querySelector<HTMLElement>('#first')?.dataset.state).toBe('closed')
+    expect(document.querySelectorAll('[data-ui-toast]')).toHaveLength(3)
+
+    vi.advanceTimersByTime(240)
+    expect(document.querySelector('#first')).toBeNull()
+
+    LumenToast.update('second', { description: 'Updated copy', duration: 500, variant: 'warning' })
+    expect(document.querySelector<HTMLElement>('#second')?.dataset.description).toBe('Updated copy')
+    expect(document.querySelector<HTMLElement>('#second')?.getAttribute('variant')).toBe('warning')
+
+    document.querySelector<HTMLButtonElement>('#third .ui-toast__action')?.click()
+    expect(actionEvents).toHaveLength(1)
+    expect(actionEvents[0]?.detail).toEqual({ id: 'third', value: 'third-action' })
+
+    const second = document.querySelector<HTMLElement>('#second')
+    second?.dispatchEvent(new Event('mouseenter'))
+    vi.advanceTimersByTime(500)
+    expect(second?.dataset.state).toBe('open')
+
+    second?.dispatchEvent(new Event('mouseleave'))
+    vi.advanceTimersByTime(500)
+    expect(second?.dataset.state).toBe('closed')
+
+    LumenToast.create({ duration: Number.POSITIVE_INFINITY, id: 'fourth', title: 'Fourth' })
+    document.dispatchEvent(new CustomEvent('ui:toast-dismiss', { detail: { id: 'fourth' } }))
+    expect(document.querySelector<HTMLElement>('#fourth')?.dataset.state).toBe('closed')
   })
 })

@@ -83,7 +83,10 @@ export function SubscribeForm() {
 
 ## Web Components
 
-Register custom elements once, then use `lumen-*` tags in HTML.
+Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
+interactive behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip:
+ARIA state, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native
+select form participation, and the same toast controller events as the Astro runtime.
 
 ```html
 <script type="module">
@@ -154,17 +157,19 @@ The shared catalog includes:
   `control.setCustomValidity(message)` before the runtime reads validity, and listen for
   `ui:invalid` or `ui:valid` on the form for submission state.
 - Use `Sonner` plus `Toast` for transient feedback. Static `<Toast>` markup works without
-  JavaScript. With `UIPrimitives`, create toasts with `window.LumenToast.create(detail)` or
-  `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`, update them with
-  `window.LumenToast.update(id, detail)` or `ui:toast-update`, and dismiss them with
-  `window.LumenToast.dismiss(id)` or `ui:toast-dismiss`. `detail` supports `title`, `description`,
-  `variant`, `duration`, `placement`, and `action: { label, value }`. Destructive toasts use
-  `role="alert"`; other variants use `role="status"`. Runtime toasts pause their timeout on hover
-  or focus, and Escape dismisses the focused toast.
+  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with
+  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,
+  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with
+  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or
+  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,
+  `max`, and `action: { label, value }`. Destructive toasts use `role="alert"`; other variants use
+  `role="status"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the
+  focused toast.
 
 ## Runtime CustomEvents
 
-When `UIPrimitives` is mounted, the Astro runtime uses these CustomEvents:
+When `UIPrimitives` is mounted, or when Web Components are registered for toast behavior, Lumen uses
+these CustomEvents:
 
 | Event | Target | Detail | Fires When |
 | --- | --- | --- | --- |
