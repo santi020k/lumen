@@ -2,8 +2,16 @@
 import { NativeSelect } from '@santi020k/lumen-astro'
 ---
 
-<NativeSelect name="plan" aria-label="Plan">
-  <option value="free">Free</option>
-  <option value="pro">Pro</option>
-  <option value="team">Team</option>
-</NativeSelect>
+<div style="display: grid; gap: 0.5rem; max-width: 20rem;">
+  <NativeSelect name="plan" aria-label="Plan" placeholder="Choose a plan">
+    <option value="free">Free</option>
+    <option value="pro">Pro</option>
+    <option value="team">Team</option>
+  </NativeSelect>
+  <NativeSelect
+    aria-label="Billing period"
+    name="billing"
+    options={['Monthly', 'Yearly']}
+    size="lg"
+  />
+</div>

@@ -4,7 +4,19 @@ import { TreeGrid } from '@santi020k/lumen-astro'
 
 <TreeGrid aria-label="Project status">
   <div role="row">
-    <span role="gridcell">Docs</span>
+    <span role="columnheader">Package</span>
+    <span role="columnheader">Status</span>
+  </div>
+  <div aria-expanded="true" aria-level="1" role="row">
+    <span role="gridcell">packages</span>
+    <span role="gridcell">—</span>
+  </div>
+  <div aria-level="2" role="row">
+    <span role="gridcell">astro</span>
+    <span role="gridcell">Ready</span>
+  </div>
+  <div aria-level="2" role="row">
+    <span role="gridcell">react</span>
     <span role="gridcell">Ready</span>
   </div>
 </TreeGrid>

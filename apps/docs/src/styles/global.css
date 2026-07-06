@@ -134,12 +134,37 @@ html {
 }
 
 body {
+  position: relative;
   min-height: 100vh;
   margin: 0;
   background:
     linear-gradient(135deg, hsl(var(--brand) / 0.08), transparent 28%),
     linear-gradient(315deg, hsl(var(--accent) / 0.08), transparent 32%),
     linear-gradient(180deg, hsl(var(--theme-bg)), hsl(var(--canvas)));
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid hsl(var(--glass-border));
+  background:
+    linear-gradient(90deg, hsl(var(--ink) / 0.025) 1px, transparent 1px),
+    linear-gradient(180deg, hsl(var(--ink) / 0.025) 1px, transparent 1px),
+    linear-gradient(180deg, hsl(var(--glass-highlight)), transparent 120%),
+    hsl(var(--glass-bg-strong));
+  background-size: 4rem 4rem, 4rem 4rem, auto, auto;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--glass-edge)),
+    inset 0 -1px 0 hsl(var(--glass-edge-soft)),
+    0 1px 2px hsl(var(--ink) / 0.04),
+    0 12px 36px hsl(var(--ink) / 0.07);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+.site-header__inner {
+  position: relative;
 }
 
 code {
@@ -234,11 +259,11 @@ pre code {
 
 .docs-home-shell::before {
   position: absolute;
-  top: 0.5rem;
+  top: -3.25rem;
   left: 50%;
   z-index: -1;
   width: 100vw;
-  height: min(38rem, 58vh);
+  height: calc(min(38rem, 58vh) + 3.25rem);
   background:
     linear-gradient(90deg, hsl(var(--ink) / 0.04) 1px, transparent 1px),
     linear-gradient(180deg, hsl(var(--ink) / 0.04) 1px, transparent 1px),

@@ -2,8 +2,21 @@
 import { Select } from '@santi020k/lumen-astro'
 ---
 
-<Select name="framework" aria-label="Framework">
-  <option value="astro">Astro</option>
-  <option value="react">React</option>
-  <option value="elements">Web Components</option>
-</Select>
+<div style="display: grid; gap: 0.5rem; max-width: 20rem;">
+  <Select name="framework" aria-label="Framework" placeholder="Pick a framework">
+    <option value="astro">Astro</option>
+    <option value="react">React</option>
+    <option value="elements">Web Components</option>
+  </Select>
+  <Select
+    aria-label="Region"
+    name="region"
+    options={[
+      { label: 'US East', value: 'us-east' },
+      { label: 'EU West', value: 'eu-west' },
+      { disabled: true, label: 'APAC (soon)', value: 'apac' }
+    ]}
+    placeholder="Options via prop"
+    size="sm"
+  />
+</div>

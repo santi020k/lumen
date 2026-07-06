@@ -2,5 +2,13 @@
 import { Skeleton } from '@santi020k/lumen-astro'
 ---
 
-<Skeleton aria-label="Loading title" />
-<Skeleton aria-label="Loading paragraph" />
+{/* Skeletons are decorative (aria-hidden) by default; pass aria-label to
+    announce a loading region instead. */}
+<div style="display: flex; gap: 0.75rem; align-items: center;">
+  <Skeleton style="width: 2.5rem; height: 2.5rem; border-radius: 9999px;" />
+  <div style="display: grid; gap: 0.5rem; flex: 1;">
+    <Skeleton style="height: 1rem; width: 40%;" />
+    <Skeleton style="height: 0.75rem; width: 80%;" />
+  </div>
+</div>
+<Skeleton aria-label="Loading article" style="height: 6rem;" />

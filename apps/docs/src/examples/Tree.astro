@@ -3,6 +3,11 @@ import { Tree } from '@santi020k/lumen-astro'
 ---
 
 <Tree aria-label="Project files">
-  <div role="treeitem" aria-expanded="true">src</div>
-  <div role="treeitem">index.ts</div>
+  <div aria-expanded="true" aria-level="1" role="treeitem">src</div>
+  <div role="group">
+    <div aria-level="2" role="treeitem">components</div>
+    <div aria-level="2" role="treeitem">index.ts</div>
+  </div>
+  <div aria-expanded="false" aria-level="1" role="treeitem">tests</div>
+  <div aria-level="1" role="treeitem">package.json</div>
 </Tree>

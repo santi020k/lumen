@@ -2,9 +2,21 @@
 import { Button } from '@santi020k/lumen-astro'
 ---
 
-<Button>Default</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="destructive">Destructive</Button>
-<Button variant="link">Link</Button>
+<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+  <Button>Default</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+  <Button variant="ghost">Ghost</Button>
+  <Button variant="destructive">Destructive</Button>
+  <Button variant="link">Link</Button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+  <Button size="sm">Small</Button>
+  <Button>Default size</Button>
+  <Button size="lg">Large</Button>
+  <Button aria-label="Settings" size="icon">⚙</Button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+  <Button loading>Saving</Button>
+  <Button disabled>Disabled</Button>
+</div>

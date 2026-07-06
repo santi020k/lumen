@@ -2,4 +2,9 @@
 import { Input } from '@santi020k/lumen-astro'
 ---
 
-<Input type="email" placeholder="you@example.com" aria-label="Email" />
+<div style="display: grid; gap: 0.5rem; max-width: 20rem;">
+  <Input aria-label="Small input" placeholder="Small" size="sm" />
+  <Input aria-label="Email" placeholder="you@example.com" type="email" />
+  <Input aria-label="Large input" placeholder="Large" size="lg" />
+  <Input aria-label="Disabled input" disabled placeholder="Disabled" />
+</div>

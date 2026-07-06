@@ -1,9 +1,10 @@
 ---
 import { VirtualList } from '@santi020k/lumen-astro'
+
+const rows = Array.from({ length: 200 }, (_, index) => `Deployment #${200 - index}`)
 ---
 
-<VirtualList data-ui-item-size="44" style="--ui-list-height: 12rem">
-  <div>Row 1</div>
-  <div>Row 2</div>
-  <div>Row 3</div>
+{/* 200 rows, but only the visible slice is rendered while scrolling. */}
+<VirtualList aria-label="Deployments" data-ui-item-size="44" style="--ui-list-height: 12rem">
+  {rows.map(row => <div>{row}</div>)}
 </VirtualList>

@@ -5,8 +5,18 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Card>
-  <h3>Starter</h3>
-  <p>For personal projects and prototypes.</p>
-  <Button size="sm">Choose plan</Button>
-</Card>
+<div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+  <Card>
+    <h3>Starter</h3>
+    <p>For personal projects and prototypes.</p>
+    <Button size="sm">Choose plan</Button>
+  </Card>
+  <Card variant="muted">
+    <h3>Muted</h3>
+    <p>A quieter surface for secondary content.</p>
+  </Card>
+  <Card as="article" variant="interactive">
+    <h3>Interactive</h3>
+    <p>Hover and focus styles for clickable cards.</p>
+  </Card>
+</div>
