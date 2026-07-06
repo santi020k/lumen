@@ -34,6 +34,9 @@ With Tailwind, keep it in the same shared CSS entry:
 @import "@santi020k/lumen-astro/styles.css";
 ```
 
+For interactive Astro primitives, mount `UIPrimitives` once in your root layout. Do not place it
+next to every component instance.
+
 ```astro
 ---
 import { Button, Card, Input } from '@santi020k/lumen-astro'

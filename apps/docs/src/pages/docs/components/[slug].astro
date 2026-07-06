@@ -1,11 +1,11 @@
 ---
-import { Badge, Separator } from '@santi020k/lumen-astro'
+import { Badge, Separator, Tabs } from '@santi020k/lumen-astro'
 
 import type { InferGetStaticPropsType } from 'astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import CodeTabs from '../../../components/CodeTabs.astro'
-import { componentDocs } from '../../../data/docs'
+import { componentDocs, frameworkSetups } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { getExample, getGlassExample } from '../../../lib/examples'
 import { toSlug } from '../../../lib/routes'
@@ -21,15 +21,26 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 
 const { component } = Astro.props
 const { component: Example, source } = getExample(component.name)
+const componentSlug = toSlug(component.name)
 const snippets = buildSnippets(component.name, source)
-const installCommand = 'pnpm add @santi020k/lumen-astro'
 const registryCommand = `lumen add ${component.name}`
+const packageInstallSetups = frameworkSetups.map(setup => ({
+  command: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? setup.installCommands[0]?.command ?? '',
+  id: setup.id,
+  label: setup.label,
+  packageName: setup.packageName
+}))
 const glassExample = component.glass ? getGlassExample(component.name) : undefined
 const GlassExample = glassExample?.component
 const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.source) : undefined
 const index = componentDocs.findIndex(entry => entry.name === component.name)
 const previous = index > 0 ? componentDocs[index - 1] : undefined
 const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undefined
+const requiresAstroRuntime = Boolean(
+  component.keyboardInteractions ||
+  component.runtimeEvents ||
+  component.apiReference.some(row => /UIPrimitives|runtime/i.test(row.description))
+)
 ---
 
 <DocsLayout
@@ -67,24 +78,54 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
   </section>
 
   <section class="mt-8 space-y-3" aria-labelledby="usage-title">
-    <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="usage-title">Usage</h2>
-    <CodeTabs groupId={`code-${toSlug(component.name)}`} snippets={snippets} />
+    <div class="space-y-2">
+      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="usage-title">Usage</h2>
+      {requiresAstroRuntime && (
+        <p class="max-w-2xl text-sm/7 text-ink-soft">
+          Astro examples assume UIPrimitives is mounted once in your root layout. Do not add the
+          runtime next to each component instance.
+        </p>
+      )}
+    </div>
+    <CodeTabs groupId={`code-${componentSlug}`} snippets={snippets} />
   </section>
 
   <section class="mt-10 space-y-3" aria-labelledby="install-title">
     <div class="space-y-2">
-      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="install-title">Install</h2>
+      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="install-title">Add this component</h2>
       <p class="max-w-2xl text-sm/7 text-ink-soft">
-        Install the Astro package, then add this component from the Lumen registry when you want a
-        local wrapper in your app.
+        Choose the package for your runtime. All adapters share the Lumen stylesheet. Use the
+        registry command only when you want a local Astro wrapper for this component.
       </p>
     </div>
     <div class="
       grid gap-4
-      lg:grid-cols-2
+      lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)]
     ">
-      <CodeBlock code={installCommand} lang="bash" title="Package" />
-      <CodeBlock code={registryCommand} lang="bash" title="Registry" />
+      <Tabs>
+        <div role="tablist" aria-label="Package install">
+          {packageInstallSetups.map((setup, index) => (
+            <button
+              aria-controls={`install-${componentSlug}-panel-${setup.id}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              id={`install-${componentSlug}-tab-${setup.id}`}
+              role="tab"
+            >{setup.label}</button>
+          ))}
+        </div>
+        {packageInstallSetups.map((setup, index) => (
+          <section
+            aria-labelledby={`install-${componentSlug}-tab-${setup.id}`}
+            class="docs-code-panel"
+            hidden={index !== 0}
+            id={`install-${componentSlug}-panel-${setup.id}`}
+            role="tabpanel"
+          >
+            <CodeBlock code={setup.command} lang="bash" title={setup.packageName} />
+          </section>
+        ))}
+      </Tabs>
+      <CodeBlock code={registryCommand} lang="bash" title="Optional Astro wrapper" />
     </div>
   </section>
 
@@ -102,7 +143,7 @@ const next = index < componentDocs.length - 1 ? componentDocs[index + 1] : undef
       <div class="docs-preview">
         <GlassExample />
       </div>
-      <CodeTabs groupId={`code-${toSlug(component.name)}-glass`} snippets={glassSnippets} />
+      <CodeTabs groupId={`code-${componentSlug}-glass`} snippets={glassSnippets} />
     </section>
   )}
 

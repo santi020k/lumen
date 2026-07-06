@@ -288,7 +288,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands,
     label: 'Astro',
     lang: 'astro',
-    note: 'With the stylesheet loaded globally, import components where you use them. Mount UIPrimitives once near your root layout only if you use interactive primitives.',
+    note: 'With the stylesheet loaded globally, import components where you use them. Mount UIPrimitives once in your root layout only if you use interactive primitives; do not add it beside every component.',
     packageName: '@santi020k/lumen-astro',
     usage: astroUsage
   },

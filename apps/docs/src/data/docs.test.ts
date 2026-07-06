@@ -22,6 +22,7 @@ import {
   globalStyleSetups,
   themeSetups
 } from './docs'
+import { buildSnippets } from '../lib/snippets'
 
 const staleAttributePatterns = [
   'data-dialog-trigger',
@@ -108,6 +109,25 @@ describe('component docs snippets', () => {
       .toBe('pnpm add @santi020k/lumen-react @santi020k/lumen-astro')
     expect(frameworkSetups.find(setup => setup.id === 'elements')?.installCommands[0]?.command)
       .toBe('pnpm add @santi020k/lumen-elements @santi020k/lumen-astro')
+    expect(frameworkSetups.find(setup => setup.id === 'astro')?.note)
+      .toContain('Mount UIPrimitives once in your root layout')
+  })
+
+  test('keep component snippets focused on component usage instead of runtime mounting', () => {
+    const snippets = buildSnippets('Dialog', `---
+import { Button, Dialog } from '@santi020k/lumen-astro'
+---
+
+<Button data-ui-dialog-trigger="settings">Open settings</Button>
+<Dialog id="settings">
+  <Button data-ui-dialog-close>Close</Button>
+</Dialog>
+`)
+
+    const astroSnippet = snippets.find(snippet => snippet.label === 'Astro')?.code ?? ''
+
+    expect(astroSnippet).toContain("import { Button, Dialog } from '@santi020k/lumen-astro'")
+    expect(astroSnippet).not.toContain('UIPrimitives')
   })
 
   test('documents the stylesheet as a one-time global setup', () => {

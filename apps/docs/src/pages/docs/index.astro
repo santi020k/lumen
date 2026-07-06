@@ -287,8 +287,9 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       <p>Behavior layer</p>
       <h2 id="runtime-title">Progressive-enhancement runtime</h2>
       <p>
-        One UIPrimitives include wires up every interactive primitive. Static components never need
-        it; behavior attaches to semantic markup and data attributes when the runtime is mounted.
+        Mount UIPrimitives once in your Astro root layout to wire every interactive primitive.
+        Static components never need it, and component snippets assume the root layout already owns
+        that runtime include.
       </p>
     </div>
     <div class="

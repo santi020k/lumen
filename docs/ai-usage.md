@@ -33,7 +33,8 @@ If Tailwind is present, keep both imports in the same shared CSS entry.
 
 Astro apps should mount `UIPrimitives` once in the root layout when using interactive primitives
 such as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or
-toasts.
+toasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;
+one root include enhances all matching `data-ui-*` markup on the page.
 
 ```astro
 ---

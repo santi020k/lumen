@@ -215,7 +215,7 @@ import {
       path: 'llms.txt',
       source: `# Lumen UI
 
-Use @santi020k/lumen-astro for Astro apps, import @santi020k/lumen-astro/styles.css once, and mount UIPrimitives once for interactive primitives.
+Use @santi020k/lumen-astro for Astro apps, import @santi020k/lumen-astro/styles.css once, and mount UIPrimitives once in the root layout for interactive primitives. Do not place UIPrimitives next to every component instance.
 `
     }
   ]

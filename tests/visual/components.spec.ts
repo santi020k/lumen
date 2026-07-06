@@ -1,4 +1,6 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
+
+/* cspell:ignore valuenow */
 
 type Theme = 'dark' | 'light'
 

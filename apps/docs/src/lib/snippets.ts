@@ -10,30 +10,6 @@ const lumenNames = new Set<string>(lumenComponentNames)
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 const valueDefaultTags = ['Checkbox', 'DatePicker', 'Input', 'InputOTP', 'Slider', 'Switch', 'Textarea']
 const valueDefaultPattern = new RegExp(`<(${valueDefaultTags.join('|')})([^>]*?) value="`, 'g')
-const astroPackageImportPattern = /import\s*\{([\S\s]*?)\}\s*from '@santi020k\/lumen-astro'/
-
-const runtimeComponents = new Set([
-  'AlertDialog',
-  'Carousel',
-  'Combobox',
-  'Code',
-  'Command',
-  'Dialog',
-  'Drawer',
-  'DropdownMenu',
-  'HoverCard',
-  'Menubar',
-  'NavigationMenu',
-  'Popover',
-  'RadioGroup',
-  'Sheet',
-  'Sonner',
-  'Tabs',
-  'Toggle',
-  'ToggleGroup'
-])
-
-const runtimeAttributePattern = /\bdata-ui-(?:alert-dialog|carousel|command|combobox|dialog|drawer|dropdown-menu|hover-card|menubar|navigation-menu|popover|radio-group|sheet|sonner|tabs|toast|toggle)/
 
 const splitExample = (raw: string) => {
   const match = /^---\n([\S\s]*?)\n---\n\n?([\S\s]*)$/.exec(raw.trim())
@@ -57,32 +33,10 @@ const usedComponents = (body: string): string[] => {
   return [...used].sort((a, b) => a.localeCompare(b))
 }
 
-const needsRuntime = (body: string) =>
-  runtimeAttributePattern.test(body) || usedComponents(body).some(component => runtimeComponents.has(component))
-
 const toAstroSnippet = (raw: string): string => {
   const { body, frontmatter } = splitExample(raw)
-  let nextFrontmatter = frontmatter
-  const includeRuntime = needsRuntime(body)
 
-  if (astroPackageImportPattern.test(nextFrontmatter)) {
-    nextFrontmatter = nextFrontmatter.replace(astroPackageImportPattern, (_match, imports: string) => {
-      const names = imports
-        .split(',')
-        .map(name => name.trim())
-        .filter(Boolean)
-
-      if (includeRuntime && !names.includes('UIPrimitives')) names.push('UIPrimitives')
-
-      return `import { ${names.join(', ')} } from '@santi020k/lumen-astro'`
-    })
-  } else if (includeRuntime) {
-    nextFrontmatter = `import { UIPrimitives } from '@santi020k/lumen-astro'\n${nextFrontmatter}`
-  }
-
-  const nextBody = includeRuntime && !body.includes('<UIPrimitives') ? `<UIPrimitives />\n\n${body}` : body
-
-  return `---\n${nextFrontmatter.trim()}\n---\n\n${nextBody.trim()}\n`
+  return `---\n${frontmatter.trim()}\n---\n\n${body.trim()}\n`
 }
 
 const toCssCamelCase = (property: string) =>

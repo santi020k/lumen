@@ -9,8 +9,10 @@ configuration is required to render the components.
 pnpm add @santi020k/lumen-astro
 ```
 
-Import the CSS once in your root layout and mount `UIPrimitives` once if you use interactive
-components such as dialogs, menus, popovers, tabs, carousels, toggles, command lists, or toasts.
+Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
+use interactive components such as dialogs, menus, popovers, tabs, carousels, toggles, command
+lists, or toasts. Do not add `UIPrimitives` beside each component instance; one root include
+enhances all matching Lumen markup on the page.
 
 ```css
 @import "@santi020k/lumen-astro/styles.css";
@@ -21,6 +23,15 @@ With Tailwind, keep the Lumen import in the same shared CSS entry:
 ```css
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
+```
+
+```astro
+---
+import { UIPrimitives } from '@santi020k/lumen-astro'
+---
+
+<UIPrimitives />
+<slot />
 ```
 
 ```astro
