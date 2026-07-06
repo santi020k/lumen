@@ -31,6 +31,10 @@
       "types": "./dist/data.d.ts",
       "import": "./dist/data.js"
     },
+    "./figma": {
+      "types": "./dist/figma.d.ts",
+      "import": "./dist/figma.js"
+    },
     "./schedule": {
       "types": "./dist/schedule.d.ts",
       "import": "./dist/schedule.js"

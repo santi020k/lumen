@@ -65,6 +65,9 @@ Lumen includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and
 component catalog, setup rules, recipes, and installable file groups. The current roadmap lives in
 [docs/feature-roadmap.md](docs/feature-roadmap.md).
 
+Figma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for
+Figma variables and the Code Connect path for a published component library.
+
 The umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for
 listing recipes, showing recipe contents, printing install commands, loading alternate registry
 manifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge

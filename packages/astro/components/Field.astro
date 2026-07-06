@@ -4,20 +4,27 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  controlId?: string
+  describedBy?: string
   glass?: boolean | 'subtle' | 'strong'
 }
 
 const {
+  'aria-describedby': ariaDescribedby,
   class: classProp = '',
   className = '',
+  controlId,
+  describedBy,
   glass = false,
   ...rest
 } = Astro.props
 
 const passthrough = rest as Record<string, unknown>
+const fieldDescribedBy = [ariaDescribedby, describedBy].filter(Boolean).join(' ') || undefined
 ---
 
 <div
+  aria-describedby={ariaDescribedby}
   class:list={[
     'ui-field',
     glass && 'ui-field--glass',
@@ -26,6 +33,9 @@ const passthrough = rest as Record<string, unknown>
     classProp,
     className
   ]}
+  data-ui-field
+  data-ui-field-control={controlId}
+  data-ui-field-describedby={fieldDescribedBy}
   {...passthrough}
 >
   <slot />

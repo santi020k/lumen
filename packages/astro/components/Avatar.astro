@@ -29,6 +29,6 @@ const passthrough = rest as Record<string, unknown>
   ]}
   {...passthrough}
 >
-  {src ? <img alt={alt} src={src} /> : <span>{fallback}</span>}
+  {src ? <img alt={alt} src={src} /> : fallback && <span>{fallback}</span>}
   <slot />
 </span>

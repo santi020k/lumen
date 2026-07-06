@@ -5,7 +5,15 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<ButtonGroup>
-  <Button variant="secondary">Back</Button>
-  <Button>Publish</Button>
-</ButtonGroup>
+<div style="display: grid; gap: 1rem;">
+  <ButtonGroup role="group" aria-label="Publishing actions">
+    <Button variant="secondary">Back</Button>
+    <Button>Publish</Button>
+  </ButtonGroup>
+
+  <ButtonGroup role="group" aria-label="Text alignment">
+    <Button variant="secondary">Left</Button>
+    <Button variant="secondary">Center</Button>
+    <Button variant="secondary">Right</Button>
+  </ButtonGroup>
+</div>

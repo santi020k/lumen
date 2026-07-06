@@ -179,6 +179,12 @@ attributes, and accessible markup.
 - Use `glass` as a boolean prop or attribute for glass surfaces when supported.
 - Preserve semantic labels, keyboard paths, focus states, and native form attributes.
 
+## Figma Handoff
+
+Use `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs
+Figma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design
+token JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.
+
 ## When Editing This Repo
 
 - Shared contracts belong in `packages/core`.

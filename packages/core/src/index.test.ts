@@ -9,15 +9,20 @@ import {
   createDataViewServerRequest,
   createDataViewState,
   createDataViewStorageKey,
+  createFigmaVariableName,
   createScheduleSlots,
   createScheduleStorageKey,
   createThemeFromHue,
   createThemePalette,
   expandRecurringScheduleEvent,
   exportThemeCss,
+  exportThemeDesignTokens,
+  exportThemeFigmaVariables,
   getContrastRatio,
   getScheduleConflicts,
   getVirtualRange,
+  hslTokenToFigmaColor,
+  hslTokenToHexColor,
   loadDataViewState,
   loadScheduleEvents,
   lumenCodeTokenClassNames,
@@ -261,6 +266,32 @@ describe('lumen product helpers', () => {
     expect(parseThemeCss(css).accent).toBe('168 76% 36%')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
+  })
+
+  test('exports theme tokens for Figma variables and design-token importers', () => {
+    const palette = createThemePalette('221 83% 53%', '168 76% 36%')
+    const variables = exportThemeFigmaVariables(palette, {
+      collectionName: 'Acme theme',
+      modeName: 'Brand'
+    })
+    const designTokens = exportThemeDesignTokens(palette)
+
+    expect(createFigmaVariableName('surface-muted')).toBe('color/surface/muted')
+    expect(hslTokenToFigmaColor('221 83% 53%')).toMatchObject({
+      a: 1,
+      b: 0.9215686274509803,
+      g: 0.38823529411764707,
+      r: 0.1411764705882353
+    })
+    expect(hslTokenToHexColor('0 0% 100% / 0.55')).toBe('#ffffff8c')
+    expect(variables.collectionName).toBe('Acme theme')
+    expect(variables.modes[0]?.name).toBe('Brand')
+    expect(variables.modes[0]?.variables.find(variable => variable.name === 'color/brand')).toMatchObject({
+      cssValue: 'hsl(221 83% 53%)',
+      type: 'COLOR'
+    })
+    expect(designTokens.color.brand?.$value).toBe('#2463eb')
+    expect(designTokens.color['surface-muted']?.$type).toBe('color')
   })
 
   test('suggests readable ink and tunes low contrast themes', () => {

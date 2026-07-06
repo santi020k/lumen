@@ -2,12 +2,25 @@
 import { Checkbox } from '@santi020k/lumen-astro'
 ---
 
-<label>
-  <Checkbox name="updates" /> Email me product updates
-</label>
-<label>
-  <Checkbox checked name="terms" /> Accept terms (checked)
-</label>
-<label>
-  <Checkbox disabled name="legacy" /> Legacy option (disabled)
-</label>
+<div style="display: grid; gap: 0.5rem;">
+  <label>
+    <Checkbox name="updates" /> Email me product updates
+  </label>
+  <label>
+    <Checkbox checked name="terms" /> Accept terms (checked)
+  </label>
+  <label>
+    <Checkbox id="ex-checkbox-indeterminate" name="permissions" /> Some permissions selected
+  </label>
+  <label>
+    <Checkbox disabled name="legacy" /> Legacy option (disabled)
+  </label>
+</div>
+
+<script>
+  const checkbox = document.querySelector<HTMLInputElement>('#ex-checkbox-indeterminate')
+
+  if (checkbox) {
+    checkbox.indeterminate = true
+  }
+</script>

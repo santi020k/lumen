@@ -1,15 +1,120 @@
 ---
-/**
- * Select is an alias of NativeSelect: both render a styled native <select>.
- * Keeping a single implementation avoids the two files drifting apart.
- */
-import type { ComponentProps } from 'astro/types'
+import type { HTMLAttributes } from 'astro/types'
 
-import NativeSelect from './NativeSelect.astro'
+interface Option {
+  disabled?: boolean
+  label: string
+  value: string
+}
 
-type Props = ComponentProps<typeof NativeSelect>
+type SelectOption = Option | string
 
-const props = Astro.props as Props
+interface Props extends Omit<HTMLAttributes<'select'>, 'size'> {
+  class?: string
+  className?: string
+  glass?: boolean | 'subtle' | 'strong'
+  options?: SelectOption[]
+  placeholder?: string
+  size?: 'default' | 'lg' | 'md' | 'sm'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  disabled = false,
+  glass = false,
+  id,
+  name,
+  options = [],
+  placeholder,
+  required = false,
+  size = 'default',
+  value,
+  ...rest
+} = Astro.props
+
+const normalizedOptions = options.map(option =>
+  typeof option === 'string' ? { label: option, value: option } : option
+)
+const selectedValue = value === undefined || value === null ? undefined : String(value)
+const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
+const selectedOption = normalizedOptions.find(option => String(option.value) === selectedValue)
+const selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`
+const triggerId = `${selectId}-trigger`
+const listId = `${selectId}-listbox`
+const placeholderText = placeholder ?? 'Select an option'
+const triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText
+const passthrough = rest as Record<string, unknown>
 ---
 
-<NativeSelect {...props}><slot /></NativeSelect>
+<div
+  class:list={[
+    'ui-select-field',
+    glass && 'ui-select-field--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong',
+    classProp,
+    className
+  ]}
+  data-placeholder={hasSelectedValue ? 'false' : 'true'}
+  data-ui-glass-track={glass ? true : undefined}
+  data-ui-select
+>
+  <select
+    class:list={[
+      'ui-select',
+      'ui-select__native',
+      size === 'sm' && 'ui-select--sm',
+      size === 'lg' && 'ui-select--lg'
+    ]}
+    data-ui-select-native
+    disabled={disabled}
+    id={selectId}
+    name={name}
+    required={required}
+    {...passthrough}
+  >
+    {placeholder && <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value="">{placeholder}</option>}
+    <slot />
+    {normalizedOptions.map(option => (
+      <option disabled={option.disabled} selected={selectedValue === String(option.value)} value={option.value}>{option.label}</option>
+    ))}
+  </select>
+
+  <div class="ui-select__control" data-ui-select-control hidden>
+    <button
+      aria-controls={listId}
+      aria-expanded="false"
+      aria-haspopup="listbox"
+      class:list={[
+        'ui-select',
+        'ui-select__trigger',
+        size === 'sm' && 'ui-select--sm',
+        size === 'lg' && 'ui-select--lg'
+      ]}
+      data-ui-select-trigger
+      disabled={disabled}
+      id={triggerId}
+      role="combobox"
+      type="button"
+    >
+      <span data-ui-select-value>{triggerText}</span>
+    </button>
+
+    <div class="ui-select__list" data-state="closed" data-ui-select-list hidden id={listId} role="listbox">
+      {normalizedOptions.map(option => (
+        <button
+          aria-disabled={option.disabled ? 'true' : undefined}
+          aria-selected={selectedValue === String(option.value) ? 'true' : 'false'}
+          data-ui-select-option
+          data-value={option.value}
+          disabled={option.disabled}
+          role="option"
+          type="button"
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>

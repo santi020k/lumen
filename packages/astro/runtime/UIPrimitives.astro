@@ -19,6 +19,19 @@
 
   const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
 
+  const fieldControlSelector = [
+    'input:not([type="hidden"])',
+    'select',
+    'textarea',
+    '[contenteditable="true"]',
+    '[role="combobox"]',
+    '[role="listbox"]',
+    '[role="spinbutton"]',
+    '[role="textbox"]'
+  ].join(',')
+
+  const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
+
   /**
    * Top-layer mode: when the browser supports both the Popover API and CSS
    * anchor positioning, floating panels are promoted to [popover] so they
@@ -33,7 +46,6 @@
     CSS.supports('position-area: block-end')
 
   let uiAnchorCount = 0
-
   const nextAnchorName = (): string => `--ui-anchor-${++uiAnchorCount}`
 
   const isElementVisible = (element: HTMLElement): boolean =>
@@ -347,6 +359,50 @@
     }
   }
 
+  const getFieldControl = (root: HTMLElement): HTMLElement | null => {
+    const controlId = root.dataset.uiFieldControl
+
+    if (controlId) {
+      const control = document.getElementById(controlId)
+
+      if (control instanceof HTMLElement) return control
+    }
+
+    return root.querySelector<HTMLElement>(fieldControlSelector)
+  }
+
+  const getFieldDescriptionId = (element: HTMLElement): string => {
+    if (!element.id) {
+      element.id = `ui-field-description-${crypto.randomUUID()}`
+    }
+
+    return element.id
+  }
+
+  const initFields = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('.ui-field, [data-ui-field]')) {
+      if (root.dataset.uiFieldBound === 'true') continue
+
+      const control = getFieldControl(root)
+
+      if (!control) continue
+
+      root.dataset.uiFieldBound = 'true'
+
+      const existingIds = control.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? []
+      const configuredIds = root.dataset.uiFieldDescribedby?.trim().split(/\s+/) ?? []
+
+      const descriptionIds = [...root.querySelectorAll<HTMLElement>(fieldDescriptionSelector)]
+        .map(element => getFieldDescriptionId(element))
+
+      const describedBy = [...new Set([...existingIds, ...configuredIds, ...descriptionIds].filter(Boolean))]
+
+      if (describedBy.length) {
+        control.setAttribute('aria-describedby', describedBy.join(' '))
+      }
+    }
+  }
+
   const initTabs = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tabs]')) {
       if (root.dataset.uiBound === 'true') continue
@@ -563,6 +619,124 @@
     input.focus({ preventScroll: true })
   }
 
+  const closeSelect = (root: HTMLElement): void => {
+    const trigger = root.querySelector<HTMLElement>('[data-ui-select-trigger]')
+    const listbox = root.querySelector<HTMLElement>('[data-ui-select-list]')
+
+    if (!trigger || !listbox) return
+
+    trigger.setAttribute('aria-expanded', 'false')
+
+    listbox.hidden = true
+
+    listbox.dataset.state = 'closed'
+  }
+
+  const openSelect = (root: HTMLElement): void => {
+    const trigger = root.querySelector<HTMLElement>('[data-ui-select-trigger]')
+    const listbox = root.querySelector<HTMLElement>('[data-ui-select-list]')
+
+    if (!trigger || !listbox) return
+
+    trigger.setAttribute('aria-expanded', 'true')
+
+    listbox.hidden = false
+
+    listbox.dataset.state = 'open'
+  }
+
+  const getSelectItems = (root: HTMLElement): HTMLElement[] =>
+    [...root.querySelectorAll<HTMLElement>('[data-ui-select-option]')]
+
+  const getEnabledSelectItems = (root: HTMLElement): HTMLElement[] =>
+    getSelectItems(root).filter(item => !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true')
+
+  const getSelectedSelectItem = (root: HTMLElement): HTMLElement | undefined =>
+    getEnabledSelectItems(root).find(item => item.getAttribute('aria-selected') === 'true')
+
+  const isPrintableKey = (event: KeyboardEvent): boolean =>
+    event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
+
+  const renderSelectOptions = (select: HTMLSelectElement, listbox: HTMLElement): void => {
+    const items = [...select.options]
+      .filter(option => !option.hasAttribute('data-ui-select-placeholder'))
+      .map(option => {
+        const item = document.createElement('button')
+
+        item.type = 'button'
+        item.role = 'option'
+        item.dataset.uiSelectOption = ''
+        item.dataset.value = option.value
+        item.textContent = option.label
+
+        if (option.disabled) {
+          item.disabled = true
+          item.setAttribute('aria-disabled', 'true')
+        }
+
+        return item
+      })
+
+    listbox.replaceChildren(...items)
+  }
+
+  const syncSelectValue = (root: HTMLElement): void => {
+    const select = root.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+    const trigger = root.querySelector<HTMLElement>('[data-ui-select-trigger]')
+    const value = root.querySelector<HTMLElement>('[data-ui-select-value]')
+
+    if (!select || !trigger || !value) return
+
+    const selectedOption = select.selectedOptions[0]
+    const hasSelection = Boolean(selectedOption && !selectedOption.hasAttribute('data-ui-select-placeholder'))
+    const placeholder = select.querySelector<HTMLOptionElement>('[data-ui-select-placeholder]')
+
+    value.textContent = hasSelection
+      ? selectedOption.label
+      : placeholder?.textContent?.trim() || 'Select an option'
+
+    root.dataset.placeholder = hasSelection ? 'false' : 'true'
+
+    for (const item of getSelectItems(root)) {
+      item.setAttribute('aria-selected', String(hasSelection && item.dataset.value === select.value))
+    }
+  }
+
+  const selectSelectOption = (root: HTMLElement, item: HTMLElement): void => {
+    const select = root.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+    const trigger = root.querySelector<HTMLElement>('[data-ui-select-trigger]')
+
+    if (!select || !trigger || item.hasAttribute('disabled') || item.getAttribute('aria-disabled') === 'true') return
+
+    select.value = item.dataset.value ?? ''
+
+    select.dispatchEvent(new Event('input', { bubbles: true }))
+
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+
+    syncSelectValue(root)
+
+    closeSelect(root)
+
+    trigger.focus({ preventScroll: true })
+  }
+
+  const focusSelectOption = (
+    root: HTMLElement,
+    key: string,
+    currentItem?: HTMLElement
+  ): void => {
+    const items = getEnabledSelectItems(root)
+
+    if (!items.length) return
+
+    const current = currentItem ?? getSelectedSelectItem(root) ?? items[0]
+    const currentIndex = items.indexOf(current)
+    const nextItem = items[getLoopedIndex(key, Math.max(0, currentIndex), items.length, ['ArrowDown'])]
+
+    nextItem?.focus()
+  }
+
   const focusLoopedOption = (
     items: HTMLElement[],
     currentItem: HTMLElement,
@@ -674,6 +848,168 @@
           event.preventDefault()
 
           focusLoopedOption(items, item, event.key)
+        })
+      }
+    }
+  }
+
+  const initSelects = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-select]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const select = root.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+      const control = root.querySelector<HTMLElement>('[data-ui-select-control]')
+      const trigger = root.querySelector<HTMLButtonElement>('[data-ui-select-trigger]')
+      const listbox = root.querySelector<HTMLElement>('[data-ui-select-list]')
+
+      if (!select || !control || !trigger || !listbox) continue
+
+      root.dataset.uiBound = 'true'
+
+      renderSelectOptions(select, listbox)
+
+      control.hidden = false
+      select.dataset.uiEnhanced = 'true'
+      select.tabIndex = -1
+      select.setAttribute('aria-hidden', 'true')
+      trigger.disabled = select.disabled
+      trigger.setAttribute('aria-haspopup', 'listbox')
+
+      for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) {
+        const value = select.getAttribute(attribute)
+
+        if (value) {
+          trigger.setAttribute(attribute, value)
+        }
+      }
+
+      if (select.required) {
+        trigger.setAttribute('aria-required', 'true')
+      }
+
+      if (!trigger.hasAttribute('aria-label') && !trigger.hasAttribute('aria-labelledby')) {
+        const label = [...(select.labels ?? [])].find(item => item.textContent?.trim())
+
+        if (label?.textContent) {
+          trigger.setAttribute('aria-label', label.textContent.trim())
+        }
+      }
+
+      for (const label of select.labels ?? []) {
+        label.addEventListener('click', event => {
+          event.preventDefault()
+
+          trigger.focus({ preventScroll: true })
+        })
+      }
+
+      let typeahead = ''
+      let typeaheadTimer = 0
+
+      const focusTypeaheadOption = (currentItem?: HTMLElement): void => {
+        const items = getEnabledSelectItems(root)
+
+        if (!items.length || !typeahead) return
+
+        const currentIndex = currentItem ? items.indexOf(currentItem) : items.indexOf(getSelectedSelectItem(root) ?? items[0])
+        const orderedItems = [...items.slice(Math.max(0, currentIndex + 1)), ...items.slice(0, Math.max(0, currentIndex + 1))]
+        const nextItem = orderedItems.find(item => item.textContent?.trim().toLowerCase().startsWith(typeahead))
+
+        nextItem?.focus()
+      }
+
+      const handleTypeahead = (event: KeyboardEvent, currentItem?: HTMLElement): boolean => {
+        if (!isPrintableKey(event)) return false
+
+        event.preventDefault()
+
+        typeahead += event.key.toLowerCase()
+
+        window.clearTimeout(typeaheadTimer)
+
+        typeaheadTimer = window.setTimeout(() => {
+          typeahead = ''
+        }, 700)
+
+        openSelect(root)
+
+        focusTypeaheadOption(currentItem)
+
+        return true
+      }
+
+      syncSelectValue(root)
+      closeSelect(root)
+
+      trigger.addEventListener('click', () => {
+        const isOpen = trigger.getAttribute('aria-expanded') === 'true'
+
+        if (isOpen) {
+          closeSelect(root)
+        } else {
+          openSelect(root)
+        }
+      })
+
+      trigger.addEventListener('keydown', event => {
+        if (handleTypeahead(event)) return
+
+        if (event.key === 'Escape') {
+          closeSelect(root)
+
+          return
+        }
+
+        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End' && event.key !== 'Enter' && event.key !== ' ') return
+
+        event.preventDefault()
+
+        openSelect(root)
+
+        if (event.key === 'Enter' || event.key === ' ') {
+          ;(getSelectedSelectItem(root) ?? getEnabledSelectItems(root)[0])?.focus()
+
+          return
+        }
+
+        focusSelectOption(root, event.key)
+      })
+
+      select.addEventListener('change', () => syncSelectValue(root))
+
+      select.form?.addEventListener('reset', () => {
+        window.setTimeout(() => syncSelectValue(root))
+      })
+
+      for (const item of getSelectItems(root)) {
+        item.tabIndex = -1
+
+        item.addEventListener('click', () => selectSelectOption(root, item))
+
+        item.addEventListener('keydown', event => {
+          if (handleTypeahead(event, item)) return
+
+          if (event.key === 'Escape') {
+            closeSelect(root)
+
+            trigger.focus({ preventScroll: true })
+
+            return
+          }
+
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+
+            selectSelectOption(root, item)
+
+            return
+          }
+
+          if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
+
+          event.preventDefault()
+
+          focusSelectOption(root, event.key, item)
         })
       }
     }
@@ -1183,6 +1519,8 @@
   const initUiPrimitives = (scope: ParentNode = document): void => {
     initDialogs(scope)
 
+    initFields(scope)
+
     initDisclosures(scope)
 
     initTabs(scope)
@@ -1195,7 +1533,10 @@
 
     initComboboxes(scope)
 
+    initSelects(scope)
+
     initCodeCopy(scope)
+
 
     initCarousel(scope)
 
@@ -1239,6 +1580,12 @@
       }
     }
 
+    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
+      if (!root.contains(target)) {
+        closeSelect(root)
+      }
+    }
+
     for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
       if (!menu.contains(target)) {
         closeContextMenu(menu)
@@ -1255,6 +1602,10 @@
 
     for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
       closeCombobox(root)
+    }
+
+    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
+      closeSelect(root)
     }
 
     for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {

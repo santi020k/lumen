@@ -2,10 +2,20 @@
 import { Pagination } from '@santi020k/lumen-astro'
 ---
 
-<Pagination>
-  <a href="?page=1" rel="prev">Previous</a>
-  <a href="?page=1">1</a>
-  <a aria-current="page" href="?page=2">2</a>
-  <a href="?page=3">3</a>
-  <a href="?page=3" rel="next">Next</a>
-</Pagination>
+<div style="display: grid; gap: 1rem;">
+  <Pagination>
+    <a href="?page=1" rel="prev">Previous</a>
+    <a href="?page=1">1</a>
+    <a aria-current="page" href="?page=2">2</a>
+    <a href="?page=3">3</a>
+    <a href="?page=3" rel="next">Next</a>
+  </Pagination>
+
+  <Pagination aria-label="Pagination with disabled previous state">
+    <button type="button" disabled aria-label="Previous page">Previous</button>
+    <a aria-current="page" href="?page=1">1</a>
+    <a href="?page=2">2</a>
+    <a href="?page=3">3</a>
+    <a href="?page=2" rel="next">Next</a>
+  </Pagination>
+</div>

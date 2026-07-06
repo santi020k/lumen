@@ -37,6 +37,20 @@ export {
   toggleDataViewSelection,
   unpinDataViewColumn} from './data.js'
 export {
+  createFigmaVariableName,
+  exportThemeDesignTokens,
+  exportThemeFigmaVariables,
+  hslTokenToFigmaColor,
+  hslTokenToHexColor,
+  type LumenDesignToken,
+  type LumenDesignTokenExport,
+  type LumenFigmaColorValue,
+  type LumenFigmaVariable,
+  type LumenFigmaVariableCollection,
+  type LumenFigmaVariableExportOptions,
+  type LumenFigmaVariableMode
+} from './figma.js'
+export {
   canPlaceScheduleEvent,
   createScheduleSlots,
   createScheduleStorageKey,
@@ -67,6 +81,7 @@ export {
   type LumenContrastScore,
   type LumenThemeContrastSuggestion,
   type LumenThemeFromHueOptions,
+  type LumenThemeTokenName,
   type LumenThemeTokens,
   lumenTokenNames,
   mergeThemeTokens,

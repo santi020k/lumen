@@ -30,6 +30,8 @@ export const lumenTokenNames = [
   'danger'
 ] as const
 
+export type LumenThemeTokenName = typeof lumenTokenNames[number]
+
 export const exportThemeCss = (
   tokens: LumenThemeTokens,
   selector = ':root'

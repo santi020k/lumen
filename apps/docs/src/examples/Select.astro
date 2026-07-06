@@ -2,14 +2,16 @@
 import { Select } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 0.5rem; max-width: 20rem;">
-  <Select name="framework" aria-label="Framework" placeholder="Pick a framework">
+<div style="display: grid; gap: 0.75rem; max-width: 20rem;">
+  <label for="ex-select-framework">Framework</label>
+  <Select id="ex-select-framework" name="framework" placeholder="Pick a framework">
     <option value="astro">Astro</option>
     <option value="react">React</option>
     <option value="elements">Web Components</option>
   </Select>
+  <label for="ex-select-region">Region</label>
   <Select
-    aria-label="Region"
+    id="ex-select-region"
     name="region"
     options={[
       { label: 'US East', value: 'us-east' },
@@ -18,5 +20,18 @@ import { Select } from '@santi020k/lumen-astro'
     ]}
     placeholder="Options via prop"
     size="sm"
+  />
+  <label for="ex-select-density">Density</label>
+  <Select id="ex-select-density" name="density" placeholder="Large select" size="lg">
+    <option value="compact">Compact</option>
+    <option value="comfortable">Comfortable</option>
+  </Select>
+  <label for="ex-select-surface">Surface</label>
+  <Select
+    glass="subtle"
+    id="ex-select-surface"
+    name="surface"
+    options={['Canvas', 'Surface', 'Glass']}
+    placeholder="Glass enhanced select"
   />
 </div>

@@ -1,10 +1,36 @@
 ---
-import { Input } from '@santi020k/lumen-astro'
+import {
+  Field,
+  Input
+} from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 0.5rem; max-width: 20rem;">
-  <Input aria-label="Small input" placeholder="Small" size="sm" />
-  <Input aria-label="Email" placeholder="you@example.com" type="email" />
-  <Input aria-label="Large input" placeholder="Large" size="lg" />
-  <Input aria-label="Disabled input" disabled placeholder="Disabled" />
+<div style="display: grid; gap: 0.75rem; max-width: 20rem;">
+  <Field>
+    <label for="ex-input-small">Small input</label>
+    <Input id="ex-input-small" name="small-input" placeholder="Small" size="sm" />
+  </Field>
+  <Field>
+    <label for="ex-input-email">Email</label>
+    <Input id="ex-input-email" name="email" placeholder="you@example.com" type="email" />
+  </Field>
+  <Field>
+    <label for="ex-input-large">Large input</label>
+    <Input id="ex-input-large" name="large-input" placeholder="Large" size="lg" />
+  </Field>
+  <Field>
+    <label for="ex-input-disabled">Disabled input</label>
+    <Input id="ex-input-disabled" name="disabled-input" disabled placeholder="Disabled" />
+  </Field>
+  <Field>
+    <label for="ex-input-invalid">Workspace slug</label>
+    <Input
+      aria-describedby="ex-input-invalid-error"
+      aria-invalid="true"
+      id="ex-input-invalid"
+      name="workspace-slug"
+      value="lumen docs"
+    />
+    <p id="ex-input-invalid-error">Use lowercase letters, numbers, and hyphens only.</p>
+  </Field>
 </div>

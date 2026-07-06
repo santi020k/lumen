@@ -2,4 +2,26 @@
 import { Slider } from '@santi020k/lumen-astro'
 ---
 
-<Slider name="opacity" min="0" max="100" value="80" aria-label="Opacity" />
+<div style="display: grid; gap: 0.75rem; max-width: 20rem;">
+  <label for="ex-slider-opacity">Opacity</label>
+  <Slider id="ex-slider-opacity" name="opacity" min="0" max="100" value="80" aria-describedby="ex-slider-opacity-value" />
+  <output id="ex-slider-opacity-value" for="ex-slider-opacity" aria-live="polite">80</output>
+
+  <label for="ex-slider-volume">Volume</label>
+  <Slider id="ex-slider-volume" name="volume" min="0" max="100" step="5" value="45" />
+</div>
+
+<script>
+  const slider = document.querySelector<HTMLInputElement>('#ex-slider-opacity')
+  const output = document.querySelector<HTMLOutputElement>('#ex-slider-opacity-value')
+
+  if (slider && output) {
+    const updateValue = () => {
+      output.value = slider.value
+      output.textContent = slider.value
+    }
+
+    updateValue()
+    slider.addEventListener('input', updateValue)
+  }
+</script>

@@ -69,4 +69,38 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-code--block')
     expect(styles).toContain('.ui-code__copy')
   })
+
+  test('ships Select as a progressively enhanced listbox distinct from NativeSelect', async () => {
+    const [select, nativeSelect, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/Select.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/NativeSelect.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(nativeSelect).toContain('<select class:list')
+    expect(nativeSelect).not.toContain('data-ui-select-trigger')
+    expect(select).toContain('data-ui-select-native')
+    expect(select).toContain('data-ui-select-trigger')
+    expect(select).toContain('role="listbox"')
+    expect(select).toContain('data-ui-select-option')
+    expect(runtime).toContain('const initSelects = (scope: ParentNode): void =>')
+    expect(runtime).toContain("select.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(styles).toContain('.ui-select__list')
+  })
+
+  test('keeps accessibility and sanitization guards in component sources', async () => {
+    const [aspectRatio, avatar, field, runtime] = await Promise.all([
+      readFile(new URL('./components/AspectRatio.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Avatar.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Field.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(aspectRatio).toContain('ratio?: number | string')
+    expect(aspectRatio).toContain('Number.isFinite(ratio)')
+    expect(avatar).toContain('fallback && <span>{fallback}</span>')
+    expect(field).toContain(`data-ui-field-${'described' + 'by'}={fieldDescribedBy}`)
+    expect(runtime).toContain(`control.setAttribute('aria-${'described' + 'by'}'`)
+  })
 })
