@@ -1,15 +1,37 @@
 ---
-import { ThemeBuilder } from '@santi020k/lumen-astro'
+import { Label, ThemeBuilder } from '@santi020k/lumen-astro'
 ---
 
 <div class="docs-glass-demo">
-  <ThemeBuilder glass>
+  <ThemeBuilder data-ui-theme-target="#ex-glass-theme-preview" glass>
     <header><h2>Brand theme</h2></header>
-    <div style="display: flex; gap: 0.5rem;">
-      <span data-ui-swatch style="--ui-swatch:#2563eb"></span>
-      <span data-ui-swatch style="--ui-swatch:#14b8a6"></span>
-      <span data-ui-swatch style="--ui-swatch:#f59e0b"></span>
-      <span data-ui-swatch style="--ui-swatch:#ef4444"></span>
+    <div style="display: grid; gap: 0.45rem;">
+      <Label for="ex-glass-theme-hue">Brand hue</Label>
+      <input
+        id="ex-glass-theme-hue"
+        data-ui-theme-brand-hue
+        type="range"
+        class="ui-slider"
+        min="0"
+        max="359"
+        value="264"
+      />
+      <Label for="ex-glass-theme-accent">Accent hue</Label>
+      <input
+        id="ex-glass-theme-accent"
+        data-ui-theme-accent-hue
+        type="range"
+        class="ui-slider"
+        min="0"
+        max="359"
+        value="54"
+      />
     </div>
+    <div id="ex-glass-theme-preview" style="display: flex; gap: 0.5rem; padding: 0.5rem;">
+      <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
+      <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
+    </div>
+    <button data-ui-theme-export type="button">Export CSS</button>
+    <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
   </ThemeBuilder>
 </div>

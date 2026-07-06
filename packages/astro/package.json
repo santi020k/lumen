@@ -29,9 +29,11 @@
     "lint:fix": "eslint . --fix --no-warn-ignored",
     "clean": "rm -rf .astro coverage"
   },
+  "dependencies": {
+    "@santi020k/lumen-core": "workspace:^"
+  },
   "devDependencies": {
     "@astrojs/ts-plugin": "catalog:",
-    "@santi020k/lumen-core": "workspace:^",
     "astro": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

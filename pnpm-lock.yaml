@@ -214,13 +214,14 @@ importers:
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
 
   packages/astro:
+    dependencies:
+      '@santi020k/lumen-core':
+        specifier: workspace:^
+        version: link:../core
     devDependencies:
       '@astrojs/ts-plugin':
         specifier: 'catalog:'
         version: 1.10.10
-      '@santi020k/lumen-core':
-        specifier: workspace:^
-        version: link:../core
       astro:
         specifier: 'catalog:'
         version: 7.0.6(@astrojs/markdown-remark@7.2.1)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.2)(@types/node@26.1.0)(jiti@2.7.0)(yaml@2.9.0)

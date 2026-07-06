@@ -19,7 +19,9 @@
 
   /* eslint-disable complexity, unicorn/consistent-function-scoping -- The runtime keeps stateful DOM handlers close to each primitive so Astro consumers do not need a framework runtime. */
   type ThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
+
   type ThemeBuilderMode = 'generated' | 'manual'
+
   type ThemeBuilderScheme = 'dark' | 'light'
 
   const focusableSelector = [
@@ -2594,6 +2596,7 @@
       }
 
       button.classList.toggle('ui-button--secondary', isPressed)
+
       button.classList.toggle('ui-button--outline', !isPressed)
     }
   }
@@ -2631,7 +2634,9 @@
       }
 
       text.value = color.value
+
       setThemeBuilderHexValidity(text, true)
+
       onChange()
     })
 
@@ -2732,6 +2737,7 @@
       const exportFormatButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-export-format]')]
       const modeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-mode]')]
       const schemeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')]
+
       const hasTokenControls = Boolean(
         brandHue ||
         brandHueNumber ||
@@ -2771,6 +2777,7 @@
         const target = getThemeBuilderTarget(root) ?? document.documentElement
 
         currentTokens = getComputedThemeBuilderTokens(target)
+
         writeExport(currentTokens, currentScheme)
       }
 
@@ -2783,10 +2790,12 @@
           root.getAttribute('data-ui-theme-brand-hue') ??
           root.getAttribute('data-ui-theme-hue')
         )
+
         const nextAccentHue = normalizeThemeBuilderHue(
           accentHue?.value ?? accentHueNumber?.value ?? root.getAttribute('data-ui-theme-accent-hue'),
           normalizeThemeBuilderHue(hue + 150)
         )
+
         const mode = coerceThemeBuilderMode(getThemeBuilderButtonValue(root, modeButtons, 'data-ui-theme-mode', 'generated'))
         const primaryValue = primaryHex?.value ?? primaryColor?.value
         const secondaryValue = secondaryHex?.value ?? secondaryColor?.value
@@ -2794,6 +2803,7 @@
         const secondary = secondaryValue ? hexToThemeBuilderHsl(secondaryValue) : null
         const baseHue = mode === 'manual' ? primary?.hue ?? hue : hue
         const baseAccentHue = mode === 'manual' ? secondary?.hue ?? nextAccentHue : nextAccentHue
+
         const tokens = createThemeFromHue(baseHue, {
           accentHue: baseAccentHue,
           scheme: currentScheme
@@ -2802,6 +2812,7 @@
         if (mode === 'manual') {
           if (primary) {
             tokens.brand = primary.value
+
             tokens['brand-solid'] = primary.value
           }
 

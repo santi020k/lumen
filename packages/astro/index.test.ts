@@ -278,4 +278,25 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-sonner[data-placement$="center"]')
     expect(styles).toContain('.ui-toast__action')
   })
+
+  test('ships ThemeBuilder as a scoped token playground runtime', async () => {
+    const [example, glassExample, runtime] = await Promise.all([
+      readFile(new URL('../../apps/docs/src/examples/ThemeBuilder.astro', packageRoot), 'utf8'),
+      readFile(new URL('../../apps/docs/src/examples/glass/ThemeBuilder.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(example).toContain('data-ui-theme-target')
+    expect(example).toContain('data-ui-theme-brand-hue')
+    expect(example).toContain('data-ui-theme-accent-hue')
+    expect(glassExample).toContain('<ThemeBuilder data-ui-theme-target="#ex-glass-theme-preview" glass>')
+    expect(glassExample).toContain('data-ui-theme-brand-hue')
+    expect(glassExample).toContain('data-ui-theme-accent-hue')
+    expect(glassExample).toContain('data-ui-theme-export')
+    expect(runtime).toContain('data-ui-theme-primary-hex')
+    expect(runtime).toContain('data-ui-theme-export-format')
+    expect(runtime).toContain('exportThemeFigmaVariables')
+    expect(runtime).toContain("'ui:theme-change'")
+    expect(runtime).toContain("'ui:theme-export'")
+  })
 })
