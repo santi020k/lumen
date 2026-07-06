@@ -175,9 +175,19 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<ThemeBuilder class="lumen-recipe lumen-recipe--theme-builder">
-  <header><h2>Brand theme</h2><Button data-ui-theme-export type="button">Export CSS</Button></header>
-  <Card><Input aria-label="Theme name" placeholder="Acme light" /><ColorPicker aria-label="Brand color" value="#2563eb" /></Card>
+<ThemeBuilder class="lumen-recipe lumen-recipe--theme-builder" data-ui-theme-target="#lumen-theme-preview">
+  <header><h2>Brand theme</h2><Button data-ui-theme-export type="button">Copy CSS</Button></header>
+  <Card id="lumen-theme-preview" style="display: flex; gap: 0.5rem;">
+    <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
+    <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
+  </Card>
+  <Card>
+    <Button aria-pressed="true" data-ui-theme-mode="generated" type="button" variant="secondary">Generated</Button>
+    <Button aria-pressed="false" data-ui-theme-mode="manual" type="button" variant="outline">Manual</Button>
+    <Input aria-label="Brand hue" data-ui-theme-brand-hue max="359" min="0" type="range" value="264" />
+    <ColorPicker aria-label="Manual brand color" data-ui-theme-primary-color value="#6f20f0" />
+    <Input aria-label="Manual brand hex" data-ui-theme-primary-hex value="#6f20f0" />
+  </Card>
   <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
 </ThemeBuilder>
 `

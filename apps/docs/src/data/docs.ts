@@ -474,16 +474,16 @@ export const runtimeEvents: RuntimeEventRow[] = [
     when: 'Fires after a [data-ui-editor-command] control runs document.execCommand(command).'
   },
   {
-    detail: '{ hue: number, tokens: Record<string, string> }',
+    detail: "{ hue: number, accentHue: number, mode: 'generated' | 'manual', scheme: 'dark' | 'light', tokens: Record<string, string> }",
     name: 'ui:theme-change',
     target: 'ThemeBuilder root ([data-ui-theme-builder])',
-    when: 'Fires after the [data-ui-theme-hue] input updates generated theme tokens on the target element.'
+    when: 'Fires after ThemeBuilder hue, manual color, mode, or scheme controls update theme tokens on the target element.'
   },
   {
-    detail: '{ css: string }',
+    detail: "{ css?: string, format: 'css' | 'figma' | 'tokens', tokens: Record<string, string> | null, value: string }",
     name: 'ui:theme-export',
     target: 'ThemeBuilder root ([data-ui-theme-builder])',
-    when: 'Fires after a [data-ui-theme-export] control writes the current token CSS to the output and clipboard when available.'
+    when: 'Fires after a [data-ui-theme-export] control writes the selected CSS, Figma, or design-token export to the output and clipboard when available.'
   },
   {
     detail: '{ control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, form: HTMLFormElement, value: string }',
@@ -842,7 +842,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Tabs', 'Navigation', 'Switches between related panels.', '<Tabs><div role="tablist"><button role="tab" aria-selected="true">Preview</button></div><section role="tabpanel">Preview content</section></Tabs>'],
   ['TagGroup', 'Forms', 'Groups removable or selectable tags.', '<TagGroup><span data-ui-tag role="listitem">Astro</span><span data-ui-tag role="listitem">Accessible</span></TagGroup>'],
   ['Textarea', 'Forms', 'Captures longer free-form text.', '<Textarea name="notes" rows={5} placeholder="Add release notes..." />'],
-  ['ThemeBuilder', 'Data display', 'Frames token previews and theme export controls.', '<ThemeBuilder><header><h2>Brand theme</h2></header><span data-ui-swatch style="--ui-swatch:#2563eb"></span></ThemeBuilder>'],
+  ['ThemeBuilder', 'Data display', 'Builds scoped token previews with hue, scheme, manual color, and export controls.', '<ThemeBuilder data-ui-theme-target="#preview"><input data-ui-theme-brand-hue type="range" min="0" max="359" value="264" /><button data-ui-theme-export type="button">Copy CSS</button><textarea data-ui-theme-output></textarea></ThemeBuilder>'],
   ['TimeField', 'Forms', 'Captures a native time value.', '<TimeField name="startTime" aria-label="Start time" />'],
   ['Toast', 'Feedback', 'Displays temporary feedback for background actions.', '<Toast><strong>Saved</strong><p>Your changes are live.</p></Toast>'],
   ['Toggle', 'Actions', 'Represents an on/off action.', '<Toggle aria-label="Pin project" pressed={false}>Pin</Toggle>'],

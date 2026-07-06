@@ -50,8 +50,8 @@ surface; React and Web Components expose the same class and data contracts.
 - Web Components behavior parity: `packages/elements` currently emits classes/default
   `data-ui-*` attributes and documents Astro as the reference runtime; behavior-heavy elements still
   need equivalent client behavior.
-- Docs theme playground: `ThemeBuilder` has a live component example, but there is not yet a broader
-  docs playground for trying, comparing, and copying full token themes.
+- Theme tooling polish: the docs theme playground now uses the public `ThemeBuilder` runtime; add
+  import/check contrast flows when token review needs to go beyond generation and export.
 - Per-component API prop tables completeness: `apps/docs/src/data/docs.ts` uses a partial
   `apiReferenceByComponent` map, so many components still rely only on common rows.
 - Visual regression coverage for new interactive components: `tests/visual/components.spec.ts`

@@ -8,7 +8,20 @@
 ---
 
 <script>
+  import {
+    createThemeFromHue,
+    exportThemeCss,
+    exportThemeDesignTokens,
+    exportThemeFigmaVariables,
+    type LumenThemeTokens,
+    lumenTokenNames
+  } from '@santi020k/lumen-core'
+
   /* eslint-disable complexity, unicorn/consistent-function-scoping -- The runtime keeps stateful DOM handlers close to each primitive so Astro consumers do not need a framework runtime. */
+  type ThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
+  type ThemeBuilderMode = 'generated' | 'manual'
+  type ThemeBuilderScheme = 'dark' | 'light'
+
   const focusableSelector = [
     'a[href]',
     'button:not([disabled])',
@@ -2455,6 +2468,251 @@
     }
   }
 
+  const themeBuilderExportButtonLabels: Record<ThemeBuilderExportFormat, string> = {
+    css: 'Copy CSS',
+    figma: 'Copy Figma JSON',
+    tokens: 'Copy token JSON'
+  }
+
+  const coerceThemeBuilderExportFormat = (value?: string | null): ThemeBuilderExportFormat => {
+    if (value === 'figma' || value === 'tokens') return value
+
+    return 'css'
+  }
+
+  const coerceThemeBuilderMode = (value?: string | null): ThemeBuilderMode =>
+    value === 'manual' ? 'manual' : 'generated'
+
+  const coerceThemeBuilderScheme = (value?: string | null): ThemeBuilderScheme =>
+    value === 'dark' ? 'dark' : 'light'
+
+  const getDefaultThemeBuilderScheme = (): ThemeBuilderScheme =>
+    document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
+
+  const normalizeThemeBuilderHue = (
+    value: number | string | null | undefined,
+    fallback = 0
+  ): number => {
+    const parsed = Number(value)
+
+    if (!Number.isFinite(parsed)) return fallback
+
+    return ((Math.round(parsed) % 360) + 360) % 360
+  }
+
+  const normalizeThemeBuilderHex = (value: string): string | null => {
+    const hex = value.trim().replace(/^#/, '')
+
+    if (/^[\da-f]{3}$/i.test(hex)) {
+      return `#${[...hex].map(character => `${character}${character}`).join('').toLowerCase()}`
+    }
+
+    return /^[\da-f]{6}$/i.test(hex) ? `#${hex.toLowerCase()}` : null
+  }
+
+  const hexToThemeBuilderHsl = (value: string): { hue: number, value: string } | null => {
+    const normalized = normalizeThemeBuilderHex(value)
+
+    if (!normalized) return null
+
+    const red = Number.parseInt(normalized.slice(1, 3), 16) / 255
+    const green = Number.parseInt(normalized.slice(3, 5), 16) / 255
+    const blue = Number.parseInt(normalized.slice(5, 7), 16) / 255
+    const max = Math.max(red, green, blue)
+    const min = Math.min(red, green, blue)
+    const lightness = (max + min) / 2
+    const delta = max - min
+    let hue = 0
+    let saturation = 0
+
+    if (delta !== 0) {
+      saturation = delta / (1 - Math.abs(2 * lightness - 1))
+
+      if (max === red) {
+        hue = 60 * (((green - blue) / delta) % 6)
+      } else if (max === green) {
+        hue = 60 * ((blue - red) / delta + 2)
+      } else {
+        hue = 60 * ((red - green) / delta + 4)
+      }
+    }
+
+    const normalizedHue = normalizeThemeBuilderHue(hue)
+
+    return {
+      hue: normalizedHue,
+      value: `${normalizedHue} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%`
+    }
+  }
+
+  const setThemeBuilderHexValidity = (input: HTMLInputElement, isValid: boolean): void => {
+    if (isValid) {
+      input.removeAttribute('aria-invalid')
+
+      return
+    }
+
+    input.setAttribute('aria-invalid', 'true')
+  }
+
+  const getThemeBuilderTarget = (root: HTMLElement): HTMLElement | null => {
+    const selector = root.dataset.uiThemeTarget
+
+    if (!selector) return document.documentElement
+
+    try {
+      return document.querySelector<HTMLElement>(selector)
+    } catch {
+      return null
+    }
+  }
+
+  const getThemeBuilderButtonValue = (
+    root: HTMLElement,
+    buttons: HTMLButtonElement[],
+    attribute: string,
+    fallback: string
+  ): string => {
+    const activeButton = buttons.find(button =>
+      button.getAttribute('aria-selected') === 'true' ||
+      button.getAttribute('aria-pressed') === 'true'
+    )
+
+    return activeButton?.getAttribute(attribute) ?? root.getAttribute(attribute) ?? fallback
+  }
+
+  const setThemeBuilderPressedState = (
+    buttons: HTMLButtonElement[],
+    attribute: string,
+    value: string
+  ): void => {
+    for (const button of buttons) {
+      const isPressed = button.getAttribute(attribute) === value
+
+      if (button.hasAttribute('aria-pressed')) {
+        button.setAttribute('aria-pressed', String(isPressed))
+      }
+
+      button.classList.toggle('ui-button--secondary', isPressed)
+      button.classList.toggle('ui-button--outline', !isPressed)
+    }
+  }
+
+  const bindSyncedThemeBuilderHueInputs = (
+    range: HTMLInputElement | null,
+    number: HTMLInputElement | null,
+    onChange: () => void
+  ): void => {
+    const sync = (source: HTMLInputElement, target: HTMLInputElement | null): void => {
+      source.value = String(normalizeThemeBuilderHue(source.value))
+
+      if (target) {
+        target.value = source.value
+      }
+
+      onChange()
+    }
+
+    range?.addEventListener('input', () => sync(range, number))
+
+    number?.addEventListener('input', () => sync(number, range))
+  }
+
+  const bindThemeBuilderHexInputs = (
+    color: HTMLInputElement | null,
+    text: HTMLInputElement | null,
+    onChange: () => void
+  ): void => {
+    color?.addEventListener('input', () => {
+      if (!text) {
+        onChange()
+
+        return
+      }
+
+      text.value = color.value
+      setThemeBuilderHexValidity(text, true)
+      onChange()
+    })
+
+    text?.addEventListener('change', () => {
+      const normalized = normalizeThemeBuilderHex(text.value)
+
+      setThemeBuilderHexValidity(text, Boolean(normalized))
+
+      if (normalized) {
+        if (color) color.value = normalized
+
+        text.value = normalized
+      }
+
+      onChange()
+    })
+
+    text?.addEventListener('input', () => {
+      const normalized = normalizeThemeBuilderHex(text.value)
+
+      setThemeBuilderHexValidity(text, Boolean(normalized))
+
+      if (normalized) {
+        if (color) color.value = normalized
+
+        onChange()
+      }
+    })
+  }
+
+  const getComputedThemeBuilderTokens = (target: HTMLElement): LumenThemeTokens => {
+    const styles = getComputedStyle(target)
+    const tokens: LumenThemeTokens = {}
+
+    for (const token of lumenTokenNames) {
+      const value = styles.getPropertyValue(`--${token}`).trim()
+
+      if (value) {
+        tokens[token] = value
+      }
+    }
+
+    return tokens
+  }
+
+  const applyThemeBuilderTokens = (
+    target: HTMLElement,
+    tokens: LumenThemeTokens,
+    scheme: ThemeBuilderScheme
+  ): void => {
+    target.style.colorScheme = scheme
+
+    for (const token of lumenTokenNames) {
+      target.style.setProperty(`--${token}`, tokens[token] ?? '')
+    }
+  }
+
+  const buildThemeBuilderCss = (
+    tokens: LumenThemeTokens,
+    scheme: ThemeBuilderScheme
+  ): string => exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
+
+  const buildThemeBuilderExport = (
+    tokens: LumenThemeTokens,
+    scheme: ThemeBuilderScheme,
+    format: ThemeBuilderExportFormat
+  ): string => {
+    if (format === 'figma') {
+      return JSON.stringify(exportThemeFigmaVariables(tokens, {
+        collectionName: 'Lumen',
+        modeName: scheme === 'dark' ? 'Dark' : 'Light'
+      }), null, 2)
+    }
+
+    if (format === 'tokens') {
+      return JSON.stringify(exportThemeDesignTokens(tokens), null, 2)
+    }
+
+    return buildThemeBuilderCss(tokens, scheme)
+  }
+
   const initThemeBuilders = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-theme-builder]')) {
       if (root.dataset.uiBound === 'true') continue
@@ -2463,97 +2721,199 @@
 
       const exportButton = root.querySelector<HTMLElement>('[data-ui-theme-export]')
       const output = root.querySelector<HTMLTextAreaElement | HTMLOutputElement>('[data-ui-theme-output]')
-      const hueInput = root.querySelector<HTMLInputElement>('[data-ui-theme-hue]')
+      const brandHue = root.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue], [data-ui-theme-hue]')
+      const brandHueNumber = root.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue-number]')
+      const accentHue = root.querySelector<HTMLInputElement>('[data-ui-theme-accent-hue]')
+      const accentHueNumber = root.querySelector<HTMLInputElement>('[data-ui-theme-accent-hue-number]')
+      const primaryColor = root.querySelector<HTMLInputElement>('[data-ui-theme-primary-color]')
+      const primaryHex = root.querySelector<HTMLInputElement>('[data-ui-theme-primary-hex]')
+      const secondaryColor = root.querySelector<HTMLInputElement>('[data-ui-theme-secondary-color]')
+      const secondaryHex = root.querySelector<HTMLInputElement>('[data-ui-theme-secondary-hex]')
+      const exportFormatButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-export-format]')]
+      const modeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-mode]')]
+      const schemeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')]
+      const hasTokenControls = Boolean(
+        brandHue ||
+        brandHueNumber ||
+        accentHue ||
+        accentHueNumber ||
+        primaryColor ||
+        primaryHex ||
+        secondaryColor ||
+        secondaryHex ||
+        root.hasAttribute('data-ui-theme-brand-hue') ||
+        root.hasAttribute('data-ui-theme-accent-hue') ||
+        root.hasAttribute('data-ui-theme-hue')
+      )
 
-      hueInput?.addEventListener('input', () => {
-        const hue = ((Number(hueInput.value) % 360) + 360) % 360
+      let currentExportValue = ''
+      let currentFormat = coerceThemeBuilderExportFormat(getThemeBuilderButtonValue(root, exportFormatButtons, 'data-ui-theme-export-format', 'css'))
+      let currentScheme = coerceThemeBuilderScheme(getThemeBuilderButtonValue(root, schemeButtons, 'data-ui-theme-scheme', getDefaultThemeBuilderScheme()))
+      let currentTokens: LumenThemeTokens | null = null
 
-        if (Number.isNaN(hue)) return
+      const updateExportButtonLabel = (): void => {
+        if (!exportButton || exportFormatButtons.length === 0) return
 
-        const target = root.dataset.uiThemeTarget
-          ? document.querySelector<HTMLElement>(root.dataset.uiThemeTarget)
-          : document.documentElement
+        exportButton.replaceChildren(themeBuilderExportButtonLabels[currentFormat])
+      }
 
-        if (!target) return
+      const writeExport = (tokens: LumenThemeTokens, scheme: ThemeBuilderScheme): void => {
+        currentExportValue = buildThemeBuilderExport(tokens, scheme, currentFormat)
 
-        const isDark = document.documentElement.dataset.theme?.includes('dark') ?? false
-        const accentHue = (hue + 150) % 360
-
-        const tokens: Record<string, string> = isDark
-          ? {
-              accent: `${accentHue} 70% 48%`,
-              brand: `${hue} 88% 60%`,
-              'brand-soft': `${hue} 80% 16%`,
-              'brand-solid': `${hue} 88% 46%`,
-              canvas: `${hue} 24% 8%`,
-              ink: `${hue} 20% 96%`,
-              'ink-muted': `${hue} 10% 58%`,
-              'ink-soft': `${hue} 14% 77%`,
-              line: `${hue} 14% 26%`,
-              surface: `${hue} 18% 11%`,
-              'surface-muted': `${hue} 16% 15%`,
-              'surface-strong': `${hue} 14% 22%`
-            }
-          : {
-              accent: `${accentHue} 70% 40%`,
-              brand: `${hue} 85% 53%`,
-              'brand-soft': `${hue} 90% 96%`,
-              'brand-solid': `${hue} 85% 45%`,
-              canvas: `${hue} 20% 99%`,
-              ink: `${hue} 40% 11%`,
-              'ink-muted': `${hue} 10% 48%`,
-              'ink-soft': `${hue} 14% 32%`,
-              line: `${hue} 14% 86%`,
-              surface: `${hue} 20% 100%`,
-              'surface-muted': `${hue} 16% 96%`,
-              'surface-strong': `${hue} 14% 91%`
-            }
-
-        for (const [token, value] of Object.entries(tokens)) {
-          target.style.setProperty(`--${token}`, value)
+        if (output) {
+          output.value = currentExportValue
         }
+
+        updateExportButtonLabel()
+      }
+
+      const writeComputedExport = (): void => {
+        const target = getThemeBuilderTarget(root) ?? document.documentElement
+
+        currentTokens = getComputedThemeBuilderTokens(target)
+        writeExport(currentTokens, currentScheme)
+      }
+
+      const update = (
+        options: { apply?: boolean, dispatch?: boolean } = {}
+      ): void => {
+        const hue = normalizeThemeBuilderHue(
+          brandHue?.value ??
+          brandHueNumber?.value ??
+          root.getAttribute('data-ui-theme-brand-hue') ??
+          root.getAttribute('data-ui-theme-hue')
+        )
+        const nextAccentHue = normalizeThemeBuilderHue(
+          accentHue?.value ?? accentHueNumber?.value ?? root.getAttribute('data-ui-theme-accent-hue'),
+          normalizeThemeBuilderHue(hue + 150)
+        )
+        const mode = coerceThemeBuilderMode(getThemeBuilderButtonValue(root, modeButtons, 'data-ui-theme-mode', 'generated'))
+        const primaryValue = primaryHex?.value ?? primaryColor?.value
+        const secondaryValue = secondaryHex?.value ?? secondaryColor?.value
+        const primary = primaryValue ? hexToThemeBuilderHsl(primaryValue) : null
+        const secondary = secondaryValue ? hexToThemeBuilderHsl(secondaryValue) : null
+        const baseHue = mode === 'manual' ? primary?.hue ?? hue : hue
+        const baseAccentHue = mode === 'manual' ? secondary?.hue ?? nextAccentHue : nextAccentHue
+        const tokens = createThemeFromHue(baseHue, {
+          accentHue: baseAccentHue,
+          scheme: currentScheme
+        })
+
+        if (mode === 'manual') {
+          if (primary) {
+            tokens.brand = primary.value
+            tokens['brand-solid'] = primary.value
+          }
+
+          if (secondary) {
+            tokens.accent = secondary.value
+          }
+        }
+
+        currentTokens = tokens
+
+        const target = getThemeBuilderTarget(root)
+
+        if (options.apply !== false && target) {
+          applyThemeBuilderTokens(target, tokens, currentScheme)
+        }
+
+        writeExport(tokens, currentScheme)
+
+        if (options.dispatch === false) return
 
         root.dispatchEvent(new CustomEvent('ui:theme-change', {
           bubbles: true,
-          detail: { hue, tokens }
+          detail: {
+            accentHue: baseAccentHue,
+            hue: baseHue,
+            mode,
+            scheme: currentScheme,
+            tokens
+          }
         }))
-      })
+      }
+
+      bindSyncedThemeBuilderHueInputs(brandHue, brandHueNumber, update)
+
+      bindSyncedThemeBuilderHueInputs(accentHue, accentHueNumber, update)
+
+      bindThemeBuilderHexInputs(primaryColor, primaryHex, update)
+
+      bindThemeBuilderHexInputs(secondaryColor, secondaryHex, update)
+
+      for (const button of exportFormatButtons) {
+        button.addEventListener('click', () => {
+          currentFormat = coerceThemeBuilderExportFormat(button.getAttribute('data-ui-theme-export-format'))
+
+          setThemeBuilderPressedState(exportFormatButtons, 'data-ui-theme-export-format', currentFormat)
+
+          if (hasTokenControls) {
+            update({ apply: false, dispatch: false })
+          } else {
+            writeComputedExport()
+          }
+        })
+      }
+
+      for (const button of modeButtons) {
+        button.addEventListener('click', () => {
+          const mode = coerceThemeBuilderMode(button.getAttribute('data-ui-theme-mode'))
+
+          if (button.getAttribute('role') !== 'tab') {
+            setThemeBuilderPressedState(modeButtons, 'data-ui-theme-mode', mode)
+          }
+
+          update()
+        })
+
+        button.addEventListener('keydown', event => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+
+          queueMicrotask(update)
+        })
+      }
+
+      for (const button of schemeButtons) {
+        button.addEventListener('click', () => {
+          currentScheme = coerceThemeBuilderScheme(button.getAttribute('data-ui-theme-scheme'))
+
+          setThemeBuilderPressedState(schemeButtons, 'data-ui-theme-scheme', currentScheme)
+
+          update()
+        })
+      }
 
       exportButton?.addEventListener('click', async () => {
-        const target = root.dataset.uiThemeTarget ? document.querySelector<HTMLElement>(root.dataset.uiThemeTarget) : document.documentElement
-        const styles = getComputedStyle(target ?? document.documentElement)
-
-        const tokens = [
-          'canvas',
-          'surface',
-          'surface-muted',
-          'surface-strong',
-          'line',
-          'ink',
-          'ink-soft',
-          'ink-muted',
-          'brand',
-          'brand-solid',
-          'brand-soft',
-          'accent',
-          'success',
-          'warning',
-          'danger'
-        ]
-
-        const css = `:root {\n${tokens.map(token => `  --${token}: ${styles.getPropertyValue(`--${token}`).trim()};`).join('\n')}\n}`
-
-        if (output) {
-          output.value = css
+        if (hasTokenControls && !currentTokens) {
+          update({ apply: false, dispatch: false })
+        } else if (!hasTokenControls) {
+          writeComputedExport()
         }
 
-        await navigator.clipboard?.writeText(css).catch(() => null)
+        const value = output?.value || currentExportValue
+
+        await navigator.clipboard?.writeText(value).catch(() => null)
 
         root.dispatchEvent(new CustomEvent('ui:theme-export', {
           bubbles: true,
-          detail: { css }
+          detail: {
+            css: currentFormat === 'css' ? value : undefined,
+            format: currentFormat,
+            tokens: currentTokens,
+            value
+          }
         }))
       })
+
+      if (hasTokenControls) {
+        update({
+          apply: Boolean(root.dataset.uiThemeTarget || root.hasAttribute('data-ui-theme-apply-on-init')),
+          dispatch: false
+        })
+      } else if (output) {
+        writeComputedExport()
+      }
     }
   }
 

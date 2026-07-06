@@ -2,25 +2,34 @@
 import { Label, ThemeBuilder } from '@santi020k/lumen-astro'
 ---
 
-<ThemeBuilder>
+<ThemeBuilder data-ui-theme-target="#ex-theme-preview">
   <header><h3>Brand theme</h3></header>
   <div style="display: grid; gap: 0.45rem;">
     <Label for="ex-theme-hue">Brand hue</Label>
     <input
       id="ex-theme-hue"
-      data-ui-theme-hue
+      data-ui-theme-brand-hue
       type="range"
       class="ui-slider"
       min="0"
       max="359"
       value="264"
     />
-    <p style="margin: 0; font-size: 0.8125rem;">
-      Dragging the slider regenerates the full token set from a single hue, live on this page.
-    </p>
+    <Label for="ex-theme-accent">Accent hue</Label>
+    <input
+      id="ex-theme-accent"
+      data-ui-theme-accent-hue
+      type="range"
+      class="ui-slider"
+      min="0"
+      max="359"
+      value="54"
+    />
   </div>
-  <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
-  <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
+  <div id="ex-theme-preview" style="display: flex; gap: 0.5rem; padding: 0.5rem;">
+    <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
+    <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
+  </div>
   <button data-ui-theme-export type="button">Export CSS</button>
   <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
 </ThemeBuilder>

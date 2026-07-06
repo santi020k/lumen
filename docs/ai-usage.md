@@ -140,10 +140,13 @@ The shared catalog includes:
   `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when
   connecting dense views to router state or server-backed data.
 - Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export
-  tools. Add `data-ui-theme-export` and `data-ui-theme-output` to copy the current CSS token block.
-  Use `createThemePalette`, `exportThemeCss`, `parseThemeCss`, and `scoreThemeContrast` for theme
-  import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`, and
-  `tuneThemeContrast` when generated palettes need readable foreground repair.
+  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,
+  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and
+  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,
+  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design
+  token JSON. Use `createThemePalette`, `exportThemeCss`, `parseThemeCss`, and `scoreThemeContrast`
+  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,
+  and `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
   Controls with `data-ui-editor-command` dispatch browser editing commands and emit
   `ui:editor-command`. For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external
@@ -179,8 +182,8 @@ these CustomEvents:
 | `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
 | `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |
 | `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string }` | A `[data-ui-editor-command]` control runs `document.execCommand(command)`. |
-| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, tokens: Record<string, string> }` | The `[data-ui-theme-hue]` input updates generated tokens. |
-| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css: string }` | A `[data-ui-theme-export]` control writes token CSS to the output and clipboard when available. |
+| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \| 'manual', scheme: 'dark' \| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |
+| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \| 'figma' \| 'tokens', tokens: Record<string, string> \| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |
 | `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |
 | `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |
 | `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |
