@@ -17,8 +17,10 @@ lumen add Button
 lumen add Button --target react
 lumen add Button --target elements
 lumen add scheduler
+lumen add scheduler --target react
+lumen add scheduler --target elements
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
-`--target elements` for a custom-elements registration helper. Recipe starters are currently Astro
-files while React and Elements recipe equivalents are built out.
+`--target elements` for a custom-elements registration helper. Bundled recipes support the same
+Astro, React, and Elements targets.

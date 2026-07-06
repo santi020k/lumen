@@ -208,6 +208,8 @@ lumen add Button --target elements
 lumen add data-table
 lumen show scheduler
 lumen add scheduler
+lumen add scheduler --target react
+lumen add scheduler --target elements
 lumen add scheduler --dry-run
 lumen add scheduler --fail-on-conflict
 lumen add scheduler --force
@@ -219,8 +221,9 @@ lumen install
 ```
 
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
-or `--target elements` for a custom-elements registration helper. Recipe starters are still Astro
-files until equivalent React and Elements recipes are authored.
+or `--target elements` for a custom-elements registration helper. Bundled recipes also accept
+`--target astro`, `--target react`, and `--target elements`; external registry inline files keep
+their authored paths and sources.
 
 Before inventing a wrapper or custom class pattern, check the component source in
 `packages/astro/components`. Astro is the reference implementation for props, class names, data

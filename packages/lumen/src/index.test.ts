@@ -164,14 +164,24 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
-  test('keeps recipe starter files scoped to implemented framework targets', async () => {
+  test('installs recipe starter files for each framework target', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-recipe-target-'))
 
     try {
-      await expect(addLumenRegistryItem('scheduler', { cwd, target: 'react' }))
-        .rejects.toThrow('only has Astro starter files today')
-      await expect(addLumenRegistryItem('scheduler', { cwd, target: 'elements' }))
-        .rejects.toThrow('only has Astro starter files today')
+      const react = await addLumenRegistryItem('scheduler', { cwd, target: 'react' })
+      const elements = await addLumenRegistryItem('theme-builder', { cwd, target: 'elements' })
+      const reactSource = await readFile(join(cwd, 'src/lumen/scheduler.tsx'), 'utf8')
+      const elementsSource = await readFile(join(cwd, 'src/lumen/theme-builder.html'), 'utf8')
+
+      expect(react.added).toEqual(['src/lumen/scheduler.tsx'])
+      expect(reactSource).toContain("from '@santi020k/lumen-react'")
+      expect(reactSource).toContain('export const SchedulerRecipe')
+      expect(reactSource).toContain('data-ui-schedule-event')
+
+      expect(elements.added).toEqual(['src/lumen/theme-builder.html'])
+      expect(elementsSource).toContain("defineLumenElements()")
+      expect(elementsSource).toContain('<lumen-theme-builder')
+      expect(elementsSource).toContain('data-lumen-theme-builder-recipe')
     } finally {
       await rm(cwd, { force: true, recursive: true })
     }

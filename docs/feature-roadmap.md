@@ -19,6 +19,9 @@ surface; React and Web Components expose the same class and data contracts.
 - Per-component registry: component entries are addressable by canonical and kebab-case names, with
   target-aware local wrapper files, manifest-backed package metadata, and docs guidance for
   `lumen add <component> --target <framework>`.
+- Bundled recipe parity: scheduler, data collections, advanced fields, theme builder, and rich text
+  starter recipes now generate Astro, React, or Elements files with `lumen add <recipe> --target
+  <framework>`.
 - Scheduling surfaces: `Schedule` and `Agenda`.
 - Advanced data surfaces: `DataTable`, `Tree`, `TreeGrid`, and `VirtualList`.
 - Theme tooling surface: `ThemeBuilder`.
@@ -52,9 +55,6 @@ surface; React and Web Components expose the same class and data contracts.
 - Web Components behavior parity: `packages/elements` currently emits classes/default
   `data-ui-*` attributes and documents Astro as the reference runtime; behavior-heavy elements still
   need equivalent client behavior.
-- Recipe parity: `lumen add <component> --target react|elements` now exists, but recipe starters
-  such as scheduler, data collections, theme builder, and rich text still need React and Elements
-  equivalents before installable recipes are framework-complete.
 - Theme tooling polish: the docs theme playground now uses the public `ThemeBuilder` runtime; add
   import/check contrast flows when token review needs to go beyond generation and export.
 - Per-component API prop tables completeness: `apps/docs/src/data/docs.ts` uses a partial

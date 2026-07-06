@@ -325,7 +325,7 @@ export const frameworkGuides = [
     body: [
       'Reference implementation for markup, props, standalone CSS, and progressive enhancement.',
       'Mount UIPrimitives once in the root layout for interactive primitives and CustomEvents.',
-      'Use lumen add Component or lumen add Component --target astro when you want a local .astro wrapper.'
+      'Use lumen add Component or lumen add recipe-name --target astro when you want local .astro starter files.'
     ],
     code: `---
 import { Button, Card, UIPrimitives } from '@santi020k/lumen-astro'
@@ -343,7 +343,7 @@ import '@santi020k/lumen-astro/styles.css'
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useTabs, useSelect, useToast, and useTooltip for behavior-heavy primitives.',
-      'Use lumen add Component --target react when you want a local .tsx wrapper around the React primitive.'
+      'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
     code: `import '@santi020k/lumen-astro/styles.css'
 import { Button, Card, useDialog } from '@santi020k/lumen-react'
@@ -362,7 +362,7 @@ export function Actions() {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
       'Call defineLumenElements once before using the tags; behavior-backed elements ship their own custom-element behavior where implemented.',
-      'Use lumen add Component --target elements when you want a local registration helper and typed tag-name export.'
+      'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">
   import { defineLumenElements } from '@santi020k/lumen-elements/define'

@@ -123,11 +123,13 @@ describe('component docs snippets', () => {
       .join('\n')
 
     expect(guideText).toContain('UIPrimitives')
-    expect(guideText).toContain('lumen add Component --target astro')
+    expect(guideText).toContain('lumen add recipe-name --target astro')
     expect(guideText).toContain('useDialog')
     expect(guideText).toContain('lumen add Component --target react')
+    expect(guideText).toContain('lumen add recipe-name --target react')
     expect(guideText).toContain('defineLumenElements')
     expect(guideText).toContain('lumen add Component --target elements')
+    expect(guideText).toContain('lumen add recipe-name --target elements')
   })
 
   test('keep component snippets focused on component usage instead of runtime mounting', () => {
