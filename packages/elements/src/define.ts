@@ -14,7 +14,7 @@ type ToastPlacement =
   | 'top-left'
   | 'top-right'
 
-type ToastVariant = 'default' | 'destructive' | 'success' | 'warning' | string
+type ToastVariant = string
 
 export interface ToastAction {
   event?: string
@@ -65,10 +65,8 @@ const defaultToastDuration = 5000
 const defaultToastMax = 5
 const toastCloseDelay = 240
 
-const noop = () => {}
-
 const toastTimers = new WeakMap<HTMLElement, {
-  cleanup: () => void
+  cleanup: (() => void) | undefined
   remaining: number
   startedAt: number
   timer: ReturnType<typeof globalThis.setTimeout> | undefined
@@ -547,7 +545,7 @@ const clearToastTimer = (toast: HTMLElement): void => {
     globalThis.clearTimeout(timer.timer)
   }
 
-  timer.cleanup()
+  timer.cleanup?.()
 
   toastTimers.delete(toast)
 }
@@ -565,8 +563,13 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
 
   if (!Number.isFinite(duration) || duration <= 0) return
 
-  const timerState = {
-    cleanup: noop,
+  const timerState: {
+    cleanup: (() => void) | undefined
+    remaining: number
+    startedAt: number
+    timer: ReturnType<typeof globalThis.setTimeout> | undefined
+  } = {
+    cleanup: undefined,
     remaining: duration,
     startedAt: Date.now(),
     timer: undefined as ReturnType<typeof globalThis.setTimeout> | undefined
@@ -1297,14 +1300,14 @@ class LumenSelectBehaviorElement extends LumenElement {
     }
 
     if (!trigger.hasAttribute('aria-label') && !trigger.hasAttribute('aria-labelledby')) {
-      const label = [...(select.labels ?? [])].find(item => item.textContent?.trim())
+      const label = [...select.labels].find(item => item.textContent.trim())
 
       if (label?.textContent) {
         trigger.setAttribute('aria-label', label.textContent.trim())
       }
     }
 
-    for (const label of select.labels ?? []) {
+    for (const label of select.labels) {
       label.addEventListener('click', event => {
         event.preventDefault()
 
@@ -1524,10 +1527,11 @@ class LumenSelectBehaviorElement extends LumenElement {
     const selectedOption = select.selectedOptions[0]
     const placeholder = select.querySelector<HTMLOptionElement>('[data-ui-select-placeholder]')
     const hasSelection = Boolean(selectedOption && !selectedOption.hasAttribute('data-ui-select-placeholder'))
+    const selectedLabel = hasSelection && selectedOption ? selectedOption.label : ''
 
     value.textContent = hasSelection
-      ? selectedOption?.label ?? ''
-      : placeholder?.textContent?.trim() || 'Select an option'
+      ? selectedLabel
+      : placeholder?.textContent.trim() || 'Select an option'
 
     this.dataset.placeholder = hasSelection ? 'false' : 'true'
 
@@ -1636,7 +1640,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     const currentIndex = items.indexOf(current)
     const startIndex = Math.max(0, currentIndex + 1)
     const orderedItems = [...items.slice(startIndex), ...items.slice(0, startIndex)]
-    const nextItem = orderedItems.find(item => item.textContent?.trim().toLowerCase().startsWith(this.typeahead))
+    const nextItem = orderedItems.find(item => item.textContent.trim().toLowerCase().startsWith(this.typeahead))
 
     nextItem?.focus()
   }
@@ -1809,7 +1813,11 @@ const elementDefinitions = lumenComponentNames.map(componentName => {
   return [config.tagName, elementClasses[componentName]] as const
 })
 
-export const defineLumenElements = (customElementsRegistry: CustomElementRegistry | undefined = globalThis.customElements) => {
+export const defineLumenElements = (
+  customElementsRegistry: CustomElementRegistry | undefined = typeof customElements === 'undefined'
+    ? undefined
+    : customElements
+) => {
   if (!customElementsRegistry) return
 
   for (const [name, element] of elementDefinitions) {

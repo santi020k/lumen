@@ -89,6 +89,14 @@ const recipeItems: DocsSearchItem[] = [
     title: 'Install and use Lumen',
     type: 'Recipe'
   },
+  {
+    category: 'Themes',
+    description: 'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',
+    href: '/docs/theme-playground',
+    keywords: normalizeKeywords('theme playground hue accent dark light createThemeFromHue tokens css export preview'),
+    title: 'Theme playground',
+    type: 'Recipe'
+  },
   ...frameworkSetups.map(setup => ({
     category: 'Framework setup',
     description: setup.note,

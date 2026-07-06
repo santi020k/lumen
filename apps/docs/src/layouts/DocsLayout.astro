@@ -15,7 +15,8 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '')
 
 const gettingStarted = [
   ['Introduction', '/docs'],
-  ['Components', '/docs/components']
+  ['Components', '/docs/components'],
+  ['Theme playground', '/docs/theme-playground']
 ] as const
 
 const isCurrent = (href: string) => currentPath === href

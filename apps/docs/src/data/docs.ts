@@ -277,6 +277,10 @@ export const glassComponentNames = [
 ] as const
 
 const glassComponentNameSet = new Set<string>(glassComponentNames)
+const glassApiComponentNameSet = new Set<string>([
+  ...glassComponentNames,
+  'Select'
+])
 
 export const frameworkSetups: FrameworkSetup[] = [
   {
@@ -546,10 +550,14 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     ...dialogTriggerApiRows('alert-dialog')
   ],
   AspectRatio: [
-    apiRow('ratio', 'CSS aspect-ratio value', '"16 / 9"', 'Sets the preferred width-to-height ratio for the frame.')
+    apiRow('ratio', 'number | string', '"16 / 9"', 'Sets the preferred CSS aspect-ratio value; invalid values fall back to 16 / 9.')
   ],
   Attachment: [
     apiRow('href', 'string', '-', 'Renders the root as a link when provided; otherwise renders an article.')
+  ],
+  Autocomplete: [
+    apiRow('list', 'string', 'required', 'Connects the search input to a datalist id.'),
+    apiRow('type', 'HTML input type', '"search"', 'Sets the native input type.')
   ],
   Avatar: [
     apiRow('src', 'string', '-', 'Shows an image when present.'),
@@ -574,6 +582,14 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Card: [
     apiRow('as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'),
     apiRow('variant', '"default" | "muted" | "interactive" | "glass"', '"default"', 'Controls the card surface and affordance; variant="glass" is kept as a compatibility alias.')
+  ],
+  Calendar: [
+    apiRow('disabled', 'boolean', 'false', 'Disables month navigation, date selection, and the hidden form input.'),
+    apiRow('max', 'YYYY-MM-DD string', '-', 'Disables dates after the inclusive maximum date.'),
+    apiRow('min', 'YYYY-MM-DD string', '-', 'Disables dates before the inclusive minimum date.'),
+    apiRow('month', 'YYYY-MM string', 'current or selected month', 'Sets the initially visible month.'),
+    apiRow('name', 'string', '-', 'Sets the name of the hidden input that stores the selected ISO date.'),
+    apiRow('value', 'YYYY-MM-DD string', '""', 'Sets the selected date and hidden input value.')
   ],
   Carousel: [
     apiRow('data-ui-carousel-viewport', 'boolean attribute', '-', 'Marks the scrollable slide viewport.'),
@@ -603,6 +619,15 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   ContextMenu: [
     surfaceApiRow
+  ],
+  ColorPicker: [
+    apiRow('type', 'HTML input type', '"color"', 'Sets the native input type.')
+  ],
+  DataTable: [
+    apiRow('columns', 'DataTableColumn[]', '[]', 'Generates table headers and maps row cells by column key when rows are provided.'),
+    apiRow('rows', 'DataTableRow[]', '[]', 'Generates table body rows from structured data.'),
+    apiRow('name', 'string', '-', 'Scopes selectable row checkbox names for form submission and runtime selection state.'),
+    apiRow('selectable', 'boolean', 'false', 'Enables selectable row behavior for the UIPrimitives runtime.')
   ],
   DatePicker: [
     apiRow('type', 'HTML input type', '"date"', 'Sets the native input type.')
@@ -638,9 +663,12 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the field height and font size.')
   ],
   InputOTP: [
-    apiRow('length', 'number', '6', 'Sets the default maxlength for the one-time code.'),
+    apiRow('autocomplete', 'HTML autocomplete value', '"one-time-code"', 'Hints that password managers and mobile keyboards can offer one-time code autofill.'),
+    apiRow('disabled', 'boolean', 'false', 'Disables the native input and generated visual segments.'),
+    apiRow('length', 'number', '6', 'Sets the number of visual code segments and the default maxlength.'),
     apiRow('maxlength', 'number', 'length', 'Overrides the native maximum character count.'),
-    apiRow('inputmode', 'HTML inputmode value', '"numeric"', 'Hints the preferred on-screen keyboard.')
+    apiRow('inputmode', 'HTML inputmode value', '"numeric"', 'Hints the preferred on-screen keyboard.'),
+    apiRow('pattern', 'string', '"[0-9]*"', 'Sets the native input pattern for accepted characters.')
   ],
   Marker: [
     apiRow('variant', '"default" | "success" | "warning" | "danger"', '"default"', 'Controls the marker tone.')
@@ -659,6 +687,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   NavigationMenu: [
     surfaceApiRow
   ],
+  NumberField: [
+    apiRow('type', 'HTML input type', '"number"', 'Sets the native input type.')
+  ],
   Popover: [
     surfaceApiRow,
     disclosureTriggerApiRow
@@ -667,12 +698,26 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('value', 'number', '0', 'Sets the current progress value, clamped between 0 and max.'),
     apiRow('max', 'number', '100', 'Sets the upper bound for progress.')
   ],
+  Resizable: [
+    apiRow('defaultSizes', 'number[]', '-', 'Sets initial pane sizes as percentages, serialized for the runtime.'),
+    apiRow('direction', '"horizontal" | "vertical"', '"horizontal"', 'Sets the resize axis and generated handle orientation.'),
+    apiRow('maxSize', 'number | number[]', '-', 'Limits pane growth by percentage; pass an array for per-pane limits.'),
+    apiRow('minSize', 'number | number[]', '-', 'Limits pane shrinkage by percentage; pass an array for per-pane limits.'),
+    apiRow('resetOnDoubleClick', 'boolean', 'true', 'Restores default pane sizes when a resize handle is double-clicked.')
+  ],
   Select: [
     apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
-    apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.')
+    apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option and trigger placeholder text.'),
+    apiRow('size', '"default" | "sm" | "md" | "lg"', '"default"', 'Controls select height and font size. The md value maps to the default size.'),
+    apiRow('disabled', 'boolean', 'false', 'Disables the native select and enhanced trigger.'),
+    apiRow('required', 'boolean', 'false', 'Forwards required validation to the native select.'),
+    apiRow('value', 'string | number', '-', 'Selects the matching option value.')
   ],
   Separator: [
     apiRow('orientation', '"horizontal" | "vertical"', '"horizontal"', 'Sets the separator direction.')
+  ],
+  SearchField: [
+    apiRow('type', 'HTML input type', '"search"', 'Sets the native input type.')
   ],
   RichTextEditor: [
     apiRow('data-ui-editor-command', 'bold | italic | underline | insertUnorderedList | insertOrderedList | createLink | unlink | formatBlock | removeFormat', '-', 'Marks toolbar controls that call document.execCommand(command) and emit ui:editor-command.')
@@ -686,10 +731,22 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   Sonner: [
     apiRow('placement', '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', '"bottom-right"', 'Positions the toast viewport.'),
-    apiRow('maxCount', 'number', '5', 'Limits the number of runtime toasts kept in the viewport.')
+    apiRow('maxCount', 'number', '-', 'Limits the number of runtime toasts kept in the viewport. The runtime default is 5 when omitted.'),
+    apiRow('aria-atomic', 'ARIA boolean string', '"false"', 'Sets the live-region atomicity attribute.'),
+    apiRow('aria-live', '"off" | "polite" | "assertive"', '"polite"', 'Sets the live-region announcement priority.')
   ],
   Slider: [
     apiRow('type', 'HTML input type', '"range"', 'Sets the native input type.')
+  ],
+  Skeleton: [
+    apiRow('aria-label, aria-labelledby', 'string', '-', 'Makes the placeholder accessible and changes the default role to status.'),
+    apiRow('aria-hidden', 'ARIA boolean string', 'true unless labelled', 'Overrides whether the loading placeholder is exposed to assistive technology.'),
+    apiRow('role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.')
+  ],
+  Spinner: [
+    apiRow('aria-label, aria-labelledby', 'string', '-', 'Makes the spinner accessible and changes the default role to status.'),
+    apiRow('aria-hidden', 'ARIA boolean string', 'true unless labelled', 'Overrides whether the loading indicator is exposed to assistive technology.'),
+    apiRow('role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.')
   ],
   Switch: [
     apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
@@ -709,6 +766,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Toggle: [
     apiRow('pressed', 'boolean', 'false', 'Sets the initial pressed state.'),
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
+  ],
+  TimeField: [
+    apiRow('type', 'HTML input type', '"time"', 'Sets the native input type.')
   ]
 }
 
@@ -794,7 +854,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['VirtualList', 'Data display', 'Frames long scrollable collections for virtualization adapters.', '<VirtualList style="--ui-list-height: 16rem"><div>Row 1</div><div>Row 2</div></VirtualList>']
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
-    ...(glassComponentNameSet.has(name) ? [glassApiRow] : []),
+    ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
     ...(apiReferenceByComponent[name] ?? []),
     ...commonApiRows
   ],
