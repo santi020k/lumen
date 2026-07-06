@@ -1327,5 +1327,6 @@ export {
   addLumenRegistryItem,
   type LumenAddOptions,
   type LumenAddResult,
+  type LumenAddTarget,
   type LumenMergeConflict
 } from './installer.js'

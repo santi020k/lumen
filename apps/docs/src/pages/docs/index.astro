@@ -16,6 +16,7 @@ import CodeBlock from '../../components/CodeBlock.astro'
 import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
 import {
   componentDocs,
+  frameworkGuides,
   frameworkPackages,
   frameworkSetups,
   glassSurfaceExamples,
@@ -146,6 +147,40 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       <h2 id="install-title">Install and use</h2>
     </div>
     <FrameworkSetupTabs setups={frameworkSetups} />
+  </section>
+
+  <section class="docs-section" id="framework-guides" aria-labelledby="framework-guides-title">
+    <div class="docs-section-heading">
+      <p>Framework contracts</p>
+      <h2 id="framework-guides-title">Framework-specific guidance</h2>
+      <p>
+        Lumen keeps one visual contract, but each target has its own integration surface for
+        behavior, local wrappers, and registration.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-3
+    ">
+      {frameworkGuides.map(guide => (
+        <Card class="docs-example-card" variant="muted">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <h3 class="text-base font-bold text-ink">{guide.title}</h3>
+              <Badge variant="outline">{guide.packageName}</Badge>
+            </div>
+            <ul class="m-0 grid gap-2 pl-4 text-sm/6 text-ink-soft">
+              {guide.body.map(item => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="docs-code-compact">
+            <CodeBlock code={guide.code} lang={guide.lang} />
+          </div>
+        </Card>
+      ))}
+    </div>
   </section>
 
   <section class="docs-section" id="global-styles" aria-labelledby="global-styles-title">

@@ -4,6 +4,7 @@ import { toSlug } from '../lib/routes'
 
 import {
   componentDocs,
+  frameworkGuides,
   frameworkSetups,
   glassSurfaceExamples,
   globalStyleSetups,
@@ -111,6 +112,14 @@ const recipeItems: DocsSearchItem[] = [
     href: '/docs#installation',
     keywords: normalizeKeywords(setup.label, setup.packageName, setup.note, setup.usage),
     title: `${setup.label} setup`,
+    type: 'Recipe' as const
+  })),
+  ...frameworkGuides.map(guide => ({
+    category: 'Framework guides',
+    description: guide.body.join(' '),
+    href: '/docs#framework-guides',
+    keywords: normalizeKeywords(guide.title, guide.packageName, guide.body.join(' '), guide.code),
+    title: `${guide.title} framework guide`,
     type: 'Recipe' as const
   })),
   ...globalStyleSetups.map(setup => ({

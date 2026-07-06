@@ -3,6 +3,7 @@ import {
   getLumenRegistryEntries,
   getLumenRegistryItem,
   loadLumenRegistry,
+  type LumenAddTarget,
   type LumenRegistry,
   lumenRegistry,
   type LumenRegistryEntry
@@ -20,7 +21,22 @@ const registryIndex = args.indexOf('--registry')
 const registrySource = registryIndex >= 0 ? args[registryIndex + 1] : undefined
 const registryTokenIndex = args.indexOf('--registry-token')
 const registryToken = registryTokenIndex >= 0 ? args[registryTokenIndex + 1] : process.env.LUMEN_REGISTRY_TOKEN
+const targetIndex = args.indexOf('--target')
+const targetProvided = targetIndex >= 0
+const targetValue = targetIndex >= 0 ? args[targetIndex + 1] : undefined
 let conflict: 'error' | 'merge' | 'skip' = 'skip'
+
+const getAddTarget = (value: string | undefined, provided = false): LumenAddTarget => {
+  if (provided && !value) {
+    throw new Error('Missing Lumen add target. Use astro, react, or elements.')
+  }
+
+  if (!value || value === 'astro') return 'astro'
+
+  if (value === 'react' || value === 'elements') return value
+
+  throw new Error(`Unknown Lumen add target: ${value}. Use astro, react, or elements.`)
+}
 
 if (failOnConflict) {
   conflict = 'error'
@@ -90,7 +106,8 @@ const formatAddResult = async (itemName: string, registry: LumenRegistry) => {
     conflict,
     dryRun,
     force,
-    registry
+    registry,
+    target: getAddTarget(targetValue, targetProvided)
   })
 
   return [
@@ -118,6 +135,7 @@ const help = [
   '  --merge                Merge recipe files with existing files',
   '  --registry <source>    Load list/show data from a local or remote registry JSON file',
   '  --registry-token <key> Use a bearer token for private remote registries',
+  '  --target <framework>   Generate component wrappers for astro, react, or elements',
   ''
 ].join('\n')
 

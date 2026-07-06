@@ -10,13 +10,15 @@ surface; React and Web Components expose the same class and data contracts.
 - Registry manifest: `registry/lumen.registry.json` describes components, recipes, docs, tokens, and
   runtime files that a future `lumen add` command can install.
 - Registry API and CLI: `@santi020k/lumen/registry` exports typed recipe metadata, and the `lumen`
-  binary can list registry items, show recipe contents, print install commands, and add recipe
-  starter files with `lumen add <item>`. Add supports `--dry-run`, `--cwd`, conflict-safe skips, and
-  `--force`, plus `--fail-on-conflict` for CI and `--merge` for deterministic conflict-aware merges;
-  list/show/add can load alternate local, remote, and token-authenticated private manifests with
-  `--registry` when items provide inline `{ path, source }` file entries.
+  binary can list registry items, show recipe contents, print install commands, add recipe starter
+  files, and generate component wrappers with `lumen add <item>`. Add supports `--target astro`,
+  `--target react`, and `--target elements` for component wrappers; `--dry-run`, `--cwd`,
+  conflict-safe skips, `--force`, `--fail-on-conflict`, and `--merge` for deterministic
+  conflict-aware installs; and alternate local, remote, and token-authenticated private manifests
+  with `--registry` when items provide inline `{ path, source }` file entries.
 - Per-component registry: component entries are addressable by canonical and kebab-case names, with
-  starter files, manifest-backed package metadata, and docs guidance for `lumen add <component>`.
+  target-aware local wrapper files, manifest-backed package metadata, and docs guidance for
+  `lumen add <component> --target <framework>`.
 - Scheduling surfaces: `Schedule` and `Agenda`.
 - Advanced data surfaces: `DataTable`, `Tree`, `TreeGrid`, and `VirtualList`.
 - Theme tooling surface: `ThemeBuilder`.
@@ -50,6 +52,9 @@ surface; React and Web Components expose the same class and data contracts.
 - Web Components behavior parity: `packages/elements` currently emits classes/default
   `data-ui-*` attributes and documents Astro as the reference runtime; behavior-heavy elements still
   need equivalent client behavior.
+- Recipe parity: `lumen add <component> --target react|elements` now exists, but recipe starters
+  such as scheduler, data collections, theme builder, and rich text still need React and Elements
+  equivalents before installable recipes are framework-complete.
 - Theme tooling polish: the docs theme playground now uses the public `ThemeBuilder` runtime; add
   import/check contrast flows when token review needs to go beyond generation and export.
 - Per-component API prop tables completeness: `apps/docs/src/data/docs.ts` uses a partial

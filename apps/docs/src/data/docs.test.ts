@@ -14,15 +14,17 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import { describe, expect, test } from 'vitest'
 
+import { buildSnippets } from '../lib/snippets'
+
 import {
   componentDocs,
+  frameworkGuides,
   frameworkSetups,
   glassComponentNames,
   glassSurfaceExamples,
   globalStyleSetups,
   themeSetups
 } from './docs'
-import { buildSnippets } from '../lib/snippets'
 
 const staleAttributePatterns = [
   'data-dialog-trigger',
@@ -111,6 +113,21 @@ describe('component docs snippets', () => {
       .toBe('pnpm add @santi020k/lumen-elements @santi020k/lumen-astro')
     expect(frameworkSetups.find(setup => setup.id === 'astro')?.note)
       .toContain('Mount UIPrimitives once in your root layout')
+  })
+
+  test('document framework-specific behavior and wrapper guidance', () => {
+    expect(frameworkGuides.map(guide => guide.id)).toEqual(['astro', 'react', 'elements'])
+
+    const guideText = frameworkGuides
+      .map(guide => `${guide.title}\n${guide.packageName}\n${guide.body.join('\n')}\n${guide.code}`)
+      .join('\n')
+
+    expect(guideText).toContain('UIPrimitives')
+    expect(guideText).toContain('lumen add Component --target astro')
+    expect(guideText).toContain('useDialog')
+    expect(guideText).toContain('lumen add Component --target react')
+    expect(guideText).toContain('defineLumenElements')
+    expect(guideText).toContain('lumen add Component --target elements')
   })
 
   test('keep component snippets focused on component usage instead of runtime mounting', () => {

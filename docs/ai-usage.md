@@ -203,6 +203,8 @@ lumen list
 lumen show Button
 lumen show data-table
 lumen add Button
+lumen add Button --target react
+lumen add Button --target elements
 lumen add data-table
 lumen show scheduler
 lumen add scheduler
@@ -215,6 +217,10 @@ lumen add custom-recipe --registry ./registry/custom.registry.json
 lumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token "$TOKEN"
 lumen install
 ```
+
+`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
+or `--target elements` for a custom-elements registration helper. Recipe starters are still Astro
+files until equivalent React and Elements recipes are authored.
 
 Before inventing a wrapper or custom class pattern, check the component source in
 `packages/astro/components`. Astro is the reference implementation for props, class names, data

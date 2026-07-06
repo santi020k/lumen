@@ -141,6 +141,42 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test('installs framework-targeted component wrappers', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-component-targets-'))
+
+    try {
+      const react = await addLumenRegistryItem('button', { cwd, target: 'react' })
+      const elements = await addLumenRegistryItem('button', { cwd, target: 'elements' })
+      const reactSource = await readFile(join(cwd, 'src/lumen/button.tsx'), 'utf8')
+      const elementsSource = await readFile(join(cwd, 'src/lumen/button.ts'), 'utf8')
+
+      expect(react.added).toEqual(['src/lumen/button.tsx'])
+      expect(reactSource).toContain("import { Button as LumenButton } from '@santi020k/lumen-react'")
+      expect(reactSource).toContain('export type ButtonProps = ComponentPropsWithoutRef<typeof LumenButton>')
+      expect(reactSource).toContain('export const Button = (props: ButtonProps) => <LumenButton {...props} />')
+
+      expect(elements.added).toEqual(['src/lumen/button.ts'])
+      expect(elementsSource).toContain("import {\n  defineLumenElements,\n  LumenButtonElement\n} from '@santi020k/lumen-elements'")
+      expect(elementsSource).toContain("export const buttonTagName = 'lumen-button' as const")
+      expect(elementsSource).toContain("'lumen-button': InstanceType<typeof LumenButtonElement>")
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('keeps recipe starter files scoped to implemented framework targets', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-recipe-target-'))
+
+    try {
+      await expect(addLumenRegistryItem('scheduler', { cwd, target: 'react' }))
+        .rejects.toThrow('only has Astro starter files today')
+      await expect(addLumenRegistryItem('scheduler', { cwd, target: 'elements' }))
+        .rejects.toThrow('only has Astro starter files today')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
   test('rejects unknown install items', async () => {
     await expect(addLumenRegistryItem('missing')).rejects.toThrow('Unknown Lumen registry item')
   })

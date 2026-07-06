@@ -5,6 +5,7 @@ export {
   loadLumenRegistry,
   type LumenAddOptions,
   type LumenAddResult,
+  type LumenAddTarget,
   type LumenMergeConflict,
   type LumenRegistry,
   lumenRegistry,

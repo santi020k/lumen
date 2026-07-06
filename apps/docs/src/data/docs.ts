@@ -277,6 +277,7 @@ export const glassComponentNames = [
 ] as const
 
 const glassComponentNameSet = new Set<string>(glassComponentNames)
+
 const glassApiComponentNameSet = new Set<string>([
   ...glassComponentNames,
   'Select'
@@ -317,6 +318,65 @@ export const frameworkPackages = [
   ['React', '@santi020k/lumen-react', 'Adapter', 'React components for the full primitive catalog using the shared class and data contract.'],
   ['Elements', '@santi020k/lumen-elements', 'Adapter', 'Standards-based custom elements for the full primitive catalog using the shared class and data contract.'],
   ['Core', '@santi020k/lumen-core', 'Shared', 'Design tokens, component metadata, and small adapter utilities.']
+] as const
+
+export const frameworkGuides = [
+  {
+    body: [
+      'Reference implementation for markup, props, standalone CSS, and progressive enhancement.',
+      'Mount UIPrimitives once in the root layout for interactive primitives and CustomEvents.',
+      'Use lumen add Component or lumen add Component --target astro when you want a local .astro wrapper.'
+    ],
+    code: `---
+import { Button, Card, UIPrimitives } from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles.css'
+---
+
+<UIPrimitives />
+<Card><Button>Save</Button></Card>`,
+    id: 'astro',
+    lang: 'astro',
+    packageName: '@santi020k/lumen-astro',
+    title: 'Astro'
+  },
+  {
+    body: [
+      'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
+      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useTabs, useSelect, useToast, and useTooltip for behavior-heavy primitives.',
+      'Use lumen add Component --target react when you want a local .tsx wrapper around the React primitive.'
+    ],
+    code: `import '@santi020k/lumen-astro/styles.css'
+import { Button, Card, useDialog } from '@santi020k/lumen-react'
+
+export function Actions() {
+  const dialog = useDialog()
+
+  return <Card><Button {...dialog.triggerProps}>Open</Button></Card>
+}`,
+    id: 'react',
+    lang: 'tsx',
+    packageName: '@santi020k/lumen-react',
+    title: 'React'
+  },
+  {
+    body: [
+      'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
+      'Call defineLumenElements once before using the tags; behavior-backed elements ship their own custom-element behavior where implemented.',
+      'Use lumen add Component --target elements when you want a local registration helper and typed tag-name export.'
+    ],
+    code: `<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  import '@santi020k/lumen-astro/styles.css'
+
+  defineLumenElements()
+</script>
+
+<lumen-card><lumen-button>Save</lumen-button></lumen-card>`,
+    id: 'elements',
+    lang: 'html',
+    packageName: '@santi020k/lumen-elements',
+    title: 'Elements'
+  }
 ] as const
 
 export const runtimeFeatures = [

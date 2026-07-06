@@ -28,7 +28,10 @@ export interface LumenAddOptions {
   force?: boolean
   merge?: (conflict: LumenMergeConflict) => string
   registry?: LumenRegistry
+  target?: LumenAddTarget
 }
+
+export type LumenAddTarget = 'astro' | 'elements' | 'react'
 
 export interface LumenMergeConflict {
   existing: string
@@ -233,7 +236,10 @@ Use @santi020k/lumen-astro for Astro apps, import @santi020k/lumen-astro/styles.
 
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
-const createComponentFile = (name: string): LumenRecipeFile => ({
+const toCamelCase = (value: string): string =>
+  value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
+
+const createAstroComponentFile = (name: string): LumenRecipeFile => ({
   path: `src/lumen/${toKebabCase(name)}.astro`,
   source: `---
 import { ${name} as Lumen${name} } from '@santi020k/lumen-astro'
@@ -247,8 +253,64 @@ const props = Astro.props
 `
 })
 
-const getFilesForItem = (item: LumenRegistryEntry): LumenRecipeFile[] => {
-  if (item.type === 'component') return [createComponentFile(item.name)]
+const createReactComponentFile = (name: string): LumenRecipeFile => ({
+  path: `src/lumen/${toKebabCase(name)}.tsx`,
+  source: `import type { ComponentPropsWithoutRef } from 'react'
+
+import { ${name} as Lumen${name} } from '@santi020k/lumen-react'
+
+export type ${name}Props = ComponentPropsWithoutRef<typeof Lumen${name}>
+
+export const ${name} = (props: ${name}Props) => <Lumen${name} {...props} />
+`
+})
+
+const createElementsComponentFile = (name: string): LumenRecipeFile => {
+  const tagName = `lumen-${toKebabCase(name)}`
+  const variableName = `${toCamelCase(toKebabCase(name))}TagName`
+
+  return {
+    path: `src/lumen/${toKebabCase(name)}.ts`,
+    source: `import {
+  defineLumenElements,
+  Lumen${name}Element
+} from '@santi020k/lumen-elements'
+
+defineLumenElements()
+
+export { Lumen${name}Element }
+
+export const ${variableName} = '${tagName}' as const
+
+declare global {
+  interface HTMLElementTagNameMap {
+    '${tagName}': InstanceType<typeof Lumen${name}Element>
+  }
+}
+`
+  }
+}
+
+const createComponentFile = (
+  name: string,
+  target: LumenAddTarget
+): LumenRecipeFile => {
+  if (target === 'react') return createReactComponentFile(name)
+
+  if (target === 'elements') return createElementsComponentFile(name)
+
+  return createAstroComponentFile(name)
+}
+
+const getFilesForItem = (
+  item: LumenRegistryEntry,
+  target: LumenAddTarget
+): LumenRecipeFile[] => {
+  if (item.type === 'component') return [createComponentFile(item.name, target)]
+
+  if (target !== 'astro') {
+    throw new Error(`Registry recipe "${item.name}" only has Astro starter files today. Use --target astro or install an individual component wrapper.`)
+  }
 
   return recipeFiles[item.name] ??
     item.files
@@ -345,7 +407,7 @@ export const addLumenRegistryItem = async (
     throw new Error(`Unknown Lumen registry item: ${name}`)
   }
 
-  const files = getFilesForItem(item)
+  const files = getFilesForItem(item, options.target ?? 'astro')
   const cwd = options.cwd ?? process.cwd()
 
   if (!files.length) {
