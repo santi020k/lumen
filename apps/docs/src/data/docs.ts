@@ -562,6 +562,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Bubble: [
     apiRow('from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the bubble for the message author.')
   ],
+  Breadcrumb: [
+    apiRow('children', '<ol><li>...</li></ol>', 'required', 'Use an ordered list inside the nav and set aria-current="page" on the final item.')
+  ],
   Button: [
     apiRow('variant', '"default" | "secondary" | "outline" | "ghost" | "link" | "destructive"', '"default"', 'Controls the button emphasis.'),
     apiRow('size', '"default" | "sm" | "lg" | "icon"', '"default"', 'Controls button height, padding, and icon-only sizing.'),
@@ -617,7 +620,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   DropdownMenu: [
     surfaceApiRow,
-    disclosureTriggerApiRow
+    disclosureTriggerApiRow,
+    apiRow('[role="menu"]', 'child panel', '-', 'Marks the dropdown panel that contains role="menuitem" actions.')
   ],
   HoverCard: [
     surfaceApiRow,
@@ -649,7 +653,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   NativeSelect: [
     apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
-    apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.')
+    apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.'),
+    apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls select height and font size.')
   ],
   NavigationMenu: [
     surfaceApiRow

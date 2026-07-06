@@ -91,6 +91,47 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-select__list')
   })
 
+  test('keeps audited primitive semantics and examples documented', async () => {
+    const [
+      avatar,
+      breadcrumbExample,
+      combobox,
+      comboboxExample,
+      docs,
+      dropdownMenu,
+      nativeSelectExample,
+      runtime
+    ] = await Promise.all([
+      readFile(new URL('./components/Avatar.astro', packageRoot), 'utf8'),
+      readFile(new URL('../../apps/docs/src/examples/Breadcrumb.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Combobox.astro', packageRoot), 'utf8'),
+      readFile(new URL('../../apps/docs/src/examples/Combobox.astro', packageRoot), 'utf8'),
+      readFile(new URL('../../apps/docs/src/data/docs.ts', packageRoot), 'utf8'),
+      readFile(new URL('./components/DropdownMenu.astro', packageRoot), 'utf8'),
+      readFile(new URL('../../apps/docs/src/examples/NativeSelect.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(avatar).toContain("Astro.slots.has('default')")
+    expect(avatar).toContain("fallback ?? (!src && !hasDefaultSlot ? '?' : undefined)")
+    expect(breadcrumbExample).toContain('<ol>')
+    expect(breadcrumbExample).toContain('aria-current="page"')
+    expect(combobox).toContain('type ComboboxOption = Option | string')
+    expect(combobox).toContain('aria-disabled={option.disabled')
+    expect(comboboxExample).toContain("value: 'web-components'")
+    expect(docs).toContain('Use an ordered list inside the nav')
+    expect(docs).toContain('data-ui-editor-command')
+    expect(docs).toContain('bold | italic | underline')
+    expect(dropdownMenu).toContain("interface Props extends HTMLAttributes<'div'>")
+    expect(dropdownMenu).toContain('<div')
+    expect(dropdownMenu).not.toContain('<menu')
+    expect(nativeSelectExample).toContain('size="lg"')
+    expect(nativeSelectExample).toContain('disabled')
+    expect(runtime).toContain("trigger.setAttribute('aria-describedby'")
+    expect(runtime).toContain("tip.id = `ui-tooltip-${crypto.randomUUID()}`")
+    expect(runtime).toContain("item.getAttribute('aria-disabled') !== 'true'")
+  })
+
   test('ships Resizable as an enhanced split panel with accessible handles', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Resizable.astro', packageRoot), 'utf8'),
@@ -188,7 +229,7 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(aspectRatio).toContain('ratio?: number | string')
     expect(aspectRatio).toContain('Number.isFinite(ratio)')
-    expect(avatar).toContain('fallback && <span>{fallback}</span>')
+    expect(avatar).toContain('fallbackText && <span')
     expect(field).toContain(`data-ui-field-${'described' + 'by'}={fieldDescribedBy}`)
     expect(runtime).toContain(`control.setAttribute('aria-${'described' + 'by'}'`)
   })

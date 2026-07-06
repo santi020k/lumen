@@ -16,9 +16,9 @@ The bar for examples (per your choice): each main example should demonstrate eve
 
 **C3 — Resolved.** The behavior-implying shell gaps now have runtime coverage: `ContextMenu` binds `data-ui-context-menu-trigger` for right-click and Shift+F10 open behavior, and `DateRangePicker` syncs start/end date min/max values.
 
-**C4 — Resolved except Tooltip follow-up.** `Skeleton` defaults to `aria-hidden` unless labeled, `AlertDialog` renders `role="alertdialog"`, `Autocomplete` dropped the incomplete explicit combobox role, `Button loading` disables the button, `Field` runtime wires hint/error ids into `aria-describedby`, and the `TagGroup` example gives remove buttons distinct labels. `Tooltip` still does not wire the trigger to the tooltip with `aria-describedby`.
+**C4 — Resolved.** `Skeleton` defaults to `aria-hidden` unless labeled, `AlertDialog` renders `role="alertdialog"`, `Autocomplete` dropped the incomplete explicit combobox role, `Button loading` disables the button, `Field` runtime wires hint/error ids into `aria-describedby`, `TagGroup` remove buttons have distinct labels, and `Tooltip` now wires the trigger to the tooltip with `aria-describedby`.
 
-**C5 — Mostly resolved.** Overlay `surface="glass"` props are now deprecated compatibility aliases that map through `resolveLumenGlass`; the remaining minor cleanup is `Avatar`, which can still render an empty root when no `src`, `fallback`, or slot content is provided.
+**C5 — Resolved.** Overlay `surface="glass"` props are now deprecated compatibility aliases that map through `resolveLumenGlass`; `Avatar` now renders a deliberate decorative fallback when no `src`, `fallback`, or slot content is provided.
 
 **C6 — Resolved.** `resolveLumenAstroProps` in `packages/core/src/props.ts` now centralizes class/className merge and passthrough handling across the Astro component catalog.
 
@@ -46,8 +46,8 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | RadioGroup | ✅ | ✅ | Fieldset + roving runtime; example wires name/checked correctly. |
 | Slider | ✅ | ✅ | Example includes `step` and a labeled live value readout. |
 | Select | ✅ | ✅ | Enhanced listbox with native select fallback, placeholder/options props, sizes, glass, disabled options, and keyboard/typeahead runtime. |
-| NativeSelect | ✅ | ⚠️ | Native wrapper is distinct from Select and supports placeholder/options/sizes; example shows placeholder, disabled option, options prop, and `sm`, but not `lg` or disabled select. |
-| Combobox | ⚠️ | ✅ | Runtime-backed; `options` accepts strings only (no value/label pairs, no disabled options). |
+| NativeSelect | ✅ | ✅ | Native wrapper is distinct from Select and supports placeholder/options/sizes; example shows placeholder, disabled option, options prop, `sm`, `lg`, and disabled select. |
+| Combobox | ✅ | ✅ | Runtime-backed; `options` accepts strings and value/label/disabled option objects. |
 | Autocomplete | ✅ | ✅ | Clean datalist wrapper; explicit ARIA combobox role was removed. |
 | NumberField | ✅ | ✅ | Thin native wrapper, example shows min/max/value. |
 | SearchField | ✅ | ✅ | Fine. |
@@ -69,10 +69,10 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | Sheet | ✅ | ✅ | Fine. |
 | Popover | ✅ | ✅ | Anchored-popover runtime; good example. |
 | HoverCard | ✅ | ✅ | Fine. |
-| DropdownMenu | ⚠️ | ✅ | Runtime works, but the component renders a `<menu>` wrapper around a user-provided `role="menu"` panel; document the expected trigger/panel shape or flatten later. |
+| DropdownMenu | ✅ | ✅ | Runtime works; the wrapper is now a neutral `<div>` around the documented trigger and `[role="menu"]` panel shape. |
 | ContextMenu | ✅ | ✅ | Runtime-backed right-click and Shift+F10 behavior; example now uses a trigger instead of a permanently visible menu. |
 | Menubar | ✅ | ✅ | Roving focus runtime. |
-| Tooltip | ⚠️ | ✅ | Runtime handles hover/focus popover behavior and Escape dismissal, but does not set `aria-describedby` on the trigger. |
+| Tooltip | ✅ | ✅ | Runtime handles hover/focus popover behavior, Escape dismissal, and trigger `aria-describedby` wiring. |
 | Toast | ✅ | ✅ | Example covers success and warning programmatic toasts, placement, update, dismiss, action, and static fallback. |
 | Sonner | ✅ | ✅ | `ui:toast` event demo with script; Toast example now covers multi-placement Sonner usage too. |
 
@@ -99,7 +99,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 
 | Component | Comp | Ex | Findings |
 |---|---|---|---|
-| Breadcrumb | ⚠️ | ✅ | Still just a nav slot; consider documenting `<ol><li>` markup as the recommended children. |
+| Breadcrumb | ✅ | ✅ | Nav keeps a flexible slot, and docs/examples now document the recommended `<ol><li>` children with `aria-current="page"` on the final item. |
 | NavigationMenu | ✅ | ✅ | Fine. |
 | Pagination | ✅ | ✅ | Example includes `rel="prev"/"next"` and disabled-state pagination. |
 | Tabs | ✅ | ✅ | Runtime + fully wired ARIA example. |
@@ -112,7 +112,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | Badge | ✅ | ✅ | Example covers all variants. |
 | Marker | ✅ | ✅ | Example covers default, success, warning, and danger. |
 | Alert | ✅ | ✅ | Example covers default, success, warning, and destructive. |
-| Avatar | ⚠️ | ✅ | Example now shows `src` and fallback; component can still emit an empty root when no image, fallback, or slot is provided. |
+| Avatar | ✅ | ✅ | Example shows `src` and fallback; component now emits a deliberate decorative fallback when no image, fallback, or slot is provided. |
 | Skeleton | ✅ | ✅ | Decorative by default with `aria-hidden`; example shows shaped/sized skeletons and an announced loading region. |
 | Spinner | ✅ | ✅ | Best a11y handling in the repo. |
 | Progress | ✅ | ✅ | Example shows default max, custom max, and 100% state. |
@@ -136,22 +136,20 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | Agenda | ✅ | ✅ | Fine. |
 | Schedule | ✅ | ✅ | Drag runtime demoed. |
 | Carousel | ✅ | ✅ | Prev/next runtime demoed. |
-| RichTextEditor | ⚠️ | ✅ | Runtime delegates any `data-ui-editor-command` through `document.execCommand(command)` and documents the event bridge; still no curated supported command set. |
+| RichTextEditor | ✅ | ✅ | Runtime delegates `data-ui-editor-command` through `document.execCommand(command)`; docs now list the curated command contract and event bridge. |
 | ThemeBuilder | ✅ | ✅ | Live hue → token demo with export; excellent. |
 
 ---
 
 ## Prioritized fix list
 
-**P1 — correctness & a11y (component code):**
-1. Tooltip: set or document trigger `aria-describedby` wiring for `[role="tooltip"]`.
-2. Decide whether `Avatar` should render a deliberate fallback/skeleton when no `src`, `fallback`, or slot content is provided.
-3. Breadcrumb: document or enforce the recommended `<ol><li>` child structure.
+**P1 — correctness & a11y (component code): resolved.**
+Tooltip trigger `aria-describedby` wiring, Avatar's empty-root fallback, and Breadcrumb's recommended ordered-list structure are all covered.
 
 **P2 — example coverage (the "all variants/states" bar):**
-NativeSelect (`lg`, disabled select) · Code (`theme` variants, minor).
+Code (`theme` variants, minor).
 
 **P3 — consistency & maintenance:**
-Broaden Combobox options beyond `string[]` if it should match Select option objects · flatten or document DropdownMenu markup expectations · document a curated RichTextEditor command set · rename DataTable's `ui-datatable-selectionchange` event to the `ui:*` convention at the next major.
+Rename DataTable's `ui-datatable-selectionchange` event to the `ui:*` convention at the next major.
 
-Overall: the system is now much closer to its intended shape — thin, semantic, token-driven wrappers with runtime behavior on the components whose names promise interaction. The old correctness gaps are mostly closed; the remaining work is concentrated in a few semantics/a11y polish items, API breadth, and keeping event naming consistent across the newer runtime surface.
+Overall: the system is now much closer to its intended shape — thin, semantic, token-driven wrappers with runtime behavior on the components whose names promise interaction. The old correctness gaps are closed; the remaining work is concentrated in minor example breadth and keeping event naming consistent across the newer runtime surface.
