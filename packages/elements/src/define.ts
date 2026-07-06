@@ -447,12 +447,16 @@ const getLoopedIndex = (
   return (currentIndex - 1 + itemCount) % itemCount
 }
 
-const getDataTableSortValue = (cell: HTMLTableCellElement | undefined): string =>
-  cell?.dataset.sortValue ?? cell?.textContent?.trim() ?? ''
+const getDataTableSortValue = (cell: HTMLTableCellElement | undefined): string => {
+  if (!cell) return ''
+
+  return cell.dataset.sortValue ?? cell.textContent.trim()
+}
 
 const compareDataTableValues = (value: string, other: string, sortType: string | undefined): number => {
   const numericValue = Number(value.replaceAll(',', ''))
   const numericOther = Number(other.replaceAll(',', ''))
+
   const useNumeric = sortType === 'number' || (
     sortType !== 'string' &&
     value.trim() !== '' &&
@@ -472,7 +476,7 @@ const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] =>
   [...(table.tBodies[0]?.rows ?? [])]
 
 const getDataTableRowValue = (row: HTMLTableRowElement, index: number): string =>
-  row.dataset.value ?? row.id ?? String(index)
+  row.dataset.value || row.id || String(index)
 
 const getNextDataTableSortDirection = (
   currentColumn: string | undefined,
@@ -1749,6 +1753,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
       if (columnIndex < 0) continue
 
       header.dataset.uiDatatableColumn = String(columnIndex)
+
       header.setAttribute('aria-sort', header.getAttribute('aria-sort') ?? 'none')
 
       const button = this.ensureSortButton(header)
@@ -2032,7 +2037,7 @@ class LumenVirtualListBehaviorElement extends LumenElement {
     if (!items.length) return
 
     const update = (): void => {
-      const overscan = this.getNumberAttribute('data-ui-overscan', 'overscan', 4)
+      const overscan = this.getNumberAttribute('data-ui-overscan', 'overscan', 4, 0)
       const itemSize = this.getNumberAttribute('data-ui-item-size', 'item-size', 44)
       const range = getVirtualRange(this.scrollTop, this.clientHeight, itemSize, items.length, overscan)
 
@@ -2051,10 +2056,10 @@ class LumenVirtualListBehaviorElement extends LumenElement {
     update()
   }
 
-  private getNumberAttribute(dataAttribute: string, attribute: string, fallback: number): number {
+  private getNumberAttribute(dataAttribute: string, attribute: string, fallback: number, minimum = 1): number {
     const value = Number(this.getAttribute(dataAttribute) ?? this.getAttribute(attribute) ?? fallback)
 
-    return Number.isFinite(value) && value > 0 ? value : fallback
+    return Number.isFinite(value) && value >= minimum ? value : fallback
   }
 }
 

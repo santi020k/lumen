@@ -12,7 +12,6 @@ import {
   type CardProps,
   Code,
   DataTable,
-  type DataTableProps,
   Dialog,
   type DialogProps,
   Input,
@@ -22,7 +21,6 @@ import {
   type TableProps,
   ToastProvider,
   VirtualList,
-  type VirtualListProps,
   useDropdownMenu,
   usePopover,
   useSelect,
@@ -180,19 +178,19 @@ describe('@santi020k/lumen-react', () => {
         { count: { sortValue: 1, value: '1' }, id: 'alpha', name: 'Alpha' }
       ],
       selectable: true
-    }) as ReactElement<DataTableProps>
-    const tableProps = table.props as DataTableProps & {
+    }) as ReactElement
+    const tableProps = table.props as Record<string, unknown> & {
       children: ReactElement<Record<string, unknown>>
     }
     const renderedTable = tableProps.children
     const tableChildren = renderedTable.props.children as ReactElement<Record<string, unknown>>[]
-    const thead = tableChildren[0] as ReactElement<Record<string, unknown>>
-    const tbody = tableChildren[1] as ReactElement<Record<string, unknown>>
+    const thead = tableChildren[0]!
+    const tbody = tableChildren[1]!
     const headerRow = thead.props.children as ReactElement<Record<string, unknown>>
     const headers = headerRow.props.children as ReactElement<Record<string, unknown>>[]
     const rows = tbody.props.children as ReactElement<Record<string, unknown>>[]
     const firstRowCells = rows[0]?.props.children as ReactElement<Record<string, unknown>>[]
-    const virtualList = VirtualList({ itemSize: 48, overscan: 2 }) as ReactElement<VirtualListProps>
+    const virtualList = VirtualList({ itemSize: 48, overscan: 2 }) as ReactElement<Record<string, unknown>>
 
     expect(tableProps['data-ui-datatable']).toBe(true)
     expect(tableProps['data-ui-datatable-name']).toBe('rows')

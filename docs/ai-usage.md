@@ -85,9 +85,10 @@ export function SubscribeForm() {
 ## Web Components
 
 Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
-interactive behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip:
-ARIA state, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native
-select form participation, and the same toast controller events as the Astro runtime.
+interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, Tabs, Select, Toast,
+Tooltip, and VirtualList: selection and range events, ARIA state, roving/listbox keyboard paths,
+Escape/outside dismissal, focus return/trapping, native select form participation, and the same
+toast controller events as the Astro runtime.
 
 ```html
 <script type="module">
@@ -131,8 +132,10 @@ The shared catalog includes:
   `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for
   snap-to-grid resize handles.
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
-  collection workflows. `Tree` and `TreeGrid` use roving keyboard focus, and `VirtualList` emits
-  `ui:virtual-list-range` as the rendered range changes. Use `createDataViewState`,
+  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and
+  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`
+  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the
+  rendered range changes. Use `createDataViewState`,
   `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for
   saved views, filtering, sorting, pagination, and virtualization math. Use
   `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should
@@ -172,8 +175,8 @@ The shared catalog includes:
 
 ## Runtime CustomEvents
 
-When `UIPrimitives` is mounted, or when Web Components are registered for toast behavior, Lumen uses
-these CustomEvents:
+When `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen
+uses these CustomEvents:
 
 | Event | Target | Detail | Fires When |
 | --- | --- | --- | --- |

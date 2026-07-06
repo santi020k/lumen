@@ -298,7 +298,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract; wire app state for behavior-heavy primitives.',
+    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display attributes; use hooks for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -307,7 +307,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Wire app state for behavior-heavy primitives.',
+    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, select, toast, DataTable, and VirtualList.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -342,6 +342,7 @@ import '@santi020k/lumen-astro/styles.css'
   {
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
+      'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useTabs, useSelect, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
@@ -361,7 +362,7 @@ export function Actions() {
   {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
-      'Call defineLumenElements once before using the tags; behavior-backed elements ship their own custom-element behavior where implemented.',
+      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, VirtualList range events, overlays, select, tabs, tooltip, and toast.',
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">

@@ -51,7 +51,7 @@ type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
 type CodeVariant = 'block' | 'inline'
 
-type DataTableCell =
+export type DataTableCell =
   | boolean
   | null
   | number
@@ -63,7 +63,7 @@ type DataTableCell =
     value?: boolean | null | number | string
   }
 
-interface DataTableColumn {
+export interface DataTableColumn {
   header?: string
   key: string
   label?: string
@@ -71,7 +71,7 @@ interface DataTableColumn {
   sortable?: boolean
 }
 
-type DataTableRow = Record<string, DataTableCell> & {
+export type DataTableRow = Record<string, DataTableCell> & {
   id?: number | string
   rowValue?: number | string
   value?: number | string
@@ -105,6 +105,8 @@ type SelectOption = Option | string
 
 const emptyOptions: SelectOption[] = []
 const emptyStringOptions: string[] = []
+const emptyDataTableColumns: DataTableColumn[] = []
+const emptyDataTableRows: DataTableRow[] = []
 
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
   variant === defaultVariant ? false : `${base}--${variant}`
@@ -697,10 +699,10 @@ export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
 export const DataTable = ({
   children,
   className,
-  columns = [],
+  columns = emptyDataTableColumns,
   glass = false,
   name,
-  rows = [],
+  rows = emptyDataTableRows,
   selectable = false,
   ...props
 }: DataTableProps) => (

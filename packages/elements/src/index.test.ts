@@ -340,7 +340,7 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('virtual list emits visible ranges and hides offscreen items', () => {
-    const ranges: Array<{ endIndex: number, startIndex: number }> = []
+    const ranges: { endIndex: number, startIndex: number }[] = []
     const root = document.createElement('lumen-virtual-list')
 
     root.setAttribute('data-ui-item-size', '44')
