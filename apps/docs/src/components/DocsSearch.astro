@@ -3,24 +3,50 @@ import { SearchField } from '@santi020k/lumen-astro'
 
 import { docsSearchIndex } from '../data/search'
 
+interface Props {
+  class?: string
+  className?: string
+  inputId?: string
+  optionIdPrefix?: string
+  placeholder?: string
+  resultsId?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  inputId = 'docs-search-input',
+  optionIdPrefix = inputId,
+  placeholder = 'Search components, props, and recipes...',
+  resultsId = `${inputId}-results`
+} = Astro.props
 const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
 ---
 
-<div class="docs-search relative max-w-2xl" data-docs-search>
-  <label class="sr-only" for="docs-search-input">Search docs</label>
+<div
+  class:list={[
+    'docs-search relative',
+    classProp || className ? undefined : 'max-w-2xl',
+    classProp,
+    className
+  ]}
+  data-docs-search
+  data-docs-search-id={optionIdPrefix}
+>
+  <label class="sr-only" for={inputId}>Search docs</label>
   <SearchField
-    id="docs-search-input"
+    id={inputId}
     autocomplete="off"
     class="w-full"
-    placeholder="Search components, props, and recipes..."
+    placeholder={placeholder}
     role="combobox"
     aria-autocomplete="list"
-    aria-controls="docs-search-results"
+    aria-controls={resultsId}
     aria-expanded="false"
     data-docs-search-input
   />
   <div
-    id="docs-search-results"
+    id={resultsId}
     class="
       absolute z-50 mt-2 hidden max-h-96 w-full overflow-y-auto rounded-xl
       border border-line bg-surface p-2 shadow-xl
@@ -46,6 +72,7 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
   interface DocsSearchState {
     activeIndex: number
     input: HTMLInputElement
+    optionIdPrefix: string
     results: HTMLElement
   }
 
@@ -143,13 +170,13 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
     }
   }
 
-  const createSearchOption = (item: SearchItem, index: number): HTMLAnchorElement => {
+  const createSearchOption = (item: SearchItem, index: number, idPrefix: string): HTMLAnchorElement => {
     const option = document.createElement('a')
     const meta = document.createElement('span')
     const title = document.createElement('strong')
     const description = document.createElement('span')
 
-    option.id = `docs-search-option-${index}`
+    option.id = `${idPrefix}-option-${index}`
 
     option.href = item.href
 
@@ -216,7 +243,7 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
     }
 
     for (const [resultIndex, item] of matchedResults.entries()) {
-      state.results.append(createSearchOption(item, resultIndex))
+      state.results.append(createSearchOption(item, resultIndex, state.optionIdPrefix))
     }
 
     openSearchResults(state)
@@ -272,12 +299,13 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
 
       const input = root.querySelector<HTMLInputElement>('[data-docs-search-input]')
       const results = root.querySelector<HTMLElement>('[data-docs-search-results]')
+      const optionIdPrefix = root.dataset.docsSearchId ?? 'docs-search'
 
       if (!input || !results) continue
 
       root.dataset.docsSearchBound = 'true'
 
-      const state: DocsSearchState = { activeIndex: -1, input, results }
+      const state: DocsSearchState = { activeIndex: -1, input, optionIdPrefix, results }
 
       input.addEventListener('input', () => {
         renderSearchResults(state, index)

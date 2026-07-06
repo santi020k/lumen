@@ -26,16 +26,24 @@ const isCurrent = (href: string) => currentPath === href
   <div class="
     mx-auto grid w-full max-w-7xl gap-10 px-5 py-8
     sm:px-8
-    lg:grid-cols-[15rem_minmax(0,1fr)]
+    lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start
   ">
-    <div class="lg:col-span-2">
-      <DocsSearch />
-    </div>
-    <aside class="
-      hidden
-      lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)]
-      lg:overflow-y-auto lg:pr-2 lg:pb-8
-    " aria-label="Documentation" data-docs-sidebar>
+    <aside
+      class="
+        hidden
+        lg:sticky lg:top-20 lg:grid lg:max-h-[calc(100vh-6rem)] lg:gap-6
+        lg:overflow-y-auto lg:pr-2 lg:pb-8
+      "
+      aria-label="Documentation"
+      data-docs-sidebar
+    >
+      <DocsSearch
+        class="max-w-none"
+        inputId="docs-sidebar-search-input"
+        optionIdPrefix="docs-sidebar-search"
+        placeholder="Search docs..."
+        resultsId="docs-sidebar-search-results"
+      />
       <nav class="grid gap-6 text-sm" data-docs-nav>
         <div class="grid gap-1">
           <p class="
@@ -91,6 +99,14 @@ const isCurrent = (href: string) => currentPath === href
       </nav>
     </aside>
     <main class="min-w-0 pb-16">
+      <div class="mb-8 lg:hidden">
+        <DocsSearch
+          class="max-w-2xl"
+          inputId="docs-mobile-search-input"
+          optionIdPrefix="docs-mobile-search"
+          resultsId="docs-mobile-search-results"
+        />
+      </div>
       <slot />
     </main>
   </div>
