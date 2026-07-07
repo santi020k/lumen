@@ -29,6 +29,10 @@ type DataTableSortDirection = 'ascending' | 'descending' | 'none'
 
 type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
+interface RichTextCommandDocument {
+  execCommand?: (command: string) => boolean
+}
+
 export interface ToastAction {
   event?: string
   label?: string
@@ -87,6 +91,8 @@ const fieldControlSelector = [
 
 const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
 const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
+const richTextEditorSelector = '[data-ui-rich-text-editor]'
+const richTextEditorCommandSelector = '[data-ui-editor-command]'
 
 const formControlSelector = [
   'input:not([type="hidden"])',
@@ -487,6 +493,12 @@ const getScopedElements = <ScopedElement extends Element>(
   return elements
 }
 
+const getClosestScopedElement = (
+  scope: ParentNode,
+  selector: string
+): Element | null =>
+  scope instanceof Element ? scope.closest(selector) : null
+
 const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl =>
   element instanceof HTMLInputElement ||
   element instanceof HTMLSelectElement ||
@@ -675,6 +687,72 @@ const installFormController = (): void => {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
           enhanceLumenForms(node)
+        }
+      }
+    }
+  })
+
+  observer.observe(document.documentElement, { childList: true, subtree: true })
+}
+
+const executeRichTextCommand = (root: HTMLElement, command: string): void => {
+  if (!command) return
+
+  const commandDocument = document as unknown as RichTextCommandDocument
+
+  if (typeof commandDocument.execCommand === 'function') {
+    commandDocument.execCommand(command)
+  }
+
+  root.dispatchEvent(new CustomEvent('ui:editor-command', {
+    bubbles: true,
+    detail: { command }
+  }))
+}
+
+const initRichTextEditors = (scope: ParentNode): void => {
+  const closestRoot = getClosestScopedElement(scope, richTextEditorSelector)
+  const roots = getScopedElements<HTMLElement>(scope, richTextEditorSelector)
+
+  if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
+    roots.unshift(closestRoot)
+  }
+
+  for (const root of roots) {
+    root.dataset.uiEditorBound = 'true'
+
+    for (const control of root.querySelectorAll<HTMLElement>(richTextEditorCommandSelector)) {
+      if (control.dataset.uiEditorCommandBound === 'true') continue
+
+      control.dataset.uiEditorCommandBound = 'true'
+
+      control.addEventListener('click', () => {
+        executeRichTextCommand(root, control.dataset.uiEditorCommand ?? '')
+      })
+    }
+  }
+}
+
+export const enhanceLumenRichTextEditors = (
+  scope: ParentNode = document
+): void => {
+  initRichTextEditors(scope)
+}
+
+const installRichTextEditorController = (): void => {
+  if (!hasDocument() || document.documentElement.dataset.uiElementsRichTextEditorsBound === 'true') return
+
+  document.documentElement.dataset.uiElementsRichTextEditorsBound = 'true'
+
+  enhanceLumenRichTextEditors(document)
+
+  if (typeof MutationObserver === 'undefined') return
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof Element || node instanceof DocumentFragment) {
+          enhanceLumenRichTextEditors(node)
         }
       }
     }
@@ -2759,6 +2837,8 @@ export const defineLumenElements = (
   installToastController()
 
   installFormController()
+
+  installRichTextEditorController()
 }
 
 export const lumenElementDefinitions = elementDefinitions

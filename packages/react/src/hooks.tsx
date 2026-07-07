@@ -38,6 +38,10 @@ type DataAttributes = Record<`data-${string}`, unknown>
 
 type LumenProps<Tag extends keyof HTMLElementTagNameMap> = ComponentPropsWithRef<Tag> & DataAttributes
 
+interface RichTextCommandDocument {
+  execCommand?: (command: string) => boolean
+}
+
 export type ToastPlacement =
   | 'bottom-center'
   | 'bottom-left'
@@ -229,6 +233,24 @@ export interface FormValidationController {
   setFieldValidity: (control: NativeFormControl, invalid: boolean, message?: string) => void
   validateControl: (control: NativeFormControl, form?: HTMLFormElement | null) => boolean
   validateForm: (form?: HTMLFormElement | null) => NativeFormControl[]
+}
+
+export interface RichTextEditorCommandDetail {
+  command: string
+}
+
+export interface RichTextEditorOptions {
+  onCommand?: ChangeHandler<RichTextEditorCommandDetail> | undefined
+}
+
+export interface RichTextEditorController {
+  executeCommand: (command: string, root?: HTMLElement | null) => boolean
+  getCommandProps: (
+    command: string,
+    props?: ComponentPropsWithRef<'button'>
+  ) => LumenProps<'button'>
+  rootProps: LumenProps<'section'>
+  rootRef: RefObject<HTMLElement | null>
 }
 
 export type ThemeBuilderChangeDetail = LumenThemeBuilderResult
@@ -1164,6 +1186,54 @@ export const useFormValidation = ({
     setFieldValidity,
     validateControl,
     validateForm
+  }
+}
+
+export const useRichTextEditor = ({
+  onCommand
+}: RichTextEditorOptions = {}): RichTextEditorController => {
+  const rootRef = useRef<HTMLElement | null>(null)
+
+  const executeCommand = useCallback<RichTextEditorController['executeCommand']>((command, root = rootRef.current) => {
+    if (!command) return false
+
+    const commandDocument = typeof document === 'undefined'
+      ? undefined
+      : document as unknown as RichTextCommandDocument
+
+    const executed = typeof commandDocument?.execCommand === 'function'
+      ? commandDocument.execCommand(command)
+      : false
+
+    const detail = { command }
+
+    if (root && typeof CustomEvent !== 'undefined') {
+      root.dispatchEvent(new CustomEvent('ui:editor-command', {
+        bubbles: true,
+        detail
+      }))
+    }
+
+    onCommand?.(detail)
+
+    return executed
+  }, [onCommand])
+
+  const getCommandProps = useCallback<RichTextEditorController['getCommandProps']>((command, props = {}) => ({
+    ...props,
+    'data-ui-editor-command': command,
+    onClick: composeHandlers(props.onClick, () => { executeCommand(command); }),
+    type: props.type ?? 'button'
+  }), [executeCommand])
+
+  return {
+    executeCommand,
+    getCommandProps,
+    rootProps: {
+      'data-ui-rich-text-editor': true,
+      ref: rootRef
+    },
+    rootRef
   }
 }
 

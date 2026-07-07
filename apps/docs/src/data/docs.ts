@@ -298,7 +298,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display and form attributes; use hooks for behavior-heavy primitives.',
+    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display, form, and rich text attributes; use hooks for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -307,7 +307,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, select, forms, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, select, forms, rich text, toast, DataTable, ThemeBuilder, and VirtualList.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -343,7 +343,7 @@ import '@santi020k/lumen-astro/styles.css'
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
       'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
-      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useTabs, useSelect, useFormValidation, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
+      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useTabs, useSelect, useFormValidation, useRichTextEditor, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
     code: `import '@santi020k/lumen-astro/styles.css'
@@ -362,7 +362,7 @@ export function Actions() {
   {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
-      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, ThemeBuilder export, VirtualList range events, overlays, select, tabs, tooltip, and toast.',
+      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, rich text commands, ThemeBuilder export, VirtualList range events, overlays, select, tabs, tooltip, and toast.',
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">

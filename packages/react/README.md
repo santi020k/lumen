@@ -35,9 +35,10 @@ export function SubscribeForm() {
 
 React is Lumen's visual adapter layer plus headless behavior hooks. The components emit the same
 `ui-*` classes and `data-ui-*` attributes as Astro, while hooks such as `useDialog`, `usePopover`,
-`useDropdownMenu`, `useTabs`, `useSelect`, `useFormValidation`, `useThemeBuilder`, `useToast`, and
-`useTooltip` track the Astro runtime's ARIA, keyboard, Escape, dismissal, form validation, theme
-export, and toast controller semantics for React applications.
+`useDropdownMenu`, `useTabs`, `useSelect`, `useFormValidation`, `useRichTextEditor`,
+`useThemeBuilder`, `useToast`, and `useTooltip` track the Astro runtime's ARIA, keyboard, Escape,
+dismissal, form validation, rich text command, theme export, and toast controller semantics for
+React applications.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
 attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
 

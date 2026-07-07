@@ -5,6 +5,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 import {
   defineLumenElements,
   enhanceLumenForms,
+  enhanceLumenRichTextEditors,
   LumenButtonElement,
   LumenCardElement,
   LumenToast} from './index.js'
@@ -481,6 +482,38 @@ describe('@santi020k/lumen-elements', () => {
     expect(exports).toHaveLength(1)
     expect(exports[0]?.format).toBe('tokens')
     expect(writeText).toHaveBeenCalledWith(output?.value)
+  })
+
+  test('rich text editor controls execute commands and emit events', () => {
+    const execCommand = vi.fn(() => true)
+    const commands: string[] = []
+
+    Object.defineProperty(document, 'execCommand', {
+      configurable: true,
+      value: execCommand
+    })
+
+    document.body.innerHTML = `
+      <lumen-rich-text-editor>
+        <button data-ui-editor-command="bold" type="button">Bold</button>
+      </lumen-rich-text-editor>
+    `
+
+    enhanceLumenRichTextEditors(document)
+
+    const root = document.querySelector<HTMLElement>('lumen-rich-text-editor')
+    const button = document.querySelector<HTMLButtonElement>('[data-ui-editor-command]')
+
+    root?.addEventListener('ui:editor-command', event => {
+      commands.push((event as CustomEvent<{ command: string }>).detail.command)
+    })
+
+    button?.click()
+
+    expect(execCommand).toHaveBeenCalledWith('bold')
+    expect(commands).toEqual(['bold'])
+    expect(root?.dataset.uiEditorBound).toBe('true')
+    expect(button?.dataset.uiEditorCommandBound).toBe('true')
   })
 
   test('tooltip wires aria-describedby and dismisses with Escape', () => {

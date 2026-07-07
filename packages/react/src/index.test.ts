@@ -1,7 +1,7 @@
 /* eslint-disable @eslint-react/no-unnecessary-use-prefix -- The mock dispatcher mirrors React's internal hook method names. */
 import type { ReactElement } from 'react'
 import * as React from 'react'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 
 import {
   Alert,
@@ -25,6 +25,7 @@ import {
   useDropdownMenu,
   useFormValidation,
   usePopover,
+  useRichTextEditor,
   useSelect,
   useTabs,
   useThemeBuilder,
@@ -187,6 +188,39 @@ describe('@santi020k/lumen-react', () => {
     expect(validation.formProps.noValidate).toBe(true)
     expect(validation.validateForm).toBeTypeOf('function')
     expect(validation.validateControl).toBeTypeOf('function')
+  })
+
+  test('exposes rich text command props and events', () => {
+    const documentDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'document')
+    const execCommand = vi.fn(() => true)
+    const commands: string[] = []
+
+    Object.defineProperty(globalThis, 'document', {
+      configurable: true,
+      value: { execCommand }
+    })
+
+    try {
+      const editor = withHookDispatcher(() => useRichTextEditor({
+        onCommand: detail => { commands.push(detail.command); }
+      }))
+      const commandProps = editor.getCommandProps('bold')
+
+      expect(editor.rootProps['data-ui-rich-text-editor']).toBe(true)
+      expect(commandProps['data-ui-editor-command']).toBe('bold')
+      expect(commandProps.type).toBe('button')
+
+      commandProps.onClick?.({} as Parameters<NonNullable<typeof commandProps.onClick>>[0])
+
+      expect(execCommand).toHaveBeenCalledWith('bold')
+      expect(commands).toEqual(['bold'])
+    } finally {
+      if (documentDescriptor) {
+        Object.defineProperty(globalThis, 'document', documentDescriptor)
+      } else {
+        delete (globalThis as { document?: Document }).document
+      }
+    }
   })
 
   test('renders data display runtime contracts', () => {

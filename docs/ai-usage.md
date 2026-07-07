@@ -86,9 +86,10 @@ export function SubscribeForm() {
 
 Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
 interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, Tabs, Select,
-ThemeBuilder, Toast, Tooltip, forms, and VirtualList: selection, validation, theme, and range
-events, ARIA state, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping,
-native select form participation, and the same toast controller events as the Astro runtime.
+ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, and VirtualList: selection, validation, rich
+text command, theme, and range events, ARIA state, roving/listbox keyboard paths, Escape/outside
+dismissal, focus return/trapping, native select form participation, and the same toast controller
+events as the Astro runtime.
 
 ```html
 <script type="module">
@@ -155,9 +156,11 @@ The shared catalog includes:
   and `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
   Controls with `data-ui-editor-command` dispatch browser editing commands and emit
-  `ui:editor-command`. For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external
-  editor package in the app and bridge toolbar buttons through the emitted command event instead of
-  adding the editor engine to Lumen.
+  `ui:editor-command`. Astro `UIPrimitives` and registered Web Components bind those controls
+  directly; React apps can use `useRichTextEditor` for `rootProps`, `getCommandProps`, and
+  `executeCommand`. For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor
+  package in the app and bridge toolbar buttons through the emitted command event instead of adding
+  the editor engine to Lumen.
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
   and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that
   should reflect native Constraint Validation API state into `Field` error slots on blur and submit.
