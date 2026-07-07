@@ -1,0 +1,30 @@
+import {
+  Agenda,
+  Calendar,
+  DatePicker,
+  Schedule
+} from '@santi020k/lumen-react'
+
+export const SchedulerRecipe = () => (
+  <section className="lumen-recipe lumen-recipe--scheduler">
+    <Calendar aria-label="Choose schedule date" />
+    <DatePicker aria-label="Jump to date" />
+    <Schedule>
+      <header><h2>Launch week</h2></header>
+      <div data-ui-schedule-grid>
+        <section data-ui-schedule-slot="monday">
+          <article id="schedule-planning" data-ui-draggable="true" data-ui-schedule-event>Planning</article>
+        </section>
+        <section data-ui-schedule-slot="friday">
+          <article id="schedule-ship" data-ui-draggable="true" data-ui-schedule-event>Ship</article>
+        </section>
+      </div>
+    </Schedule>
+    <Agenda>
+      <ol>
+        <li><strong>Design review</strong><span>10:00</span></li>
+        <li><strong>Release notes</strong><span>14:30</span></li>
+      </ol>
+    </Agenda>
+  </section>
+)

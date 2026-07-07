@@ -1,0 +1,59 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<script type="module">
+  const root = document.querySelector('[data-lumen-theme-builder-recipe]')
+  const hueInput = root?.querySelector('[data-ui-theme-brand-hue]')
+  const preview = root?.querySelector('#lumen-theme-preview')
+  const output = root?.querySelector('[data-ui-theme-output]')
+  const exportButton = root?.querySelector('[data-ui-theme-export]')
+  const tokenNames = ['canvas', 'surface', 'surface-muted', 'surface-strong', 'line', 'ink', 'ink-soft', 'ink-muted', 'brand', 'brand-solid', 'brand-soft', 'accent', 'success', 'warning', 'danger']
+  const createTheme = hue => ({
+    accent: `${(hue + 150) % 360} 70% 40%`,
+    brand: `${hue} 85% 53%`,
+    'brand-soft': `${hue} 90% 96%`,
+    'brand-solid': `${hue} 85% 45%`,
+    canvas: `${hue} 20% 99%`,
+    danger: '0 84% 60%',
+    ink: `${hue} 40% 11%`,
+    'ink-muted': `${hue} 10% 48%`,
+    'ink-soft': `${hue} 14% 32%`,
+    line: `${hue} 14% 86%`,
+    success: '142 71% 36%',
+    surface: `${hue} 20% 100%`,
+    'surface-muted': `${hue} 16% 96%`,
+    'surface-strong': `${hue} 14% 91%`,
+    warning: '38 92% 50%'
+  })
+  const update = () => {
+    const hue = Number(hueInput?.value ?? 264)
+    const tokens = createTheme(Number.isFinite(hue) ? hue : 264)
+
+    for (const [token, value] of Object.entries(tokens)) {
+      preview?.style.setProperty(`--${token}`, value)
+    }
+
+    if (output) {
+      output.value = `:root {\n${tokenNames.map(token => `  --${token}: ${tokens[token]};`).join('\n')}\n}`
+    }
+  }
+
+  hueInput?.addEventListener('input', update)
+  exportButton?.addEventListener('click', () => navigator.clipboard?.writeText(output?.value ?? ''))
+  update()
+</script>
+
+<lumen-theme-builder class="lumen-recipe lumen-recipe--theme-builder" data-lumen-theme-builder-recipe>
+  <header><h2>Brand theme</h2><lumen-button data-ui-theme-export type="button">Copy CSS</lumen-button></header>
+  <lumen-card id="lumen-theme-preview" style="display: flex; gap: 0.5rem;">
+    <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
+    <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
+  </lumen-card>
+  <lumen-card>
+    <input class="ui-input" aria-label="Brand hue" data-ui-theme-brand-hue max="359" min="0" type="range" value="264" />
+  </lumen-card>
+  <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
+</lumen-theme-builder>

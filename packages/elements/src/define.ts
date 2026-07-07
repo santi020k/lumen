@@ -1,9 +1,17 @@
 import {
+  coerceThemeBuilderExportFormat,
+  coerceThemeBuilderMode,
+  coerceThemeBuilderScheme,
   composeClassName,
+  createThemeBuilderTokens,
+  exportThemeBuilderValue,
   getVirtualRange,
   type LumenComponentName,
-  lumenComponentNames
-} from '@santi020k/lumen-core'
+  lumenComponentNames,
+  type LumenThemeBuilderExportFormat,
+  type LumenThemeBuilderScheme,
+  type LumenThemeTokens,
+  normalizeThemeBuilderHex} from '@santi020k/lumen-core'
 
 type AttributeClassMap = Record<string, Record<string, string>>
 
@@ -2063,6 +2071,261 @@ class LumenVirtualListBehaviorElement extends LumenElement {
   }
 }
 
+class LumenThemeBuilderBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private currentExportFormat: LumenThemeBuilderExportFormat = 'css'
+  private currentExportValue = ''
+  private currentScheme: LumenThemeBuilderScheme = 'light'
+  private currentTokens: LumenThemeTokens | null = null
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    this.setupThemeBuilder(this.abortController.signal)
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+
+  private setupThemeBuilder(signal: AbortSignal): void {
+    const brandHue = this.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue], [data-ui-theme-hue]')
+    const brandHueNumber = this.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue-number]')
+    const accentHue = this.querySelector<HTMLInputElement>('[data-ui-theme-accent-hue]')
+    const accentHueNumber = this.querySelector<HTMLInputElement>('[data-ui-theme-accent-hue-number]')
+    const primaryColor = this.querySelector<HTMLInputElement>('[data-ui-theme-primary-color]')
+    const primaryHex = this.querySelector<HTMLInputElement>('[data-ui-theme-primary-hex]')
+    const secondaryColor = this.querySelector<HTMLInputElement>('[data-ui-theme-secondary-color]')
+    const secondaryHex = this.querySelector<HTMLInputElement>('[data-ui-theme-secondary-hex]')
+    const exportButton = this.querySelector<HTMLButtonElement>('[data-ui-theme-export]')
+    const output = this.querySelector<HTMLTextAreaElement | HTMLOutputElement>('[data-ui-theme-output]')
+    const exportFormatButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-export-format]')]
+    const modeButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-mode]')]
+    const schemeButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')]
+
+    this.currentExportFormat = coerceThemeBuilderExportFormat(
+      this.getButtonValue(exportFormatButtons, 'data-ui-theme-export-format', 'css')
+    )
+
+    this.currentScheme = coerceThemeBuilderScheme(
+      this.getButtonValue(schemeButtons, 'data-ui-theme-scheme', this.getDefaultScheme())
+    )
+
+    const update = (dispatch = true): void => {
+      const result = createThemeBuilderTokens({
+        accentHue: accentHue?.value ?? accentHueNumber?.value ?? this.getAttribute('data-ui-theme-accent-hue') ?? null,
+        hue: brandHue?.value ?? brandHueNumber?.value ?? this.getAttribute('data-ui-theme-brand-hue') ?? this.getAttribute('data-ui-theme-hue') ?? null,
+        mode: this.getButtonValue(modeButtons, 'data-ui-theme-mode', 'generated'),
+        primaryColor: primaryHex?.value ?? primaryColor?.value ?? null,
+        scheme: this.currentScheme,
+        secondaryColor: secondaryHex?.value ?? secondaryColor?.value ?? null
+      })
+
+      this.currentScheme = result.scheme
+
+      this.currentTokens = result.tokens
+
+      const target = this.getTarget()
+
+      if (target) {
+        this.applyTokens(target, result.tokens, result.scheme)
+      }
+
+      this.writeExport(output)
+
+      if (dispatch) {
+        this.dispatchEvent(new CustomEvent('ui:theme-change', {
+          bubbles: true,
+          detail: result
+        }))
+      }
+    }
+
+    this.bindHueInputs(brandHue, brandHueNumber, update, signal)
+
+    this.bindHueInputs(accentHue, accentHueNumber, update, signal)
+
+    this.bindHexInputs(primaryColor, primaryHex, update, signal)
+
+    this.bindHexInputs(secondaryColor, secondaryHex, update, signal)
+
+    for (const button of exportFormatButtons) {
+      button.addEventListener('click', () => {
+        this.currentExportFormat = coerceThemeBuilderExportFormat(button.getAttribute('data-ui-theme-export-format'))
+
+        this.setPressedState(exportFormatButtons, 'data-ui-theme-export-format', this.currentExportFormat)
+
+        this.writeExport(output)
+      }, { signal })
+    }
+
+    for (const button of modeButtons) {
+      button.addEventListener('click', () => {
+        this.setPressedState(modeButtons, 'data-ui-theme-mode', coerceThemeBuilderMode(button.getAttribute('data-ui-theme-mode')))
+
+        update()
+      }, { signal })
+    }
+
+    for (const button of schemeButtons) {
+      button.addEventListener('click', () => {
+        this.currentScheme = coerceThemeBuilderScheme(button.getAttribute('data-ui-theme-scheme'))
+
+        this.setPressedState(schemeButtons, 'data-ui-theme-scheme', this.currentScheme)
+
+        update()
+      }, { signal })
+    }
+
+    exportButton?.addEventListener('click', () => {
+      if (this.currentTokens) {
+        this.writeExport(output)
+      } else {
+        update(false)
+      }
+
+      const value = output?.value || this.currentExportValue
+
+      navigator.clipboard.writeText(value).catch(() => null)
+
+      this.dispatchEvent(new CustomEvent('ui:theme-export', {
+        bubbles: true,
+        detail: {
+          css: this.currentExportFormat === 'css' ? value : undefined,
+          format: this.currentExportFormat,
+          tokens: this.currentTokens,
+          value
+        }
+      }))
+    }, { signal })
+
+    update(false)
+  }
+
+  private getDefaultScheme(): LumenThemeBuilderScheme {
+    return document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
+  }
+
+  private getTarget(): HTMLElement | null {
+    const selector = this.dataset.uiThemeTarget
+
+    if (!selector) return document.documentElement
+
+    try {
+      return document.querySelector<HTMLElement>(selector)
+    } catch {
+      return null
+    }
+  }
+
+  private getButtonValue(buttons: HTMLButtonElement[], attribute: string, fallback: string): string {
+    const activeButton = buttons.find(button =>
+      button.getAttribute('aria-selected') === 'true' ||
+      button.getAttribute('aria-pressed') === 'true'
+    )
+
+    return activeButton?.getAttribute(attribute) ?? this.getAttribute(attribute) ?? fallback
+  }
+
+  private setPressedState(buttons: HTMLButtonElement[], attribute: string, value: string): void {
+    for (const button of buttons) {
+      const isPressed = button.getAttribute(attribute) === value
+
+      if (button.hasAttribute('aria-pressed')) {
+        button.setAttribute('aria-pressed', String(isPressed))
+      }
+
+      button.classList.toggle('ui-button--secondary', isPressed)
+
+      button.classList.toggle('ui-button--outline', !isPressed)
+    }
+  }
+
+  private bindHueInputs(
+    range: HTMLInputElement | null,
+    number: HTMLInputElement | null,
+    onChange: () => void,
+    signal: AbortSignal
+  ): void {
+    const sync = (source: HTMLInputElement, target: HTMLInputElement | null): void => {
+      if (target) {
+        target.value = source.value
+      }
+
+      onChange()
+    }
+
+    range?.addEventListener('input', () => { sync(range, number); }, { signal })
+
+    number?.addEventListener('input', () => { sync(number, range); }, { signal })
+  }
+
+  private bindHexInputs(
+    color: HTMLInputElement | null,
+    text: HTMLInputElement | null,
+    onChange: () => void,
+    signal: AbortSignal
+  ): void {
+    color?.addEventListener('input', () => {
+      if (text) {
+        text.value = color.value
+
+        text.removeAttribute('aria-invalid')
+      }
+
+      onChange()
+    }, { signal })
+
+    text?.addEventListener('input', () => {
+      const normalized = normalizeThemeBuilderHex(text.value)
+
+      if (normalized) {
+        if (color) color.value = normalized
+
+        text.removeAttribute('aria-invalid')
+
+        onChange()
+      } else {
+        text.setAttribute('aria-invalid', 'true')
+      }
+    }, { signal })
+  }
+
+  private applyTokens(
+    target: HTMLElement,
+    tokens: LumenThemeTokens,
+    scheme: LumenThemeBuilderScheme
+  ): void {
+    target.style.colorScheme = scheme
+
+    for (const [token, value] of Object.entries(tokens)) {
+      target.style.setProperty(`--${token}`, value)
+    }
+  }
+
+  private writeExport(output: HTMLTextAreaElement | HTMLOutputElement | null): void {
+    if (!this.currentTokens) return
+
+    this.currentExportValue = exportThemeBuilderValue(
+      this.currentTokens,
+      this.currentScheme,
+      this.currentExportFormat
+    )
+
+    if (output) {
+      output.value = this.currentExportValue
+    }
+  }
+}
+
 class LumenTooltipBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private showTimer: ReturnType<typeof globalThis.setTimeout> | undefined
@@ -2209,6 +2472,7 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   Select: LumenSelectBehaviorElement,
   Sonner: LumenSonnerBehaviorElement,
   Tabs: LumenTabsBehaviorElement,
+  ThemeBuilder: LumenThemeBuilderBehaviorElement,
   Toast: LumenToastBehaviorElement,
   Tooltip: LumenTooltipBehaviorElement,
   VirtualList: LumenVirtualListBehaviorElement

@@ -54,8 +54,8 @@ surface; React and Web Components expose the same class and data contracts.
 ## Next
 
 - Remaining Web Components behavior parity: `packages/elements` now covers DataTable, Dialog,
-  Popover, DropdownMenu, Tabs, Select, Toast, Tooltip, and VirtualList; Schedule, forms, rich text,
-  theme builder, and other advanced runtimes still need equivalent client behavior.
+  Popover, DropdownMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, and VirtualList; Schedule,
+  forms, rich text, and other advanced runtimes still need equivalent client behavior.
 - Theme tooling polish: the docs theme playground now uses the public `ThemeBuilder` runtime; add
   import/check contrast flows when token review needs to go beyond generation and export.
 - Per-component API prop tables completeness: `apps/docs/src/data/docs.ts` uses a partial

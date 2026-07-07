@@ -1,0 +1,27 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<section class="lumen-recipe lumen-recipe--scheduler">
+  <lumen-calendar aria-label="Choose schedule date"></lumen-calendar>
+  <lumen-date-picker aria-label="Jump to date"></lumen-date-picker>
+  <lumen-schedule>
+    <header><h2>Launch week</h2></header>
+    <div data-ui-schedule-grid>
+      <section data-ui-schedule-slot="monday">
+        <article id="schedule-planning" data-ui-draggable="true" data-ui-schedule-event>Planning</article>
+      </section>
+      <section data-ui-schedule-slot="friday">
+        <article id="schedule-ship" data-ui-draggable="true" data-ui-schedule-event>Ship</article>
+      </section>
+    </div>
+  </lumen-schedule>
+  <lumen-agenda>
+    <ol>
+      <li><strong>Design review</strong><span>10:00</span></li>
+      <li><strong>Release notes</strong><span>14:30</span></li>
+    </ol>
+  </lumen-agenda>
+</section>

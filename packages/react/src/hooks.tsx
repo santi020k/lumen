@@ -1,9 +1,19 @@
 /* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context, react-refresh/only-export-components -- This package supports React 18 and intentionally keeps public hooks, context provider, and small helper components together in one library module. */
-import { composeClassName } from '@santi020k/lumen-core'
+import {
+  coerceThemeBuilderExportFormat,
+  composeClassName,
+  createThemeBuilderTokens,
+  exportThemeBuilderValue,
+  type LumenThemeBuilderExportFormat,
+  type LumenThemeBuilderMode,
+  type LumenThemeBuilderResult,
+  type LumenThemeBuilderScheme,
+  type LumenThemeTokens} from '@santi020k/lumen-core'
 
 import {
   type ComponentPropsWithRef,
   createContext,
+  type CSSProperties,
   type Dispatch,
   type KeyboardEvent,
   type MouseEvent,
@@ -190,6 +200,103 @@ export interface ToastProviderProps {
   children?: ReactNode
   maxCount?: number
   placement?: ToastPlacement
+}
+
+type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+
+export interface FormValidationValidateDetail {
+  control: NativeFormControl
+  form: HTMLFormElement
+  value: string
+}
+
+export interface FormValidationStateDetail {
+  control?: NativeFormControl
+  controls?: NativeFormControl[]
+  form: HTMLFormElement
+}
+
+export interface FormValidationOptions {
+  onInvalid?: ChangeHandler<FormValidationStateDetail> | undefined
+  onValid?: ChangeHandler<FormValidationStateDetail> | undefined
+  onValidate?: ChangeHandler<FormValidationValidateDetail> | undefined
+}
+
+export interface FormValidationController {
+  formProps: LumenProps<'form'>
+  formRef: RefObject<HTMLFormElement | null>
+  getControls: (form?: HTMLFormElement | null) => NativeFormControl[]
+  setFieldValidity: (control: NativeFormControl, invalid: boolean, message?: string) => void
+  validateControl: (control: NativeFormControl, form?: HTMLFormElement | null) => boolean
+  validateForm: (form?: HTMLFormElement | null) => NativeFormControl[]
+}
+
+export type ThemeBuilderChangeDetail = LumenThemeBuilderResult
+
+export interface ThemeBuilderExportDetail {
+  css?: string
+  format: LumenThemeBuilderExportFormat
+  tokens: LumenThemeTokens
+  value: string
+}
+
+export interface ThemeBuilderOptions {
+  accentHue?: number | undefined
+  defaultAccentHue?: number | undefined
+  defaultExportFormat?: LumenThemeBuilderExportFormat | undefined
+  defaultHue?: number | undefined
+  defaultMode?: LumenThemeBuilderMode | undefined
+  defaultPrimaryColor?: string | undefined
+  defaultScheme?: LumenThemeBuilderScheme | undefined
+  defaultSecondaryColor?: string | undefined
+  exportFormat?: LumenThemeBuilderExportFormat | undefined
+  hue?: number | undefined
+  mode?: LumenThemeBuilderMode | undefined
+  onAccentHueChange?: ChangeHandler<number> | undefined
+  onExportFormatChange?: ChangeHandler<LumenThemeBuilderExportFormat> | undefined
+  onHueChange?: ChangeHandler<number> | undefined
+  onModeChange?: ChangeHandler<LumenThemeBuilderMode> | undefined
+  onPrimaryColorChange?: ChangeHandler<string> | undefined
+  onSchemeChange?: ChangeHandler<LumenThemeBuilderScheme> | undefined
+  onSecondaryColorChange?: ChangeHandler<string> | undefined
+  onThemeChange?: ChangeHandler<ThemeBuilderChangeDetail> | undefined
+  onThemeExport?: ChangeHandler<ThemeBuilderExportDetail> | undefined
+  primaryColor?: string | undefined
+  scheme?: LumenThemeBuilderScheme | undefined
+  secondaryColor?: string | undefined
+}
+
+export interface ThemeBuilderController extends ThemeBuilderChangeDetail {
+  accentHueProps: LumenProps<'input'>
+  copyExport: () => Promise<string>
+  exportButtonProps: LumenProps<'button'>
+  exportFormat: LumenThemeBuilderExportFormat
+  exportValue: string
+  getExportFormatProps: (
+    format: LumenThemeBuilderExportFormat,
+    props?: ComponentPropsWithRef<'button'>
+  ) => LumenProps<'button'>
+  getModeProps: (
+    mode: LumenThemeBuilderMode,
+    props?: ComponentPropsWithRef<'button'>
+  ) => LumenProps<'button'>
+  getSchemeProps: (
+    scheme: LumenThemeBuilderScheme,
+    props?: ComponentPropsWithRef<'button'>
+  ) => LumenProps<'button'>
+  hueProps: LumenProps<'input'>
+  outputProps: LumenProps<'textarea'>
+  previewStyle: CSSProperties
+  primaryColorProps: LumenProps<'input'>
+  rootProps: LumenProps<'section'>
+  secondaryColorProps: LumenProps<'input'>
+  setAccentHue: Dispatch<SetStateAction<number>>
+  setExportFormat: Dispatch<SetStateAction<LumenThemeBuilderExportFormat>>
+  setHue: Dispatch<SetStateAction<number>>
+  setMode: Dispatch<SetStateAction<LumenThemeBuilderMode>>
+  setPrimaryColor: Dispatch<SetStateAction<string>>
+  setScheme: Dispatch<SetStateAction<LumenThemeBuilderScheme>>
+  setSecondaryColor: Dispatch<SetStateAction<string>>
 }
 
 const defaultToastDuration = 5000
@@ -834,6 +941,206 @@ export const useSelect = ({
   }
 }
 /* eslint-enable complexity */
+
+export const useThemeBuilder = ({
+  accentHue,
+  defaultAccentHue = 54,
+  defaultExportFormat = 'css',
+  defaultHue = 264,
+  defaultMode = 'generated',
+  defaultPrimaryColor = '#6f20f0',
+  defaultScheme = 'light',
+  defaultSecondaryColor = '#14b8a6',
+  exportFormat,
+  hue,
+  mode,
+  onAccentHueChange,
+  onExportFormatChange,
+  onHueChange,
+  onModeChange,
+  onPrimaryColorChange,
+  onSchemeChange,
+  onSecondaryColorChange,
+  onThemeChange,
+  onThemeExport,
+  primaryColor,
+  scheme,
+  secondaryColor
+}: ThemeBuilderOptions = {}): ThemeBuilderController => {
+  const [currentHue, setHue] = useControllableState({
+    defaultValue: defaultHue,
+    onChange: onHueChange,
+    value: hue
+  })
+
+  const [currentAccentHue, setAccentHue] = useControllableState({
+    defaultValue: defaultAccentHue,
+    onChange: onAccentHueChange,
+    value: accentHue
+  })
+
+  const [currentMode, setMode] = useControllableState({
+    defaultValue: defaultMode,
+    onChange: onModeChange,
+    value: mode
+  })
+
+  const [currentScheme, setScheme] = useControllableState({
+    defaultValue: defaultScheme,
+    onChange: onSchemeChange,
+    value: scheme
+  })
+
+  const [currentPrimaryColor, setPrimaryColor] = useControllableState({
+    defaultValue: defaultPrimaryColor,
+    onChange: onPrimaryColorChange,
+    value: primaryColor
+  })
+
+  const [currentSecondaryColor, setSecondaryColor] = useControllableState({
+    defaultValue: defaultSecondaryColor,
+    onChange: onSecondaryColorChange,
+    value: secondaryColor
+  })
+
+  const [currentExportFormat, setExportFormat] = useControllableState({
+    defaultValue: defaultExportFormat,
+    onChange: onExportFormatChange,
+    value: exportFormat
+  })
+
+  const result = useMemo(() => createThemeBuilderTokens({
+    accentHue: currentAccentHue,
+    hue: currentHue,
+    mode: currentMode,
+    primaryColor: currentPrimaryColor,
+    scheme: currentScheme,
+    secondaryColor: currentSecondaryColor
+  }), [
+    currentAccentHue,
+    currentHue,
+    currentMode,
+    currentPrimaryColor,
+    currentScheme,
+    currentSecondaryColor
+  ])
+
+  const exportValue = useMemo(() => exportThemeBuilderValue(
+    result.tokens,
+    result.scheme,
+    currentExportFormat
+  ), [currentExportFormat, result.scheme, result.tokens])
+
+  const previewStyle = useMemo(() => Object.fromEntries(
+    Object.entries(result.tokens).map(([token, value]) => [`--${token}`, value])
+  ) as CSSProperties, [result.tokens])
+
+  useEffect(() => {
+    onThemeChange?.(result)
+  }, [onThemeChange, result])
+
+  const exportDetail = useMemo<ThemeBuilderExportDetail>(() => ({
+    ...(currentExportFormat === 'css' ? { css: exportValue } : {}),
+    format: currentExportFormat,
+    tokens: result.tokens,
+    value: exportValue
+  }), [currentExportFormat, exportValue, result.tokens])
+
+  const copyExport = useCallback(async (): Promise<string> => {
+    if (typeof navigator !== 'undefined') {
+      await navigator.clipboard.writeText(exportValue).catch(() => null)
+    }
+
+    onThemeExport?.(exportDetail)
+
+    return exportValue
+  }, [exportDetail, exportValue, onThemeExport])
+
+  const getModeProps = useCallback<ThemeBuilderController['getModeProps']>((nextMode, props = {}) => ({
+    ...props,
+    'aria-pressed': currentMode === nextMode,
+    'data-ui-theme-mode': nextMode,
+    onClick: composeHandlers(props.onClick, () => { setMode(nextMode); }),
+    type: props.type ?? 'button'
+  }), [currentMode, setMode])
+
+  const getSchemeProps = useCallback<ThemeBuilderController['getSchemeProps']>((nextScheme, props = {}) => ({
+    ...props,
+    'aria-pressed': currentScheme === nextScheme,
+    'data-ui-theme-scheme': nextScheme,
+    onClick: composeHandlers(props.onClick, () => { setScheme(nextScheme); }),
+    type: props.type ?? 'button'
+  }), [currentScheme, setScheme])
+
+  const getExportFormatProps = useCallback<ThemeBuilderController['getExportFormatProps']>((format, props = {}) => ({
+    ...props,
+    'aria-pressed': currentExportFormat === format,
+    'data-ui-theme-export-format': format,
+    onClick: composeHandlers(props.onClick, () => { setExportFormat(coerceThemeBuilderExportFormat(format)); }),
+    type: props.type ?? 'button'
+  }), [currentExportFormat, setExportFormat])
+
+  return {
+    ...result,
+    accentHueProps: {
+      'data-ui-theme-accent-hue': true,
+      max: 359,
+      min: 0,
+      onChange: event => { setAccentHue(Number(event.currentTarget.value)); },
+      type: 'range',
+      value: currentAccentHue
+    },
+    copyExport,
+    exportButtonProps: {
+      'data-ui-theme-export': true,
+      onClick: () => {
+        copyExport().catch(() => null)
+      },
+      type: 'button'
+    },
+    exportFormat: currentExportFormat,
+    exportValue,
+    getExportFormatProps,
+    getModeProps,
+    getSchemeProps,
+    hueProps: {
+      'data-ui-theme-brand-hue': true,
+      max: 359,
+      min: 0,
+      onChange: event => { setHue(Number(event.currentTarget.value)); },
+      type: 'range',
+      value: currentHue
+    },
+    outputProps: {
+      'data-ui-theme-output': true,
+      readOnly: true,
+      value: exportValue
+    },
+    previewStyle,
+    primaryColorProps: {
+      'data-ui-theme-primary-color': true,
+      onChange: event => { setPrimaryColor(event.currentTarget.value); },
+      type: 'color',
+      value: currentPrimaryColor
+    },
+    rootProps: {
+      'data-ui-theme-builder': true
+    },
+    secondaryColorProps: {
+      'data-ui-theme-secondary-color': true,
+      onChange: event => { setSecondaryColor(event.currentTarget.value); },
+      type: 'color',
+      value: currentSecondaryColor
+    },
+    setAccentHue,
+    setExportFormat,
+    setHue,
+    setMode,
+    setPrimaryColor,
+    setScheme,
+    setSecondaryColor
+  }
+}
 
 export const useTooltip = ({
   defaultOpen = false,

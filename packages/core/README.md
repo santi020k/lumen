@@ -7,6 +7,26 @@ Most consumers should install a framework package such as `@santi020k/lumen-astr
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme
 tokens outside the shared stylesheet.
 
+## Theme Builder Helpers
+
+Use the ThemeBuilder helpers when an adapter or app needs the same token generation and export
+contract as the Astro runtime.
+
+```ts
+import {
+  createThemeBuilderTokens,
+  exportThemeBuilderValue
+} from '@santi020k/lumen-core'
+
+const theme = createThemeBuilderTokens({
+  accentHue: 140,
+  hue: 260,
+  scheme: 'dark'
+})
+
+exportThemeBuilderValue(theme.tokens, theme.scheme, 'css')
+```
+
 ## Figma and Design Tokens
 
 Use the Figma helpers when a design workflow needs the same semantic colors as Lumen's CSS tokens.

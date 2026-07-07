@@ -1,0 +1,17 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<lumen-rich-text-editor class="lumen-recipe lumen-recipe--rich-text-editor">
+  <div role="toolbar" aria-label="Editor toolbar">
+    <lumen-button-group>
+      <lumen-button data-ui-editor-command="bold" type="button">Bold</lumen-button>
+      <lumen-button data-ui-editor-command="italic" type="button">Italic</lumen-button>
+    </lumen-button-group>
+    <lumen-toggle-group><button data-ui-editor-command="insertUnorderedList" type="button">List</button></lumen-toggle-group>
+  </div>
+  <div contenteditable="true">Draft release notes...</div>
+  <lumen-textarea name="fallback" placeholder="Plain text fallback"></lumen-textarea>
+</lumen-rich-text-editor>

@@ -1,13 +1,17 @@
 import {
   access,
   mkdir,
+  readdir,
   readFile,
   writeFile
 } from 'node:fs/promises'
 import {
   dirname,
-  join
+  join,
+  relative,
+  sep
 } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import {
   getLumenRegistryItem,
@@ -48,553 +52,35 @@ export interface LumenAddResult {
   skipped: string[]
 }
 
-const recipeFiles: Record<string, LumenRecipeFile[]> = {
-  'advanced-fields': [
-    {
-      path: 'src/lumen/advanced-fields.astro',
-      source: `---
-import {
-  Autocomplete,
-  ColorPicker,
-  DatePicker,
-  DateRangePicker,
-  NumberField,
-  SearchField,
-  TagGroup,
-  TimeField
-} from '@santi020k/lumen-astro'
----
+const templatesRoot = fileURLToPath(new URL('../templates/', import.meta.url))
 
-<form class="lumen-recipe lumen-recipe--advanced-fields">
-  <SearchField name="q" placeholder="Search records" />
-  <Autocomplete list="assignees" placeholder="Assign to..." />
-  <datalist id="assignees">
-    <option value="Design" />
-    <option value="Engineering" />
-    <option value="Operations" />
-  </datalist>
-  <NumberField aria-label="Seats" min="1" value="3" />
-  <TimeField aria-label="Start time" value="09:30" />
-  <DateRangePicker>
-    <DatePicker aria-label="Start date" />
-    <DatePicker aria-label="End date" />
-  </DateRangePicker>
-  <ColorPicker aria-label="Brand color" value="#2563eb" />
-  <TagGroup aria-label="Selected filters">
-    <span data-ui-tag role="listitem">Active <button data-ui-tag-remove type="button">Remove</button></span>
-  </TagGroup>
-</form>
-`
-    }
-  ],
-  scheduler: [
-    {
-      path: 'src/lumen/scheduler.astro',
-      source: `---
-import {
-  Agenda,
-  Calendar,
-  DatePicker,
-  Schedule
-} from '@santi020k/lumen-astro'
----
+const loadRecipeTemplateFiles = async (
+  itemName: string,
+  target: LumenAddTarget
+): Promise<LumenRecipeFile[] | undefined> => {
+  const templateDir = join(templatesRoot, target, itemName)
+  let entries
 
-<section class="lumen-recipe lumen-recipe--scheduler">
-  <Calendar aria-label="Choose schedule date" />
-  <DatePicker aria-label="Jump to date" />
-  <Schedule>
-    <header><h2>Launch week</h2></header>
-    <div data-ui-schedule-grid>
-      <section data-ui-schedule-slot="monday">
-        <article id="schedule-planning" data-ui-draggable="true" data-ui-schedule-event>Planning</article>
-      </section>
-      <section data-ui-schedule-slot="friday">
-        <article id="schedule-ship" data-ui-draggable="true" data-ui-schedule-event>Ship</article>
-      </section>
-    </div>
-  </Schedule>
-  <Agenda>
-    <ol>
-      <li><strong>Design review</strong><span>10:00</span></li>
-      <li><strong>Release notes</strong><span>14:30</span></li>
-    </ol>
-  </Agenda>
-</section>
-`
-    }
-  ],
-  'data-collections': [
-    {
-      path: 'src/lumen/data-collections.astro',
-      source: `---
-import {
-  Command,
-  DataTable,
-  Pagination,
-  Tree,
-  TreeGrid,
-  VirtualList
-} from '@santi020k/lumen-astro'
----
-
-<section class="lumen-recipe lumen-recipe--data-collections">
-  <Command>
-    <input type="search" placeholder="Filter records" />
-    <button data-ui-command-item type="button">Open docs</button>
-  </Command>
-  <DataTable>
-    <table>
-      <thead><tr><th>Name</th><th>Status</th></tr></thead>
-      <tbody><tr><td>Docs</td><td>Ready</td></tr></tbody>
-    </table>
-  </DataTable>
-  <Tree aria-label="Files">
-    <div role="treeitem" aria-expanded="true">src</div>
-    <div role="treeitem">index.ts</div>
-  </Tree>
-  <TreeGrid aria-label="Project status">
-    <div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div>
-  </TreeGrid>
-  <VirtualList data-ui-item-size="44" style="--ui-list-height: 12rem">
-    <div>Row 1</div>
-    <div>Row 2</div>
-    <div>Row 3</div>
-  </VirtualList>
-  <Pagination><a href="?page=1">Previous</a><a href="?page=2">Next</a></Pagination>
-</section>
-`
-    }
-  ],
-  'theme-builder': [
-    {
-      path: 'src/lumen/theme-builder.astro',
-      source: `---
-import {
-  Button,
-  Card,
-  ColorPicker,
-  Input,
-  ThemeBuilder
-} from '@santi020k/lumen-astro'
----
-
-<ThemeBuilder class="lumen-recipe lumen-recipe--theme-builder" data-ui-theme-target="#lumen-theme-preview">
-  <header><h2>Brand theme</h2><Button data-ui-theme-export type="button">Copy CSS</Button></header>
-  <Card id="lumen-theme-preview" style="display: flex; gap: 0.5rem;">
-    <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
-    <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
-  </Card>
-  <Card>
-    <Button aria-pressed="true" data-ui-theme-mode="generated" type="button" variant="secondary">Generated</Button>
-    <Button aria-pressed="false" data-ui-theme-mode="manual" type="button" variant="outline">Manual</Button>
-    <Input aria-label="Brand hue" data-ui-theme-brand-hue max="359" min="0" type="range" value="264" />
-    <ColorPicker aria-label="Manual brand color" data-ui-theme-primary-color value="#6f20f0" />
-    <Input aria-label="Manual brand hex" data-ui-theme-primary-hex value="#6f20f0" />
-  </Card>
-  <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
-</ThemeBuilder>
-`
-    }
-  ],
-  'rich-text-editor': [
-    {
-      path: 'src/lumen/rich-text-editor.astro',
-      source: `---
-import {
-  Button,
-  ButtonGroup,
-  RichTextEditor,
-  Textarea,
-  ToggleGroup
-} from '@santi020k/lumen-astro'
----
-
-<RichTextEditor class="lumen-recipe lumen-recipe--rich-text-editor">
-  <div role="toolbar" aria-label="Editor toolbar">
-    <ButtonGroup>
-      <Button data-ui-editor-command="bold" type="button">Bold</Button>
-      <Button data-ui-editor-command="italic" type="button">Italic</Button>
-    </ButtonGroup>
-    <ToggleGroup><button data-ui-editor-command="insertUnorderedList" type="button">List</button></ToggleGroup>
-  </div>
-  <div contenteditable="true">Draft release notes...</div>
-  <Textarea name="fallback" placeholder="Plain text fallback" />
-</RichTextEditor>
-`
-    }
-  ],
-  'ai-docs': [
-    {
-      path: 'llms.txt',
-      source: `# Lumen UI
-
-Use @santi020k/lumen-astro for Astro apps, import @santi020k/lumen-astro/styles.css once, and mount UIPrimitives once in the root layout for interactive primitives. Do not place UIPrimitives next to every component instance.
-`
-    }
-  ]
-}
-
-const elementsRecipeHeader = `<script type="module">
-  import { defineLumenElements } from '@santi020k/lumen-elements/define'
-
-  defineLumenElements()
-</script>`
-
-const reactRecipeFiles: Record<string, LumenRecipeFile[]> = {
-  'advanced-fields': [{
-    path: 'src/lumen/advanced-fields.tsx',
-    source: `import {
-  Autocomplete,
-  ColorPicker,
-  DatePicker,
-  DateRangePicker,
-  NumberField,
-  SearchField,
-  TagGroup,
-  TimeField
-} from '@santi020k/lumen-react'
-
-export const AdvancedFieldsRecipe = () => (
-  <form className="lumen-recipe lumen-recipe--advanced-fields">
-    <SearchField name="q" placeholder="Search records" />
-    <Autocomplete list="assignees" placeholder="Assign to..." />
-    <datalist id="assignees">
-      <option value="Design" />
-      <option value="Engineering" />
-      <option value="Operations" />
-    </datalist>
-    <NumberField aria-label="Seats" min="1" defaultValue="3" />
-    <TimeField aria-label="Start time" defaultValue="09:30" />
-    <DateRangePicker>
-      <DatePicker aria-label="Start date" />
-      <DatePicker aria-label="End date" />
-    </DateRangePicker>
-    <ColorPicker aria-label="Brand color" defaultValue="#2563eb" />
-    <TagGroup aria-label="Selected filters">
-      <span data-ui-tag role="listitem">Active <button data-ui-tag-remove type="button">Remove</button></span>
-    </TagGroup>
-  </form>
-)
-`
-  }],
-  'data-collections': [{
-    path: 'src/lumen/data-collections.tsx',
-    source: `import type { CSSProperties } from 'react'
-
-import {
-  Command,
-  DataTable,
-  Pagination,
-  Tree,
-  TreeGrid,
-  VirtualList
-} from '@santi020k/lumen-react'
-
-const virtualListStyle = { '--ui-list-height': '12rem' } as CSSProperties
-
-export const DataCollectionsRecipe = () => (
-  <section className="lumen-recipe lumen-recipe--data-collections">
-    <Command>
-      <input type="search" placeholder="Filter records" />
-      <button data-ui-command-item type="button">Open docs</button>
-    </Command>
-    <DataTable>
-      <table>
-        <thead><tr><th>Name</th><th>Status</th></tr></thead>
-        <tbody><tr><td>Docs</td><td>Ready</td></tr></tbody>
-      </table>
-    </DataTable>
-    <Tree aria-label="Files">
-      <div role="treeitem" aria-expanded="true">src</div>
-      <div role="treeitem">index.ts</div>
-    </Tree>
-    <TreeGrid aria-label="Project status">
-      <div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div>
-    </TreeGrid>
-    <VirtualList data-ui-item-size="44" style={virtualListStyle}>
-      <div>Row 1</div>
-      <div>Row 2</div>
-      <div>Row 3</div>
-    </VirtualList>
-    <Pagination><a href="?page=1">Previous</a><a href="?page=2">Next</a></Pagination>
-  </section>
-)
-`
-  }],
-  'rich-text-editor': [{
-    path: 'src/lumen/rich-text-editor.tsx',
-    source: `import {
-  Button,
-  ButtonGroup,
-  RichTextEditor,
-  Textarea,
-  ToggleGroup
-} from '@santi020k/lumen-react'
-
-export const RichTextEditorRecipe = () => (
-  <RichTextEditor className="lumen-recipe lumen-recipe--rich-text-editor">
-    <div role="toolbar" aria-label="Editor toolbar">
-      <ButtonGroup>
-        <Button data-ui-editor-command="bold" type="button">Bold</Button>
-        <Button data-ui-editor-command="italic" type="button">Italic</Button>
-      </ButtonGroup>
-      <ToggleGroup><button data-ui-editor-command="insertUnorderedList" type="button">List</button></ToggleGroup>
-    </div>
-    <div contentEditable suppressContentEditableWarning>Draft release notes...</div>
-    <Textarea name="fallback" placeholder="Plain text fallback" />
-  </RichTextEditor>
-)
-`
-  }],
-  scheduler: [{
-    path: 'src/lumen/scheduler.tsx',
-    source: `import {
-  Agenda,
-  Calendar,
-  DatePicker,
-  Schedule
-} from '@santi020k/lumen-react'
-
-export const SchedulerRecipe = () => (
-  <section className="lumen-recipe lumen-recipe--scheduler">
-    <Calendar aria-label="Choose schedule date" />
-    <DatePicker aria-label="Jump to date" />
-    <Schedule>
-      <header><h2>Launch week</h2></header>
-      <div data-ui-schedule-grid>
-        <section data-ui-schedule-slot="monday">
-          <article id="schedule-planning" data-ui-draggable="true" data-ui-schedule-event>Planning</article>
-        </section>
-        <section data-ui-schedule-slot="friday">
-          <article id="schedule-ship" data-ui-draggable="true" data-ui-schedule-event>Ship</article>
-        </section>
-      </div>
-    </Schedule>
-    <Agenda>
-      <ol>
-        <li><strong>Design review</strong><span>10:00</span></li>
-        <li><strong>Release notes</strong><span>14:30</span></li>
-      </ol>
-    </Agenda>
-  </section>
-)
-`
-  }],
-  'theme-builder': [{
-    path: 'src/lumen/theme-builder.tsx',
-    source: `import type { CSSProperties } from 'react'
-import { useMemo, useState } from 'react'
-
-import {
-  createThemeFromHue,
-  exportThemeCss
-} from '@santi020k/lumen-core'
-import {
-  Button,
-  Card,
-  Input,
-  ThemeBuilder
-} from '@santi020k/lumen-react'
-
-export const ThemeBuilderRecipe = () => {
-  const [hue, setHue] = useState(264)
-  const tokens = useMemo(() => createThemeFromHue(hue), [hue])
-  const previewStyle = useMemo(() => Object.fromEntries(
-    Object.entries(tokens).map(([token, value]) => [\`--\${token}\`, value])
-  ) as CSSProperties, [tokens])
-  const css = useMemo(() => exportThemeCss(tokens), [tokens])
-
-  return (
-    <ThemeBuilder className="lumen-recipe lumen-recipe--theme-builder">
-      <header><h2>Brand theme</h2><Button type="button" onClick={() => navigator.clipboard?.writeText(css)}>Copy CSS</Button></header>
-      <Card id="lumen-theme-preview" style={previewStyle}>
-        <span data-ui-swatch style={{ '--ui-swatch': 'hsl(var(--brand))' } as CSSProperties}></span>
-        <span data-ui-swatch style={{ '--ui-swatch': 'hsl(var(--accent))' } as CSSProperties}></span>
-      </Card>
-      <Card>
-        <Input
-          aria-label="Brand hue"
-          max="359"
-          min="0"
-          type="range"
-          value={hue}
-          onChange={(event) => { setHue(Number(event.currentTarget.value)); }}
-        />
-      </Card>
-      <textarea aria-label="Theme CSS" readOnly value={css}></textarea>
-    </ThemeBuilder>
-  )
-}
-`
-  }]
-}
-
-const elementsRecipeFiles: Record<string, LumenRecipeFile[]> = {
-  'advanced-fields': [{
-    path: 'src/lumen/advanced-fields.html',
-    source: `${elementsRecipeHeader}
-
-<form class="lumen-recipe lumen-recipe--advanced-fields">
-  <lumen-search-field name="q" placeholder="Search records"></lumen-search-field>
-  <lumen-autocomplete list="assignees" placeholder="Assign to..."></lumen-autocomplete>
-  <datalist id="assignees">
-    <option value="Design"></option>
-    <option value="Engineering"></option>
-    <option value="Operations"></option>
-  </datalist>
-  <lumen-number-field aria-label="Seats" min="1" value="3"></lumen-number-field>
-  <lumen-time-field aria-label="Start time" value="09:30"></lumen-time-field>
-  <lumen-date-range-picker>
-    <lumen-date-picker aria-label="Start date"></lumen-date-picker>
-    <lumen-date-picker aria-label="End date"></lumen-date-picker>
-  </lumen-date-range-picker>
-  <lumen-color-picker aria-label="Brand color" value="#2563eb"></lumen-color-picker>
-  <lumen-tag-group aria-label="Selected filters">
-    <span data-ui-tag role="listitem">Active <button data-ui-tag-remove type="button">Remove</button></span>
-  </lumen-tag-group>
-</form>
-`
-  }],
-  'data-collections': [{
-    path: 'src/lumen/data-collections.html',
-    source: `${elementsRecipeHeader}
-
-<section class="lumen-recipe lumen-recipe--data-collections">
-  <lumen-command>
-    <input type="search" placeholder="Filter records" />
-    <button data-ui-command-item type="button">Open docs</button>
-  </lumen-command>
-  <lumen-data-table>
-    <table>
-      <thead><tr><th>Name</th><th>Status</th></tr></thead>
-      <tbody><tr><td>Docs</td><td>Ready</td></tr></tbody>
-    </table>
-  </lumen-data-table>
-  <lumen-tree aria-label="Files">
-    <div role="treeitem" aria-expanded="true">src</div>
-    <div role="treeitem">index.ts</div>
-  </lumen-tree>
-  <lumen-tree-grid aria-label="Project status">
-    <div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div>
-  </lumen-tree-grid>
-  <lumen-virtual-list data-ui-item-size="44" style="--ui-list-height: 12rem">
-    <div>Row 1</div>
-    <div>Row 2</div>
-    <div>Row 3</div>
-  </lumen-virtual-list>
-  <lumen-pagination><a href="?page=1">Previous</a><a href="?page=2">Next</a></lumen-pagination>
-</section>
-`
-  }],
-  'rich-text-editor': [{
-    path: 'src/lumen/rich-text-editor.html',
-    source: `${elementsRecipeHeader}
-
-<lumen-rich-text-editor class="lumen-recipe lumen-recipe--rich-text-editor">
-  <div role="toolbar" aria-label="Editor toolbar">
-    <lumen-button-group>
-      <lumen-button data-ui-editor-command="bold" type="button">Bold</lumen-button>
-      <lumen-button data-ui-editor-command="italic" type="button">Italic</lumen-button>
-    </lumen-button-group>
-    <lumen-toggle-group><button data-ui-editor-command="insertUnorderedList" type="button">List</button></lumen-toggle-group>
-  </div>
-  <div contenteditable="true">Draft release notes...</div>
-  <lumen-textarea name="fallback" placeholder="Plain text fallback"></lumen-textarea>
-</lumen-rich-text-editor>
-`
-  }],
-  scheduler: [{
-    path: 'src/lumen/scheduler.html',
-    source: `${elementsRecipeHeader}
-
-<section class="lumen-recipe lumen-recipe--scheduler">
-  <lumen-calendar aria-label="Choose schedule date"></lumen-calendar>
-  <lumen-date-picker aria-label="Jump to date"></lumen-date-picker>
-  <lumen-schedule>
-    <header><h2>Launch week</h2></header>
-    <div data-ui-schedule-grid>
-      <section data-ui-schedule-slot="monday">
-        <article id="schedule-planning" data-ui-draggable="true" data-ui-schedule-event>Planning</article>
-      </section>
-      <section data-ui-schedule-slot="friday">
-        <article id="schedule-ship" data-ui-draggable="true" data-ui-schedule-event>Ship</article>
-      </section>
-    </div>
-  </lumen-schedule>
-  <lumen-agenda>
-    <ol>
-      <li><strong>Design review</strong><span>10:00</span></li>
-      <li><strong>Release notes</strong><span>14:30</span></li>
-    </ol>
-  </lumen-agenda>
-</section>
-`
-  }],
-  'theme-builder': [{
-    path: 'src/lumen/theme-builder.html',
-    source: `${elementsRecipeHeader}
-
-<script type="module">
-  const root = document.querySelector('[data-lumen-theme-builder-recipe]')
-  const hueInput = root?.querySelector('[data-ui-theme-brand-hue]')
-  const preview = root?.querySelector('#lumen-theme-preview')
-  const output = root?.querySelector('[data-ui-theme-output]')
-  const exportButton = root?.querySelector('[data-ui-theme-export]')
-  const tokenNames = ['canvas', 'surface', 'surface-muted', 'surface-strong', 'line', 'ink', 'ink-soft', 'ink-muted', 'brand', 'brand-solid', 'brand-soft', 'accent', 'success', 'warning', 'danger']
-  const createTheme = hue => ({
-    accent: \`\${(hue + 150) % 360} 70% 40%\`,
-    brand: \`\${hue} 85% 53%\`,
-    'brand-soft': \`\${hue} 90% 96%\`,
-    'brand-solid': \`\${hue} 85% 45%\`,
-    canvas: \`\${hue} 20% 99%\`,
-    danger: '0 84% 60%',
-    ink: \`\${hue} 40% 11%\`,
-    'ink-muted': \`\${hue} 10% 48%\`,
-    'ink-soft': \`\${hue} 14% 32%\`,
-    line: \`\${hue} 14% 86%\`,
-    success: '142 71% 36%',
-    surface: \`\${hue} 20% 100%\`,
-    'surface-muted': \`\${hue} 16% 96%\`,
-    'surface-strong': \`\${hue} 14% 91%\`,
-    warning: '38 92% 50%'
-  })
-  const update = () => {
-    const hue = Number(hueInput?.value ?? 264)
-    const tokens = createTheme(Number.isFinite(hue) ? hue : 264)
-
-    for (const [token, value] of Object.entries(tokens)) {
-      preview?.style.setProperty(\`--\${token}\`, value)
-    }
-
-    if (output) {
-      output.value = \`:root {\\n\${tokenNames.map(token => \`  --\${token}: \${tokens[token]};\`).join('\\n')}\\n}\`
-    }
+  try {
+    entries = await readdir(templateDir, { recursive: true, withFileTypes: true })
+  } catch {
+    return undefined
   }
 
-  hueInput?.addEventListener('input', update)
-  exportButton?.addEventListener('click', () => navigator.clipboard?.writeText(output?.value ?? ''))
-  update()
-</script>
+  const files = await Promise.all(entries
+    .filter(entry => entry.isFile())
+    .map(async entry => {
+      const absolutePath = join(entry.parentPath, entry.name)
 
-<lumen-theme-builder class="lumen-recipe lumen-recipe--theme-builder" data-lumen-theme-builder-recipe>
-  <header><h2>Brand theme</h2><lumen-button data-ui-theme-export type="button">Copy CSS</lumen-button></header>
-  <lumen-card id="lumen-theme-preview" style="display: flex; gap: 0.5rem;">
-    <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
-    <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
-  </lumen-card>
-  <lumen-card>
-    <input class="ui-input" aria-label="Brand hue" data-ui-theme-brand-hue max="359" min="0" type="range" value="264" />
-  </lumen-card>
-  <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
-</lumen-theme-builder>
-`
-  }]
-}
+      return {
+        path: relative(templateDir, absolutePath).split(sep).join('/'),
+        source: await readFile(absolutePath, 'utf8')
+      }
+    }))
 
-const recipeFilesByTarget: Record<LumenAddTarget, Record<string, LumenRecipeFile[]>> = {
-  astro: recipeFiles,
-  elements: elementsRecipeFiles,
-  react: reactRecipeFiles
+  files.sort((first, second) => first.path.localeCompare(second.path))
+
+  return files.length > 0 ? files : undefined
 }
 
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
@@ -665,13 +151,13 @@ const createComponentFile = (
   return createAstroComponentFile(name)
 }
 
-const getFilesForItem = (
+const getFilesForItem = async (
   item: LumenRegistryEntry,
   target: LumenAddTarget
-): LumenRecipeFile[] => {
+): Promise<LumenRecipeFile[]> => {
   if (item.type === 'component') return [createComponentFile(item.name, target)]
 
-  const targetRecipeFiles = recipeFilesByTarget[target][item.name]
+  const targetRecipeFiles = await loadRecipeTemplateFiles(item.name, target)
 
   if (targetRecipeFiles) {
     return targetRecipeFiles
@@ -778,7 +264,7 @@ export const addLumenRegistryItem = async (
     throw new Error(`Unknown Lumen registry item: ${name}`)
   }
 
-  const files = getFilesForItem(item, options.target ?? 'astro')
+  const files = await getFilesForItem(item, options.target ?? 'astro')
   const cwd = options.cwd ?? process.cwd()
 
   if (!files.length) {

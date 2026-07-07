@@ -1,0 +1,21 @@
+---
+import {
+  Button,
+  ButtonGroup,
+  RichTextEditor,
+  Textarea,
+  ToggleGroup
+} from '@santi020k/lumen-astro'
+---
+
+<RichTextEditor class="lumen-recipe lumen-recipe--rich-text-editor">
+  <div role="toolbar" aria-label="Editor toolbar">
+    <ButtonGroup>
+      <Button data-ui-editor-command="bold" type="button">Bold</Button>
+      <Button data-ui-editor-command="italic" type="button">Italic</Button>
+    </ButtonGroup>
+    <ToggleGroup><button data-ui-editor-command="insertUnorderedList" type="button">List</button></ToggleGroup>
+  </div>
+  <div contenteditable="true">Draft release notes...</div>
+  <Textarea name="fallback" placeholder="Plain text fallback" />
+</RichTextEditor>

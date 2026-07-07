@@ -99,6 +99,22 @@ export {
   tuneThemeContrast
 } from './theme.js'
 export {
+  coerceThemeBuilderExportFormat,
+  coerceThemeBuilderMode,
+  coerceThemeBuilderScheme,
+  createThemeBuilderTokens,
+  exportThemeBuilderCss,
+  exportThemeBuilderValue,
+  type LumenThemeBuilderExportFormat,
+  type LumenThemeBuilderMode,
+  type LumenThemeBuilderOptions,
+  type LumenThemeBuilderResult,
+  type LumenThemeBuilderScheme,
+  normalizeThemeBuilderHex,
+  normalizeThemeBuilderHue,
+  themeBuilderHexToHsl
+} from './theme-builder.js'
+export {
   composeClassName,
   lumenColors,
   lumenDarkTheme,

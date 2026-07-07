@@ -51,6 +51,9 @@
       "dependsOn": ["^build"],
       "outputLogs": "errors-only"
     },
+    "//#check:registry": {
+      "outputLogs": "errors-only"
+    },
     "clean": {
       "cache": false
     }

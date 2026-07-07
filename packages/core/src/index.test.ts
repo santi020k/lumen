@@ -12,9 +12,11 @@ import {
   createFigmaVariableName,
   createScheduleSlots,
   createScheduleStorageKey,
+  createThemeBuilderTokens,
   createThemeFromHue,
   createThemePalette,
   expandRecurringScheduleEvent,
+  exportThemeBuilderValue,
   exportThemeCss,
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
@@ -35,6 +37,7 @@ import {
   lumenThemeAttribute,
   moveScheduleEvent,
   normalizeLumenCode,
+  normalizeThemeBuilderHex,
   parseDataViewState,
   parseScheduleEvents,
   parseThemeCss,
@@ -268,6 +271,34 @@ describe('lumen product helpers', () => {
     expect(parseThemeCss(css).accent).toBe('168 76% 36%')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
+  })
+
+  test('creates theme builder tokens and export payloads', () => {
+    const generated = createThemeBuilderTokens({
+      accentHue: 140,
+      hue: 260,
+      scheme: 'dark'
+    })
+    const manual = createThemeBuilderTokens({
+      mode: 'manual',
+      primaryColor: '#6f20f0',
+      secondaryColor: '#14b8a6'
+    })
+
+    expect(generated).toMatchObject({
+      accentHue: 140,
+      hue: 260,
+      mode: 'generated',
+      scheme: 'dark'
+    })
+    expect(generated.tokens.brand).toBe('260 88% 60%')
+    expect(manual.hue).toBe(263)
+    expect(manual.tokens.brand).toBe('263 87% 53%')
+    expect(manual.tokens.accent).toBe('173 80% 40%')
+    expect(normalizeThemeBuilderHex('fff')).toBe('#ffffff')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'css')).toContain('color-scheme: dark;')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"$type": "color"')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'figma')).toContain('"collectionName": "Lumen"')
   })
 
   test('exports theme tokens for Figma variables and design-token importers', () => {

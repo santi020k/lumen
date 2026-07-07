@@ -376,6 +376,57 @@ describe('@santi020k/lumen-elements', () => {
     expect(root.children[2]?.hasAttribute('hidden')).toBe(false)
   })
 
+  test('theme builder applies tokens and emits export events', () => {
+    const writeText = vi.fn(() => Promise.resolve())
+    const exports: { format: string, value: string }[] = []
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText }
+    })
+
+    document.body.innerHTML = `
+      <div id="theme-preview"></div>
+      <lumen-theme-builder data-ui-theme-target="#theme-preview">
+        <input data-ui-theme-brand-hue type="range" max="360" value="264" />
+        <input data-ui-theme-accent-hue type="range" max="360" value="54" />
+        <button data-ui-theme-export-format="tokens" type="button">Tokens</button>
+        <button data-ui-theme-export type="button">Copy</button>
+        <textarea data-ui-theme-output></textarea>
+      </lumen-theme-builder>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-theme-builder')
+    const preview = document.querySelector<HTMLElement>('#theme-preview')
+    const hue = document.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue]')
+    const format = document.querySelector<HTMLButtonElement>('[data-ui-theme-export-format]')
+    const exportButton = document.querySelector<HTMLButtonElement>('[data-ui-theme-export]')
+    const output = document.querySelector<HTMLTextAreaElement>('[data-ui-theme-output]')
+
+    root?.addEventListener('ui:theme-export', event => {
+      exports.push((event as CustomEvent<{ format: string, value: string }>).detail)
+    })
+
+    expect(preview?.style.getPropertyValue('--brand')).toBe('264 85% 53%')
+    expect(output?.value).toContain('color-scheme: light;')
+
+    if (hue) {
+      hue.value = '260'
+      hue.dispatchEvent(new Event('input'))
+    }
+
+    expect(preview?.style.getPropertyValue('--brand')).toBe('260 85% 53%')
+
+    format?.click()
+    expect(output?.value).toContain('"$type": "color"')
+
+    exportButton?.click()
+
+    expect(exports).toHaveLength(1)
+    expect(exports[0]?.format).toBe('tokens')
+    expect(writeText).toHaveBeenCalledWith(output?.value)
+  })
+
   test('tooltip wires aria-describedby and dismisses with Escape', () => {
     vi.useFakeTimers()
 

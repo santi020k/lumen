@@ -1,0 +1,31 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<section class="lumen-recipe lumen-recipe--data-collections">
+  <lumen-command>
+    <input type="search" placeholder="Filter records" />
+    <button data-ui-command-item type="button">Open docs</button>
+  </lumen-command>
+  <lumen-data-table>
+    <table>
+      <thead><tr><th>Name</th><th>Status</th></tr></thead>
+      <tbody><tr><td>Docs</td><td>Ready</td></tr></tbody>
+    </table>
+  </lumen-data-table>
+  <lumen-tree aria-label="Files">
+    <div role="treeitem" aria-expanded="true">src</div>
+    <div role="treeitem">index.ts</div>
+  </lumen-tree>
+  <lumen-tree-grid aria-label="Project status">
+    <div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div>
+  </lumen-tree-grid>
+  <lumen-virtual-list data-ui-item-size="44" style="--ui-list-height: 12rem">
+    <div>Row 1</div>
+    <div>Row 2</div>
+    <div>Row 3</div>
+  </lumen-virtual-list>
+  <lumen-pagination><a href="?page=1">Previous</a><a href="?page=2">Next</a></lumen-pagination>
+</section>

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://santi020k.dev/lumen/registry.schema.json",
+  "$schema": "./registry.schema.json",
   "name": "lumen",
   "version": 1,
   "description": "Astro-first Lumen UI primitives, recipes, tokens, runtime, and AI docs.",

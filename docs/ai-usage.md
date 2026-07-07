@@ -85,10 +85,10 @@ export function SubscribeForm() {
 ## Web Components
 
 Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
-interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, Tabs, Select, Toast,
-Tooltip, and VirtualList: selection and range events, ARIA state, roving/listbox keyboard paths,
-Escape/outside dismissal, focus return/trapping, native select form participation, and the same
-toast controller events as the Astro runtime.
+interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, Tabs, Select,
+ThemeBuilder, Toast, Tooltip, and VirtualList: selection, theme, and range events, ARIA state,
+roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native select form
+participation, and the same toast controller events as the Astro runtime.
 
 ```html
 <script type="module">
@@ -147,7 +147,10 @@ The shared catalog includes:
   `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and
   `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,
   `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design
-  token JSON. Use `createThemePalette`, `exportThemeCss`, `parseThemeCss`, and `scoreThemeContrast`
+  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;
+  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use
+  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,
+  `parseThemeCss`, and `scoreThemeContrast`
   for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,
   and `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.

@@ -20,12 +20,13 @@ import {
   Table,
   type TableProps,
   ToastProvider,
-  VirtualList,
   useDropdownMenu,
   usePopover,
   useSelect,
   useTabs,
-  useTooltip
+  useThemeBuilder,
+  useTooltip,
+  VirtualList
 } from './index.js'
 
 interface ReactInternals {
@@ -184,8 +185,10 @@ describe('@santi020k/lumen-react', () => {
     }
     const renderedTable = tableProps.children
     const tableChildren = renderedTable.props.children as ReactElement<Record<string, unknown>>[]
-    const thead = tableChildren[0]!
-    const tbody = tableChildren[1]!
+    const [thead, tbody] = tableChildren
+
+    if (!thead || !tbody) throw new Error('Expected DataTable to render table sections.')
+
     const headerRow = thead.props.children as ReactElement<Record<string, unknown>>
     const headers = headerRow.props.children as ReactElement<Record<string, unknown>>[]
     const rows = tbody.props.children as ReactElement<Record<string, unknown>>[]
@@ -253,6 +256,29 @@ describe('@santi020k/lumen-react', () => {
     expect(select.listProps.role).toBe('listbox')
     expect(option.role).toBe('option')
     expect(option['aria-selected']).toBe(true)
+  })
+
+  test('exposes theme builder tokens and control props', () => {
+    const theme = withHookDispatcher(() => useThemeBuilder({
+      defaultAccentHue: 140,
+      defaultHue: 260,
+      defaultScheme: 'dark'
+    }))
+    const manualMode = theme.getModeProps('manual')
+    const figmaFormat = theme.getExportFormatProps('figma')
+
+    expect(theme.rootProps['data-ui-theme-builder']).toBe(true)
+    expect(theme.hue).toBe(260)
+    expect(theme.accentHue).toBe(140)
+    expect(theme.tokens.brand).toBe('260 88% 60%')
+    expect(theme.previewStyle['--brand' as keyof typeof theme.previewStyle]).toBe('260 88% 60%')
+    expect(theme.exportValue).toContain('color-scheme: dark;')
+    expect(theme.hueProps['data-ui-theme-brand-hue']).toBe(true)
+    expect(theme.accentHueProps['data-ui-theme-accent-hue']).toBe(true)
+    expect(theme.outputProps.value).toContain('--brand: 260 88% 60%;')
+    expect(manualMode['data-ui-theme-mode']).toBe('manual')
+    expect(manualMode['aria-pressed']).toBe(false)
+    expect(figmaFormat['data-ui-theme-export-format']).toBe('figma')
   })
 
   test('exposes tooltip escape-dismissable aria state', () => {
