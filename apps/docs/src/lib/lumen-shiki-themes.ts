@@ -62,7 +62,7 @@ const lumenDarkTokenColors = [
   }
 ]
 
-export const lumenShikiThemes = {
+const lumenShikiThemes = {
   dark: {
     name: 'lumen dark',
     type: 'dark',

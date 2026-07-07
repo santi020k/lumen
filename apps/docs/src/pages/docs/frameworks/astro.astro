@@ -5,8 +5,12 @@ import CodeBlock from '../../../components/CodeBlock.astro'
 import { frameworkGuides, frameworkSetups } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
-const guide = frameworkGuides.find(g => g.id === 'astro')!
-const setup = frameworkSetups.find(s => s.id === 'astro')!
+const guide = frameworkGuides.find(g => g.id === 'astro')
+const setup = frameworkSetups.find(s => s.id === 'astro')
+
+if (!guide || !setup) {
+  throw new Error('Astro framework docs are missing their guide or setup data.')
+}
 ---
 
 <DocsLayout

@@ -5,8 +5,12 @@ import CodeBlock from '../../../components/CodeBlock.astro'
 import { frameworkGuides, frameworkSetups, reactHooksReference } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
-const guide = frameworkGuides.find(g => g.id === 'react')!
-const setup = frameworkSetups.find(s => s.id === 'react')!
+const guide = frameworkGuides.find(g => g.id === 'react')
+const setup = frameworkSetups.find(s => s.id === 'react')
+
+if (!guide || !setup) {
+  throw new Error('React framework docs are missing their guide or setup data.')
+}
 ---
 
 <DocsLayout

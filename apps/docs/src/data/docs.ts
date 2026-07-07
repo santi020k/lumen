@@ -16,7 +16,7 @@ interface ComponentApiRow {
   values: string
 }
 
-export interface KeyboardInteractionRow {
+interface KeyboardInteractionRow {
   action: string
   key: string
 }
@@ -949,7 +949,7 @@ export interface ReactHookDoc {
   options: readonly ReactHookApiRow[]
 }
 
-export interface ReactHookApiRow {
+interface ReactHookApiRow {
   defaultValue: string
   description: string
   name: string
@@ -1591,7 +1591,7 @@ export interface ElementsApiDoc {
   type: 'enhancement' | 'event' | 'registration' | 'toast'
 }
 
-export interface ElementsApiRow {
+interface ElementsApiRow {
   description: string
   name: string
   signature: string
