@@ -585,7 +585,7 @@ export const lumenRegistry = {
     {
       "name": "Icon",
       "type": "component",
-      "description": "Renders curated Lucide icons with Lumen sizing and accessibility defaults.",
+      "description": "Renders Lucide icons with Lumen sizing and accessibility defaults.",
       "category": "Data display",
       "files": [
         "packages/astro/components/Icon.astro",

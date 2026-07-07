@@ -6,4 +6,4 @@
 "@santi020k/lumen": minor
 ---
 
-Add a Lucide-backed Icon primitive with shared curated icon names across Astro, React, and Web Components.
+Add a Lucide-backed Icon primitive with shared full-catalog icon names across Astro, React, and Web Components.

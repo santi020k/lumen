@@ -34,12 +34,12 @@ Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
 </lumen-card>
 ```
 
-Use `lumen-icon` for the curated Lucide icons Lumen standardizes across framework adapters.
+Use `lumen-icon` for Lucide icons by name across framework adapters.
 
 ```html
 <lumen-button variant="secondary">
-  <lumen-icon name="settings" decorative></lumen-icon>
-  Settings
+  <lumen-icon name="wand-sparkles" decorative></lumen-icon>
+  Generate
 </lumen-button>
 <lumen-icon name="search" label="Search"></lumen-icon>
 ```

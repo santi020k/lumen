@@ -33,7 +33,7 @@ export function SubscribeForm() {
 }
 ```
 
-Use `Icon` for the curated Lucide icons Lumen standardizes across framework adapters.
+Use `Icon` for Lucide icons by name across framework adapters.
 
 ```tsx
 import { Button, Icon } from '@santi020k/lumen-react'
@@ -41,8 +41,8 @@ import { Button, Icon } from '@santi020k/lumen-react'
 export function SettingsButton() {
   return (
     <Button variant="secondary">
-      <Icon name="settings" decorative />
-      Settings
+      <Icon name="wand-sparkles" decorative />
+      Generate
     </Button>
   )
 }

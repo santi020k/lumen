@@ -46,7 +46,7 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 </Card>
 ```
 
-Use `Icon` for the curated Lucide icons Lumen standardizes across framework adapters.
+Use `Icon` for Lucide icons by name across framework adapters.
 
 ```astro
 ---
@@ -54,8 +54,8 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 ---
 
 <Button variant="secondary">
-  <Icon name="settings" decorative />
-  Settings
+  <Icon name="wand-sparkles" decorative />
+  Generate
 </Button>
 <Icon name="search" label="Search" />
 ```

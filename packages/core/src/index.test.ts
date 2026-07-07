@@ -84,8 +84,13 @@ describe('lumen core metadata', () => {
 describe('lumen icon helpers', () => {
   test('resolve supported icon names and render Lucide SVGs', () => {
     expect(lumenIconNames).toContain('search')
+    expect(lumenIconNames).toContain('wand-sparkles')
+    expect(resolveLumenIconName('Home')).toBe('home')
+    expect(resolveLumenIconName('alert-circle')).toBe('alert-circle')
     expect(resolveLumenIconName('ChevronLeft')).toBe('chevron-left')
+    expect(resolveLumenIconName('WandSparkles')).toBe('wand-sparkles')
     expect(renderLumenIconSvg('search')).toContain('lucide-search')
+    expect(renderLumenIconSvg('wand-sparkles')).toContain('lucide-wand-sparkles')
     expect(renderLumenIconSvg('missing')).toBe('')
   })
 })

@@ -123,9 +123,9 @@ The shared catalog includes:
 
 ## Product Recipes
 
-- Use `Icon name="search"` and other curated Lucide-backed names for standard interface
-  pictograms. Pair decorative icons with `decorative`, and pass `label` only when the icon carries
-  meaning on its own.
+- Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
+  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
+  when the icon carries meaning on its own.
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.

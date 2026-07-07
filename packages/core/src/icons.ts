@@ -1,95 +1,40 @@
 import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  CircleAlert,
-  CircleCheck,
-  Copy,
-  ExternalLink,
-  House,
-  Info,
-  LoaderCircle,
+  icons as lucideIcons,
   type LucideIconData,
-  type LucideIconNode,
-  Menu,
-  Minus,
-  MoreHorizontal,
-  Plus,
-  Search,
-  Settings,
-  TriangleAlert,
-  X
+  type LucideIconNode
 } from '@lucide/icons'
 
 export type LumenIconNode = LucideIconNode
 export type LumenIconData = LucideIconData
-
-export const lumenIconNames = [
-  'arrow-left',
-  'arrow-right',
-  'calendar',
-  'check',
-  'chevron-down',
-  'chevron-left',
-  'chevron-right',
-  'chevron-up',
-  'circle-alert',
-  'circle-check',
-  'copy',
-  'external-link',
-  'home',
-  'info',
-  'loader-circle',
-  'menu',
-  'minus',
-  'more-horizontal',
-  'plus',
-  'search',
-  'settings',
-  'triangle-alert',
-  'x'
-] as const
-
-export type LumenIconName = typeof lumenIconNames[number]
-
-export const lumenIcons = {
-  'arrow-left': ArrowLeft,
-  'arrow-right': ArrowRight,
-  calendar: Calendar,
-  check: Check,
-  'chevron-down': ChevronDown,
-  'chevron-left': ChevronLeft,
-  'chevron-right': ChevronRight,
-  'chevron-up': ChevronUp,
-  'circle-alert': CircleAlert,
-  'circle-check': CircleCheck,
-  copy: Copy,
-  'external-link': ExternalLink,
-  home: House,
-  info: Info,
-  'loader-circle': LoaderCircle,
-  menu: Menu,
-  minus: Minus,
-  'more-horizontal': MoreHorizontal,
-  plus: Plus,
-  search: Search,
-  settings: Settings,
-  'triangle-alert': TriangleAlert,
-  x: X
-} as const satisfies Record<LumenIconName, LumenIconData>
-
-const iconNameSet = new Set<string>(lumenIconNames)
+export type LumenIconName = string
 
 const toKebabCase = (value: string) =>
   value.trim()
     .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
     .replaceAll(/[\s_]+/g, '-')
     .toLowerCase()
+
+const lucideIconEntries = Object.entries(lucideIcons)
+
+const createLumenIconEntries = () => {
+  const entries: [string, LumenIconData][] = []
+
+  for (const [exportName, icon] of lucideIconEntries) {
+    entries.push([toKebabCase(exportName), icon], [icon.name, icon])
+
+    for (const alias of icon.aliases ?? []) {
+      entries.push([toKebabCase(alias), icon])
+    }
+  }
+
+  return entries
+}
+
+export const lumenIcons = Object.freeze(
+  Object.fromEntries(createLumenIconEntries())
+) as Readonly<Record<string, LumenIconData>>
+
+export const lumenIconNames = Object.freeze(Object.keys(lumenIcons).sort())
 
 const escapeHtmlAttribute = (value: string) =>
   value.replaceAll('&', '&amp;')
@@ -116,7 +61,7 @@ const renderIconNode = ([tagName, attributes, children]: LumenIconNode): string 
 export const resolveLumenIconName = (name: string): LumenIconName | undefined => {
   const normalized = toKebabCase(name)
 
-  return iconNameSet.has(normalized) ? normalized as LumenIconName : undefined
+  return lumenIcons[normalized] ? normalized : undefined
 }
 
 export const getLumenIcon = (name: string): LumenIconData | undefined => {

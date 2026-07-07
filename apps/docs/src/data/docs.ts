@@ -714,7 +714,7 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     disclosureTriggerApiRow
   ],
   Icon: [
-    apiRow('name', 'LumenIconName', '-', 'Renders a curated Lucide icon by name.'),
+    apiRow('name', 'string', '-', 'Renders any Lucide icon by name, including kebab-case names and Lucide aliases.'),
     apiRow('label', 'string', '-', 'Adds an accessible name and exposes the icon as an image.'),
     apiRow('decorative', 'boolean', 'true when unlabelled', 'Keeps decorative icons hidden from assistive technology.'),
     apiRow('size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.')
@@ -874,7 +874,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Empty', 'Feedback', 'Explains an empty state and next action.', '<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>'],
   ['Field', 'Forms', 'Groups labels, controls, descriptions, and errors.', '<Field><Label for="email">Email</Label><Input id="email" type="email" /></Field>'],
   ['HoverCard', 'Overlays', 'Shows extra context on hover and focus.', '<HoverCard><a href="/team/santiago">Santiago</a><div role="tooltip">Maintainer of Lumen UI.</div></HoverCard>'],
-  ['Icon', 'Data display', 'Renders curated Lucide icons with Lumen sizing and accessibility defaults.', '<Icon name="search" label="Search" /><Icon name="settings" decorative />'],
+  ['Icon', 'Data display', 'Renders Lucide icons with Lumen sizing and accessibility defaults.', '<Icon name="search" label="Search" /><Icon name="wand-sparkles" decorative />'],
   ['Input', 'Forms', 'Captures short text, email, password, search, or numeric values.', '<Input id="email" name="email" type="email" placeholder="you@example.com" />'],
   ['InputGroup', 'Forms', 'Combines inputs with prefixes, suffixes, or controls.', '<InputGroup><span>https://</span><Input aria-label="Domain" placeholder="example.com" /></InputGroup>'],
   ['InputOTP', 'Forms', 'Collects one-time passcodes and verification codes.', '<InputOTP name="code" length={6} inputmode="numeric" />'],
