@@ -535,6 +535,7 @@
 .ui-input,
 .ui-select,
 .ui-input-otp {
+  height: 2.75rem;
   padding: 0 0.75rem;
 }
 
@@ -2928,12 +2929,14 @@
   .ui-input--sm,
   .ui-select--sm {
     min-height: 2.25rem;
+    height: 2.25rem;
     font-size: 0.8125rem;
   }
 
   .ui-input--lg,
   .ui-select--lg {
     min-height: 3.25rem;
+    height: 3.25rem;
     font-size: 1rem;
   }
 }
