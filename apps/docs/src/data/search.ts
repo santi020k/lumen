@@ -4,10 +4,12 @@ import { toSlug } from '../lib/routes'
 
 import {
   componentDocs,
+  elementsApiReference,
   frameworkGuides,
   frameworkSetups,
   glassSurfaceExamples,
   globalStyleSetups,
+  reactHooksReference,
   runtimeEvents,
   themeSetups
 } from './docs'
@@ -109,7 +111,7 @@ const recipeItems: DocsSearchItem[] = [
   ...frameworkSetups.map(setup => ({
     category: 'Framework setup',
     description: setup.note,
-    href: '/docs#installation',
+    href: `/docs/frameworks/${setup.id}#install-title`,
     keywords: normalizeKeywords(setup.label, setup.packageName, setup.note, setup.usage),
     title: `${setup.label} setup`,
     type: 'Recipe' as const
@@ -117,9 +119,25 @@ const recipeItems: DocsSearchItem[] = [
   ...frameworkGuides.map(guide => ({
     category: 'Framework guides',
     description: guide.body.join(' '),
-    href: '/docs#framework-guides',
+    href: `/docs/frameworks/${guide.id}`,
     keywords: normalizeKeywords(guide.title, guide.packageName, guide.body.join(' '), guide.code),
     title: `${guide.title} framework guide`,
+    type: 'Recipe' as const
+  })),
+  ...reactHooksReference.map(hook => ({
+    category: 'React Hooks',
+    description: hook.description,
+    href: `/docs/frameworks/react#${hook.name}`,
+    keywords: normalizeKeywords(hook.name, hook.description, 'react hook use state'),
+    title: hook.name,
+    type: 'Recipe' as const
+  })),
+  ...elementsApiReference.map(api => ({
+    category: 'Elements API',
+    description: api.description,
+    href: `/docs/frameworks/elements#${api.name}`,
+    keywords: normalizeKeywords(api.name, api.description, 'elements web components api'),
+    title: api.name,
     type: 'Recipe' as const
   })),
   ...globalStyleSetups.map(setup => ({
