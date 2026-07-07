@@ -47,15 +47,29 @@
   --line: 260 16% 22%;
   --ink: 260 12% 96%;
   --ink-soft: 260 10% 75%;
-  --ink-muted: 260 8% 56%;
-  --brand: 264 95% 68%;
+  --ink-muted: 260 8% 60%;
+  --brand: 264 95% 70%;
   --brand-solid: 264 92% 58%;
-  --brand-soft: 264 50% 16%;
+  --brand-soft: 264 50% 15%;
   --accent: 280 95% 72%;
   --glow: 270 90% 60%;
   --success: 150 65% 52%;
   --warning: 40 85% 60%;
   --danger: 3 85% 65%;
+  --glass-bg: 260 22% 12% / 0.78;
+  --glass-bg-subtle: 260 22% 12% / 0.64;
+  --glass-bg-strong: 260 22% 12% / 0.9;
+  --glass-border: 260 28% 88% / 0.24;
+  --glass-highlight: 260 36% 96% / 0.1;
+  --glass-brightness: 1;
+  --glass-edge: 260 40% 98% / 0.24;
+  --glass-edge-soft: 260 40% 98% / 0.08;
+  --glass-shade: 260 45% 3% / 0.34;
+  --glass-refraction: 264 95% 70% / 0.12;
+  --glass-shadow:
+    0 1px 2px hsl(0 0% 0% / 0.32),
+    0 16px 40px hsl(0 0% 0% / 0.36),
+    0 40px 96px hsl(0 0% 0% / 0.4);
 }
 
 :root[data-theme="light"],
@@ -95,9 +109,9 @@
   --line: 222 14% 26%;
   --ink: 210 20% 96%;
   --ink-soft: 214 14% 77%;
-  --ink-muted: 216 10% 58%;
+  --ink-muted: 216 10% 62%;
   --brand: 199 91% 56%;
-  --brand-solid: 199 91% 44%;
+  --brand-solid: 199 91% 36%;
   --brand-soft: 199 84% 16%;
   --accent: 166 76% 43%;
   --glow: 199 91% 56%;
@@ -392,7 +406,7 @@ pre code {
   width: max-content;
   border-radius: 999px;
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   font-size: 0.75rem;
   font-weight: 900;
   line-height: 1;
@@ -517,7 +531,7 @@ pre code {
 }
 
 .docs-section-heading > p:first-child {
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.12em;

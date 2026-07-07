@@ -51,6 +51,14 @@ jobs:
       - name: Run CI checks
         run: pnpm exec turbo run build typecheck lint test
 
+      - name: Install Playwright Chromium
+        if: matrix.node-version == '22.x'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run accessibility checks
+        if: matrix.node-version == '22.x'
+        run: pnpm run test:a11y
+
       - name: Repository checks
         if: matrix.node-version == '22.x'
         run: pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip

@@ -36,6 +36,7 @@
     "pre-commit": "lint-staged",
     "pre-push": "pnpm run typecheck && pnpm run test && pnpm run lint",
     "commit": "cz",
+    "test:a11y": "playwright test -c playwright.a11y.config.ts",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots"
   },

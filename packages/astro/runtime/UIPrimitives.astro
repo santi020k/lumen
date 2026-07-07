@@ -2720,7 +2720,9 @@
 
   const initThemeBuilders = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-theme-builder]')) {
-      if (root.dataset.uiBound === 'true') continue
+      if (root.dataset.uiThemeBuilderBound === 'true') continue
+
+      root.dataset.uiThemeBuilderBound = 'true'
 
       root.dataset.uiBound = 'true'
 

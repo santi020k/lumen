@@ -111,7 +111,7 @@ export const createThemeFromHue = (
       canvas: `${h} 24% 8%`,
       danger: '0 84% 65%',
       ink: `${h} 20% 96%`,
-      'ink-muted': `${h} 10% 58%`,
+      'ink-muted': `${h} 10% 62%`,
       'ink-soft': `${h} 14% 77%`,
       line: `${h} 14% 26%`,
       success: '142 69% 45%',

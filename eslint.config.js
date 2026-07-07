@@ -82,7 +82,7 @@ const config = await defineConfig({
   },
   ...tseslint.configs.disableTypeChecked
 }, {
-  files: ['tests/visual/**/*.ts'],
+  files: ['tests/a11y/**/*.ts', 'tests/visual/**/*.ts'],
   languageOptions: {
     parserOptions: {
       project: false,

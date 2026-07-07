@@ -222,19 +222,19 @@ const interactiveScenarios: VisualScenario[] = [
     path: '/docs/theme-playground',
     prepare: async page => {
       const playground = page.locator('.theme-playground')
-      const darkScheme = playground.locator('[data-theme-scheme="dark"]')
-      const brandHue = playground.locator('[data-theme-brand-hue-number]')
+      const darkScheme = playground.locator('[data-ui-theme-scheme="dark"]')
+      const brandHue = playground.locator('[data-ui-theme-brand-hue-number]')
       const output = playground.locator('[data-ui-theme-output]')
 
-      await expect(playground).toHaveAttribute('data-theme-playground-bound', 'true')
+      await expect(playground).toHaveAttribute('data-ui-theme-builder-bound', 'true')
 
       await darkScheme.click()
       await expect(darkScheme).toHaveAttribute('aria-pressed', 'true')
 
       await brandHue.fill('212')
 
-      await expect(output).toContainText('color-scheme: dark')
-      await expect(output).toContainText('--brand: 212')
+      await expect(output).toHaveValue(/color-scheme: dark/)
+      await expect(output).toHaveValue(/--brand: 212/)
     }
   },
   {
