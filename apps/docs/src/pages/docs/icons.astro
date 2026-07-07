@@ -1,0 +1,225 @@
+---
+import { lumenIcons, renderLumenIconSvg } from '@santi020k/lumen-core'
+
+import CodeBlock from '../../components/CodeBlock.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+interface IconEntry {
+  name: string
+  svg: string
+  terms: string
+}
+
+// lumenIcons maps every kebab name, canonical Lucide name, and alias to the same
+// icon data. Collapse them to one entry per icon while keeping the other keys as
+// search terms so people can find an icon by any name Lumen accepts.
+const byName = new Map<string, { name: string, terms: Set<string> }>()
+
+for (const [key, icon] of Object.entries(lumenIcons)) {
+  const existing = byName.get(icon.name)
+
+  if (existing) {
+    existing.terms.add(key)
+
+    continue
+  }
+
+  byName.set(icon.name, { name: icon.name, terms: new Set([icon.name, key]) })
+}
+
+const iconEntries: IconEntry[] = [...byName.values()]
+  .sort((a, b) => a.name.localeCompare(b.name))
+  .map(({ name, terms }) => ({
+    name,
+    svg: renderLumenIconSvg(name),
+    terms: [...terms].join(' ')
+  }))
+
+const iconCount = iconEntries.length
+
+const astroUsage = `---
+import { Icon } from '@santi020k/lumen-astro'
+---
+
+<Icon name="search" label="Search" />
+<Icon name="wand-sparkles" decorative />
+<Icon name="circle-check" label="Synced" size="lg" />`
+
+const reactUsage = `import { Icon } from '@santi020k/lumen-react'
+
+export const Toolbar = () => (
+  <>
+    <Icon name="search" label="Search" />
+    <Icon name="wand-sparkles" decorative />
+    <Icon name="circle-check" label="Synced" size="lg" />
+  </>
+)`
+
+const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
+<lumen-icon name="wand-sparkles" decorative></lumen-icon>
+<lumen-icon name="circle-check" label="Synced" size="lg"></lumen-icon>`
+---
+
+<DocsLayout
+  description={`Browse the ${iconCount} Lucide icons available through the Lumen Icon component across Astro, React, and Elements.`}
+  title="Icons - Lumen UI"
+>
+  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
+    <a class="
+      text-ink-soft no-underline
+      hover:text-ink
+    " href="/docs">Docs</a>
+    <span aria-hidden="true"> / </span>
+    <span aria-current="page" class="font-bold text-ink">Icons</span>
+  </nav>
+
+  <section class="docs-section" aria-labelledby="icons-title">
+    <div class="docs-section-heading">
+      <p>Foundations</p>
+      <h1 class="
+        text-4xl/tight font-black text-ink
+        sm:text-5xl/tight
+      " id="icons-title">
+        Icons
+      </h1>
+      <p>
+        Lumen ships the full <a class="font-bold text-ink underline" href="https://lucide.dev" target="_blank" rel="noopener noreferrer">Lucide</a>
+        icon set through a single <code>Icon</code> component. Reference any of the
+        <strong>{iconCount}</strong> icons by name — kebab-case names and Lucide aliases both
+        resolve — and Lumen renders a consistent, accessible SVG in Astro, React, and Elements.
+      </p>
+    </div>
+
+    <div class="
+      grid gap-4
+      lg:grid-cols-3
+    ">
+      <CodeBlock code={astroUsage} lang="astro" title="Astro" />
+      <CodeBlock code={reactUsage} lang="tsx" title="React" />
+      <CodeBlock code={elementsUsage} lang="html" title="Elements" />
+    </div>
+  </section>
+
+  <section class="mt-10 space-y-4" aria-labelledby="catalog-title">
+    <div class="
+      flex flex-col gap-3
+      sm:flex-row sm:items-center sm:justify-between
+    ">
+      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="catalog-title">Catalog</h2>
+      <p class="text-sm text-ink-muted" data-icon-status>
+        Showing <span data-icon-visible-count>{iconCount}</span> of {iconCount} icons
+      </p>
+    </div>
+
+    <label class="sr-only" for="icon-search">Search icons</label>
+    <input
+      autocomplete="off"
+      class="ui-input"
+      data-icon-search
+      id="icon-search"
+      placeholder={`Search ${iconCount} icons by name or alias...`}
+      spellcheck="false"
+      type="search"
+    />
+
+    <p
+      class="
+        hidden rounded-xl border border-line bg-surface px-4 py-6 text-center
+        text-sm text-ink-soft
+      "
+      data-icon-empty
+      hidden
+    >
+      No icons match your search.
+    </p>
+
+    <div
+      class="grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-2"
+      data-icon-grid
+    >
+      {iconEntries.map(entry => (
+        <button
+          class="
+            group flex aspect-square flex-col items-center justify-center gap-2
+            rounded-xl border border-line bg-surface p-3 text-ink-soft
+            transition
+            hover:border-brand hover:bg-brand-soft hover:text-ink
+          "
+          data-icon-name={entry.name}
+          data-icon-terms={entry.terms}
+          title={`Copy "${entry.name}"`}
+          type="button"
+        >
+          <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
+          <span class="
+            w-full truncate text-center text-[0.65rem] leading-tight
+            text-ink-muted
+          ">{entry.name}</span>
+        </button>
+      ))}
+    </div>
+  </section>
+</DocsLayout>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-icon-grid]')
+  const search = document.querySelector<HTMLInputElement>('[data-icon-search]')
+  const empty = document.querySelector<HTMLElement>('[data-icon-empty]')
+  const visibleCount = document.querySelector<HTMLElement>('[data-icon-visible-count]')
+
+  if (grid && search) {
+    const cells = [...grid.querySelectorAll<HTMLButtonElement>('[data-icon-name]')]
+
+    const applyFilter = (raw: string) => {
+      const query = raw.trim().toLowerCase()
+      let visible = 0
+
+      for (const cell of cells) {
+        const terms = cell.dataset.iconTerms ?? ''
+        const match = query === '' || terms.includes(query)
+
+        cell.hidden = !match
+
+        if (match) visible += 1
+      }
+
+      if (visibleCount) visibleCount.textContent = String(visible)
+
+      if (empty) empty.hidden = visible !== 0
+    }
+
+    const flashCopied = (cell: HTMLButtonElement) => {
+      const label = cell.querySelector('span:last-child')
+
+      if (!label) return
+
+      const original = label.textContent
+
+      label.textContent = 'Copied!'
+
+      window.setTimeout(() => {
+        label.textContent = original
+      }, 1000)
+    }
+
+    search.addEventListener('input', event => {
+      applyFilter((event.target as HTMLInputElement).value)
+    })
+
+    grid.addEventListener('click', async event => {
+      const cell = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-icon-name]')
+
+      if (!cell) return
+
+      const name = cell.dataset.iconName ?? ''
+
+      try {
+        await navigator.clipboard.writeText(name)
+
+        flashCopied(cell)
+      } catch {
+        // Clipboard access can be blocked; ignore silently.
+      }
+    })
+  }
+</script>

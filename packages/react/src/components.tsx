@@ -189,10 +189,10 @@ const getIconAccessibility = ({
   }
 }
 
-const renderNamedIcon = (icon: LumenIconData) => (
+const renderIconSvg = (icon: LumenIconData, className: string) => (
   <svg
     aria-hidden="true"
-    className={`ui-icon__svg lucide-${icon.name}`}
+    className={className}
     fill="none"
     focusable="false"
     height="1em"
@@ -207,6 +207,14 @@ const renderNamedIcon = (icon: LumenIconData) => (
     {icon.node.map(renderIconNode)}
   </svg>
 )
+
+const renderNamedIcon = (icon: LumenIconData) => renderIconSvg(icon, `ui-icon__svg lucide-${icon.name}`)
+
+const renderLucideIcon = (name: string, className: string) => {
+  const icon = getLumenIcon(name)
+
+  return icon ? renderIconSvg(icon, className) : null
+}
 
 const resolveSurface = (surface: SurfaceVariant, glass?: LumenGlassProp): SurfaceVariant =>
   glass || surface === 'glass' ? 'glass' : surface
@@ -627,35 +635,8 @@ const renderCodeCopyButton = () => (
     data-ui-code-copy
     type="button"
   >
-    <svg
-      aria-hidden="true"
-      className="ui-code__copy-icon"
-      fill="none"
-      focusable="false"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect height="14" rx="2" ry="2" width="14" x="8" y="8" />
-      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-    </svg>
-    <svg
-      aria-hidden="true"
-      className="ui-code__check-icon"
-      fill="none"
-      focusable="false"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
+    {renderLucideIcon('copy', 'ui-code__copy-icon')}
+    {renderLucideIcon('check', 'ui-code__check-icon')}
   </button>
 )
 

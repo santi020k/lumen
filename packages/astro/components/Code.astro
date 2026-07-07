@@ -1,5 +1,5 @@
 ---
-import { renderLumenCodeHtml, resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
@@ -70,35 +70,8 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
             data-ui-code-copy
             type="button"
           >
-            <svg
-              aria-hidden="true"
-              class="ui-code__copy-icon"
-              fill="none"
-              focusable="false"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect height="14" rx="2" ry="2" width="14" x="8" y="8"></rect>
-              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
-            </svg>
-            <svg
-              aria-hidden="true"
-              class="ui-code__check-icon"
-              fill="none"
-              focusable="false"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M20 6 9 17l-5-5"></path>
-            </svg>
+            <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />
+            <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />
           </button>
         )}
       </figcaption>

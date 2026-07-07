@@ -108,6 +108,14 @@ const recipeItems: DocsSearchItem[] = [
     title: 'Lumen Figma library',
     type: 'Recipe'
   },
+  {
+    category: 'Foundations',
+    description: 'Browse the full Lucide icon set available through the Lumen Icon component and copy icon names.',
+    href: '/docs/icons',
+    keywords: normalizeKeywords('icons lucide icon component name alias search catalog svg glyph symbol foundations'),
+    title: 'Icons catalog',
+    type: 'Recipe'
+  },
   ...frameworkSetups.map(setup => ({
     category: 'Framework setup',
     description: setup.note,
