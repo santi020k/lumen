@@ -8,11 +8,16 @@ import {
 
 import type {
   ComponentPropsWithoutRef,
+  CSSProperties,
   ElementType,
   ReactNode
 } from 'react'
 import {
+  Children,
+  cloneElement,
   createContext,
+  Fragment,
+  isValidElement,
   useContext,
   useMemo,
   useState
@@ -24,14 +29,18 @@ import {
   type DropdownMenuOptions,
   type PopoverController,
   type PopoverOptions,
+  type ResizableDirection,
   type SelectOptions,
   type TabsController,
   type TabsOptions,
   type TooltipController,
   type TooltipOptions,
+  useCalendar,
   useDialog,
   useDropdownMenu,
+  useInputOTP,
   usePopover,
+  useResizable,
   useSelect,
   useTabs,
   useTooltip
@@ -145,6 +154,12 @@ const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
 
 const getDataTableRowValue = (row: DataTableRow, index: number): string =>
   String(row.rowValue ?? row.value ?? row.id ?? index)
+
+const toInputValue = (value: ComponentPropsWithoutRef<'input'>['value']): string | undefined => {
+  if (value === undefined) return undefined
+
+  return String(value)
+}
 
 const composeHandlers = <Event,>(
   userHandler: EventHandler<Event> | undefined,
@@ -364,11 +379,83 @@ export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
 )
 
 export interface CalendarProps extends ComponentPropsWithoutRef<'div'> {
+  defaultValue?: string | undefined
+  disabled?: boolean | undefined
   glass?: LumenGlassProp
+  locale?: string | undefined
+  max?: string | undefined
+  min?: string | undefined
+  month?: string | undefined
+  name?: string | undefined
+  onValueChange?: ((value: string) => void) | undefined
+  value?: string | undefined
 }
-export const Calendar = ({ className, glass = false, ...props }: CalendarProps) => (
-  <div className={composeClassName('ui-calendar', glassClass('ui-calendar', glass), className)} {...props} />
-)
+export const Calendar = ({
+  className,
+  defaultValue,
+  disabled = false,
+  glass = false,
+  locale,
+  max,
+  min,
+  month,
+  name,
+  onValueChange,
+  value,
+  ...props
+}: CalendarProps) => {
+  const calendar = useCalendar({
+    defaultValue,
+    disabled,
+    locale,
+    max,
+    min,
+    month,
+    name,
+    onValueChange,
+    value
+  })
+
+  return (
+    <div
+      {...props}
+      {...calendar.rootProps}
+      className={composeClassName(calendar.rootProps.className, glassClass('ui-calendar', glass), className)}
+      data-ui-glass-track={glass ? true : undefined}
+    >
+      <input {...calendar.inputProps} />
+      <div className="ui-calendar__header">
+        <button {...calendar.previousProps} type="button">
+          <span aria-hidden="true">&lsaquo;</span>
+        </button>
+        <strong {...calendar.labelProps}>{calendar.label}</strong>
+        <button {...calendar.nextProps} type="button">
+          <span aria-hidden="true">&rsaquo;</span>
+        </button>
+      </div>
+      <table {...calendar.gridProps}>
+        <thead>
+          <tr role="row">
+            {calendar.weekdays.map(weekday => (
+              <th key={weekday} role="columnheader" scope="col">{weekday}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {calendar.weeks.map(week => (
+            <tr key={week[0]?.date ?? 'week'} role="row">
+              {week.map(day => (
+                <td key={day.date} {...calendar.getDayProps(day)}>
+                  {day.day}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
 
 export type CardProps<T extends ElementType = 'div'> = PrimitiveProps & {
   'data-variant'?: CardVariant
@@ -680,6 +767,8 @@ export const ContextMenu = ({ className, glass = false, surface = 'default', ...
   <menu
     className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
     data-surface={resolveSurface(surface, glass)}
+    data-ui-context-menu
+    role={props.role ?? 'menu'}
     {...props}
   />
 )
@@ -926,27 +1015,62 @@ export const InputGroup = ({ className, ...props }: InputGroupProps) => (
   <div className={composeClassName('ui-input-group', className)} {...props} />
 )
 
-export interface InputOTPProps extends Omit<ComponentPropsWithoutRef<'input'>, 'maxLength' | 'type'> {
+export interface InputOTPProps extends Omit<ComponentPropsWithoutRef<'input'>, 'className' | 'maxLength' | 'type'> {
+  className?: string | undefined
+  inputClassName?: string | undefined
   length?: number
   maxLength?: number
 }
 
 export const InputOTP = ({
+  'aria-invalid': ariaInvalid,
   className,
+  defaultValue,
+  disabled = false,
+  inputClassName,
   inputMode = 'numeric',
   length = 6,
   maxLength = length,
+  pattern = '[0-9]*',
+  value,
   ...props
-}: InputOTPProps) => (
-  <input
-    className={composeClassName('ui-input-otp', className)}
-    inputMode={inputMode}
-    maxLength={maxLength}
-    pattern="[0-9]*"
-    type="text"
-    {...props}
-  />
-)
+}: InputOTPProps) => {
+  const otp = useInputOTP({
+    defaultValue: toInputValue(defaultValue),
+    disabled,
+    inputMode,
+    invalid: ariaInvalid === true || ariaInvalid === 'true',
+    length,
+    pattern,
+    value: toInputValue(value)
+  })
+
+  return (
+    <div
+      {...otp.rootProps}
+      className={composeClassName(otp.rootProps.className, className)}
+    >
+      <input
+        {...otp.getInputProps({
+          ...props,
+          'aria-invalid': ariaInvalid,
+          className: inputClassName,
+          disabled,
+          inputMode,
+          maxLength,
+          pattern
+        })}
+      />
+      <div {...otp.segmentsProps}>
+        {otp.segmentIndexes.map(index => (
+          <button key={index} {...otp.getSegmentProps(index)} type="button">
+            <span data-ui-input-otp-char>{otp.getSegmentChar(index)}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export type NumberFieldProps = ComponentPropsWithoutRef<'input'>
 export const NumberField = ({ className, type = 'number', ...props }: NumberFieldProps) => (
@@ -1152,10 +1276,79 @@ export const RadioGroup = ({ className, ...props }: RadioGroupProps) => (
   <fieldset className={composeClassName('ui-radio-group', className)} data-ui-radio-group {...props} />
 )
 
-export type ResizableProps = ComponentPropsWithoutRef<'div'>
-export const Resizable = ({ className, ...props }: ResizableProps) => (
-  <div className={composeClassName('ui-resizable', className)} {...props} />
-)
+/* eslint-disable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element -- Resizable preserves pane element tags while injecting pane sizing props and handles. */
+interface ResizablePaneProps {
+  className?: string | undefined
+  style?: CSSProperties | undefined
+}
+
+export interface ResizableProps extends ComponentPropsWithoutRef<'div'> {
+  defaultSizes?: number[] | undefined
+  direction?: ResizableDirection | undefined
+  maxSize?: number | number[] | undefined
+  minSize?: number | number[] | undefined
+  resetOnDoubleClick?: boolean | undefined
+}
+
+const renderResizablePane = (
+  child: ReactNode,
+  index: number,
+  panelProps: ComponentPropsWithoutRef<'div'>
+) => {
+  if (isValidElement<ResizablePaneProps>(child)) {
+    const childProps = child.props
+
+    return cloneElement(child, {
+      ...panelProps,
+      className: composeClassName(childProps.className, panelProps.className),
+      style: {
+        ...childProps.style,
+        ...panelProps.style
+      }
+    })
+  }
+
+  return <div {...panelProps}>{child}</div>
+}
+
+export const Resizable = ({
+  children,
+  className,
+  defaultSizes,
+  direction = 'horizontal',
+  maxSize,
+  minSize,
+  resetOnDoubleClick = true,
+  ...props
+}: ResizableProps) => {
+  const panes = Children.toArray(children)
+  const resizable = useResizable({
+    defaultSizes,
+    direction,
+    maxSize,
+    minSize,
+    panelCount: panes.length,
+    resetOnDoubleClick
+  })
+
+  return (
+    <div
+      {...props}
+      {...resizable.rootProps}
+      className={composeClassName(resizable.rootProps.className, className)}
+    >
+      {panes.map((child, index) => (
+        <Fragment key={index}>
+          {renderResizablePane(child, index, resizable.getPanelProps(index))}
+          {index < panes.length - 1 && (
+            <button {...resizable.getHandleProps(index)} type="button" />
+          )}
+        </Fragment>
+      ))}
+    </div>
+  )
+}
+/* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
 
 export interface RichTextEditorProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp

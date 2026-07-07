@@ -85,11 +85,11 @@ export function SubscribeForm() {
 ## Web Components
 
 Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
-interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, Tabs, Select,
-ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, and VirtualList: selection, validation, rich
-text command, theme, and range events, ARIA state, roving/listbox keyboard paths, Escape/outside
-dismissal, focus return/trapping, native select form participation, and the same toast controller
-events as the Astro runtime.
+interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,
+Select, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,
+validation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA
+state, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native
+select form participation, and the same toast controller events as the Astro runtime.
 
 ```html
 <script type="module">
@@ -126,7 +126,12 @@ The shared catalog includes:
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.
-  Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from
+  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered
+  Web Components wire month navigation and roving keyboard focus directly, while React apps can use
+  the `Calendar` component or `useCalendar` for the same date selection contract.
+  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps
+  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`
+  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from
   `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and
   `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with
   `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any
@@ -143,6 +148,10 @@ The shared catalog includes:
   survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,
   `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when
   connecting dense views to router state or server-backed data.
+- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.
+  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing
+  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,
+  min/max, and double-click reset parity.
 - Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export
   tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,
   `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and
@@ -164,6 +173,12 @@ The shared catalog includes:
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
   and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that
   should reflect native Constraint Validation API state into `Field` error slots on blur and submit.
+  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input
+  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the
+  same sanitization, paste handling, and caret navigation.
+  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native
+  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same
+  start/end syncing props.
   Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add
   `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or
   `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call

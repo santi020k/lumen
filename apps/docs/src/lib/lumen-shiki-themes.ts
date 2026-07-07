@@ -1,7 +1,5 @@
 import { santi020kShikiThemes } from '@santi020k/theme/shiki'
 
-type CodeThemes = Record<'dark' | 'light', unknown>
-
 const lumenLightTokenColors = [
   {
     scope: ['comment', 'punctuation.definition.comment'],
@@ -87,6 +85,12 @@ export const lumenShikiThemes = {
   }
 } as const
 
-export const cachedSanti020kThemes = santi020kShikiThemes as unknown as CodeThemes
+export const cachedSanti020kThemes = {
+  dark: santi020kShikiThemes.dark,
+  light: santi020kShikiThemes.light
+} as const
 
-export const cachedLumenThemes = lumenShikiThemes as unknown as CodeThemes
+export const cachedLumenThemes = {
+  dark: lumenShikiThemes.dark,
+  light: lumenShikiThemes.light
+} as const

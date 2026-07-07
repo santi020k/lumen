@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { readFile } from 'node:fs/promises'
 
 import { lumenRegistry } from './registry-data.js'

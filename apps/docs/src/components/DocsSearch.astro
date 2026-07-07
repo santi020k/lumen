@@ -20,6 +20,7 @@ const {
   placeholder = 'Search components, props, and recipes...',
   resultsId = `${inputId}-results`
 } = Astro.props
+
 const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
 ---
 

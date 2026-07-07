@@ -17,6 +17,8 @@ interface Props {
 
 const { code, lang = 'plaintext', title } = Astro.props
 const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
+const santi020kThemes = cachedSanti020kThemes as NonNullable<AstroCodeProps['themes']>
+const lumenThemes = cachedLumenThemes as NonNullable<AstroCodeProps['themes']>
 ---
 
 <Code
@@ -28,9 +30,9 @@ const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
   variant="block"
 >
   <div class="docs-code-block__variant docs-code-block__variant--santi020k">
-    <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedSanti020kThemes} />
+    <AstroCode code={code} defaultColor={false} lang={lang} themes={santi020kThemes} />
   </div>
   <div class="docs-code-block__variant docs-code-block__variant--lumen">
-    <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedLumenThemes} />
+    <AstroCode code={code} defaultColor={false} lang={lang} themes={lumenThemes} />
   </div>
 </Code>

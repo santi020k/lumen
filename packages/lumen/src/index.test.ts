@@ -176,7 +176,9 @@ describe('@santi020k/lumen umbrella package', () => {
       expect(react.added).toEqual(['src/lumen/scheduler.tsx'])
       expect(reactSource).toContain("from '@santi020k/lumen-react'")
       expect(reactSource).toContain('export const SchedulerRecipe')
-      expect(reactSource).toContain('data-ui-schedule-event')
+      expect(reactSource).toContain('useSchedule')
+      expect(reactSource).toContain("schedule.getSlotProps('monday')")
+      expect(reactSource).toContain("schedule.getEventProps('schedule-planning')")
 
       expect(elements.added).toEqual(['src/lumen/theme-builder.html'])
       expect(elementsSource).toContain("defineLumenElements()")

@@ -298,7 +298,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display, form, and rich text attributes; use hooks for behavior-heavy primitives.',
+    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -307,7 +307,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, select, forms, rich text, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, select, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -343,7 +343,7 @@ import '@santi020k/lumen-astro/styles.css'
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
       'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
-      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useTabs, useSelect, useFormValidation, useRichTextEditor, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
+      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useResizable, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
     code: `import '@santi020k/lumen-astro/styles.css'
@@ -362,7 +362,7 @@ export function Actions() {
   {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
-      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, rich text commands, ThemeBuilder export, VirtualList range events, overlays, select, tabs, tooltip, and toast.',
+      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, calendar grids, OTP segmentation, date range syncing, rich text commands, context menu triggers, schedule drag/drop, resizable pane sizing, ThemeBuilder export, VirtualList range events, overlays, select, tabs, tooltip, and toast.',
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">
@@ -929,3 +929,891 @@ export const componentDocs: ComponentDoc[] = ([
 }))
 
 export const componentCategories = [...new Set(componentDocs.map(component => component.category))].sort()
+
+// ---------------------------------------------------------------------------
+// React hooks reference
+// ---------------------------------------------------------------------------
+
+export interface ReactHookDoc {
+  code: string
+  controller: readonly ReactHookApiRow[]
+  description: string
+  name: string
+  options: readonly ReactHookApiRow[]
+}
+
+export interface ReactHookApiRow {
+  defaultValue: string
+  description: string
+  name: string
+  type: string
+}
+
+const hookApiRow = (
+  name: string,
+  type: string,
+  defaultValue: string,
+  description: string
+): ReactHookApiRow => ({
+  defaultValue,
+  description,
+  name,
+  type
+})
+
+export const reactHooksReference: ReactHookDoc[] = [
+  {
+    name: 'useDialog',
+    description: 'Manages modal and alert dialog lifecycle — open, close, focus trapping, backdrop click dismiss, and Escape key handling. Spreads props onto a <dialog> element.',
+    options: [
+      hookApiRow('alert', 'boolean', 'false', 'Render as an alert dialog that blocks backdrop-click dismiss.'),
+      hookApiRow('defaultOpen', 'boolean', 'false', 'Initial open state for uncontrolled usage.'),
+      hookApiRow('open', 'boolean', '-', 'Controlled open state. When provided the hook does not manage open internally.'),
+      hookApiRow('onOpenChange', '(open: boolean) => void', '-', 'Callback fired when the open state changes.'),
+      hookApiRow('id', 'string', 'auto', 'Explicit id for the dialog element.')
+    ],
+    controller: [
+      hookApiRow('dialogProps', 'LumenProps<"dialog">', '-', 'Spread onto the <dialog> element. Includes aria-modal, data attributes, click and keydown handlers.'),
+      hookApiRow('triggerProps', 'LumenProps<"button">', '-', 'Spread onto the trigger button. Binds the click handler that opens the dialog.'),
+      hookApiRow('closeProps', 'LumenProps<"button">', '-', 'Spread onto any close button inside the dialog.'),
+      hookApiRow('dialogRef', 'RefObject<HTMLDialogElement>', '-', 'Ref to the dialog DOM element.'),
+      hookApiRow('triggerRef', 'RefObject<HTMLElement>', '-', 'Ref to the trigger DOM element.'),
+      hookApiRow('open', 'boolean', '-', 'Current open state.'),
+      hookApiRow('close', '() => void', '-', 'Imperatively close the dialog.'),
+      hookApiRow('setOpen', 'Dispatch<SetStateAction<boolean>>', '-', 'State setter for controlled usage.')
+    ],
+    code: `import { Button, Dialog, Card } from '@santi020k/lumen-react'
+import { useDialog } from '@santi020k/lumen-react'
+
+export function ConfirmDialog() {
+  const dialog = useDialog()
+
+  return (
+    <>
+      <Button {...dialog.triggerProps}>Open dialog</Button>
+      <Dialog {...dialog.dialogProps}>
+        <Card>
+          <h2>Confirm action</h2>
+          <p>Are you sure you want to continue?</p>
+          <Button {...dialog.closeProps}>Close</Button>
+        </Card>
+      </Dialog>
+    </>
+  )
+}`
+  },
+  {
+    name: 'usePopover',
+    description: 'Manages popover disclosure — toggle, outside click close, Escape key dismiss, and arrow key navigation through focusable panel items.',
+    options: [
+      hookApiRow('defaultOpen', 'boolean', 'false', 'Initial open state for uncontrolled usage.'),
+      hookApiRow('open', 'boolean', '-', 'Controlled open state.'),
+      hookApiRow('onOpenChange', '(open: boolean) => void', '-', 'Callback fired when the open state changes.'),
+      hookApiRow('id', 'string', 'auto', 'Explicit id for the panel element.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the root wrapper element.'),
+      hookApiRow('triggerProps', 'LumenProps<"button">', '-', 'Spread onto the trigger button. Binds click, ArrowDown, Enter, and Space key handlers.'),
+      hookApiRow('panelProps', 'LumenProps<"div">', '-', 'Spread onto the popover panel. Includes Escape, arrow, Home, and End key handlers.'),
+      hookApiRow('rootRef', 'RefObject<HTMLElement>', '-', 'Ref to the root wrapper.'),
+      hookApiRow('triggerRef', 'RefObject<HTMLElement>', '-', 'Ref to the trigger element.'),
+      hookApiRow('panelRef', 'RefObject<HTMLElement>', '-', 'Ref to the panel element.'),
+      hookApiRow('open', 'boolean', '-', 'Current open state.'),
+      hookApiRow('close', '() => void', '-', 'Close the popover.'),
+      hookApiRow('toggle', '() => void', '-', 'Toggle the popover.'),
+      hookApiRow('setOpen', 'Dispatch<SetStateAction<boolean>>', '-', 'State setter for controlled usage.')
+    ],
+    code: `import { Button, Popover, PopoverTrigger, PopoverPanel } from '@santi020k/lumen-react'
+import { usePopover } from '@santi020k/lumen-react'
+
+export function NotificationsPopover() {
+  const popover = usePopover()
+
+  return (
+    <Popover {...popover.rootProps}>
+      <PopoverTrigger {...popover.triggerProps}>Notifications</PopoverTrigger>
+      <PopoverPanel {...popover.panelProps}>
+        <p>No new notifications.</p>
+      </PopoverPanel>
+    </Popover>
+  )
+}`
+  },
+  {
+    name: 'useDropdownMenu',
+    description: 'Manages dropdown menu disclosure — identical API to usePopover but sets aria-haspopup to "menu" for correct ARIA semantics on menu triggers.',
+    options: [
+      hookApiRow('defaultOpen', 'boolean', 'false', 'Initial open state.'),
+      hookApiRow('open', 'boolean', '-', 'Controlled open state.'),
+      hookApiRow('onOpenChange', '(open: boolean) => void', '-', 'Callback fired when the open state changes.'),
+      hookApiRow('id', 'string', 'auto', 'Explicit id for the menu panel.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the root wrapper.'),
+      hookApiRow('triggerProps', 'LumenProps<"button">', '-', 'Spread onto the menu trigger. Sets aria-haspopup="menu".'),
+      hookApiRow('panelProps', 'LumenProps<"div">', '-', 'Spread onto the menu panel with keyboard navigation.'),
+      hookApiRow('open', 'boolean', '-', 'Current open state.'),
+      hookApiRow('close', '() => void', '-', 'Close the menu.'),
+      hookApiRow('toggle', '() => void', '-', 'Toggle the menu.')
+    ],
+    code: `import { Button, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@santi020k/lumen-react'
+import { useDropdownMenu } from '@santi020k/lumen-react'
+
+export function ActionsMenu() {
+  const menu = useDropdownMenu()
+
+  return (
+    <DropdownMenu {...menu.rootProps}>
+      <DropdownMenuTrigger {...menu.triggerProps}>Actions</DropdownMenuTrigger>
+      <DropdownMenuContent {...menu.panelProps}>
+        <button>Edit</button>
+        <button>Delete</button>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}`
+  },
+  {
+    name: 'useContextMenu',
+    description: 'Binds a trigger to a context menu that opens on right-click or Shift+F10 and supports Escape and roving item focus.',
+    options: [
+      hookApiRow('defaultOpen', 'boolean', 'false', 'Initial open state.'),
+      hookApiRow('open', 'boolean', '-', 'Controlled open state.'),
+      hookApiRow('onOpenChange', '(open: boolean) => void', '-', 'Callback fired when the context menu opens or closes.'),
+      hookApiRow('id', 'string', 'auto', 'Explicit id for the menu.')
+    ],
+    controller: [
+      hookApiRow('triggerProps', 'LumenProps<"button">', '-', 'Spread onto the trigger. Handles contextmenu and Shift+F10.'),
+      hookApiRow('menuProps', 'LumenProps<"menu">', '-', 'Spread onto ContextMenu. Includes data-ui-context-menu, role, hidden state, and keyboard handlers.'),
+      hookApiRow('triggerRef', 'RefObject<HTMLElement>', '-', 'Ref to the trigger.'),
+      hookApiRow('menuRef', 'RefObject<HTMLElement>', '-', 'Ref to the menu.'),
+      hookApiRow('open', 'boolean', '-', 'Current open state.'),
+      hookApiRow('openAt', '(x: number, y: number) => void', '-', 'Open the menu at viewport coordinates.'),
+      hookApiRow('close', '() => void', '-', 'Close the menu.')
+    ],
+    code: `import { ContextMenu, useContextMenu } from '@santi020k/lumen-react'
+
+export function ProjectActions() {
+  const menu = useContextMenu({ id: 'project-actions' })
+
+  return (
+    <>
+      <button {...menu.triggerProps}>Project</button>
+      <ContextMenu {...menu.menuProps}>
+        <button role="menuitem">Duplicate</button>
+        <button role="menuitem">Delete</button>
+      </ContextMenu>
+    </>
+  )
+}`
+  },
+  {
+    name: 'useTabs',
+    description: 'Manages a tabbed interface with controlled/uncontrolled value, arrow key navigation, roving tabindex, and automatic ARIA attributes for tab triggers and panels.',
+    options: [
+      hookApiRow('defaultValue', 'string', '""', 'Initial active tab value for uncontrolled usage.'),
+      hookApiRow('value', 'string', '-', 'Controlled active tab value.'),
+      hookApiRow('onValueChange', '(value: string) => void', '-', 'Callback fired when the active tab changes.'),
+      hookApiRow('orientation', '"horizontal" | "vertical"', '"horizontal"', 'Tab navigation direction — affects which arrow keys are used.'),
+      hookApiRow('id', 'string', 'auto', 'Base id for generated tab and panel ids.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the tabs root wrapper.'),
+      hookApiRow('listProps', 'LumenProps<"div">', '-', 'Spread onto the tablist element.'),
+      hookApiRow('getTriggerProps(value)', '(value, props?) => LumenProps<"button">', '-', 'Returns props for a tab trigger with the given value. Includes aria-selected, role, keyboard handlers.'),
+      hookApiRow('getPanelProps(value)', '(value, props?) => LumenProps<"div">', '-', 'Returns props for a tab panel. Automatically hides non-active panels.'),
+      hookApiRow('value', 'string', '-', 'Currently active tab value.'),
+      hookApiRow('setValue', 'Dispatch<SetStateAction<string>>', '-', 'State setter for controlled usage.'),
+      hookApiRow('rootRef', 'RefObject<HTMLElement>', '-', 'Ref to the tabs root element.')
+    ],
+    code: `import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@santi020k/lumen-react'
+import { useTabs } from '@santi020k/lumen-react'
+
+export function SettingsTabs() {
+  const tabs = useTabs({ defaultValue: 'general' })
+
+  return (
+    <Tabs {...tabs.rootProps}>
+      <TabsList {...tabs.listProps}>
+        <TabsTrigger {...tabs.getTriggerProps('general')}>General</TabsTrigger>
+        <TabsTrigger {...tabs.getTriggerProps('security')}>Security</TabsTrigger>
+      </TabsList>
+      <TabsPanel {...tabs.getPanelProps('general')}>
+        <p>General settings content.</p>
+      </TabsPanel>
+      <TabsPanel {...tabs.getPanelProps('security')}>
+        <p>Security settings content.</p>
+      </TabsPanel>
+    </Tabs>
+  )
+}`
+  },
+  {
+    name: 'useSelect',
+    description: 'Manages a fully custom select with native <select> fallback, ARIA listbox, typeahead character search, keyboard navigation, and external form integration.',
+    options: [
+      hookApiRow('options', 'Array<string | SelectOption>', '[]', 'Available options. Strings are converted to { label, value } objects.'),
+      hookApiRow('defaultValue', 'string', '""', 'Initial selected value.'),
+      hookApiRow('value', 'string', '-', 'Controlled selected value.'),
+      hookApiRow('onValueChange', '(value: string) => void', '-', 'Callback fired when the selected value changes.'),
+      hookApiRow('placeholder', 'string', '-', 'Placeholder text shown when no option is selected.'),
+      hookApiRow('disabled', 'boolean', 'false', 'Disable the select trigger.'),
+      hookApiRow('required', 'boolean', 'false', 'Mark the hidden native select as required for form validation.'),
+      hookApiRow('name', 'string', '-', 'Name attribute for the hidden native select.'),
+      hookApiRow('id', 'string', 'auto', 'Explicit id for the listbox.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the select root wrapper.'),
+      hookApiRow('triggerProps', 'LumenProps<"button">', '-', 'Spread onto the trigger button. Includes keyboard navigation.'),
+      hookApiRow('listProps', 'LumenProps<"div">', '-', 'Spread onto the listbox container.'),
+      hookApiRow('controlProps', 'LumenProps<"div">', '-', 'Spread onto the visual control wrapper.'),
+      hookApiRow('nativeSelectProps', 'LumenProps<"select">', '-', 'Spread onto a hidden native <select> for form compatibility.'),
+      hookApiRow('getOptionProps(option)', '(option, props?) => LumenProps<"button">', '-', 'Returns props for an option button.'),
+      hookApiRow('selectedOption', 'SelectOption | undefined', '-', 'Currently selected option object.'),
+      hookApiRow('triggerText', 'string', '-', 'Display text for the trigger (selected label or placeholder).'),
+      hookApiRow('value', 'string', '-', 'Currently selected value.'),
+      hookApiRow('options', 'SelectOption[]', '-', 'Normalized options array.'),
+      hookApiRow('open', 'boolean', '-', 'Whether the listbox is open.'),
+      hookApiRow('close', '() => void', '-', 'Close the listbox.'),
+      hookApiRow('selectOption', '(value: string) => void', '-', 'Programmatically select an option by value.')
+    ],
+    code: `import { Select } from '@santi020k/lumen-react'
+import { useSelect } from '@santi020k/lumen-react'
+
+export function CountrySelect() {
+  const select = useSelect({
+    options: ['United States', 'Canada', 'Mexico'],
+    placeholder: 'Choose a country',
+    onValueChange: (value) => console.log('Selected:', value)
+  })
+
+  return (
+    <div {...select.rootProps}>
+      <button {...select.triggerProps}>{select.triggerText}</button>
+      <select {...select.nativeSelectProps} />
+      <div {...select.listProps}>
+        {select.options.map(option => (
+          <button key={option.value} {...select.getOptionProps(option)}>
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}`
+  },
+  {
+    name: 'useTooltip',
+    description: 'Manages tooltip show/hide with configurable delay, hover and focus triggers, and Escape key dismissal.',
+    options: [
+      hookApiRow('delay', 'number', '400', 'Milliseconds to wait before showing the tooltip on hover.'),
+      hookApiRow('defaultOpen', 'boolean', 'false', 'Initial open state.'),
+      hookApiRow('open', 'boolean', '-', 'Controlled open state.'),
+      hookApiRow('onOpenChange', '(open: boolean) => void', '-', 'Callback fired when the tooltip opens or closes.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"span">', '-', 'Spread onto the wrapper span. Includes hover and focus listeners.'),
+      hookApiRow('tooltipProps', 'LumenProps<"span">', '-', 'Spread onto the tooltip content span. Includes role="tooltip" and visibility.'),
+      hookApiRow('open', 'boolean', '-', 'Current open state.'),
+      hookApiRow('close', '() => void', '-', 'Close the tooltip.'),
+      hookApiRow('setOpen', 'Dispatch<SetStateAction<boolean>>', '-', 'State setter for controlled usage.')
+    ],
+    code: `import { Button, Tooltip, TooltipContent } from '@santi020k/lumen-react'
+import { useTooltip } from '@santi020k/lumen-react'
+
+export function SaveButton() {
+  const tooltip = useTooltip({ delay: 300 })
+
+  return (
+    <Tooltip {...tooltip.rootProps}>
+      <Button>Save</Button>
+      <TooltipContent {...tooltip.tooltipProps}>Save your changes</TooltipContent>
+    </Tooltip>
+  )
+}`
+  },
+  {
+    name: 'useToast',
+    description: 'Consumes the ToastProvider context to create, update, and dismiss toast notifications. Requires a ToastProvider ancestor in the component tree.',
+    options: [],
+    controller: [
+      hookApiRow('create', '(detail: ToastDetail) => string', '-', 'Create a toast and return its id. Accepts title, description, variant, duration, placement, and an optional action.'),
+      hookApiRow('dismiss', '(id?: string) => void', '-', 'Dismiss a specific toast by id, or dismiss the most recent toast if no id is provided.'),
+      hookApiRow('update', '(id: string, detail: ToastDetail) => void', '-', 'Update an existing toast with new content.'),
+      hookApiRow('toasts', 'ToastRecord[]', '-', 'Array of all active toast records.')
+    ],
+    code: `import { Button, ToastProvider } from '@santi020k/lumen-react'
+import { useToast } from '@santi020k/lumen-react'
+
+function SaveButton() {
+  const toast = useToast()
+
+  return (
+    <Button onClick={() => toast.create({
+      title: 'Saved',
+      description: 'Your changes are live.',
+      variant: 'success'
+    })}>
+      Save
+    </Button>
+  )
+}
+
+// Wrap your app with ToastProvider
+export function App() {
+  return (
+    <ToastProvider placement="bottom-right" maxCount={5}>
+      <SaveButton />
+    </ToastProvider>
+  )
+}`
+  },
+  {
+    name: 'useFormValidation',
+    description: 'Enhances native HTML form validation with custom error messages via data-error-* attributes, live field description syncing, and programmatic validity control.',
+    options: [
+      hookApiRow('onValidate', '(detail: FormValidationValidateDetail) => void', '-', 'Callback fired when a single control is validated.'),
+      hookApiRow('onValid', '(detail: FormValidationStateDetail) => void', '-', 'Callback fired when the form becomes valid.'),
+      hookApiRow('onInvalid', '(detail: FormValidationStateDetail) => void', '-', 'Callback fired when the form has invalid controls.')
+    ],
+    controller: [
+      hookApiRow('formProps', 'LumenProps<"form">', '-', 'Spread onto the <form> element. Adds native validation bypass and submit handler.'),
+      hookApiRow('formRef', 'RefObject<HTMLFormElement>', '-', 'Ref to the form element.'),
+      hookApiRow('getControls', '(form?) => NativeFormControl[]', '-', 'Returns all form controls, including inputs, selects, and text areas.'),
+      hookApiRow('setFieldValidity', '(control, invalid, message?) => void', '-', 'Programmatically set a field as valid or invalid with a custom message.'),
+      hookApiRow('validateControl', '(control, form?) => boolean', '-', 'Validate a single control and return whether it is valid.'),
+      hookApiRow('validateForm', '(form?) => NativeFormControl[]', '-', 'Validate all controls and return the array of invalid controls.')
+    ],
+    code: `import { Button, Field, Input, Label } from '@santi020k/lumen-react'
+import { useFormValidation } from '@santi020k/lumen-react'
+
+export function SignupForm() {
+  const form = useFormValidation({
+    onValid: () => console.log('Form is valid'),
+    onInvalid: ({ controls }) =>
+      console.log('Invalid fields:', controls?.length)
+  })
+
+  return (
+    <form {...form.formProps}>
+      <Field>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          required
+          data-error-required="Please enter your email"
+          data-error-type="Enter a valid email address"
+        />
+      </Field>
+      <Button type="submit">Sign up</Button>
+    </form>
+  )
+}`
+  },
+  {
+    name: 'useCalendar',
+    description: 'Builds an Astro-compatible calendar grid with hidden input value, min/max clamping, month navigation, selection, and roving keyboard focus.',
+    options: [
+      hookApiRow('value', 'string', '-', 'Controlled selected date in YYYY-MM-DD format.'),
+      hookApiRow('defaultValue', 'string', '""', 'Initial selected date for uncontrolled usage.'),
+      hookApiRow('month', 'string', 'selected month or today', 'Visible month in YYYY-MM format.'),
+      hookApiRow('min / max', 'string', '-', 'Inclusive date bounds in YYYY-MM-DD format.'),
+      hookApiRow('onValueChange', '(value: string) => void', '-', 'Callback fired when a date is selected.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the calendar root.'),
+      hookApiRow('inputProps', 'LumenProps<"input">', '-', 'Spread onto the hidden input.'),
+      hookApiRow('previousProps / nextProps', 'LumenProps<"button">', '-', 'Spread onto month navigation buttons.'),
+      hookApiRow('weeks', 'CalendarDay[][]', '-', 'Six calendar rows of generated day models.'),
+      hookApiRow('getDayProps', '(day, props?) => LumenProps<"td">', '-', 'Returns gridcell props for a generated day.'),
+      hookApiRow('selectDate', '(date) => void', '-', 'Select a date programmatically.')
+    ],
+    code: `import { Calendar } from '@santi020k/lumen-react'
+
+export function DeliveryDate() {
+  return (
+    <Calendar
+      max="2026-07-31"
+      min="2026-07-01"
+      month="2026-07"
+      name="delivery"
+    />
+  )
+}`
+  },
+  {
+    name: 'useDateRangePicker',
+    description: 'Keeps paired native date inputs constrained so the end date cannot be before the start date.',
+    options: [
+      hookApiRow('onRangeChange', '(detail: DateRangePickerChangeDetail) => void', '-', 'Callback fired after the date range is synchronized.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the date range root.'),
+      hookApiRow('rootRef', 'RefObject<HTMLElement>', '-', 'Ref to the date range root.'),
+      hookApiRow('getStartProps', '(props?) => LumenProps<"input">', '-', 'Returns props for the start date input.'),
+      hookApiRow('getEndProps', '(props?) => LumenProps<"input">', '-', 'Returns props for the end date input.'),
+      hookApiRow('syncRange', '(root?) => DateRangePickerChangeDetail', '-', 'Synchronize min/max constraints and return the current range.')
+    ],
+    code: `import { useDateRangePicker } from '@santi020k/lumen-react'
+
+export function BookingRange() {
+  const range = useDateRangePicker()
+
+  return (
+    <div className="ui-date-range-picker" {...range.rootProps}>
+      <input className="ui-input ui-date-picker" aria-label="Start date" {...range.getStartProps()} />
+      <input className="ui-input ui-date-picker" aria-label="End date" {...range.getEndProps()} />
+    </div>
+  )
+}`
+  },
+  {
+    name: 'useInputOTP',
+    description: 'Builds an Astro-compatible OTP field with a native input, visual segments, sanitized values, and caret navigation.',
+    options: [
+      hookApiRow('length', 'number', '6', 'Number of visible OTP segments.'),
+      hookApiRow('value', 'string', '-', 'Controlled OTP value.'),
+      hookApiRow('defaultValue', 'string', '""', 'Initial value for uncontrolled usage.'),
+      hookApiRow('onValueChange', '(value: string) => void', '-', 'Callback fired when input or paste changes the sanitized value.'),
+      hookApiRow('inputMode', 'string', '"numeric"', 'Native inputMode forwarded to the hidden input. Numeric mode removes non-digits.'),
+      hookApiRow('pattern', 'string', '"[0-9]*"', 'Native pattern forwarded to the hidden input.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the OTP field root.'),
+      hookApiRow('getInputProps', '(props?) => LumenProps<"input">', '-', 'Returns props for the native input.'),
+      hookApiRow('segmentsProps', 'LumenProps<"div">', '-', 'Spread onto the visual segment container.'),
+      hookApiRow('getSegmentProps', '(index, props?) => LumenProps<"button">', '-', 'Returns props for a visual segment button.'),
+      hookApiRow('getSegmentChar', '(index) => string', '-', 'Returns the character or blank placeholder for a segment.'),
+      hookApiRow('setValue', '(value) => string', '-', 'Sanitize and set the current OTP value.')
+    ],
+    code: `import { useInputOTP } from '@santi020k/lumen-react'
+
+export function VerificationCode() {
+  const otp = useInputOTP({ length: 6 })
+
+  return (
+    <div {...otp.rootProps}>
+      <input aria-label="Verification code" name="code" {...otp.getInputProps()} />
+      <div {...otp.segmentsProps}>
+        {otp.segmentIndexes.map(index => (
+          <button key={index} {...otp.getSegmentProps(index)}>
+            <span data-ui-input-otp-char>{otp.getSegmentChar(index)}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}`
+  },
+  {
+    name: 'useRichTextEditor',
+    description: 'Provides rich text editing via document.execCommand. Returns props for the editable root and factory for toolbar command buttons.',
+    options: [
+      hookApiRow('onCommand', '(detail: { command: string }) => void', '-', 'Callback fired when a command is executed.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"section">', '-', 'Spread onto the editor root section.'),
+      hookApiRow('rootRef', 'RefObject<HTMLElement>', '-', 'Ref to the editor root.'),
+      hookApiRow('executeCommand', '(command: string, root?) => boolean', '-', 'Execute a rich text command (bold, italic, insertUnorderedList, etc.).'),
+      hookApiRow('getCommandProps', '(command, props?) => LumenProps<"button">', '-', 'Returns props for a toolbar button bound to a specific command.')
+    ],
+    code: `import { Button, RichTextEditor } from '@santi020k/lumen-react'
+import { useRichTextEditor } from '@santi020k/lumen-react'
+
+export function Editor() {
+  const editor = useRichTextEditor()
+
+  return (
+    <RichTextEditor {...editor.rootProps}>
+      <div role="toolbar" aria-label="Formatting">
+        <Button {...editor.getCommandProps('bold')} size="icon">B</Button>
+        <Button {...editor.getCommandProps('italic')} size="icon">I</Button>
+        <Button {...editor.getCommandProps('insertUnorderedList')} size="icon">•</Button>
+      </div>
+      <div contentEditable data-ui-rich-text-editable>
+        <p>Start writing...</p>
+      </div>
+    </RichTextEditor>
+  )
+}`
+  },
+  {
+    name: 'useSchedule',
+    description: 'Provides props for schedule/agenda slot and event elements, and emits change details when a slot or event is interacted with.',
+    options: [
+      hookApiRow('onChange', '(detail: ScheduleChangeDetail) => void', '-', 'Callback fired when a schedule slot or event changes.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"section">', '-', 'Spread onto the schedule root.'),
+      hookApiRow('rootRef', 'RefObject<HTMLElement>', '-', 'Ref to the schedule root.'),
+      hookApiRow('getSlotProps', '(slot, props?) => LumenProps<"section">', '-', 'Returns props for a time slot element.'),
+      hookApiRow('getEventProps', '(eventId?, props?) => LumenProps<"article">', '-', 'Returns props for an event element.'),
+      hookApiRow('emitChange', '(detail, root?) => void', '-', 'Programmatically emit a schedule change detail.')
+    ],
+    code: `import { Schedule, Card } from '@santi020k/lumen-react'
+import { useSchedule } from '@santi020k/lumen-react'
+
+export function WeekView() {
+  const schedule = useSchedule({
+    onChange: ({ eventId, slot }) =>
+      console.log('Changed:', eventId, slot)
+  })
+
+  return (
+    <Schedule {...schedule.rootProps}>
+      <section {...schedule.getSlotProps('2025-01-06T09:00')}>
+        <Card {...schedule.getEventProps('meeting-1')}>
+          <strong>Team standup</strong>
+          <p>9:00 – 9:30</p>
+        </Card>
+      </section>
+    </Schedule>
+  )
+}`
+  },
+  {
+    name: 'useResizable',
+    description: 'Provides pane sizing props and separator handle props for horizontal or vertical resizable groups.',
+    options: [
+      hookApiRow('panelCount', 'number', '2', 'Number of panes in the group.'),
+      hookApiRow('defaultSizes', 'number[]', 'equal panes', 'Initial pane sizes normalized to 100%.'),
+      hookApiRow('minSize', 'number | number[]', '12', 'Minimum pane size percentage.'),
+      hookApiRow('maxSize', 'number | number[]', '88', 'Maximum pane size percentage.'),
+      hookApiRow('direction', '"horizontal" | "vertical"', '"horizontal"', 'Resize axis and generated separator orientation.'),
+      hookApiRow('resetOnDoubleClick', 'boolean', 'true', 'Reset panes to their default sizes on handle double-click.'),
+      hookApiRow('onSizesChange', '(sizes: number[]) => void', '-', 'Callback fired when panes are resized.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"div">', '-', 'Spread onto the resizable root.'),
+      hookApiRow('getPanelProps', '(index, props?) => LumenProps<"div">', '-', 'Returns data/style props for a pane.'),
+      hookApiRow('getHandleProps', '(index, props?) => LumenProps<"button">', '-', 'Returns separator handle props with pointer and keyboard handlers.'),
+      hookApiRow('sizes', 'number[]', '-', 'Current pane sizes as percentages.'),
+      hookApiRow('resizePair', '(index, nextSize) => void', '-', 'Resize one pane and its following pane while honoring min/max.'),
+      hookApiRow('reset', '() => void', '-', 'Reset to the normalized default sizes.')
+    ],
+    code: `import { Resizable } from '@santi020k/lumen-react'
+
+export function SplitEditor() {
+  return (
+    <Resizable defaultSizes={[30, 70]}>
+      <aside>Navigation</aside>
+      <main>Editor</main>
+    </Resizable>
+  )
+}`
+  },
+  {
+    name: 'useThemeBuilder',
+    description: 'Interactive theme builder with controllable hue, accent, mode (generated/manual), scheme (light/dark), color pickers, and export in CSS, Figma variables, or design token formats.',
+    options: [
+      hookApiRow('defaultHue', 'number', '210', 'Initial hue value.'),
+      hookApiRow('hue', 'number', '-', 'Controlled hue.'),
+      hookApiRow('onHueChange', '(hue: number) => void', '-', 'Callback when the hue changes.'),
+      hookApiRow('defaultAccentHue', 'number', '-', 'Initial accent hue.'),
+      hookApiRow('accentHue', 'number', '-', 'Controlled accent hue.'),
+      hookApiRow('onAccentHueChange', '(hue: number) => void', '-', 'Callback when the accent hue changes.'),
+      hookApiRow('defaultScheme', '"light" | "dark"', '"dark"', 'Initial color scheme.'),
+      hookApiRow('scheme', '"light" | "dark"', '-', 'Controlled color scheme.'),
+      hookApiRow('onSchemeChange', '(scheme) => void', '-', 'Callback when the scheme changes.'),
+      hookApiRow('defaultMode', '"generated" | "manual"', '"generated"', 'Initial builder mode.'),
+      hookApiRow('mode', '"generated" | "manual"', '-', 'Controlled builder mode.'),
+      hookApiRow('defaultExportFormat', '"css" | "figma" | "tokens"', '"css"', 'Initial export format.'),
+      hookApiRow('onThemeChange', '(detail: ThemeBuilderChangeDetail) => void', '-', 'Callback when any theme value changes.'),
+      hookApiRow('onThemeExport', '(detail: ThemeBuilderExportDetail) => void', '-', 'Callback when the user exports the theme.')
+    ],
+    controller: [
+      hookApiRow('rootProps', 'LumenProps<"section">', '-', 'Spread onto the theme builder root.'),
+      hookApiRow('hueProps', 'LumenProps<"input">', '-', 'Spread onto the hue range input.'),
+      hookApiRow('accentHueProps', 'LumenProps<"input">', '-', 'Spread onto the accent hue range input.'),
+      hookApiRow('primaryColorProps', 'LumenProps<"input">', '-', 'Spread onto the primary color picker input.'),
+      hookApiRow('secondaryColorProps', 'LumenProps<"input">', '-', 'Spread onto the secondary color picker input.'),
+      hookApiRow('outputProps', 'LumenProps<"textarea">', '-', 'Spread onto the export output textarea.'),
+      hookApiRow('exportButtonProps', 'LumenProps<"button">', '-', 'Spread onto the copy/export button.'),
+      hookApiRow('getModeProps', '(mode, props?) => LumenProps<"button">', '-', 'Returns toggle props for a mode button.'),
+      hookApiRow('getSchemeProps', '(scheme, props?) => LumenProps<"button">', '-', 'Returns toggle props for a scheme button.'),
+      hookApiRow('getExportFormatProps', '(format, props?) => LumenProps<"button">', '-', 'Returns toggle props for an export format button.'),
+      hookApiRow('previewStyle', 'CSSProperties', '-', 'Inline style object with generated CSS custom properties for live preview.'),
+      hookApiRow('exportValue', 'string', '-', 'Current export string (CSS, Figma JSON, or design tokens JSON).'),
+      hookApiRow('exportFormat', '"css" | "figma" | "tokens"', '-', 'Current export format.'),
+      hookApiRow('tokens', 'LumenThemeTokens', '-', 'Current generated theme tokens.'),
+      hookApiRow('copyExport', '() => Promise<string>', '-', 'Copy the export value to clipboard and return it.')
+    ],
+    code: `import { ThemeBuilder, Card, Button, Slider } from '@santi020k/lumen-react'
+import { useThemeBuilder } from '@santi020k/lumen-react'
+
+export function CustomThemeBuilder() {
+  const builder = useThemeBuilder({
+    defaultHue: 264,
+    defaultScheme: 'dark',
+    onThemeExport: ({ value, format }) =>
+      console.log(\`Exported \${format}:\`, value)
+  })
+
+  return (
+    <ThemeBuilder {...builder.rootProps}>
+      <div style={builder.previewStyle}>
+        <Card glass>
+          <label>Brand hue</label>
+          <input type="range" {...builder.hueProps} min={0} max={359} />
+          <label>Accent hue</label>
+          <input type="range" {...builder.accentHueProps} min={0} max={359} />
+          <div>
+            <Button {...builder.getSchemeProps('light')}>Light</Button>
+            <Button {...builder.getSchemeProps('dark')}>Dark</Button>
+          </div>
+          <textarea {...builder.outputProps} readOnly rows={6} />
+          <Button {...builder.exportButtonProps}>Copy CSS</Button>
+        </Card>
+      </div>
+    </ThemeBuilder>
+  )
+}`
+  }
+]
+
+// ---------------------------------------------------------------------------
+// Elements API reference
+// ---------------------------------------------------------------------------
+
+export interface ElementsApiDoc {
+  code: string
+  description: string
+  name: string
+  rows: readonly ElementsApiRow[]
+  type: 'enhancement' | 'event' | 'registration' | 'toast'
+}
+
+export interface ElementsApiRow {
+  description: string
+  name: string
+  signature: string
+}
+
+const elementsRow = (
+  name: string,
+  signature: string,
+  description: string
+): ElementsApiRow => ({
+  description,
+  name,
+  signature
+})
+
+export const elementsApiReference: ElementsApiDoc[] = [
+  {
+    name: 'defineLumenElements',
+    type: 'registration',
+    description: 'Registers all 79 Lumen web components in the custom element registry. Call once before using any <lumen-*> tags. Optionally pass a custom registry for scoped usage.',
+    rows: [
+      elementsRow('registry', 'CustomElementRegistry (optional)', 'Custom element registry to register against. Defaults to the global customElements.')
+    ],
+    code: `<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<lumen-card>
+  <lumen-button>Click me</lumen-button>
+</lumen-card>`
+  },
+  {
+    name: 'enhanceLumenForms',
+    type: 'enhancement',
+    description: 'Enhances forms marked with [data-ui-form] with native constraint validation, custom error messages via data-error-* attributes, and field description syncing. Works without registering custom elements.',
+    rows: [
+      elementsRow('root', 'ParentNode (optional)', 'Root element to search for [data-ui-form] forms. Defaults to document.'),
+      elementsRow('data-error-required', 'attribute', 'Custom message shown when a required field is empty.'),
+      elementsRow('data-error-type', 'attribute', 'Custom message shown when the value does not match the input type (e.g. email).'),
+      elementsRow('data-error-pattern', 'attribute', 'Custom message shown when the value does not match the pattern attribute.'),
+      elementsRow('data-error-min / data-error-max', 'attribute', 'Custom message for range violations.')
+    ],
+    code: `<script type="module">
+  import { enhanceLumenForms } from '@santi020k/lumen-elements/define'
+
+  enhanceLumenForms()
+</script>
+
+<form data-ui-form>
+  <label for="email">Email</label>
+  <input
+    id="email"
+    type="email"
+    required
+    data-error-required="Please enter your email"
+    data-error-type="Enter a valid email address"
+    class="ui-input"
+  />
+  <button type="submit" class="ui-button ui-button--default">Sign up</button>
+</form>`
+  },
+  {
+    name: 'enhanceLumenCalendars',
+    type: 'enhancement',
+    description: 'Enhances elements marked with [data-ui-calendar] or <lumen-calendar> with generated date grids, hidden input values, month navigation, selection, min/max clamping, and keyboard focus.',
+    rows: [
+      elementsRow('root', 'ParentNode (optional)', 'Root element to search for calendars. Defaults to document.'),
+      elementsRow('month', 'YYYY-MM', 'Visible month for generated calendars.'),
+      elementsRow('value', 'YYYY-MM-DD', 'Initial selected date copied to the hidden input.'),
+      elementsRow('min / max', 'YYYY-MM-DD', 'Inclusive selectable date bounds.'),
+      elementsRow('name', 'attribute', 'Forwarded to the generated hidden input for form submission.')
+    ],
+    code: `<script type="module">
+  import { enhanceLumenCalendars } from '@santi020k/lumen-elements/define'
+
+  enhanceLumenCalendars()
+</script>
+
+<lumen-calendar
+  max="2026-07-31"
+  min="2026-07-01"
+  month="2026-07"
+  name="delivery"
+></lumen-calendar>`
+  },
+  {
+    name: 'enhanceLumenDateRangePickers',
+    type: 'enhancement',
+    description: 'Enhances elements marked with [data-ui-date-range-picker] so paired native date inputs keep min/max constraints in sync. Works without registering custom elements.',
+    rows: [
+      elementsRow('root', 'ParentNode (optional)', 'Root element to search for date range pickers. Defaults to document.'),
+      elementsRow('input[type="date"]', 'native date inputs', 'The first date input is treated as the start date and the last date input is treated as the end date.')
+    ],
+    code: `<script type="module">
+  import { enhanceLumenDateRangePickers } from '@santi020k/lumen-elements/define'
+
+  enhanceLumenDateRangePickers()
+</script>
+
+<section data-ui-date-range-picker class="ui-date-range-picker">
+  <input class="ui-input ui-date-picker" type="date" aria-label="Start date" />
+  <input class="ui-input ui-date-picker" type="date" aria-label="End date" />
+</section>`
+  },
+  {
+    name: 'enhanceLumenInputOTPs',
+    type: 'enhancement',
+    description: 'Enhances elements marked with [data-ui-input-otp] or <lumen-input-otp> with a real native input, visual segments, sanitized input, paste handling, and caret navigation.',
+    rows: [
+      elementsRow('root', 'ParentNode (optional)', 'Root element to search for OTP fields. Defaults to document.'),
+      elementsRow('length', 'attribute', 'Number of OTP segments to create. Defaults to 6.'),
+      elementsRow('value', 'attribute', 'Initial value copied to the generated native input.'),
+      elementsRow('name', 'attribute', 'Forwarded to the generated native input for form submission.')
+    ],
+    code: `<script type="module">
+  import { enhanceLumenInputOTPs } from '@santi020k/lumen-elements/define'
+
+  enhanceLumenInputOTPs()
+</script>
+
+<lumen-input-otp
+  aria-label="Verification code"
+  length="6"
+  name="code"
+></lumen-input-otp>`
+  },
+  {
+    name: 'enhanceLumenResizable',
+    type: 'enhancement',
+    description: 'Enhances elements marked with [data-ui-resizable] with pane sizing, generated separator handles, pointer resizing, keyboard resizing, and double-click reset.',
+    rows: [
+      elementsRow('root', 'ParentNode (optional)', 'Root element to search for resizable groups. Defaults to document.'),
+      elementsRow('data-ui-resizable-default-sizes', 'comma-separated percentages', 'Initial pane sizes normalized to 100%.'),
+      elementsRow('data-ui-resizable-min-size', 'number or comma list', 'Minimum pane size percentage. Defaults to 12.'),
+      elementsRow('data-ui-resizable-max-size', 'number or comma list', 'Maximum pane size percentage. Defaults to 88.'),
+      elementsRow('data-orientation', '"horizontal" | "vertical"', 'Resize axis. Defaults to horizontal.')
+    ],
+    code: `<script type="module">
+  import { enhanceLumenResizable } from '@santi020k/lumen-elements/define'
+
+  enhanceLumenResizable()
+</script>
+
+<lumen-resizable data-ui-resizable-default-sizes="30,70">
+  <aside>Navigation</aside>
+  <main>Editor</main>
+</lumen-resizable>`
+  },
+  {
+    name: 'enhanceLumenRichTextEditors',
+    type: 'enhancement',
+    description: 'Enhances elements marked with [data-ui-rich-text-editor] with toolbar command execution via document.execCommand. Works without registering custom elements.',
+    rows: [
+      elementsRow('root', 'ParentNode (optional)', 'Root element to search for editors. Defaults to document.'),
+      elementsRow('data-ui-command', 'attribute', 'Set on toolbar buttons to specify the command name (bold, italic, insertUnorderedList, etc.).')
+    ],
+    code: `<script type="module">
+  import { enhanceLumenRichTextEditors } from '@santi020k/lumen-elements/define'
+
+  enhanceLumenRichTextEditors()
+</script>
+
+<section data-ui-rich-text-editor class="ui-rich-text-editor">
+  <div role="toolbar">
+    <button data-ui-command="bold" class="ui-button ui-button--icon">B</button>
+    <button data-ui-command="italic" class="ui-button ui-button--icon">I</button>
+  </div>
+  <div contenteditable data-ui-rich-text-editable>
+    <p>Start writing...</p>
+  </div>
+</section>`
+  },
+  {
+    name: 'LumenToast',
+    type: 'toast',
+    description: 'Global singleton toast API available after calling defineLumenElements(). Create, update, and dismiss toast notifications from anywhere.',
+    rows: [
+      elementsRow('create(detail)', '(ToastDetail) => string', 'Create a toast with title, description, variant, duration, placement, and optional action. Returns the toast id.'),
+      elementsRow('dismiss(id?)', '(string?) => void', 'Dismiss a toast by id, or dismiss the most recent toast.'),
+      elementsRow('update(id, detail)', '(string, ToastDetail) => void', 'Update an existing toast with new content.')
+    ],
+    code: `<script type="module">
+  import { defineLumenElements, LumenToast } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+
+  document.querySelector('#notify').addEventListener('click', () => {
+    LumenToast.create({
+      title: 'Saved',
+      description: 'Your changes are live.',
+      variant: 'success',
+      duration: 5000,
+      placement: 'bottom-right'
+    })
+  })
+</script>
+
+<lumen-sonner aria-label="Notifications"></lumen-sonner>
+<lumen-button id="notify">Show toast</lumen-button>`
+  },
+  {
+    name: 'Custom events',
+    type: 'event',
+    description: 'Lumen elements dispatch CustomEvents that you can listen for on the document or on specific elements.',
+    rows: [
+      elementsRow('ui:toast', 'CustomEvent<ToastDetail>', 'Dispatched on document when a toast is created. Listen on document to handle toasts globally.'),
+      elementsRow('ui:validate', 'CustomEvent<{ control, form, value }>', 'Dispatched during form validation for each control.'),
+      elementsRow('ui:valid', 'CustomEvent<{ form, controls? }>', 'Dispatched when a form passes validation.'),
+      elementsRow('ui:invalid', 'CustomEvent<{ form, control?, controls? }>', 'Dispatched when a form fails validation.'),
+      elementsRow('ui:editor-command', 'CustomEvent<{ command }>', 'Dispatched when a rich text editor command is executed.'),
+      elementsRow('ui:toast-action', 'CustomEvent<{ event?, value? }>', 'Dispatched when a toast action button is clicked.')
+    ],
+    code: `<script type="module">
+  // Listen for toast events globally
+  document.addEventListener('ui:toast', (event) => {
+    console.log('Toast created:', event.detail.title)
+  })
+
+  // Listen for form validation events
+  document.querySelector('form').addEventListener('ui:invalid', (event) => {
+    console.log('Invalid controls:', event.detail.controls)
+  })
+
+  // Listen for rich text commands
+  document.addEventListener('ui:editor-command', (event) => {
+    console.log('Command executed:', event.detail.command)
+  })
+</script>`
+  }
+]

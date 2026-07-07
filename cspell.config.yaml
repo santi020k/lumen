@@ -47,6 +47,9 @@ words:
   - WCAG
   - wordmark
   - workspaces
+  - novalidate
+  - shikijs
+  - textareas
 ignoreRegExpList:
   - "luQW2pTQ3jGGxSFPAAsfa9"
 ignorePaths:

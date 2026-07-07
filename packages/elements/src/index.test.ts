@@ -1,14 +1,24 @@
+/* eslint-disable complexity, @typescript-eslint/no-non-null-assertion */
+/* cspell:ignore valuenow */
+
 // @vitest-environment jsdom
 
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import {
   defineLumenElements,
+  enhanceLumenCalendars,
+  enhanceLumenContextMenus,
+  enhanceLumenDateRangePickers,
   enhanceLumenForms,
+  enhanceLumenInputOTPs,
+  enhanceLumenResizable,
   enhanceLumenRichTextEditors,
+  enhanceLumenSchedules,
   LumenButtonElement,
   LumenCardElement,
-  LumenToast} from './index.js'
+  LumenToast
+} from './index.js'
 
 const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
   element.dispatchEvent(new KeyboardEvent('keydown', {
@@ -17,6 +27,20 @@ const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
     key,
     ...init
   }))
+}
+
+const createDragEvent = (
+  type: string,
+  dataTransfer: Pick<DataTransfer, 'getData' | 'setData'>
+) => {
+  const event = new Event(type, { bubbles: true, cancelable: true })
+
+  Object.defineProperty(event, 'dataTransfer', {
+    configurable: true,
+    value: dataTransfer
+  })
+
+  return event
 }
 
 beforeAll(() => {
@@ -338,6 +362,125 @@ describe('@santi020k/lumen-elements', () => {
     expect(events).toEqual(['validate:email', 'invalid:1', 'validate:email', 'valid'])
   })
 
+  test('date range pickers keep native date inputs in range', () => {
+    document.body.innerHTML = `
+      <lumen-date-range-picker>
+        <input id="start-date" type="date" value="2026-07-10" />
+        <input id="end-date" type="date" value="2026-07-08" />
+      </lumen-date-range-picker>
+    `
+
+    enhanceLumenDateRangePickers(document)
+
+    const start = document.querySelector<HTMLInputElement>('#start-date')
+    const end = document.querySelector<HTMLInputElement>('#end-date')
+
+    expect(end?.min).toBe('2026-07-10')
+    expect(end?.value).toBe('2026-07-10')
+    expect(start?.dataset.uiDateRangeInputBound).toBe('true')
+    expect(end?.dataset.uiDateRangeInputBound).toBe('true')
+
+    if (start) {
+      start.value = ''
+      start.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    expect(end?.hasAttribute('min')).toBe(false)
+  })
+
+  test('input OTP creates native input and visual segments', () => {
+    document.body.innerHTML = `
+      <lumen-input-otp length="4" name="code" value="12a3"></lumen-input-otp>
+    `
+
+    enhanceLumenInputOTPs(document)
+
+    const root = document.querySelector<HTMLElement>('lumen-input-otp')
+    const input = document.querySelector<HTMLInputElement>('[data-ui-input-otp-native]')
+    const segmentsRoot = document.querySelector<HTMLElement>('[data-ui-input-otp-segments]')
+    const segments = [...document.querySelectorAll<HTMLButtonElement>('[data-ui-input-otp-segment]')]
+
+    expect(root?.classList.contains('ui-input-otp-field')).toBe(true)
+    expect(root?.dataset.uiBound).toBe('true')
+    expect(root?.dataset.uiInputOtpLength).toBe('4')
+    expect(input?.classList.contains('ui-input-otp__native')).toBe(true)
+    expect(input?.dataset.uiEnhanced).toBe('true')
+    expect(input?.name).toBe('code')
+    expect(input?.value).toBe('123')
+    expect(segmentsRoot?.hidden).toBe(false)
+    expect(segments).toHaveLength(4)
+    expect(segments[0]?.textContent).toBe('1')
+    expect(segments[3]?.textContent).toBe('\u00a0')
+
+    const paste = new Event('paste', { bubbles: true, cancelable: true })
+
+    Object.defineProperty(paste, 'clipboardData', {
+      configurable: true,
+      value: { getData: () => '98x7' }
+    })
+
+    input?.dispatchEvent(paste)
+
+    expect(input?.value).toBe('987')
+    expect(segments[0]?.textContent).toBe('9')
+    expect(segments[2]?.textContent).toBe('7')
+  })
+
+  test('resizable panes get handles and keyboard resizing', () => {
+    document.body.innerHTML = `
+      <lumen-resizable data-ui-resizable-default-sizes="25,75">
+        <aside id="nav">Navigation</aside>
+        <main id="editor">Editor</main>
+      </lumen-resizable>
+    `
+
+    enhanceLumenResizable(document)
+
+    const root = document.querySelector<HTMLElement>('lumen-resizable')
+    const nav = document.querySelector<HTMLElement>('#nav')
+    const editor = document.querySelector<HTMLElement>('#editor')
+    const handle = document.querySelector<HTMLElement>('[data-ui-resizable-handle]')
+
+    expect(root?.dataset.uiResizableEnhanced).toBe('true')
+    expect(nav?.dataset.uiResizablePanel).toBe('')
+    expect(editor?.dataset.uiResizablePanel).toBe('')
+    expect(nav?.style.getPropertyValue('--ui-resizable-size')).toBe('25%')
+    expect(editor?.style.getPropertyValue('--ui-resizable-size')).toBe('75%')
+    expect(handle?.getAttribute('role')).toBe('separator')
+    expect(handle?.getAttribute('aria-valuenow')).toBe('25')
+
+    press(handle!, 'ArrowRight')
+
+    expect(nav?.style.getPropertyValue('--ui-resizable-size')).toBe('27%')
+    expect(editor?.style.getPropertyValue('--ui-resizable-size')).toBe('73%')
+  })
+
+  test('calendar creates a selectable date grid', () => {
+    document.body.innerHTML = `
+      <lumen-calendar month="2026-07" name="delivery" value="2026-07-10"></lumen-calendar>
+    `
+
+    enhanceLumenCalendars(document)
+
+    const root = document.querySelector<HTMLElement>('lumen-calendar')
+    const input = document.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+    const label = document.querySelector<HTMLElement>('[data-ui-calendar-label]')
+    const selected = document.querySelector<HTMLElement>('[data-ui-calendar-day][data-date="2026-07-10"]')
+    const nextDate = document.querySelector<HTMLElement>('[data-ui-calendar-day][data-date="2026-07-15"]')
+
+    expect(root?.dataset.uiBound).toBe('true')
+    expect(root?.dataset.uiCalendarMonth).toBe('2026-07')
+    expect(input?.name).toBe('delivery')
+    expect(input?.value).toBe('2026-07-10')
+    expect(label?.textContent).toBe('July 2026')
+    expect(selected?.dataset.selected).toBe('true')
+
+    nextDate?.click()
+
+    expect(input?.value).toBe('2026-07-15')
+    expect(root?.dataset.uiCalendarValue).toBe('2026-07-15')
+  })
+
   test('data table selects rows, submits values, and sorts columns', () => {
     const selectionEvents: string[][] = []
 
@@ -514,6 +657,103 @@ describe('@santi020k/lumen-elements', () => {
     expect(commands).toEqual(['bold'])
     expect(root?.dataset.uiEditorBound).toBe('true')
     expect(button?.dataset.uiEditorCommandBound).toBe('true')
+  })
+
+  test('schedule slots accept dropped events and emit changes', () => {
+    const changes: unknown[] = []
+    const transferData: Record<string, string> = {}
+    const dataTransfer = {
+      getData: vi.fn((type: string) => transferData[type] ?? ''),
+      setData: vi.fn((type: string, value: string) => {
+        transferData[type] = value
+      })
+    }
+
+    document.body.innerHTML = `
+      <lumen-schedule>
+        <section data-ui-schedule-slot="monday">
+          <article id="schedule-planning" data-ui-draggable="true" data-ui-schedule-event>Planning</article>
+        </section>
+        <section data-ui-schedule-slot="friday"></section>
+      </lumen-schedule>
+    `
+
+    enhanceLumenSchedules(document)
+
+    const root = document.querySelector<HTMLElement>('lumen-schedule')
+    const planning = document.querySelector<HTMLElement>('#schedule-planning')
+    const monday = document.querySelector<HTMLElement>('[data-ui-schedule-slot="monday"]')
+    const friday = document.querySelector<HTMLElement>('[data-ui-schedule-slot="friday"]')
+
+    root?.addEventListener('ui:schedule-change', event => {
+      changes.push((event as CustomEvent<{ eventId: string, slot: string }>).detail)
+    })
+
+    planning?.dispatchEvent(createDragEvent('dragstart', dataTransfer))
+
+    expect(dataTransfer.setData).toHaveBeenCalledWith('text/plain', 'schedule-planning')
+    expect(root?.dataset.uiDragging).toBe('true')
+    expect(planning?.draggable).toBe(true)
+
+    const dragOverPrevented = !friday?.dispatchEvent(createDragEvent('dragover', dataTransfer))
+
+    expect(dragOverPrevented).toBe(true)
+    expect(friday?.dataset.state).toBe('drag-over')
+
+    friday?.dispatchEvent(createDragEvent('drop', dataTransfer))
+
+    expect(friday?.dataset.state).toBeUndefined()
+    expect(friday?.contains(planning ?? null)).toBe(true)
+    expect(monday?.contains(planning ?? null)).toBe(false)
+    expect(changes).toEqual([{ eventId: 'schedule-planning', slot: 'friday' }])
+
+    planning?.dispatchEvent(createDragEvent('dragend', dataTransfer))
+
+    expect(root?.dataset.uiDragging).toBeUndefined()
+  })
+
+  test('context menu triggers open, focus, and close menus', () => {
+    document.body.innerHTML = `
+      <button data-ui-context-menu-trigger="project-menu" id="project-trigger">Project</button>
+      <lumen-context-menu id="project-menu">
+        <button role="menuitem" type="button">Duplicate</button>
+        <button role="menuitem" type="button">Delete</button>
+      </lumen-context-menu>
+    `
+
+    enhanceLumenContextMenus(document)
+
+    const trigger = document.querySelector<HTMLButtonElement>('#project-trigger')
+    const menu = document.querySelector<HTMLElement>('#project-menu')
+    const firstItem = document.querySelector<HTMLButtonElement>('[role="menuitem"]')
+
+    expect(menu?.hidden).toBe(true)
+    expect(menu?.dataset.state).toBe('closed')
+
+    const contextMenuPrevented = !trigger?.dispatchEvent(new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+      clientX: 24,
+      clientY: 32
+    }))
+
+    expect(contextMenuPrevented).toBe(true)
+    expect(menu?.hidden).toBe(false)
+    expect(menu?.dataset.state).toBe('open')
+    expect(menu?.style.position).toBe('fixed')
+
+    firstItem?.click()
+
+    expect(menu?.hidden).toBe(true)
+    expect(menu?.dataset.state).toBe('closed')
+
+    press(trigger!, 'F10', { shiftKey: true })
+
+    expect(menu?.hidden).toBe(false)
+
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+    expect(menu?.hidden).toBe(true)
   })
 
   test('tooltip wires aria-describedby and dismisses with Escape', () => {

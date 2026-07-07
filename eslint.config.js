@@ -73,6 +73,15 @@ const config = await defineConfig({
   },
   ...tseslint.configs.disableTypeChecked
 }, {
+  files: ['packages/lumen/templates/**/*.ts', 'packages/lumen/templates/**/*.tsx'],
+  languageOptions: {
+    parserOptions: {
+      project: false,
+      projectService: false
+    }
+  },
+  ...tseslint.configs.disableTypeChecked
+}, {
   files: ['tests/visual/**/*.ts'],
   languageOptions: {
     parserOptions: {

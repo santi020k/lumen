@@ -8,6 +8,7 @@ import {
   type AlertProps,
   Button,
   type ButtonProps,
+  Calendar,
   Card,
   type CardProps,
   Code,
@@ -17,15 +18,23 @@ import {
   Field,
   type FieldProps,
   Input,
+  InputOTP,
   type InputProps,
   lumenComponentNames,
+  Resizable,
   Table,
   type TableProps,
   ToastProvider,
+  useCalendar,
+  useContextMenu,
+  useDateRangePicker,
   useDropdownMenu,
   useFormValidation,
+  useInputOTP,
   usePopover,
+  useResizable,
   useRichTextEditor,
+  useSchedule,
   useSelect,
   useTabs,
   useThemeBuilder,
@@ -83,6 +92,27 @@ const withHookDispatcher = <Value,>(callback: () => Value): Value => {
   } finally {
     internals.H = previousDispatcher
   }
+}
+
+const makeDateRangeInput = (value: string): HTMLInputElement => {
+  const input: {
+    closest: (selector: string) => HTMLElement | null
+    max: string | undefined
+    min: string | undefined
+    removeAttribute: (name: string) => void
+    value: string
+  } = {
+    closest: vi.fn(() => null),
+    max: '',
+    min: '',
+    removeAttribute: vi.fn((name: string) => {
+      if (name === 'max') input.max = undefined
+      if (name === 'min') input.min = undefined
+    }),
+    value
+  }
+
+  return input as unknown as HTMLInputElement
 }
 
 describe('@santi020k/lumen-react', () => {
@@ -171,6 +201,97 @@ describe('@santi020k/lumen-react', () => {
     expect(input.props.type).toBe('text')
   })
 
+  test('renders calendar grid and hidden input', () => {
+    const calendar = withHookDispatcher(() => Calendar({
+      month: '2026-07',
+      name: 'delivery',
+      value: '2026-07-10'
+    }) as ReactElement)
+    const calendarProps = calendar.props as Record<string, unknown>
+    const children = calendarProps.children as ReactElement<Record<string, unknown>>[]
+    const input = children[0]
+    const header = children[1]
+    const table = children[2]
+    const label = (header?.props.children as ReactElement<Record<string, unknown>>[])[1]
+    const body = (table?.props.children as ReactElement<Record<string, unknown>>[])[1]
+    const firstRow = (body?.props.children as ReactElement<Record<string, unknown>>[])[0]
+    const firstDay = (firstRow?.props.children as ReactElement<Record<string, unknown>>[])[0]
+
+    expect(calendarProps.className).toBe('ui-calendar')
+    expect(calendarProps['data-ui-calendar']).toBe(true)
+    expect(input?.props.name).toBe('delivery')
+    expect(input?.props.value).toBe('2026-07-10')
+    expect(label?.props.children).toBe('July 2026')
+    expect(table?.props.role).toBe('grid')
+    expect(firstDay?.props['data-date']).toBe('2026-06-29')
+  })
+
+  test('exposes calendar selection helpers', () => {
+    const changes: string[] = []
+    const calendar = withHookDispatcher(() => useCalendar({
+      month: '2026-07',
+      onValueChange: value => { changes.push(value); }
+    }))
+
+    calendar.selectDate('2026-07-15')
+
+    expect(calendar.month).toBe('2026-07')
+    expect(changes).toEqual(['2026-07-15'])
+    expect(calendar.previousProps['data-ui-calendar-prev']).toBe(true)
+    expect(calendar.nextProps['data-ui-calendar-next']).toBe(true)
+  })
+
+  test('renders input OTP as native input plus visual segments', () => {
+    const otp = withHookDispatcher(() => InputOTP({
+      defaultValue: '12a3',
+      length: 4,
+      name: 'code'
+    }) as ReactElement)
+    const otpProps = otp.props as Record<string, unknown>
+    const children = otpProps.children as ReactElement<Record<string, unknown>>[]
+    const nativeInput = children[0]
+    const segmentsRoot = children[1]
+    const segments = segmentsRoot?.props.children as ReactElement<Record<string, unknown>>[]
+    const firstSegment = segments[0]
+    const firstChar = firstSegment?.props.children as ReactElement<Record<string, unknown>>
+
+    expect(otp.type).toBe('div')
+    expect(otpProps.className).toBe('ui-input-otp-field')
+    expect(otpProps['data-ui-input-otp']).toBe(true)
+    expect(nativeInput?.props.className).toBe('ui-input-otp ui-input-otp__native')
+    expect(nativeInput?.props['data-ui-input-otp-native']).toBe(true)
+    expect(nativeInput?.props.name).toBe('code')
+    expect(nativeInput?.props.value).toBe('123')
+    expect(segmentsRoot?.props.className).toBe('ui-input-otp__segments')
+    expect(segments).toHaveLength(4)
+    expect(firstSegment?.props['data-ui-input-otp-segment']).toBe(true)
+    expect(firstChar.props['data-ui-input-otp-char']).toBe(true)
+    expect(firstChar.props.children).toBe('1')
+  })
+
+  test('exposes input OTP sanitizing props', () => {
+    const changes: string[] = []
+    const otp = withHookDispatcher(() => useInputOTP({
+      length: 4,
+      onValueChange: value => { changes.push(value); }
+    }))
+    const input = {
+      selectionStart: 6,
+      value: '12ab34'
+    } as HTMLInputElement
+    const inputProps = otp.getInputProps()
+    const segmentProps = otp.getSegmentProps(2)
+
+    inputProps.onInput?.({
+      currentTarget: input
+    } as unknown as Parameters<NonNullable<typeof inputProps.onInput>>[0])
+
+    expect(input.value).toBe('1234')
+    expect(changes).toEqual(['1234'])
+    expect(segmentProps['data-index']).toBe(2)
+    expect(segmentProps['data-ui-input-otp-segment']).toBe(true)
+  })
+
   test('exposes form validation and field contracts', () => {
     const field = Field({
       children: 'Email',
@@ -188,6 +309,32 @@ describe('@santi020k/lumen-react', () => {
     expect(validation.formProps.noValidate).toBe(true)
     expect(validation.validateForm).toBeTypeOf('function')
     expect(validation.validateControl).toBeTypeOf('function')
+  })
+
+  test('exposes date range picker syncing props', () => {
+    const changes: unknown[] = []
+    const picker = withHookDispatcher(() => useDateRangePicker({
+      onRangeChange: detail => { changes.push(detail); }
+    }))
+    const start = makeDateRangeInput('2026-07-10')
+    const end = makeDateRangeInput('2026-07-08')
+    const startProps = picker.getStartProps()
+    const endProps = picker.getEndProps()
+
+    expect(picker.rootProps['data-ui-date-range-picker']).toBe(true)
+    expect(startProps.type).toBe('date')
+    expect(endProps.type).toBe('date')
+
+    startProps.onChange?.({
+      currentTarget: start
+    } as unknown as Parameters<NonNullable<typeof startProps.onChange>>[0])
+    endProps.onChange?.({
+      currentTarget: end
+    } as unknown as Parameters<NonNullable<typeof endProps.onChange>>[0])
+
+    expect(end.min).toBe('2026-07-10')
+    expect(end.value).toBe('2026-07-10')
+    expect(changes.at(-1)).toEqual({ end: '2026-07-10', start: '2026-07-10' })
   })
 
   test('exposes rich text command props and events', () => {
@@ -210,7 +357,9 @@ describe('@santi020k/lumen-react', () => {
       expect(commandProps['data-ui-editor-command']).toBe('bold')
       expect(commandProps.type).toBe('button')
 
-      commandProps.onClick?.({} as Parameters<NonNullable<typeof commandProps.onClick>>[0])
+      commandProps.onClick?.({
+        currentTarget: { closest: vi.fn(() => null) }
+      } as unknown as Parameters<NonNullable<typeof commandProps.onClick>>[0])
 
       expect(execCommand).toHaveBeenCalledWith('bold')
       expect(commands).toEqual(['bold'])
@@ -221,6 +370,72 @@ describe('@santi020k/lumen-react', () => {
         delete (globalThis as { document?: Document }).document
       }
     }
+  })
+
+  test('exposes schedule drag and drop props', () => {
+    const changes: unknown[] = []
+    const schedule = withHookDispatcher(() => useSchedule({
+      onChange: detail => { changes.push(detail); }
+    }))
+    const root = {
+      dataset: {},
+      dispatchEvent: vi.fn()
+    } as unknown as HTMLElement
+    const scheduleEvent = {
+      closest: vi.fn(() => root),
+      id: 'schedule-planning',
+      textContent: 'Planning'
+    } as unknown as HTMLElement
+    const slot = {
+      closest: vi.fn(() => root),
+      dataset: {}
+    } as unknown as HTMLElement
+    const transferData: Record<string, string> = {}
+    const dataTransfer = {
+      getData: vi.fn((type: string) => transferData[type] ?? ''),
+      setData: vi.fn((type: string, value: string) => {
+        transferData[type] = value
+      })
+    }
+    const eventProps = schedule.getEventProps('schedule-planning')
+    const slotProps = schedule.getSlotProps('friday')
+
+    expect(schedule.rootProps['data-ui-schedule']).toBe(true)
+    expect(eventProps['data-ui-schedule-event']).toBe(true)
+    expect(eventProps['data-ui-draggable']).toBe(true)
+    expect(eventProps.draggable).toBe(true)
+    expect(eventProps.id).toBe('schedule-planning')
+    expect(slotProps['data-ui-schedule-slot']).toBe('friday')
+
+    eventProps.onDragStart?.({
+      currentTarget: scheduleEvent,
+      dataTransfer
+    } as unknown as Parameters<NonNullable<typeof eventProps.onDragStart>>[0])
+
+    expect(dataTransfer.setData).toHaveBeenCalledWith('text/plain', 'schedule-planning')
+    expect(root.dataset.uiDragging).toBe('true')
+
+    eventProps.onDragEnd?.({
+      currentTarget: scheduleEvent
+    } as Parameters<NonNullable<typeof eventProps.onDragEnd>>[0])
+
+    expect(root.dataset.uiDragging).toBeUndefined()
+
+    slotProps.onDragOver?.({
+      currentTarget: slot,
+      preventDefault: vi.fn()
+    } as unknown as Parameters<NonNullable<typeof slotProps.onDragOver>>[0])
+
+    expect(slot.dataset.state).toBe('drag-over')
+
+    slotProps.onDrop?.({
+      currentTarget: slot,
+      dataTransfer,
+      preventDefault: vi.fn()
+    } as unknown as Parameters<NonNullable<typeof slotProps.onDrop>>[0])
+
+    expect(slot.dataset.state).toBeUndefined()
+    expect(changes).toEqual([{ eventId: 'schedule-planning', slot: 'friday' }])
   })
 
   test('renders data display runtime contracts', () => {
@@ -263,6 +478,49 @@ describe('@santi020k/lumen-react', () => {
     expect(virtualList.props['data-ui-overscan']).toBe(2)
   })
 
+  test('renders resizable panes with separator handles', () => {
+    const resizable = withHookDispatcher(() => Resizable({
+      children: [
+        React.createElement('aside', { key: 'nav' }, 'Navigation'),
+        React.createElement('main', { key: 'main' }, 'Editor')
+      ],
+      defaultSizes: [25, 75]
+    }) as ReactElement)
+    const resizableProps = resizable.props as Record<string, unknown>
+    const children = resizableProps.children as ReactElement<Record<string, unknown>>[]
+    const firstFragmentChildren = children[0]?.props.children as ReactElement<Record<string, unknown>>[]
+    const firstPane = firstFragmentChildren[0]
+    const firstHandle = firstFragmentChildren[1]
+
+    expect(resizableProps.className).toBe('ui-resizable')
+    expect(resizableProps['data-ui-resizable']).toBe(true)
+    expect(firstPane?.props['data-ui-resizable-panel']).toBe(true)
+    expect((firstPane?.props.style as Record<string, string>)['--ui-resizable-size']).toBe('25%')
+    expect(firstHandle?.props.className).toBe('ui-resizable__handle')
+    expect(firstHandle?.props.role).toBe('separator')
+    expect(firstHandle?.props['aria-orientation']).toBe('vertical')
+  })
+
+  test('exposes resizable keyboard sizing props', () => {
+    const changes: number[][] = []
+    const resizable = withHookDispatcher(() => useResizable({
+      defaultSizes: [30, 70],
+      onSizesChange: sizes => { changes.push(sizes); },
+      panelCount: 2
+    }))
+    const handleProps = resizable.getHandleProps(0)
+    const preventDefault = vi.fn()
+
+    handleProps.onKeyDown?.({
+      key: 'ArrowRight',
+      preventDefault,
+      shiftKey: false
+    } as unknown as Parameters<NonNullable<typeof handleProps.onKeyDown>>[0])
+
+    expect(preventDefault).toHaveBeenCalled()
+    expect(changes.at(-1)).toEqual([32, 68])
+  })
+
   test('exposes disclosure semantics for popovers and dropdown menus', () => {
     const popover = withHookDispatcher(() => usePopover({ defaultOpen: true }))
     const dropdown = withHookDispatcher(() => useDropdownMenu({ defaultOpen: false }))
@@ -276,6 +534,32 @@ describe('@santi020k/lumen-react', () => {
     expect(dropdown.triggerProps['aria-expanded']).toBe(false)
     expect(dropdown.panelProps.hidden).toBe(true)
     expect(dropdown.panelProps['data-state']).toBe('closed')
+  })
+
+  test('exposes context menu trigger and menu props', () => {
+    const changes: boolean[] = []
+    const contextMenu = withHookDispatcher(() => useContextMenu({
+      id: 'actions-menu',
+      onOpenChange: open => { changes.push(open); }
+    }))
+
+    expect(contextMenu.triggerProps['data-ui-context-menu-trigger']).toBe('actions-menu')
+    expect(contextMenu.triggerProps['aria-haspopup']).toBe('menu')
+    expect(contextMenu.menuProps['data-ui-context-menu']).toBe(true)
+    expect(contextMenu.menuProps.role).toBe('menu')
+    expect(contextMenu.menuProps.hidden).toBe(true)
+    expect(contextMenu.menuProps['data-state']).toBe('closed')
+
+    contextMenu.triggerProps.onContextMenu?.({
+      clientX: 24,
+      clientY: 32,
+      currentTarget: {
+        getBoundingClientRect: () => ({ left: 0, top: 0 })
+      },
+      preventDefault: vi.fn()
+    } as unknown as Parameters<NonNullable<typeof contextMenu.triggerProps.onContextMenu>>[0])
+
+    expect(changes).toEqual([true])
   })
 
   test('exposes tabs roving aria state', () => {

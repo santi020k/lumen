@@ -11,7 +11,7 @@ export const RichTextEditorRecipe = () => {
   const editor = useRichTextEditor()
 
   return (
-    <RichTextEditor {...editor.rootProps} className="lumen-recipe lumen-recipe--rich-text-editor">
+    <RichTextEditor className="lumen-recipe lumen-recipe--rich-text-editor">
       <div role="toolbar" aria-label="Editor toolbar">
         <ButtonGroup>
           <Button {...editor.getCommandProps('bold')}>Bold</Button>
