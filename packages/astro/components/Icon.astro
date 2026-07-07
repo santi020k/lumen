@@ -1,0 +1,50 @@
+---
+import {
+  renderLumenIconSvg,
+  resolveLumenAstroProps,
+  type LumenIconName
+} from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+type IconSize = 'default' | 'lg' | 'sm' | 'xl'
+
+interface Props extends HTMLAttributes<'span'> {
+  class?: string
+  className?: string
+  decorative?: boolean
+  label?: string
+  name?: LumenIconName
+  size?: IconSize
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  decorative,
+  label,
+  name,
+  size = 'default',
+  ...rest
+} = Astro.props
+
+const isDecorative = decorative ?? !label
+const iconSvg = name ? renderLumenIconSvg(name) : ''
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-icon',
+  size === 'sm' && 'ui-icon--sm',
+  size === 'lg' && 'ui-icon--lg',
+  size === 'xl' && 'ui-icon--xl'
+], classProp, className)
+---
+
+<span
+  aria-hidden={isDecorative ? 'true' : undefined}
+  aria-label={!isDecorative ? label : undefined}
+  class:list={classList}
+  role={!isDecorative ? 'img' : undefined}
+  {...passthrough}
+>
+  {name ? <Fragment set:html={iconSvg} /> : <slot />}
+</span>

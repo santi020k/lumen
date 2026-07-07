@@ -46,6 +46,20 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 </Card>
 ```
 
+Use `Icon` for the curated Lucide icons Lumen standardizes across framework adapters.
+
+```astro
+---
+import { Button, Icon } from '@santi020k/lumen-astro'
+---
+
+<Button variant="secondary">
+  <Icon name="settings" decorative />
+  Settings
+</Button>
+<Icon name="search" label="Search" />
+```
+
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.
 
 ## Glass surfaces

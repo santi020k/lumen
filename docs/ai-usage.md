@@ -113,7 +113,7 @@ The shared catalog includes:
 `Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,
 `Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
-`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
+`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
 `Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
 `NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
@@ -123,6 +123,9 @@ The shared catalog includes:
 
 ## Product Recipes
 
+- Use `Icon name="search"` and other curated Lucide-backed names for standard interface
+  pictograms. Pair decorative icons with `decorative`, and pass `label` only when the icon carries
+  meaning on its own.
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.

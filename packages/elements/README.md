@@ -34,6 +34,16 @@ Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
 </lumen-card>
 ```
 
+Use `lumen-icon` for the curated Lucide icons Lumen standardizes across framework adapters.
+
+```html
+<lumen-button variant="secondary">
+  <lumen-icon name="settings" decorative></lumen-icon>
+  Settings
+</lumen-button>
+<lumen-icon name="search" label="Search"></lumen-icon>
+```
+
 Elements emit the same `ui-*` classes and `data-ui-*` attributes as the Astro primitives. Astro
 remains the reference package, and the Web Components adapter now carries matching light-DOM
 behavior for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder,

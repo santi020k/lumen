@@ -32,6 +32,7 @@ import {
   lumenComponentNames,
   lumenDarkTheme,
   lumenGlass,
+  lumenIconNames,
   lumenLightTheme,
   lumenPackages,
   lumenThemeAttribute,
@@ -43,10 +44,12 @@ import {
   parseThemeCss,
   pinDataViewColumn,
   renderLumenCodeHtml,
+  renderLumenIconSvg,
   resizeScheduleEvent,
   resizeScheduleEvents,
   resolveLumenAstroProps,
   resolveLumenGlass,
+  resolveLumenIconName,
   saveDataViewState,
   saveScheduleEvents,
   scoreThemeContrast,
@@ -62,6 +65,7 @@ import {
 describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
+    expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('Tabs')
     expect(new Set(lumenComponentNames).size).toBe(lumenComponentNames.length)
   })
@@ -74,6 +78,15 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-react',
       '@santi020k/lumen-elements'
     ])
+  })
+})
+
+describe('lumen icon helpers', () => {
+  test('resolve supported icon names and render Lucide SVGs', () => {
+    expect(lumenIconNames).toContain('search')
+    expect(resolveLumenIconName('ChevronLeft')).toBe('chevron-left')
+    expect(renderLumenIconSvg('search')).toContain('lucide-search')
+    expect(renderLumenIconSvg('missing')).toBe('')
   })
 })
 

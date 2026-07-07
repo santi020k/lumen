@@ -7,6 +7,9 @@ Most consumers should install a framework package such as `@santi020k/lumen-astr
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme
 tokens outside the shared stylesheet.
 
+It also exports the curated Lumen icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
+`renderLumenIconSvg` so framework adapters can render the same Lucide-backed system icons.
+
 ## Theme Builder Helpers
 
 Use the ThemeBuilder helpers when an adapter or app needs the same token generation and export

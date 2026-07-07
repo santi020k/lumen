@@ -30,6 +30,9 @@ catalogs:
     '@commitlint/config-conventional':
       specifier: ^21.1.0
       version: 21.2.0
+    '@lucide/icons':
+      specifier: ^1.23.0
+      version: 1.23.0
     '@playwright/test':
       specifier: ^1.53.0
       version: 1.61.1
@@ -248,6 +251,10 @@ importers:
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
 
   packages/core:
+    dependencies:
+      '@lucide/icons':
+        specifier: 'catalog:'
+        version: 1.23.0
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
@@ -2083,6 +2090,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+  '@lucide/icons@1.23.0':
+    resolution: {integrity: sha512-N94uJxxVrrHOdLXvYWAmn+YKwb+Pb/ZhQATjeZMW8Raq2/OC/zLs6Mh1auD+FStAwok9JG6N1p4FcRcjdx6Xlg==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -10620,6 +10630,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@lucide/icons@1.23.0': {}
 
   '@manypkg/find-root@1.1.0':
     dependencies:

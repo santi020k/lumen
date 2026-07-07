@@ -33,6 +33,21 @@ export function SubscribeForm() {
 }
 ```
 
+Use `Icon` for the curated Lucide icons Lumen standardizes across framework adapters.
+
+```tsx
+import { Button, Icon } from '@santi020k/lumen-react'
+
+export function SettingsButton() {
+  return (
+    <Button variant="secondary">
+      <Icon name="settings" decorative />
+      Settings
+    </Button>
+  )
+}
+```
+
 React is Lumen's visual adapter layer plus headless behavior hooks. The components emit the same
 `ui-*` classes and `data-ui-*` attributes as Astro, while hooks such as `useDialog`, `usePopover`,
 `useDropdownMenu`, `useContextMenu`, `useTabs`, `useSelect`, `useFormValidation`, `useCalendar`,

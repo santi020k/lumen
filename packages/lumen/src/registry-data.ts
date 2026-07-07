@@ -583,6 +583,20 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "Icon",
+      "type": "component",
+      "description": "Renders curated Lucide icons with Lumen sizing and accessibility defaults.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/Icon.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/core/src/icons.ts"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
       "name": "Input",
       "type": "component",
       "description": "Captures short text, email, password, search, or numeric values.",

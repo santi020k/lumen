@@ -33,6 +33,7 @@ export const lumenComponentNames = [
   'Empty',
   'Field',
   'HoverCard',
+  'Icon',
   'Input',
   'InputGroup',
   'InputOTP',

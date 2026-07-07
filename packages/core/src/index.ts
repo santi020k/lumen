@@ -51,6 +51,16 @@ export {
   type LumenFigmaVariableMode
 } from './figma.js'
 export {
+  getLumenIcon,
+  type LumenIconData,
+  type LumenIconName,
+  lumenIconNames,
+  type LumenIconNode,
+  lumenIcons,
+  renderLumenIconSvg,
+  resolveLumenIconName
+} from './icons.js'
+export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,

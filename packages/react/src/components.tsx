@@ -1,8 +1,12 @@
 /* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen React keeps React 18 peer support, so React 19 context shorthand and use() are not available. */
 import {
   composeClassName,
+  getLumenIcon,
   type LumenCodeToken,
   lumenCodeTokenClassNames,
+  type LumenIconData,
+  type LumenIconName,
+  type LumenIconNode,
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
 
@@ -16,6 +20,7 @@ import {
   Children,
   cloneElement,
   createContext,
+  createElement,
   Fragment,
   isValidElement,
   useContext,
@@ -59,6 +64,8 @@ type CardVariant = 'default' | 'glass' | 'interactive' | 'muted'
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
 type CodeVariant = 'block' | 'inline'
+
+type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
 export type DataTableCell =
   | boolean
@@ -119,6 +126,87 @@ const emptyDataTableRows: DataTableRow[] = []
 
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
   variant === defaultVariant ? false : `${base}--${variant}`
+
+const iconSizeClass = (size: IconSize) => size === 'default' ? undefined : `ui-icon--${size}`
+
+const reactSvgAttributeNames: Record<string, string> = {
+  'clip-rule': 'clipRule',
+  'fill-rule': 'fillRule',
+  'stroke-dasharray': 'strokeDasharray',
+  'stroke-dashoffset': 'strokeDashoffset',
+  'stroke-linecap': 'strokeLinecap',
+  'stroke-linejoin': 'strokeLinejoin',
+  'stroke-miterlimit': 'strokeMiterlimit',
+  'stroke-width': 'strokeWidth',
+  tabindex: 'tabIndex'
+}
+
+const toReactSvgAttributes = (attributes: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(attributes).map(([name, value]) => [reactSvgAttributeNames[name] ?? name, value])
+  )
+
+const renderIconNode = ([tagName, attributes, children]: LumenIconNode, index: number): ReactNode =>
+  createElement(
+    tagName,
+    {
+      ...toReactSvgAttributes(attributes),
+      key: attributes.key ?? index
+    },
+    children?.map(renderIconNode)
+  )
+
+interface IconAccessibilityOptions {
+  ariaHidden: boolean | 'false' | 'true' | undefined
+  ariaLabel: string | undefined
+  decorative: boolean | undefined
+  label: string | undefined
+  role: string | undefined
+}
+
+const getIconAccessibility = ({
+  ariaHidden,
+  ariaLabel,
+  decorative,
+  label,
+  role
+}: IconAccessibilityOptions) => {
+  const accessibleLabel = label ?? ariaLabel
+  const isDecorative = decorative ?? !accessibleLabel
+
+  if (isDecorative) {
+    return {
+      ariaHidden: ariaHidden ?? true,
+      ariaLabel: undefined,
+      role
+    }
+  }
+
+  return {
+    ariaHidden,
+    ariaLabel: accessibleLabel,
+    role: role ?? 'img'
+  }
+}
+
+const renderNamedIcon = (icon: LumenIconData) => (
+  <svg
+    aria-hidden="true"
+    className={`ui-icon__svg lucide-${icon.name}`}
+    fill="none"
+    focusable="false"
+    height="1em"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {icon.node.map(renderIconNode)}
+  </svg>
+)
 
 const resolveSurface = (surface: SurfaceVariant, glass?: LumenGlassProp): SurfaceVariant =>
   glass || surface === 'glass' ? 'glass' : surface
@@ -993,6 +1081,41 @@ export const HoverCard = ({ className, glass = false, surface = 'default', ...pr
     {...props}
   />
 )
+
+export interface IconProps extends ComponentPropsWithoutRef<'span'> {
+  decorative?: boolean
+  label?: string
+  name?: LumenIconName
+  size?: IconSize
+}
+
+export const Icon = ({
+  'aria-hidden': ariaHidden,
+  'aria-label': ariaLabel,
+  children,
+  className,
+  decorative,
+  label,
+  name,
+  role,
+  size = 'default',
+  ...props
+}: IconProps) => {
+  const icon = name ? getLumenIcon(name) : undefined
+  const accessibility = getIconAccessibility({ ariaHidden, ariaLabel, decorative, label, role })
+
+  return (
+    <span
+      aria-hidden={accessibility.ariaHidden}
+      aria-label={accessibility.ariaLabel}
+      className={composeClassName('ui-icon', iconSizeClass(size), className)}
+      role={accessibility.role}
+      {...props}
+    >
+      {icon ? renderNamedIcon(icon) : children}
+    </span>
+  )
+}
 
 export interface InputProps extends Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
   size?: 'default' | 'lg' | 'sm'

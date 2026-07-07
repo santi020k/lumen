@@ -35,6 +35,10 @@
       "types": "./dist/figma.d.ts",
       "import": "./dist/figma.js"
     },
+    "./icons": {
+      "types": "./dist/icons.d.ts",
+      "import": "./dist/icons.js"
+    },
     "./schedule": {
       "types": "./dist/schedule.d.ts",
       "import": "./dist/schedule.js"
@@ -45,7 +49,11 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -55,6 +63,9 @@
     "lint": "eslint . --no-warn-ignored",
     "lint:fix": "eslint . --fix --no-warn-ignored",
     "clean": "rm -rf dist coverage"
+  },
+  "dependencies": {
+    "@lucide/icons": "catalog:"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",

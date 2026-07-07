@@ -13,7 +13,9 @@ import {
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
-  normalizeThemeBuilderHex} from '@santi020k/lumen-core'
+  normalizeThemeBuilderHex,
+  renderLumenIconSvg
+} from '@santi020k/lumen-core'
 
 type AttributeClassMap = Record<string, Record<string, string>>
 
@@ -321,6 +323,18 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '', surface: 'default' },
     tagName: 'lumen-hover-card'
   },
+  Icon: {
+    attributeClasses: {
+      size: {
+        lg: 'ui-icon--lg',
+        sm: 'ui-icon--sm',
+        xl: 'ui-icon--xl'
+      }
+    },
+    baseClassName: 'ui-icon',
+    defaults: { size: 'default' },
+    tagName: 'lumen-icon'
+  },
   Input: { attributeClasses: { size: { lg: 'ui-input--lg', sm: 'ui-input--sm' } }, baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: { baseClassName: 'ui-input-otp-field', defaults: { 'data-ui-input-otp': '', 'data-ui-input-otp-length': '6' }, tagName: 'lumen-input-otp' },
@@ -468,9 +482,12 @@ const elementConfigs = {
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [
+  'decorative',
   'disabled',
   'from',
   'glass',
+  'label',
+  'name',
   'orientation',
   'pressed',
   'size',
@@ -2636,6 +2653,48 @@ export class LumenElement extends HTMLElement {
   }
 }
 
+class LumenIconBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderIcon()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    this.renderIcon()
+  }
+
+  private renderIcon() {
+    const name = this.getAttribute('name')
+    const label = this.getAttribute('label') ?? this.getAttribute('aria-label')
+    const isDecorative = this.hasAttribute('decorative') || !label
+
+    if (name) {
+      const svg = renderLumenIconSvg(name)
+
+      if (svg !== this.innerHTML) {
+        this.innerHTML = svg
+      }
+    }
+
+    if (isDecorative) {
+      this.setAttribute('aria-hidden', 'true')
+
+      this.removeAttribute('aria-label')
+
+      this.removeAttribute('role')
+    } else {
+      this.removeAttribute('aria-hidden')
+
+      this.setAttribute('aria-label', label)
+
+      this.setAttribute('role', 'img')
+    }
+  }
+}
+
 class LumenDialogBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private lastTrigger: HTMLElement | undefined
@@ -4178,6 +4237,7 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
+  Icon: LumenIconBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
   Select: LumenSelectBehaviorElement,
   Sonner: LumenSonnerBehaviorElement,
@@ -4276,6 +4336,7 @@ export const LumenDropdownMenuElement = elementClasses.DropdownMenu
 export const LumenEmptyElement = elementClasses.Empty
 export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
+export const LumenIconElement = elementClasses.Icon
 export const LumenInputElement = elementClasses.Input
 export const LumenInputGroupElement = elementClasses.InputGroup
 export const LumenInputOTPElement = elementClasses.InputOTP

@@ -17,6 +17,7 @@ import {
   enhanceLumenSchedules,
   LumenButtonElement,
   LumenCardElement,
+  LumenIconElement,
   LumenToast
 } from './index.js'
 
@@ -68,6 +69,7 @@ describe('@santi020k/lumen-elements', () => {
 
     expect(customElements.get('lumen-button')).toBe(LumenButtonElement)
     expect(customElements.get('lumen-card')).toBe(LumenCardElement)
+    expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
   })
 
   test('applies primitive classes when elements connect', () => {
@@ -80,6 +82,23 @@ describe('@santi020k/lumen-elements', () => {
     expect(button.getAttribute('role')).toBe('button')
     expect(button.tabIndex).toBe(0)
     expect([...card.classList]).toEqual(['ui-card'])
+  })
+
+  test('renders named Lucide icons with accessible labels', () => {
+    const icon = document.createElement('lumen-icon')
+
+    icon.setAttribute('name', 'search')
+    icon.setAttribute('label', 'Search')
+    document.body.append(icon)
+
+    expect([...icon.classList]).toEqual(['ui-icon'])
+    expect(icon.getAttribute('role')).toBe('img')
+    expect(icon.getAttribute('aria-label')).toBe('Search')
+    expect(icon.querySelector('svg')?.classList.contains('lucide-search')).toBe(true)
+
+    icon.setAttribute('decorative', '')
+    expect(icon.getAttribute('aria-hidden')).toBe('true')
+    expect(icon.hasAttribute('role')).toBe(false)
   })
 
   test('applies glass attribute classes', () => {
