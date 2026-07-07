@@ -27,6 +27,8 @@ type ToastVariant = string
 
 type DataTableSortDirection = 'ascending' | 'descending' | 'none'
 
+type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+
 export interface ToastAction {
   event?: string
   label?: string
@@ -71,10 +73,44 @@ const focusableSelector = [
   '[tabindex]:not([tabindex="-1"])'
 ].join(',')
 
+// cspell:ignore spinbutton
+const fieldControlSelector = [
+  'input:not([type="hidden"])',
+  'select',
+  'textarea',
+  '[contenteditable="true"]',
+  '[role="combobox"]',
+  '[role="listbox"]',
+  '[role="spinbutton"]',
+  '[role="textbox"]'
+].join(',')
+
+const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
+const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
+
+const formControlSelector = [
+  'input:not([type="hidden"])',
+  'select',
+  'textarea'
+].join(',')
+
 const selectOptionSelector = '[data-ui-select-option]'
 const defaultToastDuration = 5000
 const defaultToastMax = 5
 const toastCloseDelay = 240
+
+const validityMessageAttributes = [
+  ['valueMissing', 'data-error-required'],
+  ['typeMismatch', 'data-error-type'],
+  ['patternMismatch', 'data-error-pattern'],
+  ['tooShort', 'data-error-too-short'],
+  ['tooLong', 'data-error-too-long'],
+  ['rangeUnderflow', 'data-error-min'],
+  ['rangeOverflow', 'data-error-max'],
+  ['stepMismatch', 'data-error-step'],
+  ['badInput', 'data-error-bad-input'],
+  ['customError', 'data-error-custom']
+] as const
 
 const toastTimers = new WeakMap<HTMLElement, {
   cleanup: (() => void) | undefined
@@ -248,7 +284,7 @@ const elementConfigs = {
     tagName: 'lumen-dropdown-menu'
   },
   Empty: { attributeClasses: glassAttributeClasses('ui-empty--glass'), baseClassName: 'ui-empty', tagName: 'lumen-empty' },
-  Field: { attributeClasses: glassAttributeClasses('ui-field--glass'), baseClassName: 'ui-field', tagName: 'lumen-field' },
+  Field: { attributeClasses: glassAttributeClasses('ui-field--glass'), baseClassName: 'ui-field', defaults: { 'data-ui-field': '' }, tagName: 'lumen-field' },
   HoverCard: {
     attributeClasses: {
       glass: { strong: 'ui-hover-card--glass ui-glass-strong', subtle: 'ui-hover-card--glass ui-glass-subtle', true: 'ui-hover-card--glass' },
@@ -437,6 +473,215 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 
 const getOwnedTarget = (event: Event): Node | null =>
   event.target instanceof Node ? event.target : null
+
+const getScopedElements = <ScopedElement extends Element>(
+  scope: ParentNode,
+  selector: string
+): ScopedElement[] => {
+  const elements = [...scope.querySelectorAll<ScopedElement>(selector)]
+
+  if (scope instanceof Element && scope.matches(selector)) {
+    elements.unshift(scope as ScopedElement)
+  }
+
+  return elements
+}
+
+const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl =>
+  element instanceof HTMLInputElement ||
+  element instanceof HTMLSelectElement ||
+  element instanceof HTMLTextAreaElement
+
+const getFieldControl = (root: HTMLElement): HTMLElement | null => {
+  const controlId = root.dataset.uiFieldControl
+
+  if (controlId && hasDocument()) {
+    const control = document.getElementById(controlId)
+
+    if (control instanceof HTMLElement) return control
+  }
+
+  return root.querySelector<HTMLElement>(fieldControlSelector)
+}
+
+const getFieldDescriptionId = (element: HTMLElement): string => {
+  if (!element.id) {
+    element.id = createId('ui-field-description')
+  }
+
+  return element.id
+}
+
+const getFieldRoot = (control: HTMLElement): HTMLElement | null =>
+  control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+
+const getValidationMessage = (control: NativeFormControl, field: HTMLElement | null): string => {
+  for (const [validityKey, attributeName] of validityMessageAttributes) {
+    if (!control.validity[validityKey]) continue
+
+    return control.getAttribute(attributeName) ??
+      field?.getAttribute(attributeName) ??
+      control.validationMessage
+  }
+
+  return control.validationMessage
+}
+
+const setFieldValidity = (
+  control: NativeFormControl,
+  invalid: boolean,
+  message = ''
+): void => {
+  const field = getFieldRoot(control)
+
+  if (invalid) {
+    control.setAttribute('aria-invalid', 'true')
+
+    control.dataset.uiValidationInvalid = 'true'
+  } else if (control.dataset.uiValidationInvalid === 'true') {
+    control.removeAttribute('aria-invalid')
+
+    delete control.dataset.uiValidationInvalid
+  }
+
+  if (!field) return
+
+  field.dataset.invalid = String(invalid)
+
+  for (const error of field.querySelectorAll<HTMLElement>(fieldErrorSelector)) {
+    error.dataset.uiValidationErrorBound = 'true'
+
+    error.hidden = !invalid
+
+    error.textContent = invalid ? message : ''
+  }
+}
+
+const validateControl = (control: NativeFormControl, form: HTMLFormElement): boolean => {
+  form.dispatchEvent(new CustomEvent('ui:validate', {
+    bubbles: true,
+    detail: { control, form, value: control.value }
+  }))
+
+  const invalid = !control.validity.valid
+  const message = invalid ? getValidationMessage(control, getFieldRoot(control)) : ''
+
+  setFieldValidity(control, invalid, message)
+
+  return !invalid
+}
+
+const getFormControls = (form: HTMLFormElement): NativeFormControl[] =>
+  [...form.querySelectorAll<NativeFormControl>(formControlSelector)]
+    .filter(control => control.form === form && !control.disabled)
+
+const validateForm = (form: HTMLFormElement): NativeFormControl[] =>
+  getFormControls(form).filter(control => !validateControl(control, form))
+
+const initLumenFields = (scope: ParentNode): void => {
+  for (const root of getScopedElements<HTMLElement>(scope, '.ui-field, [data-ui-field]')) {
+    if (root.dataset.uiFieldBound === 'true') continue
+
+    const control = getFieldControl(root)
+
+    if (!control) continue
+
+    root.dataset.uiFieldBound = 'true'
+
+    const existingIds = control.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? []
+    const configuredIds = root.dataset.uiFieldDescribedby?.trim().split(/\s+/) ?? []
+
+    const descriptionIds = [...root.querySelectorAll<HTMLElement>(fieldDescriptionSelector)]
+      .map(element => getFieldDescriptionId(element))
+
+    const describedBy = [...new Set([...existingIds, ...configuredIds, ...descriptionIds].filter(Boolean))]
+
+    if (describedBy.length) {
+      control.setAttribute('aria-describedby', describedBy.join(' '))
+    }
+  }
+}
+
+const initLumenForms = (scope: ParentNode): void => {
+  for (const form of getScopedElements<HTMLFormElement>(scope, 'form[data-ui-form]')) {
+    if (form.dataset.uiFormBound === 'true') continue
+
+    form.dataset.uiFormBound = 'true'
+
+    form.noValidate = true
+
+    form.addEventListener('focusout', event => {
+      if (!isNativeFormControl(event.target) || event.target.form !== form) return
+
+      const valid = validateControl(event.target, form)
+
+      form.dispatchEvent(new CustomEvent(valid ? 'ui:valid' : 'ui:invalid', {
+        bubbles: true,
+        detail: valid
+          ? { control: event.target, form }
+          : { control: event.target, controls: [event.target], form }
+      }))
+    })
+
+    form.addEventListener('submit', event => {
+      const invalidControls = validateForm(form)
+
+      if (invalidControls.length) {
+        event.preventDefault()
+
+        const firstInvalid = invalidControls[0]
+
+        if (!firstInvalid) return
+
+        form.dispatchEvent(new CustomEvent('ui:invalid', {
+          bubbles: true,
+          detail: { control: firstInvalid, controls: invalidControls, form }
+        }))
+
+        firstInvalid.focus({ preventScroll: true })
+
+        firstInvalid.reportValidity()
+
+        return
+      }
+
+      form.dispatchEvent(new CustomEvent('ui:valid', {
+        bubbles: true,
+        detail: { controls: getFormControls(form), form }
+      }))
+    })
+  }
+}
+
+export const enhanceLumenForms = (
+  scope: ParentNode = document
+): void => {
+  initLumenFields(scope)
+
+  initLumenForms(scope)
+}
+
+const installFormController = (): void => {
+  if (!hasDocument() || document.documentElement.dataset.uiElementsFormsBound === 'true') return
+
+  document.documentElement.dataset.uiElementsFormsBound = 'true'
+
+  enhanceLumenForms(document)
+
+  if (typeof MutationObserver === 'undefined') return
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof Element || node instanceof DocumentFragment) {
+          enhanceLumenForms(node)
+        }
+      }
+    }
+  })
+
+  observer.observe(document.documentElement, { childList: true, subtree: true })
+}
 
 const getLoopedIndex = (
   key: string,
@@ -2512,6 +2757,8 @@ export const defineLumenElements = (
   }
 
   installToastController()
+
+  installFormController()
 }
 
 export const lumenElementDefinitions = elementDefinitions

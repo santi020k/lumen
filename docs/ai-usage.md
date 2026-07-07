@@ -86,9 +86,9 @@ export function SubscribeForm() {
 
 Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
 interactive behavior parity for DataTable, Dialog, Popover, DropdownMenu, Tabs, Select,
-ThemeBuilder, Toast, Tooltip, and VirtualList: selection, theme, and range events, ARIA state,
-roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native select form
-participation, and the same toast controller events as the Astro runtime.
+ThemeBuilder, Toast, Tooltip, forms, and VirtualList: selection, validation, theme, and range
+events, ARIA state, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping,
+native select form participation, and the same toast controller events as the Astro runtime.
 
 ```html
 <script type="module">
@@ -165,7 +165,9 @@ The shared catalog includes:
   `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or
   `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call
   `control.setCustomValidity(message)` before the runtime reads validity, and listen for
-  `ui:invalid` or `ui:valid` on the form for submission state.
+  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered
+  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`
+  to get the same control props, CustomEvents, and error slot updates.
 - Use `Sonner` plus `Toast` for transient feedback. Static `<Toast>` markup works without
   JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with
   `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,
@@ -227,9 +229,9 @@ lumen install
 ```
 
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
-or `--target elements` for a custom-elements registration helper. Bundled recipes also accept
-`--target astro`, `--target react`, and `--target elements`; external registry inline files keep
-their authored paths and sources.
+or `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,
+`--target react`, and `--target elements`; external registry inline files keep their authored paths
+and sources.
 
 Before inventing a wrapper or custom class pattern, check the component source in
 `packages/astro/components`. Astro is the reference implementation for props, class names, data

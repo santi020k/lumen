@@ -4,6 +4,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 
 import {
   defineLumenElements,
+  enhanceLumenForms,
   LumenButtonElement,
   LumenCardElement,
   LumenToast} from './index.js'
@@ -279,6 +280,61 @@ describe('@santi020k/lumen-elements', () => {
     expect(select?.value).toBe('business')
     expect(new FormData(document.querySelector<HTMLFormElement>('#billing')!).get('plan')).toBe('business')
     expect(trigger?.textContent).toBe('Business')
+  })
+
+  test('forms reflect native validation into field errors and events', () => {
+    const events: string[] = []
+
+    document.body.innerHTML = `
+      <form data-ui-form id="signup">
+        <lumen-field>
+          <label for="email">Email</label>
+          <input id="email" name="email" required data-error-required="Email required" />
+          <p data-ui-field-error hidden></p>
+        </lumen-field>
+        <button type="submit">Submit</button>
+      </form>
+    `
+
+    enhanceLumenForms(document)
+
+    const form = document.querySelector<HTMLFormElement>('#signup')
+    const input = document.querySelector<HTMLInputElement>('#email')
+    const error = document.querySelector<HTMLElement>('[data-ui-field-error]')
+
+    form?.addEventListener('ui:validate', event => {
+      const detail = (event as CustomEvent<{ control: HTMLInputElement }>).detail
+
+      events.push(`validate:${detail.control.id}`)
+    })
+
+    form?.addEventListener('ui:invalid', event => {
+      const detail = (event as CustomEvent<{ controls: HTMLInputElement[] }>).detail
+
+      events.push(`invalid:${detail.controls.length}`)
+    })
+
+    form?.addEventListener('ui:valid', () => {
+      events.push('valid')
+    })
+
+    const submitPrevented = !form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+
+    expect(submitPrevented).toBe(true)
+    expect(input?.getAttribute('aria-invalid')).toBe('true')
+    expect(input?.getAttribute('aria-describedby')).toContain(error?.id)
+    expect(error?.hidden).toBe(false)
+    expect(error?.textContent).toBe('Email required')
+    expect(events).toEqual(['validate:email', 'invalid:1'])
+
+    if (input) {
+      input.value = 'me@example.com'
+      input.dispatchEvent(new Event('focusout', { bubbles: true }))
+    }
+
+    expect(input?.hasAttribute('aria-invalid')).toBe(false)
+    expect(error?.hidden).toBe(true)
+    expect(events).toEqual(['validate:email', 'invalid:1', 'validate:email', 'valid'])
   })
 
   test('data table selects rows, submits values, and sorts columns', () => {

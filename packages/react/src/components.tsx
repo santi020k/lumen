@@ -868,11 +868,31 @@ export const Empty = ({ className, glass = false, ...props }: EmptyProps) => (
 )
 
 export interface FieldProps extends ComponentPropsWithoutRef<'div'> {
+  controlId?: string
+  describedBy?: string
   glass?: LumenGlassProp
 }
-export const Field = ({ className, glass = false, ...props }: FieldProps) => (
-  <div className={composeClassName('ui-field', glassClass('ui-field', glass), className)} {...props} />
-)
+export const Field = ({
+  'aria-describedby': ariaDescribedby,
+  className,
+  controlId,
+  describedBy,
+  glass = false,
+  ...props
+}: FieldProps) => {
+  const fieldDescribedBy = [ariaDescribedby, describedBy].filter(Boolean).join(' ') || undefined
+
+  return (
+    <div
+      aria-describedby={ariaDescribedby}
+      className={composeClassName('ui-field', glassClass('ui-field', glass), className)}
+      data-ui-field
+      data-ui-field-control={controlId}
+      data-ui-field-describedby={fieldDescribedBy}
+      {...props}
+    />
+  )
+}
 
 export interface HoverCardProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}
 

@@ -942,6 +942,231 @@ export const useSelect = ({
 }
 /* eslint-enable complexity */
 
+const fieldControlSelector = [
+  'input:not([type="hidden"])',
+  'select',
+  'textarea',
+  '[contenteditable="true"]',
+  '[role="combobox"]',
+  '[role="listbox"]',
+  '[role="spinbutton"]',
+  '[role="textbox"]'
+].join(',')
+
+const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
+const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
+
+const formControlSelector = [
+  'input:not([type="hidden"])',
+  'select',
+  'textarea'
+].join(',')
+
+const validityMessageAttributes = [
+  ['valueMissing', 'data-error-required'],
+  ['typeMismatch', 'data-error-type'],
+  ['patternMismatch', 'data-error-pattern'],
+  ['tooShort', 'data-error-too-short'],
+  ['tooLong', 'data-error-too-long'],
+  ['rangeUnderflow', 'data-error-min'],
+  ['rangeOverflow', 'data-error-max'],
+  ['stepMismatch', 'data-error-step'],
+  ['badInput', 'data-error-bad-input'],
+  ['customError', 'data-error-custom']
+] as const
+
+const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl =>
+  element instanceof HTMLInputElement ||
+  element instanceof HTMLSelectElement ||
+  element instanceof HTMLTextAreaElement
+
+const getFieldRoot = (control: HTMLElement): HTMLElement | null =>
+  control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+
+const getValidationMessage = (control: NativeFormControl, field: HTMLElement | null): string => {
+  for (const [validityKey, attributeName] of validityMessageAttributes) {
+    if (!control.validity[validityKey]) continue
+
+    return control.getAttribute(attributeName) ??
+      field?.getAttribute(attributeName) ??
+      control.validationMessage
+  }
+
+  return control.validationMessage
+}
+
+const getFieldDescriptionId = (element: HTMLElement): string => {
+  if (!element.id) {
+    element.id = `ui-field-description-${Math.random().toString(36).slice(2)}`
+  }
+
+  return element.id
+}
+
+const syncFieldDescription = (field: HTMLElement): void => {
+  const controlId = field.dataset.uiFieldControl
+
+  const control = controlId
+    ? document.getElementById(controlId)
+    : field.querySelector<HTMLElement>(fieldControlSelector)
+
+  if (!(control instanceof HTMLElement)) return
+
+  const existingIds = control.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? []
+  const configuredIds = field.dataset.uiFieldDescribedby?.trim().split(/\s+/) ?? []
+
+  const descriptionIds = [...field.querySelectorAll<HTMLElement>(fieldDescriptionSelector)]
+    .map(element => getFieldDescriptionId(element))
+
+  const describedBy = [...new Set([...existingIds, ...configuredIds, ...descriptionIds].filter(Boolean))]
+
+  if (describedBy.length) {
+    control.setAttribute('aria-describedby', describedBy.join(' '))
+  }
+}
+
+export const useFormValidation = ({
+  onInvalid,
+  onValid,
+  onValidate
+}: FormValidationOptions = {}): FormValidationController => {
+  const formRef = useRef<HTMLFormElement | null>(null)
+
+  const setFieldValidity = useCallback<FormValidationController['setFieldValidity']>((control, invalid, message = '') => {
+    const field = getFieldRoot(control)
+
+    if (invalid) {
+      control.setAttribute('aria-invalid', 'true')
+
+      control.dataset.uiValidationInvalid = 'true'
+    } else if (control.dataset.uiValidationInvalid === 'true') {
+      control.removeAttribute('aria-invalid')
+
+      delete control.dataset.uiValidationInvalid
+    }
+
+    if (!field) return
+
+    field.dataset.invalid = String(invalid)
+
+    for (const error of field.querySelectorAll<HTMLElement>(fieldErrorSelector)) {
+      error.dataset.uiValidationErrorBound = 'true'
+
+      error.hidden = !invalid
+
+      error.textContent = invalid ? message : ''
+    }
+  }, [])
+
+  const getControls = useCallback<FormValidationController['getControls']>((form = formRef.current) => {
+    if (!form) return []
+
+    return [...form.querySelectorAll<NativeFormControl>(formControlSelector)]
+      .filter(control => control.form === form && !control.disabled)
+  }, [])
+
+  const validateControl = useCallback<FormValidationController['validateControl']>((control, form = formRef.current ?? control.form) => {
+    if (!form) return true
+
+    const validateDetail = { control, form, value: control.value }
+
+    form.dispatchEvent(new CustomEvent('ui:validate', {
+      bubbles: true,
+      detail: validateDetail
+    }))
+
+    onValidate?.(validateDetail)
+
+    const invalid = !control.validity.valid
+    const message = invalid ? getValidationMessage(control, getFieldRoot(control)) : ''
+
+    setFieldValidity(control, invalid, message)
+
+    return !invalid
+  }, [onValidate, setFieldValidity])
+
+  const validateForm = useCallback<FormValidationController['validateForm']>((form = formRef.current) => {
+    if (!form) return []
+
+    return getControls(form).filter(control => !validateControl(control, form))
+  }, [getControls, validateControl])
+
+  const emitState = useCallback((
+    name: 'ui:invalid' | 'ui:valid',
+    detail: FormValidationStateDetail
+  ): void => {
+    detail.form.dispatchEvent(new CustomEvent(name, {
+      bubbles: true,
+      detail
+    }))
+
+    if (name === 'ui:invalid') {
+      onInvalid?.(detail)
+    } else {
+      onValid?.(detail)
+    }
+  }, [onInvalid, onValid])
+
+  const syncFields = useCallback((form: HTMLFormElement): void => {
+    for (const field of form.querySelectorAll<HTMLElement>('.ui-field, [data-ui-field]')) {
+      syncFieldDescription(field)
+    }
+  }, [])
+
+  const formProps: LumenProps<'form'> = {
+    'data-ui-form': true,
+    noValidate: true,
+    onBlur: (event) => {
+      const form = event.currentTarget
+
+      syncFields(form)
+
+      if (!isNativeFormControl(event.target) || event.target.form !== form) return
+
+      const valid = validateControl(event.target, form)
+
+      emitState(valid ? 'ui:valid' : 'ui:invalid', valid
+        ? { control: event.target, form }
+        : { control: event.target, controls: [event.target], form })
+    },
+    onSubmit: (event) => {
+      const form = event.currentTarget
+
+      syncFields(form)
+
+      const invalidControls = validateForm(form)
+
+      if (invalidControls.length) {
+        event.preventDefault()
+
+        const firstInvalid = invalidControls[0]
+
+        if (!firstInvalid) return
+
+        emitState('ui:invalid', { control: firstInvalid, controls: invalidControls, form })
+
+        firstInvalid.focus({ preventScroll: true })
+
+        firstInvalid.reportValidity()
+
+        return
+      }
+
+      emitState('ui:valid', { controls: getControls(form), form })
+    },
+    ref: formRef
+  }
+
+  return {
+    formProps,
+    formRef,
+    getControls,
+    setFieldValidity,
+    validateControl,
+    validateForm
+  }
+}
+
 export const useThemeBuilder = ({
   accentHue,
   defaultAccentHue = 54,

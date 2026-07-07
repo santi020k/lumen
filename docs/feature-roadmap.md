@@ -47,15 +47,16 @@ surface; React and Web Components expose the same class and data contracts.
 - Documentation surface: component pages include docs search, keyboard interaction notes, runtime
   event tables, and per-component API references where rows have been authored.
 - React behavior hooks: `useDialog`, `usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`,
-  `useToast`, and `useTooltip` expose the main behavior contracts for React apps.
+  `useFormValidation`, `useToast`, and `useTooltip` expose the main behavior contracts for React
+  apps.
 - Rich-text adapter guidance: `docs/ai-usage.md` documents the event-bridge pattern for Tiptap,
   ProseMirror, Lexical, or Markdown engines without adding a heavy editor runtime to Lumen.
 
 ## Next
 
 - Remaining Web Components behavior parity: `packages/elements` now covers DataTable, Dialog,
-  Popover, DropdownMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, and VirtualList; Schedule,
-  forms, rich text, and other advanced runtimes still need equivalent client behavior.
+  Popover, DropdownMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms, and VirtualList;
+  Schedule, rich text, and other advanced runtimes still need equivalent client behavior.
 - Theme tooling polish: the docs theme playground now uses the public `ThemeBuilder` runtime; add
   import/check contrast flows when token review needs to go beyond generation and export.
 - Per-component API prop tables completeness: `apps/docs/src/data/docs.ts` uses a partial

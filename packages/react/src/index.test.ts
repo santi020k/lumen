@@ -14,6 +14,8 @@ import {
   DataTable,
   Dialog,
   type DialogProps,
+  Field,
+  type FieldProps,
   Input,
   type InputProps,
   lumenComponentNames,
@@ -21,6 +23,7 @@ import {
   type TableProps,
   ToastProvider,
   useDropdownMenu,
+  useFormValidation,
   usePopover,
   useSelect,
   useTabs,
@@ -165,6 +168,25 @@ describe('@santi020k/lumen-react', () => {
 
     expect(input.props.className).toBe('ui-input custom-input')
     expect(input.props.type).toBe('text')
+  })
+
+  test('exposes form validation and field contracts', () => {
+    const field = Field({
+      children: 'Email',
+      controlId: 'email',
+      describedBy: 'email-hint'
+    }) as ReactElement<FieldProps>
+    const fieldProps = field.props as FieldProps & Record<`data-${string}`, unknown>
+    const validation = withHookDispatcher(() => useFormValidation())
+
+    expect(fieldProps.className).toBe('ui-field')
+    expect(fieldProps['data-ui-field']).toBe(true)
+    expect(fieldProps['data-ui-field-control']).toBe('email')
+    expect(fieldProps['data-ui-field-describedby']).toBe('email-hint')
+    expect(validation.formProps['data-ui-form']).toBe(true)
+    expect(validation.formProps.noValidate).toBe(true)
+    expect(validation.validateForm).toBeTypeOf('function')
+    expect(validation.validateControl).toBeTypeOf('function')
   })
 
   test('renders data display runtime contracts', () => {
