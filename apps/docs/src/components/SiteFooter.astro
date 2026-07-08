@@ -1,0 +1,91 @@
+---
+import { Icon } from '@santi020k/lumen-astro'
+
+import LumenLogo from './LumenLogo.astro'
+
+const footerGroups = [
+  {
+    links: [
+      { href: '/docs', label: 'Start' },
+      { href: '/docs/components', label: 'Components' },
+      { href: '/docs/icons', label: 'Icons' },
+      { href: '/docs/theme-playground', label: 'Theme playground' }
+    ],
+    title: 'Explore'
+  },
+  {
+    links: [
+      { href: '/docs/frameworks/astro', label: 'Astro' },
+      { href: '/docs/frameworks/react', label: 'React' },
+      { href: '/docs/frameworks/elements', label: 'Elements' },
+      { href: '/docs/figma', label: 'Figma' }
+    ],
+    title: 'Use Lumen'
+  }
+] as const
+
+const resourceLinks = [
+  {
+    href: 'https://github.com/santi020k/lumen',
+    icon: 'github',
+    label: 'GitHub'
+  },
+  {
+    href: 'https://www.npmjs.com/package/@santi020k/lumen',
+    icon: 'package',
+    label: 'npm'
+  }
+] as const
+
+const currentYear = new Date().getFullYear()
+---
+
+<footer class="docs-site-footer">
+  <div class="
+    docs-site-footer__inner mx-auto w-full max-w-7xl px-5 py-10
+    sm:px-8
+  ">
+    <div class="docs-site-footer__brand">
+      <a class="docs-site-footer__logo text-ink no-underline" href="/">
+        <LumenLogo markClass="size-9" />
+      </a>
+      <p>
+        Multi-framework UI primitives with semantic tokens, accessible patterns,
+        and a reference Astro implementation.
+      </p>
+      <div class="docs-site-footer__social" aria-label="Project resources">
+        {resourceLinks.map(link => (
+          <a
+            aria-label={link.label}
+            href={link.href}
+            rel="noopener noreferrer"
+            target="_blank"
+            title={link.label}
+          >
+            <Icon name={link.icon} size="sm" />
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <nav class="docs-site-footer__nav" aria-label="Footer">
+      {footerGroups.map(group => (
+        <section>
+          <h2>{group.title}</h2>
+          <ul>
+            {group.links.map(link => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </nav>
+
+    <div class="docs-site-footer__meta">
+      <p>© {currentYear} Lumen UI.</p>
+      <p>Built with its own primitives.</p>
+    </div>
+  </div>
+</footer>

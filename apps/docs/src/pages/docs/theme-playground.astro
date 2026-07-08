@@ -70,6 +70,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
   <ThemeBuilder
     class="theme-playground"
+    data-theme-playground
     data-ui-theme-target="#theme-playground-preview"
     glass="subtle"
   >
@@ -314,11 +315,39 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
       <Button data-ui-theme-export type="button">Copy CSS</Button>
     </Card>
   </ThemeBuilder>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-theme-playground]')
+
+      if (!(root instanceof HTMLElement)) return
+
+      const syncSchemeWithPageTheme = () => {
+        const scheme = document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
+
+        for (const button of root.querySelectorAll('[data-ui-theme-scheme]')) {
+          const isPressed = button.getAttribute('data-ui-theme-scheme') === scheme
+
+          button.setAttribute('aria-pressed', String(isPressed))
+
+          button.classList.toggle('ui-button--secondary', isPressed)
+
+          button.classList.toggle('ui-button--outline', !isPressed)
+        }
+      }
+
+      syncSchemeWithPageTheme()
+    })()
+  </script>
 </DocsLayout>
 
 
 <style>
   .theme-playground {
+    --theme-playground-panel: hsl(var(--surface-muted) / 0.78);
+    --theme-playground-panel-strong: hsl(var(--surface) / 0.9);
+    --theme-playground-border: hsl(var(--line));
+    --theme-playground-shadow: var(--ui-shadow-sm);
     display: grid;
     gap: 1rem;
   }
@@ -327,6 +356,9 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
   .theme-playground__export {
     display: grid;
     gap: 1rem;
+    border-color: var(--theme-playground-border);
+    background: var(--theme-playground-panel);
+    box-shadow: var(--theme-playground-shadow);
     padding: 1rem;
   }
 
@@ -476,13 +508,14 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     display: grid;
     gap: 1rem;
     overflow: hidden;
-    border: 1px solid hsl(var(--line));
+    border: 1px solid var(--theme-playground-border);
     border-radius: 0.5rem;
     background:
       linear-gradient(135deg, hsl(var(--brand) / 0.14), transparent 35%),
       linear-gradient(315deg, hsl(var(--accent) / 0.14), transparent 38%),
       hsl(var(--canvas));
     color: hsl(var(--ink));
+    box-shadow: var(--theme-playground-shadow);
     padding: 1rem;
   }
 
@@ -550,6 +583,69 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 0.8125rem;
     line-height: 1.6;
+  }
+
+  :global(:root[data-theme="dark"]) .theme-playground,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground {
+    --theme-playground-panel: hsl(260 20% 11% / 0.78);
+    --theme-playground-panel-strong: hsl(260 20% 13% / 0.88);
+    --theme-playground-border: hsl(260 18% 38% / 0.72);
+    --theme-playground-shadow:
+      inset 0 1px 0 hsl(260 45% 96% / 0.08),
+      0 18px 48px hsl(260 55% 3% / 0.42);
+  }
+
+  :global(:root[data-theme="dark"]) .theme-playground__controls,
+  :global(:root[data-theme="dark"]) .theme-playground__export,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground__controls,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground__export,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground__controls,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground__export {
+    background:
+      linear-gradient(180deg, hsl(260 38% 92% / 0.055), transparent 42%),
+      var(--theme-playground-panel);
+  }
+
+  :global(:root[data-theme="dark"]) .theme-playground__preview,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground__preview,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground__preview {
+    border-color: hsl(260 18% 44% / 0.82);
+    background:
+      linear-gradient(135deg, hsl(var(--brand) / 0.18), transparent 38%),
+      linear-gradient(315deg, hsl(var(--accent) / 0.16), transparent 42%),
+      linear-gradient(180deg, hsl(var(--canvas)), hsl(var(--surface-muted) / 0.92));
+    box-shadow:
+      inset 0 1px 0 hsl(260 45% 96% / 0.18),
+      0 20px 54px hsl(260 55% 3% / 0.36);
+  }
+
+  :global(:root[data-theme="dark"]) .theme-playground__preview-card,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground__preview-card,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground__preview-card {
+    border-color: hsl(var(--line) / 0.82);
+    background:
+      linear-gradient(180deg, hsl(var(--ink) / 0.07), transparent 44%),
+      hsl(var(--surface) / 0.84);
+  }
+
+  :global(:root[data-theme="dark"]) .theme-playground__swatches > span,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground__swatches > span,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground__swatches > span {
+    border-color: hsl(var(--line) / 0.82);
+    background: hsl(var(--surface) / 0.82);
+    color: hsl(var(--ink-soft));
+  }
+
+  :global(:root[data-theme="dark"]) .theme-playground__css,
+  :global(:root[data-theme="lumen-dark"]) .theme-playground__css,
+  :global(:root[data-theme="santi020k-dark"]) .theme-playground__css {
+    border-color: hsl(260 18% 34% / 0.9);
+    background: hsl(260 24% 6% / 0.96);
+    box-shadow:
+      inset 0 1px 0 hsl(260 45% 96% / 0.06),
+      inset 0 0 0 1px hsl(260 45% 96% / 0.025);
+    color: hsl(260 18% 91%);
   }
 
   @media (min-width: 1024px) {

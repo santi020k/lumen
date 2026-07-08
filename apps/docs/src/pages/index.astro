@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Field,
+  Icon,
   Input,
   Label,
   Marker,
@@ -24,9 +25,27 @@ const componentCount = lumenComponentNames.length
 const installCommand = 'pnpm add @santi020k/lumen-astro'
 
 const highlights = [
-  ['Semantic first', 'Real buttons, dialogs, tables, and forms. Accessibility comes from the markup, not a wrapper div.'],
-  ['One class contract', 'Every target shares the same ui-* stylesheet driven by design tokens, so screens look identical across frameworks.'],
-  ['No framework runtime', 'A single progressive-enhancement script powers dialogs, menus, tabs, and toasts in about 4 KB.']
+  {
+    description: 'Real buttons, dialogs, tables, and forms. Accessibility comes from the markup, not a wrapper div.',
+    icon: 'shield-check',
+    metric: 'A11y',
+    tone: 'brand',
+    title: 'Semantic first'
+  },
+  {
+    description: 'Every target shares the same ui-* stylesheet driven by design tokens, so screens look identical across frameworks.',
+    icon: 'layers-3',
+    metric: '1 CSS',
+    tone: 'accent',
+    title: 'One class contract'
+  },
+  {
+    description: 'A single progressive-enhancement script powers dialogs, menus, tabs, and toasts in about 4 KB.',
+    icon: 'zap',
+    metric: '~4 KB',
+    tone: 'warning',
+    title: 'No framework runtime'
+  }
 ] as const
 
 const featured = componentDocs.slice(0, 12)
@@ -42,11 +61,11 @@ const featured = componentDocs.slice(0, 12)
     sm:px-8
   ">
     <section class="
-      grid gap-10
+      docs-home-hero grid gap-10
       lg:grid-cols-[1.05fr_0.95fr] lg:items-center
     ">
       <div class="space-y-6">
-        <div class="flex flex-wrap gap-2">
+        <div class="docs-home-eyebrow flex flex-wrap gap-2">
           <Badge>{componentCount} components</Badge>
           <Badge variant="secondary">Astro</Badge>
           <Badge variant="secondary">React</Badge>
@@ -62,21 +81,28 @@ const featured = componentDocs.slice(0, 12)
           standards-based custom elements.
         </p>
         <div class="flex flex-wrap gap-3">
-          <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">Get started</a>
-          <a class="ui-button ui-button--lg ui-button--secondary no-underline" href="/docs/components">Browse components</a>
+          <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">
+            Get started
+            <Icon name="arrow-right" size="sm" />
+          </a>
+          <a class="ui-button ui-button--lg ui-button--secondary no-underline" href="/docs/components">
+            <Icon name="blocks" size="sm" />
+            Browse components
+          </a>
         </div>
         <button
           class="
-            inline-flex cursor-pointer items-center gap-2.5 rounded-md border
-            border-line px-3 py-2 font-mono text-sm text-ink-muted
-            transition-colors
+            docs-home-install-command inline-flex cursor-pointer items-center
+            gap-2.5 rounded-md border border-line px-3 py-2 font-mono text-sm
+            text-ink-muted transition-colors
             hover:border-ink-muted hover:text-ink
           "
           data-copy-command={installCommand}
           type="button"
         >
+          <Icon name="terminal" size="sm" />
           <span aria-hidden="true">{installCommand}</span>
-          <span class="text-xs font-bold" data-copy-feedback>Copy</span>
+          <span class="docs-home-install-command__action text-xs font-bold" data-copy-feedback>Copy</span>
           <span class="sr-only">Copy install command: {installCommand}</span>
         </button>
       </div>
@@ -104,7 +130,7 @@ const featured = componentDocs.slice(0, 12)
           <Switch name="hero-updates" checked /> Send me release notes
         </label>
         <Progress value={72} aria-label="Onboarding progress" />
-        <div class="flex gap-3">
+        <div class="flex flex-wrap gap-3">
           <Button>Create workspace</Button>
           <Button variant="ghost">Skip for now</Button>
         </div>
@@ -112,18 +138,29 @@ const featured = componentDocs.slice(0, 12)
     </section>
 
     <section class="
-      grid gap-4
+      docs-home-highlights grid gap-4
       md:grid-cols-3
     " aria-label="Why Lumen">
-      {highlights.map(([title, description]) => (
-        <Card class="space-y-2 p-6" variant="muted">
-          <h2 class="text-base font-bold text-ink">{title}</h2>
-          <p class="text-sm/6 text-ink-soft">{description}</p>
+      {highlights.map(highlight => (
+        <Card
+          as="article"
+          class="docs-home-highlight h-full p-6"
+          data-tone={highlight.tone}
+          variant="interactive"
+        >
+          <div class="docs-home-highlight__top">
+            <span class="docs-home-highlight__icon">
+              <Icon name={highlight.icon} />
+            </span>
+            <span class="docs-home-highlight__metric">{highlight.metric}</span>
+          </div>
+          <h2 class="text-base font-bold text-ink">{highlight.title}</h2>
+          <p class="text-sm/6 text-ink-soft">{highlight.description}</p>
         </Card>
       ))}
     </section>
 
-    <section class="space-y-6" aria-labelledby="usage-title">
+    <section class="docs-home-section space-y-6" aria-labelledby="usage-title">
       <div class="space-y-2">
         <p class="text-sm font-semibold tracking-[0.22em] text-brand uppercase">Proof, not promises</p>
         <h2 class="text-3xl font-bold text-ink" id="usage-title">
@@ -137,7 +174,7 @@ const featured = componentDocs.slice(0, 12)
       <FrameworkSetupTabs setups={frameworkSetups} />
     </section>
 
-    <section class="space-y-6" aria-labelledby="catalog-title">
+    <section class="docs-home-section space-y-6" aria-labelledby="catalog-title">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div class="space-y-2">
           <p class="
@@ -153,21 +190,27 @@ const featured = componentDocs.slice(0, 12)
         </div>
         <a class="
           ui-button ui-button--default-size ui-button--outline no-underline
-        " href="/docs/components">See all {componentCount}</a>
+        " href="/docs/components">
+          See all {componentCount}
+          <Icon name="arrow-up-right" size="sm" />
+        </a>
       </div>
       <div class="
-        grid gap-4
+        docs-home-catalog-grid grid gap-4
         md:grid-cols-2
         xl:grid-cols-4
       ">
         {featured.map(component => (
           <a class="no-underline" href={`/docs/components/${toSlug(component.name)}`}>
-            <Card class="h-full space-y-2 p-5" variant="interactive">
+            <Card class="docs-home-component-card h-full space-y-2 p-5" variant="interactive">
               <div class="flex items-center justify-between gap-3">
                 <h3 class="text-sm font-bold text-ink">{component.name}</h3>
                 {component.glass && <Badge variant="outline">Glass</Badge>}
               </div>
               <p class="text-sm/6 text-ink-soft">{component.summary}</p>
+              <span class="docs-home-component-card__arrow" aria-hidden="true">
+                <Icon name="arrow-up-right" size="sm" />
+              </span>
             </Card>
           </a>
         ))}
@@ -176,11 +219,17 @@ const featured = componentDocs.slice(0, 12)
 
     <Separator />
 
-    <section class="grid gap-6 text-center" aria-label="Get started">
+    <section class="docs-home-cta grid gap-6 text-center" aria-label="Get started">
       <h2 class="text-3xl font-bold text-ink">Start with the framework you already use.</h2>
       <div class="flex flex-wrap justify-center gap-3">
-        <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">Read the docs</a>
-        <a class="ui-button ui-button--lg ui-button--outline no-underline" href="https://github.com/santi020k/lumen">Star on GitHub</a>
+        <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">
+          <Icon name="book-open" size="sm" />
+          Read the docs
+        </a>
+        <a class="ui-button ui-button--lg ui-button--outline no-underline" href="https://github.com/santi020k/lumen">
+          <Icon name="github" size="sm" />
+          Star on GitHub
+        </a>
       </div>
     </section>
   </main>

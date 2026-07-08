@@ -1,40 +1,65 @@
 ---
-import { Badge, Button } from '@santi020k/lumen-astro'
+import { Badge, Button, Icon } from '@santi020k/lumen-astro'
 
 import LumenLogo from './LumenLogo.astro'
+
+const currentPath = Astro.url.pathname
+
+const navLinks = [
+  {
+    href: '/docs',
+    icon: 'book-open',
+    isActive: currentPath === '/docs' || (
+      currentPath.startsWith('/docs/') && !currentPath.startsWith('/docs/components')
+    ),
+    label: 'Docs'
+  },
+  {
+    href: '/docs/components',
+    icon: 'blocks',
+    isActive: currentPath.startsWith('/docs/components'),
+    label: 'Components'
+  }
+] as const
 ---
 
 <header class="docs-site-header">
   <div class="
-    docs-site-header__inner mx-auto flex w-full max-w-7xl flex-wrap items-center
-    justify-between gap-4 px-5 py-3
+    docs-site-header__inner mx-auto flex w-full max-w-7xl items-center
+    justify-between gap-3 px-5 py-3
     sm:px-8
   ">
-    <a class="flex items-center gap-2.5 text-ink no-underline" href="/">
+    <a class="docs-site-header__brand text-ink no-underline" href="/">
       <LumenLogo markClass="size-8" />
       <Badge variant="outline">v0.1</Badge>
     </a>
     <nav
       class="
-        flex max-w-full flex-wrap items-center justify-start gap-2 text-sm
-        font-bold
-        sm:ml-auto sm:justify-end
+        docs-site-header__nav flex max-w-full items-center justify-end gap-1
+        text-sm font-bold
       "
       aria-label="Site"
     >
-      <a class="
-        text-ink-soft no-underline
-        hover:text-ink
-      " href="/docs">Docs</a>
-      <a class="
-        text-ink-soft no-underline
-        hover:text-ink
-      " href="/docs/components">Components</a>
-      <a class="
-        text-ink-soft no-underline
-        hover:text-ink
-        max-sm:hidden
-      " href="https://github.com/santi020k/lumen">GitHub</a>
+      {navLinks.map(link => (
+        <a
+          class:list={[
+            'docs-site-header__link no-underline',
+            link.isActive && 'docs-site-header__link--active'
+          ]}
+          href={link.href}
+          aria-current={link.isActive ? 'page' : undefined}
+        >
+          <Icon name={link.icon} size="sm" />
+          <span>{link.label}</span>
+        </a>
+      ))}
+      <a
+        class="docs-site-header__github no-underline"
+        href="https://github.com/santi020k/lumen"
+      >
+        <Icon name="github" size="sm" />
+        <span>GitHub</span>
+      </a>
       <div class="ui-theme-controls" aria-label="Theme controls">
         <label class="sr-only" for="site-color-theme">Theme</label>
         <select

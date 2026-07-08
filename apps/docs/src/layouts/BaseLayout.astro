@@ -5,6 +5,7 @@ import '../styles/global.css'
 
 import { UIPrimitives } from '@santi020k/lumen-astro'
 
+import SiteFooter from '../components/SiteFooter.astro'
 import SiteHeader from '../components/SiteHeader.astro'
 import { getSocialImageUrl } from '../lib/social-image'
 
@@ -98,29 +99,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <UIPrimitives />
     <SiteHeader />
     <slot />
-    <footer class="border-t border-line">
-      <div class="
-        mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between
-        gap-3 px-5 py-6 text-sm text-ink-soft
-        sm:px-8
-      ">
-        <p>Lumen UI. Built with its own primitives.</p>
-        <div class="flex gap-4 font-bold">
-          <a class="
-            text-ink-soft no-underline
-            hover:text-ink
-          " href="/docs">Docs</a>
-          <a class="
-            text-ink-soft no-underline
-            hover:text-ink
-          " href="/docs/components">Components</a>
-          <a class="
-            text-ink-soft no-underline
-            hover:text-ink
-          " href="https://github.com/santi020k/lumen">GitHub</a>
-        </div>
-      </div>
-    </footer>
+    <SiteFooter />
   </body>
 </html>
 
