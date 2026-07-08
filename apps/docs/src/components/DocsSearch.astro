@@ -1,8 +1,6 @@
 ---
 import { SearchField } from '@santi020k/lumen-astro'
 
-import { docsSearchIndex } from '../data/search'
-
 interface Props {
   class?: string
   className?: string
@@ -21,7 +19,7 @@ const {
   resultsId = `${inputId}-results`
 } = Astro.props
 
-const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
+const searchIndexHref = '/docs-search.json'
 ---
 
 <div
@@ -33,6 +31,7 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
   ]}
   data-docs-search
   data-docs-search-id={optionIdPrefix}
+  data-docs-search-source={searchIndexHref}
 >
   <label class="sr-only" for={inputId}>Search docs</label>
   <SearchField
@@ -57,7 +56,6 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
     data-docs-search-results
     hidden
   ></div>
-  <script is:inline type="application/json" data-docs-search-index set:html={searchJson}></script>
 </div>
 
 <script>
@@ -77,16 +75,26 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
     results: HTMLElement
   }
 
-  const getDocsSearchIndex = (): SearchItem[] => {
-    const source = document.querySelector<HTMLScriptElement>('[data-docs-search-index]')
-
-    if (!source?.textContent) return []
-
-    try {
-      return JSON.parse(source.textContent) as SearchItem[]
-    } catch {
-      return []
+  declare global {
+    interface Window {
+      __lumenDocsSearchIndex?: Promise<SearchItem[]>
     }
+  }
+
+  const getDocsSearchSource = (): string => (
+    document.querySelector<HTMLElement>('[data-docs-search-source]')?.dataset.docsSearchSource ?? '/docs-search.json'
+  )
+
+  const getDocsSearchIndex = (): Promise<SearchItem[]> => {
+    if (!window.__lumenDocsSearchIndex) {
+      window.__lumenDocsSearchIndex = fetch(getDocsSearchSource(), {
+        headers: { accept: 'application/json' }
+      })
+        .then(response => response.ok ? response.json() as Promise<SearchItem[]> : [])
+        .catch(() => [])
+    }
+
+    return window.__lumenDocsSearchIndex
   }
 
   const normalizeSearchText = (value: string): string =>
@@ -293,8 +301,6 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
   }
 
   const initDocsSearch = (): void => {
-    const index = getDocsSearchIndex()
-
     for (const root of document.querySelectorAll<HTMLElement>('[data-docs-search]')) {
       if (root.dataset.docsSearchBound === 'true') continue
 
@@ -309,15 +315,23 @@ const searchJson = JSON.stringify(docsSearchIndex).replaceAll('<', '\\u003c')
       const state: DocsSearchState = { activeIndex: -1, input, optionIdPrefix, results }
 
       input.addEventListener('input', () => {
-        renderSearchResults(state, index)
+        getDocsSearchIndex()
+          .then(index => renderSearchResults(state, index))
+          .catch(() => renderSearchResults(state, []))
       })
 
       input.addEventListener('focus', () => {
-        if (input.value.trim().length >= 2) renderSearchResults(state, index)
+        if (input.value.trim().length >= 2) {
+          getDocsSearchIndex()
+            .then(index => renderSearchResults(state, index))
+            .catch(() => renderSearchResults(state, []))
+        }
       })
 
       input.addEventListener('keydown', event => {
-        handleSearchKeyDown(event, state, index)
+        getDocsSearchIndex()
+          .then(index => handleSearchKeyDown(event, state, index))
+          .catch(() => handleSearchKeyDown(event, state, []))
       })
 
       document.addEventListener('click', event => {

@@ -41,7 +41,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:image:alt" content={title} />
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Lumen UI",
@@ -57,9 +57,6 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" />
     <title>{title}</title>
     <ClientRouter />
     <script is:inline>
