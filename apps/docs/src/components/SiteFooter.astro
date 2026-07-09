@@ -1,6 +1,7 @@
 ---
 import { Icon } from '@santi020k/lumen-astro'
 
+import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
 
 const footerGroups = [
@@ -29,6 +30,11 @@ const resourceLinks = [
     href: 'https://github.com/santi020k/lumen',
     icon: 'github',
     label: 'GitHub'
+  },
+  {
+    href: 'https://santi020k.com',
+    icon: 'house',
+    label: 'Santi020k'
   },
   {
     href: 'https://www.npmjs.com/package/@santi020k/lumen',
@@ -62,7 +68,9 @@ const currentYear = new Date().getFullYear()
             target="_blank"
             title={link.label}
           >
-            <Icon name={link.icon} size="sm" />
+            {link.icon === 'github'
+              ? <GitHubIcon />
+              : <Icon name={link.icon} size="sm" />}
           </a>
         ))}
       </div>

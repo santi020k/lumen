@@ -1,0 +1,383 @@
+---
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Field,
+  Icon,
+  Input,
+  Label,
+  Marker,
+  Progress,
+  Separator,
+  Switch,
+  Toggle,
+  ToggleGroup
+} from '@santi020k/lumen-astro'
+import { lumenColorTokenNames } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+import LumenLogo from './LumenLogo.astro'
+
+type HeadingLevel = 'h2' | 'h3'
+
+type MarkerVariant = 'default' | 'success' | 'warning' | 'danger'
+
+type SwatchMode = 'all' | 'featured'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  description?: string
+  eyebrow?: string
+  headingLevel?: HeadingLevel
+  markerVariant?: MarkerVariant
+  status?: string
+  swatchMode?: SwatchMode
+  title?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  description = 'Compose a workspace from accessible primitives, scoped tokens, and framework-neutral classes.',
+  eyebrow = 'Everything below is Lumen',
+  headingLevel = 'h2',
+  markerVariant = 'success',
+  status = 'Live',
+  swatchMode = 'featured',
+  title = 'Launch console',
+  ...rest
+} = Astro.props
+
+const HeadingTag = headingLevel
+const featuredSwatches = ['canvas', 'surface', 'surface-muted', 'brand', 'accent', 'success']
+const swatches = swatchMode === 'all' ? lumenColorTokenNames : featuredSwatches
+const rootClass = ['primitive-showcase', classProp, className].filter(Boolean).join(' ')
+---
+
+<Card class={rootClass} glass="strong" {...rest}>
+  <div class="primitive-showcase__header">
+    <div class="primitive-showcase__identity">
+      <span class="primitive-showcase__mark" aria-hidden="true">
+        <LumenLogo markClass="size-7" showText={false} />
+      </span>
+      <div>
+        <p>{eyebrow}</p>
+        <HeadingTag>{title}</HeadingTag>
+      </div>
+    </div>
+    <Marker variant={markerVariant}>{status}</Marker>
+  </div>
+
+  <p class="primitive-showcase__description">{description}</p>
+
+  <div class="primitive-showcase__workspace">
+    <div class="primitive-showcase__main">
+      <div class="primitive-showcase__toolbar">
+        <ToggleGroup aria-label="Launch cadence">
+          <Toggle>Preview</Toggle>
+          <Toggle pressed>Ship</Toggle>
+        </ToggleGroup>
+        <Badge variant="secondary">Astro</Badge>
+      </div>
+
+      <Field class="primitive-showcase__field">
+        <Label for="showcase-workspace-email">Workspace owner</Label>
+        <Input id="showcase-workspace-email" type="email" placeholder="you@example.com" />
+      </Field>
+
+      <div class="primitive-showcase__toggles">
+        <label>
+          <Switch name="showcase-audit" checked />
+          <span>Accessibility checks</span>
+        </label>
+        <label>
+          <Switch name="showcase-sync" checked />
+          <span>Token sync</span>
+        </label>
+      </div>
+
+      <div class="primitive-showcase__progress">
+        <div>
+          <span>Readiness</span>
+          <strong>86%</strong>
+        </div>
+        <Progress value={86} aria-label="Workspace readiness" />
+      </div>
+
+      <div class="primitive-showcase__actions">
+        <Button>
+          <Icon name="rocket" size="sm" />
+          Publish
+        </Button>
+        <Button variant="outline">
+          <Icon name="eye" size="sm" />
+          Preview
+        </Button>
+      </div>
+    </div>
+
+    <aside class="primitive-showcase__side" aria-label="Workspace status">
+      <Alert variant="success" glass="subtle">
+        <strong>Theme applied.</strong>
+        <p>Scoped tokens update this surface instantly.</p>
+      </Alert>
+
+      <Separator />
+
+      <div class="primitive-showcase__timeline" aria-label="Launch activity">
+        <span>
+          <Icon name="shield-check" size="sm" />
+          A11y pass
+        </span>
+        <span>
+          <Icon name="palette" size="sm" />
+          Tokens exported
+        </span>
+        <span>
+          <Icon name="blocks" size="sm" />
+          Components ready
+        </span>
+      </div>
+    </aside>
+  </div>
+
+  <div class="primitive-showcase__swatches" aria-label="Generated token swatches">
+    {swatches.map(token => (
+      <span>
+        <i style={`--swatch: hsl(var(--${token}));`}></i>
+        <span>{token}</span>
+      </span>
+    ))}
+  </div>
+</Card>
+
+<style>
+  .primitive-showcase {
+    display: grid;
+    gap: 1rem;
+    overflow: hidden;
+    min-width: 0;
+    border-color: hsl(var(--line) / 0.72);
+    background:
+      linear-gradient(135deg, hsl(var(--brand) / 0.16), transparent 34%),
+      linear-gradient(315deg, hsl(var(--accent) / 0.14), transparent 42%),
+      hsl(var(--surface) / 0.84);
+    color: hsl(var(--ink));
+    padding: clamp(1rem, 2vw, 1.35rem);
+  }
+
+  .primitive-showcase__header,
+  .primitive-showcase__toolbar,
+  .primitive-showcase__actions,
+  .primitive-showcase__progress > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .primitive-showcase__identity {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .primitive-showcase__mark {
+    display: inline-flex;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    color: hsl(var(--ink));
+  }
+
+  .primitive-showcase__identity p,
+  .primitive-showcase__identity :global(h2),
+  .primitive-showcase__identity :global(h3),
+  .primitive-showcase__description,
+  .primitive-showcase__side p {
+    margin: 0;
+  }
+
+  .primitive-showcase__identity p {
+    color: hsl(var(--ink-muted));
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .primitive-showcase__identity :global(h2),
+  .primitive-showcase__identity :global(h3) {
+    color: hsl(var(--ink));
+    font-size: clamp(1.1rem, 2.6vw, 1.45rem);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 1.12;
+  }
+
+  .primitive-showcase__description {
+    max-width: 34rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .primitive-showcase__workspace {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .primitive-showcase__main,
+  .primitive-showcase__side {
+    display: grid;
+    gap: 0.9rem;
+    min-width: 0;
+    border: 1px solid hsl(var(--line) / 0.72);
+    border-radius: 0.5rem;
+    background: hsl(var(--surface-muted) / 0.66);
+    box-shadow: inset 0 1px 0 hsl(var(--ink) / 0.05);
+    padding: 0.9rem;
+  }
+
+  .primitive-showcase__field {
+    border: 1px solid hsl(var(--line) / 0.58);
+    border-radius: 0.5rem;
+    background:
+      linear-gradient(180deg, hsl(var(--surface) / 0.58), hsl(var(--surface-muted) / 0.42));
+    padding: 0.8rem;
+  }
+
+  .primitive-showcase__field .ui-label {
+    color: hsl(var(--ink));
+    font-size: 0.8rem;
+  }
+
+  .primitive-showcase__field .ui-input {
+    border-color: hsl(var(--line) / 0.58);
+    background: hsl(var(--surface) / 0.54);
+    box-shadow: none;
+  }
+
+  .primitive-showcase__field .ui-input:hover,
+  .primitive-showcase__field .ui-input:focus-visible {
+    background: hsl(var(--surface) / 0.72);
+  }
+
+  .primitive-showcase__toggles {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .primitive-showcase__toggles label {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.6rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+
+  .primitive-showcase__toggles .ui-switch {
+    flex: 0 0 auto;
+  }
+
+  .primitive-showcase__progress {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .primitive-showcase__progress span,
+  .primitive-showcase__timeline {
+    color: hsl(var(--ink-soft));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .primitive-showcase__progress strong {
+    color: hsl(var(--ink));
+    font-size: 0.86rem;
+    font-weight: 900;
+  }
+
+  .primitive-showcase__side {
+    align-content: start;
+  }
+
+  .primitive-showcase__side .ui-alert {
+    gap: 0.35rem;
+  }
+
+  .primitive-showcase__side strong {
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+  }
+
+  .primitive-showcase__side p {
+    color: hsl(var(--success));
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .primitive-showcase__timeline {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .primitive-showcase__timeline span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .primitive-showcase__timeline .ui-icon {
+    color: hsl(var(--brand));
+  }
+
+  .primitive-showcase__swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7.75rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .primitive-showcase__swatches > span {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid hsl(var(--line) / 0.78);
+    border-radius: 0.4rem;
+    background: hsl(var(--surface) / 0.68);
+    color: hsl(var(--ink-soft));
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.5rem;
+  }
+
+  .primitive-showcase__swatches i {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    border: 1px solid hsl(var(--line));
+    border-radius: 999px;
+    background: var(--swatch);
+  }
+
+  @media (min-width: 680px) {
+    .primitive-showcase__workspace {
+      grid-template-columns: minmax(0, 1.1fr) minmax(13rem, 0.72fr);
+      align-items: stretch;
+    }
+  }
+</style>

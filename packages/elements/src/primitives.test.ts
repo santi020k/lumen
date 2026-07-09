@@ -1,0 +1,114 @@
+// @vitest-environment jsdom
+
+import { beforeAll, beforeEach, describe, expect, test } from 'vitest'
+
+import { defineLumenElements } from './index.js'
+
+beforeAll(() => {
+  defineLumenElements(customElements)
+})
+
+beforeEach(() => {
+  document.body.innerHTML = ''
+})
+
+const connect = (tagName: string, attributes: Record<string, string> = {}): HTMLElement => {
+  const element = document.createElement(tagName)
+
+  for (const [name, value] of Object.entries(attributes)) {
+    element.setAttribute(name, value)
+  }
+
+  document.body.append(element)
+
+  return element
+}
+
+const classesOf = (element: HTMLElement): string[] => [...element.classList].sort()
+
+describe('@santi020k/lumen-elements primitives', () => {
+  test('applies base classes for presentational primitives', () => {
+    expect(classesOf(connect('lumen-avatar'))).toEqual(['ui-avatar'])
+    expect(classesOf(connect('lumen-skeleton'))).toEqual(['ui-skeleton'])
+    expect(classesOf(connect('lumen-kbd'))).toEqual(['ui-kbd'])
+    expect(classesOf(connect('lumen-label'))).toEqual(['ui-label'])
+    expect(classesOf(connect('lumen-button-group'))).toEqual(['ui-button-group'])
+    expect(classesOf(connect('lumen-spinner'))).toEqual(['ui-spinner'])
+    expect(classesOf(connect('lumen-accordion'))).toEqual(['ui-accordion'])
+  })
+
+  test('maps badge variants to modifier classes', () => {
+    expect(classesOf(connect('lumen-badge'))).toEqual(['ui-badge', 'ui-badge--default'].sort())
+    expect(classesOf(connect('lumen-badge', { variant: 'secondary' }))).toEqual(['ui-badge', 'ui-badge--secondary'].sort())
+    expect(classesOf(connect('lumen-badge', { variant: 'success' }))).toEqual(['ui-badge', 'ui-badge--success'].sort())
+  })
+
+  test('omits marker modifier for the default variant', () => {
+    expect(classesOf(connect('lumen-marker'))).toEqual(['ui-marker'])
+    expect(classesOf(connect('lumen-marker', { variant: 'success' }))).toEqual(['ui-marker', 'ui-marker--success'].sort())
+  })
+
+  test('marks separator orientation with class and aria attribute defaults', () => {
+    const horizontal = connect('lumen-separator')
+    const vertical = connect('lumen-separator', { orientation: 'vertical' })
+
+    expect(classesOf(horizontal)).toEqual(['ui-separator', 'ui-separator--horizontal'].sort())
+    expect(horizontal.getAttribute('orientation')).toBe('horizontal')
+    expect(classesOf(vertical)).toEqual(['ui-separator', 'ui-separator--vertical'].sort())
+  })
+
+  test('labels conversation primitives by author', () => {
+    expect(classesOf(connect('lumen-message'))).toEqual(['ui-message', 'ui-message--assistant'].sort())
+    expect(classesOf(connect('lumen-message', { from: 'user' }))).toEqual(['ui-message', 'ui-message--user'].sort())
+    expect(classesOf(connect('lumen-bubble'))).toEqual(['ui-bubble'])
+    expect(classesOf(connect('lumen-bubble', { from: 'user' }))).toEqual(['ui-bubble', 'ui-bubble--user'].sort())
+  })
+
+  test('sets default attributes on native form primitives', () => {
+    const checkbox = connect('lumen-checkbox')
+    const toggle = connect('lumen-switch')
+    const slider = connect('lumen-slider')
+    const textarea = connect('lumen-textarea')
+
+    expect(checkbox.getAttribute('type')).toBe('checkbox')
+    expect(classesOf(checkbox)).toEqual(['ui-checkbox'])
+    expect(toggle.getAttribute('type')).toBe('checkbox')
+    expect(toggle.getAttribute('role')).toBe('switch')
+    expect(slider.getAttribute('type')).toBe('range')
+    expect(textarea.getAttribute('rows')).toBe('4')
+  })
+
+  test('sets landmark and role defaults', () => {
+    expect(connect('lumen-breadcrumb').getAttribute('aria-label')).toBe('Breadcrumb')
+    expect(connect('lumen-pagination').getAttribute('aria-label')).toBe('Pagination')
+    expect(connect('lumen-tag-group').getAttribute('role')).toBe('list')
+    expect(connect('lumen-progress').getAttribute('role')).toBe('progressbar')
+    expect(connect('lumen-radio-group').hasAttribute('data-ui-radio-group')).toBe(true)
+    expect(connect('lumen-collapsible').hasAttribute('data-ui-collapsible')).toBe(true)
+  })
+
+  test('resolves glass intensity classes on structural surfaces', () => {
+    expect(classesOf(connect('lumen-item', { glass: '' }))).toEqual(['ui-item', 'ui-item--glass'].sort())
+    expect(classesOf(connect('lumen-item', { glass: 'strong' })))
+      .toEqual(['ui-item', 'ui-item--glass', 'ui-glass-strong'].sort())
+    expect(classesOf(connect('lumen-scroll-area', { glass: 'subtle' })))
+      .toEqual(['ui-scroll-area', 'ui-scroll-area--glass', 'ui-glass-subtle'].sort())
+  })
+
+  test('maps native select size to modifier classes', () => {
+    expect(classesOf(connect('lumen-native-select'))).toEqual(['ui-select'])
+    expect(classesOf(connect('lumen-native-select', { size: 'sm' }))).toEqual(['ui-select', 'ui-select--sm'].sort())
+    expect(classesOf(connect('lumen-select', { size: 'lg' }))).toEqual(['ui-select', 'ui-select--lg'].sort())
+  })
+
+  test('reapplies modifier classes when attributes change', () => {
+    const badge = connect('lumen-badge', { variant: 'secondary' })
+
+    expect(badge.classList.contains('ui-badge--secondary')).toBe(true)
+
+    badge.setAttribute('variant', 'destructive')
+
+    expect(badge.classList.contains('ui-badge--secondary')).toBe(false)
+    expect(badge.classList.contains('ui-badge--destructive')).toBe(true)
+  })
+})

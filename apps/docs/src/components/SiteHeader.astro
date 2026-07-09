@@ -1,16 +1,25 @@
 ---
 import { Badge, Button, Icon } from '@santi020k/lumen-astro'
 
+import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
 
 const currentPath = Astro.url.pathname
 
 const navLinks = [
   {
+    href: '/',
+    icon: 'home',
+    isActive: currentPath === '/',
+    label: 'Home'
+  },
+  {
     href: '/docs',
     icon: 'book-open',
     isActive: currentPath === '/docs' || (
-      currentPath.startsWith('/docs/') && !currentPath.startsWith('/docs/components')
+      currentPath.startsWith('/docs/')
+      && !currentPath.startsWith('/docs/components')
+      && !currentPath.startsWith('/docs/theme-playground')
     ),
     label: 'Docs'
   },
@@ -19,6 +28,12 @@ const navLinks = [
     icon: 'blocks',
     isActive: currentPath.startsWith('/docs/components'),
     label: 'Components'
+  },
+  {
+    href: '/docs/theme-playground',
+    icon: 'palette',
+    isActive: currentPath.startsWith('/docs/theme-playground'),
+    label: 'Theme'
   }
 ] as const
 ---
@@ -33,31 +48,33 @@ const navLinks = [
       <LumenLogo markClass="size-8" />
       <Badge variant="outline">v0.1</Badge>
     </a>
-    <nav
-      class="
-        docs-site-header__nav flex max-w-full items-center justify-end gap-1
-        text-sm font-bold
-      "
-      aria-label="Site"
-    >
-      {navLinks.map(link => (
-        <a
-          class:list={[
-            'docs-site-header__link no-underline',
-            link.isActive && 'docs-site-header__link--active'
-          ]}
-          href={link.href}
-          aria-current={link.isActive ? 'page' : undefined}
-        >
-          <Icon name={link.icon} size="sm" />
-          <span>{link.label}</span>
-        </a>
-      ))}
+    <div class="docs-site-header__actions">
+      <nav
+        class="docs-site-header__nav"
+        aria-label="Site"
+      >
+        {navLinks.map(link => (
+          <a
+            class:list={[
+              'docs-site-header__link no-underline',
+              link.isActive && 'docs-site-header__link--active'
+            ]}
+            href={link.href}
+            aria-current={link.isActive ? 'page' : undefined}
+          >
+            <Icon name={link.icon} size="sm" />
+            <span>{link.label}</span>
+          </a>
+        ))}
+      </nav>
       <a
-        class="docs-site-header__github no-underline"
+        class="
+          docs-site-header__github ui-button ui-button--default-size
+          ui-button--secondary no-underline
+        "
         href="https://github.com/santi020k/lumen"
       >
-        <Icon name="github" size="sm" />
+        <GitHubIcon />
         <span>GitHub</span>
       </a>
       <div class="ui-theme-controls" aria-label="Theme controls">
@@ -86,6 +103,6 @@ const navLinks = [
           <span class="sr-only" data-theme-toggle-label>Switch color mode</span>
         </Button>
       </div>
-    </nav>
+    </div>
   </div>
 </header>

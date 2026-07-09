@@ -86,4 +86,103 @@ describe('lumen elements accessibility', () => {
 
     expect(violations).toEqual([])
   })
+
+  test('alert markup keeps live-region semantics', async () => {
+    const violations = await runAxe(`
+      <lumen-alert role="status" variant="success">
+        <strong>Saved</strong>
+        <p>Your changes were saved.</p>
+      </lumen-alert>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('breadcrumb markup uses an accessible navigation list', async () => {
+    const violations = await runAxe(`
+      <lumen-breadcrumb role="navigation" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li aria-current="page">Button</li>
+        </ol>
+      </lumen-breadcrumb>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('progress markup exposes valuenow bounds', async () => {
+    const violations = await runAxe(`
+      <lumen-progress role="progressbar" aria-label="Upload" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40">
+        <span class="ui-progress__bar" style="width: 40%"></span>
+      </lumen-progress>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('switch markup pairs the control with a label', async () => {
+    const violations = await runAxe(`
+      <lumen-field>
+        <label class="ui-label" for="a11y-switch">Notifications</label>
+        <input class="ui-switch" id="a11y-switch" role="switch" type="checkbox" />
+      </lumen-field>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('dialog markup exposes an accessible name', async () => {
+    const violations = await runAxe(`
+      <lumen-dialog role="dialog" aria-modal="true" aria-labelledby="a11y-dialog-title">
+        <h2 id="a11y-dialog-title">Delete project</h2>
+        <p>This action cannot be undone.</p>
+        <lumen-button role="button" tabindex="0">Cancel</lumen-button>
+      </lumen-dialog>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('collapsible markup uses native disclosure semantics', async () => {
+    const violations = await runAxe(`
+      <lumen-collapsible>
+        <details>
+          <summary>Advanced options</summary>
+          <p>Configure caching and retries.</p>
+        </details>
+      </lumen-collapsible>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('data table markup keeps caption and header associations', async () => {
+    const violations = await runAxe(`
+      <lumen-table>
+        <table>
+          <caption>Recent invoices</caption>
+          <thead>
+            <tr><th scope="col">Invoice</th><th scope="col">Total</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>A-100</td><td>$42.00</td></tr>
+          </tbody>
+        </table>
+      </lumen-table>
+    `)
+
+    expect(violations).toEqual([])
+  })
+
+  test('avatar image markup carries alternative text', async () => {
+    const violations = await runAxe(`
+      <lumen-avatar>
+        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Ada Lovelace" />
+      </lumen-avatar>
+    `)
+
+    expect(violations).toEqual([])
+  })
 })

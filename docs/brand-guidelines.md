@@ -42,11 +42,15 @@ more personal violet expression.
 
 ## Logo
 
-Use the Lumen mark as a compact glass-panel symbol paired with `Lumen UI` when the brand needs to be
-explicit. In tight spaces, the mark can stand alone with an accessible label.
+Use the Lumen mark as a lowercase `lu` monogram with one warm point of light, paired with `lumen ui`
+when the brand needs to be explicit. In tight spaces, the mark can stand alone with an accessible
+label.
 
 Do not redraw the mark from memory. Use the existing implementation in
 `apps/docs/src/components/LumenLogo.astro` or exported assets when they exist.
+
+Pair the mark with a restrained serif wordmark and keep product UI copy in the app sans face. The
+contrast should feel editorial and intentional, not decorative.
 
 ## Interface Principles
 

@@ -12,7 +12,7 @@ export interface LumenThemeContrastSuggestion {
   ratio: number
 }
 
-export const lumenTokenNames = [
+export const lumenSemanticColorTokenNames = [
   'canvas',
   'surface',
   'surface-muted',
@@ -30,6 +30,56 @@ export const lumenTokenNames = [
   'danger'
 ] as const
 
+export const lumenGlassColorTokenNames = [
+  'glass-bg',
+  'glass-bg-subtle',
+  'glass-bg-strong',
+  'glass-border',
+  'glass-highlight',
+  'glass-edge',
+  'glass-edge-soft',
+  'glass-shade',
+  'glass-refraction'
+] as const
+
+export const lumenGlassEffectTokenNames = [
+  'glass-blur',
+  'glass-saturate',
+  'glass-brightness',
+  'glass-shadow'
+] as const
+
+export const lumenGlassTokenNames = [
+  'glass-bg',
+  'glass-bg-subtle',
+  'glass-bg-strong',
+  'glass-border',
+  'glass-highlight',
+  'glass-blur',
+  'glass-saturate',
+  'glass-brightness',
+  'glass-edge',
+  'glass-edge-soft',
+  'glass-shade',
+  'glass-refraction',
+  'glass-shadow'
+] as const
+
+export const lumenColorTokenNames = [
+  ...lumenSemanticColorTokenNames,
+  ...lumenGlassColorTokenNames
+] as const
+
+export const lumenTokenNames = [
+  ...lumenSemanticColorTokenNames,
+  ...lumenGlassTokenNames
+] as const
+
+export type LumenSemanticColorTokenName = typeof lumenSemanticColorTokenNames[number]
+export type LumenGlassColorTokenName = typeof lumenGlassColorTokenNames[number]
+export type LumenGlassEffectTokenName = typeof lumenGlassEffectTokenNames[number]
+export type LumenGlassTokenName = typeof lumenGlassTokenNames[number]
+export type LumenColorTokenName = typeof lumenColorTokenNames[number]
 export type LumenThemeTokenName = typeof lumenTokenNames[number]
 
 export const exportThemeCss = (
@@ -61,6 +111,55 @@ export const parseThemeCss = (css: string): LumenThemeTokens => {
   return tokens
 }
 
+const normalizeHue = (hue: number): number => ((Math.round(hue) % 360) + 360) % 360
+
+const getHueFromToken = (value: string): number => {
+  const hue = Number(value.trim().split(/\s+/)[0])
+
+  return Number.isFinite(hue) ? normalizeHue(hue) : 221
+}
+
+const createGlassThemeTokens = (
+  hue: number,
+  scheme: 'dark' | 'light' = 'light'
+): Pick<LumenThemeTokens, LumenGlassTokenName> => {
+  const h = normalizeHue(hue)
+
+  if (scheme === 'dark') {
+    return {
+      'glass-bg': `${h} 20% 13% / 0.78`,
+      'glass-bg-strong': `${h} 20% 13% / 0.9`,
+      'glass-bg-subtle': `${h} 20% 13% / 0.64`,
+      'glass-blur': '22px',
+      'glass-border': `${h} 30% 92% / 0.24`,
+      'glass-brightness': '1',
+      'glass-edge': `${h} 40% 98% / 0.24`,
+      'glass-edge-soft': `${h} 40% 98% / 0.08`,
+      'glass-highlight': `${h} 30% 96% / 0.1`,
+      'glass-refraction': `${h} 91% 56% / 0.1`,
+      'glass-saturate': '1.7',
+      'glass-shade': `${h} 40% 3% / 0.3`,
+      'glass-shadow': '0 1px 2px hsl(0 0% 0% / 0.3), 0 16px 40px hsl(0 0% 0% / 0.34), 0 40px 96px hsl(0 0% 0% / 0.38)'
+    }
+  }
+
+  return {
+    'glass-bg': '0 0% 100% / 0.55',
+    'glass-bg-strong': '0 0% 100% / 0.72',
+    'glass-bg-subtle': '0 0% 100% / 0.38',
+    'glass-blur': '22px',
+    'glass-border': `${h} 30% 100% / 0.55`,
+    'glass-brightness': '1.05',
+    'glass-edge': '0 0% 100% / 0.9',
+    'glass-edge-soft': '0 0% 100% / 0.34',
+    'glass-highlight': '0 0% 100% / 0.85',
+    'glass-refraction': `${h} 83% 53% / 0.08`,
+    'glass-saturate': '1.7',
+    'glass-shade': `${h} 47% 11% / 0.07`,
+    'glass-shadow': `0 1px 2px hsl(${h} 47% 11% / 0.08), 0 12px 32px hsl(${h} 47% 11% / 0.12), 0 32px 80px hsl(${h} 47% 11% / 0.14)`
+  }
+}
+
 export const createThemePalette = (
   brand: string,
   accent = brand
@@ -79,15 +178,14 @@ export const createThemePalette = (
   surface: '0 0% 100%',
   'surface-muted': '220 14% 96%',
   'surface-strong': '220 13% 91%',
-  warning: '38 92% 50%'
+  warning: '38 92% 50%',
+  ...createGlassThemeTokens(getHueFromToken(brand))
 })
 
 export interface LumenThemeFromHueOptions {
   accentHue?: number
   scheme?: 'dark' | 'light'
 }
-
-const normalizeHue = (hue: number): number => ((Math.round(hue) % 360) + 360) % 360
 
 /**
  * Derives a complete token set from a single brand hue.
@@ -118,7 +216,8 @@ export const createThemeFromHue = (
       surface: `${h} 18% 11%`,
       'surface-muted': `${h} 16% 15%`,
       'surface-strong': `${h} 14% 22%`,
-      warning: '38 92% 55%'
+      warning: '38 92% 55%',
+      ...createGlassThemeTokens(h, 'dark')
     }
   }
 
@@ -137,7 +236,8 @@ export const createThemeFromHue = (
     surface: `${h} 20% 100%`,
     'surface-muted': `${h} 16% 96%`,
     'surface-strong': `${h} 14% 91%`,
-    warning: '38 92% 50%'
+    warning: '38 92% 50%',
+    ...createGlassThemeTokens(h)
   }
 }
 

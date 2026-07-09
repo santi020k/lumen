@@ -1,22 +1,16 @@
 ---
 import {
   Badge,
-  Button,
   Card,
-  Field,
   Icon,
-  Input,
-  Label,
-  Marker,
-  Progress,
   Separator,
-  Switch,
-  Toggle,
-  ToggleGroup
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
+import GitHubIcon from '../components/GitHubIcon.astro'
+import LumenLogo from '../components/LumenLogo.astro'
+import PrimitiveShowcase from '../components/PrimitiveShowcase.astro'
 import { componentCategories, componentDocs, frameworkSetups } from '../data/docs'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { toSlug } from '../lib/routes'
@@ -64,22 +58,46 @@ const featured = componentDocs.slice(0, 12)
       docs-home-hero grid gap-10
       lg:grid-cols-[1.05fr_0.95fr] lg:items-center
     ">
-      <div class="space-y-6">
-        <div class="docs-home-eyebrow flex flex-wrap gap-2">
-          <Badge>{componentCount} components</Badge>
-          <Badge variant="secondary">Astro</Badge>
-          <Badge variant="secondary">React</Badge>
-          <Badge variant="secondary">Web Components</Badge>
+      <div class="docs-home-hero__content space-y-6">
+        <div class="docs-home-eyebrow">
+          <div class="docs-home-eyebrow__identity">
+            <span class="docs-home-eyebrow__icon" aria-hidden="true">
+              <LumenLogo markClass="size-9" showText={false} />
+            </span>
+            <div>
+              <p>Lumen UI</p>
+              <span>{componentCount} semantic primitives, one shared contract</span>
+            </div>
+          </div>
+          <div class="docs-home-eyebrow__targets" aria-label="Supported frameworks">
+            <Badge>Astro</Badge>
+            <Badge variant="secondary">React</Badge>
+            <Badge variant="secondary">Web Components</Badge>
+          </div>
         </div>
         <h1 class="
-          max-w-3xl text-5xl/tight font-black text-ink
+          docs-home-title max-w-3xl text-5xl/tight font-black text-ink
           sm:text-6xl/tight
-        ">Write it once. Ship it in any framework.</h1>
+        ">Primitive UI that ships in <span>every framework.</span></h1>
         <p class="max-w-2xl text-lg/8 text-ink-soft">
           Lumen is a primitive UI system built on semantic markup and shared design tokens.
           The same component, the same classes, the same behavior, in Astro, React, and
           standards-based custom elements.
         </p>
+        <div class="docs-home-hero__stats" aria-label="Lumen highlights">
+          <div>
+            <strong>{componentCount}</strong>
+            <span>components</span>
+          </div>
+          <div>
+            <strong>3</strong>
+            <span>targets</span>
+          </div>
+          <div>
+            <strong>0</strong>
+            <span>app runtime lock-in</span>
+          </div>
+        </div>
         <div class="flex flex-wrap gap-3">
           <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">
             Get started
@@ -107,34 +125,11 @@ const featured = componentDocs.slice(0, 12)
         </button>
       </div>
 
-      <Card glass="strong" class="
-        docs-home-showcase grid gap-5 p-6
-        sm:p-7
-      ">
-        <div class="flex items-center justify-between gap-4">
-          <div>
-            <p class="text-sm font-bold text-ink">Everything below is Lumen</p>
-            <p class="text-sm text-ink-soft">This site is built with its own primitives.</p>
-          </div>
-          <Marker variant="success">Live</Marker>
-        </div>
-        <ToggleGroup aria-label="Billing interval">
-          <Toggle>Monthly</Toggle>
-          <Toggle pressed>Yearly</Toggle>
-        </ToggleGroup>
-        <Field glass="subtle" class="p-4">
-          <Label for="hero-email">Work email</Label>
-          <Input id="hero-email" type="email" placeholder="you@example.com" />
-        </Field>
-        <label class="flex items-center gap-2 text-sm text-ink-soft">
-          <Switch name="hero-updates" checked /> Send me release notes
-        </label>
-        <Progress value={72} aria-label="Onboarding progress" />
-        <div class="flex flex-wrap gap-3">
-          <Button>Create workspace</Button>
-          <Button variant="ghost">Skip for now</Button>
-        </div>
-      </Card>
+      <PrimitiveShowcase
+        class="docs-home-showcase"
+        description="This site is built with the same primitives it documents: controls, status, tokens, and glass surfaces sharing one contract."
+        title="Workspace launch"
+      />
     </section>
 
     <section class="
@@ -200,11 +195,24 @@ const featured = componentDocs.slice(0, 12)
         md:grid-cols-2
         xl:grid-cols-4
       ">
-        {featured.map(component => (
-          <a class="no-underline" href={`/docs/components/${toSlug(component.name)}`}>
-            <Card class="docs-home-component-card h-full space-y-2 p-5" variant="interactive">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="text-sm font-bold text-ink">{component.name}</h3>
+        {featured.map((component, index) => (
+          <a
+            class="docs-home-component-link no-underline"
+            href={`/docs/components/${toSlug(component.name)}`}
+          >
+            <Card
+              class="docs-home-component-card h-full p-5"
+              data-tone={String(index % 4)}
+              variant="interactive"
+            >
+              <div class="docs-home-component-card__header">
+                <span class="docs-home-component-card__mark" aria-hidden="true">
+                  {component.name.slice(0, 2)}
+                </span>
+                <div>
+                  <h3 class="text-sm font-bold text-ink">{component.name}</h3>
+                  <p>{component.category}</p>
+                </div>
                 {component.glass && <Badge variant="outline">Glass</Badge>}
               </div>
               <p class="text-sm/6 text-ink-soft">{component.summary}</p>
@@ -227,7 +235,7 @@ const featured = componentDocs.slice(0, 12)
           Read the docs
         </a>
         <a class="ui-button ui-button--lg ui-button--outline no-underline" href="https://github.com/santi020k/lumen">
-          <Icon name="github" size="sm" />
+          <GitHubIcon />
           Star on GitHub
         </a>
       </div>

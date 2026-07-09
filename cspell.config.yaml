@@ -18,6 +18,8 @@ words:
   - labelledby
   - describedby
   - dismissable
+  - valuemax
+  - valuenow
   - haspopup
   - linecap
   - llms
@@ -47,6 +49,7 @@ words:
   - vitest
   - WCAG
   - wordmark
+  - workerd
   - workspaces
   - novalidate
   - shikijs

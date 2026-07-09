@@ -107,7 +107,7 @@ export default [
     rules: {
       'better-tailwindcss/no-unknown-classes': ['error', {
         entryPoint: `${docsRoot}/src/styles/global.css`,
-        ignore: ['^docs-', '^ui-']
+        ignore: ['^docs-', '^lumen-logo', '^ui-']
       }]
     },
     settings: {

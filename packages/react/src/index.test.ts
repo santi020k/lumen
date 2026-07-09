@@ -15,12 +15,14 @@ import {
   DataTable,
   Dialog,
   type DialogProps,
+  DropdownMenu,
   Field,
   type FieldProps,
   Input,
   InputOTP,
   type InputProps,
   lumenComponentNames,
+  Popover,
   Resizable,
   Table,
   type TableProps,
@@ -28,6 +30,7 @@ import {
   useCalendar,
   useContextMenu,
   useDateRangePicker,
+  useDialog,
   useDropdownMenu,
   useFormValidation,
   useInputOTP,
@@ -38,6 +41,7 @@ import {
   useSelect,
   useTabs,
   useThemeBuilder,
+  useToast,
   useTooltip,
   VirtualList
 } from './index.js'
@@ -292,6 +296,34 @@ describe('@santi020k/lumen-react', () => {
     expect(segmentProps['data-ui-input-otp-segment']).toBe(true)
   })
 
+  test('sanitizes input OTP setValue and exposes native input props', () => {
+    const changes: string[] = []
+    const otp = withHookDispatcher(() => useInputOTP({
+      invalid: true,
+      length: 4,
+      onValueChange: value => { changes.push(value); }
+    }))
+    const inputProps = otp.getInputProps()
+
+    expect(inputProps.autoComplete).toBe('one-time-code')
+    expect(inputProps.maxLength).toBe(4)
+    expect(inputProps.className).toBe('ui-input-otp ui-input-otp__native')
+    expect(inputProps['data-ui-input-otp-native']).toBe(true)
+    expect(inputProps['aria-invalid']).toBe(true)
+
+    expect(otp.setValue('12ab99')).toBe('1299')
+    expect(changes).toEqual(['1299'])
+  })
+
+  test('renders input OTP segment characters with placeholder padding', () => {
+    const otp = withHookDispatcher(() => useInputOTP({ defaultValue: '12', length: 4 }))
+
+    expect(otp.segmentIndexes).toEqual([0, 1, 2, 3])
+    expect(otp.getSegmentChar(0)).toBe('1')
+    expect(otp.getSegmentChar(1)).toBe('2')
+    expect(otp.getSegmentChar(2)).toBe(' ')
+  })
+
   test('exposes form validation and field contracts', () => {
     const field = Field({
       children: 'Email',
@@ -521,6 +553,43 @@ describe('@santi020k/lumen-react', () => {
     expect(changes.at(-1)).toEqual([32, 68])
   })
 
+  test('resizes with keyboard steps, bounds, and double-click reset', () => {
+    const changes: number[][] = []
+    const resizable = withHookDispatcher(() => useResizable({
+      defaultSizes: [30, 70],
+      onSizesChange: sizes => { changes.push(sizes); },
+      panelCount: 2
+    }))
+    const handle = resizable.getHandleProps(0)
+    const key = (init: { key: string, shiftKey?: boolean }): void => {
+      handle.onKeyDown?.({
+        preventDefault: vi.fn(),
+        shiftKey: false,
+        ...init
+      } as unknown as Parameters<NonNullable<typeof handle.onKeyDown>>[0])
+    }
+
+    key({ key: 'ArrowLeft' })
+    expect(changes.at(-1)).toEqual([28, 72])
+
+    key({ key: 'ArrowRight', shiftKey: true })
+    expect(changes.at(-1)).toEqual([40, 60])
+
+    key({ key: 'Home' })
+    expect(changes.at(-1)).toEqual([12, 88])
+
+    key({ key: 'End' })
+    expect(changes.at(-1)).toEqual([88, 12])
+
+    handle.onDoubleClick?.({} as Parameters<NonNullable<typeof handle.onDoubleClick>>[0])
+    expect(changes.at(-1)).toEqual([30, 70])
+
+    expect(handle['aria-valuemin']).toBe(12)
+    expect(handle['aria-valuemax']).toBe(88)
+    expect(handle['aria-valuenow']).toBe(30)
+    expect((resizable.getPanelProps(0).style as Record<string, string>)['--ui-resizable-size']).toBe('30%')
+  })
+
   test('exposes disclosure semantics for popovers and dropdown menus', () => {
     const popover = withHookDispatcher(() => usePopover({ defaultOpen: true }))
     const dropdown = withHookDispatcher(() => useDropdownMenu({ defaultOpen: false }))
@@ -611,14 +680,48 @@ describe('@santi020k/lumen-react', () => {
     expect(theme.hue).toBe(260)
     expect(theme.accentHue).toBe(140)
     expect(theme.tokens.brand).toBe('260 88% 60%')
+    expect(theme.tokens['glass-bg']).toBeTypeOf('string')
+    expect(theme.tokens['glass-shadow']).toBeTypeOf('string')
     expect(theme.previewStyle['--brand' as keyof typeof theme.previewStyle]).toBe('260 88% 60%')
     expect(theme.exportValue).toContain('color-scheme: dark;')
+    expect(theme.exportValue).toContain('--glass-bg:')
     expect(theme.hueProps['data-ui-theme-brand-hue']).toBe(true)
     expect(theme.accentHueProps['data-ui-theme-accent-hue']).toBe(true)
     expect(theme.outputProps.value).toContain('--brand: 260 88% 60%;')
     expect(manualMode['data-ui-theme-mode']).toBe('manual')
     expect(manualMode['aria-pressed']).toBe(false)
     expect(figmaFormat['data-ui-theme-export-format']).toBe('figma')
+  })
+
+  test('exposes theme builder scheme, hue, and color control props', () => {
+    const schemes: string[] = []
+    const hues: number[] = []
+    const theme = withHookDispatcher(() => useThemeBuilder({
+      defaultHue: 260,
+      defaultScheme: 'dark',
+      onHueChange: value => { hues.push(value); },
+      onSchemeChange: value => { schemes.push(value); }
+    }))
+
+    expect(theme.getSchemeProps('dark')['aria-pressed']).toBe(true)
+    expect(theme.getSchemeProps('light')['aria-pressed']).toBe(false)
+    expect(theme.getSchemeProps('dark')['data-ui-theme-scheme']).toBe('dark')
+    expect(theme.hueProps.min).toBe(0)
+    expect(theme.hueProps.max).toBe(359)
+    expect(theme.hueProps.type).toBe('range')
+    expect(theme.hueProps.value).toBe(260)
+    expect(theme.primaryColorProps.type).toBe('color')
+    expect(theme.secondaryColorProps.type).toBe('color')
+    expect(theme.exportButtonProps.type).toBe('button')
+    expect(theme.outputProps.readOnly).toBe(true)
+
+    theme.getSchemeProps('light').onClick?.({} as Parameters<NonNullable<ReturnType<typeof theme.getSchemeProps>['onClick']>>[0])
+    expect(schemes).toEqual(['light'])
+
+    theme.hueProps.onChange?.({
+      currentTarget: { value: '120' }
+    } as unknown as Parameters<NonNullable<typeof theme.hueProps.onChange>>[0])
+    expect(hues).toEqual([120])
   })
 
   test('exposes tooltip escape-dismissable aria state', () => {
@@ -643,5 +746,291 @@ describe('@santi020k/lumen-react', () => {
     expect(id).toMatch(/^ui-toast-/)
     expect(provider.props.value.update).toBeTypeOf('function')
     expect(provider.props.value.dismiss).toBeTypeOf('function')
+  })
+
+  test('exposes modal dialog aria contracts and open toggles', () => {
+    const changes: boolean[] = []
+    const dialog = withHookDispatcher(() => useDialog({
+      onOpenChange: open => { changes.push(open); }
+    }))
+
+    expect(dialog.dialogProps.role).toBe('dialog')
+    expect(dialog.dialogProps['aria-modal']).toBe(true)
+    expect(dialog.dialogProps['data-ui-dialog']).toBe(true)
+    expect(dialog.dialogProps['data-ui-alert-dialog']).toBeUndefined()
+    expect(dialog.triggerProps['aria-haspopup']).toBe('dialog')
+    expect(dialog.triggerProps.type).toBe('button')
+    expect(dialog.closeProps.type).toBe('button')
+
+    dialog.triggerProps.onClick?.({} as Parameters<NonNullable<typeof dialog.triggerProps.onClick>>[0])
+    dialog.closeProps.onClick?.({} as Parameters<NonNullable<typeof dialog.closeProps.onClick>>[0])
+
+    expect(changes).toEqual([true, false])
+  })
+
+  test('closes non-alert dialogs on backdrop click but keeps alerts modal', () => {
+    const alertChanges: boolean[] = []
+    const alert = withHookDispatcher(() => useDialog({
+      alert: true,
+      onOpenChange: open => { alertChanges.push(open); }
+    }))
+
+    expect(alert.dialogProps.role).toBe('alertdialog')
+    expect(alert.dialogProps['data-ui-alert-dialog']).toBe(true)
+    expect(alert.dialogProps['data-ui-dialog']).toBeUndefined()
+
+    alert.dialogProps.onClick?.({
+      target: null
+    } as unknown as Parameters<NonNullable<typeof alert.dialogProps.onClick>>[0])
+
+    expect(alertChanges).toEqual([])
+
+    const dialogChanges: boolean[] = []
+    const dialog = withHookDispatcher(() => useDialog({
+      onOpenChange: open => { dialogChanges.push(open); }
+    }))
+
+    dialog.dialogProps.onClick?.({
+      target: null
+    } as unknown as Parameters<NonNullable<typeof dialog.dialogProps.onClick>>[0])
+
+    expect(dialogChanges).toEqual([false])
+  })
+
+  test('requires a toast provider ancestor', () => {
+    expect(() => withHookDispatcher(() => useToast())).toThrow('useToast must be used inside a ToastProvider.')
+  })
+
+  test('activates tabs through trigger clicks', () => {
+    const changes: string[] = []
+    const tabs = withHookDispatcher(() => useTabs({
+      defaultValue: 'overview',
+      onValueChange: value => { changes.push(value); }
+    }))
+    const settings = tabs.getTriggerProps('settings')
+
+    settings.onClick?.({} as Parameters<NonNullable<typeof settings.onClick>>[0])
+
+    expect(changes).toEqual(['settings'])
+  })
+
+  test('selects enabled options and ignores disabled ones', () => {
+    const changes: string[] = []
+    const select = withHookDispatcher(() => useSelect({
+      onValueChange: value => { changes.push(value); },
+      options: ['Alpha', { label: 'Beta', value: 'beta' }, { disabled: true, label: 'Gamma', value: 'gamma' }]
+    }))
+    const beta = select.getOptionProps({ label: 'Beta', value: 'beta' })
+    const gamma = select.getOptionProps({ disabled: true, label: 'Gamma', value: 'gamma' })
+
+    expect(gamma['aria-disabled']).toBe('true')
+    expect(gamma.disabled).toBe(true)
+
+    gamma.onClick?.({} as Parameters<NonNullable<typeof gamma.onClick>>[0])
+    expect(changes).toEqual([])
+
+    beta.onClick?.({} as Parameters<NonNullable<typeof beta.onClick>>[0])
+    expect(changes).toEqual(['beta'])
+  })
+
+  test('falls back to the default select trigger label', () => {
+    const empty = withHookDispatcher(() => useSelect())
+    const placeholder = withHookDispatcher(() => useSelect({ placeholder: 'Choose' }))
+
+    expect(empty.triggerText).toBe('Select an option')
+    expect(empty.rootProps['data-placeholder']).toBe('true')
+    expect(placeholder.triggerText).toBe('Choose')
+  })
+
+  test('syncs the native select change back to state', () => {
+    const changes: string[] = []
+    const select = withHookDispatcher(() => useSelect({
+      onValueChange: value => { changes.push(value); },
+      options: ['Alpha', 'Beta']
+    }))
+
+    select.nativeSelectProps.onChange?.({
+      currentTarget: { value: 'Beta' }
+    } as unknown as Parameters<NonNullable<typeof select.nativeSelectProps.onChange>>[0])
+
+    expect(changes).toEqual(['Beta'])
+  })
+
+  test('toggles disclosure open state through the trigger', () => {
+    const changes: boolean[] = []
+    const popover = withHookDispatcher(() => usePopover({
+      onOpenChange: open => { changes.push(open); }
+    }))
+
+    popover.triggerProps.onClick?.({} as Parameters<NonNullable<typeof popover.triggerProps.onClick>>[0])
+
+    expect(changes).toEqual([true])
+  })
+
+  test('closes an open disclosure panel on Escape', () => {
+    const changes: boolean[] = []
+    const dropdown = withHookDispatcher(() => useDropdownMenu({
+      defaultOpen: true,
+      onOpenChange: open => { changes.push(open); }
+    }))
+
+    dropdown.panelProps.onKeyDown?.({
+      key: 'Escape',
+      preventDefault: vi.fn()
+    } as unknown as Parameters<NonNullable<typeof dropdown.panelProps.onKeyDown>>[0])
+
+    expect(changes).toEqual([false])
+  })
+
+  test('dismisses tooltips on mouse leave and Escape', () => {
+    const changes: boolean[] = []
+    const tooltip = withHookDispatcher(() => useTooltip({
+      defaultOpen: true,
+      onOpenChange: open => { changes.push(open); }
+    }))
+
+    tooltip.rootProps.onMouseLeave?.({} as Parameters<NonNullable<typeof tooltip.rootProps.onMouseLeave>>[0])
+    tooltip.rootProps.onKeyDown?.({
+      key: 'Escape'
+    } as Parameters<NonNullable<typeof tooltip.rootProps.onKeyDown>>[0])
+
+    expect(changes).toEqual([false, false])
+  })
+
+  test('opens tooltips after the scheduled focus delay', () => {
+    vi.useFakeTimers()
+
+    try {
+      const changes: boolean[] = []
+      const tooltip = withHookDispatcher(() => useTooltip({
+        delay: 0,
+        onOpenChange: open => { changes.push(open); }
+      }))
+
+      tooltip.rootProps.onFocus?.({} as Parameters<NonNullable<typeof tooltip.rootProps.onFocus>>[0])
+
+      expect(changes).toEqual([])
+
+      vi.advanceTimersByTime(0)
+
+      expect(changes).toEqual([true])
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  test('reflects field validity onto controls', () => {
+    const validation = withHookDispatcher(() => useFormValidation())
+    const control = {
+      closest: () => null,
+      dataset: {} as Record<string, string>,
+      removeAttribute: vi.fn(),
+      setAttribute: vi.fn()
+    }
+
+    validation.setFieldValidity(control as unknown as Parameters<typeof validation.setFieldValidity>[0], true, 'Required')
+
+    expect(control.setAttribute).toHaveBeenCalledWith('aria-invalid', 'true')
+    expect(control.dataset.uiValidationInvalid).toBe('true')
+
+    validation.setFieldValidity(control as unknown as Parameters<typeof validation.setFieldValidity>[0], false)
+
+    expect(control.removeAttribute).toHaveBeenCalledWith('aria-invalid')
+    expect(control.dataset.uiValidationInvalid).toBeUndefined()
+  })
+
+  test('treats detached controls as valid', () => {
+    const validation = withHookDispatcher(() => useFormValidation())
+    const control = {
+      form: null,
+      validity: { valid: true },
+      value: ''
+    }
+
+    expect(validation.validateControl(control as unknown as Parameters<typeof validation.validateControl>[0])).toBe(true)
+  })
+
+  test('builds a six-week calendar grid with weekday and month labels', () => {
+    const calendar = withHookDispatcher(() => useCalendar({
+      month: '2026-07',
+      name: 'delivery',
+      value: '2026-07-10'
+    }))
+
+    expect(calendar.month).toBe('2026-07')
+    expect(calendar.weekdays).toHaveLength(7)
+    expect(calendar.weeks).toHaveLength(6)
+    expect(calendar.weeks.every(week => week.length === 7)).toBe(true)
+    expect(calendar.label).toContain('2026')
+    expect(calendar.inputProps.name).toBe('delivery')
+    expect(calendar.inputProps.type).toBe('hidden')
+    expect(calendar.inputProps.value).toBe('2026-07-10')
+    expect(calendar.previousProps.disabled).toBe(false)
+    expect(calendar.nextProps.disabled).toBe(false)
+  })
+
+  test('clamps calendar selection to the max boundary and disables forward navigation', () => {
+    const changes: string[] = []
+    const calendar = withHookDispatcher(() => useCalendar({
+      max: '2026-07-15',
+      month: '2026-07',
+      onValueChange: value => { changes.push(value); }
+    }))
+
+    calendar.selectDate('2026-07-20')
+
+    expect(changes).toEqual(['2026-07-15'])
+    expect(calendar.nextProps.disabled).toBe(true)
+  })
+
+  test('ignores calendar selection while disabled', () => {
+    const changes: string[] = []
+    const calendar = withHookDispatcher(() => useCalendar({
+      disabled: true,
+      month: '2026-07',
+      onValueChange: value => { changes.push(value); }
+    }))
+
+    calendar.selectDate('2026-07-10')
+
+    expect(changes).toEqual([])
+    expect(calendar.rootProps['data-disabled']).toBe('true')
+  })
+
+  test('exposes calendar day cell props and click selection', () => {
+    const changes: string[] = []
+    const calendar = withHookDispatcher(() => useCalendar({
+      month: '2026-07',
+      onValueChange: value => { changes.push(value); }
+    }))
+    const firstOfMonth = calendar.weeks.flat().find(day => day.date === '2026-07-01')
+
+    if (!firstOfMonth) throw new Error('Expected 2026-07-01 in the calendar grid.')
+
+    const dayProps = calendar.getDayProps(firstOfMonth)
+
+    expect(dayProps.role).toBe('gridcell')
+    expect(dayProps['data-date']).toBe('2026-07-01')
+    expect(dayProps['data-ui-calendar-day']).toBe(true)
+
+    dayProps.onClick?.({} as Parameters<NonNullable<typeof dayProps.onClick>>[0])
+
+    expect(changes).toEqual(['2026-07-01'])
+  })
+
+  test('composes popover and dropdown surfaces over disclosure hooks', () => {
+    const popover = withHookDispatcher(() => Popover({ glass: true }) as ReactElement<{ children: ReactElement }>)
+    const dropdown = withHookDispatcher(() => DropdownMenu({ surface: 'glass' }) as ReactElement<{ children: ReactElement }>)
+    const popoverProps = popover.props.children.props as Record<string, unknown>
+    const dropdownRoot = dropdown.props.children
+    const dropdownProps = dropdownRoot.props as Record<string, unknown>
+
+    expect(popoverProps.className).toBe('ui-popover ui-popover--glass')
+    expect(popoverProps['data-surface']).toBe('glass')
+    expect(popoverProps['data-ui-popover']).toBe(true)
+    expect(dropdownRoot.type).toBe('menu')
+    expect(dropdownProps.className).toBe('ui-menu ui-menu--glass')
+    expect(dropdownProps['data-surface']).toBe('glass')
+    expect(dropdownProps['data-ui-dropdown-menu']).toBe(true)
   })
 })

@@ -29,13 +29,17 @@ import {
   loadScheduleEvents,
   lumenCodeTokenClassNames,
   lumenColors,
+  lumenColorTokenNames,
   lumenComponentNames,
   lumenDarkTheme,
   lumenGlass,
+  lumenGlassEffectTokenNames,
+  lumenGlassTokenNames,
   lumenIconNames,
   lumenLightTheme,
   lumenPackages,
   lumenThemeAttribute,
+  lumenTokenNames,
   moveScheduleEvent,
   normalizeLumenCode,
   normalizeThemeBuilderHex,
@@ -118,6 +122,26 @@ describe('lumen code helpers', () => {
     ])
     expect(html).toContain(lumenCodeTokenClassNames.string)
     expect(html).toContain('&lt;lumen&gt;')
+  })
+
+  test('classifies comment, number, and type tokens', () => {
+    const tokens = tokenizeLumenCode('let total: number = 42 // sum', 'ts')
+    const kinds = new Set(tokens.map(token => token.kind).filter(Boolean))
+
+    expect(kinds.has('keyword')).toBe(true)
+    expect(kinds.has('type')).toBe(true)
+    expect(kinds.has('accent')).toBe(true)
+    expect(kinds.has('comment')).toBe(true)
+    expect(tokens.find(token => token.value === '// sum')?.kind).toBe('comment')
+    expect(tokens.find(token => token.value === '42')?.kind).toBe('accent')
+    expect(tokens.find(token => token.value === 'number')?.kind).toBe('type')
+  })
+
+  test('passes through code for non-JavaScript languages', () => {
+    expect(tokenizeLumenCode('SELECT * FROM users', 'sql')).toEqual([
+      { start: 0, value: 'SELECT * FROM users' }
+    ])
+    expect(tokenizeLumenCode('', 'sql')).toEqual([])
   })
 })
 
@@ -286,7 +310,10 @@ describe('lumen product helpers', () => {
     const css = exportThemeCss(palette, ':root[data-theme="acme"]')
 
     expect(css).toContain('--brand: 221 83% 53%;')
+    expect(css).toContain('--glass-bg: 0 0% 100% / 0.55;')
+    expect(css).toContain('--glass-shadow:')
     expect(parseThemeCss(css).accent).toBe('168 76% 36%')
+    expect(parseThemeCss(css)['glass-refraction']).toBe('221 83% 53% / 0.08')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
   })
@@ -310,24 +337,29 @@ describe('lumen product helpers', () => {
       scheme: 'dark'
     })
     expect(generated.tokens.brand).toBe('260 88% 60%')
+    expect(generated.tokens['glass-bg']).toBe('260 20% 13% / 0.78')
+    expect(generated.tokens['glass-brightness']).toBe('1')
     expect(manual.hue).toBe(263)
     expect(manual.tokens.brand).toBe('263 87% 53%')
+    expect(manual.tokens['glass-refraction']).toBe('263 83% 53% / 0.08')
     expect(manual.tokens.accent).toBe('173 80% 40%')
     expect(normalizeThemeBuilderHex('fff')).toBe('#ffffff')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'css')).toContain('color-scheme: dark;')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'css')).toContain('--glass-bg: 260 20% 13% / 0.78;')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"$type": "color"')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"glass-shadow"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'figma')).toContain('"collectionName": "Lumen"')
   })
 
-  test('exports theme tokens for Figma variables and design-token importers', () => {
+  test('exports theme tokens for Figma variables', () => {
     const palette = createThemePalette('221 83% 53%', '168 76% 36%')
     const variables = exportThemeFigmaVariables(palette, {
       collectionName: 'Acme theme',
       modeName: 'Brand'
     })
-    const designTokens = exportThemeDesignTokens(palette)
 
     expect(createFigmaVariableName('surface-muted')).toBe('color/surface/muted')
+    expect(createFigmaVariableName('glass-bg')).toBe('color/glass/bg')
     expect(hslTokenToFigmaColor('221 83% 53%')).toMatchObject({
       a: 1,
       b: 0.9215686274509803,
@@ -341,8 +373,21 @@ describe('lumen product helpers', () => {
       cssValue: 'hsl(221 83% 53%)',
       type: 'COLOR'
     })
+    expect(variables.modes[0]?.variables.find(variable => variable.name === 'color/glass/bg')).toMatchObject({
+      cssValue: 'hsl(0 0% 100% / 0.55)',
+      type: 'COLOR'
+    })
+  })
+
+  test('exports theme tokens for design-token importers', () => {
+    const palette = createThemePalette('221 83% 53%', '168 76% 36%')
+    const designTokens = exportThemeDesignTokens(palette)
+
     expect(designTokens.color.brand?.$value).toBe('#2463eb')
+    expect(designTokens.color['glass-bg']?.$value).toBe('#ffffff8c')
     expect(designTokens.color['surface-muted']?.$type).toBe('color')
+    expect(designTokens.effect?.['glass-blur']?.$type).toBe('dimension')
+    expect(designTokens.effect?.['glass-saturate']?.$value).toBe(1.7)
   })
 
   test('suggests readable ink and tunes low contrast themes', () => {
@@ -384,6 +429,10 @@ describe('lumen theme tokens', () => {
     expect(lumenColors.brand).toMatch(/^\d+ \d+% \d+%$/)
     expect(lumenGlass.blur).toBe('22px')
     expect(lumenGlass.bg).toContain('/')
+    expect(lumenColorTokenNames).toContain('glass-bg')
+    expect(lumenGlassEffectTokenNames).toContain('glass-shadow')
+    expect(lumenGlassTokenNames).toContain('glass-blur')
+    expect(lumenTokenNames).toContain('glass-refraction')
   })
 
   test('composes class names from truthy values only', () => {

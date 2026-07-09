@@ -845,7 +845,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['AlertDialog', 'Overlays', 'Confirms destructive or high-commitment actions.', '<Button data-ui-alert-dialog-trigger="delete-project">Delete</Button><AlertDialog id="delete-project"><h2>Delete this project?</h2><Button data-ui-alert-dialog-close>Cancel</Button></AlertDialog>'],
   ['Agenda', 'Data display', 'Lists upcoming appointments, tasks, or dated events.', '<Agenda><header><h2>Today</h2></header><ol><li><strong>Design review</strong><span>10:00</span></li></ol></Agenda>'],
   ['AspectRatio', 'Layout', 'Keeps media and embeds in a predictable ratio.', '<AspectRatio ratio="16/9"><img src="/logo.svg" alt="Lumen logo" /></AspectRatio>'],
-  ['Attachment', 'Data display', 'Displays a file attachment with metadata.', '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>2 KB</span></Attachment>'],
+  ['Attachment', 'Data display', 'Displays a file attachment with metadata.', '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>1 KB</span></Attachment>'],
   ['Autocomplete', 'Forms', 'Captures searchable text connected to suggestions.', '<Autocomplete list="cities" placeholder="Search city" /><datalist id="cities"><option value="Bogota" /></datalist>'],
   ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'],
   ['Badge', 'Data display', 'Labels status, type, plan, or count information.', '<Badge variant="secondary">Astro</Badge>'],

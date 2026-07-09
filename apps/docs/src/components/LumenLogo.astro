@@ -12,7 +12,7 @@ const {
 } = Astro.props
 ---
 
-<span class:list={['inline-flex items-center gap-2.5', className]}>
+<span class:list={['lumen-logo', className]}>
   <svg
     class:list={['shrink-0', markClass]}
     viewBox="0 0 64 64"
@@ -20,134 +20,40 @@ const {
     aria-hidden={showText ? 'true' : undefined}
     aria-label={showText ? undefined : 'Lumen UI'}
   >
-    <defs>
-      <linearGradient id="lumen-glass-bg" x1="9" x2="56" y1="6" y2="61">
-        <stop stop-color="hsl(224 48% 12%)" />
-        <stop offset="0.52" stop-color="hsl(214 48% 10%)" />
-        <stop offset="1" stop-color="hsl(230 42% 7%)" />
-      </linearGradient>
-      <radialGradient id="lumen-glass-cyan" cx="23%" cy="18%" r="62%">
-        <stop stop-color="hsl(var(--brand))" stop-opacity="0.78" />
-        <stop offset="0.52" stop-color="hsl(var(--accent))" stop-opacity="0.24" />
-        <stop offset="1" stop-color="hsl(var(--accent))" stop-opacity="0" />
-      </radialGradient>
-      <radialGradient id="lumen-glass-violet" cx="78%" cy="84%" r="70%">
-        <stop stop-color="hsl(262 90% 72%)" stop-opacity="0.42" />
-        <stop offset="0.62" stop-color="hsl(262 90% 72%)" stop-opacity="0.12" />
-        <stop offset="1" stop-color="hsl(262 90% 72%)" stop-opacity="0" />
-      </radialGradient>
-      <linearGradient id="lumen-pane-back" x1="17" x2="45" y1="11" y2="47">
-        <stop stop-color="hsl(210 55% 98%)" stop-opacity="0.34" />
-        <stop offset="1" stop-color="hsl(185 88% 72%)" stop-opacity="0.12" />
-      </linearGradient>
-      <linearGradient id="lumen-pane-mid" x1="11" x2="48" y1="17" y2="49">
-        <stop stop-color="hsl(191 96% 78%)" stop-opacity="0.4" />
-        <stop offset="0.48" stop-color="hsl(210 55% 98%)" stop-opacity="0.22" />
-        <stop offset="1" stop-color="hsl(263 94% 78%)" stop-opacity="0.18" />
-      </linearGradient>
-      <linearGradient id="lumen-pane-front" x1="20" x2="52" y1="19" y2="51">
-        <stop stop-color="hsl(210 55% 98%)" stop-opacity="0.6" />
-        <stop offset="0.46" stop-color="hsl(190 96% 88%)" stop-opacity="0.34" />
-        <stop offset="1" stop-color="hsl(168 78% 62%)" stop-opacity="0.18" />
-      </linearGradient>
-      <linearGradient id="lumen-pane-stroke" x1="12" x2="55" y1="10" y2="55">
-        <stop stop-color="hsl(210 55% 98%)" stop-opacity="0.82" />
-        <stop offset="0.5" stop-color="hsl(190 96% 84%)" stop-opacity="0.46" />
-        <stop offset="1" stop-color="hsl(262 90% 82%)" stop-opacity="0.28" />
-      </linearGradient>
-      <linearGradient id="lumen-shine" x1="22" x2="51" y1="24" y2="45">
-        <stop stop-color="hsl(210 55% 98%)" stop-opacity="0.95" />
-        <stop offset="0.52" stop-color="hsl(190 96% 88%)" stop-opacity="0.74" />
-        <stop offset="1" stop-color="hsl(var(--glow))" stop-opacity="0.72" />
-      </linearGradient>
-      <filter id="lumen-pane-shadow" x="-24%" y="-24%" width="148%" height="156%">
-        <feDropShadow dx="0" dy="7" flood-color="hsl(230 42% 3%)" flood-opacity="0.34" stdDeviation="5" />
-      </filter>
-      <filter id="lumen-pane-glow" x="-70%" y="-70%" width="240%" height="240%">
-        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="2.4" />
-        <feColorMatrix
-          in="blur"
-          result="glow"
-          type="matrix"
-          values="0 0 0 0 0.2  0 0 0 0 0.9  0 0 0 0 0.95  0 0 0 0.72 0"
-        />
-        <feMerge>
-          <feMergeNode in="glow" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-    </defs>
-    <rect width="64" height="64" rx="16" fill="url(#lumen-glass-bg)" />
-    <rect width="64" height="64" rx="16" fill="url(#lumen-glass-cyan)" />
-    <rect width="64" height="64" rx="16" fill="url(#lumen-glass-violet)" />
+    <rect width="64" height="64" rx="16" fill="hsl(var(--ink))" />
     <rect
-      x="4.5"
-      y="4.5"
-      width="55"
-      height="55"
-      rx="13.5"
+      x="5"
+      y="5"
+      width="54"
+      height="54"
+      rx="13"
       fill="none"
-      stroke="hsl(210 55% 98%)"
-      stroke-opacity="0.13"
+      stroke="hsl(var(--surface) / 0.28)"
+      stroke-width="1.5"
     />
-    <g filter="url(#lumen-pane-shadow)">
-      <rect
-        x="17.2"
-        y="10.4"
-        width="31"
-        height="38"
-        rx="9"
-        fill="url(#lumen-pane-back)"
-        stroke="url(#lumen-pane-stroke)"
-        stroke-opacity="0.54"
-        transform="rotate(-9 32.7 29.4)"
-      />
-      <rect
-        x="10.3"
-        y="17.2"
-        width="37"
-        height="33"
-        rx="10"
-        fill="url(#lumen-pane-mid)"
-        stroke="url(#lumen-pane-stroke)"
-        stroke-opacity="0.66"
-        transform="rotate(5 28.8 33.7)"
-      />
-      <rect
-        x="18.2"
-        y="20.2"
-        width="36"
-        height="29.5"
-        rx="9.5"
-        fill="url(#lumen-pane-front)"
-        stroke="url(#lumen-pane-stroke)"
-        stroke-width="1.15"
-      />
-    </g>
-    <path
-      d="M24 27.2h14.7"
-      fill="none"
-      stroke="url(#lumen-shine)"
-      stroke-linecap="round"
-      stroke-width="2.2"
-    />
-    <path
-      d="M24 34.2h23.2M24 41.2h12.3"
-      fill="none"
-      stroke="hsl(210 55% 98%)"
-      stroke-linecap="round"
-      stroke-opacity="0.72"
-      stroke-width="2.2"
-    />
-    <circle cx="45.8" cy="27.4" r="3.1" fill="hsl(var(--glow))" filter="url(#lumen-pane-glow)" />
-    <path
-      d="m49.4 13.5 1.4 4.2 4.2 1.4-4.2 1.4-1.4 4.2-1.4-4.2-4.2-1.4 4.2-1.4Z"
-      fill="hsl(210 55% 98%)"
-      opacity="0.9"
+    <text
+      x="9"
+      y="45"
+      fill="hsl(var(--canvas))"
+      font-family="ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif"
+      font-size="42"
+      font-weight="700"
+      letter-spacing="0"
+    >lu</text>
+    <circle
+      cx="50"
+      cy="18"
+      r="3.75"
+      fill="hsl(var(--lumen-logo-dot))"
+      stroke="hsl(var(--ink))"
+      stroke-width="2"
     />
   </svg>
 
   {showText && (
-    <span class="text-sm font-black tracking-wide">Lumen UI</span>
+    <span class="lumen-logo__wordmark">
+      <span class="lumen-logo__name">lumen</span>
+      <span class="lumen-logo__ui">ui</span>
+    </span>
   )}
 </span>

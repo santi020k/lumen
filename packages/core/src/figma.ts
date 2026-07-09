@@ -1,5 +1,13 @@
-import type { LumenThemeTokenName, LumenThemeTokens } from './theme.js'
-import { lumenTokenNames } from './theme.js'
+import type {
+  LumenColorTokenName,
+  LumenGlassEffectTokenName,
+  LumenThemeTokenName,
+  LumenThemeTokens
+} from './theme.js'
+import {
+  lumenColorTokenNames,
+  lumenGlassEffectTokenNames
+} from './theme.js'
 
 export interface LumenFigmaColorValue {
   a: number
@@ -32,14 +40,23 @@ export interface LumenFigmaVariableExportOptions {
   variablePrefix?: string
 }
 
+export type LumenDesignTokenType = 'color' | 'dimension' | 'number' | 'shadow'
+
 export interface LumenDesignToken {
   $description: string
   $type: 'color'
   $value: string
 }
 
+export interface LumenEffectDesignToken {
+  $description: string
+  $type: Exclude<LumenDesignTokenType, 'color'>
+  $value: number | string
+}
+
 export interface LumenDesignTokenExport {
-  color: Partial<Record<LumenThemeTokenName, LumenDesignToken>>
+  color: Partial<Record<LumenColorTokenName, LumenDesignToken>>
+  effect?: Partial<Record<LumenGlassEffectTokenName, LumenEffectDesignToken>>
 }
 
 const lumenTokenDescriptions = {
@@ -49,6 +66,19 @@ const lumenTokenDescriptions = {
   'brand-solid': 'Solid brand fill for high-emphasis controls.',
   canvas: 'Base app or page background.',
   danger: 'Destructive, error, or critical status color.',
+  'glass-bg': 'Default translucent glass fill.',
+  'glass-bg-strong': 'Stronger translucent glass fill for floating surfaces.',
+  'glass-bg-subtle': 'Subtle translucent glass fill for nested surfaces.',
+  'glass-blur': 'Backdrop blur amount for glass surfaces.',
+  'glass-border': 'Translucent glass border color.',
+  'glass-brightness': 'Backdrop brightness multiplier for glass surfaces.',
+  'glass-edge': 'Specular top edge color for glass surfaces.',
+  'glass-edge-soft': 'Soft inner edge color for glass surfaces.',
+  'glass-highlight': 'Glass highlight overlay color.',
+  'glass-refraction': 'Tint used for glass refraction glow.',
+  'glass-saturate': 'Backdrop saturation multiplier for glass surfaces.',
+  'glass-shade': 'Inner glass shade color.',
+  'glass-shadow': 'Layered depth shadow for glass surfaces.',
   ink: 'Primary readable foreground color.',
   'ink-muted': 'Muted foreground color for secondary content.',
   'ink-soft': 'Soft foreground color for tertiary content.',
@@ -141,7 +171,7 @@ export const hslTokenToHexColor = (value: string): string => {
 }
 
 export const createFigmaVariableName = (
-  token: LumenThemeTokenName,
+  token: LumenColorTokenName,
   prefix = 'color'
 ): string => `${prefix}/${token.replaceAll('-', '/')}`
 
@@ -154,7 +184,7 @@ export const exportThemeFigmaVariables = (
   const variablePrefix = options.variablePrefix ?? 'color'
   const variables: LumenFigmaVariable[] = []
 
-  for (const token of lumenTokenNames) {
+  for (const token of lumenColorTokenNames) {
     const value = tokens[token]
 
     if (!value) continue
@@ -174,11 +204,34 @@ export const exportThemeFigmaVariables = (
   }
 }
 
+const getEffectDesignTokenType = (
+  token: LumenGlassEffectTokenName
+): Exclude<LumenDesignTokenType, 'color'> => {
+  if (token === 'glass-blur') return 'dimension'
+
+  if (token === 'glass-shadow') return 'shadow'
+
+  return 'number'
+}
+
+const getEffectDesignTokenValue = (
+  token: LumenGlassEffectTokenName,
+  value: string
+): number | string => {
+  if (token === 'glass-saturate' || token === 'glass-brightness') {
+    const number = Number(value)
+
+    return Number.isFinite(number) ? number : value
+  }
+
+  return value
+}
+
 export const exportThemeDesignTokens = (
   tokens: LumenThemeTokens
 ): LumenDesignTokenExport => ({
   color: Object.fromEntries(
-    lumenTokenNames
+    lumenColorTokenNames
       .filter(token => tokens[token])
       .map(token => [
         token,
@@ -188,5 +241,21 @@ export const exportThemeDesignTokens = (
           $value: hslTokenToHexColor(tokens[token] ?? '')
         }
       ])
+  ),
+  effect: Object.fromEntries(
+    lumenGlassEffectTokenNames
+      .filter(token => tokens[token])
+      .map(token => {
+        const value = tokens[token] ?? ''
+
+        return [
+          token,
+          {
+            $description: lumenTokenDescriptions[token],
+            $type: getEffectDesignTokenType(token),
+            $value: getEffectDesignTokenValue(token, value)
+          }
+        ]
+      })
   )
 })
