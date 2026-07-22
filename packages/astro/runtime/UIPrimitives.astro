@@ -1753,7 +1753,7 @@
     }
 
     if (dispatch) {
-      root.dispatchEvent(new CustomEvent('ui-datatable-selectionchange', {
+      root.dispatchEvent(new CustomEvent('ui:datatable-selection-change', {
         bubbles: true,
         detail: { values: selectedValues }
       }))

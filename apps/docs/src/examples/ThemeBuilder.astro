@@ -30,6 +30,10 @@ import { Label, ThemeBuilder } from '@santi020k/lumen-astro'
     <span data-ui-swatch style="--ui-swatch:hsl(var(--brand))"></span>
     <span data-ui-swatch style="--ui-swatch:hsl(var(--accent))"></span>
   </div>
-  <button data-ui-theme-export type="button">Export CSS</button>
-  <textarea data-ui-theme-output aria-label="Theme CSS"></textarea>
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <button class="ui-button" data-ui-theme-export type="button">Export CSS</button>
+    <button class="ui-button ui-button--outline" data-ui-theme-import type="button">Import CSS</button>
+    <button class="ui-button ui-button--secondary" data-ui-theme-check-contrast type="button">Fix Contrast</button>
+  </div>
+  <textarea class="ui-textarea" data-ui-theme-output aria-label="Theme CSS"></textarea>
 </ThemeBuilder>

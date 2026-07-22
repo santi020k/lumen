@@ -14,8 +14,10 @@ import {
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
   normalizeThemeBuilderHex,
-  renderLumenIconSvg
-} from '@santi020k/lumen-core'
+  parseThemeCss,
+  renderLumenIconSvg,
+  scoreThemeContrast,
+  tuneThemeContrast} from '@santi020k/lumen-core'
 
 type AttributeClassMap = Record<string, Record<string, string>>
 
@@ -189,6 +191,7 @@ const elementConfigs = {
   Attachment: { attributeClasses: glassAttributeClasses('ui-attachment--glass'), baseClassName: 'ui-attachment', tagName: 'lumen-attachment' },
   Autocomplete: { baseClassName: 'ui-input ui-autocomplete', defaults: { role: 'combobox', type: 'search' }, tagName: 'lumen-autocomplete' },
   Avatar: { baseClassName: 'ui-avatar', tagName: 'lumen-avatar' },
+  BackToTop: { baseClassName: 'ui-back-to-top', tagName: 'lumen-back-to-top' },
   Badge: {
     attributeClasses: {
       variant: {
@@ -237,6 +240,7 @@ const elementConfigs = {
   },
   ButtonGroup: { baseClassName: 'ui-button-group', tagName: 'lumen-button-group' },
   Calendar: { attributeClasses: glassAttributeClasses('ui-calendar--glass'), baseClassName: 'ui-calendar', defaults: { 'data-ui-calendar': '' }, tagName: 'lumen-calendar' },
+  Callout: { baseClassName: 'ui-callout', tagName: 'lumen-callout' },
   Card: {
     attributeClasses: {
       glass: {
@@ -313,7 +317,10 @@ const elementConfigs = {
     tagName: 'lumen-dropdown-menu'
   },
   Empty: { attributeClasses: glassAttributeClasses('ui-empty--glass'), baseClassName: 'ui-empty', tagName: 'lumen-empty' },
+  Eyebrow: { baseClassName: 'ui-eyebrow', tagName: 'lumen-eyebrow' },
   Field: { attributeClasses: glassAttributeClasses('ui-field--glass'), baseClassName: 'ui-field', defaults: { 'data-ui-field': '' }, tagName: 'lumen-field' },
+  FloatingBadge: { baseClassName: 'ui-floating-badge', tagName: 'lumen-floating-badge' },
+  FormattedDate: { baseClassName: 'ui-formatted-date', tagName: 'lumen-formatted-date' },
   HoverCard: {
     attributeClasses: {
       glass: { strong: 'ui-hover-card--glass ui-glass-strong', subtle: 'ui-hover-card--glass ui-glass-subtle', true: 'ui-hover-card--glass' },
@@ -335,6 +342,7 @@ const elementConfigs = {
     defaults: { size: 'default' },
     tagName: 'lumen-icon'
   },
+  Image: { baseClassName: 'ui-image', tagName: 'lumen-image' },
   Input: { attributeClasses: { size: { lg: 'ui-input--lg', sm: 'ui-input--sm' } }, baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: { baseClassName: 'ui-input-otp-field', defaults: { 'data-ui-input-otp': '', 'data-ui-input-otp-length': '6' }, tagName: 'lumen-input-otp' },
@@ -342,6 +350,7 @@ const elementConfigs = {
   Item: { attributeClasses: glassAttributeClasses('ui-item--glass'), baseClassName: 'ui-item', tagName: 'lumen-item' },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
   Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
+  Link: { baseClassName: 'ui-link', tagName: 'lumen-link' },
   Marker: {
     attributeClasses: {
       variant: {
@@ -386,6 +395,7 @@ const elementConfigs = {
     tagName: 'lumen-navigation-menu'
   },
   Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
+  Pill: { baseClassName: 'ui-pill', tagName: 'lumen-pill' },
   Popover: {
     attributeClasses: {
       glass: { strong: 'ui-popover--glass ui-glass-strong', subtle: 'ui-popover--glass ui-glass-subtle', true: 'ui-popover--glass' },
@@ -396,6 +406,7 @@ const elementConfigs = {
     tagName: 'lumen-popover'
   },
   Progress: { baseClassName: 'ui-progress', defaults: { role: 'progressbar' }, tagName: 'lumen-progress' },
+  Prose: { baseClassName: 'ui-prose', tagName: 'lumen-prose' },
   RadioGroup: { baseClassName: 'ui-radio-group', defaults: { 'data-ui-radio-group': '' }, tagName: 'lumen-radio-group' },
   Resizable: {
     attributeClasses: { 'data-orientation': { vertical: 'ui-resizable--vertical' } },
@@ -438,6 +449,7 @@ const elementConfigs = {
     tagName: 'lumen-sidebar'
   },
   Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
+  SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' },
   Slider: { baseClassName: 'ui-slider', defaults: { type: 'range' }, tagName: 'lumen-slider' },
   Sonner: { baseClassName: 'ui-sonner', defaults: { 'data-ui-sonner': '' }, tagName: 'lumen-sonner' },
   Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
@@ -447,6 +459,7 @@ const elementConfigs = {
   TagGroup: { baseClassName: 'ui-tag-group', defaults: { role: 'list' }, tagName: 'lumen-tag-group' },
   Textarea: { baseClassName: 'ui-textarea', defaults: { rows: '4' }, tagName: 'lumen-textarea' },
   ThemeBuilder: { attributeClasses: glassAttributeClasses('ui-theme-builder--glass'), baseClassName: 'ui-theme-builder', defaults: { 'data-ui-theme-builder': '' }, tagName: 'lumen-theme-builder' },
+  ThemeToggle: { baseClassName: 'ui-theme-toggle', tagName: 'lumen-theme-toggle' },
   TimeField: { baseClassName: 'ui-input ui-time-field', defaults: { type: 'time' }, tagName: 'lumen-time-field' },
   Toast: {
     attributeClasses: {
@@ -3748,7 +3761,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     this.syncSelectionInputs(selectedValues)
 
     if (dispatch) {
-      this.dispatchEvent(new CustomEvent('ui-datatable-selectionchange', {
+      this.dispatchEvent(new CustomEvent('ui:datatable-selection-change', {
         bubbles: true,
         detail: { values: selectedValues }
       }))
@@ -3879,6 +3892,10 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     const exportFormatButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-export-format]')]
     const modeButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-mode]')]
     const schemeButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')]
+    const importButton = this.querySelector<HTMLButtonElement>('[data-ui-theme-import]')
+    const checkContrastButton = this.querySelector<HTMLButtonElement>('[data-ui-theme-check-contrast]')
+    const scoreElement = this.querySelector<HTMLElement>('[data-ui-theme-contrast-score]')
+    const statusElement = this.querySelector<HTMLElement>('[data-ui-theme-contrast-status]')
 
     this.currentExportFormat = coerceThemeBuilderExportFormat(
       this.getButtonValue(exportFormatButtons, 'data-ui-theme-export-format', 'css')
@@ -3887,6 +3904,20 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     this.currentScheme = coerceThemeBuilderScheme(
       this.getButtonValue(schemeButtons, 'data-ui-theme-scheme', this.getDefaultScheme())
     )
+
+    const updateContrastUi = (tokens: LumenThemeTokens) => {
+      if (!scoreElement && !statusElement) return
+
+      const score = scoreThemeContrast(tokens, 'ink', 'canvas')
+
+      if (scoreElement) scoreElement.textContent = String(score.ratio)
+
+      if (statusElement) {
+        statusElement.textContent = score.wcagAA ? 'Passes WCAG AA' : 'Fails WCAG AA'
+
+        statusElement.dataset.status = score.wcagAA ? 'pass' : 'fail'
+      }
+    }
 
     const update = (dispatch = true): void => {
       const result = createThemeBuilderTokens({
@@ -3909,6 +3940,8 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       }
 
       this.writeExport(output)
+
+      updateContrastUi(result.tokens)
 
       if (dispatch) {
         this.dispatchEvent(new CustomEvent('ui:theme-change', {
@@ -3972,6 +4005,66 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
           format: this.currentExportFormat,
           tokens: this.currentTokens,
           value
+        }
+      }))
+    }, { signal })
+
+    importButton?.addEventListener('click', () => {
+      const value = output?.value || ''
+
+      if (!value) return
+      
+      const parsed = parseThemeCss(value)
+
+      if (Object.keys(parsed).length === 0) return
+      
+      this.currentTokens = parsed
+
+      const target = this.getTarget()
+
+      if (target) {
+        this.applyTokens(target, this.currentTokens, this.currentScheme)
+      }
+
+      this.writeExport(output)
+
+      updateContrastUi(this.currentTokens)
+
+      this.dispatchEvent(new CustomEvent('ui:theme-change', {
+        bubbles: true,
+        detail: {
+          accentHue: 0,
+          hue: 0,
+          mode: 'manual',
+          scheme: this.currentScheme,
+          tokens: this.currentTokens
+        }
+      }))
+    }, { signal })
+
+    checkContrastButton?.addEventListener('click', () => {
+      if (!this.currentTokens) return
+
+      this.currentTokens = tuneThemeContrast(this.currentTokens, 'ink', 'canvas')
+
+      const target = this.getTarget()
+
+      if (target) {
+        this.applyTokens(target, this.currentTokens, this.currentScheme)
+      }
+
+      this.writeExport(output)
+
+      updateContrastUi(this.currentTokens)
+
+      this.dispatchEvent(new CustomEvent('ui:theme-change', {
+        bubbles: true,
+        detail: {
+          accentHue: 0,
+          hue: 0,
+          mode: 'manual',
+          scheme: this.currentScheme,
+          tokens: this.currentTokens
         }
       }))
     }, { signal })

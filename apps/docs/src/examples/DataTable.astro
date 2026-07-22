@@ -41,18 +41,16 @@ const rows = [
     <strong data-selected-count>0</strong> selected
   </p>
 
-  <DataTable columns={columns} name="packages" rows={rows} selectable />
+  <DataTable id="ex-datatable" columns={columns} name="packages" rows={rows} selectable />
 </div>
 
 <script>
-  for (const example of document.querySelectorAll<HTMLElement>('[data-data-table-example]')) {
-    const table = example.querySelector('[data-ui-datatable]')
-    const count = example.querySelector('[data-selected-count]')
+  const table = document.getElementById('ex-datatable')
+  const count = document.querySelector('[data-selected-count]')
 
-    table?.addEventListener('ui-datatable-selectionchange', event => {
-      if (!(event instanceof CustomEvent) || !count) return
+  table?.addEventListener('ui:datatable-selection-change', event => {
+    const detail = (event as CustomEvent<{ values: string[] }>).detail
 
-      count.textContent = String(event.detail.values.length)
-    })
-  }
+    if (count) count.textContent = String(detail.values.length)
+  })
 </script>

@@ -281,10 +281,13 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
         aria-label="Generated theme export"
         class="theme-playground__css"
         data-ui-theme-output
-        readonly
         rows={18}
       >{defaultCss}</Textarea>
-      <Button data-ui-theme-export type="button">Copy CSS</Button>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <Button data-ui-theme-export type="button">Copy CSS</Button>
+        <Button data-ui-theme-import type="button" variant="outline">Import CSS</Button>
+        <Button data-ui-theme-check-contrast type="button" variant="secondary">Fix Contrast</Button>
+      </div>
     </Card>
   </ThemeBuilder>
 

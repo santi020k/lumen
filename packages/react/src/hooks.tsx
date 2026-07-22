@@ -3144,3 +3144,34 @@ const ToastItem = ({
     </aside>
   )
 }
+
+export const useThemeToggle = (defaultTheme = 'light') => {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') ?? 
+        (document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+    }
+
+    return defaultTheme
+  })
+
+  useEffect(() => {
+    const doc = document.documentElement
+
+    doc.setAttribute('data-theme', theme)
+
+    if (theme === 'dark') {
+      doc.classList.add('dark')
+    } else {
+      doc.classList.remove('dark')
+    }
+
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark')
+  }
+
+  return { theme, toggleTheme, setTheme }
+}

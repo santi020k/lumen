@@ -1865,3 +1865,58 @@ export const VirtualList = ({
     {...props}
   />
 )
+
+export type BackToTopProps = ComponentPropsWithoutRef<'button'>
+export const BackToTop = ({ className, type = 'button', ...props }: BackToTopProps) => (
+  <button className={composeClassName('ui-back-to-top', className)} type={type} {...props} />
+)
+
+export type CalloutProps = ComponentPropsWithoutRef<'aside'>
+export const Callout = ({ className, ...props }: CalloutProps) => (
+  <aside className={composeClassName('ui-callout', className)} {...props} />
+)
+
+export type EyebrowProps = ComponentPropsWithoutRef<'p'>
+export const Eyebrow = ({ className, ...props }: EyebrowProps) => (
+  <p className={composeClassName('ui-eyebrow', className)} {...props} />
+)
+
+export type FloatingBadgeProps = ComponentPropsWithoutRef<'span'>
+export const FloatingBadge = ({ className, ...props }: FloatingBadgeProps) => (
+  <span className={composeClassName('ui-floating-badge', className)} {...props} />
+)
+
+export type FormattedDateProps = ComponentPropsWithoutRef<'time'>
+export const FormattedDate = ({ className, ...props }: FormattedDateProps) => (
+  <time className={composeClassName('ui-formatted-date', className)} {...props} />
+)
+
+export type ImageProps = ComponentPropsWithoutRef<'img'>
+export const Image = ({ className, ...props }: ImageProps) => (
+  <img className={composeClassName('ui-image', className)} {...props} />
+)
+
+export type LinkProps = ComponentPropsWithoutRef<'a'>
+export const Link = ({ className, ...props }: LinkProps) => (
+  <a className={composeClassName('ui-link', className)} {...props} />
+)
+
+export type PillProps = ComponentPropsWithoutRef<'span'>
+export const Pill = ({ className, ...props }: PillProps) => (
+  <span className={composeClassName('ui-pill', className)} {...props} />
+)
+
+export type ProseProps = ComponentPropsWithoutRef<'div'>
+export const Prose = ({ className, ...props }: ProseProps) => (
+  <div className={composeClassName('ui-prose', className)} {...props} />
+)
+
+export type SkipLinkProps = ComponentPropsWithoutRef<'a'>
+export const SkipLink = ({ className, ...props }: SkipLinkProps) => (
+  <a className={composeClassName('ui-skip-link', className)} {...props} />
+)
+
+export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
+export const ThemeToggle = ({ className, type = 'button', ...props }: ThemeToggleProps) => (
+  <button className={composeClassName('ui-theme-toggle', className)} type={type} {...props} />
+)

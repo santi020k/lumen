@@ -1,0 +1,27 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'a'> {
+  class?: string
+  className?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-link'
+], classProp, className)
+---
+
+<a
+  class:list={classList}
+  {...passthrough}
+>
+  <slot />
+</a>

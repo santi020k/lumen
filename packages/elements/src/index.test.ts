@@ -528,7 +528,7 @@ describe('@santi020k/lumen-elements', () => {
     const selectAll = document.querySelector<HTMLInputElement>('[data-ui-datatable-select-all]')
     const sortButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-ui-datatable-sort]')]
 
-    root?.addEventListener('ui-datatable-selectionchange', event => {
+    root?.addEventListener('ui:datatable-selection-change', event => {
       selectionEvents.push((event as CustomEvent<{ values: string[] }>).detail.values)
     })
 

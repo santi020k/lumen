@@ -1,0 +1,58 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'button'> {
+  class?: string
+  className?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  type = 'button',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-theme-toggle'
+], classProp, className)
+---
+
+<button
+  type={type}
+  class:list={classList}
+  data-ui-theme-toggle
+  {...passthrough}
+>
+  <slot />
+</button>
+
+<script>
+  function initThemeToggle() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-ui-theme-toggle]')
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const doc = document.documentElement
+        const currentTheme = doc.getAttribute('data-theme') || (doc.classList.contains('dark') ? 'dark' : 'light')
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
+        
+        doc.setAttribute('data-theme', nextTheme)
+        
+        if (nextTheme === 'dark') {
+          doc.classList.add('dark')
+        } else {
+          doc.classList.remove('dark')
+        }
+        
+        localStorage.setItem('theme', nextTheme)
+        window.dispatchEvent(new CustomEvent('theme-change', { detail: nextTheme }))
+      })
+    })
+  }
+  
+  initThemeToggle()
+  
+  document.addEventListener('astro:after-swap', initThemeToggle)
+</script>

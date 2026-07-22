@@ -207,6 +207,19 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "BackToTop",
+      "type": "component",
+      "description": "Returns user to the top of the page.",
+      "category": "Navigation",
+      "files": [
+        "packages/astro/components/BackToTop.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
       "name": "Badge",
       "type": "component",
       "description": "Labels status, type, plan, or count information.",
@@ -286,6 +299,19 @@ export const lumenRegistry = {
       "dependencies": [
         "styles",
         "runtime"
+      ]
+    },
+    {
+      "name": "Callout",
+      "type": "component",
+      "description": "Important notice or callout.",
+      "category": "Feedback",
+      "files": [
+        "packages/astro/components/Callout.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
       ]
     },
     {
@@ -551,6 +577,19 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "Eyebrow",
+      "type": "component",
+      "description": "Small heading or eyebrow text.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/Eyebrow.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
       "name": "Field",
       "type": "component",
       "description": "Groups labels, controls, descriptions, and errors.",
@@ -564,6 +603,32 @@ export const lumenRegistry = {
       "dependencies": [
         "Input",
         "Label",
+        "styles"
+      ]
+    },
+    {
+      "name": "FloatingBadge",
+      "type": "component",
+      "description": "A badge that floats above its container.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/FloatingBadge.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "FormattedDate",
+      "type": "component",
+      "description": "Displays a formatted date.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/FormattedDate.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
         "styles"
       ]
     },
@@ -591,6 +656,19 @@ export const lumenRegistry = {
         "packages/astro/components/Icon.astro",
         "packages/astro/styles/lumen.css",
         "packages/core/src/icons.ts"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "Image",
+      "type": "component",
+      "description": "Displays an image.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/Image.astro",
+        "packages/astro/styles/lumen.css"
       ],
       "dependencies": [
         "styles"
@@ -677,6 +755,19 @@ export const lumenRegistry = {
       ],
       "dependencies": [
         "Input",
+        "styles"
+      ]
+    },
+    {
+      "name": "Link",
+      "type": "component",
+      "description": "A standard link.",
+      "category": "Navigation",
+      "files": [
+        "packages/astro/components/Link.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
         "styles"
       ]
     },
@@ -795,6 +886,19 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "Pill",
+      "type": "component",
+      "description": "A rounded pill badge.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/Pill.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
       "name": "Popover",
       "type": "component",
       "description": "Displays lightweight floating content from a trigger.",
@@ -816,6 +920,19 @@ export const lumenRegistry = {
       "category": "Feedback",
       "files": [
         "packages/astro/components/Progress.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "Prose",
+      "type": "component",
+      "description": "Formats markdown or rich text.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/Prose.astro",
         "packages/astro/styles/lumen.css"
       ],
       "dependencies": [
@@ -984,6 +1101,19 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "SkipLink",
+      "type": "component",
+      "description": "Skips to main content.",
+      "category": "Navigation",
+      "files": [
+        "packages/astro/components/SkipLink.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
       "name": "Slider",
       "type": "component",
       "description": "Captures numeric values across a bounded range.",
@@ -1106,6 +1236,19 @@ export const lumenRegistry = {
       "dependencies": [
         "styles",
         "runtime"
+      ]
+    },
+    {
+      "name": "ThemeToggle",
+      "type": "component",
+      "description": "Toggles the color theme.",
+      "category": "Actions",
+      "files": [
+        "packages/astro/components/ThemeToggle.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
       ]
     },
     {
