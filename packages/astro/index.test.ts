@@ -213,7 +213,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).not.toContain('ui-data-table__sort')
     expect(runtime).toContain('const initDataTables = (scope: ParentNode): void =>')
     expect(runtime).toContain("header.setAttribute('aria-sort', 'none')")
-    expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui-datatable-selectionchange'")
+    expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui:datatable-selection-change'")
     expect(runtime).toContain("input.type = 'hidden'")
     expect(styles).toContain('.ui-data-table__sort')
     expect(styles).toContain('.ui-data-table tbody tr[data-state="selected"]')

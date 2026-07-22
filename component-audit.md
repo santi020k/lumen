@@ -93,7 +93,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | Direction | ✅ | ✅ | Fine. |
 | Typography | ✅ | ✅ | Fine. |
 | Table | ✅ | ✅ | Honest wrapper; fine. |
-| DataTable | ✅ | ✅ | Runtime-enhanced sorting and row selection with form participation; event name is still the pre-`ui:*` `ui-datatable-selectionchange`. |
+| DataTable | ✅ | ✅ | Runtime-enhanced sorting and row selection with form participation; event name is `ui:datatable-selection-change`. |
 
 ### Navigation
 
@@ -150,6 +150,5 @@ Tooltip trigger `aria-describedby` wiring, Avatar's empty-root fallback, and Bre
 Code (`theme` variants, minor).
 
 **P3 — consistency & maintenance:**
-Rename DataTable's `ui-datatable-selectionchange` event to the `ui:*` convention at the next major.
 
 Overall: the system is now much closer to its intended shape — thin, semantic, token-driven wrappers with runtime behavior on the components whose names promise interaction. The old correctness gaps are closed; the remaining work is concentrated in minor example breadth and keeping event naming consistent across the newer runtime surface.

@@ -61,6 +61,10 @@ pnpm run validate
 
 The `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.
 
+## Migration
+
+If you are replacing an older internal design system or duplicated UI primitives, refer to the [Migration Guide](docs/migrating-to-lumen.md) for instructions on adopting Lumen incrementally and mapping existing tokens.
+
 ## Agent and Registry Surfaces
 
 Lumen includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and

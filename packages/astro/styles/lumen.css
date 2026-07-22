@@ -1257,7 +1257,7 @@
 .ui-toggle[aria-pressed="true"] {
   border-color: hsl(var(--brand) / 0.28);
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand));
+  color: hsl(var(--ink));
 }
 
 .ui-tabs {

@@ -23,7 +23,9 @@ const componentSlugs = [
   'card',
   'checkbox',
   'command',
+  'context-menu',
   'data-table',
+  'date-range-picker',
   'dialog',
   'dropdown-menu',
   'field',
@@ -34,11 +36,15 @@ const componentSlugs = [
   'resizable',
   'select',
   'sidebar',
+  'sonner',
   'switch',
   'table',
   'tabs',
   'toast',
-  'tooltip'
+  'tooltip',
+  'tree',
+  'tree-grid',
+  'virtual-list'
 ]
 
 const themes: Theme[] = ['light', 'dark']

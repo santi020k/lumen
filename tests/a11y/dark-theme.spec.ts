@@ -70,7 +70,8 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     'svg',
     '.sr-only',
     '[data-ui-code-line-numbers]',
-    '[data-ui-swatch]'
+    '[data-ui-swatch]',
+    '.docs-home-title span'
   ]
 
   const parseRgb = (value: string): Rgb | null => {

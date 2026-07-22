@@ -75,6 +75,7 @@
   --success: 150 65% 52%;
   --warning: 40 85% 60%;
   --danger: 3 85% 65%;
+  --lumen-logo-accent: 174 76% 56%;
   --glass-bg: 260 22% 12% / 0.78;
   --glass-bg-subtle: 260 22% 12% / 0.64;
   --glass-bg-strong: 260 22% 12% / 0.9;
@@ -137,6 +138,7 @@
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
+  --lumen-logo-accent: 174 76% 56%;
 }
 
 @theme {

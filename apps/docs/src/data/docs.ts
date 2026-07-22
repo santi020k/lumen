@@ -506,7 +506,7 @@ const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardI
 export const runtimeEvents: RuntimeEventRow[] = [
   {
     detail: '{ values: string[] }',
-    name: 'ui-datatable-selectionchange',
+    name: 'ui:datatable-selection-change',
     target: 'DataTable root ([data-ui-datatable])',
     when: 'Fires after a selectable DataTable row checkbox, select-all checkbox, or form reset changes the selected row values.'
   },
@@ -690,6 +690,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('name', 'string', '-', 'Scopes selectable row checkbox names for form submission and runtime selection state.'),
     apiRow('selectable', 'boolean', 'false', 'Enables selectable row behavior for the UIPrimitives runtime.')
   ],
+  DateRangePicker: [
+    apiRow('data-ui-date-range-picker', 'boolean attribute', '-', 'Marks the container to sync min/max constraints between its child DatePicker inputs.')
+  ],
   DatePicker: [
     apiRow('type', 'HTML input type', '"date"', 'Sets the native input type.')
   ],
@@ -830,12 +833,26 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('window.LumenToast.dismiss(id?)', 'function', '-', 'Dismisses one runtime toast, or all runtime toasts when id is omitted.'),
     surfaceApiRow
   ],
+  TimeField: [
+    apiRow('type', 'HTML input type', '"time"', 'Sets the native input type.')
+  ],
   Toggle: [
     apiRow('pressed', 'boolean', 'false', 'Sets the initial pressed state.'),
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
   ],
-  TimeField: [
-    apiRow('type', 'HTML input type', '"time"', 'Sets the native input type.')
+  ToggleGroup: [
+    apiRow('data-ui-toggle-group', 'boolean attribute', '-', 'Marks the container for roving focus management by the UIPrimitives runtime.')
+  ],
+  Tree: [
+    apiRow('role', 'ARIA role', '"tree"', 'Generated tree role for the root element.'),
+    apiRow('aria-expanded, aria-level', 'ARIA attributes', '-', 'Use on child items to indicate nested tree structure.')
+  ],
+  TreeGrid: [
+    apiRow('role', 'ARIA role', '"treegrid"', 'Generated treegrid role for the root element.'),
+    apiRow('role="row", role="gridcell"', 'ARIA roles', '-', 'Use on children to build out the hierarchical grid rows and cells.')
+  ],
+  VirtualList: [
+    apiRow('style', 'CSS declaration', '-', 'Set --ui-list-height in the style attribute to define the scrolling viewport height.')
   ]
 }
 
@@ -848,12 +865,14 @@ export const componentDocs: ComponentDoc[] = ([
   ['Attachment', 'Data display', 'Displays a file attachment with metadata.', '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>1 KB</span></Attachment>'],
   ['Autocomplete', 'Forms', 'Captures searchable text connected to suggestions.', '<Autocomplete list="cities" placeholder="Search city" /><datalist id="cities"><option value="Bogota" /></datalist>'],
   ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'],
+  ['BackToTop', 'Navigation', 'Returns user to the top of the page.', '<BackToTop>Top</BackToTop>'],
   ['Badge', 'Data display', 'Labels status, type, plan, or count information.', '<Badge variant="secondary">Astro</Badge>'],
   ['Breadcrumb', 'Navigation', 'Shows page hierarchy and parent navigation.', '<Breadcrumb><ol><li><a href="/docs">Docs</a></li><li><span aria-current="page">Components</span></li></ol></Breadcrumb>'],
   ['Bubble', 'Data display', 'Frames chat messages and short comments.', '<Bubble from="user">Can you summarize the release?</Bubble>'],
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
   ['ButtonGroup', 'Actions', 'Groups related button actions.', '<ButtonGroup><Button variant="secondary">Back</Button><Button>Publish</Button></ButtonGroup>'],
   ['Calendar', 'Forms', 'Presents a calendar surface for date selection.', '<Calendar aria-label="Choose a delivery date" />'],
+  ['Callout', 'Feedback', 'Important notice or callout.', '<Callout>Note: This is important</Callout>'],
   ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card><h2>Starter</h2><p>For personal projects.</p></Card>'],
   ['Carousel', 'Layout', 'Displays a horizontal sequence of slides.', '<Carousel aria-label="Featured templates"><article>Dashboard</article><article>Portfolio</article></Carousel>'],
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
@@ -872,15 +891,20 @@ export const componentDocs: ComponentDoc[] = ([
   ['Drawer', 'Overlays', 'Slides in supporting navigation, filters, or task panels.', '<Button data-ui-drawer-trigger="filters-drawer">Open filters</Button><Drawer id="filters-drawer"><p>Filter controls</p><Button data-ui-drawer-close>Close</Button></Drawer>'],
   ['DropdownMenu', 'Overlays', 'Shows compact actions from a trigger.', '<DropdownMenu><Button data-ui-trigger>More</Button><div role="menu"><button role="menuitem">Rename</button></div></DropdownMenu>'],
   ['Empty', 'Feedback', 'Explains an empty state and next action.', '<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>'],
+  ['Eyebrow', 'Data display', 'Small heading or eyebrow text.', '<Eyebrow>New</Eyebrow>'],
   ['Field', 'Forms', 'Groups labels, controls, descriptions, and errors.', '<Field><Label for="email">Email</Label><Input id="email" type="email" /></Field>'],
+  ['FloatingBadge', 'Data display', 'A badge that floats above its container.', '<FloatingBadge>1</FloatingBadge>'],
+  ['FormattedDate', 'Data display', 'Displays a formatted date.', '<FormattedDate datetime="2024-01-01">Jan 1, 2024</FormattedDate>'],
   ['HoverCard', 'Overlays', 'Shows extra context on hover and focus.', '<HoverCard><a href="/team/santiago">Santiago</a><div role="tooltip">Maintainer of Lumen UI.</div></HoverCard>'],
   ['Icon', 'Data display', 'Renders Lucide icons with Lumen sizing and accessibility defaults.', '<Icon name="search" label="Search" /><Icon name="wand-sparkles" decorative />'],
+  ['Image', 'Data display', 'Displays an image.', '<Image src="/logo.png" />'],
   ['Input', 'Forms', 'Captures short text, email, password, search, or numeric values.', '<Input id="email" name="email" type="email" placeholder="you@example.com" />'],
   ['InputGroup', 'Forms', 'Combines inputs with prefixes, suffixes, or controls.', '<InputGroup><span>https://</span><Input aria-label="Domain" placeholder="example.com" /></InputGroup>'],
   ['InputOTP', 'Forms', 'Collects one-time passcodes and verification codes.', '<InputOTP name="code" length={6} inputmode="numeric" />'],
   ['Item', 'Data display', 'Creates a compact row for lists and search results.', '<Item><strong>Production docs</strong><span>Ready for review</span></Item>'],
   ['Kbd', 'Data display', 'Displays keyboard shortcuts.', '<p>Open the command menu with <Kbd>Cmd K</Kbd>.</p>'],
   ['Label', 'Forms', 'Labels form controls with consistent spacing.', '<Label for="workspace">Workspace name</Label><Input id="workspace" />'],
+  ['Link', 'Navigation', 'A standard link.', '<Link href="#">Click me</Link>'],
   ['Marker', 'Data display', 'Highlights status, position, or annotations.', '<Marker variant="success">Live</Marker>'],
   ['Menubar', 'Navigation', 'Creates horizontal application menus.', '<Menubar><button role="menuitem">File</button><button role="menuitem">View</button></Menubar>'],
   ['Message', 'Data display', 'Structures a chat, activity, or system message.', '<Message><Avatar>LM</Avatar><Bubble>Lumen components are installed.</Bubble></Message>'],
@@ -889,8 +913,10 @@ export const componentDocs: ComponentDoc[] = ([
   ['NavigationMenu', 'Navigation', 'Builds grouped top-level navigation.', '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'],
   ['NumberField', 'Forms', 'Captures constrained numeric values.', '<NumberField min="1" max="10" step="1" aria-label="Seats" />'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
+  ['Pill', 'Data display', 'A rounded pill badge.', '<Pill>Tag</Pill>'],
   ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
+  ['Prose', 'Layout', 'Formats markdown or rich text.', '<Prose><p>Text</p></Prose>'],
   ['RadioGroup', 'Forms', 'Groups mutually exclusive options.', '<RadioGroup><label><input type="radio" name="theme" value="light" /> Light</label><label><input type="radio" name="theme" value="dark" /> Dark</label></RadioGroup>'],
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],
   ['RichTextEditor', 'Forms', 'Frames rich text toolbar and editing compositions.', '<RichTextEditor><div role="toolbar"><ButtonGroup><Button data-ui-editor-command="bold">B</Button><Button data-ui-editor-command="italic">I</Button></ButtonGroup></div><div contenteditable="true">Draft release notes...</div></RichTextEditor>'],
@@ -902,6 +928,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Sheet', 'Overlays', 'Shows a side sheet for secondary flows.', '<Button data-ui-sheet-trigger="details-sheet">Open details</Button><Sheet id="details-sheet"><p>Details panel</p><Button data-ui-sheet-close>Close</Button></Sheet>'],
   ['Sidebar', 'Navigation', 'Builds persistent app navigation.', '<Sidebar><a href="/dashboard">Dashboard</a><a href="/settings">Settings</a></Sidebar>'],
   ['Skeleton', 'Feedback', 'Reserves space during loading states.', '<Skeleton style="height: 2.5rem" aria-label="Loading profile" />'],
+  ['SkipLink', 'Navigation', 'Skips to main content.', '<SkipLink href="#main">Skip</SkipLink>'],
   ['Slider', 'Forms', 'Captures numeric values across a bounded range.', '<Slider name="opacity" min="0" max="100" value="80" />'],
   ['Sonner', 'Feedback', 'Provides the toast viewport for notifications.', '<Sonner aria-live="polite" />'],
   ['Spinner', 'Feedback', 'Indicates short loading states.', '<Spinner aria-label="Saving" />'],
@@ -911,6 +938,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['TagGroup', 'Forms', 'Groups removable or selectable tags.', '<TagGroup><span data-ui-tag role="listitem">Astro</span><span data-ui-tag role="listitem">Accessible</span></TagGroup>'],
   ['Textarea', 'Forms', 'Captures longer free-form text.', '<Textarea name="notes" rows={5} placeholder="Add release notes..." />'],
   ['ThemeBuilder', 'Data display', 'Builds scoped token previews with hue, scheme, manual color, and export controls.', '<ThemeBuilder data-ui-theme-target="#preview"><input data-ui-theme-brand-hue type="range" min="0" max="359" value="264" /><button data-ui-theme-export type="button">Copy CSS</button><textarea data-ui-theme-output></textarea></ThemeBuilder>'],
+  ['ThemeToggle', 'Actions', 'Toggles the color theme.', '<ThemeToggle>Toggle</ThemeToggle>'],
   ['TimeField', 'Forms', 'Captures a native time value.', '<TimeField name="startTime" aria-label="Start time" />'],
   ['Toast', 'Feedback', 'Displays temporary feedback for background actions.', '<Toast><strong>Saved</strong><p>Your changes are live.</p></Toast>'],
   ['Toggle', 'Actions', 'Represents an on/off action.', '<Toggle aria-label="Pin project" pressed={false}>Pin</Toggle>'],
