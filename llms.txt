@@ -6,12 +6,19 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 
 - README.md: public overview and package strategy.
 - docs/ai-usage.md: AI-focused setup, package selection, and component selection.
+- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.
 - docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.
 - registry/lumen.registry.json: installable component, recipe, and documentation manifest.
 - packages/core/src/components.ts: authoritative shared component catalog.
 - packages/astro/components: reference component markup and prop shapes.
 - packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.
-- @santi020k/lumen-mcp: Model Context Protocol server exposing lumen_list_components, lumen_get_component, lumen_search, lumen_get_tokens, and lumen_get_rules for live component, prop, token, and rule lookups.
+- @santi020k/lumen-mcp: Model Context Protocol server exposing structured component discovery, framework-aware usage/source, recipes, search, tokens, rules, and lumen:// resources for AI agents.
+
+Install the portable Lumen Agent Skill:
+
+```bash
+npx skills add santi020k/lumen --skill lumen-ui
+```
 
 Default usage:
 

@@ -30,6 +30,18 @@ const resultText = (result: unknown): string => {
     .join('\n')
 }
 
+const resultStructuredContent = (result: unknown): Record<string, unknown> => {
+  if (
+    typeof result !== 'object' ||
+    result === null ||
+    !('structuredContent' in result) ||
+    typeof result.structuredContent !== 'object' ||
+    result.structuredContent === null
+  ) return {}
+
+  return result.structuredContent as Record<string, unknown>
+}
+
 const withClient = async (callback: (client: Client, server: McpServer) => Promise<void> | void) => {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
   const client = new Client({ name: 'lumen-mcp-tests', version: '1.0.0' })
@@ -56,7 +68,7 @@ describe('Lumen MCP protocol server', () => {
         name: '@santi020k/lumen-mcp',
         version: loadLumenData().meta.serverVersion
       })
-      expect(client.getInstructions()).toContain('lumen_get_rules')
+      expect(client.getInstructions()).toContain('lumen://rules')
     })
   })
 
@@ -67,12 +79,14 @@ describe('Lumen MCP protocol server', () => {
       expect(response.tools.map((tool) => tool.name)).toEqual([
         'lumen_list_components',
         'lumen_get_component',
+        'lumen_get_recipe',
         'lumen_search',
         'lumen_get_tokens',
         'lumen_get_rules'
       ])
 
       for (const tool of response.tools) {
+        expect(tool.outputSchema).toBeDefined()
         expect(tool.annotations).toMatchObject({
           idempotentHint: true,
           openWorldHint: false,
@@ -85,22 +99,29 @@ describe('Lumen MCP protocol server', () => {
   test('calls a tool and serializes its text result', async () => {
     await withClient(async (client) => {
       const result = await client.callTool({
-        arguments: { includeSource: false, name: 'data-table' },
+        arguments: { detail: 'usage', framework: 'react', name: 'data-table' },
         name: 'lumen_get_component'
       })
 
       expect(result.isError).toBe(false)
       expect(resultText(result)).toContain('# DataTable')
-      expect(resultText(result)).not.toContain('```astro')
+      expect(resultText(result)).toContain('@santi020k/lumen-react')
+      expect(resultStructuredContent(result)).toMatchObject({
+        found: true
+      })
     })
   })
 
   test('executes every catalog discovery tool over MCP', async () => {
     await withClient(async (client) => {
-      const [listResult, searchResult, tokensResult, rulesResult] = await Promise.all([
+      const [listResult, recipeResult, searchResult, tokensResult, rulesResult] = await Promise.all([
         client.callTool({
           arguments: { framework: 'astro', query: 'button' },
           name: 'lumen_list_components'
+        }),
+        client.callTool({
+          arguments: { framework: 'elements', name: 'scheduler' },
+          name: 'lumen_get_recipe'
         }),
         client.callTool({
           arguments: { limit: 5, query: 'date input' },
@@ -111,12 +132,14 @@ describe('Lumen MCP protocol server', () => {
       ])
 
       expect(resultText(listResult)).toContain('Button')
+      expect(resultText(recipeResult)).toContain('lumen add scheduler --target elements')
       expect(resultText(searchResult)).toContain('DatePicker')
       expect(resultText(tokensResult)).toContain('Lumen design tokens')
       expect(resultText(rulesResult)).toContain('@santi020k/lumen')
 
-      for (const result of [listResult, searchResult, tokensResult, rulesResult]) {
+      for (const result of [listResult, recipeResult, searchResult, tokensResult, rulesResult]) {
         expect(result.isError).toBe(false)
+        expect(resultStructuredContent(result)).not.toEqual({})
       }
     })
   })
@@ -128,6 +151,10 @@ describe('Lumen MCP protocol server', () => {
     },
     {
       arguments: { extra: true, name: 'Button' },
+      name: 'lumen_get_component'
+    },
+    {
+      arguments: { detail: 'everything', name: 'Button' },
       name: 'lumen_get_component'
     },
     {
@@ -152,6 +179,32 @@ describe('Lumen MCP protocol server', () => {
 
       expect(result.isError).toBe(true)
       expect(resultText(result)).toContain('Unknown component')
+      expect(resultStructuredContent(result)).toMatchObject({ found: false })
+    })
+  })
+
+  test('lists and reads stable catalog resources', async () => {
+    await withClient(async (client) => {
+      const resources = await client.listResources()
+      const templates = await client.listResourceTemplates()
+
+      expect(resources.resources.some((resource) => resource.uri === 'lumen://rules')).toBe(true)
+      expect(resources.resources.some((resource) => resource.uri === 'lumen://components/button'))
+        .toBe(true)
+      expect(templates.resourceTemplates.map((template) => template.uriTemplate)).toEqual([
+        'lumen://components/{name}',
+        'lumen://recipes/{name}'
+      ])
+
+      const [rules, component, recipe] = await Promise.all([
+        client.readResource({ uri: 'lumen://rules' }),
+        client.readResource({ uri: 'lumen://components/date-range-picker' }),
+        client.readResource({ uri: 'lumen://recipes/advanced-fields' })
+      ])
+
+      expect(rules.contents[0]).toMatchObject({ mimeType: 'text/markdown' })
+      expect(JSON.stringify(component.contents[0])).toContain('DateRangePicker')
+      expect(JSON.stringify(recipe.contents[0])).toContain('advanced-fields')
     })
   })
 })

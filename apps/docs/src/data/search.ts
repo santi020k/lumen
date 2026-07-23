@@ -112,6 +112,14 @@ const recipeItems: DocsSearchItem[] = [
   },
   {
     category: 'AI integration',
+    description: 'Install the portable Lumen UI Agent Skill for Codex, Claude Code, Cursor, Windsurf, and other compatible AI coding tools.',
+    href: '/docs/ai-skill',
+    keywords: normalizeKeywords('ai agent skill skills install codex claude code cursor windsurf gemini github copilot native ui design system npx skills add'),
+    title: 'Lumen AI skill',
+    type: 'Recipe'
+  },
+  {
+    category: 'AI integration',
     description: 'Connect the Lumen MCP server so AI agents can list components, read real source and props, and follow Lumen tokens and rules.',
     href: '/docs/mcp',
     keywords: normalizeKeywords('mcp model context protocol ai agent claude cursor server tools list components get component search tokens rules llms stdio npx'),

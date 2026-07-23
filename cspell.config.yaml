@@ -2,6 +2,10 @@ version: "0.2"
 language: en
 words:
   - aaronmgz
+  - aeiou
+  - affordances
+  - browsable
+  - targetable
   - affix
   - Affix
   - alertdialog
@@ -84,6 +88,7 @@ words:
   - stdio
   - stepper
   - Stepper
+  - stylesheet
   - swrow
   - textareas
   - toolbar

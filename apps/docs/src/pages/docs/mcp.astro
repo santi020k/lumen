@@ -17,12 +17,17 @@ const tools = [
   ],
   [
     'lumen_get_component',
-    'Return one component’s typed props, framework availability, recipes, and the real Astro reference source. Accepts PascalCase or kebab-case.',
+    'Return framework-specific imports, styles, props or attributes, examples, accessibility behavior, events, and optional source.',
     'component'
   ],
   [
+    'lumen_get_recipe',
+    'Return a recipe’s purpose, categories, components, files, and framework-specific install command.',
+    'blocks'
+  ],
+  [
     'lumen_search',
-    'Search across components, props, recipes, tokens, and agent rules by keyword or use-case.',
+    'Rank natural-language matches across descriptions, collections, props, attributes, recipes, tokens, and rules.',
     'search'
   ],
   [
@@ -39,8 +44,17 @@ const tools = [
 
 const workflow = [
   ['01', 'Discover', 'The agent calls lumen_list_components or lumen_search to find the right primitive for the task.'],
-  ['02', 'Read the contract', 'lumen_get_component returns real Astro source and typed props, so the agent uses correct prop names.'],
-  ['03', 'Follow the system', 'lumen_get_tokens and lumen_get_rules keep generated code on the semantic tokens and conventions.']
+  ['02', 'Read framework usage', 'lumen_get_component returns imports, styles, examples, props or attributes, accessibility behavior, and events for Astro, React, or Elements.'],
+  ['03', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
+  ['04', 'Follow the system', 'Structured tokens, resources, and rules keep generated code on Lumen’s semantic contract.']
+] as const
+
+const resources = [
+  ['lumen://rules', 'Agent generation rules as Markdown.'],
+  ['lumen://tokens', 'Structured semantic, color, glass, and theme tokens.'],
+  ['lumen://components', 'Compact structured component catalog.'],
+  ['lumen://components/{name}', 'One component’s metadata and default Astro usage.'],
+  ['lumen://recipes/{name}', 'Recipe metadata and framework install commands.']
 ] as const
 
 const claudeConfig = `{
@@ -60,20 +74,34 @@ const cursorConfig = `{
     }
   }
 }`
+
+const codexConfig = `[mcp_servers.lumen]
+enabled = true
+command = "npx"
+args = ["-y", "@santi020k/lumen-mcp"]
+startup_timeout_sec = 10.0
+tool_timeout_sec = 30.0`
+
+const genericConfig = `{
+  "name": "lumen",
+  "transport": "stdio",
+  "command": "npx",
+  "args": ["-y", "@santi020k/lumen-mcp"]
+}`
 ---
 
 <DocsLayout
-  description="Connect the Lumen MCP server so AI agents can list components, read real source and props, and follow Lumen tokens and rules."
+  description="Connect the Lumen MCP server so AI agents can discover components, read framework contracts and recipes, and follow Lumen tokens and rules."
   title="MCP server - Lumen UI"
 >
   <div class="mcp-page">
     <DocsPageHero
-      description="A Model Context Protocol server that gives AI agents live access to the Lumen catalog: component source, typed props, recipes, design tokens, and the agent rules that keep generated code on-system."
+      description="A Model Context Protocol server that gives AI agents structured access to Lumen component contracts, framework usage, recipes, design tokens, resources, and generation rules."
       eyebrow="AI integration"
       stats={[
-        { label: 'Tools', value: 5 },
+        { label: 'Tools', value: 6 },
+        { label: 'Resources', value: 5 },
         { label: 'Components', value: 121 },
-        { label: 'Transport', value: 'stdio' }
       ]}
       title="Give agents the Lumen contract."
     >
@@ -106,7 +134,7 @@ const cursorConfig = `{
         </div>
         <div>
           <span><Icon decorative name="component" /></span>
-          <p><strong>lumen_get_component</strong><small>Source and props</small></p>
+          <p><strong>lumen_get_component</strong><small>Framework contracts</small></p>
         </div>
         <div>
           <span><Icon decorative name="scroll-text" /></span>
@@ -119,11 +147,11 @@ const cursorConfig = `{
       <div class="mcp-section__heading">
         <div>
           <p>What agents can do</p>
-          <h2 id="tools-title">Five focused tools</h2>
+          <h2 id="tools-title">Six focused tools</h2>
         </div>
         <p>
-          Each tool answers one question an agent asks while generating or reviewing Lumen code,
-          grounded in the same catalog, tokens, and rules the packages ship.
+          Every tool returns readable text plus validated structured content, grounded in the same
+          catalog, docs, framework source, tokens, and rules the packages ship.
         </p>
       </div>
 
@@ -155,6 +183,15 @@ const cursorConfig = `{
       <div class="mcp-setup">
         <Card class="mcp-setup-card" variant="muted">
           <div class="mcp-setup-card__head">
+            <Badge variant="outline">Codex</Badge>
+            <span>.codex/config.toml</span>
+          </div>
+          <pre><code>{codexConfig}</code></pre>
+          <p>Or run <code>codex mcp add lumen -- npx -y {packageName}</code>.</p>
+        </Card>
+
+        <Card class="mcp-setup-card" variant="muted">
+          <div class="mcp-setup-card__head">
             <Badge variant="outline">Claude Desktop</Badge>
             <span>claude_desktop_config.json</span>
           </div>
@@ -168,6 +205,36 @@ const cursorConfig = `{
           </div>
           <pre><code>{cursorConfig}</code></pre>
         </Card>
+
+        <Card class="mcp-setup-card" variant="muted">
+          <div class="mcp-setup-card__head">
+            <Badge variant="outline">Any stdio client</Badge>
+            <span>generic shape</span>
+          </div>
+          <pre><code>{genericConfig}</code></pre>
+        </Card>
+      </div>
+    </section>
+
+    <section class="mcp-section" aria-labelledby="resources-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>Stable context</p>
+          <h2 id="resources-title">Browsable MCP resources</h2>
+        </div>
+        <p>
+          Clients can read or cache stable catalog context without calling a tool. Component and
+          recipe templates are enumerable and support name completion.
+        </p>
+      </div>
+
+      <div class="mcp-resources">
+        {resources.map(([uri, description]) => (
+          <Card class="mcp-resource-card" variant="muted">
+            <code>{uri}</code>
+            <p>{description}</p>
+          </Card>
+        ))}
       </div>
     </section>
 
@@ -178,7 +245,8 @@ const cursorConfig = `{
           <h2 id="workflow-title">Discover, read, and stay on-system</h2>
         </div>
         <p>
-          A short loop keeps generated code aligned with real component props and Lumen conventions.
+          Start compact, read the target framework’s usage contract, and request full source only
+          when the imports, examples, accessibility notes, and API rows are insufficient.
         </p>
       </div>
 
@@ -200,8 +268,9 @@ const cursorConfig = `{
         <Badge>npm package</Badge>
         <h2 id="package-title">{packageName}</h2>
         <p>
-          The bundled snapshot is generated from the component catalog, Astro components, tokens,
-          registry, and llms.txt, so the server always mirrors the shipped packages.
+          The deterministic snapshot is generated from the component registry, documentation API
+          rows and examples, Astro and React declarations, Web Component definitions, tokens,
+          recipes, accessibility interactions, runtime events, and llms.txt.
         </p>
       </div>
       <code>npx -y {packageName}</code>
@@ -389,6 +458,39 @@ const cursorConfig = `{
     font-family: ui-monospace, monospace;
     font-size: 0.78rem;
     line-height: 1.6;
+  }
+
+  .mcp-setup-card > p,
+  .mcp-resource-card p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .mcp-setup-card > p code {
+    color: hsl(var(--ink));
+    font-family: ui-monospace, monospace;
+    font-size: 0.9em;
+  }
+
+  .mcp-resources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .mcp-resource-card {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1rem;
+  }
+
+  .mcp-resource-card code {
+    overflow-wrap: anywhere;
+    color: hsl(var(--brand));
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 750;
   }
 
   .mcp-workflow {
