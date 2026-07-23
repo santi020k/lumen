@@ -1,5 +1,6 @@
 ---
-import { Icon, NativeSelect, NavigationMenu } from '@santi020k/lumen-astro'
+import { Badge, Icon, NativeSelect, NavigationMenu } from '@santi020k/lumen-astro'
+import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
@@ -34,12 +35,14 @@ const navLinks = [
 ] as const
 
 const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
+const componentCount = lumenComponentNames.length
 ---
 
 <div class="docs-site-header">
   <header class="docs-header-shell" data-site-header>
     <a class="docs-header-brand no-underline" href="/">
       <LumenLogo markClass="size-7" />
+      <Badge class="docs-header-count" variant="outline">{componentCount}</Badge>
     </a>
 
     <NavigationMenu class="docs-nav-track" aria-label="Main menu" style={`--item-count:${navLinks.length};--active-index:${activeIndex};`}>

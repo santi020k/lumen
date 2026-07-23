@@ -52,14 +52,11 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
   description="Install and use Lumen UI, a multi-framework primitive component system for Astro, React, and Elements."
   title="Getting started - Lumen UI"
 >
-  <section class="docs-hero" id="introduction" aria-labelledby="intro-title">
+  <section class="docs-hero docs-intro-hero" id="introduction" aria-labelledby="intro-title">
     <div class="docs-hero__content">
-      <Badge>Getting started</Badge>
-      <h1 class="
-        text-4xl/tight font-black text-ink
-        sm:text-5xl/tight
-      " id="intro-title">
-        One primitive system, three framework targets.
+      <Badge variant="outline">Getting started</Badge>
+      <h1 class="docs-intro-title" id="intro-title">
+        Build once. Use Lumen everywhere.
       </h1>
       <p class="max-w-2xl text-lg/8 text-ink-soft">
         Semantic markup, one token-driven stylesheet, and a small progressive-enhancement
@@ -359,3 +356,40 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
     </div>
   </Card>
 </DocsLayout>
+
+<style>
+  .docs-intro-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 88% 8%, hsl(var(--brand) / 0.2), transparent 32%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .docs-intro-title {
+    max-width: 12ch;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 5vw, 4.25rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .docs-intro-hero :global(.docs-hero__surface) {
+    background: hsl(var(--canvas) / 0.7);
+    backdrop-filter: blur(18px);
+  }
+
+  .docs-intro-hero :global(.docs-hero__stats > div) {
+    min-width: 7rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.8rem;
+    background: hsl(var(--canvas) / 0.6);
+  }
+</style>

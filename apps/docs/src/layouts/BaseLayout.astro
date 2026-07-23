@@ -191,7 +191,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     const nextTheme = getToggledTheme(theme)
     const label = `Switch to ${getThemeMode(nextTheme)} mode`
 
-    for (const toggle of targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle]')) {
+    for (const toggle of targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle], [data-ui-theme-toggle]')) {
       toggle.dataset.themeToggle = theme
 
       toggle.setAttribute('aria-label', label)
@@ -297,7 +297,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 
   document.addEventListener('click', event => {
     const toggle = event.target instanceof Element
-      ? event.target.closest<HTMLElement>('[data-theme-toggle]')
+      ? event.target.closest<HTMLElement>('[data-theme-toggle], [data-ui-theme-toggle]')
       : null
 
     if (!toggle || isThemeAnimating) return

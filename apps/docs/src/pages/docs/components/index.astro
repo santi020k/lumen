@@ -1,51 +1,518 @@
 ---
-import { Badge, Card } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Input } from '@santi020k/lumen-astro'
 
 import { componentCategories, componentDocs } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { toSlug } from '../../../lib/routes'
+
+const categoryDescriptions: Record<string, string> = {
+  Actions: 'Buttons, toggles, and controls that help people take action.',
+  Brand: 'Expressive primitives for bringing the Lumen identity into a product.',
+  'Data display': 'Present structured information, media, metrics, and content.',
+  Feedback: 'Communicate status, progress, loading, and important outcomes.',
+  Forms: 'Collect, validate, and refine user input.',
+  Layout: 'Compose content, manage space, and build responsive structure.',
+  Navigation: 'Help people move through pages, views, and collections.',
+  Overlays: 'Layer focused tasks and contextual information above the interface.'
+}
+
+const componentGroups = componentCategories.map(category => ({
+  category,
+  components: componentDocs
+    .filter(component => component.category === category)
+    .sort((left, right) => left.name.localeCompare(right.name))
+}))
+
+const categoryId = (category: string) => toSlug(category).replaceAll(' ', '-')
+const glassCount = componentDocs.filter(component => component.glass).length
 ---
 
 <DocsLayout
   description="Browse all Lumen UI components with live previews and usage examples for Astro, React, and Elements."
   title="Components - Lumen UI"
 >
-  <div class="docs-components-hero mb-10 space-y-3">
-    <div class="flex flex-wrap gap-2">
-      <Badge>{componentDocs.length} primitives</Badge>
-      <Badge variant="outline">{componentDocs.filter(component => component.glass).length} glass surfaces</Badge>
-    </div>
-    <h1 class="text-4xl font-black text-ink">Components</h1>
-    <p class="max-w-2xl text-lg/8 text-ink-soft">
-      {componentDocs.length} primitives, each documented with a live preview and code for
-      Astro, React, and Elements. Glass-capable surfaces use the same tokenized blur,
-      highlight, and border treatment across targets.
-    </p>
-  </div>
+  <div class="components-page">
+    <header class="components-hero">
+      <div class="components-hero__copy">
+        <Badge variant="outline">Component library</Badge>
+        <h1>Find the right primitive.</h1>
+        <p>
+          Browse accessible building blocks for Astro, React, and Web Components.
+          Every primitive includes a live preview, usage examples, and a complete API reference.
+        </p>
+      </div>
 
-  {componentCategories.map(category => (
-    <section class="mb-10 space-y-4" aria-label={category}>
-      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase">{category}</h2>
-      <div class="
-        grid gap-4
-        md:grid-cols-2
-        xl:grid-cols-3
-      ">
-        {componentDocs.filter(component => component.category === category).map(component => (
-          <a class="no-underline" href={`/docs/components/${toSlug(component.name)}`}>
-            <Card class="h-full space-y-2 p-5" variant="interactive">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="text-base font-bold text-ink">{component.name}</h3>
-                <div class="flex flex-wrap justify-end gap-2">
-                  <Badge variant="outline">{category}</Badge>
-                  {component.glass && <Badge variant="outline">Glass</Badge>}
-                </div>
-              </div>
-              <p class="text-sm/6 text-ink-soft">{component.summary}</p>
-            </Card>
+      <dl class="components-stats" aria-label="Component library totals">
+        <div>
+          <dt>Primitives</dt>
+          <dd>{componentDocs.length}</dd>
+        </div>
+        <div>
+          <dt>Categories</dt>
+          <dd>{componentCategories.length}</dd>
+        </div>
+        <div>
+          <dt>Glass surfaces</dt>
+          <dd>{glassCount}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <div class="components-explorer">
+      <div class="components-filter">
+        <label for="component-filter">Search the component library</label>
+        <div class="components-filter__control">
+          <Icon decorative name="search" size="sm" />
+          <Input
+            autocomplete="off"
+            id="component-filter"
+            placeholder="Search by name, category, or use case..."
+            type="search"
+            data-component-filter
+          />
+          <kbd>/</kbd>
+        </div>
+        <p id="component-filter-status" aria-live="polite">
+          Showing all {componentDocs.length} components
+        </p>
+      </div>
+
+      <nav class="components-categories" aria-label="Component categories">
+        {componentGroups.map(({ category, components }) => (
+          <a href={`#${categoryId(category)}`}>
+            <span>{category}</span>
+            <span>{components.length}</span>
           </a>
         ))}
+      </nav>
+    </div>
+
+    <div class="components-catalog" data-component-catalog>
+      {componentGroups.map(({ category, components }) => (
+        <section
+          aria-labelledby={`${categoryId(category)}-title`}
+          data-component-section
+          id={categoryId(category)}
+        >
+          <div class="components-section__heading">
+            <div>
+              <p>{components.length} components</p>
+              <h2 id={`${categoryId(category)}-title`}>{category}</h2>
+            </div>
+            <p>{categoryDescriptions[category]}</p>
+          </div>
+
+          <div class="components-grid">
+            {components.map(component => (
+              <a
+                aria-label={`${component.name}: ${component.summary}`}
+                data-component-card
+                data-component-search={`${component.name} ${category} ${component.summary}`.toLowerCase()}
+                href={`/docs/components/${toSlug(component.name)}`}
+              >
+                <Card class="components-card" variant="interactive">
+                  <div class="components-card__top">
+                    <h3>{component.name}</h3>
+                    {component.glass && <Badge variant="outline">Glass</Badge>}
+                  </div>
+                  <p>{component.summary}</p>
+                  <span class="components-card__link">
+                    View usage
+                    <Icon decorative name="arrow-right" size="sm" />
+                  </span>
+                </Card>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <div class="components-empty" data-component-empty hidden>
+        <Icon decorative name="search-x" size="lg" />
+        <h2>No components found</h2>
+        <p>Try a component name, category, or a broader use case.</p>
       </div>
-    </section>
-  ))}
+    </div>
+  </div>
 </DocsLayout>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('[data-component-filter]')
+  const catalog = document.querySelector<HTMLElement>('[data-component-catalog]')
+  const status = document.querySelector<HTMLElement>('#component-filter-status')
+  const empty = document.querySelector<HTMLElement>('[data-component-empty]')
+
+  const filterComponents = () => {
+    if (!input || !catalog || !status || !empty) return
+
+    const query = input.value.trim().toLowerCase()
+    let visibleCount = 0
+
+    catalog.querySelectorAll<HTMLElement>('[data-component-section]').forEach(section => {
+      let sectionCount = 0
+
+      section.querySelectorAll<HTMLElement>('[data-component-card]').forEach(card => {
+        const matches = !query || card.dataset.componentSearch?.includes(query)
+        card.hidden = !matches
+        if (matches) sectionCount += 1
+      })
+
+      section.hidden = sectionCount === 0
+      visibleCount += sectionCount
+    })
+
+    empty.hidden = visibleCount !== 0
+    status.textContent = query
+      ? `${visibleCount} component${visibleCount === 1 ? '' : 's'} found`
+      : `Showing all ${visibleCount} components`
+  }
+
+  input?.addEventListener('input', filterComponents)
+
+  document.addEventListener('keydown', event => {
+    if (
+      event.key === '/'
+      && document.activeElement?.tagName !== 'INPUT'
+      && document.activeElement?.tagName !== 'TEXTAREA'
+    ) {
+      event.preventDefault()
+      input?.focus()
+    }
+  })
+</script>
+
+<style>
+  .components-page {
+    display: grid;
+    gap: 3rem;
+  }
+
+  .components-hero {
+    display: grid;
+    gap: 2rem;
+    overflow: hidden;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 88% 8%, hsl(var(--brand) / 0.18), transparent 34%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .components-hero__copy {
+    max-width: 44rem;
+  }
+
+  .components-hero h1 {
+    max-width: 12ch;
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.96;
+  }
+
+  .components-hero__copy > p {
+    max-width: 42rem;
+    margin-top: 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .components-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    align-self: end;
+    margin: 0;
+  }
+
+  .components-stats div {
+    padding: 1rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--canvas) / 0.72);
+    backdrop-filter: blur(12px);
+  }
+
+  .components-stats dt {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .components-stats dd {
+    margin-top: 0.35rem;
+    color: hsl(var(--ink));
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  .components-explorer {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .components-filter {
+    display: grid;
+    gap: 0.55rem;
+    max-width: 46rem;
+  }
+
+  .components-filter label {
+    color: hsl(var(--ink));
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  .components-filter__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .components-filter__control > :global(.ui-icon) {
+    position: absolute;
+    z-index: 1;
+    left: 1rem;
+    color: hsl(var(--ink-muted));
+    pointer-events: none;
+  }
+
+  .components-filter__control > :global(.ui-input) {
+    height: 3.25rem;
+    padding-right: 3.25rem;
+    padding-left: 2.75rem;
+    border-radius: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .components-filter__control kbd {
+    position: absolute;
+    right: 0.9rem;
+    display: grid;
+    width: 1.6rem;
+    height: 1.6rem;
+    place-items: center;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.4rem;
+    background: hsl(var(--surface-muted));
+    color: hsl(var(--ink-muted));
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+    pointer-events: none;
+  }
+
+  .components-filter > p {
+    color: hsl(var(--ink-muted));
+    font-size: 0.8rem;
+  }
+
+  .components-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .components-categories a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 999px;
+    background: hsl(var(--surface));
+    color: hsl(var(--ink-soft));
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+  }
+
+  .components-categories a:hover {
+    border-color: hsl(var(--brand));
+    color: hsl(var(--ink));
+    transform: translateY(-1px);
+  }
+
+  .components-categories a span:last-child {
+    display: grid;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+    border-radius: 999px;
+    background: hsl(var(--surface-muted));
+    color: hsl(var(--ink-muted));
+    font-size: 0.68rem;
+  }
+
+  .components-catalog {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  .components-catalog section {
+    scroll-margin-top: 6rem;
+  }
+
+  .components-section__heading {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .components-section__heading > div > p {
+    margin-bottom: 0.25rem;
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .components-section__heading h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .components-section__heading > p {
+    max-width: 34rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .components-grid > a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .components-card {
+    display: flex;
+    min-height: 12rem;
+    height: 100%;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.15rem;
+  }
+
+  .components-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .components-card h3 {
+    overflow-wrap: anywhere;
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+  }
+
+  .components-card > p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.83rem;
+    line-height: 1.55;
+  }
+
+  .components-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: auto;
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 850;
+  }
+
+  .components-card__link :global(.ui-icon) {
+    transition: transform 150ms ease;
+  }
+
+  .components-grid > a:hover .components-card__link :global(.ui-icon) {
+    transform: translateX(0.2rem);
+  }
+
+  .components-empty {
+    padding: 4rem 1rem;
+    border: 1px dashed hsl(var(--line));
+    border-radius: 1.25rem;
+    color: hsl(var(--ink-muted));
+    text-align: center;
+  }
+
+  .components-empty h2 {
+    margin-top: 0.8rem;
+    color: hsl(var(--ink));
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+
+  .components-empty p {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 48rem) {
+    .components-section__heading {
+      grid-template-columns: minmax(12rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
+      justify-content: space-between;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .components-hero {
+      min-height: 28rem;
+      grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.65fr);
+      align-items: end;
+    }
+
+    .components-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .components-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .components-stats div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .components-stats dd {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .components-filter__control kbd {
+      display: none;
+    }
+
+    .components-filter__control > :global(.ui-input) {
+      padding-right: 1rem;
+    }
+  }
+</style>

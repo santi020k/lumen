@@ -1,6 +1,7 @@
 ---
-import { Badge, Card } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon } from '@santi020k/lumen-astro'
 
+import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const figmaLibraryUrl = 'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
@@ -9,20 +10,30 @@ const figmaFileKey = 'luQW2pTQ3jGGxSFPAAsfa9'
 const figmaDetails = [
   [
     'Variables',
-    'Color includes 15 semantic tokens with Light and Dark modes. Radius includes sm, md, and lg values.'
+    'Color includes 15 semantic tokens with Light and Dark modes. Radius includes sm, md, and lg values.',
+    'swatch-book'
   ],
   [
     'Library pages',
-    'Cover, Foundations, and Components keep the design file easy to scan during handoff.'
+    'Cover, Foundations, and Components keep the design file easy to scan during handoff.',
+    'layout-template'
   ],
   [
     'Component variants',
-    'Button, Badge, Input, Field, Card, Alert, Checkbox, Switch, Tabs, and Avatar mirror code props where possible.'
+    'Core variants mirror code props where possible, so review language remains consistent.',
+    'component'
   ],
   [
     'Code workflow',
-    'Use the file as the source for Figma variables, component review, and future Code Connect mappings.'
+    'Use the file for variable references, component review, and future Code Connect mappings.',
+    'code-xml'
   ]
+] as const
+
+const workflow = [
+  ['01', 'Start with semantics', 'Choose canvas, surface, ink, brand, and state tokens before reaching for raw color values.'],
+  ['02', 'Compose with variants', 'Use library components and their variants to keep behavior and naming close to production.'],
+  ['03', 'Hand off by contract', 'Reference component names, props, and semantic tokens—the same vocabulary engineers use in code.']
 ] as const
 ---
 
@@ -30,63 +41,304 @@ const figmaDetails = [
   description="Open the Lumen Figma library and learn how variables, pages, and component variants map back to code."
   title="Figma library - Lumen UI"
 >
-  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs">Docs</a>
-    <span aria-hidden="true"> / </span>
-    <span aria-current="page" class="font-bold text-ink">Figma library</span>
-  </nav>
+  <div class="figma-page">
+    <DocsPageHero
+      description="Design and implementation share one semantic language. Explore variables, component variants, and handoff patterns that map directly to Lumen code."
+      eyebrow="Design handoff"
+      stats={[
+        { label: 'Color tokens', value: 15 },
+        { label: 'Modes', value: 2 },
+        { label: 'Code targets', value: 3 }
+      ]}
+      title="One system from canvas to code."
+    >
+      <Fragment slot="actions">
+        <a
+          class="ui-button ui-button--default-size ui-button--default no-underline"
+          href={figmaLibraryUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open in Figma
+          <Icon decorative name="arrow-up-right" size="sm" />
+        </a>
+        <a
+          class="ui-button ui-button--default-size ui-button--outline no-underline"
+          href="https://github.com/santi020k/lumen/blob/main/docs/figma.md"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Read Figma notes</a>
+      </Fragment>
 
-  <section class="docs-section" aria-labelledby="figma-title">
-    <div class="docs-section-heading">
-      <p>Design handoff</p>
-      <h1 class="
-        text-4xl/tight font-black text-ink
-        sm:text-5xl/tight
-      " id="figma-title">
-        Figma library
-      </h1>
-      <p>
-        Lumen has a Figma library for semantic variables and component review. The library follows
-        the same token contract as the code, so handoff can stay centered on names like
-        <code>brand</code>, <code>surface</code>, <code>line</code>, and <code>ink</code> instead
-        of copied hex values.
-      </p>
-    </div>
-    <div class="
-      grid gap-4
-      lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]
-    ">
-      <Card class="docs-example-card" variant="muted">
-        <Badge>Library file</Badge>
-        <h2 class="text-base font-bold text-ink">Lumen UI Library</h2>
-        <p class="text-sm/6 text-ink-soft">
-          Open the shared Figma file when you need token references, component variants, or a
-          design-to-code handoff surface.
-        </p>
-        <p class="font-mono text-xs text-ink-muted">File key: {figmaFileKey}</p>
-        <div class="flex flex-wrap gap-3">
-          <a class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          " href={figmaLibraryUrl} target="_blank" rel="noopener noreferrer">Open in Figma</a>
-          <a class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          " href="https://github.com/santi020k/lumen/blob/main/docs/figma.md" target="_blank" rel="noopener noreferrer">Read Figma notes</a>
+      <div class="figma-token-stack" slot="visual" aria-label="Semantic token preview">
+        <div>
+          <span style="--token-color: hsl(var(--brand));"></span>
+          <p><strong>brand</strong><small>Primary interaction</small></p>
         </div>
-      </Card>
-      <div class="
-        grid gap-3
-        sm:grid-cols-2
-      ">
-        {figmaDetails.map(([title, description]) => (
-          <Card class="docs-example-card" variant="muted">
-            <h2 class="text-sm font-bold text-ink">{title}</h2>
-            <p class="text-sm/6 text-ink-soft">{description}</p>
+        <div>
+          <span style="--token-color: hsl(var(--surface));"></span>
+          <p><strong>surface</strong><small>Raised content</small></p>
+        </div>
+        <div>
+          <span style="--token-color: hsl(var(--success));"></span>
+          <p><strong>success</strong><small>Positive state</small></p>
+        </div>
+      </div>
+    </DocsPageHero>
+
+    <section class="figma-section" aria-labelledby="library-title">
+      <div class="figma-section__heading">
+        <div>
+          <p>Inside the file</p>
+          <h2 id="library-title">Built for useful handoff</h2>
+        </div>
+        <p>
+          The library is intentionally compact: foundations establish the contract, components
+          demonstrate it, and the codebase remains the source of truth for behavior.
+        </p>
+      </div>
+
+      <div class="figma-details">
+        {figmaDetails.map(([title, description, icon]) => (
+          <Card class="figma-detail-card" variant="muted">
+            <span class="figma-detail-card__icon">
+              <Icon decorative name={icon} />
+            </span>
+            <h3>{title}</h3>
+            <p>{description}</p>
           </Card>
         ))}
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="figma-section" aria-labelledby="workflow-title">
+      <div class="figma-section__heading">
+        <div>
+          <p>Recommended flow</p>
+          <h2 id="workflow-title">Design with the contract</h2>
+        </div>
+        <p>
+          A short loop keeps visual decisions traceable from the first frame through production.
+        </p>
+      </div>
+
+      <ol class="figma-workflow">
+        {workflow.map(([step, title, description]) => (
+          <li>
+            <span>{step}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <Card as="section" class="figma-file-card" aria-labelledby="file-title" glass="subtle">
+      <div>
+        <Badge>Library file</Badge>
+        <h2 id="file-title">Lumen UI Library</h2>
+        <p>
+          Open the shared file for token references, component variants, and design-to-code review.
+        </p>
+      </div>
+      <code>File key: {figmaFileKey}</code>
+      <a
+        class="ui-button ui-button--default-size ui-button--default no-underline"
+        href={figmaLibraryUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >Open library</a>
+    </Card>
+  </div>
 </DocsLayout>
+
+<style>
+  .figma-page {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  .figma-token-stack {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / 0.62);
+    backdrop-filter: blur(14px);
+  }
+
+  .figma-token-stack > div {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem;
+    border-radius: 0.75rem;
+    background: hsl(var(--surface) / 0.75);
+  }
+
+  .figma-token-stack span {
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: 0 0 auto;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.65rem;
+    background: var(--token-color);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.24);
+  }
+
+  .figma-token-stack p {
+    display: grid;
+    margin: 0;
+  }
+
+  .figma-token-stack strong {
+    color: hsl(var(--ink));
+    font: 800 0.78rem/1.3 ui-monospace, monospace;
+  }
+
+  .figma-token-stack small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+  }
+
+  .figma-section {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .figma-section__heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .figma-section__heading > div > p {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .figma-section__heading h2,
+  .figma-file-card h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .figma-section__heading > p,
+  .figma-file-card p {
+    max-width: 36rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .figma-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .figma-detail-card {
+    display: flex;
+    min-height: 13rem;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.15rem;
+  }
+
+  .figma-detail-card__icon {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    place-items: center;
+    border-radius: 0.7rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .figma-detail-card h3,
+  .figma-workflow h3 {
+    color: hsl(var(--ink));
+    font-size: 0.95rem;
+    font-weight: 850;
+  }
+
+  .figma-detail-card p,
+  .figma-workflow p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .figma-workflow {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .figma-workflow li {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .figma-workflow li > span {
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .figma-workflow li div {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .figma-file-card {
+    display: grid;
+    gap: 1.25rem;
+    align-items: center;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .figma-file-card code {
+    overflow: hidden;
+    color: hsl(var(--ink-muted));
+    font-size: 0.72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .figma-file-card > :global(.ui-button) {
+    width: max-content;
+  }
+
+  @media (min-width: 48rem) {
+    .figma-section__heading {
+      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
+    }
+
+    .figma-file-card {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .figma-file-card > :global(.ui-button) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+</style>

@@ -1,0 +1,671 @@
+---
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import {
+  Alert,
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Icon,
+  Input,
+  Marker,
+  Progress,
+  Segmented,
+  Stat,
+  Switch
+} from '@santi020k/lumen-astro'
+
+import LumenLogo from './LumenLogo.astro'
+
+const navigation = [
+  { icon: 'layout-dashboard', label: 'Overview' },
+  { icon: 'chart-no-axes-column-increasing', label: 'Analytics' },
+  { icon: 'users', label: 'Customers' },
+  { icon: 'settings-2', label: 'Settings' }
+] as const
+
+const activity = [
+  { initials: 'AK', label: 'Ada joined the workspace', time: '2m' },
+  { initials: 'JM', label: 'New theme published', time: '18m' },
+  { initials: 'LR', label: 'Accessibility audit passed', time: '1h' }
+] as const
+---
+
+<Card class="home-workbench" glass="subtle">
+  <header class="home-workbench__bar">
+    <div class="home-workbench__brand">
+      <LumenLogo markClass="size-7" showText={false} />
+      <span>Atlas</span>
+      <Badge variant="secondary">Pro</Badge>
+    </div>
+    <div class="home-workbench__bar-actions">
+      <Button aria-label="Search" size="icon" variant="ghost">
+        <Icon name="search" size="sm" />
+      </Button>
+      <Button aria-label="Notifications" size="icon" variant="ghost">
+        <Icon name="bell" size="sm" />
+      </Button>
+      <Avatar fallback="SA" />
+    </div>
+  </header>
+
+  <div class="home-workbench__body">
+    <aside class="home-workbench__nav" aria-label="Demo navigation">
+      <nav>
+        {navigation.map((item, index) => (
+          <Button
+            class="home-workbench__nav-item"
+            variant={index === 0 ? 'secondary' : 'ghost'}
+          >
+            <Icon name={item.icon} size="sm" />
+            <span>{item.label}</span>
+          </Button>
+        ))}
+      </nav>
+      <Alert class="home-workbench__upgrade" variant="success">
+        <Icon name="sparkles" size="sm" />
+        <strong>All systems ready</strong>
+        <p>121 primitives synced.</p>
+      </Alert>
+    </aside>
+
+    <section class="home-workbench__main" aria-labelledby="workbench-title">
+      <div class="home-workbench__heading">
+        <div>
+          <p>Thursday, July 23</p>
+          <h2 id="workbench-title">Good morning, Santi.</h2>
+        </div>
+        <div class="home-workbench__heading-actions">
+          <Button variant="outline">
+            <Icon name="sliders-horizontal" size="sm" />
+            Filter
+          </Button>
+          <Button>
+            <Icon name="plus" size="sm" />
+            New report
+          </Button>
+        </div>
+      </div>
+
+      <div class="home-workbench__stats">
+        <Card class="home-workbench__stat">
+          <div class="home-workbench__stat-top">
+            <span>Monthly revenue</span>
+            <Icon name="wallet-cards" size="sm" />
+          </div>
+          <Stat label="+12.4% from last month" value="$48,290" />
+          <div class="home-workbench__spark" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </Card>
+
+        <Card class="home-workbench__stat">
+          <div class="home-workbench__stat-top">
+            <span>Active projects</span>
+            <Icon name="folder-kanban" size="sm" />
+          </div>
+          <Stat label="8 due this week" value="24" />
+          <Progress aria-label="Project completion" value={72} />
+        </Card>
+
+        <Card class="home-workbench__stat home-workbench__stat--accent">
+          <div class="home-workbench__stat-top">
+            <span>Team health</span>
+            <Marker variant="success">Excellent</Marker>
+          </div>
+          <Stat label="Across 4 squads" value="94%" />
+          <div class="home-workbench__avatars" aria-label="Team members">
+            <Avatar fallback="AK" />
+            <Avatar fallback="JM" />
+            <Avatar fallback="LR" />
+            <Avatar fallback="+8" />
+          </div>
+        </Card>
+      </div>
+
+      <div class="home-workbench__lower">
+        <Card class="home-workbench__chart">
+          <div class="home-workbench__card-head">
+            <div>
+              <h3>Performance</h3>
+              <p>Revenue across the last 6 months</p>
+            </div>
+            <Segmented
+              aria-label="Chart period"
+              name="workbench-period"
+              options={['Week', 'Month', 'Year']}
+              size="sm"
+              value="Month"
+            />
+          </div>
+          <div class="home-workbench__chart-canvas" aria-label="Revenue trend chart">
+            <span>$50k</span>
+            <span>$25k</span>
+            <span>$0</span>
+            <svg viewBox="0 0 620 180" role="img" aria-label="An upward revenue trend">
+              <defs>
+                <linearGradient id="home-chart-fill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="currentColor" stop-opacity=".24" />
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                class="home-workbench__chart-area"
+                d="M0 151 C60 145 67 117 118 121 S185 146 232 111 S291 61 348 79 S422 109 465 65 S543 46 620 17 L620 180 L0 180 Z"
+              />
+              <path
+                class="home-workbench__chart-line"
+                d="M0 151 C60 145 67 117 118 121 S185 146 232 111 S291 61 348 79 S422 109 465 65 S543 46 620 17"
+              />
+              <circle cx="465" cy="65" r="5" />
+            </svg>
+            <div class="home-workbench__chart-labels" aria-hidden="true">
+              <span>Feb</span><span>Mar</span><span>Apr</span>
+              <span>May</span><span>Jun</span><span>Jul</span>
+            </div>
+          </div>
+        </Card>
+
+        <Card class="home-workbench__activity">
+          <div class="home-workbench__card-head">
+            <div>
+              <h3>Recent activity</h3>
+              <p>Your workspace today</p>
+            </div>
+            <Button aria-label="More activity options" size="icon" variant="ghost">
+              <Icon name="ellipsis" size="sm" />
+            </Button>
+          </div>
+          <div class="home-workbench__activity-list">
+            {activity.map(item => (
+              <div class="home-workbench__activity-item">
+                <Avatar fallback={item.initials} />
+                <span>{item.label}</span>
+                <time>{item.time}</time>
+              </div>
+            ))}
+          </div>
+          <label class="home-workbench__notify">
+            <Checkbox checked />
+            <span>Email me a daily summary</span>
+          </label>
+        </Card>
+      </div>
+    </section>
+
+    <aside class="home-workbench__rail" aria-label="Demo quick panel">
+      <div class="home-workbench__rail-head">
+        <span>Quick add</span>
+        <Button aria-label="Close quick panel" size="icon" variant="ghost">
+          <Icon name="x" size="sm" />
+        </Button>
+      </div>
+      <div class="home-workbench__rail-form">
+        <label for="home-demo-title">Task title</label>
+        <Input id="home-demo-title" placeholder="What needs doing?" />
+        <label for="home-demo-owner">Owner</label>
+        <Input id="home-demo-owner" value="Santi A." />
+        <label class="home-workbench__switch">
+          <span>High priority</span>
+          <Switch name="home-demo-priority" />
+        </label>
+        <Button>
+          <Icon name="plus" size="sm" />
+          Add task
+        </Button>
+      </div>
+      <div class="home-workbench__rail-note">
+        <Icon name="wand-sparkles" size="sm" />
+        <p><strong>Built with Lumen.</strong> Every control in this canvas is a library primitive.</p>
+      </div>
+    </aside>
+  </div>
+</Card>
+
+<style>
+  .home-workbench {
+    overflow: hidden;
+    border-color: hsl(var(--line) / .86);
+    border-radius: 1.5rem;
+    background: hsl(var(--surface) / .95);
+    box-shadow:
+      0 40px 100px -45px hsl(var(--ink) / .42),
+      0 1px 0 hsl(0 0% 100% / .1) inset;
+    padding: 0;
+  }
+
+  .home-workbench__bar {
+    display: flex;
+    min-height: 4.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid hsl(var(--line) / .75);
+    padding: .75rem 1rem;
+  }
+
+  .home-workbench__brand,
+  .home-workbench__bar-actions,
+  .home-workbench__heading,
+  .home-workbench__heading-actions,
+  .home-workbench__stat-top,
+  .home-workbench__card-head,
+  .home-workbench__rail-head,
+  .home-workbench__switch {
+    display: flex;
+    align-items: center;
+  }
+
+  .home-workbench__brand,
+  .home-workbench__bar-actions,
+  .home-workbench__heading-actions {
+    gap: .55rem;
+  }
+
+  .home-workbench__brand > span {
+    font-family: var(--app-font-display), sans-serif;
+    font-weight: 800;
+  }
+
+  .home-workbench__bar-actions :global(.ui-avatar) {
+    width: 2.2rem;
+    height: 2.2rem;
+    background: hsl(var(--brand-solid));
+    color: white;
+    font-size: .72rem;
+  }
+
+  .home-workbench__body {
+    display: grid;
+    grid-template-columns: 11.5rem minmax(0, 1fr) 14rem;
+    min-height: 36rem;
+  }
+
+  .home-workbench__nav,
+  .home-workbench__rail {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: hsl(var(--surface-muted) / .45);
+    padding: 1rem;
+  }
+
+  .home-workbench__nav {
+    justify-content: space-between;
+    border-right: 1px solid hsl(var(--line) / .7);
+  }
+
+  .home-workbench__nav nav {
+    display: grid;
+    gap: .3rem;
+  }
+
+  .home-workbench__nav-item {
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: .65rem;
+  }
+
+  .home-workbench__upgrade {
+    display: grid;
+    gap: .3rem;
+    padding: .85rem;
+    font-size: .75rem;
+  }
+
+  .home-workbench__upgrade p,
+  .home-workbench__heading p,
+  .home-workbench__card-head p,
+  .home-workbench__rail-note p {
+    margin: 0;
+  }
+
+  .home-workbench__main {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.25rem;
+  }
+
+  .home-workbench__heading,
+  .home-workbench__card-head,
+  .home-workbench__rail-head,
+  .home-workbench__switch {
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .home-workbench__heading p,
+  .home-workbench__card-head p {
+    color: hsl(var(--ink-muted));
+    font-size: .75rem;
+  }
+
+  .home-workbench__heading h2,
+  .home-workbench__card-head h3 {
+    margin: .15rem 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+  }
+
+  .home-workbench__heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .home-workbench__card-head h3 {
+    font-size: .92rem;
+  }
+
+  .home-workbench__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+  }
+
+  .home-workbench__stat {
+    display: grid;
+    gap: .75rem;
+    min-width: 0;
+    border-color: hsl(var(--line) / .8);
+    box-shadow: none;
+    padding: 1rem;
+  }
+
+  .home-workbench__stat--accent {
+    background:
+      linear-gradient(145deg, hsl(var(--brand-soft) / .85), hsl(var(--surface)));
+  }
+
+  .home-workbench__stat-top {
+    justify-content: space-between;
+    gap: .75rem;
+    color: hsl(var(--ink-muted));
+    font-size: .72rem;
+    font-weight: 700;
+  }
+
+  .home-workbench__stat :global(.ui-stat-value) {
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: 1.55rem;
+    font-weight: 800;
+  }
+
+  .home-workbench__stat :global(.ui-stat-label) {
+    color: hsl(var(--ink-muted));
+    font-size: .68rem;
+  }
+
+  .home-workbench__spark {
+    display: flex;
+    height: 1.7rem;
+    align-items: end;
+    gap: .2rem;
+  }
+
+  .home-workbench__spark i {
+    width: 100%;
+    height: 35%;
+    border-radius: 999px;
+    background: hsl(var(--brand) / .28);
+  }
+
+  .home-workbench__spark i:nth-child(2),
+  .home-workbench__spark i:nth-child(7) { height: 55%; }
+  .home-workbench__spark i:nth-child(3) { height: 42%; }
+  .home-workbench__spark i:nth-child(4),
+  .home-workbench__spark i:nth-child(8) { height: 72%; }
+  .home-workbench__spark i:nth-child(5) { height: 58%; }
+  .home-workbench__spark i:nth-child(6) { height: 84%; }
+  .home-workbench__spark i:nth-child(9) {
+    height: 100%;
+    background: hsl(var(--brand));
+  }
+
+  .home-workbench__avatars {
+    display: flex;
+    padding-left: .4rem;
+  }
+
+  .home-workbench__avatars :global(.ui-avatar) {
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-left: -.4rem;
+    border: 2px solid hsl(var(--surface));
+    background: hsl(var(--surface-strong));
+    font-size: .58rem;
+  }
+
+  .home-workbench__lower {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(14rem, .75fr);
+    gap: .75rem;
+  }
+
+  .home-workbench__chart,
+  .home-workbench__activity {
+    min-width: 0;
+    border-color: hsl(var(--line) / .8);
+    box-shadow: none;
+    padding: 1rem;
+  }
+
+  .home-workbench__chart {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .home-workbench__chart-canvas {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: .4rem;
+    min-height: 13.5rem;
+    color: hsl(var(--brand));
+  }
+
+  .home-workbench__chart-canvas > span {
+    grid-column: 1;
+    color: hsl(var(--ink-muted));
+    font-size: .6rem;
+  }
+
+  .home-workbench__chart-canvas > span:nth-child(2) { align-self: center; }
+  .home-workbench__chart-canvas > span:nth-child(3) { align-self: end; }
+
+  .home-workbench__chart-canvas svg {
+    position: absolute;
+    inset: .25rem 0 1.25rem 2.4rem;
+    width: calc(100% - 2.4rem);
+    height: calc(100% - 1.5rem);
+    overflow: visible;
+  }
+
+  .home-workbench__chart-area {
+    fill: url("#home-chart-fill");
+  }
+
+  .home-workbench__chart-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 4;
+  }
+
+  .home-workbench__chart-canvas circle {
+    fill: hsl(var(--surface));
+    stroke: currentColor;
+    stroke-width: 4;
+  }
+
+  .home-workbench__chart-labels {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 2.4rem;
+    display: flex;
+    justify-content: space-between;
+    color: hsl(var(--ink-muted));
+    font-size: .6rem;
+  }
+
+  .home-workbench__activity {
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+  }
+
+  .home-workbench__activity-list {
+    display: grid;
+    gap: .75rem;
+  }
+
+  .home-workbench__activity-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .55rem;
+    font-size: .7rem;
+    line-height: 1.35;
+  }
+
+  .home-workbench__activity-item :global(.ui-avatar) {
+    width: 1.75rem;
+    height: 1.75rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    font-size: .55rem;
+  }
+
+  .home-workbench__activity-item time {
+    color: hsl(var(--ink-muted));
+  }
+
+  .home-workbench__notify {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: auto;
+    border-top: 1px solid hsl(var(--line) / .7);
+    padding-top: .85rem;
+    color: hsl(var(--ink-soft));
+    font-size: .68rem;
+  }
+
+  .home-workbench__rail {
+    border-left: 1px solid hsl(var(--line) / .7);
+  }
+
+  .home-workbench__rail-head {
+    font-size: .78rem;
+    font-weight: 800;
+  }
+
+  .home-workbench__rail-form {
+    display: grid;
+    gap: .55rem;
+  }
+
+  .home-workbench__rail-form > label {
+    color: hsl(var(--ink-soft));
+    font-size: .68rem;
+    font-weight: 700;
+  }
+
+  .home-workbench__rail-form :global(.ui-input) {
+    width: 100%;
+  }
+
+  .home-workbench__switch {
+    margin: .25rem 0;
+    border-top: 1px solid hsl(var(--line) / .7);
+    border-bottom: 1px solid hsl(var(--line) / .7);
+    padding: .75rem 0;
+  }
+
+  .home-workbench__rail-note {
+    display: grid;
+    gap: .5rem;
+    margin-top: auto;
+    border: 1px solid hsl(var(--brand) / .18);
+    border-radius: .85rem;
+    background: hsl(var(--brand-soft) / .6);
+    color: hsl(var(--ink-soft));
+    padding: .8rem;
+    font-size: .68rem;
+    line-height: 1.5;
+  }
+
+  .home-workbench__rail-note :global(.ui-icon) {
+    color: hsl(var(--brand));
+  }
+
+  @media (max-width: 1100px) {
+    .home-workbench__body {
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+    }
+
+    .home-workbench__nav-item {
+      justify-content: center;
+    }
+
+    .home-workbench__nav-item span,
+    .home-workbench__upgrade,
+    .home-workbench__rail {
+      display: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .home-workbench {
+      border-radius: 1rem;
+    }
+
+    .home-workbench__body {
+      display: block;
+      min-height: 0;
+    }
+
+    .home-workbench__nav,
+    .home-workbench__heading-actions,
+    .home-workbench__activity {
+      display: none;
+    }
+
+    .home-workbench__main {
+      padding: .8rem;
+    }
+
+    .home-workbench__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-workbench__stat--accent {
+      display: none;
+    }
+
+    .home-workbench__lower {
+      display: block;
+    }
+
+    .home-workbench__bar {
+      min-height: 3.6rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .home-workbench__stats {
+      grid-template-columns: 1fr;
+    }
+
+    .home-workbench__stat:nth-child(2) {
+      display: none;
+    }
+
+    .home-workbench__heading h2 {
+      font-size: 1.05rem;
+    }
+  }
+</style>

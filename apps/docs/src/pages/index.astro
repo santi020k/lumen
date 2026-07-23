@@ -1,253 +1,1015 @@
 ---
+/* eslint-disable better-tailwindcss/no-unknown-classes */
 import {
+  Alert,
+  Avatar,
   Badge,
   Button,
+  ButtonGroup,
   ButtonLink,
+  Calendar,
   Card,
+  Checkbox,
   Eyebrow,
+  Field,
   Icon,
-  Separator,
+  Input,
+  Label,
+  Marker,
+  Progress,
   Stat,
+  Switch
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
 import GitHubIcon from '../components/GitHubIcon.astro'
-import PrimitiveShowcase from '../components/PrimitiveShowcase.astro'
-import { componentCategories, componentDocs, frameworkSetups } from '../data/docs'
+import HomeWorkbench from '../components/HomeWorkbench.astro'
+import { frameworkSetups } from '../data/docs'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { toSlug } from '../lib/routes'
 
 const componentCount = lumenComponentNames.length
 const installCommand = 'pnpm add @santi020k/lumen-astro'
 
-const highlights = [
+const principles = [
   {
-    description: 'Real buttons, dialogs, tables, and forms. Accessibility comes from the markup, not a wrapper div.',
-    icon: 'shield-check',
-    metric: 'A11y',
-    title: 'Semantic first'
-  },
-  {
-    description: 'Every target shares the same ui-* stylesheet driven by design tokens, so screens look identical across frameworks.',
+    description: 'One semantic class contract keeps Astro, React, and custom elements visually aligned.',
     icon: 'layers-3',
-    metric: '1 CSS',
-    title: 'One class contract'
+    metric: '3 targets',
+    title: 'Change frameworks, not your design language.'
   },
   {
-    description: 'A single progressive-enhancement script powers dialogs, menus, tabs, and toasts in about 4 KB.',
+    description: 'Keyboard paths, focus management, labels, and meaningful markup are part of the primitive.',
+    icon: 'shield-check',
+    metric: 'A11y first',
+    title: 'The accessible path is the default path.'
+  },
+  {
+    description: 'Interactive Astro primitives use a tiny progressive-enhancement layer, not an app runtime.',
     icon: 'zap',
     metric: '~4 KB',
-    title: 'No framework runtime'
+    title: 'Keep the interaction. Lose the weight.'
   }
 ] as const
 
-const stats = [
-  { label: 'components', value: String(componentCount) },
-  { label: 'targets', value: '3' },
-  { label: 'app runtime lock-in', value: '0' }
+const categories = [
+  'Actions',
+  'Forms',
+  'Navigation',
+  'Overlays',
+  'Data display',
+  'Feedback',
+  'Layout',
+  'Brand'
 ] as const
-
-const featured = componentDocs.slice(0, 8)
 ---
 
 <BaseLayout
-  description={`Lumen is a multi-framework primitive UI system with ${componentCount} components for Astro, React, and Web Components, documented with live examples.`}
-  title="Lumen UI - Primitives for Astro, React, and Web Components"
+  description={`Lumen is a crafted multi-framework UI system with ${componentCount} accessible primitives for Astro, React, and Web Components.`}
+  title="Lumen UI — Crafted primitives for every framework"
 >
-  <main class="
-    docs-home-shell mx-auto flex w-full max-w-6xl flex-col gap-24 px-5 py-16
-    sm:px-8
-  ">
-    <section class="
-      docs-home-hero grid gap-14
-      lg:grid-cols-[0.82fr_1.18fr] lg:items-center
-    ">
-      <div class="docs-home-hero__content">
-        <Eyebrow class="docs-home-eyebrow docs-anim">
-          {componentCount} primitives, one shared contract
+  <main class="home">
+    <section class="home-hero">
+      <div class="home-hero__wash" aria-hidden="true"></div>
+      <div class="home-hero__copy">
+        <Eyebrow class="home-hero__eyebrow">
+          <Marker variant="success">Open source</Marker>
+          <span>{componentCount} crafted primitives</span>
         </Eyebrow>
-        <h1 class="docs-home-title docs-anim">
-          Primitive UI that ships in <span>every framework.</span>
+        <h1>
+          Build interfaces<br />
+          people <em>want</em> to use.
         </h1>
-        <p class="docs-home-lede docs-anim">
-          Lumen is a primitive UI system built on semantic markup and shared design tokens.
-          The same component, the same classes, the same behavior, in Astro, React, and
-          standards-based custom elements.
+        <p class="home-hero__lede">
+          A complete UI foundation for Astro, React, and Web Components.
+          Accessible by default, beautifully tokenized, and designed to feel like yours.
         </p>
-        <div class="docs-home-targets docs-anim" aria-label="Supported frameworks">
+        <div class="home-hero__actions">
+          <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
+            Start building
+          </ButtonLink>
+          <ButtonLink class="home-button-lg" href="/docs/components" variant="secondary">
+            Explore components
+          </ButtonLink>
+        </div>
+        <Button
+          class="home-install"
+          data-copy-command={installCommand}
+          variant="ghost"
+        >
+          <Icon name="terminal" size="sm" />
+          <code>{installCommand}</code>
+          <span class="home-install__copy" data-copy-feedback>Copy</span>
+        </Button>
+        <div class="home-hero__frameworks" aria-label="Supported frameworks">
+          <span>Built for</span>
           <Badge variant="outline">Astro</Badge>
           <Badge variant="outline">React</Badge>
           <Badge variant="outline">Web Components</Badge>
         </div>
-        <div class="docs-home-actions docs-anim">
-          <ButtonLink class="docs-cta-lg" href="/docs" showArrow variant="primary">
-            Get started
-          </ButtonLink>
-          <ButtonLink class="docs-cta-lg" href="/docs/components" variant="ghost">
-            Browse components
-          </ButtonLink>
-        </div>
-        <Button
-          class="docs-home-install docs-anim"
-          data-copy-command={installCommand}
-          variant="outline"
-        >
-          <Icon name="terminal" size="sm" />
-          <span aria-hidden="true">{installCommand}</span>
-          <span class="docs-home-install__action" data-copy-feedback>Copy</span>
-          <span class="sr-only">Copy install command: {installCommand}</span>
-        </Button>
-        <dl class="docs-home-stats docs-anim" aria-label="Lumen at a glance">
-          {stats.map(stat => (
-            <Stat class="docs-home-stat" label={stat.label} value={stat.value} />
-          ))}
-        </dl>
       </div>
 
-      <div class="docs-home-showcase-wrap docs-anim">
-        <span class="docs-home-showcase-glow" aria-hidden="true"></span>
-        <div class="docs-home-window">
-          <div class="docs-home-window__bar" aria-hidden="true">
-            <span class="docs-home-window__dots">
-              <i></i><i></i><i></i>
-            </span>
-            <span class="docs-home-window__url">lumen.santi020k.com</span>
-            <span class="docs-home-window__live">
-              <Icon name="circle-dot" size="sm" />
-              Live
-            </span>
-          </div>
-          <PrimitiveShowcase
-            class="docs-home-showcase"
-            description="This site is built with the same primitives it documents: controls, status, and tokens sharing one contract."
-            title="Workspace launch"
-          />
+      <div class="home-hero__product">
+        <div class="home-hero__product-label" aria-hidden="true">
+          <span>Actual primitives</span>
+          <i></i>
+          <span>Live canvas</span>
+        </div>
+        <HomeWorkbench />
+      </div>
+    </section>
+
+    <section class="home-proof" aria-label="Lumen at a glance">
+      <div class="home-container home-proof__inner">
+        <p>One system. Every surface.</p>
+        <div class="home-proof__stats">
+          <Stat label="components" value={String(componentCount)} />
+          <Stat label="framework targets" value="03" />
+          <Stat label="runtime lock-in" value="00" />
+        </div>
+        <div class="home-proof__categories" aria-label="Component categories">
+          {categories.map(category => <Badge variant="outline">{category}</Badge>)}
         </div>
       </div>
     </section>
 
-    <section class="docs-home-block" aria-label="Why Lumen">
-      <div class="
-        docs-home-highlights grid gap-4
-        md:grid-cols-3
-      ">
-        {highlights.map(highlight => (
-          <Card as="article" class="docs-home-highlight">
-            <div class="docs-home-highlight__top">
-              <span class="docs-home-highlight__icon">
-                <Icon name={highlight.icon} size="sm" />
-              </span>
-              <span class="docs-home-highlight__metric">{highlight.metric}</span>
-            </div>
-            <h2 class="docs-home-highlight__title">{highlight.title}</h2>
-            <p class="docs-home-highlight__body">{highlight.description}</p>
-          </Card>
-        ))}
-      </div>
-    </section>
-
-    <section class="docs-home-block" aria-labelledby="usage-title">
-      <div class="docs-home-block__head">
-        <Eyebrow>Proof, not promises</Eyebrow>
-        <h2 class="docs-home-block__title" id="usage-title">
-          The same component in every framework
-        </h2>
-        <p class="docs-home-block__lede">
-          Install the adapter for your stack and write the same markup. Same classes,
-          same tokens, same behavior.
-        </p>
-      </div>
-      <FrameworkSetupTabs setups={frameworkSetups} />
-    </section>
-
-    <section class="docs-home-block" aria-labelledby="catalog-title">
-      <div class="docs-home-block__head docs-home-block__head--split">
+    <section class="home-section home-container" aria-labelledby="components-title">
+      <div class="home-section__head home-section__head--split">
         <div>
-          <Eyebrow>Component reference</Eyebrow>
-          <h2 class="docs-home-block__title" id="catalog-title">
-            Live previews, code in three flavors
-          </h2>
-          <p class="docs-home-block__lede">
-            Every component page renders the real thing and shows matching Astro, React, and
-            custom-element usage side by side. {componentCategories.join(', ')}.
+          <Eyebrow>Designed as a system</Eyebrow>
+          <h2 id="components-title">The pieces already know<br />how to work together.</h2>
+        </div>
+        <div class="home-section__aside">
+          <p>
+            Production-ready controls with consistent states, spacing, motion,
+            and behavior—composed into real interface patterns.
+          </p>
+          <ButtonLink href="/docs/components" showArrow variant="inline">
+            Browse all {componentCount} components
+          </ButtonLink>
+        </div>
+      </div>
+
+      <div class="home-specimens">
+        <Card class="home-specimen home-specimen--actions">
+          <div class="home-specimen__label">
+            <span>Actions</span>
+            <Badge variant="secondary">7 variants</Badge>
+          </div>
+          <div class="home-specimen__center">
+            <ButtonGroup>
+              <Button>
+                <Icon name="plus" size="sm" />
+                Create
+              </Button>
+              <Button variant="secondary">Duplicate</Button>
+              <Button aria-label="More actions" size="icon" variant="outline">
+                <Icon name="ellipsis" size="sm" />
+              </Button>
+            </ButtonGroup>
+          </div>
+          <p>Buttons, links, groups, toggles, and toolbars share one visual rhythm.</p>
+        </Card>
+
+        <Card class="home-specimen home-specimen--form">
+          <div class="home-specimen__label">
+            <span>Forms</span>
+            <Marker variant="success">Valid</Marker>
+          </div>
+          <div class="home-specimen__form">
+            <Field>
+              <Label for="home-email">Work email</Label>
+              <Input id="home-email" placeholder="you@company.com" type="email" />
+            </Field>
+            <label>
+              <Checkbox checked />
+              <span>Send me product updates</span>
+            </label>
+            <Button>Join the preview</Button>
+          </div>
+        </Card>
+
+        <Card class="home-specimen home-specimen--calendar">
+          <div class="home-specimen__label">
+            <span>Date & time</span>
+            <Badge variant="outline">Keyboard ready</Badge>
+          </div>
+          <Calendar
+            aria-label="Choose a launch date"
+            month="2026-07"
+            value="2026-07-23"
+          />
+        </Card>
+
+        <Card class="home-specimen home-specimen--feedback">
+          <div class="home-specimen__label">
+            <span>Feedback</span>
+            <Badge variant="secondary">Live states</Badge>
+          </div>
+          <div class="home-specimen__alerts">
+            <Alert variant="success">
+              <Icon name="circle-check" size="sm" />
+              <div>
+                <strong>Changes published</strong>
+                <p>Your new theme is live everywhere.</p>
+              </div>
+            </Alert>
+            <Alert variant="warning">
+              <Icon name="triangle-alert" size="sm" />
+              <div>
+                <strong>Review contrast</strong>
+                <p>Accent text needs a darker surface.</p>
+              </div>
+            </Alert>
+          </div>
+        </Card>
+
+        <Card class="home-specimen home-specimen--identity">
+          <div class="home-specimen__label">
+            <span>People & progress</span>
+            <Marker>In review</Marker>
+          </div>
+          <div class="home-specimen__identity">
+            <div class="home-specimen__avatar-stack">
+              <Avatar fallback="SA" />
+              <Avatar fallback="AK" />
+              <Avatar fallback="JM" />
+              <Avatar fallback="+6" />
+            </div>
+            <div>
+              <span>Design system rollout</span>
+              <strong>82%</strong>
+            </div>
+            <Progress aria-label="Design system rollout" value={82} />
+          </div>
+        </Card>
+
+        <Card class="home-specimen home-specimen--tokens">
+          <div class="home-specimen__label">
+            <span>Semantic tokens</span>
+            <Switch aria-label="Enable brand theme" checked />
+          </div>
+          <div class="home-specimen__swatches" aria-label="Token colors">
+            <span style="--swatch: hsl(var(--brand));">brand</span>
+            <span style="--swatch: hsl(var(--accent));">accent</span>
+            <span style="--swatch: hsl(var(--success));">success</span>
+            <span style="--swatch: hsl(var(--warning));">warning</span>
+            <span style="--swatch: hsl(var(--danger));">danger</span>
+          </div>
+          <p>Theme the meaning once. Every primitive follows.</p>
+        </Card>
+      </div>
+    </section>
+
+    <section class="home-principles">
+      <div class="home-container">
+        <div class="home-section__head">
+          <Eyebrow>Quietly rigorous</Eyebrow>
+          <h2>Craft you can see.<br />Details you don’t have to chase.</h2>
+        </div>
+        <div class="home-principles__grid">
+          {principles.map((principle, index) => (
+            <article class="home-principle">
+              <span class="home-principle__number">0{index + 1}</span>
+              <Icon name={principle.icon} />
+              <Badge variant="outline">{principle.metric}</Badge>
+              <h3>{principle.title}</h3>
+              <p>{principle.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section home-container" aria-labelledby="framework-title">
+      <div class="home-section__head home-section__head--split">
+        <div>
+          <Eyebrow>Bring your framework</Eyebrow>
+          <h2 id="framework-title">One design language.<br />Three native implementations.</h2>
+        </div>
+        <div class="home-section__aside">
+          <p>
+            Start with the adapter for your stack. The names, tokens, and interaction
+            model stay familiar when your project changes.
           </p>
         </div>
-        <ButtonLink href="/docs/components" showArrow variant="secondary">
-          See all {componentCount}
-        </ButtonLink>
       </div>
-      <div class="
-        docs-home-catalog grid gap-3
-        sm:grid-cols-2
-        lg:grid-cols-4
-      ">
-        {featured.map(component => (
-          <a
-            class="docs-home-component no-underline"
-            href={`/docs/components/${toSlug(component.name)}`}
-          >
-            <div class="docs-home-component__header">
-              <span class="docs-home-component__mark" aria-hidden="true">
-                {component.name.slice(0, 2)}
-              </span>
-              <div class="docs-home-component__meta">
-                <h3>{component.name}</h3>
-                <p>{component.category}</p>
-              </div>
-              <Icon class="docs-home-component__arrow" name="arrow-up-right" size="sm" />
-            </div>
-            <p class="docs-home-component__body">{component.summary}</p>
-          </a>
-        ))}
+      <div class="home-framework">
+        <FrameworkSetupTabs setups={frameworkSetups} />
       </div>
     </section>
 
-    <Separator />
-
-    <section class="docs-home-cta" aria-label="Get started">
-      <h2 class="docs-home-cta__title">Start with the framework you already use.</h2>
-      <div class="docs-home-cta__actions">
-        <ButtonLink class="docs-cta-lg" href="/docs" variant="primary">
-          <Icon name="book-open" size="sm" />
-          Read the docs
-        </ButtonLink>
-        <ButtonLink
-          class="docs-cta-lg"
-          href="https://github.com/santi020k/lumen"
-          newTab
-          variant="secondary"
-        >
-          <GitHubIcon />
-          Star on GitHub
-        </ButtonLink>
-      </div>
+    <section class="home-container">
+      <Card as="section" class="home-cta">
+        <div class="home-cta__orb" aria-hidden="true"></div>
+        <Eyebrow>Build something considered</Eyebrow>
+        <h2>Your product deserves<br />better defaults.</h2>
+        <p>
+          Start with Lumen’s accessible primitives, then make the system unmistakably yours.
+        </p>
+        <div class="home-cta__actions">
+          <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
+            Read the docs
+          </ButtonLink>
+          <ButtonLink
+            class="home-button-lg"
+            href="https://github.com/santi020k/lumen"
+            newTab
+            variant="secondary"
+          >
+            <GitHubIcon />
+            View on GitHub
+          </ButtonLink>
+        </div>
+      </Card>
     </section>
   </main>
 </BaseLayout>
 
 <script>
-  document.addEventListener('click', event => {
-    const button = event.target instanceof Element
-      ? event.target.closest<HTMLButtonElement>('[data-copy-command]')
-      : null
+  const initHomeCopy = () => {
+    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy-command]')) {
+      if (button.dataset.copyInit === 'true') continue
 
-    const command = button?.dataset.copyCommand
+      button.dataset.copyInit = 'true'
 
-    if (!button || command === undefined) return
+      button.addEventListener('click', async () => {
+        const command = button.dataset.copyCommand
 
-    navigator.clipboard.writeText(command).then(() => {
-      const feedback = button.querySelector('[data-copy-feedback]')
+        if (!command) return
 
-      if (!feedback) return null
+        try {
+          await navigator.clipboard.writeText(command)
 
-      feedback.textContent = 'Copied!'
+          const feedback = button.querySelector('[data-copy-feedback]')
 
-      setTimeout(() => {
-        feedback.textContent = 'Copy'
-      }, 2000)
+          if (!feedback) return
 
-      return null
-    }).catch(() => null)
-  })
+          feedback.textContent = 'Copied'
+
+          setTimeout(() => {
+            feedback.textContent = 'Copy'
+          }, 1800)
+        } catch {
+          // Clipboard access can be unavailable in non-secure preview contexts.
+        }
+      })
+    }
+  }
+
+  initHomeCopy()
+
+  document.addEventListener('astro:page-load', initHomeCopy)
 </script>
+
+<style>
+  .home {
+    overflow: hidden;
+    padding-bottom: clamp(5rem, 10vw, 9rem);
+  }
+
+  .home-container {
+    width: min(100% - 2.5rem, 74rem);
+    margin-inline: auto;
+  }
+
+  .home-hero {
+    position: relative;
+    padding: clamp(5rem, 10vw, 8.5rem) 0 0;
+  }
+
+  .home-hero__wash {
+    position: absolute;
+    top: -12rem;
+    left: 50%;
+    z-index: -1;
+    width: min(100rem, 130vw);
+    height: 52rem;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(circle at 30% 35%, hsl(var(--brand) / .17), transparent 31%),
+      radial-gradient(circle at 70% 30%, hsl(var(--accent) / .12), transparent 28%);
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  .home-hero__copy {
+    display: flex;
+    width: min(100% - 2.5rem, 61rem);
+    margin-inline: auto;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .home-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .65rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .home-hero h1 {
+    max-width: 13ch;
+    margin: 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), "Montserrat", sans-serif;
+    font-size: clamp(3.25rem, 7.4vw, 6.65rem);
+    font-weight: 800;
+    letter-spacing: -.065em;
+    line-height: .91;
+  }
+
+  .home-hero h1 em {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(110deg, hsl(var(--brand)), hsl(var(--accent)));
+    background-clip: text;
+    color: transparent;
+    font-style: normal;
+  }
+
+  .home-hero h1 em::after {
+    position: absolute;
+    right: -.04em;
+    bottom: -.08em;
+    left: -.04em;
+    height: .08em;
+    border-radius: 999px;
+    background: linear-gradient(90deg, hsl(var(--brand)), hsl(var(--accent)));
+    content: "";
+    transform: rotate(-1.5deg);
+  }
+
+  .home-hero__lede {
+    max-width: 42rem;
+    margin: 1.8rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: clamp(1rem, 1.7vw, 1.22rem);
+    line-height: 1.7;
+  }
+
+  .home-hero__actions,
+  .home-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .75rem;
+    margin-top: 1.8rem;
+  }
+
+  .home-button-lg {
+    min-height: 3.25rem;
+    padding-inline: 1.55rem;
+  }
+
+  .home-install {
+    gap: .65rem;
+    max-width: calc(100vw - 2.5rem);
+    margin-top: 1rem;
+    border: 1px solid hsl(var(--line) / .85);
+    border-radius: 999px;
+    background: hsl(var(--surface) / .75);
+    box-shadow: 0 8px 30px hsl(var(--ink) / .04);
+    backdrop-filter: blur(16px);
+    padding-inline: 1rem;
+  }
+
+  .home-install code {
+    overflow: hidden;
+    color: hsl(var(--ink-soft));
+    font-size: .78rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-install__copy {
+    color: hsl(var(--brand));
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .home-hero__frameworks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    margin-top: 1.1rem;
+  }
+
+  .home-hero__frameworks > span {
+    margin-right: .25rem;
+    color: hsl(var(--ink-muted));
+    font-size: .72rem;
+  }
+
+  .home-hero__product {
+    position: relative;
+    width: min(100% - 2.5rem, 82rem);
+    margin: clamp(3.5rem, 7vw, 6rem) auto 0;
+  }
+
+  .home-hero__product::before {
+    position: absolute;
+    inset: -2rem 5% 30%;
+    z-index: -1;
+    border-radius: 50%;
+    background: hsl(var(--brand) / .14);
+    content: "";
+    filter: blur(55px);
+  }
+
+  .home-hero__product-label {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    margin: 0 0 .8rem .5rem;
+    color: hsl(var(--ink-muted));
+    font-size: .66rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .home-hero__product-label i {
+    width: 2.5rem;
+    height: 1px;
+    background: hsl(var(--line));
+  }
+
+  .home-proof {
+    border-top: 1px solid hsl(var(--line) / .7);
+    border-bottom: 1px solid hsl(var(--line) / .7);
+    background: hsl(var(--surface-muted) / .35);
+    margin-top: 5rem;
+    padding: 2rem 0;
+  }
+
+  .home-proof__inner {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 2.25rem;
+  }
+
+  .home-proof__inner > p {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-weight: 800;
+  }
+
+  .home-proof__stats {
+    display: flex;
+    gap: 1.5rem;
+    border-right: 1px solid hsl(var(--line));
+    border-left: 1px solid hsl(var(--line));
+    padding-inline: 2rem;
+  }
+
+  .home-proof__stats :global(.ui-stat-value) {
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .home-proof__stats :global(.ui-stat-label) {
+    color: hsl(var(--ink-muted));
+    font-size: .62rem;
+  }
+
+  .home-proof__categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .4rem;
+  }
+
+  .home-section {
+    padding-top: clamp(6rem, 11vw, 10rem);
+  }
+
+  .home-section__head {
+    display: grid;
+    gap: .75rem;
+  }
+
+  .home-section__head--split {
+    grid-template-columns: minmax(0, 1.35fr) minmax(17rem, .65fr);
+    align-items: end;
+    gap: 3rem;
+  }
+
+  .home-section__head h2,
+  .home-cta h2 {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), "Montserrat", sans-serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -.045em;
+    line-height: 1.02;
+  }
+
+  .home-section__aside {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+  }
+
+  .home-section__aside p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .95rem;
+    line-height: 1.7;
+  }
+
+  .home-specimens {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: .9rem;
+    margin-top: 3rem;
+  }
+
+  .home-specimen {
+    display: flex;
+    min-height: 18rem;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+    border-color: hsl(var(--line) / .86);
+    box-shadow: none;
+    padding: 1.15rem;
+  }
+
+  .home-specimen--actions { grid-column: span 7; }
+  .home-specimen--form { grid-column: span 5; }
+  .home-specimen--calendar { grid-column: span 5; }
+  .home-specimen--feedback { grid-column: span 7; }
+  .home-specimen--identity { grid-column: span 7; }
+  .home-specimen--tokens { grid-column: span 5; }
+
+  .home-specimen__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: hsl(var(--ink));
+    font-size: .74rem;
+    font-weight: 800;
+  }
+
+  .home-specimen__center {
+    display: grid;
+    min-height: 10rem;
+    place-items: center;
+    border-radius: .9rem;
+    background:
+      linear-gradient(hsl(var(--line) / .35) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--line) / .35) 1px, transparent 1px),
+      hsl(var(--surface-muted) / .45);
+    background-size: 24px 24px;
+  }
+
+  .home-specimen > p {
+    margin: auto 0 0;
+    color: hsl(var(--ink-muted));
+    font-size: .78rem;
+    line-height: 1.6;
+  }
+
+  .home-specimen__form {
+    display: grid;
+    gap: .8rem;
+    margin: auto 0;
+    border: 1px solid hsl(var(--line) / .75);
+    border-radius: 1rem;
+    background: hsl(var(--surface-muted) / .45);
+    padding: 1rem;
+  }
+
+  .home-specimen__form > label {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    color: hsl(var(--ink-soft));
+    font-size: .72rem;
+  }
+
+  .home-specimen__form :global(.ui-input) {
+    width: 100%;
+  }
+
+  .home-specimen--calendar :global(.ui-calendar) {
+    margin: auto;
+    border: 0;
+    box-shadow: none;
+    transform: scale(.9);
+  }
+
+  .home-specimen__alerts {
+    display: grid;
+    gap: .75rem;
+    margin: auto 0;
+  }
+
+  .home-specimen__alerts :global(.ui-alert) {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+  }
+
+  .home-specimen__alerts strong {
+    font-size: .82rem;
+  }
+
+  .home-specimen__alerts p {
+    margin: .2rem 0 0;
+    font-size: .72rem;
+  }
+
+  .home-specimen__identity {
+    display: grid;
+    gap: 1rem;
+    margin: auto 0;
+    border-radius: 1rem;
+    background: hsl(var(--surface-muted) / .5);
+    padding: 1.2rem;
+  }
+
+  .home-specimen__avatar-stack {
+    display: flex;
+    padding-left: .65rem;
+  }
+
+  .home-specimen__avatar-stack :global(.ui-avatar) {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: -.65rem;
+    border: 3px solid hsl(var(--surface));
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    font-size: .68rem;
+  }
+
+  .home-specimen__identity > div:nth-child(2) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: hsl(var(--ink-soft));
+    font-size: .78rem;
+  }
+
+  .home-specimen__identity strong {
+    color: hsl(var(--ink));
+  }
+
+  .home-specimen__swatches {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: .55rem;
+    margin: auto 0;
+  }
+
+  .home-specimen__swatches span {
+    display: grid;
+    gap: .5rem;
+    color: hsl(var(--ink-muted));
+    font-size: .58rem;
+    text-align: center;
+  }
+
+  .home-specimen__swatches span::before {
+    height: 5.5rem;
+    border: 1px solid hsl(var(--line) / .5);
+    border-radius: .7rem;
+    background: var(--swatch);
+    content: "";
+  }
+
+  .home-principles {
+    margin-top: clamp(6rem, 11vw, 10rem);
+    border-top: 1px solid hsl(var(--line) / .7);
+    border-bottom: 1px solid hsl(var(--line) / .7);
+    background:
+      radial-gradient(circle at 85% 15%, hsl(var(--brand) / .12), transparent 28%),
+      hsl(var(--surface-muted) / .42);
+    padding: clamp(5rem, 9vw, 8rem) 0;
+  }
+
+  .home-principles__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 3.5rem;
+    border-top: 1px solid hsl(var(--line));
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .home-principle {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-height: 21rem;
+    padding: 2rem;
+  }
+
+  .home-principle + .home-principle {
+    border-left: 1px solid hsl(var(--line));
+  }
+
+  .home-principle__number {
+    color: hsl(var(--ink-muted));
+    font-family: var(--santi020k-font-mono, monospace);
+    font-size: .7rem;
+  }
+
+  .home-principle > :global(.ui-icon) {
+    width: 2rem;
+    height: 2rem;
+    margin-top: 1.5rem;
+    color: hsl(var(--brand));
+  }
+
+  .home-principle > :global(.ui-badge) {
+    justify-self: start;
+  }
+
+  .home-principle h3 {
+    max-width: 19rem;
+    margin: auto 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  .home-principle p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .85rem;
+    line-height: 1.65;
+  }
+
+  .home-framework {
+    margin-top: 3rem;
+    border: 1px solid hsl(var(--line) / .8);
+    border-radius: 1.3rem;
+    background: hsl(var(--surface));
+    box-shadow: 0 22px 60px -42px hsl(var(--ink) / .4);
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .home-cta {
+    position: relative;
+    display: flex;
+    margin-top: clamp(6rem, 11vw, 10rem);
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    border-color: hsl(var(--brand) / .22);
+    background:
+      linear-gradient(145deg, hsl(var(--brand-soft) / .7), hsl(var(--surface)));
+    box-shadow: none;
+    text-align: center;
+    padding: clamp(3rem, 8vw, 6rem) 1.5rem;
+  }
+
+  .home-cta__orb {
+    position: absolute;
+    top: -9rem;
+    left: 50%;
+    z-index: 0;
+    width: 27rem;
+    height: 17rem;
+    border-radius: 50%;
+    background: hsl(var(--brand) / .2);
+    filter: blur(55px);
+    transform: translateX(-50%);
+  }
+
+  .home-cta > *:not(.home-cta__orb) {
+    position: relative;
+  }
+
+  .home-cta h2 {
+    margin-top: 1rem;
+  }
+
+  .home-cta > p {
+    max-width: 38rem;
+    margin: 1.25rem 0 0;
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  @media (max-width: 960px) {
+    .home-proof__inner {
+      grid-template-columns: 1fr auto;
+    }
+
+    .home-proof__categories {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+
+    .home-proof__stats {
+      border-right: 0;
+    }
+
+    .home-section__head--split {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 1.5rem;
+    }
+
+    .home-section__aside {
+      max-width: 34rem;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .home-container,
+    .home-hero__copy,
+    .home-hero__product {
+      width: min(100% - 1.5rem, 74rem);
+    }
+
+    .home-hero {
+      padding-top: 3.75rem;
+    }
+
+    .home-hero h1 {
+      font-size: clamp(3.15rem, 15vw, 5rem);
+    }
+
+    .home-hero__lede {
+      font-size: .98rem;
+    }
+
+    .home-proof__inner {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .home-proof__stats {
+      border-left: 0;
+      padding-inline: 0;
+    }
+
+    .home-proof__categories {
+      grid-column: auto;
+    }
+
+    .home-specimens,
+    .home-principles__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .home-specimen {
+      grid-column: auto;
+      min-height: 17rem;
+    }
+
+    .home-principle {
+      min-height: 18rem;
+      padding-inline: 1rem;
+    }
+
+    .home-principle + .home-principle {
+      border-top: 1px solid hsl(var(--line));
+      border-left: 0;
+    }
+
+    .home-specimen__swatches span::before {
+      height: 4rem;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .home-hero__actions,
+    .home-cta__actions {
+      width: 100%;
+      flex-direction: column;
+    }
+
+    .home-hero__actions :global(.ui-button-link),
+    .home-cta__actions :global(.ui-button-link) {
+      width: 100%;
+    }
+
+    .home-proof__stats {
+      justify-content: space-between;
+      gap: .8rem;
+    }
+
+    .home-specimen__center :global(.ui-button-group) {
+      transform: scale(.86);
+    }
+  }
+</style>

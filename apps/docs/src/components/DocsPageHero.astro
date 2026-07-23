@@ -1,0 +1,185 @@
+---
+import { Badge } from '@santi020k/lumen-astro'
+
+interface Stat {
+  label: string
+  value: string | number
+}
+
+interface Props {
+  description: string
+  eyebrow: string
+  stats?: Stat[]
+  title: string
+}
+
+const { description, eyebrow, stats = [], title } = Astro.props
+---
+
+<header class="docs-page-hero">
+  <div class="docs-page-hero__copy">
+    <Badge variant="outline">{eyebrow}</Badge>
+    <h1>{title}</h1>
+    <p>{description}</p>
+    <div class="docs-page-hero__actions">
+      <slot name="actions" />
+    </div>
+  </div>
+
+  <div class="docs-page-hero__aside">
+    <div class="docs-page-hero__visual">
+      <slot name="visual" />
+    </div>
+
+    {stats.length > 0 && (
+      <dl class="docs-page-hero__stats" aria-label={`${eyebrow} overview`}>
+        {stats.map(stat => (
+          <div>
+            <dt>{stat.label}</dt>
+            <dd>{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+  </div>
+</header>
+
+<style>
+  .docs-page-hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: 2rem;
+    overflow: hidden;
+    min-height: 27rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 92% 8%, hsl(var(--brand) / 0.2), transparent 32%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .docs-page-hero::after {
+    position: absolute;
+    z-index: -1;
+    right: -5rem;
+    bottom: -8rem;
+    width: 19rem;
+    height: 19rem;
+    border-radius: 999px;
+    background: hsl(var(--accent) / 0.08);
+    content: "";
+    filter: blur(1px);
+  }
+
+  .docs-page-hero__copy {
+    align-self: end;
+    max-width: 44rem;
+  }
+
+  .docs-page-hero h1 {
+    max-width: 13ch;
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 6vw, 4.75rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .docs-page-hero__copy > p {
+    max-width: 41rem;
+    margin-top: 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .docs-page-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .docs-page-hero__actions:empty {
+    display: none;
+  }
+
+  .docs-page-hero__aside {
+    display: grid;
+    gap: 0.75rem;
+    align-self: end;
+  }
+
+  .docs-page-hero__visual {
+    min-width: 0;
+  }
+
+  .docs-page-hero__visual:empty {
+    display: none;
+  }
+
+  .docs-page-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+  }
+
+  .docs-page-hero__stats div {
+    min-width: 0;
+    padding: 0.85rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.9rem;
+    background: hsl(var(--canvas) / 0.72);
+    backdrop-filter: blur(12px);
+  }
+
+  .docs-page-hero__stats dt {
+    overflow: hidden;
+    color: hsl(var(--ink-muted));
+    font-size: 0.62rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .docs-page-hero__stats dd {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  @media (min-width: 64rem) {
+    .docs-page-hero {
+      grid-template-columns: minmax(0, 1.3fr) minmax(17rem, 0.7fr);
+      align-items: end;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .docs-page-hero {
+      min-height: auto;
+    }
+
+    .docs-page-hero__stats {
+      grid-template-columns: 1fr;
+    }
+
+    .docs-page-hero__stats div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .docs-page-hero__stats dd {
+      margin: 0;
+    }
+  }
+</style>

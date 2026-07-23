@@ -625,6 +625,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('alt', 'string', '""', 'Accessible text for the image.'),
     apiRow('fallback', 'string', '-', 'Fallback text shown when no image source is provided.')
   ],
+  BackToTop: [
+    apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.'),
+    apiRow('data-ui-back-to-top', 'boolean attribute', 'generated', 'Marks the button for scroll-to-top behavior from the UIPrimitives runtime.')
+  ],
   Badge: [
     apiRow('variant', '"default" | "secondary" | "outline" | "destructive" | "success" | "warning"', '"default"', 'Controls the badge tone.')
   ],
@@ -889,7 +893,7 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('density', '"low" | "medium" | "high"', '"medium"', 'Controls the density of the particles.')
   ],
   ScrollReveal: [
-    apiRow('animation', '"fade" | "slide-up" | "scale"', '"fade"', 'The animation style for revealing the element.')
+    apiRow('animation', '"fade" | "slide-up" | "scale"', '"fade"', 'Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.')
   ],
   Stat: [
     apiRow('label', 'string', '-', 'The label describing the statistic.'),
@@ -906,7 +910,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Attachment', 'Data display', 'Displays a file attachment with metadata.', '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>1 KB</span></Attachment>'],
   ['Autocomplete', 'Forms', 'Captures searchable text connected to suggestions.', '<Autocomplete list="cities" placeholder="Search city" /><datalist id="cities"><option value="Bogota" /></datalist>'],
   ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'],
-  ['BackToTop', 'Navigation', 'Returns user to the top of the page.', '<BackToTop>Top</BackToTop>'],
+  ['BackToTop', 'Navigation', 'Returns user to the top of the page.', '<BackToTop aria-label="Back to top">↑ Top</BackToTop>'],
   ['Badge', 'Data display', 'Labels status, type, plan, or count information.', '<Badge variant="secondary">Astro</Badge>'],
   ['Breadcrumb', 'Navigation', 'Shows page hierarchy and parent navigation.', '<Breadcrumb><ol><li><a href="/docs">Docs</a></li><li><span aria-current="page">Components</span></li></ol></Breadcrumb>'],
   ['Bubble', 'Data display', 'Frames chat messages and short comments.', '<Bubble from="user">Can you summarize the release?</Bubble>'],
@@ -938,7 +942,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['FormattedDate', 'Data display', 'Displays a formatted date.', '<FormattedDate datetime="2024-01-01">Jan 1, 2024</FormattedDate>'],
   ['HoverCard', 'Overlays', 'Shows extra context on hover and focus.', '<HoverCard><a href="/team/santiago">Santiago</a><div role="tooltip">Maintainer of Lumen UI.</div></HoverCard>'],
   ['Icon', 'Data display', 'Renders Lucide icons with Lumen sizing and accessibility defaults.', '<Icon name="search" label="Search" /><Icon name="wand-sparkles" decorative />'],
-  ['Image', 'Data display', 'Displays an image.', '<Image src="/logo.png" />'],
+  ['Image', 'Data display', 'Displays an image.', '<Image alt="Lumen UI logo" src="/logo.svg" />'],
   ['Input', 'Forms', 'Captures short text, email, password, search, or numeric values.', '<Input id="email" name="email" type="email" placeholder="you@example.com" />'],
   ['InputGroup', 'Forms', 'Combines inputs with prefixes, suffixes, or controls.', '<InputGroup><span>https://</span><Input aria-label="Domain" placeholder="example.com" /></InputGroup>'],
   ['InputOTP', 'Forms', 'Collects one-time passcodes and verification codes.', '<InputOTP name="code" length={6} inputmode="numeric" />'],
@@ -990,13 +994,13 @@ export const componentDocs: ComponentDoc[] = ([
   ['TreeGrid', 'Data display', 'Displays hierarchical rows with grid-like columns.', '<TreeGrid><div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div></TreeGrid>'],
   ['Typography', 'Data display', 'Applies Lumen text rhythm to article content.', '<Typography><h1>Release notes</h1><p>Lumen now includes production documentation.</p></Typography>'],
   ['VirtualList', 'Data display', 'Frames long scrollable collections for virtualization adapters.', '<VirtualList style="--ui-list-height: 16rem"><div>Row 1</div><div>Row 2</div></VirtualList>'],
-  ['LanguageToggle', 'Actions', 'A toggle for switching languages.', '<LanguageToggle>EN</LanguageToggle>'],
+  ['LanguageToggle', 'Actions', 'A toggle for switching languages.', '<LanguageToggle aria-label="Change language">EN</LanguageToggle>'],
   ['Particles', 'Layout', 'A generative background with particles.', '<Particles density="medium" />'],
   ['ScrollReveal', 'Layout', 'A wrapper that reveals elements on scroll.', '<ScrollReveal animation="fade">\n  <div>Content</div>\n</ScrollReveal>'],
   ['Stat', 'Data display', 'A component for displaying data metrics.', '<Stat label="Total Users" value="1,234" />'],
-  ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter value={50} min={0} max={100} />'],
+  ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter aria-label="Storage used" value={64} min={0} max={100}>64%</Meter>'],
   ['Note', 'Data display', 'Displays a contextual note or information.', '<Note label="Info">This is a note.</Note>'],
-  ['Rating', 'Data display', 'Displays a star rating input or display.', '<Rating value={4} max={5} />'],
+  ['Rating', 'Data display', 'Displays a star rating input or display.', '<Rating aria-label="Component rating" value={4} max={5} />'],
   ['Timeline', 'Data display', 'Displays a list of events in chronological order.', '<Timeline>...</Timeline>'],
   ['AnimatedLogo', 'Brand', 'An animated logo component.', '<AnimatedLogo />'],
   ['AnimatedPortrait', 'Brand', 'An animated portrait component.', '<AnimatedPortrait />'],

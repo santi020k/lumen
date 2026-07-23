@@ -20,10 +20,11 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<lumen-back-to-top
+<button
   type={type}
   class:list={classList}
+  data-ui-back-to-top
   {...passthrough}
 >
   <slot />
-</lumen-back-to-top>
+</button>

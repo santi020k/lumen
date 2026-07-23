@@ -15,12 +15,10 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-gradient-divider',
-  'pointer-events-none flex justify-center'
+  'ui-gradient-divider'
 ], classProp, className)
 ---
 
 <div aria-hidden="true" class:list={classList} {...passthrough}>
-  <div class="h-px w-full max-w-5xl bg-linear-to-r from-transparent via-brand/40 to-transparent">
-  </div>
+  <div class="ui-gradient-divider__line"></div>
 </div>

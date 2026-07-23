@@ -22,11 +22,10 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<lumen-scroll-reveal
+<div
   class:list={classList}
   data-ui-scroll-reveal
   {...passthrough}
 >
   <slot />
-</lumen-scroll-reveal>
-
+</div>

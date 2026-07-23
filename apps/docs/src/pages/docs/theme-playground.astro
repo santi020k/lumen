@@ -2,7 +2,6 @@
 /* cspell:ignore Consolas Menlo */
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import {
-  Badge,
   Button,
   ButtonGroup,
   Card,
@@ -17,6 +16,7 @@ import {
 } from '@santi020k/lumen-astro'
 import { createThemeFromHue, lumenTokenNames } from '@santi020k/lumen-core'
 
+import DocsPageHero from '../../components/DocsPageHero.astro'
 import PrimitiveShowcase from '../../components/PrimitiveShowcase.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
@@ -45,35 +45,55 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
   description="Generate Lumen theme tokens from a brand hue, preview representative primitives, and copy a CSS theme."
   title="Theme playground - Lumen UI"
 >
-  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs">Docs</a>
-    <span aria-hidden="true"> / </span>
-    <span aria-current="page" class="font-bold text-ink">Theme playground</span>
-  </nav>
+  <div class="theme-page">
+    <DocsPageHero
+      description="Generate a complete semantic theme from a pair of colors, preview it against real Lumen primitives, and export production-ready CSS, Figma variables, or JSON."
+      eyebrow="Theme studio"
+      stats={[
+        { label: 'Semantic tokens', value: lumenTokenNames.length },
+        { label: 'Schemes', value: 2 },
+        { label: 'Export formats', value: 3 }
+      ]}
+      title="Shape a theme. See it live."
+    >
+      <Fragment slot="actions">
+        <a
+          class="ui-button ui-button--default-size ui-button--default no-underline"
+          href="#theme-workbench"
+        >Start building</a>
+        <a
+          class="ui-button ui-button--default-size ui-button--outline no-underline"
+          href="/docs#themes"
+        >Read theme guide</a>
+      </Fragment>
 
-  <div class="mb-8 space-y-3">
-    <div class="flex flex-wrap items-center gap-3">
-      <h1 class="
-        text-4xl/tight font-black text-ink
-        sm:text-5xl/tight
-      ">Theme playground</h1>
-      <Badge variant="secondary">Tokens</Badge>
+      <div class="theme-hero-swatches" slot="visual" aria-label="Generated theme preview">
+        <span style="--theme-swatch: hsl(var(--brand));"><small>Brand</small></span>
+        <span style="--theme-swatch: hsl(var(--accent));"><small>Accent</small></span>
+        <span style="--theme-swatch: hsl(var(--success));"><small>Success</small></span>
+        <span style="--theme-swatch: hsl(var(--warning));"><small>Warning</small></span>
+        <span style="--theme-swatch: hsl(var(--danger));"><small>Danger</small></span>
+      </div>
+    </DocsPageHero>
+
+    <div class="theme-workbench-heading">
+      <div>
+        <p>Interactive workbench</p>
+        <h2>Build, preview, and export</h2>
+      </div>
+      <p>
+        Adjust generated or manual colors on the left. The preview and export stay in sync as you
+        refine the system.
+      </p>
     </div>
-    <p class="max-w-3xl text-lg/8 text-ink-soft">
-      Generate the Lumen token set from a brand hue, tune the accent hue, preview light and dark
-      schemes, and copy CSS ready for your app.
-    </p>
-  </div>
 
-  <ThemeBuilder
-    class="theme-playground"
-    data-theme-playground
-    data-ui-theme-target="#theme-playground-preview"
-    glass="subtle"
-  >
+    <ThemeBuilder
+      class="theme-playground"
+      data-theme-playground
+      data-ui-theme-target="#theme-playground-preview"
+      glass="subtle"
+      id="theme-workbench"
+    >
     <Card class="theme-playground__controls" variant="muted">
       <div class="theme-playground__section-heading">
         <p>Inputs</p>
@@ -289,7 +309,8 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
         <Button data-ui-theme-check-contrast type="button" variant="secondary">Fix Contrast</Button>
       </div>
     </Card>
-  </ThemeBuilder>
+    </ThemeBuilder>
+  </div>
 
   <script is:inline>
     (() => {
@@ -372,6 +393,73 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
 
 <style>
+  .theme-page {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  .theme-hero-swatches {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.45rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / 0.62);
+    backdrop-filter: blur(14px);
+  }
+
+  .theme-hero-swatches span {
+    display: flex;
+    min-height: 8rem;
+    align-items: end;
+    overflow: hidden;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.75rem;
+    background: var(--theme-swatch);
+  }
+
+  .theme-hero-swatches small {
+    width: 100%;
+    padding: 0.45rem 0.25rem;
+    background: hsl(var(--canvas) / 0.76);
+    color: hsl(var(--ink-soft));
+    font-size: 0.55rem;
+    font-weight: 850;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .theme-workbench-heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .theme-workbench-heading > div > p {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .theme-workbench-heading h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .theme-workbench-heading > p {
+    max-width: 36rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
   .theme-playground {
     --theme-playground-panel: hsl(var(--surface-muted) / 0.78);
     --theme-playground-panel-strong: hsl(var(--surface) / 0.9);
@@ -379,6 +467,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     --theme-playground-shadow: var(--ui-shadow-sm);
     display: grid;
     gap: 1rem;
+    scroll-margin-top: 6rem;
   }
 
   .theme-playground__controls,
@@ -386,6 +475,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     display: grid;
     gap: 1rem;
     border-color: var(--theme-playground-border);
+    border-radius: 1.1rem;
     background: var(--theme-playground-panel);
     box-shadow: var(--theme-playground-shadow);
     padding: 1rem;
@@ -538,7 +628,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     gap: 1rem;
     overflow: hidden;
     border: 1px solid var(--theme-playground-border);
-    border-radius: 0.5rem;
+    border-radius: 1.1rem;
     background:
       linear-gradient(135deg, hsl(var(--brand) / 0.14), transparent 35%),
       linear-gradient(315deg, hsl(var(--accent) / 0.14), transparent 38%),
@@ -685,6 +775,13 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
     .theme-playground__export {
       grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .theme-workbench-heading {
+      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
     }
   }
 </style>

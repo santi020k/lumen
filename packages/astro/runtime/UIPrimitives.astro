@@ -3837,6 +3837,48 @@
     }
   }
 
+  const initBackToTopButtons = (scope: ParentNode): void => {
+    for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-back-to-top]')) {
+      if (button.dataset.uiBound === 'true') continue
+
+      button.dataset.uiBound = 'true'
+
+      button.addEventListener('click', () => {
+        window.scrollTo({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          top: 0
+        })
+      })
+    }
+  }
+
+  const initScrollReveals = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-scroll-reveal]')) {
+      if (root.dataset.uiScrollRevealBound === 'true') continue
+
+      root.dataset.uiScrollRevealBound = 'true'
+
+      if (
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        || typeof IntersectionObserver === 'undefined'
+      ) {
+        root.classList.add('is-revealed')
+
+        continue
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some(entry => entry.isIntersecting)) return
+
+        root.classList.add('is-revealed')
+
+        observer.disconnect()
+      }, { rootMargin: '0px 0px -10% 0px' })
+
+      observer.observe(root)
+    }
+  }
+
   const initUiPrimitives = (scope: ParentNode = document): void => {
     initDialogs(scope)
 
@@ -3905,6 +3947,10 @@
     initCascaders(scope)
 
     initTreeSelects(scope)
+
+    initBackToTopButtons(scope)
+
+    initScrollReveals(scope)
 
     initToasts()
   }

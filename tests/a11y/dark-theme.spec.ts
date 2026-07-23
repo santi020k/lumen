@@ -12,8 +12,11 @@ const checkedPaths = [
   '/docs/components',
   '/docs/components/button',
   '/docs/components/field',
+  '/docs/components/particles',
+  '/docs/components/scroll-reveal',
   '/docs/components/select',
   '/docs/components/theme-builder',
+  '/docs/components/theme-toggle',
   '/docs/theme-playground'
 ]
 
@@ -71,7 +74,9 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     '.sr-only',
     '[data-ui-code-line-numbers]',
     '[data-ui-swatch]',
-    '.docs-home-title span'
+    '.docs-home-title span',
+    '.docs-site-footer__statement h2 em',
+    '.home-hero h1 em'
   ]
 
   const parseRgb = (value: string): Rgb | null => {

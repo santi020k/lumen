@@ -75,6 +75,19 @@ describe('component docs snippets', () => {
     }
   })
 
+  test('keeps native media and navigation examples usable', () => {
+    const imageExample = readFileSync(join(examplesDirectory, 'Image.astro'), 'utf8')
+    const linkExample = readFileSync(join(examplesDirectory, 'Link.astro'), 'utf8')
+    const skipLinkExample = readFileSync(join(examplesDirectory, 'SkipLink.astro'), 'utf8')
+    const formattedDateExample = readFileSync(join(examplesDirectory, 'FormattedDate.astro'), 'utf8')
+
+    expect(imageExample).toContain('src="/logo.svg"')
+    expect(imageExample).toContain('alt="Lumen UI logo"')
+    expect(linkExample).toContain('href="/docs"')
+    expect(skipLinkExample).toContain('href="#preview-title"')
+    expect(formattedDateExample).toContain('datetime="2026-07-23"')
+  })
+
   test('use the public data-ui runtime attribute contract', () => {
     const examples = componentDocs.map(component => component.example).join('\n')
 
