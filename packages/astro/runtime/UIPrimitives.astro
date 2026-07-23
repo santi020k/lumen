@@ -643,7 +643,7 @@
   }
 
   const initRovingGroups = (scope: ParentNode): void => {
-    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-menubar], [data-ui-navigation-menu], [data-ui-radio-group], [data-ui-toggle-group]')) {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-menubar], [data-ui-navigation-menu], [data-ui-radio-group], [data-ui-toggle-group], [data-ui-toolbar]')) {
       if (root.dataset.uiBound === 'true') continue
 
       root.dataset.uiBound = 'true'
@@ -3440,6 +3440,400 @@
     })
   }
 
+  const initFileUploads = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-file-upload]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const input = root.querySelector<HTMLInputElement>('[data-ui-file-upload-input]')
+
+      if (!input) continue
+
+      root.dataset.uiBound = 'true'
+
+      const files = root.querySelector<HTMLElement>('[data-ui-file-upload-files]')
+
+      const renderFiles = (): void => {
+        if (!files) return
+
+        files.textContent = input.files ? [...input.files].map(file => file.name).join(', ') : ''
+      }
+
+      input.addEventListener('change', renderFiles)
+
+      root.addEventListener('dragover', event => {
+        event.preventDefault()
+
+        root.dataset.state = 'drag-over'
+      })
+
+      root.addEventListener('dragleave', () => {
+        delete root.dataset.state
+      })
+
+      root.addEventListener('drop', event => {
+        event.preventDefault()
+
+        delete root.dataset.state
+
+        if (event.dataTransfer) {
+          input.files = event.dataTransfer.files
+
+          input.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+      })
+
+      renderFiles()
+    }
+  }
+
+  const initAnchors = (scope: ParentNode): void => {
+    if (typeof IntersectionObserver === 'undefined') return
+
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
+      const byId = new Map<string, HTMLAnchorElement>()
+      const targets: HTMLElement[] = []
+
+      for (const link of links) {
+        const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
+        const target = id ? document.getElementById(id) : null
+
+        if (target) {
+          byId.set(id, link)
+
+          targets.push(target)
+        }
+      }
+
+      if (!targets.length) continue
+
+      const observer = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+
+          for (const link of links) {
+            link.dataset.active = 'false'
+          }
+
+          const active = byId.get(entry.target.id)
+
+          if (active) {
+            active.dataset.active = 'true'
+          }
+
+          break
+        }
+      }, { rootMargin: '0px 0px -70% 0px', threshold: 0 })
+
+      for (const target of targets) {
+        observer.observe(target)
+      }
+    }
+  }
+
+  const initTours = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tour]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const popover = root.querySelector<HTMLElement>('[data-ui-tour-popover]')
+      const steps = [...root.querySelectorAll<HTMLElement>('[data-ui-tour-step]')]
+
+      if (!popover || !steps.length) continue
+
+      root.dataset.uiBound = 'true'
+
+      let index = 0
+
+      const positionStep = (): void => {
+        const step = steps[index]
+
+        if (!step) return
+
+        for (const [stepIndex, node] of steps.entries()) {
+          node.hidden = stepIndex !== index
+        }
+
+        const selector = step.dataset.target
+        const target = selector ? document.querySelector<HTMLElement>(selector) : null
+
+        if (target) {
+          const rect = target.getBoundingClientRect()
+
+          popover.style.top = `${rect.bottom + 8}px`
+          popover.style.left = `${rect.left}px`
+        }
+      }
+
+      const open = (): void => {
+        root.hidden = false
+        index = 0
+
+        positionStep()
+      }
+
+      const close = (): void => {
+        root.hidden = true
+      }
+
+      root.addEventListener('click', event => {
+        const target = event.target
+
+        if (!(target instanceof HTMLElement)) return
+
+        if (target.closest('[data-ui-tour-next]')) {
+          if (index < steps.length - 1) {
+            index += 1
+
+            positionStep()
+          } else {
+            close()
+          }
+        } else if (target.closest('[data-ui-tour-prev]')) {
+          if (index > 0) {
+            index -= 1
+
+            positionStep()
+          }
+        } else if (target.closest('[data-ui-tour-close]') || target.hasAttribute('data-ui-tour-backdrop')) {
+          close()
+        }
+      })
+
+      const opener = root.id ? document.querySelector<HTMLElement>(`[data-ui-tour-open="#${root.id}"]`) : null
+
+      if (opener) {
+        opener.addEventListener('click', open)
+      }
+
+      const lumenTourWindow = window as Window & { LumenTours?: Record<string, () => void> }
+
+      lumenTourWindow.LumenTours = lumenTourWindow.LumenTours ?? {}
+
+      if (root.id) {
+        lumenTourWindow.LumenTours[root.id] = open
+      }
+    }
+  }
+
+  const initTransfers = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-transfer]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      root.dataset.uiBound = 'true'
+
+      const lists = new Map<string, HTMLElement>()
+
+      for (const list of root.querySelectorAll<HTMLElement>('[data-ui-transfer-list]')) {
+        if (list.dataset.side) {
+          lists.set(list.dataset.side, list)
+        }
+      }
+
+      const move = (fromSide: string, toSide: string): void => {
+        const from = lists.get(fromSide)
+        const to = lists.get(toSide)
+
+        if (!from || !to) return
+
+        const moved: string[] = []
+
+        for (const checkbox of [...from.querySelectorAll<HTMLInputElement>('[data-ui-transfer-item]')]) {
+          if (!checkbox.checked) continue
+
+          const item = checkbox.closest<HTMLElement>('.ui-transfer__item')
+
+          if (item) {
+            checkbox.checked = false
+
+            to.append(item)
+
+            moved.push(checkbox.value)
+          }
+        }
+
+        if (moved.length) {
+          root.dispatchEvent(new CustomEvent('ui:transfer-change', {
+            bubbles: true,
+            detail: { from: fromSide, to: toSide, values: moved }
+          }))
+        }
+      }
+
+      for (const button of root.querySelectorAll<HTMLButtonElement>('[data-ui-transfer-move]')) {
+        button.addEventListener('click', () => {
+          if (button.dataset.uiTransferMove === 'target') {
+            move('source', 'target')
+          } else if (button.dataset.uiTransferMove === 'source') {
+            move('target', 'source')
+          }
+        })
+      }
+    }
+  }
+
+  const initMentions = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-mentions]')) {
+      if (root.dataset.uiBound === 'true') continue
+
+      const input = root.querySelector<HTMLTextAreaElement>('[data-ui-mentions-input]')
+      const list = root.querySelector<HTMLElement>('[data-ui-mentions-list]')
+
+      if (!input || !list) continue
+
+      root.dataset.uiBound = 'true'
+
+      const trigger = root.dataset.uiMentionsTrigger ?? '@'
+      const options = [...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')]
+
+      const close = (): void => {
+        list.hidden = true
+      }
+
+      const filter = (): void => {
+        const caret = input.selectionStart ?? input.value.length
+        const match = new RegExp(`\\${trigger}(\\w*)$`).exec(input.value.slice(0, caret))
+
+        if (!match) {
+          close()
+
+          return
+        }
+
+        const query = (match[1] ?? '').toLowerCase()
+        let visibleCount = 0
+
+        for (const option of options) {
+          const visible = (option.dataset.value ?? '').toLowerCase().includes(query)
+
+          option.hidden = !visible
+
+          if (visible) visibleCount += 1
+        }
+
+        list.hidden = visibleCount === 0
+      }
+
+      const insert = (value: string): void => {
+        const caret = input.selectionStart ?? input.value.length
+        const before = input.value.slice(0, caret).replace(new RegExp(`\\${trigger}\\w*$`), `${trigger}${value} `)
+
+        input.value = before + input.value.slice(caret)
+
+        input.focus()
+
+        input.setSelectionRange(before.length, before.length)
+
+        close()
+
+        input.dispatchEvent(new Event('input', { bubbles: true }))
+      }
+
+      input.addEventListener('input', filter)
+
+      input.addEventListener('keyup', filter)
+
+      input.addEventListener('blur', () => window.setTimeout(close, 120))
+
+      for (const option of options) {
+        option.addEventListener('mousedown', event => {
+          event.preventDefault()
+
+          insert(option.dataset.value ?? '')
+        })
+      }
+    }
+  }
+
+  const initCascaders = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-cascader]')) {
+      if (root.dataset.uiCascaderBound === 'true') continue
+
+      root.dataset.uiCascaderBound = 'true'
+
+      const valueLabel = root.querySelector<HTMLElement>('[data-ui-cascader-value]')
+      const input = root.querySelector<HTMLInputElement>('[data-ui-cascader-input]')
+      const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
+
+      for (const option of root.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')) {
+        option.addEventListener('click', () => {
+          const column = option.closest<HTMLElement>('.ui-cascader__column')
+
+          if (column) {
+            for (const sibling of column.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
+              sibling.dataset.active = 'false'
+            }
+          }
+
+          option.dataset.active = 'true'
+
+          const nextSelector = option.dataset.uiCascaderNext
+          const next = nextSelector ? root.querySelector<HTMLElement>(nextSelector) : null
+
+          if (next) {
+            next.hidden = false
+
+            return
+          }
+
+          const value = option.dataset.value ?? (option.textContent ?? '').trim()
+
+          if (valueLabel) {
+            valueLabel.textContent = option.dataset.label ?? (option.textContent ?? '').trim()
+          }
+
+          if (input) {
+            input.value = value
+          }
+
+          const panel = trigger ? getPanel(trigger) : null
+
+          if (trigger && panel) {
+            setOpen(trigger, panel, false)
+          }
+
+          root.dispatchEvent(new CustomEvent('ui:cascader-change', { bubbles: true, detail: { value } }))
+        })
+      }
+    }
+  }
+
+  const initTreeSelects = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tree-select]')) {
+      if (root.dataset.uiTreeSelectBound === 'true') continue
+
+      root.dataset.uiTreeSelectBound = 'true'
+
+      const valueLabel = root.querySelector<HTMLElement>('[data-ui-tree-select-value]')
+      const input = root.querySelector<HTMLInputElement>('[data-ui-tree-select-input]')
+      const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
+      const panel = root.querySelector<HTMLElement>('[data-ui-panel]')
+
+      for (const item of root.querySelectorAll<HTMLElement>('[data-ui-panel] [data-value]')) {
+        item.addEventListener('click', () => {
+          const value = item.dataset.value ?? ''
+
+          if (valueLabel) {
+            valueLabel.textContent = (item.textContent ?? '').trim()
+          }
+
+          if (input) {
+            input.value = value
+          }
+
+          if (trigger && panel) {
+            setOpen(trigger, panel, false)
+          }
+
+          root.dispatchEvent(new CustomEvent('ui:tree-select-change', { bubbles: true, detail: { value } }))
+        })
+      }
+    }
+  }
+
   const initUiPrimitives = (scope: ParentNode = document): void => {
     initDialogs(scope)
 
@@ -3493,6 +3887,20 @@
     initDateRangePickers(scope)
 
     initGlassTracking(scope)
+
+    initFileUploads(scope)
+
+    initAnchors(scope)
+
+    initTours(scope)
+
+    initTransfers(scope)
+
+    initMentions(scope)
+
+    initCascaders(scope)
+
+    initTreeSelects(scope)
 
     initToasts()
   }

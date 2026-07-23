@@ -1284,6 +1284,12 @@ export interface PhoneInputProps extends Omit<ComponentPropsWithoutRef<'div'>, '
   placeholder?: string
   size?: 'default' | 'lg' | 'sm'
 }
+
+const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => ({
+  selectClass: size === 'sm' ? 'ui-select--sm' : size === 'lg' ? 'ui-select--lg' : undefined,
+  inputClass: size === 'sm' ? 'ui-input--sm' : size === 'lg' ? 'ui-input--lg' : undefined
+})
+
 export const PhoneInput = ({
   className,
   countries = emptyOptions,
@@ -1295,39 +1301,34 @@ export const PhoneInput = ({
   placeholder = 'Phone number',
   size = 'default',
   ...props
-}: PhoneInputProps) => (
-  <div className={composeClassName('ui-phone-input ui-input-group', className)} {...props}>
-    <select
-      aria-label={countryLabel}
-      className={composeClassName(
-        'ui-select ui-phone-input__country',
-        size === 'sm' && 'ui-select--sm',
-        size === 'lg' && 'ui-select--lg'
-      )}
-      defaultValue={defaultCountryValue}
-      name={countryName}
-    >
-      {countries.map(normalizeOption).map(option => (
-        <option disabled={option.disabled} key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-    <input
-      autoComplete="tel"
-      className={composeClassName(
-        'ui-input ui-phone-input__number',
-        size === 'sm' && 'ui-input--sm',
-        size === 'lg' && 'ui-input--lg'
-      )}
-      defaultValue={defaultValue}
-      inputMode="tel"
-      name={name}
-      placeholder={placeholder}
-      type="tel"
-    />
-  </div>
-)
+}: PhoneInputProps) => {
+  const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+  return (
+    <div className={composeClassName('ui-phone-input ui-input-group', className)} {...props}>
+      <select
+        aria-label={countryLabel}
+        className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+        defaultValue={defaultCountryValue}
+        name={countryName}
+      >
+        {countries.map(normalizeOption).map(option => (
+          <option disabled={option.disabled} key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <input
+        autoComplete="tel"
+        className={composeClassName('ui-input ui-phone-input__number', inputClass)}
+        defaultValue={defaultValue}
+        inputMode="tel"
+        name={name}
+        placeholder={placeholder}
+        type="tel"
+      />
+    </div>
+  )
+}
 
 export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}
 
@@ -1963,7 +1964,7 @@ export type PillProps = ComponentPropsWithoutRef<'span'> & {
 export const Pill = ({ className, count, children, ...props }: PillProps) => (
   <span className={composeClassName('ui-pill', className)} {...props}>
     {children}
-    {count != null && <span className="ui-pill__count">{count}</span>}
+    {count !== null && count !== undefined && <span className="ui-pill__count">{count}</span>}
   </span>
 )
 
@@ -2174,6 +2175,295 @@ export type GradientDividerProps = ComponentPropsWithoutRef<'div'>
 export const GradientDivider = ({ className, ...props }: GradientDividerProps) => (
   <div aria-hidden="true" className={composeClassName('ui-gradient-divider pointer-events-none flex justify-center', className)} {...props}>
     <div className="h-px w-full max-w-5xl bg-gradient-to-r from-transparent via-brand/40 to-transparent"></div>
+  </div>
+)
+
+export interface StepperProps extends ComponentPropsWithoutRef<'ol'> {
+  orientation?: Orientation
+}
+export const Stepper = ({ className, orientation = 'horizontal', ...props }: StepperProps) => (
+  <ol
+    className={composeClassName('ui-stepper', orientation === 'vertical' && 'ui-stepper--vertical', className)}
+    data-orientation={orientation}
+    {...props}
+  />
+)
+
+export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> {
+  hint?: ReactNode
+  inputClassName?: string
+  label?: ReactNode
+}
+export const FileUpload = ({ children, className, hint, id, inputClassName, label = 'Choose a file or drag it here', ...props }: FileUploadProps) => {
+  const inputId = id ?? 'ui-file-upload'
+
+  return (
+    <label className={composeClassName('ui-file-upload', className)} data-ui-file-upload htmlFor={inputId}>
+      <input className={composeClassName('ui-file-upload__input', inputClassName)} data-ui-file-upload-input id={inputId} type="file" {...props} />
+      <span aria-hidden="true" className="ui-file-upload__icon" />
+      <span className="ui-file-upload__prompt">{children ?? label}</span>
+      {hint && <span className="ui-file-upload__hint">{hint}</span>}
+      <span aria-live="polite" className="ui-file-upload__files" data-ui-file-upload-files />
+    </label>
+  )
+}
+
+export type TourProps = ComponentPropsWithoutRef<'div'>
+export const Tour = ({ className, hidden = true, ...props }: TourProps) => (
+  <div className={composeClassName('ui-tour', className)} data-ui-tour hidden={hidden} {...props}>
+    <div aria-hidden="true" className="ui-tour__backdrop" data-ui-tour-backdrop />
+    <div className="ui-tour__popover" data-ui-tour-popover role="dialog">
+      {props.children}
+    </div>
+  </div>
+)
+
+export type AnchorProps = ComponentPropsWithoutRef<'nav'>
+export const Anchor = ({ 'aria-label': ariaLabel = 'On this page', className, ...props }: AnchorProps) => (
+  <nav aria-label={ariaLabel} className={composeClassName('ui-anchor', className)} data-ui-anchor {...props} />
+)
+
+export interface SegmentedProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
+  name: string
+  onValueChange?: (value: string) => void
+  options?: SelectOption[]
+  size?: 'default' | 'lg' | 'sm'
+  value?: string
+}
+export const Segmented = ({ children, className, name, onValueChange, options = emptyOptions, size = 'default', value, ...props }: SegmentedProps) => (
+  <div
+    className={composeClassName('ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className)}
+    role="group"
+    {...props}
+  >
+    {options.map(normalizeOption).map(option => (
+      <label className="ui-segmented__option" key={option.value}>
+        <input
+          checked={value === undefined ? undefined : value === option.value}
+          className="ui-segmented__input"
+          disabled={option.disabled}
+          name={name}
+          type="radio"
+          value={option.value}
+          onChange={() => onValueChange?.(option.value)}
+        />
+        <span className="ui-segmented__label">{option.label}</span>
+      </label>
+    ))}
+    {children}
+  </div>
+)
+
+export interface ToolbarProps extends ComponentPropsWithoutRef<'div'> {
+  orientation?: Orientation
+}
+export const Toolbar = ({ 'aria-label': ariaLabel = 'Toolbar', className, orientation = 'horizontal', ...props }: ToolbarProps) => (
+  <div
+    aria-label={ariaLabel}
+    aria-orientation={orientation}
+    className={composeClassName('ui-toolbar', orientation === 'vertical' && 'ui-toolbar--vertical', className)}
+    data-orientation={orientation}
+    data-ui-toolbar
+    role="toolbar"
+    {...props}
+  />
+)
+
+export interface DescriptionsItem {
+  label: ReactNode
+  value: ReactNode
+}
+export interface DescriptionsProps extends ComponentPropsWithoutRef<'dl'> {
+  columns?: number
+  items?: DescriptionsItem[]
+}
+const emptyDescriptionsItems: DescriptionsItem[] = []
+export const Descriptions = ({ children, className, columns = 1, items = emptyDescriptionsItems, style, ...props }: DescriptionsProps) => (
+  <dl
+    className={composeClassName('ui-descriptions', className)}
+    data-columns={columns}
+    style={{ ['--ui-descriptions-columns' as string]: columns, ...style }}
+    {...props}
+  >
+    {items.map((item, index) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Descriptions rows are static and order-stable.
+      <div className="ui-descriptions__item" key={index}>
+        <dt className="ui-descriptions__term">{item.label}</dt>
+        <dd className="ui-descriptions__detail">{item.value}</dd>
+      </div>
+    ))}
+    {children}
+  </dl>
+)
+
+export interface PopconfirmProps extends ComponentPropsWithoutRef<'div'> {
+  cancelLabel?: string
+  confirmLabel?: string
+  message?: ReactNode
+  triggerLabel?: ReactNode
+}
+export const Popconfirm = ({ cancelLabel = 'Cancel', children, className, confirmLabel = 'Confirm', message = 'Are you sure?', triggerLabel = 'Delete', ...props }: PopconfirmProps) => (
+  <div className={composeClassName('ui-popover ui-popconfirm', className)} data-surface="default" data-ui-popconfirm data-ui-popover {...props}>
+    <button aria-expanded="false" aria-haspopup="dialog" className="ui-button ui-button--outline ui-button--default-size" data-ui-trigger type="button">
+      {triggerLabel}
+    </button>
+    <div className="ui-popover__panel ui-popconfirm__panel" data-ui-panel hidden role="dialog">
+      <p className="ui-popconfirm__message">{children ?? message}</p>
+      <div className="ui-popconfirm__actions">
+        <button className="ui-button ui-button--ghost ui-button--sm" data-ui-popconfirm-cancel type="button">{cancelLabel}</button>
+        <button className="ui-button ui-button--destructive ui-button--sm" data-ui-popconfirm-confirm type="button">{confirmLabel}</button>
+      </div>
+    </div>
+  </div>
+)
+
+export interface TransferItem {
+  label: ReactNode
+  value: string
+}
+export interface TransferProps extends ComponentPropsWithoutRef<'div'> {
+  name?: string
+  sourceItems?: TransferItem[]
+  sourceLabel?: string
+  targetItems?: TransferItem[]
+  targetLabel?: string
+}
+const emptyTransferItems: TransferItem[] = []
+const renderTransferItems = (items: TransferItem[]) => items.map(item => (
+  <li className="ui-transfer__item" key={item.value}>
+    <label className="ui-transfer__option">
+      <input className="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.value} />
+      <span>{item.label}</span>
+    </label>
+  </li>
+))
+export const Transfer = ({ className, name, sourceItems = emptyTransferItems, sourceLabel = 'Available', targetItems = emptyTransferItems, targetLabel = 'Selected', ...props }: TransferProps) => (
+  <div className={composeClassName('ui-transfer', className)} data-ui-transfer data-ui-transfer-name={name} {...props}>
+    <div className="ui-transfer__panel">
+      <p className="ui-transfer__title">{sourceLabel}</p>
+      <ul className="ui-transfer__list" data-side="source" data-ui-transfer-list>{renderTransferItems(sourceItems)}</ul>
+    </div>
+    <div className="ui-transfer__controls">
+      <button aria-label={`Move to ${targetLabel}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
+      <button aria-label={`Move to ${sourceLabel}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
+    </div>
+    <div className="ui-transfer__panel">
+      <p className="ui-transfer__title">{targetLabel}</p>
+      <ul className="ui-transfer__list" data-side="target" data-ui-transfer-list>{renderTransferItems(targetItems)}</ul>
+    </div>
+  </div>
+)
+
+export interface CascaderProps extends ComponentPropsWithoutRef<'div'> {
+  name?: string
+  placeholder?: string
+}
+export const Cascader = ({ children, className, name, placeholder = 'Select…', ...props }: CascaderProps) => (
+  <div className={composeClassName('ui-cascader', className)} data-surface="default" data-ui-cascader data-ui-popover {...props}>
+    <button aria-expanded="false" aria-haspopup="listbox" className="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
+      <span data-ui-cascader-placeholder={placeholder} data-ui-cascader-value>{placeholder}</span>
+    </button>
+    <div className="ui-cascader__panel" data-ui-panel hidden>{children}</div>
+    {name && <input data-ui-cascader-input name={name} type="hidden" />}
+  </div>
+)
+
+export interface TreeSelectProps extends ComponentPropsWithoutRef<'div'> {
+  name?: string
+  placeholder?: string
+}
+export const TreeSelect = ({ children, className, name, placeholder = 'Select…', ...props }: TreeSelectProps) => (
+  <div className={composeClassName('ui-tree-select', className)} data-surface="default" data-ui-popover data-ui-tree-select {...props}>
+    <button aria-expanded="false" aria-haspopup="tree" className="ui-select ui-select__trigger ui-tree-select__trigger" data-ui-trigger type="button">
+      <span data-ui-tree-select-placeholder={placeholder} data-ui-tree-select-value>{placeholder}</span>
+    </button>
+    <div className="ui-tree-select__panel" data-ui-panel hidden>{children}</div>
+    {name && <input data-ui-tree-select-input name={name} type="hidden" />}
+  </div>
+)
+
+export interface MentionsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
+  name?: string
+  options?: SelectOption[]
+  placeholder?: string
+  trigger?: string
+}
+export const Mentions = ({ className, name, options = emptyOptions, placeholder, trigger = '@', ...props }: MentionsProps) => (
+  <div className={composeClassName('ui-mentions', className)} data-ui-mentions data-ui-mentions-trigger={trigger} {...props}>
+    <textarea className="ui-textarea ui-mentions__input" data-ui-mentions-input name={name} placeholder={placeholder} rows={3} />
+    <ul className="ui-mentions__list" data-ui-mentions-list hidden role="listbox">
+      {options.map(normalizeOption).map(option => (
+        <li key={option.value}>
+          <button className="ui-mentions__option" data-ui-mentions-option data-value={option.value} role="option" type="button">
+            {option.label}
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+)
+
+export interface QRCodeProps extends ComponentPropsWithoutRef<'figure'> {
+  size?: number
+  src?: string
+  value?: string
+}
+export const QRCode = ({ children, className, size = 160, src, style, value, ...props }: QRCodeProps) => (
+  <figure
+    className={composeClassName('ui-qr-code', className)}
+    data-ui-qr-code
+    style={{ ['--ui-qr-code-size' as string]: `${size}px`, ...style }}
+    {...props}
+  >
+    <div className="ui-qr-code__frame">
+      {src
+        ? <img alt={value ? `QR code for ${value}` : 'QR code'} className="ui-qr-code__image" height={size} src={src} width={size} />
+        : children}
+    </div>
+    {value && <figcaption className="ui-qr-code__value">{value}</figcaption>}
+  </figure>
+)
+
+export interface WatermarkProps extends ComponentPropsWithoutRef<'div'> {
+  gap?: number
+  rotate?: number
+  text?: string
+}
+export const Watermark = ({ children, className, gap = 120, rotate = -22, style, text = 'Confidential', ...props }: WatermarkProps) => (
+  <div
+    className={composeClassName('ui-watermark', className)}
+    data-ui-watermark
+    style={{ ['--ui-watermark-gap' as string]: `${gap}px`, ['--ui-watermark-rotate' as string]: `${rotate}deg`, ...style }}
+    {...props}
+  >
+    {children}
+    <div aria-hidden="true" className="ui-watermark__overlay" data-text={text} />
+  </div>
+)
+
+export interface AffixProps extends ComponentPropsWithoutRef<'div'> {
+  offset?: number
+  position?: 'bottom' | 'top'
+}
+export const Affix = ({ className, offset = 0, position = 'top', style, ...props }: AffixProps) => (
+  <div
+    className={composeClassName('ui-affix', position === 'bottom' && 'ui-affix--bottom', className)}
+    data-position={position}
+    style={{ ['--ui-affix-offset' as string]: `${offset}px`, ...style }}
+    {...props}
+  />
+)
+
+export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {
+  direction?: 'down' | 'left' | 'right' | 'up'
+  label?: string
+}
+export const SpeedDial = ({ children, className, direction = 'up', label = 'Actions', ...props }: SpeedDialProps) => (
+  <div className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)} data-direction={direction} data-ui-speed-dial {...props}>
+    <button aria-expanded="false" aria-label={label} className="ui-speed-dial__trigger" data-ui-speed-dial-trigger type="button">
+      <span aria-hidden="true" className="ui-speed-dial__icon" />
+    </button>
+    <menu className="ui-speed-dial__actions" data-ui-speed-dial-actions>{children}</menu>
   </div>
 )
 

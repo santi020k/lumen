@@ -103,7 +103,23 @@ export const lumenComponentNames = [
   'AnimatedPortrait',
   'ButtonLink',
   'CoverImage',
-  'GradientDivider'
+  'GradientDivider',
+  'Stepper',
+  'FileUpload',
+  'Tour',
+  'Anchor',
+  'Segmented',
+  'Toolbar',
+  'Descriptions',
+  'Popconfirm',
+  'Transfer',
+  'Cascader',
+  'TreeSelect',
+  'Mentions',
+  'QRCode',
+  'Watermark',
+  'Affix',
+  'SpeedDial'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]

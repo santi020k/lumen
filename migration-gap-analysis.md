@@ -71,3 +71,36 @@ New CSS modifier classes in `packages/astro/styles/lumen.css`: `ui-note--border-
 - The full vitest suite can't run in this sandbox (the installed `rolldown`/`esbuild` native binaries are built for the host Mac, not Linux). Run `pnpm test` locally to confirm.
 
 All changes are additive and backward compatible. Everything else is a direct swap.
+
+## Competitor-parity additions — implemented 2026-07-23
+
+Beyond the sibling-project audit above, a comparison against the larger enterprise libraries (Ant Design, MUI, Mantine, Chakra, React Aria) surfaced sixteen patterns Lumen lacked. All were added across `core` (catalog), Astro (reference), React, Elements (class config), shared `lumen.css`, and — for the interactive ones — the Astro progressive-enhancement runtime.
+
+| Component | Tier | Behavior |
+|---|---|---|
+| Stepper | high | Static; `orientation` + `data-state` step markers. |
+| FileUpload | high | Runtime drag-and-drop over a native file input; sets `input.files`, dispatches `change`. |
+| Tour | high | Runtime step navigation, target positioning, `window.LumenTours[id]()` opener. |
+| Anchor | high | Runtime scroll-spy via `IntersectionObserver`, sets `data-active` on the in-view link. |
+| Segmented | minor | Native radio group styled as a segmented control (zero JS). |
+| Toolbar | minor | Reuses the existing roving-focus runtime (`[data-ui-toolbar]`). |
+| Descriptions | minor | Static `<dl>` grid, `columns` prop. |
+| Popconfirm | minor | Reuses the popover disclosure runtime (`data-ui-popover`). |
+| Transfer | niche | Runtime moves checked items between lists, emits `ui:transfer-change`. |
+| Cascader | niche | Popover-backed column reveal, emits `ui:cascader-change`. |
+| TreeSelect | niche | Popover-backed tree value selection, emits `ui:tree-select-change`. |
+| Mentions | niche | Runtime `@`-trigger filtering + insertion into a textarea. |
+| QRCode | niche | Static display frame for a server-rendered QR image/svg (no encoder dependency). |
+| Watermark | niche | CSS repeating diagonal overlay via `data-text`. |
+| Affix | niche | CSS `position: sticky` wrapper with `offset`/`position`. |
+| SpeedDial | niche | CSS focus-within/hover action reveal, four `direction` variants. |
+
+### Verification
+- `core`, `react`, and `elements` typecheck clean (`tsc --noEmit`).
+- Every `ui-*` class emitted by the new components is defined in `lumen.css` (no dangling classes).
+- Registry data stays in sync (the `all-components` set references the component directory).
+- The Astro build and full vitest suite can't run in the current sandbox (the installed `rolldown`/`esbuild` native binaries are host-Mac, not Linux). Run `pnpm validate` locally to confirm.
+
+### Remaining follow-ups
+- Docs-site examples in `apps/docs/src/examples/` for each of the sixteen (not gated by tests; needed to meet the per-component "all variants/states" example bar).
+- Web Components runtime parity: Elements ships the class-config shell for all sixteen; the interactive behaviors (FileUpload, Tour, Anchor, Transfer, Mentions, Cascader, TreeSelect) currently run through the Astro runtime and should be mirrored into `packages/elements/src/define.ts` for standalone custom-element consumers.

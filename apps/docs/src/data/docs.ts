@@ -1002,7 +1002,19 @@ export const componentDocs: ComponentDoc[] = ([
   ['AnimatedPortrait', 'Brand', 'An animated portrait component.', '<AnimatedPortrait />'],
   ['ButtonLink', 'Navigation', 'A button-styled link.', '<ButtonLink href="/">Home</ButtonLink>'],
   ['CoverImage', 'Data display', 'A cover image component.', '<CoverImage src="/image.jpg" alt="Cover" />'],
-  ['GradientDivider', 'Layout', 'A gradient divider component.', '<GradientDivider />']
+  ['GradientDivider', 'Layout', 'A gradient divider component.', '<GradientDivider />'],
+  ['Stepper', 'Navigation', 'A multi-step progress indicator.', '<Stepper steps={["Step 1", "Step 2", "Step 3"]} currentStep={1} />'],
+  ['FileUpload', 'Forms', 'A file upload input with drag-and-drop support.', '<FileUpload accept="image/*" />'],
+  ['Tour', 'Overlays', 'A guided product tour component.', '<Tour steps={[{ target: "#btn", content: "Click here" }]} />'],
+  ['Anchor', 'Navigation', 'A side navigation anchor for in-page sections.', '<Anchor items={[{ href: "#section", label: "Section" }]} />'],
+  ['Segmented', 'Forms', 'A segmented control for mutually exclusive options.', '<Segmented options={["Day", "Week", "Month"]} />'],
+  ['Toolbar', 'Layout', 'A horizontal toolbar for grouping actions.', '<Toolbar><Button>Bold</Button><Button>Italic</Button></Toolbar>'],
+  ['Descriptions', 'Data display', 'A key-value description list component.', '<Descriptions items={[{ label: "Name", value: "Alice" }]} />'],
+  ['Popconfirm', 'Overlays', 'A confirmation popover for destructive actions.', '<Popconfirm title="Delete?" onConfirm={handleDelete}><Button>Delete</Button></Popconfirm>'],
+  ['Transfer', 'Forms', 'A dual-panel list for transferring items between sets.', '<Transfer dataSource={items} targetKeys={selected} />'],
+  ['Watermark', 'Layout', 'Overlays a text or image watermark on content.', '<Watermark content=\"Draft\"><div>Content</div></Watermark>'],
+  ['Affix', 'Layout', 'Sticks an element to a fixed position when scrolled past.', '<Affix offsetTop={64}><Button>Top</Button></Affix>'],
+  ['SpeedDial', 'Navigation', 'A floating action button with expandable sub-actions.', '<SpeedDial actions={[{ icon: \"plus\", label: \"Add\" }]} />']
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
