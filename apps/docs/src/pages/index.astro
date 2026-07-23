@@ -2,14 +2,15 @@
 import {
   Badge,
   Card,
+  Eyebrow,
   Icon,
   Separator,
+  Stat,
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
 import GitHubIcon from '../components/GitHubIcon.astro'
-import LumenLogo from '../components/LumenLogo.astro'
 import PrimitiveShowcase from '../components/PrimitiveShowcase.astro'
 import { componentCategories, componentDocs, frameworkSetups } from '../data/docs'
 import BaseLayout from '../layouts/BaseLayout.astro'
@@ -23,26 +24,29 @@ const highlights = [
     description: 'Real buttons, dialogs, tables, and forms. Accessibility comes from the markup, not a wrapper div.',
     icon: 'shield-check',
     metric: 'A11y',
-    tone: 'brand',
     title: 'Semantic first'
   },
   {
     description: 'Every target shares the same ui-* stylesheet driven by design tokens, so screens look identical across frameworks.',
     icon: 'layers-3',
     metric: '1 CSS',
-    tone: 'accent',
     title: 'One class contract'
   },
   {
     description: 'A single progressive-enhancement script powers dialogs, menus, tabs, and toasts in about 4 KB.',
     icon: 'zap',
     metric: '~4 KB',
-    tone: 'warning',
     title: 'No framework runtime'
   }
 ] as const
 
-const featured = componentDocs.slice(0, 12)
+const stats = [
+  { label: 'components', value: String(componentCount) },
+  { label: 'targets', value: '3' },
+  { label: 'app runtime lock-in', value: '0' }
+] as const
+
+const featured = componentDocs.slice(0, 8)
 ---
 
 <BaseLayout
@@ -50,118 +54,93 @@ const featured = componentDocs.slice(0, 12)
   title="Lumen UI - Primitives for Astro, React, and Web Components"
 >
   <main class="
-    docs-home-shell mx-auto flex w-full max-w-7xl flex-col gap-16 px-5 pt-8
-    pb-12
+    docs-home-shell mx-auto flex w-full max-w-6xl flex-col gap-24 px-5 py-16
     sm:px-8
   ">
     <section class="
-      docs-home-hero grid gap-10
+      docs-home-hero grid gap-14
       lg:grid-cols-[1.05fr_0.95fr] lg:items-center
     ">
-      <div class="docs-home-hero__content space-y-6">
-        <div class="docs-home-eyebrow">
-          <div class="docs-home-eyebrow__identity">
-            <span class="docs-home-eyebrow__icon" aria-hidden="true">
-              <LumenLogo markClass="size-9" showText={false} />
-            </span>
-            <div>
-              <p>Lumen UI</p>
-              <span>{componentCount} semantic primitives, one shared contract</span>
-            </div>
-          </div>
-          <div class="docs-home-eyebrow__targets" aria-label="Supported frameworks">
-            <Badge>Astro</Badge>
-            <Badge variant="secondary">React</Badge>
-            <Badge variant="secondary">Web Components</Badge>
-          </div>
-        </div>
-        <h1 class="
-          docs-home-title max-w-3xl text-5xl/tight font-black text-ink
-          sm:text-6xl/tight
-        ">Primitive UI that ships in <span>every framework.</span></h1>
-        <p class="max-w-2xl text-lg/8 text-ink-soft">
+      <div class="docs-home-hero__content">
+        <Eyebrow class="docs-home-eyebrow docs-anim">
+          {componentCount} primitives, one shared contract
+        </Eyebrow>
+        <h1 class="docs-home-title docs-anim">
+          Primitive UI that ships in <span>every framework.</span>
+        </h1>
+        <p class="docs-home-lede docs-anim">
           Lumen is a primitive UI system built on semantic markup and shared design tokens.
           The same component, the same classes, the same behavior, in Astro, React, and
           standards-based custom elements.
         </p>
-        <div class="docs-home-hero__stats" aria-label="Lumen highlights">
-          <div>
-            <strong>{componentCount}</strong>
-            <span>components</span>
-          </div>
-          <div>
-            <strong>3</strong>
-            <span>targets</span>
-          </div>
-          <div>
-            <strong>0</strong>
-            <span>app runtime lock-in</span>
-          </div>
+        <div class="docs-home-targets docs-anim" aria-label="Supported frameworks">
+          <Badge variant="outline">Astro</Badge>
+          <Badge variant="outline">React</Badge>
+          <Badge variant="outline">Web Components</Badge>
         </div>
-        <div class="flex flex-wrap gap-3">
+        <div class="docs-home-actions docs-anim">
           <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">
             Get started
             <Icon name="arrow-right" size="sm" />
           </a>
-          <a class="ui-button ui-button--lg ui-button--secondary no-underline" href="/docs/components">
-            <Icon name="blocks" size="sm" />
+          <a class="ui-button ui-button--lg ui-button--ghost no-underline" href="/docs/components">
             Browse components
           </a>
         </div>
         <button
-          class="
-            docs-home-install-command inline-flex cursor-pointer items-center
-            gap-2.5 rounded-md border border-line px-3 py-2 font-mono text-sm
-            text-ink-muted transition-colors
-            hover:border-ink-muted hover:text-ink
-          "
+          class="docs-home-install docs-anim"
           data-copy-command={installCommand}
           type="button"
         >
           <Icon name="terminal" size="sm" />
           <span aria-hidden="true">{installCommand}</span>
-          <span class="docs-home-install-command__action text-xs font-bold" data-copy-feedback>Copy</span>
+          <span class="docs-home-install__action" data-copy-feedback>Copy</span>
           <span class="sr-only">Copy install command: {installCommand}</span>
         </button>
+        <dl class="docs-home-stats docs-anim" aria-label="Lumen at a glance">
+          {stats.map(stat => (
+            <Stat class="docs-home-stat" label={stat.label} value={stat.value} />
+          ))}
+        </dl>
       </div>
 
-      <PrimitiveShowcase
-        class="docs-home-showcase"
-        description="This site is built with the same primitives it documents: controls, status, tokens, and glass surfaces sharing one contract."
-        title="Workspace launch"
-      />
+      <div class="docs-home-showcase-wrap docs-anim">
+        <span class="docs-home-showcase-glow" aria-hidden="true"></span>
+        <PrimitiveShowcase
+          class="docs-home-showcase"
+          description="This site is built with the same primitives it documents: controls, status, and tokens sharing one contract."
+          title="Workspace launch"
+        />
+      </div>
     </section>
 
-    <section class="
-      docs-home-highlights grid gap-4
-      md:grid-cols-3
-    " aria-label="Why Lumen">
-      {highlights.map(highlight => (
-        <Card
-          as="article"
-          class="docs-home-highlight h-full p-6"
-          data-tone={highlight.tone}
-          variant="interactive"
-        >
-          <div class="docs-home-highlight__top">
-            <span class="docs-home-highlight__icon">
-              <Icon name={highlight.icon} />
-            </span>
-            <span class="docs-home-highlight__metric">{highlight.metric}</span>
-          </div>
-          <h2 class="text-base font-bold text-ink">{highlight.title}</h2>
-          <p class="text-sm/6 text-ink-soft">{highlight.description}</p>
-        </Card>
-      ))}
+    <section class="docs-home-block" aria-label="Why Lumen">
+      <div class="
+        docs-home-highlights grid gap-4
+        md:grid-cols-3
+      ">
+        {highlights.map(highlight => (
+          <Card as="article" class="docs-home-highlight">
+            <div class="docs-home-highlight__top">
+              <span class="docs-home-highlight__icon">
+                <Icon name={highlight.icon} size="sm" />
+              </span>
+              <span class="docs-home-highlight__metric">{highlight.metric}</span>
+            </div>
+            <h2 class="docs-home-highlight__title">{highlight.title}</h2>
+            <p class="docs-home-highlight__body">{highlight.description}</p>
+          </Card>
+        ))}
+      </div>
     </section>
 
-    <section class="docs-home-section space-y-6" aria-labelledby="usage-title">
-      <div class="space-y-2">
-        <p class="text-sm font-semibold tracking-[0.22em] text-brand uppercase">Proof, not promises</p>
-        <h2 class="text-3xl font-bold text-ink" id="usage-title">
+    <section class="docs-home-block" aria-labelledby="usage-title">
+      <div class="docs-home-block__head">
+        <Eyebrow>Proof, not promises</Eyebrow>
+        <h2 class="docs-home-block__title" id="usage-title">
           The same component in every framework
         </h2>
-        <p class="max-w-2xl text-sm/7 text-ink-soft">
+        <p class="docs-home-block__lede">
           Install the adapter for your stack and write the same markup. Same classes,
           same tokens, same behavior.
         </p>
@@ -169,16 +148,14 @@ const featured = componentDocs.slice(0, 12)
       <FrameworkSetupTabs setups={frameworkSetups} />
     </section>
 
-    <section class="docs-home-section space-y-6" aria-labelledby="catalog-title">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <div class="space-y-2">
-          <p class="
-            text-sm font-semibold tracking-[0.22em] text-brand uppercase
-          ">Component reference</p>
-          <h2 class="text-3xl font-bold text-ink" id="catalog-title">
+    <section class="docs-home-block" aria-labelledby="catalog-title">
+      <div class="docs-home-block__head docs-home-block__head--split">
+        <div>
+          <Eyebrow>Component reference</Eyebrow>
+          <h2 class="docs-home-block__title" id="catalog-title">
             Live previews, code in three flavors
           </h2>
-          <p class="max-w-2xl text-sm/7 text-ink-soft">
+          <p class="docs-home-block__lede">
             Every component page renders the real thing and shows matching Astro, React, and
             custom-element usage side by side. {componentCategories.join(', ')}.
           </p>
@@ -191,35 +168,26 @@ const featured = componentDocs.slice(0, 12)
         </a>
       </div>
       <div class="
-        docs-home-catalog-grid grid gap-4
-        md:grid-cols-2
-        xl:grid-cols-4
+        docs-home-catalog grid gap-3
+        sm:grid-cols-2
+        lg:grid-cols-4
       ">
-        {featured.map((component, index) => (
+        {featured.map(component => (
           <a
-            class="docs-home-component-link no-underline"
+            class="docs-home-component no-underline"
             href={`/docs/components/${toSlug(component.name)}`}
           >
-            <Card
-              class="docs-home-component-card h-full p-5"
-              data-tone={String(index % 4)}
-              variant="interactive"
-            >
-              <div class="docs-home-component-card__header">
-                <span class="docs-home-component-card__mark" aria-hidden="true">
-                  {component.name.slice(0, 2)}
-                </span>
-                <div>
-                  <h3 class="text-sm font-bold text-ink">{component.name}</h3>
-                  <p>{component.category}</p>
-                </div>
-                {component.glass && <Badge variant="outline">Glass</Badge>}
-              </div>
-              <p class="text-sm/6 text-ink-soft">{component.summary}</p>
-              <span class="docs-home-component-card__arrow" aria-hidden="true">
-                <Icon name="arrow-up-right" size="sm" />
+            <div class="docs-home-component__header">
+              <span class="docs-home-component__mark" aria-hidden="true">
+                {component.name.slice(0, 2)}
               </span>
-            </Card>
+              <div class="docs-home-component__meta">
+                <h3>{component.name}</h3>
+                <p>{component.category}</p>
+              </div>
+              <Icon class="docs-home-component__arrow" name="arrow-up-right" size="sm" />
+            </div>
+            <p class="docs-home-component__body">{component.summary}</p>
           </a>
         ))}
       </div>
@@ -227,9 +195,9 @@ const featured = componentDocs.slice(0, 12)
 
     <Separator />
 
-    <section class="docs-home-cta grid gap-6 text-center" aria-label="Get started">
-      <h2 class="text-3xl font-bold text-ink">Start with the framework you already use.</h2>
-      <div class="flex flex-wrap justify-center gap-3">
+    <section class="docs-home-cta" aria-label="Get started">
+      <h2 class="docs-home-cta__title">Start with the framework you already use.</h2>
+      <div class="docs-home-cta__actions">
         <a class="ui-button ui-button--lg ui-button--default no-underline" href="/docs">
           <Icon name="book-open" size="sm" />
           Read the docs

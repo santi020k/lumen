@@ -227,6 +227,71 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   )
 
   const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+  let isThemeAnimating = false
+
+  const commitTheme = (nextTheme: ColorTheme) => {
+    localStorage.setItem(themeStorageKey, nextTheme)
+
+    applyTheme(nextTheme)
+  }
+
+  const circularRevealTheme = (toggle: HTMLElement, currentTheme: ColorTheme, nextTheme: ColorTheme) => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+
+    if (prefersReducedMotion || isTouchDevice) {
+      commitTheme(nextTheme)
+
+      return
+    }
+
+    isThemeAnimating = true
+
+    const rect = toggle.getBoundingClientRect()
+    const x = Math.round(rect.left + rect.width / 2)
+    const y = Math.round(rect.top + rect.height / 2)
+
+    const maxRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    )
+
+    const overlay = document.createElement('div')
+
+    overlay.setAttribute('aria-hidden', 'true')
+
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      inset: '0',
+      zIndex: '99999',
+      pointerEvents: 'none',
+      backgroundColor: getThemeColor(currentTheme),
+      clipPath: `circle(${maxRadius}px at ${x}px ${y}px)`,
+      willChange: 'clip-path'
+    })
+
+    document.body.appendChild(overlay)
+
+    commitTheme(nextTheme)
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.style.transition = 'clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)'
+
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`
+
+        const done = () => {
+          overlay.remove()
+
+          isThemeAnimating = false
+        }
+
+        overlay.addEventListener('transitionend', done, { once: true })
+
+        setTimeout(done, 750)
+      })
+    })
+  }
 
   applyTheme(getPreferredTheme())
 
@@ -235,14 +300,12 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
       ? event.target.closest<HTMLElement>('[data-theme-toggle]')
       : null
 
-    if (!toggle) return
+    if (!toggle || isThemeAnimating) return
 
     const currentTheme = getPreferredTheme()
     const nextTheme = getToggledTheme(currentTheme)
 
-    localStorage.setItem(themeStorageKey, nextTheme)
-
-    applyTheme(nextTheme)
+    circularRevealTheme(toggle, currentTheme, nextTheme)
   })
 
   document.addEventListener('change', event => {
