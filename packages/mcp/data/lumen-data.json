@@ -938,7 +938,7 @@
       ]
     },
     {
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'input'> {\n  class?: string\n  className?: string\n}\n\nconst { class: classProp = '', className = '', type = 'date', ...rest } = Astro.props\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input', 'ui-date-picker'\n], classProp, className)\n---\n\n<input\n  class:list={classList}\n  type={type}\n  {...passthrough}\n/>\n",
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\nimport Calendar from './Calendar.astro'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'input'> {\n  class?: string\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  placeholder?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  placeholder,\n  required = false,\n  type = 'date',\n  value,\n  ...rest\n} = Astro.props\n\nconst datePickerId = id ?? `ui-date-picker-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${datePickerId}-trigger`\nconst popoverId = `${datePickerId}-popover`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-date-picker-field',\n    glass && 'ui-date-picker-field--glass',\n    glass === 'subtle' && 'ui-glass-subtle',\n    glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst selectedValue = value === undefined || value === null ? undefined : String(value)\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst placeholderText = placeholder ?? 'mm/dd/yyyy'\n---\n\n<div class:list={classList} data-ui-date-picker data-ui-glass-track={glass ? true : undefined}>\n  <input\n    class=\"ui-date-picker ui-date-picker__native\"\n    data-ui-date-picker-native\n    disabled={disabled}\n    id={datePickerId}\n    max={max}\n    min={min}\n    name={name}\n    required={required}\n    type={type}\n    value={value}\n    {...passthrough}\n  />\n\n  <div class=\"ui-date-picker__control\" data-ui-date-picker-control hidden>\n    <button\n      aria-controls={popoverId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"dialog\"\n      class=\"ui-input ui-date-picker ui-date-picker__trigger\"\n      data-ui-date-picker-trigger\n      disabled={disabled}\n      id={triggerId}\n      type=\"button\"\n    >\n      <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>\n    </button>\n\n    <div class=\"ui-date-picker__popover\" data-state=\"closed\" data-ui-date-picker-popover hidden id={popoverId} role=\"dialog\">\n      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />\n    </div>\n  </div>\n</div>\n",
       "frameworks": {
         "astro": true,
         "elements": true,
@@ -954,6 +954,16 @@
         },
         {
           "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "glass",
+          "optional": true,
+          "type": "boolean | 'subtle' | 'strong'"
+        },
+        {
+          "name": "placeholder",
           "optional": true,
           "type": "string"
         }
@@ -3912,7 +3922,7 @@
       "recipes": []
     },
     {
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  class?: string\n  className?: string\n  size?: number\n  src?: string\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  size = 160,\n  src,\n  value,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-qr-code'\n], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-ui-qr-code\n  style={`--ui-qr-code-size:${size}px`}\n  {...passthrough}\n>\n  <div class=\"ui-qr-code__frame\">\n    {src\n      ? <img alt={value ? `QR code for ${value}` : 'QR code'} class=\"ui-qr-code__image\" height={size} src={src} width={size} />\n      : <slot />}\n  </div>\n  {value && <figcaption class=\"ui-qr-code__value\">{value}</figcaption>}\n</figure>\n",
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\nimport { renderSVG } from 'uqr'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  class?: string\n  className?: string\n  size?: number\n  src?: string\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  size = 160,\n  src,\n  value,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-qr-code'\n], classProp, className)\n\nconst qrSvg = !src && value ? renderSVG(value) : null\nconst qrSrc = qrSvg ? `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}` : src\n---\n\n<figure\n  class:list={classList}\n  data-ui-qr-code\n  style={`--ui-qr-code-size:${size}px`}\n  {...passthrough}\n>\n  <div class=\"ui-qr-code__frame\">\n    {qrSrc\n      ? <img alt={value ? `QR code for ${value}` : 'QR code'} class=\"ui-qr-code__image\" height={size} src={qrSrc} width={size} />\n      : <slot />}\n  </div>\n  {value && <figcaption class=\"ui-qr-code__value\">{value}</figcaption>}\n</figure>\n",
       "frameworks": {
         "astro": true,
         "elements": true,
@@ -4084,7 +4094,7 @@
   },
   "meta": {
     "componentCount": 121,
-    "generatedAt": "2026-07-23T19:19:14.930Z",
+    "generatedAt": "2026-07-23T20:41:45.804Z",
     "packages": [
       "@santi020k/lumen-astro",
       "@santi020k/lumen-react",

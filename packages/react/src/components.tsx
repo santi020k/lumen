@@ -24,6 +24,7 @@ import {
   Fragment,
   isValidElement,
   useContext,
+  useId,
   useMemo,
   useState
 } from 'react'
@@ -907,10 +908,78 @@ export const DataTable = ({
   </div>
 )
 
-export type DatePickerProps = ComponentPropsWithoutRef<'input'>
-export const DatePicker = ({ className, type = 'date', ...props }: DatePickerProps) => (
-  <input className={composeClassName('ui-input ui-date-picker', className)} type={type} {...props} />
-)
+export type DatePickerProps = ComponentPropsWithoutRef<'input'> & SurfaceProps & {
+  placeholder?: string
+}
+
+export const DatePicker = ({
+  className,
+  disabled,
+  glass = false,
+  id,
+  max,
+  min,
+  name,
+  placeholder,
+  required,
+  type = 'date',
+  value,
+  ...props
+}: DatePickerProps) => {
+  const datePickerId = id ?? useId()
+  const triggerId = `${datePickerId}-trigger`
+  const popoverId = `${datePickerId}-popover`
+  const selectedValue = value === undefined || value === null ? undefined : String(value)
+  const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
+  const placeholderText = placeholder ?? 'mm/dd/yyyy'
+  const maxStr = typeof max === 'string' ? max : typeof max === 'number' ? max.toString() : undefined
+  const minStr = typeof min === 'string' ? min : typeof min === 'number' ? min.toString() : undefined
+
+  return (
+    <div
+      className={composeClassName(
+        'ui-date-picker-field',
+        glass && 'ui-date-picker-field--glass',
+        glass === 'subtle' && 'ui-glass-subtle',
+        glass === 'strong' && 'ui-glass-strong',
+        className
+      )}
+      data-ui-date-picker
+      data-ui-glass-track={glass ? true : undefined}
+    >
+      <input
+        className="ui-date-picker ui-date-picker__native"
+        data-ui-date-picker-native
+        disabled={disabled}
+        id={datePickerId}
+        max={max}
+        min={min}
+        name={name}
+        required={required}
+        type={type}
+        value={value}
+        {...props}
+      />
+      <div className="ui-date-picker__control" data-ui-date-picker-control hidden>
+        <button
+          aria-controls={popoverId}
+          aria-expanded="false"
+          aria-haspopup="dialog"
+          className="ui-input ui-date-picker ui-date-picker__trigger"
+          data-ui-date-picker-trigger
+          disabled={disabled}
+          id={triggerId}
+          type="button"
+        >
+          <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>
+        </button>
+        <div className="ui-date-picker__popover" data-state="closed" data-ui-date-picker-popover hidden id={popoverId} role="dialog">
+          <Calendar max={maxStr} min={minStr} value={selectedValue} />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export type DateRangePickerProps = ComponentPropsWithoutRef<'div'>
 export const DateRangePicker = ({ className, ...props }: DateRangePickerProps) => (
@@ -2097,6 +2166,17 @@ export const Rating = ({ className, value = 0, max = 5, readonly = false, ...pro
 export type TimelineProps = ComponentPropsWithoutRef<'ol'>
 export const Timeline = ({ className, ...props }: TimelineProps) => (
   <ol className={composeClassName('ui-timeline', className)} {...props} />
+)
+
+export type TimelineItemProps = ComponentPropsWithoutRef<'li'> & {
+  dot?: React.ReactNode
+}
+export const TimelineItem = ({ className, children, dot, ...props }: TimelineItemProps) => (
+  <li className={composeClassName('ui-timeline-item', className)} {...props}>
+    <div className="ui-timeline-item__tail" />
+    <div className="ui-timeline-item__dot">{dot}</div>
+    <div className="ui-timeline-item__content">{children}</div>
+  </li>
 )
 
 export type AnimatedLogoProps = ComponentPropsWithoutRef<'span'> & {

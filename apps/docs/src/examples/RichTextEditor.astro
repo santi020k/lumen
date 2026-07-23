@@ -1,13 +1,39 @@
 ---
-import { Button, ButtonGroup, RichTextEditor } from '@santi020k/lumen-astro'
+import { Button, ButtonGroup, Icon, RichTextEditor } from '@santi020k/lumen-astro'
 ---
 
 <RichTextEditor>
   <div role="toolbar" aria-label="Editor toolbar">
     <ButtonGroup>
-      <Button data-ui-editor-command="bold" type="button">Bold</Button>
-      <Button data-ui-editor-command="italic" type="button" variant="secondary">Italic</Button>
+      <Button data-ui-editor-command="bold" type="button" variant="ghost" size="icon" aria-label="Bold">
+        <Icon name="bold" decorative />
+      </Button>
+      <Button data-ui-editor-command="italic" type="button" variant="ghost" size="icon" aria-label="Italic">
+        <Icon name="italic" decorative />
+      </Button>
+      <Button data-ui-editor-command="underline" type="button" variant="ghost" size="icon" aria-label="Underline">
+        <Icon name="underline" decorative />
+      </Button>
+      <Button data-ui-editor-command="strikeThrough" type="button" variant="ghost" size="icon" aria-label="Strike">
+        <!-- cspell:disable-next-line -->
+        <Icon name="strikethrough" decorative />
+      </Button>
+    </ButtonGroup>
+    <ButtonGroup>
+      <Button data-ui-editor-command="insertUnorderedList" type="button" variant="ghost" size="icon" aria-label="Bullet List">
+        <Icon name="list" decorative />
+      </Button>
+      <Button data-ui-editor-command="insertOrderedList" type="button" variant="ghost" size="icon" aria-label="Numbered List">
+        <Icon name="list-ordered" decorative />
+      </Button>
     </ButtonGroup>
   </div>
-  <div contenteditable="true">Draft release notes...</div>
+  <div contenteditable="true">
+    <h2>v2.0 Release Notes</h2>
+    <p>Draft release notes...</p>
+    <ul>
+      <li>Added new rich text toolbar</li>
+      <li>Improved editor layout</li>
+    </ul>
+  </div>
 </RichTextEditor>

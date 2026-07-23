@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { composeClassName } from '@santi020k/lumen-core'
+
+export interface Props extends HTMLAttributes<'li'> {}
+
+const { class: className, ...props } = Astro.props
+const hasDot = Astro.slots.has('dot')
+---
+
+<li class={composeClassName('ui-timeline-item', className)} {...props}>
+  <div class="ui-timeline-item__tail"></div>
+  <div class="ui-timeline-item__dot">
+    {hasDot ? <slot name="dot" /> : null}
+  </div>
+  <div class="ui-timeline-item__content">
+    <slot />
+  </div>
+</li>

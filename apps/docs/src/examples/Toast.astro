@@ -6,114 +6,123 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Sonner aria-label="Notifications" placement="bottom-right" maxCount={4} />
+<lumen-toast-demo style="display: block;">
+  <Sonner aria-label="Notifications" placement="bottom-right" maxCount={4} />
 
-<div style="display: grid; gap: 1.25rem;">
-  <div>
-    <strong style="display: block; margin-bottom: 0.625rem;">Common feedback</strong>
-    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-      <Button data-ex-toast-default variant="outline">Default</Button>
-      <Button data-ex-toast-success>Success</Button>
-      <Button data-ex-toast-warning variant="secondary">Warning</Button>
-      <Button data-ex-toast-error variant="destructive">Error</Button>
+  <div style="display: grid; gap: 1.25rem;">
+    <div>
+      <strong style="display: block; margin-bottom: 0.625rem;">Common feedback</strong>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+        <Button data-ex-toast="default" variant="outline">Default</Button>
+        <Button data-ex-toast="success">Success</Button>
+        <Button data-ex-toast="warning" variant="secondary">Warning</Button>
+        <Button data-ex-toast="error" variant="destructive">Error</Button>
+      </div>
+    </div>
+
+    <div>
+      <strong style="display: block; margin-bottom: 0.625rem;">Interactive patterns</strong>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+        <Button data-ex-toast="action" variant="outline">With action</Button>
+        <Button data-ex-toast="progress" variant="secondary">Loading → success</Button>
+        <Button data-ex-toast="dismiss" variant="ghost">Dismiss all</Button>
+      </div>
     </div>
   </div>
 
-  <div>
-    <strong style="display: block; margin-bottom: 0.625rem;">Interactive patterns</strong>
-    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-      <Button data-ex-toast-action variant="outline">With action</Button>
-      <Button data-ex-toast-progress variant="secondary">Loading → success</Button>
-      <Button data-ex-toast-dismiss variant="ghost">Dismiss all</Button>
-    </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;">
+    <Toast style="min-width: min(100%, 18rem);">
+      <strong>Static toast</strong>
+      <p>Useful when feedback already exists in the page markup.</p>
+    </Toast>
+    <Toast variant="success" style="min-width: min(100%, 18rem);">
+      <strong>Changes saved</strong>
+      <p>Static Toast markup remains readable without JavaScript.</p>
+    </Toast>
   </div>
-</div>
-
-<div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-  <Toast style="min-width: min(100%, 18rem);">
-    <strong>Static toast</strong>
-    <p>Useful when feedback already exists in the page markup.</p>
-  </Toast>
-  <Toast variant="success" style="min-width: min(100%, 18rem);">
-    <strong>Changes saved</strong>
-    <p>Static Toast markup remains readable without JavaScript.</p>
-  </Toast>
-</div>
+</lumen-toast-demo>
 
 <script>
-  const lumenWindow = window as Window & {
-    LumenToast?: {
-      create: (detail: Record<string, unknown>) => string
-      dismiss: (id?: string) => void
-      update: (id: string, detail: Record<string, unknown>) => void
+  class LumenToastDemo extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready) return
+      this.dataset.ready = 'true'
+
+      const lumenWindow = window as Window & {
+        LumenToast?: {
+          create: (detail: Record<string, unknown>) => string
+          dismiss: (id?: string) => void
+          update: (id: string, detail: Record<string, unknown>) => void
+        }
+      }
+
+      const createToast = (detail: Record<string, unknown>) => {
+        document.dispatchEvent(new CustomEvent('ui:toast', { detail }))
+      }
+
+      this.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement
+        const btn = target.closest('[data-ex-toast]')
+        if (!btn) return
+
+        const type = btn.getAttribute('data-ex-toast')
+        
+        if (type === 'default') {
+          createToast({
+            description: 'Your draft is ready to keep editing.',
+            title: 'Draft saved'
+          })
+        } else if (type === 'success') {
+          createToast({
+            description: 'The latest version is now live.',
+            title: 'Published',
+            variant: 'success'
+          })
+        } else if (type === 'warning') {
+          createToast({
+            description: 'We will keep retrying in the background.',
+            title: 'Connection interrupted',
+            variant: 'warning'
+          })
+        } else if (type === 'error') {
+          createToast({
+            description: 'Check the required fields and try again.',
+            title: 'Could not save changes',
+            variant: 'destructive'
+          })
+        } else if (type === 'action') {
+          lumenWindow.LumenToast?.create({
+            action: { label: 'Undo', value: 'deploy' },
+            description: 'lumen-docs was moved to production.',
+            duration: 8000,
+            title: 'Deployment complete',
+            variant: 'success'
+          })
+        } else if (type === 'progress') {
+          const toastId = lumenWindow.LumenToast?.create({
+            description: 'Preparing the production bundle.',
+            duration: 10000,
+            title: 'Deploying…'
+          })
+
+          if (!toastId) return
+
+          window.setTimeout(() => {
+            lumenWindow.LumenToast?.update(toastId, {
+              description: 'The production bundle is live.',
+              duration: 4000,
+              title: 'Deployment complete',
+              variant: 'success'
+            })
+          }, 1600)
+        } else if (type === 'dismiss') {
+          lumenWindow.LumenToast?.dismiss()
+        }
+      })
     }
   }
 
-  const createToast = (detail: Record<string, unknown>) => {
-    document.dispatchEvent(new CustomEvent('ui:toast', { detail }))
+  if (!customElements.get('lumen-toast-demo')) {
+    customElements.define('lumen-toast-demo', LumenToastDemo)
   }
-
-  document.querySelector('[data-ex-toast-default]')?.addEventListener('click', () => {
-    createToast({
-      description: 'Your draft is ready to keep editing.',
-      title: 'Draft saved'
-    })
-  })
-
-  document.querySelector('[data-ex-toast-success]')?.addEventListener('click', () => {
-    createToast({
-      description: 'The latest version is now live.',
-      title: 'Published',
-      variant: 'success'
-    })
-  })
-
-  document.querySelector('[data-ex-toast-warning]')?.addEventListener('click', () => {
-    createToast({
-      description: 'We will keep retrying in the background.',
-      title: 'Connection interrupted',
-      variant: 'warning'
-    })
-  })
-
-  document.querySelector('[data-ex-toast-error]')?.addEventListener('click', () => {
-    createToast({
-      description: 'Check the required fields and try again.',
-      title: 'Could not save changes',
-      variant: 'destructive'
-    })
-  })
-
-  document.querySelector('[data-ex-toast-action]')?.addEventListener('click', () => {
-    lumenWindow.LumenToast?.create({
-      action: { label: 'Undo', value: 'deploy' },
-      description: 'lumen-docs was moved to production.',
-      duration: 8000,
-      title: 'Deployment complete',
-      variant: 'success'
-    })
-  })
-
-  document.querySelector('[data-ex-toast-progress]')?.addEventListener('click', () => {
-    const toastId = lumenWindow.LumenToast?.create({
-      description: 'Preparing the production bundle.',
-      duration: 10000,
-      title: 'Deploying…'
-    })
-
-    if (!toastId) return
-
-    window.setTimeout(() => {
-      lumenWindow.LumenToast?.update(toastId, {
-        description: 'The production bundle is live.',
-        duration: 4000,
-        title: 'Deployment complete',
-        variant: 'success'
-      })
-    }, 1600)
-  })
-
-  document.querySelector('[data-ex-toast-dismiss]')?.addEventListener('click', () => {
-    lumenWindow.LumenToast?.dismiss()
-  })
 </script>
