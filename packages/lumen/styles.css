@@ -948,6 +948,7 @@
 }
 
 .ui-combobox,
+.ui-date-picker-field,
 .ui-select-field {
   position: relative;
   width: min(100%, 34rem);
@@ -957,15 +958,18 @@
   width: 100%;
 }
 
+.ui-date-picker__control,
 .ui-select__control {
   position: relative;
   width: 100%;
 }
 
+.ui-date-picker__control[hidden],
 .ui-select__control[hidden] {
   display: none;
 }
 
+.ui-date-picker__native[data-ui-enhanced="true"],
 .ui-select__native[data-ui-enhanced="true"] {
   position: absolute;
   width: 1px;
@@ -976,6 +980,7 @@
   pointer-events: none;
 }
 
+.ui-date-picker__trigger,
 .ui-select__trigger {
   display: flex;
   align-items: center;
@@ -996,6 +1001,7 @@
 }
 
 .ui-combobox__list,
+.ui-date-picker__popover,
 .ui-select__list {
   position: absolute;
   z-index: 50;
@@ -1013,6 +1019,7 @@
 }
 
 .ui-combobox__list[hidden],
+.ui-date-picker__popover[hidden],
 .ui-select__list[hidden] {
   display: none;
 }
@@ -3652,6 +3659,8 @@
 @layer lumen.components {
   .ui-popover > [popover],
   .ui-hover-card > [popover],
+  .ui-cascader > [popover],
+  .ui-tree-select > [popover],
   .ui-menu[data-ui-dropdown-menu] > [popover][role="menu"] {
     position: fixed;
     position-area: block-end span-inline-end;
@@ -3663,6 +3672,8 @@
 
   .ui-popover > [popover]:not(:popover-open),
   .ui-hover-card > [popover]:not(:popover-open),
+  .ui-cascader > [popover]:not(:popover-open),
+  .ui-tree-select > [popover]:not(:popover-open),
   .ui-menu[data-ui-dropdown-menu] > [popover][role="menu"]:not(:popover-open) {
     opacity: 0;
     transform: translateY(-0.25rem) scale(0.98);
@@ -4209,7 +4220,7 @@
   border-radius: 0.375rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
   transition: background 0.15s ease, color 0.15s ease;
 }
 .ui-segmented__input:checked + .ui-segmented__label {
@@ -4338,6 +4349,15 @@
   padding: 0.25rem;
   list-style: none;
   overflow-y: auto;
+}
+.ui-transfer__list:not(:has(.ui-transfer__item))::after {
+  content: 'No items';
+  display: block;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: hsl(var(--ink-muted));
+  font-size: 0.8125rem;
+  font-style: italic;
 }
 .ui-transfer__item {
   list-style: none;
@@ -4654,7 +4674,7 @@
 }
 .ui-tour__content {
   margin: 0;
-  color: hsl(var(--ink-soft)));
+  color: hsl(var(--ink-soft));
 }
 
 /* TreeSelect tree */

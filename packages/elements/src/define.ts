@@ -118,6 +118,12 @@ const calendarInputSelector = '[data-ui-calendar-input]'
 const calendarLabelSelector = '[data-ui-calendar-label]'
 const calendarGridSelector = '[data-ui-calendar-grid]'
 const calendarDaySelector = '[data-ui-calendar-day]'
+const datePickerSelector = '[data-ui-date-picker], lumen-date-picker'
+const datePickerNativeSelector = '[data-ui-date-picker-native]'
+const datePickerControlSelector = '[data-ui-date-picker-control]'
+const datePickerTriggerSelector = '[data-ui-date-picker-trigger]'
+const datePickerValueSelector = '[data-ui-date-picker-value]'
+const datePickerPopoverSelector = '[data-ui-date-picker-popover]'
 
 const formControlSelector = [
   'input:not([type="hidden"])',
@@ -1334,6 +1340,96 @@ const initDateRangePickers = (scope: ParentNode): void => {
   }
 }
 
+const initDatePickers = (scope: ParentNode): void => {
+  const closestRoot = getClosestScopedElement(scope, datePickerSelector)
+  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
+
+  if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
+    roots.unshift(closestRoot)
+  }
+
+  for (const root of roots) {
+    if (root.dataset.uiBound === 'true') continue
+
+    const native = root.querySelector<HTMLInputElement>(datePickerNativeSelector)
+    const control = root.querySelector<HTMLElement>(datePickerControlSelector)
+    const trigger = root.querySelector<HTMLElement>(datePickerTriggerSelector)
+    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector)
+    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector)
+    const calendar = root.querySelector<HTMLElement>(calendarSelector)
+
+    if (!native || !control || !trigger || !popover) continue
+
+    root.dataset.uiBound = 'true'
+
+    native.dataset.uiEnhanced = 'true'
+
+    control.hidden = false
+
+    const closePopover = (): void => {
+      popover.hidden = true
+
+      popover.dataset.state = 'closed'
+
+      trigger.setAttribute('aria-expanded', 'false')
+
+      document.removeEventListener('click', handleOutsideClick)
+    }
+
+    const handleOutsideClick = (event: MouseEvent): void => {
+      if (!(event.target instanceof Node)) return
+
+      if (!popover.contains(event.target) && !trigger.contains(event.target)) {
+        closePopover()
+      }
+    }
+
+    const openPopover = (): void => {
+      if (calendar) {
+        if (native.min) calendar.dataset.uiCalendarMin = native.min
+        else delete calendar.dataset.uiCalendarMin
+
+        if (native.max) calendar.dataset.uiCalendarMax = native.max
+        else delete calendar.dataset.uiCalendarMax
+      }
+
+      popover.hidden = false
+
+      popover.dataset.state = 'open'
+
+      trigger.setAttribute('aria-expanded', 'true')
+
+      globalThis.setTimeout(() => {
+        document.addEventListener('click', handleOutsideClick)
+      })
+    }
+
+    trigger.addEventListener('click', () => {
+      if (popover.hidden) {
+        openPopover()
+      } else {
+        closePopover()
+      }
+    })
+
+    popover.addEventListener('change', event => {
+      const target = event.target
+
+      if (target instanceof HTMLInputElement && target.hasAttribute('data-ui-calendar-input')) {
+        const newDate = target.value
+
+        native.value = newDate
+
+        if (valueEl) valueEl.textContent = newDate || 'mm/dd/yyyy'
+
+        native.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }))
+
+        closePopover()
+      }
+    })
+  }
+}
+
 export const enhanceLumenDateRangePickers = (
   scope: ParentNode = document
 ): void => {
@@ -1354,6 +1450,34 @@ const installDateRangePickerController = (): void => {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
           enhanceLumenDateRangePickers(node)
+        }
+      }
+    }
+  })
+
+  observer.observe(document.documentElement, { childList: true, subtree: true })
+}
+
+export const enhanceLumenDatePickers = (
+  scope: ParentNode = document
+): void => {
+  initDatePickers(scope)
+}
+
+const installDatePickerController = (): void => {
+  if (!hasDocument() || document.documentElement.dataset.uiElementsDatePickersBound === 'true') return
+
+  document.documentElement.dataset.uiElementsDatePickersBound = 'true'
+
+  enhanceLumenDatePickers(document)
+
+  if (typeof MutationObserver === 'undefined') return
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof Element || node instanceof DocumentFragment) {
+          enhanceLumenDatePickers(node)
         }
       }
     }
@@ -3273,9 +3397,7 @@ class LumenSelectBehaviorElement extends LumenElement {
       this.openSelect(trigger, listbox)
 
       if (event.key === 'Enter' || event.key === ' ') {
-        ;
-
-(this.getSelectedItem() ?? this.getEnabledItems()[0])?.focus()
+        (this.getSelectedItem() ?? this.getEnabledItems()[0])?.focus()
 
         return
       }
@@ -4693,6 +4815,16 @@ const elementDefinitions = lumenComponentNames.map(componentName => {
   return [config.tagName, elementClasses[componentName]] as const
 })
 
+export const enhanceLumenElements = (scope: ParentNode = document): void => {
+  enhanceLumenDateRangePickers(scope)
+
+  enhanceLumenInputOTPs(scope)
+
+  initLumenFields(scope)
+
+  initLumenForms(scope)
+}
+
 export const defineLumenElements = (
   customElementsRegistry: CustomElementRegistry | undefined = typeof customElements === 'undefined'
     ? undefined
@@ -4725,6 +4857,12 @@ export const defineLumenElements = (
   installInputOtpController()
 
   installCalendarController()
+}
+
+export const installLumenControllers = (): void => {
+  installDateRangePickerController()
+
+  installInputOtpController()
 }
 
 export const lumenElementDefinitions = elementDefinitions

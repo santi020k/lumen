@@ -9,7 +9,7 @@ test('component preview changes and persists the site-wide theme', async ({ page
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/theme-toggle')
 
-  const previewToggle = page.locator('[data-ui-theme-toggle]')
+  const previewToggle = page.locator('.component-doc-preview [data-ui-theme-toggle]')
 
   await expect(previewToggle).toHaveCount(1)
   await expect(previewToggle).toHaveJSProperty('tagName', 'BUTTON')

@@ -1281,6 +1281,32 @@ pre code {
   gap: 0.2rem;
 }
 
+.docs-sidebar__components-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.55rem;
+  color: hsl(var(--ink-muted));
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.docs-sidebar__components-label a {
+  color: hsl(var(--brand));
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.docs-sidebar__components-label a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
 .docs-sidebar__group > p {
   display: flex;
   align-items: center;
@@ -1294,6 +1320,66 @@ pre code {
   letter-spacing: 0.13em;
   line-height: 1.2;
   text-transform: uppercase;
+}
+
+.docs-sidebar__group--collapsible {
+  gap: 0;
+}
+
+.docs-sidebar__group--collapsible summary {
+  display: flex;
+  min-height: 2.2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.65rem;
+  color: hsl(var(--ink-soft));
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  list-style: none;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.docs-sidebar__group--collapsible summary::-webkit-details-marker {
+  display: none;
+}
+
+.docs-sidebar__group--collapsible summary:hover {
+  background: hsl(var(--surface-strong) / 0.72);
+  color: hsl(var(--ink));
+}
+
+.docs-sidebar__group--collapsible summary > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.docs-sidebar__group--collapsible summary .ui-badge {
+  min-height: 1.15rem;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.58rem;
+  letter-spacing: 0;
+}
+
+.docs-sidebar__group--collapsible summary .ui-icon {
+  color: hsl(var(--ink-muted));
+  transition: transform 150ms ease;
+}
+
+.docs-sidebar__group--collapsible[open] summary .ui-icon {
+  transform: rotate(90deg);
+}
+
+.docs-sidebar__group--collapsible > div {
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.2rem;
 }
 
 .docs-sidebar__group > p .ui-badge {
@@ -1625,13 +1711,23 @@ pre code {
 }
 
 .component-doc-hero__meta strong,
-.component-doc-hero__meta code {
+.component-doc-hero__meta code,
+.component-doc-hero__meta a {
   overflow: hidden;
   color: hsl(var(--ink));
   font-size: 0.78rem;
   font-weight: 750;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.component-doc-hero__meta a {
+  text-decoration-color: hsl(var(--brand) / 0.45);
+  text-underline-offset: 0.2rem;
+}
+
+.component-doc-hero__meta a:hover {
+  color: hsl(var(--brand));
 }
 
 .component-doc-guidance {
@@ -1679,6 +1775,85 @@ pre code {
   letter-spacing: 0.1em;
   line-height: 1.2;
   text-transform: uppercase;
+}
+
+.component-doc-related {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid hsl(var(--line) / 0.78);
+  border-radius: 1rem;
+  background:
+    linear-gradient(135deg, hsl(var(--brand-soft) / 0.34), hsl(var(--surface) / 0.86));
+}
+
+.component-doc-related > div {
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+}
+
+.component-doc-related > div > small {
+  color: hsl(var(--brand));
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.component-doc-related h2 {
+  color: hsl(var(--ink));
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.component-doc-related > div > p {
+  color: hsl(var(--ink-soft));
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.component-doc-related nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.5rem;
+}
+
+.component-doc-related nav a {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid hsl(var(--line) / 0.8);
+  border-radius: 0.7rem;
+  background: hsl(var(--surface) / 0.78);
+  color: hsl(var(--ink));
+  text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.component-doc-related nav a:hover {
+  border-color: hsl(var(--brand) / 0.5);
+  background: hsl(var(--brand-soft) / 0.48);
+  transform: translateY(-1px);
+}
+
+.component-doc-related nav a > span {
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.component-doc-related nav a > small {
+  overflow: hidden;
+  color: hsl(var(--ink-muted));
+  font-size: 0.66rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .component-doc-section {
@@ -1752,6 +1927,11 @@ pre code {
 
   .component-doc-guidance {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .component-doc-related {
+    grid-template-columns: minmax(11rem, 0.32fr) minmax(0, 0.68fr);
+    align-items: start;
   }
 }
 
@@ -2280,7 +2460,8 @@ pre code {
 }
 
 .docs-theme-select.ui-select:focus-visible {
-  outline: 0;
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: -4px;
 }
 
 .docs-theme-select option {

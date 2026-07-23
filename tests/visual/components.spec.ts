@@ -137,6 +137,8 @@ const interactiveScenarios: VisualScenario[] = [
       const segments = otp.locator('[data-ui-input-otp-segments]')
 
       await expect(input).toHaveAttribute('data-ui-enhanced', 'true')
+
+      await input.fill('')
       await expect(input).toHaveValue('')
       await expect(segments).toBeVisible()
 
@@ -153,6 +155,7 @@ const interactiveScenarios: VisualScenario[] = [
 
       await expect(input).toHaveAttribute('data-ui-enhanced', 'true')
 
+      await input.fill('')
       await input.focus()
       await page.keyboard.type('123456')
 
@@ -230,9 +233,9 @@ const interactiveScenarios: VisualScenario[] = [
     name: 'toast-visible',
     path: '/docs/components/toast',
     prepare: async page => {
-      await page.locator('[data-ex-toast-create]').click()
+      await page.locator('[data-ex-toast="default"]').click()
 
-      const toast = page.locator('[data-ui-toast][data-state="open"]').filter({ hasText: 'Build complete' })
+      const toast = page.locator('[data-ui-toast][data-state="open"]').filter({ hasText: 'Draft saved' })
 
       await expect(toast).toBeVisible()
     }
