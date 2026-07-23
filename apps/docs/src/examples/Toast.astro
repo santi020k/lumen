@@ -6,20 +6,39 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Sonner aria-label="Top notifications" placement="top-right" maxCount={3} />
-<Sonner aria-label="Bottom notifications" placement="bottom-left" maxCount={3} />
+<Sonner aria-label="Notifications" placement="bottom-right" maxCount={4} />
 
-<div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-  <Button data-ex-toast-create>Action toast</Button>
-  <Button data-ex-toast-bottom variant="outline">Bottom toast</Button>
-  <Button data-ex-toast-update variant="secondary">Update</Button>
-  <Button data-ex-toast-dismiss variant="ghost">Dismiss</Button>
+<div style="display: grid; gap: 1.25rem;">
+  <div>
+    <strong style="display: block; margin-bottom: 0.625rem;">Common feedback</strong>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+      <Button data-ex-toast-default variant="outline">Default</Button>
+      <Button data-ex-toast-success>Success</Button>
+      <Button data-ex-toast-warning variant="secondary">Warning</Button>
+      <Button data-ex-toast-error variant="destructive">Error</Button>
+    </div>
+  </div>
+
+  <div>
+    <strong style="display: block; margin-bottom: 0.625rem;">Interactive patterns</strong>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+      <Button data-ex-toast-action variant="outline">With action</Button>
+      <Button data-ex-toast-progress variant="secondary">Loading → success</Button>
+      <Button data-ex-toast-dismiss variant="ghost">Dismiss all</Button>
+    </div>
+  </div>
 </div>
 
-<Toast variant="success" style="max-width: 24rem;">
-  <strong>Static fallback</strong>
-  <p>This toast remains readable without JavaScript.</p>
-</Toast>
+<div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+  <Toast style="min-width: min(100%, 18rem);">
+    <strong>Static toast</strong>
+    <p>Useful when feedback already exists in the page markup.</p>
+  </Toast>
+  <Toast variant="success" style="min-width: min(100%, 18rem);">
+    <strong>Changes saved</strong>
+    <p>Static Toast markup remains readable without JavaScript.</p>
+  </Toast>
+</div>
 
 <script>
   const lumenWindow = window as Window & {
@@ -30,44 +49,71 @@ import {
     }
   }
 
-  let activeToastId = ''
+  const createToast = (detail: Record<string, unknown>) => {
+    document.dispatchEvent(new CustomEvent('ui:toast', { detail }))
+  }
 
-  document.querySelector('[data-ex-toast-create]')?.addEventListener('click', () => {
-    activeToastId = lumenWindow.LumenToast?.create({
-      action: { label: 'Undo', value: 'deploy' },
-      description: 'lumen-docs deployed to production.',
-      duration: 8000,
-      placement: 'top-right',
-      title: 'Build complete',
-      variant: 'success'
-    }) ?? ''
-  })
-
-  document.querySelector('[data-ex-toast-bottom]')?.addEventListener('click', () => {
-    document.dispatchEvent(new CustomEvent('ui:toast', {
-      detail: {
-        description: 'This notification uses the bottom-left viewport.',
-        duration: 4000,
-        placement: 'bottom-left',
-        title: 'Queued',
-        variant: 'warning'
-      }
-    }))
-  })
-
-  document.querySelector('[data-ex-toast-update]')?.addEventListener('click', () => {
-    if (!activeToastId) return
-
-    lumenWindow.LumenToast?.update(activeToastId, {
-      description: 'The build was promoted after verification.',
-      title: 'Promotion complete',
-      variant: 'default'
+  document.querySelector('[data-ex-toast-default]')?.addEventListener('click', () => {
+    createToast({
+      description: 'Your draft is ready to keep editing.',
+      title: 'Draft saved'
     })
   })
 
-  document.querySelector('[data-ex-toast-dismiss]')?.addEventListener('click', () => {
-    lumenWindow.LumenToast?.dismiss(activeToastId)
+  document.querySelector('[data-ex-toast-success]')?.addEventListener('click', () => {
+    createToast({
+      description: 'The latest version is now live.',
+      title: 'Published',
+      variant: 'success'
+    })
+  })
 
-    activeToastId = ''
+  document.querySelector('[data-ex-toast-warning]')?.addEventListener('click', () => {
+    createToast({
+      description: 'We will keep retrying in the background.',
+      title: 'Connection interrupted',
+      variant: 'warning'
+    })
+  })
+
+  document.querySelector('[data-ex-toast-error]')?.addEventListener('click', () => {
+    createToast({
+      description: 'Check the required fields and try again.',
+      title: 'Could not save changes',
+      variant: 'destructive'
+    })
+  })
+
+  document.querySelector('[data-ex-toast-action]')?.addEventListener('click', () => {
+    lumenWindow.LumenToast?.create({
+      action: { label: 'Undo', value: 'deploy' },
+      description: 'lumen-docs was moved to production.',
+      duration: 8000,
+      title: 'Deployment complete',
+      variant: 'success'
+    })
+  })
+
+  document.querySelector('[data-ex-toast-progress]')?.addEventListener('click', () => {
+    const toastId = lumenWindow.LumenToast?.create({
+      description: 'Preparing the production bundle.',
+      duration: 10000,
+      title: 'Deploying…'
+    })
+
+    if (!toastId) return
+
+    window.setTimeout(() => {
+      lumenWindow.LumenToast?.update(toastId, {
+        description: 'The production bundle is live.',
+        duration: 4000,
+        title: 'Deployment complete',
+        variant: 'success'
+      })
+    }, 1600)
+  })
+
+  document.querySelector('[data-ex-toast-dismiss]')?.addEventListener('click', () => {
+    lumenWindow.LumenToast?.dismiss()
   })
 </script>

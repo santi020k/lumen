@@ -41,15 +41,15 @@
     "test:visual:update": "playwright test --update-snapshots"
   },
   "devDependencies": {
-    "ajv": "catalog:",
     "@changesets/changelog-github": "catalog:",
     "@changesets/cli": "catalog:",
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
+    "@playwright/test": "catalog:",
     "@santi020k/eslint-config-basic": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "typescript-eslint": "catalog:",
+    "ajv": "catalog:",
     "commitizen": "catalog:",
     "cspell": "catalog:",
     "cz-conventional-changelog": "catalog:",
@@ -60,9 +60,9 @@
     "tailwindcss": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vitest": "catalog:",
-    "wrangler": "catalog:",
-    "@playwright/test": "catalog:"
+    "wrangler": "catalog:"
   },
   "engines": {
     "node": ">=22.18.0"
@@ -83,5 +83,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "uqr": "^0.1.3"
   }
 }

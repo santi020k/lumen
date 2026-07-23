@@ -1,5 +1,6 @@
 ---
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { renderSVG } from 'uqr'
 
 import type { HTMLAttributes } from 'astro/types'
 
@@ -23,6 +24,9 @@ const {
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-qr-code'
 ], classProp, className)
+
+const qrSvg = !src && value ? renderSVG(value) : null
+const qrSrc = qrSvg ? `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}` : src
 ---
 
 <figure
@@ -32,8 +36,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   {...passthrough}
 >
   <div class="ui-qr-code__frame">
-    {src
-      ? <img alt={value ? `QR code for ${value}` : 'QR code'} class="ui-qr-code__image" height={size} src={src} width={size} />
+    {qrSrc
+      ? <img alt={value ? `QR code for ${value}` : 'QR code'} class="ui-qr-code__image" height={size} src={qrSrc} width={size} />
       : <slot />}
   </div>
   {value && <figcaption class="ui-qr-code__value">{value}</figcaption>}

@@ -882,6 +882,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   Toast: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the toast tone.'),
+    apiRow('Sonner placement', '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', '"bottom-right"', 'Positions the toast viewport mounted for programmatic notifications.'),
+    apiRow('Sonner maxCount', 'number', '5', 'Limits the number of runtime toasts kept in the viewport.'),
     apiRow('window.LumenToast.create(detail)', 'function', '-', 'Creates a runtime toast and returns its id. Also available through document ui:toast.'),
     apiRow('window.LumenToast.update(id, detail)', 'function', '-', 'Updates the title, description, variant, action, or duration for a runtime toast.'),
     apiRow('window.LumenToast.dismiss(id?)', 'function', '-', 'Dismisses one runtime toast, or all runtime toasts when id is omitted.'),
@@ -1060,7 +1062,7 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   },
   Toast: {
     when: 'Use for brief, non-blocking feedback after an action or background event.',
-    distinction: 'Use Alert when the message must remain in the page; mount Sonner to manage and announce programmatic Toast instances.'
+    distinction: 'Use Alert when the message must remain in the page. Mount Sonner once as the viewport that positions, stacks, and announces programmatic Toast instances.'
   },
   Toggle: {
     when: 'Use for a control that keeps an active state, such as pin, mute, or formatting.',
@@ -1218,7 +1220,9 @@ export const componentDocs: ComponentDoc[] = ([
   example
 }))
 
-export const componentCategories = [...new Set(componentDocs.map(component => component.category))].sort()
+export const componentNavigationDocs = componentDocs.filter(component => component.name !== 'Sonner')
+
+export const componentCategories = [...new Set(componentNavigationDocs.map(component => component.category))].sort()
 
 // ---------------------------------------------------------------------------
 // React hooks reference

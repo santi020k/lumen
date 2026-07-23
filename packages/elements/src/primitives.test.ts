@@ -43,6 +43,12 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(classesOf(connect('lumen-badge', { variant: 'success' }))).toEqual(['ui-badge', 'ui-badge--success'].sort())
   })
 
+  test('opts monochrome images into dark-theme inversion', () => {
+    expect(classesOf(connect('lumen-image'))).toEqual(['ui-image'])
+    expect(classesOf(connect('lumen-image', { 'invert-on-dark': '' })))
+      .toEqual(['ui-image', 'ui-image--invert-dark'].sort())
+  })
+
   test('omits marker modifier for the default variant', () => {
     expect(classesOf(connect('lumen-marker'))).toEqual(['ui-marker'])
     expect(classesOf(connect('lumen-marker', { variant: 'success' }))).toEqual(['ui-marker', 'ui-marker--success'].sort())

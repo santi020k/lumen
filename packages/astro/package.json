@@ -6,7 +6,10 @@
   },
   "description": "Astro components and progressive-enhancement runtime for Lumen UI.",
   "type": "module",
-  "sideEffects": ["./styles/lumen.css", "./styles.css"],
+  "sideEffects": [
+    "./styles/lumen.css",
+    "./styles.css"
+  ],
   "types": "./index.d.ts",
   "exports": {
     ".": {
@@ -18,7 +21,15 @@
     "./styles.css": "./styles/lumen.css",
     "./package.json": "./package.json"
   },
-  "files": ["components", "runtime", "styles", "index.d.ts", "index.ts", "README.md", "LICENSE"],
+  "files": [
+    "components",
+    "runtime",
+    "styles",
+    "index.d.ts",
+    "index.ts",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "astro sync && tsc -p tsconfig.json --noEmit",
     "dev": "astro sync --watch",
@@ -31,7 +42,8 @@
   },
   "dependencies": {
     "@santi020k/lumen": "workspace:^",
-    "@santi020k/lumen-core": "workspace:^"
+    "@santi020k/lumen-core": "workspace:^",
+    "uqr": "^0.1.3"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "catalog:",

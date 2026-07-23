@@ -2,7 +2,7 @@
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import { Badge, Card, Icon, Input } from '@santi020k/lumen-astro'
 
-import { componentCategories, componentDocs } from '../../../data/docs'
+import { componentCategories, componentNavigationDocs } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { toSlug } from '../../../lib/routes'
 
@@ -19,13 +19,13 @@ const categoryDescriptions: Record<string, string> = {
 
 const componentGroups = componentCategories.map(category => ({
   category,
-  components: componentDocs
+  components: componentNavigationDocs
     .filter(component => component.category === category)
     .sort((left, right) => left.name.localeCompare(right.name))
 }))
 
 const categoryId = (category: string) => toSlug(category).replaceAll(' ', '-')
-const glassCount = componentDocs.filter(component => component.glass).length
+const glassCount = componentNavigationDocs.filter(component => component.glass).length
 ---
 
 <DocsLayout
@@ -46,7 +46,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
       <dl class="components-stats" aria-label="Component library totals">
         <div>
           <dt>Primitives</dt>
-          <dd>{componentDocs.length}</dd>
+          <dd>{componentNavigationDocs.length}</dd>
         </div>
         <div>
           <dt>Categories</dt>
@@ -74,7 +74,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
           <kbd>/</kbd>
         </div>
         <p id="component-filter-status" aria-live="polite">
-          Showing all {componentDocs.length} components
+          Showing all {componentNavigationDocs.length} components
         </p>
       </div>
 

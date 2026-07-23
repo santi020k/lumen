@@ -68,6 +68,16 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('color: hsl(var(--ink-muted))')
   })
 
+  test('styles native meter tracks and values with shared color tokens', async () => {
+    const css = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(css).toMatch(/\.ui-meter\s*\{[^}]*appearance: none/s)
+    expect(css).toMatch(/\.ui-meter::-webkit-meter-bar\s*\{[^}]*hsl\(var\(--surface-strong\)\)/s)
+    expect(css).toMatch(/\.ui-meter::-webkit-meter-optimum-value\s*\{[^}]*hsl\(var\(--brand-solid\)\)/s)
+    expect(css).toMatch(/\.ui-meter::-moz-meter-bar\s*\{[^}]*hsl\(var\(--brand-solid\)\)/s)
+    expect(css).not.toMatch(/\.ui-meter(?:\s|::)[^{]*\{[^}]*var\(--ui-(?:brand|surface-strong)\)/s)
+  })
+
   test('ships the code primitive markup and standalone styles', async () => {
     const [component, styles] = await Promise.all([
       readFile(new URL('./components/Code.astro', packageRoot), 'utf8'),

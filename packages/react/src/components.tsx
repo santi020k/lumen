@@ -27,6 +27,7 @@ import {
   useMemo,
   useState
 } from 'react'
+import { renderSVG } from 'uqr'
 
 import {
   type DialogOptions,
@@ -2555,21 +2556,26 @@ export interface QRCodeProps extends ComponentPropsWithoutRef<'figure'> {
   src?: string
   value?: string
 }
-export const QRCode = ({ children, className, size = 160, src, style, value, ...props }: QRCodeProps) => (
-  <figure
-    className={composeClassName('ui-qr-code', className)}
-    data-ui-qr-code
-    style={{ ['--ui-qr-code-size' as string]: `${size}px`, ...style }}
-    {...props}
-  >
-    <div className="ui-qr-code__frame">
-      {src
-        ? <img alt={value ? `QR code for ${value}` : 'QR code'} className="ui-qr-code__image" height={size} src={src} width={size} />
-        : children}
-    </div>
-    {value && <figcaption className="ui-qr-code__value">{value}</figcaption>}
-  </figure>
-)
+export const QRCode = ({ children, className, size = 160, src, style, value, ...props }: QRCodeProps) => {
+  const qrSvg = !src && value ? renderSVG(value) : null
+  const qrSrc = qrSvg ? `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}` : src
+
+  return (
+    <figure
+      className={composeClassName('ui-qr-code', className)}
+      data-ui-qr-code
+      style={{ ['--ui-qr-code-size' as string]: `${size}px`, ...style }}
+      {...props}
+    >
+      <div className="ui-qr-code__frame">
+        {qrSrc
+          ? <img alt={value ? `QR code for ${value}` : 'QR code'} className="ui-qr-code__image" height={size} src={qrSrc} width={size} />
+          : children}
+      </div>
+      {value && <figcaption className="ui-qr-code__value">{value}</figcaption>}
+    </figure>
+  )
+}
 
 export interface WatermarkProps extends ComponentPropsWithoutRef<'div'> {
   content?: string
