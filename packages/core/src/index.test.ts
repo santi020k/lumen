@@ -37,7 +37,10 @@ import {
   lumenGlassTokenNames,
   lumenIconNames,
   lumenLightTheme,
+  lumenMotion,
   lumenPackages,
+  lumenRadius,
+  lumenStructureTokenNames,
   lumenThemeAttribute,
   lumenTokenNames,
   moveScheduleEvent,
@@ -312,8 +315,15 @@ describe('lumen product helpers', () => {
     expect(css).toContain('--brand: 221 83% 53%;')
     expect(css).toContain('--glass-bg: 0 0% 100% / 0.55;')
     expect(css).toContain('--glass-shadow:')
+    expect(css).toContain('--ui-radius: 0.625rem;')
+    expect(css).toContain('--ui-shadow-md: 0 8px 24px hsl(221 47% 11% / 0.08);')
+    expect(css).toContain('--ui-duration: 160ms;')
+    expect(css).toContain('--ui-ease: cubic-bezier(0.32, 0.72, 0, 1);')
     expect(parseThemeCss(css).accent).toBe('168 76% 36%')
     expect(parseThemeCss(css)['glass-refraction']).toBe('221 83% 53% / 0.08')
+    expect(parseThemeCss(css)['ui-radius-sm']).toBe('0.375rem')
+    expect(parseThemeCss(css)['ui-font']).toContain('Inter')
+    expect(parseThemeCss(css)['ui-ease-emphasized']).toBe('cubic-bezier(0.22, 1, 0.36, 1)')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
   })
@@ -339,6 +349,9 @@ describe('lumen product helpers', () => {
     expect(generated.tokens.brand).toBe('260 88% 60%')
     expect(generated.tokens['glass-bg']).toBe('260 20% 13% / 0.78')
     expect(generated.tokens['glass-brightness']).toBe('1')
+    expect(generated.tokens['ui-radius']).toBe('0.625rem')
+    expect(generated.tokens['ui-shadow-md']).toBe('0 12px 32px hsl(0 0% 0% / 0.24)')
+    expect(generated.tokens['ui-duration']).toBe('160ms')
     expect(manual.hue).toBe(263)
     expect(manual.tokens.brand).toBe('263 87% 53%')
     expect(manual.tokens['glass-refraction']).toBe('263 83% 53% / 0.08')
@@ -346,8 +359,10 @@ describe('lumen product helpers', () => {
     expect(normalizeThemeBuilderHex('fff')).toBe('#ffffff')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'css')).toContain('color-scheme: dark;')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'css')).toContain('--glass-bg: 260 20% 13% / 0.78;')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'css')).toContain('--ui-radius: 0.625rem;')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"$type": "color"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"glass-shadow"')
+    expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"ui-radius"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'figma')).toContain('"collectionName": "Lumen"')
   })
 
@@ -388,6 +403,12 @@ describe('lumen product helpers', () => {
     expect(designTokens.color['surface-muted']?.$type).toBe('color')
     expect(designTokens.effect?.['glass-blur']?.$type).toBe('dimension')
     expect(designTokens.effect?.['glass-saturate']?.$value).toBe(1.7)
+    expect(designTokens.structure?.['ui-radius']?.$type).toBe('dimension')
+    expect(designTokens.structure?.['ui-radius']?.$value).toBe('0.625rem')
+    expect(designTokens.structure?.['ui-shadow-lg']?.$type).toBe('shadow')
+    expect(designTokens.structure?.['ui-font']?.$type).toBe('fontFamily')
+    expect(designTokens.structure?.['ui-duration']?.$type).toBe('duration')
+    expect(designTokens.structure?.['ui-ease']?.$type).toBe('cubicBezier')
   })
 
   test('suggests readable ink and tunes low contrast themes', () => {
@@ -433,6 +454,12 @@ describe('lumen theme tokens', () => {
     expect(lumenGlassEffectTokenNames).toContain('glass-shadow')
     expect(lumenGlassTokenNames).toContain('glass-blur')
     expect(lumenTokenNames).toContain('glass-refraction')
+    expect(lumenStructureTokenNames).toContain('ui-radius')
+    expect(lumenStructureTokenNames).toContain('ui-shadow-md')
+    expect(lumenStructureTokenNames).toContain('ui-ease')
+    expect(lumenTokenNames).toContain('ui-font')
+    expect(lumenRadius.base).toBe('0.625rem')
+    expect(lumenMotion.ease).toContain('cubic-bezier')
   })
 
   test('composes class names from truthy values only', () => {

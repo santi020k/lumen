@@ -164,6 +164,7 @@
 }
 
 html {
+  overflow-x: clip;
   background: hsl(var(--theme-bg));
   color: hsl(var(--ink));
   font-family: var(--font-sans);
@@ -171,6 +172,7 @@ html {
 
 body {
   position: relative;
+  overflow-x: clip;
   min-height: 100vh;
   margin: 0;
   background: hsl(var(--theme-bg));
@@ -1863,13 +1865,21 @@ pre code {
 
 .component-doc-section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 1rem;
   margin-top: 3.5rem;
   scroll-margin-top: 6rem;
 }
 
+.component-doc-section > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .component-doc-heading {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 0.9rem;
 }
@@ -2180,8 +2190,14 @@ pre code {
 }
 
 @media (max-width: 47.999rem) {
-  .docs-section > .grid {
+  .docs-section .grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .docs-section .grid > * {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
@@ -2603,6 +2619,9 @@ pre code {
 @utility docs-preview {
   display: flow-root;
   align-content: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 9rem;
   border: 1px solid hsl(var(--line));
   border-radius: 0.75rem;
