@@ -1,5 +1,149 @@
 ---
-import { AnimatedLogo } from '@santi020k/lumen-astro'
+import { AnimatedLogo, Button } from '@santi020k/lumen-astro'
 ---
 
-<AnimatedLogo class="h-24 w-auto" />
+<section class="animated-logo-demo" data-animated-logo-demo>
+  <div class="animated-logo-demo__grid">
+    <figure>
+      <AnimatedLogo class="animated-logo-demo__lumen">
+        <svg
+          aria-labelledby="lumen-logo-title lumen-logo-description"
+          role="img"
+          viewBox="0 0 318 80"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <title id="lumen-logo-title">Lumen UI</title>
+          <desc id="lumen-logo-description">The Lumen UI lowercase wordmark with a small lu monogram.</desc>
+          <text
+            fill="currentColor"
+            font-family="ui-serif, Georgia, Cambria, serif"
+            font-size="42"
+            font-weight="700"
+            x="8"
+            y="51"
+          >lu</text>
+          <circle cx="69" cy="22" fill="#f59e0b" r="3.75"></circle>
+          <path d="M90 19v42" stroke="currentColor" stroke-linecap="round" stroke-opacity="0.22" stroke-width="1.5"></path>
+          <text
+            fill="currentColor"
+            font-family="ui-serif, Georgia, Cambria, serif"
+            font-size="38"
+            font-weight="700"
+            x="112"
+            y="51"
+          >lumen</text>
+          <text
+            fill="hsl(var(--accent))"
+            font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+            font-size="20"
+            font-weight="850"
+            x="238"
+            y="51"
+          >UI</text>
+        </svg>
+      </AnimatedLogo>
+      <figcaption>Lumen UI</figcaption>
+    </figure>
+
+    <figure>
+      <AnimatedLogo class="animated-logo-demo__memudo">
+        <svg
+          aria-label="MeMudo.ai"
+          fill="none"
+          role="img"
+          viewBox="0 0 204 48"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="animated-logo-memudo-mark-bg" x1="8" x2="40" y1="6" y2="42">
+              <stop stop-color="#17211b"></stop>
+              <stop offset="0.62" stop-color="#203529"></stop>
+              <stop offset="1" stop-color="#0fa6a0"></stop>
+            </linearGradient>
+          </defs>
+          <rect fill="url(#animated-logo-memudo-mark-bg)" height="48" rx="14" width="48"></rect>
+          <path d="M12 31.5C12 24 18 18 25.5 18H34v8.5C34 34 28 40 20.5 40H12v-8.5Z" fill="#bdeb6c"></path>
+          <path d="M14 21.5C14 14.6 19.6 9 26.5 9H36v9.5C36 25.4 30.4 31 23.5 31H14v-9.5Z" fill="#fbf8f1"></path>
+          <path d="M19 30.5v-12l5 6.5 5-6.5v12" stroke="#17211b" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"></path>
+          <path d="M33.5 7.5a5 5 0 0 1 5 5c0 4.1-5 7.5-5 7.5s-5-3.4-5-7.5a5 5 0 0 1 5-5Z" fill="#f56b5b"></path>
+          <circle cx="33.5" cy="12.5" fill="#fbf8f1" r="1.45"></circle>
+          <text font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-weight="750" x="62" y="32">
+            <tspan fill="currentColor" font-size="26">MeMudo</tspan>
+            <tspan fill="#0fa6a0" font-size="20">.ai</tspan>
+          </text>
+        </svg>
+      </AnimatedLogo>
+      <figcaption>MeMudo.ai</figcaption>
+    </figure>
+  </div>
+
+  <Button data-animated-logo-replay size="sm" variant="outline">
+    Replay animation
+  </Button>
+</section>
+
+<script>
+  for (const demo of document.querySelectorAll('[data-animated-logo-demo]')) {
+    const replayButton = demo.querySelector<HTMLButtonElement>('[data-animated-logo-replay]')
+
+    replayButton?.addEventListener('click', () => {
+      for (const logo of demo.querySelectorAll('[data-ui-animated-logo]')) {
+        logo.replaceWith(logo.cloneNode(true))
+      }
+    })
+  }
+</script>
+
+<style>
+  .animated-logo-demo {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    width: 100%;
+  }
+
+  .animated-logo-demo__grid {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  figure {
+    align-items: center;
+    background: hsl(var(--surface-muted));
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--ui-radius-lg);
+    color: hsl(var(--ink));
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+    margin: 0;
+    min-height: 10rem;
+    padding: 1.5rem;
+  }
+
+  figcaption {
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .animated-logo-demo__lumen {
+    height: 4rem;
+    max-width: 19rem;
+  }
+
+  .animated-logo-demo__memudo {
+    height: 3.5rem;
+    max-width: 15rem;
+    --ui-animated-logo-delay: 120ms;
+  }
+
+  @media (min-width: 42rem) {
+    .animated-logo-demo__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

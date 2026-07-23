@@ -106,6 +106,18 @@
   }
 }
 
+@keyframes ui-animated-logo-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .ui-sr-only {
   position: absolute;
   width: 1px;
@@ -216,6 +228,22 @@
 }
 
 @layer lumen.components {
+.ui-animated-logo {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.ui-animated-logo > svg {
+  animation: ui-animated-logo-reveal var(--ui-animated-logo-duration, 700ms)
+    cubic-bezier(0.22, 1, 0.36, 1) var(--ui-animated-logo-delay, 0ms) both;
+  display: block;
+  flex: none;
+  height: 100%;
+  max-width: 100%;
+  transform-origin: center;
+  width: auto;
+}
+
 .panel-surface {
   background: hsl(var(--surface) / 0.96);
   border: 1px solid hsl(var(--line));
@@ -626,6 +654,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ui-animated-logo > svg {
+    animation: none;
+  }
+
   .ui-scroll-reveal[data-ui-scroll-reveal-bound="true"] {
     opacity: 1;
     transform: none;
