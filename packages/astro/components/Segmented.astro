@@ -1,0 +1,54 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+type SegmentedOption = string | { disabled?: boolean; label: string; value: string }
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  name: string
+  options?: SegmentedOption[]
+  size?: 'default' | 'sm' | 'lg'
+  value?: string
+}
+
+const {
+  'aria-label': ariaLabel,
+  class: classProp = '',
+  className = '',
+  name,
+  options = [],
+  size = 'default',
+  value,
+  ...rest
+} = Astro.props
+
+const normalized = options.map(option =>
+  typeof option === 'string' ? { disabled: false, label: option, value: option } : option
+)
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-segmented',
+  size === 'sm' && 'ui-segmented--sm',
+  size === 'lg' && 'ui-segmented--lg'
+], classProp, className)
+---
+
+<div aria-label={ariaLabel} class:list={classList} role="group" {...passthrough}>
+  {normalized.map(option => (
+    <label class="ui-segmented__option">
+      <input
+        checked={value === option.value}
+        class="ui-segmented__input"
+        disabled={option.disabled}
+        name={name}
+        type="radio"
+        value={option.value}
+      />
+      <span class="ui-segmented__label">{option.label}</span>
+    </label>
+  ))}
+  <slot />
+</div>

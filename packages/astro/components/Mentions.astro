@@ -1,0 +1,47 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+type MentionOption = string | { label: string; value: string }
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  name?: string
+  options?: MentionOption[]
+  placeholder?: string
+  trigger?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  name,
+  options = [],
+  placeholder,
+  trigger = '@',
+  ...rest
+} = Astro.props
+
+const normalized = options.map(option =>
+  typeof option === 'string' ? { label: option, value: option } : option
+)
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-mentions'
+], classProp, className)
+---
+
+<div class:list={classList} data-ui-mentions data-ui-mentions-trigger={trigger} {...passthrough}>
+  <textarea class="ui-textarea ui-mentions__input" data-ui-mentions-input name={name} placeholder={placeholder} rows={3}></textarea>
+  <ul class="ui-mentions__list" data-ui-mentions-list hidden role="listbox">
+    {normalized.map(option => (
+      <li>
+        <button class="ui-mentions__option" data-ui-mentions-option data-value={option.value} role="option" type="button">
+          {option.label}
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>

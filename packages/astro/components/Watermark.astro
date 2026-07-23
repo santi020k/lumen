@@ -1,0 +1,36 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  gap?: number
+  rotate?: number
+  text?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  gap = 120,
+  rotate = -22,
+  text = 'Confidential',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-watermark'
+], classProp, className)
+---
+
+<div
+  class:list={classList}
+  data-ui-watermark
+  style={`--ui-watermark-gap:${gap}px;--ui-watermark-rotate:${rotate}deg`}
+  {...passthrough}
+>
+  <slot />
+  <div aria-hidden="true" class="ui-watermark__overlay" data-text={text}></div>
+</div>

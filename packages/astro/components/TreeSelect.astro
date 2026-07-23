@@ -1,0 +1,34 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  name?: string
+  placeholder?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  name,
+  placeholder = 'Select…',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-tree-select'
+], classProp, className)
+---
+
+<div class:list={classList} data-surface="default" data-ui-popover data-ui-tree-select {...passthrough}>
+  <button aria-expanded="false" aria-haspopup="tree" class="ui-select ui-select__trigger ui-tree-select__trigger" data-ui-trigger type="button">
+    <span data-ui-tree-select-value data-ui-tree-select-placeholder={placeholder}>{placeholder}</span>
+  </button>
+  <div class="ui-tree-select__panel" data-ui-panel hidden>
+    <slot />
+  </div>
+  {name && <input data-ui-tree-select-input name={name} type="hidden" />}
+</div>

@@ -1,0 +1,36 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  orientation?: 'horizontal' | 'vertical'
+}
+
+const {
+  'aria-label': ariaLabel = 'Toolbar',
+  class: classProp = '',
+  className = '',
+  orientation = 'horizontal',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-toolbar',
+  orientation === 'vertical' && 'ui-toolbar--vertical'
+], classProp, className)
+---
+
+<div
+  aria-label={ariaLabel}
+  aria-orientation={orientation}
+  class:list={classList}
+  data-ui-toolbar
+  data-orientation={orientation}
+  role="toolbar"
+  {...passthrough}
+>
+  <slot />
+</div>

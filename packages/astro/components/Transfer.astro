@@ -1,0 +1,67 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+type TransferItem = { label: string; value: string }
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  name?: string
+  sourceLabel?: string
+  sourceItems?: TransferItem[]
+  targetLabel?: string
+  targetItems?: TransferItem[]
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  name,
+  sourceLabel = 'Available',
+  sourceItems = [],
+  targetLabel = 'Selected',
+  targetItems = [],
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-transfer'
+], classProp, className)
+
+const renderItems = (items: TransferItem[]) => items
+---
+
+<div class:list={classList} data-ui-transfer data-ui-transfer-name={name} {...passthrough}>
+  <div class="ui-transfer__panel">
+    <p class="ui-transfer__title">{sourceLabel}</p>
+    <ul class="ui-transfer__list" data-side="source" data-ui-transfer-list>
+      {renderItems(sourceItems).map(item => (
+        <li class="ui-transfer__item">
+          <label class="ui-transfer__option">
+            <input class="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.value} />
+            <span>{item.label}</span>
+          </label>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div class="ui-transfer__controls">
+    <button aria-label={`Move to ${targetLabel}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
+    <button aria-label={`Move to ${sourceLabel}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
+  </div>
+  <div class="ui-transfer__panel">
+    <p class="ui-transfer__title">{targetLabel}</p>
+    <ul class="ui-transfer__list" data-side="target" data-ui-transfer-list>
+      {renderItems(targetItems).map(item => (
+        <li class="ui-transfer__item">
+          <label class="ui-transfer__option">
+            <input class="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.value} />
+            <span>{item.label}</span>
+          </label>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>

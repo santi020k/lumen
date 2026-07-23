@@ -1,0 +1,44 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  cancelLabel?: string
+  class?: string
+  className?: string
+  confirmLabel?: string
+  message?: string
+  triggerLabel?: string
+}
+
+const {
+  cancelLabel = 'Cancel',
+  class: classProp = '',
+  className = '',
+  confirmLabel = 'Confirm',
+  message = 'Are you sure?',
+  triggerLabel = 'Delete',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-popover',
+  'ui-popconfirm'
+], classProp, className)
+---
+
+<div class:list={classList} data-surface="default" data-ui-popover data-ui-popconfirm {...passthrough}>
+  <button aria-expanded="false" aria-haspopup="dialog" class="ui-button ui-button--outline ui-button--default-size" data-ui-trigger type="button">
+    <slot name="trigger">{triggerLabel}</slot>
+  </button>
+  <div class="ui-popover__panel ui-popconfirm__panel" data-ui-panel hidden role="dialog">
+    <p class="ui-popconfirm__message">
+      <slot>{message}</slot>
+    </p>
+    <div class="ui-popconfirm__actions">
+      <button class="ui-button ui-button--ghost ui-button--sm" data-ui-popconfirm-cancel type="button">{cancelLabel}</button>
+      <button class="ui-button ui-button--destructive ui-button--sm" data-ui-popconfirm-confirm type="button">{confirmLabel}</button>
+    </div>
+  </div>
+</div>
