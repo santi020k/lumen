@@ -95,6 +95,32 @@ describe('Lumen MCP protocol server', () => {
     })
   })
 
+  test('executes every catalog discovery tool over MCP', async () => {
+    await withClient(async (client) => {
+      const [listResult, searchResult, tokensResult, rulesResult] = await Promise.all([
+        client.callTool({
+          arguments: { framework: 'astro', query: 'button' },
+          name: 'lumen_list_components'
+        }),
+        client.callTool({
+          arguments: { limit: 5, query: 'date input' },
+          name: 'lumen_search'
+        }),
+        client.callTool({ arguments: {}, name: 'lumen_get_tokens' }),
+        client.callTool({ arguments: {}, name: 'lumen_get_rules' })
+      ])
+
+      expect(resultText(listResult)).toContain('Button')
+      expect(resultText(searchResult)).toContain('DatePicker')
+      expect(resultText(tokensResult)).toContain('Lumen design tokens')
+      expect(resultText(rulesResult)).toContain('@santi020k/lumen')
+
+      for (const result of [listResult, searchResult, tokensResult, rulesResult]) {
+        expect(result.isError).toBe(false)
+      }
+    })
+  })
+
   test.each([
     {
       arguments: { framework: 'vue' },
