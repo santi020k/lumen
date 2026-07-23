@@ -2,4 +2,7 @@
 import { Rating } from '@santi020k/lumen-astro'
 ---
 
-<Rating aria-label="Component rating" value={4} max={5} />
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+  <Rating aria-label="Empty rating" max={5} />
+  <Rating aria-label="Filled rating" value={3} max={5} />
+</div>

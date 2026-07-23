@@ -6,7 +6,9 @@
   },
   "description": "React primitive components for Lumen UI.",
   "type": "module",
-  "sideEffects": ["./styles.css"],
+  "sideEffects": [
+    "./styles.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +20,12 @@
     "./styles.css": "./styles.css",
     "./package.json": "./package.json"
   },
-  "files": ["dist", "styles.css", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "styles.css",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -31,7 +38,8 @@
   },
   "dependencies": {
     "@santi020k/lumen": "workspace:^",
-    "@santi020k/lumen-core": "workspace:^"
+    "@santi020k/lumen-core": "workspace:^",
+    "uqr": "^0.1.3"
   },
   "devDependencies": {
     "@types/react": "catalog:",

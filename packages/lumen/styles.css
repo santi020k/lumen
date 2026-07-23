@@ -3811,17 +3811,35 @@
 }
 
 .ui-meter {
+  appearance: none;
   width: 100%;
   height: 0.5rem;
-  background: var(--ui-surface-strong);
+  border: 0;
+  background: hsl(var(--surface-strong));
   border-radius: 9999px;
   overflow: hidden;
 }
 .ui-meter::-webkit-meter-bar {
-  background: transparent;
+  border: 0;
+  background: hsl(var(--surface-strong));
+  border-radius: inherit;
 }
 .ui-meter::-webkit-meter-optimum-value {
-  background: var(--ui-brand);
+  background: hsl(var(--brand-solid));
+  border-radius: inherit;
+}
+.ui-meter::-webkit-meter-suboptimum-value {
+  background: hsl(var(--warning));
+  border-radius: inherit;
+}
+.ui-meter::-webkit-meter-even-less-good-value {
+  background: hsl(var(--danger));
+  border-radius: inherit;
+}
+.ui-meter::-moz-meter-bar {
+  border: 0;
+  background: hsl(var(--brand-solid));
+  border-radius: inherit;
 }
 
 .ui-timeline {
