@@ -118,6 +118,34 @@
   }
 }
 
+@keyframes ui-animated-logo-pop {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes ui-animated-logo-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ui-animated-logo-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-0.625rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .ui-sr-only {
   position: absolute;
   width: 1px;
@@ -182,6 +210,7 @@
   .ui-navigation-menu,
   .ui-pagination,
   .ui-particles,
+  .ui-pill,
   .ui-popover,
   .ui-progress,
   .ui-prose,
@@ -243,6 +272,29 @@
   max-width: 100%;
   transform-origin: center;
   width: auto;
+}
+
+.ui-animated-logo[data-animation="sequence"] > svg {
+  animation: none;
+}
+
+.ui-animated-logo[data-animation="sequence"] [data-ui-logo-pop] {
+  animation: ui-animated-logo-pop var(--ui-logo-duration, 500ms)
+    cubic-bezier(0.34, 1.56, 0.64, 1) var(--ui-logo-delay, 0ms) both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ui-animated-logo[data-animation="sequence"] [data-ui-logo-draw] {
+  animation: ui-animated-logo-draw var(--ui-logo-duration, 600ms)
+    ease var(--ui-logo-delay, 0ms) both;
+  stroke-dasharray: var(--ui-logo-path-length, 100);
+  stroke-dashoffset: var(--ui-logo-path-length, 100);
+}
+
+.ui-animated-logo[data-animation="sequence"] [data-ui-logo-reveal] {
+  animation: ui-animated-logo-slide var(--ui-logo-duration, 500ms)
+    ease var(--ui-logo-delay, 0ms) both;
 }
 
 .panel-surface {
@@ -538,6 +590,10 @@
   object-fit: cover;
 }
 
+:where([data-theme="dark"], [data-theme$="-dark"], .dark) .ui-image--invert-dark {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 .ui-link {
   color: hsl(var(--brand));
   font-weight: 600;
@@ -655,7 +711,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-animated-logo > svg {
+  .ui-animated-logo > svg,
+  .ui-animated-logo[data-animation="sequence"] [data-ui-logo-pop],
+  .ui-animated-logo[data-animation="sequence"] [data-ui-logo-draw],
+  .ui-animated-logo[data-animation="sequence"] [data-ui-logo-reveal] {
     animation: none;
   }
 
@@ -2844,7 +2903,6 @@
 .ui-agenda :where(li, [data-ui-agenda-item]),
 .ui-schedule :where(li, [data-ui-schedule-event]),
 .ui-schedule :where([data-ui-schedule-slot]),
-.ui-tree :where([role="treeitem"]),
 .ui-tree-grid :where([role="row"]),
 .ui-virtual-list > * {
   border: 1px solid hsl(var(--line));
@@ -2970,7 +3028,6 @@
   font: 0.8125rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
-.ui-tree,
 .ui-tree-grid,
 .ui-virtual-list {
   display: grid;
@@ -2980,22 +3037,87 @@
   padding: 0.5rem;
 }
 
+.ui-tree {
+  display: grid;
+  gap: 0.125rem;
+  max-height: var(--ui-list-height, 22rem);
+  overflow: auto;
+  padding: 0.375rem;
+}
+
+.ui-tree :where([role="treeitem"]) {
+  position: relative;
+  display: flex;
+  min-height: 2.25rem;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-sm);
+  background: transparent;
+  color: hsl(var(--ink-soft));
+  padding: 0.4375rem 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.ui-tree > :where([role="treeitem"]:not([aria-expanded])) {
+  padding-inline-start: 1.975rem;
+}
+
+.ui-tree :where([role="treeitem"]):is(:hover, :focus-visible) {
+  border-color: hsl(var(--line) / 0.72);
+  background: hsl(var(--surface-muted) / 0.72);
+  color: hsl(var(--ink));
+}
+
+.ui-tree :where([role="treeitem"]):focus-visible {
+  outline: 2px solid hsl(var(--brand) / 0.58);
+  outline-offset: -2px;
+}
+
+.ui-tree :where([role="group"]) {
+  position: relative;
+  display: grid;
+  gap: 0.125rem;
+  margin: 0.0625rem 0 0.25rem 0.625rem;
+  padding-inline-start: 1.35rem;
+}
+
+.ui-tree :where([role="group"])::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.125rem;
+  inset-inline-start: 0.5rem;
+  width: 1px;
+  border-radius: 999px;
+  background: hsl(var(--line) / 0.8);
+}
+
 .ui-tree :where([aria-selected="true"], [data-selected="true"]),
 .ui-tree-grid :where([aria-selected="true"], [data-selected="true"]) {
   border-color: hsl(var(--brand) / 0.44);
   background: hsl(var(--brand-soft));
 }
 
+.ui-tree :where([aria-selected="true"], [data-selected="true"]) {
+  color: hsl(var(--ink));
+  font-weight: 600;
+}
+
 .ui-tree :where([role="treeitem"][aria-expanded]) {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
+  color: hsl(var(--ink));
+  font-weight: 600;
 }
 
 .ui-tree :where([role="treeitem"][aria-expanded])::before {
   content: "";
-  width: 1rem;
-  height: 1rem;
+  width: 0.875rem;
+  height: 0.875rem;
   flex: 0 0 auto;
   background-color: hsl(var(--ink-muted));
   /* Lucide chevron-right */
@@ -3152,13 +3274,26 @@
 .ui-carousel--glass [data-ui-carousel-viewport] > *,
 .ui-agenda--glass :where(li, [data-ui-agenda-item]),
 .ui-schedule--glass :where(li, [data-ui-schedule-event], [data-ui-schedule-slot]),
-.ui-tree--glass :where([role="treeitem"]),
 .ui-tree-grid--glass :where([role="row"]),
 .ui-virtual-list--glass > * {
   border-color: hsl(var(--glass-border));
   background:
     linear-gradient(180deg, hsl(var(--glass-highlight)) -60%, transparent 55%),
     hsl(var(--glass-bg-subtle));
+}
+
+.ui-tree--glass :where([role="treeitem"]) {
+  border-color: transparent;
+  background: transparent;
+}
+
+.ui-tree--glass :where([role="treeitem"]):is(:hover, :focus-visible) {
+  border-color: hsl(var(--glass-border));
+  background: hsl(var(--glass-highlight));
+}
+
+.ui-tree--glass :where([role="group"])::before {
+  background: hsl(var(--glass-border));
 }
 
 .ui-message-scroller--glass .ui-bubble {
@@ -3711,12 +3846,29 @@
   border-right-width: 0;
 }
 
-/* Pill count affix */
+.ui-pill {
+  display: inline-flex;
+  min-height: 1.75rem;
+  max-width: 100%;
+  align-items: center;
+  border: 1px solid hsl(var(--line));
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  background: hsl(var(--surface-muted));
+  color: hsl(var(--ink-soft));
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .ui-pill__count {
-  margin-left: 0.375rem;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid hsl(var(--line));
   font-size: 0.75rem;
   line-height: 1;
-  color: var(--ui-ink-muted);
+  color: hsl(var(--ink-muted));
   font-variant-numeric: tabular-nums;
 }
 

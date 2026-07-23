@@ -43,38 +43,63 @@ import { AnimatedLogo, Button } from '@santi020k/lumen-astro'
           >UI</text>
         </svg>
       </AnimatedLogo>
-      <figcaption>Lumen UI</figcaption>
+      <figcaption>Generic reveal</figcaption>
     </figure>
 
     <figure>
-      <AnimatedLogo class="animated-logo-demo__memudo">
+      <AnimatedLogo animation="sequence" class="animated-logo-demo__santi">
         <svg
-          aria-label="MeMudo.ai"
-          fill="none"
+          aria-label="Santi020k"
           role="img"
-          viewBox="0 0 204 48"
+          viewBox="0 0 504 80"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <defs>
-            <linearGradient id="animated-logo-memudo-mark-bg" x1="8" x2="40" y1="6" y2="42">
-              <stop stop-color="#17211b"></stop>
-              <stop offset="0.62" stop-color="#203529"></stop>
-              <stop offset="1" stop-color="#0fa6a0"></stop>
-            </linearGradient>
-          </defs>
-          <rect fill="url(#animated-logo-memudo-mark-bg)" height="48" rx="14" width="48"></rect>
-          <path d="M12 31.5C12 24 18 18 25.5 18H34v8.5C34 34 28 40 20.5 40H12v-8.5Z" fill="#bdeb6c"></path>
-          <path d="M14 21.5C14 14.6 19.6 9 26.5 9H36v9.5C36 25.4 30.4 31 23.5 31H14v-9.5Z" fill="#fbf8f1"></path>
-          <path d="M19 30.5v-12l5 6.5 5-6.5v12" stroke="#17211b" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"></path>
-          <path d="M33.5 7.5a5 5 0 0 1 5 5c0 4.1-5 7.5-5 7.5s-5-3.4-5-7.5a5 5 0 0 1 5-5Z" fill="#f56b5b"></path>
-          <circle cx="33.5" cy="12.5" fill="#fbf8f1" r="1.45"></circle>
-          <text font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-weight="750" x="62" y="32">
-            <tspan fill="currentColor" font-size="26">MeMudo</tspan>
-            <tspan fill="#0fa6a0" font-size="20">.ai</tspan>
+          <g>
+            <rect
+              data-ui-logo-pop
+              fill="#5a0fdb"
+              height="80"
+              rx="18"
+              width="80"
+            ></rect>
+            <path
+              d="M26 28 40 40 26 52"
+              data-ui-logo-draw
+              fill="none"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="8"
+              style="--ui-logo-delay: 300ms; --ui-logo-path-length: 60;"
+            ></path>
+            <line
+              data-ui-logo-draw
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-width="8"
+              style="--ui-logo-delay: 500ms; --ui-logo-path-length: 60;"
+              x1="48"
+              x2="62"
+              y1="52"
+              y2="52"
+            ></line>
+          </g>
+          <text
+            data-ui-logo-reveal
+            fill="currentColor"
+            font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+            font-size="48"
+            font-weight="800"
+            letter-spacing="-0.04em"
+            style="--ui-logo-delay: 700ms;"
+            x="100"
+            y="56"
+          >
+            Santi<tspan fill="#713bf7" font-weight="700" letter-spacing="-0.02em">020k</tspan>
           </text>
         </svg>
       </AnimatedLogo>
-      <figcaption>MeMudo.ai</figcaption>
+      <figcaption>Sequenced layers</figcaption>
     </figure>
   </div>
 
@@ -98,7 +123,7 @@ import { AnimatedLogo, Button } from '@santi020k/lumen-astro'
 <style>
   .animated-logo-demo {
     display: grid;
-    gap: 1.5rem;
+    gap: 1.25rem;
     justify-items: start;
     width: 100%;
   }
@@ -119,7 +144,7 @@ import { AnimatedLogo, Button } from '@santi020k/lumen-astro'
     gap: 1rem;
     justify-items: center;
     margin: 0;
-    min-height: 10rem;
+    min-height: 12rem;
     padding: 1.5rem;
   }
 
@@ -136,15 +161,15 @@ import { AnimatedLogo, Button } from '@santi020k/lumen-astro'
     max-width: 19rem;
   }
 
-  .animated-logo-demo__memudo {
-    height: 3.5rem;
-    max-width: 15rem;
-    --ui-animated-logo-delay: 120ms;
+  .animated-logo-demo__santi {
+    height: 4.5rem;
+    max-width: 28rem;
+    width: 100%;
   }
 
-  @media (min-width: 42rem) {
+  @media (min-width: 48rem) {
     .animated-logo-demo__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
     }
   }
 </style>

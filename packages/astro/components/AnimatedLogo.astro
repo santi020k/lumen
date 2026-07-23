@@ -3,11 +3,13 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'span'> {
+  animation?: 'reveal' | 'sequence'
   class?: string
   className?: string
 }
 
 const {
+  animation = 'reveal',
   class: classProp = '',
   className = '',
   ...rest
@@ -20,6 +22,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <span
   class:list={classList}
+  data-animation={animation}
   data-ui-animated-logo
   {...passthrough}
 >

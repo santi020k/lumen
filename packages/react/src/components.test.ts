@@ -1,4 +1,7 @@
-import type { ReactElement } from 'react'
+import type {
+  ComponentPropsWithoutRef,
+  ReactElement
+} from 'react'
 import { describe, expect, test } from 'vitest'
 
 import {
@@ -26,6 +29,7 @@ import {
   Empty,
   HoverCard,
   Icon,
+  Image,
   Input,
   InputGroup,
   Item,
@@ -63,6 +67,7 @@ import {
 type Props = Record<string, unknown>
 
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
+const OptimizedImage = (_props: ComponentPropsWithoutRef<'img'> & { preload?: boolean }) => null
 
 describe('@santi020k/lumen-react components', () => {
   test('composes structural container classes', () => {
@@ -74,6 +79,26 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Label({}) as ReactElement).className).toBe('ui-label')
   })
 
+  test('keeps native images lazy and supports framework image renderers', () => {
+    const nativeImage = Image({ alt: 'Landscape', invertOnDark: true, src: '/landscape.jpg' }) as ReactElement
+    const optimizedImage = Image({
+      alt: 'Portrait',
+      as: OptimizedImage,
+      height: 800,
+      preload: true,
+      src: '/portrait.jpg',
+      width: 600
+    }) as ReactElement
+
+    expect(nativeImage.type).toBe('img')
+    expect(propsOf(nativeImage).loading).toBe('lazy')
+    expect(propsOf(nativeImage).className).toBe('ui-image ui-image--invert-dark')
+    expect(optimizedImage.type).toBe(OptimizedImage)
+    expect(propsOf(optimizedImage).className).toBe('ui-image')
+    expect(propsOf(optimizedImage).loading).toBeUndefined()
+    expect(propsOf(optimizedImage).preload).toBe(true)
+  })
+
   test('wraps arbitrary logo artwork without imposing SVG content', () => {
     const artwork = 'inline SVG artwork'
     const logo = AnimatedLogo({ children: artwork, className: 'brand-logo' }) as ReactElement
@@ -81,8 +106,12 @@ describe('@santi020k/lumen-react components', () => {
 
     expect(logo.type).toBe('span')
     expect(props.className).toBe('ui-animated-logo brand-logo')
+    expect(props['data-animation']).toBe('reveal')
     expect(props['data-ui-animated-logo']).toBe(true)
     expect(props.children).toBe(artwork)
+
+    expect(propsOf(AnimatedLogo({ animation: 'sequence' }) as ReactElement)['data-animation'])
+      .toBe('sequence')
   })
 
   test('applies alert variant class and data attribute', () => {

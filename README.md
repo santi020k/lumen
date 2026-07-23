@@ -81,6 +81,8 @@ component catalog, setup rules, recipes, and installable file groups. The curren
 
 Figma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for
 Figma variables and the Code Connect path for a published component library.
+[Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,
+other framework, CMS, and CDN optimizers while applying Lumen presentation.
 
 The umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for
 listing recipes, showing recipe contents, printing install commands, loading alternate registry

@@ -48,6 +48,30 @@ export function SettingsButton() {
 }
 ```
 
+## Optimized images
+
+The React `Image` uses a lazy native `img` by default. In Next.js, pass `next/image` through `as` so
+Next keeps control of image sizing, format negotiation, caching, placeholders, and preloading while
+Lumen supplies its presentation class.
+
+```tsx
+import NextImage from 'next/image'
+import { Image as LumenImage } from '@santi020k/lumen-react'
+
+<LumenImage
+  alt="Team collaborating around a table"
+  as={NextImage}
+  height={800}
+  sizes="(max-width: 768px) 100vw, 50vw"
+  src="/team.jpg"
+  width={1200}
+/>
+```
+
+Keep the default lazy loading for images below the fold. For the single likely LCP image, follow
+your framework's preload or fetch-priority guidance. `invertOnDark` is available for monochrome
+artwork authored for light surfaces; leave it off for photos and colorful illustrations.
+
 `AnimatedLogo` accepts your own inline SVG rather than imposing brand artwork. Put the accessible
 name on the SVG itself.
 
@@ -60,6 +84,10 @@ import { AnimatedLogo } from '@santi020k/lumen-react'
   </svg>
 </AnimatedLogo>
 ```
+
+For a choreographed logo, set `animation="sequence"` and mark individual SVG layers with
+`data-ui-logo-pop`, `data-ui-logo-draw`, or `data-ui-logo-reveal`. Timing can be adjusted per layer
+with `--ui-logo-delay`.
 
 React is Lumen's visual adapter layer plus headless behavior hooks. The components emit the same
 `ui-*` classes and `data-ui-*` attributes as Astro, while hooks such as `useDialog`, `usePopover`,
