@@ -100,6 +100,21 @@ const requiresAstroRuntime = Boolean(
       </div>
     </header>
 
+    {component.guidance && (
+      <aside class="component-doc-guidance" aria-label={`${component.name} usage guidance`}>
+        <div>
+          <span><Icon decorative name="check-circle-2" size="sm" /></span>
+          <p><small>Use it when</small>{component.guidance.when}</p>
+        </div>
+        {component.guidance.distinction && (
+          <div>
+            <span><Icon decorative name="split" size="sm" /></span>
+            <p><small>How it differs</small>{component.guidance.distinction}</p>
+          </div>
+        )}
+      </aside>
+    )}
+
     <section class="component-doc-section space-y-3" aria-labelledby="preview-title">
       <div class="component-doc-heading">
         <span>01</span>

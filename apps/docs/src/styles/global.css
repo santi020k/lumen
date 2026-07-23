@@ -1634,6 +1634,53 @@ pre code {
   white-space: nowrap;
 }
 
+.component-doc-guidance {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 1rem;
+  border: 1px solid hsl(var(--line) / 0.78);
+  border-radius: 1rem;
+  background: hsl(var(--line) / 0.78);
+}
+
+.component-doc-guidance > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: hsl(var(--surface) / 0.9);
+}
+
+.component-doc-guidance span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.65rem;
+  background: hsl(var(--brand-soft) / 0.72);
+  color: hsl(var(--brand));
+}
+
+.component-doc-guidance p {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  color: hsl(var(--ink-soft));
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.component-doc-guidance small {
+  color: hsl(var(--ink));
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
 .component-doc-section {
   display: grid;
   gap: 1rem;
@@ -1702,6 +1749,10 @@ pre code {
   .component-doc-hero {
     grid-template-columns: minmax(0, 1.25fr) minmax(17rem, 0.75fr);
     align-items: end;
+  }
+
+  .component-doc-guidance {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

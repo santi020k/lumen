@@ -18,7 +18,8 @@ import {
   Marker,
   Progress,
   Stat,
-  Switch
+  Switch,
+  Tabs
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
@@ -29,7 +30,19 @@ import { frameworkSetups } from '../data/docs'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
 const componentCount = lumenComponentNames.length
-const installCommand = 'pnpm add @santi020k/lumen'
+
+const installerIcons = {
+  astro: 'asterisk',
+  elements: 'blocks',
+  react: 'atom'
+} as const
+
+const heroInstallers = frameworkSetups.map(setup => ({
+  command: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? '',
+  icon: installerIcons[setup.id],
+  id: setup.id,
+  label: setup.label
+}))
 
 const principles = [
   {
@@ -92,21 +105,43 @@ const categories = [
             Explore components
           </ButtonLink>
         </div>
-        <Button
-          class="home-install"
-          data-copy-command={installCommand}
-          variant="ghost"
-        >
-          <Icon name="terminal" size="sm" />
-          <code>{installCommand}</code>
-          <span class="home-install__copy" data-copy-feedback>Copy</span>
-        </Button>
-        <div class="home-hero__frameworks" aria-label="Supported frameworks">
-          <span>Built for</span>
-          <Badge variant="outline">Astro</Badge>
-          <Badge variant="outline">React</Badge>
-          <Badge variant="outline">Web Components</Badge>
-        </div>
+        <Tabs class="home-installer" glass="subtle">
+          <div class="home-installer__heading">
+            <span>Install for your stack</span>
+            <span>One package. Ready to use.</span>
+          </div>
+          <div role="tablist" aria-label="Choose a framework to install">
+            {heroInstallers.map((installer, index) => (
+              <button
+                aria-controls={`hero-install-panel-${installer.id}`}
+                aria-selected={index === 0 ? 'true' : 'false'}
+                id={`hero-install-tab-${installer.id}`}
+                role="tab"
+              >
+                <Icon name={installer.icon} size="sm" />
+                {installer.label}
+              </button>
+            ))}
+          </div>
+          {heroInstallers.map((installer, index) => (
+            <section
+              aria-labelledby={`hero-install-tab-${installer.id}`}
+              hidden={index !== 0}
+              id={`hero-install-panel-${installer.id}`}
+              role="tabpanel"
+            >
+              <Button
+                class="home-install"
+                data-copy-command={installer.command}
+                variant="ghost"
+              >
+                <Icon name="terminal" size="sm" />
+                <code>{installer.command}</code>
+                <span class="home-install__copy" data-copy-feedback>Copy</span>
+              </Button>
+            </section>
+          ))}
+        </Tabs>
       </div>
 
       <div class="home-hero__product">
@@ -463,22 +498,76 @@ const categories = [
     padding-inline: 1.55rem;
   }
 
-  .home-install {
+  .home-installer {
+    width: min(100%, 35rem);
+    margin-top: 1.15rem;
     gap: .65rem;
-    max-width: calc(100vw - 2.5rem);
-    margin-top: 1rem;
+    border: 1px solid hsl(var(--line) / .8);
+    border-radius: calc(var(--ui-radius) + .45rem);
+    background: hsl(var(--surface) / .7);
+    box-shadow:
+      0 18px 50px hsl(var(--ink) / .07),
+      inset 0 1px 0 hsl(var(--canvas) / .8);
+    padding: .55rem;
+    backdrop-filter: blur(18px);
+  }
+
+  .home-installer__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .25rem .45rem 0;
+    color: hsl(var(--ink));
+    font-size: .72rem;
+    font-weight: 750;
+  }
+
+  .home-installer__heading span:last-child {
+    color: hsl(var(--ink-muted));
+    font-size: .66rem;
+    font-weight: 550;
+  }
+
+  .home-installer [role="tablist"] {
+    width: 100%;
+    justify-content: stretch;
+    border: 0;
+    border-radius: calc(var(--ui-radius) - .05rem);
+    background: hsl(var(--surface-muted) / .82);
+  }
+
+  .home-installer [role="tab"] {
+    display: inline-flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+  }
+
+  .home-installer [role="tabpanel"] {
+    min-width: 0;
+  }
+
+  .home-install {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: .65rem;
     border: 1px solid hsl(var(--line) / .85);
-    border-radius: 999px;
-    background: hsl(var(--surface) / .75);
-    box-shadow: 0 8px 30px hsl(var(--ink) / .04);
-    backdrop-filter: blur(16px);
-    padding-inline: 1rem;
+    border-radius: calc(var(--ui-radius) - .05rem);
+    background: hsl(var(--canvas) / .62);
+    padding-inline: .9rem;
   }
 
   .home-install code {
+    min-width: 0;
     overflow: hidden;
+    flex: 1;
     color: hsl(var(--ink-soft));
     font-size: .78rem;
+    text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -489,21 +578,6 @@ const categories = [
     font-weight: 800;
     letter-spacing: .04em;
     text-transform: uppercase;
-  }
-
-  .home-hero__frameworks {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: .45rem;
-    margin-top: 1.1rem;
-  }
-
-  .home-hero__frameworks > span {
-    margin-right: .25rem;
-    color: hsl(var(--ink-muted));
-    font-size: .72rem;
   }
 
   .home-hero__product {
@@ -949,6 +1023,17 @@ const categories = [
 
     .home-hero__lede {
       font-size: .98rem;
+    }
+
+    .home-installer__heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: .15rem;
+    }
+
+    .home-installer [role="tab"] {
+      padding-inline: .45rem;
+      font-size: .78rem;
     }
 
     .home-proof__inner {

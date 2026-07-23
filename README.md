@@ -1,8 +1,8 @@
 # Lumen
 
-Lumen is a multi-framework primitive UI system from Santiago Molina. Install the shared
-`@santi020k/lumen` foundation with the adapter for your framework. Consumers do not need Tailwind
-configuration for Lumen components to render.
+Lumen is a multi-framework primitive UI system from Santiago Molina. Install the package for your
+framework; it includes the shared Lumen foundation and standalone stylesheet. Consumers do not
+need Tailwind configuration for Lumen components to render.
 
 The monorepo layers framework adapters around a shared core:
 
@@ -15,25 +15,34 @@ The monorepo layers framework adapters around a shared core:
 
 ## Quick Start
 
+Choose one package for your framework:
+
 ```bash
-pnpm add @santi020k/lumen @santi020k/lumen-astro
+# Astro
+pnpm add @santi020k/lumen-astro
+
+# React
+pnpm add @santi020k/lumen-react
+
+# Web Components
+pnpm add @santi020k/lumen-elements
 ```
 
-Import the stylesheet once from your global CSS file, root layout, or app entry.
+Import the stylesheet from the same framework package once in your global CSS file, root layout,
+or app entry. For example:
 
 ```css
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-react/styles.css";
 ```
 
 With Tailwind, keep it in the same shared CSS entry:
 
 ```css
 @import "tailwindcss";
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-react/styles.css";
 ```
 
-For interactive Astro primitives, mount `UIPrimitives` once in your root layout. Do not place it
-next to every component instance.
+For interactive Astro primitives, mount `UIPrimitives` once in your root layout:
 
 ```astro
 ---

@@ -134,6 +134,7 @@
   .ui-accordion,
   .ui-alert,
   .ui-agenda,
+  .ui-animated-logo,
   .ui-aspect-ratio,
   .ui-attachment,
   .ui-autocomplete,
@@ -2684,9 +2685,6 @@
   box-shadow: var(--ui-shadow-sm);
 }
 
-.ui-agenda,
-.ui-schedule,
-.ui-rich-text-editor,
 .ui-theme-toggle {
   position: relative;
   display: flex;
@@ -2708,6 +2706,14 @@
     border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.2s ease;
+}
+
+.ui-agenda,
+.ui-schedule,
+.ui-rich-text-editor {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2845,6 +2851,13 @@
   border-radius: var(--ui-radius-sm);
   background: hsl(var(--surface-muted) / 0.52);
   padding: 0.75rem;
+}
+
+.ui-agenda :where(li, [data-ui-agenda-item]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .ui-schedule :where([data-ui-schedule-slot]) {

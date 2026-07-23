@@ -5,6 +5,6 @@
 "@santi020k/lumen-elements": patch
 ---
 
-Expose the framework-neutral stylesheet from `@santi020k/lumen/styles.css` and document every
-framework adapter alongside the shared umbrella package. Keep the Astro stylesheet export as a
-compatibility entry point.
+Expose the shared stylesheet through every framework package so consumers only install and import
+from their selected adapter. Keep `@santi020k/lumen/styles.css` available for umbrella-package
+consumers.

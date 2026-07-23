@@ -2,20 +2,17 @@
 
 Shared foundation and umbrella package for Lumen UI.
 
-Install it alongside the adapter for your framework:
+Install the framework package directly:
 
 - `@santi020k/lumen-astro`
 - `@santi020k/lumen-react`
 - `@santi020k/lumen-elements`
 
+Each adapter includes the shared foundation and exposes its own stylesheet entry. Install this
+umbrella package only when you want the framework-neutral CLI or registry APIs:
+
 ```bash
-pnpm add @santi020k/lumen @santi020k/lumen-react
-```
-
-Load the framework-neutral stylesheet once from your global CSS or application entry:
-
-```css
-@import "@santi020k/lumen/styles.css";
+pnpm add @santi020k/lumen
 ```
 
 The umbrella package also exposes typed registry metadata and the `lumen` CLI:

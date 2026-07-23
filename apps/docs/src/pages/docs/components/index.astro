@@ -108,7 +108,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
               <a
                 aria-label={`${component.name}: ${component.summary}`}
                 data-component-card
-                data-component-search={`${component.name} ${category} ${component.summary}`.toLowerCase()}
+                data-component-search={`${component.name} ${category} ${component.summary} ${component.guidance?.when ?? ''} ${component.guidance?.distinction ?? ''}`.toLowerCase()}
                 href={`/docs/components/${toSlug(component.name)}`}
               >
                 <Card class="components-card" variant="interactive">

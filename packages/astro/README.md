@@ -6,7 +6,7 @@ configuration is required to render the components.
 ## Install
 
 ```bash
-pnpm add @santi020k/lumen @santi020k/lumen-astro
+pnpm add @santi020k/lumen-astro
 ```
 
 Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
@@ -15,14 +15,14 @@ lists, or toasts. Do not add `UIPrimitives` beside each component instance; one 
 enhances all matching Lumen markup on the page.
 
 ```css
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-astro/styles.css";
 ```
 
 With Tailwind, keep the Lumen import in the same shared CSS entry:
 
 ```css
 @import "tailwindcss";
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-astro/styles.css";
 ```
 
 ```astro
@@ -58,6 +58,21 @@ import { Button, Icon } from '@santi020k/lumen-astro'
   Generate
 </Button>
 <Icon name="search" label="Search" />
+```
+
+`AnimatedLogo` accepts your own inline SVG rather than imposing brand artwork. Put the accessible
+name on the SVG itself.
+
+```astro
+---
+import { AnimatedLogo } from '@santi020k/lumen-astro'
+---
+
+<AnimatedLogo style="height: 3rem">
+  <svg aria-label="Acme" role="img" viewBox="0 0 120 32">
+    <!-- Your logo artwork -->
+  </svg>
+</AnimatedLogo>
 ```
 
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.

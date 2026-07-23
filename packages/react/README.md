@@ -8,13 +8,13 @@ Lumen stylesheet.
 ## Install
 
 ```bash
-pnpm add @santi020k/lumen @santi020k/lumen-react
+pnpm add @santi020k/lumen-react
 ```
 
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```tsx
-import '@santi020k/lumen/styles.css'
+import '@santi020k/lumen-react/styles.css'
 ```
 
 ## Usage
@@ -48,6 +48,19 @@ export function SettingsButton() {
 }
 ```
 
+`AnimatedLogo` accepts your own inline SVG rather than imposing brand artwork. Put the accessible
+name on the SVG itself.
+
+```tsx
+import { AnimatedLogo } from '@santi020k/lumen-react'
+
+<AnimatedLogo style={{ height: '3rem' }}>
+  <svg aria-label="Acme" role="img" viewBox="0 0 120 32">
+    {/* Your logo artwork */}
+  </svg>
+</AnimatedLogo>
+```
+
 React is Lumen's visual adapter layer plus headless behavior hooks. The components emit the same
 `ui-*` classes and `data-ui-*` attributes as Astro, while hooks such as `useDialog`, `usePopover`,
 `useDropdownMenu`, `useContextMenu`, `useTabs`, `useSelect`, `useFormValidation`, `useCalendar`,
@@ -62,7 +75,7 @@ attributes, and `VirtualList` exposes the shared range sizing attributes for app
 
 ## Glass surfaces
 
-Load `@santi020k/lumen/styles.css` once in your app, then use the shared glass API from React.
+Load `@santi020k/lumen-react/styles.css` once in your app, then use the shared glass API from React.
 
 ```tsx
 <Card glass>Glass card</Card>
