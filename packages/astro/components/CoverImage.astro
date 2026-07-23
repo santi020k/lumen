@@ -1,0 +1,168 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import type { ImageMetadata } from 'astro'
+import { Picture } from 'astro:assets'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  alt: string
+  ariaHidden?: boolean
+  class?: string
+  className?: string
+  featured?: boolean
+  featuredMinHeightClass?: string
+  fetchpriority?: 'auto' | 'high' | 'low'
+  image: ImageMetadata
+  loading?: 'eager' | 'lazy'
+  mode?: 'card' | 'detail'
+  showCardOverlay?: boolean
+  sizes?: string
+  transitionName?: string
+}
+
+const {
+  alt,
+  ariaHidden = false,
+  class: classProp = '',
+  className = '',
+  featured = false,
+  featuredMinHeightClass = 'lg:min-h-88',
+  fetchpriority = 'auto',
+  image,
+  loading = 'lazy',
+  mode = 'card',
+  showCardOverlay = true,
+  sizes = '(min-width: 1024px) 800px, 100vw',
+  transitionName,
+  ...rest
+} = Astro.props
+
+const effectiveTransitionName = transitionName ?? `cover:${image.src}`
+const aspectRatio = image.width / image.height
+let orientation: 'landscape' | 'portrait' | 'square' = 'landscape'
+
+if (aspectRatio < 0.92) {
+  orientation = 'portrait'
+} else if (aspectRatio <= 1.08) {
+  orientation = 'square'
+}
+
+const useContainedFrame = orientation !== 'landscape'
+let cardAspectClass = 'aspect-16/10'
+
+if (orientation === 'portrait') {
+  cardAspectClass = 'aspect-4/5'
+} else if (orientation === 'square') {
+  cardAspectClass = 'aspect-square'
+}
+
+let cardWrapperClass = `${cardAspectClass} rounded-t-[1.75rem] border-b border-line/45`
+
+if (featured && orientation === 'landscape') {
+  cardWrapperClass = `aspect-16/10 rounded-t-[1.75rem] border-b border-line/45`
+} else if (useContainedFrame) {
+  cardWrapperClass = `${cardAspectClass} rounded-t-[1.75rem] flex items-center justify-center border-b border-line/45 bg-linear-to-br from-surface-muted via-surface to-brand-soft/30 p-4 sm:p-5`
+}
+
+let detailWrapperClass = 'w-full'
+let detailImageClass = 'size-full object-contain'
+let detailWrapperStyle: string | undefined
+
+let cardImageClass = `size-full object-cover motion-safe:group-hover:scale-[1.03]`
+
+if (useContainedFrame) {
+  detailWrapperClass = `flex min-h-[22rem] items-center justify-center bg-linear-to-br from-surface-muted via-surface to-brand-soft/35 p-4 sm:min-h-[28rem] sm:p-6 lg:min-h-[34rem] lg:p-8`
+
+  if (orientation === 'portrait') {
+    detailImageClass = 'mx-auto h-full w-auto max-w-full object-contain'
+  } else {
+    detailImageClass = 'mx-auto h-full w-full max-w-[34rem] object-contain'
+  }
+
+  cardImageClass = `mx-auto h-full w-full object-contain motion-safe:group-hover:scale-[1.02]`
+} else {
+  detailWrapperStyle = `aspect-ratio: ${image.width} / ${image.height};`
+}
+
+const wrapperClasses =
+  mode === 'card' ?
+    [
+      'relative overflow-hidden bg-surface-muted',
+      cardWrapperClass,
+      featured && orientation === 'landscape' && featuredMinHeightClass
+    ] :
+    [
+      'relative overflow-hidden bg-surface-muted',
+      detailWrapperClass
+    ]
+
+const imageClasses = ['relative z-10 transition duration-500 motion-reduce:transition-none']
+
+if (mode === 'detail') {
+  imageClasses.push(detailImageClass)
+} else {
+  imageClasses.push(cardImageClass)
+}
+
+let targetWidth = 1280
+let targetHeight = 800
+
+if (mode === 'detail') {
+  targetWidth = 1600
+  targetHeight = 1000
+}
+
+if (orientation === 'portrait') {
+  targetHeight = mode === 'detail' ? 1500 : 1280
+  targetWidth = Math.round(targetHeight * 0.8)
+} else if (orientation === 'square') {
+  targetHeight = mode === 'detail' ? 1200 : 1024
+  targetWidth = targetHeight
+}
+
+const widths =
+  mode === 'detail' ?
+    [400, 800, 1200, 1600] :
+    [320, 400, 560, 740, 960, 1280]
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-cover-image',
+  ...wrapperClasses
+], classProp, className)
+---
+
+<div
+  class:list={classList}
+  style={mode === 'detail' ? detailWrapperStyle : undefined}
+  transition:name={effectiveTransitionName}
+  {...passthrough}
+>
+  {mode === 'detail' && useContainedFrame && (
+    <div
+      aria-hidden="true"
+      class="grid-fade absolute inset-0 opacity-45"
+    />
+  )}
+
+  <Picture
+    alt={ariaHidden ? '' : alt}
+    aria-hidden={ariaHidden ? 'true' : undefined}
+    class:list={imageClasses}
+    fetchpriority={fetchpriority}
+    formats={['avif', 'webp']}
+    height={targetHeight}
+    loading={loading}
+    sizes={sizes}
+    src={image}
+    width={targetWidth}
+    widths={widths}
+  />
+
+  {mode === 'card' && !useContainedFrame && showCardOverlay && (
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 bg-linear-to-t from-canvas/55 via-canvas/10 to-transparent"
+    />
+  )}
+</div>

@@ -20,26 +20,11 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<button
+<lumen-language-toggle
   type={type}
   class:list={classList}
   data-ui-language-toggle
   {...passthrough}
 >
   <slot />
-</button>
-
-<script>
-  function initLanguageToggle() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-ui-language-toggle]')
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('language-change'))
-      })
-    })
-  }
-  
-  initLanguageToggle()
-  
-  document.addEventListener('astro:after-swap', initLanguageToggle)
-</script>
+</lumen-language-toggle>

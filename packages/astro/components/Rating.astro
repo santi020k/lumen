@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { composeClassName } from '@santi020k/lumen-core'
+import Icon from './Icon.astro'
+
+export interface Props extends HTMLAttributes<'div'> {
+  value?: number
+  max?: number
+  readonly?: boolean
+}
+
+const {
+  class: className,
+  value = 0,
+  max = 5,
+  readonly = false,
+  ...props
+} = Astro.props
+
+const stars = Array.from({ length: max }, (_, i) => i + 1)
+---
+
+<lumen-rating
+  class={composeClassName('ui-rating', readonly && 'ui-rating--readonly', className)}
+  data-ui-rating
+  data-value={value}
+  data-max={max}
+  data-readonly={readonly ? 'true' : 'false'}
+  {...props}
+>
+  {stars.map((star) => (
+    <button
+      type="button"
+      class="ui-rating__star"
+      data-active={star <= value ? 'true' : 'false'}
+      disabled={readonly}
+      aria-label={`Rate ${star} out of ${max}`}
+    >
+      <Icon name="star" />
+    </button>
+  ))}
+</lumen-rating>

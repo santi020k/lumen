@@ -495,7 +495,16 @@ const elementConfigs = {
   LanguageToggle: { baseClassName: 'ui-language-toggle', tagName: 'lumen-language-toggle' },
   Particles: { baseClassName: 'ui-particles', tagName: 'lumen-particles' },
   ScrollReveal: { baseClassName: 'ui-scroll-reveal', tagName: 'lumen-scroll-reveal' },
-  Stat: { baseClassName: 'ui-stat', tagName: 'lumen-stat' }
+  Stat: { baseClassName: 'ui-stat', tagName: 'lumen-stat' },
+  Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
+  Note: { baseClassName: 'ui-note', tagName: 'lumen-note' },
+  Rating: { baseClassName: 'ui-rating', tagName: 'lumen-rating' },
+  Timeline: { baseClassName: 'ui-timeline', tagName: 'lumen-timeline' },
+  AnimatedLogo: { baseClassName: 'ui-animated-logo', tagName: 'lumen-animated-logo' },
+  AnimatedPortrait: { baseClassName: 'ui-animated-portrait', tagName: 'lumen-animated-portrait' },
+  ButtonLink: { baseClassName: 'ui-button-link', tagName: 'lumen-button-link' },
+  CoverImage: { baseClassName: 'ui-cover-image', tagName: 'lumen-cover-image' },
+  GradientDivider: { baseClassName: 'ui-gradient-divider', tagName: 'lumen-gradient-divider' }
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [
@@ -4316,6 +4325,242 @@ class LumenToastBehaviorElement extends LumenElement {
   }
 }
 
+class LumenBackToTopBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
+  }
+}
+
+class LumenLanguageToggleBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('language-change'))
+    })
+  }
+}
+
+class LumenParticlesBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    if (this.children.length > 0) return
+
+    type ParticleDensity = 'low' | 'medium' | 'high'
+
+    const densityConfig: Record<ParticleDensity, number> = { low: 15, medium: 25, high: 40 }
+    const density = (this.getAttribute('data-ui-particles') || 'medium') as ParticleDensity
+    const count = densityConfig[density]
+
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('div')
+      const size = Math.random() * 12 + 8
+      const left = Math.random() * 100
+      const top = Math.random() * 100
+      const delay = Math.random() * 8
+      const duration = 20 + Math.random() * 15
+
+      el.style.cssText = `
+        position: absolute;
+        left: ${left}%;
+        top: ${top}%;
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        background: var(--ui-surface-strong, currentColor);
+        opacity: 0.1;
+        animation: ui-particle-drift ${duration}s ease-in-out ${delay}s infinite;
+      `
+
+      this.appendChild(el)
+    }
+  }
+}
+
+class LumenRatingBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.addEventListener('click', (e) => {
+      if (this.getAttribute('data-readonly') === 'true') return
+
+      const button = (e.target as HTMLElement).closest<HTMLButtonElement>('.ui-rating__star')
+
+      if (!button) return
+      
+      const stars = [...this.querySelectorAll<HTMLButtonElement>('.ui-rating__star')]
+      const index = stars.indexOf(button)
+
+      if (index === -1) return
+      
+      const newValue = index + 1
+
+      this.setAttribute('data-value', newValue.toString())
+
+      for (const [i, star] of stars.entries()) {
+        star.setAttribute('data-active', i < newValue ? 'true' : 'false')
+      }
+
+      this.dispatchEvent(new CustomEvent('change', { detail: { value: newValue } }))
+    })
+  }
+}
+
+class LumenScrollRevealBehaviorElement extends LumenElement {
+  private observer: IntersectionObserver | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.style.opacity = '1'
+
+      this.style.transform = 'none'
+
+      return
+    }
+
+    this.observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed')
+
+          this.observer?.unobserve(entry.target)
+        }
+      }
+    }, { rootMargin: '0px 0px -10% 0px' })
+
+    this.observer.observe(this)
+  }
+
+  override disconnectedCallback() {
+    this.observer?.disconnect()
+
+    this.observer = undefined
+  }
+}
+
+class LumenThemeToggleBehaviorElement extends LumenElement {
+  #isAnimating = false
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.setAttribute('role', 'switch')
+
+    this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
+
+    this.addEventListener('click', () => {
+      if (this.#isAnimating) return
+
+      const isDark = this.#rootInDarkMode()
+      const newTheme = isDark ? 'light' : 'dark'
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (prefersReducedMotion) {
+        this.#dispatchChange(newTheme)
+
+        return
+      }
+
+      this.#circularReveal(isDark, newTheme)
+    })
+  }
+
+  #rootInDarkMode() {
+    const doc = document.documentElement
+
+    return doc.getAttribute('data-theme') === 'dark' || doc.classList.contains('dark')
+  }
+
+  #dispatchChange(newTheme: string) {
+    const doc = document.documentElement
+
+    doc.setAttribute('data-theme', newTheme)
+    
+    if (newTheme === 'dark') {
+      doc.classList.add('dark')
+    } else {
+      doc.classList.remove('dark')
+    }
+    
+    localStorage.setItem('theme', newTheme)
+
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: newTheme }))
+
+    this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
+  }
+
+  #circularReveal(isDark: boolean, newTheme: string) {
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+
+    if (isTouchDevice) {
+      this.#dispatchChange(newTheme)
+
+      return
+    }
+
+    this.#isAnimating = true
+
+    const rect = this.getBoundingClientRect()
+    const x = Math.round(rect.left + rect.width / 2)
+    const y = Math.round(rect.top + rect.height / 2)
+
+    const maxRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    )
+
+    const oldBg = isDark ? 'hsl(277 20% 10%)' : 'hsl(268 20% 98%)'
+    const overlay = document.createElement('div')
+
+    overlay.setAttribute('aria-hidden', 'true')
+
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      inset: '0',
+      zIndex: '99999',
+      pointerEvents: 'none',
+      backgroundColor: oldBg,
+      clipPath: `circle(${maxRadius}px at ${x}px ${y}px)`,
+      willChange: 'clip-path',
+    })
+
+    document.body.appendChild(overlay)
+
+    this.#dispatchChange(newTheme)
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.style.transition = 'clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)'
+
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`
+
+        const done = () => {
+          overlay.remove()
+
+          this.#isAnimating = false
+        }
+
+        overlay.addEventListener('transitionend', done, { once: true })
+
+        setTimeout(done, 750)
+      })
+    })
+  }
+}
+
 const createLumenElementClass = (config: LumenElementConfig) =>
   class extends LumenElement {
     static override config = config
@@ -4331,15 +4576,21 @@ const createLumenBehaviorElementClass = (
 
 const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenElement>> = {
   AlertDialog: LumenDialogBehaviorElement,
+  BackToTop: LumenBackToTopBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
   Icon: LumenIconBehaviorElement,
+  LanguageToggle: LumenLanguageToggleBehaviorElement,
+  Particles: LumenParticlesBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
+  Rating: LumenRatingBehaviorElement,
+  ScrollReveal: LumenScrollRevealBehaviorElement,
   Select: LumenSelectBehaviorElement,
   Sonner: LumenSonnerBehaviorElement,
   Tabs: LumenTabsBehaviorElement,
   ThemeBuilder: LumenThemeBuilderBehaviorElement,
+  ThemeToggle: LumenThemeToggleBehaviorElement,
   Toast: LumenToastBehaviorElement,
   Tooltip: LumenTooltipBehaviorElement,
   VirtualList: LumenVirtualListBehaviorElement
@@ -4479,3 +4730,16 @@ export const LumenTreeElement = elementClasses.Tree
 export const LumenTreeGridElement = elementClasses.TreeGrid
 export const LumenTypographyElement = elementClasses.Typography
 export const LumenVirtualListElement = elementClasses.VirtualList
+export const LumenLanguageToggleElement = elementClasses.LanguageToggle
+export const LumenParticlesElement = elementClasses.Particles
+export const LumenScrollRevealElement = elementClasses.ScrollReveal
+export const LumenStatElement = elementClasses.Stat
+export const LumenMeterElement = elementClasses.Meter
+export const LumenNoteElement = elementClasses.Note
+export const LumenRatingElement = elementClasses.Rating
+export const LumenTimelineElement = elementClasses.Timeline
+export const LumenAnimatedLogoElement = elementClasses.AnimatedLogo
+export const LumenAnimatedPortraitElement = elementClasses.AnimatedPortrait
+export const LumenButtonLinkElement = elementClasses.ButtonLink
+export const LumenCoverImageElement = elementClasses.CoverImage
+export const LumenGradientDividerElement = elementClasses.GradientDivider

@@ -1,0 +1,108 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import type { ImageMetadata } from 'astro'
+import { Picture } from 'astro:assets'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  alt: string
+  badgeProps?: {
+    experience?: {
+      label: string
+      value: string
+    }
+    location?: {
+      label: string
+      text: string
+    }
+  }
+  class?: string
+  className?: string
+  showFloatingBadges?: boolean
+  sizes?: string
+  src: ImageMetadata | string
+  widths?: number[]
+}
+
+const {
+  alt,
+  badgeProps,
+  class: classProp = '',
+  className = '',
+  showFloatingBadges = false,
+  sizes = '(min-width: 1024px) 352px, 75vw',
+  src,
+  widths = [400, 600, 800],
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-animated-portrait',
+  'relative isolate mx-auto w-full max-w-88 animate-reveal-lcp motion-reduce:animate-none'
+], classProp, className)
+---
+
+<div class:list={classList} {...passthrough}>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-[5%] z-10 rounded-4xl bg-radial from-brand/18 via-accent/8 to-transparent blur-3xl motion-safe:animate-pulse motion-reduce:animate-none"
+  />
+
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-[-10%] z-20 rounded-full border-2 border-brand/15 motion-safe:animate-[spin_24s_linear_infinite] motion-reduce:animate-none dark:border-brand/20"
+    style="border-image: linear-gradient(135deg, hsl(var(--brand)/0.3), hsl(var(--accent)/0.15), transparent) 1; border-radius: 9999px;"
+  />
+
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-[8%] z-20 rounded-full border border-brand/10 motion-safe:animate-[spin_18s_linear_infinite_reverse] motion-reduce:animate-none"
+    style="border-image: linear-gradient(225deg, hsl(var(--accent)/0.2), hsl(var(--brand)/0.1), transparent) 1; border-radius: 9999px;"
+  />
+
+  <div
+    class="panel-card relative z-0 overflow-hidden rounded-[2.25rem] p-3 transition-shadow duration-500 hover:shadow-[0_20px_60px_-15px_hsl(var(--brand)/0.15)] motion-reduce:transition-none sm:p-4"
+  >
+    <div
+      aria-hidden="true"
+      class="grid-fade pointer-events-none absolute inset-0 z-10 opacity-20 dark:opacity-30"
+    />
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-20 bg-linear-to-br from-brand/5 via-transparent to-accent/8"
+    />
+    <Picture
+      alt={alt}
+      class="relative z-0 aspect-4/5 w-full rounded-[1.7rem] object-cover object-top"
+      decoding="sync"
+      fetchpriority="high"
+      formats={['avif', 'webp']}
+      height={440}
+      loading="eager"
+      sizes={sizes}
+      src={src}
+      width={352}
+      widths={widths}
+    />
+  </div>
+
+  {showFloatingBadges && badgeProps?.location && (
+    <div class="mini-note absolute bottom-8 -left-4 z-30 hidden min-w-40 border-l-4 border-l-brand/40 motion-safe:animate-float-y motion-reduce:animate-none sm:-left-8 sm:block">
+      <p class="section-label flex items-center gap-1.5">
+        <span class="inline-block size-1.5 rounded-full bg-brand motion-safe:animate-pulse" />
+        {badgeProps.location.label}
+      </p>
+      <p class="mt-2 text-sm/6 text-ink">{badgeProps.location.text}</p>
+    </div>
+  )}
+
+  {showFloatingBadges && badgeProps?.experience && (
+    <div class="mini-note absolute top-8 -right-4 z-30 hidden min-w-32 border-r-4 border-r-accent/40 motion-safe:animate-float-y motion-reduce:animate-none sm:-right-8 sm:block">
+      <p class="section-label">{badgeProps.experience.label}</p>
+      <p class="mt-2 bg-linear-to-br from-ink to-ink-soft bg-clip-text text-2xl font-bold text-transparent">
+        {badgeProps.experience.value}
+      </p>
+    </div>
+  )}
+</div>

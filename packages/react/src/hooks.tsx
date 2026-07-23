@@ -3167,10 +3167,66 @@ export const useThemeToggle = (defaultTheme = 'light') => {
     }
 
     localStorage.setItem('theme', theme)
+
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: theme }))
   }, [theme])
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark')
+  const toggleTheme = (event?: React.MouseEvent<HTMLButtonElement>) => {
+    const isDark = theme === 'dark'
+    const newTheme = isDark ? 'light' : 'dark'
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+
+    if (prefersReducedMotion || isTouchDevice || !event) {
+      setTheme(newTheme)
+
+      return
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = Math.round(rect.left + rect.width / 2)
+    const y = Math.round(rect.top + rect.height / 2)
+
+    const maxRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    )
+
+    const oldBg = isDark ? 'hsl(277 20% 10%)' : 'hsl(268 20% 98%)'
+    const overlay = document.createElement('div')
+
+    overlay.setAttribute('aria-hidden', 'true')
+
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      inset: '0',
+      zIndex: '99999',
+      pointerEvents: 'none',
+      backgroundColor: oldBg,
+      clipPath: `circle(${maxRadius}px at ${x}px ${y}px)`,
+      willChange: 'clip-path',
+    })
+
+    document.body.appendChild(overlay)
+
+    // Switch theme behind the overlay
+    setTheme(newTheme)
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.style.transition = 'clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)'
+
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`
+
+        const done = () => {
+          overlay.remove()
+        }
+
+        overlay.addEventListener('transitionend', done, { once: true })
+
+        setTimeout(done, 750)
+      })
+    })
   }
 
   return { theme, toggleTheme, setTheme }

@@ -1,5 +1,6 @@
 ---
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import Icon from './Icon.astro'
 
 import type { HTMLAttributes } from 'astro/types'
 
@@ -20,39 +21,21 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<button
+<lumen-theme-toggle
   type={type}
   class:list={classList}
   data-ui-theme-toggle
   {...passthrough}
 >
-  <slot />
-</button>
-
-<script>
-  function initThemeToggle() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-ui-theme-toggle]')
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        const doc = document.documentElement
-        const currentTheme = doc.getAttribute('data-theme') || (doc.classList.contains('dark') ? 'dark' : 'light')
-        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
-        
-        doc.setAttribute('data-theme', nextTheme)
-        
-        if (nextTheme === 'dark') {
-          doc.classList.add('dark')
-        } else {
-          doc.classList.remove('dark')
-        }
-        
-        localStorage.setItem('theme', nextTheme)
-        window.dispatchEvent(new CustomEvent('theme-change', { detail: nextTheme }))
-      })
-    })
-  }
-  
-  initThemeToggle()
-  
-  document.addEventListener('astro:after-swap', initThemeToggle)
-</script>
+  <span class="ui-sr-only">Toggle color theme</span>
+  <Icon
+    aria-hidden="true"
+    class="ui-theme-toggle__sun"
+    name="sun"
+  />
+  <Icon
+    aria-hidden="true"
+    class="ui-theme-toggle__moon"
+    name="moon"
+  />
+</lumen-theme-toggle>

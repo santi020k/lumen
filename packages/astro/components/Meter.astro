@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { composeClassName } from '@santi020k/lumen-core'
+
+export interface Props extends HTMLAttributes<'meter'> {
+  value: number
+  min?: number
+  max?: number
+  low?: number
+  high?: number
+  optimum?: number
+}
+
+const {
+  class: className,
+  value,
+  min = 0,
+  max = 100,
+  ...props
+} = Astro.props
+---
+
+<meter
+  class={composeClassName('ui-meter', className)}
+  value={value}
+  min={min}
+  max={max}
+  {...props}
+>
+  <slot>{value}</slot>
+</meter>
