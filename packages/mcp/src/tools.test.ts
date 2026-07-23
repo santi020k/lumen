@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import { describe, expect, test } from 'vitest'
 
 import { loadLumenData } from './data.js'
@@ -8,8 +10,27 @@ describe('lumen-mcp data snapshot', () => {
     const data = loadLumenData()
 
     expect(data.components.length).toBeGreaterThan(50)
+    expect(data.meta.componentCount).toBe(data.components.length)
+    expect(data.meta.serverVersion).toMatch(/^\d+\.\d+\.\d+/)
     expect(data.tokens.semantic).toContain('brand')
     expect(data.rules.length).toBeGreaterThan(0)
+  })
+
+  test('matches the package version and contains no volatile build timestamp', () => {
+    const data = loadLumenData()
+    const packageJson = JSON.parse(
+      readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+    ) as { version: string }
+
+    expect(data.meta.serverVersion).toBe(packageJson.version)
+    expect(data.meta).not.toHaveProperty('generatedAt')
+  })
+
+  test('ships the package license', () => {
+    const license = readFileSync(new URL('../LICENSE', import.meta.url), 'utf8')
+
+    expect(license).toContain('MIT License')
+    expect(license).toContain('Santiago Molina')
   })
 })
 
@@ -43,6 +64,18 @@ describe('listComponents', () => {
 
     expect(result.text.toLowerCase()).toContain('button')
   })
+
+  test('filters by recipe membership', () => {
+    const result = listComponents({ recipe: 'scheduler' })
+
+    expect(result.text).toContain('Calendar')
+    expect(result.text).not.toContain('Button (button)')
+  })
+
+  test('returns a clear empty result', () => {
+    expect(listComponents({ query: 'definitely-not-a-component' }).text)
+      .toBe('No components matched the given filters.')
+  })
 })
 
 describe('getComponent', () => {
@@ -72,6 +105,28 @@ describe('search', () => {
     const result = search({ query: 'button' })
 
     expect(result.text.toLowerCase()).toContain('button')
+  })
+
+  test('ranks an exact component name first', () => {
+    const result = search({ query: 'button' })
+    const firstResult = result.text.split('\n').find((line) => line.startsWith('component:'))
+
+    expect(firstResult).toContain('component: Button (button)')
+  })
+
+  test('finds relevant components from a natural-language use case', () => {
+    const result = search({ query: 'date input' })
+
+    expect(result.text).toContain('DatePicker')
+    expect(result.text).toContain('DateRangePicker')
+  })
+
+  test('honors the result limit', () => {
+    const result = search({ limit: 1, query: 'input' })
+    const resultLines = result.text.split('\n').filter((line) => line.startsWith('component:'))
+
+    expect(result.text).toContain('(showing 1)')
+    expect(resultLines).toHaveLength(1)
   })
 
   test('errors on empty query', () => {

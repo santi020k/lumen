@@ -34,10 +34,10 @@ export interface LumenData {
   }
   meta: {
     componentCount: number
-    generatedAt: string
     packages: string[]
     registryName: string
     registryVersion: number
+    serverVersion: string
   }
   recipes: LumenRecipeSnapshot[]
   rules: string

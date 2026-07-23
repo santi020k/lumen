@@ -4094,7 +4094,6 @@
   },
   "meta": {
     "componentCount": 121,
-    "generatedAt": "2026-07-23T22:46:36.478Z",
     "packages": [
       "@santi020k/lumen-astro",
       "@santi020k/lumen-react",
@@ -4102,7 +4101,8 @@
       "@santi020k/lumen-core"
     ],
     "registryName": "lumen",
-    "registryVersion": 1
+    "registryVersion": 1,
+    "serverVersion": "0.0.0"
   },
   "recipes": [
     {
