@@ -2080,72 +2080,14 @@ export const Timeline = ({ className, ...props }: TimelineProps) => (
   <ol className={composeClassName('ui-timeline', className)} {...props} />
 )
 
-export type AnimatedLogoProps = Omit<ComponentPropsWithoutRef<'svg'>, 'xmlns' | 'viewBox'> & {
-  iconOnly?: boolean
-  variant?: 'light' | 'dark'
-}
-export const AnimatedLogo = ({ className, iconOnly = false, variant = 'light', ...props }: AnimatedLogoProps) => {
-  const isDark = variant === 'dark'
-  const fillColor = isDark ? '#713bf7' : '#5a0fdb'
-  const strokeColor = isDark ? '#110c1d' : '#FFFFFF'
-  const textColor = isDark ? '#faf9fb' : '#332e38'
-  const viewBox = iconOnly ? '0 0 80 80' : '0 0 504 80'
-
-  return (
-    <svg
-      aria-label="Santi020k"
-      className={composeClassName('ui-animated-logo', className)}
-      role="img"
-      viewBox={viewBox}
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <g data-logo-mark>
-        <rect
-          fill={fillColor}
-          height="80"
-          rx="18"
-          style={{ transform: 'scale(0)', transformOrigin: '40px 40px', animation: 'ui-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
-          width="80"
-        />
-        <path
-          d="M 26 28 L 40 40 L 26 52"
-          fill="none"
-          stroke={strokeColor}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="8"
-          style={{ strokeDasharray: 60, strokeDashoffset: 60, animation: 'ui-draw 0.6s ease forwards', animationDelay: '0.3s' }}
-        />
-        <line
-          stroke={strokeColor}
-          strokeLinecap="round"
-          strokeWidth="8"
-          style={{ strokeDasharray: 60, strokeDashoffset: 60, animation: 'ui-draw 0.6s ease forwards', animationDelay: '0.5s' }}
-          x1="48"
-          x2="62"
-          y1="52"
-          y2="52"
-        />
-      </g>
-      {!iconOnly && (
-        <text
-          dominantBaseline="central"
-          fill={textColor}
-          fontFamily="Montserrat, Inter, sans-serif"
-          fontSize="48"
-          fontWeight="800"
-          letterSpacing="-0.04em"
-          style={{ opacity: 0, transform: 'translateX(-10px)', animation: 'ui-fade-slide 0.5s ease forwards', animationDelay: '0.7s' }}
-          x="100"
-          y="40"
-        >
-          Santi<tspan fill={fillColor} fontWeight="600" letterSpacing="-0.02em">020k</tspan>
-        </text>
-      )}
-    </svg>
-  )
-}
+export type AnimatedLogoProps = ComponentPropsWithoutRef<'span'>
+export const AnimatedLogo = ({ className, ...props }: AnimatedLogoProps) => (
+  <span
+    className={composeClassName('ui-animated-logo', className)}
+    data-ui-animated-logo
+    {...props}
+  />
+)
 
 export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>
 export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps) => (
@@ -2676,4 +2618,3 @@ export const SpeedDial = ({ actions = emptySpeedDialActions, children, className
     </menu>
   </div>
 )
-

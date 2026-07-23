@@ -625,6 +625,11 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('alt', 'string', '""', 'Accessible text for the image.'),
     apiRow('fallback', 'string', '-', 'Fallback text shown when no image source is provided.')
   ],
+  AnimatedLogo: [
+    apiRow('children', 'inline SVG', 'required', 'Wraps any inline SVG logo and applies the reveal animation without changing its artwork.'),
+    apiRow('--ui-animated-logo-duration', 'CSS time', '"700ms"', 'Customizes the reveal duration.'),
+    apiRow('--ui-animated-logo-delay', 'CSS time', '"0ms"', 'Delays the reveal for coordinated compositions.')
+  ],
   BackToTop: [
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.'),
     apiRow('data-ui-back-to-top', 'boolean attribute', 'generated', 'Marks the button for scroll-to-top behavior from the UIPrimitives runtime.')
@@ -1002,7 +1007,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Note', 'Data display', 'Displays a contextual note or information.', '<Note label="Info">This is a note.</Note>'],
   ['Rating', 'Data display', 'Displays a star rating input or display.', '<Rating aria-label="Component rating" value={4} max={5} />'],
   ['Timeline', 'Data display', 'Displays a list of events in chronological order.', '<Timeline>...</Timeline>'],
-  ['AnimatedLogo', 'Brand', 'An animated logo component.', '<AnimatedLogo />'],
+  ['AnimatedLogo', 'Brand', 'Reveals any inline SVG logo with accessible, reduced-motion-aware animation.', '<AnimatedLogo><svg role="img" aria-label="Acme" viewBox="0 0 120 32">...</svg></AnimatedLogo>'],
   ['AnimatedPortrait', 'Brand', 'An animated portrait component.', '<AnimatedPortrait />'],
   ['ButtonLink', 'Navigation', 'A button-styled link.', '<ButtonLink href="/">Home</ButtonLink>'],
   ['CoverImage', 'Data display', 'A cover image component.', '<CoverImage src="/image.jpg" alt="Cover" />'],

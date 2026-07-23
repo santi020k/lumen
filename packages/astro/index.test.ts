@@ -75,6 +75,21 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-code__copy')
   })
 
+  test('wraps arbitrary inline SVG logos with shared animation styles', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/AnimatedLogo.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain("HTMLAttributes<'span'>")
+    expect(component).toContain('data-ui-animated-logo')
+    expect(component).toContain('<slot />')
+    expect(component).not.toContain('Santi020k')
+    expect(styles).toContain('.ui-animated-logo > svg')
+    expect(styles).toContain('--ui-animated-logo-duration')
+    expect(styles).toContain('@keyframes ui-animated-logo-reveal')
+  })
+
   test('keeps audited primitive semantics, runtime behavior, and standalone styles aligned', async () => {
     const [backToTop, component, languageToggle, particles, runtime, scrollReveal, styles] = await Promise.all([
       readFile(new URL('./components/BackToTop.astro', packageRoot), 'utf8'),

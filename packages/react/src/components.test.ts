@@ -5,6 +5,7 @@ import {
   Accordion,
   Agenda,
   Alert,
+  AnimatedLogo,
   AspectRatio,
   Attachment,
   Autocomplete,
@@ -71,6 +72,17 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Skeleton({}) as ReactElement).className).toBe('ui-skeleton')
     expect(propsOf(Kbd({}) as ReactElement).className).toBe('ui-kbd')
     expect(propsOf(Label({}) as ReactElement).className).toBe('ui-label')
+  })
+
+  test('wraps arbitrary logo artwork without imposing SVG content', () => {
+    const artwork = <svg aria-label="Acme logo" role="img" viewBox="0 0 24 24" />
+    const logo = AnimatedLogo({ children: artwork, className: 'brand-logo' }) as ReactElement
+    const props = propsOf(logo)
+
+    expect(logo.type).toBe('span')
+    expect(props.className).toBe('ui-animated-logo brand-logo')
+    expect(props['data-ui-animated-logo']).toBe(true)
+    expect(props.children).toBe(artwork)
   })
 
   test('applies alert variant class and data attribute', () => {
