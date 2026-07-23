@@ -1,0 +1,31 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'ol'> {
+  class?: string
+  className?: string
+  orientation?: 'horizontal' | 'vertical'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  orientation = 'horizontal',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-stepper',
+  orientation === 'vertical' && 'ui-stepper--vertical'
+], classProp, className)
+---
+
+<ol
+  class:list={classList}
+  data-orientation={orientation}
+  {...passthrough}
+>
+  <slot />
+</ol>

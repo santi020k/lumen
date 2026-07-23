@@ -1,0 +1,41 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+type DescriptionItem = { label: string; value: string }
+
+interface Props extends HTMLAttributes<'dl'> {
+  class?: string
+  className?: string
+  columns?: number
+  items?: DescriptionItem[]
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  columns = 1,
+  items = [],
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-descriptions'
+], classProp, className)
+---
+
+<dl
+  class:list={classList}
+  data-columns={columns}
+  style={`--ui-descriptions-columns:${columns}`}
+  {...passthrough}
+>
+  {items.map(item => (
+    <div class="ui-descriptions__item">
+      <dt class="ui-descriptions__term">{item.label}</dt>
+      <dd class="ui-descriptions__detail">{item.value}</dd>
+    </div>
+  ))}
+  <slot />
+</dl>

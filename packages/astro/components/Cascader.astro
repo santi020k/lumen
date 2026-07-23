@@ -1,0 +1,34 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  name?: string
+  placeholder?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  name,
+  placeholder = 'Select…',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-cascader'
+], classProp, className)
+---
+
+<div class:list={classList} data-surface="default" data-ui-cascader data-ui-popover {...passthrough}>
+  <button aria-expanded="false" aria-haspopup="listbox" class="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
+    <span data-ui-cascader-value data-ui-cascader-placeholder={placeholder}>{placeholder}</span>
+  </button>
+  <div class="ui-cascader__panel" data-ui-panel hidden>
+    <slot />
+  </div>
+  {name && <input data-ui-cascader-input name={name} type="hidden" />}
+</div>

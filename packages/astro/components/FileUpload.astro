@@ -1,0 +1,37 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'size'> {
+  class?: string
+  className?: string
+  label?: string
+  hint?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  label = 'Choose a file or drag it here',
+  hint,
+  id,
+  ...rest
+} = Astro.props
+
+const inputId = id ?? 'ui-file-upload'
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-file-upload'
+], classProp, className)
+---
+
+<label class:list={classList} data-ui-file-upload for={inputId}>
+  <input class="ui-file-upload__input" data-ui-file-upload-input id={inputId} type="file" {...passthrough} />
+  <span aria-hidden="true" class="ui-file-upload__icon"></span>
+  <span class="ui-file-upload__prompt">
+    <slot>{label}</slot>
+  </span>
+  {hint && <span class="ui-file-upload__hint">{hint}</span>}
+  <span aria-live="polite" class="ui-file-upload__files" data-ui-file-upload-files></span>
+</label>
