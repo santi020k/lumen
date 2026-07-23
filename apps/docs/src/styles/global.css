@@ -632,7 +632,7 @@ pre code {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 1.35rem;
   min-width: 0;
   max-width: 100%;
 }
@@ -642,14 +642,14 @@ pre code {
 }
 
 .docs-home-title {
-  max-width: 16ch;
+  max-width: 15ch;
   margin: 0;
   color: hsl(var(--ink));
   font-family: var(--app-font-display), "Montserrat", sans-serif;
-  font-size: clamp(2.75rem, 6vw, 4rem);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.0;
+  line-height: 1.02;
 }
 
 .docs-home-title span {
@@ -673,16 +673,16 @@ pre code {
 
 .docs-home-showcase-glow {
   position: absolute;
-  inset: 6%;
+  inset: -4%;
   z-index: -1;
-  border-radius: 2rem;
+  border-radius: 2.5rem;
   background: radial-gradient(
-    ellipse at 30% 0%,
-    hsl(var(--brand) / 0.18),
-    hsl(var(--accent) / 0.08) 45%,
-    transparent 70%
+    ellipse at 35% 0%,
+    hsl(var(--brand) / 0.28),
+    hsl(var(--accent) / 0.12) 48%,
+    transparent 72%
   );
-  filter: blur(42px);
+  filter: blur(48px);
   animation: docs-glow-pulse 6s ease-in-out infinite;
 }
 
@@ -698,11 +698,11 @@ pre code {
 }
 
 .docs-home-lede {
-  max-width: 46ch;
+  max-width: 42ch;
   margin: 0;
   color: hsl(var(--ink-soft));
-  font-size: 1.075rem;
-  line-height: 1.65;
+  font-size: 1.02rem;
+  line-height: 1.6;
 }
 
 .docs-home-targets {
@@ -784,8 +784,12 @@ pre code {
 }
 
 .docs-home-showcase.ui-card {
-  border-color: hsl(var(--line));
-  box-shadow: none;
+  border-color: hsl(var(--line) / 0.8);
+  border-radius: 1.15rem;
+  box-shadow:
+    0 32px 60px -24px hsl(230 40% 6% / 0.5),
+    0 2px 0 hsl(0 0% 100% / 0.04) inset,
+    0 0 0 1px hsl(var(--brand) / 0.06);
 }
 
 .docs-home-block {
@@ -1406,27 +1410,45 @@ pre code {
 }
 
 .docs-theme-select {
-  min-height: 2.5rem;
-  border: 1px solid hsl(var(--line) / 0.55);
+  min-height: 2.75rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid hsl(var(--line) / 0.5);
   border-radius: 999px;
-  background: hsl(var(--surface) / 0.68);
+  background-color: hsl(var(--surface) / 0.68);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
   color: hsl(var(--ink-soft));
   cursor: pointer;
   font: inherit;
   font-size: 0.82rem;
   font-weight: 600;
   line-height: 1.2;
-  padding: 0.3rem 0.75rem;
+  padding: 0.3rem 2.05rem 0.3rem 0.95rem;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.12);
   transition:
     border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.2s ease,
-    background-color 0.25s ease;
+    background-color 0.25s ease,
+    box-shadow 0.3s ease;
 }
 
 .docs-theme-select:hover {
-  border-color: hsl(var(--brand) / 0.4);
+  border-color: hsl(var(--brand) / 0.45);
+  background-color: hsl(var(--brand-soft) / 0.35);
   color: hsl(var(--brand));
+  box-shadow:
+    0 8px 24px hsl(230 30% 8% / 0.08),
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
+}
+
+.docs-theme-select option {
+  color: hsl(var(--ink));
+  background: hsl(var(--surface));
 }
 
 .docs-theme-toggle {
