@@ -5,7 +5,7 @@
 // and writes a single self-contained JSON payload the published server reads at
 // runtime. This keeps @santi020k/lumen-mcp installable without the whole repo.
 
-import { access,mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -106,6 +106,7 @@ const main = async () => {
   const rules = await readIfExists(p('llms.txt'))
   const readme = await readIfExists(p('README.md'))
   const aiUsage = await readIfExists(p('docs/ai-usage.md'))
+  const packageJson = JSON.parse(await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8'))
   let registry = { items: [] }
 
   try {
@@ -187,7 +188,6 @@ const main = async () => {
     },
     meta: {
       componentCount: components.length,
-      generatedAt: new Date().toISOString(),
       packages: registry.packages ?? [
         '@santi020k/lumen-astro',
         '@santi020k/lumen-react',
@@ -195,7 +195,8 @@ const main = async () => {
         '@santi020k/lumen-core'
       ],
       registryName: registry.name ?? 'lumen',
-      registryVersion: registry.version ?? 1
+      registryVersion: registry.version ?? 1,
+      serverVersion: packageJson.version
     },
     recipes: (registry.items ?? []).filter((i) => i.type === 'recipe' || i.type === 'component-set'),
     rules,

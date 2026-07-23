@@ -37,7 +37,8 @@
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "catalog:"
+    "@modelcontextprotocol/sdk": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@santi020k/lumen-core": "workspace:^",

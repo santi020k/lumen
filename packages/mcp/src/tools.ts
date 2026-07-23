@@ -11,6 +11,65 @@ export interface LumenToolResult {
 const normalize = (value: string) =>
   value.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').replaceAll(/[\s_]+/g, '-').toLowerCase()
 
+const tokenize = (value: string): string[] =>
+  normalize(value).split(/[^a-z0-9]+/).filter(Boolean)
+
+const componentAliases = (component: LumenComponentSnapshot): string => {
+  const name = component.kebab
+  const aliases: string[] = []
+
+  if (/(?:autocomplete|cascader|checkbox|combobox|field|input|mentions|picker|radio|select|slider|switch|textarea|upload)/.test(name)) {
+    aliases.push('form input control field')
+  }
+
+  if (/(?:calendar|date|schedule|time)/.test(name)) {
+    aliases.push('date time scheduling')
+  }
+
+  if (/(?:alert-dialog|dialog|drawer|popover|sheet|popconfirm)/.test(name)) {
+    aliases.push('modal overlay confirmation')
+  }
+
+  if (/(?:alert|callout|message|note|sonner|toast)/.test(name)) {
+    aliases.push('notification feedback status message')
+  }
+
+  if (/(?:breadcrumb|menu|pagination|sidebar|tabs)/.test(name)) {
+    aliases.push('navigation')
+  }
+
+  if (/(?:progress|skeleton|spinner)/.test(name)) {
+    aliases.push('loading progress status')
+  }
+
+  if (/(?:chart|data-table|list|table|tree)/.test(name)) {
+    aliases.push('data collection display')
+  }
+
+  return aliases.join(' ')
+}
+
+const scoreSearchCandidate = (
+  query: string,
+  terms: string[],
+  searchableText: string,
+  primaryName = ''
+): number => {
+  const normalizedText = normalize(searchableText)
+
+  if (!terms.every((term) => normalizedText.includes(term))) return 0
+
+  const normalizedQuery = normalize(query)
+  const normalizedName = normalize(primaryName)
+  let score = terms.reduce((total, term) => total + (normalizedName.includes(term) ? 20 : 5), 0)
+
+  if (normalizedText.includes(normalizedQuery)) score += 100
+
+  if (normalizedName === normalizedQuery) score += 500
+
+  return score
+}
+
 export const resolveComponent = (
   name: string,
   data: LumenData = loadLumenData()
@@ -117,62 +176,75 @@ export const search = (
   args: { limit?: number | undefined; query: string },
   data: LumenData = loadLumenData()
 ): LumenToolResult => {
-  const query = args.query.trim().toLowerCase()
+  const query = args.query.trim()
 
   if (!query) {
     return { isError: true, text: 'Provide a non-empty query.' }
   }
 
   const limit = Math.max(1, Math.min(args.limit ?? 20, 100))
-  const results: string[] = []
+  const terms = tokenize(query)
+  const results: { label: string; score: number }[] = []
 
   for (const component of data.components) {
     const haystack = [
       component.name,
       component.kebab,
+      componentAliases(component),
       component.propsExtends ?? '',
       component.props.map((prop) => `${prop.name} ${prop.type}`).join(' ')
-    ].join(' ').toLowerCase()
+    ].join(' ')
 
-    if (haystack.includes(query)) {
-      results.push(`component: ${component.name} (${component.kebab}) — ${frameworkSummary(component)}`)
+    const score = scoreSearchCandidate(query, terms, haystack, component.name)
+
+    if (score > 0) {
+      results.push({
+        label: `component: ${component.name} (${component.kebab}) — ${frameworkSummary(component)}`,
+        score
+      })
     }
   }
 
   for (const recipe of data.recipes) {
-    const haystack = `${recipe.name} ${(recipe.components ?? []).join(' ')}`.toLowerCase()
+    const haystack = `${recipe.name} ${(recipe.components ?? []).join(' ')}`
+    const score = scoreSearchCandidate(query, terms, haystack, recipe.name)
 
-    if (haystack.includes(query)) {
-      results.push(`recipe: ${recipe.name} — ${(recipe.components ?? []).join(', ') || 'files'}`)
+    if (score > 0) {
+      results.push({
+        label: `recipe: ${recipe.name} — ${(recipe.components ?? []).join(', ') || 'files'}`,
+        score
+      })
     }
   }
 
   for (const token of data.tokens.semantic) {
-    if (token.toLowerCase().includes(query)) {
-      results.push(`token: ${token}`)
+    const score = scoreSearchCandidate(query, terms, token, token)
+
+    if (score > 0) {
+      results.push({ label: `token: ${token}`, score })
     }
   }
 
-  if (data.rules.toLowerCase().includes(query)) {
-    const ruleLines = data.rules
-      .split('\n')
-      .filter((line) => line.toLowerCase().includes(query))
-      .slice(0, 5)
-      .map((line) => `rule: ${line.trim()}`)
+  for (const line of data.rules.split('\n')) {
+    const score = scoreSearchCandidate(query, terms, line)
 
-    results.push(...ruleLines)
+    if (score > 0) {
+      results.push({ label: `rule: ${line.trim()}`, score })
+    }
   }
 
   if (results.length === 0) {
     return { text: `No matches for "${args.query}".` }
   }
 
+  results.sort((left, right) => right.score - left.score || left.label.localeCompare(right.label))
+
   const shown = results.slice(0, limit)
 
   return {
     text: `${results.length} match(es) for "${args.query}"${
       results.length > shown.length ? ` (showing ${shown.length})` : ''
-    }:\n\n${shown.join('\n')}`
+    }:\n\n${shown.map((result) => result.label).join('\n')}`
   }
 }
 
