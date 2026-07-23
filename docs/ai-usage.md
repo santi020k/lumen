@@ -5,30 +5,31 @@ another agent how to use the library.
 
 ## Pick the Right Package
 
-Start with Astro unless the user explicitly asks for another framework.
+Use the framework requested by the user. Every adapter shares the same Lumen foundation.
 
 | App Target | Install | Import Components From | Load Styles From |
 | --- | --- | --- | --- |
-| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |
-| React | `@santi020k/lumen-react @santi020k/lumen-astro` | `@santi020k/lumen-react` | `@santi020k/lumen-astro/styles.css` |
-| Web Components | `@santi020k/lumen-elements @santi020k/lumen-astro` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-astro/styles.css` |
+| Astro | `@santi020k/lumen @santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen/styles.css` |
+| React | `@santi020k/lumen @santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen/styles.css` |
+| Web Components | `@santi020k/lumen @santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen/styles.css` |
 | Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
 
-`@santi020k/lumen` is the umbrella package map. Prefer the framework package for component imports.
+`@santi020k/lumen` provides the shared stylesheet, package map, CLI, and registry metadata. Import
+components from the matching framework adapter.
 
 ## Minimal Setup
 
 Import the stylesheet once in the app's global CSS, root layout, or app entry.
 
 ```css
-@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen/styles.css";
 ```
 
 If Tailwind is present, keep both imports in the same shared CSS entry.
 
 ```css
 @import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen/styles.css";
 ```
 
 Astro apps should mount `UIPrimitives` once in the root layout when using interactive primitives
@@ -68,7 +69,7 @@ behavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-r
 the Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.
 
 ```tsx
-import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen/styles.css'
 import { Button, Card, Input, Label } from '@santi020k/lumen-react'
 
 export function SubscribeForm() {

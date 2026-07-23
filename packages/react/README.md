@@ -8,13 +8,13 @@ Lumen stylesheet.
 ## Install
 
 ```bash
-pnpm add @santi020k/lumen-react @santi020k/lumen-astro
+pnpm add @santi020k/lumen @santi020k/lumen-react
 ```
 
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```tsx
-import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen/styles.css'
 ```
 
 ## Usage
@@ -62,7 +62,7 @@ attributes, and `VirtualList` exposes the shared range sizing attributes for app
 
 ## Glass surfaces
 
-Load `@santi020k/lumen-astro/styles.css` once in your app, then use the shared glass API from React.
+Load `@santi020k/lumen/styles.css` once in your app, then use the shared glass API from React.
 
 ```tsx
 <Card glass>Glass card</Card>

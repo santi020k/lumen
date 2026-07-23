@@ -30,17 +30,21 @@ if (!guide || !setup) {
       description="The reference implementation for Lumen UI, with the complete component catalog, standalone CSS, and a tiny progressive-enhancement runtime."
       eyebrow="Framework guide"
       stats={[
-        { label: 'Surface', value: 'Reference' },
-        { label: 'Runtime', value: 'Progressive' },
+        { label: 'Surface', value: 'Full' },
+        { label: 'Runtime', value: '~4 KB' },
         { label: 'Package', value: 'Astro' }
       ]}
       title={guide.title}
     >
       <Fragment slot="actions">
-        <a class="ui-button ui-button--default-size ui-button--default no-underline" href="#install-title">
+        <a class="
+          ui-button ui-button--default-size ui-button--default no-underline
+        " href="#install-title">
           Install for Astro
         </a>
-        <a class="ui-button ui-button--default-size ui-button--outline no-underline" href="/docs/components">
+        <a class="
+          ui-button ui-button--default-size ui-button--outline no-underline
+        " href="/docs/components">
           Browse components
         </a>
       </Fragment>

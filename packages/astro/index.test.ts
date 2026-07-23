@@ -7,6 +7,7 @@ import { describe, expect, test } from 'vitest'
 /* cspell:ignore datatable */
 
 const packageRoot = new URL('.', import.meta.url)
+const sharedStylesUrl = new URL('../lumen/styles.css', packageRoot)
 
 describe('@santi020k/lumen-astro package surface', () => {
   test('ships one Astro component file per shared component name', async () => {
@@ -44,11 +45,13 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(packageJson.exports['./styles.css']).toBe('./styles/lumen.css')
 
     await expect(readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')).resolves.toContain('<script>')
-    await expect(readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')).resolves.toContain('.ui-button')
+    await expect(readFile(new URL('./styles/lumen.css', packageRoot), 'utf8'))
+      .resolves.toContain('@import "@santi020k/lumen/styles.css"')
+    await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain('.ui-button')
   })
 
   test('ships glass styles for overlay and structural surfaces', async () => {
-    const css = await readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    const css = await readFile(sharedStylesUrl, 'utf8')
 
     expect(css).toContain('.ui-dialog--glass')
     expect(css).toContain('.ui-alert--glass')
@@ -59,7 +62,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('ships the code primitive markup and standalone styles', async () => {
     const [component, styles] = await Promise.all([
       readFile(new URL('./components/Code.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(component).toContain('code?: string')
@@ -80,7 +83,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/Particles.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(backToTop).toContain('<button')
@@ -108,7 +111,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/Select.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/NativeSelect.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(nativeSelect).toContain('<select class:list')
@@ -167,7 +170,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Resizable.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(component).toContain('data-ui-resizable')
@@ -186,7 +189,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/InputOTP.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(component).toContain('autocomplete')
@@ -204,7 +207,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Calendar.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(component).toContain('value?: string')
@@ -231,7 +234,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(component).toContain('columns?: DataTableColumn[]')
@@ -268,7 +271,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('enhances native form validation through Field error slots', async () => {
     const [runtime, styles] = await Promise.all([
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(runtime).toContain("form[data-ui-form]")
@@ -288,7 +291,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+      readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(toast).toContain('data-ui-toast')
