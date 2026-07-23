@@ -4,13 +4,16 @@ import { composeClassName } from '@santi020k/lumen-core'
 
 export interface Props extends HTMLAttributes<'div'> {
   label?: string
+  borderPosition?: 'left' | 'right' | 'none'
 }
 
-const { class: className, label, ...props } = Astro.props
+const { class: className, label, borderPosition = 'left', ...props } = Astro.props
+
+const borderClass = `ui-note--border-${borderPosition}`
 ---
 
 <div
-  class={composeClassName('ui-note', className)}
+  class={composeClassName('ui-note', borderClass, className)}
   {...props}
 >
   {label && <p class="ui-note__label">{label}</p>}

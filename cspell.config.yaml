@@ -1,6 +1,7 @@
 version: "0.2"
 language: en
 words:
+  - aaronmgz
   - astrojs
   - commitizen
   - commitlint
@@ -12,6 +13,7 @@ words:
   - geolocation
   - glassmorphism
   - hashkey
+  - Hoverable
   - inputmode
   - jsdom
   - knip
@@ -26,8 +28,11 @@ words:
   - lucide
   - Lumen
   - maxlength
+  - memudo
   - nosniff
+  - nums
   - overscan
+  - postlens
   - readwrite
   - santi020k
   - santi

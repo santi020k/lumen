@@ -3378,3 +3378,60 @@
   padding-left: 1rem;
   border-left: 2px solid var(--ui-line);
 }
+
+/* Note border-position variants */
+.ui-note--border-left {
+  border-left: 4px solid var(--ui-brand);
+  border-right-width: 0;
+}
+.ui-note--border-right {
+  border-left-width: 0;
+  border-right: 4px solid var(--ui-accent);
+}
+.ui-note--border-none {
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
+/* Pill count affix */
+.ui-pill__count {
+  margin-left: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--ui-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* CoverImage hover lift + bottom gradient overlay */
+.ui-cover-image--hover {
+  transition: transform 300ms ease;
+}
+.ui-cover-image--hover:hover {
+  transform: translateY(-0.25rem);
+}
+.ui-cover-image__bottom-gradient {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 45%;
+  z-index: 20;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--ui-canvas), transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-cover-image--hover {
+    transition: none;
+  }
+  .ui-cover-image--hover:hover {
+    transform: none;
+  }
+}
+
+/* ButtonLink icon-only round shape */
+.ui-button-link--icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+}

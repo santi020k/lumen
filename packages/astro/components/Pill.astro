@@ -6,11 +6,13 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'span'> {
   class?: string
   className?: string
+  count?: number | string
 }
 
 const {
   class: classProp = '',
   className = '',
+  count,
   ...rest
 } = Astro.props
 
@@ -24,4 +26,5 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   {...passthrough}
 >
   <slot />
+  {count != null && <span class="ui-pill__count">{count}</span>}
 </span>
