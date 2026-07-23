@@ -1274,6 +1274,61 @@ export const NativeSelect = ({
   )
 }
 
+export interface PhoneInputProps extends Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue'> {
+  countries?: SelectOption[]
+  countryLabel?: string
+  countryName?: string
+  defaultCountryValue?: string
+  defaultValue?: string
+  name?: string
+  placeholder?: string
+  size?: 'default' | 'lg' | 'sm'
+}
+export const PhoneInput = ({
+  className,
+  countries = emptyOptions,
+  countryLabel = 'Country code',
+  countryName = 'country',
+  defaultCountryValue,
+  defaultValue,
+  name = 'phone',
+  placeholder = 'Phone number',
+  size = 'default',
+  ...props
+}: PhoneInputProps) => (
+  <div className={composeClassName('ui-phone-input ui-input-group', className)} {...props}>
+    <select
+      aria-label={countryLabel}
+      className={composeClassName(
+        'ui-select ui-phone-input__country',
+        size === 'sm' && 'ui-select--sm',
+        size === 'lg' && 'ui-select--lg'
+      )}
+      defaultValue={defaultCountryValue}
+      name={countryName}
+    >
+      {countries.map(normalizeOption).map(option => (
+        <option disabled={option.disabled} key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+    <input
+      autoComplete="tel"
+      className={composeClassName(
+        'ui-input ui-phone-input__number',
+        size === 'sm' && 'ui-input--sm',
+        size === 'lg' && 'ui-input--lg'
+      )}
+      defaultValue={defaultValue}
+      inputMode="tel"
+      name={name}
+      placeholder={placeholder}
+      type="tel"
+    />
+  </div>
+)
+
 export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}
 
 export const NavigationMenu = ({ className, glass = false, surface = 'default', ...props }: NavigationMenuProps) => (

@@ -55,6 +55,7 @@ export const lumenComponentNames = [
   'NavigationMenu',
   'NumberField',
   'Pagination',
+  'PhoneInput',
   'Pill',
   'Popover',
   'Progress',

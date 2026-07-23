@@ -1,0 +1,86 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface CountryOption {
+  disabled?: boolean
+  label: string
+  value: string
+}
+
+type Country = CountryOption | string
+
+interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
+  class?: string
+  className?: string
+  countries?: Country[]
+  countryLabel?: string
+  countryName?: string
+  countryValue?: string
+  name?: string
+  placeholder?: string
+  size?: 'default' | 'lg' | 'sm'
+  value?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  countries = [],
+  countryLabel = 'Country code',
+  countryName = 'country',
+  countryValue,
+  name = 'phone',
+  placeholder = 'Phone number',
+  size = 'default',
+  value,
+  ...rest
+} = Astro.props
+
+const normalizedCountries = countries.map(country =>
+  typeof country === 'string' ? { label: country, value: country } : country
+)
+
+const hasCountryValue = countryValue !== undefined
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-phone-input',
+  'ui-input-group'
+], classProp, className)
+---
+
+<div class:list={classList} {...passthrough}>
+  <select
+    aria-label={countryLabel}
+    class:list={[
+      'ui-select',
+      'ui-phone-input__country',
+      size === 'sm' && 'ui-select--sm',
+      size === 'lg' && 'ui-select--lg'
+    ]}
+    name={countryName}
+  >
+    {normalizedCountries.map(country => (
+      <option
+        disabled={country.disabled}
+        selected={hasCountryValue && country.value === countryValue}
+        value={country.value}
+      >{country.label}</option>
+    ))}
+  </select>
+  <input
+    autocomplete="tel"
+    class:list={[
+      'ui-input',
+      'ui-phone-input__number',
+      size === 'sm' && 'ui-input--sm',
+      size === 'lg' && 'ui-input--lg'
+    ]}
+    inputmode="tel"
+    name={name}
+    placeholder={placeholder}
+    type="tel"
+    value={value}
+  />
+</div>
