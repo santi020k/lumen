@@ -1,5 +1,12 @@
 ---
-import { SearchField } from '@santi020k/lumen-astro'
+import { Icon, InputGroup, Kbd, SearchField } from '@santi020k/lumen-astro'
 ---
 
-<SearchField name="q" placeholder="Search docs" />
+<InputGroup>
+  <Icon name="search" decorative />
+  <SearchField name="q" placeholder="Search docs" />
+  <div class="flex items-center gap-1 opacity-50 px-2 pointer-events-none">
+    <Kbd>Cmd</Kbd>
+    <Kbd>K</Kbd>
+  </div>
+</InputGroup>

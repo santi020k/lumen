@@ -1734,7 +1734,6 @@ pre code {
 
 .component-doc-preview {
   position: relative;
-  overflow: hidden;
   min-height: 15rem;
   border-radius: 1.15rem;
   background:

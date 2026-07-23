@@ -1,14 +1,25 @@
 ---
-import { Button, ButtonGroup, RichTextEditor } from '@santi020k/lumen-astro'
+import { Button, ButtonGroup, Icon, RichTextEditor } from '@santi020k/lumen-astro'
 ---
 
 <div class="docs-glass-demo">
   <RichTextEditor glass>
     <div role="toolbar" aria-label="Formatting">
       <ButtonGroup>
-        <Button size="sm" variant="secondary">B</Button>
-        <Button size="sm" variant="secondary">I</Button>
-        <Button size="sm" variant="secondary">Link</Button>
+        <Button data-ui-editor-command="bold" type="button" variant="ghost" size="icon" aria-label="Bold">
+          <Icon name="bold" decorative />
+        </Button>
+        <Button data-ui-editor-command="italic" type="button" variant="ghost" size="icon" aria-label="Italic">
+          <Icon name="italic" decorative />
+        </Button>
+        <Button data-ui-editor-command="underline" type="button" variant="ghost" size="icon" aria-label="Underline">
+          <Icon name="underline" decorative />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <Button data-ui-editor-command="insertUnorderedList" type="button" variant="ghost" size="icon" aria-label="Bullet List">
+          <Icon name="list" decorative />
+        </Button>
       </ButtonGroup>
     </div>
     <div contenteditable="true">Draft the glass release notes... the editing area stays translucent so the backdrop glows through.</div>

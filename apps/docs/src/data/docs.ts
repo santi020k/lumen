@@ -980,6 +980,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use as a short contextual label immediately above a heading.',
     distinction: 'It styles a paragraph and does not replace a semantic heading or act as a status Badge.'
   },
+  Field: {
+    when: 'Use to group a form control with its label, description, and validation errors.',
+    distinction: 'Use Field as the structural container for form elements, and Input for the interactive control itself.'
+  },
   FloatingBadge: {
     when: 'Use for a high-emphasis count or notification positioned over an icon, avatar, or control.',
     distinction: 'Unlike Badge, it has notification styling and is intended for overlay placement; the parent layout controls its position.'
@@ -987,6 +991,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   HoverCard: {
     when: 'Use to preview richer information about a person, link, or object on hover and keyboard focus.',
     distinction: 'Use Tooltip for a short label and Popover when the floating content contains actions or form controls.'
+  },
+  Input: {
+    when: 'Use to capture short text, email, passwords, search terms, or numeric values.',
+    distinction: 'Use Input for the actual interactive form control, and Field to structurally group it with a label and helper text.'
   },
   Item: {
     when: 'Use to align a compact row of primary text, supporting metadata, badges, icons, or actions in a list or results view.',
@@ -1182,7 +1190,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter aria-label="Storage used" value={64} min={0} max={100}>64%</Meter>'],
   ['Note', 'Data display', 'Keeps supplementary information visually attached to nearby content.', '<Note label="Compatibility">Requires Safari 16.4 or newer.</Note>'],
   ['Rating', 'Data display', 'Collects or presents a bounded star-based score.', '<Rating aria-label="Rate this component" value={4} max={5} />'],
-  ['Timeline', 'Data display', 'Orders milestones or activity events along a chronological track.', '<Timeline><Item><strong>10:00</strong> Design approved</Item><Item><strong>14:30</strong> Release deployed</Item></Timeline>'],
+  ['Timeline', 'Data display', 'Orders milestones or activity events along a chronological track.', '<Timeline><TimelineItem><strong>10:00</strong> Design approved</TimelineItem><TimelineItem><strong>14:30</strong> Release deployed</TimelineItem></Timeline>'],
   ['AnimatedLogo', 'Brand', 'Reveals any inline SVG logo with accessible, reduced-motion-aware animation.', '<AnimatedLogo><svg role="img" aria-label="Acme" viewBox="0 0 120 32">...</svg></AnimatedLogo>'],
   ['AnimatedPortrait', 'Brand', 'Presents a portrait with optional motion and floating profile facts.', '<AnimatedPortrait src="/portrait.jpg" alt="Portrait of Ana" showFloatingBadges />'],
   ['ButtonLink', 'Navigation', 'Gives navigation the visual emphasis of a button while retaining anchor semantics.', '<ButtonLink href="/docs" showArrow>Read the docs</ButtonLink>'],
@@ -1684,7 +1692,7 @@ export function BookingRange() {
     code: `import { useInputOTP } from '@santi020k/lumen-react'
 
 export function VerificationCode() {
-  const otp = useInputOTP({ length: 6 })
+  const otp = useInputOTP({ length: 6, defaultValue: '123456' })
 
   return (
     <div {...otp.rootProps}>

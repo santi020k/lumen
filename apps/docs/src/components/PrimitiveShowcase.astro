@@ -13,6 +13,8 @@ import {
   Progress,
   Separator,
   Switch,
+  Timeline,
+  TimelineItem,
   Toggle,
   ToggleGroup
 } from '@santi020k/lumen-astro'
@@ -129,20 +131,20 @@ const rootClass = ['primitive-showcase', classProp, className].filter(Boolean).j
 
       <Separator />
 
-      <div class="primitive-showcase__timeline" aria-label="Launch activity">
-        <span>
-          <Icon name="shield-check" size="sm" />
+      <Timeline class="primitive-showcase__timeline" aria-label="Launch activity">
+        <TimelineItem>
+          <Icon slot="dot" name="shield-check" size="sm" />
           A11y pass
-        </span>
-        <span>
-          <Icon name="palette" size="sm" />
+        </TimelineItem>
+        <TimelineItem>
+          <Icon slot="dot" name="palette" size="sm" />
           Tokens exported
-        </span>
-        <span>
-          <Icon name="blocks" size="sm" />
+        </TimelineItem>
+        <TimelineItem>
+          <Icon slot="dot" name="blocks" size="sm" />
           Components ready
-        </span>
-      </div>
+        </TimelineItem>
+      </Timeline>
     </aside>
   </div>
 
@@ -327,18 +329,7 @@ const rootClass = ['primitive-showcase', classProp, className].filter(Boolean).j
   }
 
   .primitive-showcase__timeline {
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .primitive-showcase__timeline span {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .primitive-showcase__timeline .ui-icon {
-    color: hsl(var(--brand));
+    margin-top: 1rem;
   }
 
   .primitive-showcase__swatches {

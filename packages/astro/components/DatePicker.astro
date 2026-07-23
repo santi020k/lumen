@@ -1,20 +1,79 @@
 ---
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import Calendar from './Calendar.astro'
 
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'input'> {
   class?: string
   className?: string
+  glass?: boolean | 'subtle' | 'strong'
+  placeholder?: string
 }
 
-const { class: classProp = '', className = '', type = 'date', ...rest } = Astro.props
-const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input', 'ui-date-picker'
+const {
+  class: classProp = '',
+  className = '',
+  disabled = false,
+  glass = false,
+  id,
+  max,
+  min,
+  name,
+  placeholder,
+  required = false,
+  type = 'date',
+  value,
+  ...rest
+} = Astro.props
+
+const datePickerId = id ?? `ui-date-picker-${Math.random().toString(36).slice(2)}`
+const triggerId = `${datePickerId}-trigger`
+const popoverId = `${datePickerId}-popover`
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+    'ui-date-picker-field',
+    glass && 'ui-date-picker-field--glass',
+    glass === 'subtle' && 'ui-glass-subtle',
+    glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
+
+const selectedValue = value === undefined || value === null ? undefined : String(value)
+const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
+const placeholderText = placeholder ?? 'mm/dd/yyyy'
 ---
 
-<input
-  class:list={classList}
-  type={type}
-  {...passthrough}
-/>
+<div class:list={classList} data-ui-date-picker data-ui-glass-track={glass ? true : undefined}>
+  <input
+    class="ui-date-picker ui-date-picker__native"
+    data-ui-date-picker-native
+    disabled={disabled}
+    id={datePickerId}
+    max={max}
+    min={min}
+    name={name}
+    required={required}
+    type={type}
+    value={value}
+    {...passthrough}
+  />
+
+  <div class="ui-date-picker__control" data-ui-date-picker-control hidden>
+    <button
+      aria-controls={popoverId}
+      aria-expanded="false"
+      aria-haspopup="dialog"
+      class="ui-input ui-date-picker ui-date-picker__trigger"
+      data-ui-date-picker-trigger
+      disabled={disabled}
+      id={triggerId}
+      type="button"
+    >
+      <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>
+    </button>
+
+    <div class="ui-date-picker__popover" data-state="closed" data-ui-date-picker-popover hidden id={popoverId} role="dialog">
+      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />
+    </div>
+  </div>
+</div>
