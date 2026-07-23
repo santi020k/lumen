@@ -1,5 +1,5 @@
 ---
-import { Badge, Button, Icon } from '@santi020k/lumen-astro'
+import { Icon } from '@santi020k/lumen-astro'
 
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
@@ -9,13 +9,11 @@ const currentPath = Astro.url.pathname
 const navLinks = [
   {
     href: '/',
-    icon: 'home',
     isActive: currentPath === '/',
     label: 'Home'
   },
   {
     href: '/docs',
-    icon: 'book-open',
     isActive: currentPath === '/docs' || (
       currentPath.startsWith('/docs/')
       && !currentPath.startsWith('/docs/components')
@@ -25,84 +23,94 @@ const navLinks = [
   },
   {
     href: '/docs/components',
-    icon: 'blocks',
     isActive: currentPath.startsWith('/docs/components'),
     label: 'Components'
   },
   {
     href: '/docs/theme-playground',
-    icon: 'palette',
     isActive: currentPath.startsWith('/docs/theme-playground'),
     label: 'Theme'
   }
 ] as const
+
+const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
 ---
 
-<header class="docs-site-header">
-  <div class="
-    docs-site-header__inner mx-auto flex w-full max-w-7xl items-center
-    justify-between gap-3 px-5 py-3
-    sm:px-8
-  ">
-    <a class="docs-site-header__brand text-ink no-underline" href="/">
-      <LumenLogo markClass="size-8" />
-      <Badge variant="outline">v0.1</Badge>
+<div class="docs-site-header">
+  <header class="docs-header-shell" data-site-header>
+    <a class="docs-header-brand no-underline" href="/">
+      <LumenLogo markClass="size-7" />
     </a>
-    <div class="docs-site-header__actions">
-      <nav
-        class="docs-site-header__nav"
-        aria-label="Site"
-      >
-        {navLinks.map(link => (
-          <a
-            class:list={[
-              'docs-site-header__link no-underline',
-              link.isActive && 'docs-site-header__link--active'
-            ]}
-            href={link.href}
-            aria-current={link.isActive ? 'page' : undefined}
-          >
-            <Icon name={link.icon} size="sm" />
-            <span>{link.label}</span>
-          </a>
-        ))}
-      </nav>
+
+    <nav class="docs-nav-track" aria-label="Main menu" style={`--item-count:${navLinks.length};--active-index:${activeIndex};`}>
+      <span class="docs-nav-indicator" aria-hidden="true"></span>
+      {navLinks.map(link => (
+        <a
+          class:list={[
+            'docs-nav-link no-underline',
+            link.isActive && 'docs-nav-link--active'
+          ]}
+          href={link.href}
+          aria-current={link.isActive ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="docs-header-actions">
       <a
-        class="
-          docs-site-header__github ui-button ui-button--default-size
-          ui-button--secondary no-underline
-        "
+        class="docs-header-github no-underline"
         href="https://github.com/santi020k/lumen"
+        aria-label="Lumen on GitHub"
       >
         <GitHubIcon />
         <span>GitHub</span>
       </a>
-      <div class="ui-theme-controls" aria-label="Theme controls">
+
+      <div class="docs-theme-controls" aria-label="Theme controls">
         <label class="sr-only" for="site-color-theme">Theme</label>
         <select
           id="site-color-theme"
-          class="ui-theme-select"
+          class="docs-theme-select"
           data-theme-select
           aria-label="Theme"
         >
           <option value="santi020k">Santi020k</option>
           <option value="lumen">Lumen</option>
         </select>
-        <Button
-          class="ui-theme-toggle"
-          size="icon"
-          variant="outline"
+        <button
+          class="docs-theme-toggle"
+          type="button"
           data-theme-toggle
           aria-label="Switch color mode"
           title="Switch color mode"
         >
-          <span class="ui-theme-toggle__icon" aria-hidden="true">
-            <span class="ui-theme-toggle__sun"></span>
-            <span class="ui-theme-toggle__moon"></span>
-          </span>
+          <Icon class="docs-theme-toggle__sun" name="sun" size="sm" aria-hidden="true" />
+          <Icon class="docs-theme-toggle__moon" name="moon" size="sm" aria-hidden="true" />
           <span class="sr-only" data-theme-toggle-label>Switch color mode</span>
-        </Button>
+        </button>
       </div>
     </div>
-  </div>
-</header>
+  </header>
+</div>
+
+<script>
+  const initSiteHeader = () => {
+    const header = document.querySelector<HTMLElement>('[data-site-header]')
+
+    if (!header) return
+
+    const onScroll = () => {
+      header.dataset.scrolled = String(window.scrollY > 8)
+    }
+
+    onScroll()
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+  }
+
+  initSiteHeader()
+
+  document.addEventListener('astro:after-swap', initSiteHeader)
+</script>
