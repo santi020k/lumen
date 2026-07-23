@@ -2,6 +2,7 @@
 import { lumenIcons, renderLumenIconSvg } from '@santi020k/lumen-core'
 
 import CodeBlock from '../../components/CodeBlock.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 interface IconEntry {
@@ -36,6 +37,7 @@ const iconEntries: IconEntry[] = [...byName.values()]
   }))
 
 const iconCount = iconEntries.length
+const featuredIcons = iconEntries.slice(0, 9)
 
 const astroUsage = `---
 import { Icon } from '@santi020k/lumen-astro'
@@ -64,101 +66,100 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
   description={`Browse the ${iconCount} Lucide icons available through the Lumen Icon component across Astro, React, and Elements.`}
   title="Icons - Lumen UI"
 >
-  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs">Docs</a>
-    <span aria-hidden="true"> / </span>
-    <span aria-current="page" class="font-bold text-ink">Icons</span>
-  </nav>
-
-  <section class="docs-section" aria-labelledby="icons-title">
-    <div class="docs-section-heading">
-      <p>Foundations</p>
-      <h1 class="
-        text-4xl/tight font-black text-ink
-        sm:text-5xl/tight
-      " id="icons-title">
-        Icons
-      </h1>
-      <p>
-        Lumen ships the full <a class="font-bold text-ink underline" href="https://lucide.dev" target="_blank" rel="noopener noreferrer">Lucide</a>
-        icon set through a single <code>Icon</code> component. Reference any of the
-        <strong>{iconCount}</strong> icons by name — kebab-case names and Lucide aliases both
-        resolve — and Lumen renders a consistent, accessible SVG in Astro, React, and Elements.
-      </p>
-    </div>
-
-    <div class="
-      grid gap-4
-      lg:grid-cols-3
-    ">
-      <CodeBlock code={astroUsage} lang="astro" title="Astro" />
-      <CodeBlock code={reactUsage} lang="tsx" title="React" />
-      <CodeBlock code={elementsUsage} lang="html" title="Elements" />
-    </div>
-  </section>
-
-  <section class="mt-10 space-y-4" aria-labelledby="catalog-title">
-    <div class="
-      flex flex-col gap-3
-      sm:flex-row sm:items-center sm:justify-between
-    ">
-      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="catalog-title">Catalog</h2>
-      <p class="text-sm text-ink-muted" data-icon-status>
-        Showing <span data-icon-visible-count>{iconCount}</span> of {iconCount} icons
-      </p>
-    </div>
-
-    <label class="sr-only" for="icon-search">Search icons</label>
-    <input
-      autocomplete="off"
-      class="ui-input"
-      data-icon-search
-      id="icon-search"
-      placeholder={`Search ${iconCount} icons by name or alias...`}
-      spellcheck="false"
-      type="search"
-    />
-
-    <p
-      class="
-        hidden rounded-xl border border-line bg-surface px-4 py-6 text-center
-        text-sm text-ink-soft
-      "
-      data-icon-empty
-      hidden
+  <div class="icons-page">
+    <DocsPageHero
+      description={`Search the complete Lucide set through one accessible component. Kebab-case names and aliases resolve consistently in every Lumen framework target.`}
+      eyebrow="Icon library"
+      stats={[
+        { label: 'Icons', value: iconCount },
+        { label: 'Frameworks', value: 3 },
+        { label: 'Component API', value: 1 }
+      ]}
+      title="A familiar symbol for every action."
     >
-      No icons match your search.
-    </p>
+      <Fragment slot="actions">
+        <a
+          class="ui-button ui-button--default-size ui-button--default no-underline"
+          href="#icon-catalog"
+        >Explore icons</a>
+        <a
+          class="ui-button ui-button--default-size ui-button--outline no-underline"
+          href="/docs/components/icon"
+        >View Icon API</a>
+      </Fragment>
 
-    <div
-      class="grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-2"
-      data-icon-grid
-    >
-      {iconEntries.map(entry => (
-        <button
-          class="
-            group flex aspect-square flex-col items-center justify-center gap-2
-            rounded-xl border border-line bg-surface p-3 text-ink-soft
-            transition
-            hover:border-brand hover:bg-brand-soft hover:text-ink
-          "
-          data-icon-name={entry.name}
-          data-icon-terms={entry.terms}
-          title={`Copy "${entry.name}"`}
-          type="button"
-        >
-          <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
-          <span class="
-            w-full truncate text-center text-[0.65rem] leading-tight
-            text-ink-muted
-          ">{entry.name}</span>
-        </button>
-      ))}
-    </div>
-  </section>
+      <div class="icons-hero-grid" slot="visual" aria-hidden="true">
+        {featuredIcons.map(entry => (
+          <span class="ui-icon ui-icon--lg" set:html={entry.svg} />
+        ))}
+      </div>
+    </DocsPageHero>
+
+    <section class="icons-section" aria-labelledby="usage-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>One component</p>
+          <h2 id="usage-title">Use it everywhere</h2>
+        </div>
+        <p>
+          Names, sizes, and accessibility props stay aligned across Astro, React, and custom
+          elements. Decorative icons stay hidden; meaningful icons require a label.
+        </p>
+      </div>
+
+      <div class="icons-usage-grid">
+        <CodeBlock code={astroUsage} lang="astro" title="Astro" />
+        <CodeBlock code={reactUsage} lang="tsx" title="React" />
+        <CodeBlock code={elementsUsage} lang="html" title="Elements" />
+      </div>
+    </section>
+
+    <section class="icons-section" id="icon-catalog" aria-labelledby="catalog-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>Complete set</p>
+          <h2 id="catalog-title">Find your icon</h2>
+        </div>
+        <p>
+          Search by canonical name or alias, then select any tile to copy its component name.
+        </p>
+      </div>
+
+      <div class="icons-search">
+        <label for="icon-search">Search the icon library</label>
+        <input
+          autocomplete="off"
+          class="ui-input"
+          data-icon-search
+          id="icon-search"
+          placeholder={`Search ${iconCount} icons by name or alias...`}
+          spellcheck="false"
+          type="search"
+        />
+        <p data-icon-status>
+          Showing <span data-icon-visible-count>{iconCount}</span> of {iconCount} icons
+        </p>
+      </div>
+
+      <p class="icons-empty" data-icon-empty hidden>
+        No icons match your search.
+      </p>
+
+      <div class="icons-grid" data-icon-grid>
+        {iconEntries.map(entry => (
+          <button
+            data-icon-name={entry.name}
+            data-icon-terms={entry.terms}
+            title={`Copy "${entry.name}"`}
+            type="button"
+          >
+            <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
+            <span>{entry.name}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  </div>
 </DocsLayout>
 
 <script>
@@ -223,3 +224,168 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
     })
   }
 </script>
+
+<style>
+  .icons-page {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  .icons-hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / 0.62);
+    backdrop-filter: blur(14px);
+  }
+
+  .icons-hero-grid > span {
+    display: grid;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.75rem;
+    background: hsl(var(--surface) / 0.8);
+    color: hsl(var(--brand));
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.16);
+  }
+
+  .icons-hero-grid > span:nth-child(2n) {
+    color: hsl(var(--ink-soft));
+    transform: translateY(0.3rem);
+  }
+
+  .icons-section {
+    display: grid;
+    gap: 1.4rem;
+    scroll-margin-top: 6rem;
+  }
+
+  .icons-section__heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .icons-section__heading > div > p {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .icons-section__heading h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .icons-section__heading > p {
+    max-width: 36rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .icons-usage-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .icons-search {
+    display: grid;
+    gap: 0.55rem;
+    max-width: 46rem;
+  }
+
+  .icons-search label {
+    color: hsl(var(--ink));
+    font-size: 0.8rem;
+    font-weight: 850;
+  }
+
+  .icons-search input {
+    height: 3.25rem;
+    border-radius: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .icons-search p {
+    color: hsl(var(--ink-muted));
+    font-size: 0.8rem;
+  }
+
+  .icons-empty {
+    padding: 3rem 1rem;
+    border: 1px dashed hsl(var(--line));
+    border-radius: 1rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: 0.6rem;
+  }
+
+  .icons-grid button {
+    display: flex;
+    aspect-ratio: 1;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.9rem;
+    background: hsl(var(--surface));
+    color: hsl(var(--ink-soft));
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .icons-grid button:hover {
+    border-color: hsl(var(--brand));
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    transform: translateY(-2px);
+  }
+
+  .icons-grid button > span:last-child {
+    overflow: hidden;
+    width: 100%;
+    color: hsl(var(--ink-muted));
+    font-size: 0.63rem;
+    line-height: 1.2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 48rem) {
+    .icons-section__heading {
+      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
+    }
+  }
+
+  @media (min-width: 75rem) {
+    .icons-usage-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

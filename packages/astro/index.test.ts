@@ -72,6 +72,37 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-code__copy')
   })
 
+  test('keeps audited primitive semantics, runtime behavior, and standalone styles aligned', async () => {
+    const [backToTop, component, languageToggle, particles, runtime, scrollReveal, styles] = await Promise.all([
+      readFile(new URL('./components/BackToTop.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ThemeToggle.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/LanguageToggle.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Particles.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ])
+
+    expect(backToTop).toContain('<button')
+    expect(backToTop).toContain('data-ui-back-to-top')
+    expect(component).toContain('<button')
+    expect(component).toContain('type={type}')
+    expect(component).toContain('data-ui-theme-toggle')
+    expect(component).not.toContain('<lumen-theme-toggle')
+    expect(languageToggle).toContain('<button')
+    expect(languageToggle).not.toContain('<lumen-language-toggle')
+    expect(particles).toContain('<div')
+    expect(particles).not.toContain('<lumen-particles')
+    expect(scrollReveal).toContain('<div')
+    expect(scrollReveal).not.toContain('<lumen-scroll-reveal')
+    expect(runtime).toContain('const initBackToTopButtons = (scope: ParentNode): void =>')
+    expect(runtime).toContain('const initScrollReveals = (scope: ParentNode): void =>')
+    expect(styles).toContain('.ui-particles')
+    expect(styles).toContain('.ui-scroll-reveal.is-revealed')
+    expect(styles).toContain('.ui-sr-only')
+    expect(styles).toContain('[data-theme$="-dark"]')
+  })
+
   test('ships Select as a progressively enhanced listbox distinct from NativeSelect', async () => {
     const [select, nativeSelect, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Select.astro', packageRoot), 'utf8'),

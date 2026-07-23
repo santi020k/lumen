@@ -20,11 +20,11 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<lumen-language-toggle
+<button
   type={type}
   class:list={classList}
   data-ui-language-toggle
   {...passthrough}
 >
   <slot />
-</lumen-language-toggle>
+</button>

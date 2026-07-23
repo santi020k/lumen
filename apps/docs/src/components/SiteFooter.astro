@@ -1,5 +1,12 @@
 ---
-import { Icon } from '@santi020k/lumen-astro'
+import {
+  Badge,
+  ButtonLink,
+  Icon,
+  Marker,
+  Separator
+} from '@santi020k/lumen-astro'
+import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
@@ -22,78 +29,109 @@ const footerGroups = [
       { href: '/docs/figma', label: 'Figma' }
     ],
     title: 'Use Lumen'
-  }
-] as const
-
-const resourceLinks = [
-  {
-    href: 'https://github.com/santi020k/lumen',
-    icon: 'github',
-    label: 'GitHub'
   },
   {
-    href: 'https://santi020k.com',
-    icon: 'house',
-    label: 'Santi020k'
-  },
-  {
-    href: 'https://www.npmjs.com/package/@santi020k/lumen',
-    icon: 'package',
-    label: 'npm'
+    links: [
+      { href: 'https://github.com/santi020k/lumen', label: 'GitHub' },
+      { href: 'https://www.npmjs.com/package/@santi020k/lumen', label: 'npm' },
+      { href: 'https://santi020k.com', label: 'Santi020k' },
+      { href: '/docs/figma', label: 'Figma workflow' }
+    ],
+    title: 'Resources'
   }
 ] as const
 
 const currentYear = new Date().getFullYear()
+const componentCount = lumenComponentNames.length
 ---
 
 <footer class="docs-site-footer">
   <div class="
-    docs-site-footer__inner mx-auto w-full max-w-7xl px-5 py-10
+    docs-site-footer__inner mx-auto w-full max-w-7xl px-5
     sm:px-8
   ">
-    <div class="docs-site-footer__brand">
-      <a class="docs-site-footer__logo text-ink no-underline" href="/">
-        <LumenLogo markClass="size-9" />
-      </a>
-      <p>
-        Multi-framework UI primitives with semantic tokens, accessible patterns,
-        and a reference Astro implementation.
-      </p>
-      <div class="docs-site-footer__social" aria-label="Project resources">
-        {resourceLinks.map(link => (
-          <a
-            aria-label={link.label}
-            href={link.href}
-            rel="noopener noreferrer"
-            target="_blank"
-            title={link.label}
-          >
-            {link.icon === 'github'
-              ? <GitHubIcon />
-              : <Icon name={link.icon} size="sm" />}
-          </a>
-        ))}
+    <div class="docs-site-footer__statement">
+      <div class="docs-site-footer__statement-copy">
+        <div class="docs-site-footer__eyebrow">
+          <Marker variant="success">Open source</Marker>
+          <Badge variant="outline">{componentCount} primitives</Badge>
+        </div>
+        <h2>Good interfaces feel<br /><em>inevitable.</em></h2>
+        <p>
+          Lumen gives every framework the same considered foundation—so your
+          product can feel coherent before the custom work even begins.
+        </p>
+      </div>
+      <div class="docs-site-footer__actions">
+        <ButtonLink href="/docs" showArrow variant="primary">
+          Start building
+        </ButtonLink>
+        <ButtonLink
+          href="https://github.com/santi020k/lumen"
+          newTab
+          variant="secondary"
+        >
+          <GitHubIcon />
+          GitHub
+        </ButtonLink>
       </div>
     </div>
 
-    <nav class="docs-site-footer__nav" aria-label="Footer">
-      {footerGroups.map(group => (
-        <section>
-          <h2>{group.title}</h2>
-          <ul>
-            {group.links.map(link => (
-              <li>
-                <a href={link.href}>{link.label}</a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-    </nav>
+    <Separator />
+
+    <div class="docs-site-footer__directory">
+      <div class="docs-site-footer__brand">
+        <a class="docs-site-footer__logo text-ink no-underline" href="/">
+          <LumenLogo markClass="size-9" />
+        </a>
+        <p>
+          Multi-framework UI primitives for Astro, React, and the platform.
+        </p>
+        <span class="docs-site-footer__signature">
+          <Icon name="sparkles" size="sm" />
+          Built with Lumen
+        </span>
+      </div>
+
+      <nav class="docs-site-footer__nav" aria-label="Footer">
+        {footerGroups.map(group => (
+          <section>
+            <h2>{group.title}</h2>
+            <ul>
+              {group.links.map(link => {
+                const isExternal = link.href.startsWith('http')
+
+                return (
+                  <li>
+                    <a
+                      href={link.href}
+                      rel={isExternal ? 'noopener noreferrer' : undefined}
+                      target={isExternal ? '_blank' : undefined}
+                    >
+                      {link.label}
+                      {isExternal && <Icon name="arrow-up-right" size="sm" />}
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        ))}
+      </nav>
+    </div>
 
     <div class="docs-site-footer__meta">
-      <p>© {currentYear} Lumen UI.</p>
-      <p>Built with its own primitives.</p>
+      <p>
+        © {currentYear} Lumen UI. Crafted by
+        <a href="https://santi020k.com" rel="noopener noreferrer" target="_blank">
+          Santi020k
+          <Icon name="arrow-up-right" size="sm" />
+        </a>.
+      </p>
+      <p class="docs-site-footer__status">
+        <Marker variant="success">Stable</Marker>
+        Accessible by default
+      </p>
     </div>
   </div>
 </footer>

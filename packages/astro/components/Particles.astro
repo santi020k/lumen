@@ -21,11 +21,11 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<lumen-particles
+<div
   aria-hidden="true"
   class:list={classList}
   data-ui-particles={density}
   {...passthrough}
 >
   <slot />
-</lumen-particles>
+</div>
