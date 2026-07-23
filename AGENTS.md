@@ -75,3 +75,5 @@ before release-oriented work or broad cross-package changes.
   [docs/figma-design-to-code.md](docs/figma-design-to-code.md); token export to Figma lives in
   [docs/figma.md](docs/figma.md).
 - Tool-specific AI files should be tiny pointers back to this file.
+
+## Imported Claude Cowork project instructions

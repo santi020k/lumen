@@ -1,0 +1,67 @@
+{
+  "name": "@santi020k/lumen-mcp",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Model Context Protocol server for the Lumen multi-framework primitive UI system. Lets AI agents list components, read real component source, and follow Lumen tokens and rules.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tools": {
+      "types": "./dist/tools.d.ts",
+      "import": "./dist/tools.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["bin", "dist", "data", "README.md", "LICENSE"],
+  "bin": {
+    "lumen-mcp": "./bin/lumen-mcp.mjs"
+  },
+  "scripts": {
+    "generate": "node scripts/generate-data.mjs",
+    "build": "pnpm run generate && tsc -p tsconfig.build.json",
+    "dev": "pnpm run generate && tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config ../../vitest.config.ts --project mcp",
+    "test:coverage": "vitest run --config ../../vitest.config.ts --project mcp --coverage",
+    "lint": "eslint . --no-warn-ignored",
+    "lint:fix": "eslint . --fix --no-warn-ignored",
+    "clean": "rm -rf dist coverage"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "catalog:"
+  },
+  "devDependencies": {
+    "@santi020k/lumen-core": "workspace:^",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/lumen.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://lumen.santi020k.com",
+  "bugs": {
+    "url": "https://github.com/santi020k/lumen/issues"
+  },
+  "keywords": ["lumen", "mcp", "model-context-protocol", "ai", "ui", "design-system", "astro"],
+  "author": {
+    "name": "Santiago Molina",
+    "url": "https://santi020k.com"
+  },
+  "license": "MIT"
+}

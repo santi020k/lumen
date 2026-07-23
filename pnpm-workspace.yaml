@@ -18,6 +18,7 @@ catalog:
   "@commitlint/cli": ^21.1.0
   "@commitlint/config-conventional": ^21.1.0
   "@lucide/icons": ^1.23.0
+  "@modelcontextprotocol/sdk": ^1.29.0
   "@playwright/test": ^1.53.0
   "@santi020k/eslint-config-basic": ^2.1.1
   "@santi020k/theme": ^1.1.0
