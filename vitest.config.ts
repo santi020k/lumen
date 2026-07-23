@@ -51,6 +51,7 @@ export default defineConfig({
     projects: [
       project('core', 'packages/core'),
       project('lumen', 'packages/lumen'),
+      project('mcp', 'packages/mcp'),
       project('react', 'packages/react'),
       project('elements', 'packages/elements', { environment: 'jsdom' }),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),

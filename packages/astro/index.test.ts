@@ -68,6 +68,19 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('color: hsl(var(--ink-muted))')
   })
 
+  test('aligns image and fallback avatars consistently in inline groups', async () => {
+    const css = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(css).toMatch(/\.ui-avatar\s*\{[^}]*vertical-align: middle;/s)
+  })
+
+  test('keeps icons from collapsing inside input groups', async () => {
+    const css = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(css).toContain('.ui-input-group > :where(span, strong):not(.ui-icon)')
+    expect(css).toMatch(/\.ui-input-group > \.ui-icon\s*\{[^}]*margin-inline-start: 0\.75rem;/s)
+  })
+
   test('styles native meter tracks and values with shared color tokens', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
@@ -109,6 +122,22 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('--ui-animated-logo-duration')
     expect(styles).toContain('@keyframes ui-animated-logo-reveal')
     expect(styles).toContain('[data-ui-logo-draw]')
+  })
+
+  test('ships AnimatedPortrait structure and motion as standalone styles', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/AnimatedPortrait.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('ui-animated-portrait__orbit--outer')
+    expect(component).toContain('ui-animated-portrait__badge--location')
+    expect(component).toContain('ui-animated-portrait__badge--experience')
+    expect(component).not.toContain('border-image:')
+    expect(styles).toContain('.ui-animated-portrait__badge')
+    expect(styles).toContain('backdrop-filter: blur(10px)')
+    expect(styles).toContain('@keyframes ui-animated-portrait-spin')
+    expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 
   test('keeps Astro image optimization and dark artwork support', async () => {

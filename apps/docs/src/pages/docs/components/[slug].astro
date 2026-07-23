@@ -91,7 +91,7 @@ const componentNameParts = component.name.split(/(?<=[a-z])(?=[A-Z])/)
           <Badge variant="secondary">{component.category}</Badge>
           {component.glass && <Badge variant="outline">Glass surface</Badge>}
         </div>
-        <h1>
+        <h1 data-long-title={component.name.length >= 12 ? 'true' : undefined}>
           {componentNameParts.map((part, index) => (
             <Fragment>{index > 0 && <wbr />}{part}</Fragment>
           ))}

@@ -1623,6 +1623,7 @@ pre code {
 }
 
 .component-doc-hero__copy {
+  container-type: inline-size;
   align-self: end;
 }
 
@@ -1641,6 +1642,10 @@ pre code {
   font-weight: 900;
   letter-spacing: -0.065em;
   line-height: 0.92;
+}
+
+.component-doc-hero h1[data-long-title] {
+  font-size: clamp(2.5rem, 12cqi, 5.7rem);
 }
 
 .component-doc-hero__copy > p {
