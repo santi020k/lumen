@@ -15,6 +15,7 @@ import {
   createContext,
   type CSSProperties,
   type Dispatch,
+  type JSX,
   type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
@@ -36,7 +37,7 @@ type ToastVariant = 'default' | 'destructive' | 'success' | 'warning'
 
 type DataAttributes = Record<`data-${string}`, unknown>
 
-type LumenProps<Tag extends keyof HTMLElementTagNameMap> = ComponentPropsWithRef<Tag> & DataAttributes
+type LumenProps<Tag extends keyof JSX.IntrinsicElements> = ComponentPropsWithRef<Tag> & DataAttributes
 
 type InputMode = NonNullable<ComponentPropsWithRef<'input'>['inputMode']>
 

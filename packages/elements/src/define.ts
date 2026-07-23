@@ -524,12 +524,61 @@ const elementConfigs = {
     baseClassName: 'ui-cover-image',
     tagName: 'lumen-cover-image'
   },
-  GradientDivider: { baseClassName: 'ui-gradient-divider', tagName: 'lumen-gradient-divider' }
+  GradientDivider: { baseClassName: 'ui-gradient-divider', tagName: 'lumen-gradient-divider' },
+  Stepper: {
+    attributeClasses: { orientation: { vertical: 'ui-stepper--vertical' } },
+    baseClassName: 'ui-stepper',
+    defaults: { orientation: 'horizontal' },
+    tagName: 'lumen-stepper'
+  },
+  FileUpload: { baseClassName: 'ui-file-upload', defaults: { 'data-ui-file-upload': '' }, tagName: 'lumen-file-upload' },
+  Tour: { baseClassName: 'ui-tour', defaults: { 'data-ui-tour': '' }, tagName: 'lumen-tour' },
+  Anchor: { baseClassName: 'ui-anchor', defaults: { 'aria-label': 'On this page', 'data-ui-anchor': '' }, tagName: 'lumen-anchor' },
+  Segmented: {
+    attributeClasses: { size: { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' } },
+    baseClassName: 'ui-segmented',
+    defaults: { role: 'group' },
+    tagName: 'lumen-segmented'
+  },
+  Toolbar: {
+    attributeClasses: { orientation: { vertical: 'ui-toolbar--vertical' } },
+    baseClassName: 'ui-toolbar',
+    defaults: { 'aria-label': 'Toolbar', 'data-ui-toolbar': '', orientation: 'horizontal', role: 'toolbar' },
+    tagName: 'lumen-toolbar'
+  },
+  Descriptions: { baseClassName: 'ui-descriptions', tagName: 'lumen-descriptions' },
+  Popconfirm: { baseClassName: 'ui-popover ui-popconfirm', defaults: { 'data-ui-popconfirm': '', 'data-ui-popover': '' }, tagName: 'lumen-popconfirm' },
+  Transfer: { baseClassName: 'ui-transfer', defaults: { 'data-ui-transfer': '' }, tagName: 'lumen-transfer' },
+  Cascader: { baseClassName: 'ui-cascader', defaults: { 'data-ui-cascader': '' }, tagName: 'lumen-cascader' },
+  TreeSelect: { baseClassName: 'ui-tree-select', defaults: { 'data-ui-tree-select': '' }, tagName: 'lumen-tree-select' },
+  Mentions: { baseClassName: 'ui-mentions', defaults: { 'data-ui-mentions': '' }, tagName: 'lumen-mentions' },
+  QRCode: { baseClassName: 'ui-qr-code', tagName: 'lumen-qr-code' },
+  Watermark: { baseClassName: 'ui-watermark', defaults: { 'data-ui-watermark': '' }, tagName: 'lumen-watermark' },
+  Affix: {
+    attributeClasses: { position: { bottom: 'ui-affix--bottom' } },
+    baseClassName: 'ui-affix',
+    defaults: { position: 'top' },
+    tagName: 'lumen-affix'
+  },
+  SpeedDial: {
+    attributeClasses: {
+      direction: {
+        down: 'ui-speed-dial--down',
+        left: 'ui-speed-dial--left',
+        right: 'ui-speed-dial--right',
+        up: 'ui-speed-dial--up'
+      }
+    },
+    baseClassName: 'ui-speed-dial',
+    defaults: { 'data-ui-speed-dial': '', direction: 'up' },
+    tagName: 'lumen-speed-dial'
+  }
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [
   'border-position',
   'decorative',
+  'direction',
   'disabled',
   'from',
   'glass',
@@ -537,6 +586,7 @@ const observedAttributeNames = [
   'label',
   'name',
   'orientation',
+  'position',
   'pressed',
   'shape',
   'size',

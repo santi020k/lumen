@@ -60,6 +60,45 @@ words:
   - novalidate
   - shikijs
   - textareas
+  - Cascader
+  - cascader
+  - Popconfirm
+  - popconfirm
+  - ButtonLink
+  - buttonlink
+  - CoverImage
+  - coverimage
+  - GradientDivider
+  - gradientdivider
+  - AnimatedLogo
+  - AnimatedPortrait
+  - SpeedDial
+  - speeddial
+  - Watermark
+  - watermark
+  - Segmented
+  - segmented
+  - Mentions
+  - mentions
+  - Affix
+  - affix
+  - Anchor
+  - anchor
+  - Toolbar
+  - toolbar
+  - Stepper
+  - stepper
+  - Transfer
+  - transfer
+  - TreeSelect
+  - treeselect
+  - Tour
+  - Descriptions
+  - descriptions
+  - FileUpload
+  - fileupload
+  - QRCode
+  - qrcode
 ignoreRegExpList:
   - "luQW2pTQ3jGGxSFPAAsfa9"
 ignorePaths:
