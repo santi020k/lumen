@@ -2,6 +2,7 @@ export interface ComponentDoc {
   apiReference: ComponentApiRow[]
   name: string
   category: 'Actions' | 'Brand' | 'Data display' | 'Feedback' | 'Forms' | 'Layout' | 'Navigation' | 'Overlays'
+  figmaNodeId?: string
   glass?: boolean
   guidance?: ComponentGuidance
   keyboardInteractions?: KeyboardInteractionRow[]
@@ -288,6 +289,175 @@ const glassApiComponentNameSet = new Set<string>([
   ...glassComponentNames,
   'Select'
 ])
+
+export const figmaLibraryUrl = 'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
+
+const figmaNodeIdByComponent: Record<string, string> = {
+  Accordion: '67:11',
+  Affix: '288:27',
+  Agenda: '53:76',
+  Alert: '14:44',
+  AlertDialog: '45:23',
+  AnimatedLogo: '286:33',
+  AspectRatio: '41:51',
+  Attachment: '41:68',
+  Autocomplete: '48:45',
+  Avatar: '14:30',
+  BackToTop: '274:15',
+  Badge: '14:14',
+  Breadcrumb: '67:67',
+  Bubble: '41:29',
+  Button: '6:69',
+  ButtonGroup: '67:43',
+  ButtonLink: '280:39',
+  Calendar: '48:261',
+  Callout: '281:4',
+  Card: '14:27',
+  Carousel: '53:56',
+  Chart: '53:53',
+  Checkbox: '15:6',
+  Code: '53:28',
+  Collapsible: '67:36',
+  ColorPicker: '42:15',
+  Combobox: '48:42',
+  Command: '48:51',
+  ContextMenu: '45:92',
+  DataTable: '44:68',
+  DatePicker: '48:264',
+  DateRangePicker: '48:270',
+  Dialog: '45:12',
+  Direction: '51:127',
+  Drawer: '45:34',
+  DropdownMenu: '45:82',
+  Empty: '41:40',
+  Eyebrow: '253:6',
+  Field: '14:22',
+  FileUpload: '290:22',
+  FloatingBadge: '272:39',
+  FormattedDate: '259:6',
+  GradientDivider: '250:7',
+  HoverCard: '45:67',
+  Icon: '216:6',
+  Image: '261:7',
+  Input: '14:21',
+  InputGroup: '42:6',
+  InputOTP: '40:76',
+  Item: '44:12',
+  Kbd: '69:23',
+  Label: '69:18',
+  LanguageToggle: '279:23',
+  Link: '256:15',
+  Marker: '41:20',
+  Menubar: '45:100',
+  Message: '51:53',
+  MessageScroller: '51:56',
+  Meter: '267:28',
+  NativeSelect: '40:36',
+  NavigationMenu: '45:109',
+  Note: '282:23',
+  NumberField: '42:11',
+  Pagination: '67:75',
+  Particles: '284:74',
+  PhoneInput: '289:22',
+  Pill: '271:36',
+  Popover: '45:61',
+  Progress: '264:18',
+  RadioGroup: '48:284',
+  Rating: '269:72',
+  Resizable: '51:118',
+  RichTextEditor: '53:114',
+  Schedule: '53:91',
+  ScrollArea: '44:17',
+  ScrollReveal: '285:44',
+  SearchField: '40:18',
+  Segmented: '291:28',
+  Select: '48:24',
+  Separator: '69:15',
+  Sheet: '45:45',
+  Sidebar: '51:99',
+  Skeleton: '69:36',
+  SkipLink: '276:13',
+  Slider: '42:17',
+  Sonner: '51:33',
+  Spinner: '69:64',
+  Switch: '15:11',
+  Table: '44:39',
+  Tabs: '15:12',
+  TagGroup: '48:298',
+  Textarea: '40:16',
+  ThemeBuilder: '53:126',
+  ThemeToggle: '278:33',
+  TimeField: '42:13',
+  Toast: '51:30',
+  Toggle: '40:11',
+  ToggleGroup: '67:52',
+  Tooltip: '45:73',
+  Tree: '51:130',
+  TreeGrid: '51:143',
+  Typography: '53:10',
+  VirtualList: '44:24',
+  Watermark: '287:19'
+}
+
+export const getFigmaComponentUrl = (nodeId?: string) => (
+  nodeId
+    ? `${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}`
+    : figmaLibraryUrl
+)
+
+export interface ComponentCollection {
+  description: string
+  names: readonly string[]
+  title: string
+}
+
+export const componentCollections: ComponentCollection[] = [
+  {
+    title: 'Buttons and actions',
+    description: 'Choose navigation, action, grouped, or compact floating controls.',
+    names: ['Button', 'ButtonLink', 'ButtonGroup', 'Toggle', 'ToggleGroup', 'Toolbar', 'SpeedDial']
+  },
+  {
+    title: 'Text entry',
+    description: 'Start with Input, then choose a purpose-built field only when the data needs it.',
+    names: ['Input', 'Textarea', 'SearchField', 'NumberField', 'PhoneInput', 'InputOTP', 'Mentions']
+  },
+  {
+    title: 'Selection controls',
+    description: 'Compare native, custom, binary, grouped, and hierarchical selection patterns.',
+    names: ['NativeSelect', 'Select', 'Combobox', 'Autocomplete', 'Cascader', 'TreeSelect', 'Checkbox', 'RadioGroup', 'Switch', 'Segmented']
+  },
+  {
+    title: 'Dates and time',
+    description: 'Pick a calendar surface or a focused single-value, range, or time input.',
+    names: ['Calendar', 'DatePicker', 'DateRangePicker', 'TimeField']
+  },
+  {
+    title: 'Dialogs and contextual layers',
+    description: 'Match the layer to the task: blocking, edge-mounted, anchored, or explanatory.',
+    names: ['Dialog', 'AlertDialog', 'Sheet', 'Drawer', 'Popover', 'HoverCard', 'Tooltip', 'Popconfirm', 'Tour']
+  },
+  {
+    title: 'Menus and commands',
+    description: 'Use application menus, contextual actions, navigation, or searchable commands.',
+    names: ['DropdownMenu', 'ContextMenu', 'Menubar', 'NavigationMenu', 'Command']
+  },
+  {
+    title: 'Status and messaging',
+    description: 'Separate persistent guidance, inline status, empty states, and transient notifications.',
+    names: ['Alert', 'Callout', 'Note', 'Empty', 'Message', 'Toast', 'Sonner']
+  },
+  {
+    title: 'Structured data',
+    description: 'Choose the lightest structure that supports the required hierarchy and interaction.',
+    names: ['Descriptions', 'Table', 'DataTable', 'Tree', 'TreeGrid', 'VirtualList']
+  },
+  {
+    title: 'Disclosure and navigation',
+    description: 'Organize related content with progressive disclosure or local navigation.',
+    names: ['Accordion', 'Collapsible', 'Tabs', 'Breadcrumb', 'Pagination', 'Stepper', 'Anchor']
+  }
+]
 
 export const frameworkSetups: FrameworkSetup[] = [
   {
@@ -1218,6 +1388,7 @@ export const componentDocs: ComponentDoc[] = ([
     ...(apiReferenceByComponent[name] ?? []),
     ...commonApiRows
   ],
+  ...(figmaNodeIdByComponent[name] ? { figmaNodeId: figmaNodeIdByComponent[name] } : {}),
   glass: glassComponentNameSet.has(name),
   ...(componentGuidanceByName[name] ? { guidance: componentGuidanceByName[name] } : {}),
   ...(keyboardInteractionsByComponent[name] ? { keyboardInteractions: [...keyboardInteractionsByComponent[name]] } : {}),
@@ -1228,7 +1399,7 @@ export const componentDocs: ComponentDoc[] = ([
   example
 }))
 
-export const componentNavigationDocs = componentDocs.filter(component => component.name !== 'Sonner')
+export const componentNavigationDocs = componentDocs
 
 export const componentCategories = [...new Set(componentNavigationDocs.map(component => component.category))].sort()
 

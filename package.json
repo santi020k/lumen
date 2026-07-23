@@ -40,6 +40,9 @@
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots"
   },
+  "dependencies": {
+    "uqr": "catalog:"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
     "@changesets/cli": "catalog:",
@@ -83,8 +86,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "dependencies": {
-    "uqr": "^0.1.3"
   }
 }

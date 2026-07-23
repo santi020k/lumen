@@ -672,6 +672,22 @@
             nextItem.tabIndex = 0
 
             nextItem.focus()
+
+            if (nextItem instanceof HTMLInputElement && nextItem.type === 'radio') {
+              nextItem.checked = true
+
+              nextItem.dispatchEvent(new Event('input', { bubbles: true }))
+
+              nextItem.dispatchEvent(new Event('change', { bubbles: true }))
+            } else if (nextItem.getAttribute('role') === 'radio') {
+              for (const radio of items) {
+                if (radio.getAttribute('role') === 'radio') {
+                  radio.setAttribute('aria-checked', String(radio === nextItem))
+                }
+              }
+
+              nextItem.dispatchEvent(new Event('change', { bubbles: true }))
+            }
           }
         })
       }
@@ -3709,7 +3725,7 @@
         let visibleCount = 0
 
         for (const option of options) {
-          const visible = (option.dataset.value ?? '').toLowerCase().includes(query)
+          const visible = (option.dataset.value ?? '').toLowerCase().startsWith(query)
 
           option.hidden = !visible
 

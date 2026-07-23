@@ -2,7 +2,11 @@
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import { Badge, Card, Icon, Input } from '@santi020k/lumen-astro'
 
-import { componentCategories, componentNavigationDocs } from '../../../data/docs'
+import {
+  componentCategories,
+  componentCollections,
+  componentNavigationDocs
+} from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { toSlug } from '../../../lib/routes'
 
@@ -58,6 +62,32 @@ const glassCount = componentNavigationDocs.filter(component => component.glass).
         </div>
       </dl>
     </header>
+
+    <section class="components-patterns" aria-labelledby="component-patterns-title">
+      <div class="components-patterns__heading">
+        <div>
+          <p>Compare before choosing</p>
+          <h2 id="component-patterns-title">Browse by pattern</h2>
+        </div>
+        <p>
+          Similar primitives are grouped by the job they solve, so the differences are easier to
+          understand before you open an API reference.
+        </p>
+      </div>
+      <div class="components-patterns__grid">
+        {componentCollections.map(collection => (
+          <Card class="components-pattern-card">
+            <h3>{collection.title}</h3>
+            <p>{collection.description}</p>
+            <div aria-label={`${collection.title} components`}>
+              {collection.names.map(name => (
+                <a href={`/docs/components/${toSlug(name)}`}>{name}</a>
+              ))}
+            </div>
+          </Card>
+        ))}
+      </div>
+    </section>
 
     <div class="components-explorer">
       <div class="components-filter">
@@ -270,6 +300,93 @@ const glassCount = componentNavigationDocs.filter(component => component.glass).
   .components-explorer {
     display: grid;
     gap: 1.5rem;
+  }
+
+  .components-patterns {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .components-patterns__heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .components-patterns__heading > div > p {
+    margin-bottom: 0.25rem;
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .components-patterns__heading h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.65rem, 3vw, 2.25rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  .components-patterns__heading > p {
+    max-width: 38rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .components-patterns__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .components-pattern-card {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    min-height: 12rem;
+    padding: 1.15rem;
+  }
+
+  .components-pattern-card h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+  }
+
+  .components-pattern-card > p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  .components-pattern-card > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.35rem;
+  }
+
+  .components-pattern-card a {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 999px;
+    background: hsl(var(--surface-muted) / 0.72);
+    color: hsl(var(--ink-soft));
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+
+  .components-pattern-card a:hover {
+    border-color: hsl(var(--brand) / 0.55);
+    color: hsl(var(--brand));
   }
 
   .components-filter {
@@ -486,6 +603,7 @@ const glassCount = componentNavigationDocs.filter(component => component.glass).
   }
 
   @media (min-width: 48rem) {
+    .components-patterns__heading,
     .components-section__heading {
       grid-template-columns: minmax(12rem, 0.8fr) minmax(18rem, 1fr);
       align-items: end;

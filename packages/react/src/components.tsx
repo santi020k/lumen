@@ -926,10 +926,11 @@ export const DatePicker = ({
   value,
   ...props
 }: DatePickerProps) => {
-  const datePickerId = id ?? useId()
+  const generatedId = useId()
+  const datePickerId = id ?? generatedId
   const triggerId = `${datePickerId}-trigger`
   const popoverId = `${datePickerId}-popover`
-  const selectedValue = value === undefined || value === null ? undefined : String(value)
+  const selectedValue = value === undefined ? undefined : String(value)
   const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
   const placeholderText = placeholder ?? 'mm/dd/yyyy'
   const maxStr = typeof max === 'string' ? max : typeof max === 'number' ? max.toString() : undefined
@@ -2473,8 +2474,12 @@ export const Transfer = ({ className, items = emptyTransferItems, name, sourceTi
       <ul className="ui-transfer__list" data-side="source" data-ui-transfer-list>{renderTransferItems(items)}</ul>
     </div>
     <div className="ui-transfer__controls">
-      <button aria-label={`Move to ${targetTitle}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
-      <button aria-label={`Move to ${sourceTitle}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
+      <button aria-label={`Move to ${targetTitle}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">
+        <Icon name="chevron-right" />
+      </button>
+      <button aria-label={`Move to ${sourceTitle}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">
+        <Icon name="chevron-left" />
+      </button>
     </div>
     <div className="ui-transfer__panel">
       <p className="ui-transfer__title">{targetTitle}</p>

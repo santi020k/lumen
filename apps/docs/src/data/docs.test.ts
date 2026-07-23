@@ -17,9 +17,12 @@ import { describe, expect, test } from 'vitest'
 import { buildSnippets } from '../lib/snippets'
 
 import {
+  componentCollections,
   componentDocs,
+  figmaLibraryUrl,
   frameworkGuides,
   frameworkSetups,
+  getFigmaComponentUrl,
   glassComponentNames,
   glassSurfaceExamples,
   globalStyleSetups,
@@ -85,6 +88,38 @@ describe('component docs snippets', () => {
 
       expect(component?.guidance?.when, `${name} needs "use it when" guidance`).toBeTruthy()
       expect(component?.guidance?.distinction, `${name} needs comparison guidance`).toBeTruthy()
+    }
+  })
+
+  test('group similar components into valid comparison collections', () => {
+    const documentedNames = new Set(componentDocs.map(component => component.name))
+
+    for (const collection of componentCollections) {
+      expect(collection.names.length, `${collection.title} should compare multiple components`)
+        .toBeGreaterThan(1)
+
+      for (const name of collection.names) {
+        expect(documentedNames.has(name), `${collection.title} references unknown component ${name}`)
+          .toBe(true)
+      }
+    }
+  })
+
+  test('link documented Figma components to their exact design nodes', () => {
+    const linkedComponents = componentDocs.filter(component => component.figmaNodeId)
+
+    expect(linkedComponents.length).toBeGreaterThan(90)
+    expect(getFigmaComponentUrl()).toBe(figmaLibraryUrl)
+
+    for (const component of linkedComponents) {
+      const nodeId = component.figmaNodeId
+
+      expect(nodeId).toBeDefined()
+
+      if (!nodeId) throw new Error(`${component.name} is missing its Figma node ID`)
+
+      expect(getFigmaComponentUrl(component.figmaNodeId))
+        .toBe(`${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}`)
     }
   })
 

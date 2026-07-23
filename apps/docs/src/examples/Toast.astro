@@ -46,6 +46,7 @@ import {
   class LumenToastDemo extends HTMLElement {
     connectedCallback() {
       if (this.dataset.ready) return
+
       this.dataset.ready = 'true'
 
       const lumenWindow = window as Window & {
@@ -63,61 +64,91 @@ import {
       this.addEventListener('click', (e) => {
         const target = e.target as HTMLElement
         const btn = target.closest('[data-ex-toast]')
+
         if (!btn) return
 
         const type = btn.getAttribute('data-ex-toast')
         
-        if (type === 'default') {
-          createToast({
-            description: 'Your draft is ready to keep editing.',
-            title: 'Draft saved'
-          })
-        } else if (type === 'success') {
-          createToast({
-            description: 'The latest version is now live.',
-            title: 'Published',
-            variant: 'success'
-          })
-        } else if (type === 'warning') {
-          createToast({
-            description: 'We will keep retrying in the background.',
-            title: 'Connection interrupted',
-            variant: 'warning'
-          })
-        } else if (type === 'error') {
-          createToast({
-            description: 'Check the required fields and try again.',
-            title: 'Could not save changes',
-            variant: 'destructive'
-          })
-        } else if (type === 'action') {
-          lumenWindow.LumenToast?.create({
-            action: { label: 'Undo', value: 'deploy' },
-            description: 'lumen-docs was moved to production.',
-            duration: 8000,
+        switch (type) {
+      case 'default': {
+        createToast({
+          description: 'Your draft is ready to keep editing.',
+          title: 'Draft saved'
+        })
+
+      break;
+      }
+
+      case 'success': {
+        createToast({
+          description: 'The latest version is now live.',
+          title: 'Published',
+          variant: 'success'
+        })
+
+      break;
+      }
+
+      case 'warning': {
+        createToast({
+          description: 'We will keep retrying in the background.',
+          title: 'Connection interrupted',
+          variant: 'warning'
+        })
+
+      break;
+      }
+
+      case 'error': {
+        createToast({
+          description: 'Check the required fields and try again.',
+          title: 'Could not save changes',
+          variant: 'destructive'
+        })
+
+      break;
+      }
+
+      case 'action': {
+        lumenWindow.LumenToast?.create({
+          action: { label: 'Undo', value: 'deploy' },
+          description: 'lumen-docs was moved to production.',
+          duration: 8000,
+          title: 'Deployment complete',
+          variant: 'success'
+        })
+
+      break;
+      }
+
+      case 'progress': {
+        const toastId = lumenWindow.LumenToast?.create({
+          description: 'Preparing the production bundle.',
+          duration: 10000,
+          title: 'Deploying…'
+        })
+
+        if (!toastId) return
+
+        window.setTimeout(() => {
+          lumenWindow.LumenToast?.update(toastId, {
+            description: 'The production bundle is live.',
+            duration: 4000,
             title: 'Deployment complete',
             variant: 'success'
           })
-        } else if (type === 'progress') {
-          const toastId = lumenWindow.LumenToast?.create({
-            description: 'Preparing the production bundle.',
-            duration: 10000,
-            title: 'Deploying…'
-          })
+        }, 1600)
 
-          if (!toastId) return
+      break;
+      }
 
-          window.setTimeout(() => {
-            lumenWindow.LumenToast?.update(toastId, {
-              description: 'The production bundle is live.',
-              duration: 4000,
-              title: 'Deployment complete',
-              variant: 'success'
-            })
-          }, 1600)
-        } else if (type === 'dismiss') {
-          lumenWindow.LumenToast?.dismiss()
-        }
+      case 'dismiss': {
+        lumenWindow.LumenToast?.dismiss()
+
+      break;
+      }
+      // No default
+      }
       })
     }
   }

@@ -1,5 +1,6 @@
 ---
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import Icon from './Icon.astro'
 
 import type { HTMLAttributes } from 'astro/types'
 
@@ -46,8 +47,12 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     </ul>
   </div>
   <div class="ui-transfer__controls">
-    <button aria-label={`Move to ${targetTitle}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
-    <button aria-label={`Move to ${sourceTitle}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
+    <button aria-label={`Move to ${targetTitle}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">
+      <Icon name="chevron-right" />
+    </button>
+    <button aria-label={`Move to ${sourceTitle}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">
+      <Icon name="chevron-left" />
+    </button>
   </div>
   <div class="ui-transfer__panel">
     <p class="ui-transfer__title">{targetTitle}</p>
