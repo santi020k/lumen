@@ -2,4 +2,8 @@
 import { Pill } from '@santi020k/lumen-astro'
 ---
 
-<Pill>Pill</Pill>
+<div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+  <Pill>Pill</Pill>
+  <Pill count={12}>Notifications</Pill>
+  <Pill count="99+">Messages</Pill>
+</div>

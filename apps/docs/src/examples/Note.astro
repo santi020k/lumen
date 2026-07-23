@@ -1,4 +1,10 @@
 ---
 import { Note } from '@santi020k/lumen-astro'
 ---
-<Note label="Information">This is an important note.</Note>
+
+<div style="display: grid; gap: 0.75rem; max-width: 28rem;">
+  <Note label="Information">This is an important note.</Note>
+  <Note borderPosition="left" label="Left accent">Brand accent on the leading edge.</Note>
+  <Note borderPosition="right" label="Right accent">Accent color on the trailing edge.</Note>
+  <Note borderPosition="none" label="No border">A flat note with no accent border.</Note>
+</div>

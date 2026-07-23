@@ -1,7 +1,18 @@
 ---
-import { ButtonLink } from '@santi020k/lumen-astro'
+import { ButtonLink, Icon } from '@santi020k/lumen-astro'
 ---
 
-<ButtonLink href="https://example.com" showArrow newTab>
-  Visit Example
-</ButtonLink>
+<div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+  <ButtonLink href="https://example.com" showArrow newTab>
+    Visit Example
+  </ButtonLink>
+  <ButtonLink href="https://example.com" variant="secondary" showArrow newTab>
+    Secondary
+  </ButtonLink>
+  <ButtonLink ariaLabel="GitHub" href="https://example.com" shape="icon" variant="ghost" newTab>
+    <Icon name="github" decorative />
+  </ButtonLink>
+  <ButtonLink ariaLabel="Website" href="https://example.com" shape="icon" variant="secondary" newTab>
+    <Icon name="globe" decorative />
+  </ButtonLink>
+</div>

@@ -1,0 +1,43 @@
+---
+import { PhoneInput } from '@santi020k/lumen-astro'
+
+const countries = [
+  { label: '🇺🇸 +1', value: '+1' },
+  { label: '🇬🇧 +44', value: '+44' },
+  { label: '🇪🇸 +34', value: '+34' },
+  { label: '🇨🇴 +57', value: '+57' },
+  { label: '🇯🇵 +81', value: '+81' }
+]
+---
+
+<div style="display: grid; gap: 0.75rem; max-width: 22rem;">
+  <label for="ex-phone">Phone number</label>
+  <PhoneInput
+    countries={countries}
+    countryValue="+1"
+    id="ex-phone"
+    name="phone"
+    placeholder="(555) 000-0000"
+  />
+
+  <label for="ex-phone-sm">Small</label>
+  <PhoneInput
+    countries={countries}
+    countryValue="+44"
+    id="ex-phone-sm"
+    name="phone-sm"
+    placeholder="Mobile number"
+    size="sm"
+  />
+
+  <label for="ex-phone-lg">Large</label>
+  <PhoneInput
+    countries={countries}
+    countryValue="+34"
+    id="ex-phone-lg"
+    name="phone-lg"
+    placeholder="Work number"
+    size="lg"
+    value="612 345 678"
+  />
+</div>
