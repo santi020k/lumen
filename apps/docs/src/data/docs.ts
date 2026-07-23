@@ -852,7 +852,18 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('role="row", role="gridcell"', 'ARIA roles', '-', 'Use on children to build out the hierarchical grid rows and cells.')
   ],
   VirtualList: [
-    apiRow('style', 'CSS declaration', '-', 'Set --ui-list-height in the style attribute to define the scrolling viewport height.')
+    apiRow('itemSize', 'number | string', '-', 'Fixed size for items if all are uniform height/width. Used for virtual scroll calculation.'),
+    apiRow('overscan', 'number | string', '-', 'Number of items to render outside the viewport.')
+  ],
+  Particles: [
+    apiRow('density', '"low" | "medium" | "high"', '"medium"', 'Controls the density of the particles.')
+  ],
+  ScrollReveal: [
+    apiRow('animation', '"fade" | "slide-up" | "scale"', '"fade"', 'The animation style for revealing the element.')
+  ],
+  Stat: [
+    apiRow('label', 'string', '-', 'The label describing the statistic.'),
+    apiRow('value', 'string', '-', 'The numeric or text value of the statistic.')
   ]
 }
 

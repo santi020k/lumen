@@ -1926,17 +1926,28 @@ export const LanguageToggle = ({ className, type = 'button', ...props }: Languag
   <button className={composeClassName('ui-language-toggle', className)} type={type} {...props} />
 )
 
-export type ParticlesProps = ComponentPropsWithoutRef<'div'>
-export const Particles = ({ className, ...props }: ParticlesProps) => (
-  <div className={composeClassName('ui-particles', className)} {...props} />
+export interface ParticlesProps extends ComponentPropsWithoutRef<'div'> {
+  density?: 'low' | 'medium' | 'high'
+}
+export const Particles = ({ className, density = 'medium', ...props }: ParticlesProps) => (
+  <div aria-hidden="true" className={composeClassName('ui-particles', className)} data-ui-particles={density} {...props} />
 )
 
-export type ScrollRevealProps = ComponentPropsWithoutRef<'div'>
-export const ScrollReveal = ({ className, ...props }: ScrollRevealProps) => (
-  <div className={composeClassName('ui-scroll-reveal', className)} {...props} />
+export interface ScrollRevealProps extends ComponentPropsWithoutRef<'div'> {
+  animation?: 'fade' | 'slide-up' | 'scale'
+}
+export const ScrollReveal = ({ className, animation = 'fade', ...props }: ScrollRevealProps) => (
+  <div className={composeClassName('ui-scroll-reveal', `ui-scroll-reveal-${animation}`, className)} data-ui-scroll-reveal {...props} />
 )
 
-export type StatProps = ComponentPropsWithoutRef<'div'>
-export const Stat = ({ className, ...props }: StatProps) => (
-  <div className={composeClassName('ui-stat', className)} {...props} />
+export interface StatProps extends ComponentPropsWithoutRef<'div'> {
+  label?: string
+  value?: string
+}
+export const Stat = ({ className, label, value, children, ...props }: StatProps) => (
+  <div className={composeClassName('ui-stat', className)} {...props}>
+    {label && <div className="ui-stat-label">{label}</div>}
+    {value && <div className="ui-stat-value">{value}</div>}
+    {children}
+  </div>
 )
