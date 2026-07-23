@@ -1,26 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-export interface LumenApiReferenceRow {
-  attribute: string
-  defaultValue: string
-  description: string
-  values: string
-}
-
-export interface LumenComponentProp {
-  name: string
-  optional: boolean
-  type: string
-}
-
-export interface LumenComponentRecipe {
-  name: string
-  type: string
-}
-
 export interface LumenComponentSnapshot {
-  apiReference: LumenApiReferenceRow[]
+  apiReference: {
+    attribute: string
+    defaultValue: string
+    description: string
+    values: string
+  }[]
   astroSource: string
   category: string
   collections: string[]
@@ -38,13 +25,28 @@ export interface LumenComponentSnapshot {
     when: string
   }
   kebab: string
-  keyboardInteractions: LumenKeyboardInteraction[]
+  keyboardInteractions: {
+    action: string
+    key: string
+  }[]
   keywords: string[]
   name: string
-  props: LumenComponentProp[]
+  props: {
+    name: string
+    optional: boolean
+    type: string
+  }[]
   propsExtends: null | string
-  recipes: LumenComponentRecipe[]
-  runtimeEvents: LumenRuntimeEvent[]
+  recipes: {
+    name: string
+    type: string
+  }[]
+  runtimeEvents: {
+    detail: string
+    name: string
+    target: string
+    when: string
+  }[]
 }
 
 export interface LumenData {
@@ -62,7 +64,12 @@ export interface LumenData {
   }
   recipes: LumenRecipeSnapshot[]
   rules: string
-  tokens: LumenTokens
+  tokens: {
+    colors: Record<string, string>
+    glass: Record<string, string>
+    semantic: string[]
+    themeAttribute: string
+  }
 }
 
 export type LumenFramework = 'astro' | 'elements' | 'react'
@@ -74,17 +81,16 @@ export interface LumenFrameworkSnapshot {
   importStatement: string
   language: 'astro' | 'html' | 'tsx'
   packageName: string
-  props: LumenComponentProp[]
+  props: {
+    name: string
+    optional: boolean
+    type: string
+  }[]
   propsExtends: null | string
   registration?: string
   source: string
   styleImport: string
   tagName?: string
-}
-
-export interface LumenKeyboardInteraction {
-  action: string
-  key: string
 }
 
 export interface LumenRecipeSnapshot {
@@ -95,20 +101,6 @@ export interface LumenRecipeSnapshot {
   install: Record<LumenFramework, string>
   name: string
   type: string
-}
-
-export interface LumenRuntimeEvent {
-  detail: string
-  name: string
-  target: string
-  when: string
-}
-
-export interface LumenTokens {
-  colors: Record<string, string>
-  glass: Record<string, string>
-  semantic: string[]
-  themeAttribute: string
 }
 
 const dataUrl = new URL('../data/lumen-data.json', import.meta.url)
