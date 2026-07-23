@@ -1,12 +1,14 @@
 import type {
   LumenColorTokenName,
   LumenGlassEffectTokenName,
+  LumenStructureTokenName,
   LumenThemeTokenName,
   LumenThemeTokens
 } from './theme.js'
 import {
   lumenColorTokenNames,
-  lumenGlassEffectTokenNames
+  lumenGlassEffectTokenNames,
+  lumenStructureTokenNames
 } from './theme.js'
 
 export interface LumenFigmaColorValue {
@@ -40,7 +42,14 @@ export interface LumenFigmaVariableExportOptions {
   variablePrefix?: string
 }
 
-export type LumenDesignTokenType = 'color' | 'dimension' | 'number' | 'shadow'
+export type LumenDesignTokenType =
+  | 'color'
+  | 'cubicBezier'
+  | 'dimension'
+  | 'duration'
+  | 'fontFamily'
+  | 'number'
+  | 'shadow'
 
 export interface LumenDesignToken {
   $description: string
@@ -54,9 +63,16 @@ export interface LumenEffectDesignToken {
   $value: number | string
 }
 
+export interface LumenStructureDesignToken {
+  $description: string
+  $type: Exclude<LumenDesignTokenType, 'color'>
+  $value: string
+}
+
 export interface LumenDesignTokenExport {
   color: Partial<Record<LumenColorTokenName, LumenDesignToken>>
   effect?: Partial<Record<LumenGlassEffectTokenName, LumenEffectDesignToken>>
+  structure?: Partial<Record<LumenStructureTokenName, LumenStructureDesignToken>>
 }
 
 const lumenTokenDescriptions = {
@@ -87,6 +103,18 @@ const lumenTokenDescriptions = {
   surface: 'Default component surface.',
   'surface-muted': 'Subtle component surface.',
   'surface-strong': 'Raised or stronger component surface.',
+  'ui-duration': 'Base transition duration for interactive states.',
+  'ui-duration-fast': 'Fast transition duration for small state changes.',
+  'ui-duration-slow': 'Slow transition duration for larger movements.',
+  'ui-ease': 'Standard easing curve for interface motion.',
+  'ui-ease-emphasized': 'Emphasized easing curve for entrances and overlays.',
+  'ui-font': 'Default interface font family stack.',
+  'ui-radius': 'Base corner radius for controls and surfaces.',
+  'ui-radius-lg': 'Large corner radius for cards and floating surfaces.',
+  'ui-radius-sm': 'Small corner radius for compact controls.',
+  'ui-shadow-lg': 'High-elevation shadow for overlays and popovers.',
+  'ui-shadow-md': 'Medium-elevation shadow for raised surfaces.',
+  'ui-shadow-sm': 'Low-elevation shadow for resting surfaces.',
   warning: 'Cautionary status color.'
 } as const satisfies Record<LumenThemeTokenName, string>
 
@@ -227,6 +255,20 @@ const getEffectDesignTokenValue = (
   return value
 }
 
+const getStructureDesignTokenType = (
+  token: LumenStructureTokenName
+): Exclude<LumenDesignTokenType, 'color'> => {
+  if (token === 'ui-font') return 'fontFamily'
+
+  if (token.startsWith('ui-radius')) return 'dimension'
+
+  if (token.startsWith('ui-shadow')) return 'shadow'
+
+  if (token.startsWith('ui-duration')) return 'duration'
+
+  return 'cubicBezier'
+}
+
 export const exportThemeDesignTokens = (
   tokens: LumenThemeTokens
 ): LumenDesignTokenExport => ({
@@ -257,5 +299,17 @@ export const exportThemeDesignTokens = (
           }
         ]
       })
+  ),
+  structure: Object.fromEntries(
+    lumenStructureTokenNames
+      .filter(token => tokens[token])
+      .map(token => [
+        token,
+        {
+          $description: lumenTokenDescriptions[token],
+          $type: getStructureDesignTokenType(token),
+          $value: tokens[token] ?? ''
+        }
+      ])
   )
 })

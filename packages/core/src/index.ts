@@ -50,7 +50,8 @@ export {
   type LumenFigmaVariable,
   type LumenFigmaVariableCollection,
   type LumenFigmaVariableExportOptions,
-  type LumenFigmaVariableMode
+  type LumenFigmaVariableMode,
+  type LumenStructureDesignToken
 } from './figma.js'
 export {
   getLumenIcon,
@@ -107,13 +108,23 @@ export {
   lumenGlassEffectTokenNames,
   type LumenGlassTokenName,
   lumenGlassTokenNames,
+  type LumenMotionTokenName,
+  lumenMotionTokenNames,
+  type LumenRadiusTokenName,
+  lumenRadiusTokenNames,
   type LumenSemanticColorTokenName,
   lumenSemanticColorTokenNames,
+  type LumenShadowTokenName,
+  lumenShadowTokenNames,
+  type LumenStructureTokenName,
+  lumenStructureTokenNames,
   type LumenThemeContrastSuggestion,
   type LumenThemeFromHueOptions,
   type LumenThemeTokenName,
   type LumenThemeTokens,
   lumenTokenNames,
+  type LumenTypographyTokenName,
+  lumenTypographyTokenNames,
   mergeThemeTokens,
   parseThemeCss,
   scoreThemeContrast,
@@ -140,7 +151,11 @@ export {
   composeClassName,
   lumenColors,
   lumenDarkTheme,
+  lumenFont,
   lumenGlass,
   lumenLightTheme,
+  lumenMotion,
+  lumenRadius,
+  lumenShadow,
   lumenThemeAttribute
 } from './tokens.js'

@@ -65,6 +65,37 @@ export const lumenGlassTokenNames = [
   'glass-shadow'
 ] as const
 
+export const lumenRadiusTokenNames = [
+  'ui-radius-sm',
+  'ui-radius',
+  'ui-radius-lg'
+] as const
+
+export const lumenShadowTokenNames = [
+  'ui-shadow-sm',
+  'ui-shadow-md',
+  'ui-shadow-lg'
+] as const
+
+export const lumenTypographyTokenNames = [
+  'ui-font'
+] as const
+
+export const lumenMotionTokenNames = [
+  'ui-duration-fast',
+  'ui-duration',
+  'ui-duration-slow',
+  'ui-ease',
+  'ui-ease-emphasized'
+] as const
+
+export const lumenStructureTokenNames = [
+  ...lumenRadiusTokenNames,
+  ...lumenShadowTokenNames,
+  ...lumenTypographyTokenNames,
+  ...lumenMotionTokenNames
+] as const
+
 export const lumenColorTokenNames = [
   ...lumenSemanticColorTokenNames,
   ...lumenGlassColorTokenNames
@@ -72,7 +103,8 @@ export const lumenColorTokenNames = [
 
 export const lumenTokenNames = [
   ...lumenSemanticColorTokenNames,
-  ...lumenGlassTokenNames
+  ...lumenGlassTokenNames,
+  ...lumenStructureTokenNames
 ] as const
 
 export type LumenSemanticColorTokenName = typeof lumenSemanticColorTokenNames[number]
@@ -80,6 +112,11 @@ export type LumenGlassColorTokenName = typeof lumenGlassColorTokenNames[number]
 export type LumenGlassEffectTokenName = typeof lumenGlassEffectTokenNames[number]
 export type LumenGlassTokenName = typeof lumenGlassTokenNames[number]
 export type LumenColorTokenName = typeof lumenColorTokenNames[number]
+export type LumenRadiusTokenName = typeof lumenRadiusTokenNames[number]
+export type LumenShadowTokenName = typeof lumenShadowTokenNames[number]
+export type LumenTypographyTokenName = typeof lumenTypographyTokenNames[number]
+export type LumenMotionTokenName = typeof lumenMotionTokenNames[number]
+export type LumenStructureTokenName = typeof lumenStructureTokenNames[number]
 export type LumenThemeTokenName = typeof lumenTokenNames[number]
 
 export const exportThemeCss = (
@@ -160,6 +197,55 @@ const createGlassThemeTokens = (
   }
 }
 
+const lumenRadiusTokens: Pick<LumenThemeTokens, LumenRadiusTokenName> = {
+  'ui-radius': '0.625rem',
+  'ui-radius-lg': '0.75rem',
+  'ui-radius-sm': '0.375rem'
+}
+
+const lumenTypographyTokens: Pick<LumenThemeTokens, LumenTypographyTokenName> = {
+  'ui-font': 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+}
+
+const lumenMotionTokens: Pick<LumenThemeTokens, LumenMotionTokenName> = {
+  'ui-duration': '160ms',
+  'ui-duration-fast': '120ms',
+  'ui-duration-slow': '300ms',
+  'ui-ease': 'cubic-bezier(0.32, 0.72, 0, 1)',
+  'ui-ease-emphasized': 'cubic-bezier(0.22, 1, 0.36, 1)'
+}
+
+const createShadowTokens = (
+  hue: number,
+  scheme: 'dark' | 'light' = 'light'
+): Pick<LumenThemeTokens, LumenShadowTokenName> => {
+  if (scheme === 'dark') {
+    return {
+      'ui-shadow-lg': '0 28px 80px hsl(0 0% 0% / 0.36)',
+      'ui-shadow-md': '0 12px 32px hsl(0 0% 0% / 0.24)',
+      'ui-shadow-sm': '0 1px 2px hsl(0 0% 0% / 0.18)'
+    }
+  }
+
+  const h = normalizeHue(hue)
+
+  return {
+    'ui-shadow-lg': `0 24px 64px hsl(${h} 47% 11% / 0.14)`,
+    'ui-shadow-md': `0 8px 24px hsl(${h} 47% 11% / 0.08)`,
+    'ui-shadow-sm': `0 1px 2px hsl(${h} 47% 11% / 0.06)`
+  }
+}
+
+const createStructureTokens = (
+  hue: number,
+  scheme: 'dark' | 'light' = 'light'
+): Pick<LumenThemeTokens, LumenStructureTokenName> => ({
+  ...lumenRadiusTokens,
+  ...createShadowTokens(hue, scheme),
+  ...lumenTypographyTokens,
+  ...lumenMotionTokens
+})
+
 export const createThemePalette = (
   brand: string,
   accent = brand
@@ -179,7 +265,8 @@ export const createThemePalette = (
   'surface-muted': '220 14% 96%',
   'surface-strong': '220 13% 91%',
   warning: '38 92% 50%',
-  ...createGlassThemeTokens(getHueFromToken(brand))
+  ...createGlassThemeTokens(getHueFromToken(brand)),
+  ...createStructureTokens(getHueFromToken(brand))
 })
 
 export interface LumenThemeFromHueOptions {
@@ -217,7 +304,8 @@ export const createThemeFromHue = (
       'surface-muted': `${h} 16% 15%`,
       'surface-strong': `${h} 14% 22%`,
       warning: '38 92% 55%',
-      ...createGlassThemeTokens(h, 'dark')
+      ...createGlassThemeTokens(h, 'dark'),
+      ...createStructureTokens(h, 'dark')
     }
   }
 
@@ -237,7 +325,8 @@ export const createThemeFromHue = (
     'surface-muted': `${h} 16% 96%`,
     'surface-strong': `${h} 14% 91%`,
     warning: '38 92% 50%',
-    ...createGlassThemeTokens(h)
+    ...createGlassThemeTokens(h),
+    ...createStructureTokens(h)
   }
 }
 
