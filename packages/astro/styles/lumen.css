@@ -297,6 +297,18 @@
   border-color: hsl(var(--brand-solid));
 }
 
+.ui-button--primary {
+  background: hsl(var(--brand-solid));
+  border-color: hsl(var(--brand-solid));
+  color: white;
+  box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
+}
+
+.ui-button--primary:hover {
+  background: hsl(var(--brand-solid));
+  border-color: hsl(var(--brand-solid));
+}
+
 .ui-button--secondary {
   background: hsl(var(--surface-muted));
   border-color: hsl(var(--line));

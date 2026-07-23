@@ -1,114 +1,118 @@
 version: "0.2"
 language: en
 words:
-  - Avenir
-  - tsel
-  - ttoggle
-  - hcol
-  - lede
-  - swrow
-  - Chakra
-  - cascaders
   - aaronmgz
+  - affix
+  - Affix
+  - alertdialog
+  - anchor
+  - Anchor
+  - AnimatedLogo
+  - AnimatedPortrait
   - astrojs
+  - Avenir
+  - buttonlink
+  - ButtonLink
+  - cascader
+  - Cascader
+  - cascaders
+  - Chakra
   - commitizen
   - commitlint
   - contenteditable
+  - coverimage
+  - CoverImage
+  - Cowork
+  - datalist
   - datatable
+  - describedby
+  - descriptions
+  - Descriptions
+  - dismissable
   - dogfooded
   - dropzone
   - esbuild
+  - fileupload
+  - FileUpload
   - geolocation
   - glassmorphism
+  - gradientdivider
+  - GradientDivider
   - hashkey
+  - haspopup
+  - hcol
   - Hoverable
   - inputmode
   - jsdom
   - knip
   - labelledby
-  - describedby
-  - dismissable
-  - valuemax
-  - valuenow
-  - haspopup
+  - lede
   - linecap
   - llms
   - lucide
   - Lumen
   - maxlength
   - memudo
+  - mentions
+  - Mentions
+  - modelcontextprotocol
   - nosniff
+  - novalidate
   - nums
   - overscan
+  - popconfirm
+  - Popconfirm
   - postlens
+  - qrcode
+  - QRCode
   - readwrite
-  - santi020k
   - santi
+  - santi020k
   - scroller
+  - segmented
+  - Segmented
   - Segoe
   - selectionchange
   - shiki
   - Shiki
+  - shikijs
   - sonner
+  - speeddial
+  - SpeedDial
   - Stackframe
+  - stepper
+  - Stepper
+  - swrow
+  - textareas
+  - toolbar
+  - Toolbar
+  - Tour
+  - transfer
+  - Transfer
   - treegrid
+  - treeselect
+  - TreeSelect
+  - tsel
+  - ttoggle
   - turborepo
   - undici
   - unlayered
-  - unshown
   - unrs
+  - unshown
+  - valuemax
+  - valuenow
   - viewports
   - vite
   - vitejs
   - vitest
+  - watermark
+  - Watermark
   - WCAG
   - wordmark
   - workerd
   - workspaces
-  - novalidate
-  - shikijs
-  - textareas
-  - Cascader
-  - cascader
-  - Popconfirm
-  - popconfirm
-  - ButtonLink
-  - buttonlink
-  - CoverImage
-  - coverimage
-  - GradientDivider
-  - gradientdivider
-  - AnimatedLogo
-  - AnimatedPortrait
-  - SpeedDial
-  - speeddial
-  - Watermark
-  - watermark
-  - Segmented
-  - segmented
-  - Mentions
-  - mentions
-  - Affix
-  - affix
-  - Anchor
-  - anchor
-  - Toolbar
-  - toolbar
-  - Stepper
-  - stepper
-  - Transfer
-  - transfer
-  - TreeSelect
-  - treeselect
-  - Tour
-  - Descriptions
-  - descriptions
-  - FileUpload
-  - fileupload
-  - QRCode
-  - qrcode
 ignoreRegExpList:
-  - "luQW2pTQ3jGGxSFPAAsfa9"
+  - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
   - node_modules
   - dist
@@ -116,3 +120,4 @@ ignorePaths:
   - pnpm-lock.yaml
   - .astro
   - .turbo
+  - packages/mcp/data/**

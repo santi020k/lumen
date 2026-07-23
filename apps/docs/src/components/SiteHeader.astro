@@ -1,5 +1,5 @@
 ---
-import { Icon } from '@santi020k/lumen-astro'
+import { Icon, NativeSelect, NavigationMenu } from '@santi020k/lumen-astro'
 
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
@@ -42,7 +42,7 @@ const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
       <LumenLogo markClass="size-7" />
     </a>
 
-    <nav class="docs-nav-track" aria-label="Main menu" style={`--item-count:${navLinks.length};--active-index:${activeIndex};`}>
+    <NavigationMenu class="docs-nav-track" aria-label="Main menu" style={`--item-count:${navLinks.length};--active-index:${activeIndex};`}>
       <span class="docs-nav-indicator" aria-hidden="true"></span>
       {navLinks.map(link => (
         <a
@@ -56,7 +56,7 @@ const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
           {link.label}
         </a>
       ))}
-    </nav>
+    </NavigationMenu>
 
     <div class="docs-header-actions">
       <a
@@ -70,7 +70,7 @@ const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
 
       <div class="docs-theme-controls" aria-label="Theme controls">
         <label class="sr-only" for="site-color-theme">Theme</label>
-        <select
+        <NativeSelect
           id="site-color-theme"
           class="docs-theme-select"
           data-theme-select
@@ -78,7 +78,7 @@ const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
         >
           <option value="santi020k">Santi020k</option>
           <option value="lumen">Lumen</option>
-        </select>
+        </NativeSelect>
         <button
           class="docs-theme-toggle"
           type="button"
