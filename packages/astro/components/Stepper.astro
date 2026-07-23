@@ -3,18 +3,31 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
+type StepItem = string | { description?: string; title: string }
+
 interface Props extends HTMLAttributes<'ol'> {
   class?: string
   className?: string
+  currentStep?: number
   orientation?: 'horizontal' | 'vertical'
+  steps?: StepItem[]
 }
 
 const {
   class: classProp = '',
   className = '',
+  currentStep = 0,
   orientation = 'horizontal',
+  steps = [],
   ...rest
 } = Astro.props
+
+const normalized = steps.map(step =>
+  typeof step === 'string' ? { description: undefined, title: step } : step
+)
+
+const stepState = (index: number) =>
+  index < currentStep ? 'complete' : index === currentStep ? 'current' : 'upcoming'
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-stepper',
@@ -27,5 +40,18 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   data-orientation={orientation}
   {...passthrough}
 >
+  {normalized.map((step, index) => (
+    <li
+      aria-current={stepState(index) === 'current' ? 'step' : undefined}
+      class="ui-stepper__step"
+      data-state={stepState(index)}
+    >
+      <span class="ui-stepper__marker">{index + 1}</span>
+      <span class="ui-stepper__content">
+        <span class="ui-stepper__title">{step.title}</span>
+        {step.description && <span class="ui-stepper__description">{step.description}</span>}
+      </span>
+    </li>
+  ))}
   <slot />
 </ol>

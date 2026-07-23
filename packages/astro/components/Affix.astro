@@ -7,6 +7,8 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
   offset?: number
+  offsetBottom?: number
+  offsetTop?: number
   position?: 'top' | 'bottom'
 }
 
@@ -14,9 +16,14 @@ const {
   class: classProp = '',
   className = '',
   offset = 0,
-  position = 'top',
+  offsetBottom,
+  offsetTop,
+  position: positionProp,
   ...rest
 } = Astro.props
+
+const position = positionProp ?? (offsetBottom !== undefined ? 'bottom' : 'top')
+const resolvedOffset = offsetBottom ?? offsetTop ?? offset
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-affix',
@@ -27,7 +34,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 <div
   class:list={classList}
   data-position={position}
-  style={`--ui-affix-offset:${offset}px`}
+  style={`--ui-affix-offset:${resolvedOffset}px`}
   {...passthrough}
 >
   <slot />

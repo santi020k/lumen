@@ -1,5 +1,9 @@
 ---
-import { SpeedDial } from '@santi020k/lumen-astro'
+import { Button,SpeedDial } from '@santi020k/lumen-astro'
 ---
 
-<SpeedDial actions={[{ icon: 'plus', label: 'Add' }, { icon: 'edit', label: 'Edit' }, { icon: 'trash', label: 'Delete' }]} />
+<SpeedDial>
+  <Button variant="ghost">Add</Button>
+  <Button variant="ghost">Edit</Button>
+  <Button variant="ghost">Delete</Button>
+</SpeedDial>

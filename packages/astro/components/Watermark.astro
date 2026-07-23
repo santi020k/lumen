@@ -6,6 +6,7 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  content?: string
   gap?: number
   rotate?: number
   text?: string
@@ -14,11 +15,14 @@ interface Props extends HTMLAttributes<'div'> {
 const {
   class: classProp = '',
   className = '',
+  content,
   gap = 120,
   rotate = -22,
   text = 'Confidential',
   ...rest
 } = Astro.props
+
+const watermarkText = content ?? text
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-watermark'
@@ -32,5 +36,5 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   {...passthrough}
 >
   <slot />
-  <div aria-hidden="true" class="ui-watermark__overlay" data-text={text}></div>
+  <div aria-hidden="true" class="ui-watermark__overlay" data-text={watermarkText}></div>
 </div>

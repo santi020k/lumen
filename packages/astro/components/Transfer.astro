@@ -3,44 +3,42 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
-type TransferItem = { label: string; value: string }
+type TransferItem = { key: string; label: string }
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  items?: TransferItem[]
   name?: string
-  sourceLabel?: string
-  sourceItems?: TransferItem[]
-  targetLabel?: string
+  sourceTitle?: string
   targetItems?: TransferItem[]
+  targetTitle?: string
 }
 
 const {
   class: classProp = '',
   className = '',
+  items = [],
   name,
-  sourceLabel = 'Available',
-  sourceItems = [],
-  targetLabel = 'Selected',
+  sourceTitle = 'Available',
   targetItems = [],
+  targetTitle = 'Selected',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-transfer'
 ], classProp, className)
-
-const renderItems = (items: TransferItem[]) => items
 ---
 
 <div class:list={classList} data-ui-transfer data-ui-transfer-name={name} {...passthrough}>
   <div class="ui-transfer__panel">
-    <p class="ui-transfer__title">{sourceLabel}</p>
+    <p class="ui-transfer__title">{sourceTitle}</p>
     <ul class="ui-transfer__list" data-side="source" data-ui-transfer-list>
-      {renderItems(sourceItems).map(item => (
+      {items.map(item => (
         <li class="ui-transfer__item">
           <label class="ui-transfer__option">
-            <input class="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.value} />
+            <input class="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.key} />
             <span>{item.label}</span>
           </label>
         </li>
@@ -48,16 +46,16 @@ const renderItems = (items: TransferItem[]) => items
     </ul>
   </div>
   <div class="ui-transfer__controls">
-    <button aria-label={`Move to ${targetLabel}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
-    <button aria-label={`Move to ${sourceLabel}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
+    <button aria-label={`Move to ${targetTitle}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
+    <button aria-label={`Move to ${sourceTitle}`} class="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
   </div>
   <div class="ui-transfer__panel">
-    <p class="ui-transfer__title">{targetLabel}</p>
+    <p class="ui-transfer__title">{targetTitle}</p>
     <ul class="ui-transfer__list" data-side="target" data-ui-transfer-list>
-      {renderItems(targetItems).map(item => (
+      {targetItems.map(item => (
         <li class="ui-transfer__item">
           <label class="ui-transfer__option">
-            <input class="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.value} />
+            <input class="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.key} />
             <span>{item.label}</span>
           </label>
         </li>

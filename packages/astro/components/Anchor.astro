@@ -3,15 +3,19 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
-interface Props extends HTMLAttributes<'nav'> {
+type AnchorLink = { href: string; label: string }
+
+export interface Props extends HTMLAttributes<'nav'> {
   class?: string
   className?: string
+  items?: AnchorLink[]
 }
 
 const {
   'aria-label': ariaLabel = 'On this page',
   class: classProp = '',
   className = '',
+  items = [],
   ...rest
 } = Astro.props
 
@@ -26,5 +30,14 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   data-ui-anchor
   {...passthrough}
 >
+  {items.length > 0 && (
+    <ol>
+      {items.map((item, index) => (
+        <li>
+          <a data-active={index === 0 ? 'true' : 'false'} href={item.href}>{item.label}</a>
+        </li>
+      ))}
+    </ol>
+  )}
   <slot />
 </nav>

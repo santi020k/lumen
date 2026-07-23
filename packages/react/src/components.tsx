@@ -1285,10 +1285,17 @@ export interface PhoneInputProps extends Omit<ComponentPropsWithoutRef<'div'>, '
   size?: 'default' | 'lg' | 'sm'
 }
 
-const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => ({
-  selectClass: size === 'sm' ? 'ui-select--sm' : size === 'lg' ? 'ui-select--lg' : undefined,
-  inputClass: size === 'sm' ? 'ui-input--sm' : size === 'lg' ? 'ui-input--lg' : undefined
-})
+const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
+  if (size === 'sm') {
+    return { inputClass: 'ui-input--sm', selectClass: 'ui-select--sm' }
+  }
+
+  if (size === 'lg') {
+    return { inputClass: 'ui-input--lg', selectClass: 'ui-select--lg' }
+  }
+
+  return { inputClass: undefined, selectClass: undefined }
+}
 
 export const PhoneInput = ({
   className,
@@ -1303,6 +1310,7 @@ export const PhoneInput = ({
   ...props
 }: PhoneInputProps) => {
   const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+
   return (
     <div className={composeClassName('ui-phone-input ui-input-group', className)} {...props}>
       <select
@@ -1964,7 +1972,7 @@ export type PillProps = ComponentPropsWithoutRef<'span'> & {
 export const Pill = ({ className, count, children, ...props }: PillProps) => (
   <span className={composeClassName('ui-pill', className)} {...props}>
     {children}
-    {count !== null && count !== undefined && <span className="ui-pill__count">{count}</span>}
+    {count !== undefined && <span className="ui-pill__count">{count}</span>}
   </span>
 )
 
@@ -2178,15 +2186,43 @@ export const GradientDivider = ({ className, ...props }: GradientDividerProps) =
   </div>
 )
 
+export type StepItem = string | { description?: string; title: string }
 export interface StepperProps extends ComponentPropsWithoutRef<'ol'> {
+  currentStep?: number
   orientation?: Orientation
+  steps?: StepItem[]
 }
-export const Stepper = ({ className, orientation = 'horizontal', ...props }: StepperProps) => (
+
+const emptySteps: StepItem[] = []
+const normalizeStep = (step: StepItem) => typeof step === 'string' ? { description: undefined, title: step } : step
+
+export const Stepper = ({ children, className, currentStep = 0, orientation = 'horizontal', steps = emptySteps, ...props }: StepperProps) => (
   <ol
     className={composeClassName('ui-stepper', orientation === 'vertical' && 'ui-stepper--vertical', className)}
     data-orientation={orientation}
     {...props}
-  />
+  >
+    {steps.map(normalizeStep).map((step, index) => {
+      let state: 'complete' | 'current' | 'upcoming' = 'upcoming'
+
+      if (index < currentStep) {
+        state = 'complete'
+      } else if (index === currentStep) {
+        state = 'current'
+      }
+
+      return (
+        <li aria-current={state === 'current' ? 'step' : undefined} className="ui-stepper__step" data-state={state} key={step.title}>
+          <span className="ui-stepper__marker">{index + 1}</span>
+          <span className="ui-stepper__content">
+            <span className="ui-stepper__title">{step.title}</span>
+            {step.description && <span className="ui-stepper__description">{step.description}</span>}
+          </span>
+        </li>
+      )
+    })}
+    {children}
+  </ol>
 )
 
 export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> {
@@ -2208,29 +2244,74 @@ export const FileUpload = ({ children, className, hint, id, inputClassName, labe
   )
 }
 
-export type TourProps = ComponentPropsWithoutRef<'div'>
-export const Tour = ({ className, hidden = true, ...props }: TourProps) => (
+export interface TourStep {
+  content: ReactNode
+  target: string
+  title?: ReactNode
+}
+export interface TourProps extends ComponentPropsWithoutRef<'div'> {
+  closeLabel?: string
+  nextLabel?: string
+  steps?: TourStep[]
+}
+
+const emptyTourSteps: TourStep[] = []
+
+export const Tour = ({ children, className, closeLabel = 'Done', hidden = true, nextLabel = 'Next', steps = emptyTourSteps, ...props }: TourProps) => (
   <div className={composeClassName('ui-tour', className)} data-ui-tour hidden={hidden} {...props}>
     <div aria-hidden="true" className="ui-tour__backdrop" data-ui-tour-backdrop />
     <div className="ui-tour__popover" data-ui-tour-popover role="dialog">
-      {props.children}
+      {steps.map((step, index) => (
+        <div className="ui-tour__step" data-target={step.target} data-ui-tour-step hidden={index !== 0} key={step.target}>
+          {step.title && <p className="ui-tour__title">{step.title}</p>}
+          <p className="ui-tour__content">{step.content}</p>
+          <div className="ui-tour__actions">
+            <button className="ui-button ui-button--ghost ui-button--sm" data-ui-tour-close type="button">{closeLabel}</button>
+            {index < steps.length - 1 && (
+              <button className="ui-button ui-button--default ui-button--sm" data-ui-tour-next type="button">{nextLabel}</button>
+            )}
+          </div>
+        </div>
+      ))}
+      {children}
     </div>
   </div>
 )
 
-export type AnchorProps = ComponentPropsWithoutRef<'nav'>
-export const Anchor = ({ 'aria-label': ariaLabel = 'On this page', className, ...props }: AnchorProps) => (
-  <nav aria-label={ariaLabel} className={composeClassName('ui-anchor', className)} data-ui-anchor {...props} />
+export interface AnchorLink {
+  href: string
+  label: ReactNode
+}
+export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {
+  items?: AnchorLink[]
+}
+
+const emptyAnchorLinks: AnchorLink[] = []
+
+export const Anchor = ({ 'aria-label': ariaLabel = 'On this page', children, className, items = emptyAnchorLinks, ...props }: AnchorProps) => (
+  <nav aria-label={ariaLabel} className={composeClassName('ui-anchor', className)} data-ui-anchor {...props}>
+    {items.length > 0 && (
+      <ol>
+        {items.map((item, index) => (
+          <li key={item.href}>
+            <a data-active={index === 0 ? 'true' : 'false'} href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ol>
+    )}
+    {children}
+  </nav>
 )
 
 export interface SegmentedProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
-  name: string
+  defaultValue?: string
+  name?: string
   onValueChange?: (value: string) => void
   options?: SelectOption[]
   size?: 'default' | 'lg' | 'sm'
   value?: string
 }
-export const Segmented = ({ children, className, name, onValueChange, options = emptyOptions, size = 'default', value, ...props }: SegmentedProps) => (
+export const Segmented = ({ children, className, defaultValue, name = 'segmented', onValueChange, options = emptyOptions, size = 'default', value = defaultValue, ...props }: SegmentedProps) => (
   <div
     className={composeClassName('ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className)}
     role="group"
@@ -2239,7 +2320,7 @@ export const Segmented = ({ children, className, name, onValueChange, options = 
     {options.map(normalizeOption).map(option => (
       <label className="ui-segmented__option" key={option.value}>
         <input
-          checked={value === undefined ? undefined : value === option.value}
+          defaultChecked={value === option.value}
           className="ui-segmented__input"
           disabled={option.disabled}
           name={name}
@@ -2277,7 +2358,9 @@ export interface DescriptionsProps extends ComponentPropsWithoutRef<'dl'> {
   columns?: number
   items?: DescriptionsItem[]
 }
+
 const emptyDescriptionsItems: DescriptionsItem[] = []
+
 export const Descriptions = ({ children, className, columns = 1, items = emptyDescriptionsItems, style, ...props }: DescriptionsProps) => (
   <dl
     className={composeClassName('ui-descriptions', className)}
@@ -2296,19 +2379,18 @@ export const Descriptions = ({ children, className, columns = 1, items = emptyDe
   </dl>
 )
 
-export interface PopconfirmProps extends ComponentPropsWithoutRef<'div'> {
+export interface PopconfirmProps extends Omit<ComponentPropsWithoutRef<'div'>, 'title'> {
   cancelLabel?: string
   confirmLabel?: string
-  message?: ReactNode
-  triggerLabel?: ReactNode
+  title?: ReactNode
 }
-export const Popconfirm = ({ cancelLabel = 'Cancel', children, className, confirmLabel = 'Confirm', message = 'Are you sure?', triggerLabel = 'Delete', ...props }: PopconfirmProps) => (
+export const Popconfirm = ({ cancelLabel = 'Cancel', children, className, confirmLabel = 'Confirm', title = 'Are you sure?', ...props }: PopconfirmProps) => (
   <div className={composeClassName('ui-popover ui-popconfirm', className)} data-surface="default" data-ui-popconfirm data-ui-popover {...props}>
-    <button aria-expanded="false" aria-haspopup="dialog" className="ui-button ui-button--outline ui-button--default-size" data-ui-trigger type="button">
-      {triggerLabel}
-    </button>
+    <span aria-expanded="false" aria-haspopup="dialog" className="ui-popconfirm__trigger" data-ui-trigger>
+      {children}
+    </span>
     <div className="ui-popover__panel ui-popconfirm__panel" data-ui-panel hidden role="dialog">
-      <p className="ui-popconfirm__message">{children ?? message}</p>
+      <p className="ui-popconfirm__message">{title}</p>
       <div className="ui-popconfirm__actions">
         <button className="ui-button ui-button--ghost ui-button--sm" data-ui-popconfirm-cancel type="button">{cancelLabel}</button>
         <button className="ui-button ui-button--destructive ui-button--sm" data-ui-popconfirm-confirm type="button">{confirmLabel}</button>
@@ -2318,66 +2400,168 @@ export const Popconfirm = ({ cancelLabel = 'Cancel', children, className, confir
 )
 
 export interface TransferItem {
+  key: string
   label: ReactNode
-  value: string
 }
 export interface TransferProps extends ComponentPropsWithoutRef<'div'> {
+  items?: TransferItem[]
   name?: string
-  sourceItems?: TransferItem[]
-  sourceLabel?: string
+  sourceTitle?: string
   targetItems?: TransferItem[]
-  targetLabel?: string
+  targetTitle?: string
 }
+
 const emptyTransferItems: TransferItem[] = []
+
 const renderTransferItems = (items: TransferItem[]) => items.map(item => (
-  <li className="ui-transfer__item" key={item.value}>
+  <li className="ui-transfer__item" key={item.key}>
     <label className="ui-transfer__option">
-      <input className="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.value} />
+      <input className="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.key} />
       <span>{item.label}</span>
     </label>
   </li>
 ))
-export const Transfer = ({ className, name, sourceItems = emptyTransferItems, sourceLabel = 'Available', targetItems = emptyTransferItems, targetLabel = 'Selected', ...props }: TransferProps) => (
+
+export const Transfer = ({ className, items = emptyTransferItems, name, sourceTitle = 'Available', targetItems = emptyTransferItems, targetTitle = 'Selected', ...props }: TransferProps) => (
   <div className={composeClassName('ui-transfer', className)} data-ui-transfer data-ui-transfer-name={name} {...props}>
     <div className="ui-transfer__panel">
-      <p className="ui-transfer__title">{sourceLabel}</p>
-      <ul className="ui-transfer__list" data-side="source" data-ui-transfer-list>{renderTransferItems(sourceItems)}</ul>
+      <p className="ui-transfer__title">{sourceTitle}</p>
+      <ul className="ui-transfer__list" data-side="source" data-ui-transfer-list>{renderTransferItems(items)}</ul>
     </div>
     <div className="ui-transfer__controls">
-      <button aria-label={`Move to ${targetLabel}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
-      <button aria-label={`Move to ${sourceLabel}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
+      <button aria-label={`Move to ${targetTitle}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="target" type="button">&rsaquo;</button>
+      <button aria-label={`Move to ${sourceTitle}`} className="ui-button ui-button--outline ui-button--icon" data-ui-transfer-move="source" type="button">&lsaquo;</button>
     </div>
     <div className="ui-transfer__panel">
-      <p className="ui-transfer__title">{targetLabel}</p>
+      <p className="ui-transfer__title">{targetTitle}</p>
       <ul className="ui-transfer__list" data-side="target" data-ui-transfer-list>{renderTransferItems(targetItems)}</ul>
     </div>
   </div>
 )
 
+export interface CascaderOption {
+  children?: CascaderOption[]
+  label: ReactNode
+  value: string
+}
 export interface CascaderProps extends ComponentPropsWithoutRef<'div'> {
   name?: string
+  options?: CascaderOption[]
   placeholder?: string
 }
-export const Cascader = ({ children, className, name, placeholder = 'Select…', ...props }: CascaderProps) => (
-  <div className={composeClassName('ui-cascader', className)} data-surface="default" data-ui-cascader data-ui-popover {...props}>
-    <button aria-expanded="false" aria-haspopup="listbox" className="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
-      <span data-ui-cascader-placeholder={placeholder} data-ui-cascader-value>{placeholder}</span>
-    </button>
-    <div className="ui-cascader__panel" data-ui-panel hidden>{children}</div>
-    {name && <input data-ui-cascader-input name={name} type="hidden" />}
-  </div>
-)
 
+interface CascaderColumn {
+  id: string
+  options: { label: ReactNode; nextId?: string | undefined; value: string }[]
+  root: boolean
+}
+
+const buildCascaderColumns = (options: CascaderOption[]): CascaderColumn[] => {
+  const columns: CascaderColumn[] = []
+  let count = 0
+
+  const build = (items: CascaderOption[], root: boolean): string => {
+    count += 1
+
+    const id = `ui-cascader-col-${count}`
+
+    const rendered = items.map(item => ({
+      label: item.label,
+      nextId: item.children && item.children.length > 0 ? build(item.children, false) : undefined,
+      value: item.value
+    }))
+
+    columns.push({ id, options: rendered, root })
+
+    return id
+  }
+
+  if (options.length > 0) build(options, true)
+
+  return columns
+}
+
+const emptyCascaderOptions: CascaderOption[] = []
+
+export const Cascader = ({ children, className, name, options = emptyCascaderOptions, placeholder = 'Select…', ...props }: CascaderProps) => {
+  const columns = buildCascaderColumns(options)
+
+  return (
+    <div className={composeClassName('ui-cascader', className)} data-surface="default" data-ui-cascader data-ui-popover {...props}>
+      <button aria-expanded="false" aria-haspopup="listbox" className="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
+        <span data-ui-cascader-placeholder={placeholder} data-ui-cascader-value>{placeholder}</span>
+      </button>
+      <div className="ui-cascader__panel" data-ui-panel hidden>
+        {columns.map(column => (
+          <ol className="ui-cascader__column" hidden={!column.root} id={column.id} key={column.id}>
+            {column.options.map(option => (
+              <li key={option.value}>
+                <button
+                  className="ui-cascader__option"
+                  data-ui-cascader-next={option.nextId ? `#${option.nextId}` : undefined}
+                  data-ui-cascader-option
+                  data-value={option.value}
+                  type="button"
+                >
+                  <span>{option.label}</span>
+                  {option.nextId && <span aria-hidden="true">&rsaquo;</span>}
+                </button>
+              </li>
+            ))}
+          </ol>
+        ))}
+        {children}
+      </div>
+      {name && <input data-ui-cascader-input name={name} type="hidden" />}
+    </div>
+  )
+}
+
+export interface TreeSelectNode {
+  children?: TreeSelectNode[]
+  label: ReactNode
+  value: string
+}
 export interface TreeSelectProps extends ComponentPropsWithoutRef<'div'> {
   name?: string
   placeholder?: string
+  treeData?: TreeSelectNode[]
 }
-export const TreeSelect = ({ children, className, name, placeholder = 'Select…', ...props }: TreeSelectProps) => (
+
+const flattenTreeSelect = (nodes: TreeSelectNode[], depth = 0, acc: { depth: number; label: ReactNode; value: string }[] = []) => {
+  for (const node of nodes) {
+    acc.push({ depth, label: node.label, value: node.value })
+
+    if (node.children && node.children.length > 0) flattenTreeSelect(node.children, depth + 1, acc)
+  }
+
+  return acc
+}
+
+const emptyTreeSelectNodes: TreeSelectNode[] = []
+
+export const TreeSelect = ({ children, className, name, placeholder = 'Select…', treeData = emptyTreeSelectNodes, ...props }: TreeSelectProps) => (
   <div className={composeClassName('ui-tree-select', className)} data-surface="default" data-ui-popover data-ui-tree-select {...props}>
     <button aria-expanded="false" aria-haspopup="tree" className="ui-select ui-select__trigger ui-tree-select__trigger" data-ui-trigger type="button">
       <span data-ui-tree-select-placeholder={placeholder} data-ui-tree-select-value>{placeholder}</span>
     </button>
-    <div className="ui-tree-select__panel" data-ui-panel hidden>{children}</div>
+    <div className="ui-tree-select__panel" data-ui-panel hidden>
+      <div className="ui-tree-select__tree" role="tree">
+        {flattenTreeSelect(treeData).map(row => (
+          <button
+            className="ui-tree-select__option"
+            data-value={row.value}
+            key={row.value}
+            role="treeitem"
+            style={{ ['--ui-tree-depth' as string]: row.depth }}
+            type="button"
+          >
+            {row.label}
+          </button>
+        ))}
+      </div>
+      {children}
+    </div>
     {name && <input data-ui-tree-select-input name={name} type="hidden" />}
   </div>
 )
@@ -2425,11 +2609,12 @@ export const QRCode = ({ children, className, size = 160, src, style, value, ...
 )
 
 export interface WatermarkProps extends ComponentPropsWithoutRef<'div'> {
+  content?: string
   gap?: number
   rotate?: number
   text?: string
 }
-export const Watermark = ({ children, className, gap = 120, rotate = -22, style, text = 'Confidential', ...props }: WatermarkProps) => (
+export const Watermark = ({ children, className, content, gap = 120, rotate = -22, style, text = 'Confidential', ...props }: WatermarkProps) => (
   <div
     className={composeClassName('ui-watermark', className)}
     data-ui-watermark
@@ -2437,33 +2622,58 @@ export const Watermark = ({ children, className, gap = 120, rotate = -22, style,
     {...props}
   >
     {children}
-    <div aria-hidden="true" className="ui-watermark__overlay" data-text={text} />
+    <div aria-hidden="true" className="ui-watermark__overlay" data-text={content ?? text} />
   </div>
 )
 
 export interface AffixProps extends ComponentPropsWithoutRef<'div'> {
   offset?: number
+  offsetBottom?: number
+  offsetTop?: number
   position?: 'bottom' | 'top'
 }
-export const Affix = ({ className, offset = 0, position = 'top', style, ...props }: AffixProps) => (
-  <div
-    className={composeClassName('ui-affix', position === 'bottom' && 'ui-affix--bottom', className)}
-    data-position={position}
-    style={{ ['--ui-affix-offset' as string]: `${offset}px`, ...style }}
-    {...props}
-  />
-)
+export const Affix = ({ className, offset = 0, offsetBottom, offsetTop, position: positionProp, style, ...props }: AffixProps) => {
+  const position = positionProp ?? (offsetBottom === undefined ? 'top' : 'bottom')
+  const resolvedOffset = offsetBottom ?? offsetTop ?? offset
 
+  return (
+    <div
+      className={composeClassName('ui-affix', position === 'bottom' && 'ui-affix--bottom', className)}
+      data-position={position}
+      style={{ ['--ui-affix-offset' as string]: `${resolvedOffset}px`, ...style }}
+      {...props}
+    />
+  )
+}
+
+export interface SpeedDialAction {
+  icon?: string
+  label: string
+  value?: string
+}
 export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {
+  actions?: SpeedDialAction[]
   direction?: 'down' | 'left' | 'right' | 'up'
   label?: string
 }
-export const SpeedDial = ({ children, className, direction = 'up', label = 'Actions', ...props }: SpeedDialProps) => (
+
+const emptySpeedDialActions: SpeedDialAction[] = []
+
+export const SpeedDial = ({ actions = emptySpeedDialActions, children, className, direction = 'up', label = 'Actions', ...props }: SpeedDialProps) => (
   <div className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)} data-direction={direction} data-ui-speed-dial {...props}>
     <button aria-expanded="false" aria-label={label} className="ui-speed-dial__trigger" data-ui-speed-dial-trigger type="button">
       <span aria-hidden="true" className="ui-speed-dial__icon" />
     </button>
-    <menu className="ui-speed-dial__actions" data-ui-speed-dial-actions>{children}</menu>
+    <menu className="ui-speed-dial__actions" data-ui-speed-dial-actions>
+      {actions.map(action => (
+        <li key={action.value ?? action.label}>
+          <button aria-label={action.label} className="ui-speed-dial__action" data-icon={action.icon} data-value={action.value ?? action.label} type="button">
+            <span className="ui-speed-dial__action-label">{action.label}</span>
+          </button>
+        </li>
+      ))}
+      {children}
+    </menu>
   </div>
 )
 

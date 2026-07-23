@@ -91,7 +91,7 @@ catalogs:
       specifier: ^19.2.3
       version: 19.2.7
     sharp:
-      specifier: ^0.35.2
+      specifier: ^0.35.3
       version: 0.35.3
     tailwindcss:
       specifier: ^4.3.1
