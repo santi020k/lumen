@@ -1,0 +1,468 @@
+---
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Badge, Card, Icon } from '@santi020k/lumen-astro'
+
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const packageName = '@santi020k/lumen-mcp'
+const npmUrl = 'https://www.npmjs.com/package/@santi020k/lumen-mcp'
+const readmeUrl = 'https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md'
+
+const tools = [
+  [
+    'lumen_list_components',
+    'List every component with its framework availability and recipe membership. Filter by framework, recipe, or a name query.',
+    'list'
+  ],
+  [
+    'lumen_get_component',
+    'Return one component’s typed props, framework availability, recipes, and the real Astro reference source. Accepts PascalCase or kebab-case.',
+    'component'
+  ],
+  [
+    'lumen_search',
+    'Search across components, props, recipes, tokens, and agent rules by keyword or use-case.',
+    'search'
+  ],
+  [
+    'lumen_get_tokens',
+    'Return semantic token names, base color values, glass tokens, and the theme attribute for generated code.',
+    'swatch-book'
+  ],
+  [
+    'lumen_get_rules',
+    'Return the Lumen agent rules (llms.txt) to read before producing Lumen code.',
+    'scroll-text'
+  ]
+] as const
+
+const workflow = [
+  ['01', 'Discover', 'The agent calls lumen_list_components or lumen_search to find the right primitive for the task.'],
+  ['02', 'Read the contract', 'lumen_get_component returns real Astro source and typed props, so the agent uses correct prop names.'],
+  ['03', 'Follow the system', 'lumen_get_tokens and lumen_get_rules keep generated code on the semantic tokens and conventions.']
+] as const
+
+const claudeConfig = `{
+  "mcpServers": {
+    "lumen": {
+      "command": "npx",
+      "args": ["-y", "@santi020k/lumen-mcp"]
+    }
+  }
+}`
+
+const cursorConfig = `{
+  "mcpServers": {
+    "lumen": {
+      "command": "npx",
+      "args": ["-y", "@santi020k/lumen-mcp"]
+    }
+  }
+}`
+---
+
+<DocsLayout
+  description="Connect the Lumen MCP server so AI agents can list components, read real source and props, and follow Lumen tokens and rules."
+  title="MCP server - Lumen UI"
+>
+  <div class="mcp-page">
+    <DocsPageHero
+      description="A Model Context Protocol server that gives AI agents live access to the Lumen catalog: component source, typed props, recipes, design tokens, and the agent rules that keep generated code on-system."
+      eyebrow="AI integration"
+      stats={[
+        { label: 'Tools', value: 5 },
+        { label: 'Components', value: 121 },
+        { label: 'Transport', value: 'stdio' }
+      ]}
+      title="Give agents the Lumen contract."
+    >
+      <Fragment slot="actions">
+        <a
+          class="
+            ui-button ui-button--default-size ui-button--default no-underline
+          "
+          href={npmUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on npm
+          <Icon decorative name="arrow-up-right" size="sm" />
+        </a>
+        <a
+          class="
+            ui-button ui-button--default-size ui-button--outline no-underline
+          "
+          href={readmeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >Read the README</a>
+      </Fragment>
+
+      <div class="mcp-hero-card" slot="visual" aria-label="MCP tools preview">
+        <div>
+          <span><Icon decorative name="list" /></span>
+          <p><strong>lumen_list_components</strong><small>Discover primitives</small></p>
+        </div>
+        <div>
+          <span><Icon decorative name="component" /></span>
+          <p><strong>lumen_get_component</strong><small>Source and props</small></p>
+        </div>
+        <div>
+          <span><Icon decorative name="scroll-text" /></span>
+          <p><strong>lumen_get_rules</strong><small>Stay on-system</small></p>
+        </div>
+      </div>
+    </DocsPageHero>
+
+    <section class="mcp-section" aria-labelledby="tools-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>What agents can do</p>
+          <h2 id="tools-title">Five focused tools</h2>
+        </div>
+        <p>
+          Each tool answers one question an agent asks while generating or reviewing Lumen code,
+          grounded in the same catalog, tokens, and rules the packages ship.
+        </p>
+      </div>
+
+      <div class="mcp-tools">
+        {tools.map(([name, description, icon]) => (
+          <Card class="mcp-tool-card" variant="muted">
+            <span class="mcp-tool-card__icon">
+              <Icon decorative name={icon} />
+            </span>
+            <code>{name}</code>
+            <p>{description}</p>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mcp-section" aria-labelledby="setup-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>Connect a client</p>
+          <h2 id="setup-title">Run over stdio with npx</h2>
+        </div>
+        <p>
+          The server ships a self-contained snapshot of the catalog, so no repository checkout is
+          required. Point any MCP client at <code>npx -y {packageName}</code>.
+        </p>
+      </div>
+
+      <div class="mcp-setup">
+        <Card class="mcp-setup-card" variant="muted">
+          <div class="mcp-setup-card__head">
+            <Badge variant="outline">Claude Desktop</Badge>
+            <span>claude_desktop_config.json</span>
+          </div>
+          <pre><code>{claudeConfig}</code></pre>
+        </Card>
+
+        <Card class="mcp-setup-card" variant="muted">
+          <div class="mcp-setup-card__head">
+            <Badge variant="outline">Cursor</Badge>
+            <span>.cursor/mcp.json</span>
+          </div>
+          <pre><code>{cursorConfig}</code></pre>
+        </Card>
+      </div>
+    </section>
+
+    <section class="mcp-section" aria-labelledby="workflow-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>How agents use it</p>
+          <h2 id="workflow-title">Discover, read, and stay on-system</h2>
+        </div>
+        <p>
+          A short loop keeps generated code aligned with real component props and Lumen conventions.
+        </p>
+      </div>
+
+      <ol class="mcp-workflow">
+        {workflow.map(([step, title, description]) => (
+          <li>
+            <span>{step}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <Card as="section" class="mcp-file-card" aria-labelledby="package-title" glass="subtle">
+      <div>
+        <Badge>npm package</Badge>
+        <h2 id="package-title">{packageName}</h2>
+        <p>
+          The bundled snapshot is generated from the component catalog, Astro components, tokens,
+          registry, and llms.txt, so the server always mirrors the shipped packages.
+        </p>
+      </div>
+      <code>npx -y {packageName}</code>
+      <a
+        class="
+          ui-button ui-button--default-size ui-button--default no-underline
+        "
+        href={npmUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >Open on npm</a>
+    </Card>
+  </div>
+</DocsLayout>
+
+<style>
+  .mcp-page {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  .mcp-hero-card {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / 0.62);
+    backdrop-filter: blur(14px);
+  }
+
+  .mcp-hero-card > div {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem;
+    border-radius: 0.75rem;
+    background: hsl(var(--surface) / 0.75);
+  }
+
+  .mcp-hero-card span {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.65rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .mcp-hero-card p {
+    display: grid;
+    margin: 0;
+  }
+
+  .mcp-hero-card strong {
+    color: hsl(var(--ink));
+    font: 800 0.78rem/1.3 ui-monospace, monospace;
+  }
+
+  .mcp-hero-card small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+  }
+
+  .mcp-section {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .mcp-section__heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .mcp-section__heading > div > p {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .mcp-section__heading h2,
+  .mcp-file-card h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .mcp-section__heading > p,
+  .mcp-file-card p {
+    max-width: 40rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .mcp-section__heading code,
+  .mcp-file-card code {
+    color: hsl(var(--ink));
+    font-family: ui-monospace, monospace;
+    font-size: 0.82em;
+  }
+
+  .mcp-tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .mcp-tool-card {
+    display: flex;
+    min-height: 12rem;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.15rem;
+  }
+
+  .mcp-tool-card__icon {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    place-items: center;
+    border-radius: 0.7rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .mcp-tool-card code {
+    color: hsl(var(--ink));
+    font-family: ui-monospace, monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .mcp-tool-card p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .mcp-setup {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .mcp-setup-card {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.15rem;
+  }
+
+  .mcp-setup-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .mcp-setup-card__head span {
+    color: hsl(var(--ink-muted));
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+  }
+
+  .mcp-setup-card pre {
+    overflow-x: auto;
+    margin: 0;
+    padding: 0.9rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.75rem;
+    background: hsl(var(--surface-strong) / 0.5);
+  }
+
+  .mcp-setup-card code {
+    color: hsl(var(--ink));
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  .mcp-workflow {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mcp-workflow li {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .mcp-workflow li > span {
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .mcp-workflow li div {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .mcp-workflow h3 {
+    color: hsl(var(--ink));
+    font-size: 0.95rem;
+    font-weight: 850;
+  }
+
+  .mcp-workflow p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .mcp-file-card {
+    display: grid;
+    gap: 1.25rem;
+    align-items: center;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .mcp-file-card > code {
+    overflow: hidden;
+    color: hsl(var(--ink-muted));
+    font-size: 0.72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mcp-file-card > :global(.ui-button) {
+    width: max-content;
+  }
+
+  @media (min-width: 48rem) {
+    .mcp-section__heading {
+      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
+    }
+
+    .mcp-file-card {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .mcp-file-card > :global(.ui-button) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+</style>

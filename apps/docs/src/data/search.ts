@@ -111,6 +111,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'AI integration',
+    description: 'Connect the Lumen MCP server so AI agents can list components, read real source and props, and follow Lumen tokens and rules.',
+    href: '/docs/mcp',
+    keywords: normalizeKeywords('mcp model context protocol ai agent claude cursor server tools list components get component search tokens rules llms stdio npx'),
+    title: 'Lumen MCP server',
+    type: 'Recipe'
+  },
+  {
     category: 'Foundations',
     description: 'Browse the full Lucide icon set available through the Lumen Icon component and copy icon names.',
     href: '/docs/icons',
