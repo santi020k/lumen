@@ -1415,6 +1415,96 @@
         "packages/astro/components/Stat.astro",
         "packages/react/src/components.tsx"
       ]
+    },
+    {
+      "name": "Meter",
+      "type": "component",
+      "category": "Data display",
+      "description": "A meter component.",
+      "files": [
+        "packages/astro/components/Meter.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Note",
+      "type": "component",
+      "category": "Data display",
+      "description": "A note component.",
+      "files": [
+        "packages/astro/components/Note.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Rating",
+      "type": "component",
+      "category": "Data display",
+      "description": "A rating component.",
+      "files": [
+        "packages/astro/components/Rating.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Timeline",
+      "type": "component",
+      "category": "Data display",
+      "description": "A timeline component.",
+      "files": [
+        "packages/astro/components/Timeline.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "AnimatedLogo",
+      "type": "component",
+      "category": "Brand",
+      "description": "An animated logo component.",
+      "files": [
+        "packages/astro/components/AnimatedLogo.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "AnimatedPortrait",
+      "type": "component",
+      "category": "Brand",
+      "description": "An animated portrait component.",
+      "files": [
+        "packages/astro/components/AnimatedPortrait.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "ButtonLink",
+      "type": "component",
+      "category": "Navigation",
+      "description": "A button-styled link.",
+      "files": [
+        "packages/astro/components/ButtonLink.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "CoverImage",
+      "type": "component",
+      "category": "Data display",
+      "description": "A cover image component.",
+      "files": [
+        "packages/astro/components/CoverImage.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "GradientDivider",
+      "type": "component",
+      "category": "Layout",
+      "description": "A gradient divider component.",
+      "files": [
+        "packages/astro/components/GradientDivider.astro",
+        "packages/react/src/components.tsx"
+      ]
     }
   ]
 }

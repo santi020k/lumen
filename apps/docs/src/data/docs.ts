@@ -1,7 +1,7 @@
 export interface ComponentDoc {
   apiReference: ComponentApiRow[]
   name: string
-  category: 'Actions' | 'Data display' | 'Feedback' | 'Forms' | 'Layout' | 'Navigation' | 'Overlays'
+  category: 'Actions' | 'Brand' | 'Data display' | 'Feedback' | 'Forms' | 'Layout' | 'Navigation' | 'Overlays'
   glass?: boolean
   keyboardInteractions?: KeyboardInteractionRow[]
   runtimeEvents?: RuntimeEventRow[]
@@ -886,7 +886,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Callout', 'Feedback', 'Important notice or callout.', '<Callout>Note: This is important</Callout>'],
   ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card><h2>Starter</h2><p>For personal projects.</p></Card>'],
   ['Carousel', 'Layout', 'Displays a horizontal sequence of slides.', '<Carousel aria-label="Featured templates"><article>Dashboard</article><article>Portfolio</article></Carousel>'],
-  ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>export const componentDocs: ComponentDoc[] = ([28K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
+  ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
   ['Collapsible', 'Layout', 'Shows and hides one optional content region.', '<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>'],
   ['Code', 'Data display', 'Renders inline code and framed code blocks with theme-aware palettes.', '<Code code={`const theme = "lumen";\nconst accent = "hsl(var(--accent))";`} variant="block" language="ts" label="theme.ts" copy />'],
@@ -962,7 +962,16 @@ export const componentDocs: ComponentDoc[] = ([
   ['LanguageToggle', 'Actions', 'A toggle for switching languages.', '<LanguageToggle>EN</LanguageToggle>'],
   ['Particles', 'Layout', 'A generative background with particles.', '<Particles density="medium" />'],
   ['ScrollReveal', 'Layout', 'A wrapper that reveals elements on scroll.', '<ScrollReveal animation="fade">\n  <div>Content</div>\n</ScrollReveal>'],
-  ['Stat', 'Data display', 'A component for displaying data metrics.', '<Stat label="Total Users" value="1,234" />']
+  ['Stat', 'Data display', 'A component for displaying data metrics.', '<Stat label="Total Users" value="1,234" />'],
+  ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter value={50} min={0} max={100} />'],
+  ['Note', 'Data display', 'Displays a contextual note or information.', '<Note label="Info">This is a note.</Note>'],
+  ['Rating', 'Data display', 'Displays a star rating input or display.', '<Rating value={4} max={5} />'],
+  ['Timeline', 'Data display', 'Displays a list of events in chronological order.', '<Timeline>...</Timeline>'],
+  ['AnimatedLogo', 'Brand', 'An animated logo component.', '<AnimatedLogo />'],
+  ['AnimatedPortrait', 'Brand', 'An animated portrait component.', '<AnimatedPortrait />'],
+  ['ButtonLink', 'Navigation', 'A button-styled link.', '<ButtonLink href="/">Home</ButtonLink>'],
+  ['CoverImage', 'Data display', 'A cover image component.', '<CoverImage src="/image.jpg" alt="Cover" />'],
+  ['GradientDivider', 'Layout', 'A gradient divider component.', '<GradientDivider />']
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),

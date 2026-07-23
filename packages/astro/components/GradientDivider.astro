@@ -6,27 +6,21 @@ import type { HTMLAttributes } from 'astro/types'
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
-  animation?: 'fade' | 'slide-up' | 'scale'
 }
 
 const {
   class: classProp = '',
   className = '',
-  animation = 'fade',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-scroll-reveal',
-  `ui-scroll-reveal-${animation}`
+  'ui-gradient-divider',
+  'pointer-events-none flex justify-center'
 ], classProp, className)
 ---
 
-<lumen-scroll-reveal
-  class:list={classList}
-  data-ui-scroll-reveal
-  {...passthrough}
->
-  <slot />
-</lumen-scroll-reveal>
-
+<div aria-hidden="true" class:list={classList} {...passthrough}>
+  <div class="h-px w-full max-w-5xl bg-linear-to-r from-transparent via-brand/40 to-transparent">
+  </div>
+</div>

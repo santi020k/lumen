@@ -1892,8 +1892,9 @@ export const FormattedDate = ({ className, ...props }: FormattedDateProps) => (
 )
 
 export type ImageProps = ComponentPropsWithoutRef<'img'>
-export const Image = ({ className, ...props }: ImageProps) => (
-  <img className={composeClassName('ui-image', className)} {...props} />
+export const Image = ({ className, loading = 'eager', ...props }: ImageProps) => (
+  /* eslint-disable-next-line jsx-a11y/alt-text -- alt is provided by the consumer via spread props */
+  <img className={composeClassName('ui-image', className)} loading={loading} {...props} />
 )
 
 export type LinkProps = ComponentPropsWithoutRef<'a'>
@@ -1918,7 +1919,11 @@ export const SkipLink = ({ className, ...props }: SkipLinkProps) => (
 
 export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
 export const ThemeToggle = ({ className, type = 'button', ...props }: ThemeToggleProps) => (
-  <button className={composeClassName('ui-theme-toggle', className)} type={type} {...props} />
+  <button className={composeClassName('ui-theme-toggle', className)} type={type} {...props}>
+    <span className="ui-sr-only">Toggle color theme</span>
+    <Icon className="ui-theme-toggle__sun" name="sun" />
+    <Icon className="ui-theme-toggle__moon" name="moon" />
+  </button>
 )
 
 export type LanguageToggleProps = ComponentPropsWithoutRef<'button'>
@@ -1951,3 +1956,154 @@ export const Stat = ({ className, label, value, children, ...props }: StatProps)
     {children}
   </div>
 )
+
+export type MeterProps = ComponentPropsWithoutRef<'meter'>
+export const Meter = ({ className, ...props }: MeterProps) => (
+  <meter className={composeClassName('ui-meter', className)} {...props} />
+)
+
+export interface NoteProps extends ComponentPropsWithoutRef<'div'> {
+  label?: string
+}
+export const Note = ({ className, label, children, ...props }: NoteProps) => (
+  <div className={composeClassName('ui-note', className)} {...props}>
+    {label && <p className="ui-note__label">{label}</p>}
+    <div className="ui-note__content">{children}</div>
+  </div>
+)
+
+export interface RatingProps extends ComponentPropsWithoutRef<'div'> {
+  value?: number
+  max?: number
+  readonly?: boolean
+}
+export const Rating = ({ className, value = 0, max = 5, readonly = false, ...props }: RatingProps) => {
+  const stars = Array.from({ length: max }, (_, i) => i + 1)
+
+  return (
+    <div
+      className={composeClassName('ui-rating', readonly && 'ui-rating--readonly', className)}
+      data-ui-rating
+      data-value={value}
+      data-max={max}
+      data-readonly={readonly ? 'true' : 'false'}
+      {...props}
+    >
+      {stars.map((star) => (
+        <button
+          key={star}
+          type="button"
+          className="ui-rating__star"
+          data-active={star <= value ? 'true' : 'false'}
+          disabled={readonly}
+          aria-label={`Rate ${star} out of ${max}`}
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="ui-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export type TimelineProps = ComponentPropsWithoutRef<'ol'>
+export const Timeline = ({ className, ...props }: TimelineProps) => (
+  <ol className={composeClassName('ui-timeline', className)} {...props} />
+)
+
+export type AnimatedLogoProps = Omit<ComponentPropsWithoutRef<'svg'>, 'xmlns' | 'viewBox'> & {
+  iconOnly?: boolean
+  variant?: 'light' | 'dark'
+}
+export const AnimatedLogo = ({ className, iconOnly = false, variant = 'light', ...props }: AnimatedLogoProps) => {
+  const isDark = variant === 'dark'
+  const fillColor = isDark ? '#713bf7' : '#5a0fdb'
+  const strokeColor = isDark ? '#110c1d' : '#FFFFFF'
+  const textColor = isDark ? '#faf9fb' : '#332e38'
+  const viewBox = iconOnly ? '0 0 80 80' : '0 0 504 80'
+
+  return (
+    <svg
+      aria-label="Santi020k"
+      className={composeClassName('ui-animated-logo', className)}
+      role="img"
+      viewBox={viewBox}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g data-logo-mark>
+        <rect
+          fill={fillColor}
+          height="80"
+          rx="18"
+          style={{ transform: 'scale(0)', transformOrigin: '40px 40px', animation: 'ui-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
+          width="80"
+        />
+        <path
+          d="M 26 28 L 40 40 L 26 52"
+          fill="none"
+          stroke={strokeColor}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="8"
+          style={{ strokeDasharray: 60, strokeDashoffset: 60, animation: 'ui-draw 0.6s ease forwards', animationDelay: '0.3s' }}
+        />
+        <line
+          stroke={strokeColor}
+          strokeLinecap="round"
+          strokeWidth="8"
+          style={{ strokeDasharray: 60, strokeDashoffset: 60, animation: 'ui-draw 0.6s ease forwards', animationDelay: '0.5s' }}
+          x1="48"
+          x2="62"
+          y1="52"
+          y2="52"
+        />
+      </g>
+      {!iconOnly && (
+        <text
+          dominantBaseline="central"
+          fill={textColor}
+          fontFamily="Montserrat, Inter, sans-serif"
+          fontSize="48"
+          fontWeight="800"
+          letterSpacing="-0.04em"
+          style={{ opacity: 0, transform: 'translateX(-10px)', animation: 'ui-fade-slide 0.5s ease forwards', animationDelay: '0.7s' }}
+          x="100"
+          y="40"
+        >
+          Santi<tspan fill={fillColor} fontWeight="600" letterSpacing="-0.02em">020k</tspan>
+        </text>
+      )}
+    </svg>
+  )
+}
+
+export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>
+export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps) => (
+  <div className={composeClassName('ui-animated-portrait relative isolate w-full animate-reveal-lcp motion-reduce:animate-none', className)} {...props} />
+)
+
+export type ButtonLinkProps = ComponentPropsWithoutRef<'a'> & {
+  variant?: 'ghost' | 'inline' | 'primary' | 'secondary'
+}
+export const ButtonLink = ({ className, variant = 'primary', ...props }: ButtonLinkProps) => {
+  const variantClass = variant === 'inline' 
+    ? 'ui-button ui-button--inline' 
+    : `ui-button ui-button--${variant} min-h-11 rounded-full border`
+
+  return (
+    <a className={composeClassName('ui-button-link group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, className)} {...props} />
+  )
+}
+
+export type CoverImageProps = ComponentPropsWithoutRef<'div'>
+export const CoverImage = ({ className, ...props }: CoverImageProps) => (
+  <div className={composeClassName('ui-cover-image relative overflow-hidden bg-surface-muted', className)} {...props} />
+)
+
+export type GradientDividerProps = ComponentPropsWithoutRef<'div'>
+export const GradientDivider = ({ className, ...props }: GradientDividerProps) => (
+  <div aria-hidden="true" className={composeClassName('ui-gradient-divider pointer-events-none flex justify-center', className)} {...props}>
+    <div className="h-px w-full max-w-5xl bg-gradient-to-r from-transparent via-brand/40 to-transparent"></div>
+  </div>
+)
+

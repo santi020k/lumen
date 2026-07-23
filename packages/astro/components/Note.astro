@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { composeClassName } from '@santi020k/lumen-core'
+
+export interface Props extends HTMLAttributes<'div'> {
+  label?: string
+}
+
+const { class: className, label, ...props } = Astro.props
+---
+
+<div
+  class={composeClassName('ui-note', className)}
+  {...props}
+>
+  {label && <p class="ui-note__label">{label}</p>}
+  <div class="ui-note__content">
+    <slot />
+  </div>
+</div>

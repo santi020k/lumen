@@ -1,0 +1,91 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import Icon from './Icon.astro'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'a'> {
+  ariaLabel?: string
+  class?: string
+  className?: string
+  href: string
+  newTab?: boolean
+  showArrow?: boolean
+  variant?: 'ghost' | 'inline' | 'primary' | 'secondary'
+}
+
+const {
+  ariaLabel,
+  class: classProp = '',
+  className = '',
+  href,
+  newTab = false,
+  showArrow = false,
+  variant = 'primary',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-button-link',
+  'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]',
+  variant !== 'inline' && 'min-h-11 rounded-full border',
+  variant === 'primary' && 'ui-button ui-button--primary',
+  variant === 'secondary' && 'ui-button ui-button--secondary',
+  variant === 'ghost' && 'ui-button ui-button--ghost',
+  variant === 'inline' && 'ui-button ui-button--inline'
+], classProp, className)
+---
+
+<a
+  aria-label={ariaLabel}
+  class:list={classList}
+  data-magnetic={variant !== 'inline' ? 'true' : undefined}
+  href={href}
+  rel={newTab ? 'noreferrer noopener' : undefined}
+  target={newTab ? '_blank' : undefined}
+  {...passthrough}
+>
+  <slot />
+  {showArrow && (
+    <Icon
+      aria-hidden="true"
+      class="size-4 shrink-0 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5 motion-reduce:transition-none"
+      name={newTab ? 'arrow-up-right' : 'arrow-right'}
+    />
+  )}
+</a>
+
+<script>
+  function initMagneticButtons() {
+    if (window.matchMedia('(hover: none)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const magneticElements = document.querySelectorAll<HTMLElement>('[data-magnetic]')
+
+    for (const el of magneticElements) {
+      if (el.hasAttribute('data-magnetic-init')) continue
+      el.setAttribute('data-magnetic-init', 'true')
+      
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect()
+        const hx = rect.left + rect.width / 2
+        const hy = rect.top + rect.height / 2
+
+        const dx = e.clientX - hx
+        const dy = e.clientY - hy
+
+        const pullX = dx * 0.15
+        const pullY = dy * 0.25
+
+        el.style.transform = `translate(${pullX}px, ${pullY}px)`
+      })
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = ''
+      })
+    }
+  }
+  
+  initMagneticButtons()
+  document.addEventListener('astro:page-load', initMagneticButtons)
+</script>

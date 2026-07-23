@@ -21,75 +21,11 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<div
+<lumen-particles
   aria-hidden="true"
   class:list={classList}
   data-ui-particles={density}
   {...passthrough}
 >
-</div>
-
-<script>
-  type ParticleDensity = 'low' | 'medium' | 'high'
-
-  const densityConfig: Record<ParticleDensity, number> = {
-    low: 15,
-    medium: 25,
-    high: 40
-  }
-
-  function initParticles() {
-    const containers = document.querySelectorAll<HTMLElement>('[data-ui-particles]')
-    containers.forEach(container => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-      if (container.children.length > 0) return
-
-      const density = (container.getAttribute('data-ui-particles') as ParticleDensity) || 'medium'
-      const count = densityConfig[density] || 25
-
-      for (let i = 0; i < count; i++) {
-        const el = document.createElement('div')
-        const size = Math.random() * 12 + 8
-        const left = Math.random() * 100
-        const top = Math.random() * 100
-        const delay = Math.random() * 8
-        const duration = 20 + Math.random() * 15
-
-        el.style.cssText = `
-          position: absolute;
-          left: ${left}%;
-          top: ${top}%;
-          width: ${size}px;
-          height: ${size}px;
-          border-radius: 50%;
-          background: var(--ui-surface-strong, currentColor);
-          opacity: 0.1;
-          animation: ui-particle-drift ${duration}s ease-in-out ${delay}s infinite;
-        `
-        container.appendChild(el)
-      }
-    })
-  }
-
-  initParticles()
-  document.addEventListener('astro:after-swap', initParticles)
-</script>
-
-<style is:global>
-  @keyframes ui-particle-drift {
-    0%, 100% {
-      transform: translateY(0) translateX(0);
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.15;
-    }
-    90% {
-      opacity: 0.1;
-    }
-    100% {
-      transform: translateY(-100vh) translateX(20px);
-      opacity: 0;
-    }
-  }
-</style>
+  <slot />
+</lumen-particles>

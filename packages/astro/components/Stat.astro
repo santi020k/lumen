@@ -32,23 +32,3 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   <slot />
 </div>
 
-<style is:global>
-  .ui-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem;
-    background: var(--ui-surface);
-    border: 1px solid var(--ui-line);
-    border-radius: 0.5rem;
-  }
-  .ui-stat-label {
-    font-size: 0.875rem;
-    color: var(--ui-ink-muted);
-  }
-  .ui-stat-value {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--ui-ink);
-  }
-</style>
