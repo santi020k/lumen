@@ -886,6 +886,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "PhoneInput",
+      "type": "component",
+      "description": "Pairs a country dial-code select with a telephone number input.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/PhoneInput.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Input",
+        "NativeSelect",
+        "styles"
+      ]
+    },
+    {
       "name": "Pill",
       "type": "component",
       "description": "A rounded pill badge.",

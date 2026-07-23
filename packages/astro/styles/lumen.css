@@ -741,6 +741,26 @@
   margin-inline-end: 0.25rem;
 }
 
+.ui-phone-input {
+  padding: 0;
+}
+.ui-phone-input > .ui-phone-input__country {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: calc(2.75rem - 2px);
+  border: 0;
+  border-radius: 0;
+  border-inline-end: 1px solid hsl(var(--line));
+  box-shadow: none;
+}
+.ui-phone-input > .ui-phone-input__number {
+  flex: 1 1 auto;
+  min-height: calc(2.75rem - 2px);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .ui-checkbox {
   width: 1rem;
   height: 1rem;

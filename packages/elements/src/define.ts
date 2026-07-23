@@ -395,6 +395,7 @@ const elementConfigs = {
     tagName: 'lumen-navigation-menu'
   },
   Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
+  PhoneInput: { baseClassName: 'ui-phone-input ui-input-group', tagName: 'lumen-phone-input' },
   Pill: { baseClassName: 'ui-pill', tagName: 'lumen-pill' },
   Popover: {
     attributeClasses: {
@@ -4721,6 +4722,7 @@ export const LumenMessageScrollerElement = elementClasses.MessageScroller
 export const LumenNativeSelectElement = elementClasses.NativeSelect
 export const LumenNavigationMenuElement = elementClasses.NavigationMenu
 export const LumenPaginationElement = elementClasses.Pagination
+export const LumenPhoneInputElement = elementClasses.PhoneInput
 export const LumenPopoverElement = elementClasses.Popover
 export const LumenProgressElement = elementClasses.Progress
 export const LumenRadioGroupElement = elementClasses.RadioGroup
