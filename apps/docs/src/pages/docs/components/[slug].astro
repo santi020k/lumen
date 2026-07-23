@@ -1,5 +1,6 @@
 ---
-import { Badge, Separator, Tabs } from '@santi020k/lumen-astro'
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Badge, Icon, Separator, Tabs } from '@santi020k/lumen-astro'
 
 import type { InferGetStaticPropsType } from 'astro'
 
@@ -53,87 +54,120 @@ const requiresAstroRuntime = Boolean(
   description={`${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
   title={`${component.name} - Lumen UI`}
 >
-  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs">Docs</a>
-    <span aria-hidden="true"> / </span>
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs/components">Components</a>
-    <span aria-hidden="true"> / </span>
-    <span aria-current="page" class="font-bold text-ink">{component.name}</span>
-  </nav>
+  <div class="component-doc-page">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="/docs">Docs</a>
+      <span aria-hidden="true">/</span>
+      <a href="/docs/components">Components</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{component.name}</span>
+    </nav>
 
-  <div class="mb-8 space-y-3">
-    <div class="flex flex-wrap items-center gap-3">
-      <h1 class="text-4xl font-black text-ink">{component.name}</h1>
-      <Badge variant="secondary">{component.category}</Badge>
-      {component.glass && <Badge variant="outline">Glass</Badge>}
-    </div>
-    <p class="max-w-2xl text-lg/8 text-ink-soft">{component.summary}</p>
-  </div>
+    <header class="component-doc-hero">
+      <div class="component-doc-hero__copy">
+        <div class="component-doc-hero__badges">
+          <Badge variant="secondary">{component.category}</Badge>
+          {component.glass && <Badge variant="outline">Glass surface</Badge>}
+        </div>
+        <h1>{component.name}</h1>
+        <p>{component.summary}</p>
+        <div class="component-doc-hero__actions">
+          <a class="ui-button ui-button--default-size ui-button--default no-underline" href="#preview-title">
+            View preview
+          </a>
+          <a class="ui-button ui-button--default-size ui-button--outline no-underline" href="#api-title">
+            API reference
+          </a>
+        </div>
+      </div>
+      <div class="component-doc-hero__meta" aria-label={`${component.name} support`}>
+        <div>
+          <span><Icon decorative name="layers-3" size="sm" /></span>
+          <p><small>Frameworks</small><strong>Astro · React · Elements</strong></p>
+        </div>
+        <div>
+          <span><Icon decorative name="package" size="sm" /></span>
+          <p><small>Registry command</small><code>{registryCommand}</code></p>
+        </div>
+        <div>
+          <span><Icon decorative name="shield-check" size="sm" /></span>
+          <p><small>Interaction</small><strong>{requiresAstroRuntime ? 'Enhanced runtime' : 'Native markup'}</strong></p>
+        </div>
+      </div>
+    </header>
 
-  <section class="space-y-3" aria-labelledby="preview-title">
-    <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="preview-title">Preview</h2>
-    <div class="docs-preview">
-      <Example />
-    </div>
-  </section>
+    <section class="component-doc-section space-y-3" aria-labelledby="preview-title">
+      <div class="component-doc-heading">
+        <span>01</span>
+        <div>
+          <p>See it in context</p>
+          <h2 id="preview-title">Preview</h2>
+        </div>
+      </div>
+      <div class="docs-preview component-doc-preview">
+        <Example />
+      </div>
+    </section>
 
-  <section class="mt-8 space-y-3" aria-labelledby="usage-title">
-    <div class="space-y-2">
-      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="usage-title">Usage</h2>
+    <section class="component-doc-section space-y-3" aria-labelledby="usage-title">
+      <div class="component-doc-heading">
+        <span>02</span>
+        <div>
+          <p>Copy a working example</p>
+          <h2 id="usage-title">Usage</h2>
+        </div>
+      </div>
       {requiresAstroRuntime && (
         <p class="max-w-2xl text-sm/7 text-ink-soft">
           Astro examples assume UIPrimitives is mounted once in your root layout. Do not add the
           runtime next to each component instance.
         </p>
       )}
-    </div>
-    <CodeTabs groupId={`code-${componentSlug}`} snippets={snippets} />
-  </section>
+      <CodeTabs groupId={`code-${componentSlug}`} snippets={snippets} />
+    </section>
 
-  <section class="mt-10 space-y-3" aria-labelledby="install-title">
-    <div class="space-y-2">
-      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="install-title">Add this component</h2>
+    <section class="component-doc-section space-y-3" aria-labelledby="install-title">
+      <div class="component-doc-heading">
+        <span>03</span>
+        <div>
+          <p>Choose your target</p>
+          <h2 id="install-title">Add this component</h2>
+        </div>
+      </div>
       <p class="max-w-2xl text-sm/7 text-ink-soft">
         Choose the package for your runtime. All adapters share the Lumen stylesheet. Use the
         matching registry command when you want a local wrapper for that framework.
       </p>
-    </div>
-    <Tabs>
-      <div role="tablist" aria-label="Package install">
+      <Tabs>
+        <div role="tablist" aria-label="Package install">
+          {packageInstallSetups.map((setup, index) => (
+            <button
+              aria-controls={`install-${componentSlug}-panel-${setup.id}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              id={`install-${componentSlug}-tab-${setup.id}`}
+              role="tab"
+            >{setup.label}</button>
+          ))}
+        </div>
         {packageInstallSetups.map((setup, index) => (
-          <button
-            aria-controls={`install-${componentSlug}-panel-${setup.id}`}
-            aria-selected={index === 0 ? 'true' : 'false'}
-            id={`install-${componentSlug}-tab-${setup.id}`}
-            role="tab"
-          >{setup.label}</button>
+          <section
+            aria-labelledby={`install-${componentSlug}-tab-${setup.id}`}
+            class="docs-code-panel"
+            hidden={index !== 0}
+            id={`install-${componentSlug}-panel-${setup.id}`}
+            role="tabpanel"
+          >
+            <div class="
+              grid gap-4
+              lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)]
+            ">
+              <CodeBlock code={setup.command} lang="bash" title={setup.packageName} />
+              <CodeBlock code={setup.addCommand} lang="bash" title={`${setup.label} wrapper`} />
+            </div>
+          </section>
         ))}
-      </div>
-      {packageInstallSetups.map((setup, index) => (
-        <section
-          aria-labelledby={`install-${componentSlug}-tab-${setup.id}`}
-          class="docs-code-panel"
-          hidden={index !== 0}
-          id={`install-${componentSlug}-panel-${setup.id}`}
-          role="tabpanel"
-        >
-          <div class="
-            grid gap-4
-            lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)]
-          ">
-            <CodeBlock code={setup.command} lang="bash" title={setup.packageName} />
-            <CodeBlock code={setup.addCommand} lang="bash" title={`${setup.label} wrapper`} />
-          </div>
-        </section>
-      ))}
-    </Tabs>
-  </section>
+      </Tabs>
+    </section>
 
   {GlassExample && glassSnippets && (
     <section class="mt-10 space-y-3" aria-labelledby="glass-title">
@@ -298,4 +332,5 @@ const requiresAstroRuntime = Boolean(
       </a>
     )}
   </nav>
+  </div>
 </DocsLayout>

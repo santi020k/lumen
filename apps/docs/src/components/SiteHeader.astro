@@ -1,5 +1,11 @@
 ---
-import { Badge, Icon, NativeSelect, NavigationMenu } from '@santi020k/lumen-astro'
+import {
+  Badge,
+  Icon,
+  NativeSelect,
+  NavigationMenu,
+  ThemeToggle
+} from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import GitHubIcon from './GitHubIcon.astro'
@@ -72,27 +78,27 @@ const componentCount = lumenComponentNames.length
       </a>
 
       <div class="docs-theme-controls" aria-label="Theme controls">
-        <label class="sr-only" for="site-color-theme">Theme</label>
-        <NativeSelect
-          id="site-color-theme"
-          class="docs-theme-select"
-          data-theme-select
-          aria-label="Theme"
-        >
-          <option value="santi020k">Santi020k</option>
-          <option value="lumen">Lumen</option>
-        </NativeSelect>
-        <button
+        <div class="docs-theme-picker">
+          <Icon aria-hidden="true" name="palette" size="sm" />
+          <label class="sr-only" for="site-color-theme">Theme family</label>
+          <NativeSelect
+            id="site-color-theme"
+            class="docs-theme-select"
+            data-theme-select
+            aria-label="Theme family"
+            size="sm"
+          >
+            <option value="santi020k">Santi020k</option>
+            <option value="lumen">Lumen</option>
+          </NativeSelect>
+        </div>
+        <span class="docs-theme-divider" aria-hidden="true"></span>
+        <ThemeToggle
           class="docs-theme-toggle"
-          type="button"
           data-theme-toggle
           aria-label="Switch color mode"
           title="Switch color mode"
-        >
-          <Icon class="docs-theme-toggle__sun" name="sun" size="sm" aria-hidden="true" />
-          <Icon class="docs-theme-toggle__moon" name="moon" size="sm" aria-hidden="true" />
-          <span class="sr-only" data-theme-toggle-label>Switch color mode</span>
-        </button>
+        />
       </div>
     </div>
   </header>

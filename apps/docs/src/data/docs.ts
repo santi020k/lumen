@@ -83,7 +83,7 @@ const buildInstallCommands = (...packages: string[]): InstallCommand[] =>
     label
   }))
 
-const installCommands = buildInstallCommands('@santi020k/lumen-astro')
+const installCommands = buildInstallCommands('@santi020k/lumen', '@santi020k/lumen-astro')
 
 const astroUsage = `---
 import { Button, Card, Input } from '@santi020k/lumen-astro'
@@ -122,14 +122,14 @@ const elementsUsage = `<script type="module">
 export const globalStyleSetups: GlobalStyleSetup[] = [
   {
     code: `@import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";`,
+@import "@santi020k/lumen/styles.css";`,
     description: 'Use this in your main Tailwind CSS entry, such as src/styles/global.css or app.css.',
     label: 'Tailwind CSS',
     lang: 'css'
   },
   {
     code: `---
-import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen/styles.css'
 ---
 
 <html lang="en">
@@ -142,7 +142,7 @@ import '@santi020k/lumen-astro/styles.css'
     lang: 'astro'
   },
   {
-    code: `import '@santi020k/lumen-astro/styles.css'
+    code: `import '@santi020k/lumen/styles.css'
 
 import { createRoot } from 'react-dom/client'
 
@@ -177,7 +177,7 @@ document.documentElement.dataset.theme = nextTheme`,
     lang: 'ts'
   },
   {
-    code: `@import "@santi020k/lumen-astro/styles.css";
+    code: `@import "@santi020k/lumen/styles.css";
 
 :root[data-theme="santi020k-light"] {
   color-scheme: light;
@@ -295,7 +295,7 @@ export const frameworkSetups: FrameworkSetup[] = [
   },
   {
     id: 'react',
-    installCommands: buildInstallCommands('@santi020k/lumen-react', '@santi020k/lumen-astro'),
+    installCommands: buildInstallCommands('@santi020k/lumen', '@santi020k/lumen-react'),
     label: 'React',
     lang: 'tsx',
     note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
@@ -304,7 +304,7 @@ export const frameworkSetups: FrameworkSetup[] = [
   },
   {
     id: 'elements',
-    installCommands: buildInstallCommands('@santi020k/lumen-elements', '@santi020k/lumen-astro'),
+    installCommands: buildInstallCommands('@santi020k/lumen', '@santi020k/lumen-elements'),
     label: 'Elements',
     lang: 'html',
     note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, select, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
@@ -329,7 +329,7 @@ export const frameworkGuides = [
     ],
     code: `---
 import { Button, Card, UIPrimitives } from '@santi020k/lumen-astro'
-import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen/styles.css'
 ---
 
 <UIPrimitives />
@@ -346,7 +346,7 @@ import '@santi020k/lumen-astro/styles.css'
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useResizable, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
-    code: `import '@santi020k/lumen-astro/styles.css'
+    code: `import '@santi020k/lumen/styles.css'
 import { Button, Card, useDialog } from '@santi020k/lumen-react'
 
 export function Actions() {
@@ -367,7 +367,7 @@ export function Actions() {
     ],
     code: `<script type="module">
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
-  import '@santi020k/lumen-astro/styles.css'
+  import '@santi020k/lumen/styles.css'
 
   defineLumenElements()
 </script>
