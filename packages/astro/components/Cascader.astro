@@ -3,10 +3,17 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
-interface Props extends HTMLAttributes<'div'> {
+interface CascaderOption {
+  children?: CascaderOption[]
+  label: string
+  value: string
+}
+
+export interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
   name?: string
+  options?: CascaderOption[]
   placeholder?: string
 }
 
@@ -14,9 +21,39 @@ const {
   class: classProp = '',
   className = '',
   name,
+  options = [],
   placeholder = 'Select…',
   ...rest
 } = Astro.props
+
+interface RenderedColumn {
+  id: string
+  options: { label: string; nextId?: string | undefined; value: string }[]
+  root: boolean
+}
+
+let columnCount = 0
+const columns: RenderedColumn[] = []
+
+const buildColumn = (items: CascaderOption[], root: boolean): string => {
+  columnCount += 1
+
+  const id = `ui-cascader-col-${columnCount}`
+
+  const rendered = items.map(item => ({
+    label: item.label,
+    nextId: item.children && item.children.length > 0 ? buildColumn(item.children, false) : undefined,
+    value: item.value
+  }))
+
+  columns.push({ id, options: rendered, root })
+
+  return id
+}
+
+if (options.length > 0) {
+  buildColumn(options, true)
+}
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-cascader'
@@ -25,9 +62,28 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <div class:list={classList} data-surface="default" data-ui-cascader data-ui-popover {...passthrough}>
   <button aria-expanded="false" aria-haspopup="listbox" class="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
-    <span data-ui-cascader-value data-ui-cascader-placeholder={placeholder}>{placeholder}</span>
+    <span data-ui-cascader-placeholder={placeholder} data-ui-cascader-value>{placeholder}</span>
   </button>
   <div class="ui-cascader__panel" data-ui-panel hidden>
+    {columns.map(column => (
+      <ol class="ui-cascader__column" hidden={!column.root} id={column.id}>
+        {column.options.map(option => (
+          <li>
+            <button
+              class="ui-cascader__option"
+              data-label={option.label}
+              data-ui-cascader-next={option.nextId ? `#${option.nextId}` : undefined}
+              data-ui-cascader-option
+              data-value={option.value}
+              type="button"
+            >
+              <span>{option.label}</span>
+              {option.nextId && <span aria-hidden="true">&rsaquo;</span>}
+            </button>
+          </li>
+        ))}
+      </ol>
+    ))}
     <slot />
   </div>
   {name && <input data-ui-cascader-input name={name} type="hidden" />}

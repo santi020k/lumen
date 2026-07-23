@@ -3564,12 +3564,14 @@
           const rect = target.getBoundingClientRect()
 
           popover.style.top = `${rect.bottom + 8}px`
+
           popover.style.left = `${rect.left}px`
         }
       }
 
       const open = (): void => {
         root.hidden = false
+
         index = 0
 
         positionStep()
@@ -3641,7 +3643,7 @@
 
         const moved: string[] = []
 
-        for (const checkbox of [...from.querySelectorAll<HTMLInputElement>('[data-ui-transfer-item]')]) {
+        for (const checkbox of from.querySelectorAll<HTMLInputElement>('[data-ui-transfer-item]')) {
           if (!checkbox.checked) continue
 
           const item = checkbox.closest<HTMLElement>('.ui-transfer__item')
@@ -3748,6 +3750,7 @@
     }
   }
 
+  // cspell:disable-next-line
   const initCascaders = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-cascader]')) {
       if (root.dataset.uiCascaderBound === 'true') continue
@@ -3898,6 +3901,7 @@
 
     initMentions(scope)
 
+    // cspell:disable-next-line
     initCascaders(scope)
 
     initTreeSelects(scope)

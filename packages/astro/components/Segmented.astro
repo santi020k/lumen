@@ -8,7 +8,8 @@ type SegmentedOption = string | { disabled?: boolean; label: string; value: stri
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
-  name: string
+  defaultValue?: string
+  name?: string
   options?: SegmentedOption[]
   size?: 'default' | 'sm' | 'lg'
   value?: string
@@ -18,10 +19,11 @@ const {
   'aria-label': ariaLabel,
   class: classProp = '',
   className = '',
-  name,
+  defaultValue,
+  name = 'segmented',
   options = [],
   size = 'default',
-  value,
+  value = defaultValue,
   ...rest
 } = Astro.props
 

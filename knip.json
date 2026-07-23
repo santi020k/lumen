@@ -12,10 +12,12 @@
     },
     "apps/docs": {
       "entry": [
-        "src/pages/**/*.astro"
+        "src/pages/**/*.astro",
+        "scripts/**/*.{js,mjs}"
       ],
       "project": [
-        "src/**/*.{astro,css,ts}"
+        "src/**/*.{astro,css,ts}",
+        "scripts/**/*.{js,mjs}"
       ]
     },
     "packages/astro": {

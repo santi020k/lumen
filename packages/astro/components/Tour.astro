@@ -3,14 +3,22 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
+type TourStep = { content: string; target: string; title?: string }
+
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  closeLabel?: string
+  nextLabel?: string
+  steps?: TourStep[]
 }
 
 const {
   class: classProp = '',
   className = '',
+  closeLabel = 'Done',
+  nextLabel = 'Next',
+  steps = [],
   ...rest
 } = Astro.props
 
@@ -27,6 +35,18 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 >
   <div aria-hidden="true" class="ui-tour__backdrop" data-ui-tour-backdrop></div>
   <div class="ui-tour__popover" data-ui-tour-popover role="dialog" aria-modal="false">
+    {steps.map((step, index) => (
+      <div class="ui-tour__step" data-target={step.target} data-ui-tour-step hidden={index !== 0}>
+        {step.title && <p class="ui-tour__title">{step.title}</p>}
+        <p class="ui-tour__content">{step.content}</p>
+        <div class="ui-tour__actions">
+          <button class="ui-button ui-button--ghost ui-button--sm" data-ui-tour-close type="button">{closeLabel}</button>
+          {index < steps.length - 1 && (
+            <button class="ui-button ui-button--default ui-button--sm" data-ui-tour-next type="button">{nextLabel}</button>
+          )}
+        </div>
+      </div>
+    ))}
     <slot />
   </div>
 </div>

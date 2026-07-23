@@ -3,7 +3,10 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
+type SpeedDialAction = { icon?: string; label: string; value?: string }
+
 interface Props extends HTMLAttributes<'div'> {
+  actions?: SpeedDialAction[]
   class?: string
   className?: string
   direction?: 'up' | 'down' | 'left' | 'right'
@@ -11,6 +14,7 @@ interface Props extends HTMLAttributes<'div'> {
 }
 
 const {
+  actions = [],
   class: classProp = '',
   className = '',
   direction = 'up',
@@ -29,6 +33,19 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     <span aria-hidden="true" class="ui-speed-dial__icon"></span>
   </button>
   <menu class="ui-speed-dial__actions" data-ui-speed-dial-actions>
+    {actions.map(action => (
+      <li>
+        <button
+          aria-label={action.label}
+          class="ui-speed-dial__action"
+          data-icon={action.icon}
+          data-value={action.value ?? action.label}
+          type="button"
+        >
+          <span class="ui-speed-dial__action-label">{action.label}</span>
+        </button>
+      </li>
+    ))}
     <slot />
   </menu>
 </div>

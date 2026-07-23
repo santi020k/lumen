@@ -1010,11 +1010,15 @@ export const componentDocs: ComponentDoc[] = ([
   ['Segmented', 'Forms', 'A segmented control for mutually exclusive options.', '<Segmented options={["Day", "Week", "Month"]} />'],
   ['Toolbar', 'Layout', 'A horizontal toolbar for grouping actions.', '<Toolbar><Button>Bold</Button><Button>Italic</Button></Toolbar>'],
   ['Descriptions', 'Data display', 'A key-value description list component.', '<Descriptions items={[{ label: "Name", value: "Alice" }]} />'],
-  ['Popconfirm', 'Overlays', 'A confirmation popover for destructive actions.', '<Popconfirm title="Delete?" onConfirm={handleDelete}><Button>Delete</Button></Popconfirm>'],
-  ['Transfer', 'Forms', 'A dual-panel list for transferring items between sets.', '<Transfer dataSource={items} targetKeys={selected} />'],
-  ['Watermark', 'Layout', 'Overlays a text or image watermark on content.', '<Watermark content=\"Draft\"><div>Content</div></Watermark>'],
-  ['Affix', 'Layout', 'Sticks an element to a fixed position when scrolled past.', '<Affix offsetTop={64}><Button>Top</Button></Affix>'],
-  ['SpeedDial', 'Navigation', 'A floating action button with expandable sub-actions.', '<SpeedDial actions={[{ icon: \"plus\", label: \"Add\" }]} />']
+  ['Popconfirm', 'Overlays', 'A confirmation popover for destructive actions.', '<Popconfirm title="Delete this item?" confirmLabel="Delete"><Button variant="destructive">Delete</Button></Popconfirm>'],
+  ['Transfer', 'Forms', 'A dual-panel list for transferring items between sets.', '<Transfer sourceTitle="Available" targetTitle="Selected" items={[{ key: "1", label: "Item 1" }]} />'],
+  ['Cascader', 'Forms', 'A cascading selector for hierarchical options.', '<Cascader placeholder="Select category" options={[{ label: "Category A", value: "a", children: [{ label: "Item A1", value: "a1" }] }]} />'],
+  ['TreeSelect', 'Forms', 'A dropdown backed by a hierarchical tree of options.', '<TreeSelect placeholder="Select node" treeData={[{ label: "Root", value: "root", children: [{ label: "Child", value: "child" }] }]} />'],
+  ['Mentions', 'Forms', 'A textarea with @-mention autocomplete.', '<Mentions placeholder="@mention someone" options={["alice", "bob", "carol"]} />'],
+  ['QRCode', 'Data display', 'A frame for a rendered QR code image.', '<QRCode value="https://example.com" size={160} />'],
+  ['Watermark', 'Layout', 'Overlays a text or image watermark on content.', '<Watermark content="Draft"><div>Content</div></Watermark>'],
+  ['Affix', 'Layout', 'Sticks an element to a fixed position when scrolled past.', '<Affix offset={64}><Button>Top</Button></Affix>'],
+  ['SpeedDial', 'Navigation', 'A floating action button with expandable sub-actions.', '<SpeedDial><Button>Add</Button></SpeedDial>']
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),

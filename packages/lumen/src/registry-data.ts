@@ -1522,6 +1522,166 @@ export const lumenRegistry = {
         "packages/astro/components/GradientDivider.astro",
         "packages/react/src/components.tsx"
       ]
+    },
+    {
+      "name": "Stepper",
+      "type": "component",
+      "category": "Navigation",
+      "description": "A multi-step progress indicator.",
+      "files": [
+        "packages/astro/components/Stepper.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "FileUpload",
+      "type": "component",
+      "category": "Forms",
+      "description": "A file upload input with drag-and-drop support.",
+      "files": [
+        "packages/astro/components/FileUpload.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Tour",
+      "type": "component",
+      "category": "Overlays",
+      "description": "A guided product tour component.",
+      "files": [
+        "packages/astro/components/Tour.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Anchor",
+      "type": "component",
+      "category": "Navigation",
+      "description": "A side navigation anchor for in-page sections.",
+      "files": [
+        "packages/astro/components/Anchor.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Segmented",
+      "type": "component",
+      "category": "Forms",
+      "description": "A segmented control for mutually exclusive options.",
+      "files": [
+        "packages/astro/components/Segmented.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Toolbar",
+      "type": "component",
+      "category": "Layout",
+      "description": "A horizontal toolbar for grouping actions.",
+      "files": [
+        "packages/astro/components/Toolbar.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Descriptions",
+      "type": "component",
+      "category": "Data display",
+      "description": "A key-value description list component.",
+      "files": [
+        "packages/astro/components/Descriptions.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Popconfirm",
+      "type": "component",
+      "category": "Overlays",
+      "description": "A confirmation popover for destructive actions.",
+      "files": [
+        "packages/astro/components/Popconfirm.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Transfer",
+      "type": "component",
+      "category": "Forms",
+      "description": "A dual-panel list for transferring items between sets.",
+      "files": [
+        "packages/astro/components/Transfer.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Cascader",
+      "type": "component",
+      "category": "Forms",
+      "description": "A cascading selector for hierarchical options.",
+      "files": [
+        "packages/astro/components/Cascader.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "TreeSelect",
+      "type": "component",
+      "category": "Forms",
+      "description": "A dropdown backed by a hierarchical tree of options.",
+      "files": [
+        "packages/astro/components/TreeSelect.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Mentions",
+      "type": "component",
+      "category": "Forms",
+      "description": "A textarea with @-mention autocomplete.",
+      "files": [
+        "packages/astro/components/Mentions.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "QRCode",
+      "type": "component",
+      "category": "Data display",
+      "description": "A frame for a rendered QR code image.",
+      "files": [
+        "packages/astro/components/QRCode.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Watermark",
+      "type": "component",
+      "category": "Layout",
+      "description": "Overlays a text or image watermark on content.",
+      "files": [
+        "packages/astro/components/Watermark.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Affix",
+      "type": "component",
+      "category": "Layout",
+      "description": "Sticks an element to a fixed position when scrolled past.",
+      "files": [
+        "packages/astro/components/Affix.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "SpeedDial",
+      "type": "component",
+      "category": "Navigation",
+      "description": "A floating action button with expandable sub-actions.",
+      "files": [
+        "packages/astro/components/SpeedDial.astro",
+        "packages/react/src/components.tsx"
+      ]
     }
   ]
 } as const satisfies LumenRegistry
