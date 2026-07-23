@@ -3,10 +3,16 @@ export interface ComponentDoc {
   name: string
   category: 'Actions' | 'Brand' | 'Data display' | 'Feedback' | 'Forms' | 'Layout' | 'Navigation' | 'Overlays'
   glass?: boolean
+  guidance?: ComponentGuidance
   keyboardInteractions?: KeyboardInteractionRow[]
   runtimeEvents?: RuntimeEventRow[]
   summary: string
   example: string
+}
+
+interface ComponentGuidance {
+  distinction?: string
+  when: string
 }
 
 interface ComponentApiRow {
@@ -83,7 +89,7 @@ const buildInstallCommands = (...packages: string[]): InstallCommand[] =>
     label
   }))
 
-const installCommands = buildInstallCommands('@santi020k/lumen', '@santi020k/lumen-astro')
+const installCommands = buildInstallCommands('@santi020k/lumen-astro')
 
 const astroUsage = `---
 import { Button, Card, Input } from '@santi020k/lumen-astro'
@@ -122,14 +128,14 @@ const elementsUsage = `<script type="module">
 export const globalStyleSetups: GlobalStyleSetup[] = [
   {
     code: `@import "tailwindcss";
-@import "@santi020k/lumen/styles.css";`,
-    description: 'Use this in your main Tailwind CSS entry, such as src/styles/global.css or app.css.',
-    label: 'Tailwind CSS',
+@import "@santi020k/lumen-astro/styles.css";`,
+    description: 'Use the stylesheet exported by your framework package in your main CSS entry.',
+    label: 'Astro + Tailwind',
     lang: 'css'
   },
   {
     code: `---
-import '@santi020k/lumen/styles.css'
+import '@santi020k/lumen-astro/styles.css'
 ---
 
 <html lang="en">
@@ -142,7 +148,7 @@ import '@santi020k/lumen/styles.css'
     lang: 'astro'
   },
   {
-    code: `import '@santi020k/lumen/styles.css'
+    code: `import '@santi020k/lumen-react/styles.css'
 
 import { createRoot } from 'react-dom/client'
 
@@ -177,7 +183,7 @@ document.documentElement.dataset.theme = nextTheme`,
     lang: 'ts'
   },
   {
-    code: `@import "@santi020k/lumen/styles.css";
+    code: `@import "@santi020k/lumen-astro/styles.css";
 
 :root[data-theme="santi020k-light"] {
   color-scheme: light;
@@ -295,19 +301,19 @@ export const frameworkSetups: FrameworkSetup[] = [
   },
   {
     id: 'react',
-    installCommands: buildInstallCommands('@santi020k/lumen', '@santi020k/lumen-react'),
+    installCommands: buildInstallCommands('@santi020k/lumen-react'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the adapter alongside the shared stylesheet package, then import primitives directly. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
+    note: 'Install the React package, load its stylesheet once, then import primitives directly. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
   {
     id: 'elements',
-    installCommands: buildInstallCommands('@santi020k/lumen', '@santi020k/lumen-elements'),
+    installCommands: buildInstallCommands('@santi020k/lumen-elements'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the adapter alongside the shared stylesheet package, register Lumen elements once, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, select, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the Elements package, load its stylesheet once, register Lumen elements, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, select, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -329,7 +335,7 @@ export const frameworkGuides = [
     ],
     code: `---
 import { Button, Card, UIPrimitives } from '@santi020k/lumen-astro'
-import '@santi020k/lumen/styles.css'
+import '@santi020k/lumen-astro/styles.css'
 ---
 
 <UIPrimitives />
@@ -346,7 +352,7 @@ import '@santi020k/lumen/styles.css'
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useResizable, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
-    code: `import '@santi020k/lumen/styles.css'
+    code: `import '@santi020k/lumen-react/styles.css'
 import { Button, Card, useDialog } from '@santi020k/lumen-react'
 
 export function Actions() {
@@ -367,7 +373,7 @@ export function Actions() {
     ],
     code: `<script type="module">
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
-  import '@santi020k/lumen/styles.css'
+  import '@santi020k/lumen-elements/styles.css'
 
   defineLumenElements()
 </script>
@@ -906,6 +912,157 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ]
 }
 
+const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
+  Accordion: {
+    when: 'Use for a list of related sections when people may open and compare more than one section.',
+    distinction: 'Use Collapsible for one standalone disclosure rather than a coordinated group.'
+  },
+  Alert: {
+    when: 'Use for a status or outcome that should remain visible near the content it affects.',
+    distinction: 'Use Toast for temporary feedback, Callout for editorial emphasis, or Note for supporting context.'
+  },
+  AlertDialog: {
+    when: 'Use before an irreversible or high-impact action that requires an explicit decision.',
+    distinction: 'Use Dialog for ordinary focused tasks and Popconfirm for a compact confirmation beside its trigger.'
+  },
+  Autocomplete: {
+    when: 'Use when people may type any value but benefit from browser-native suggestions.',
+    distinction: 'Use Combobox when the value must come from a managed option list with richer keyboard behavior.'
+  },
+  Badge: {
+    when: 'Use as an inline label for status, category, plan, or other compact metadata.',
+    distinction: 'Use FloatingBadge for an overlaid notification count, Pill for a label with an attached count, or Marker for dot-led operational status.'
+  },
+  Bubble: {
+    when: 'Use for the visible text container of one chat message or short comment.',
+    distinction: 'Use Message to compose the full row, including avatar, author, timestamp, and a Bubble.'
+  },
+  ButtonLink: {
+    when: 'Use for navigation that needs button-level visual emphasis while preserving link behavior.',
+    distinction: 'Use Button for an action that changes state and Link for ordinary inline navigation.'
+  },
+  Callout: {
+    when: 'Use to pull an important explanation, caveat, or instruction out of surrounding prose.',
+    distinction: 'Use Alert for a system status or outcome and Note for quieter supplementary information.'
+  },
+  Collapsible: {
+    when: 'Use for one optional region such as advanced settings, details, or filters.',
+    distinction: 'Use Accordion when several related disclosures need shared structure.'
+  },
+  Combobox: {
+    when: 'Use when people need to search and choose from a controlled list of options.',
+    distinction: 'Use Select for selection without text search or Autocomplete when free-form values are allowed.'
+  },
+  DataTable: {
+    when: 'Use for dense records that need interactive behaviors such as sorting, filtering, or selection.',
+    distinction: 'Use Table for static semantic rows and columns, and TreeGrid for expandable hierarchical rows.'
+  },
+  Dialog: {
+    when: 'Use for a focused task or decision that temporarily interrupts the page.',
+    distinction: 'Use AlertDialog for dangerous confirmations, Sheet or Drawer for edge-aligned supporting work, and Popover for lightweight contextual content.'
+  },
+  Drawer: {
+    when: 'Use for temporary controls or navigation that slide in from an edge, especially on compact screens.',
+    distinction: 'Use Sheet for a secondary detail workflow and Dialog for a centered, blocking task.'
+  },
+  Eyebrow: {
+    when: 'Use as a short contextual label immediately above a heading.',
+    distinction: 'It styles a paragraph and does not replace a semantic heading or act as a status Badge.'
+  },
+  FloatingBadge: {
+    when: 'Use for a high-emphasis count or notification positioned over an icon, avatar, or control.',
+    distinction: 'Unlike Badge, it has notification styling and is intended for overlay placement; the parent layout controls its position.'
+  },
+  HoverCard: {
+    when: 'Use to preview richer information about a person, link, or object on hover and keyboard focus.',
+    distinction: 'Use Tooltip for a short label and Popover when the floating content contains actions or form controls.'
+  },
+  Marker: {
+    when: 'Use for compact operational status where a colored dot should carry the visual signal.',
+    distinction: 'Use Badge for a filled metadata label and Pill for a label paired with a count.'
+  },
+  Meter: {
+    when: 'Use to show a measurement within a known range, such as storage, signal, or score.',
+    distinction: 'Use Progress for task completion; Meter represents a current quantity, not work advancing toward completion.'
+  },
+  NativeSelect: {
+    when: 'Use when native platform behavior, mobile pickers, and minimal runtime are the priority.',
+    distinction: 'Use Select for Lumen’s enhanced custom control or Combobox when people need to search the options.'
+  },
+  Note: {
+    when: 'Use for supplementary information that should stay attached to nearby content.',
+    distinction: 'Use Callout for stronger editorial emphasis and Alert for status that requires attention.'
+  },
+  Pill: {
+    when: 'Use for a rounded label that may include a separate trailing count.',
+    distinction: 'Use Badge for status variants, FloatingBadge for an overlaid notification, or TagGroup for interactive/removable tags.'
+  },
+  Popconfirm: {
+    when: 'Use for a brief yes-or-no confirmation anchored directly to the action that triggered it.',
+    distinction: 'Use AlertDialog when the consequence is serious enough to require a modal interruption.'
+  },
+  Popover: {
+    when: 'Use for contextual floating content that may contain controls, actions, or a small form.',
+    distinction: 'Use Tooltip for one short explanation and HoverCard for a read-only preview.'
+  },
+  Progress: {
+    when: 'Use to communicate how much of a task, upload, or process has completed.',
+    distinction: 'Use Meter for a stable measurement, Spinner for indeterminate short waits, or Skeleton while page structure is loading.'
+  },
+  Prose: {
+    when: 'Use around rendered Markdown, CMS content, or other long-form content you do not style element by element.',
+    distinction: 'Use Typography for a deliberately composed article surface with Lumen’s heading and paragraph rhythm.'
+  },
+  Segmented: {
+    when: 'Use for a small set of mutually exclusive views or values that should remain visible at once.',
+    distinction: 'Use RadioGroup for form choices, Select when space is limited, or ToggleGroup when multiple options may be active.'
+  },
+  Select: {
+    when: 'Use for choosing one value from a controlled list with Lumen’s enhanced presentation.',
+    distinction: 'Use NativeSelect for platform-native behavior and Combobox when the option list needs text search.'
+  },
+  Sheet: {
+    when: 'Use for secondary details or workflows that stay visually connected to the current page.',
+    distinction: 'Use Drawer for navigation or filters that slide in, and Dialog for a centered task that demands focus.'
+  },
+  Sonner: {
+    when: 'Mount once as the live-region viewport that receives programmatically created toast notifications.',
+    distinction: 'Toast is the notification surface; Sonner is the container and announcement region that manages multiple toasts.'
+  },
+  Spinner: {
+    when: 'Use for a short wait when progress cannot be measured.',
+    distinction: 'Use Progress when completion can be quantified and Skeleton when reserving the shape of loading content.'
+  },
+  Stat: {
+    when: 'Use to pair one prominent metric with its concise label.',
+    distinction: 'Use Chart when the trend or relationship matters, or Descriptions for several equally weighted key–value facts.'
+  },
+  Switch: {
+    when: 'Use for a setting that takes effect immediately when turned on or off.',
+    distinction: 'Use Checkbox for form submission or agreement, and Toggle for a pressable tool state such as bold or pin.'
+  },
+  Toast: {
+    when: 'Use for brief, non-blocking feedback after an action or background event.',
+    distinction: 'Use Alert when the message must remain in the page; mount Sonner to manage and announce programmatic Toast instances.'
+  },
+  Toggle: {
+    when: 'Use for a pressable control that keeps an active state, such as pin, mute, or formatting.',
+    distinction: 'Use Switch for an immediate setting and Checkbox for a form value or agreement.'
+  },
+  ToggleGroup: {
+    when: 'Use to organize related pressed-state controls with shared keyboard navigation.',
+    distinction: 'Use Segmented for one mutually exclusive view/value and ButtonGroup for actions that do not retain selection.'
+  },
+  Tooltip: {
+    when: 'Use for a short, non-interactive explanation of an icon or compact control.',
+    distinction: 'Use HoverCard for a richer preview and Popover for interactive floating content.'
+  },
+  TreeGrid: {
+    when: 'Use when hierarchical rows also need aligned columns, such as a file tree with size and status.',
+    distinction: 'Use Tree for hierarchy without columns and DataTable for flat interactive records.'
+  }
+}
+
 export const componentDocs: ComponentDoc[] = ([
   ['Accordion', 'Layout', 'Stacks collapsible content sections.', '<Accordion><details open><summary>Billing</summary><p>Invoices and payment methods.</p></details></Accordion>'],
   ['Alert', 'Feedback', 'Surfaces contextual status messages.', '<Alert><strong>Project synced.</strong><p>Your tokens are available.</p></Alert>'],
@@ -922,7 +1079,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
   ['ButtonGroup', 'Actions', 'Groups related button actions.', '<ButtonGroup><Button variant="secondary">Back</Button><Button>Publish</Button></ButtonGroup>'],
   ['Calendar', 'Forms', 'Presents a calendar surface for date selection.', '<Calendar aria-label="Choose a delivery date" />'],
-  ['Callout', 'Feedback', 'Important notice or callout.', '<Callout>Note: This is important</Callout>'],
+  ['Callout', 'Feedback', 'Emphasizes an important explanation, caveat, or instruction within page content.', '<Callout><strong>Runtime required</strong><p>Mount UIPrimitives once in your root layout.</p></Callout>'],
   ['Card', 'Layout', 'Frames a focused item, metric, plan, or form.', '<Card><h2>Starter</h2><p>For personal projects.</p></Card>'],
   ['Carousel', 'Layout', 'Displays a horizontal sequence of slides.', '<Carousel aria-label="Featured templates"><article>Dashboard</article><article>Portfolio</article></Carousel>'],
   ['Chart', 'Data display', 'Frames metric headers, SVG plots, and captions for lightweight data visualization.', '<Chart aria-label="Revenue"><header><h3>Revenue</h3><strong data-ui-chart-value>$128K</strong></header><svg viewBox="0 0 120 40" role="img" aria-label="Revenue trend"><path d="M0 35 L30 26 L60 18 L90 22 L120 8" fill="none" stroke="currentColor" stroke-width="3" /></svg><figcaption>Revenue is up 42% since Q1.</figcaption></Chart>'],
@@ -941,20 +1098,20 @@ export const componentDocs: ComponentDoc[] = ([
   ['Drawer', 'Overlays', 'Slides in supporting navigation, filters, or task panels.', '<Button data-ui-drawer-trigger="filters-drawer">Open filters</Button><Drawer id="filters-drawer"><p>Filter controls</p><Button data-ui-drawer-close>Close</Button></Drawer>'],
   ['DropdownMenu', 'Overlays', 'Shows compact actions from a trigger.', '<DropdownMenu><Button data-ui-trigger>More</Button><div role="menu"><button role="menuitem">Rename</button></div></DropdownMenu>'],
   ['Empty', 'Feedback', 'Explains an empty state and next action.', '<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>'],
-  ['Eyebrow', 'Data display', 'Small heading or eyebrow text.', '<Eyebrow>New</Eyebrow>'],
+  ['Eyebrow', 'Data display', 'Introduces or categorizes the heading that immediately follows it.', '<header><Eyebrow>Framework guide</Eyebrow><h2>Build with Astro</h2></header>'],
   ['Field', 'Forms', 'Groups labels, controls, descriptions, and errors.', '<Field><Label for="email">Email</Label><Input id="email" type="email" /></Field>'],
-  ['FloatingBadge', 'Data display', 'A badge that floats above its container.', '<FloatingBadge>1</FloatingBadge>'],
-  ['FormattedDate', 'Data display', 'Displays a formatted date.', '<FormattedDate datetime="2024-01-01">Jan 1, 2024</FormattedDate>'],
+  ['FloatingBadge', 'Data display', 'Shows a high-emphasis notification count over an icon, avatar, or control.', '<span style="position: relative"><Button aria-label="Inbox">Inbox</Button><FloatingBadge style="position: absolute; right: -0.5rem; top: -0.5rem">12</FloatingBadge></span>'],
+  ['FormattedDate', 'Data display', 'Pairs human-readable date text with a machine-readable datetime value.', '<FormattedDate datetime="2026-07-23">July 23, 2026</FormattedDate>'],
   ['HoverCard', 'Overlays', 'Shows extra context on hover and focus.', '<HoverCard><a href="/team/santiago">Santiago</a><div role="tooltip">Maintainer of Lumen UI.</div></HoverCard>'],
   ['Icon', 'Data display', 'Renders Lucide icons with Lumen sizing and accessibility defaults.', '<Icon name="search" label="Search" /><Icon name="wand-sparkles" decorative />'],
-  ['Image', 'Data display', 'Displays an image.', '<Image alt="Lumen UI logo" src="/logo.svg" />'],
+  ['Image', 'Data display', 'Applies Lumen sizing and presentation to an accessible image.', '<Image alt="Lumen UI logo" src="/logo.svg" />'],
   ['Input', 'Forms', 'Captures short text, email, password, search, or numeric values.', '<Input id="email" name="email" type="email" placeholder="you@example.com" />'],
   ['InputGroup', 'Forms', 'Combines inputs with prefixes, suffixes, or controls.', '<InputGroup><span>https://</span><Input aria-label="Domain" placeholder="example.com" /></InputGroup>'],
   ['InputOTP', 'Forms', 'Collects one-time passcodes and verification codes.', '<InputOTP name="code" length={6} inputmode="numeric" />'],
   ['Item', 'Data display', 'Creates a compact row for lists and search results.', '<Item><strong>Production docs</strong><span>Ready for review</span></Item>'],
   ['Kbd', 'Data display', 'Displays keyboard shortcuts.', '<p>Open the command menu with <Kbd>Cmd K</Kbd>.</p>'],
   ['Label', 'Forms', 'Labels form controls with consistent spacing.', '<Label for="workspace">Workspace name</Label><Input id="workspace" />'],
-  ['Link', 'Navigation', 'A standard link.', '<Link href="#">Click me</Link>'],
+  ['Link', 'Navigation', 'Styles ordinary text navigation while preserving native anchor behavior.', '<Link href="/docs">Read the documentation</Link>'],
   ['Marker', 'Data display', 'Highlights status, position, or annotations.', '<Marker variant="success">Live</Marker>'],
   ['Menubar', 'Navigation', 'Creates horizontal application menus.', '<Menubar><button role="menuitem">File</button><button role="menuitem">View</button></Menubar>'],
   ['Message', 'Data display', 'Structures a chat, activity, or system message.', '<Message><Avatar>LM</Avatar><Bubble>Lumen components are installed.</Bubble></Message>'],
@@ -964,22 +1121,22 @@ export const componentDocs: ComponentDoc[] = ([
   ['NumberField', 'Forms', 'Captures constrained numeric values.', '<NumberField min="1" max="10" step="1" aria-label="Seats" />'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
   ['PhoneInput', 'Forms', 'Pairs a country dial-code select with a telephone number input.', '<PhoneInput name="phone" countryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />'],
-  ['Pill', 'Data display', 'A rounded pill badge.', '<Pill count={3}>Tag</Pill>'],
+  ['Pill', 'Data display', 'Pairs a rounded text label with an optional trailing count.', '<Pill count={12}>Notifications</Pill>'],
   ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
-  ['Prose', 'Layout', 'Formats markdown or rich text.', '<Prose><p>Text</p></Prose>'],
+  ['Prose', 'Layout', 'Adds readable spacing and typography to rendered Markdown or CMS content.', '<Prose><h2>Release notes</h2><p>Long-form content receives consistent reading rhythm.</p></Prose>'],
   ['RadioGroup', 'Forms', 'Groups mutually exclusive options.', '<RadioGroup><label><input type="radio" name="theme" value="light" /> Light</label><label><input type="radio" name="theme" value="dark" /> Dark</label></RadioGroup>'],
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],
   ['RichTextEditor', 'Forms', 'Frames rich text toolbar and editing compositions.', '<RichTextEditor><div role="toolbar"><ButtonGroup><Button data-ui-editor-command="bold">B</Button><Button data-ui-editor-command="italic">I</Button></ButtonGroup></div><div contenteditable="true">Draft release notes...</div></RichTextEditor>'],
   ['ScrollArea', 'Layout', 'Provides a styled scroll container.', '<ScrollArea style="max-height: 18rem"><p>Long release notes...</p></ScrollArea>'],
   ['Schedule', 'Data display', 'Displays calendar events across day, week, or resource grids.', '<Schedule><header><h2>Launch week</h2></header><div data-ui-schedule-grid><article data-ui-schedule-event>Planning</article><article data-ui-schedule-event>Ship</article></div></Schedule>'],
   ['SearchField', 'Forms', 'Captures search queries with native search semantics.', '<SearchField name="q" placeholder="Search docs" />'],
-  ['Select', 'Forms', 'Creates a custom select control.', '<Select name="framework" options={["Astro", "React", "Web Components"]} />'],
-  ['Separator', 'Layout', 'Separates related content groups.', '<Separator /><p>Next section</p>'],
+  ['Select', 'Forms', 'Provides an enhanced single-choice list when text search is not needed.', '<Select name="framework" options={["Astro", "React", "Web Components"]} placeholder="Choose a framework" />'],
+  ['Separator', 'Layout', 'Creates a semantic visual boundary between adjacent content groups.', '<section>Account settings</section><Separator /><section>Danger zone</section>'],
   ['Sheet', 'Overlays', 'Shows a side sheet for secondary flows.', '<Button data-ui-sheet-trigger="details-sheet">Open details</Button><Sheet id="details-sheet"><p>Details panel</p><Button data-ui-sheet-close>Close</Button></Sheet>'],
   ['Sidebar', 'Navigation', 'Builds persistent app navigation.', '<Sidebar><a href="/dashboard">Dashboard</a><a href="/settings">Settings</a></Sidebar>'],
   ['Skeleton', 'Feedback', 'Reserves space during loading states.', '<Skeleton style="height: 2.5rem" aria-label="Loading profile" />'],
-  ['SkipLink', 'Navigation', 'Skips to main content.', '<SkipLink href="#main">Skip</SkipLink>'],
+  ['SkipLink', 'Navigation', 'Lets keyboard users bypass repeated navigation and move directly to main content.', '<SkipLink href="#main">Skip to main content</SkipLink>'],
   ['Slider', 'Forms', 'Captures numeric values across a bounded range.', '<Slider name="opacity" min="0" max="100" value="80" />'],
   ['Sonner', 'Feedback', 'Provides the toast viewport for notifications.', '<Sonner aria-live="polite" />'],
   ['Spinner', 'Feedback', 'Indicates short loading states.', '<Spinner aria-label="Saving" />'],
@@ -989,45 +1146,45 @@ export const componentDocs: ComponentDoc[] = ([
   ['TagGroup', 'Forms', 'Groups removable or selectable tags.', '<TagGroup><span data-ui-tag role="listitem">Astro</span><span data-ui-tag role="listitem">Accessible</span></TagGroup>'],
   ['Textarea', 'Forms', 'Captures longer free-form text.', '<Textarea name="notes" rows={5} placeholder="Add release notes..." />'],
   ['ThemeBuilder', 'Data display', 'Builds scoped token previews with hue, scheme, manual color, and export controls.', '<ThemeBuilder data-ui-theme-target="#preview"><input data-ui-theme-brand-hue type="range" min="0" max="359" value="264" /><button data-ui-theme-export type="button">Copy CSS</button><textarea data-ui-theme-output></textarea></ThemeBuilder>'],
-  ['ThemeToggle', 'Actions', 'Toggles the color theme.', '<ThemeToggle>Toggle</ThemeToggle>'],
+  ['ThemeToggle', 'Actions', 'Switches between the configured light and dark color themes.', '<ThemeToggle>Switch theme</ThemeToggle>'],
   ['TimeField', 'Forms', 'Captures a native time value.', '<TimeField name="startTime" aria-label="Start time" />'],
   ['Toast', 'Feedback', 'Displays temporary feedback for background actions.', '<Toast><strong>Saved</strong><p>Your changes are live.</p></Toast>'],
-  ['Toggle', 'Actions', 'Represents an on/off action.', '<Toggle aria-label="Pin project" pressed={false}>Pin</Toggle>'],
-  ['ToggleGroup', 'Actions', 'Groups related toggles.', '<ToggleGroup><Toggle>Day</Toggle><Toggle pressed>Week</Toggle><Toggle>Month</Toggle></ToggleGroup>'],
+  ['Toggle', 'Actions', 'Keeps the pressed state of a tool action such as pin, mute, or bold.', '<Toggle aria-label="Pin project" pressed={false}>Pin</Toggle>'],
+  ['ToggleGroup', 'Actions', 'Coordinates related pressed-state controls with shared keyboard navigation.', '<ToggleGroup><Toggle>Grid</Toggle><Toggle pressed>List</Toggle><Toggle>Compact</Toggle></ToggleGroup>'],
   ['Tooltip', 'Overlays', 'Adds concise helper text to compact controls.', '<Tooltip><button aria-label="Save changes">Save</button><span role="tooltip">Save changes</span></Tooltip>'],
   ['Tree', 'Data display', 'Displays hierarchical navigation or object collections.', '<Tree><div role="treeitem" aria-expanded="true">src</div><div role="treeitem">index.ts</div></Tree>'],
   ['TreeGrid', 'Data display', 'Displays hierarchical rows with grid-like columns.', '<TreeGrid><div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div></TreeGrid>'],
   ['Typography', 'Data display', 'Applies Lumen text rhythm to article content.', '<Typography><h1>Release notes</h1><p>Lumen now includes production documentation.</p></Typography>'],
   ['VirtualList', 'Data display', 'Frames long scrollable collections for virtualization adapters.', '<VirtualList style="--ui-list-height: 16rem"><div>Row 1</div><div>Row 2</div></VirtualList>'],
-  ['LanguageToggle', 'Actions', 'A toggle for switching languages.', '<LanguageToggle aria-label="Change language">EN</LanguageToggle>'],
-  ['Particles', 'Layout', 'A generative background with particles.', '<Particles density="medium" />'],
-  ['ScrollReveal', 'Layout', 'A wrapper that reveals elements on scroll.', '<ScrollReveal animation="fade">\n  <div>Content</div>\n</ScrollReveal>'],
-  ['Stat', 'Data display', 'A component for displaying data metrics.', '<Stat label="Total Users" value="1,234" />'],
+  ['LanguageToggle', 'Actions', 'Presents the current locale as a compact control for changing language.', '<LanguageToggle aria-label="Change language">EN</LanguageToggle>'],
+  ['Particles', 'Layout', 'Adds a density-controlled decorative particle field behind foreground content.', '<div style="position: relative"><Particles density="medium" /><h2>Launch faster</h2></div>'],
+  ['ScrollReveal', 'Layout', 'Animates wrapped content as it first enters the viewport.', '<ScrollReveal animation="slide-up"><article>New release highlights</article></ScrollReveal>'],
+  ['Stat', 'Data display', 'Pairs one prominent metric with a concise descriptive label.', '<Stat label="Active workspaces" value="1,234" />'],
   ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter aria-label="Storage used" value={64} min={0} max={100}>64%</Meter>'],
-  ['Note', 'Data display', 'Displays a contextual note or information.', '<Note label="Info">This is a note.</Note>'],
-  ['Rating', 'Data display', 'Displays a star rating input or display.', '<Rating aria-label="Component rating" value={4} max={5} />'],
-  ['Timeline', 'Data display', 'Displays a list of events in chronological order.', '<Timeline>...</Timeline>'],
+  ['Note', 'Data display', 'Keeps supplementary information visually attached to nearby content.', '<Note label="Compatibility">Requires Safari 16.4 or newer.</Note>'],
+  ['Rating', 'Data display', 'Collects or presents a bounded star-based score.', '<Rating aria-label="Rate this component" value={4} max={5} />'],
+  ['Timeline', 'Data display', 'Orders milestones or activity events along a chronological track.', '<Timeline><Item><strong>10:00</strong> Design approved</Item><Item><strong>14:30</strong> Release deployed</Item></Timeline>'],
   ['AnimatedLogo', 'Brand', 'Reveals any inline SVG logo with accessible, reduced-motion-aware animation.', '<AnimatedLogo><svg role="img" aria-label="Acme" viewBox="0 0 120 32">...</svg></AnimatedLogo>'],
-  ['AnimatedPortrait', 'Brand', 'An animated portrait component.', '<AnimatedPortrait />'],
-  ['ButtonLink', 'Navigation', 'A button-styled link.', '<ButtonLink href="/">Home</ButtonLink>'],
-  ['CoverImage', 'Data display', 'A cover image component.', '<CoverImage src="/image.jpg" alt="Cover" />'],
-  ['GradientDivider', 'Layout', 'A gradient divider component.', '<GradientDivider />'],
-  ['Stepper', 'Navigation', 'A multi-step progress indicator.', '<Stepper steps={["Step 1", "Step 2", "Step 3"]} currentStep={1} />'],
-  ['FileUpload', 'Forms', 'A file upload input with drag-and-drop support.', '<FileUpload accept="image/*" />'],
-  ['Tour', 'Overlays', 'A guided product tour component.', '<Tour steps={[{ target: "#btn", content: "Click here" }]} />'],
-  ['Anchor', 'Navigation', 'A side navigation anchor for in-page sections.', '<Anchor items={[{ href: "#section", label: "Section" }]} />'],
-  ['Segmented', 'Forms', 'A segmented control for mutually exclusive options.', '<Segmented options={["Day", "Week", "Month"]} />'],
-  ['Toolbar', 'Layout', 'A horizontal toolbar for grouping actions.', '<Toolbar><Button>Bold</Button><Button>Italic</Button></Toolbar>'],
-  ['Descriptions', 'Data display', 'A key-value description list component.', '<Descriptions items={[{ label: "Name", value: "Alice" }]} />'],
-  ['Popconfirm', 'Overlays', 'A confirmation popover for destructive actions.', '<Popconfirm title="Delete this item?" confirmLabel="Delete"><Button variant="destructive">Delete</Button></Popconfirm>'],
-  ['Transfer', 'Forms', 'A dual-panel list for transferring items between sets.', '<Transfer sourceTitle="Available" targetTitle="Selected" items={[{ key: "1", label: "Item 1" }]} />'],
-  ['Cascader', 'Forms', 'A cascading selector for hierarchical options.', '<Cascader placeholder="Select category" options={[{ label: "Category A", value: "a", children: [{ label: "Item A1", value: "a1" }] }]} />'],
-  ['TreeSelect', 'Forms', 'A dropdown backed by a hierarchical tree of options.', '<TreeSelect placeholder="Select node" treeData={[{ label: "Root", value: "root", children: [{ label: "Child", value: "child" }] }]} />'],
-  ['Mentions', 'Forms', 'A textarea with @-mention autocomplete.', '<Mentions placeholder="@mention someone" options={["alice", "bob", "carol"]} />'],
-  ['QRCode', 'Data display', 'A frame for a rendered QR code image.', '<QRCode value="https://example.com" size={160} />'],
+  ['AnimatedPortrait', 'Brand', 'Presents a portrait with optional motion and floating profile facts.', '<AnimatedPortrait src="/portrait.jpg" alt="Portrait of Ana" showFloatingBadges />'],
+  ['ButtonLink', 'Navigation', 'Gives navigation the visual emphasis of a button while retaining anchor semantics.', '<ButtonLink href="/docs" showArrow>Read the docs</ButtonLink>'],
+  ['CoverImage', 'Data display', 'Presents responsive editorial artwork with optional hover lift and gradient treatment.', '<CoverImage image={cover} alt="Abstract purple forms" showBottomGradient />'],
+  ['GradientDivider', 'Layout', 'Separates sections with a decorative brand-colored gradient line.', '<section>Overview</section><GradientDivider /><section>Details</section>'],
+  ['Stepper', 'Navigation', 'Shows a person’s current position and progress through an ordered multi-step flow.', '<Stepper steps={["Account", "Workspace", "Review"]} currentStep={1} />'],
+  ['FileUpload', 'Forms', 'Collects files through a picker or drag-and-drop target.', '<FileUpload accept="image/*" aria-label="Upload profile image" />'],
+  ['Tour', 'Overlays', 'Guides people through product features using a sequence of anchored steps.', '<Tour steps={[{ target: "#publish", content: "Publish your changes when they are ready." }]} />'],
+  ['Anchor', 'Navigation', 'Links to sections within a long page and exposes the page’s local structure.', '<Anchor items={[{ href: "#installation", label: "Installation" }, { href: "#usage", label: "Usage" }]} />'],
+  ['Segmented', 'Forms', 'Presents a small, always-visible set of mutually exclusive values.', '<Segmented options={["Day", "Week", "Month"]} aria-label="Calendar view" />'],
+  ['Toolbar', 'Layout', 'Groups frequently used controls into one compact action row.', '<Toolbar aria-label="Text formatting"><Button>Bold</Button><Button>Italic</Button></Toolbar>'],
+  ['Descriptions', 'Data display', 'Presents a set of labeled facts as an aligned key–value list.', '<Descriptions items={[{ label: "Owner", value: "Alice" }, { label: "Status", value: "Active" }]} />'],
+  ['Popconfirm', 'Overlays', 'Requests a brief confirmation beside the action that triggered it.', '<Popconfirm title="Delete this item?" confirmLabel="Delete"><Button variant="destructive">Delete</Button></Popconfirm>'],
+  ['Transfer', 'Forms', 'Moves selected items between available and chosen collections.', '<Transfer sourceTitle="Available members" targetTitle="Project members" items={[{ key: "1", label: "Ana" }]} />'],
+  ['Cascader', 'Forms', 'Selects one value by drilling through dependent levels of a hierarchy.', '<Cascader placeholder="Choose location" options={[{ label: "Colombia", value: "co", children: [{ label: "Bogotá", value: "bog" }] }]} />'],
+  ['TreeSelect', 'Forms', 'Selects nodes from a branching hierarchy inside a dropdown.', '<TreeSelect placeholder="Choose team" treeData={[{ label: "Design", value: "design", children: [{ label: "Research", value: "research" }] }]} />'],
+  ['Mentions', 'Forms', 'Captures multi-line text with suggestions triggered by @ mentions.', '<Mentions placeholder="Comment and @mention a teammate" options={["alice", "bob", "carol"]} />'],
+  ['QRCode', 'Data display', 'Renders a scannable QR code for a URL or other short value.', '<QRCode value="https://example.com" size={160} aria-label="Open example.com" />'],
   ['Watermark', 'Layout', 'Overlays a text or image watermark on content.', '<Watermark content="Draft"><div>Content</div></Watermark>'],
-  ['Affix', 'Layout', 'Sticks an element to a fixed position when scrolled past.', '<Affix offset={64}><Button>Top</Button></Affix>'],
-  ['SpeedDial', 'Navigation', 'A floating action button with expandable sub-actions.', '<SpeedDial><Button>Add</Button></SpeedDial>']
+  ['Affix', 'Layout', 'Keeps important controls visible after their original position scrolls out of view.', '<Affix offset={64}><Button>Save draft</Button></Affix>'],
+  ['SpeedDial', 'Navigation', 'Expands a floating primary action into a compact set of related actions.', '<SpeedDial><Button aria-label="Create">+</Button><Button>New file</Button><Button>New folder</Button></SpeedDial>']
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
@@ -1035,6 +1192,7 @@ export const componentDocs: ComponentDoc[] = ([
     ...commonApiRows
   ],
   glass: glassComponentNameSet.has(name),
+  ...(componentGuidanceByName[name] ? { guidance: componentGuidanceByName[name] } : {}),
   ...(keyboardInteractionsByComponent[name] ? { keyboardInteractions: [...keyboardInteractionsByComponent[name]] } : {}),
   name,
   category,

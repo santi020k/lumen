@@ -6,19 +6,19 @@ This guide explains how to adopt Lumen incrementally.
 
 ## 1. Setup
 
-Install the framework packages you need alongside the shared stylesheet.
+Install the package for your framework. It includes the shared stylesheet.
 
 For Astro projects:
 
 ```bash
-pnpm add @santi020k/lumen @santi020k/lumen-astro
+pnpm add @santi020k/lumen-astro
 ```
 
 Import the stylesheet globally in your main layout or Tailwind CSS entry:
 
 ```css
 @import "tailwindcss";
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-astro/styles.css";
 ```
 
 For interactive primitives (Dialogs, Menus, Select, etc.), mount `UIPrimitives` once in your root layout:

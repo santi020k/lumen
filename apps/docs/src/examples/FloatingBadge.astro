@@ -1,5 +1,32 @@
 ---
-import { FloatingBadge } from '@santi020k/lumen-astro'
+import {
+  Avatar,
+  Button,
+  FloatingBadge,
+  Icon
+} from '@santi020k/lumen-astro'
 ---
 
-<FloatingBadge>12 new</FloatingBadge>
+<div style="display: flex; gap: 2rem; align-items: center;">
+  <span style="display: inline-flex; position: relative;">
+    <Button variant="outline" size="icon" aria-label="Inbox">
+      <Icon name="inbox" decorative />
+    </Button>
+    <FloatingBadge
+      aria-label="12 unread messages"
+      style="position: absolute; right: -0.65rem; top: -0.65rem;"
+    >
+      12
+    </FloatingBadge>
+  </span>
+
+  <span style="display: inline-flex; position: relative;">
+    <Avatar aria-label="Ana Torres">AT</Avatar>
+    <FloatingBadge
+      aria-label="3 notifications"
+      style="position: absolute; right: -0.65rem; top: -0.65rem;"
+    >
+      3
+    </FloatingBadge>
+  </span>
+</div>

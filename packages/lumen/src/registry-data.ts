@@ -1477,7 +1477,7 @@ export const lumenRegistry = {
       "name": "AnimatedLogo",
       "type": "component",
       "category": "Brand",
-      "description": "An animated logo component.",
+      "description": "Reveals any inline SVG logo with accessible, reduced-motion-aware animation.",
       "files": [
         "packages/astro/components/AnimatedLogo.astro",
         "packages/react/src/components.tsx"

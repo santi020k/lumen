@@ -7,13 +7,13 @@ This package registers standards-based custom elements for the shared Lumen prim
 ## Install
 
 ```bash
-pnpm add @santi020k/lumen @santi020k/lumen-elements
+pnpm add @santi020k/lumen-elements
 ```
 
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```css
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-elements/styles.css";
 ```
 
 ## Usage
@@ -85,7 +85,7 @@ unless an action supplies a custom event name.
 
 ## Glass surfaces
 
-Load `@santi020k/lumen/styles.css` once, register the elements, then use the shared glass
+Load `@santi020k/lumen-elements/styles.css` once, register the elements, then use the shared glass
 attributes.
 
 ```html

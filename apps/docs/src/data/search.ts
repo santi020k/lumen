@@ -41,6 +41,8 @@ const componentItems: DocsSearchItem[] = componentDocs.map(component => ({
     component.name,
     component.category,
     component.summary,
+    component.guidance?.when ?? '',
+    component.guidance?.distinction ?? '',
     component.glass ? 'glass surface' : '',
     canonicalComponentNames.has(component.name) ? 'canonical component primitive' : ''
   ),

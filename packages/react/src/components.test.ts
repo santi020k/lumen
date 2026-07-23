@@ -75,7 +75,7 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('wraps arbitrary logo artwork without imposing SVG content', () => {
-    const artwork = <svg aria-label="Acme logo" role="img" viewBox="0 0 24 24" />
+    const artwork = 'inline SVG artwork'
     const logo = AnimatedLogo({ children: artwork, className: 'brand-logo' }) as ReactElement
     const props = propsOf(logo)
 
