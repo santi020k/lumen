@@ -30,6 +30,7 @@ import { frameworkSetups } from '../data/docs'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
 const componentCount = lumenComponentNames.length
+const aiSkillInstallCommand = 'npx skills add santi020k/lumen --skill lumen-ui'
 
 const installerIcons = {
   astro: 'asterisk',
@@ -311,6 +312,50 @@ const categories = [
           ))}
         </div>
       </div>
+    </section>
+
+    <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
+      <div class="home-ai__copy">
+        <Eyebrow>AI-native UI</Eyebrow>
+        <h2 id="ai-title">Give your coding agent<br />the Lumen design system.</h2>
+        <p>
+          Install one portable skill for Codex, Claude Code, Cursor, Windsurf, and other Agent
+          Skills clients. It teaches your AI to choose real Lumen primitives, respect the current
+          framework, use semantic tokens, and verify accessible interactions.
+        </p>
+        <div class="home-ai__actions">
+          <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
+            Explore the AI skill
+          </ButtonLink>
+          <ButtonLink href="/docs/mcp" variant="inline">
+            Add live MCP context
+          </ButtonLink>
+        </div>
+      </div>
+      <Card class="home-ai__terminal" glass="subtle">
+        <div class="home-ai__terminal-head">
+          <span></span><span></span><span></span>
+          <Badge variant="outline">Agent Skills</Badge>
+        </div>
+        <div class="home-ai__terminal-line">
+          <span>$</span>
+          <code>{aiSkillInstallCommand}</code>
+        </div>
+        <div class="home-ai__agent-flow">
+          <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
+          <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
+          <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
+          <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
+        </div>
+        <Button
+          class="home-ai__copy-command"
+          data-copy-command={aiSkillInstallCommand}
+          variant="ghost"
+        >
+          <Icon decorative name="copy" size="sm" />
+          <span data-copy-feedback>Copy install command</span>
+        </Button>
+      </Card>
     </section>
 
     <section class="home-section home-container" aria-labelledby="framework-title">
@@ -935,6 +980,118 @@ const categories = [
     line-height: 1.65;
   }
 
+  .home-ai {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(24rem, 1.1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .home-ai__copy {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+  }
+
+  .home-ai__copy h2 {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), "Montserrat", sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 800;
+    letter-spacing: -.045em;
+    line-height: 1.02;
+  }
+
+  .home-ai__copy > p {
+    max-width: 36rem;
+    margin: .4rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: .95rem;
+    line-height: 1.75;
+  }
+
+  .home-ai__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem;
+    align-items: center;
+    margin-top: .5rem;
+  }
+
+  .home-ai__terminal {
+    display: grid;
+    gap: 1rem;
+    overflow: hidden;
+    border-color: hsl(var(--brand) / .22);
+    background:
+      radial-gradient(circle at 90% 0%, hsl(var(--brand) / .16), transparent 34%),
+      hsl(var(--surface) / .82);
+    box-shadow: 0 28px 72px -52px hsl(var(--ink) / .55);
+    padding: 1rem;
+  }
+
+  .home-ai__terminal-head {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+  }
+
+  .home-ai__terminal-head > span {
+    width: .55rem;
+    height: .55rem;
+    border-radius: 999px;
+    background: hsl(var(--line));
+  }
+
+  .home-ai__terminal-head :global(.ui-badge) {
+    margin-left: auto;
+  }
+
+  .home-ai__terminal-line {
+    display: flex;
+    gap: .65rem;
+    overflow-x: auto;
+    border: 1px solid hsl(var(--line) / .8);
+    border-radius: .8rem;
+    background: hsl(var(--canvas) / .78);
+    padding: .9rem;
+    color: hsl(var(--brand));
+    font: 700 .76rem/1.5 var(--santi020k-font-mono, monospace);
+    white-space: nowrap;
+  }
+
+  .home-ai__terminal-line code {
+    color: hsl(var(--ink));
+  }
+
+  .home-ai__agent-flow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .55rem;
+  }
+
+  .home-ai__agent-flow span {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    border-radius: .7rem;
+    background: hsl(var(--surface-muted) / .72);
+    padding: .7rem;
+    color: hsl(var(--ink-soft));
+    font-size: .72rem;
+    font-weight: 700;
+  }
+
+  .home-ai__agent-flow :global(.ui-icon) {
+    color: hsl(var(--brand));
+  }
+
+  .home-ai__copy-command:global(.ui-button) {
+    justify-self: start;
+    color: hsl(var(--ink-soft));
+  }
+
   .home-framework {
     margin-top: 3rem;
     border: 1px solid hsl(var(--line) / .8);
@@ -1009,6 +1166,14 @@ const categories = [
 
     .home-section__aside {
       max-width: 34rem;
+    }
+
+    .home-ai {
+      grid-template-columns: 1fr;
+    }
+
+    .home-ai__copy > p {
+      max-width: 42rem;
     }
   }
 
@@ -1095,6 +1260,10 @@ const categories = [
     .home-principle + .home-principle {
       border-top: 1px solid hsl(var(--line));
       border-left: 0;
+    }
+
+    .home-ai__agent-flow {
+      grid-template-columns: 1fr;
     }
 
     .home-specimen__swatches span::before {

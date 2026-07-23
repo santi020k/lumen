@@ -75,7 +75,19 @@ If you are replacing an older internal design system or duplicated UI primitives
 
 ## Agent and Registry Surfaces
 
-Lumen includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and
+Install the portable Lumen Agent Skill in Codex, Claude Code, Cursor, Windsurf, and other compatible
+AI coding tools:
+
+```bash
+npx skills add santi020k/lumen --skill lumen-ui
+```
+
+The canonical skill lives in [skills/lumen-ui](skills/lumen-ui). It teaches agents how to select,
+compose, theme, and verify Lumen primitives while preserving the app's framework and architecture.
+Pair it with [`@santi020k/lumen-mcp`](packages/mcp/README.md) when the agent should search the live
+catalog and retrieve current component source, props, tokens, and rules.
+
+Lumen also includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and
 [registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the
 component catalog, setup rules, recipes, and installable file groups. The current roadmap lives in
 [docs/feature-roadmap.md](docs/feature-roadmap.md).

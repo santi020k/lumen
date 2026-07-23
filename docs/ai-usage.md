@@ -3,6 +3,23 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
+## Install the Lumen Agent Skill
+
+Lumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:
+
+```bash
+npx skills add santi020k/lumen --skill lumen-ui
+```
+
+The source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable
+framework-selection, component-composition, theming, accessibility, and verification workflow.
+Use it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific
+requests.
+
+The skill and MCP server complement each other: the skill explains how to work, while
+`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,
+source, tokens, resources, and rules.
+
 ## Pick the Right Package
 
 Use the framework requested by the user. Every adapter shares the same Lumen foundation.
@@ -16,6 +33,52 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
+
+## MCP-Assisted Workflow
+
+Connect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns
+validated structured content as well as readable text, so agents can select components without
+scraping documentation.
+
+```bash
+codex mcp add lumen -- npx -y @santi020k/lumen-mcp
+```
+
+For Codex project configuration:
+
+```toml
+[mcp_servers.lumen]
+enabled = true
+command = "npx"
+args = ["-y", "@santi020k/lumen-mcp"]
+```
+
+Use this sequence:
+
+1. Read `lumen://rules`.
+2. Search for the use case with `lumen_search`.
+3. Inspect the selected framework with `lumen_get_component` and `detail: "usage"`.
+4. Read related multi-component guidance with `lumen_get_recipe`.
+5. Request `detail: "source"` only when the usage contract is insufficient.
+6. Read `lumen://tokens` before introducing custom styling.
+
+Example framework-aware component request:
+
+```json
+{
+  "name": "lumen_get_component",
+  "arguments": {
+    "name": "DateRangePicker",
+    "framework": "react",
+    "detail": "usage"
+  }
+}
+```
+
+Stable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,
+`lumen://components/{name}`, and `lumen://recipes/{name}`. See
+[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,
+local repository, and programmatic examples.
 
 ## Minimal Setup
 

@@ -1,0 +1,384 @@
+---
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Badge, Card, Icon } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../components/CodeBlock.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const installCommand = 'npx skills add santi020k/lumen --skill lumen-ui'
+const skillUrl = 'https://github.com/santi020k/lumen/tree/main/skills/lumen-ui'
+
+const workflow = [
+  ['01', 'Understand the app', 'The skill detects Astro, React, or Web Components and preserves the project’s architecture.', 'scan-search'],
+  ['02', 'Use real contracts', 'It retrieves current components, props, tokens, and rules instead of inventing a parallel UI system.', 'blocks'],
+  ['03', 'Compose and verify', 'It maps product intent to accessible Lumen primitives, then checks the edited surface.', 'shield-check']
+] as const
+
+const compatibleAgents = [
+  'Codex',
+  'Claude Code',
+  'Cursor',
+  'Gemini CLI',
+  'GitHub Copilot',
+  'Windsurf'
+] as const
+
+const examplePrompt = `Use $lumen-ui to build an account settings page in this app.
+Keep the current framework and data flow, use Lumen primitives and tokens,
+and include validation, loading, success, and keyboard states.`
+---
+
+<DocsLayout
+  description="Install the portable Lumen UI agent skill for Codex, Claude Code, Cursor, and other AI coding tools."
+  title="AI skill - Lumen UI"
+>
+  <div class="skill-page">
+    <DocsPageHero
+      description="A portable Agent Skill that teaches coding assistants how to select, compose, theme, and verify Lumen components across Astro, React, and Web Components."
+      eyebrow="AI-native UI"
+      stats={[
+        { label: 'Install', value: '1 command' },
+        { label: 'Targets', value: 3 },
+        { label: 'Format', value: 'SKILL.md' }
+      ]}
+      title="Give your AI the Lumen design system."
+    >
+      <Fragment slot="actions">
+        <a
+          class="
+            ui-button ui-button--default-size ui-button--default no-underline
+          "
+          href="#install"
+        >
+          Install the skill
+          <Icon decorative name="arrow-down" size="sm" />
+        </a>
+        <a
+          class="
+            ui-button ui-button--default-size ui-button--outline no-underline
+          "
+          href={skillUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Read the source
+          <Icon decorative name="arrow-up-right" size="sm" />
+        </a>
+      </Fragment>
+
+      <div class="skill-hero-card" slot="visual" aria-label="Lumen skill workflow">
+        <div class="skill-hero-card__prompt">
+          <span>YOU</span>
+          <p>Build a focused settings screen with Lumen.</p>
+        </div>
+        <div class="skill-hero-card__agent">
+          <span><Icon decorative name="sparkles" size="sm" /></span>
+          <p>
+            <strong>$lumen-ui</strong>
+            <small>Framework · components · tokens · accessibility</small>
+          </p>
+        </div>
+        <div class="skill-hero-card__result">
+          <span><Icon decorative name="circle-check" size="sm" /></span>
+          <p>On-system implementation</p>
+        </div>
+      </div>
+    </DocsPageHero>
+
+    <section class="skill-section" id="install" aria-labelledby="install-title">
+      <div class="skill-section__heading">
+        <div>
+          <p>Open Agent Skills</p>
+          <h2 id="install-title">Install once from the repository</h2>
+        </div>
+        <p>
+          The standard skills CLI discovers the canonical skill in Lumen’s GitHub repository and
+          installs it into the AI coding tools you select.
+        </p>
+      </div>
+
+      <Card class="skill-install" glass="subtle">
+        <CodeBlock code={installCommand} lang="bash" title="Terminal" />
+        <div class="skill-agents" aria-label="Compatible AI coding tools">
+          {compatibleAgents.map(agent => <Badge variant="outline">{agent}</Badge>)}
+          <Badge variant="secondary">and other Agent Skills clients</Badge>
+        </div>
+      </Card>
+    </section>
+
+    <section class="skill-section" aria-labelledby="workflow-title">
+      <div class="skill-section__heading">
+        <div>
+          <p>Built for implementation</p>
+          <h2 id="workflow-title">From product intent to Lumen code</h2>
+        </div>
+        <p>
+          The skill supplies the durable workflow. Current component details can come from the
+          installed packages, the Lumen CLI, documentation, or the optional MCP server.
+        </p>
+      </div>
+
+      <ol class="skill-workflow">
+        {workflow.map(([number, title, description, icon]) => (
+          <li>
+            <span>{number}</span>
+            <Icon decorative name={icon} />
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <div class="skill-pair">
+      <Card as="section" class="skill-pair__card" aria-labelledby="skill-layer-title" variant="muted">
+        <Badge variant="outline">Portable guidance</Badge>
+        <h2 id="skill-layer-title">The skill</h2>
+        <p>
+          Gives any compatible agent Lumen’s framework choices, design language, component-selection
+          heuristics, accessibility guardrails, and completion checklist.
+        </p>
+        <a href={skillUrl} rel="noopener noreferrer" target="_blank">
+          View SKILL.md <Icon decorative name="arrow-up-right" size="sm" />
+        </a>
+      </Card>
+
+      <Card as="section" class="skill-pair__card" aria-labelledby="mcp-layer-title" variant="muted">
+        <Badge variant="outline">Live catalog</Badge>
+        <h2 id="mcp-layer-title">The MCP server</h2>
+        <p>
+          Adds live component search, real source and prop lookup, tokens, and agent rules. Use it
+          with the skill for the richest AI-native Lumen workflow.
+        </p>
+        <a href="/docs/mcp">
+          Connect the MCP server <Icon decorative name="arrow-right" size="sm" />
+        </a>
+      </Card>
+    </div>
+
+    <section class="skill-section" aria-labelledby="prompt-title">
+      <div class="skill-section__heading">
+        <div>
+          <p>Try it</p>
+          <h2 id="prompt-title">Invoke Lumen in the request</h2>
+        </div>
+        <p>
+          Explicit invocation is useful when several design or framework skills are installed. The
+          skill can also trigger automatically when the task names Lumen.
+        </p>
+      </div>
+      <CodeBlock code={examplePrompt} title="Prompt" />
+    </section>
+  </div>
+</DocsLayout>
+
+<style>
+  .skill-page,
+  .skill-section {
+    display: grid;
+  }
+
+  .skill-page {
+    gap: 3.5rem;
+  }
+
+  .skill-section {
+    gap: 1.4rem;
+    scroll-margin-top: 6rem;
+  }
+
+  .skill-hero-card {
+    display: grid;
+    gap: .6rem;
+    padding: .8rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / .62);
+    backdrop-filter: blur(14px);
+  }
+
+  .skill-hero-card > div {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .75rem;
+    border-radius: .75rem;
+  }
+
+  .skill-hero-card__prompt,
+  .skill-hero-card__result {
+    background: hsl(var(--surface) / .78);
+  }
+
+  .skill-hero-card__agent {
+    margin-left: 1.4rem;
+    background: hsl(var(--brand-soft) / .85);
+    color: hsl(var(--brand));
+  }
+
+  .skill-hero-card span {
+    display: grid;
+    min-width: 2rem;
+    place-items: center;
+    color: hsl(var(--brand));
+    font: 800 .6rem/1 ui-monospace, monospace;
+  }
+
+  .skill-hero-card p {
+    display: grid;
+    gap: .1rem;
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .78rem;
+  }
+
+  .skill-hero-card strong {
+    color: hsl(var(--ink));
+    font-family: ui-monospace, monospace;
+  }
+
+  .skill-hero-card small {
+    color: hsl(var(--ink-muted));
+    font-size: .65rem;
+  }
+
+  .skill-section__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, .85fr);
+    gap: 2rem;
+    align-items: end;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .skill-section__heading > div > p {
+    color: hsl(var(--brand));
+    font-size: .7rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .skill-section__heading h2,
+  .skill-pair__card h2 {
+    margin-top: .25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -.035em;
+  }
+
+  .skill-section__heading > p,
+  .skill-pair__card > p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .88rem;
+    line-height: 1.7;
+  }
+
+  .skill-install {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .skill-install :global(.docs-code-block) {
+    margin: 0;
+  }
+
+  .skill-agents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+  }
+
+  .skill-workflow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    padding: 0;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--surface));
+    list-style: none;
+  }
+
+  .skill-workflow li {
+    display: grid;
+    align-content: start;
+    gap: .8rem;
+    min-height: 17rem;
+    padding: 1.4rem;
+  }
+
+  .skill-workflow li + li {
+    border-left: 1px solid hsl(var(--line));
+  }
+
+  .skill-workflow span {
+    color: hsl(var(--ink-muted));
+    font: 700 .68rem/1 ui-monospace, monospace;
+  }
+
+  .skill-workflow :global(.ui-icon) {
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-top: 1.5rem;
+    color: hsl(var(--brand));
+  }
+
+  .skill-workflow h3 {
+    margin: auto 0 0;
+    color: hsl(var(--ink));
+    font-size: 1rem;
+  }
+
+  .skill-workflow p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .8rem;
+    line-height: 1.65;
+  }
+
+  .skill-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .skill-pair__card {
+    display: grid;
+    justify-items: start;
+    gap: .8rem;
+    padding: 1.4rem;
+  }
+
+  .skill-pair__card a {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    margin-top: .4rem;
+    color: hsl(var(--brand));
+    font-size: .82rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  @media (max-width: 760px) {
+    .skill-section__heading,
+    .skill-workflow,
+    .skill-pair {
+      grid-template-columns: 1fr;
+    }
+
+    .skill-workflow li {
+      min-height: 13rem;
+    }
+
+    .skill-workflow li + li {
+      border-top: 1px solid hsl(var(--line));
+      border-left: 0;
+    }
+  }
+</style>

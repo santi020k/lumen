@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
+export interface LumenApiReferenceRow {
+  attribute: string
+  defaultValue: string
+  description: string
+  values: string
+}
+
 export interface LumenComponentProp {
   name: string
   optional: boolean
@@ -13,17 +20,31 @@ export interface LumenComponentRecipe {
 }
 
 export interface LumenComponentSnapshot {
+  apiReference: LumenApiReferenceRow[]
   astroSource: string
+  category: string
+  collections: string[]
+  dependencies: string[]
+  description: string
+  files: unknown[]
+  frameworkDetails: Record<LumenFramework, LumenFrameworkSnapshot>
   frameworks: {
     astro: boolean
     elements: boolean
     react: boolean
   }
+  guidance: null | {
+    distinction?: string
+    when: string
+  }
   kebab: string
+  keyboardInteractions: LumenKeyboardInteraction[]
+  keywords: string[]
   name: string
   props: LumenComponentProp[]
   propsExtends: null | string
   recipes: LumenComponentRecipe[]
+  runtimeEvents: LumenRuntimeEvent[]
 }
 
 export interface LumenData {
@@ -44,11 +65,43 @@ export interface LumenData {
   tokens: LumenTokens
 }
 
+export type LumenFramework = 'astro' | 'elements' | 'react'
+
+export interface LumenFrameworkSnapshot {
+  attributes?: string[]
+  available: boolean
+  example: string
+  importStatement: string
+  language: 'astro' | 'html' | 'tsx'
+  packageName: string
+  props: LumenComponentProp[]
+  propsExtends: null | string
+  registration?: string
+  source: string
+  styleImport: string
+  tagName?: string
+}
+
+export interface LumenKeyboardInteraction {
+  action: string
+  key: string
+}
+
 export interface LumenRecipeSnapshot {
+  categories: string[]
   components?: string[]
+  description: string
   files?: unknown[]
+  install: Record<LumenFramework, string>
   name: string
   type: string
+}
+
+export interface LumenRuntimeEvent {
+  detail: string
+  name: string
+  target: string
+  when: string
 }
 
 export interface LumenTokens {

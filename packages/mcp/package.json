@@ -29,6 +29,7 @@
     "generate": "node scripts/generate-data.mjs",
     "build": "pnpm run generate && tsc -p tsconfig.build.json",
     "dev": "pnpm run generate && tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "local": "node bin/lumen-mcp-local.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --config ../../vitest.config.ts --project mcp",
     "test:coverage": "vitest run --config ../../vitest.config.ts --project mcp --coverage",
