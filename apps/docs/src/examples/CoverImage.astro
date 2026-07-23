@@ -11,8 +11,22 @@ const dummyImage: ImageMetadata = {
 }
 ---
 
-<CoverImage 
-  image={dummyImage} 
-  alt="Cover image" 
-  sizes="(min-width: 1024px) 800px, 100vw"
-/>
+<div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+  <CoverImage
+    alt="Cover image"
+    image={dummyImage}
+    sizes="(min-width: 1024px) 400px, 100vw"
+  />
+  <CoverImage
+    alt="Cover image with hover lift"
+    hover
+    image={dummyImage}
+    sizes="(min-width: 1024px) 400px, 100vw"
+  />
+  <CoverImage
+    alt="Cover image with bottom gradient"
+    image={dummyImage}
+    showBottomGradient
+    sizes="(min-width: 1024px) 400px, 100vw"
+  />
+</div>

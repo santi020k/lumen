@@ -640,6 +640,13 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('loading', 'boolean', 'false', 'Shows a spinner, sets aria-busy, and blocks pointer interaction while pending.'),
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
   ],
+  ButtonLink: [
+    apiRow('href', 'string', '-', 'Sets the link destination.'),
+    apiRow('variant', '"primary" | "secondary" | "ghost" | "inline"', '"primary"', 'Controls the link emphasis.'),
+    apiRow('shape', '"default" | "icon"', '"default"', 'Renders a round icon-only link when set to "icon".'),
+    apiRow('showArrow', 'boolean', 'false', 'Appends a directional arrow icon.'),
+    apiRow('newTab', 'boolean', 'false', 'Opens the link in a new tab with safe rel attributes.')
+  ],
   Card: [
     apiRow('as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'),
     apiRow('variant', '"default" | "muted" | "interactive" | "glass"', '"default"', 'Controls the card surface and affordance; variant="glass" is kept as a compatibility alias.')
@@ -668,6 +675,13 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('copy', 'boolean', 'false', 'Shows a copy button when UIPrimitives is mounted.'),
     apiRow('highlighted', 'boolean', 'false', 'Allows a pre-highlighted pre/code tree, such as Shiki output, to render directly.'),
     apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.')
+  ],
+  CoverImage: [
+    apiRow('image', 'ImageMetadata', 'required', 'Sets the source image processed by astro:assets.'),
+    apiRow('alt', 'string', 'required', 'Sets the alt text, or pass ariaHidden for decorative covers.'),
+    apiRow('mode', '"card" | "detail"', '"card"', 'Switches between the card crop and the contained detail frame.'),
+    apiRow('hover', 'boolean', 'false', 'Lifts the cover on hover (respects reduced motion).'),
+    apiRow('showBottomGradient', 'boolean', 'false', 'Overlays a bottom-to-top fade for legible captions.')
   ],
   Combobox: [
     apiRow('list', 'string', 'required', 'Sets the id for the generated listbox and connects it to the combobox input.'),
@@ -749,6 +763,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Message: [
     apiRow('from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the message for the author.')
   ],
+  Note: [
+    apiRow('label', 'string', '-', 'Adds an emphasized label above the note content.'),
+    apiRow('borderPosition', '"left" | "right" | "none"', '"left"', 'Positions the accent border, or removes it entirely.')
+  ],
   NativeSelect: [
     apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
     apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.'),
@@ -759,6 +777,18 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   NumberField: [
     apiRow('type', 'HTML input type', '"number"', 'Sets the native input type.')
+  ],
+  PhoneInput: [
+    apiRow('countries', 'Array<string | { label, value, disabled? }>', '[]', 'Populates the country dial-code select options.'),
+    apiRow('countryName', 'string', '"country"', 'Sets the name of the country dial-code select.'),
+    apiRow('countryLabel', 'string', '"Country code"', 'Sets the accessible label for the dial-code select.'),
+    apiRow('countryValue', 'string', '-', 'Selects the initial dial code by value.'),
+    apiRow('name', 'string', '"phone"', 'Sets the name of the telephone number input.'),
+    apiRow('placeholder', 'string', '"Phone number"', 'Sets the placeholder for the number input.'),
+    apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the height and font size of both controls.')
+  ],
+  Pill: [
+    apiRow('count', 'number | string', '-', 'Appends a muted count affix after the pill label.')
   ],
   Popover: [
     surfaceApiRow,
@@ -924,7 +954,8 @@ export const componentDocs: ComponentDoc[] = ([
   ['NavigationMenu', 'Navigation', 'Builds grouped top-level navigation.', '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'],
   ['NumberField', 'Forms', 'Captures constrained numeric values.', '<NumberField min="1" max="10" step="1" aria-label="Seats" />'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
-  ['Pill', 'Data display', 'A rounded pill badge.', '<Pill>Tag</Pill>'],
+  ['PhoneInput', 'Forms', 'Pairs a country dial-code select with a telephone number input.', '<PhoneInput name="phone" countryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />'],
+  ['Pill', 'Data display', 'A rounded pill badge.', '<Pill count={3}>Tag</Pill>'],
   ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
   ['Prose', 'Layout', 'Formats markdown or rich text.', '<Prose><p>Text</p></Prose>'],
