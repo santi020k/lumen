@@ -11,6 +11,7 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 - packages/core/src/components.ts: authoritative shared component catalog.
 - packages/astro/components: reference component markup and prop shapes.
 - packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.
+- @santi020k/lumen-mcp: Model Context Protocol server exposing lumen_list_components, lumen_get_component, lumen_search, lumen_get_tokens, and lumen_get_rules for live component, prop, token, and rule lookups.
 
 Default usage:
 

@@ -11,6 +11,7 @@ The monorepo layers framework adapters around a shared core:
 - `@santi020k/lumen-astro` - Astro components and progressive-enhancement runtime
 - `@santi020k/lumen-react` - React components
 - `@santi020k/lumen-elements` - standards-based Web Components
+- `@santi020k/lumen-mcp` - Model Context Protocol server for AI agents
 - `apps/docs` - Astro documentation and demo site
 
 ## Quick Start
