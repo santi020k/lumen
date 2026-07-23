@@ -1199,7 +1199,7 @@ pre code {
   position: absolute;
   z-index: -1;
   top: -9rem;
-  left: 13rem;
+  left: clamp(0rem, 14vw, 13rem);
   width: min(70vw, 62rem);
   height: 35rem;
   pointer-events: none;
@@ -2156,6 +2156,8 @@ pre code {
 
 .docs-section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 1rem;
   margin-top: 3rem;
   scroll-margin-top: 6rem;
@@ -2163,8 +2165,24 @@ pre code {
 
 .docs-section-heading {
   display: grid;
+  min-width: 0;
   gap: 0.4rem;
   max-width: 44rem;
+}
+
+.docs-section > .grid,
+.docs-section > .grid > .ui-card,
+.docs-code-block,
+.docs-code-block__variant {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 47.999rem) {
+  .docs-section > .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .docs-section-heading > p:first-child {
@@ -2220,6 +2238,11 @@ pre code {
   font-size: 0.8125rem;
   line-height: 1.6;
   padding: 0.875rem;
+}
+
+.docs-example-card .docs-code-compact :where(code, .line) {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .docs-theme-feature {

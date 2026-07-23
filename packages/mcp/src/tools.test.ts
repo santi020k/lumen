@@ -132,6 +132,11 @@ describe('search', () => {
   test('errors on empty query', () => {
     expect(search({ query: '  ' }).isError).toBe(true)
   })
+
+  test('returns a clear response when nothing matches', () => {
+    expect(search({ query: 'definitely-not-in-lumen' }).text)
+      .toBe('No matches for "definitely-not-in-lumen".')
+  })
 })
 
 describe('getTokens and getRules', () => {
@@ -141,5 +146,9 @@ describe('getTokens and getRules', () => {
 
   test('returns rules', () => {
     expect(getRules().text.length).toBeGreaterThan(0)
+  })
+
+  test('errors when a custom snapshot has no bundled rules', () => {
+    expect(getRules({ ...loadLumenData(), rules: '' }).isError).toBe(true)
   })
 })

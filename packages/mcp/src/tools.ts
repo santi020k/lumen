@@ -70,6 +70,24 @@ const scoreSearchCandidate = (
   return score
 }
 
+interface SearchResult {
+  label: string
+  score: number
+}
+
+const appendSearchResult = (
+  results: SearchResult[],
+  query: string,
+  terms: string[],
+  searchableText: string,
+  label: string,
+  primaryName = ''
+) => {
+  const score = scoreSearchCandidate(query, terms, searchableText, primaryName)
+
+  if (score > 0) results.push({ label, score })
+}
+
 export const resolveComponent = (
   name: string,
   data: LumenData = loadLumenData()
@@ -103,6 +121,52 @@ const frameworkSummary = (component: LumenComponentSnapshot): string => {
     .map(([framework]) => framework)
 
   return available.length > 0 ? available.join(', ') : 'none detected'
+}
+
+const collectSearchResults = (query: string, terms: string[], data: LumenData): SearchResult[] => {
+  const results: SearchResult[] = []
+
+  for (const component of data.components) {
+    const haystack = [
+      component.name,
+      component.kebab,
+      componentAliases(component),
+      component.propsExtends ?? '',
+      component.props.map((prop) => `${prop.name} ${prop.type}`).join(' ')
+    ].join(' ')
+
+    appendSearchResult(
+      results,
+      query,
+      terms,
+      haystack,
+      `component: ${component.name} (${component.kebab}) — ${frameworkSummary(component)}`,
+      component.name
+    )
+  }
+
+  for (const recipe of data.recipes) {
+    const haystack = `${recipe.name} ${(recipe.components ?? []).join(' ')}`
+
+    appendSearchResult(
+      results,
+      query,
+      terms,
+      haystack,
+      `recipe: ${recipe.name} — ${(recipe.components ?? []).join(', ') || 'files'}`,
+      recipe.name
+    )
+  }
+
+  for (const token of data.tokens.semantic) {
+    appendSearchResult(results, query, terms, token, `token: ${token}`, token)
+  }
+
+  for (const line of data.rules.split('\n')) {
+    appendSearchResult(results, query, terms, line, `rule: ${line.trim()}`)
+  }
+
+  return results
 }
 
 export const listComponents = (
@@ -184,54 +248,7 @@ export const search = (
 
   const limit = Math.max(1, Math.min(args.limit ?? 20, 100))
   const terms = tokenize(query)
-  const results: { label: string; score: number }[] = []
-
-  for (const component of data.components) {
-    const haystack = [
-      component.name,
-      component.kebab,
-      componentAliases(component),
-      component.propsExtends ?? '',
-      component.props.map((prop) => `${prop.name} ${prop.type}`).join(' ')
-    ].join(' ')
-
-    const score = scoreSearchCandidate(query, terms, haystack, component.name)
-
-    if (score > 0) {
-      results.push({
-        label: `component: ${component.name} (${component.kebab}) — ${frameworkSummary(component)}`,
-        score
-      })
-    }
-  }
-
-  for (const recipe of data.recipes) {
-    const haystack = `${recipe.name} ${(recipe.components ?? []).join(' ')}`
-    const score = scoreSearchCandidate(query, terms, haystack, recipe.name)
-
-    if (score > 0) {
-      results.push({
-        label: `recipe: ${recipe.name} — ${(recipe.components ?? []).join(', ') || 'files'}`,
-        score
-      })
-    }
-  }
-
-  for (const token of data.tokens.semantic) {
-    const score = scoreSearchCandidate(query, terms, token, token)
-
-    if (score > 0) {
-      results.push({ label: `token: ${token}`, score })
-    }
-  }
-
-  for (const line of data.rules.split('\n')) {
-    const score = scoreSearchCandidate(query, terms, line)
-
-    if (score > 0) {
-      results.push({ label: `rule: ${line.trim()}`, score })
-    }
-  }
+  const results = collectSearchResults(query, terms, data)
 
   if (results.length === 0) {
     return { text: `No matches for "${args.query}".` }
