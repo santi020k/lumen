@@ -58,6 +58,7 @@ words:
   - modelcontextprotocol
   - nosniff
   - novalidate
+  - npx
   - nums
   - overscan
   - popconfirm
@@ -80,6 +81,7 @@ words:
   - speeddial
   - SpeedDial
   - Stackframe
+  - stdio
   - stepper
   - Stepper
   - swrow
