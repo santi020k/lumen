@@ -491,7 +491,11 @@ const elementConfigs = {
   Tree: { attributeClasses: glassAttributeClasses('ui-tree--glass'), baseClassName: 'ui-tree', defaults: { role: 'tree' }, tagName: 'lumen-tree' },
   TreeGrid: { attributeClasses: glassAttributeClasses('ui-tree-grid--glass'), baseClassName: 'ui-tree-grid', defaults: { role: 'treegrid' }, tagName: 'lumen-tree-grid' },
   Typography: { baseClassName: 'ui-typography', tagName: 'lumen-typography' },
-  VirtualList: { attributeClasses: glassAttributeClasses('ui-virtual-list--glass'), baseClassName: 'ui-virtual-list', defaults: { 'data-ui-virtual-list': '' }, tagName: 'lumen-virtual-list' }
+  VirtualList: { attributeClasses: glassAttributeClasses('ui-virtual-list--glass'), baseClassName: 'ui-virtual-list', defaults: { 'data-ui-virtual-list': '' }, tagName: 'lumen-virtual-list' },
+  LanguageToggle: { baseClassName: 'ui-language-toggle', tagName: 'lumen-language-toggle' },
+  Particles: { baseClassName: 'ui-particles', tagName: 'lumen-particles' },
+  ScrollReveal: { baseClassName: 'ui-scroll-reveal', tagName: 'lumen-scroll-reveal' },
+  Stat: { baseClassName: 'ui-stat', tagName: 'lumen-stat' }
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [

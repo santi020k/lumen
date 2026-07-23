@@ -1,0 +1,76 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string
+  className?: string
+  animation?: 'fade' | 'slide-up' | 'scale'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  animation = 'fade',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-scroll-reveal',
+  `ui-scroll-reveal-${animation}`
+], classProp, className)
+---
+
+<div
+  class:list={classList}
+  data-ui-scroll-reveal
+  {...passthrough}
+>
+  <slot />
+</div>
+
+<script>
+  function initScrollReveal() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll<HTMLElement>('[data-ui-scroll-reveal]').forEach(el => {
+        el.style.opacity = '1'
+        el.style.transform = 'none'
+      })
+      return
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { rootMargin: '0px 0px -10% 0px' })
+
+    document.querySelectorAll('[data-ui-scroll-reveal]').forEach(el => {
+      observer.observe(el)
+    })
+  }
+
+  initScrollReveal()
+  document.addEventListener('astro:after-swap', initScrollReveal)
+</script>
+
+<style is:global>
+  .ui-scroll-reveal {
+    opacity: 0;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .ui-scroll-reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+  .ui-scroll-reveal-slide-up {
+    transform: translateY(20px);
+  }
+  .ui-scroll-reveal-scale {
+    transform: scale(0.95);
+  }
+</style>

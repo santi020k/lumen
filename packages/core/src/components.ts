@@ -89,7 +89,11 @@ export const lumenComponentNames = [
   'Tree',
   'TreeGrid',
   'Typography',
-  'VirtualList'
+  'VirtualList',
+  'LanguageToggle',
+  'Particles',
+  'ScrollReveal',
+  'Stat'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]

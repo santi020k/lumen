@@ -1377,6 +1377,46 @@ export const lumenRegistry = {
         "styles",
         "runtime"
       ]
+    },
+    {
+      "name": "LanguageToggle",
+      "type": "component",
+      "category": "Actions",
+      "description": "A Language Toggle component.",
+      "files": [
+        "packages/astro/components/LanguageToggle.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Particles",
+      "type": "component",
+      "category": "Layout",
+      "description": "A particles component.",
+      "files": [
+        "packages/astro/components/Particles.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "ScrollReveal",
+      "type": "component",
+      "category": "Layout",
+      "description": "A Scroll Reveal component.",
+      "files": [
+        "packages/astro/components/ScrollReveal.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "Stat",
+      "type": "component",
+      "category": "Data display",
+      "description": "A stat component.",
+      "files": [
+        "packages/astro/components/Stat.astro",
+        "packages/react/src/components.tsx"
+      ]
     }
   ]
 } as const satisfies LumenRegistry

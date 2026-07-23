@@ -1920,3 +1920,23 @@ export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
 export const ThemeToggle = ({ className, type = 'button', ...props }: ThemeToggleProps) => (
   <button className={composeClassName('ui-theme-toggle', className)} type={type} {...props} />
 )
+
+export type LanguageToggleProps = ComponentPropsWithoutRef<'button'>
+export const LanguageToggle = ({ className, type = 'button', ...props }: LanguageToggleProps) => (
+  <button className={composeClassName('ui-language-toggle', className)} type={type} {...props} />
+)
+
+export type ParticlesProps = ComponentPropsWithoutRef<'div'>
+export const Particles = ({ className, ...props }: ParticlesProps) => (
+  <div className={composeClassName('ui-particles', className)} {...props} />
+)
+
+export type ScrollRevealProps = ComponentPropsWithoutRef<'div'>
+export const ScrollReveal = ({ className, ...props }: ScrollRevealProps) => (
+  <div className={composeClassName('ui-scroll-reveal', className)} {...props} />
+)
+
+export type StatProps = ComponentPropsWithoutRef<'div'>
+export const Stat = ({ className, ...props }: StatProps) => (
+  <div className={composeClassName('ui-stat', className)} {...props} />
+)
