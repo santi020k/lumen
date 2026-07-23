@@ -497,25 +497,47 @@ const elementConfigs = {
   ScrollReveal: { baseClassName: 'ui-scroll-reveal', tagName: 'lumen-scroll-reveal' },
   Stat: { baseClassName: 'ui-stat', tagName: 'lumen-stat' },
   Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
-  Note: { baseClassName: 'ui-note', tagName: 'lumen-note' },
+  Note: {
+    attributeClasses: {
+      'border-position': {
+        left: 'ui-note--border-left',
+        none: 'ui-note--border-none',
+        right: 'ui-note--border-right'
+      }
+    },
+    baseClassName: 'ui-note',
+    defaults: { 'border-position': 'left' },
+    tagName: 'lumen-note'
+  },
   Rating: { baseClassName: 'ui-rating', tagName: 'lumen-rating' },
   Timeline: { baseClassName: 'ui-timeline', tagName: 'lumen-timeline' },
   AnimatedLogo: { baseClassName: 'ui-animated-logo', tagName: 'lumen-animated-logo' },
   AnimatedPortrait: { baseClassName: 'ui-animated-portrait', tagName: 'lumen-animated-portrait' },
-  ButtonLink: { baseClassName: 'ui-button-link', tagName: 'lumen-button-link' },
-  CoverImage: { baseClassName: 'ui-cover-image', tagName: 'lumen-cover-image' },
+  ButtonLink: {
+    attributeClasses: { shape: { icon: 'ui-button-link--icon' } },
+    baseClassName: 'ui-button-link',
+    tagName: 'lumen-button-link'
+  },
+  CoverImage: {
+    attributeClasses: { hover: { true: 'ui-cover-image--hover' } },
+    baseClassName: 'ui-cover-image',
+    tagName: 'lumen-cover-image'
+  },
   GradientDivider: { baseClassName: 'ui-gradient-divider', tagName: 'lumen-gradient-divider' }
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [
+  'border-position',
   'decorative',
   'disabled',
   'from',
   'glass',
+  'hover',
   'label',
   'name',
   'orientation',
   'pressed',
+  'shape',
   'size',
   'surface',
   'variant'

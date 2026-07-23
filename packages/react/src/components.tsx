@@ -1902,9 +1902,14 @@ export const Link = ({ className, ...props }: LinkProps) => (
   <a className={composeClassName('ui-link', className)} {...props} />
 )
 
-export type PillProps = ComponentPropsWithoutRef<'span'>
-export const Pill = ({ className, ...props }: PillProps) => (
-  <span className={composeClassName('ui-pill', className)} {...props} />
+export type PillProps = ComponentPropsWithoutRef<'span'> & {
+  count?: number | string
+}
+export const Pill = ({ className, count, children, ...props }: PillProps) => (
+  <span className={composeClassName('ui-pill', className)} {...props}>
+    {children}
+    {count != null && <span className="ui-pill__count">{count}</span>}
+  </span>
 )
 
 export type ProseProps = ComponentPropsWithoutRef<'div'>
@@ -1964,9 +1969,10 @@ export const Meter = ({ className, ...props }: MeterProps) => (
 
 export interface NoteProps extends ComponentPropsWithoutRef<'div'> {
   label?: string
+  borderPosition?: 'left' | 'right' | 'none'
 }
-export const Note = ({ className, label, children, ...props }: NoteProps) => (
-  <div className={composeClassName('ui-note', className)} {...props}>
+export const Note = ({ className, label, borderPosition = 'left', children, ...props }: NoteProps) => (
+  <div className={composeClassName('ui-note', `ui-note--border-${borderPosition}`, className)} {...props}>
     {label && <p className="ui-note__label">{label}</p>}
     <div className="ui-note__content">{children}</div>
   </div>
@@ -2083,21 +2089,30 @@ export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps)
 )
 
 export type ButtonLinkProps = ComponentPropsWithoutRef<'a'> & {
+  shape?: 'default' | 'icon'
   variant?: 'ghost' | 'inline' | 'primary' | 'secondary'
 }
-export const ButtonLink = ({ className, variant = 'primary', ...props }: ButtonLinkProps) => {
-  const variantClass = variant === 'inline' 
-    ? 'ui-button ui-button--inline' 
+export const ButtonLink = ({ className, shape = 'default', variant = 'primary', ...props }: ButtonLinkProps) => {
+  const variantClass = variant === 'inline'
+    ? 'ui-button ui-button--inline'
     : `ui-button ui-button--${variant} min-h-11 rounded-full border`
 
+  const shapeClass = shape === 'icon' && variant !== 'inline' ? 'ui-button-link--icon' : undefined
+
   return (
-    <a className={composeClassName('ui-button-link group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, className)} {...props} />
+    <a className={composeClassName('ui-button-link group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, shapeClass, className)} {...props} />
   )
 }
 
-export type CoverImageProps = ComponentPropsWithoutRef<'div'>
-export const CoverImage = ({ className, ...props }: CoverImageProps) => (
-  <div className={composeClassName('ui-cover-image relative overflow-hidden bg-surface-muted', className)} {...props} />
+export type CoverImageProps = ComponentPropsWithoutRef<'div'> & {
+  hover?: boolean
+  showBottomGradient?: boolean
+}
+export const CoverImage = ({ className, hover = false, showBottomGradient = false, children, ...props }: CoverImageProps) => (
+  <div className={composeClassName('ui-cover-image relative overflow-hidden bg-surface-muted', hover && 'ui-cover-image--hover', className)} {...props}>
+    {children}
+    {showBottomGradient && <div aria-hidden="true" className="ui-cover-image__bottom-gradient" />}
+  </div>
 )
 
 export type GradientDividerProps = ComponentPropsWithoutRef<'div'>

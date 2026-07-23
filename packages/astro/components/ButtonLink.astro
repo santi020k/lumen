@@ -10,6 +10,7 @@ interface Props extends HTMLAttributes<'a'> {
   className?: string
   href: string
   newTab?: boolean
+  shape?: 'default' | 'icon'
   showArrow?: boolean
   variant?: 'ghost' | 'inline' | 'primary' | 'secondary'
 }
@@ -20,6 +21,7 @@ const {
   className = '',
   href,
   newTab = false,
+  shape = 'default',
   showArrow = false,
   variant = 'primary',
   ...rest
@@ -32,7 +34,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   variant === 'primary' && 'ui-button ui-button--primary',
   variant === 'secondary' && 'ui-button ui-button--secondary',
   variant === 'ghost' && 'ui-button ui-button--ghost',
-  variant === 'inline' && 'ui-button ui-button--inline'
+  variant === 'inline' && 'ui-button ui-button--inline',
+  shape === 'icon' && variant !== 'inline' && 'ui-button-link--icon'
 ], classProp, className)
 ---
 

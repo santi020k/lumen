@@ -13,9 +13,11 @@ interface Props extends HTMLAttributes<'div'> {
   featured?: boolean
   featuredMinHeightClass?: string
   fetchpriority?: 'auto' | 'high' | 'low'
+  hover?: boolean
   image: ImageMetadata
   loading?: 'eager' | 'lazy'
   mode?: 'card' | 'detail'
+  showBottomGradient?: boolean
   showCardOverlay?: boolean
   sizes?: string
   transitionName?: string
@@ -29,9 +31,11 @@ const {
   featured = false,
   featuredMinHeightClass = 'lg:min-h-88',
   fetchpriority = 'auto',
+  hover = false,
   image,
   loading = 'lazy',
   mode = 'card',
+  showBottomGradient = false,
   showCardOverlay = true,
   sizes = '(min-width: 1024px) 800px, 100vw',
   transitionName,
@@ -128,6 +132,7 @@ const widths =
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-cover-image',
+  hover && 'ui-cover-image--hover',
   ...wrapperClasses
 ], classProp, className)
 ---
@@ -163,6 +168,13 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     <div
       aria-hidden="true"
       class="absolute inset-0 bg-linear-to-t from-canvas/55 via-canvas/10 to-transparent"
+    />
+  )}
+
+  {showBottomGradient && (
+    <div
+      aria-hidden="true"
+      class="ui-cover-image__bottom-gradient"
     />
   )}
 </div>
