@@ -2394,6 +2394,7 @@ pre code {
 
 @utility docs-preview {
   display: flow-root;
+  align-content: center;
   min-height: 9rem;
   border: 1px solid hsl(var(--line));
   border-radius: 0.75rem;
@@ -2413,4 +2414,10 @@ pre code {
     margin-top: 0;
     margin-left: 0.6rem;
   }
+}
+
+@utility docs-example-compact {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
 }

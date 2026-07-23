@@ -55,6 +55,39 @@ describe('component docs snippets', () => {
     expect(sortByName(exampleFileNames)).toEqual(sortByName(lumenComponentNames))
   })
 
+  test('distinguish commonly confused component families', () => {
+    const overlappingComponents = [
+      'Alert',
+      'Badge',
+      'Callout',
+      'Combobox',
+      'Dialog',
+      'Eyebrow',
+      'FloatingBadge',
+      'Item',
+      'Meter',
+      'NativeSelect',
+      'Note',
+      'Pill',
+      'Popover',
+      'Progress',
+      'Schedule',
+      'Select',
+      'Sheet',
+      'Switch',
+      'Toast',
+      'Toggle',
+      'Tooltip'
+    ]
+
+    for (const name of overlappingComponents) {
+      const component = componentDocs.find(entry => entry.name === name)
+
+      expect(component?.guidance?.when, `${name} needs "use it when" guidance`).toBeTruthy()
+      expect(component?.guidance?.distinction, `${name} needs comparison guidance`).toBeTruthy()
+    }
+  })
+
   test('only link to existing public assets from examples', () => {
     const localAssetPattern = /\b(?:href|src)="([^"]+)"/g
 
@@ -83,6 +116,8 @@ describe('component docs snippets', () => {
 
     expect(imageExample).toContain('src="/logo.svg"')
     expect(imageExample).toContain('alt="Lumen UI logo"')
+    expect(imageExample).toContain('invertOnDark')
+    expect(imageExample).toContain('layout="fixed"')
     expect(linkExample).toContain('href="/docs"')
     expect(skipLinkExample).toContain('href="#preview-title"')
     expect(formattedDateExample).toContain('datetime="2026-07-23"')

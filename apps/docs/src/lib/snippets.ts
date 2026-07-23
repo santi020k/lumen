@@ -120,6 +120,20 @@ export const Example = () => (
   <Code code={themeExample} copy label="theme.ts" language="ts" variant="block" />
 )
 `,
+  Image: `import NextImage from 'next/image'
+import { Image as LumenImage } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <LumenImage
+    alt="Lumen UI logo"
+    as={NextImage}
+    height={80}
+    invertOnDark
+    src="/logo.svg"
+    width={318}
+  />
+)
+`,
   Sonner: `import { Button, Sonner } from '@santi020k/lumen-react'
 
 export const Example = () => (
@@ -158,6 +172,20 @@ const elementsOverrides: Record<string, string> = {
   <pre><code>const theme = "lumen";
 const accent = "hsl(var(--accent))";</code></pre>
 </lumen-code>
+`,
+  Image: `<picture>
+  <source srcset="/logo.avif" type="image/avif" />
+  <source srcset="/logo.webp" type="image/webp" />
+  <img
+    alt="Lumen UI logo"
+    class="ui-image ui-image--invert-dark"
+    decoding="async"
+    height="80"
+    loading="lazy"
+    src="/logo.svg"
+    width="318"
+  />
+</picture>
 `,
   Combobox: `${elementsHeader}
 

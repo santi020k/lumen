@@ -106,10 +106,7 @@ const categories = [
           </ButtonLink>
         </div>
         <Tabs class="home-installer" glass="subtle">
-          <div class="home-installer__heading">
-            <span>Install for your stack</span>
-            <span>One package. Ready to use.</span>
-          </div>
+          <span class="home-installer__label">Quick install</span>
           <div role="tablist" aria-label="Choose a framework to install">
             {heroInstallers.map((installer, index) => (
               <button
@@ -499,55 +496,64 @@ const categories = [
   }
 
   .home-installer {
-    width: min(100%, 35rem);
-    margin-top: 1.15rem;
-    gap: .65rem;
+    display: grid;
+    width: min(100%, 45rem);
+    margin-top: 1.1rem;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: .35rem;
     border: 1px solid hsl(var(--line) / .8);
-    border-radius: calc(var(--ui-radius) + .45rem);
-    background: hsl(var(--surface) / .7);
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, hsl(var(--canvas) / .38), transparent),
+      hsl(var(--surface) / .66);
     box-shadow:
-      0 18px 50px hsl(var(--ink) / .07),
-      inset 0 1px 0 hsl(var(--canvas) / .8);
-    padding: .55rem;
+      0 12px 38px hsl(var(--ink) / .055),
+      inset 0 1px 0 hsl(var(--canvas) / .9);
+    padding: .3rem;
     backdrop-filter: blur(18px);
   }
 
-  .home-installer__heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: .25rem .45rem 0;
-    color: hsl(var(--ink));
-    font-size: .72rem;
-    font-weight: 750;
-  }
-
-  .home-installer__heading span:last-child {
+  .home-installer__label {
+    padding-inline: .8rem .45rem;
     color: hsl(var(--ink-muted));
-    font-size: .66rem;
-    font-weight: 550;
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .home-installer [role="tablist"] {
-    width: 100%;
-    justify-content: stretch;
+    width: auto;
+    justify-content: start;
+    gap: .1rem;
     border: 0;
-    border-radius: calc(var(--ui-radius) - .05rem);
-    background: hsl(var(--surface-muted) / .82);
+    border-radius: 999px;
+    background: hsl(var(--surface-muted) / .7);
+    padding: .18rem;
   }
 
   .home-installer [role="tab"] {
     display: inline-flex;
     min-width: 0;
-    flex: 1;
     align-items: center;
     justify-content: center;
-    gap: .4rem;
+    gap: .32rem;
+    border-radius: 999px;
+    padding: .34rem .55rem;
+    font-size: .72rem;
+  }
+
+  .home-installer [role="tab"][aria-selected="true"] {
+    background: hsl(var(--surface) / .92);
+    color: hsl(var(--brand));
+    box-shadow: 0 2px 10px hsl(var(--ink) / .08);
   }
 
   .home-installer [role="tabpanel"] {
     min-width: 0;
+    border-left: 1px solid hsl(var(--line) / .8);
   }
 
   .home-install {
@@ -555,10 +561,10 @@ const categories = [
     min-width: 0;
     justify-content: flex-start;
     gap: .65rem;
-    border: 1px solid hsl(var(--line) / .85);
-    border-radius: calc(var(--ui-radius) - .05rem);
-    background: hsl(var(--canvas) / .62);
-    padding-inline: .9rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    padding-inline: .8rem;
   }
 
   .home-install code {
@@ -574,7 +580,7 @@ const categories = [
 
   .home-install__copy {
     color: hsl(var(--brand));
-    font-size: .68rem;
+    font-size: .64rem;
     font-weight: 800;
     letter-spacing: .04em;
     text-transform: uppercase;
@@ -1025,15 +1031,35 @@ const categories = [
       font-size: .98rem;
     }
 
-    .home-installer__heading {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: .15rem;
+    .home-installer {
+      grid-template-columns: 1fr;
+      gap: .25rem;
+      border-radius: calc(var(--ui-radius) + .35rem);
+      padding: .38rem;
+    }
+
+    .home-installer__label {
+      display: none;
+    }
+
+    .home-installer [role="tablist"] {
+      width: 100%;
+      justify-content: stretch;
     }
 
     .home-installer [role="tab"] {
+      flex: 1;
       padding-inline: .45rem;
       font-size: .78rem;
+    }
+
+    .home-installer [role="tabpanel"] {
+      border-top: 1px solid hsl(var(--line) / .75);
+      border-left: 0;
+    }
+
+    .home-install {
+      min-height: 2.65rem;
     }
 
     .home-proof__inner {

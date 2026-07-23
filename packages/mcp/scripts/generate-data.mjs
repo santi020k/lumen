@@ -70,7 +70,9 @@ const parseTokenBlock = (source, identifier) => {
 // Pull the `interface Props { ... }` body out of Astro frontmatter and turn it
 // into a compact list of { name, optional, type } records.
 const parseProps = (source) => {
-  const header = source.match(/interface Props(?:\s+extends\s+([^\n{]+))?\s*\{([\s\S]*?)\n\}/)
+  const interfaceHeader = source.match(/interface Props(?:\s+extends\s+([^\n{]+))?\s*\{([\s\S]*?)\n\}/)
+  const typeHeader = source.match(/type Props\s*=\s*([\s\S]*?)&\s*\{([\s\S]*?)\n\}/)
+  const header = interfaceHeader ?? typeHeader
 
   if (!header) return { extends: null, props: [] }
 

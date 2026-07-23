@@ -633,6 +633,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   AnimatedLogo: [
     apiRow('children', 'inline SVG', 'required', 'Wraps any inline SVG logo and applies the reveal animation without changing its artwork.'),
+    apiRow('animation', '"reveal" | "sequence"', '"reveal"', 'Uses a whole-logo reveal, or enables opt-in pop, draw, and reveal hooks inside the SVG.'),
+    apiRow('data-ui-logo-pop, data-ui-logo-draw, data-ui-logo-reveal', 'SVG attributes', '-', 'Marks SVG layers for the matching effect when animation="sequence".'),
     apiRow('--ui-animated-logo-duration', 'CSS time', '"700ms"', 'Customizes the reveal duration.'),
     apiRow('--ui-animated-logo-delay', 'CSS time', '"0ms"', 'Delays the reveal for coordinated compositions.')
   ],
@@ -750,6 +752,13 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('label', 'string', '-', 'Adds an accessible name and exposes the icon as an image.'),
     apiRow('decorative', 'boolean', 'true when unlabelled', 'Keeps decorative icons hidden from assistive technology.'),
     apiRow('size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.')
+  ],
+  Image: [
+    apiRow('src', 'ImageMetadata | string', 'required', 'Uses astro:assets in Astro; React can pass a framework optimizer through as.'),
+    apiRow('alt', 'string', 'required', 'Provides an accessible description; use an empty string for decorative images.'),
+    apiRow('loading', '"lazy" | "eager"', '"lazy"', 'Defers off-screen image loading by default; use eager only for likely LCP images.'),
+    apiRow('invertOnDark', 'boolean', 'false', 'Inverts monochrome artwork in dark themes while preserving colorful images by default.'),
+    apiRow('as', 'React ElementType', '"img"', 'React only: renders a compatible optimizer such as next/image while retaining Lumen classes.')
   ],
   Field: [
     apiRow('controlId', 'string', '-', 'Connects the field to a control elsewhere in the field root.'),
@@ -977,6 +986,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use to preview richer information about a person, link, or object on hover and keyboard focus.',
     distinction: 'Use Tooltip for a short label and Popover when the floating content contains actions or form controls.'
   },
+  Item: {
+    when: 'Use to align a compact row of primary text, supporting metadata, badges, icons, or actions in a list or results view.',
+    distinction: 'Item provides visual layout only: it renders a div and adds no list semantics or interaction. Wrap it in a semantic list item when needed, and use a Link or Button for clickable behavior.'
+  },
   Marker: {
     when: 'Use for compact operational status where a colored dot should carry the visual signal.',
     distinction: 'Use Badge for a filled metadata label and Pill for a label paired with a count.'
@@ -1013,6 +1026,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use around rendered Markdown, CMS content, or other long-form content you do not style element by element.',
     distinction: 'Use Typography for a deliberately composed article surface with Lumen’s heading and paragraph rhythm.'
   },
+  Schedule: {
+    when: 'Use to arrange events across time slots, days, or resources when people need to review or change when work happens.',
+    distinction: 'Use Calendar for choosing dates and Agenda for a chronological list. Schedule is the time-grid surface for positioned events, conflicts, drag and drop, and rescheduling workflows.'
+  },
   Segmented: {
     when: 'Use for a small set of mutually exclusive views or values that should remain visible at once.',
     distinction: 'Use RadioGroup for form choices, Select when space is limited, or ToggleGroup when multiple options may be active.'
@@ -1039,14 +1056,14 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   },
   Switch: {
     when: 'Use for a setting that takes effect immediately when turned on or off.',
-    distinction: 'Use Checkbox for form submission or agreement, and Toggle for a pressable tool state such as bold or pin.'
+    distinction: 'Use Checkbox for form submission or agreement, and Toggle for a persistent tool state such as bold or pin.'
   },
   Toast: {
     when: 'Use for brief, non-blocking feedback after an action or background event.',
     distinction: 'Use Alert when the message must remain in the page; mount Sonner to manage and announce programmatic Toast instances.'
   },
   Toggle: {
-    when: 'Use for a pressable control that keeps an active state, such as pin, mute, or formatting.',
+    when: 'Use for a control that keeps an active state, such as pin, mute, or formatting.',
     distinction: 'Use Switch for an immediate setting and Checkbox for a form value or agreement.'
   },
   ToggleGroup: {
@@ -1104,11 +1121,11 @@ export const componentDocs: ComponentDoc[] = ([
   ['FormattedDate', 'Data display', 'Pairs human-readable date text with a machine-readable datetime value.', '<FormattedDate datetime="2026-07-23">July 23, 2026</FormattedDate>'],
   ['HoverCard', 'Overlays', 'Shows extra context on hover and focus.', '<HoverCard><a href="/team/santiago">Santiago</a><div role="tooltip">Maintainer of Lumen UI.</div></HoverCard>'],
   ['Icon', 'Data display', 'Renders Lucide icons with Lumen sizing and accessibility defaults.', '<Icon name="search" label="Search" /><Icon name="wand-sparkles" decorative />'],
-  ['Image', 'Data display', 'Applies Lumen sizing and presentation to an accessible image.', '<Image alt="Lumen UI logo" src="/logo.svg" />'],
+  ['Image', 'Data display', 'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.', '<Image alt="Lumen UI logo" invertOnDark layout="fixed" src="/logo.svg" />'],
   ['Input', 'Forms', 'Captures short text, email, password, search, or numeric values.', '<Input id="email" name="email" type="email" placeholder="you@example.com" />'],
   ['InputGroup', 'Forms', 'Combines inputs with prefixes, suffixes, or controls.', '<InputGroup><span>https://</span><Input aria-label="Domain" placeholder="example.com" /></InputGroup>'],
   ['InputOTP', 'Forms', 'Collects one-time passcodes and verification codes.', '<InputOTP name="code" length={6} inputmode="numeric" />'],
-  ['Item', 'Data display', 'Creates a compact row for lists and search results.', '<Item><strong>Production docs</strong><span>Ready for review</span></Item>'],
+  ['Item', 'Data display', 'Aligns primary content, supporting metadata, and optional actions in a compact row.', '<Item><strong>Production docs</strong><span>Ready for review</span></Item>'],
   ['Kbd', 'Data display', 'Displays keyboard shortcuts.', '<p>Open the command menu with <Kbd>Cmd K</Kbd>.</p>'],
   ['Label', 'Forms', 'Labels form controls with consistent spacing.', '<Label for="workspace">Workspace name</Label><Input id="workspace" />'],
   ['Link', 'Navigation', 'Styles ordinary text navigation while preserving native anchor behavior.', '<Link href="/docs">Read the documentation</Link>'],

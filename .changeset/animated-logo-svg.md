@@ -4,4 +4,4 @@
 "@santi020k/lumen-react": minor
 ---
 
-Generalize AnimatedLogo into an accessible wrapper for arbitrary inline SVG logos, with shared reveal animation styles and reduced-motion support.
+Generalize AnimatedLogo into an accessible wrapper for arbitrary inline SVG logos, with shared reveal and opt-in sequenced animation styles plus reduced-motion support.

@@ -44,6 +44,32 @@ Use `lumen-icon` for Lucide icons by name across framework adapters.
 <lumen-icon name="search" label="Search"></lumen-icon>
 ```
 
+## Optimized images
+
+Image optimization belongs to the host framework or CDN. Keep its generated `picture`, `srcset`,
+and `sizes` output, and put Lumen's `ui-image` class on the final `img`. This works with optimized
+markup from Nuxt, SvelteKit, a CMS, an image CDN, or a static build pipeline without sending the
+image through a second component.
+
+```html
+<picture>
+  <source srcset="/team.avif" type="image/avif">
+  <source srcset="/team.webp" type="image/webp">
+  <img
+    alt="Team collaborating around a table"
+    class="ui-image"
+    decoding="async"
+    height="800"
+    loading="lazy"
+    sizes="(max-width: 768px) 100vw, 50vw"
+    src="/team.jpg"
+    width="1200"
+  >
+</picture>
+```
+
+Add `ui-image--invert-dark` only to monochrome artwork that needs inversion on dark themes.
+
 Elements emit the same `ui-*` classes and `data-ui-*` attributes as the Astro primitives. Astro
 remains the reference package, and the Web Components adapter now carries matching light-DOM
 behavior for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder,

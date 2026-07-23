@@ -342,7 +342,13 @@ const elementConfigs = {
     defaults: { size: 'default' },
     tagName: 'lumen-icon'
   },
-  Image: { baseClassName: 'ui-image', tagName: 'lumen-image' },
+  Image: {
+    attributeClasses: {
+      'invert-on-dark': { true: 'ui-image--invert-dark' }
+    },
+    baseClassName: 'ui-image',
+    tagName: 'lumen-image'
+  },
   Input: { attributeClasses: { size: { lg: 'ui-input--lg', sm: 'ui-input--sm' } }, baseClassName: 'ui-input', defaults: { type: 'text' }, tagName: 'lumen-input' },
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: { baseClassName: 'ui-input-otp-field', defaults: { 'data-ui-input-otp': '', 'data-ui-input-otp-length': '6' }, tagName: 'lumen-input-otp' },

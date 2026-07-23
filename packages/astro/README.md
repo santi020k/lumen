@@ -60,6 +60,30 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 <Icon name="search" label="Search" />
 ```
 
+## Optimized images
+
+Lumen's Astro `Image` delegates to `astro:assets`, so imported image metadata, responsive layouts,
+generated `srcset` values, output formats, quality, and remote-size inference stay available. It
+loads lazily by default. Use `loading="eager"` and `fetchpriority="high"` only for the single image
+that is likely to be the page's LCP image.
+
+```astro
+---
+import { Image } from '@santi020k/lumen-astro'
+import hero from '../assets/hero.jpg'
+---
+
+<Image
+  alt="Team collaborating around a table"
+  layout="full-width"
+  quality="high"
+  src={hero}
+/>
+```
+
+For monochrome artwork whose pixels were authored for a light background, add `invertOnDark`.
+Colorful photography should keep the default so its colors remain unchanged.
+
 `AnimatedLogo` accepts your own inline SVG rather than imposing brand artwork. Put the accessible
 name on the SVG itself.
 
@@ -74,6 +98,10 @@ import { AnimatedLogo } from '@santi020k/lumen-astro'
   </svg>
 </AnimatedLogo>
 ```
+
+For a choreographed logo, set `animation="sequence"` and mark individual SVG layers with
+`data-ui-logo-pop`, `data-ui-logo-draw`, or `data-ui-logo-reveal`. Timing can be adjusted per layer
+with `--ui-logo-delay`.
 
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.
 

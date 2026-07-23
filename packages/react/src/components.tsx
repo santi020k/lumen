@@ -1955,11 +1955,29 @@ export const FormattedDate = ({ className, ...props }: FormattedDateProps) => (
   <time className={composeClassName('ui-formatted-date', className)} {...props} />
 )
 
-export type ImageProps = ComponentPropsWithoutRef<'img'>
-export const Image = ({ className, loading = 'eager', ...props }: ImageProps) => (
-  /* eslint-disable-next-line jsx-a11y/alt-text -- alt is provided by the consumer via spread props */
-  <img className={composeClassName('ui-image', className)} loading={loading} {...props} />
-)
+export type ImageProps<T extends ElementType = 'img'> = {
+  as?: T
+  className?: string
+  invertOnDark?: boolean
+  loading?: 'eager' | 'lazy'
+} & Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'loading'>
+
+export const Image = <T extends ElementType = 'img',>({
+  as,
+  className,
+  invertOnDark = false,
+  loading,
+  ...props
+}: ImageProps<T>) => {
+  const Component = as ?? 'img'
+  const resolvedLoading = loading ?? (as ? undefined : 'lazy')
+
+  return createElement(Component, {
+    ...props,
+    className: composeClassName('ui-image', invertOnDark && 'ui-image--invert-dark', className),
+    ...(resolvedLoading ? { loading: resolvedLoading } : {})
+  })
+}
 
 export type LinkProps = ComponentPropsWithoutRef<'a'>
 export const Link = ({ className, ...props }: LinkProps) => (
@@ -2080,10 +2098,13 @@ export const Timeline = ({ className, ...props }: TimelineProps) => (
   <ol className={composeClassName('ui-timeline', className)} {...props} />
 )
 
-export type AnimatedLogoProps = ComponentPropsWithoutRef<'span'>
-export const AnimatedLogo = ({ className, ...props }: AnimatedLogoProps) => (
+export type AnimatedLogoProps = ComponentPropsWithoutRef<'span'> & {
+  animation?: 'reveal' | 'sequence'
+}
+export const AnimatedLogo = ({ animation = 'reveal', className, ...props }: AnimatedLogoProps) => (
   <span
     className={composeClassName('ui-animated-logo', className)}
+    data-animation={animation}
     data-ui-animated-logo
     {...props}
   />

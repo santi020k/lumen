@@ -59,6 +59,15 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('@supports not ((backdrop-filter: blur(1px))')
   })
 
+  test('ships the pill shell and count affix styles', async () => {
+    const css = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(css).toMatch(/\.ui-pill\s*\{/)
+    expect(css).toMatch(/\.ui-pill__count\s*\{/)
+    expect(css).toContain('border-left: 1px solid hsl(var(--line))')
+    expect(css).toContain('color: hsl(var(--ink-muted))')
+  })
+
   test('ships the code primitive markup and standalone styles', async () => {
     const [component, styles] = await Promise.all([
       readFile(new URL('./components/Code.astro', packageRoot), 'utf8'),
@@ -82,12 +91,28 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     expect(component).toContain("HTMLAttributes<'span'>")
+    expect(component).toContain("animation?: 'reveal' | 'sequence'")
     expect(component).toContain('data-ui-animated-logo')
     expect(component).toContain('<slot />')
     expect(component).not.toContain('Santi020k')
     expect(styles).toContain('.ui-animated-logo > svg')
     expect(styles).toContain('--ui-animated-logo-duration')
     expect(styles).toContain('@keyframes ui-animated-logo-reveal')
+    expect(styles).toContain('[data-ui-logo-draw]')
+  })
+
+  test('keeps Astro image optimization and dark artwork support', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/Image.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain("Image as AstroImage")
+    expect(component).toContain("from 'astro:assets'")
+    expect(component).toContain("loading = 'lazy'")
+    expect(component).toContain('invertOnDark')
+    expect(component).toContain('<AstroImage')
+    expect(styles).toContain('.ui-image--invert-dark')
   })
 
   test('keeps audited primitive semantics, runtime behavior, and standalone styles aligned', async () => {
