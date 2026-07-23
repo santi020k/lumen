@@ -1,7 +1,9 @@
 ---
-import { Badge, Card, Separator } from '@santi020k/lumen-astro'
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Card, Separator } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
 import { frameworkGuides, frameworkSetups, reactHooksReference } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
@@ -17,27 +19,34 @@ if (!guide || !setup) {
   description="Using Lumen UI in React: Component adapters, interactive hooks, and form validation."
   title="React - Lumen UI"
 >
-  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs">Docs</a>
-    <span aria-hidden="true"> / </span>
-    <span aria-current="page" class="font-bold text-ink">React</span>
-  </nav>
+  <div class="framework-page">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="/docs">Docs</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">React</span>
+    </nav>
 
-  <div class="mb-8 space-y-3">
-    <div class="flex flex-wrap items-center gap-3">
-      <h1 class="text-4xl font-black text-ink">{guide.title}</h1>
-      <Badge variant="secondary">Adapter primitives</Badge>
-    </div>
-    <p class="max-w-2xl text-lg/8 text-ink-soft">
-      The React package provides wrapper components that map to the shared class and data contract,
-      plus a suite of hooks for complex interactive primitives like dialogs, menus, and selects.
-    </p>
-  </div>
+    <DocsPageHero
+      description="React components that preserve Lumen’s shared visual contract, paired with focused hooks for dialogs, menus, selects, and other interactive patterns."
+      eyebrow="Framework guide"
+      stats={[
+        { label: 'Surface', value: 'Adapter' },
+        { label: 'Behavior', value: 'Hooks' },
+        { label: 'Package', value: 'React' }
+      ]}
+      title={guide.title}
+    >
+      <Fragment slot="actions">
+        <a class="ui-button ui-button--default-size ui-button--default no-underline" href="#install-title">
+          Install for React
+        </a>
+        <a class="ui-button ui-button--default-size ui-button--outline no-underline" href="#hooks-title">
+          Explore hooks
+        </a>
+      </Fragment>
+    </DocsPageHero>
 
-  <section class="docs-section space-y-4" aria-labelledby="install-title">
+    <section class="docs-section space-y-4" aria-labelledby="install-title">
     <div class="docs-section-heading">
       <h2 id="install-title" class="text-xl font-bold text-ink">Installation</h2>
       <p class="text-sm/6 text-ink-soft">{setup.note}</p>
@@ -59,9 +68,9 @@ if (!guide || !setup) {
       <h3 class="mb-2 text-sm font-bold text-ink">Usage Example</h3>
       <CodeBlock code={setup.usage} lang={setup.lang} />
     </div>
-  </section>
+    </section>
 
-  <section class="docs-section mt-10 space-y-4" aria-labelledby="overview-title">
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="overview-title">
     <div class="docs-section-heading">
       <h2 id="overview-title" class="text-xl font-bold text-ink">Overview</h2>
     </div>
@@ -70,11 +79,11 @@ if (!guide || !setup) {
         <li>{item}</li>
       ))}
     </ul>
-  </section>
+    </section>
 
-  <Separator class="my-10" />
+    <Separator class="my-10" />
 
-  <section class="docs-section space-y-8" aria-labelledby="hooks-title">
+    <section class="docs-section space-y-8" aria-labelledby="hooks-title">
     <div class="docs-section-heading">
       <h2 id="hooks-title" class="text-2xl font-bold text-ink">Hooks Reference</h2>
       <p class="max-w-2xl text-sm/7 text-ink-soft">
@@ -183,6 +192,7 @@ if (!guide || !setup) {
         </div>
       ))}
     </div>
-  </section>
+    </section>
+  </div>
 
 </DocsLayout>

@@ -6,7 +6,7 @@
   },
   "description": "Umbrella package for the Lumen multi-framework primitive UI system.",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": ["./styles.css"],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -19,9 +19,10 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
+    "./styles.css": "./styles.css",
     "./package.json": "./package.json"
   },
-  "files": ["bin", "dist", "README.md", "LICENSE"],
+  "files": ["bin", "dist", "styles.css", "README.md", "LICENSE"],
   "bin": {
     "lumen": "./bin/lumen.mjs"
   },

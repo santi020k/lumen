@@ -1,4 +1,7 @@
 ---
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Badge, Icon } from '@santi020k/lumen-astro'
+
 import DocsSearch from '../components/DocsSearch.astro'
 import { componentCategories, componentDocs } from '../data/docs'
 import { toSlug } from '../lib/routes'
@@ -32,95 +35,77 @@ const isCurrent = (href: string) => currentPath === href
 ---
 
 <BaseLayout description={description} title={title}>
-  <div class="
-    mx-auto grid w-full max-w-7xl gap-10 px-5 py-8
-    sm:px-8
-    lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start
-  ">
+  <div class="docs-shell">
+    <div class="docs-shell__wash" aria-hidden="true"></div>
     <aside
-      class="
-        hidden
-        lg:sticky lg:top-20 lg:grid lg:max-h-[calc(100vh-6rem)] lg:gap-6
-        lg:overflow-y-auto lg:pr-2 lg:pb-8
-      "
+      class="docs-sidebar"
       aria-label="Documentation"
       data-docs-sidebar
     >
-      <DocsSearch
-        class="max-w-none"
-        inputId="docs-sidebar-search-input"
-        optionIdPrefix="docs-sidebar-search"
-        placeholder="Search docs..."
-        resultsId="docs-sidebar-search-results"
-      />
-      <nav class="grid gap-6 text-sm" data-docs-nav>
-        <div class="grid gap-1">
-          <p class="
-            mb-1 text-xs font-black tracking-[0.14em] text-ink-muted uppercase
-          ">Getting started</p>
+      <div class="docs-sidebar__top">
+        <div class="docs-sidebar__label">
+          <span><Icon decorative name="book-open" size="sm" /></span>
+          <div>
+            <strong>Documentation</strong>
+            <small>{componentDocs.length} production primitives</small>
+          </div>
+        </div>
+        <DocsSearch
+          class="max-w-none"
+          inputId="docs-sidebar-search-input"
+          optionIdPrefix="docs-sidebar-search"
+          placeholder="Search the docs..."
+          resultsId="docs-sidebar-search-results"
+        />
+      </div>
+
+      <nav class="docs-sidebar__nav" data-docs-nav>
+        <div class="docs-sidebar__group">
+          <p>Start here</p>
           {gettingStarted.map(([label, href]) => (
             <a
               aria-current={isCurrent(href) ? 'page' : undefined}
-              class:list={[
-                `
-                  rounded-sm px-2 py-1 no-underline
-                  hover:text-ink
-                `,
-                isCurrent(href) ? 'bg-brand-soft font-bold text-ink' : `
-                  text-ink-soft
-                `
-              ]}
+              class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
               href={href}
-            >{label}</a>
+            >
+              <span>{label}</span>
+              {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
+            </a>
           ))}
         </div>
-        <div class="grid gap-1">
-          <p class="
-            mb-1 text-xs font-black tracking-[0.14em] text-ink-muted uppercase
-          ">Frameworks</p>
+        <div class="docs-sidebar__group">
+          <p>Frameworks</p>
           {frameworkLinks.map(([label, href]) => (
             <a
               aria-current={isCurrent(href) ? 'page' : undefined}
-              class:list={[
-                `
-                  rounded-sm px-2 py-1 no-underline
-                  hover:text-ink
-                `,
-                isCurrent(href) ? 'bg-brand-soft font-bold text-ink' : `
-                  text-ink-soft
-                `
-              ]}
+              class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
               href={href}
-            >{label}</a>
+            >
+              <span>{label}</span>
+              {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
+            </a>
           ))}
         </div>
         {componentCategories.map(category => (
-
-          <div class="grid gap-1">
-            <p class="
-              mb-1 text-xs font-black tracking-[0.14em] text-ink-muted uppercase
-            ">{category}</p>
+          <div class="docs-sidebar__group">
+            <p>
+              <span>{category}</span>
+              <Badge variant="outline">
+                {componentDocs.filter(component => component.category === category).length}
+              </Badge>
+            </p>
             {componentDocs.filter(component => component.category === category).map(component => (
               <a
                 aria-current={isCurrent(`/docs/components/${toSlug(component.name)}`) ? 'page' : undefined}
-                class:list={[
-                  `
-                    flex items-center justify-between gap-2 rounded-sm px-2 py-1
-                    no-underline
-                    hover:text-ink
-                  `,
-                  isCurrent(`/docs/components/${toSlug(component.name)}`)
-                    ? 'bg-brand-soft font-bold text-ink'
-                    : 'text-ink-soft'
-                ]}
+                class:list={{
+                  'docs-sidebar__link': true,
+                  'is-current': isCurrent(`/docs/components/${toSlug(component.name)}`)
+                }}
                 href={`/docs/components/${toSlug(component.name)}`}
               >
                 <span class="truncate">{component.name}</span>
                 {component.glass && (
-                  <span class="
-                    shrink-0 rounded-sm border border-line px-1.5 py-0.5
-                    text-[0.65rem] leading-none font-bold text-ink-muted
-                  ">Glass</span>
+                  <span class="docs-sidebar__glass">Glass</span>
                 )}
               </a>
             ))}
@@ -128,11 +113,9 @@ const isCurrent = (href: string) => currentPath === href
         ))}
       </nav>
     </aside>
-    <main class="min-w-0 pb-16">
-      <div class="
-        mb-8
-        lg:hidden
-      ">
+    <main class="docs-content">
+      <div class="docs-mobile-search">
+        <span>Documentation</span>
         <DocsSearch
           class="max-w-2xl"
           inputId="docs-mobile-search-input"

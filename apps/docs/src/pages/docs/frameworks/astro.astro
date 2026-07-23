@@ -1,7 +1,9 @@
 ---
-import { Badge, Card } from '@santi020k/lumen-astro'
+/* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Card } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
 import { frameworkGuides, frameworkSetups } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
@@ -17,27 +19,34 @@ if (!guide || !setup) {
   description="Using Lumen UI in Astro: Reference implementation, progressive enhancement, and component registry."
   title="Astro - Lumen UI"
 >
-  <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
-    <a class="
-      text-ink-soft no-underline
-      hover:text-ink
-    " href="/docs">Docs</a>
-    <span aria-hidden="true"> / </span>
-    <span aria-current="page" class="font-bold text-ink">Astro</span>
-  </nav>
+  <div class="framework-page">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="/docs">Docs</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Astro</span>
+    </nav>
 
-  <div class="mb-8 space-y-3">
-    <div class="flex flex-wrap items-center gap-3">
-      <h1 class="text-4xl font-black text-ink">{guide.title}</h1>
-      <Badge variant="secondary">Reference implementation</Badge>
-    </div>
-    <p class="max-w-2xl text-lg/8 text-ink-soft">
-      The Astro package is the reference implementation for Lumen UI. It provides the full component
-      catalog, shared standalone CSS, and the progressive enhancement runtime.
-    </p>
-  </div>
+    <DocsPageHero
+      description="The reference implementation for Lumen UI, with the complete component catalog, standalone CSS, and a tiny progressive-enhancement runtime."
+      eyebrow="Framework guide"
+      stats={[
+        { label: 'Surface', value: 'Reference' },
+        { label: 'Runtime', value: 'Progressive' },
+        { label: 'Package', value: 'Astro' }
+      ]}
+      title={guide.title}
+    >
+      <Fragment slot="actions">
+        <a class="ui-button ui-button--default-size ui-button--default no-underline" href="#install-title">
+          Install for Astro
+        </a>
+        <a class="ui-button ui-button--default-size ui-button--outline no-underline" href="/docs/components">
+          Browse components
+        </a>
+      </Fragment>
+    </DocsPageHero>
 
-  <section class="docs-section space-y-4" aria-labelledby="install-title">
+    <section class="docs-section space-y-4" aria-labelledby="install-title">
     <div class="docs-section-heading">
       <h2 id="install-title" class="text-xl font-bold text-ink">Installation</h2>
       <p class="text-sm/6 text-ink-soft">{setup.note}</p>
@@ -59,9 +68,9 @@ if (!guide || !setup) {
       <h3 class="mb-2 text-sm font-bold text-ink">Usage Example</h3>
       <CodeBlock code={setup.usage} lang={setup.lang} />
     </div>
-  </section>
+    </section>
 
-  <section class="docs-section mt-10 space-y-4" aria-labelledby="overview-title">
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="overview-title">
     <div class="docs-section-heading">
       <h2 id="overview-title" class="text-xl font-bold text-ink">Overview</h2>
     </div>
@@ -70,9 +79,9 @@ if (!guide || !setup) {
         <li>{item}</li>
       ))}
     </ul>
-  </section>
+    </section>
 
-  <section class="docs-section mt-10 space-y-4" aria-labelledby="runtime-title">
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="runtime-title">
     <div class="docs-section-heading">
       <h2 id="runtime-title" class="text-xl font-bold text-ink">Progressive Enhancement Runtime</h2>
       <p class="text-sm/6 text-ink-soft">
@@ -82,6 +91,7 @@ if (!guide || !setup) {
       </p>
     </div>
     <CodeBlock code={guide.code} lang={guide.lang} />
-  </section>
+    </section>
+  </div>
 
 </DocsLayout>

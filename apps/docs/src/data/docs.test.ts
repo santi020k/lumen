@@ -121,9 +121,11 @@ describe('component docs snippets', () => {
     }
 
     expect(frameworkSetups.find(setup => setup.id === 'react')?.installCommands[0]?.command)
-      .toBe('pnpm add @santi020k/lumen-react @santi020k/lumen-astro')
+      .toBe('pnpm add @santi020k/lumen @santi020k/lumen-react')
     expect(frameworkSetups.find(setup => setup.id === 'elements')?.installCommands[0]?.command)
-      .toBe('pnpm add @santi020k/lumen-elements @santi020k/lumen-astro')
+      .toBe('pnpm add @santi020k/lumen @santi020k/lumen-elements')
+    expect(frameworkSetups.find(setup => setup.id === 'astro')?.installCommands[0]?.command)
+      .toBe('pnpm add @santi020k/lumen @santi020k/lumen-astro')
     expect(frameworkSetups.find(setup => setup.id === 'astro')?.note)
       .toContain('Mount UIPrimitives once in your root layout')
   })
@@ -180,7 +182,7 @@ import { Button, Dialog } from '@santi020k/lumen-astro'
 
   test('documents the stylesheet as a one-time global setup', () => {
     expect(globalStyleSetups.map(setup => setup.label)).toEqual(['Tailwind CSS', 'Astro layout', 'App entry'])
-    expect(globalStyleSetups.map(setup => setup.code).join('\n')).toContain('@santi020k/lumen-astro/styles.css')
+    expect(globalStyleSetups.map(setup => setup.code).join('\n')).toContain('@santi020k/lumen/styles.css')
   })
 
   test('documents built-in and example theme setup', () => {

@@ -30,6 +30,7 @@
     "clean": "rm -rf .astro coverage"
   },
   "dependencies": {
+    "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-core": "workspace:^"
   },
   "devDependencies": {
