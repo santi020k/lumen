@@ -334,7 +334,9 @@ const categories = [
       </div>
       <Card class="home-ai__terminal" glass="subtle">
         <div class="home-ai__terminal-head">
-          <span></span><span></span><span></span>
+          <div class="home-ai__terminal-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
           <Badge variant="outline">Agent Skills</Badge>
         </div>
         <div class="home-ai__terminal-line">
@@ -1037,7 +1039,12 @@ const categories = [
     gap: .35rem;
   }
 
-  .home-ai__terminal-head > span {
+  .home-ai__terminal-dots {
+    display: flex;
+    gap: .35rem;
+  }
+
+  .home-ai__terminal-dots span {
     width: .55rem;
     height: .55rem;
     border-radius: 999px;

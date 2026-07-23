@@ -42,7 +42,6 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@santi020k/lumen-core": "workspace:^",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
