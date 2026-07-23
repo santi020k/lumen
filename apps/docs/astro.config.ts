@@ -3,9 +3,12 @@ import { fileURLToPath } from 'node:url'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'astro/config'
+import { defineConfig, passthroughImageService } from 'astro/config'
 
 export default defineConfig({
+  image: {
+    service: passthroughImageService()
+  },
   integrations: [mdx(), sitemap()],
   site: process.env.PUBLIC_SITE_URL ?? 'https://lumen.santi020k.com',
   vite: {
