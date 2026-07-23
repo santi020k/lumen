@@ -199,6 +199,9 @@ importers:
       '@astrojs/sitemap':
         specifier: 'catalog:'
         version: 3.7.3
+      '@santi020k/lumen':
+        specifier: workspace:^
+        version: link:../../packages/lumen
       '@santi020k/lumen-astro':
         specifier: workspace:^
         version: link:../../packages/astro
@@ -236,6 +239,9 @@ importers:
 
   packages/astro:
     dependencies:
+      '@santi020k/lumen':
+        specifier: workspace:^
+        version: link:../lumen
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../core

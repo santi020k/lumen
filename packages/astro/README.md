@@ -6,7 +6,7 @@ configuration is required to render the components.
 ## Install
 
 ```bash
-pnpm add @santi020k/lumen-astro
+pnpm add @santi020k/lumen @santi020k/lumen-astro
 ```
 
 Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
@@ -15,14 +15,14 @@ lists, or toasts. Do not add `UIPrimitives` beside each component instance; one 
 enhances all matching Lumen markup on the page.
 
 ```css
-@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen/styles.css";
 ```
 
 With Tailwind, keep the Lumen import in the same shared CSS entry:
 
 ```css
 @import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen/styles.css";
 ```
 
 ```astro
