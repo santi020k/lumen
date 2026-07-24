@@ -15920,10 +15920,40 @@
     {
       "apiReference": [
         {
-          "attribute": "animation",
-          "defaultValue": "\"fade\"",
-          "description": "Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.",
-          "values": "\"fade\" | \"slide-up\" | \"scale\""
+          "attribute": "value",
+          "defaultValue": "required",
+          "description": "Sets the final value announced to assistive technology and displayed after the animation.",
+          "values": "number"
+        },
+        {
+          "attribute": "from",
+          "defaultValue": "0",
+          "description": "Sets the visual starting value.",
+          "values": "number"
+        },
+        {
+          "attribute": "decimals",
+          "defaultValue": "0",
+          "description": "Sets the number of displayed decimal places.",
+          "values": "number"
+        },
+        {
+          "attribute": "locale",
+          "defaultValue": "browser locale",
+          "description": "Formats the value with Intl.NumberFormat.",
+          "values": "string"
+        },
+        {
+          "attribute": "prefix, suffix",
+          "defaultValue": "\"\"",
+          "description": "Adds stable text around the formatted number.",
+          "values": "string"
+        },
+        {
+          "attribute": "duration",
+          "defaultValue": "\"slow\"",
+          "description": "Uses the shared Lumen motion duration.",
+          "values": "\"fast\" | \"standard\" | \"slow\""
         },
         {
           "attribute": "class, className",
@@ -15938,7 +15968,512 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n  animation?: 'fade' | 'slide-up' | 'scale'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  animation = 'fade',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-scroll-reveal',\n  `ui-scroll-reveal-${animation}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-scroll-reveal\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'span'>, 'prefix'> {\n  class?: string\n  className?: string\n  decimals?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  from?: number\n  locale?: string\n  prefix?: string\n  suffix?: string\n  value: number\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  decimals = 0,\n  duration = 'slow',\n  from = 0,\n  locale,\n  prefix = '',\n  suffix = '',\n  value,\n  ...rest\n} = Astro.props\n\nconst safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))\nconst formatter = new Intl.NumberFormat(locale, {\n  maximumFractionDigits: safeDecimals,\n  minimumFractionDigits: safeDecimals\n})\nconst formattedValue = `${prefix}${formatter.format(value)}${suffix}`\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-animated-number',\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<span\n  class:list={classList}\n  data-ui-animated-number\n  data-ui-animated-number-decimals={safeDecimals}\n  data-ui-animated-number-from={from}\n  data-ui-animated-number-locale={locale}\n  data-ui-animated-number-prefix={prefix}\n  data-ui-animated-number-suffix={suffix}\n  data-ui-animated-number-value={value}\n  {...passthrough}\n>\n  <span aria-hidden=\"true\" data-ui-animated-number-output>{formattedValue}</span>\n  <span class=\"ui-sr-only\">{formattedValue}</span>\n</span>\n",
+      "category": "Data display",
+      "collections": [],
+      "dependencies": [],
+      "description": "Animates a formatted metric while keeping one stable accessible value.",
+      "files": [
+        "packages/astro/components/AnimatedNumber.astro",
+        "packages/react/src/components.tsx"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<AnimatedNumber value={1234} prefix=\"$\" />",
+          "importStatement": "import { AnimatedNumber } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "decimals",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "optional": true,
+              "type": "'fast' | 'standard' | 'slow'"
+            },
+            {
+              "name": "from",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "locale",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "prefix",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "suffix",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "optional": false,
+              "type": "number"
+            }
+          ],
+          "propsExtends": "Omit<HTMLAttributes<'span'>, 'prefix'>",
+          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'span'>, 'prefix'> {\n  class?: string\n  className?: string\n  decimals?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  from?: number\n  locale?: string\n  prefix?: string\n  suffix?: string\n  value: number\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  decimals = 0,\n  duration = 'slow',\n  from = 0,\n  locale,\n  prefix = '',\n  suffix = '',\n  value,\n  ...rest\n} = Astro.props\n\nconst safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))\nconst formatter = new Intl.NumberFormat(locale, {\n  maximumFractionDigits: safeDecimals,\n  minimumFractionDigits: safeDecimals\n})\nconst formattedValue = `${prefix}${formatter.format(value)}${suffix}`\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-animated-number',\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<span\n  class:list={classList}\n  data-ui-animated-number\n  data-ui-animated-number-decimals={safeDecimals}\n  data-ui-animated-number-from={from}\n  data-ui-animated-number-locale={locale}\n  data-ui-animated-number-prefix={prefix}\n  data-ui-animated-number-suffix={suffix}\n  data-ui-animated-number-value={value}\n  {...passthrough}\n>\n  <span aria-hidden=\"true\" data-ui-animated-number-output>{formattedValue}</span>\n  <span class=\"ui-sr-only\">{formattedValue}</span>\n</span>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "duration",
+            "from",
+            "value",
+            "decimals",
+            "locale",
+            "prefix, suffix",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "example": "<lumen-animated-number></lumen-animated-number>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "AnimatedNumber: {\n    attributeClasses: {\n      duration: {\n        fast: 'ui-motion-duration-fast',\n        slow: 'ui-motion-duration-slow',\n        standard: 'ui-motion-duration-standard'\n      }\n    },\n    baseClassName: 'ui-animated-number',\n    defaults: { duration: 'slow', from: '0' },\n    tagName: 'lumen-animated-number'\n  }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-animated-number"
+        },
+        "react": {
+          "available": true,
+          "example": "<AnimatedNumber value={1234} prefix=\"$\" />",
+          "importStatement": "import { AnimatedNumber } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "decimals",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "optional": true,
+              "type": "MotionDuration"
+            },
+            {
+              "name": "from",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "locale",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "prefix",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "suffix",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "optional": false,
+              "type": "number"
+            }
+          ],
+          "propsExtends": "Omit<ComponentPropsWithoutRef<'span'>, 'prefix'>",
+          "source": "export interface AnimatedNumberProps extends Omit<ComponentPropsWithoutRef<'span'>, 'prefix'> {\n  decimals?: number\n  duration?: MotionDuration\n  from?: number\n  locale?: string\n  prefix?: string\n  suffix?: string\n  value: number\n}\n\nexport const AnimatedNumber = ({\n  className,\n  decimals = 0,\n  duration = 'slow',\n  from = 0,\n  locale,\n  prefix = '',\n  suffix = '',\n  value,\n  ...props\n}: AnimatedNumberProps) => {\n  const outputRef = useRef<HTMLSpanElement>(null)\n  const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))\n  const formatter = useMemo(() => new Intl.NumberFormat(locale, {\n    maximumFractionDigits: safeDecimals,\n    minimumFractionDigits: safeDecimals\n  }), [locale, safeDecimals])\n  const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`\n\n  useEffect(() => {\n    const output = outputRef.current\n\n    if (!output) return\n\n    if (\n      window.matchMedia('(prefers-reduced-motion: reduce)').matches\n      || typeof IntersectionObserver === 'undefined'\n    ) {\n      output.textContent = format(value)\n\n      return\n    }\n\n    output.textContent = format(from)\n\n    const root = output.parentElement\n\n    if (!root) return\n\n    const observer = new IntersectionObserver(entries => {\n      if (!entries.some(entry => entry.isIntersecting)) return\n\n      observer.disconnect()\n\n      const durationValue = getComputedStyle(root).getPropertyValue('--ui-motion-duration').trim()\n      const parsedDuration = Number.parseFloat(durationValue)\n      const durationMs = Number.isFinite(parsedDuration)\n        ? durationValue.endsWith('ms') ? parsedDuration : parsedDuration * 1000\n        : 300\n      const startedAt = performance.now()\n\n      const update = (now: number) => {\n        const progress = Math.min(1, (now - startedAt) / Math.max(1, durationMs))\n        const eased = 1 - Math.pow(1 - progress, 3)\n\n        output.textContent = format(from + ((value - from) * eased))\n\n        if (progress < 1) {\n          requestAnimationFrame(update)\n        } else {\n          output.textContent = format(value)\n        }\n      }\n\n      requestAnimationFrame(update)\n    }, { threshold: 0.15 })\n\n    observer.observe(root)\n\n    return () => { observer.disconnect() }\n  }, [formatter, from, prefix, suffix, value])\n\n  const formattedValue = format(value)\n\n  return (\n    <span\n      className={composeClassName('ui-animated-number', `ui-motion-duration-${duration}`, className)}\n      data-ui-animated-number\n      {...props}\n    >\n      <span aria-hidden=\"true\" data-ui-animated-number-output ref={outputRef}>{formattedValue}</span>\n      <span className=\"ui-sr-only\">{formattedValue}</span>\n    </span>\n  )\n}",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "animated-number",
+      "keyboardInteractions": [],
+      "keywords": [
+        "accessible",
+        "animatednumber",
+        "animates",
+        "data",
+        "display",
+        "formatted",
+        "keeping",
+        "metric",
+        "one",
+        "stable",
+        "value",
+        "while"
+      ],
+      "name": "AnimatedNumber",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "decimals",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "'fast' | 'standard' | 'slow'"
+        },
+        {
+          "name": "from",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "locale",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "prefix",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "suffix",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "propsExtends": "Omit<HTMLAttributes<'span'>, 'prefix'>",
+      "recipes": [],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "animation",
+          "defaultValue": "\"slide-up\"",
+          "description": "Sets the shared entrance treatment for direct children.",
+          "values": "\"fade\" | \"slide-up\" | \"scale\""
+        },
+        {
+          "attribute": "stagger",
+          "defaultValue": "80",
+          "description": "Sets the delay in milliseconds between direct children.",
+          "values": "number"
+        },
+        {
+          "attribute": "delay",
+          "defaultValue": "0",
+          "description": "Delays the first child in milliseconds.",
+          "values": "number"
+        },
+        {
+          "attribute": "duration",
+          "defaultValue": "\"slow\"",
+          "description": "Uses the shared Lumen motion duration.",
+          "values": "\"fast\" | \"standard\" | \"slow\""
+        },
+        {
+          "attribute": "once",
+          "defaultValue": "true",
+          "description": "When false, children transition again when the group re-enters the viewport.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "threshold",
+          "defaultValue": "0.15",
+          "description": "Sets the visible intersection ratio that starts the reveal.",
+          "values": "number"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n  class?: string\n  className?: string\n  delay?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  once?: boolean\n  stagger?: number\n  threshold?: number\n}\n\nconst {\n  animation = 'slide-up',\n  class: classProp = '',\n  className = '',\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  stagger = 80,\n  style,\n  threshold = 0.15,\n  ...rest\n} = Astro.props\n\nconst safeDelay = Math.max(0, delay)\nconst safeStagger = Math.max(0, stagger)\nconst safeThreshold = Math.min(1, Math.max(0, threshold))\nconst motionStyle = [\n  typeof style === 'string' ? style : '',\n  `--ui-reveal-delay:${safeDelay}ms`,\n  `--ui-reveal-stagger:${safeStagger}ms`\n].filter(Boolean).join(';')\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-reveal-group',\n  `ui-reveal-group-${animation}`,\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-reveal-group\n  data-ui-reveal-once={String(once)}\n  data-ui-reveal-threshold={safeThreshold}\n  style={motionStyle}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+      "category": "Layout",
+      "collections": [],
+      "dependencies": [],
+      "description": "Reveals a group of direct children with tokenized, reduced-motion-aware staggering.",
+      "files": [
+        "packages/astro/components/RevealGroup.astro",
+        "packages/react/src/components.tsx"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<RevealGroup stagger={80}><Card>Plan</Card><Card>Build</Card><Card>Ship</Card></RevealGroup>",
+          "importStatement": "import { RevealGroup, Card } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "animation",
+              "optional": true,
+              "type": "'fade' | 'slide-up' | 'scale'"
+            },
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "delay",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "optional": true,
+              "type": "'fast' | 'standard' | 'slow'"
+            },
+            {
+              "name": "once",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "stagger",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "threshold",
+              "optional": true,
+              "type": "number"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'div'>",
+          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n  class?: string\n  className?: string\n  delay?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  once?: boolean\n  stagger?: number\n  threshold?: number\n}\n\nconst {\n  animation = 'slide-up',\n  class: classProp = '',\n  className = '',\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  stagger = 80,\n  style,\n  threshold = 0.15,\n  ...rest\n} = Astro.props\n\nconst safeDelay = Math.max(0, delay)\nconst safeStagger = Math.max(0, stagger)\nconst safeThreshold = Math.min(1, Math.max(0, threshold))\nconst motionStyle = [\n  typeof style === 'string' ? style : '',\n  `--ui-reveal-delay:${safeDelay}ms`,\n  `--ui-reveal-stagger:${safeStagger}ms`\n].filter(Boolean).join(';')\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-reveal-group',\n  `ui-reveal-group-${animation}`,\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-reveal-group\n  data-ui-reveal-once={String(once)}\n  data-ui-reveal-threshold={safeThreshold}\n  style={motionStyle}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "animation",
+            "duration",
+            "once",
+            "threshold",
+            "stagger",
+            "delay",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "example": "<lumen-reveal-group></lumen-reveal-group>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "RevealGroup: {\n    attributeClasses: {\n      animation: {\n        fade: 'ui-reveal-group-fade',\n        scale: 'ui-reveal-group-scale',\n        'slide-up': 'ui-reveal-group-slide-up'\n      },\n      duration: {\n        fast: 'ui-motion-duration-fast',\n        slow: 'ui-motion-duration-slow',\n        standard: 'ui-motion-duration-standard'\n      }\n    },\n    baseClassName: 'ui-reveal-group',\n    defaults: { animation: 'slide-up', duration: 'slow', once: 'true', threshold: '0.15' },\n    tagName: 'lumen-reveal-group'\n  }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-reveal-group"
+        },
+        "react": {
+          "available": true,
+          "example": "<RevealGroup stagger={80}><Card>Plan</Card><Card>Build</Card><Card>Ship</Card></RevealGroup>",
+          "importStatement": "import { RevealGroup, Card } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "animation",
+              "optional": true,
+              "type": "MotionAnimation"
+            },
+            {
+              "name": "delay",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "optional": true,
+              "type": "MotionDuration"
+            },
+            {
+              "name": "once",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "stagger",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "threshold",
+              "optional": true,
+              "type": "number"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithoutRef<'div'>",
+          "source": "export interface RevealGroupProps extends ComponentPropsWithoutRef<'div'> {\n  animation?: MotionAnimation\n  delay?: number\n  duration?: MotionDuration\n  once?: boolean\n  stagger?: number\n  threshold?: number\n}\n\nexport const RevealGroup = ({\n  animation = 'slide-up',\n  className,\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  stagger = 80,\n  style,\n  threshold = 0.15,\n  ...props\n}: RevealGroupProps) => {\n  const rootRef = useRef<HTMLDivElement>(null)\n\n  useEffect(() => {\n    const root = rootRef.current\n\n    if (!root) return\n\n    root.dataset.uiScrollRevealBound = 'true'\n\n    for (const [index, child] of [...root.children].entries()) {\n      if (child instanceof HTMLElement) {\n        child.style.setProperty('--ui-reveal-index', String(index))\n      }\n    }\n\n    if (\n      window.matchMedia('(prefers-reduced-motion: reduce)').matches\n      || typeof IntersectionObserver === 'undefined'\n    ) {\n      root.classList.add('is-revealed')\n\n      return\n    }\n\n    const observer = new IntersectionObserver(([entry]) => {\n      if (!entry) return\n\n      root.classList.toggle('is-revealed', entry.isIntersecting)\n\n      if (entry.isIntersecting && once) observer.disconnect()\n    }, { threshold: Math.min(1, Math.max(0, threshold)) })\n\n    observer.observe(root)\n\n    return () => { observer.disconnect() }\n  }, [once, threshold])\n\n  return (\n    <div\n      className={composeClassName(\n        'ui-reveal-group',\n        `ui-reveal-group-${animation}`,\n        `ui-motion-duration-${duration}`,\n        className\n      )}\n      data-ui-reveal-group\n      data-ui-reveal-once={String(once)}\n      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}\n      ref={rootRef}\n      style={{\n        ...style,\n        '--ui-reveal-delay': `${Math.max(0, delay)}ms`,\n        '--ui-reveal-stagger': `${Math.max(0, stagger)}ms`\n      } as CSSProperties}\n      {...props}\n    />\n  )\n}",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "reveal-group",
+      "keyboardInteractions": [],
+      "keywords": [
+        "aware",
+        "children",
+        "direct",
+        "group",
+        "layout",
+        "motion",
+        "reduced",
+        "revealgroup",
+        "reveals",
+        "staggering",
+        "tokenized",
+        "with"
+      ],
+      "name": "RevealGroup",
+      "props": [
+        {
+          "name": "animation",
+          "optional": true,
+          "type": "'fade' | 'slide-up' | 'scale'"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "delay",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "'fast' | 'standard' | 'slow'"
+        },
+        {
+          "name": "once",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "stagger",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "threshold",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'div'>",
+      "recipes": [],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "animation",
+          "defaultValue": "\"fade\"",
+          "description": "Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.",
+          "values": "\"fade\" | \"slide-up\" | \"scale\""
+        },
+        {
+          "attribute": "delay",
+          "defaultValue": "0",
+          "description": "Delays the entrance in milliseconds.",
+          "values": "number"
+        },
+        {
+          "attribute": "duration",
+          "defaultValue": "\"slow\"",
+          "description": "Uses the shared Lumen motion duration.",
+          "values": "\"fast\" | \"standard\" | \"slow\""
+        },
+        {
+          "attribute": "once",
+          "defaultValue": "true",
+          "description": "When false, the content transitions again when it re-enters the viewport.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "threshold",
+          "defaultValue": "0.15",
+          "description": "Sets the visible intersection ratio that starts the reveal.",
+          "values": "number"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n  class?: string\n  className?: string\n  delay?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  once?: boolean\n  threshold?: number\n}\n\nconst {\n  animation = 'fade',\n  class: classProp = '',\n  className = '',\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  style,\n  threshold = 0.15,\n  ...rest\n} = Astro.props\n\nconst safeDelay = Math.max(0, delay)\nconst safeThreshold = Math.min(1, Math.max(0, threshold))\nconst motionStyle = [\n  typeof style === 'string' ? style : '',\n  `--ui-reveal-delay:${safeDelay}ms`\n].filter(Boolean).join(';')\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-scroll-reveal',\n  `ui-scroll-reveal-${animation}`,\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-reveal-once={String(once)}\n  data-ui-reveal-threshold={safeThreshold}\n  data-ui-scroll-reveal\n  style={motionStyle}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Layout",
       "collections": [],
       "dependencies": [],
@@ -15956,6 +16491,11 @@
           "packageName": "@santi020k/lumen-astro",
           "props": [
             {
+              "name": "animation",
+              "optional": true,
+              "type": "'fade' | 'slide-up' | 'scale'"
+            },
+            {
               "name": "class",
               "optional": true,
               "type": "string"
@@ -15966,18 +16506,37 @@
               "type": "string"
             },
             {
-              "name": "animation",
+              "name": "delay",
               "optional": true,
-              "type": "'fade' | 'slide-up' | 'scale'"
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "optional": true,
+              "type": "'fast' | 'standard' | 'slow'"
+            },
+            {
+              "name": "once",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "threshold",
+              "optional": true,
+              "type": "number"
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n  animation?: 'fade' | 'slide-up' | 'scale'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  animation = 'fade',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-scroll-reveal',\n  `ui-scroll-reveal-${animation}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-scroll-reveal\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n  class?: string\n  className?: string\n  delay?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  once?: boolean\n  threshold?: number\n}\n\nconst {\n  animation = 'fade',\n  class: classProp = '',\n  className = '',\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  style,\n  threshold = 0.15,\n  ...rest\n} = Astro.props\n\nconst safeDelay = Math.max(0, delay)\nconst safeThreshold = Math.min(1, Math.max(0, threshold))\nconst motionStyle = [\n  typeof style === 'string' ? style : '',\n  `--ui-reveal-delay:${safeDelay}ms`\n].filter(Boolean).join(';')\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-scroll-reveal',\n  `ui-scroll-reveal-${animation}`,\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-reveal-once={String(once)}\n  data-ui-reveal-threshold={safeThreshold}\n  data-ui-scroll-reveal\n  style={motionStyle}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "animation",
+            "duration",
+            "once",
+            "threshold",
+            "delay",
             "class, className",
             "...native attributes"
           ],
@@ -15989,7 +16548,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "ScrollReveal: { baseClassName: 'ui-scroll-reveal', tagName: 'lumen-scroll-reveal' }",
+          "source": "ScrollReveal: {\n    attributeClasses: {\n      animation: {\n        fade: 'ui-scroll-reveal-fade',\n        scale: 'ui-scroll-reveal-scale',\n        'slide-up': 'ui-scroll-reveal-slide-up'\n      },\n      duration: {\n        fast: 'ui-motion-duration-fast',\n        slow: 'ui-motion-duration-slow',\n        standard: 'ui-motion-duration-standard'\n      }\n    },\n    baseClassName: 'ui-scroll-reveal',\n    defaults: { animation: 'fade', duration: 'slow', once: 'true', threshold: '0.15' },\n    tagName: 'lumen-scroll-reveal'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-scroll-reveal"
         },
@@ -16003,11 +16562,31 @@
             {
               "name": "animation",
               "optional": true,
-              "type": "'fade' | 'slide-up' | 'scale'"
+              "type": "MotionAnimation"
+            },
+            {
+              "name": "delay",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "optional": true,
+              "type": "MotionDuration"
+            },
+            {
+              "name": "once",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "threshold",
+              "optional": true,
+              "type": "number"
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface ScrollRevealProps extends ComponentPropsWithoutRef<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n}\n\nexport const ScrollReveal = ({ className, animation = 'fade', ...props }: ScrollRevealProps) => (\n  <div className={composeClassName('ui-scroll-reveal', `ui-scroll-reveal-${animation}`, className)} data-ui-scroll-reveal {...props} />\n)",
+          "source": "export interface ScrollRevealProps extends ComponentPropsWithoutRef<'div'> {\n  animation?: MotionAnimation\n  delay?: number\n  duration?: MotionDuration\n  once?: boolean\n  threshold?: number\n}\n\nexport const ScrollReveal = ({\n  animation = 'fade',\n  className,\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  style,\n  threshold = 0.15,\n  ...props\n}: ScrollRevealProps) => {\n  const rootRef = useRef<HTMLDivElement>(null)\n\n  useEffect(() => {\n    const root = rootRef.current\n\n    if (!root) return\n\n    root.dataset.uiScrollRevealBound = 'true'\n\n    if (\n      window.matchMedia('(prefers-reduced-motion: reduce)').matches\n      || typeof IntersectionObserver === 'undefined'\n    ) {\n      root.classList.add('is-revealed')\n\n      return\n    }\n\n    const observer = new IntersectionObserver(([entry]) => {\n      if (!entry) return\n\n      root.classList.toggle('is-revealed', entry.isIntersecting)\n\n      if (entry.isIntersecting && once) observer.disconnect()\n    }, { threshold: Math.min(1, Math.max(0, threshold)) })\n\n    observer.observe(root)\n\n    return () => { observer.disconnect() }\n  }, [once, threshold])\n\n  return (\n    <div\n      className={composeClassName(\n        'ui-scroll-reveal',\n        `ui-scroll-reveal-${animation}`,\n        `ui-motion-duration-${duration}`,\n        className\n      )}\n      data-ui-reveal-once={String(once)}\n      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}\n      data-ui-scroll-reveal\n      ref={rootRef}\n      style={{ ...style, '--ui-reveal-delay': `${Math.max(0, delay)}ms` } as CSSProperties}\n      {...props}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -16033,6 +16612,11 @@
       "name": "ScrollReveal",
       "props": [
         {
+          "name": "animation",
+          "optional": true,
+          "type": "'fade' | 'slide-up' | 'scale'"
+        },
+        {
           "name": "class",
           "optional": true,
           "type": "string"
@@ -16043,9 +16627,24 @@
           "type": "string"
         },
         {
-          "name": "animation",
+          "name": "delay",
           "optional": true,
-          "type": "'fade' | 'slide-up' | 'scale'"
+          "type": "number"
+        },
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "'fast' | 'standard' | 'slow'"
+        },
+        {
+          "name": "once",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "threshold",
+          "optional": true,
+          "type": "number"
         }
       ],
       "propsExtends": "HTMLAttributes<'div'>",
@@ -20688,7 +21287,7 @@
     "readme": "# Lumen\n\nLumen is a multi-framework primitive UI system from Santiago Molina. Install the package for your\nframework; it includes the shared Lumen foundation and standalone stylesheet. Consumers do not\nneed Tailwind configuration for Lumen components to render.\n\nThe monorepo layers framework adapters around a shared core:\n\n- `@santi020k/lumen` - shared stylesheet, CLI, registry metadata, and package map\n- `@santi020k/lumen-core` - tokens, component metadata, class composition, and shared behavior helpers\n- `@santi020k/lumen-astro` - Astro components and progressive-enhancement runtime\n- `@santi020k/lumen-react` - React components\n- `@santi020k/lumen-elements` - standards-based Web Components\n- `@santi020k/lumen-mcp` - Model Context Protocol server for AI agents\n- `apps/docs` - Astro documentation and demo site\n\n## Quick Start\n\nChoose one package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\nImport the stylesheet from the same framework package once in your global CSS file, root layout,\nor app entry. For example:\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nWith Tailwind, keep it in the same shared CSS entry:\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nFor interactive Astro primitives, mount `UIPrimitives` once in your root layout:\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n## Development\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\n## Package Strategy\n\nThe `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.\n\n## Migration\n\nIf you are replacing an older internal design system or duplicated UI primitives, refer to the [Migration Guide](docs/migrating-to-lumen.md) for instructions on adopting Lumen incrementally and mapping existing tokens.\n\n## Agent and Registry Surfaces\n\nInstall the portable Lumen Agent Skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\nAI coding tools:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe canonical skill lives in [skills/lumen-ui](skills/lumen-ui). It teaches agents how to select,\ncompose, theme, and verify Lumen primitives while preserving the app's framework and architecture.\nPair it with [`@santi020k/lumen-mcp`](packages/mcp/README.md) when the agent should search the live\ncatalog and retrieve current component source, props, tokens, and rules.\n\nLumen also includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and\n[registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the\ncomponent catalog, setup rules, recipes, and installable file groups. The current roadmap lives in\n[docs/feature-roadmap.md](docs/feature-roadmap.md).\n\nFigma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for\nFigma variables and the Code Connect path for a published component library.\n[Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,\nother framework, CMS, and CDN optimizers while applying Lumen presentation.\n\nThe umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for\nlisting recipes, showing recipe contents, printing install commands, loading alternate registry\nmanifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge\nincoming recipe files with existing files, `--fail-on-conflict` for CI, or `--registry-token` /\n`LUMEN_REGISTRY_TOKEN` for private remote registries.\n"
   },
   "meta": {
-    "componentCount": 121,
+    "componentCount": 123,
     "packages": [
       "@santi020k/lumen-astro",
       "@santi020k/lumen-react",

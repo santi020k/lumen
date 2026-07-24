@@ -1,0 +1,15 @@
+---
+import { AnimatedNumber, Stat } from '@santi020k/lumen-astro'
+---
+
+<div style="display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr));">
+  <Stat label="Active workspaces">
+    <span class="ui-stat-value"><AnimatedNumber value={1234} /></span>
+  </Stat>
+  <Stat label="Deploy success">
+    <span class="ui-stat-value"><AnimatedNumber decimals={1} suffix="%" value={99.8} /></span>
+  </Stat>
+  <Stat label="Median build">
+    <span class="ui-stat-value"><AnimatedNumber suffix="s" value={42} /></span>
+  </Stat>
+</div>

@@ -1,0 +1,13 @@
+---
+import { Card, RevealGroup } from '@santi020k/lumen-astro'
+---
+
+<RevealGroup
+  animation="slide-up"
+  stagger={90}
+  style="display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr));"
+>
+  <Card><strong>Plan</strong><p>Start with semantic structure.</p></Card>
+  <Card><strong>Build</strong><p>Compose accessible primitives.</p></Card>
+  <Card><strong>Ship</strong><p>Keep motion consistent.</p></Card>
+</RevealGroup>

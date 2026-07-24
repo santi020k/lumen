@@ -111,6 +111,22 @@ You can also use the shared document events: dispatch `ui:toast` to create, `ui:
 update, and `ui:toast-dismiss` to dismiss runtime toasts. Toast actions emit `ui:toast-action`
 unless an action supplies a custom event name.
 
+## Motion
+
+The elements adapter exposes the same motion vocabulary as Astro and React. Use
+`lumen-scroll-reveal` for one entrance, `lumen-reveal-group` for a short staggered sequence, and
+`lumen-animated-number` for meaningful metric changes. They honor reduced-motion preferences.
+
+```html
+<lumen-reveal-group animation="slide-up" stagger="80">
+  <lumen-card>Plan</lumen-card>
+  <lumen-card>Build</lumen-card>
+  <lumen-card>Ship</lumen-card>
+</lumen-reveal-group>
+
+<lumen-animated-number decimals="1" suffix="%" value="99.8"></lumen-animated-number>
+```
+
 ## Glass surfaces
 
 Load `@santi020k/lumen-elements/styles.css` once, register the elements, then use the shared glass

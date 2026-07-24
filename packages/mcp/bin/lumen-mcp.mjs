@@ -2,7 +2,7 @@
 import { startLumenMcp } from '../dist/index.js'
 
 startLumenMcp().catch((error) => {
-  console.error('lumen-mcp failed to start:', error)
+  process.stderr.write('lumen-mcp failed to start: ' + String(error) + '\n')
 
   process.exitCode = 1
 })

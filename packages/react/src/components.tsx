@@ -2295,12 +2295,247 @@ export const Particles = ({ className, density = 'medium', ...props }: Particles
   <div aria-hidden="true" className={composeClassName('ui-particles', className)} data-ui-particles={density} {...props} />
 )
 
+type MotionAnimation = 'fade' | 'scale' | 'slide-up'
+type MotionDuration = 'fast' | 'slow' | 'standard'
+
 export interface ScrollRevealProps extends ComponentPropsWithoutRef<'div'> {
-  animation?: 'fade' | 'slide-up' | 'scale'
+  animation?: MotionAnimation
+  delay?: number
+  duration?: MotionDuration
+  once?: boolean
+  threshold?: number
 }
-export const ScrollReveal = ({ className, animation = 'fade', ...props }: ScrollRevealProps) => (
-  <div className={composeClassName('ui-scroll-reveal', `ui-scroll-reveal-${animation}`, className)} data-ui-scroll-reveal {...props} />
-)
+export const ScrollReveal = ({
+  animation = 'fade',
+  className,
+  delay = 0,
+  duration = 'slow',
+  once = true,
+  style,
+  threshold = 0.15,
+  ...props
+}: ScrollRevealProps) => {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (!root) return
+
+    root.dataset.uiScrollRevealBound = 'true'
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || typeof IntersectionObserver === 'undefined'
+    ) {
+      root.classList.add('is-revealed')
+
+      return
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry) return
+
+      root.classList.toggle('is-revealed', entry.isIntersecting)
+
+      if (entry.isIntersecting && once) observer.disconnect()
+    }, { threshold: Math.min(1, Math.max(0, threshold)) })
+
+    observer.observe(root)
+
+    return () => { observer.disconnect() }
+  }, [once, threshold])
+
+  return (
+    <div
+      className={composeClassName(
+        'ui-scroll-reveal',
+        `ui-scroll-reveal-${animation}`,
+        `ui-motion-duration-${duration}`,
+        className
+      )}
+      data-ui-reveal-once={String(once)}
+      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
+      data-ui-scroll-reveal
+      ref={rootRef}
+      style={{ ...style, '--ui-reveal-delay': `${Math.max(0, delay)}ms` } as CSSProperties}
+      {...props}
+    />
+  )
+}
+
+export interface RevealGroupProps extends ComponentPropsWithoutRef<'div'> {
+  animation?: MotionAnimation
+  delay?: number
+  duration?: MotionDuration
+  once?: boolean
+  stagger?: number
+  threshold?: number
+}
+export const RevealGroup = ({
+  animation = 'slide-up',
+  className,
+  delay = 0,
+  duration = 'slow',
+  once = true,
+  stagger = 80,
+  style,
+  threshold = 0.15,
+  ...props
+}: RevealGroupProps) => {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (!root) return
+
+    root.dataset.uiScrollRevealBound = 'true'
+
+    for (const [index, child] of [...root.children].entries()) {
+      if (child instanceof HTMLElement) {
+        child.style.setProperty('--ui-reveal-index', String(index))
+      }
+    }
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || typeof IntersectionObserver === 'undefined'
+    ) {
+      root.classList.add('is-revealed')
+
+      return
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry) return
+
+      root.classList.toggle('is-revealed', entry.isIntersecting)
+
+      if (entry.isIntersecting && once) observer.disconnect()
+    }, { threshold: Math.min(1, Math.max(0, threshold)) })
+
+    observer.observe(root)
+
+    return () => { observer.disconnect() }
+  }, [once, threshold])
+
+  return (
+    <div
+      className={composeClassName(
+        'ui-reveal-group',
+        `ui-reveal-group-${animation}`,
+        `ui-motion-duration-${duration}`,
+        className
+      )}
+      data-ui-reveal-group
+      data-ui-reveal-once={String(once)}
+      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
+      ref={rootRef}
+      style={{
+        ...style,
+        '--ui-reveal-delay': `${Math.max(0, delay)}ms`,
+        '--ui-reveal-stagger': `${Math.max(0, stagger)}ms`
+      } as CSSProperties}
+      {...props}
+    />
+  )
+}
+
+export interface AnimatedNumberProps extends Omit<ComponentPropsWithoutRef<'span'>, 'prefix'> {
+  decimals?: number
+  duration?: MotionDuration
+  from?: number
+  locale?: string
+  prefix?: string
+  suffix?: string
+  value: number
+}
+export const AnimatedNumber = ({
+  className,
+  decimals = 0,
+  duration = 'slow',
+  from = 0,
+  locale,
+  prefix = '',
+  suffix = '',
+  value,
+  ...props
+}: AnimatedNumberProps) => {
+  const outputRef = useRef<HTMLSpanElement>(null)
+  const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
+  const formatter = useMemo(() => new Intl.NumberFormat(locale, {
+    maximumFractionDigits: safeDecimals,
+    minimumFractionDigits: safeDecimals
+  }), [locale, safeDecimals])
+  const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
+
+  useEffect(() => {
+    const output = outputRef.current
+
+    if (!output) return
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || typeof IntersectionObserver === 'undefined'
+    ) {
+      output.textContent = format(value)
+
+      return
+    }
+
+    output.textContent = format(from)
+
+    const root = output.parentElement
+
+    if (!root) return
+
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return
+
+      observer.disconnect()
+
+      const durationValue = getComputedStyle(root).getPropertyValue('--ui-motion-duration').trim()
+      const parsedDuration = Number.parseFloat(durationValue)
+      const durationMs = Number.isFinite(parsedDuration)
+        ? durationValue.endsWith('ms') ? parsedDuration : parsedDuration * 1000
+        : 300
+      const startedAt = performance.now()
+
+      const update = (now: number) => {
+        const progress = Math.min(1, (now - startedAt) / Math.max(1, durationMs))
+        const eased = 1 - Math.pow(1 - progress, 3)
+
+        output.textContent = format(from + ((value - from) * eased))
+
+        if (progress < 1) {
+          requestAnimationFrame(update)
+        } else {
+          output.textContent = format(value)
+        }
+      }
+
+      requestAnimationFrame(update)
+    }, { threshold: 0.15 })
+
+    observer.observe(root)
+
+    return () => { observer.disconnect() }
+  }, [formatter, from, prefix, suffix, value])
+
+  const formattedValue = format(value)
+
+  return (
+    <span
+      className={composeClassName('ui-animated-number', `ui-motion-duration-${duration}`, className)}
+      data-ui-animated-number
+      {...props}
+    >
+      <span aria-hidden="true" data-ui-animated-number-output ref={outputRef}>{formattedValue}</span>
+      <span className="ui-sr-only">{formattedValue}</span>
+    </span>
+  )
+}
 
 export interface StatProps extends ComponentPropsWithoutRef<'div'> {
   label?: string

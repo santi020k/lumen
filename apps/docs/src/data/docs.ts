@@ -1119,8 +1119,28 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Particles: [
     apiRow('density', '"low" | "medium" | "high"', '"medium"', 'Controls the density of the particles.')
   ],
+  AnimatedNumber: [
+    apiRow('value', 'number', 'required', 'Sets the final value announced to assistive technology and displayed after the animation.'),
+    apiRow('from', 'number', '0', 'Sets the visual starting value.'),
+    apiRow('decimals', 'number', '0', 'Sets the number of displayed decimal places.'),
+    apiRow('locale', 'string', 'browser locale', 'Formats the value with Intl.NumberFormat.'),
+    apiRow('prefix, suffix', 'string', '""', 'Adds stable text around the formatted number.'),
+    apiRow('duration', '"fast" | "standard" | "slow"', '"slow"', 'Uses the shared Lumen motion duration.')
+  ],
+  RevealGroup: [
+    apiRow('animation', '"fade" | "slide-up" | "scale"', '"slide-up"', 'Sets the shared entrance treatment for direct children.'),
+    apiRow('stagger', 'number', '80', 'Sets the delay in milliseconds between direct children.'),
+    apiRow('delay', 'number', '0', 'Delays the first child in milliseconds.'),
+    apiRow('duration', '"fast" | "standard" | "slow"', '"slow"', 'Uses the shared Lumen motion duration.'),
+    apiRow('once', 'boolean', 'true', 'When false, children transition again when the group re-enters the viewport.'),
+    apiRow('threshold', 'number', '0.15', 'Sets the visible intersection ratio that starts the reveal.')
+  ],
   ScrollReveal: [
-    apiRow('animation', '"fade" | "slide-up" | "scale"', '"fade"', 'Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.')
+    apiRow('animation', '"fade" | "slide-up" | "scale"', '"fade"', 'Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.'),
+    apiRow('delay', 'number', '0', 'Delays the entrance in milliseconds.'),
+    apiRow('duration', '"fast" | "standard" | "slow"', '"slow"', 'Uses the shared Lumen motion duration.'),
+    apiRow('once', 'boolean', 'true', 'When false, the content transitions again when it re-enters the viewport.'),
+    apiRow('threshold', 'number', '0.15', 'Sets the visible intersection ratio that starts the reveal.')
   ],
   Stat: [
     apiRow('label', 'string', '-', 'The label describing the statistic.'),
@@ -1393,6 +1413,8 @@ export const componentDocs: ComponentDoc[] = ([
   ['VirtualList', 'Data display', 'Frames long scrollable collections for virtualization adapters.', '<VirtualList style="--ui-list-height: 16rem"><div>Row 1</div><div>Row 2</div></VirtualList>'],
   ['LanguageToggle', 'Actions', 'Presents the current locale as a compact control for changing language.', '<LanguageToggle aria-label="Change language">EN</LanguageToggle>'],
   ['Particles', 'Layout', 'Adds a density-controlled decorative particle field behind foreground content.', '<div style="position: relative"><Particles density="medium" /><h2>Launch faster</h2></div>'],
+  ['AnimatedNumber', 'Data display', 'Animates a formatted metric while keeping one stable accessible value.', '<AnimatedNumber value={1234} prefix="$" />'],
+  ['RevealGroup', 'Layout', 'Reveals a group of direct children with tokenized, reduced-motion-aware staggering.', '<RevealGroup stagger={80}><Card>Plan</Card><Card>Build</Card><Card>Ship</Card></RevealGroup>'],
   ['ScrollReveal', 'Layout', 'Animates wrapped content as it first enters the viewport.', '<ScrollReveal animation="slide-up"><article>New release highlights</article></ScrollReveal>'],
   ['Stat', 'Data display', 'Pairs one prominent metric with a concise descriptive label.', '<Stat label="Active workspaces" value="1,234" />'],
   ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter aria-label="Storage used" value={64} min={0} max={100}>64%</Meter>'],

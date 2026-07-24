@@ -174,6 +174,7 @@
   .ui-alert,
   .ui-agenda,
   .ui-animated-logo,
+  .ui-animated-number,
   .ui-aspect-ratio,
   .ui-attachment,
   .ui-autocomplete,
@@ -230,6 +231,7 @@
   .ui-rich-text-editor,
   .ui-scroll-area,
   .ui-scroll-reveal,
+  .ui-reveal-group,
   .ui-schedule,
   .ui-search-field,
   .ui-select,
@@ -958,13 +960,34 @@
   background-size: 4.5rem 4.5rem, 6rem 6rem, 3.5rem 3.5rem;
 }
 
+.ui-motion-duration-fast {
+  --ui-motion-duration: var(--ui-duration-fast);
+}
+
+.ui-motion-duration-standard {
+  --ui-motion-duration: var(--ui-duration);
+}
+
+.ui-motion-duration-slow {
+  --ui-motion-duration: var(--ui-duration-slow);
+}
+
+.ui-animated-number {
+  display: inline;
+  font-variant-numeric: tabular-nums;
+}
+
 .ui-scroll-reveal {
   display: block;
 }
 
 .ui-scroll-reveal[data-ui-scroll-reveal-bound="true"] {
   opacity: 0;
-  transition: opacity 500ms ease, transform 500ms ease;
+  transition:
+    opacity var(--ui-motion-duration, var(--ui-duration-slow)) var(--ui-ease-emphasized)
+      var(--ui-reveal-delay, 0ms),
+    transform var(--ui-motion-duration, var(--ui-duration-slow)) var(--ui-ease-emphasized)
+      var(--ui-reveal-delay, 0ms);
 }
 
 .ui-scroll-reveal-fade[data-ui-scroll-reveal-bound="true"] {
@@ -984,6 +1007,38 @@
   transform: none;
 }
 
+.ui-reveal-group[data-ui-scroll-reveal-bound="true"] > * {
+  opacity: 0;
+  transition:
+    opacity var(--ui-motion-duration, var(--ui-duration-slow)) var(--ui-ease-emphasized)
+      calc(
+        var(--ui-reveal-delay, 0ms)
+        + var(--ui-reveal-index, 0) * var(--ui-reveal-stagger, 80ms)
+      ),
+    transform var(--ui-motion-duration, var(--ui-duration-slow)) var(--ui-ease-emphasized)
+      calc(
+        var(--ui-reveal-delay, 0ms)
+        + var(--ui-reveal-index, 0) * var(--ui-reveal-stagger, 80ms)
+      );
+}
+
+.ui-reveal-group-fade[data-ui-scroll-reveal-bound="true"] > * {
+  transform: none;
+}
+
+.ui-reveal-group-slide-up[data-ui-scroll-reveal-bound="true"] > * {
+  transform: translateY(1.5rem);
+}
+
+.ui-reveal-group-scale[data-ui-scroll-reveal-bound="true"] > * {
+  transform: scale(0.96);
+}
+
+.ui-reveal-group.is-revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ui-animated-logo > svg,
   .ui-animated-logo[data-animation="sequence"] [data-ui-logo-pop],
@@ -993,6 +1048,12 @@
   }
 
   .ui-scroll-reveal[data-ui-scroll-reveal-bound="true"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .ui-reveal-group[data-ui-scroll-reveal-bound="true"] > * {
     opacity: 1;
     transform: none;
     transition: none;
@@ -1796,8 +1857,8 @@
   opacity: 0;
   pointer-events: none;
   transition:
-    opacity 140ms ease,
-    visibility 140ms ease;
+    opacity var(--ui-duration-fast) var(--ui-ease),
+    visibility var(--ui-duration-fast) var(--ui-ease);
   visibility: hidden;
 }
 
@@ -3928,10 +3989,10 @@
   .ui-dialog,
   .ui-alert-dialog {
     transition:
-      opacity 200ms ease,
-      transform 220ms cubic-bezier(0.32, 0.72, 0, 1),
-      overlay 220ms ease allow-discrete,
-      display 220ms ease allow-discrete;
+      opacity var(--ui-duration) var(--ui-ease),
+      transform var(--ui-duration-slow) var(--ui-ease-emphasized),
+      overlay var(--ui-duration-slow) var(--ui-ease) allow-discrete,
+      display var(--ui-duration-slow) var(--ui-ease) allow-discrete;
   }
 
   .ui-dialog:not([open]),
@@ -3950,10 +4011,10 @@
 
   .ui-drawer {
     transition:
-      opacity 200ms ease,
-      transform 260ms cubic-bezier(0.32, 0.72, 0, 1),
-      overlay 260ms ease allow-discrete,
-      display 260ms ease allow-discrete;
+      opacity var(--ui-duration) var(--ui-ease),
+      transform var(--ui-duration-slow) var(--ui-ease-emphasized),
+      overlay var(--ui-duration-slow) var(--ui-ease) allow-discrete,
+      display var(--ui-duration-slow) var(--ui-ease) allow-discrete;
   }
 
   .ui-drawer:not([open]) {
@@ -3970,10 +4031,10 @@
 
   .ui-sheet {
     transition:
-      opacity 200ms ease,
-      transform 260ms cubic-bezier(0.32, 0.72, 0, 1),
-      overlay 260ms ease allow-discrete,
-      display 260ms ease allow-discrete;
+      opacity var(--ui-duration) var(--ui-ease),
+      transform var(--ui-duration-slow) var(--ui-ease-emphasized),
+      overlay var(--ui-duration-slow) var(--ui-ease) allow-discrete,
+      display var(--ui-duration-slow) var(--ui-ease) allow-discrete;
   }
 
   .ui-sheet:not([open]) {
@@ -3993,9 +4054,9 @@
   .ui-drawer::backdrop,
   .ui-sheet::backdrop {
     transition:
-      opacity 200ms ease,
-      overlay 260ms ease allow-discrete,
-      display 260ms ease allow-discrete;
+      opacity var(--ui-duration) var(--ui-ease),
+      overlay var(--ui-duration-slow) var(--ui-ease) allow-discrete,
+      display var(--ui-duration-slow) var(--ui-ease) allow-discrete;
   }
 
   :is(.ui-dialog, .ui-alert-dialog, .ui-drawer, .ui-sheet):not([open])::backdrop {
@@ -4014,9 +4075,9 @@
   .ui-combobox__list,
   .ui-select__list {
     transition:
-      opacity 140ms ease,
-      transform 160ms cubic-bezier(0.32, 0.72, 0, 1),
-      display 160ms ease allow-discrete;
+      opacity var(--ui-duration-fast) var(--ui-ease),
+      transform var(--ui-duration) var(--ui-ease-emphasized),
+      display var(--ui-duration) var(--ui-ease) allow-discrete;
   }
 
   .ui-popover > :where(div, section, article, form, [role="dialog"])[data-state="closed"],
@@ -4041,9 +4102,9 @@
 
   .ui-sonner .ui-toast {
     transition:
-      opacity 200ms ease,
-      transform 220ms cubic-bezier(0.32, 0.72, 0, 1),
-      display 220ms ease allow-discrete;
+      opacity var(--ui-duration) var(--ui-ease),
+      transform var(--ui-duration-slow) var(--ui-ease-emphasized),
+      display var(--ui-duration-slow) var(--ui-ease) allow-discrete;
   }
 
   .ui-sonner .ui-toast[data-state="closed"] {
@@ -4207,8 +4268,8 @@
     margin: 0 0 0.45rem;
     transform: none;
     transition:
-      opacity 140ms ease,
-      display 140ms ease allow-discrete;
+      opacity var(--ui-duration-fast) var(--ui-ease),
+      display var(--ui-duration-fast) var(--ui-ease) allow-discrete;
   }
 
   .ui-tooltip [role="tooltip"][popover]:popover-open {
@@ -4338,21 +4399,6 @@
     transform: translateY(-100vh) translateX(20px);
     opacity: 0;
   }
-}
-
-.ui-scroll-reveal {
-  opacity: 0;
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-.ui-scroll-reveal.is-revealed {
-  opacity: 1;
-  transform: none;
-}
-.ui-scroll-reveal-slide-up {
-  transform: translateY(20px);
-}
-.ui-scroll-reveal-scale {
-  transform: scale(0.95);
 }
 
 .ui-stat {

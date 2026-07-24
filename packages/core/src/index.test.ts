@@ -394,13 +394,19 @@ describe('lumen product helpers', () => {
     })
   })
 
-  test('exports theme tokens for design-token importers', () => {
+  test('exports theme tokens for design-token importers (colors)', () => {
     const palette = createThemePalette('221 83% 53%', '168 76% 36%')
     const designTokens = exportThemeDesignTokens(palette)
 
     expect(designTokens.color.brand?.$value).toBe('#2463eb')
     expect(designTokens.color['glass-bg']?.$value).toBe('#ffffff8c')
     expect(designTokens.color['surface-muted']?.$type).toBe('color')
+  })
+
+  test('exports theme tokens for design-token importers (effects and structure)', () => {
+    const palette = createThemePalette('221 83% 53%', '168 76% 36%')
+    const designTokens = exportThemeDesignTokens(palette)
+
     expect(designTokens.effect?.['glass-blur']?.$type).toBe('dimension')
     expect(designTokens.effect?.['glass-saturate']?.$value).toBe(1.7)
     expect(designTokens.structure?.['ui-radius']?.$type).toBe('dimension')

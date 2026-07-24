@@ -1,6 +1,6 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Badge, Card, Icon } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
@@ -133,9 +133,9 @@ and include validation, loading, success, and keyboard states.`
           Gives any compatible agent Lumen’s framework choices, design language, component-selection
           heuristics, accessibility guardrails, and completion checklist.
         </p>
-        <a href={skillUrl} rel="noopener noreferrer" target="_blank">
+        <Link href={skillUrl} rel="noopener noreferrer" target="_blank">
           View SKILL.md <Icon decorative name="arrow-up-right" size="sm" />
-        </a>
+        </Link>
       </Card>
 
       <Card as="section" class="skill-pair__card" aria-labelledby="mcp-layer-title" variant="muted">
@@ -145,9 +145,9 @@ and include validation, loading, success, and keyboard states.`
           Adds live component search, real source and prop lookup, tokens, and agent rules. Use it
           with the skill for the richest AI-native Lumen workflow.
         </p>
-        <a href="/docs/mcp">
+        <Link href="/docs/mcp">
           Connect the MCP server <Icon decorative name="arrow-right" size="sm" />
-        </a>
+        </Link>
       </Card>
     </div>
 

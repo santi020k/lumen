@@ -45,7 +45,7 @@
     "@changesets/cli": "catalog:",
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
-    "@figma/code-connect": "1.4.9",
+    "@figma/code-connect": "catalog:",
     "@playwright/test": "catalog:",
     "@santi020k/eslint-config-basic": "catalog:",
     "@types/node": "catalog:",

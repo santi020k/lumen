@@ -261,12 +261,28 @@ const frameworkWithoutSource = (framework: LumenFrameworkSnapshot) => {
   return usage
 }
 
+const getFrameworkDetail = (details: Record<LumenFramework, LumenFrameworkSnapshot>, framework: LumenFramework): LumenFrameworkSnapshot => {
+  if (framework === 'astro') return details.astro
+  
+  if (framework === 'elements') return details.elements
+  
+  return details.react
+}
+
+const getRecipeInstall = (install: Record<LumenFramework, string>, framework: LumenFramework): string => {
+  if (framework === 'astro') return install.astro
+  
+  if (framework === 'elements') return install.elements
+  
+  return install.react
+}
+
 const componentDetail = (
   component: LumenComponentSnapshot,
   framework: LumenFramework,
   detail: ComponentDetailLevel
 ) => {
-  const selectedFramework = component.frameworkDetails[framework]
+  const selectedFramework = getFrameworkDetail(component.frameworkDetails, framework)
   const summary = componentSummary(component)
 
   if (detail === 'summary') {
@@ -321,7 +337,7 @@ const formatComponentUsage = (
   frameworkName: LumenFramework,
   detail: ComponentDetailLevel
 ) => {
-  const framework = component.frameworkDetails[frameworkName]
+  const framework = getFrameworkDetail(component.frameworkDetails, frameworkName)
 
   const sections = [
     `# ${component.name}`,
@@ -397,7 +413,7 @@ export const getComponent = (
 
   const framework = args.framework ?? 'astro'
   const detail = args.detail ?? (args.includeSource ? 'source' : 'usage')
-  const selectedFramework = component.frameworkDetails[framework]
+  const selectedFramework = getFrameworkDetail(component.frameworkDetails, framework)
 
   if (!selectedFramework.available) {
     const message = `${component.name} is not available for ${framework}.`
@@ -449,7 +465,7 @@ export const getRecipe = (
       recipe.description,
       `Type: ${recipe.type}`,
       `Categories: ${recipe.categories.join(', ') || 'all'}`,
-      `Install for ${framework}: ${recipe.install[framework]}`,
+      `Install for ${framework}: ${getRecipeInstall(recipe.install, framework)}`,
       '',
       '## Components',
       ...componentLines

@@ -12,6 +12,8 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/a11y',
+  // Keep docs rendering below the Oniguruma WASM concurrency threshold.
+  workers: 2,
   use: {
     baseURL: 'http://localhost:4321'
   },

@@ -3,13 +3,14 @@ import { expect, type Page, test } from '@playwright/test'
 import {
   componentNameToSlug,
   componentPageNames
-} from '../component-coverage.js'
+} from '../a11y/component-coverage.js'
 
 /* cspell:ignore valuenow */
 
 type Theme = 'dark' | 'light'
 
 interface VisualScenario {
+  fullPage?: boolean
   name: string
   path: string
   prepare: (page: Page) => Promise<void>
@@ -224,6 +225,7 @@ const interactiveScenarios: VisualScenario[] = [
   {
     name: 'docs-search-open',
     path: '/docs',
+    fullPage: false,
     prepare: async page => {
       const search = page.locator('[data-docs-search]').first()
       const input = search.locator('[data-docs-search-input]')
@@ -258,7 +260,7 @@ for (const theme of themes) {
       await scenario.prepare(page)
 
       await expect(page).toHaveScreenshot(`${scenario.name}-${theme}.png`, {
-        fullPage: true
+        fullPage: scenario.fullPage ?? true
       })
     })
   }

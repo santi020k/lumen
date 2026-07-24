@@ -526,7 +526,52 @@ const elementConfigs = {
   VirtualList: { attributeClasses: glassAttributeClasses('ui-virtual-list--glass'), baseClassName: 'ui-virtual-list', defaults: { 'data-ui-virtual-list': '' }, tagName: 'lumen-virtual-list' },
   LanguageToggle: { baseClassName: 'ui-language-toggle', tagName: 'lumen-language-toggle' },
   Particles: { baseClassName: 'ui-particles', tagName: 'lumen-particles' },
-  ScrollReveal: { baseClassName: 'ui-scroll-reveal', tagName: 'lumen-scroll-reveal' },
+  AnimatedNumber: {
+    attributeClasses: {
+      duration: {
+        fast: 'ui-motion-duration-fast',
+        slow: 'ui-motion-duration-slow',
+        standard: 'ui-motion-duration-standard'
+      }
+    },
+    baseClassName: 'ui-animated-number',
+    defaults: { duration: 'slow', from: '0' },
+    tagName: 'lumen-animated-number'
+  },
+  RevealGroup: {
+    attributeClasses: {
+      animation: {
+        fade: 'ui-reveal-group-fade',
+        scale: 'ui-reveal-group-scale',
+        'slide-up': 'ui-reveal-group-slide-up'
+      },
+      duration: {
+        fast: 'ui-motion-duration-fast',
+        slow: 'ui-motion-duration-slow',
+        standard: 'ui-motion-duration-standard'
+      }
+    },
+    baseClassName: 'ui-reveal-group',
+    defaults: { animation: 'slide-up', duration: 'slow', once: 'true', threshold: '0.15' },
+    tagName: 'lumen-reveal-group'
+  },
+  ScrollReveal: {
+    attributeClasses: {
+      animation: {
+        fade: 'ui-scroll-reveal-fade',
+        scale: 'ui-scroll-reveal-scale',
+        'slide-up': 'ui-scroll-reveal-slide-up'
+      },
+      duration: {
+        fast: 'ui-motion-duration-fast',
+        slow: 'ui-motion-duration-slow',
+        standard: 'ui-motion-duration-standard'
+      }
+    },
+    baseClassName: 'ui-scroll-reveal',
+    defaults: { animation: 'fade', duration: 'slow', once: 'true', threshold: '0.15' },
+    tagName: 'lumen-scroll-reveal'
+  },
   Stat: { baseClassName: 'ui-stat', tagName: 'lumen-stat' },
   Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
   Note: {
@@ -607,21 +652,31 @@ const elementConfigs = {
 } as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
 
 const observedAttributeNames = [
+  'animation',
   'border-position',
+  'decimals',
+  'delay',
   'decorative',
   'direction',
   'disabled',
+  'duration',
   'from',
   'glass',
   'hover',
   'label',
+  'locale',
   'name',
   'orientation',
   'position',
+  'prefix',
   'pressed',
   'shape',
   'size',
   'surface',
+  'stagger',
+  'suffix',
+  'threshold',
+  'value',
   'variant'
 ]
 
@@ -1450,11 +1505,15 @@ const syncDateRangePicker = (root: HTMLElement): void => {
     end.dispatchEvent(new Event('change', { bubbles: true }))
   }
 
-  root.dataset.rangeState = start.value && end.value
-    ? 'complete'
-    : start.value
-      ? 'selecting-end'
-      : 'empty'
+  let rangeState = 'empty'
+
+  if (start.value && end.value) {
+    rangeState = 'complete'
+  } else if (start.value) {
+    rangeState = 'selecting-end'
+  }
+
+  root.dataset.rangeState = rangeState
 }
 
 const initDateRangePickers = (scope: ParentNode): void => {
@@ -4767,23 +4826,33 @@ class LumenScrollRevealBehaviorElement extends LumenElement {
 
     if (!hasDocument()) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      this.style.opacity = '1'
+    this.dataset.uiScrollRevealBound = 'true'
 
-      this.style.transform = 'none'
+    const delay = Math.max(0, Number(this.getAttribute('delay')) || 0)
+
+    this.style.setProperty('--ui-reveal-delay', `${delay}ms`)
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || typeof IntersectionObserver === 'undefined'
+    ) {
+      this.classList.add('is-revealed')
 
       return
     }
 
+    const once = this.getAttribute('once') !== 'false'
+    const threshold = Math.min(1, Math.max(0, Number(this.getAttribute('threshold')) || 0))
+
     this.observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed')
+        entry.target.classList.toggle('is-revealed', entry.isIntersecting)
 
+        if (entry.isIntersecting && once) {
           this.observer?.unobserve(entry.target)
         }
       }
-    }, { rootMargin: '0px 0px -10% 0px' })
+    }, { threshold })
 
     this.observer.observe(this)
   }
@@ -4792,6 +4861,111 @@ class LumenScrollRevealBehaviorElement extends LumenElement {
     this.observer?.disconnect()
 
     this.observer = undefined
+  }
+}
+
+class LumenRevealGroupBehaviorElement extends LumenScrollRevealBehaviorElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    const stagger = Math.max(0, Number(this.getAttribute('stagger')) || 80)
+
+    this.style.setProperty('--ui-reveal-stagger', `${stagger}ms`)
+
+    for (const [index, child] of [...this.children].entries()) {
+      if (child instanceof HTMLElement) {
+        child.style.setProperty('--ui-reveal-index', String(index))
+      }
+    }
+  }
+}
+
+class LumenAnimatedNumberBehaviorElement extends LumenElement {
+  private animationFrame: number | undefined
+  private observer: IntersectionObserver | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.animateValue()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.animateValue()
+  }
+
+  override disconnectedCallback() {
+    this.observer?.disconnect()
+
+    if (this.animationFrame !== undefined) cancelAnimationFrame(this.animationFrame)
+  }
+
+  private animateValue() {
+    if (!hasDocument()) return
+
+    this.observer?.disconnect()
+
+    if (this.animationFrame !== undefined) cancelAnimationFrame(this.animationFrame)
+
+    const from = Number(this.getAttribute('from'))
+    const value = Number(this.getAttribute('value'))
+
+    if (!Number.isFinite(from) || !Number.isFinite(value)) return
+
+    const decimals = Math.max(0, Math.min(20, Number(this.getAttribute('decimals')) || 0))
+    const prefix = this.getAttribute('prefix') ?? ''
+    const suffix = this.getAttribute('suffix') ?? ''
+    const formatter = new Intl.NumberFormat(this.getAttribute('locale') || undefined, {
+      maximumFractionDigits: decimals,
+      minimumFractionDigits: decimals
+    })
+    const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
+    const finalValue = format(value)
+
+    this.setAttribute('aria-label', finalValue)
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || typeof IntersectionObserver === 'undefined'
+    ) {
+      this.textContent = finalValue
+
+      return
+    }
+
+    this.textContent = format(from)
+
+    this.observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return
+
+      this.observer?.disconnect()
+
+      const durationValue = getComputedStyle(this).getPropertyValue('--ui-motion-duration').trim()
+      const parsedDuration = Number.parseFloat(durationValue)
+      const duration = Number.isFinite(parsedDuration)
+        ? durationValue.endsWith('ms') ? parsedDuration : parsedDuration * 1000
+        : 300
+      const startedAt = performance.now()
+
+      const update = (now: number) => {
+        const progress = Math.min(1, (now - startedAt) / Math.max(1, duration))
+        const eased = 1 - Math.pow(1 - progress, 3)
+
+        this.textContent = format(from + ((value - from) * eased))
+
+        if (progress < 1) {
+          this.animationFrame = requestAnimationFrame(update)
+        } else {
+          this.textContent = finalValue
+        }
+      }
+
+      this.animationFrame = requestAnimationFrame(update)
+    }, { threshold: 0.15 })
+
+    this.observer.observe(this)
   }
 }
 
@@ -4920,6 +5094,7 @@ const createLumenBehaviorElementClass = (
 
 const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenElement>> = {
   AlertDialog: LumenDialogBehaviorElement,
+  AnimatedNumber: LumenAnimatedNumberBehaviorElement,
   BackToTop: LumenBackToTopBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
@@ -4929,6 +5104,7 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   Particles: LumenParticlesBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
   Rating: LumenRatingBehaviorElement,
+  RevealGroup: LumenRevealGroupBehaviorElement,
   ScrollReveal: LumenScrollRevealBehaviorElement,
   Select: LumenSelectBehaviorElement,
   Sonner: LumenSonnerBehaviorElement,
@@ -5099,6 +5275,8 @@ export const LumenTypographyElement = elementClasses.Typography
 export const LumenVirtualListElement = elementClasses.VirtualList
 export const LumenLanguageToggleElement = elementClasses.LanguageToggle
 export const LumenParticlesElement = elementClasses.Particles
+export const LumenAnimatedNumberElement = elementClasses.AnimatedNumber
+export const LumenRevealGroupElement = elementClasses.RevealGroup
 export const LumenScrollRevealElement = elementClasses.ScrollReveal
 export const LumenStatElement = elementClasses.Stat
 export const LumenMeterElement = elementClasses.Meter

@@ -54,7 +54,8 @@ const config = await defineConfig({
         '*.cjs',
         '**/*.config.ts',
         '**/*.config.js',
-        'tests/visual/components.spec.ts'
+        'tests/visual/components.spec.ts',
+        'tests/**/*.ts'
       ],
       defaultProject: 'tsconfig.eslint.json'
     }

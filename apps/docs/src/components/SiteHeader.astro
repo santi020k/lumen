@@ -2,6 +2,8 @@
 import {
   Badge,
   Icon,
+  Label,
+  Link,
   NativeSelect,
   NavigationMenu,
   ThemeToggle
@@ -46,15 +48,15 @@ const componentCount = lumenComponentNames.length
 
 <div class="docs-site-header">
   <header class="docs-header-shell" data-site-header>
-    <a class="docs-header-brand no-underline" href="/">
+    <Link class="docs-header-brand no-underline" href="/">
       <LumenLogo markClass="size-7" />
       <Badge class="docs-header-count" variant="outline">{componentCount}</Badge>
-    </a>
+    </Link>
 
     <NavigationMenu class="docs-nav-track" aria-label="Main menu" style={`--item-count:${navLinks.length};--active-index:${activeIndex};`}>
       <span class="docs-nav-indicator" aria-hidden="true"></span>
       {navLinks.map(link => (
-        <a
+        <Link
           class:list={[
             'docs-nav-link no-underline',
             link.isActive && 'docs-nav-link--active'
@@ -63,24 +65,24 @@ const componentCount = lumenComponentNames.length
           aria-current={link.isActive ? 'page' : undefined}
         >
           {link.label}
-        </a>
+        </Link>
       ))}
     </NavigationMenu>
 
     <div class="docs-header-actions">
-      <a
+      <Link
         class="docs-header-github no-underline"
         href="https://github.com/santi020k/lumen"
         aria-label="Lumen on GitHub"
       >
         <GitHubIcon />
         <span>GitHub</span>
-      </a>
+      </Link>
 
       <div class="docs-theme-controls" aria-label="Theme controls">
         <div class="docs-theme-picker">
           <Icon aria-hidden="true" name="palette" size="sm" />
-          <label class="sr-only" for="site-color-theme">Theme family</label>
+          <Label class="sr-only" for="site-color-theme">Theme family</Label>
           <NativeSelect
             id="site-color-theme"
             class="docs-theme-select"

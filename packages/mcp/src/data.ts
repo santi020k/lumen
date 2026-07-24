@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync as readFsFile } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 export interface LumenComponentSnapshot {
@@ -109,7 +109,7 @@ let cached: LumenData | undefined
 export const loadLumenData = (): LumenData => {
   if (cached) return cached
 
-  const raw = readFileSync(fileURLToPath(dataUrl), 'utf8')
+  const raw = readFsFile(fileURLToPath(dataUrl), 'utf8')
 
   cached = JSON.parse(raw) as LumenData
 
