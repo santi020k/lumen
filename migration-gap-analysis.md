@@ -102,5 +102,6 @@ Beyond the sibling-project audit above, a comparison against the larger enterpri
 - The Astro build and full vitest suite can't run in the current sandbox (the installed `rolldown`/`esbuild` native binaries are host-Mac, not Linux). Run `pnpm validate` locally to confirm.
 
 ### Remaining follow-ups
-- Docs-site examples in `apps/docs/src/examples/` for each of the sixteen (not gated by tests; needed to meet the per-component "all variants/states" example bar).
-- Web Components runtime parity: Elements ships the class-config shell for all sixteen; the interactive behaviors (FileUpload, Tour, Anchor, Transfer, Mentions, Cascader, TreeSelect) currently run through the Astro runtime and should be mirrored into `packages/elements/src/define.ts` for standalone custom-element consumers.
+- Resolved: docs-site examples now exist for all sixteen components.
+- Resolved: registered Elements now provide standalone FileUpload, Tour, Anchor, Transfer, Mentions,
+  Cascader, and TreeSelect behavior with focused interaction tests.

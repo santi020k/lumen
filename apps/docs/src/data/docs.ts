@@ -482,7 +482,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the Elements package, load its stylesheet once, register Lumen elements, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, select, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the Elements package, load its stylesheet once, register Lumen elements, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, advanced selection, file upload, tours, mentions, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -537,7 +537,7 @@ export function Actions() {
   {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
-      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, calendar grids, OTP segmentation, date range syncing, rich text commands, context menu triggers, schedule drag/drop, resizable pane sizing, ThemeBuilder export, VirtualList range events, overlays, select, tabs, tooltip, and toast.',
+      'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, calendar grids, OTP segmentation, date range syncing, rich text commands, context menu triggers, schedule drag/drop and file drag/drop, tours, anchor scroll spy, transfer, mentions, cascader and tree selection, resizable pane sizing, ThemeBuilder export, VirtualList range events, overlays, tabs, tooltip, and toast.',
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">
@@ -694,6 +694,24 @@ const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardI
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
+  {
+    detail: '{ from: string, to: string, values: string[] }',
+    name: 'ui:transfer-change',
+    target: 'Transfer root ([data-ui-transfer])',
+    when: 'Fires after checked items move between the source and target collections.'
+  },
+  {
+    detail: '{ value: string }',
+    name: 'ui:cascader-change',
+    target: 'Cascader root ([data-ui-cascader])',
+    when: 'Fires after a leaf option is selected and committed to the hidden input.'
+  },
+  {
+    detail: '{ value: string }',
+    name: 'ui:tree-select-change',
+    target: 'TreeSelect root ([data-ui-tree-select])',
+    when: 'Fires after a tree item is selected and committed to the hidden input.'
+  },
   {
     detail: '{ values: string[] }',
     name: 'ui:data-table-selection-change',

@@ -1010,7 +1010,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(observe).toHaveBeenCalledWith(api)
 
     observerCallback?.([
-      { isIntersecting: true, target: api } as IntersectionObserverEntry
+      { isIntersecting: true, target: api } as unknown as IntersectionObserverEntry
     ], {} as IntersectionObserver)
 
     expect(links[0]?.dataset.active).toBe('false')
@@ -1099,8 +1099,10 @@ describe('@santi020k/lumen-elements', () => {
     trigger.click()
     expect(trigger.getAttribute('aria-expanded')).toBe('true')
 
-    options[0]?.click()
+    options[0]?.focus()
+    press(options[0]!, 'ArrowRight')
     expect(columns[1]?.hidden).toBe(false)
+    expect(document.activeElement).toBe(options[1])
 
     options[1]?.click()
     expect(root.querySelector<HTMLInputElement>('[data-ui-cascader-input]')?.value).toBe('bogota')
@@ -1129,7 +1131,10 @@ describe('@santi020k/lumen-elements', () => {
       events.push(event as CustomEvent)
     })
 
-    trigger.click()
+    press(trigger, 'ArrowDown')
+    expect(trigger.getAttribute('aria-expanded')).toBe('true')
+    expect(document.activeElement).toBe(root.querySelector('[data-value="docs"]'))
+
     root.querySelector<HTMLButtonElement>('[data-value="docs"]')?.click()
 
     expect(root.querySelector<HTMLInputElement>('[data-ui-tree-select-input]')?.value).toBe('docs')
