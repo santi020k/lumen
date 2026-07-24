@@ -83,3 +83,30 @@ The website uses visually identical pills both as metadata and as topic links. L
 always renders a `span`, forcing consumers to switch to `Link` and restyle it when a pill is
 interactive. Consider an `href` contract or a typed `as` option that produces an anchor with the
 same pill presentation and focus treatment.
+
+## Aaronmgz
+
+### Make the React entry safe in Next.js server components
+
+Importing a presentation-only component such as `Card` from `@santi020k/lumen-react` caused a
+Next.js production build to evaluate the package's monolithic component entry in the server
+component runtime. That entry creates React contexts for behavior-heavy components, and the server
+runtime failed with `createContext is not a function`. The downstream compatibility wrappers had to
+be marked as client components even when the selected primitive itself had no client behavior.
+
+Consider split component entry points or an RSC-safe presentation entry so static primitives do not
+pull behavior-heavy context modules into the server graph. Document the intended Next.js boundary
+and add a production-build fixture that imports `Card`, `Badge`, and other static primitives from a
+server component.
+
+### Add compatibility contracts for shared React wrapper libraries
+
+Aaronmgz exposes a stable shared UI package consumed by Astro and multiple Next.js apps. Incremental
+adoption needed to retain forwarded refs, `Button asChild`, existing variant names, and the native
+numeric `input size` attribute. Lumen's React components currently use function components without
+ref-forwarding, `Button` has no polymorphic child contract, and `Input` reuses `size` for visual
+sizing.
+
+Consider forwarding DOM refs consistently, adding a typed polymorphic or slot contract for button
+and link wrappers, and separating visual sizing from native HTML attributes. These contracts would
+let established design-system facades delegate to Lumen without compatibility branches.
