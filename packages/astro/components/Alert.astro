@@ -4,7 +4,7 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'aside'> {
-  class?: string
+  class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
   variant?: 'default' | 'destructive' | 'success' | 'warning'

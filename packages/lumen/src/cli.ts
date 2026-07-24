@@ -1,3 +1,6 @@
+import { readdir, readFile, stat } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
 import {
   addLumenRegistryItem,
   getLumenRegistryEntries,
@@ -8,6 +11,7 @@ import {
   lumenRegistry,
   type LumenRegistryEntry
 } from './registry.js'
+import { auditLumenTokenCss, type LumenTokenAuditFinding } from './token-audit.js'
 
 const args = process.argv.slice(2)
 const [command = 'help', name] = args
@@ -118,6 +122,44 @@ const formatAddResult = async (itemName: string, registry: LumenRegistry) => {
   ].join('\n')
 }
 
+const getCssFiles = async (path: string): Promise<string[]> => {
+  const details = await stat(path)
+
+  if (details.isFile()) return path.endsWith('.css') ? [path] : []
+
+  const entries = await readdir(path, { withFileTypes: true })
+
+  const nested = await Promise.all(entries
+    .filter(entry => entry.name !== 'node_modules' && !entry.name.startsWith('.'))
+    .map(entry => getCssFiles(resolve(path, entry.name))))
+
+  return nested.flat()
+}
+
+const formatTokenAudit = async (inputPath: string): Promise<string> => {
+  const target = resolve(inputPath)
+  const files = await getCssFiles(target)
+  const findings: LumenTokenAuditFinding[] = []
+
+  for (const file of files) {
+    findings.push(...auditLumenTokenCss(await readFile(file, 'utf8'), file))
+  }
+
+  if (!findings.length) return `No incompatible Lumen semantic token declarations found in ${target}.`
+
+  process.exitCode = 1
+
+  return [
+    `Found ${findings.length} incompatible Lumen semantic token declaration${findings.length === 1 ? '' : 's'}:`,
+    ...findings.map(finding => (
+      `${finding.file}:${finding.line}:${finding.column} --${finding.token}: ${finding.value}`
+    )),
+    '',
+    'Lumen semantic colors must be HSL channels such as "220 13% 96%", not complete colors such as "#fff" or "hsl(...)".',
+    'Rename legacy variables during incremental migration or convert their values to channels before importing Lumen.'
+  ].join('\n')
+}
+
 const help = [
   'Lumen registry helper',
   '',
@@ -126,6 +168,7 @@ const help = [
   '  lumen show <name>      Show components and files for an item',
   '  lumen add <name>       Install a recipe or component into the current project',
   '  lumen install          Print install commands',
+  '  lumen audit-tokens     Report incompatible semantic color custom properties',
   '',
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
@@ -147,6 +190,12 @@ const run = async () => {
     : lumenRegistry
 
   switch (command) {
+    case 'audit-tokens': {
+      output = await formatTokenAudit(name ?? cwd ?? process.cwd())
+
+      break
+    }
+
     case 'add': {
       if (name) output = await formatAddResult(name, registry)
 

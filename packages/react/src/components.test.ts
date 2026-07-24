@@ -35,6 +35,7 @@ import {
   Item,
   Kbd,
   Label,
+  Link,
   Marker,
   Message,
   MessageScroller,
@@ -42,6 +43,7 @@ import {
   NavigationMenu,
   NumberField,
   Pagination,
+  Pill,
   Progress,
   RadioGroup,
   ScrollArea,
@@ -330,8 +332,25 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Toggle({}) as ReactElement).className).toBe('ui-toggle')
     expect(propsOf(Toggle({}) as ReactElement).type).toBe('button')
     expect(propsOf(Toggle({ pressed: true }) as ReactElement)['aria-pressed']).toBe(true)
-    expect(propsOf(Toggle({ pressed: true }) as ReactElement).className).toBe('ui-toggle ui-toggle--pressed')
+    expect(propsOf(Toggle({ pressed: true }) as ReactElement).className).toBe('ui-toggle')
+    expect(propsOf(Toggle({ controlled: true }) as ReactElement)['data-ui-controlled']).toBe(true)
     expect(propsOf(ToggleGroup({}) as ReactElement)['data-ui-toggle-group']).toBe(true)
+  })
+
+  test('supports migration-friendly links, pills, and navigation surfaces', () => {
+    const newTabLink = Link({ href: 'https://example.com', newTab: true, rel: 'external' }) as ReactElement
+    const linkedPill = Pill({ children: 'Topic', href: '/topics/lumen' }) as ReactElement
+
+    expect(newTabLink.type).toBe('a')
+    expect(propsOf(newTabLink).target).toBe('_blank')
+    expect(propsOf(newTabLink).rel).toBe('external noopener noreferrer')
+    expect(propsOf(Link({ variant: 'inherit' }) as ReactElement).className).toBe('ui-link ui-link--inherit')
+    expect(linkedPill.type).toBe('a')
+    expect(propsOf(linkedPill).href).toBe('/topics/lumen')
+    expect(propsOf(NavigationMenu({ variant: 'unstyled' }) as ReactElement).className)
+      .toBe('ui-navigation-menu ui-navigation-menu--unstyled')
+    expect(propsOf(Sidebar({ variant: 'unstyled' }) as ReactElement).className)
+      .toBe('ui-sidebar ui-sidebar--unstyled')
   })
 
   test('renders remaining structural primitives', () => {

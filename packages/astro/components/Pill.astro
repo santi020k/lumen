@@ -4,15 +4,17 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'span'> {
-  class?: string
+  class?: string | null
   className?: string
   count?: number | string
+  href?: string
 }
 
 const {
   class: classProp = '',
   className = '',
   count,
+  href,
   ...rest
 } = Astro.props
 
@@ -21,10 +23,13 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<span
-  class:list={classList}
-  {...passthrough}
->
-  <slot />
-  {count != null && <span class="ui-pill__count">{count}</span>}
-</span>
+{href
+  ? <a class:list={classList} href={href} {...passthrough}>
+      <slot />
+      {count != null && <span class="ui-pill__count">{count}</span>}
+    </a>
+  : <span class:list={classList} {...passthrough}>
+      <slot />
+      {count != null && <span class="ui-pill__count">{count}</span>}
+    </span>
+}

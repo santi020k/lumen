@@ -21,6 +21,7 @@ enhances all matching Lumen markup on the page.
 With Tailwind, keep the Lumen import in the same shared CSS entry:
 
 ```css
+@import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
 ```
@@ -59,6 +60,10 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 </Button>
 <Icon name="search" label="Search" />
 ```
+
+Lucide intentionally excludes brand marks. For GitHub and other project-specific icons, put the
+SVG in the default slot instead of passing an unsupported `name`; Astro warns about unknown named
+icons during development.
 
 ## Optimized images
 

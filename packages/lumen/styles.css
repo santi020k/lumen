@@ -623,6 +623,11 @@
   background: hsl(var(--surface-muted) / 0.72);
 }
 
+.ui-card--unstyled,
+.ui-button-link--unstyled {
+  all: revert-layer;
+}
+
 .ui-card--glass.ui-card--interactive:hover,
 .ui-card--glass.card-interactive:hover {
   border-color: hsl(var(--glass-edge));
@@ -879,6 +884,15 @@
 
 .ui-link:hover {
   color: hsl(var(--brand-solid));
+}
+
+.ui-link--inherit {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.ui-link--inherit:hover {
+  color: inherit;
 }
 
 .ui-prose {
@@ -1995,6 +2009,19 @@
   color: hsl(var(--ink));
 }
 
+.ui-navigation-menu--unstyled {
+  all: revert-layer;
+}
+
+.ui-navigation-menu--unstyled :where(a, button) {
+  all: revert-layer;
+}
+
+.ui-navigation-menu--unstyled :where(a, button):hover,
+.ui-navigation-menu--unstyled :where(a, button)[aria-current="page"] {
+  all: revert-layer;
+}
+
 .ui-breadcrumb {
   color: hsl(var(--ink-muted));
   font-size: 0.875rem;
@@ -2363,6 +2390,16 @@
 .ui-sidebar a[aria-current="page"] {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand-solid));
+}
+
+.ui-sidebar--unstyled {
+  all: revert-layer;
+}
+
+.ui-sidebar--unstyled a,
+.ui-sidebar--unstyled a:hover,
+.ui-sidebar--unstyled a[aria-current="page"] {
+  all: revert-layer;
 }
 
 .ui-empty {
@@ -4643,6 +4680,16 @@
   line-height: 1;
   color: hsl(var(--ink-muted));
   font-variant-numeric: tabular-nums;
+}
+
+a.ui-pill {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a.ui-pill:hover {
+  border-color: hsl(var(--brand) / 0.42);
+  color: hsl(var(--brand-solid));
 }
 
 /* CoverImage hover lift + bottom gradient overlay */

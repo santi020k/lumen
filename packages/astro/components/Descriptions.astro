@@ -6,7 +6,7 @@ import type { HTMLAttributes } from 'astro/types'
 type DescriptionItem = { label: string; value: string }
 
 interface Props extends HTMLAttributes<'dl'> {
-  class?: string
+  class?: string | null
   className?: string
   columns?: number
   items?: DescriptionItem[]

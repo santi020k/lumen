@@ -5,13 +5,21 @@ import Icon from './Icon.astro'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'button'> {
-  class?: string
+  class?: string | null
   className?: string
+  controlled?: boolean
+  darkTheme?: string
+  lightTheme?: string
+  storageKey?: string
 }
 
 const {
   class: classProp = '',
   className = '',
+  controlled = false,
+  darkTheme = 'dark',
+  lightTheme = 'light',
+  storageKey = 'lumen-theme',
   type = 'button',
   ...rest
 } = Astro.props
@@ -24,6 +32,10 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 <button
   type={type}
   class:list={classList}
+  data-dark-theme={darkTheme}
+  data-light-theme={lightTheme}
+  data-storage-key={storageKey}
+  data-ui-controlled={controlled || undefined}
   data-ui-theme-toggle
   {...passthrough}
 >

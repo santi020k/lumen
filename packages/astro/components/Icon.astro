@@ -10,7 +10,7 @@ import type { HTMLAttributes } from 'astro/types'
 type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
 interface Props extends HTMLAttributes<'span'> {
-  class?: string
+  class?: string | null
   className?: string
   decorative?: boolean
   label?: string
@@ -30,6 +30,10 @@ const {
 
 const isDecorative = decorative ?? !label
 const iconSvg = name ? renderLumenIconSvg(name) : ''
+
+if (name && !iconSvg && import.meta.env.DEV) {
+  console.warn(`[Lumen Icon] Unknown Lucide icon "${name}". Use the default slot for brand or project-specific SVGs.`)
+}
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-icon',

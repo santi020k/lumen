@@ -39,9 +39,13 @@ or app entry. For example:
 With Tailwind, keep it in the same shared CSS entry:
 
 ```css
+@import "@santi020k/lumen-react/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-react/styles.css";
 ```
+
+The layer-order prelude lets Tailwind base styles run before Lumen components and keeps Tailwind
+utilities—including responsive `hidden` and display utilities—above Lumen component defaults.
 
 For interactive Astro primitives, mount `UIPrimitives` once in your root layout:
 

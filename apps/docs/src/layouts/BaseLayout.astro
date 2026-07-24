@@ -92,7 +92,11 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
         window.matchMedia('(prefers-color-scheme: dark)').matches ? 'santi020k-dark' : 'santi020k-light'
       )
 
-      document.documentElement.dataset.theme = getStoredTheme() ?? getSystemTheme()
+      const initialTheme = getStoredTheme() ?? getSystemTheme()
+
+      document.documentElement.dataset.theme = initialTheme
+
+      document.documentElement.classList.toggle('dark', initialTheme.endsWith('-dark'))
     </script>
   </head>
   <body>
@@ -210,6 +214,8 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 
   const applyTheme = (theme: ColorTheme, targetDocument = document) => {
     targetDocument.documentElement.dataset.theme = theme
+
+    targetDocument.documentElement.classList.toggle('dark', getThemeMode(theme) === 'dark')
 
     setThemeColor(theme, targetDocument)
 

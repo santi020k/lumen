@@ -7,7 +7,7 @@ import type { HTMLAttributes } from 'astro/types'
 type TransferItem = { key: string; label: string }
 
 interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   items?: TransferItem[]
   name?: string

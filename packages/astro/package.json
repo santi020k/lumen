@@ -18,6 +18,7 @@
     },
     "./components/*": "./components/*.astro",
     "./runtime": "./runtime/UIPrimitives.astro",
+    "./layers.css": "./styles/layers.css",
     "./styles.css": "./styles/lumen.css",
     "./package.json": "./package.json"
   },
