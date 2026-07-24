@@ -111,4 +111,6 @@ Load `@santi020k/lumen-react/styles.css` once in your app, then use the shared g
 <Card glass>Glass card</Card>
 <Dialog glass>Glass dialog</Dialog>
 <Popover glass>Glass popover</Popover>
+<DatePicker glass="subtle" />
+<Select glass="strong" options={['Astro', 'React']} />
 ```

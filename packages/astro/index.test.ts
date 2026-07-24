@@ -56,6 +56,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('.ui-dialog--glass')
     expect(css).toContain('.ui-alert--glass')
     expect(css).toContain('.ui-table-wrap--glass')
+    expect(css).toContain('.ui-date-picker-field--glass .ui-date-picker__popover')
+    expect(css).toContain('.ui-select-field--glass .ui-select__list')
     expect(css).toContain('@supports not ((backdrop-filter: blur(1px))')
   })
 

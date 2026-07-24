@@ -4289,6 +4289,34 @@
       radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 48%),
       hsl(var(--glass-bg-strong));
   }
+
+  @media (prefers-reduced-transparency: reduce) {
+    :is(.ui-glass, .ui-glass-subtle, .ui-glass-strong, [class*="--glass"])[data-ui-glass-track],
+    .ui-date-picker-field--glass .ui-date-picker__popover,
+    .ui-select-field--glass .ui-select__list {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      background: hsl(var(--surface) / 0.97);
+    }
+
+    .ui-date-picker-field--glass,
+    .ui-select-field--glass {
+      background: none;
+    }
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    :is(.ui-glass, .ui-glass-subtle, .ui-glass-strong, [class*="--glass"])[data-ui-glass-track],
+    .ui-date-picker-field--glass .ui-date-picker__popover,
+    .ui-select-field--glass .ui-select__list {
+      background: hsl(var(--surface) / 0.94);
+    }
+
+    .ui-date-picker-field--glass,
+    .ui-select-field--glass {
+      background: none;
+    }
+  }
 }
 
 /* ---------------------------------------------------------------------------

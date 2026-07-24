@@ -120,4 +120,6 @@ attributes.
 <lumen-card glass>Glass card</lumen-card>
 <lumen-dialog glass>Glass dialog</lumen-dialog>
 <lumen-popover glass>Glass popover</lumen-popover>
+<lumen-date-picker glass="subtle"></lumen-date-picker>
+<lumen-select glass="strong"></lumen-select>
 ```
