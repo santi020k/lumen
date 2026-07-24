@@ -169,6 +169,18 @@ const accent = "hsl(var(--accent))";</code></pre>
   />
 </picture>
 `,
+  ScrollCue: `${elementsHeader}
+
+<lumen-scroll-cue>
+  <a href="#projects" aria-label="Continue to projects">
+    <span class="ui-scroll-cue__mouse" aria-hidden="true">
+      <span class="ui-scroll-cue__wheel"></span>
+    </span>
+    <span class="ui-scroll-cue__chevron" aria-hidden="true"></span>
+    <span class="ui-scroll-cue__label">Explore projects</span>
+  </a>
+</lumen-scroll-cue>
+`,
   Combobox: `${elementsHeader}
 
 <lumen-combobox data-ui-combobox>

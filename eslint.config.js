@@ -12,6 +12,25 @@ import tseslint from 'typescript-eslint'
 
 const docsRoot = `${import.meta.dirname}/apps/docs`
 
+const docsCustomClassPatterns = [
+  '^animated-logo-demo(?:$|__)',
+  '^component-doc(?:$|-)',
+  '^components(?:$|-)',
+  '^docs-',
+  '^figma(?:$|-)',
+  '^framework-(?:example|page)(?:$|__)',
+  '^home(?:$|-)',
+  '^icons(?:$|-)',
+  '^is-current$',
+  '^lumen-logo',
+  '^mcp(?:$|-)',
+  '^primitive-showcase(?:$|__)',
+  '^skill(?:$|-)',
+  '^speed-dial-example(?:$|__)',
+  '^theme(?:$|-)',
+  '^ui-'
+]
+
 const config = await defineConfig({
   autoFrameworks: false,
   detection: { libraries: false },
@@ -111,7 +130,7 @@ export default [
     rules: {
       'better-tailwindcss/no-unknown-classes': ['error', {
         entryPoint: `${docsRoot}/src/styles/global.css`,
-        ignore: ['^docs-', '^lumen-logo', '^ui-']
+        ignore: docsCustomClassPatterns
       }]
     },
     settings: {

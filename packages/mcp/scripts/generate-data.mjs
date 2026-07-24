@@ -529,7 +529,20 @@ const buildFrameworkDetails = ({
 }) => {
   const hookName = reactHookByComponent[name]
   const hook = name === 'Tabs' ? undefined : (hookName ? reactHooks.get(hookName) : undefined)
-  const elementsExample = toElementsExample(doc.example, elementComponents)
+  let elementsExample = toElementsExample(doc.example, elementComponents)
+
+  if (name === 'ScrollCue') {
+    elementsExample = `<lumen-scroll-cue>
+  <a href="#projects" aria-label="Continue to projects">
+    <span class="ui-scroll-cue__mouse" aria-hidden="true">
+      <span class="ui-scroll-cue__wheel"></span>
+    </span>
+    <span class="ui-scroll-cue__chevron" aria-hidden="true"></span>
+    <span class="ui-scroll-cue__label">Explore projects</span>
+  </a>
+</lumen-scroll-cue>`
+  }
+
   const reactExample = reactExampleForComponent(name, hook, doc.example)
   const astroExampleNames = componentNamesFromExample(doc.example)
   const astroImports = astroExampleNames.length > 0 ? astroExampleNames : [name]
