@@ -1,5 +1,39 @@
 # @santi020k/lumen-elements
 
+## 0.2.0
+
+### Minor Changes
+
+- [`485fbc7`](https://github.com/santi020k/lumen/commit/485fbc744d58aa8b364592540d4d14ed6441838a) Thanks [@santi020k](https://github.com/santi020k)! - Add standalone Web Component behavior for FileUpload, Tour, Anchor, Transfer, Mentions, Cascader,
+  and TreeSelect. Registered elements now handle file drag-and-drop, tour navigation and openers,
+  section scroll spy, collection transfer events, mention filtering and insertion, disclosure state,
+  hierarchical keyboard navigation, hidden input synchronization, and selection events without the
+  Astro runtime.
+
+- [`81bf725`](https://github.com/santi020k/lumen/commit/81bf7256a1091b0e05cdbf919b5b42691ab861d8) Thanks [@santi020k](https://github.com/santi020k)! - Add wrapped block-code output across framework adapters, refine native accordion disclosure styling,
+  and teach the registry and MCP catalog that Astro motion primitives require styles and
+  `UIPrimitives`.
+
+- [`485ef4b`](https://github.com/santi020k/lumen/commit/485ef4bc2d56969ba7292ff009c31877cbc3c627) Thanks [@santi020k](https://github.com/santi020k)! - Add a flush Accordion variant for compact FAQ and content-led disclosure lists.
+
+### Patch Changes
+
+- [`e6c1737`](https://github.com/santi020k/lumen/commit/e6c17377f79fc2dc27b88166531175917184fd3b) Thanks [@santi020k](https://github.com/santi020k)! - Make Code blocks easier to use without a separate syntax-highlighting integration.
+
+  Code strings now receive lightweight semantic-token highlighting for JavaScript, TypeScript, JSON,
+  YAML, Bash, Astro and HTML, Markdown, Lua, and SQL language families. The palette continues to
+  derive from the active Lumen theme tokens, and block layouts now stay within flex and grid
+  containers while preserving the existing opt-in wrapping behavior.
+
+- [`d7a8a84`](https://github.com/santi020k/lumen/commit/d7a8a8408c03c0c3005e7f0f515e815b59c51c17) Thanks [@santi020k](https://github.com/santi020k)! - Stabilize the existing catalog without adding components: complete the typed API reference, add
+  cross-framework class and behavior contract checks, enforce coverage and bundle-size budgets, load
+  motion controllers only when matching Astro primitives are present, and adopt
+  `ui:data-table-selection-change` while keeping the previous DataTable event as a compatibility
+  alias until Lumen 1.0.
+- Updated dependencies [[`e6c1737`](https://github.com/santi020k/lumen/commit/e6c17377f79fc2dc27b88166531175917184fd3b), [`81bf725`](https://github.com/santi020k/lumen/commit/81bf7256a1091b0e05cdbf919b5b42691ab861d8), [`241e1b6`](https://github.com/santi020k/lumen/commit/241e1b6e1d0de6e12e4e0b54a3714d69aba49063), [`485ef4b`](https://github.com/santi020k/lumen/commit/485ef4bc2d56969ba7292ff009c31877cbc3c627), [`d7a8a84`](https://github.com/santi020k/lumen/commit/d7a8a8408c03c0c3005e7f0f515e815b59c51c17)]:
+  - @santi020k/lumen@0.2.0
+  - @santi020k/lumen-core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

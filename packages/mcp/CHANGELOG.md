@@ -1,5 +1,37 @@
 # @santi020k/lumen-mcp
 
+## 0.2.0
+
+### Minor Changes
+
+- [`6129409`](https://github.com/santi020k/lumen/commit/61294095ee60bbafa0f8815b57ac815d52224c8e) Thanks [@santi020k](https://github.com/santi020k)! - Make MCP discovery framework-aware and release-verifiable. Component usage now includes authored
+  React hook/controller examples, Astro runtime setup, custom-element registration, richer Elements
+  examples, and corrected runtime event contracts. Natural-language search supports partial
+  multi-component product queries, aliases, framework filtering, and normalized recipe names.
+
+  Add `lumen_get_meta` and `lumen://meta` with deterministic catalog and package provenance, support
+  Node.js 20.20+, keep the MCP versioned with framework releases, reject stale generated snapshots in
+  CI, and smoke-test the packed package through a real external stdio connection.
+
+  Add a catalog manifest and diff workflow, deterministic connection diagnostics, a self-hostable
+  Streamable HTTP entrypoint, and release evaluations that benchmark natural-language search, exercise
+  every framework contract over MCP, parse Astro and Elements examples, and type-check every generated
+  React example against the package.
+
+### Patch Changes
+
+- [`81bf725`](https://github.com/santi020k/lumen/commit/81bf7256a1091b0e05cdbf919b5b42691ab861d8) Thanks [@santi020k](https://github.com/santi020k)! - Add wrapped block-code output across framework adapters, refine native accordion disclosure styling,
+  and teach the registry and MCP catalog that Astro motion primitives require styles and
+  `UIPrimitives`.
+
+- [`485ef4b`](https://github.com/santi020k/lumen/commit/485ef4bc2d56969ba7292ff009c31877cbc3c627) Thanks [@santi020k](https://github.com/santi020k)! - Add a flush Accordion variant for compact FAQ and content-led disclosure lists.
+
+- [`d7a8a84`](https://github.com/santi020k/lumen/commit/d7a8a8408c03c0c3005e7f0f515e815b59c51c17) Thanks [@santi020k](https://github.com/santi020k)! - Stabilize the existing catalog without adding components: complete the typed API reference, add
+  cross-framework class and behavior contract checks, enforce coverage and bundle-size budgets, load
+  motion controllers only when matching Astro primitives are present, and adopt
+  `ui:data-table-selection-change` while keeping the previous DataTable event as a compatibility
+  alias until Lumen 1.0.
+
 ## 0.1.0
 
 ### Minor Changes

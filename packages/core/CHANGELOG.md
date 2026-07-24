@@ -1,5 +1,22 @@
 # @santi020k/lumen-core
 
+## 0.2.0
+
+### Patch Changes
+
+- [`e6c1737`](https://github.com/santi020k/lumen/commit/e6c17377f79fc2dc27b88166531175917184fd3b) Thanks [@santi020k](https://github.com/santi020k)! - Make Code blocks easier to use without a separate syntax-highlighting integration.
+
+  Code strings now receive lightweight semantic-token highlighting for JavaScript, TypeScript, JSON,
+  YAML, Bash, Astro and HTML, Markdown, Lua, and SQL language families. The palette continues to
+  derive from the active Lumen theme tokens, and block layouts now stay within flex and grid
+  containers while preserving the existing opt-in wrapping behavior.
+
+- [`d7a8a84`](https://github.com/santi020k/lumen/commit/d7a8a8408c03c0c3005e7f0f515e815b59c51c17) Thanks [@santi020k](https://github.com/santi020k)! - Stabilize the existing catalog without adding components: complete the typed API reference, add
+  cross-framework class and behavior contract checks, enforce coverage and bundle-size budgets, load
+  motion controllers only when matching Astro primitives are present, and adopt
+  `ui:data-table-selection-change` while keeping the previous DataTable event as a compatibility
+  alias until Lumen 1.0.
+
 ## 0.1.0
 
 ### Minor Changes
