@@ -46,6 +46,7 @@ const searchIndexHref = '/docs-search.json'
       aria-controls={resultsId}
       aria-describedby={`${inputId}-status`}
       aria-expanded="false"
+      aria-keyshortcuts="/"
       data-docs-search-input
     />
     <Button
@@ -85,6 +86,59 @@ const searchIndexHref = '/docs-search.json'
     results: HTMLElement
     status: HTMLElement
   }
+
+  interface DocsSearchCommand {
+    command: string
+    description: string
+    href: string
+    keywords: string
+    title: string
+  }
+
+  const docsSearchCommands: DocsSearchCommand[] = [
+    {
+      command: '/components',
+      description: 'Browse every Lumen primitive by category and use case.',
+      href: '/docs/components',
+      keywords: 'components primitives catalog browse',
+      title: 'Browse components'
+    },
+    {
+      command: '/install',
+      description: 'Install Lumen and choose the package for your framework.',
+      href: '/docs#installation',
+      keywords: 'install setup getting started astro react elements',
+      title: 'Installation guide'
+    },
+    {
+      command: '/theme',
+      description: 'Generate, preview, and export a Lumen color theme.',
+      href: '/docs/theme-playground',
+      keywords: 'theme colors tokens playground customize',
+      title: 'Theme playground'
+    },
+    {
+      command: '/icons',
+      description: 'Search the complete icon catalog and copy component names.',
+      href: '/docs/icons',
+      keywords: 'icons lucide catalog symbols',
+      title: 'Icon catalog'
+    },
+    {
+      command: '/figma',
+      description: 'Open the Figma handoff and design-library guide.',
+      href: '/docs/figma',
+      keywords: 'figma design library variables handoff',
+      title: 'Figma library'
+    },
+    {
+      command: '/ai',
+      description: 'Set up the Lumen Agent Skill or MCP server.',
+      href: '/docs/ai-skill',
+      keywords: 'ai agent skill mcp codex claude cursor',
+      title: 'AI integrations'
+    }
+  ]
 
   declare global {
     interface Window {
@@ -203,6 +257,96 @@ const searchIndexHref = '/docs-search.json'
     return option
   }
 
+  const createCommandOption = (
+    item: DocsSearchCommand,
+    index: number,
+    idPrefix: string
+  ): HTMLAnchorElement => {
+    const option = document.createElement('a')
+    const heading = document.createElement('span')
+    const command = document.createElement('code')
+    const title = document.createElement('strong')
+    const description = document.createElement('span')
+
+    option.id = `${idPrefix}-option-${index}`
+
+    option.href = item.href
+
+    option.className = 'grid gap-1 rounded-md px-3 py-2 text-left no-underline hover:bg-brand-soft'
+
+    option.setAttribute('role', 'option')
+
+    option.setAttribute('aria-selected', 'false')
+
+    heading.className = 'docs-search__command-heading'
+
+    command.className = 'docs-search__command'
+
+    command.textContent = item.command
+
+    title.className = 'text-sm font-bold text-ink'
+
+    title.textContent = item.title
+
+    description.className = 'line-clamp-2 text-xs/5 text-ink-soft'
+
+    description.textContent = item.description
+
+    heading.append(command, title)
+
+    option.append(heading, description)
+
+    return option
+  }
+
+  const renderSearchCommands = (state: DocsSearchState, query = ''): void => {
+    const normalizedQuery = normalizeSearchText(query.trim())
+
+    const commands = normalizedQuery
+      ? docsSearchCommands.filter(item =>
+          normalizeSearchText(`${item.command} ${item.title} ${item.keywords}`).includes(normalizedQuery)
+        )
+      : docsSearchCommands
+
+    state.results.replaceChildren()
+
+    const label = document.createElement('p')
+
+    label.className = 'docs-search__group-label'
+
+    label.textContent = 'Quick commands'
+
+    label.setAttribute('role', 'presentation')
+
+    state.results.append(label)
+
+    if (!commands.length) {
+      const empty = document.createElement('p')
+
+      empty.className = 'px-3 py-2 text-sm text-ink-soft'
+
+      empty.textContent = `No quick command matches “/${query}”. Try another command or remove “/” to search the docs.`
+
+      state.results.append(empty)
+
+      state.status.textContent = 'No matching quick commands.'
+
+      openSearchResults(state)
+
+      return
+    }
+
+    for (const [commandIndex, item] of commands.entries()) {
+      state.results.append(createCommandOption(item, commandIndex, state.optionIdPrefix))
+    }
+
+    state.status.textContent = `${commands.length} quick ${commands.length === 1 ? 'command' : 'commands'} available.`
+
+    openSearchResults(state)
+
+    setActiveSearchOption(state, 0)
+  }
+
   const renderEmptySearchResults = (state: DocsSearchState): void => {
     const empty = document.createElement('p')
 
@@ -218,9 +362,16 @@ const searchIndexHref = '/docs-search.json'
   }
 
   const renderSearchResults = (state: DocsSearchState, index: SearchItem[]): void => {
-    const query = normalizeSearchText(state.input.value.trim())
+    const rawQuery = state.input.value.trim()
+    const query = normalizeSearchText(rawQuery)
 
     state.results.replaceChildren()
+
+    if (!query || query.startsWith('/')) {
+      renderSearchCommands(state, rawQuery.startsWith('/') ? rawQuery.slice(1) : '')
+
+      return
+    }
 
     if (query.length < 2) {
       state.status.textContent = query.length === 1
@@ -317,13 +468,21 @@ const searchIndexHref = '/docs-search.json'
       input.addEventListener('input', () => {
         updateSearchControls(state)
 
+        if (!input.value.trim() || input.value.trim().startsWith('/')) {
+          renderSearchCommands(state, input.value.trim().slice(1))
+
+          return
+        }
+
         getDocsSearchIndex()
           .then(index => renderSearchResults(state, index))
           .catch(() => renderSearchResults(state, []))
       })
 
       input.addEventListener('focus', () => {
-        if (input.value.trim().length >= 2) {
+        if (!input.value.trim() || input.value.trim().startsWith('/')) {
+          renderSearchCommands(state, input.value.trim().slice(1))
+        } else if (input.value.trim().length >= 2) {
           getDocsSearchIndex()
             .then(index => renderSearchResults(state, index))
             .catch(() => renderSearchResults(state, []))
@@ -331,6 +490,12 @@ const searchIndexHref = '/docs-search.json'
       })
 
       input.addEventListener('keydown', event => {
+        if (!input.value.trim() || input.value.trim().startsWith('/')) {
+          handleSearchKeyDown(event, state, [])
+
+          return
+        }
+
         getDocsSearchIndex()
           .then(index => handleSearchKeyDown(event, state, index))
           .catch(() => handleSearchKeyDown(event, state, []))
@@ -341,11 +506,11 @@ const searchIndexHref = '/docs-search.json'
 
         updateSearchControls(state)
 
-        closeSearchResults(state)
-
         status.textContent = 'Search cleared.'
 
         input.focus()
+
+        renderSearchCommands(state)
       })
 
       document.addEventListener('click', event => {

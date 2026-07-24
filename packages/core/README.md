@@ -10,6 +10,12 @@ tokens outside the shared stylesheet.
 It also exports the Lucide-backed icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
 `renderLumenIconSvg` so framework adapters can render icons by name.
 
+## Icon Credits
+
+Icons are provided by [Lucide](https://lucide.dev/) and its open-source contributors. Lucide is
+licensed under the ISC License, with Feather-derived icons covered by the MIT License. See
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the complete notices.
+
 ## Theme Builder Helpers
 
 Use the ThemeBuilder helpers when an adapter or app needs the same token generation and export

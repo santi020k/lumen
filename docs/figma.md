@@ -14,7 +14,7 @@ AI agents maintaining the library itself should follow the reusable
 
 The Lumen Figma library lives at
 [Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
-`luQW2pTQ3jGGxSFPAAsfa9`). The release library contains 121 public component assets and 53 local
+`luQW2pTQ3jGGxSFPAAsfa9`). The release library contains 123 public component assets and 53 local
 variables across three collections:
 
 - `Color`: 46 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
@@ -23,14 +23,15 @@ variables across three collections:
 - `Effects`: three semantic shadow variables in `Light` and `Dark` modes.
 
 The file also provides 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
-Foundations, Icons, component-category, and Utilities pages. Inter is the primary interface and
-documentation family; Cascadia Mono is reserved for the small amount of code-style text.
+Foundations, Glass Components, Icons, component-category, and Utilities pages. Inter is the primary
+interface and documentation family; Cascadia Mono is reserved for the small amount of code-style
+text.
 
 Variables carry Web code syntax (`var(--token)`) and values matching
-`packages/astro/styles/lumen.css`. The `Light` and `Dark` modes are the Lumen palettes; the
-`santi020k Light` and `santi020k Dark` modes mirror the parent website project. Component fills,
-strokes, radii, and effects bind to those variables so switching modes does not require detached
-color overrides.
+`packages/lumen/styles.css`, which is imported by the Astro compatibility stylesheet. The `Light`
+and `Dark` modes are the Lumen palettes; the `santi020k Light` and `santi020k Dark` modes mirror the
+parent website project. Component fills, strokes, radii, and effects bind to those variables so
+switching modes does not require detached color overrides.
 
 The component catalog includes editable text, boolean, instance-swap, and variant properties where
 the code API has a meaningful match. `Button`, for example, provides 24 `Variant` x `Size`
@@ -39,6 +40,10 @@ props, so `Variant=Destructive, Size=Sm` corresponds to
 `<Button variant="destructive" size="sm" />`. Interactive primitives also include representative
 prototype transitions for toggles, disclosures, tabs, selection controls, menus, theme controls,
 and reveal behavior.
+
+`AnimatedNumber` and `RevealGroup` complete the current 123-component code registry. Their Figma
+variants expose representative duration and state transitions while their descriptions and
+properties mirror the Astro behavior contracts.
 
 ## Theme Tokens
 
