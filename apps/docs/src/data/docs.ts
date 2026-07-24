@@ -293,7 +293,7 @@ const glassApiComponentNameSet = new Set<string>(glassComponentNames)
 export const figmaLibraryUrl = 'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
 
 const figmaNodeIdByComponent: Record<string, string> = {
-  Accordion: '67:11',
+  Accordion: '461:51',
   Affix: '288:27',
   Agenda: '53:76',
   Alert: '14:44',
