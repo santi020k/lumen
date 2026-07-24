@@ -1594,12 +1594,69 @@ pre code {
   backdrop-filter: blur(14px);
 }
 
-.docs-mobile-search > span {
+.docs-mobile-search__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.docs-mobile-search__header > span {
   color: hsl(var(--ink-muted));
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.docs-mobile-nav-trigger {
+  gap: 0.4rem;
+}
+
+.docs-mobile-drawer {
+  width: 100%;
+  height: min(88dvh, 48rem);
+  max-height: 88dvh;
+  overflow: hidden;
+  padding: 0;
+}
+
+.docs-mobile-drawer[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.docs-mobile-drawer > * + * {
+  margin-block-start: 0;
+}
+
+.docs-mobile-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid hsl(var(--line) / 0.7);
+  background: hsl(var(--surface) / 0.94);
+}
+
+.docs-mobile-drawer__header > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.docs-mobile-drawer__header strong {
+  color: hsl(var(--ink));
+  font-size: 0.9rem;
+}
+
+.docs-mobile-drawer__header small {
+  color: hsl(var(--ink-muted));
+  font-size: 0.68rem;
+}
+
+.docs-mobile-drawer .docs-sidebar__nav {
+  overscroll-behavior: contain;
 }
 
 @media (min-width: 64rem) {
@@ -1635,6 +1692,10 @@ pre code {
   }
 
   .docs-mobile-search {
+    display: none;
+  }
+
+  .docs-mobile-drawer[open] {
     display: none;
   }
 }

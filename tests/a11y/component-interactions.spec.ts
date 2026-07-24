@@ -35,6 +35,27 @@ test('Carousel controls move between pages of slides', async ({ page }) => {
   await expect.poll(() => viewport.evaluate(element => element.scrollLeft)).toBe(0)
 })
 
+test('Cascader opens, drills into a branch, and can reopen after selection', async ({ page }) => {
+  await openPreview(page, 'cascader')
+
+  const preview = page.locator('.component-doc-preview')
+  const trigger = preview.locator('[data-ui-cascader] [data-ui-trigger]')
+  const panel = preview.locator('[data-ui-cascader] [data-ui-panel]')
+
+  await expect(panel).toBeHidden()
+  await trigger.click()
+  await expect(panel).toBeVisible()
+
+  await preview.getByRole('button', { name: 'Category A' }).click()
+  await preview.getByRole('button', { name: 'Item A1' }).click()
+
+  await expect(trigger).toContainText('Item A1')
+  await expect(panel).toBeHidden()
+
+  await trigger.click()
+  await expect(panel).toBeVisible()
+})
+
 test('ContextMenu opens from the keyboard and closes with Escape', async ({ page }) => {
   await openPreview(page, 'context-menu')
 

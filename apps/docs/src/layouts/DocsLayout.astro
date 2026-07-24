@@ -1,10 +1,9 @@
 ---
-/* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Badge, Icon } from '@santi020k/lumen-astro'
+import { Button, Drawer, Icon } from '@santi020k/lumen-astro'
 
+import DocsNavigation from '../components/DocsNavigation.astro'
 import DocsSearch from '../components/DocsSearch.astro'
-import { componentCategories, componentDocs } from '../data/docs'
-import { toSlug } from '../lib/routes'
+import { componentDocs } from '../data/docs'
 
 import BaseLayout from './BaseLayout.astro'
 
@@ -15,24 +14,6 @@ interface Props {
 
 const { description, title } = Astro.props
 const currentPath = Astro.url.pathname.replace(/\/$/, '')
-
-const gettingStarted = [
-  ['Introduction', '/docs'],
-  ['Figma', '/docs/figma'],
-  ['AI skill', '/docs/ai-skill'],
-  ['MCP server', '/docs/mcp'],
-  ['Icons', '/docs/icons'],
-  ['Components', '/docs/components'],
-  ['Theme playground', '/docs/theme-playground']
-] as const
-
-const frameworkLinks = [
-  ['Astro', '/docs/frameworks/astro'],
-  ['React', '/docs/frameworks/react'],
-  ['Elements', '/docs/frameworks/elements']
-] as const
-
-const isCurrent = (href: string) => currentPath === href
 
 ---
 
@@ -61,75 +42,23 @@ const isCurrent = (href: string) => currentPath === href
         />
       </div>
 
-      <nav class="docs-sidebar__nav" data-docs-nav>
-        <div class="docs-sidebar__group">
-          <p>Start here</p>
-          {gettingStarted.map(([label, href]) => (
-            <a
-              aria-current={isCurrent(href) ? 'page' : undefined}
-              class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-              href={href}
-            >
-              <span>{label}</span>
-              {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
-            </a>
-          ))}
-        </div>
-        <div class="docs-sidebar__group">
-          <p>Frameworks</p>
-          {frameworkLinks.map(([label, href]) => (
-            <a
-              aria-current={isCurrent(href) ? 'page' : undefined}
-              class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-              href={href}
-            >
-              <span>{label}</span>
-              {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
-            </a>
-          ))}
-        </div>
-        <div class="docs-sidebar__components-label">
-          <span>Components</span>
-          <a href="/docs/components">Browse all</a>
-        </div>
-        {componentCategories.map(category => (
-          <details
-            class="docs-sidebar__group docs-sidebar__group--collapsible"
-            open
-          >
-            <summary>
-              <span>{category}</span>
-              <span>
-                <Badge variant="outline">
-                  {componentDocs.filter(component => component.category === category).length}
-                </Badge>
-                <Icon decorative name="chevron-right" size="sm" />
-              </span>
-            </summary>
-            <div>
-              {componentDocs.filter(component => component.category === category).map(component => (
-                <a
-                  aria-current={isCurrent(`/docs/components/${toSlug(component.name)}`) ? 'page' : undefined}
-                  class:list={{
-                    'docs-sidebar__link': true,
-                    'is-current': isCurrent(`/docs/components/${toSlug(component.name)}`)
-                  }}
-                  href={`/docs/components/${toSlug(component.name)}`}
-                >
-                  <span class="truncate">{component.name}</span>
-                  {component.glass && (
-                    <span class="docs-sidebar__glass">Glass</span>
-                  )}
-                </a>
-              ))}
-            </div>
-          </details>
-        ))}
-      </nav>
+      <DocsNavigation currentPath={currentPath} />
     </aside>
     <main class="docs-content">
       <div class="docs-mobile-search">
-        <span>Documentation</span>
+        <div class="docs-mobile-search__header">
+          <span>Documentation</span>
+          <Button
+            class="docs-mobile-nav-trigger"
+            size="sm"
+            variant="outline"
+            data-ui-drawer-trigger="docs-mobile-navigation"
+            aria-label="Browse documentation pages"
+          >
+            <Icon decorative name="menu" size="sm" />
+            Browse
+          </Button>
+        </div>
         <DocsSearch
           class="max-w-2xl"
           inputId="docs-mobile-search-input"
@@ -139,5 +68,26 @@ const isCurrent = (href: string) => currentPath === href
       </div>
       <slot />
     </main>
+    <Drawer
+      class="docs-mobile-drawer"
+      id="docs-mobile-navigation"
+      aria-labelledby="docs-mobile-navigation-title"
+    >
+      <div class="docs-mobile-drawer__header">
+        <div>
+          <strong id="docs-mobile-navigation-title">Documentation</strong>
+          <small>{componentDocs.length} production primitives</small>
+        </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          data-ui-drawer-close
+          aria-label="Close documentation menu"
+        >
+          <Icon decorative name="x" size="sm" />
+        </Button>
+      </div>
+      <DocsNavigation closeOnNavigate currentPath={currentPath} />
+    </Drawer>
   </div>
 </BaseLayout>
