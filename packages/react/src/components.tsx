@@ -1,6 +1,6 @@
 'use client'
 
-/* eslint-disable @eslint-react/no-children-only, @eslint-react/no-clone-element, @eslint-react/no-context-provider, @eslint-react/no-forward-ref, @eslint-react/no-use-context -- Lumen React keeps React 18 peer support, forwards refs through the React 18 API, and intentionally clones one child for polymorphic composition. */
+/* eslint-disable @eslint-react/no-children-only, @eslint-react/no-clone-element, @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen uses React 19 ref props and context provider syntax that remains explicit for readability, and intentionally clones one child for polymorphic composition. */
 import {
   composeClassName,
   getLumenIcon,
@@ -14,6 +14,7 @@ import {
 
 import type {
   ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
   CSSProperties,
   ElementType,
   HTMLAttributes,
@@ -25,7 +26,6 @@ import {
   cloneElement,
   createContext,
   createElement,
-  forwardRef,
   Fragment,
   isValidElement,
   useContext,
@@ -452,7 +452,7 @@ export const Bubble = ({ className, from = 'assistant', glass = false, ...props 
   />
 )
 
-export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
+export interface ButtonProps extends ComponentPropsWithRef<'button'> {
   asChild?: boolean
   loading?: boolean
   size?: ButtonSize
@@ -463,18 +463,19 @@ interface ButtonChildProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
 }
 
-// eslint-disable-next-line complexity -- The compatibility path resolves native, slotted, loading, size, and disabled states in one public component.
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
+/* eslint-disable complexity -- The compatibility path resolves native, slotted, loading, size, and disabled states in one public component. */
+export const Button = ({
   asChild = false,
   children,
   className,
   disabled,
   loading = false,
+  ref,
   size = 'default',
   type = 'button',
   variant = 'default',
   ...props
-}: ButtonProps, ref) {
+}: ButtonProps) => {
   const buttonClassName = composeClassName(
     'ui-button',
     `ui-button--${variant}`,
@@ -519,7 +520,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {children}
     </button>
   )
-})
+}
+/* eslint-enable complexity */
 
 export type ButtonGroupProps = ComponentPropsWithoutRef<'div'>
 export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
@@ -1419,29 +1421,28 @@ export const Icon = ({
   )
 }
 
-export interface InputProps extends ComponentPropsWithoutRef<'input'> {
+export interface InputProps extends ComponentPropsWithRef<'input'> {
   visualSize?: 'default' | 'lg' | 'sm'
 }
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
+export const Input = ({
   className,
+  ref,
   type = 'text',
   visualSize = 'default',
   ...props
-}, ref) {
-  return (
-    <input
-      className={composeClassName(
-        'ui-input',
-        visualSize === 'sm' && 'ui-input--sm',
-        visualSize === 'lg' && 'ui-input--lg',
-        className
-      )}
-      ref={ref}
-      type={type}
-      {...props}
-    />
-  )
-})
+}: InputProps) => (
+  <input
+    className={composeClassName(
+      'ui-input',
+      visualSize === 'sm' && 'ui-input--sm',
+      visualSize === 'lg' && 'ui-input--lg',
+      className
+    )}
+    ref={ref}
+    type={type}
+    {...props}
+  />
+)
 
 export type InputGroupProps = ComponentPropsWithoutRef<'div'>
 export const InputGroup = ({ className, ...props }: InputGroupProps) => (
@@ -2334,29 +2335,28 @@ export const Image = <T extends ElementType = 'img',>({
   })
 }
 
-export type LinkProps = ComponentPropsWithoutRef<'a'> & {
+export type LinkProps = ComponentPropsWithRef<'a'> & {
   newTab?: boolean
   variant?: 'default' | 'inherit'
 }
-export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link({
+export const Link = ({
   className,
   newTab = false,
+  ref,
   rel,
   target,
   variant = 'default',
   ...props
-}: LinkProps, ref) {
-  return (
-    <a
-      className={composeClassName('ui-link', variant === 'inherit' && 'ui-link--inherit', className)}
-      data-variant={variant}
-      ref={ref}
-      rel={newTab ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ') : rel}
-      target={newTab ? '_blank' : target}
-      {...props}
-    />
-  )
-})
+}: LinkProps) => (
+  <a
+    className={composeClassName('ui-link', variant === 'inherit' && 'ui-link--inherit', className)}
+    data-variant={variant}
+    ref={ref}
+    rel={newTab ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ') : rel}
+    target={newTab ? '_blank' : target}
+    {...props}
+  />
+)
 
 export type PillProps = ComponentPropsWithoutRef<'span'> & {
   count?: number | string
@@ -2750,16 +2750,17 @@ export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps)
   <div className={composeClassName('ui-animated-portrait relative isolate w-full animate-reveal-lcp motion-reduce:animate-none', className)} {...props} />
 )
 
-export type ButtonLinkProps = ComponentPropsWithoutRef<'a'> & {
+export type ButtonLinkProps = ComponentPropsWithRef<'a'> & {
   shape?: 'default' | 'icon'
   variant?: 'ghost' | 'inline' | 'primary' | 'secondary' | 'unstyled'
 }
-export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(function ButtonLink({
+export const ButtonLink = ({
   className,
+  ref,
   shape = 'default',
   variant = 'primary',
   ...props
-}: ButtonLinkProps, ref) {
+}: ButtonLinkProps) => {
   let variantClass = `ui-button ui-button--${variant} min-h-11 rounded-full border`
 
   if (variant === 'unstyled') {
@@ -2779,7 +2780,7 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(functio
       className
     )} ref={ref} {...props} />
   )
-})
+}
 
 export type CoverImageProps = ComponentPropsWithoutRef<'div'> & {
   hover?: boolean

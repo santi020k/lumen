@@ -14,7 +14,7 @@ The July 2026 migration pass added:
 - authoritative `[aria-pressed="true"]` styling plus controlled, cancelable Astro toggle intent;
 - catalog-wide nullable Astro `class` props for exact-optional-safe attribute passthrough.
 - a Next.js production-build fixture and client boundary for the monolithic React catalog;
-- forwarded refs for common React wrapper primitives, `Button asChild`, and a native-safe
+- React 19 ref props for common wrapper primitives, `Button asChild`, and a native-safe
   `Input size` plus `visualSize` contract.
 
 ## Dep Beacon
