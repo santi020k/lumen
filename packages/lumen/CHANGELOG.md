@@ -1,5 +1,48 @@
 # @santi020k/lumen
 
+## 0.2.0
+
+### Minor Changes
+
+- [`81bf725`](https://github.com/santi020k/lumen/commit/81bf7256a1091b0e05cdbf919b5b42691ab861d8) Thanks [@santi020k](https://github.com/santi020k)! - Add wrapped block-code output across framework adapters, refine native accordion disclosure styling,
+  and teach the registry and MCP catalog that Astro motion primitives require styles and
+  `UIPrimitives`.
+
+- [`241e1b6`](https://github.com/santi020k/lumen/commit/241e1b6e1d0de6e12e4e0b54a3714d69aba49063) Thanks [@santi020k](https://github.com/santi020k)! - Add migration-friendly link, pill, toggle, navigation menu, and sidebar contracts. Links now support
+  safe new-tab handling and inherited presentation, pills can render as links, Astro toggles expose a
+  cancelable controlled-state intent, navigation surfaces can opt out of Lumen presentation, and
+  Astro tabs can generate relationships, persist selection, synchronize groups, and emit changes.
+  The Astro theme toggle now switches and persists configured themes with the same circular reveal
+  used by the other framework adapters while respecting reduced-motion and touch preferences.
+  Astro component class props now preserve the nullable native attribute type for strict passthrough.
+  Cards and button links can also opt out of presentation while preserving their public semantic
+  contract and stable class hook.
+  The umbrella CLI can audit existing stylesheets for semantic-token name collisions with incompatible
+  complete CSS color values before migration.
+  Astro also warns about unsupported named Lucide icons during development and documents the custom
+  SVG slot for brand marks.
+  Framework packages also expose a Tailwind layer-order prelude so utilities reliably override Lumen
+  component display, spacing, radius, width, and responsive visibility defaults.
+
+- [`485ef4b`](https://github.com/santi020k/lumen/commit/485ef4bc2d56969ba7292ff009c31877cbc3c627) Thanks [@santi020k](https://github.com/santi020k)! - Add a flush Accordion variant for compact FAQ and content-led disclosure lists.
+
+### Patch Changes
+
+- [`e6c1737`](https://github.com/santi020k/lumen/commit/e6c17377f79fc2dc27b88166531175917184fd3b) Thanks [@santi020k](https://github.com/santi020k)! - Make Code blocks easier to use without a separate syntax-highlighting integration.
+
+  Code strings now receive lightweight semantic-token highlighting for JavaScript, TypeScript, JSON,
+  YAML, Bash, Astro and HTML, Markdown, Lua, and SQL language families. The palette continues to
+  derive from the active Lumen theme tokens, and block layouts now stay within flex and grid
+  containers while preserving the existing opt-in wrapping behavior.
+
+- [`d7a8a84`](https://github.com/santi020k/lumen/commit/d7a8a8408c03c0c3005e7f0f515e815b59c51c17) Thanks [@santi020k](https://github.com/santi020k)! - Stabilize the existing catalog without adding components: complete the typed API reference, add
+  cross-framework class and behavior contract checks, enforce coverage and bundle-size budgets, load
+  motion controllers only when matching Astro primitives are present, and adopt
+  `ui:data-table-selection-change` while keeping the previous DataTable event as a compatibility
+  alias until Lumen 1.0.
+- Updated dependencies [[`e6c1737`](https://github.com/santi020k/lumen/commit/e6c17377f79fc2dc27b88166531175917184fd3b), [`d7a8a84`](https://github.com/santi020k/lumen/commit/d7a8a8408c03c0c3005e7f0f515e815b59c51c17)]:
+  - @santi020k/lumen-core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

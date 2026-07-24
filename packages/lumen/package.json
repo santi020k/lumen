@@ -1,12 +1,15 @@
 {
   "name": "@santi020k/lumen",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publishConfig": {
     "access": "public"
   },
   "description": "Umbrella package for the Lumen multi-framework primitive UI system.",
   "type": "module",
-  "sideEffects": ["./layers.css", "./styles.css"],
+  "sideEffects": [
+    "./layers.css",
+    "./styles.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,7 +26,14 @@
     "./layers.css": "./layers.css",
     "./package.json": "./package.json"
   },
-  "files": ["bin", "dist", "layers.css", "styles.css", "README.md", "LICENSE"],
+  "files": [
+    "bin",
+    "dist",
+    "layers.css",
+    "styles.css",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "lumen": "./bin/lumen.mjs"
   },
