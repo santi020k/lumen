@@ -1716,9 +1716,47 @@
 
 .ui-accordion summary,
 .ui-collapsible summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
   cursor: pointer;
+  list-style: none;
   color: hsl(var(--ink));
   font-weight: 650;
+}
+
+.ui-accordion summary::-webkit-details-marker,
+.ui-collapsible summary::-webkit-details-marker {
+  display: none;
+}
+
+.ui-accordion summary::after,
+.ui-collapsible summary::after {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 1.5px solid hsl(var(--ink-muted));
+  border-bottom: 1.5px solid hsl(var(--ink-muted));
+  content: "";
+  transform: rotate(45deg) translate(-0.1rem, -0.1rem);
+  transition: transform var(--ui-duration-fast) var(--ui-ease-standard);
+}
+
+.ui-accordion details[open] > summary::after,
+.ui-collapsible[open] > summary::after {
+  transform: rotate(225deg) translate(-0.1rem, -0.1rem);
+}
+
+.ui-accordion summary:hover::after,
+.ui-collapsible summary:hover::after {
+  border-color: hsl(var(--brand));
+}
+
+.ui-accordion summary:focus-visible,
+.ui-collapsible summary:focus-visible {
+  border-radius: calc(var(--ui-radius) * 0.6);
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: 0.35rem;
 }
 
 .ui-accordion p,
@@ -2599,6 +2637,16 @@
   font-variant-ligatures: none;
   line-height: 1.65;
   white-space: pre;
+}
+
+.ui-code--wrap :where(pre) {
+  overflow-x: hidden;
+}
+
+.ui-code--wrap :where(code) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .ui-code--block :where(code span) {

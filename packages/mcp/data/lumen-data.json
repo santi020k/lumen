@@ -3533,6 +3533,12 @@
           "values": "\"auto\" | \"lumen\" | \"santi020k\""
         },
         {
+          "attribute": "wrap",
+          "defaultValue": "false",
+          "description": "Wraps long block-code lines instead of requiring horizontal scrolling.",
+          "values": "boolean"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -3545,7 +3551,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype CodeTheme = 'auto' | 'lumen' | 'santi020k'\ntype CodeVariant = 'block' | 'inline'\n\ninterface Props extends HTMLAttributes<'code'> {\n  class?: string\n  className?: string\n  code?: string\n  copy?: boolean\n  highlighted?: boolean\n  label?: string\n  language?: string\n  theme?: CodeTheme\n  variant?: CodeVariant\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  code,\n  copy = false,\n  highlighted = false,\n  label,\n  language,\n  theme = 'auto',\n  variant = 'inline',\n  ...rest\n} = Astro.props\n\nconst { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--block'\n], classProp, className)\nconst { classList: inlineClassList } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--inline'\n], classProp, className)\nconst shouldShowHeader = variant === 'block' && Boolean(copy || label || language)\nconst hasCode = code !== undefined\nconst renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''\n---\n\n{variant === 'block' ? (\n  <figure\n    class:list={blockClassList}\n    data-code-theme={theme}\n    data-language={language}\n    data-ui-code\n    {...passthrough}\n  >\n    {shouldShowHeader && (\n      <figcaption class=\"ui-code__header\">\n        <span class=\"ui-code__dots\" aria-hidden=\"true\">\n          <span class=\"ui-code__dot ui-code__dot--red\"></span>\n          <span class=\"ui-code__dot ui-code__dot--yellow\"></span>\n          <span class=\"ui-code__dot ui-code__dot--green\"></span>\n        </span>\n        <span class=\"ui-code__meta\">\n          {language && <span class=\"ui-code__language\">{language}</span>}\n          {label && <span class=\"ui-code__label\">{label}</span>}\n        </span>\n        {copy && (\n          <button\n            aria-label=\"Copy code to clipboard\"\n            class=\"ui-code__copy\"\n            data-ui-code-copy\n            type=\"button\"\n          >\n            <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />\n            <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />\n          </button>\n        )}\n      </figcaption>\n    )}\n    {highlighted ? (\n      <slot />\n    ) : hasCode ? (\n      <pre><code set:html={renderedCode}></code></pre>\n    ) : (\n      <pre><code><slot /></code></pre>\n    )}\n  </figure>\n) : (\n  <code\n    class:list={inlineClassList}\n    data-code-theme={theme}\n    data-language={language}\n    {...passthrough}\n  >\n    {hasCode ? code : <slot />}\n  </code>\n)}\n",
+      "astroSource": "---\nimport { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype CodeTheme = 'auto' | 'lumen' | 'santi020k'\ntype CodeVariant = 'block' | 'inline'\n\ninterface Props extends HTMLAttributes<'code'> {\n  class?: string\n  className?: string\n  code?: string\n  copy?: boolean\n  highlighted?: boolean\n  label?: string\n  language?: string\n  theme?: CodeTheme\n  variant?: CodeVariant\n  wrap?: boolean\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  code,\n  copy = false,\n  highlighted = false,\n  label,\n  language,\n  theme = 'auto',\n  variant = 'inline',\n  wrap = false,\n  ...rest\n} = Astro.props\n\nconst { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--block',\n  wrap && 'ui-code--wrap'\n], classProp, className)\nconst { classList: inlineClassList } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--inline'\n], classProp, className)\nconst shouldShowHeader = variant === 'block' && Boolean(copy || label || language)\nconst hasCode = code !== undefined\nconst renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''\n---\n\n{variant === 'block' ? (\n  <figure\n    class:list={blockClassList}\n    data-code-theme={theme}\n    data-language={language}\n    data-ui-code\n    {...passthrough}\n  >\n    {shouldShowHeader && (\n      <figcaption class=\"ui-code__header\">\n        <span class=\"ui-code__dots\" aria-hidden=\"true\">\n          <span class=\"ui-code__dot ui-code__dot--red\"></span>\n          <span class=\"ui-code__dot ui-code__dot--yellow\"></span>\n          <span class=\"ui-code__dot ui-code__dot--green\"></span>\n        </span>\n        <span class=\"ui-code__meta\">\n          {language && <span class=\"ui-code__language\">{language}</span>}\n          {label && <span class=\"ui-code__label\">{label}</span>}\n        </span>\n        {copy && (\n          <button\n            aria-label=\"Copy code to clipboard\"\n            class=\"ui-code__copy\"\n            data-ui-code-copy\n            type=\"button\"\n          >\n            <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />\n            <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />\n          </button>\n        )}\n      </figcaption>\n    )}\n    {highlighted ? (\n      <slot />\n    ) : hasCode ? (\n      <pre><code set:html={renderedCode}></code></pre>\n    ) : (\n      <pre><code><slot /></code></pre>\n    )}\n  </figure>\n) : (\n  <code\n    class:list={inlineClassList}\n    data-code-theme={theme}\n    data-language={language}\n    {...passthrough}\n  >\n    {hasCode ? code : <slot />}\n  </code>\n)}\n",
       "category": "Data display",
       "collections": [],
       "dependencies": [
@@ -3610,16 +3616,22 @@
               "name": "variant",
               "optional": true,
               "type": "CodeVariant"
+            },
+            {
+              "name": "wrap",
+              "optional": true,
+              "type": "boolean"
             }
           ],
           "propsExtends": "HTMLAttributes<'code'>",
-          "source": "---\nimport { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype CodeTheme = 'auto' | 'lumen' | 'santi020k'\ntype CodeVariant = 'block' | 'inline'\n\ninterface Props extends HTMLAttributes<'code'> {\n  class?: string\n  className?: string\n  code?: string\n  copy?: boolean\n  highlighted?: boolean\n  label?: string\n  language?: string\n  theme?: CodeTheme\n  variant?: CodeVariant\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  code,\n  copy = false,\n  highlighted = false,\n  label,\n  language,\n  theme = 'auto',\n  variant = 'inline',\n  ...rest\n} = Astro.props\n\nconst { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--block'\n], classProp, className)\nconst { classList: inlineClassList } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--inline'\n], classProp, className)\nconst shouldShowHeader = variant === 'block' && Boolean(copy || label || language)\nconst hasCode = code !== undefined\nconst renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''\n---\n\n{variant === 'block' ? (\n  <figure\n    class:list={blockClassList}\n    data-code-theme={theme}\n    data-language={language}\n    data-ui-code\n    {...passthrough}\n  >\n    {shouldShowHeader && (\n      <figcaption class=\"ui-code__header\">\n        <span class=\"ui-code__dots\" aria-hidden=\"true\">\n          <span class=\"ui-code__dot ui-code__dot--red\"></span>\n          <span class=\"ui-code__dot ui-code__dot--yellow\"></span>\n          <span class=\"ui-code__dot ui-code__dot--green\"></span>\n        </span>\n        <span class=\"ui-code__meta\">\n          {language && <span class=\"ui-code__language\">{language}</span>}\n          {label && <span class=\"ui-code__label\">{label}</span>}\n        </span>\n        {copy && (\n          <button\n            aria-label=\"Copy code to clipboard\"\n            class=\"ui-code__copy\"\n            data-ui-code-copy\n            type=\"button\"\n          >\n            <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />\n            <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />\n          </button>\n        )}\n      </figcaption>\n    )}\n    {highlighted ? (\n      <slot />\n    ) : hasCode ? (\n      <pre><code set:html={renderedCode}></code></pre>\n    ) : (\n      <pre><code><slot /></code></pre>\n    )}\n  </figure>\n) : (\n  <code\n    class:list={inlineClassList}\n    data-code-theme={theme}\n    data-language={language}\n    {...passthrough}\n  >\n    {hasCode ? code : <slot />}\n  </code>\n)}\n",
+          "source": "---\nimport { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype CodeTheme = 'auto' | 'lumen' | 'santi020k'\ntype CodeVariant = 'block' | 'inline'\n\ninterface Props extends HTMLAttributes<'code'> {\n  class?: string\n  className?: string\n  code?: string\n  copy?: boolean\n  highlighted?: boolean\n  label?: string\n  language?: string\n  theme?: CodeTheme\n  variant?: CodeVariant\n  wrap?: boolean\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  code,\n  copy = false,\n  highlighted = false,\n  label,\n  language,\n  theme = 'auto',\n  variant = 'inline',\n  wrap = false,\n  ...rest\n} = Astro.props\n\nconst { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--block',\n  wrap && 'ui-code--wrap'\n], classProp, className)\nconst { classList: inlineClassList } = resolveLumenAstroProps(rest, [\n  'ui-code',\n  'ui-code--inline'\n], classProp, className)\nconst shouldShowHeader = variant === 'block' && Boolean(copy || label || language)\nconst hasCode = code !== undefined\nconst renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''\n---\n\n{variant === 'block' ? (\n  <figure\n    class:list={blockClassList}\n    data-code-theme={theme}\n    data-language={language}\n    data-ui-code\n    {...passthrough}\n  >\n    {shouldShowHeader && (\n      <figcaption class=\"ui-code__header\">\n        <span class=\"ui-code__dots\" aria-hidden=\"true\">\n          <span class=\"ui-code__dot ui-code__dot--red\"></span>\n          <span class=\"ui-code__dot ui-code__dot--yellow\"></span>\n          <span class=\"ui-code__dot ui-code__dot--green\"></span>\n        </span>\n        <span class=\"ui-code__meta\">\n          {language && <span class=\"ui-code__language\">{language}</span>}\n          {label && <span class=\"ui-code__label\">{label}</span>}\n        </span>\n        {copy && (\n          <button\n            aria-label=\"Copy code to clipboard\"\n            class=\"ui-code__copy\"\n            data-ui-code-copy\n            type=\"button\"\n          >\n            <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />\n            <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />\n          </button>\n        )}\n      </figcaption>\n    )}\n    {highlighted ? (\n      <slot />\n    ) : hasCode ? (\n      <pre><code set:html={renderedCode}></code></pre>\n    ) : (\n      <pre><code><slot /></code></pre>\n    )}\n  </figure>\n) : (\n  <code\n    class:list={inlineClassList}\n    data-code-theme={theme}\n    data-language={language}\n    {...passthrough}\n  >\n    {hasCode ? code : <slot />}\n  </code>\n)}\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-code-theme",
             "variant",
+            "wrap",
             "code",
             "language",
             "label",
@@ -3637,7 +3649,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Code: {\n    attributeClasses: {\n      variant: {\n        block: 'ui-code--block',\n        inline: 'ui-code--inline'\n      }\n    },\n    baseClassName: 'ui-code',\n    defaults: { 'data-code-theme': 'auto', variant: 'inline' },\n    tagName: 'lumen-code'\n  }",
+          "source": "Code: {\n    attributeClasses: {\n      variant: {\n        block: 'ui-code--block',\n        inline: 'ui-code--inline'\n      },\n      wrap: {\n        true: 'ui-code--wrap'\n      }\n    },\n    baseClassName: 'ui-code',\n    defaults: { 'data-code-theme': 'auto', variant: 'inline' },\n    tagName: 'lumen-code'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-code"
         },
@@ -3682,10 +3694,15 @@
               "name": "variant",
               "optional": true,
               "type": "CodeVariant"
+            },
+            {
+              "name": "wrap",
+              "optional": true,
+              "type": "boolean"
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'figure'>",
-          "source": "export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {\n  code?: string\n  copy?: boolean\n  highlighted?: boolean\n  label?: ReactNode\n  language?: string\n  theme?: CodeTheme\n  variant?: CodeVariant\n}\n\nexport const Code = ({\n  children,\n  className,\n  code,\n  copy = false,\n  highlighted = false,\n  label,\n  language,\n  theme = 'auto',\n  variant = 'inline',\n  ...props\n}: CodeProps) => {\n  const codeChildren = renderCodeChildren(code, children, language)\n\n  if (variant === 'block') {\n    return (\n      <figure\n        className={composeClassName('ui-code ui-code--block', className)}\n        data-code-theme={theme}\n        data-language={language}\n        data-ui-code\n        {...props}\n      >\n        {renderCodeHeader({ copy, label, language })}\n        {highlighted ? children : <pre><code>{codeChildren}</code></pre>}\n      </figure>\n    )\n  }\n\n  return (\n    <code\n      className={composeClassName('ui-code ui-code--inline', className)}\n      data-code-theme={theme}\n      data-language={language}\n      {...props}\n    >\n      {code ?? children}\n    </code>\n  )\n}",
+          "source": "export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {\n  code?: string\n  copy?: boolean\n  highlighted?: boolean\n  label?: ReactNode\n  language?: string\n  theme?: CodeTheme\n  variant?: CodeVariant\n  wrap?: boolean\n}\n\nexport const Code = ({\n  children,\n  className,\n  code,\n  copy = false,\n  highlighted = false,\n  label,\n  language,\n  theme = 'auto',\n  variant = 'inline',\n  wrap = false,\n  ...props\n}: CodeProps) => {\n  const codeChildren = renderCodeChildren(code, children, language)\n\n  if (variant === 'block') {\n    return (\n      <figure\n        className={composeClassName('ui-code ui-code--block', wrap && 'ui-code--wrap', className)}\n        data-code-theme={theme}\n        data-language={language}\n        data-ui-code\n        {...props}\n      >\n        {renderCodeHeader({ copy, label, language })}\n        {highlighted ? children : <pre><code>{codeChildren}</code></pre>}\n      </figure>\n    )\n  }\n\n  return (\n    <code\n      className={composeClassName('ui-code ui-code--inline', className)}\n      data-code-theme={theme}\n      data-language={language}\n      {...props}\n    >\n      {code ?? children}\n    </code>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -3757,6 +3774,11 @@
           "name": "variant",
           "optional": true,
           "type": "CodeVariant"
+        },
+        {
+          "name": "wrap",
+          "optional": true,
+          "type": "boolean"
         }
       ],
       "propsExtends": "HTMLAttributes<'code'>",
@@ -15971,10 +15993,15 @@
       "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'span'>, 'prefix'> {\n  class?: string\n  className?: string\n  decimals?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  from?: number\n  locale?: string\n  prefix?: string\n  suffix?: string\n  value: number\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  decimals = 0,\n  duration = 'slow',\n  from = 0,\n  locale,\n  prefix = '',\n  suffix = '',\n  value,\n  ...rest\n} = Astro.props\n\nconst safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))\nconst formatter = new Intl.NumberFormat(locale, {\n  maximumFractionDigits: safeDecimals,\n  minimumFractionDigits: safeDecimals\n})\nconst formattedValue = `${prefix}${formatter.format(value)}${suffix}`\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-animated-number',\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<span\n  class:list={classList}\n  data-ui-animated-number\n  data-ui-animated-number-decimals={safeDecimals}\n  data-ui-animated-number-from={from}\n  data-ui-animated-number-locale={locale}\n  data-ui-animated-number-prefix={prefix}\n  data-ui-animated-number-suffix={suffix}\n  data-ui-animated-number-value={value}\n  {...passthrough}\n>\n  <span aria-hidden=\"true\" data-ui-animated-number-output>{formattedValue}</span>\n  <span class=\"ui-sr-only\">{formattedValue}</span>\n</span>\n",
       "category": "Data display",
       "collections": [],
-      "dependencies": [],
+      "dependencies": [
+        "styles",
+        "runtime"
+      ],
       "description": "Animates a formatted metric while keeping one stable accessible value.",
       "files": [
         "packages/astro/components/AnimatedNumber.astro",
+        "packages/astro/runtime/UIPrimitives.astro",
+        "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
       "frameworkDetails": {
@@ -16234,10 +16261,15 @@
       "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n  class?: string\n  className?: string\n  delay?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  once?: boolean\n  stagger?: number\n  threshold?: number\n}\n\nconst {\n  animation = 'slide-up',\n  class: classProp = '',\n  className = '',\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  stagger = 80,\n  style,\n  threshold = 0.15,\n  ...rest\n} = Astro.props\n\nconst safeDelay = Math.max(0, delay)\nconst safeStagger = Math.max(0, stagger)\nconst safeThreshold = Math.min(1, Math.max(0, threshold))\nconst motionStyle = [\n  typeof style === 'string' ? style : '',\n  `--ui-reveal-delay:${safeDelay}ms`,\n  `--ui-reveal-stagger:${safeStagger}ms`\n].filter(Boolean).join(';')\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-reveal-group',\n  `ui-reveal-group-${animation}`,\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-reveal-group\n  data-ui-reveal-once={String(once)}\n  data-ui-reveal-threshold={safeThreshold}\n  style={motionStyle}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Layout",
       "collections": [],
-      "dependencies": [],
+      "dependencies": [
+        "styles",
+        "runtime"
+      ],
       "description": "Reveals a group of direct children with tokenized, reduced-motion-aware staggering.",
       "files": [
         "packages/astro/components/RevealGroup.astro",
+        "packages/astro/runtime/UIPrimitives.astro",
+        "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
       "frameworkDetails": {
@@ -16476,10 +16508,15 @@
       "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  animation?: 'fade' | 'slide-up' | 'scale'\n  class?: string\n  className?: string\n  delay?: number\n  duration?: 'fast' | 'standard' | 'slow'\n  once?: boolean\n  threshold?: number\n}\n\nconst {\n  animation = 'fade',\n  class: classProp = '',\n  className = '',\n  delay = 0,\n  duration = 'slow',\n  once = true,\n  style,\n  threshold = 0.15,\n  ...rest\n} = Astro.props\n\nconst safeDelay = Math.max(0, delay)\nconst safeThreshold = Math.min(1, Math.max(0, threshold))\nconst motionStyle = [\n  typeof style === 'string' ? style : '',\n  `--ui-reveal-delay:${safeDelay}ms`\n].filter(Boolean).join(';')\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-scroll-reveal',\n  `ui-scroll-reveal-${animation}`,\n  `ui-motion-duration-${duration}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-ui-reveal-once={String(once)}\n  data-ui-reveal-threshold={safeThreshold}\n  data-ui-scroll-reveal\n  style={motionStyle}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Layout",
       "collections": [],
-      "dependencies": [],
+      "dependencies": [
+        "styles",
+        "runtime"
+      ],
       "description": "Animates wrapped content as it first enters the viewport.",
       "files": [
         "packages/astro/components/ScrollReveal.astro",
+        "packages/astro/runtime/UIPrimitives.astro",
+        "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
       "frameworkDetails": {

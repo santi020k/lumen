@@ -162,12 +162,14 @@ describe('@santi020k/lumen-elements', () => {
     const blockCode = document.createElement('lumen-code')
 
     blockCode.setAttribute('variant', 'block')
+    blockCode.setAttribute('wrap', '')
     document.body.append(inlineCode, blockCode)
 
     expect([...inlineCode.classList].sort()).toEqual(['ui-code', 'ui-code--inline'].sort())
     expect(inlineCode.getAttribute('data-code-theme')).toBe('auto')
     expect(inlineCode.getAttribute('variant')).toBe('inline')
     expect(blockCode.classList.contains('ui-code--block')).toBe(true)
+    expect(blockCode.classList.contains('ui-code--wrap')).toBe(true)
   })
 
   test('dialog triggers manage focus, Escape, outside click, and return focus', () => {

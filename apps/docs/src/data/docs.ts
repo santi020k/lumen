@@ -878,7 +878,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('label', 'string', '-', 'Adds a compact filename or title to the block header.'),
     apiRow('copy', 'boolean', 'false', 'Shows a copy button when UIPrimitives is mounted.'),
     apiRow('highlighted', 'boolean', 'false', 'Allows a pre-highlighted pre/code tree, such as Shiki output, to render directly.'),
-    apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.')
+    apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.'),
+    apiRow('wrap', 'boolean', 'false', 'Wraps long block-code lines instead of requiring horizontal scrolling.')
   ],
   CoverImage: [
     apiRow('image', 'ImageMetadata', 'required', 'Sets the source image processed by astro:assets.'),

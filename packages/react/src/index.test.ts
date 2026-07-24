@@ -209,7 +209,8 @@ describe('@santi020k/lumen-react', () => {
       label: 'Example',
       language: 'ts',
       theme: 'santi020k',
-      variant: 'block'
+      variant: 'block',
+      wrap: true
     }) as ReactElement
     const inlineProps = inlineCode.props as Record<string, unknown>
     const blockProps = blockCode.props as Record<string, unknown>
@@ -230,7 +231,7 @@ describe('@santi020k/lumen-react', () => {
     expect(inlineProps['data-code-theme']).toBe('auto')
 
     expect(blockCode.type).toBe('figure')
-    expect(blockProps.className).toBe('ui-code ui-code--block')
+    expect(blockProps.className).toBe('ui-code ui-code--block ui-code--wrap')
     expect(blockProps['data-code-theme']).toBe('santi020k')
     expect(blockProps['data-language']).toBe('ts')
     expect(blockProps['data-ui-code']).toBe(true)

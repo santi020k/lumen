@@ -120,11 +120,22 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('code?: string')
     expect(component).toContain('renderLumenCodeHtml')
     expect(component).toContain("variant = 'inline'")
+    expect(component).toContain("wrap = false")
+    expect(component).toContain("wrap && 'ui-code--wrap'")
     expect(component).toContain('data-ui-code-copy')
     expect(component).toContain('Copy code to clipboard')
     expect(styles).toContain('.ui-code--inline')
     expect(styles).toContain('.ui-code--block')
+    expect(styles).toContain('.ui-code--wrap')
     expect(styles).toContain('.ui-code__copy')
+  })
+
+  test('styles native accordion disclosure affordances', async () => {
+    const styles = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(styles).toContain('.ui-accordion summary::after')
+    expect(styles).toContain('.ui-accordion details[open] > summary::after')
+    expect(styles).toContain('.ui-accordion summary:focus-visible')
   })
 
   test('builds Watermark labels as repeatable masked text tiles', async () => {

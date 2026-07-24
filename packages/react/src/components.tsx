@@ -617,6 +617,7 @@ export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
   language?: string
   theme?: CodeTheme
   variant?: CodeVariant
+  wrap?: boolean
 }
 
 const renderCodeToken = (token: LumenCodeToken) => {
@@ -683,6 +684,7 @@ export const Code = ({
   language,
   theme = 'auto',
   variant = 'inline',
+  wrap = false,
   ...props
 }: CodeProps) => {
   const codeChildren = renderCodeChildren(code, children, language)
@@ -690,7 +692,7 @@ export const Code = ({
   if (variant === 'block') {
     return (
       <figure
-        className={composeClassName('ui-code ui-code--block', className)}
+        className={composeClassName('ui-code ui-code--block', wrap && 'ui-code--wrap', className)}
         data-code-theme={theme}
         data-language={language}
         data-ui-code

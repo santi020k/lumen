@@ -280,6 +280,9 @@ const elementConfigs = {
       variant: {
         block: 'ui-code--block',
         inline: 'ui-code--inline'
+      },
+      wrap: {
+        true: 'ui-code--wrap'
       }
     },
     baseClassName: 'ui-code',

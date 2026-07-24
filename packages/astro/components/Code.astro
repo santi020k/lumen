@@ -16,6 +16,7 @@ interface Props extends HTMLAttributes<'code'> {
   language?: string
   theme?: CodeTheme
   variant?: CodeVariant
+  wrap?: boolean
 }
 
 const {
@@ -28,12 +29,14 @@ const {
   language,
   theme = 'auto',
   variant = 'inline',
+  wrap = false,
   ...rest
 } = Astro.props
 
 const { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-code',
-  'ui-code--block'
+  'ui-code--block',
+  wrap && 'ui-code--wrap'
 ], classProp, className)
 const { classList: inlineClassList } = resolveLumenAstroProps(rest, [
   'ui-code',

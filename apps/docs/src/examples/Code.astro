@@ -10,7 +10,15 @@ const themeExample = `
 <div class="grid gap-4">
   <p>Apply the current theme with <Code>data-theme</Code> on the root element.</p>
   <Code code={themeExample} copy label="theme.ts" language="ts" variant="block" />
-  
+
+  <p>Wrap prose-like output or long commands when horizontal scrolling would obscure the content.</p>
+  <Code
+    code="feat(history): keep revision navigation stable across renames while preserving working-tree context"
+    label="commit-message.txt"
+    variant="block"
+    wrap
+  />
+
   <p>Override the syntax palette family with <Code>theme</Code>.</p>
   <Code code={themeExample} label="lumen" language="ts" theme="lumen" variant="block" />
   <Code code={themeExample} label="santi020k" language="ts" theme="santi020k" variant="block" />
