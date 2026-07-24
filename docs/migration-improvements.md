@@ -87,6 +87,35 @@ always renders a `span`, forcing consumers to switch to `Link` and restyle it wh
 interactive. Consider an `href` contract or a typed `as` option that produces an anchor with the
 same pill presentation and focus treatment.
 
+### Make Tailwind v4 override order explicit and resilient
+
+Importing Lumen after Tailwind v4 caused Lumen's named component layers to outrank Tailwind's
+already-declared utility layer. Consumer classes such as `absolute`, `min-h-0`, `p-0`, and custom
+radius utilities then stopped overriding primitive defaults, even though the library intends
+consumer styling to win. The website recovered by importing Lumen before Tailwind.
+
+Document the required import order prominently, and consider publishing a layer-order declaration
+or integration entry point that makes consumer utilities win regardless of import order. Add a
+fixture that combines `Card`, `Particles`, and `Button` with Tailwind v4 overrides so regressions
+are visible.
+
+### Support full-screen dialog shells
+
+Lumen's `Dialog` always applies centered-panel positioning and a translate transform. The website's
+search experience uses the native dialog as a full-screen shell with its own centered child panel,
+so it had to override the inherited transform explicitly to keep controls inside the viewport.
+
+Consider a typed layout contract such as `layout="centered" | "fullscreen"` or an `unstyled`
+presentation mode that preserves the native dialog, runtime hooks, and accessibility behavior
+without imposing panel geometry. Include a full-screen search example in the dialog documentation.
+
+### Keep circular control focus rings circular
+
+The shared focus treatment produced a rectangular outline on circular icon controls such as
+`ThemeToggle`. Consumers should not need a local focus override for a built-in round control.
+Include `ThemeToggle` and icon-sized buttons in the component focus-ring selectors, using a
+border-radius-aware ring that remains visible in both themes.
+
 ## Aaronmgz
 
 ### Make the React entry safe in Next.js server components
