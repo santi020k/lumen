@@ -10,6 +10,7 @@ const [contract, lumenCss, docsCss] = await Promise.all([
 
 const readBlock = (css, marker) => {
   const markerIndex = css.indexOf(marker)
+
   if (markerIndex === -1) throw new Error(`Missing theme selector ${marker}`)
 
   const start = css.indexOf('{', markerIndex)
@@ -17,7 +18,9 @@ const readBlock = (css, marker) => {
 
   for (let index = start; index < css.length; index += 1) {
     if (css[index] === '{') depth += 1
+
     if (css[index] === '}') depth -= 1
+
     if (depth === 0) return css.slice(start + 1, index)
   }
 
@@ -82,7 +85,9 @@ for (const source of sources) {
 
 if (mismatches.length > 0) {
   process.stderr.write('Figma theme token contract mismatch:\n')
+
   process.stderr.write(JSON.stringify(mismatches, null, 2) + '\n')
+
   process.exitCode = 1
 } else {
   process.stdout.write(`Figma theme token contract matches ${sources.length} CSS theme blocks.\n`)

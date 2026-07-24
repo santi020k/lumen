@@ -50,6 +50,15 @@ describe('@santi020k/lumen-astro package surface', () => {
     await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain('.ui-button')
   })
 
+  test('keeps ButtonLink hover motion aligned with Button without client-side magnetic behavior', async () => {
+    const buttonLink = await readFile(new URL('./components/ButtonLink.astro', packageRoot), 'utf8')
+
+    expect(buttonLink).toContain("'ui-button ui-button--primary'")
+    expect(buttonLink).not.toContain('data-magnetic')
+    expect(buttonLink).not.toContain('mousemove')
+    expect(buttonLink).not.toContain('<script>')
+  })
+
   test('ships glass styles for overlay and structural surfaces', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 

@@ -12,7 +12,7 @@ const COMPONENT_SCORE_BOOST = 75
 export const normalizeSearchText = (value: string): string =>
   value.toLowerCase().normalize('NFKD').replaceAll(/[\u0300-\u036f]/g, '')
 
-export const scoreSearchItem = (item: DocsSearchItem, query: string): number => {
+const scoreSearchItem = (item: DocsSearchItem, query: string): number => {
   const title = normalizeSearchText(item.title)
   const category = normalizeSearchText(item.category)
   const keywords = normalizeSearchText(item.keywords)

@@ -1414,6 +1414,26 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "AnimatedNumber",
+      "type": "component",
+      "category": "Data display",
+      "description": "Animates a formatted metric while keeping one stable accessible value.",
+      "files": [
+        "packages/astro/components/AnimatedNumber.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
+      "name": "RevealGroup",
+      "type": "component",
+      "category": "Layout",
+      "description": "Reveals a group of direct children with tokenized, reduced-motion-aware staggering.",
+      "files": [
+        "packages/astro/components/RevealGroup.astro",
+        "packages/react/src/components.tsx"
+      ]
+    },
+    {
       "name": "ScrollReveal",
       "type": "component",
       "category": "Layout",

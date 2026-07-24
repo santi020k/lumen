@@ -487,10 +487,10 @@ export const frameworkSetups: FrameworkSetup[] = [
 ]
 
 export const frameworkPackages = [
-  ['Astro', '@santi020k/lumen-astro', 'Complete', 'Full component catalog, shared CSS, and the UIPrimitives runtime.'],
-  ['React', '@santi020k/lumen-react', 'Adapter', 'React components for the full primitive catalog using the shared class and data contract.'],
-  ['Elements', '@santi020k/lumen-elements', 'Adapter', 'Standards-based custom elements for the full primitive catalog using the shared class and data contract.'],
-  ['Core', '@santi020k/lumen-core', 'Shared', 'Design tokens, component metadata, and small adapter utilities.']
+  ['Astro', '@santi020k/lumen-astro', 'Reference', 'Reference implementation of the full primitive catalog, shared CSS, and progressive-enhancement runtime.'],
+  ['React', '@santi020k/lumen-react', 'Full catalog', 'React implementation of the full primitive catalog using the shared class, token, and data contract.'],
+  ['Elements', '@santi020k/lumen-elements', 'Full catalog', 'Standards-based implementation of the full primitive catalog using the shared class, token, and data contract.'],
+  ['Core', '@santi020k/lumen-core', 'Shared foundation', 'Design tokens, component metadata, and utilities shared by every framework implementation.']
 ] as const
 
 export const frameworkGuides = [

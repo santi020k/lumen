@@ -22,14 +22,13 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/visual',
-  // Shiki's Oniguruma WASM initialization becomes unstable under catalog-wide concurrency.
   workers: 2,
   use: {
-    baseURL: 'http://localhost:4321'
+    baseURL: 'http://127.0.0.1:4322'
   },
   webServer: {
-    command: 'pnpm run docs:dev',
-    reuseExistingServer: !process.env.CI,
-    url: 'http://localhost:4321'
+    command: 'pnpm --filter @santi020k/lumen-docs exec astro build && pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port 4322',
+    reuseExistingServer: false,
+    url: 'http://127.0.0.1:4322'
   }
 })

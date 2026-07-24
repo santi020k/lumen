@@ -81,23 +81,9 @@ const parseTokenBlock = (source, identifier) => {
 const parseProps = (source) => {
   let extendsClause = null
   let body = ''
-
   const interfaceStart = source.indexOf('interface Props')
   
-  if (interfaceStart !== -1) {
-    const braceStart = source.indexOf('{', interfaceStart)
-    const end = source.indexOf('\n}', braceStart)
-    
-    if (braceStart !== -1 && end !== -1) {
-      const between = source.slice(interfaceStart + 15, braceStart).trim()
-      
-      if (between.startsWith('extends ')) {
-        extendsClause = between.slice(8).trim()
-      }
-      
-      body = source.slice(braceStart + 1, end)
-    }
-  } else {
+  if (interfaceStart === -1) {
     const typeStart = source.indexOf('type Props')
     
     if (typeStart !== -1) {
@@ -113,6 +99,19 @@ const parseProps = (source) => {
         
         body = source.slice(braceStart + 1, end)
       }
+    }
+  } else {
+    const braceStart = source.indexOf('{', interfaceStart)
+    const end = source.indexOf('\n}', braceStart)
+    
+    if (braceStart !== -1 && end !== -1) {
+      const between = source.slice(interfaceStart + 15, braceStart).trim()
+      
+      if (between.startsWith('extends ')) {
+        extendsClause = between.slice(8).trim()
+      }
+      
+      body = source.slice(braceStart + 1, end)
     }
   }
 
@@ -277,7 +276,7 @@ const processElementConfigProperty = (property, sourceFile) => {
       .filter(Boolean)
   })
 
-  return { name, config: { attributes: [...new Set(attributes)].sort(), source: property.getText(sourceFile), tagName } }
+  return { config: { attributes: [...new Set(attributes)].sort(), source: property.getText(sourceFile), tagName }, name }
 }
 
 const parseElementComponents = (source, componentNames) => {
@@ -299,6 +298,7 @@ const parseElementComponents = (source, componentNames) => {
 
       for (const property of initializer.properties) {
         const result = processElementConfigProperty(property, sourceFile)
+
         if (result) entries.set(result.name, result.config)
       }
     }
@@ -525,15 +525,15 @@ const buildComponentData = async (name, ctx) => {
   const components = []
   
   const ctx = {
-    astroFiles,
     astroDir,
+    astroFiles,
     docsByComponent,
     docsData,
-    registryComponents,
     elementComponents,
+    names,
     reactComponents,
     recipesByComponent,
-    names
+    registryComponents
   }
 
   for (const name of names) {
