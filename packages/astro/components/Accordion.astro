@@ -3,24 +3,30 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
+type AccordionVariant = 'default' | 'flush'
+
 interface Props extends HTMLAttributes<'div'> {
   class?: string
   className?: string
+  variant?: AccordionVariant
 }
 
 const {
   class: classProp = '',
   className = '',
+  variant = 'default',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-accordion'
+    'ui-accordion',
+    variant === 'flush' && 'ui-accordion--flush'
 ], classProp, className)
 ---
 
 <div
   class:list={classList}
+  data-variant={variant}
   {...passthrough}
 >
   <slot />

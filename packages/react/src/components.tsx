@@ -57,6 +57,8 @@ import {
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
+type AccordionVariant = 'default' | 'flush'
+
 type BadgeVariant = AlertVariant | 'outline' | 'secondary'
 
 type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
@@ -300,9 +302,16 @@ const requireContext = <Value,>(context: Value | null, componentName: string): V
   return context
 }
 
-export type AccordionProps = ComponentPropsWithoutRef<'div'>
-export const Accordion = ({ className, ...props }: AccordionProps) => (
-  <div className={composeClassName('ui-accordion', className)} {...props} />
+export interface AccordionProps extends ComponentPropsWithoutRef<'div'> {
+  variant?: AccordionVariant
+}
+
+export const Accordion = ({ className, variant = 'default', ...props }: AccordionProps) => (
+  <div
+    className={composeClassName('ui-accordion', variant === 'flush' && 'ui-accordion--flush', className)}
+    data-variant={variant}
+    {...props}
+  />
 )
 
 export interface AlertProps extends ComponentPropsWithoutRef<'aside'> {

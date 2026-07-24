@@ -48,6 +48,36 @@ describe('lumen-mcp data snapshot', () => {
     )).toBe(true)
   })
 
+  test('documents wrapped code and Astro motion runtime requirements', () => {
+    const data = loadLumenData()
+    const accordion = resolveComponent('Accordion', data)
+    const code = resolveComponent('Code', data)
+
+    expect(accordion?.apiReference).toContainEqual(expect.objectContaining({
+      attribute: 'variant',
+      values: '"default" | "flush"'
+    }))
+    expect(accordion?.frameworkDetails.astro.props).toContainEqual(expect.objectContaining({
+      name: 'variant',
+      type: 'AccordionVariant'
+    }))
+
+    expect(code?.apiReference).toContainEqual(expect.objectContaining({
+      attribute: 'wrap',
+      defaultValue: 'false'
+    }))
+    expect(code?.frameworkDetails.astro.props).toContainEqual(expect.objectContaining({
+      name: 'wrap',
+      type: 'boolean'
+    }))
+
+    for (const name of ['AnimatedNumber', 'RevealGroup', 'ScrollReveal']) {
+      expect(resolveComponent(name, data)?.dependencies).toEqual(
+        expect.arrayContaining(['runtime', 'styles'])
+      )
+    }
+  })
+
   test('matches the package version and contains no volatile build timestamp', () => {
     const data = loadLumenData()
     const packageJson = JSON.parse(

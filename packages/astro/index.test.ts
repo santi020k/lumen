@@ -131,11 +131,18 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('styles native accordion disclosure affordances', async () => {
-    const styles = await readFile(sharedStylesUrl, 'utf8')
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/Accordion.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
 
+    expect(component).toContain("type AccordionVariant = 'default' | 'flush'")
+    expect(component).toContain("variant === 'flush' && 'ui-accordion--flush'")
+    expect(component).toContain('data-variant={variant}')
     expect(styles).toContain('.ui-accordion summary::after')
     expect(styles).toContain('.ui-accordion details[open] > summary::after')
     expect(styles).toContain('.ui-accordion summary:focus-visible')
+    expect(styles).toContain('.ui-accordion--flush details')
   })
 
   test('builds Watermark labels as repeatable masked text tiles', async () => {

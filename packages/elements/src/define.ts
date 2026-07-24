@@ -176,7 +176,14 @@ const glassAttributeClasses = (className: string) => ({
 })
 
 const elementConfigs = {
-  Accordion: { baseClassName: 'ui-accordion', tagName: 'lumen-accordion' },
+  Accordion: {
+    attributeClasses: {
+      variant: { flush: 'ui-accordion--flush' }
+    },
+    baseClassName: 'ui-accordion',
+    defaults: { variant: 'default' },
+    tagName: 'lumen-accordion'
+  },
   Alert: {
     attributeClasses: {
       glass: { strong: 'ui-alert--glass ui-glass-strong', subtle: 'ui-alert--glass ui-glass-subtle', true: 'ui-alert--glass' },
