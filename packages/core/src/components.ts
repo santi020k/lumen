@@ -93,6 +93,8 @@ export const lumenComponentNames = [
   'VirtualList',
   'LanguageToggle',
   'Particles',
+  'AnimatedNumber',
+  'RevealGroup',
   'ScrollReveal',
   'Stat',
   'Meter',

@@ -105,6 +105,27 @@ with `--ui-logo-delay`.
 
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.
 
+## Motion
+
+Use the shared `fast`, `standard`, and `slow` duration vocabulary across motion primitives.
+`ScrollReveal` handles one entrance, `RevealGroup` staggers direct children, and `AnimatedNumber`
+animates a formatted metric while preserving a stable accessible value. All three keep their final
+content readable without JavaScript and honor reduced-motion preferences.
+
+```astro
+<ScrollReveal animation="slide-up" duration="slow">
+  <h2>Release highlights</h2>
+</ScrollReveal>
+
+<RevealGroup stagger={80}>
+  <Card>Plan</Card>
+  <Card>Build</Card>
+  <Card>Ship</Card>
+</RevealGroup>
+
+<AnimatedNumber decimals={1} suffix="%" value={99.8} />
+```
+
 ## Glass surfaces
 
 Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a

@@ -1,5 +1,5 @@
 ---
-import { Button, Icon, SearchField } from '@santi020k/lumen-astro'
+import { Button, Icon, Kbd, Label, SearchField } from '@santi020k/lumen-astro'
 
 interface Props {
   class?: string
@@ -33,7 +33,7 @@ const searchIndexHref = '/docs-search.json'
   data-docs-search-id={optionIdPrefix}
   data-docs-search-source={searchIndexHref}
 >
-  <label class="sr-only" for={inputId}>Search docs</label>
+  <Label class="sr-only" for={inputId}>Search docs</Label>
   <div class="docs-search__control">
     <Icon class="docs-search__icon" decorative name="search" size="sm" />
     <SearchField
@@ -58,7 +58,7 @@ const searchIndexHref = '/docs-search.json'
     >
       <Icon decorative name="x" size="sm" />
     </Button>
-    <kbd class="docs-search__shortcut" aria-hidden="true">/</kbd>
+    <Kbd class="docs-search__shortcut" aria-hidden="true">/</Kbd>
   </div>
   <p id={`${inputId}-status`} class="sr-only" aria-live="polite" data-docs-search-status>
     Type at least two characters to search.

@@ -3,6 +3,7 @@ import {
   Badge,
   ButtonLink,
   Icon,
+  Link,
   Marker,
   Separator
 } from '@santi020k/lumen-astro'
@@ -83,9 +84,9 @@ const componentCount = lumenComponentNames.length
 
     <div class="docs-site-footer__directory">
       <div class="docs-site-footer__brand">
-        <a class="docs-site-footer__logo text-ink no-underline" href="/">
+        <Link class="docs-site-footer__logo text-ink no-underline" href="/">
           <LumenLogo markClass="size-9" />
-        </a>
+        </Link>
         <p>
           Multi-framework UI primitives for Astro, React, and the platform.
         </p>
@@ -105,14 +106,14 @@ const componentCount = lumenComponentNames.length
 
                 return (
                   <li>
-                    <a
+                    <Link
                       href={link.href}
                       rel={isExternal ? 'noopener noreferrer' : undefined}
                       target={isExternal ? '_blank' : undefined}
                     >
                       {link.label}
                       {isExternal && <Icon name="arrow-up-right" size="sm" />}
-                    </a>
+                    </Link>
                   </li>
                 )
               })}
@@ -125,10 +126,10 @@ const componentCount = lumenComponentNames.length
     <div class="docs-site-footer__meta">
       <p>
         © {currentYear} Lumen UI. Crafted by{' '}
-        <a href="https://santi020k.com" rel="noopener noreferrer" target="_blank">
+        <Link href="https://santi020k.com" rel="noopener noreferrer" target="_blank">
           Santi020k
           <Icon name="arrow-up-right" size="sm" />
-        </a>.
+        </Link>.
       </p>
       <p class="docs-site-footer__status">
         <Marker variant="success">Stable</Marker>

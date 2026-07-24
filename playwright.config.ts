@@ -22,6 +22,8 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/visual',
+  // Shiki's Oniguruma WASM initialization becomes unstable under catalog-wide concurrency.
+  workers: 2,
   use: {
     baseURL: 'http://localhost:4321'
   },

@@ -60,6 +60,21 @@ contrast should feel editorial and intentional, not decorative.
 - Do not hide core behavior behind visual flourish.
 - Prefer real component examples over abstract marketing sections.
 
+## Motion
+
+Motion should explain a state change, establish hierarchy, or make an entrance feel intentional.
+It should never compete with the content.
+
+- Use `--ui-duration-fast` for compact feedback, `--ui-duration` for ordinary state changes, and
+  `--ui-duration-slow` for entrances and overlays.
+- Use `--ui-ease` for interaction and `--ui-ease-emphasized` for entrances.
+- Prefer `ScrollReveal` for one content block and `RevealGroup` for a short staggered sequence.
+- Keep stagger intervals short and ordered. Do not stagger long reading surfaces.
+- Use `AnimatedNumber` only when the change in value is meaningful.
+- Do not use marquees, endlessly moving text, or decorative motion on every card.
+- Every animation must preserve readable server-rendered content and honor
+  `prefers-reduced-motion`.
+
 ## Naming
 
 - Product name: `Lumen UI`.

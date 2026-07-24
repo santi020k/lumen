@@ -1,6 +1,6 @@
 
 import { spawnSync } from 'node:child_process'
-import { access, readdir, stat } from 'node:fs/promises'
+import { access, readdir as readDirectory, stat as getStat } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -9,7 +9,7 @@ const repoRoot = resolve(packageRoot, '../..')
 const distEntry = join(packageRoot, 'dist/index.js')
 
 const filesIn = async (directory) => {
-  const entries = await readdir(directory, { withFileTypes: true })
+  const entries = await readDirectory(directory, { withFileTypes: true })
 
   const nested = await Promise.all(entries.map((entry) => {
     const path = join(directory, entry.name)
@@ -27,9 +27,9 @@ const needsBuild = async () => {
     return true
   }
 
-  const outputTime = (await stat(distEntry)).mtimeMs
+  const outputTime = (await getStat(distEntry)).mtimeMs
   const sourceFiles = await filesIn(join(packageRoot, 'src'))
-  const sourceTimes = await Promise.all(sourceFiles.map(async (path) => (await stat(path)).mtimeMs))
+  const sourceTimes = await Promise.all(sourceFiles.map(async (path) => (await getStat(path)).mtimeMs))
 
   return sourceTimes.some((modifiedTime) => modifiedTime > outputTime)
 }

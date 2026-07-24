@@ -81,9 +81,9 @@ for (const source of sources) {
 }
 
 if (mismatches.length > 0) {
-  console.error('Figma theme token contract mismatch:')
-  console.error(JSON.stringify(mismatches, null, 2))
+  process.stderr.write('Figma theme token contract mismatch:\n')
+  process.stderr.write(JSON.stringify(mismatches, null, 2) + '\n')
   process.exitCode = 1
 } else {
-  console.log(`Figma theme token contract matches ${sources.length} CSS theme blocks.`)
+  process.stdout.write(`Figma theme token contract matches ${sources.length} CSS theme blocks.\n`)
 }

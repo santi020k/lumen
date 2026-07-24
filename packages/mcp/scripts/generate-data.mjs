@@ -56,13 +56,20 @@ const parseComponentNames = (source) => {
 
 // Parse a `key: 'value'` object literal block into a record.
 const parseTokenBlock = (source, identifier) => {
-  const match = source.match(new RegExp(`${identifier}\\s*=\\s*\\{([\\s\\S]*?)\\}\\s*as const`))
+  const startStr = `${identifier} = {`
+  const startIndex = source.indexOf(startStr)
+  
+  if (startIndex === -1) return {}
+  
+  const endStr = `} as const`
+  const endIndex = source.indexOf(endStr, startIndex)
+  
+  if (endIndex === -1) return {}
 
-  if (!match) return {}
-
+  const block = source.slice(startIndex + startStr.length, endIndex)
   const out = {}
 
-  for (const entry of match[1].matchAll(/(\w+)\s*:\s*'([^']*)'/g)) {
+  for (const entry of block.matchAll(/(\w+)\s*:\s*'([^']*)'/g)) {
     out[entry[1]] = entry[2]
   }
 
@@ -72,14 +79,45 @@ const parseTokenBlock = (source, identifier) => {
 // Pull the `interface Props { ... }` body out of Astro frontmatter and turn it
 // into a compact list of { name, optional, type } records.
 const parseProps = (source) => {
-  const interfaceHeader = source.match(/interface Props(?:\s+extends\s+([^\n{]+))?\s*\{([\s\S]*?)\n\}/)
-  const typeHeader = source.match(/type Props\s*=\s*([\s\S]*?)&\s*\{([\s\S]*?)\n\}/)
-  const header = interfaceHeader ?? typeHeader
+  let extendsClause = null
+  let body = ''
 
-  if (!header) return { extends: null, props: [] }
+  const interfaceStart = source.indexOf('interface Props')
+  
+  if (interfaceStart !== -1) {
+    const braceStart = source.indexOf('{', interfaceStart)
+    const end = source.indexOf('\n}', braceStart)
+    
+    if (braceStart !== -1 && end !== -1) {
+      const between = source.slice(interfaceStart + 15, braceStart).trim()
+      
+      if (between.startsWith('extends ')) {
+        extendsClause = between.slice(8).trim()
+      }
+      
+      body = source.slice(braceStart + 1, end)
+    }
+  } else {
+    const typeStart = source.indexOf('type Props')
+    
+    if (typeStart !== -1) {
+      const braceStart = source.indexOf('{', typeStart)
+      const end = source.indexOf('\n}', braceStart)
+      
+      if (braceStart !== -1 && end !== -1) {
+        const between = source.slice(typeStart + 10, braceStart).trim()
+        
+        if (between.startsWith('=') && between.endsWith('&')) {
+          extendsClause = between.slice(1, -1).trim()
+        }
+        
+        body = source.slice(braceStart + 1, end)
+      }
+    }
+  }
 
-  const extendsClause = header[1] ? header[1].trim() : null
-  const body = header[2]
+  if (!body) return { extends: null, props: [] }
+
   const props = []
 
   for (const line of body.split('\n')) {
@@ -147,6 +185,27 @@ const parseTypeScriptProps = (declaration, sourceFile) => {
   return { extends: null, props: [] }
 }
 
+const processReactStatement = (statement, componentNameSet, componentDeclarations, propDeclarations) => {
+  if (
+    (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) &&
+    statement.name.text.endsWith('Props')
+  ) {
+    propDeclarations.set(statement.name.text.slice(0, -5), statement)
+  }
+
+  if (ts.isFunctionDeclaration(statement) && statement.name && componentNameSet.has(statement.name.text)) {
+    componentDeclarations.set(statement.name.text, statement)
+  }
+
+  if (ts.isVariableStatement(statement)) {
+    for (const declaration of statement.declarationList.declarations) {
+      if (ts.isIdentifier(declaration.name) && componentNameSet.has(declaration.name.text)) {
+        componentDeclarations.set(declaration.name.text, statement)
+      }
+    }
+  }
+}
+
 const parseReactComponents = (source, componentNames) => {
   const sourceFile = ts.createSourceFile('components.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
   const componentNameSet = new Set(componentNames)
@@ -154,24 +213,7 @@ const parseReactComponents = (source, componentNames) => {
   const propDeclarations = new Map()
 
   for (const statement of sourceFile.statements) {
-    if (
-      (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) &&
-      statement.name.text.endsWith('Props')
-    ) {
-      propDeclarations.set(statement.name.text.slice(0, -5), statement)
-    }
-
-    if (ts.isFunctionDeclaration(statement) && statement.name && componentNameSet.has(statement.name.text)) {
-      componentDeclarations.set(statement.name.text, statement)
-    }
-
-    if (ts.isVariableStatement(statement)) {
-      for (const declaration of statement.declarationList.declarations) {
-        if (ts.isIdentifier(declaration.name) && componentNameSet.has(declaration.name.text)) {
-          componentDeclarations.set(declaration.name.text, statement)
-        }
-      }
-    }
+    processReactStatement(statement, componentNameSet, componentDeclarations, propDeclarations)
   }
 
   return new Map(componentNames.map((name) => {
@@ -208,6 +250,36 @@ const unwrapExpression = (expression) => {
   return current
 }
 
+const processElementConfigProperty = (property, sourceFile) => {
+  if (!ts.isPropertyAssignment(property) || !ts.isObjectLiteralExpression(property.initializer)) return null
+
+  const name = propertyName(property, sourceFile)
+  const config = property.initializer
+
+  const tagNameProperty = config.properties.find((entry) =>
+    ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName')
+
+  const tagName = tagNameProperty &&
+    ts.isPropertyAssignment(tagNameProperty) &&
+    ts.isStringLiteral(tagNameProperty.initializer)
+    ? tagNameProperty.initializer.text
+    : `lumen-${toKebab(name)}`
+
+  const attributes = config.properties.flatMap((entry) => {
+    if (
+      !ts.isPropertyAssignment(entry) ||
+      !ts.isObjectLiteralExpression(entry.initializer) ||
+      !['attributeClasses', 'defaults'].includes(propertyName(entry, sourceFile))
+    ) return []
+
+    return entry.initializer.properties
+      .map((attribute) => propertyName(attribute, sourceFile))
+      .filter(Boolean)
+  })
+
+  return { name, config: { attributes: [...new Set(attributes)].sort(), source: property.getText(sourceFile), tagName } }
+}
+
 const parseElementComponents = (source, componentNames) => {
   const sourceFile = ts.createSourceFile('define.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
   const entries = new Map()
@@ -226,37 +298,8 @@ const parseElementComponents = (source, componentNames) => {
       ) continue
 
       for (const property of initializer.properties) {
-        if (!ts.isPropertyAssignment(property) || !ts.isObjectLiteralExpression(property.initializer)) continue
-
-        const name = propertyName(property, sourceFile)
-        const config = property.initializer
-
-        const tagNameProperty = config.properties.find((entry) =>
-          ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName')
-
-        const tagName = tagNameProperty &&
-          ts.isPropertyAssignment(tagNameProperty) &&
-          ts.isStringLiteral(tagNameProperty.initializer)
-          ? tagNameProperty.initializer.text
-          : `lumen-${toKebab(name)}`
-
-        const attributes = config.properties.flatMap((entry) => {
-          if (
-            !ts.isPropertyAssignment(entry) ||
-            !ts.isObjectLiteralExpression(entry.initializer) ||
-            !['attributeClasses', 'defaults'].includes(propertyName(entry, sourceFile))
-          ) return []
-
-          return entry.initializer.properties
-            .map((attribute) => propertyName(attribute, sourceFile))
-            .filter(Boolean)
-        })
-
-        entries.set(name, {
-          attributes: [...new Set(attributes)].sort(),
-          source: property.getText(sourceFile),
-          tagName
-        })
+        const result = processElementConfigProperty(property, sourceFile)
+        if (result) entries.set(result.name, result.config)
       }
     }
   }
@@ -424,61 +467,77 @@ const main = async () => {
     }
   }
 
+const buildComponentData = async (name, ctx) => {
+  const fileName = `${name}.astro`
+  const hasAstro = ctx.astroFiles.has(fileName)
+  const astroSource = hasAstro ? await readFile(join(ctx.astroDir, fileName), 'utf8') : ''
+  const parsed = hasAstro ? parseProps(astroSource) : { extends: null, props: [] }
+  const kebab = toKebab(name)
+  const registryComponent = ctx.registryComponents.get(name) ?? {}
+
+  const doc = ctx.docsByComponent.get(name) ?? {
+    apiReference: [],
+    category: registryComponent.category ?? 'Uncategorized',
+    example: `<${name} />`,
+    name,
+    summary: registryComponent.description ?? `${name} component.`
+  }
+
+  const collections = ctx.docsData.componentCollections.filter((collection) => collection.names.includes(name))
+
+  const frameworkDetails = buildFrameworkDetails({
+    astroSource,
+    componentNames: ctx.names,
+    doc,
+    element: ctx.elementComponents.get(name),
+    hasAstro,
+    name,
+    parsedAstro: parsed,
+    react: ctx.reactComponents.get(name)
+  })
+
+  return {
+    apiReference: doc.apiReference,
+    astroSource,
+    category: doc.category,
+    collections: collections.map((collection) => collection.title),
+    dependencies: registryComponent.dependencies ?? [],
+    description: doc.summary,
+    files: registryComponent.files ?? [],
+    frameworkDetails,
+    frameworks: {
+      astro: hasAstro,
+      elements: frameworkDetails.elements.available,
+      react: frameworkDetails.react.available
+    },
+    guidance: doc.guidance ?? null,
+    kebab,
+    keyboardInteractions: doc.keyboardInteractions ?? [],
+    keywords: keywordsForComponent(doc, collections),
+    name,
+    props: parsed.props,
+    propsExtends: parsed.extends,
+    recipes: ctx.recipesByComponent.get(name) ?? [],
+    runtimeEvents: doc.runtimeEvents ?? []
+  }
+}
+
   const components = []
+  
+  const ctx = {
+    astroFiles,
+    astroDir,
+    docsByComponent,
+    docsData,
+    registryComponents,
+    elementComponents,
+    reactComponents,
+    recipesByComponent,
+    names
+  }
 
   for (const name of names) {
-    const fileName = `${name}.astro`
-    const hasAstro = astroFiles.has(fileName)
-    const astroSource = hasAstro ? await readFile(join(astroDir, fileName), 'utf8') : ''
-    const parsed = hasAstro ? parseProps(astroSource) : { extends: null, props: [] }
-    const kebab = toKebab(name)
-    const registryComponent = registryComponents.get(name) ?? {}
-
-    const doc = docsByComponent.get(name) ?? {
-      apiReference: [],
-      category: registryComponent.category ?? 'Uncategorized',
-      example: `<${name} />`,
-      name,
-      summary: registryComponent.description ?? `${name} component.`
-    }
-
-    const collections = docsData.componentCollections.filter((collection) => collection.names.includes(name))
-
-    const frameworkDetails = buildFrameworkDetails({
-      astroSource,
-      componentNames: names,
-      doc,
-      element: elementComponents.get(name),
-      hasAstro,
-      name,
-      parsedAstro: parsed,
-      react: reactComponents.get(name)
-    })
-
-    components.push({
-      apiReference: doc.apiReference,
-      astroSource,
-      category: doc.category,
-      collections: collections.map((collection) => collection.title),
-      dependencies: registryComponent.dependencies ?? [],
-      description: doc.summary,
-      files: registryComponent.files ?? [],
-      frameworkDetails,
-      frameworks: {
-        astro: hasAstro,
-        elements: frameworkDetails.elements.available,
-        react: frameworkDetails.react.available
-      },
-      guidance: doc.guidance ?? null,
-      kebab,
-      keyboardInteractions: doc.keyboardInteractions ?? [],
-      keywords: keywordsForComponent(doc, collections),
-      name,
-      props: parsed.props,
-      propsExtends: parsed.extends,
-      recipes: recipesByComponent.get(name) ?? [],
-      runtimeEvents: doc.runtimeEvents ?? []
-    })
+    components.push(await buildComponentData(name, ctx))
   }
 
   const componentMap = new Map(components.map((component) => [component.name, component]))
@@ -537,14 +596,14 @@ const main = async () => {
 
   await writeFile(join(outDir, 'lumen-data.json'), `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 
-  console.log(
+  process.stdout.write(
     `lumen-mcp: wrote data/lumen-data.json (${components.length} components, ` +
-    `${Object.keys(colors).length} color tokens, ${rules.length} bytes of rules)`
+    `${Object.keys(colors).length} color tokens, ${rules.length} bytes of rules)\n`
   )
 }
 
 main().catch((error) => {
-  console.error(error)
+  process.stderr.write(String(error) + '\n')
 
   process.exitCode = 1
 })

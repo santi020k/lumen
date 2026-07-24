@@ -1,7 +1,6 @@
 import {
-  lumenComponentNames,
-  type LumenComponentName
-} from '../packages/core/src/components.js'
+  type LumenComponentName,
+  lumenComponentNames} from '../../packages/core/src/components.js'
 
 export const componentNameToSlug = (name: LumenComponentName): string =>
   name

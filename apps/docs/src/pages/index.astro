@@ -2,6 +2,7 @@
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import {
   Alert,
+  AnimatedNumber,
   Avatar,
   Badge,
   Button,
@@ -17,6 +18,8 @@ import {
   Label,
   Marker,
   Progress,
+  RevealGroup,
+  ScrollReveal,
   Stat,
   Switch,
   Tabs
@@ -85,7 +88,7 @@ const categories = [
   <main class="home">
     <section class="home-hero">
       <div class="home-hero__wash" aria-hidden="true"></div>
-      <div class="home-hero__copy">
+      <RevealGroup class="home-hero__copy" stagger={70}>
         <Eyebrow class="home-hero__eyebrow">
           <Marker variant="success">Open source</Marker>
           <span>{componentCount} crafted primitives</span>
@@ -140,25 +143,31 @@ const categories = [
             </section>
           ))}
         </Tabs>
-      </div>
+      </RevealGroup>
 
-      <div class="home-hero__product">
+      <ScrollReveal animation="scale" class="home-hero__product" delay={140}>
         <div class="home-hero__product-label" aria-hidden="true">
           <span>Actual primitives</span>
           <i></i>
           <span>Live canvas</span>
         </div>
         <HomeWorkbench />
-      </div>
+      </ScrollReveal>
     </section>
 
     <section class="home-proof" aria-label="Lumen at a glance">
       <div class="home-container home-proof__inner">
         <p>One system. Every surface.</p>
         <div class="home-proof__stats">
-          <Stat label="components" value={String(componentCount)} />
-          <Stat label="framework targets" value="03" />
-          <Stat label="runtime lock-in" value="00" />
+          <Stat label="components">
+            <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
+          </Stat>
+          <Stat label="framework targets">
+            <span class="ui-stat-value"><AnimatedNumber value={3} /></span>
+          </Stat>
+          <Stat label="runtime lock-in">
+            <span class="ui-stat-value"><AnimatedNumber value={0} /></span>
+          </Stat>
         </div>
         <div class="home-proof__categories" aria-label="Component categories">
           {categories.map(category => <Badge variant="outline">{category}</Badge>)}
@@ -167,23 +176,25 @@ const categories = [
     </section>
 
     <section class="home-section home-container" aria-labelledby="components-title">
-      <div class="home-section__head home-section__head--split">
-        <div>
-          <Eyebrow>Designed as a system</Eyebrow>
-          <h2 id="components-title">The pieces already know<br />how to work together.</h2>
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-section__head--split">
+          <div>
+            <Eyebrow>Designed as a system</Eyebrow>
+            <h2 id="components-title">The pieces already know<br />how to work together.</h2>
+          </div>
+          <div class="home-section__aside">
+            <p>
+              Production-ready controls with consistent states, spacing, motion,
+              and behavior—composed into real interface patterns.
+            </p>
+            <ButtonLink href="/docs/components" showArrow variant="inline">
+              Browse all {componentCount} components
+            </ButtonLink>
+          </div>
         </div>
-        <div class="home-section__aside">
-          <p>
-            Production-ready controls with consistent states, spacing, motion,
-            and behavior—composed into real interface patterns.
-          </p>
-          <ButtonLink href="/docs/components" showArrow variant="inline">
-            Browse all {componentCount} components
-          </ButtonLink>
-        </div>
-      </div>
+      </ScrollReveal>
 
-      <div class="home-specimens">
+      <RevealGroup class="home-specimens" stagger={60}>
         <Card class="home-specimen home-specimen--actions">
           <div class="home-specimen__label">
             <span>Actions</span>
@@ -291,16 +302,18 @@ const categories = [
           </div>
           <p>Theme the meaning once. Every primitive follows.</p>
         </Card>
-      </div>
+      </RevealGroup>
     </section>
 
     <section class="home-principles">
       <div class="home-container">
-        <div class="home-section__head">
-          <Eyebrow>Quietly rigorous</Eyebrow>
-          <h2>Craft you can see.<br />Details you don’t have to chase.</h2>
-        </div>
-        <div class="home-principles__grid">
+        <ScrollReveal animation="slide-up">
+          <div class="home-section__head">
+            <Eyebrow>Quietly rigorous</Eyebrow>
+            <h2>Craft you can see.<br />Details you don’t have to chase.</h2>
+          </div>
+        </ScrollReveal>
+        <RevealGroup class="home-principles__grid" stagger={90}>
           {principles.map((principle, index) => (
             <article class="home-principle">
               <span class="home-principle__number">0{index + 1}</span>
@@ -310,97 +323,105 @@ const categories = [
               <p>{principle.description}</p>
             </article>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
 
     <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
-      <div class="home-ai__copy">
-        <Eyebrow>AI-native UI</Eyebrow>
-        <h2 id="ai-title">Give your coding agent<br />the Lumen design system.</h2>
-        <p>
-          Install one portable skill for Codex, Claude Code, Cursor, Windsurf, and other Agent
-          Skills clients. It teaches your AI to choose real Lumen primitives, respect the current
-          framework, use semantic tokens, and verify accessible interactions.
-        </p>
-        <div class="home-ai__actions">
-          <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
-            Explore the AI skill
-          </ButtonLink>
-          <ButtonLink href="/docs/mcp" variant="inline">
-            Add live MCP context
-          </ButtonLink>
-        </div>
-      </div>
-      <Card class="home-ai__terminal" glass="subtle">
-        <div class="home-ai__terminal-head">
-          <div class="home-ai__terminal-dots" aria-hidden="true">
-            <span></span><span></span><span></span>
+      <ScrollReveal animation="slide-up">
+        <div class="home-ai__copy">
+          <Eyebrow>AI-native UI</Eyebrow>
+          <h2 id="ai-title">Give your coding agent<br />the Lumen design system.</h2>
+          <p>
+            Install one portable skill for Codex, Claude Code, Cursor, Windsurf, and other Agent
+            Skills clients. It teaches your AI to choose real Lumen primitives, respect the current
+            framework, use semantic tokens, and verify accessible interactions.
+          </p>
+          <div class="home-ai__actions">
+            <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
+              Explore the AI skill
+            </ButtonLink>
+            <ButtonLink href="/docs/mcp" variant="inline">
+              Add live MCP context
+            </ButtonLink>
           </div>
-          <Badge variant="outline">Agent Skills</Badge>
         </div>
-        <div class="home-ai__terminal-line">
-          <span>$</span>
-          <code>{aiSkillInstallCommand}</code>
-        </div>
-        <div class="home-ai__agent-flow">
-          <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
-          <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
-          <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
-          <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
-        </div>
-        <Button
-          class="home-ai__copy-command"
-          data-copy-command={aiSkillInstallCommand}
-          variant="ghost"
-        >
-          <Icon decorative name="copy" size="sm" />
-          <span data-copy-feedback>Copy install command</span>
-        </Button>
-      </Card>
+      </ScrollReveal>
+      <ScrollReveal animation="scale" delay={100}>
+        <Card class="home-ai__terminal" glass="subtle">
+          <div class="home-ai__terminal-head">
+            <div class="home-ai__terminal-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <Badge variant="outline">Agent Skills</Badge>
+          </div>
+          <div class="home-ai__terminal-line">
+            <span>$</span>
+            <code>{aiSkillInstallCommand}</code>
+          </div>
+          <div class="home-ai__agent-flow">
+            <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
+            <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
+            <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
+            <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
+          </div>
+          <Button
+            class="home-ai__copy-command"
+            data-copy-command={aiSkillInstallCommand}
+            variant="ghost"
+          >
+            <Icon decorative name="copy" size="sm" />
+            <span data-copy-feedback>Copy install command</span>
+          </Button>
+        </Card>
+      </ScrollReveal>
     </section>
 
     <section class="home-section home-container" aria-labelledby="framework-title">
-      <div class="home-section__head home-section__head--split">
-        <div>
-          <Eyebrow>Bring your framework</Eyebrow>
-          <h2 id="framework-title">One design language.<br />Three native implementations.</h2>
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-section__head--split">
+          <div>
+            <Eyebrow>Bring your framework</Eyebrow>
+            <h2 id="framework-title">One design language.<br />Three native implementations.</h2>
+          </div>
+          <div class="home-section__aside">
+            <p>
+              Start with the adapter for your stack. The names, tokens, and interaction
+              model stay familiar when your project changes.
+            </p>
+          </div>
         </div>
-        <div class="home-section__aside">
-          <p>
-            Start with the adapter for your stack. The names, tokens, and interaction
-            model stay familiar when your project changes.
-          </p>
-        </div>
-      </div>
+      </ScrollReveal>
       <div class="home-framework">
         <FrameworkSetupTabs setups={frameworkSetups} />
       </div>
     </section>
 
     <section class="home-container">
-      <Card as="section" class="home-cta">
-        <div class="home-cta__orb" aria-hidden="true"></div>
-        <Eyebrow>Build something considered</Eyebrow>
-        <h2>Your product deserves<br />better defaults.</h2>
-        <p>
-          Start with Lumen’s accessible primitives, then make the system unmistakably yours.
-        </p>
-        <div class="home-cta__actions">
-          <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
-            Read the docs
-          </ButtonLink>
-          <ButtonLink
-            class="home-button-lg"
-            href="https://github.com/santi020k/lumen"
-            newTab
-            variant="secondary"
-          >
-            <GitHubIcon />
-            View on GitHub
-          </ButtonLink>
-        </div>
-      </Card>
+      <ScrollReveal animation="scale">
+        <Card as="section" class="home-cta">
+          <div class="home-cta__orb" aria-hidden="true"></div>
+          <Eyebrow>Build something considered</Eyebrow>
+          <h2>Your product deserves<br />better defaults.</h2>
+          <p>
+            Start with Lumen’s accessible primitives, then make the system unmistakably yours.
+          </p>
+          <div class="home-cta__actions">
+            <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
+              Read the docs
+            </ButtonLink>
+            <ButtonLink
+              class="home-button-lg"
+              href="https://github.com/santi020k/lumen"
+              newTab
+              variant="secondary"
+            >
+              <GitHubIcon />
+              View on GitHub
+            </ButtonLink>
+          </div>
+        </Card>
+      </ScrollReveal>
     </section>
   </main>
 </BaseLayout>

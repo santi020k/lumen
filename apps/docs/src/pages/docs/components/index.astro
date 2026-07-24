@@ -1,6 +1,6 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Badge, Card, Icon, Input } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Input, Kbd, Label, Link } from '@santi020k/lumen-astro'
 
 import {
   componentCategories,
@@ -81,7 +81,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
             <p>{collection.description}</p>
             <div aria-label={`${collection.title} components`}>
               {collection.names.map(name => (
-                <a href={`/docs/components/${toSlug(name)}`}>{name}</a>
+                <Link href={`/docs/components/${toSlug(name)}`}>{name}</Link>
               ))}
             </div>
           </Card>
@@ -91,7 +91,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
     <div class="components-explorer">
       <div class="components-filter">
-        <label for="component-filter">Search the component library</label>
+        <Label for="component-filter">Search the component library</Label>
         <div class="components-filter__control">
           <Icon decorative name="search" size="sm" />
           <Input
@@ -101,7 +101,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
             type="search"
             data-component-filter
           />
-          <kbd>/</kbd>
+          <Kbd>/</Kbd>
         </div>
         <p id="component-filter-status" aria-live="polite">
           Showing all {componentDocs.length} components
@@ -110,10 +110,10 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
       <nav class="components-categories" aria-label="Component categories">
         {componentGroups.map(({ category, components }) => (
-          <a href={`#${categoryId(category)}`}>
+          <Link href={`#${categoryId(category)}`}>
             <span>{category}</span>
             <span>{components.length}</span>
-          </a>
+          </Link>
         ))}
       </nav>
     </div>
@@ -135,7 +135,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
           <div class="components-grid">
             {components.map(component => (
-              <a
+              <Link
                 aria-label={`${component.name}: ${component.summary}`}
                 data-component-card
                 data-component-search={`${component.name} ${category} ${component.summary} ${component.guidance?.when ?? ''} ${component.guidance?.distinction ?? ''}`.toLowerCase()}
@@ -152,7 +152,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
                     <Icon decorative name="arrow-right" size="sm" />
                   </span>
                 </Card>
-              </a>
+              </Link>
             ))}
           </div>
         </section>

@@ -163,6 +163,30 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 
+  test('ships a consistent, reduced-motion-aware entrance and metric vocabulary', async () => {
+    const [animatedNumber, revealGroup, runtime, scrollReveal, styles] = await Promise.all([
+      readFile(new URL('./components/AnimatedNumber.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/RevealGroup.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(scrollReveal).toContain("duration?: 'fast' | 'standard' | 'slow'")
+    expect(scrollReveal).toContain('once?: boolean')
+    expect(scrollReveal).toContain('threshold?: number')
+    expect(revealGroup).toContain('stagger?: number')
+    expect(revealGroup).toContain('data-ui-reveal-group')
+    expect(animatedNumber).toContain('data-ui-animated-number-output')
+    expect(animatedNumber).toContain('class="ui-sr-only"')
+    expect(runtime).toContain("'[data-ui-scroll-reveal], [data-ui-reveal-group]'")
+    expect(runtime).toContain('const initAnimatedNumbers = (scope: ParentNode): void =>')
+    expect(styles).toContain('.ui-motion-duration-fast')
+    expect(styles).toContain('.ui-reveal-group.is-revealed > *')
+    expect(styles).toContain('var(--ui-duration-slow) var(--ui-ease-emphasized)')
+    expect(styles).not.toContain('transform 220ms cubic-bezier(0.32, 0.72, 0, 1)')
+  })
+
   test('keeps Astro image optimization and dark artwork support', async () => {
     const [component, styles] = await Promise.all([
       readFile(new URL('./components/Image.astro', packageRoot), 'utf8'),
@@ -257,7 +281,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(comboboxExample).toContain("value: 'web-components'")
     expect(docs).toContain('Use an ordered list inside the nav')
     expect(docs).toContain('data-ui-editor-command')
-    expect(docs).toContain('bold | italic | underline')
+    expect(docs).toContain('Runs formatting, block, alignment, history, link, list, or custom commands')
     expect(dropdownMenu).toContain("interface Props extends HTMLAttributes<'div'>")
     expect(dropdownMenu).toContain('<div')
     expect(dropdownMenu).not.toContain('<menu')

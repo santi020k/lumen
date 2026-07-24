@@ -4,27 +4,46 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
+  animation?: 'fade' | 'slide-up' | 'scale'
   class?: string
   className?: string
-  animation?: 'fade' | 'slide-up' | 'scale'
+  delay?: number
+  duration?: 'fast' | 'standard' | 'slow'
+  once?: boolean
+  threshold?: number
 }
 
 const {
+  animation = 'fade',
   class: classProp = '',
   className = '',
-  animation = 'fade',
+  delay = 0,
+  duration = 'slow',
+  once = true,
+  style,
+  threshold = 0.15,
   ...rest
 } = Astro.props
 
+const safeDelay = Math.max(0, delay)
+const safeThreshold = Math.min(1, Math.max(0, threshold))
+const motionStyle = [
+  typeof style === 'string' ? style : '',
+  `--ui-reveal-delay:${safeDelay}ms`
+].filter(Boolean).join(';')
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-scroll-reveal',
-  `ui-scroll-reveal-${animation}`
+  `ui-scroll-reveal-${animation}`,
+  `ui-motion-duration-${duration}`
 ], classProp, className)
 ---
 
 <div
   class:list={classList}
+  data-ui-reveal-once={String(once)}
+  data-ui-reveal-threshold={safeThreshold}
   data-ui-scroll-reveal
+  style={motionStyle}
   {...passthrough}
 >
   <slot />

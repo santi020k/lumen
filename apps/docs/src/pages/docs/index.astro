@@ -5,6 +5,7 @@ import {
   Field,
   Input,
   Label,
+  Link,
   Marker,
   Progress,
   Switch,
@@ -157,7 +158,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       lg:grid-cols-3
     ">
       {frameworkGuides.map(guide => (
-        <a class="
+        <Link class="
           block rounded-2xl no-underline transition-colors outline-none
           hover:bg-surface-strong
           focus-visible:ring-2 focus-visible:ring-brand
@@ -176,7 +177,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
               </ul>
             </div>
           </Card>
-        </a>
+        </Link>
       ))}
     </div>
   </section>

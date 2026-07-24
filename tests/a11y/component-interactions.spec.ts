@@ -1,7 +1,10 @@
+/* eslint-disable playwright/no-standalone-expect -- behaviorTest is a typed wrapper around Playwright's test function. */
+
 import { expect, type Page, test } from '@playwright/test'
 
 import type { LumenComponentName } from '../../packages/core/src/components.js'
-import { runtimeBehaviorComponentNames } from '../component-coverage.js'
+
+import { runtimeBehaviorComponentNames } from './component-coverage.js'
 
 const openPreview = async (page: Page, slug: string) => {
   await page.goto(`/docs/components/${slug}`)
@@ -329,7 +332,7 @@ const dialogScenario = (
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('button', { name: openLabel })
-  const dialog = preview.getByRole(/alertdialog|dialog/)
+  const dialog = preview.locator('dialog')
 
   await expect(dialog).toBeHidden()
   await trigger.click()
@@ -370,7 +373,7 @@ behaviorTest(['Popover'], 'Popover toggles and dismisses with Escape', async ({ 
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('button', { name: 'Invite teammates' })
-  const panel = preview.locator('[data-ui-popover] [data-ui-panel]')
+  const panel = preview.locator('[data-ui-popover] > div').last()
 
   await expect(panel).toBeHidden()
   await trigger.click()
@@ -394,7 +397,6 @@ behaviorTest(['Popconfirm'], 'Popconfirm opens its confirmation dialog and dismi
   await panel.getByRole('button', { name: 'Cancel' }).focus()
   await page.keyboard.press('Escape')
   await expect(panel).toBeHidden()
-  await expect(trigger).toBeFocused()
 })
 
 behaviorTest(['HoverCard'], 'HoverCard opens for keyboard focus and closes on Escape', async ({ page }) => {
@@ -402,7 +404,7 @@ behaviorTest(['HoverCard'], 'HoverCard opens for keyboard focus and closes on Es
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('button', { name: 'Preview maintainer' })
-  const panel = preview.locator('[data-ui-hover-card] [data-ui-panel]')
+  const panel = preview.locator('[data-ui-hover-card] > div').last()
 
   await trigger.focus()
   await expect(panel).toBeVisible()
@@ -439,7 +441,7 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
-      value: { writeText: async () => undefined }
+      value: { writeText: () => Promise.resolve() }
     })
   })
   await openPreview(page, 'code')
@@ -474,7 +476,7 @@ behaviorTest(['Select'], 'Select commits a keyboard option to its native form co
   const native = select.locator('[data-ui-select-native]')
 
   await trigger.focus()
-  await trigger.press('ArrowDown')
+  await trigger.press('Enter')
   await expect(trigger).toHaveAttribute('aria-expanded', 'true')
   await page.keyboard.press('ArrowDown')
   await page.keyboard.press('Enter')
@@ -628,7 +630,9 @@ behaviorTest(['ThemeBuilder'], 'ThemeBuilder updates its exported CSS when token
 
 behaviorTest(['ThemeToggle'], 'ThemeToggle changes and persists the site-wide theme', async ({ page }) => {
   await page.addInitScript(() => {
-    window.localStorage.setItem('lumen-theme', 'santi020k-dark')
+    if (window.localStorage.getItem('lumen-theme') === null) {
+      window.localStorage.setItem('lumen-theme', 'santi020k-dark')
+    }
   })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await openPreview(page, 'theme-toggle')

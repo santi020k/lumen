@@ -1,0 +1,56 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends Omit<HTMLAttributes<'span'>, 'prefix'> {
+  class?: string
+  className?: string
+  decimals?: number
+  duration?: 'fast' | 'standard' | 'slow'
+  from?: number
+  locale?: string
+  prefix?: string
+  suffix?: string
+  value: number
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  decimals = 0,
+  duration = 'slow',
+  from = 0,
+  locale,
+  prefix = '',
+  suffix = '',
+  value,
+  ...rest
+} = Astro.props
+
+const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
+const formatter = new Intl.NumberFormat(locale, {
+  maximumFractionDigits: safeDecimals,
+  minimumFractionDigits: safeDecimals
+})
+const formattedValue = `${prefix}${formatter.format(value)}${suffix}`
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-animated-number',
+  `ui-motion-duration-${duration}`
+], classProp, className)
+---
+
+<span
+  class:list={classList}
+  data-ui-animated-number
+  data-ui-animated-number-decimals={safeDecimals}
+  data-ui-animated-number-from={from}
+  data-ui-animated-number-locale={locale}
+  data-ui-animated-number-prefix={prefix}
+  data-ui-animated-number-suffix={suffix}
+  data-ui-animated-number-value={value}
+  {...passthrough}
+>
+  <span aria-hidden="true" data-ui-animated-number-output>{formattedValue}</span>
+  <span class="ui-sr-only">{formattedValue}</span>
+</span>

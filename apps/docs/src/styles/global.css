@@ -2537,6 +2537,15 @@ pre code {
   margin-top: auto;
 }
 
+.docs-section > .grid > .docs-example-card {
+  align-self: start;
+  min-height: 0;
+}
+
+.docs-section > .grid > .docs-example-card .docs-code-compact {
+  margin-top: 0;
+}
+
 .docs-code-compact {
   min-width: 0;
 }

@@ -103,6 +103,22 @@ shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
 attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
 
+## Motion
+
+Use `ScrollReveal` for one entrance, `RevealGroup` for tokenized child staggering, and
+`AnimatedNumber` for meaningful metric changes. Their `duration` prop uses the shared `fast`,
+`standard`, and `slow` vocabulary, and every primitive honors reduced-motion preferences.
+
+```tsx
+<RevealGroup stagger={80}>
+  <Card>Plan</Card>
+  <Card>Build</Card>
+  <Card>Ship</Card>
+</RevealGroup>
+
+<AnimatedNumber decimals={1} suffix="%" value={99.8} />
+```
+
 ## Glass surfaces
 
 Load `@santi020k/lumen-react/styles.css` once in your app, then use the shared glass API from React.

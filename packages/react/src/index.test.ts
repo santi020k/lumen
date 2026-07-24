@@ -6,6 +6,7 @@ import { describe, expect, test, vi } from 'vitest'
 import * as LumenReact from './index.js'
 import {
   Alert,
+  AnimatedNumber,
   type AlertProps,
   Button,
   type ButtonProps,
@@ -26,7 +27,9 @@ import {
   type InputProps,
   lumenComponentNames,
   Popover,
+  RevealGroup,
   Resizable,
+  ScrollReveal,
   Select,
   Table,
   type TableProps,
@@ -133,6 +136,34 @@ describe('@santi020k/lumen-react', () => {
 
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
+  })
+
+  test('exposes the shared motion vocabulary on React primitives', () => {
+    const scrollReveal = withHookDispatcher(() => ScrollReveal({
+      animation: 'slide-up',
+      delay: 60,
+      duration: 'slow',
+      once: false,
+      threshold: 0.25
+    })) as ReactElement
+    const revealGroup = withHookDispatcher(() => RevealGroup({
+      children: 'Steps',
+      stagger: 90
+    })) as ReactElement
+    const animatedNumber = withHookDispatcher(() => AnimatedNumber({
+      decimals: 1,
+      suffix: '%',
+      value: 99.8
+    })) as ReactElement
+
+    expect(scrollReveal.props.className).toContain('ui-motion-duration-slow')
+    expect(scrollReveal.props['data-ui-reveal-once']).toBe('false')
+    expect(scrollReveal.props['data-ui-reveal-threshold']).toBe(0.25)
+    expect(scrollReveal.props.style).toMatchObject({ '--ui-reveal-delay': '60ms' })
+    expect(revealGroup.props.className).toContain('ui-reveal-group-slide-up')
+    expect(revealGroup.props.style).toMatchObject({ '--ui-reveal-stagger': '90ms' })
+    expect(animatedNumber.props.className).toContain('ui-animated-number')
+    expect(animatedNumber.props.children[1].props.children).toBe('99.8%')
   })
 
   test('applies default button classes and type', () => {

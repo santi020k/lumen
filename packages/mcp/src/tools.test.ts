@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync as readFsFile } from 'node:fs'
 
 import { describe, expect, test } from 'vitest'
 
@@ -32,8 +32,8 @@ describe('lumen-mcp data snapshot', () => {
     expect(dateRangePicker).toMatchObject({
       category: 'Forms',
       collections: ['Dates and time'],
-      dependencies: expect.arrayContaining(['DatePicker']),
-      description: expect.stringContaining('range')
+      dependencies: expect.arrayContaining(['DatePicker']) as unknown as string[],
+      description: expect.stringMatching(/date range|start and end date/i) as unknown as string
     })
     expect(dateRangePicker?.apiReference).not.toHaveLength(0)
     expect(dateRangePicker?.frameworkDetails.astro.source).toContain('interface Props')
@@ -51,7 +51,7 @@ describe('lumen-mcp data snapshot', () => {
   test('matches the package version and contains no volatile build timestamp', () => {
     const data = loadLumenData()
     const packageJson = JSON.parse(
-      readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+      readFsFile(new URL('../package.json', import.meta.url), 'utf8')
     ) as { version: string }
 
     expect(data.meta.serverVersion).toBe(packageJson.version)
@@ -59,7 +59,7 @@ describe('lumen-mcp data snapshot', () => {
   })
 
   test('ships the package license', () => {
-    const license = readFileSync(new URL('../LICENSE', import.meta.url), 'utf8')
+    const license = readFsFile(new URL('../LICENSE', import.meta.url), 'utf8')
 
     expect(license).toContain('MIT License')
     expect(license).toContain('Santiago Molina')

@@ -84,6 +84,34 @@ describe('@santi020k/lumen-elements', () => {
     expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
   })
 
+  test('keeps motion elements readable when motion is reduced', () => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      addEventListener: vi.fn(),
+      matches: true,
+      media: '(prefers-reduced-motion: reduce)',
+      onchange: null,
+      removeEventListener: vi.fn()
+    })))
+
+    const number = document.createElement('lumen-animated-number')
+
+    number.setAttribute('decimals', '1')
+    number.setAttribute('suffix', '%')
+    number.setAttribute('value', '99.8')
+
+    const group = document.createElement('lumen-reveal-group')
+
+    group.innerHTML = '<article>Plan</article><article>Ship</article>'
+    document.body.append(number, group)
+
+    expect(number.textContent).toBe('99.8%')
+    expect(number.getAttribute('aria-label')).toBe('99.8%')
+    expect(group.classList).toContain('is-revealed')
+    expect((group.children[1] as HTMLElement).style.getPropertyValue('--ui-reveal-index')).toBe('1')
+
+    vi.unstubAllGlobals()
+  })
+
   test('applies primitive classes when elements connect', () => {
     const button = document.createElement('lumen-button')
     const card = document.createElement('lumen-card')
