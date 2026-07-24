@@ -9,7 +9,6 @@ import CodeTabs from '../../../components/CodeTabs.astro'
 import {
   componentCollections,
   componentDocs,
-  componentNavigationDocs,
   frameworkSetups,
   getFigmaComponentUrl
 } from '../../../data/docs'
@@ -45,11 +44,11 @@ const packageInstallSetups = frameworkSetups.map(setup => ({
 const glassExample = component.glass ? getGlassExample(component.name) : undefined
 const GlassExample = glassExample?.component
 const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.source) : undefined
-const index = componentNavigationDocs.findIndex(entry => entry.name === component.name)
-const previous = index > 0 ? componentNavigationDocs[index - 1] : undefined
+const index = componentDocs.findIndex(entry => entry.name === component.name)
+const previous = index > 0 ? componentDocs[index - 1] : undefined
 
-const next = index >= 0 && index < componentNavigationDocs.length - 1
-  ? componentNavigationDocs[index + 1]
+const next = index >= 0 && index < componentDocs.length - 1
+  ? componentDocs[index + 1]
   : undefined
 
 const requiresAstroRuntime = Boolean(
@@ -64,12 +63,44 @@ const relatedCollection = componentCollections.find(collection =>
 
 const relatedComponents = relatedCollection?.names
   .filter(name => name !== component.name)
-  .map(name => componentNavigationDocs.find(entry => entry.name === name))
+  .map(name => componentDocs.find(entry => entry.name === name))
   .filter(entry => entry !== undefined)
   ?? []
 
 const figmaUrl = getFigmaComponentUrl(component.figmaNodeId)
 const componentNameParts = component.name.split(/(?<=[a-z])(?=[A-Z])/)
+const isImage = component.name === 'Image'
+
+const astroImageOptimizationExample = `---
+import { Image } from '@santi020k/lumen-astro'
+import hero from '../assets/hero.jpg'
+---
+
+<Image
+  alt="Mountain valley at sunrise"
+  layout="full-width"
+  priority
+  quality={80}
+  src={hero}
+/>`
+
+const nextImageOptimizationExample = `import NextImage from 'next/image'
+import { Image as LumenImage } from '@santi020k/lumen-react'
+import hero from './hero.jpg'
+
+export function HeroImage() {
+  return (
+    <LumenImage
+      alt="Mountain valley at sunrise"
+      as={NextImage}
+      placeholder="blur"
+      preload
+      sizes="(max-width: 768px) 100vw, 50vw"
+      src={hero}
+      style={{ height: 'auto', width: '100%' }}
+    />
+  )
+}`
 ---
 
 <DocsLayout
@@ -200,18 +231,128 @@ const componentNameParts = component.name.split(/(?<=[a-z])(?=[A-Z])/)
           <h2 id="usage-title">Usage</h2>
         </div>
       </div>
-      {requiresAstroRuntime && (
-        <p class="max-w-2xl text-sm/7 text-ink-soft">
-          Astro examples assume UIPrimitives is mounted once in your root layout. Do not add the
-          runtime next to each component instance.
-        </p>
-      )}
+      <p class="max-w-2xl text-sm/7 text-ink-soft">
+        Choose the framework that fits your app. Each example uses its adapter’s native API and
+        assumes the framework-level setup is already complete.
+      </p>
       <CodeTabs groupId={`code-${componentSlug}`} snippets={snippets} />
     </section>
 
+    {isImage && (
+      <section class="component-doc-section space-y-5" aria-labelledby="image-optimization-title">
+        <div class="component-doc-heading">
+          <span>03</span>
+          <div>
+            <p>Keep the host framework in control</p>
+            <h2 id="image-optimization-title">Astro and Next.js optimization</h2>
+          </div>
+        </div>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Lumen owns the final image styling, including <code>ui-image</code> and optional dark-mode
+          inversion. It does not run a second image pipeline. The Astro adapter delegates to
+          <code>astro:assets</code>; the React adapter renders the optimizer supplied through
+          <code>as</code> and forwards its props.
+        </p>
+
+        <div class="
+          grid gap-6
+          xl:grid-cols-2
+        ">
+          <article class="
+            space-y-4 rounded-2xl border border-line bg-surface p-5
+          ">
+            <div class="space-y-2">
+              <h3 class="font-black text-ink">Astro: import local assets</h3>
+              <p class="text-sm/7 text-ink-soft">
+                A static import supplies intrinsic dimensions and enables build-time processing.
+                Choose <code>layout="full-width"</code> for viewport-width media,
+                <code>"constrained"</code> for fluid media with a maximum width, or
+                <code>"fixed"</code> for a fixed-size asset. Astro generates the responsive
+                <code>srcset</code>, <code>sizes</code>, and layout styles.
+              </p>
+            </div>
+            <CodeBlock code={astroImageOptimizationExample} lang="astro" title="HeroImage.astro" />
+            <ul class="list-disc space-y-2 pl-5 text-sm/7 text-ink-soft">
+              <li>
+                Use <code>priority</code> only for the likely LCP image. Astro applies eager
+                loading, high fetch priority, and synchronous decoding.
+              </li>
+              <li>
+                Public-directory and remote string sources need known dimensions. Use
+                <code>inferSize</code> for an authorized remote source when its dimensions are not
+                available, and configure remote image domains in the Astro app.
+              </li>
+              <li>
+                Override <code>widths</code>, <code>sizes</code>, <code>quality</code>, or
+                <code>format</code> only when the layout or delivery target calls for it.
+              </li>
+            </ul>
+            <a
+              class="ui-link text-sm"
+              href="https://docs.astro.build/en/reference/modules/astro-assets/"
+              rel="noreferrer"
+              target="_blank"
+            >Astro Image reference</a>
+          </article>
+
+          <article class="
+            space-y-4 rounded-2xl border border-line bg-surface p-5
+          ">
+            <div class="space-y-2">
+              <h3 class="font-black text-ink">Next.js: pass next/image through as</h3>
+              <p class="text-sm/7 text-ink-soft">
+                Passing <code>NextImage</code> keeps Next.js in charge of resizing, format
+                negotiation, caching, placeholders, and preloading. With an optimizer supplied,
+                Lumen does not inject its native <code>loading="lazy"</code> default.
+              </p>
+            </div>
+            <CodeBlock code={nextImageOptimizationExample} lang="tsx" title="HeroImage.tsx" />
+            <ul class="list-disc space-y-2 pl-5 text-sm/7 text-ink-soft">
+              <li>
+                Static imports provide dimensions and can provide blur data automatically. String
+                or remote sources need <code>width</code> and <code>height</code>, unless
+                <code>fill</code> is used.
+              </li>
+              <li>
+                Add an accurate <code>sizes</code> value for responsive or <code>fill</code>
+                images; without it the browser can select an unnecessarily large candidate.
+              </li>
+              <li>
+                In Next.js 16+, use <code>preload</code> for the one clear LCP image; do not combine
+                it with <code>loading</code> or <code>fetchPriority</code>. Leave below-the-fold
+                images on Next.js defaults.
+              </li>
+              <li>
+                Allow remote sources with narrow <code>images.remotePatterns</code> entries in
+                <code>next.config</code>. For <code>fill</code>, give the parent a positioned box
+                and a real size.
+              </li>
+            </ul>
+            <a
+              class="ui-link text-sm"
+              href="https://nextjs.org/docs/app/api-reference/components/image"
+              rel="noreferrer"
+              target="_blank"
+            >Next.js Image reference</a>
+          </article>
+        </div>
+
+        <aside class="
+          rounded-2xl border border-line bg-surface-muted p-5 text-sm/7
+          text-ink-soft
+        ">
+          <strong class="text-ink">For both frameworks:</strong> write useful alt text (or
+          <code>alt=""</code> for decoration), preserve intrinsic aspect ratio, keep
+          <code>sizes</code> aligned with the rendered layout, and reserve eager or priority
+          loading for the page’s likely LCP image. Use <code>invertOnDark</code> only for
+          monochrome artwork, not photographs.
+        </aside>
+      </section>
+    )}
+
     <section class="component-doc-section space-y-3" aria-labelledby="install-title">
       <div class="component-doc-heading">
-        <span>03</span>
+        <span>{isImage ? '04' : '03'}</span>
         <div>
           <p>Choose your target</p>
           <h2 id="install-title">Add this component</h2>

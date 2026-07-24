@@ -2,4 +2,8 @@
 import { FileUpload } from '@santi020k/lumen-astro'
 ---
 
-<FileUpload accept="image/*" multiple />
+<FileUpload
+  accept="image/png,image/jpeg,image/webp"
+  hint="PNG, JPG, or WebP up to 10 MB"
+  multiple
+/>

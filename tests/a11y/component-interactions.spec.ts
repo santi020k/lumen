@@ -120,15 +120,15 @@ test('Schedule moves an event between slots', async ({ page }) => {
   await expect(friday.locator('#schedule-planning')).toHaveCount(1)
 })
 
-test('Sonner creates a live notification', async ({ page }) => {
-  await openPreview(page, 'sonner')
+test('Toast creates a live notification', async ({ page }) => {
+  await openPreview(page, 'toast')
 
-  await page.locator('.component-doc-preview [data-ex-toast-trigger]').click()
+  await page.locator('.component-doc-preview [data-ex-toast="success"]').click()
 
-  const toast = page.locator('.component-doc-preview [data-ui-toast][data-state="open"]')
+  const toast = page.locator('[data-ui-toast][data-state="open"]')
 
-  await expect(toast).toContainText('Saved')
-  await expect(toast).toContainText('Your changes are live.')
+  await expect(toast).toContainText('Published')
+  await expect(toast).toContainText('The latest version is now live.')
 })
 
 test('Tabs switches panels with arrow keys', async ({ page }) => {

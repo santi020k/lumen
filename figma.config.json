@@ -1,0 +1,15 @@
+{
+  "codeConnect": {
+    "exclude": [
+      "**/dist/**",
+      "**/node_modules/**"
+    ],
+    "include": [
+      "figma/**/*.figma.ts"
+    ],
+    "interactiveSetupFigmaFileUrl": "https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9/Lumen-UI-Library",
+    "label": "Lumen Astro",
+    "language": "html",
+    "parser": "html"
+  }
+}

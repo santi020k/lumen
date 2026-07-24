@@ -378,7 +378,6 @@ const figmaNodeIdByComponent: Record<string, string> = {
   Skeleton: '69:36',
   SkipLink: '276:13',
   Slider: '42:17',
-  Sonner: '51:33',
   Spinner: '69:64',
   Switch: '15:11',
   Table: '44:39',
@@ -445,7 +444,7 @@ export const componentCollections: ComponentCollection[] = [
   {
     title: 'Status and messaging',
     description: 'Separate persistent guidance, inline status, empty states, and transient notifications.',
-    names: ['Alert', 'Callout', 'Note', 'Empty', 'Message', 'Toast', 'Sonner']
+    names: ['Alert', 'Callout', 'Note', 'Empty', 'Message', 'Toast']
   },
   {
     title: 'Structured data',
@@ -645,6 +644,14 @@ const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardI
     ['ArrowDown, ArrowUp in menu', 'Move focus through focusable menu items, wrapping at the ends.'],
     ['Home, End in menu', 'Move focus to the first or last focusable menu item.']
   ),
+  DatePicker: keyboardRows(
+    ['Enter, Space on trigger', 'Open the calendar popover.'],
+    ['ArrowDown on trigger', 'Open the calendar and move focus to the selected day, today, or first available day.'],
+    ['Arrow keys in calendar', 'Move focus by day or week without opening a browser-native date picker.'],
+    ['PageDown, PageUp in calendar', 'Move to the same date in the next or previous month.'],
+    ['Enter, Space on a day', 'Select the focused date, close the popover, and return focus to the trigger.'],
+    ['Escape', 'Close the calendar without changing the value and return focus to the trigger.']
+  ),
   DropdownMenu: disclosureKeyboardInteractions,
   InputOTP: keyboardRows(
     ['ArrowLeft, ArrowRight', 'Move the native input selection one position left or right and sync the visible segments.'],
@@ -705,10 +712,16 @@ export const runtimeEvents: RuntimeEventRow[] = [
     when: 'Fires after a [data-ui-tag-remove] control removes its closest tag or list item.'
   },
   {
-    detail: '{ command: string }',
+    detail: '{ command: string, executed: boolean, value?: string }',
     name: 'ui:editor-command',
     target: 'RichTextEditor root ([data-ui-rich-text-editor])',
-    when: 'Fires after a [data-ui-editor-command] control runs document.execCommand(command).'
+    when: 'Fires after a toolbar control or keyboard shortcut runs an editor command.'
+  },
+  {
+    detail: '{ html: string, text: string }',
+    name: 'ui:editor-change',
+    target: 'RichTextEditor root ([data-ui-rich-text-editor])',
+    when: 'Fires after editable content changes or an editor command runs.'
   },
   {
     detail: "{ hue: number, accentHue: number, mode: 'generated' | 'manual', scheme: 'dark' | 'light', tokens: Record<string, string> }",
@@ -744,7 +757,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
     detail: '{ id?: string, title?: string, description?: string, variant?: string, duration?: number, placement?: string, action?: { label: string } }',
     name: 'ui:toast',
     target: 'Document',
-    when: 'Creates a programmatic toast in the matching Sonner viewport.'
+    when: 'Creates a programmatic toast in the matching notification viewport.'
   },
   {
     detail: '{ id: string, title?: string, description?: string, variant?: string, duration?: number }',
@@ -769,9 +782,8 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<Record<string, readonly RuntimeEventRow[]>> = {
   DataTable: runtimeEvents.filter(event => event.name === 'ui-datatable-selectionchange'),
   Field: runtimeEvents.filter(event => event.name === 'ui:validate' || event.name === 'ui:invalid' || event.name === 'ui:valid'),
-  RichTextEditor: runtimeEvents.filter(event => event.name === 'ui:editor-command'),
+  RichTextEditor: runtimeEvents.filter(event => event.name.startsWith('ui:editor-')),
   Schedule: runtimeEvents.filter(event => event.name === 'ui:schedule-change'),
-  Sonner: runtimeEvents.filter(event => event.name === 'ui:toast' || event.name === 'ui:toast-update' || event.name === 'ui:toast-dismiss'),
   TagGroup: runtimeEvents.filter(event => event.name === 'ui:tag-remove'),
   ThemeBuilder: runtimeEvents.filter(event => event.name === 'ui:theme-change' || event.name === 'ui:theme-export'),
   Toast: runtimeEvents.filter(event => event.name === 'ui:toast' || event.name === 'ui:toast-update' || event.name === 'ui:toast-dismiss' || event.name === 'ui:toast-action'),
@@ -895,7 +907,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('data-ui-date-range-picker', 'boolean attribute', '-', 'Marks the container to sync min/max constraints between its child DatePicker inputs.')
   ],
   DatePicker: [
-    apiRow('type', 'HTML input type', '"date"', 'Sets the native input type.')
+    apiRow('value, defaultValue', 'ISO date string (YYYY-MM-DD)', '-', 'Sets the selected date while the trigger shows a localized, human-readable value.'),
+    apiRow('min, max', 'ISO date string (YYYY-MM-DD)', '-', 'Disables dates and month navigation outside the allowed range.'),
+    apiRow('placeholder', 'string', '"Choose a date"', 'Labels the trigger before a date is selected.'),
+    apiRow('UIPrimitives', 'Astro runtime', 'required', 'Enhances the form-backed input into the custom Calendar popover. React and registered Elements provide equivalent behavior.')
   ],
   Dialog: [
     surfaceApiRow,
@@ -924,11 +939,17 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.')
   ],
   Image: [
-    apiRow('src', 'ImageMetadata | string', 'required', 'Uses astro:assets in Astro; React can pass a framework optimizer through as.'),
+    apiRow('src', 'ImageMetadata | string', 'required', 'Uses astro:assets in Astro; React passes the source to the native img or the optimizer supplied through as.'),
     apiRow('alt', 'string', 'required', 'Provides an accessible description; use an empty string for decorative images.'),
-    apiRow('loading', '"lazy" | "eager"', '"lazy"', 'Defers off-screen image loading by default; use eager only for likely LCP images.'),
+    apiRow('loading', '"lazy" | "eager"', 'Astro/native img: "lazy"', 'Defers off-screen loading. When as is set in React, Lumen leaves the optimizer default untouched unless this prop is explicit.'),
+    apiRow('layout', '"fixed" | "constrained" | "full-width" | "none"', '-', 'Astro only: generates responsive dimensions, srcset, sizes, and layout styles through astro:assets.'),
+    apiRow('width, height', 'number | string', 'source metadata or required', 'Set intrinsic dimensions for public and remote sources. Astro and Next.js can derive them from supported static imports.'),
+    apiRow('widths, sizes', 'number[]; string', 'layout-dependent', 'Astro responsive controls. Next.js also uses sizes to generate and select an efficient width-based srcset.'),
+    apiRow('quality, format', 'framework-supported values', 'framework default', 'Passes image encoding choices to astro:assets or to the React optimizer supplied through as.'),
+    apiRow('priority', 'boolean', 'false', 'Astro only: marks the likely LCP image for immediate loading, synchronous decoding, and high fetch priority.'),
+    apiRow('preload, fill, placeholder', 'NextImage props', 'Next.js defaults', 'Next.js only through as={NextImage}: keeps preloading, fill layout, and placeholder generation under next/image control.'),
     apiRow('invertOnDark', 'boolean', 'false', 'Inverts monochrome artwork in dark themes while preserving colorful images by default.'),
-    apiRow('as', 'React ElementType', '"img"', 'React only: renders a compatible optimizer such as next/image while retaining Lumen classes.')
+    apiRow('as', 'React ElementType', '"img"', 'React only: renders a compatible optimizer such as next/image while retaining Lumen classes and forwarding optimizer props.')
   ],
   Field: [
     apiRow('controlId', 'string', '-', 'Connects the field to a control elsewhere in the field root.'),
@@ -1014,7 +1035,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('type', 'HTML input type', '"search"', 'Sets the native input type.')
   ],
   RichTextEditor: [
-    apiRow('data-ui-editor-command', 'bold | italic | underline | insertUnorderedList | insertOrderedList | createLink | unlink | formatBlock | removeFormat', '-', 'Marks toolbar controls that call document.execCommand(command) and emit ui:editor-command.')
+    apiRow('data-ui-editor-command', 'string', '-', 'Runs formatting, block, alignment, history, link, list, or custom commands and emits ui:editor-command.'),
+    apiRow('data-ui-editor-value', 'string', '-', 'Supplies a value for commands such as formatBlock and createLink. Native select values are read automatically.'),
+    apiRow('data-ui-rich-text-editable', 'data attribute', '-', 'Marks the editable content surface for shortcuts, state syncing, and ui:editor-change events.')
   ],
   Sheet: [
     surfaceApiRow,
@@ -1022,12 +1045,6 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   Sidebar: [
     surfaceApiRow
-  ],
-  Sonner: [
-    apiRow('placement', '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', '"bottom-right"', 'Positions the toast viewport.'),
-    apiRow('maxCount', 'number', '-', 'Limits the number of runtime toasts kept in the viewport. The runtime default is 5 when omitted.'),
-    apiRow('aria-atomic', 'ARIA boolean string', '"false"', 'Sets the live-region atomicity attribute.'),
-    apiRow('aria-live', '"off" | "polite" | "assertive"', '"polite"', 'Sets the live-region announcement priority.')
   ],
   Slider: [
     apiRow('type', 'HTML input type', '"range"', 'Sets the native input type.')
@@ -1052,8 +1069,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   Toast: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the toast tone.'),
-    apiRow('Sonner placement', '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', '"bottom-right"', 'Positions the toast viewport mounted for programmatic notifications.'),
-    apiRow('Sonner maxCount', 'number', '5', 'Limits the number of runtime toasts kept in the viewport.'),
+    apiRow('placement', '"top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right"', '"bottom-right"', 'Positions the notification viewport used for programmatic toasts.'),
+    apiRow('max', 'number', '5', 'Limits the number of runtime toasts kept in the notification viewport.'),
     apiRow('window.LumenToast.create(detail)', 'function', '-', 'Creates a runtime toast and returns its id. Also available through document ui:toast.'),
     apiRow('window.LumenToast.update(id, detail)', 'function', '-', 'Updates the title, description, variant, action, or duration for a runtime toast.'),
     apiRow('window.LumenToast.dismiss(id?)', 'function', '-', 'Dismisses one runtime toast, or all runtime toasts when id is omitted.'),
@@ -1076,6 +1093,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   TreeGrid: [
     apiRow('role', 'ARIA role', '"treegrid"', 'Generated treegrid role for the root element.'),
     apiRow('role="row", role="gridcell"', 'ARIA roles', '-', 'Use on children to build out the hierarchical grid rows and cells.')
+  ],
+  Typography: [
+    apiRow('children', 'semantic HTML', 'required', 'Styles descendant headings, paragraphs, lists, blockquotes, and links without changing their HTML semantics.')
   ],
   VirtualList: [
     apiRow('itemSize', 'number | string', '-', 'Fixed size for items if all are uniform height/width. Used for virtual scroll calculation.'),
@@ -1222,10 +1242,6 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use for secondary details or workflows that stay visually connected to the current page.',
     distinction: 'Use Drawer for navigation or filters that slide in, and Dialog for a centered task that demands focus.'
   },
-  Sonner: {
-    when: 'Mount once as the live-region viewport that receives programmatically created toast notifications.',
-    distinction: 'Toast is the notification surface; Sonner is the container and announcement region that manages multiple toasts.'
-  },
   Spinner: {
     when: 'Use for a short wait when progress cannot be measured.',
     distinction: 'Use Progress when completion can be quantified and Skeleton when reserving the shape of loading content.'
@@ -1240,7 +1256,7 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   },
   Toast: {
     when: 'Use for brief, non-blocking feedback after an action or background event.',
-    distinction: 'Use Alert when the message must remain in the page. Mount Sonner once as the viewport that positions, stacks, and announces programmatic Toast instances.'
+    distinction: 'Use Alert when the message must remain in the page. The toast runtime creates its notification viewport automatically when needed.'
   },
   Toggle: {
     when: 'Use for a control that keeps an active state, such as pin, mute, or formatting.',
@@ -1253,6 +1269,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   Tooltip: {
     when: 'Use for a short, non-interactive explanation of an icon or compact control.',
     distinction: 'Use HoverCard for a richer preview and Popover for interactive floating content.'
+  },
+  Typography: {
+    when: 'Wrap hand-authored headings, paragraphs, lists, blockquotes, and links when they should share Lumen’s text color, spacing, and reading rhythm.',
+    distinction: 'Typography is a styling-only div: it does not choose heading levels, add article semantics, constrain line length, or render Markdown. Keep semantic HTML inside it. Use Prose for rendered Markdown or CMS content and its readable 65ch width.'
   },
   TreeGrid: {
     when: 'Use when hierarchical rows also need aligned columns, such as a file tree with size and status.',
@@ -1288,7 +1308,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
   ['ColorPicker', 'Forms', 'Captures a color token or brand swatch value.', '<ColorPicker name="brand" aria-label="Brand color" value="#2563eb" />'],
   ['DataTable', 'Data display', 'Styles dense tabular data and records.', '<DataTable><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Docs</td><td>Ready</td></tr></tbody></table></DataTable>'],
-  ['DatePicker', 'Forms', 'Provides a styled date input.', '<DatePicker name="launchDate" aria-label="Launch date" />'],
+  ['DatePicker', 'Forms', 'Selects a date from a polished, accessible Calendar popover.', '<DatePicker name="launchDate" aria-label="Launch date" />'],
   ['DateRangePicker', 'Forms', 'Groups start and end date controls for range selection.', '<DateRangePicker><DatePicker aria-label="Start date" /><DatePicker aria-label="End date" /></DateRangePicker>'],
   ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
   ['Direction', 'Layout', 'Controls directional layout and text flow.', '<Direction dir="rtl"><p>Localized content</p></Direction>'],
@@ -1335,7 +1355,6 @@ export const componentDocs: ComponentDoc[] = ([
   ['Skeleton', 'Feedback', 'Reserves space during loading states.', '<Skeleton style="height: 2.5rem" aria-label="Loading profile" />'],
   ['SkipLink', 'Navigation', 'Lets keyboard users bypass repeated navigation and move directly to main content.', '<SkipLink href="#main">Skip to main content</SkipLink>'],
   ['Slider', 'Forms', 'Captures numeric values across a bounded range.', '<Slider name="opacity" min="0" max="100" value="80" />'],
-  ['Sonner', 'Feedback', 'Provides the toast viewport for notifications.', '<Sonner aria-live="polite" />'],
   ['Spinner', 'Feedback', 'Indicates short loading states.', '<Spinner aria-label="Saving" />'],
   ['Switch', 'Forms', 'Toggles a single setting on or off.', '<Switch name="notifications" aria-label="Enable notifications" />'],
   ['Table', 'Data display', 'Styles semantic tables for records and comparisons.', '<Table><thead><tr><th>Package</th><th>Status</th></tr></thead><tbody><tr><td>Astro</td><td>Complete</td></tr></tbody></Table>'],
@@ -1351,7 +1370,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Tooltip', 'Overlays', 'Adds concise helper text to compact controls.', '<Tooltip><button aria-label="Save changes">Save</button><span role="tooltip">Save changes</span></Tooltip>'],
   ['Tree', 'Data display', 'Displays hierarchical navigation or object collections.', '<Tree><div role="treeitem" aria-expanded="true">src</div><div role="treeitem">index.ts</div></Tree>'],
   ['TreeGrid', 'Data display', 'Displays hierarchical rows with grid-like columns.', '<TreeGrid><div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div></TreeGrid>'],
-  ['Typography', 'Data display', 'Applies Lumen text rhythm to article content.', '<Typography><h1>Release notes</h1><p>Lumen now includes production documentation.</p></Typography>'],
+  ['Typography', 'Layout', 'Gives hand-authored semantic text consistent Lumen spacing, color, and reading rhythm.', '<article aria-labelledby="release-notes-title"><Typography><h2 id="release-notes-title">Release notes</h2><p>Lumen now includes production documentation.</p><ul><li>Live component examples</li><li>Framework-specific usage</li></ul></Typography></article>'],
   ['VirtualList', 'Data display', 'Frames long scrollable collections for virtualization adapters.', '<VirtualList style="--ui-list-height: 16rem"><div>Row 1</div><div>Row 2</div></VirtualList>'],
   ['LanguageToggle', 'Actions', 'Presents the current locale as a compact control for changing language.', '<LanguageToggle aria-label="Change language">EN</LanguageToggle>'],
   ['Particles', 'Layout', 'Adds a density-controlled decorative particle field behind foreground content.', '<div style="position: relative"><Particles density="medium" /><h2>Launch faster</h2></div>'],
@@ -1399,9 +1418,7 @@ export const componentDocs: ComponentDoc[] = ([
   example
 }))
 
-export const componentNavigationDocs = componentDocs
-
-export const componentCategories = [...new Set(componentNavigationDocs.map(component => component.category))].sort()
+export const componentCategories = [...new Set(componentDocs.map(component => component.category))].sort()
 
 // ---------------------------------------------------------------------------
 // React hooks reference
@@ -1881,15 +1898,17 @@ export function VerificationCode() {
   },
   {
     name: 'useRichTextEditor',
-    description: 'Provides rich text editing via document.execCommand. Returns props for the editable root and factory for toolbar command buttons.',
+    description: 'Provides rich text editing commands, values, shortcuts, active toolbar state, and HTML/text change details.',
     options: [
-      hookApiRow('onCommand', '(detail: { command: string }) => void', '-', 'Callback fired when a command is executed.')
+      hookApiRow('onChange', '(detail: { html: string, text: string }) => void', '-', 'Callback fired when editable content changes.'),
+      hookApiRow('onCommand', '(detail: { command, value?, executed }) => void', '-', 'Callback fired when a command is executed.')
     ],
     controller: [
       hookApiRow('rootProps', 'LumenProps<"section">', '-', 'Spread onto the editor root section.'),
       hookApiRow('rootRef', 'RefObject<HTMLElement>', '-', 'Ref to the editor root.'),
-      hookApiRow('executeCommand', '(command: string, root?) => boolean', '-', 'Execute a rich text command (bold, italic, insertUnorderedList, etc.).'),
-      hookApiRow('getCommandProps', '(command, props?) => LumenProps<"button">', '-', 'Returns props for a toolbar button bound to a specific command.')
+      hookApiRow('executeCommand', '(command: string, root?, value?) => boolean', '-', 'Executes a rich text command with an optional value.'),
+      hookApiRow('getCommandProps', '(command, props?) => LumenProps<"button">', '-', 'Returns props for a toolbar button bound to a command.'),
+      hookApiRow('getEditableProps', '(props?) => LumenProps<"div">', '-', 'Returns accessible editable props with shortcuts and change handling.')
     ],
     code: `import { Button, RichTextEditor } from '@santi020k/lumen-react'
 import { useRichTextEditor } from '@santi020k/lumen-react'
@@ -1904,7 +1923,7 @@ export function Editor() {
         <Button {...editor.getCommandProps('italic')} size="icon">I</Button>
         <Button {...editor.getCommandProps('insertUnorderedList')} size="icon">•</Button>
       </div>
-      <div contentEditable data-ui-rich-text-editable>
+      <div {...editor.getEditableProps()}>
         <p>Start writing...</p>
       </div>
     </RichTextEditor>
@@ -2257,7 +2276,6 @@ export const elementsApiReference: ElementsApiDoc[] = [
   })
 </script>
 
-<lumen-sonner aria-label="Notifications"></lumen-sonner>
 <lumen-button id="notify">Show toast</lumen-button>`
   },
   {

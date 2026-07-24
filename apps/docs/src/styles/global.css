@@ -1934,6 +1934,122 @@ pre code {
     0 18px 40px hsl(var(--ink) / 0.04);
 }
 
+[data-icon-preview] {
+  width: min(100%, 54rem);
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid hsl(var(--line));
+  border-radius: 1rem;
+  background: hsl(var(--surface) / 0.92);
+  box-shadow: 0 1rem 2.5rem hsl(var(--ink) / 0.08);
+}
+
+[data-icon-preview-header],
+[data-icon-preview-toolbar],
+[data-icon-preview-legend] {
+  display: flex;
+  align-items: center;
+}
+
+[data-icon-preview-header] {
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid hsl(var(--line));
+}
+
+[data-icon-preview-mark] {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: hsl(var(--brand-soft));
+  color: hsl(var(--brand));
+}
+
+[data-icon-preview-header] > div:nth-child(2) {
+  display: grid;
+  gap: 0.1rem;
+}
+
+[data-icon-preview-header] p {
+  margin: 0;
+  color: hsl(var(--ink-muted));
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+[data-icon-preview-header] strong {
+  color: hsl(var(--ink));
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+[data-icon-preview-status] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  color: hsl(var(--success));
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+[data-icon-preview-toolbar] {
+  gap: 0.65rem;
+  padding: 1.35rem 1.1rem;
+  background:
+    radial-gradient(circle at 0% 0%, hsl(var(--brand) / 0.08), transparent 45%),
+    hsl(var(--surface-muted) / 0.55);
+}
+
+[data-icon-preview-toolbar] .ui-input-group {
+  min-width: 12rem;
+  flex: 1 1 24rem;
+}
+
+[data-icon-preview-toolbar] .ui-button {
+  flex: 0 0 auto;
+}
+
+[data-icon-preview-legend] {
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  padding: 0.8rem 1.1rem;
+  border-top: 1px solid hsl(var(--line));
+  color: hsl(var(--ink-soft));
+  font-size: 0.75rem;
+}
+
+[data-icon-preview-legend] span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+[data-icon-preview-legend] .ui-icon {
+  color: hsl(var(--brand));
+}
+
+@media (max-width: 36rem) {
+  [data-icon-preview-toolbar] {
+    flex-wrap: wrap;
+  }
+
+  [data-icon-preview-toolbar] .ui-input-group {
+    flex-basis: 100%;
+  }
+
+  [data-icon-preview-legend] {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 @media (min-width: 64rem) {
   .component-doc-hero {
     grid-template-columns: minmax(0, 1.25fr) minmax(17rem, 0.75fr);

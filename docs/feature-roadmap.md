@@ -32,14 +32,14 @@ surface; React and Web Components expose the same class and data contracts.
 - Runtime hooks: `Schedule` emits `ui:schedule-change`, `VirtualList` emits
   `ui:virtual-list-range`, `ThemeBuilder` emits `ui:theme-export`, `RichTextEditor` emits
   `ui:editor-command`, `TagGroup` emits `ui:tag-remove`, forms emit `ui:validate`,
-  `ui:invalid`, and `ui:valid`, DataTable emits `ui:datatable-selection-change`, and Toast/Sonner
+  `ui:invalid`, and `ui:valid`, DataTable emits `ui:datatable-selection-change`, and Toast
   expose `ui:toast`, `ui:toast-update`, `ui:toast-dismiss`, and `ui:toast-action`.
 - Shared behavior helpers: `@santi020k/lumen-core` exports schedule slot/recurrence/persistence
   and resize helpers, saved data-view serialization/filter/sort/pagination/persistence helpers,
   virtual range math, pinned-column and selection helpers, server request adapters, schedule conflict
   helpers, and theme CSS import/export plus contrast scoring and palette tuning helpers.
 - Astro behavior hardening: `Select`, `Resizable`, `InputOTP`, `Calendar`, `DataTable`,
-  `DateRangePicker`, `ContextMenu`, form validation, and Toast/Sonner now have runtime-backed
+  `DateRangePicker`, `ContextMenu`, form validation, and Toast now has runtime-backed
   behavior, with idempotent binding for global listeners.
 - Astro component consistency: the catalog uses `resolveLumenAstroProps`, `surface="glass"` is a
   deprecated alias for `glass`, and the C1-C7 audit fixes are resolved except for the documented
@@ -65,7 +65,7 @@ surface; React and Web Components expose the same class and data contracts.
   `apiReferenceByComponent` map, so many components still rely only on common rows.
 - Visual regression coverage for new interactive components: `tests/visual/components.spec.ts`
   covers 20 component docs pages, but not newer interactive surfaces such as Calendar, Resizable,
-  InputOTP, Sonner, ContextMenu, DateRangePicker, Tree, TreeGrid, or VirtualList.
+  InputOTP, Toast, ContextMenu, DateRangePicker, Tree, TreeGrid, or VirtualList.
 - Migration guide for `private-website`: no Lumen repo guide currently explains how to replace the
   sibling project's duplicated UI system with these primitives.
 - DataTable event rename: `DataTable` still emits `ui:datatable-selection-change`; rename it to the

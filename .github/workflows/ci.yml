@@ -61,4 +61,6 @@ jobs:
 
       - name: Repository checks
         if: matrix.node-version == '22.x'
-        run: pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip
+        run: |
+          pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
+          pnpm run check:publish-dry-run

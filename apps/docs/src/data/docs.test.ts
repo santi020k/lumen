@@ -48,14 +48,15 @@ const exampleFileNames = readdirSync(examplesDirectory)
   .map(fileName => fileName.replace('.astro', ''))
 
 const sortByName = (names: readonly string[]) => [...names].sort((a, b) => a.localeCompare(b))
+const documentedComponentNames = lumenComponentNames.filter(name => name !== 'Sonner')
 
 describe('component docs snippets', () => {
-  test('document every canonical component exactly once', () => {
-    expect(componentDocs.map(component => component.name)).toEqual([...lumenComponentNames])
+  test('document every user-facing component exactly once', () => {
+    expect(componentDocs.map(component => component.name)).toEqual(documentedComponentNames)
   })
 
   test('include a live example file for every documented component', () => {
-    expect(sortByName(exampleFileNames)).toEqual(sortByName(lumenComponentNames))
+    expect(sortByName(exampleFileNames)).toEqual(sortByName(documentedComponentNames))
   })
 
   test('distinguish commonly confused component families', () => {
@@ -156,6 +157,15 @@ describe('component docs snippets', () => {
     expect(linkExample).toContain('href="/docs"')
     expect(skipLinkExample).toContain('href="#preview-title"')
     expect(formattedDateExample).toContain('datetime="2026-07-23"')
+  })
+
+  test('keeps Toast as the single documented notification entry point', () => {
+    const toastExample = readFileSync(join(examplesDirectory, 'Toast.astro'), 'utf8')
+
+    expect(componentDocs.some(component => component.name === 'Sonner')).toBe(false)
+    expect(toastExample).toContain('LumenToast?.create(detail)')
+    expect(toastExample).not.toContain('Sonner')
+    expect(toastExample).not.toContain("new CustomEvent('ui:toast'")
   })
 
   test('use the public data-ui runtime attribute contract', () => {

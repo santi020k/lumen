@@ -7,14 +7,45 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<InputGroup>
-  <Icon name="search" decorative />
-  <Input aria-label="Search docs" placeholder="Search docs" />
-</InputGroup>
+<div data-icon-preview>
+  <div data-icon-preview-header>
+    <div data-icon-preview-mark aria-hidden="true">
+      <Icon name="panels-top-left" decorative size="lg" />
+    </div>
+    <div>
+      <p>Project workspace</p>
+      <strong>Quick actions</strong>
+    </div>
+    <span data-icon-preview-status>
+      <Icon name="circle-check" decorative />
+      Synced
+    </span>
+  </div>
 
-<Button variant="secondary">
-  <Icon name="wand-sparkles" decorative />
-  Generate
-</Button>
+  <div data-icon-preview-toolbar>
+    <InputGroup>
+      <Icon name="search" decorative />
+      <Input aria-label="Search documentation" placeholder="Search documentation..." />
+    </InputGroup>
 
-<Icon name="circle-check" label="Synced" size="lg" />
+    <Button>
+      <Icon name="wand-sparkles" decorative />
+      Generate
+    </Button>
+
+    <Button aria-label="Open settings" size="icon" variant="outline">
+      <Icon name="settings-2" decorative />
+    </Button>
+  </div>
+
+  <div data-icon-preview-legend aria-label="Icon accessibility examples">
+    <span>
+      <Icon name="info" decorative />
+      Decorative icons inherit nearby labels
+    </span>
+    <span>
+      <Icon name="bell" label="Notifications" />
+      Standalone icons provide an accessible label
+    </span>
+  </div>
+</div>

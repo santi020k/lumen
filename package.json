@@ -25,7 +25,7 @@
     "ok": "pnpm install --frozen-lockfile && pnpm run validate",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only",
-    "release": "pnpm run build && pnpm run check:publish-dry-run && changeset publish",
+    "release": "pnpm run validate && changeset publish",
     "docs:dev": "pnpm --filter @santi020k/lumen-docs dev",
     "docs:build": "pnpm --filter @santi020k/lumen-docs build",
     "docs:preview": "pnpm --filter @santi020k/lumen-docs preview",
@@ -39,9 +39,6 @@
     "test:a11y": "playwright test -c playwright.a11y.config.ts",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots"
-  },
-  "dependencies": {
-    "uqr": "catalog:"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

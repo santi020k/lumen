@@ -5,7 +5,7 @@ import { Badge, Card, Icon, Input } from '@santi020k/lumen-astro'
 import {
   componentCategories,
   componentCollections,
-  componentNavigationDocs
+  componentDocs
 } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { toSlug } from '../../../lib/routes'
@@ -23,13 +23,13 @@ const categoryDescriptions: Record<string, string> = {
 
 const componentGroups = componentCategories.map(category => ({
   category,
-  components: componentNavigationDocs
+  components: componentDocs
     .filter(component => component.category === category)
     .sort((left, right) => left.name.localeCompare(right.name))
 }))
 
 const categoryId = (category: string) => toSlug(category).replaceAll(' ', '-')
-const glassCount = componentNavigationDocs.filter(component => component.glass).length
+const glassCount = componentDocs.filter(component => component.glass).length
 ---
 
 <DocsLayout
@@ -50,7 +50,7 @@ const glassCount = componentNavigationDocs.filter(component => component.glass).
       <dl class="components-stats" aria-label="Component library totals">
         <div>
           <dt>Primitives</dt>
-          <dd>{componentNavigationDocs.length}</dd>
+          <dd>{componentDocs.length}</dd>
         </div>
         <div>
           <dt>Categories</dt>
@@ -104,7 +104,7 @@ const glassCount = componentNavigationDocs.filter(component => component.glass).
           <kbd>/</kbd>
         </div>
         <p id="component-filter-status" aria-live="polite">
-          Showing all {componentNavigationDocs.length} components
+          Showing all {componentDocs.length} components
         </p>
       </div>
 

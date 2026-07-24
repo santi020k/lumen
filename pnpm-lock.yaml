@@ -129,10 +129,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      uqr:
-        specifier: 'catalog:'
-        version: 0.1.3
     devDependencies:
       '@changesets/changelog-github':
         specifier: 'catalog:'

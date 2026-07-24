@@ -309,6 +309,26 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-calendar td[aria-selected="true"]')
   })
 
+  test('enhances DatePicker into a custom Calendar disclosure', async () => {
+    const [component, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/DatePicker.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('data-ui-date-picker-native')
+    expect(component).toContain('data-ui-date-picker-trigger')
+    expect(component).toContain('data-ui-date-picker-popover')
+    expect(component).toContain('<Calendar')
+    expect(runtime).toContain('const initDatePickers = (scope: ParentNode): void =>')
+    expect(runtime).toContain('initDatePickers(scope)')
+    expect(runtime).toContain("native.dataset.uiEnhanced = 'true'")
+    expect(runtime).toContain("native.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(runtime).toContain('closeDatePicker(root, true)')
+    expect(styles).toContain('.ui-date-picker__icon')
+    expect(styles).toContain('.ui-date-picker__popover > .ui-calendar')
+  })
+
   test('ships DataTable as a static table enhanced with sorting and selection', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),

@@ -64,6 +64,15 @@ export {
   resolveLumenIconName
 } from './icons.js'
 export {
+  getLumenRichTextShortcut,
+  isLumenRichTextToggleCommand,
+  type LumenRichTextChangeDetail,
+  type LumenRichTextCommandDetail,
+  type LumenRichTextShortcutEvent,
+  type LumenRichTextToggleCommand,
+  lumenRichTextToggleCommands
+} from './rich-text.js'
+export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,

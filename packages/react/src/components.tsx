@@ -24,8 +24,10 @@ import {
   Fragment,
   isValidElement,
   useContext,
+  useEffect,
   useId,
   useMemo,
+  useRef,
   useState
 } from 'react'
 import { renderSVG } from 'uqr'
@@ -908,21 +910,46 @@ export const DataTable = ({
   </div>
 )
 
-export type DatePickerProps = ComponentPropsWithoutRef<'input'> & SurfaceProps & {
+export type DatePickerProps = Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'type' | 'value'> & SurfaceProps & {
+  defaultValue?: string
+  onValueChange?: (value: string) => void
   placeholder?: string
+  value?: string
 }
 
+const formatDatePickerDisplayValue = (value: string | undefined, placeholder: string): string => {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return placeholder
+
+  const date = new Date(`${value}T00:00:00.000Z`)
+
+  if (Number.isNaN(date.getTime())) return placeholder
+
+  return new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+    year: 'numeric'
+  }).format(date)
+}
+
+const stringifyDatePickerConstraint = (value: number | string | undefined): string | undefined =>
+  value === undefined ? undefined : String(value)
+
+/* eslint-disable complexity -- DatePicker coordinates controlled input, disclosure, Calendar, and native form contracts. */
 export const DatePicker = ({
   className,
+  defaultValue,
   disabled,
   glass = false,
   id,
   max,
   min,
   name,
+  onChange,
+  onInvalid,
+  onValueChange,
   placeholder,
   required,
-  type = 'date',
   value,
   ...props
 }: DatePickerProps) => {
@@ -930,11 +957,61 @@ export const DatePicker = ({
   const datePickerId = id ?? generatedId
   const triggerId = `${datePickerId}-trigger`
   const popoverId = `${datePickerId}-popover`
-  const selectedValue = value === undefined ? undefined : String(value)
-  const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
-  const placeholderText = placeholder ?? 'mm/dd/yyyy'
-  const maxStr = typeof max === 'string' ? max : typeof max === 'number' ? max.toString() : undefined
-  const minStr = typeof min === 'string' ? min : typeof min === 'number' ? min.toString() : undefined
+  const rootRef = useRef<HTMLDivElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const [internalValue, setInternalValue] = useState(defaultValue ?? '')
+  const [open, setOpen] = useState(false)
+  const selectedValue = value ?? internalValue
+  const hasSelectedValue = selectedValue !== ''
+  const placeholderText = placeholder ?? 'Choose a date'
+  const maxStr = stringifyDatePickerConstraint(max)
+  const minStr = stringifyDatePickerConstraint(min)
+  const accessibleLabel = props['aria-label']
+
+  useEffect(() => {
+    if (!open) return
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false)
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+
+      setOpen(false)
+
+      triggerRef.current?.focus()
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
+
+  const selectDate = (nextValue: string) => {
+    if (value === undefined) setInternalValue(nextValue)
+
+    onValueChange?.(nextValue)
+
+    if (inputRef.current) {
+      inputRef.current.value = nextValue
+
+      inputRef.current.dispatchEvent(new Event('input', { bubbles: true }))
+
+      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    setOpen(false)
+
+    globalThis.setTimeout(() => triggerRef.current?.focus())
+  }
 
   return (
     <div
@@ -945,42 +1022,91 @@ export const DatePicker = ({
         glass === 'strong' && 'ui-glass-strong',
         className
       )}
+      data-placeholder={hasSelectedValue ? undefined : 'true'}
       data-ui-date-picker
       data-ui-glass-track={glass ? true : undefined}
+      ref={rootRef}
     >
       <input
+        aria-hidden="true"
         className="ui-date-picker ui-date-picker__native"
         data-ui-date-picker-native
+        data-ui-enhanced="true"
         disabled={disabled}
         id={datePickerId}
         max={max}
         min={min}
         name={name}
+        onChange={event => {
+          if (value === undefined) setInternalValue(event.currentTarget.value)
+
+          onChange?.(event)
+        }}
+        onInvalid={event => {
+          event.preventDefault()
+
+          triggerRef.current?.setAttribute('aria-invalid', 'true')
+
+          triggerRef.current?.focus()
+
+          onInvalid?.(event)
+        }}
+        ref={inputRef}
         required={required}
-        type={type}
-        value={value}
+        tabIndex={-1}
+        type="date"
+        value={selectedValue}
         {...props}
       />
-      <div className="ui-date-picker__control" data-ui-date-picker-control hidden>
+      <div className="ui-date-picker__control" data-ui-date-picker-control>
         <button
           aria-controls={popoverId}
-          aria-expanded="false"
+          aria-expanded={open}
           aria-haspopup="dialog"
+          aria-label={accessibleLabel}
+          aria-required={required ?? undefined}
           className="ui-input ui-date-picker ui-date-picker__trigger"
           data-ui-date-picker-trigger
           disabled={disabled}
           id={triggerId}
+          onClick={() => { setOpen(current => !current); }}
+          onKeyDown={event => {
+            if (event.key !== 'ArrowDown') return
+
+            event.preventDefault()
+
+            setOpen(true)
+          }}
+          ref={triggerRef}
           type="button"
         >
-          <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>
+          <span data-ui-date-picker-value>{formatDatePickerDisplayValue(selectedValue, placeholderText)}</span>
+          <svg aria-hidden="true" className="ui-date-picker__icon" fill="none" viewBox="0 0 24 24">
+            <path d="M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
+          </svg>
         </button>
-        <div className="ui-date-picker__popover" data-state="closed" data-ui-date-picker-popover hidden id={popoverId} role="dialog">
-          <Calendar max={maxStr} min={minStr} value={selectedValue} />
+        <div
+          aria-label="Choose date"
+          className="ui-date-picker__popover"
+          data-state={open ? 'open' : 'closed'}
+          data-ui-date-picker-popover
+          hidden={!open}
+          id={popoverId}
+          role="dialog"
+        >
+          <Calendar
+            disabled={disabled}
+            max={maxStr}
+            min={minStr}
+            onValueChange={selectDate}
+            value={selectedValue}
+          />
         </div>
       </div>
     </div>
   )
 }
+/* eslint-enable complexity */
 
 export type DateRangePickerProps = ComponentPropsWithoutRef<'div'>
 export const DateRangePicker = ({ className, ...props }: DateRangePickerProps) => (
@@ -2276,12 +2402,22 @@ export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<'input'>,
   label?: ReactNode
 }
 export const FileUpload = ({ children, className, hint, id, inputClassName, label = 'Choose a file or drag it here', ...props }: FileUploadProps) => {
-  const inputId = id ?? 'ui-file-upload'
+  const generatedId = useId()
+  const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(':', '')}`
 
   return (
     <label className={composeClassName('ui-file-upload', className)} data-ui-file-upload htmlFor={inputId}>
       <input className={composeClassName('ui-file-upload__input', inputClassName)} data-ui-file-upload-input id={inputId} type="file" {...props} />
-      <span aria-hidden="true" className="ui-file-upload__icon" />
+      <svg
+        aria-hidden="true"
+        className="ui-file-upload__icon"
+        fill="none"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 16V4m0 0L8 8m4-4 4 4" />
+        <path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
+      </svg>
       <span className="ui-file-upload__prompt">{children ?? label}</span>
       {hint && <span className="ui-file-upload__hint">{hint}</span>}
       <span aria-live="polite" className="ui-file-upload__files" data-ui-file-upload-files />

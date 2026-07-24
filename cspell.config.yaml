@@ -15,8 +15,10 @@ words:
   - AnimatedPortrait
   - astrojs
   - Avenir
+  - blockquotes
   - buttonlink
   - ButtonLink
+  - Cascadia
   - cascader
   - Cascader
   - cascaders
@@ -36,6 +38,7 @@ words:
   - dogfooded
   - dropzone
   - esbuild
+  - eslintcache
   - fileupload
   - FileUpload
   - geolocation
@@ -68,6 +71,7 @@ words:
   - popconfirm
   - Popconfirm
   - postlens
+  - preheading
   - qrcode
   - QRCode
   - readwrite
@@ -89,6 +93,7 @@ words:
   - stepper
   - Stepper
   - stylesheet
+  - stylelintcache
   - swrow
   - textareas
   - toolbar

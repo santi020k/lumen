@@ -7,8 +7,12 @@ import {
   composeClassName,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  getLumenRichTextShortcut,
   getVirtualRange,
+  isLumenRichTextToggleCommand,
   type LumenComponentName,
+  type LumenRichTextChangeDetail,
+  type LumenRichTextCommandDetail,
   lumenComponentNames,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
@@ -36,7 +40,10 @@ type DataTableSortDirection = 'ascending' | 'descending' | 'none'
 type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
 interface RichTextCommandDocument {
-  execCommand?: (command: string) => boolean
+  execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
+  queryCommandEnabled?: (command: string) => boolean
+  queryCommandState?: (command: string) => boolean
+  queryCommandValue?: (command: string) => string
 }
 
 export interface ToastAction {
@@ -99,6 +106,7 @@ const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .
 const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
 const richTextEditorSelector = '[data-ui-rich-text-editor]'
 const richTextEditorCommandSelector = '[data-ui-editor-command]'
+const richTextEditorContentSelector = '[data-ui-rich-text-editable], [contenteditable="true"]'
 const scheduleSelector = '[data-ui-schedule]'
 const scheduleEventSelector = '[data-ui-schedule-event]'
 const scheduleSlotSelector = '[data-ui-schedule-slot]'
@@ -849,19 +857,87 @@ const installFormController = (): void => {
   observer.observe(document.documentElement, { childList: true, subtree: true })
 }
 
-const executeRichTextCommand = (root: HTMLElement, command: string): void => {
-  if (!command) return
+const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
+  if (control.dataset.uiEditorValue !== undefined) return control.dataset.uiEditorValue
+  if (
+    control instanceof HTMLInputElement
+    || control instanceof HTMLSelectElement
+    || control instanceof HTMLTextAreaElement
+  ) return control.value
 
+  return undefined
+}
+
+const syncRichTextCommandStates = (root: HTMLElement): void => {
   const commandDocument = document as unknown as RichTextCommandDocument
 
-  if (typeof commandDocument.execCommand === 'function') {
-    commandDocument.execCommand(command)
+  for (const control of root.querySelectorAll<HTMLElement>(richTextEditorCommandSelector)) {
+    const command = control.dataset.uiEditorCommand ?? ''
+    const value = getRichTextCommandValue(control)
+    let active = false
+
+    if (isLumenRichTextToggleCommand(command)) {
+      active = commandDocument.queryCommandState?.(command) ?? false
+      control.setAttribute('aria-pressed', String(active))
+    } else if (command === 'formatBlock' && value) {
+      const currentValue = commandDocument.queryCommandValue?.(command)
+        .replaceAll(/[<>]/g, '')
+        .toLowerCase()
+
+      active = currentValue === value.replaceAll(/[<>]/g, '').toLowerCase()
+    }
+
+    control.dataset.state = active ? 'on' : 'off'
+
+    if (typeof commandDocument.queryCommandEnabled === 'function') {
+      control.toggleAttribute('disabled', !commandDocument.queryCommandEnabled(command))
+    }
+  }
+}
+
+const dispatchRichTextChange = (root: HTMLElement): void => {
+  const editable = root.querySelector<HTMLElement>(richTextEditorContentSelector)
+  if (!editable) return
+
+  const detail: LumenRichTextChangeDetail = {
+    html: editable.innerHTML,
+    text: editable.textContent ?? ''
   }
 
-  root.dispatchEvent(new CustomEvent('ui:editor-command', {
+  root.dispatchEvent(new CustomEvent<LumenRichTextChangeDetail>('ui:editor-change', {
     bubbles: true,
-    detail: { command }
+    detail
   }))
+}
+
+const executeRichTextCommand = (
+  root: HTMLElement,
+  command: string,
+  value?: string
+): boolean => {
+  if (!command) return false
+
+  const commandDocument = document as unknown as RichTextCommandDocument
+  const executed = typeof commandDocument.execCommand === 'function'
+    ? value === undefined
+      ? commandDocument.execCommand(command)
+      : commandDocument.execCommand(command, false, value)
+    : false
+  const detail: LumenRichTextCommandDetail = {
+    command,
+    executed,
+    ...(value === undefined ? {} : { value })
+  }
+
+  root.dispatchEvent(new CustomEvent<LumenRichTextCommandDetail>('ui:editor-command', {
+    bubbles: true,
+    detail
+  }))
+
+  syncRichTextCommandStates(root)
+  dispatchRichTextChange(root)
+
+  return executed
 }
 
 const initRichTextEditors = (scope: ParentNode): void => {
@@ -873,17 +949,46 @@ const initRichTextEditors = (scope: ParentNode): void => {
   }
 
   for (const root of roots) {
+    if (root.dataset.uiEditorBound === 'true') continue
+
     root.dataset.uiEditorBound = 'true'
 
     for (const control of root.querySelectorAll<HTMLElement>(richTextEditorCommandSelector)) {
-      if (control.dataset.uiEditorCommandBound === 'true') continue
-
       control.dataset.uiEditorCommandBound = 'true'
 
-      control.addEventListener('click', () => {
-        executeRichTextCommand(root, control.dataset.uiEditorCommand ?? '')
-      })
+      const execute = () => {
+        executeRichTextCommand(
+          root,
+          control.dataset.uiEditorCommand ?? '',
+          getRichTextCommandValue(control)
+        )
+      }
+
+      if (control instanceof HTMLSelectElement) control.addEventListener('change', execute)
+      else control.addEventListener('click', execute)
     }
+
+    root.addEventListener('keydown', event => {
+      if (!(event.target instanceof HTMLElement)
+        || !event.target.closest(richTextEditorContentSelector)) return
+
+      const command = getLumenRichTextShortcut(event)
+      if (!command) return
+
+      event.preventDefault()
+      executeRichTextCommand(root, command)
+    })
+    root.addEventListener('input', event => {
+      if (!(event.target instanceof HTMLElement)
+        || !event.target.closest(richTextEditorContentSelector)) return
+
+      syncRichTextCommandStates(root)
+      dispatchRichTextChange(root)
+    })
+    root.addEventListener('keyup', () => { syncRichTextCommandStates(root); })
+    root.addEventListener('mouseup', () => { syncRichTextCommandStates(root); })
+
+    syncRichTextCommandStates(root)
   }
 }
 
@@ -1340,6 +1445,7 @@ const initDateRangePickers = (scope: ParentNode): void => {
   }
 }
 
+/* eslint-disable unicorn/consistent-function-scoping -- DatePicker callbacks intentionally close over each picker instance. */
 const initDatePickers = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, datePickerSelector)
   const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
@@ -1373,6 +1479,7 @@ const initDatePickers = (scope: ParentNode): void => {
 
       trigger.setAttribute('aria-expanded', 'false')
 
+      // eslint-disable-next-line no-use-before-define -- the paired callbacks reference each other.
       document.removeEventListener('click', handleOutsideClick)
     }
 
@@ -1429,6 +1536,7 @@ const initDatePickers = (scope: ParentNode): void => {
     })
   }
 }
+/* eslint-enable unicorn/consistent-function-scoping */
 
 export const enhanceLumenDateRangePickers = (
   scope: ParentNode = document
@@ -4818,6 +4926,8 @@ const elementDefinitions = lumenComponentNames.map(componentName => {
 export const enhanceLumenElements = (scope: ParentNode = document): void => {
   enhanceLumenDateRangePickers(scope)
 
+  enhanceLumenDatePickers(scope)
+
   enhanceLumenInputOTPs(scope)
 
   initLumenFields(scope)
@@ -4854,6 +4964,8 @@ export const defineLumenElements = (
 
   installDateRangePickerController()
 
+  installDatePickerController()
+
   installInputOtpController()
 
   installCalendarController()
@@ -4861,6 +4973,8 @@ export const defineLumenElements = (
 
 export const installLumenControllers = (): void => {
   installDateRangePickerController()
+
+  installDatePickerController()
 
   installInputOtpController()
 }

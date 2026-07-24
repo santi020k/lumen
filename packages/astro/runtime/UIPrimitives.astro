@@ -13,6 +13,10 @@
     exportThemeCss,
     exportThemeDesignTokens,
     exportThemeFigmaVariables,
+    getLumenRichTextShortcut,
+    isLumenRichTextToggleCommand,
+    type LumenRichTextChangeDetail,
+    type LumenRichTextCommandDetail,
     type LumenThemeTokens,
     lumenTokenNames
   } from '@santi020k/lumen-core'
@@ -23,6 +27,13 @@
   type ThemeBuilderMode = 'generated' | 'manual'
 
   type ThemeBuilderScheme = 'dark' | 'light'
+
+  interface RichTextCommandDocument {
+    execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
+    queryCommandEnabled?: (command: string) => boolean
+    queryCommandState?: (command: string) => boolean
+    queryCommandValue?: (command: string) => string
+  }
 
   const focusableSelector = [
     'a[href]',
@@ -2274,6 +2285,171 @@
     }
   }
 
+  const formatDatePickerValue = (value: string, placeholder: string): string => {
+    const date = parseCalendarDate(value)
+
+    if (!date) return placeholder
+
+    return new Intl.DateTimeFormat(getCalendarLocale(), {
+      day: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+      year: 'numeric'
+    }).format(date)
+  }
+
+  const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
+    const trigger = root.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
+    const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
+
+    if (!trigger || !popover || popover.hidden) return
+
+    popover.hidden = true
+
+    popover.dataset.state = 'closed'
+
+    trigger.setAttribute('aria-expanded', 'false')
+
+    if (restoreFocus) trigger.focus()
+  }
+
+  const syncDatePickerValue = (root: HTMLElement): void => {
+    const native = root.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
+    const value = root.querySelector<HTMLElement>('[data-ui-date-picker-value]')
+
+    if (!native || !value) return
+
+    const placeholder = native.getAttribute('placeholder') || 'Choose a date'
+
+    value.textContent = formatDatePickerValue(native.value, placeholder)
+
+    if (native.value) {
+      delete root.dataset.placeholder
+    } else {
+      root.dataset.placeholder = 'true'
+    }
+
+    if (native.validity.valid) {
+      root.querySelector<HTMLElement>('[data-ui-date-picker-trigger]')?.removeAttribute('aria-invalid')
+    }
+  }
+
+  const openDatePicker = (root: HTMLElement): void => {
+    const native = root.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
+    const trigger = root.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
+    const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
+    const calendar = root.querySelector<HTMLElement>('[data-ui-calendar]')
+
+    if (!native || !trigger || !popover || native.disabled) return
+
+    for (const other of document.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
+      if (other !== root) closeDatePicker(other)
+    }
+
+    if (calendar) {
+      calendar.dataset.uiCalendarValue = native.value
+
+      if (native.value) calendar.dataset.uiCalendarMonth = native.value.slice(0, 7)
+
+      if (native.min) calendar.dataset.uiCalendarMin = native.min
+      else delete calendar.dataset.uiCalendarMin
+
+      if (native.max) calendar.dataset.uiCalendarMax = native.max
+      else delete calendar.dataset.uiCalendarMax
+
+      renderCalendar(calendar)
+    }
+
+    popover.hidden = false
+
+    popover.dataset.state = 'open'
+
+    trigger.setAttribute('aria-expanded', 'true')
+
+    window.requestAnimationFrame(() => {
+      calendar?.querySelector<HTMLElement>('[data-ui-calendar-day][tabindex="0"]')?.focus({ preventScroll: true })
+    })
+  }
+
+  const initDatePickers = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
+      if (root.dataset.uiDatePickerBound === 'true') continue
+
+      const native = root.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
+      const control = root.querySelector<HTMLElement>('[data-ui-date-picker-control]')
+      const trigger = root.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
+      const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
+      const calendarInput = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+
+      if (!native || !control || !trigger || !popover || !calendarInput) continue
+
+      root.dataset.uiDatePickerBound = 'true'
+
+      native.dataset.uiEnhanced = 'true'
+
+      native.setAttribute('aria-hidden', 'true')
+
+      native.tabIndex = -1
+
+      control.hidden = false
+
+      const accessibleName = native.getAttribute('aria-label')
+      const labelledBy = native.getAttribute('aria-labelledby')
+      const describedBy = native.getAttribute('aria-describedby')
+
+      if (accessibleName) trigger.setAttribute('aria-label', accessibleName)
+
+      if (labelledBy) trigger.setAttribute('aria-labelledby', labelledBy)
+
+      if (describedBy) trigger.setAttribute('aria-describedby', describedBy)
+
+      syncDatePickerValue(root)
+
+      trigger.addEventListener('click', () => {
+        if (popover.hidden) openDatePicker(root)
+        else closeDatePicker(root)
+      })
+
+      trigger.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowDown') return
+
+        event.preventDefault()
+
+        openDatePicker(root)
+      })
+
+      calendarInput.addEventListener('change', () => {
+        native.value = calendarInput.value
+
+        syncDatePickerValue(root)
+
+        native.dispatchEvent(new Event('input', { bubbles: true }))
+
+        native.dispatchEvent(new Event('change', { bubbles: true }))
+
+        closeDatePicker(root, true)
+      })
+
+      native.addEventListener('change', () => syncDatePickerValue(root))
+
+      native.addEventListener('invalid', event => {
+        event.preventDefault()
+
+        trigger.setAttribute('aria-invalid', 'true')
+
+        trigger.focus()
+      })
+
+      native.form?.addEventListener('reset', () => {
+        window.setTimeout(() => {
+          syncDatePickerValue(root)
+
+          closeDatePicker(root)
+        })
+      })
+    }
+  }
+
   const initCarousel = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-carousel]')) {
       if (root.dataset.uiBound === 'true') continue
@@ -2463,6 +2639,91 @@
     }
   }
 
+  const richTextEditorContentSelector = '[data-ui-rich-text-editable], [contenteditable="true"]'
+
+  const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
+    if (control.dataset.uiEditorValue !== undefined) return control.dataset.uiEditorValue
+    if (
+      control instanceof HTMLInputElement
+      || control instanceof HTMLSelectElement
+      || control instanceof HTMLTextAreaElement
+    ) return control.value
+
+    return undefined
+  }
+
+  const syncRichTextCommandStates = (root: HTMLElement): void => {
+    const commandDocument = document as unknown as RichTextCommandDocument
+
+    for (const control of root.querySelectorAll<HTMLElement>('[data-ui-editor-command]')) {
+      const command = control.dataset.uiEditorCommand ?? ''
+      const value = getRichTextCommandValue(control)
+      let active = false
+
+      if (isLumenRichTextToggleCommand(command)) {
+        active = commandDocument.queryCommandState?.(command) ?? false
+        control.setAttribute('aria-pressed', String(active))
+      } else if (command === 'formatBlock' && value) {
+        const currentValue = commandDocument.queryCommandValue?.(command)
+          .replaceAll(/[<>]/g, '')
+          .toLowerCase()
+
+        active = currentValue === value.replaceAll(/[<>]/g, '').toLowerCase()
+      }
+
+      control.dataset.state = active ? 'on' : 'off'
+
+      if (typeof commandDocument.queryCommandEnabled === 'function') {
+        control.toggleAttribute('disabled', !commandDocument.queryCommandEnabled(command))
+      }
+    }
+  }
+
+  const dispatchRichTextChange = (root: HTMLElement): void => {
+    const editable = root.querySelector<HTMLElement>(richTextEditorContentSelector)
+    if (!editable) return
+
+    const detail: LumenRichTextChangeDetail = {
+      html: editable.innerHTML,
+      text: editable.textContent ?? ''
+    }
+
+    root.dispatchEvent(new CustomEvent<LumenRichTextChangeDetail>('ui:editor-change', {
+      bubbles: true,
+      detail
+    }))
+  }
+
+  const executeRichTextCommand = (
+    root: HTMLElement,
+    command: string,
+    value?: string
+  ): boolean => {
+    if (!command) return false
+
+    const commandDocument = document as unknown as RichTextCommandDocument
+    const executed = typeof commandDocument.execCommand === 'function'
+      ? value === undefined
+        ? commandDocument.execCommand(command)
+        : commandDocument.execCommand(command, false, value)
+      : false
+    const detail: LumenRichTextCommandDetail = {
+      command,
+      executed,
+      ...(value === undefined ? {} : { value })
+    }
+
+    root.dispatchEvent(new CustomEvent<LumenRichTextCommandDetail>('ui:editor-command', {
+      bubbles: true,
+      detail
+    }))
+
+    syncRichTextCommandStates(root)
+    dispatchRichTextChange(root)
+
+    return executed
+  }
+
   const initRichTextEditors = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-rich-text-editor]')) {
       if (root.dataset.uiBound === 'true') continue
@@ -2470,19 +2731,39 @@
       root.dataset.uiBound = 'true'
 
       for (const control of root.querySelectorAll<HTMLElement>('[data-ui-editor-command]')) {
-        control.addEventListener('click', () => {
-          const command = control.dataset.uiEditorCommand
+        const execute = () => {
+          executeRichTextCommand(
+            root,
+            control.dataset.uiEditorCommand ?? '',
+            getRichTextCommandValue(control)
+          )
+        }
 
-          if (!command) return
-
-          document.execCommand(command)
-
-          root.dispatchEvent(new CustomEvent('ui:editor-command', {
-            bubbles: true,
-            detail: { command }
-          }))
-        })
+        if (control instanceof HTMLSelectElement) control.addEventListener('change', execute)
+        else control.addEventListener('click', execute)
       }
+
+      root.addEventListener('keydown', event => {
+        if (!(event.target instanceof HTMLElement)
+          || !event.target.closest(richTextEditorContentSelector)) return
+
+        const command = getLumenRichTextShortcut(event)
+        if (!command) return
+
+        event.preventDefault()
+        executeRichTextCommand(root, command)
+      })
+      root.addEventListener('input', event => {
+        if (!(event.target instanceof HTMLElement)
+          || !event.target.closest(richTextEditorContentSelector)) return
+
+        syncRichTextCommandStates(root)
+        dispatchRichTextChange(root)
+      })
+      root.addEventListener('keyup', () => { syncRichTextCommandStates(root); })
+      root.addEventListener('mouseup', () => { syncRichTextCommandStates(root); })
+
+      syncRichTextCommandStates(root)
     }
   }
 
@@ -3469,27 +3750,39 @@
       const files = root.querySelector<HTMLElement>('[data-ui-file-upload-files]')
 
       const renderFiles = (): void => {
+        const selectedFiles = input.files ? [...input.files] : []
+
+        root.dataset.state = selectedFiles.length > 0 ? 'selected' : 'idle'
+
         if (!files) return
 
-        files.textContent = input.files ? [...input.files].map(file => file.name).join(', ') : ''
+        files.textContent = selectedFiles.length === 1
+          ? selectedFiles[0]?.name ?? ''
+          : selectedFiles.length > 1
+            ? `${selectedFiles.length} files selected`
+            : ''
       }
 
       input.addEventListener('change', renderFiles)
 
       root.addEventListener('dragover', event => {
+        if (input.disabled) return
+
         event.preventDefault()
 
         root.dataset.state = 'drag-over'
       })
 
-      root.addEventListener('dragleave', () => {
-        delete root.dataset.state
+      root.addEventListener('dragleave', event => {
+        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return
+
+        root.dataset.state = input.files?.length ? 'selected' : 'idle'
       })
 
       root.addEventListener('drop', event => {
-        event.preventDefault()
+        if (input.disabled) return
 
-        delete root.dataset.state
+        event.preventDefault()
 
         if (event.dataTransfer) {
           input.files = event.dataTransfer.files
@@ -3924,6 +4217,8 @@
 
     initCalendars(scope)
 
+    initDatePickers(scope)
+
     initCodeCopy(scope)
 
 
@@ -4001,6 +4296,12 @@
         }
       }
 
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
+        if (!root.contains(target)) {
+          closeDatePicker(root)
+        }
+      }
+
       for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
         if (!menu.contains(target)) {
           closeContextMenu(menu)
@@ -4021,6 +4322,10 @@
 
       for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
         closeSelect(root)
+      }
+
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
+        closeDatePicker(root, root.contains(document.activeElement))
       }
 
       for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
