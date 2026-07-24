@@ -3,6 +3,9 @@ import * as z from 'zod'
 
 import { loadLumenData } from './data.js'
 import {
+  diagnose,
+  diffCatalog,
+  getCatalogManifest,
   getComponent,
   getMeta,
   getRecipe,
@@ -88,6 +91,45 @@ const metaOutputSchema = z.strictObject({
   })
 })
 
+const catalogManifestSchema = z.strictObject({
+  components: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/)),
+  recipes: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/))
+})
+
+const catalogChangesSchema = z.strictObject({
+  added: z.array(z.string().trim()),
+  changed: z.array(z.string().trim()),
+  removed: z.array(z.string().trim()),
+  unchanged: z.array(z.string().trim())
+})
+
+const catalogManifestOutputSchema = z.strictObject({
+  catalogHash: z.string().trim().regex(/^[a-f0-9]{64}$/),
+  manifest: catalogManifestSchema,
+  schemaVersion: z.int().min(1)
+})
+
+const catalogDiffOutputSchema = z.strictObject({
+  components: catalogChangesSchema,
+  currentCatalogHash: z.string().trim().regex(/^[a-f0-9]{64}$/),
+  recipes: catalogChangesSchema,
+  unchanged: z.boolean()
+})
+
+const diagnosticsOutputSchema = z.strictObject({
+  checks: z.array(z.strictObject({
+    message: z.string().trim(),
+    name: z.string().trim(),
+    status: z.enum(['fail', 'pass'])
+  })),
+  frameworkCoverage: z.strictObject({
+    astro: z.int().min(0),
+    elements: z.int().min(0),
+    react: z.int().min(0)
+  }),
+  status: z.enum(['healthy', 'issues'])
+})
+
 const structuredData = (data: unknown): Record<string, unknown> =>
   typeof data === 'object' && data !== null
     ? data as Record<string, unknown>
@@ -118,7 +160,7 @@ export const createLumenServer = (): McpServer => {
     { name: '@santi020k/lumen-mcp', version: data.meta.serverVersion },
     {
       instructions:
-        'Read lumen://meta and lumen://rules before generating Lumen code. Search or list the catalog, ' +
+        'Read lumen://meta, lumen://diagnostics, and lumen://rules before generating Lumen code. Search or list the catalog, ' +
         'then inspect the selected component for the target framework at usage detail before requesting source.'
     }
   )
@@ -225,6 +267,48 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerTool(
+    'lumen_get_catalog_manifest',
+    {
+      annotations: readOnlyAnnotations,
+      description:
+        'Return stable per-component and per-recipe fingerprints that a client can retain for later change detection.',
+      inputSchema: z.strictObject({}),
+      outputSchema: catalogManifestOutputSchema
+    },
+    () => toMcpResult(getCatalogManifest())
+  )
+
+  server.registerTool(
+    'lumen_diff_catalog',
+    {
+      annotations: readOnlyAnnotations,
+      description:
+        'Compare a previously retained Lumen catalog manifest with the current snapshot and report added, changed, removed, and unchanged entries.',
+      inputSchema: z.strictObject({
+        baseline: catalogManifestSchema
+          .meta({ description: 'Manifest previously returned by lumen_get_catalog_manifest.' }),
+        baselineCatalogHash: z.string().trim().regex(/^[a-f0-9]{64}$/)
+          .optional()
+          .meta({ description: 'Optional previous catalog hash for a fast unchanged check.' })
+      }),
+      outputSchema: catalogDiffOutputSchema
+    },
+    (args) => toMcpResult(diffCatalog(args))
+  )
+
+  server.registerTool(
+    'lumen_diagnose',
+    {
+      annotations: readOnlyAnnotations,
+      description:
+        'Run deterministic snapshot integrity checks and report framework coverage. Useful when testing a new MCP connection.',
+      inputSchema: z.strictObject({}),
+      outputSchema: diagnosticsOutputSchema
+    },
+    () => toMcpResult(diagnose())
+  )
+
+  server.registerTool(
     'lumen_get_tokens',
     {
       annotations: readOnlyAnnotations,
@@ -256,6 +340,26 @@ export const createLumenServer = (): McpServer => {
       mimeType: 'application/json'
     },
     (uri) => jsonResource(uri, getMeta().data)
+  )
+
+  server.registerResource(
+    'lumen-catalog-manifest',
+    'lumen://catalog-manifest',
+    {
+      description: 'Stable component and recipe fingerprints for catalog change detection.',
+      mimeType: 'application/json'
+    },
+    (uri) => jsonResource(uri, getCatalogManifest().data)
+  )
+
+  server.registerResource(
+    'lumen-diagnostics',
+    'lumen://diagnostics',
+    {
+      description: 'Lumen MCP snapshot integrity checks and framework coverage.',
+      mimeType: 'application/json'
+    },
+    (uri) => jsonResource(uri, diagnose().data)
   )
 
   server.registerResource(

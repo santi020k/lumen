@@ -55,7 +55,7 @@ args = ["-y", "@santi020k/lumen-mcp"]
 
 Use this sequence:
 
-1. Read `lumen://meta` to identify the catalog hash and bundled package versions.
+1. Read `lumen://meta` and `lumen://diagnostics` to identify and verify the snapshot.
 2. Read `lumen://rules`.
 3. Search for the use case with `lumen_search`, passing the target `framework` when known.
 4. Inspect the selected framework with `lumen_get_component` and `detail: "usage"`.
@@ -63,6 +63,7 @@ Use this sequence:
 6. Read related multi-component guidance with `lumen_get_recipe`.
 7. Request `detail: "source"` only when the usage contract is insufficient.
 8. Read `lumen://tokens` before introducing custom styling.
+9. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades to identify contracts that need refreshing.
 
 Example framework-aware component request:
 
@@ -78,7 +79,8 @@ Example framework-aware component request:
 ```
 
 Stable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,
-`lumen://meta`, `lumen://components/{name}`, and `lumen://recipes/{name}`. See
+`lumen://meta`, `lumen://catalog-manifest`, `lumen://diagnostics`,
+`lumen://components/{name}`, and `lumen://recipes/{name}`. See
 [`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,
 local repository, and programmatic examples.
 
@@ -275,7 +277,7 @@ uses these CustomEvents:
 
 | Event | Target | Detail | Fires When |
 | --- | --- | --- | --- |
-| `ui:datatable-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |
+| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |
 | `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |
 | `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
 | `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |

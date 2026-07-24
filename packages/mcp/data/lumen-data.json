@@ -1,4 +1,139 @@
 {
+  "catalogManifest": {
+    "components": {
+      "Accordion": "c7d8da12f7102767ae5000d0f1e3da3524fb16b25720bf727f706cdfabcf49cf",
+      "Alert": "1c897c7ff016e1bf93fefd33e9873913c1bfc0aa7e285c1c37a973bb67d240da",
+      "AlertDialog": "56de9c0ad7a39e8ddb807668d4570e289417c093629b5cd6d78b32b2c550f685",
+      "Agenda": "df923ba94486b4c1d4e81277e6ee4e640d76db042f0d6d258421c3646146c348",
+      "AspectRatio": "a647819554f9a307c7844f8f25c7b67d20df06223bd8559a6e2e128daf05d160",
+      "Attachment": "10d88945a83c18e86d8c804d651b29a2fd225e516f2460575a9c4e1c73e5e83d",
+      "Autocomplete": "96b4766d2100e0dba889299bb5ee6e2ec3b3cbecdff57474eeca19e126a586c8",
+      "Avatar": "425c8e5fed0fa84cbd0882fb576cc0210c837a2e111aa15ebff1a2df31737aee",
+      "BackToTop": "54c75c3caf7a2a5959e2b3410f6514da6254c3b7aa483f90545876402cd4fe84",
+      "Badge": "fdb58cbf2d6d074f0c1551e3676873f1d8dc81923ccb94e3b294588947fe1ca9",
+      "Breadcrumb": "fc193548a7a2b0f4a6e2069fdb238ed093bf1097d05af98f1c921ec629a3017a",
+      "Bubble": "c6e71ea78b4d05457be002a753006d1f473bb0aca34fecb4b694ce02a8efe19e",
+      "Button": "461f87363db9fb74e967f0cfeb6513c95bbe5ec7ebb62b5754c16c013f214f86",
+      "ButtonGroup": "6783c762264b729a9c55560435462a5440671ec7e4a2db383801ea576f41949f",
+      "Calendar": "830679b5c32bc2a800aa9968ea6dace3f1adbdcd70c986dab01008f6f5a0bb99",
+      "Callout": "e8e29b199ce2fd6c4212f49db1cc7ffc17da939daff38e41cf2d12c6d345fc3c",
+      "Card": "6ca649403cebc8cb50316610d8674976bb6b47398aa5666ade0a157adc3a5077",
+      "Carousel": "01708832689d92314a3f3f6318395f081c118106cc999cef5377ab4d35304cf8",
+      "Chart": "7ca624c0a5810422d8bfa4e634ace07d05d25fe2811964ae5d6020ed50205d82",
+      "Checkbox": "5cdd367561e9e7cf05415322b75716803e001f6743b87ef1c17716981af27648",
+      "Collapsible": "5bfc9dbc682be7e02cf7ab12165abf9b6305776d645dfceccac9adf595d94d23",
+      "Code": "28e59ae2bec10af7a7da85a416ef70f08818cad721d449d462ac40b090fc1769",
+      "Combobox": "30b10f3bd64a0804094464f402676963a4470703d6553a36aac801c82492447c",
+      "Command": "3fdb115c504831c555e82a04d7e8be15f079b6285f9c27b7ee0fb1f9739cb1f3",
+      "ContextMenu": "a2821d551201adb86c8e7d2a184378624aec42add6f81199a96569c1f371faa7",
+      "ColorPicker": "5132cd0df9239831ed1ffd35abf9a86b97e1e672e2f87cc2d9fb910fc5f604da",
+      "DataTable": "ef4cae9f1c9d177726fb1d871629cc15a1f5fbe2fdbafb91aa5ad9422d3ac284",
+      "DatePicker": "15f768892bbdba4200d051b4c78269d0916e66e7b9de07003c49c4e0e9dde2b1",
+      "DateRangePicker": "7b7805e2a6e3e29952ab133a65787dbdeb6021329c6f2021c95e385c01e4da61",
+      "Dialog": "71185d99bde5f7810beabc994c4d4bc7143dc4de51e7f52dc4bff3033616afe9",
+      "Direction": "d3148872512d4086882ae66d72cea56e35edba6a16d970d10ad71a89b7ec055b",
+      "Drawer": "e907b4832eb76f91f16d3b855ffde6bd6cd2ebe1fc57e657111f386a5ed8dfff",
+      "DropdownMenu": "f7e9b17851fca69b3546d184624d3335f0925efe96a88444ebf2fcb2be0a18fb",
+      "Empty": "84c9eebd793ddc1e7ed36e71c9d4a9358f2263f9fc9b9ce11b69c5e113d4e83e",
+      "Eyebrow": "75a4bfbe2cd0703450dd88ac1c0ec794bf6ef184bbf7e2c58447f3b92443fa4e",
+      "Field": "a03266d209e16d020639049692df5fa33ef2149251ac6f61e9758e5764b1cf07",
+      "FloatingBadge": "75bc994ace118a32f9dcea07b84b892c3d16e8bb2dfbad282d42eb1a9c0bf4c1",
+      "FormattedDate": "029f5249e446c9ec2c88cf600fbccfa45c4d2270840428c3ff9e180eb0bdf396",
+      "HoverCard": "7a3821b9ff091861aac5b2d44d2bdf0ceed7bfcd6d61cc326af82b35216fad63",
+      "Icon": "2292bac09d53ec55875cfc3bb942f1a375ffa1197ed9a993e1b416bcec8fee9f",
+      "Image": "d89b4b8c9a21d33900bc4c3b07d688049ac11f7b4c4da13684048f7b057f2660",
+      "Input": "2acd645c2faaea6de2d91ed44cecad7c861b49e3343d8f60795b4b95a180a816",
+      "InputGroup": "22a3ca00253f0a4bc1d6f82bd59d4b22116cf455b76f4cc21d086902b667426e",
+      "InputOTP": "355a55b91fead7725504ecb968bc26ef25b17a458b7adff81c3bd66911797d3a",
+      "Item": "1e2deabd9a701338a74e8ba85a476a3e3b1619238f45b7578bdf1cbc4decea1b",
+      "Kbd": "2ca1db94e3ec2b5958bdb7588ba62762dff48177ab4e3687961ce7d923284b59",
+      "Label": "39a6d42c282f462c817e4fe7bdbad74da699115d0c165f1bedfac5d79aeb02a4",
+      "Link": "43902c7aae5c9326662a5a372313fc436f46ea9e69e6860e7bb822959fbaf7bf",
+      "Marker": "854cfde64d33a557c716caf24323e1a5f3933370269b552ad871ee279a3437c4",
+      "Menubar": "b4c33f0aed541df09a9179188bb627df43a11b472a8a420c7dd7a025d6531190",
+      "Message": "e98792ab1f2c188ded20ec3e5255729d187bab3ad6d1663c8ae625fe2a01ef86",
+      "MessageScroller": "49d0a9e979836b2a162ae8c5a38653d81124d663663c69e2e87aa7d968d5cfb5",
+      "NativeSelect": "7cb2e5f2c8214980cc6fd9105d36d14f649e353d37c9880514dbfdd1d1559838",
+      "NavigationMenu": "683ec07e16c87615ae6991224c66087c6c3d849ab4d9f267ba3255be1ce6cc1b",
+      "NumberField": "858d6553c3979d8c68e1590c599a60c8b8e163497311e21af980c8092eb0a16f",
+      "Pagination": "aca4e2be32b251b10f529b1f83cecf740372aa68468139fb883907d64a7476f3",
+      "PhoneInput": "e668e02f74c819796f6bfc240d7886ffee7e2eeb3a26a6d530fd2cc686fd1bf1",
+      "Pill": "71b36e7b8e87b859719e9a1a2790c889969671c92c49815a6574df026c63fed8",
+      "Popover": "95b7a3216845088369bb6062ccf6b552f00bc93fede9d167de6f6f2969137daa",
+      "Progress": "76773eefb50c1efc753ac61c08d255e1c8fdcdacf55c02cf99b30c2b942417e2",
+      "Prose": "0bbfb540849143b3c6a36d3aa24c740b69bed8439b47776014e583d86cc735d6",
+      "RadioGroup": "c9ff08c7bcac3d908815460aef9cdf44a43d5fa3e5d9bfca50e25c1e0b1f42aa",
+      "Resizable": "bac78e0cdf411cbba651004b730f8f562218ab5246e84b205c5055e44803682b",
+      "RichTextEditor": "ceb794f34588f3f2d93981e8764a2e07040306baa5854fe02b9f7850398310db",
+      "ScrollArea": "66fc0a8ad5407db9d8f99574aec54aff8a2adbbf5b0154d0cc2e344e439df5a1",
+      "Schedule": "79a5c3849e4b9971aa5b219e606cea86ba80d086fb41481a0cc21cd253c762a7",
+      "SearchField": "c38cedc3190f74bb2437abafe5b928c56264466752f80594fde7a1e952143c94",
+      "Select": "c3a992d86bed002e1daf54438dd933d1f92bad302eaa7a3fa774bbddb74c3a70",
+      "Separator": "61ab4541509814a94efb2f4b4977d7bc44623ddc8f3fd4c5f6f0fc70ea24e57d",
+      "Sheet": "a5d47d6f2c2fbbc8cc8e60e76919226f2ee604d1f335606f8497edd0b117507b",
+      "Sidebar": "f57bdb7f6bcab9d09dc9b66a1796ce1e32a9bf48219cf8606a0344731aa03c08",
+      "Skeleton": "45cd6daaec25538d727b42b44c3720c863be55f82f0a5b3e878ba2a0eb3e4edc",
+      "SkipLink": "f693d527f60cd75b7207b5513a19315e9cff42ed031d9d684dd7c85014c34ba3",
+      "Slider": "4d3d14e75ab0d9bfb049064920ea69870b4f9121be5e3c46beec0075c1df3174",
+      "Sonner": "03f3783ecf4a1bb4618e1c717824ee9ba3725526153786af1ef81da33f32606a",
+      "Spinner": "b874ae10662292840545772f2c26fd7fbf87ae28327c015a6c99110b2cb15f52",
+      "Switch": "95a28bc794bcdf53f2ae6bd9ff13b391d866cd6072873df316612e1460fcc886",
+      "Table": "0f1fe80e9b23ed28e5e1725b01c746529512d91fd1607b3f6d53f367ab06f839",
+      "Tabs": "a14bbe03ba453485ae970a2c7da4b46b8efdefa021a554be3d44ad5d237d2289",
+      "TagGroup": "46c0f0e8e64e95b8799b3933bd52df9e449b7106cce8a02f5c49bd5aad9a85d4",
+      "Textarea": "db03b9df2bd79a56932c09f4555c95c976f002f33226d4aa82059abbe0377e03",
+      "ThemeBuilder": "bbfe52a5566b544d1f1b259c8778b78ac2fa11a2fa5af685e0ffbb52384ff90c",
+      "ThemeToggle": "01b1f8cef22e0c2818a1b6b688833c1535f2d12381e5c7a775b356082c058e26",
+      "TimeField": "4ef6317c830af26d6ec189485f1d8901abe5765d9e714e0e4bcfc72c61acf50c",
+      "Toast": "ef1d6a961db16ff79cf61914c1f6040c473057f37cdb788ff48219a05892a943",
+      "Toggle": "c0408553f2209e5cd47472622ca79beba459c6061ff55b25cdc3b85c4b3a6e19",
+      "ToggleGroup": "bb82e30fe45821b59aa788cb163c72d7723c4c94f6464a16a84005ee00aebdab",
+      "Tooltip": "bd521c1640c5a90b8d7eeaf6f21e1285dbcf27b8f8f55298252d4c1382db155d",
+      "Tree": "aa7e00ede60c84fd78a37a61375a2dba6dc1f376620865a9234ff5fc345a86c7",
+      "TreeGrid": "6eb59fff853cc2221eed3925a9e5b0f282308b1352a5ccadfa90536b61ed7622",
+      "Typography": "692f2a6df3fe3a0b54a70a5a939d13a73d1bc93be6f3c06629c3b5d742681a05",
+      "VirtualList": "9e3e42a3d2991bdc77471c6c312b3ba0a4761782733eaa784ef51822863d6da1",
+      "LanguageToggle": "9836866a1efdac6d5dd09f85647bcb60d661884113c807030a29a40d0d4c3708",
+      "Particles": "d41f337ab1cc5f329651fa78c9a7a697f2d76ff5d81d9f97b7df3cef7a130882",
+      "AnimatedNumber": "f1301fa05e60ee3701bb6f4845167d3956e35b34082f0a007a64eeb3829eeb3c",
+      "RevealGroup": "fa6d0256a64a6cfcb9c7a41c9150fd6612f3dff8a221ccd4c8490ede1a8032f3",
+      "ScrollReveal": "833c51005852cec2f8feb9ebc9a35fa2edde0c489c7d821c5bfe8500051a6a72",
+      "Stat": "d763e9eb85d5cc8197e2be8bcb77e97a78e355d81cc8331906e05d4731c2c060",
+      "Meter": "53461cc1804f08c63c1d0468f4169fa612696175b785946300fb63478df23330",
+      "Note": "17c44fe3a3b08193ebba56b20d3d04f90f906b477e24a21c059b8531eac1aa16",
+      "Rating": "ec00e1b7f39a38884922bd48490b1dd5625b2eb41ed5265cf83600f7705180b5",
+      "Timeline": "93ffea4de7b9007c8a2badc99cf965fe7d974ae4ba5ad01c275183af5c3d6d79",
+      "AnimatedLogo": "046dcec279b1ae74704cf9aaa79db833cfc54355b16cf5687636babcf61e1ea1",
+      "AnimatedPortrait": "c27cba3c8006b540db2d4a59eb765ccfc71496b7ff2bc893178c735f520971c0",
+      "ButtonLink": "a9bb11e3f76bb85ba8e62b1224b61cd1beee1694e3d34a669102fecbec33c9a1",
+      "CoverImage": "ad544d79d7b307c6c20f67bb4cd5b6346bc31d4c0695e1671a0d4f658e163945",
+      "GradientDivider": "9d694881c6563b2bdecbb6dc7a814552f661344665d9f18bee10a942e871726c",
+      "Stepper": "2019a4349f889190622e35eb7f112d5a5a719e081e069c1697fceceac6d09753",
+      "FileUpload": "cef1996987660ec4c0567b7a72c0ee7624fdf85a53fed0ee2a9be763b08a7c52",
+      "Tour": "4524df4a7031476d97ce993eae286d0b09bbf595ab8ee3b76824da7de4dbcb28",
+      "Anchor": "9dac409b4750fba874aa9cf6ba9c35b5d08620332b157ccf6d7a279e43f1bea0",
+      "Segmented": "4a49a797d085dc49c700fd9733957b7bc323fd6f02bad177f70cf114e7bb806a",
+      "Toolbar": "84d80d37c313cdd8075bd949c685a24c588677686eca49b1c68b5d81a5f4e3bc",
+      "Descriptions": "41bc298100481010bf49f3ce3e144f4d479b83a5a9b5b21c54b30f85fb92a21d",
+      "Popconfirm": "c9c780c91646b450f362f137e8104b0a2f9bd4800c88b2c475c0a3f3561d8f2f",
+      "Transfer": "f9d7784eaa2c8a8079b13594ccc7d71dac94f26f27d9d0fa706db49e2291103b",
+      "Cascader": "b3fde0c5c0aba67599a95c33e44859a7aa632374d9c12e35c4e3b25df83dc9e6",
+      "TreeSelect": "533a069d331a46990cf1db444686e0c3461105cdc443d6d0087564671828606b",
+      "Mentions": "0c2769cacdb66c4dbd4f3d9e64ef03d5639c3c8b7d51159a896d7a4f6b1eb0f8",
+      "QRCode": "aa3bc3e1aa519831141d02fff2d2fa2a183549baa6b436f7cd257fd95e810ba3",
+      "Watermark": "f26df36c978d585f2d0aca7ac6d8b232a7c170605687efe84c00315ad4868028",
+      "Affix": "6682be6f1b4a9721a43df764f6d6f15795b7a8b77ff20da7ffcb61406881d6ff",
+      "SpeedDial": "98f85edcc3bbef7a8c8c0bcd55327f63e5dede472dc5aa81b0da330ddc948447"
+    },
+    "recipes": {
+      "all-components": "517dfb03b8ca5483f5412a00ca2a151763d8d4429a44e398d4d74733793f0fd7",
+      "advanced-fields": "3c6acc487663c9515f4956899e276ec8bb351b7943c2801be8febe657c863c20",
+      "scheduler": "fe25905d95e8d4294df9075e47ee9257d7db8e6542a3ac81272c4dee2ea1fdc0",
+      "data-collections": "fbbc09e60caed2449b5b904f9f1432278b52c8d28e7fe22de30af21208a4dfaf",
+      "theme-builder": "8de1d5f902b728af947f57e0f3667a5a8991ef71755bca7d985cdcaec9572252",
+      "rich-text-editor": "3c47135e8e10890e1d41b1878fdd497a5c87c34c5663821cf4005602cd7adbc9"
+    }
+  },
   "components": [
     {
       "apiReference": [
@@ -691,6 +826,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the chronological headings and semantic event list rendered inside the agenda surface.",
+          "values": "Astro slot | ReactNode | child nodes"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -745,6 +886,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -2320,6 +2462,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Groups related actions while preserving each child button’s native semantics.",
+          "values": "button controls"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -2372,6 +2520,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -2858,6 +3007,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the emphasized explanation, caveat, or instruction.",
+          "values": "phrasing or flow content"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -2908,6 +3063,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -3369,6 +3525,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes the chart presentation while the consumer owns the visualization data and accessible description.",
+          "values": "header, SVG or canvas, and optional caption"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -3423,6 +3585,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -3648,6 +3811,18 @@
     {
       "apiReference": [
         {
+          "attribute": "open",
+          "defaultValue": "false",
+          "description": "Uses the native details open state to show the collapsible content.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Requires a summary trigger followed by the content controlled by native details behavior.",
+          "values": "summary and flow content"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -3699,6 +3874,8 @@
         "elements": {
           "attributes": [
             "data-ui-collapsible",
+            "open",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -4227,7 +4404,7 @@
             "mode": "built-in",
             "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
           },
-          "example": "<Combobox label=\"Framework\" list=\"framework-options\" options={[\"Astro\", { label: \"React\", value: \"react\" }, { label: \"Vue\", value: \"vue\", disabled: true }]} placeholder=\"Search package\" />",
+          "example": "<Combobox label=\"Framework\" list=\"framework-options\" options={[\"Astro\", \"React\", \"Vue\"]} placeholder=\"Search package\" />",
           "importStatement": "import { Combobox } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -5208,9 +5385,15 @@
       "runtimeEvents": [
         {
           "detail": "{ values: string[] }",
-          "name": "ui:datatable-selection-change",
+          "name": "ui:data-table-selection-change",
           "target": "DataTable root ([data-ui-datatable])",
           "when": "Fires after a selectable DataTable row checkbox, select-all checkbox, or form reset changes the selected row values."
+        },
+        {
+          "detail": "{ values: string[] }",
+          "name": "ui:datatable-selection-change",
+          "target": "DataTable root ([data-ui-datatable])",
+          "when": "Deprecated compatibility alias for ui:data-table-selection-change; planned for removal in Lumen 1.0."
         }
       ]
     },
@@ -6692,6 +6875,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes the empty-state explanation and recovery action.",
+          "values": "heading, description, and optional action"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -6748,6 +6937,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -6836,6 +7026,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the short category or context label that precedes a heading.",
+          "values": "phrasing content"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -6884,6 +7080,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -7283,6 +7480,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the compact overlaid notification value.",
+          "values": "number | short text"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -7331,6 +7534,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -7352,7 +7556,7 @@
         },
         "react": {
           "available": true,
-          "example": "<span style=\"position: relative\"><Button aria-label=\"Inbox\">Inbox</Button><FloatingBadge style=\"position: absolute; right: -0.5rem; top: -0.5rem\">12</FloatingBadge></span>",
+          "example": "<span style={{ position: 'relative' }}><Button aria-label=\"Inbox\">Inbox</Button><FloatingBadge style={{ position: 'absolute', right: '-0.5rem', top: '-0.5rem' }}>12</FloatingBadge></span>",
           "importStatement": "import { Button, FloatingBadge } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -7424,6 +7628,18 @@
     {
       "apiReference": [
         {
+          "attribute": "datetime",
+          "defaultValue": "required",
+          "description": "Sets the machine-readable date or time value on the rendered time element.",
+          "values": "valid HTML datetime string"
+        },
+        {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the localized text shown to people.",
+          "values": "human-readable date text"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -7472,6 +7688,8 @@
         },
         "elements": {
           "attributes": [
+            "datetime",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -8115,7 +8333,7 @@
         },
         "react": {
           "available": true,
-          "example": "<Image alt=\"Lumen UI logo\" invertOnDark layout=\"fixed\" src=\"/logo.svg\" />",
+          "example": "<Image alt=\"Lumen UI logo\" invertOnDark src=\"/logo.svg\" />",
           "importStatement": "import { Image } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -8381,6 +8599,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes attached controls while preserving the input’s native label and form behavior.",
+          "values": "input plus prefixes, suffixes, or controls"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -8431,6 +8655,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -8813,6 +9038,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes one compact aligned row.",
+          "values": "primary content, metadata, and optional actions"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -8867,6 +9098,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -8981,6 +9213,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the key name or shortcut sequence rendered by the semantic kbd element.",
+          "values": "shortcut text"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -9029,6 +9267,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -9096,6 +9335,12 @@
     {
       "apiReference": [
         {
+          "attribute": "for",
+          "defaultValue": "-",
+          "description": "Associates the label with a form control in Astro and HTML; use htmlFor in React.",
+          "values": "element id"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -9146,6 +9391,7 @@
         },
         "elements": {
           "attributes": [
+            "for",
             "class, className",
             "...native attributes"
           ],
@@ -9215,6 +9461,18 @@
     {
       "apiReference": [
         {
+          "attribute": "href",
+          "defaultValue": "required",
+          "description": "Sets the native anchor destination.",
+          "values": "string"
+        },
+        {
+          "attribute": "target, rel",
+          "defaultValue": "-",
+          "description": "Forwards native navigation and relationship attributes.",
+          "values": "anchor attributes"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -9263,6 +9521,8 @@
         },
         "elements": {
           "attributes": [
+            "href",
+            "target, rel",
             "class, className",
             "...native attributes"
           ],
@@ -9840,6 +10100,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the ordered feed inside the scrollable region.",
+          "values": "Message elements or activity rows"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -9896,6 +10162,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -10513,6 +10780,18 @@
     {
       "apiReference": [
         {
+          "attribute": "aria-label",
+          "defaultValue": "\"Pagination\"",
+          "description": "Sets the accessible name of the pagination navigation landmark.",
+          "values": "string"
+        },
+        {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides native links; use aria-current=\"page\" for the active page and rel for previous and next links.",
+          "values": "links and current-page indicators"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -10564,6 +10843,7 @@
         "elements": {
           "attributes": [
             "aria-label",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -10808,7 +11088,7 @@
         },
         "react": {
           "available": true,
-          "example": "<PhoneInput name=\"phone\" countryValue=\"+1\" countries={[{ label: \"+1\", value: \"+1\" }, { label: \"+44\", value: \"+44\" }]} placeholder=\"(555) 000-0000\" />",
+          "example": "<PhoneInput name=\"phone\" defaultCountryValue=\"+1\" countries={[{ label: \"+1\", value: \"+1\" }, { label: \"+44\", value: \"+44\" }]} placeholder=\"(555) 000-0000\" />",
           "importStatement": "import { PhoneInput } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -11595,6 +11875,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Applies readable measure and typographic rhythm without changing the supplied semantics.",
+          "values": "rendered Markdown, CMS, or long-form HTML"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -11643,6 +11929,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -11737,6 +12024,18 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the mutually exclusive native controls inside the fieldset.",
+          "values": "labelled radio inputs"
+        },
+        {
+          "attribute": "aria-label, aria-labelledby",
+          "defaultValue": "-",
+          "description": "Names the radio group when no visible legend is supplied.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -11794,6 +12093,8 @@
         "elements": {
           "attributes": [
             "data-ui-radio-group",
+            "children",
+            "aria-label, aria-labelledby",
             "class, className",
             "...native attributes"
           ],
@@ -12474,6 +12775,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides the content inside the styled overflow container.",
+          "values": "scrollable flow content"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -12528,6 +12835,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -12549,7 +12857,7 @@
         },
         "react": {
           "available": true,
-          "example": "<ScrollArea style=\"max-height: 18rem\"><p>Long release notes...</p></ScrollArea>",
+          "example": "<ScrollArea style={{ maxHeight: '18rem' }}><p>Long release notes...</p></ScrollArea>",
           "importStatement": "import { ScrollArea } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -12610,6 +12918,18 @@
           "defaultValue": "false",
           "description": "Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; \"subtle\" and \"strong\" adjust the fill intensity.",
           "values": "boolean | \"subtle\" | \"strong\""
+        },
+        {
+          "attribute": "data-ui-schedule-event",
+          "defaultValue": "-",
+          "description": "Marks a draggable event and exposes its id to the schedule change event.",
+          "values": "boolean attribute"
+        },
+        {
+          "attribute": "data-ui-schedule-slot",
+          "defaultValue": "-",
+          "description": "Marks a drop target and exposes its slot value to the schedule change event.",
+          "values": "boolean attribute"
         },
         {
           "attribute": "class, className",
@@ -12673,6 +12993,8 @@
           "attributes": [
             "data-ui-schedule",
             "glass",
+            "data-ui-schedule-event",
+            "data-ui-schedule-slot",
             "class, className",
             "...native attributes"
           ],
@@ -14113,7 +14435,7 @@
         },
         "react": {
           "available": true,
-          "example": "<Skeleton style=\"height: 2.5rem\" aria-label=\"Loading profile\" />",
+          "example": "<Skeleton style={{ height: '2.5rem' }} aria-label=\"Loading profile\" />",
           "importStatement": "import { Skeleton } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -14159,6 +14481,12 @@
     },
     {
       "apiReference": [
+        {
+          "attribute": "href",
+          "defaultValue": "required",
+          "description": "Targets the main-content id that receives navigation after repeated controls are bypassed.",
+          "values": "fragment URL"
+        },
         {
           "attribute": "class, className",
           "defaultValue": "\"\"",
@@ -14208,6 +14536,7 @@
         },
         "elements": {
           "attributes": [
+            "href",
             "class, className",
             "...native attributes"
           ],
@@ -14906,6 +15235,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides semantic native table structure inside the styled wrapper.",
+          "values": "caption, thead, tbody, and tfoot"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -14962,6 +15297,7 @@
         "elements": {
           "attributes": [
             "glass",
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -15060,6 +15396,24 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "[role=\"tablist\"]",
+          "defaultValue": "required",
+          "description": "Groups the tab controls.",
+          "values": "child container"
+        },
+        {
+          "attribute": "[role=\"tab\"]",
+          "defaultValue": "required",
+          "description": "Connects each tab to a panel with aria-controls and reports selection with aria-selected.",
+          "values": "child control"
+        },
+        {
+          "attribute": "[role=\"tabpanel\"]",
+          "defaultValue": "required",
+          "description": "Connects each panel to its tab with aria-labelledby and hides inactive panels.",
+          "values": "child panel"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -15123,6 +15477,9 @@
           "attributes": [
             "data-ui-tabs",
             "glass",
+            "[role=\"tablist\"]",
+            "[role=\"tab\"]",
+            "[role=\"tabpanel\"]",
             "class, className",
             "...native attributes"
           ],
@@ -15145,89 +15502,11 @@
         "react": {
           "available": true,
           "behavior": {
-            "controller": [
-              {
-                "defaultValue": "-",
-                "description": "Spread onto the tabs root wrapper.",
-                "name": "rootProps",
-                "type": "LumenProps<\"div\">"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Spread onto the tablist element.",
-                "name": "listProps",
-                "type": "LumenProps<\"div\">"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Returns props for a tab trigger with the given value. Includes aria-selected, role, keyboard handlers.",
-                "name": "getTriggerProps(value)",
-                "type": "(value, props?) => LumenProps<\"button\">"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Returns props for a tab panel. Automatically hides non-active panels.",
-                "name": "getPanelProps(value)",
-                "type": "(value, props?) => LumenProps<\"div\">"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Currently active tab value.",
-                "name": "value",
-                "type": "string"
-              },
-              {
-                "defaultValue": "-",
-                "description": "State setter for controlled usage.",
-                "name": "setValue",
-                "type": "Dispatch<SetStateAction<string>>"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Ref to the tabs root element.",
-                "name": "rootRef",
-                "type": "RefObject<HTMLElement>"
-              }
-            ],
-            "description": "Manages a tabbed interface with controlled/uncontrolled value, arrow key navigation, roving tabindex, and automatic ARIA attributes for tab triggers and panels.",
-            "hook": "useTabs",
-            "mode": "hook",
-            "options": [
-              {
-                "defaultValue": "\"\"",
-                "description": "Initial active tab value for uncontrolled usage.",
-                "name": "defaultValue",
-                "type": "string"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Controlled active tab value.",
-                "name": "value",
-                "type": "string"
-              },
-              {
-                "defaultValue": "-",
-                "description": "Callback fired when the active tab changes.",
-                "name": "onValueChange",
-                "type": "(value: string) => void"
-              },
-              {
-                "defaultValue": "\"horizontal\"",
-                "description": "Tab navigation direction — affects which arrow keys are used.",
-                "name": "orientation",
-                "type": "\"horizontal\" | \"vertical\""
-              },
-              {
-                "defaultValue": "auto",
-                "description": "Base id for generated tab and panel ids.",
-                "name": "id",
-                "type": "string"
-              }
-            ],
-            "setup": "Use useTabs from @santi020k/lumen-react; do not mount Astro UIPrimitives in React."
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
           },
-          "example": "import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@santi020k/lumen-react'\nimport { useTabs } from '@santi020k/lumen-react'\n\nexport function SettingsTabs() {\n  const tabs = useTabs({ defaultValue: 'general' })\n\n  return (\n    <Tabs {...tabs.rootProps}>\n      <TabsList {...tabs.listProps}>\n        <TabsTrigger {...tabs.getTriggerProps('general')}>General</TabsTrigger>\n        <TabsTrigger {...tabs.getTriggerProps('security')}>Security</TabsTrigger>\n      </TabsList>\n      <TabsPanel {...tabs.getPanelProps('general')}>\n        <p>General settings content.</p>\n      </TabsPanel>\n      <TabsPanel {...tabs.getPanelProps('security')}>\n        <p>Security settings content.</p>\n      </TabsPanel>\n    </Tabs>\n  )\n}",
-          "importStatement": "import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@santi020k/lumen-react'\nimport { useTabs } from '@santi020k/lumen-react'",
+          "example": "import { Tabs, TabsList, TabsPanel, TabsTrigger } from '@santi020k/lumen-react'\n\nexport function SettingsTabs() {\n  return (\n    <Tabs defaultValue=\"general\">\n      <TabsList>\n        <TabsTrigger value=\"general\">General</TabsTrigger>\n        <TabsTrigger value=\"security\">Security</TabsTrigger>\n      </TabsList>\n      <TabsPanel value=\"general\">\n        <p>General settings content.</p>\n      </TabsPanel>\n      <TabsPanel value=\"security\">\n        <p>Security settings content.</p>\n      </TabsPanel>\n    </Tabs>\n  )\n}",
+          "importStatement": "import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
@@ -15303,6 +15582,18 @@
     {
       "apiReference": [
         {
+          "attribute": "data-ui-tag",
+          "defaultValue": "-",
+          "description": "Marks each tag item for group behavior.",
+          "values": "boolean attribute"
+        },
+        {
+          "attribute": "data-ui-tag-remove",
+          "defaultValue": "-",
+          "description": "Marks a labelled child control that removes its closest tag and emits ui:tag-remove.",
+          "values": "boolean attribute"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -15358,6 +15649,8 @@
         "elements": {
           "attributes": [
             "role",
+            "data-ui-tag",
+            "data-ui-tag-remove",
             "class, className",
             "...native attributes"
           ],
@@ -15591,6 +15884,24 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "data-ui-theme-target",
+          "defaultValue": "documentElement",
+          "description": "Selects the element that receives generated theme variables.",
+          "values": "CSS selector"
+        },
+        {
+          "attribute": "data-ui-theme-brand-hue",
+          "defaultValue": "-",
+          "description": "Controls the generated brand hue.",
+          "values": "range or number input"
+        },
+        {
+          "attribute": "data-ui-theme-export",
+          "defaultValue": "-",
+          "description": "Exports the current theme in the selected CSS, Figma, or design-token format.",
+          "values": "button attribute"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -15652,6 +15963,9 @@
           "attributes": [
             "data-ui-theme-builder",
             "glass",
+            "data-ui-theme-target",
+            "data-ui-theme-brand-hue",
+            "data-ui-theme-export",
             "class, className",
             "...native attributes"
           ],
@@ -15941,6 +16255,18 @@
     {
       "apiReference": [
         {
+          "attribute": "storageKey",
+          "defaultValue": "\"lumen-theme\"",
+          "description": "Sets the local-storage key used to persist the selected theme.",
+          "values": "string"
+        },
+        {
+          "attribute": "lightLabel, darkLabel",
+          "defaultValue": "\"Use light theme\", \"Use dark theme\"",
+          "description": "Sets accessible action labels for the two theme states.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -15989,6 +16315,8 @@
         },
         "elements": {
           "attributes": [
+            "storageKey",
+            "lightLabel, darkLabel",
             "class, className",
             "...native attributes"
           ],
@@ -16887,6 +17215,18 @@
     {
       "apiReference": [
         {
+          "attribute": "data-ui-trigger",
+          "defaultValue": "-",
+          "description": "Marks the child trigger that opens and closes the adjacent disclosure panel.",
+          "values": "boolean attribute"
+        },
+        {
+          "attribute": "[role=\"tooltip\"]",
+          "defaultValue": "required",
+          "description": "Provides the non-interactive explanation linked to the trigger with aria-describedby.",
+          "values": "child panel"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -16941,6 +17281,8 @@
         },
         "elements": {
           "attributes": [
+            "data-ui-trigger",
+            "[role=\"tooltip\"]",
             "class, className",
             "...native attributes"
           ],
@@ -17749,7 +18091,7 @@
             "mode": "adapter",
             "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
           },
-          "example": "<VirtualList style=\"--ui-list-height: 16rem\"><div>Row 1</div><div>Row 2</div></VirtualList>",
+          "example": "<VirtualList style={{ height: '16rem' }}><div>Row 1</div><div>Row 2</div></VirtualList>",
           "importStatement": "import { VirtualList } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -17843,6 +18185,18 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Shows the current locale or language abbreviation.",
+          "values": "locale label"
+        },
+        {
+          "attribute": "type",
+          "defaultValue": "\"button\"",
+          "description": "Sets the native button type.",
+          "values": "\"button\" | \"submit\" | \"reset\""
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -17889,6 +18243,8 @@
         },
         "elements": {
           "attributes": [
+            "children",
+            "type",
             "class, className",
             "...native attributes"
           ],
@@ -18040,7 +18396,7 @@
         },
         "react": {
           "available": true,
-          "example": "<div style=\"position: relative\"><Particles density=\"medium\" /><h2>Launch faster</h2></div>",
+          "example": "<div style={{ position: 'relative' }}><Particles density=\"medium\" /><h2>Launch faster</h2></div>",
           "importStatement": "import { Particles } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -19070,6 +19426,24 @@
     {
       "apiReference": [
         {
+          "attribute": "value",
+          "defaultValue": "required",
+          "description": "Sets the current scalar value.",
+          "values": "number"
+        },
+        {
+          "attribute": "min, max",
+          "defaultValue": "0, 100",
+          "description": "Sets the inclusive measurement range.",
+          "values": "number"
+        },
+        {
+          "attribute": "low, high, optimum",
+          "defaultValue": "-",
+          "description": "Defines qualitative ranges for the native meter element.",
+          "values": "number"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -19136,6 +19510,9 @@
         },
         "elements": {
           "attributes": [
+            "value",
+            "min, max",
+            "low, high, optimum",
             "class, className",
             "...native attributes"
           ],
@@ -19418,6 +19795,24 @@
     {
       "apiReference": [
         {
+          "attribute": "value",
+          "defaultValue": "0",
+          "description": "Sets the selected or displayed score.",
+          "values": "number"
+        },
+        {
+          "attribute": "max",
+          "defaultValue": "5",
+          "description": "Sets the highest available score.",
+          "values": "number"
+        },
+        {
+          "attribute": "readonly",
+          "defaultValue": "false",
+          "description": "Presents the rating without interactive score controls.",
+          "values": "boolean"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -19469,6 +19864,9 @@
         },
         "elements": {
           "attributes": [
+            "value",
+            "max",
+            "readonly",
             "class, className",
             "...native attributes"
           ],
@@ -19560,6 +19958,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Provides chronologically ordered milestones or activity events.",
+          "values": "TimelineItem elements"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -19585,7 +19989,7 @@
         "astro": {
           "available": true,
           "example": "<Timeline><TimelineItem><strong>10:00</strong> Design approved</TimelineItem><TimelineItem><strong>14:30</strong> Release deployed</TimelineItem></Timeline>",
-          "importStatement": "import { Timeline } from '@santi020k/lumen-astro'",
+          "importStatement": "import { Timeline, TimelineItem } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
           "props": [],
@@ -19595,6 +19999,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -19603,7 +20008,7 @@
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
           },
-          "example": "<lumen-timeline><TimelineItem><strong>10:00</strong> Design approved</TimelineItem><TimelineItem><strong>14:30</strong> Release deployed</TimelineItem></lumen-timeline>",
+          "example": "<lumen-timeline><li><strong>10:00</strong> Design approved</li><li><strong>14:30</strong> Release deployed</li></lumen-timeline>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
           "language": "html",
           "packageName": "@santi020k/lumen-elements",
@@ -19617,7 +20022,7 @@
         "react": {
           "available": true,
           "example": "<Timeline><TimelineItem><strong>10:00</strong> Design approved</TimelineItem><TimelineItem><strong>14:30</strong> Release deployed</TimelineItem></Timeline>",
-          "importStatement": "import { Timeline } from '@santi020k/lumen-react'",
+          "importStatement": "import { Timeline, TimelineItem } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
@@ -19826,6 +20231,36 @@
     {
       "apiReference": [
         {
+          "attribute": "src",
+          "defaultValue": "required",
+          "description": "Sets the portrait image source.",
+          "values": "ImageMetadata | string"
+        },
+        {
+          "attribute": "alt",
+          "defaultValue": "required",
+          "description": "Provides the portrait image accessible text.",
+          "values": "string"
+        },
+        {
+          "attribute": "showFloatingBadges",
+          "defaultValue": "false",
+          "description": "Shows the optional experience and location facts around the portrait.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "badgeProps",
+          "defaultValue": "-",
+          "description": "Customizes the labels and values used by the floating facts.",
+          "values": "{ experience?, location? }"
+        },
+        {
+          "attribute": "widths, sizes",
+          "defaultValue": "responsive defaults",
+          "description": "Controls responsive image candidate generation and selection.",
+          "values": "number[]; string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -19932,6 +20367,11 @@
         },
         "elements": {
           "attributes": [
+            "src",
+            "alt",
+            "showFloatingBadges",
+            "badgeProps",
+            "widths, sizes",
             "class, className",
             "...native attributes"
           ],
@@ -19953,7 +20393,7 @@
         },
         "react": {
           "available": true,
-          "example": "<AnimatedPortrait src=\"/portrait.jpg\" alt=\"Portrait of Ana\" showFloatingBadges />",
+          "example": "<AnimatedPortrait><img src=\"/portrait.jpg\" alt=\"Portrait of Ana\" /></AnimatedPortrait>",
           "importStatement": "import { AnimatedPortrait } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -20198,7 +20638,7 @@
         },
         "react": {
           "available": true,
-          "example": "<ButtonLink href=\"/docs\" showArrow>Read the docs</ButtonLink>",
+          "example": "<ButtonLink href=\"/docs\">Read the docs <span aria-hidden=\"true\">→</span></ButtonLink>",
           "importStatement": "import { ButtonLink } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -20481,8 +20921,8 @@
         },
         "react": {
           "available": true,
-          "example": "<CoverImage image={cover} alt=\"Abstract purple forms\" showBottomGradient />",
-          "importStatement": "import { CoverImage } from '@santi020k/lumen-react'",
+          "example": "<CoverImage showBottomGradient><Image src=\"/cover.jpg\" alt=\"Abstract purple forms\" /></CoverImage>",
+          "importStatement": "import { CoverImage, Image } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
@@ -20611,6 +21051,12 @@
     {
       "apiReference": [
         {
+          "attribute": "aria-hidden",
+          "defaultValue": "\"true\"",
+          "description": "Keeps the decorative gradient out of the accessibility tree unless explicitly overridden.",
+          "values": "ARIA boolean string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -20657,6 +21103,7 @@
         },
         "elements": {
           "attributes": [
+            "aria-hidden",
             "class, className",
             "...native attributes"
           ],
@@ -20728,6 +21175,24 @@
     {
       "apiReference": [
         {
+          "attribute": "steps",
+          "defaultValue": "[]",
+          "description": "Defines the ordered steps.",
+          "values": "Array<string | { label, description? }>"
+        },
+        {
+          "attribute": "currentStep",
+          "defaultValue": "0",
+          "description": "Sets the zero-based active step.",
+          "values": "number"
+        },
+        {
+          "attribute": "orientation",
+          "defaultValue": "\"horizontal\"",
+          "description": "Controls the step layout direction.",
+          "values": "\"horizontal\" | \"vertical\""
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -20792,6 +21257,8 @@
         "elements": {
           "attributes": [
             "orientation",
+            "steps",
+            "currentStep",
             "class, className",
             "...native attributes"
           ],
@@ -20904,6 +21371,24 @@
     {
       "apiReference": [
         {
+          "attribute": "label",
+          "defaultValue": "\"Choose a file\"",
+          "description": "Sets the visible upload action label.",
+          "values": "string"
+        },
+        {
+          "attribute": "hint",
+          "defaultValue": "-",
+          "description": "Adds supporting file type or size guidance.",
+          "values": "string"
+        },
+        {
+          "attribute": "accept, multiple, name",
+          "defaultValue": "-",
+          "description": "Controls accepted files and form submission.",
+          "values": "native file input attributes"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -20961,6 +21446,9 @@
         "elements": {
           "attributes": [
             "data-ui-file-upload",
+            "label",
+            "hint",
+            "accept, multiple, name",
             "class, className",
             "...native attributes"
           ],
@@ -21058,6 +21546,18 @@
     {
       "apiReference": [
         {
+          "attribute": "steps",
+          "defaultValue": "[]",
+          "description": "Defines the ordered anchored guidance steps.",
+          "values": "Array<{ target, content, title? }>"
+        },
+        {
+          "attribute": "nextLabel, closeLabel",
+          "defaultValue": "\"Next\", \"Close\"",
+          "description": "Sets the tour navigation action labels.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21122,6 +21622,8 @@
         "elements": {
           "attributes": [
             "data-ui-tour",
+            "steps",
+            "nextLabel, closeLabel",
             "class, className",
             "...native attributes"
           ],
@@ -21237,6 +21739,12 @@
     {
       "apiReference": [
         {
+          "attribute": "items",
+          "defaultValue": "[]",
+          "description": "Defines the in-page navigation targets and labels.",
+          "values": "Array<{ href, label }>"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21292,6 +21800,7 @@
           "attributes": [
             "aria-label",
             "data-ui-anchor",
+            "items",
             "class, className",
             "...native attributes"
           ],
@@ -21382,6 +21891,30 @@
     {
       "apiReference": [
         {
+          "attribute": "options",
+          "defaultValue": "[]",
+          "description": "Defines the mutually exclusive visible options.",
+          "values": "Array<string | { label, value, disabled? }>"
+        },
+        {
+          "attribute": "value, defaultValue",
+          "defaultValue": "-",
+          "description": "Controls or initializes the selected value.",
+          "values": "string"
+        },
+        {
+          "attribute": "name",
+          "defaultValue": "-",
+          "description": "Sets the submitted form field name.",
+          "values": "string"
+        },
+        {
+          "attribute": "size",
+          "defaultValue": "\"default\"",
+          "description": "Controls the segment height and spacing.",
+          "values": "\"default\" | \"sm\" | \"lg\""
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21457,6 +21990,9 @@
           "attributes": [
             "role",
             "size",
+            "options",
+            "value, defaultValue",
+            "name",
             "class, className",
             "...native attributes"
           ],
@@ -21616,6 +22152,18 @@
     {
       "apiReference": [
         {
+          "attribute": "orientation",
+          "defaultValue": "\"horizontal\"",
+          "description": "Sets the toolbar direction and keyboard navigation axis.",
+          "values": "\"horizontal\" | \"vertical\""
+        },
+        {
+          "attribute": "aria-label, aria-labelledby",
+          "defaultValue": "-",
+          "description": "Provides the toolbar accessible name.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21673,6 +22221,7 @@
             "data-ui-toolbar",
             "orientation",
             "role",
+            "aria-label, aria-labelledby",
             "class, className",
             "...native attributes"
           ],
@@ -21763,6 +22312,18 @@
     {
       "apiReference": [
         {
+          "attribute": "items",
+          "defaultValue": "[]",
+          "description": "Defines the labelled facts.",
+          "values": "Array<{ label, value }>"
+        },
+        {
+          "attribute": "columns",
+          "defaultValue": "1",
+          "description": "Sets the preferred number of aligned columns.",
+          "values": "number"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21821,6 +22382,8 @@
         },
         "elements": {
           "attributes": [
+            "items",
+            "columns",
             "class, className",
             "...native attributes"
           ],
@@ -21925,6 +22488,18 @@
     {
       "apiReference": [
         {
+          "attribute": "title",
+          "defaultValue": "\"Are you sure?\"",
+          "description": "Sets the concise confirmation question.",
+          "values": "string"
+        },
+        {
+          "attribute": "confirmLabel, cancelLabel",
+          "defaultValue": "\"Confirm\", \"Cancel\"",
+          "description": "Sets the action labels.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21990,6 +22565,8 @@
           "attributes": [
             "data-ui-popconfirm",
             "data-ui-popover",
+            "title",
+            "confirmLabel, cancelLabel",
             "class, className",
             "...native attributes"
           ],
@@ -22119,6 +22696,24 @@
     {
       "apiReference": [
         {
+          "attribute": "items, targetItems",
+          "defaultValue": "[]",
+          "description": "Defines the available and initially chosen collections.",
+          "values": "TransferItem[]"
+        },
+        {
+          "attribute": "sourceTitle, targetTitle",
+          "defaultValue": "\"Available\", \"Selected\"",
+          "description": "Labels the two collections.",
+          "values": "string"
+        },
+        {
+          "attribute": "name",
+          "defaultValue": "-",
+          "description": "Sets the submitted values field name.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -22191,6 +22786,9 @@
         "elements": {
           "attributes": [
             "data-ui-transfer",
+            "items, targetItems",
+            "sourceTitle, targetTitle",
+            "name",
             "class, className",
             "...native attributes"
           ],
@@ -22313,6 +22911,24 @@
     {
       "apiReference": [
         {
+          "attribute": "options",
+          "defaultValue": "[]",
+          "description": "Defines the hierarchical option branches.",
+          "values": "CascaderOption[]"
+        },
+        {
+          "attribute": "name",
+          "defaultValue": "-",
+          "description": "Sets the submitted field name.",
+          "values": "string"
+        },
+        {
+          "attribute": "placeholder",
+          "defaultValue": "\"Select\"",
+          "description": "Sets the trigger text before a path is selected.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -22377,6 +22993,9 @@
         "elements": {
           "attributes": [
             "data-ui-cascader",
+            "options",
+            "name",
+            "placeholder",
             "class, className",
             "...native attributes"
           ],
@@ -22489,6 +23108,24 @@
     {
       "apiReference": [
         {
+          "attribute": "treeData",
+          "defaultValue": "[]",
+          "description": "Defines the selectable hierarchy.",
+          "values": "TreeNode[]"
+        },
+        {
+          "attribute": "name",
+          "defaultValue": "-",
+          "description": "Sets the submitted field name.",
+          "values": "string"
+        },
+        {
+          "attribute": "placeholder",
+          "defaultValue": "\"Select\"",
+          "description": "Sets the trigger text before a node is selected.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -22553,6 +23190,9 @@
         "elements": {
           "attributes": [
             "data-ui-tree-select",
+            "treeData",
+            "name",
+            "placeholder",
             "class, className",
             "...native attributes"
           ],
@@ -22664,6 +23304,24 @@
     {
       "apiReference": [
         {
+          "attribute": "options",
+          "defaultValue": "[]",
+          "description": "Defines the mention suggestions.",
+          "values": "Array<string | { label, value }>"
+        },
+        {
+          "attribute": "trigger",
+          "defaultValue": "\"@\"",
+          "description": "Sets the character that opens suggestions.",
+          "values": "string"
+        },
+        {
+          "attribute": "name, placeholder",
+          "defaultValue": "-",
+          "description": "Sets the native textarea field name and hint.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -22733,6 +23391,9 @@
         "elements": {
           "attributes": [
             "data-ui-mentions",
+            "options",
+            "trigger",
+            "name, placeholder",
             "class, className",
             "...native attributes"
           ],
@@ -22857,6 +23518,24 @@
     {
       "apiReference": [
         {
+          "attribute": "value",
+          "defaultValue": "required unless src is provided",
+          "description": "Generates a QR code from the supplied value.",
+          "values": "string"
+        },
+        {
+          "attribute": "src",
+          "defaultValue": "-",
+          "description": "Uses an existing QR image instead of generating one.",
+          "values": "string"
+        },
+        {
+          "attribute": "size",
+          "defaultValue": "160",
+          "description": "Sets the rendered square dimensions.",
+          "values": "number"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -22918,6 +23597,9 @@
         },
         "elements": {
           "attributes": [
+            "value",
+            "src",
+            "size",
             "class, className",
             "...native attributes"
           ],
@@ -23021,6 +23703,24 @@
     {
       "apiReference": [
         {
+          "attribute": "content, text",
+          "defaultValue": "\"Lumen\"",
+          "description": "Sets the repeated watermark text.",
+          "values": "string"
+        },
+        {
+          "attribute": "gap",
+          "defaultValue": "96",
+          "description": "Sets spacing between watermark marks.",
+          "values": "number"
+        },
+        {
+          "attribute": "rotate",
+          "defaultValue": "-22",
+          "description": "Sets the watermark rotation in degrees.",
+          "values": "number"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -23088,6 +23788,9 @@
         "elements": {
           "attributes": [
             "data-ui-watermark",
+            "content, text",
+            "gap",
+            "rotate",
             "class, className",
             "...native attributes"
           ],
@@ -23196,6 +23899,18 @@
     {
       "apiReference": [
         {
+          "attribute": "position",
+          "defaultValue": "\"top\"",
+          "description": "Selects the viewport edge used for sticky positioning.",
+          "values": "\"top\" | \"bottom\""
+        },
+        {
+          "attribute": "offset, offsetTop, offsetBottom",
+          "defaultValue": "0",
+          "description": "Sets the sticky inset in pixels; edge-specific values override offset.",
+          "values": "number"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -23263,6 +23978,7 @@
         "elements": {
           "attributes": [
             "position",
+            "offset, offsetTop, offsetBottom",
             "class, className",
             "...native attributes"
           ],
@@ -23620,11 +24336,11 @@
     }
   ],
   "docs": {
-    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://meta` to identify the catalog hash and bundled package versions.\n2. Read `lumen://rules`.\n3. Search for the use case with `lumen_search`, passing the target `framework` when known.\n4. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n5. Follow its framework behavior setup and hook/controller contract.\n6. Read related multi-component guidance with `lumen_get_recipe`.\n7. Request `detail: \"source\"` only when the usage contract is insufficient.\n8. Read `lumen://tokens` before introducing custom styling.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://meta`, `lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,\n`Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,\n`NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`.\n\n## Product Recipes\n\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:datatable-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Do not generate `surface=\"glass\"` for overlays; it is a deprecated alias that maps to `glass`.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
+    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://meta` and `lumen://diagnostics` to identify and verify the snapshot.\n2. Read `lumen://rules`.\n3. Search for the use case with `lumen_search`, passing the target `framework` when known.\n4. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n5. Follow its framework behavior setup and hook/controller contract.\n6. Read related multi-component guidance with `lumen_get_recipe`.\n7. Request `detail: \"source\"` only when the usage contract is insufficient.\n8. Read `lumen://tokens` before introducing custom styling.\n9. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades to identify contracts that need refreshing.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://meta`, `lumen://catalog-manifest`, `lumen://diagnostics`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,\n`Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,\n`NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`.\n\n## Product Recipes\n\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Do not generate `surface=\"glass\"` for overlays; it is a deprecated alias that maps to `glass`.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
     "readme": "# Lumen\n\nLumen is a multi-framework primitive UI system from Santiago Molina. Install the package for your\nframework; it includes the shared Lumen foundation and standalone stylesheet. Consumers do not\nneed Tailwind configuration for Lumen components to render.\n\nThe monorepo layers framework adapters around a shared core:\n\n- `@santi020k/lumen` - shared stylesheet, CLI, registry metadata, and package map\n- `@santi020k/lumen-core` - tokens, component metadata, class composition, and shared behavior helpers\n- `@santi020k/lumen-astro` - Astro components and progressive-enhancement runtime\n- `@santi020k/lumen-react` - React components\n- `@santi020k/lumen-elements` - standards-based Web Components\n- `@santi020k/lumen-mcp` - Model Context Protocol server for AI agents\n- `apps/docs` - Astro documentation and demo site\n\n## Quick Start\n\nChoose one package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\nImport the stylesheet from the same framework package once in your global CSS file, root layout,\nor app entry. For example:\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nWith Tailwind, keep it in the same shared CSS entry:\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nFor interactive Astro primitives, mount `UIPrimitives` once in your root layout:\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n## Development\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\n## Package Strategy\n\nThe `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.\n\n## Migration\n\nIf you are replacing an older internal design system or duplicated UI primitives, refer to the [Migration Guide](docs/migrating-to-lumen.md) for instructions on adopting Lumen incrementally and mapping existing tokens.\n\n## Agent and Registry Surfaces\n\nInstall the portable Lumen Agent Skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\nAI coding tools:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe canonical skill lives in [skills/lumen-ui](skills/lumen-ui). It teaches agents how to select,\ncompose, theme, and verify Lumen primitives while preserving the app's framework and architecture.\nPair it with [`@santi020k/lumen-mcp`](packages/mcp/README.md) when the agent should search the live\ncatalog and retrieve current component source, props, tokens, and rules.\n\nLumen also includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and\n[registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the\ncomponent catalog, setup rules, recipes, and installable file groups. The current roadmap lives in\n[docs/feature-roadmap.md](docs/feature-roadmap.md).\n\nFigma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for\nFigma variables and the Code Connect path for the\n[published Lumen UI Library](https://www.figma.com/community/file/1662337342676541513).\n[Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,\nother framework, CMS, and CDN optimizers while applying Lumen presentation.\n\nThe umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for\nlisting recipes, showing recipe contents, printing install commands, loading alternate registry\nmanifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge\nincoming recipe files with existing files, `--fail-on-conflict` for CI, or `--registry-token` /\n`LUMEN_REGISTRY_TOKEN` for private remote registries.\n"
   },
   "meta": {
-    "catalogHash": "77afbbc6b759236de64311fd09845b3322988b8ade54a3fd9633376398ecff23",
+    "catalogHash": "a8a292c84c9caef391704a98c2c2b86be52e28936799cefe8f861b027e444f5a",
     "componentCount": 123,
     "packages": [
       "@santi020k/lumen-astro",
@@ -23641,7 +24357,7 @@
     },
     "registryName": "lumen",
     "registryVersion": 1,
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "serverVersion": "0.0.0"
   },
   "recipes": [
@@ -23770,7 +24486,7 @@
       }
     }
   ],
-  "rules": "# Lumen UI\n\nLumen is a multi-framework primitive UI system with Astro as the reference implementation.\n\nUse these files first when generating, reviewing, or migrating apps that use Lumen:\n\n- README.md: public overview and package strategy.\n- docs/ai-usage.md: AI-focused setup, package selection, and component selection.\n- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.\n- docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.\n- registry/lumen.registry.json: installable component, recipe, and documentation manifest.\n- packages/core/src/components.ts: authoritative shared component catalog.\n- packages/astro/components: reference component markup and prop shapes.\n- packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.\n- @santi020k/lumen-mcp: Model Context Protocol server exposing snapshot provenance, structured component discovery, framework-aware usage/source, recipes, tolerant search, tokens, rules, and lumen:// resources for AI agents.\n\nInstall the portable Lumen Agent Skill:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nDefault usage:\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\nimport { UIPrimitives } from '@santi020k/lumen-astro'\nimport '@santi020k/lumen-astro/styles.css'\n---\n\n<UIPrimitives />\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" type=\"email\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\nRules for agents:\n\n- When Lumen MCP is connected, read `lumen://meta` and `lumen://rules`, pass the target framework to `lumen_search`, and follow the framework behavior returned by `lumen_get_component`.\n- Prefer Astro unless the user explicitly targets React or Web Components.\n- In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.\n- In Web Components, registered `lumen-*` elements include behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip, including ARIA state, keyboard paths, Escape/outside dismissal, focus handling, native select form participation, and the shared toast controller.\n- Do not require Tailwind configuration for Lumen components.\n- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, accent, success, warning, danger.\n- Mount `UIPrimitives` once for interactive Astro primitives.\n- Use `glass` for glass surfaces. Overlay `surface=\"glass\"` is a deprecated compatibility alias that maps to `glass`.\n- Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.\n- Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.\n- Runtime CustomEvents used by `UIPrimitives`: `ui:datatable-selection-change` from `[data-ui-datatable]` with `{ values }`; `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.\n- Add `data-ui-form` to forms that should reflect `required`, `pattern`, `min`, `max`, `type`, and custom `setCustomValidity()` state into Field error slots on blur and submit. Use `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or `data-error-custom` to override browser validation messages.\n- Toasts use `Sonner` viewports with `placement` and `maxCount`. With `UIPrimitives` or registered Web Components, use `window.LumenToast.create(detail)`, `.update(id, detail)`, and `.dismiss(id?)`, import `LumenToast` from `@santi020k/lumen-elements`, or dispatch the matching document events. Runtime toast `detail` supports `title`, `description`, `variant`, `duration`, `placement`, `max`, and `action`.\n",
+  "rules": "# Lumen UI\n\nLumen is a multi-framework primitive UI system with Astro as the reference implementation.\n\nUse these files first when generating, reviewing, or migrating apps that use Lumen:\n\n- README.md: public overview and package strategy.\n- docs/ai-usage.md: AI-focused setup, package selection, and component selection.\n- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.\n- docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.\n- registry/lumen.registry.json: installable component, recipe, and documentation manifest.\n- packages/core/src/components.ts: authoritative shared component catalog.\n- packages/astro/components: reference component markup and prop shapes.\n- packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.\n- @santi020k/lumen-mcp: Model Context Protocol server exposing snapshot provenance, structured component discovery, framework-aware usage/source, recipes, tolerant search, tokens, rules, and lumen:// resources for AI agents.\n\nInstall the portable Lumen Agent Skill:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nDefault usage:\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\nimport { UIPrimitives } from '@santi020k/lumen-astro'\nimport '@santi020k/lumen-astro/styles.css'\n---\n\n<UIPrimitives />\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" type=\"email\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\nRules for agents:\n\n- When Lumen MCP is connected, read `lumen://meta`, `lumen://diagnostics`, and `lumen://rules`, pass the target framework to `lumen_search`, and follow the framework behavior returned by `lumen_get_component`. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades when the client supports cached context.\n- Prefer Astro unless the user explicitly targets React or Web Components.\n- In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.\n- In Web Components, registered `lumen-*` elements include behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip, including ARIA state, keyboard paths, Escape/outside dismissal, focus handling, native select form participation, and the shared toast controller.\n- Do not require Tailwind configuration for Lumen components.\n- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, accent, success, warning, danger.\n- Mount `UIPrimitives` once for interactive Astro primitives.\n- Use `glass` for glass surfaces. Overlay `surface=\"glass\"` is a deprecated compatibility alias that maps to `glass`.\n- Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.\n- Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.\n- Runtime CustomEvents used by `UIPrimitives`: `ui:data-table-selection-change` from `[data-ui-datatable]` with `{ values }` (`ui:datatable-selection-change` remains a deprecated alias until 1.0); `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.\n- Add `data-ui-form` to forms that should reflect `required`, `pattern`, `min`, `max`, `type`, and custom `setCustomValidity()` state into Field error slots on blur and submit. Use `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or `data-error-custom` to override browser validation messages.\n- Toasts use `Sonner` viewports with `placement` and `maxCount`. With `UIPrimitives` or registered Web Components, use `window.LumenToast.create(detail)`, `.update(id, detail)`, and `.dismiss(id?)`, import `LumenToast` from `@santi020k/lumen-elements`, or dispatch the matching document events. Runtime toast `detail` supports `title`, `description`, `variant`, `duration`, `placement`, `max`, and `action`.\n",
   "tokens": {
     "colors": {
       "accent": "264 95% 57%",

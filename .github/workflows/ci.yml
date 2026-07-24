@@ -14,6 +14,56 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  browser-contracts:
+    name: Browser interaction contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run cross-browser interaction contracts
+        run: pnpm run test:interactions
+
+  visual-regression:
+    name: Visual regression
+    runs-on: macos-14
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium
+
+      - name: Run visual regression suite
+        run: pnpm run test:visual
+
   mcp-node-20:
     name: MCP compatibility (Node 20)
     runs-on: ubuntu-latest
@@ -77,6 +127,10 @@ jobs:
         if: matrix.node-version == '22.x'
         run: git diff --exit-code -- packages/mcp/data/lumen-data.json
 
+      - name: Run MCP quality evaluations
+        if: matrix.node-version == '22.x'
+        run: pnpm run check:mcp-evaluation
+
       - name: Install Playwright Chromium
         if: matrix.node-version == '22.x'
         run: pnpm exec playwright install --with-deps chromium
@@ -89,4 +143,6 @@ jobs:
         if: matrix.node-version == '22.x'
         run: |
           pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
+          pnpm run check:bundle-size
+          pnpm run check:framework-contracts
           pnpm run check:publish-dry-run

@@ -48,7 +48,7 @@ const rows = [
   const table = document.getElementById('ex-datatable')
   const count = document.querySelector('[data-selected-count]')
 
-  table?.addEventListener('ui:datatable-selection-change', event => {
+  table?.addEventListener('ui:data-table-selection-change', event => {
     const detail = (event as CustomEvent<{ values: string[] }>).detail
 
     if (count) count.textContent = String(detail.values.length)

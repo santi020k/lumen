@@ -38,6 +38,21 @@ const tools = [
     'fingerprint'
   ],
   [
+    'lumen_get_catalog_manifest',
+    'Return stable fingerprints for every component and recipe so clients can retain a known baseline.',
+    'notebook-tabs'
+  ],
+  [
+    'lumen_diff_catalog',
+    'Compare a retained manifest with the current catalog and identify exactly which entries changed.',
+    'git-compare-arrows'
+  ],
+  [
+    'lumen_diagnose',
+    'Verify snapshot integrity and report framework coverage when testing a new connection.',
+    'stethoscope'
+  ],
+  [
     'lumen_get_tokens',
     'Return semantic token names, base color values, glass tokens, and the theme attribute for generated code.',
     'swatch-book'
@@ -50,15 +65,17 @@ const tools = [
 ] as const
 
 const workflow = [
-  ['01', 'Identify the snapshot', 'lumen_get_meta exposes the catalog hash and exact package versions bundled into the server.'],
+  ['01', 'Verify the snapshot', 'lumen_get_meta identifies the snapshot and lumen_diagnose verifies its integrity and framework coverage.'],
   ['02', 'Discover', 'The agent calls lumen_list_components or lumen_search with the target framework to find the right primitives.'],
   ['03', 'Read framework usage', 'lumen_get_component returns authored examples and the required Astro runtime, React hook, or Elements registration contract.'],
   ['04', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
-  ['05', 'Follow the system', 'Structured tokens, resources, and rules keep generated code on Lumen’s semantic contract.']
+  ['05', 'Track changes', 'Retain lumen://catalog-manifest and compare it after upgrades to refresh only contracts that changed.']
 ] as const
 
 const resources = [
   ['lumen://meta', 'Snapshot provenance, package versions, and deterministic catalog hash.'],
+  ['lumen://catalog-manifest', 'Stable component and recipe fingerprints for change detection.'],
+  ['lumen://diagnostics', 'Snapshot integrity checks and framework coverage.'],
   ['lumen://rules', 'Agent generation rules as Markdown.'],
   ['lumen://tokens', 'Structured semantic, color, glass, and theme tokens.'],
   ['lumen://components', 'Compact structured component catalog.'],
@@ -97,6 +114,10 @@ const genericConfig = `{
   "command": "npx",
   "args": ["-y", "@santi020k/lumen-mcp"]
 }`
+
+const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
+# MCP endpoint: http://127.0.0.1:3000/mcp
+# Health check: http://127.0.0.1:3000/health`
 ---
 
 <DocsLayout
@@ -176,7 +197,7 @@ const genericConfig = `{
       <div class="mcp-section__heading">
         <div>
           <p>Connect a client</p>
-          <h2 id="setup-title">Run over stdio with npx</h2>
+          <h2 id="setup-title">Run with npx over stdio or HTTP</h2>
         </div>
         <p>
           The server ships a self-contained snapshot of the catalog, so no repository checkout is
@@ -217,6 +238,15 @@ const genericConfig = `{
             <span>generic shape</span>
           </div>
           <pre><code>{genericConfig}</code></pre>
+        </Card>
+
+        <Card class="mcp-setup-card" variant="muted">
+          <div class="mcp-setup-card__head">
+            <Badge variant="outline">Streamable HTTP</Badge>
+            <span>local or self-hosted</span>
+          </div>
+          <pre><code>{httpCommand}</code></pre>
+          <p>Public deployments must add TLS, authentication, rate limiting, and an allowed-host configuration.</p>
         </Card>
       </div>
     </section>

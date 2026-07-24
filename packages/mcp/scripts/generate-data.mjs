@@ -328,12 +328,30 @@ const loadDocsData = async (source) => {
   return import(dataUrl)
 }
 
-const componentNamesFromExample = (example, componentNames) => {
-  const available = new Set(componentNames)
-
-  return [...example.matchAll(/<\/?([A-Z][A-Za-z0-9]*)\b/g)]
+const componentNamesFromExample = (example) => [...example.matchAll(/<\/?([A-Z][A-Za-z0-9]*)\b/g)]
     .map((match) => match[1])
-    .filter((name, index, names) => available.has(name) && names.indexOf(name) === index)
+    .filter((name, index, names) => names.indexOf(name) === index)
+
+const reactStyleValue = (value) => {
+  const properties = value
+    .split(';')
+    .map((declaration) => declaration.trim())
+    .filter(Boolean)
+    .map((declaration) => {
+      const separator = declaration.indexOf(':')
+
+      if (separator === -1) return ''
+
+      const property = declaration.slice(0, separator).trim()
+        .replaceAll(/-([a-z])/g, (_, letter) => letter.toUpperCase())
+
+      const propertyValue = declaration.slice(separator + 1).trim()
+
+      return `${property}: '${propertyValue.replaceAll("'", "\\'")}'`
+    })
+    .filter(Boolean)
+
+  return `style={{ ${properties.join(', ')} }}`
 }
 
 const toReactExample = (example) => example
@@ -343,6 +361,42 @@ const toReactExample = (example) => example
   .replaceAll(/\binputmode=/g, 'inputMode=')
   .replaceAll(/\bcontenteditable=/g, 'contentEditable=')
   .replaceAll(/\bstroke-width=/g, 'strokeWidth=')
+  .replaceAll(/style="([^"]*)"/g, (_, value) => reactStyleValue(value))
+
+const reactExampleOverrides = {
+  AnimatedPortrait:
+    '<AnimatedPortrait><img src="/portrait.jpg" alt="Portrait of Ana" /></AnimatedPortrait>',
+  ButtonLink:
+    '<ButtonLink href="/docs">Read the docs <span aria-hidden="true">→</span></ButtonLink>',
+  Combobox:
+    '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Vue"]} placeholder="Search package" />',
+  CoverImage:
+    '<CoverImage showBottomGradient><Image src="/cover.jpg" alt="Abstract purple forms" /></CoverImage>',
+  Image:
+    '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
+  PhoneInput:
+    '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
+  Tabs: `import { Tabs, TabsList, TabsPanel, TabsTrigger } from '@santi020k/lumen-react'
+
+export function SettingsTabs() {
+  return (
+    <Tabs defaultValue="general">
+      <TabsList>
+        <TabsTrigger value="general">General</TabsTrigger>
+        <TabsTrigger value="security">Security</TabsTrigger>
+      </TabsList>
+      <TabsPanel value="general">
+        <p>General settings content.</p>
+      </TabsPanel>
+      <TabsPanel value="security">
+        <p>Security settings content.</p>
+      </TabsPanel>
+    </Tabs>
+  )
+}`,
+  VirtualList:
+    '<VirtualList style={{ height: \'16rem\' }}><div>Row 1</div><div>Row 2</div></VirtualList>'
+}
 
 const reactHookByComponent = {
   AlertDialog: 'useDialog',
@@ -367,6 +421,8 @@ const reactHookByComponent = {
 }
 
 const reactExampleForComponent = (name, hook, fallback) => {
+  if (reactExampleOverrides[name]) return reactExampleOverrides[name]
+
   if (!hook) return toReactExample(fallback)
 
   if (name === 'AlertDialog') {
@@ -409,6 +465,7 @@ const toElementsExample = (example, elementComponents) => {
   }
 
   converted = converted
+    .replaceAll(/<\/?TimelineItem>/g, (tag) => tag.startsWith('</') ? '</li>' : '<li>')
     .replaceAll(/(\s[\w-]+)=\{(-?\d+(?:\.\d+)?)\}/g, '$1="$2"')
     .replaceAll(/(\s[\w-]+)=\{true\}/g, '$1')
     .replaceAll(/(\s[\w-]+)=\{false\}/g, '$1="false"')
@@ -460,7 +517,6 @@ const frameworkBehavior = ({ framework, hook, reactSource, runtimeRequired }) =>
 
 const buildFrameworkDetails = ({
   astroSource,
-  componentNames,
   doc,
   element,
   elementComponents,
@@ -471,23 +527,25 @@ const buildFrameworkDetails = ({
   reactHooks,
   runtimeRequired
 }) => {
-  const exampleNames = componentNamesFromExample(doc.example, componentNames)
-  const imports = exampleNames.length > 0 ? exampleNames : [name]
   const hookName = reactHookByComponent[name]
-  const hook = hookName ? reactHooks.get(hookName) : undefined
+  const hook = name === 'Tabs' ? undefined : (hookName ? reactHooks.get(hookName) : undefined)
   const elementsExample = toElementsExample(doc.example, elementComponents)
   const reactExample = reactExampleForComponent(name, hook, doc.example)
+  const astroExampleNames = componentNamesFromExample(doc.example)
+  const astroImports = astroExampleNames.length > 0 ? astroExampleNames : [name]
+  const reactExampleNames = componentNamesFromExample(reactExample)
+  const reactImportsList = reactExampleNames.length > 0 ? reactExampleNames : [name]
 
   const reactImports = hook
     ? reactExample.match(/^import .+$/gm)?.join('\n') ?? `import { ${hook.name} } from '@santi020k/lumen-react'`
-    : `import { ${imports.join(', ')} } from '@santi020k/lumen-react'`
+    : `import { ${reactImportsList.join(', ')} } from '@santi020k/lumen-react'`
 
   return {
     astro: {
       available: hasAstro,
       behavior: frameworkBehavior({ framework: 'astro', runtimeRequired }),
       example: doc.example,
-      importStatement: `import { ${imports.join(', ')} } from '@santi020k/lumen-astro'`,
+      importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'`,
       language: 'astro',
       packageName: '@santi020k/lumen-astro',
       props: parsedAstro.props,
@@ -622,7 +680,6 @@ const buildComponentData = async (name, ctx) => {
 
   const frameworkDetails = buildFrameworkDetails({
     astroSource,
-    componentNames: ctx.names,
     doc,
     element: ctx.elementComponents.get(name),
     elementComponents: ctx.elementComponents,
@@ -732,7 +789,19 @@ const buildComponentData = async (name, ctx) => {
     .update(JSON.stringify({ components, docs, recipes, rules, tokens }))
     .digest('hex')
 
+  const catalogManifest = {
+    components: Object.fromEntries(components.map((component) => [
+      component.name,
+      createHash('sha256').update(JSON.stringify(component)).digest('hex')
+    ])),
+    recipes: Object.fromEntries(recipes.map((recipe) => [
+      recipe.name,
+      createHash('sha256').update(JSON.stringify(recipe)).digest('hex')
+    ]))
+  }
+
   const payload = {
+    catalogManifest,
     components,
     docs,
     meta: {
@@ -747,7 +816,7 @@ const buildComponentData = async (name, ctx) => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 2,
+      schemaVersion: 3,
       serverVersion: packageJson.version
     },
     recipes,

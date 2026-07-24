@@ -1,0 +1,63 @@
+[
+  {
+    "query": "admin dashboard with sortable records",
+    "expectedInTop": ["DataTable", "Sidebar"],
+    "top": 10
+  },
+  {
+    "query": "booking calendar and appointments",
+    "expectedInTop": ["Calendar", "Schedule"],
+    "top": 10
+  },
+  {
+    "query": "confirm a destructive delete",
+    "expectedInTop": ["AlertDialog"],
+    "top": 5
+  },
+  {
+    "query": "dark mode theme switch",
+    "expectedInTop": ["ThemeToggle", "ThemeBuilder"],
+    "top": 10
+  },
+  {
+    "query": "searchable select options",
+    "expectedInTop": ["Combobox"],
+    "top": 5
+  },
+  {
+    "query": "one time password verification",
+    "expectedInTop": ["InputOTP"],
+    "top": 5
+  },
+  {
+    "query": "responsive navigation sidebar",
+    "expectedInTop": ["Sidebar"],
+    "top": 10
+  },
+  {
+    "query": "toast notification after save",
+    "expectedInTop": ["Toast"],
+    "top": 5
+  },
+  {
+    "query": "accessible date range input",
+    "expectedInTop": ["DateRangePicker", "DatePicker"],
+    "top": 10
+  },
+  {
+    "query": "large virtualized list",
+    "expectedInTop": ["VirtualList"],
+    "top": 5
+  },
+  {
+    "query": "paginated table",
+    "expectedInTop": ["Pagination", "DataTable"],
+    "top": 10
+  },
+  {
+    "framework": "react",
+    "query": "modal hook",
+    "expectedInTop": ["Dialog"],
+    "top": 5
+  }
+]

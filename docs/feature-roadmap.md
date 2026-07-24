@@ -45,28 +45,29 @@ surface; React and Web Components expose the same class and data contracts.
   deprecated alias for `glass`, and the C1-C7 audit fixes are resolved except for the documented
   follow-up polish items.
 - Documentation surface: component pages include docs search, keyboard interaction notes, runtime
-  event tables, and per-component API references where rows have been authored.
+  event tables, and an exhaustive typed per-component API reference. Adding a component without an
+  API entry now fails type-checking.
 - React behavior hooks: `useDialog`, `usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`,
   `useContextMenu`, `useFormValidation`, `useCalendar`, `useInputOTP`, `useDateRangePicker`,
   `useRichTextEditor`, `useSchedule`, `useResizable`, `useToast`, and `useTooltip` expose the main
   behavior contracts for React apps.
 - Rich-text adapter guidance: `docs/ai-usage.md` documents the event-bridge pattern for Tiptap,
   ProseMirror, Lexical, or Markdown engines without adding a heavy editor runtime to Lumen.
+- Catalog-wide visual regression: every documented component page is derived from the shared
+  catalog and captured in light and dark themes, with additional interactive-state scenarios.
+- Cross-framework conformance: CI checks the shared root class and behavior data-attribute
+  contracts across Astro, React, and Elements.
+- Runtime budgets: CI tracks raw and gzip budgets for the Astro controller chunks, shared CSS,
+  React components and hooks, and Elements controller.
+- DataTable event migration: `ui:data-table-selection-change` is canonical.
+  `ui:datatable-selection-change` remains a compatibility alias until Lumen 1.0.
 
 ## Next
 
-- Web Components behavior parity: `packages/elements` now covers DataTable, Dialog,
-  Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms,
-  Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable, and VirtualList; any
-  remaining advanced runtimes should follow the same client behavior pattern.
-- Theme tooling polish: the docs theme playground now uses the public `ThemeBuilder` runtime; add
-  import/check contrast flows when token review needs to go beyond generation and export.
-- Per-component API prop tables completeness: `apps/docs/src/data/docs.ts` uses a partial
-  `apiReferenceByComponent` map, so many components still rely only on common rows.
-- Visual regression coverage for new interactive components: `tests/visual/components.spec.ts`
-  covers 20 component docs pages, but not newer interactive surfaces such as Calendar, Resizable,
-  InputOTP, Toast, ContextMenu, DateRangePicker, Tree, TreeGrid, or VirtualList.
-- Migration guide for `private-website`: no Lumen repo guide currently explains how to replace the
-  sibling project's duplicated UI system with these primitives.
-- DataTable event rename: `DataTable` still emits `ui:datatable-selection-change`; rename it to the
-  `ui:*` event convention at the next major.
+- Continue moving independent Astro behaviors behind selector-gated controller chunks while
+  preserving the single `UIPrimitives` mounting API.
+- Ratchet coverage thresholds upward as focused React hook and interaction tests land.
+- Remove `surface="glass"` and `ui:datatable-selection-change` in Lumen 1.0 after the documented
+  compatibility window.
+- Keep full-browser interaction checks focused on behavior contracts; keep pixel regression on one
+  deterministic browser and operating system.

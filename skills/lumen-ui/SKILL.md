@@ -17,8 +17,10 @@ Treat Astro as the reference surface, while following the user's existing stack.
    - React: `@santi020k/lumen-react`
    - Web Components or framework-neutral HTML: `@santi020k/lumen-elements`
 3. Retrieve current contracts before guessing:
-   - Prefer connected Lumen MCP tools: read snapshot metadata and agent rules, search with the
-     target framework, then read the selected component's usage contract and tokens.
+   - Prefer connected Lumen MCP tools: read snapshot metadata and diagnostics, read agent rules,
+     search with the target framework, then read the selected component's usage contract and tokens.
+     Retain the catalog manifest when the client supports caching so a later catalog diff identifies
+     only the contracts that changed.
    - Otherwise inspect installed package types/source or use the Lumen CLI and online docs.
    - Never invent a component, prop, variant, event, or import path from memory.
 4. Plan the interface as product structure and states, then map each part to the smallest suitable

@@ -136,6 +136,14 @@ describe('@santi020k/lumen-react', () => {
     }
   })
 
+  test('renders every catalog component with its documented defaults', () => {
+    for (const componentName of lumenComponentNames) {
+      const component = LumenReact[componentName] as unknown as (props: Record<string, never>) => unknown
+
+      expect(() => withHookDispatcher(() => component({}))).not.toThrow()
+    }
+  })
+
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
   })

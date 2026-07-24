@@ -191,8 +191,9 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships a consistent, reduced-motion-aware entrance and metric vocabulary', async () => {
-    const [animatedNumber, revealGroup, runtime, scrollReveal, styles] = await Promise.all([
+    const [animatedNumber, motionController, revealGroup, runtime, scrollReveal, styles] = await Promise.all([
       readFile(new URL('./components/AnimatedNumber.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/RevealGroup.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
@@ -206,8 +207,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(revealGroup).toContain('data-ui-reveal-group')
     expect(animatedNumber).toContain('data-ui-animated-number-output')
     expect(animatedNumber).toContain('class="ui-sr-only"')
-    expect(runtime).toContain("'[data-ui-scroll-reveal], [data-ui-reveal-group]'")
-    expect(runtime).toContain('const initAnimatedNumbers = (scope: ParentNode): void =>')
+    expect(runtime).toContain("import('./controllers/motion.js')")
+    expect(motionController).toContain("'[data-ui-scroll-reveal], [data-ui-reveal-group]'")
+    expect(motionController).toContain('const initAnimatedNumbers = (scope: ParentNode): void =>')
     expect(styles).toContain('.ui-motion-duration-fast')
     expect(styles).toContain('.ui-reveal-group.is-revealed > *')
     expect(styles).toContain('var(--ui-duration-slow) var(--ui-ease-emphasized)')
@@ -251,8 +253,11 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(particles).not.toContain('<lumen-particles')
     expect(scrollReveal).toContain('<div')
     expect(scrollReveal).not.toContain('<lumen-scroll-reveal')
-    expect(runtime).toContain('const initBackToTopButtons = (scope: ParentNode): void =>')
-    expect(runtime).toContain('const initScrollReveals = (scope: ParentNode): void =>')
+    const motionController = await readFile(new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8')
+
+    expect(runtime).toContain("import('./controllers/motion.js')")
+    expect(motionController).toContain('const initBackToTopButtons = (scope: ParentNode): void =>')
+    expect(motionController).toContain('const initScrollReveals = (scope: ParentNode): void =>')
     expect(styles).toContain('.ui-particles')
     expect(styles).toContain('.ui-scroll-reveal.is-revealed')
     expect(styles).toContain('.ui-sr-only')
@@ -437,6 +442,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).not.toContain('ui-data-table__sort')
     expect(runtime).toContain('const initDataTables = (scope: ParentNode): void =>')
     expect(runtime).toContain("header.setAttribute('aria-sort', 'none')")
+    expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui:data-table-selection-change'")
     expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui:datatable-selection-change'")
     expect(runtime).toContain("input.type = 'hidden'")
     expect(styles).toContain('.ui-data-table__sort')

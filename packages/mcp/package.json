@@ -29,7 +29,8 @@
     "LICENSE"
   ],
   "bin": {
-    "lumen-mcp": "./bin/lumen-mcp.mjs"
+    "lumen-mcp": "./bin/lumen-mcp.mjs",
+    "lumen-mcp-http": "./bin/lumen-mcp-http.mjs"
   },
   "scripts": {
     "generate": "node scripts/generate-data.mjs",
@@ -37,6 +38,9 @@
     "build": "pnpm run generate && tsc -p tsconfig.build.json",
     "dev": "pnpm run generate && tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "local": "node bin/lumen-mcp-local.mjs",
+    "eval": "pnpm --filter @santi020k/lumen-react... run build && pnpm run build && node scripts/evaluate.mjs && node scripts/validate-examples.mjs",
+    "eval:examples": "pnpm --filter @santi020k/lumen-react... run build && pnpm run build && node scripts/validate-examples.mjs",
+    "eval:search": "pnpm run build && node scripts/evaluate.mjs --search-only",
     "smoke:package": "pnpm run build && node scripts/smoke-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --config ../../vitest.config.ts --project mcp",
@@ -50,6 +54,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@astrojs/compiler": "catalog:",
+    "@types/express": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",

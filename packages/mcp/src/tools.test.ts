@@ -4,6 +4,9 @@ import { describe, expect, test } from 'vitest'
 
 import { loadLumenData } from './data.js'
 import {
+  diagnose,
+  diffCatalog,
+  getCatalogManifest,
   getComponent,
   getMeta,
   getRecipe,
@@ -118,6 +121,9 @@ describe('lumen-mcp data snapshot', () => {
   })
 
   test('associates runtime events with their components', () => {
+    expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
+      expect.objectContaining({ name: 'ui:data-table-selection-change' })
+    )
     expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
       expect.objectContaining({ name: 'ui:datatable-selection-change' })
     )
@@ -348,5 +354,49 @@ describe('getTokens and getRules', () => {
 
   test('errors when a custom snapshot has no bundled rules', () => {
     expect(getRules({ ...loadLumenData(), rules: '' }).isError).toBe(true)
+  })
+})
+
+describe('catalog freshness and diagnostics', () => {
+  test('returns stable fingerprints for every component and recipe', () => {
+    const data = loadLumenData()
+    const result = getCatalogManifest()
+
+    expect(Object.keys(result.data.manifest.components)).toHaveLength(data.components.length)
+    expect(Object.values(result.data.manifest.components))
+      .toEqual(expect.arrayContaining([expect.stringMatching(/^[a-f0-9]{64}$/)]))
+    expect(Object.keys(result.data.manifest.recipes)).toHaveLength(data.recipes.length)
+  })
+
+  test('reports unchanged and changed client manifests', () => {
+    const current = getCatalogManifest().data
+    const unchanged = diffCatalog({
+      baseline: current.manifest,
+      baselineCatalogHash: current.catalogHash
+    })
+    const changed = diffCatalog({
+      baseline: {
+        components: {
+          ...current.manifest.components,
+          Button: '0'.repeat(64),
+          RemovedComponent: '1'.repeat(64)
+        },
+        recipes: current.manifest.recipes
+      }
+    })
+
+    expect(unchanged.data.unchanged).toBe(true)
+    expect(changed.data.components.changed).toContain('Button')
+    expect(changed.data.components.removed).toContain('RemovedComponent')
+  })
+
+  test('reports a healthy bundled snapshot and detects corruption', () => {
+    const data = loadLumenData()
+
+    expect(diagnose().data.status).toBe('healthy')
+    expect(diagnose({
+      ...data,
+      meta: { ...data.meta, componentCount: 0 }
+    }).data.status).toBe('issues')
   })
 })

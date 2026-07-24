@@ -1,6 +1,11 @@
 import { readFileSync as readFsFile } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
+export interface LumenCatalogManifest {
+  components: Record<string, string>
+  recipes: Record<string, string>
+}
+
 export interface LumenComponentSnapshot {
   apiReference: {
     attribute: string
@@ -50,6 +55,7 @@ export interface LumenComponentSnapshot {
 }
 
 export interface LumenData {
+  catalogManifest: LumenCatalogManifest
   components: LumenComponentSnapshot[]
   docs: {
     aiUsage: string

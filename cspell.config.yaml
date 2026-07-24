@@ -49,6 +49,7 @@ words:
   - haspopup
   - hcol
   - Hoverable
+  - hostable
   - inputmode
   - jsdom
   - knip
@@ -62,6 +63,8 @@ words:
   - memudo
   - mentions
   - Mentions
+  - microtask
+  - microtasks
   - modelcontextprotocol
   - nosniff
   - novalidate
@@ -89,6 +92,7 @@ words:
   - speeddial
   - SpeedDial
   - Stackframe
+  - Streamable
   - stdio
   - stepper
   - Stepper
