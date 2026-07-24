@@ -2998,6 +2998,17 @@ export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 const emptySpeedDialActions: SpeedDialAction[] = []
+const speedDialNavigationKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'End', 'Home']
+
+const getSpeedDialNavigationIndex = (key: string, currentIndex: number, itemCount: number) => {
+  if (key === 'Home') return 0
+
+  if (key === 'End') return itemCount - 1
+
+  if (key === 'ArrowDown' || key === 'ArrowRight') return (currentIndex + 1) % itemCount
+
+  return (currentIndex - 1 + itemCount) % itemCount
+}
 
 export const SpeedDial = ({
   actions = emptySpeedDialActions,
@@ -3006,6 +3017,7 @@ export const SpeedDial = ({
   defaultOpen = false,
   direction = 'up',
   label = 'Actions',
+  onBlur,
   ...props
 }: SpeedDialProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen)
@@ -3020,6 +3032,7 @@ export const SpeedDial = ({
 
   const focusAction = (position: 'first' | 'last') => {
     setIsOpen(true)
+
     requestAnimationFrame(() => {
       const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]')
       const target = position === 'first' ? items?.[0] : items?.[items.length - 1]
@@ -3031,14 +3044,16 @@ export const SpeedDial = ({
   return (
     <div
       className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)}
+      {...props}
       data-direction={direction}
       data-state={isOpen ? 'open' : 'closed'}
       data-ui-bound="true"
       data-ui-speed-dial
       onBlur={event => {
+        onBlur?.(event)
+
         if (!event.currentTarget.contains(event.relatedTarget)) close()
       }}
-      {...props}
     >
       <button
         aria-expanded={isOpen}
@@ -3046,16 +3061,24 @@ export const SpeedDial = ({
         aria-label={label}
         className="ui-speed-dial__trigger"
         data-ui-speed-dial-trigger
-        onClick={() => setIsOpen(open => !open)}
+        onClick={() => {
+          setIsOpen(open => !open)
+        }}
         onKeyDown={event => {
-          if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+          if (event.key === 'Escape') close()
+
+          if (['ArrowDown', 'ArrowRight'].includes(event.key)) {
             event.preventDefault()
+
             focusAction('first')
-          } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+
+            return
+          }
+
+          if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {
             event.preventDefault()
+
             focusAction('last')
-          } else if (event.key === 'Escape') {
-            close()
           }
         }}
         ref={triggerRef}
@@ -3072,20 +3095,23 @@ export const SpeedDial = ({
         }}
         onKeyDown={event => {
           const items = [...(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]') ?? [])]
-          const currentIndex = items.indexOf(document.activeElement as HTMLElement)
 
           if (event.key === 'Escape') {
             event.preventDefault()
-            close(true)
-          } else if (event.key === 'Home' || event.key === 'End') {
-            event.preventDefault()
-            items[event.key === 'Home' ? 0 : items.length - 1]?.focus()
-          } else if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.key)) {
-            event.preventDefault()
-            const offset = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1
 
-            items[(currentIndex + offset + items.length) % items.length]?.focus()
+            close(true)
+
+            return
           }
+
+          if (!speedDialNavigationKeys.includes(event.key)) return
+
+          const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+          const targetIndex = getSpeedDialNavigationIndex(event.key, currentIndex, items.length)
+
+          event.preventDefault()
+
+          items[targetIndex]?.focus()
         }}
         ref={menuRef}
         role="menu"

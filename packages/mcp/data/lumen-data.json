@@ -12558,22 +12558,59 @@
         "elements": true,
         "react": true
       },
-      "guidance": null,
+      "guidance": {
+        "when": "Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.",
+        "distinction": "This is an accessibility shortcut, not visible navigation. Point its href to the main content target; the first Tab reveals the link, and activating it moves focus past the repeated navigation."
+      },
       "kebab": "skip-link",
       "keyboardInteractions": [],
       "keywords": [
+        "accessibility",
+        "activating",
         "and",
+        "before",
         "bypass",
         "content",
         "directly",
+        "element",
+        "first",
+        "focus",
+        "focusable",
+        "focuses",
+        "header",
+        "hidden",
+        "href",
+        "its",
         "keyboard",
+        "layout",
         "lets",
+        "link",
         "main",
+        "menu",
         "move",
+        "moves",
         "navigation",
+        "not",
+        "past",
+        "place",
+        "point",
         "repeated",
+        "reveals",
+        "root",
+        "shortcut",
+        "sidebar",
         "skiplink",
-        "users"
+        "stays",
+        "tab",
+        "target",
+        "the",
+        "this",
+        "until",
+        "user",
+        "users",
+        "visible",
+        "visually",
+        "your"
       ],
       "name": "SkipLink",
       "props": [
@@ -20402,6 +20439,36 @@
     {
       "apiReference": [
         {
+          "attribute": "actions",
+          "defaultValue": "[]",
+          "description": "Creates labelled menu actions and renders optional Lumen icons.",
+          "values": "Array<{ icon?, label, value? }>"
+        },
+        {
+          "attribute": "defaultOpen",
+          "defaultValue": "false",
+          "description": "Sets the initial expanded state.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "direction",
+          "defaultValue": "\"up\"",
+          "description": "Controls the direction in which actions expand.",
+          "values": "\"up\" | \"down\" | \"left\" | \"right\""
+        },
+        {
+          "attribute": "label",
+          "defaultValue": "\"Actions\"",
+          "description": "Names both the trigger and its action menu for assistive technology.",
+          "values": "string"
+        },
+        {
+          "attribute": "UIPrimitives",
+          "defaultValue": "required",
+          "description": "Adds click-away dismissal and complete trigger and menu keyboard behavior. React provides equivalent behavior.",
+          "values": "Astro runtime"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -20414,7 +20481,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype SpeedDialAction = { icon?: string; label: string; value?: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  actions?: SpeedDialAction[]\n  class?: string\n  className?: string\n  direction?: 'up' | 'down' | 'left' | 'right'\n  label?: string\n}\n\nconst {\n  actions = [],\n  class: classProp = '',\n  className = '',\n  direction = 'up',\n  label = 'Actions',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-speed-dial',\n  `ui-speed-dial--${direction}`\n], classProp, className)\n---\n\n<div class:list={classList} data-direction={direction} data-ui-speed-dial {...passthrough}>\n  <button aria-expanded=\"false\" aria-label={label} class=\"ui-speed-dial__trigger\" data-ui-speed-dial-trigger type=\"button\">\n    <span aria-hidden=\"true\" class=\"ui-speed-dial__icon\"></span>\n  </button>\n  <menu class=\"ui-speed-dial__actions\" data-ui-speed-dial-actions>\n    {actions.map(action => (\n      <li>\n        <button\n          aria-label={action.label}\n          class=\"ui-speed-dial__action\"\n          data-icon={action.icon}\n          data-value={action.value ?? action.label}\n          type=\"button\"\n        >\n          <span class=\"ui-speed-dial__action-label\">{action.label}</span>\n        </button>\n      </li>\n    ))}\n    <slot />\n  </menu>\n</div>\n",
+      "astroSource": "---\nimport {\n  renderLumenIconSvg,\n  resolveLumenAstroProps\n} from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype SpeedDialAction = { icon?: string; label: string; value?: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  actions?: SpeedDialAction[]\n  class?: string\n  className?: string\n  defaultOpen?: boolean\n  direction?: 'up' | 'down' | 'left' | 'right'\n  label?: string\n}\n\nconst {\n  actions = [],\n  class: classProp = '',\n  className = '',\n  defaultOpen = false,\n  direction = 'up',\n  label = 'Actions',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-speed-dial',\n  `ui-speed-dial--${direction}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-direction={direction}\n  data-state={defaultOpen ? 'open' : 'closed'}\n  data-ui-speed-dial\n  {...passthrough}\n>\n  <button\n    aria-expanded={defaultOpen ? 'true' : 'false'}\n    aria-haspopup=\"menu\"\n    aria-label={label}\n    class=\"ui-speed-dial__trigger\"\n    data-ui-speed-dial-trigger\n    type=\"button\"\n  >\n    <span aria-hidden=\"true\" class=\"ui-speed-dial__icon\"></span>\n  </button>\n  <menu aria-label={label} class=\"ui-speed-dial__actions\" data-ui-speed-dial-actions role=\"menu\">\n    {actions.map((action, index) => (\n      <li role=\"presentation\" style={`--ui-speed-dial-index: ${index}`}>\n        <button\n          aria-label={action.label}\n          class=\"ui-speed-dial__action\"\n          data-icon={action.icon}\n          data-value={action.value ?? action.label}\n          role=\"menuitem\"\n          type=\"button\"\n        >\n          {action.icon && (\n            <span\n              aria-hidden=\"true\"\n              class=\"ui-speed-dial__action-icon ui-icon\"\n              set:html={renderLumenIconSvg(action.icon)}\n            />\n          )}\n          <span class=\"ui-speed-dial__action-label\">{action.label}</span>\n        </button>\n      </li>\n    ))}\n    <slot />\n  </menu>\n</div>\n",
       "category": "Navigation",
       "collections": [
         "Buttons and actions"
@@ -20428,8 +20495,8 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
-          "example": "<SpeedDial><Button aria-label=\"Create\">+</Button><Button>New file</Button><Button>New folder</Button></SpeedDial>",
-          "importStatement": "import { SpeedDial, Button } from '@santi020k/lumen-astro'",
+          "example": "<SpeedDial actions={[{ icon: \"file-plus-2\", label: \"New document\" }, { icon: \"folder-plus\", label: \"New folder\" }]} label=\"Create new\" />",
+          "importStatement": "import { SpeedDial } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
           "props": [
@@ -20449,6 +20516,11 @@
               "type": "string"
             },
             {
+              "name": "defaultOpen",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
               "name": "direction",
               "optional": true,
               "type": "'up' | 'down' | 'left' | 'right'"
@@ -20460,13 +20532,17 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype SpeedDialAction = { icon?: string; label: string; value?: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  actions?: SpeedDialAction[]\n  class?: string\n  className?: string\n  direction?: 'up' | 'down' | 'left' | 'right'\n  label?: string\n}\n\nconst {\n  actions = [],\n  class: classProp = '',\n  className = '',\n  direction = 'up',\n  label = 'Actions',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-speed-dial',\n  `ui-speed-dial--${direction}`\n], classProp, className)\n---\n\n<div class:list={classList} data-direction={direction} data-ui-speed-dial {...passthrough}>\n  <button aria-expanded=\"false\" aria-label={label} class=\"ui-speed-dial__trigger\" data-ui-speed-dial-trigger type=\"button\">\n    <span aria-hidden=\"true\" class=\"ui-speed-dial__icon\"></span>\n  </button>\n  <menu class=\"ui-speed-dial__actions\" data-ui-speed-dial-actions>\n    {actions.map(action => (\n      <li>\n        <button\n          aria-label={action.label}\n          class=\"ui-speed-dial__action\"\n          data-icon={action.icon}\n          data-value={action.value ?? action.label}\n          type=\"button\"\n        >\n          <span class=\"ui-speed-dial__action-label\">{action.label}</span>\n        </button>\n      </li>\n    ))}\n    <slot />\n  </menu>\n</div>\n",
+          "source": "---\nimport {\n  renderLumenIconSvg,\n  resolveLumenAstroProps\n} from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype SpeedDialAction = { icon?: string; label: string; value?: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  actions?: SpeedDialAction[]\n  class?: string\n  className?: string\n  defaultOpen?: boolean\n  direction?: 'up' | 'down' | 'left' | 'right'\n  label?: string\n}\n\nconst {\n  actions = [],\n  class: classProp = '',\n  className = '',\n  defaultOpen = false,\n  direction = 'up',\n  label = 'Actions',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-speed-dial',\n  `ui-speed-dial--${direction}`\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-direction={direction}\n  data-state={defaultOpen ? 'open' : 'closed'}\n  data-ui-speed-dial\n  {...passthrough}\n>\n  <button\n    aria-expanded={defaultOpen ? 'true' : 'false'}\n    aria-haspopup=\"menu\"\n    aria-label={label}\n    class=\"ui-speed-dial__trigger\"\n    data-ui-speed-dial-trigger\n    type=\"button\"\n  >\n    <span aria-hidden=\"true\" class=\"ui-speed-dial__icon\"></span>\n  </button>\n  <menu aria-label={label} class=\"ui-speed-dial__actions\" data-ui-speed-dial-actions role=\"menu\">\n    {actions.map((action, index) => (\n      <li role=\"presentation\" style={`--ui-speed-dial-index: ${index}`}>\n        <button\n          aria-label={action.label}\n          class=\"ui-speed-dial__action\"\n          data-icon={action.icon}\n          data-value={action.value ?? action.label}\n          role=\"menuitem\"\n          type=\"button\"\n        >\n          {action.icon && (\n            <span\n              aria-hidden=\"true\"\n              class=\"ui-speed-dial__action-icon ui-icon\"\n              set:html={renderLumenIconSvg(action.icon)}\n            />\n          )}\n          <span class=\"ui-speed-dial__action-label\">{action.label}</span>\n        </button>\n      </li>\n    ))}\n    <slot />\n  </menu>\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-speed-dial",
             "direction",
+            "actions",
+            "defaultOpen",
+            "label",
+            "UIPrimitives",
             "class, className",
             "...native attributes"
           ],
@@ -20484,8 +20560,8 @@
         },
         "react": {
           "available": true,
-          "example": "<SpeedDial><Button aria-label=\"Create\">+</Button><Button>New file</Button><Button>New folder</Button></SpeedDial>",
-          "importStatement": "import { SpeedDial, Button } from '@santi020k/lumen-react'",
+          "example": "<SpeedDial actions={[{ icon: \"file-plus-2\", label: \"New document\" }, { icon: \"folder-plus\", label: \"New folder\" }]} label=\"Create new\" />",
+          "importStatement": "import { SpeedDial } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
@@ -20493,6 +20569,11 @@
               "name": "actions",
               "optional": true,
               "type": "SpeedDialAction[]"
+            },
+            {
+              "name": "defaultOpen",
+              "optional": true,
+              "type": "boolean"
             },
             {
               "name": "direction",
@@ -20506,7 +20587,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {\n  actions?: SpeedDialAction[]\n  direction?: 'down' | 'left' | 'right' | 'up'\n  label?: string\n}\n\nexport const SpeedDial = ({ actions = emptySpeedDialActions, children, className, direction = 'up', label = 'Actions', ...props }: SpeedDialProps) => (\n  <div className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)} data-direction={direction} data-ui-speed-dial {...props}>\n    <button aria-expanded=\"false\" aria-label={label} className=\"ui-speed-dial__trigger\" data-ui-speed-dial-trigger type=\"button\">\n      <span aria-hidden=\"true\" className=\"ui-speed-dial__icon\" />\n    </button>\n    <menu className=\"ui-speed-dial__actions\" data-ui-speed-dial-actions>\n      {actions.map(action => (\n        <li key={action.value ?? action.label}>\n          <button aria-label={action.label} className=\"ui-speed-dial__action\" data-icon={action.icon} data-value={action.value ?? action.label} type=\"button\">\n            <span className=\"ui-speed-dial__action-label\">{action.label}</span>\n          </button>\n        </li>\n      ))}\n      {children}\n    </menu>\n  </div>\n)",
+          "source": "export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {\n  actions?: SpeedDialAction[]\n  defaultOpen?: boolean\n  direction?: 'down' | 'left' | 'right' | 'up'\n  label?: string\n}\n\nexport const SpeedDial = ({\n  actions = emptySpeedDialActions,\n  children,\n  className,\n  defaultOpen = false,\n  direction = 'up',\n  label = 'Actions',\n  onBlur,\n  ...props\n}: SpeedDialProps) => {\n  const [isOpen, setIsOpen] = useState(defaultOpen)\n  const menuRef = useRef<HTMLMenuElement>(null)\n  const triggerRef = useRef<HTMLButtonElement>(null)\n\n  const close = (restoreFocus = false) => {\n    setIsOpen(false)\n\n    if (restoreFocus) triggerRef.current?.focus()\n  }\n\n  const focusAction = (position: 'first' | 'last') => {\n    setIsOpen(true)\n\n    requestAnimationFrame(() => {\n      const items = menuRef.current?.querySelectorAll<HTMLElement>('[role=\"menuitem\"], button:not([disabled]), a[href]')\n      const target = position === 'first' ? items?.[0] : items?.[items.length - 1]\n\n      target?.focus()\n    })\n  }\n\n  return (\n    <div\n      className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)}\n      {...props}\n      data-direction={direction}\n      data-state={isOpen ? 'open' : 'closed'}\n      data-ui-bound=\"true\"\n      data-ui-speed-dial\n      onBlur={event => {\n        onBlur?.(event)\n\n        if (!event.currentTarget.contains(event.relatedTarget)) close()\n      }}\n    >\n      <button\n        aria-expanded={isOpen}\n        aria-haspopup=\"menu\"\n        aria-label={label}\n        className=\"ui-speed-dial__trigger\"\n        data-ui-speed-dial-trigger\n        onClick={() => {\n          setIsOpen(open => !open)\n        }}\n        onKeyDown={event => {\n          if (event.key === 'Escape') close()\n\n          if (['ArrowDown', 'ArrowRight'].includes(event.key)) {\n            event.preventDefault()\n\n            focusAction('first')\n\n            return\n          }\n\n          if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {\n            event.preventDefault()\n\n            focusAction('last')\n          }\n        }}\n        ref={triggerRef}\n        type=\"button\"\n      >\n        <span aria-hidden=\"true\" className=\"ui-speed-dial__icon\" />\n      </button>\n      <menu\n        aria-label={label}\n        className=\"ui-speed-dial__actions\"\n        data-ui-speed-dial-actions\n        onClick={event => {\n          if ((event.target as HTMLElement).closest('[role=\"menuitem\"], button, a')) close()\n        }}\n        onKeyDown={event => {\n          const items = [...(menuRef.current?.querySelectorAll<HTMLElement>('[role=\"menuitem\"], button:not([disabled]), a[href]') ?? [])]\n\n          if (event.key === 'Escape') {\n            event.preventDefault()\n\n            close(true)\n\n            return\n          }\n\n          if (!speedDialNavigationKeys.includes(event.key)) return\n\n          const currentIndex = items.indexOf(document.activeElement as HTMLElement)\n          const targetIndex = getSpeedDialNavigationIndex(event.key, currentIndex, items.length)\n\n          event.preventDefault()\n\n          items[targetIndex]?.focus()\n        }}\n        ref={menuRef}\n        role=\"menu\"\n      >\n        {actions.map((action, index) => (\n          <li key={action.value ?? action.label} role=\"presentation\" style={{ '--ui-speed-dial-index': index } as CSSProperties}>\n            <button\n              aria-label={action.label}\n              className=\"ui-speed-dial__action\"\n              data-icon={action.icon}\n              data-value={action.value ?? action.label}\n              role=\"menuitem\"\n              type=\"button\"\n            >\n              {action.icon && (\n                <span aria-hidden=\"true\" className=\"ui-speed-dial__action-icon ui-icon\">\n                  {renderLucideIcon(action.icon, `ui-icon__svg lucide-${action.icon}`)}\n                </span>\n              )}\n              <span className=\"ui-speed-dial__action-label\">{action.label}</span>\n            </button>\n          </li>\n        ))}\n        {children}\n      </menu>\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -20517,7 +20598,28 @@
       },
       "guidance": null,
       "kebab": "speed-dial",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Open or close the action menu.",
+          "key": "Enter, Space on trigger"
+        },
+        {
+          "action": "Open the menu and move focus to its first or last action.",
+          "key": "Arrow keys on trigger"
+        },
+        {
+          "action": "Move focus through actions, wrapping at either end.",
+          "key": "Arrow keys in menu"
+        },
+        {
+          "action": "Move focus to the first or last action.",
+          "key": "Home, End in menu"
+        },
+        {
+          "action": "Close the action menu and return focus to the trigger.",
+          "key": "Escape"
+        }
+      ],
       "keywords": [
         "action",
         "actions",
@@ -20552,6 +20654,11 @@
           "name": "className",
           "optional": true,
           "type": "string"
+        },
+        {
+          "name": "defaultOpen",
+          "optional": true,
+          "type": "boolean"
         },
         {
           "name": "direction",

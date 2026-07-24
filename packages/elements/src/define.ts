@@ -299,7 +299,12 @@ const elementConfigs = {
     tagName: 'lumen-context-menu'
   },
   DataTable: { attributeClasses: glassAttributeClasses('ui-data-table--glass'), baseClassName: 'ui-data-table', defaults: { 'data-ui-datatable': '' }, tagName: 'lumen-data-table' },
-  DatePicker: { baseClassName: 'ui-input ui-date-picker', defaults: { type: 'date' }, tagName: 'lumen-date-picker' },
+  DatePicker: {
+    attributeClasses: glassAttributeClasses('ui-date-picker-field--glass'),
+    baseClassName: 'ui-input ui-date-picker',
+    defaults: { type: 'date' },
+    tagName: 'lumen-date-picker'
+  },
   DateRangePicker: { baseClassName: 'ui-date-range-picker', defaults: { 'data-ui-date-range-picker': '' }, tagName: 'lumen-date-range-picker' },
   Dialog: {
     attributeClasses: {
@@ -438,7 +443,14 @@ const elementConfigs = {
   ScrollArea: { attributeClasses: glassAttributeClasses('ui-scroll-area--glass'), baseClassName: 'ui-scroll-area', tagName: 'lumen-scroll-area' },
   Schedule: { attributeClasses: glassAttributeClasses('ui-schedule--glass'), baseClassName: 'ui-schedule', defaults: { 'data-ui-schedule': '' }, tagName: 'lumen-schedule' },
   SearchField: { baseClassName: 'ui-input ui-search-field', defaults: { type: 'search' }, tagName: 'lumen-search-field' },
-  Select: { attributeClasses: { size: { lg: 'ui-select--lg', sm: 'ui-select--sm' } }, baseClassName: 'ui-select', tagName: 'lumen-select' },
+  Select: {
+    attributeClasses: {
+      ...glassAttributeClasses('ui-select-field--glass'),
+      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' }
+    },
+    baseClassName: 'ui-select',
+    tagName: 'lumen-select'
+  },
   Separator: {
     attributeClasses: {
       orientation: {

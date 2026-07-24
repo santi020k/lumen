@@ -351,6 +351,10 @@ Also audit:
 - `loadAllPagesAsync` is not supported.
 - `figma.getLocalComponentsAsync()` is not available in this environment.
 - `figma.saveVersionHistoryAsync()` is not available.
+- `PageNode.backgrounds` cannot be bound to variables. Figma throws
+  `page backgrounds cannot be bound to variables`. Set every library page background to the exact
+  resolved `color/surface-muted` Light RGB value instead, and re-sync it whenever that token
+  changes. The first-release Light value is `#F3F4F6`; `#F5F5F5` is a stale canvas value.
 - Version-history snapshots and library publication must be completed through the Figma UI.
 - `figma.getNodeByIdAsync(id)` is file-wide. Calling it once for every page can produce duplicate
   audit output unless results are deduplicated.

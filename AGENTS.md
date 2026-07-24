@@ -60,6 +60,11 @@ before release-oriented work or broad cross-package changes.
   own theme tokens in `apps/docs/src/styles/global.css`.
 - Interactive Astro primitives should keep working without requiring Tailwind configuration from
   consumers.
+- In Lumen-owned apps and documentation, always use the public Lumen component when an equivalent
+  exists. Do not recreate a component by applying `ui-*` classes directly to a native element.
+- Keep native HTML only when it is required by a Lumen compound component's documented child
+  contract or no Lumen equivalent exists. Add reusable missing UI to Lumen first, then consume the
+  public component.
 - Use accessible names, keyboard paths, focus states, and semantic markup for every primitive.
 - Tests live beside package code as `*.test.ts`. Add or update tests when behavior, exported
   metadata, or component contracts change.

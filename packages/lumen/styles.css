@@ -3683,6 +3683,7 @@
 .ui-rich-text-editor--glass,
 .ui-scroll-area--glass,
 .ui-schedule--glass,
+.ui-date-picker-field--glass .ui-date-picker__popover,
 .ui-select-field--glass .ui-select__list,
 .ui-sidebar--glass,
 .ui-table-wrap--glass,
@@ -3724,6 +3725,7 @@
 .ui-popover--glass > :where(div, section, article, form, [role="dialog"]),
 .ui-hover-card--glass > :where(div, section, article, [role="tooltip"]),
 .ui-menu--glass[data-ui-dropdown-menu] > [role="menu"],
+.ui-date-picker-field--glass .ui-date-picker__popover,
 .ui-select-field--glass .ui-select__list,
 .ui-toast--glass {
   background:
@@ -3773,11 +3775,16 @@
 }
 
 .ui-field--glass :where(.ui-input, .ui-textarea, .ui-select, .ui-input-otp),
+.ui-date-picker-field--glass :where(.ui-date-picker),
 .ui-select-field--glass :where(.ui-select),
 .ui-rich-text-editor--glass :where([contenteditable="true"], textarea, [data-ui-editor-content]) {
   border-color: hsl(var(--glass-border));
   background: hsl(var(--glass-bg-subtle));
   box-shadow: inset 0 1px 2px hsl(var(--glass-shade));
+}
+
+.ui-date-picker-field--glass .ui-date-picker__popover > .ui-calendar {
+  background: transparent;
 }
 
 .ui-table-wrap--glass :where(th, td),
@@ -3829,6 +3836,18 @@
     backdrop-filter: none;
     background: hsl(var(--surface) / 0.97);
   }
+
+  .ui-date-picker-field--glass,
+  .ui-select-field--glass {
+    background: none;
+  }
+
+  .ui-date-picker-field--glass .ui-date-picker__popover,
+  .ui-select-field--glass .ui-select__list {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: hsl(var(--surface) / 0.97);
+  }
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -3861,6 +3880,8 @@
   .ui-rich-text-editor--glass,
   .ui-scroll-area--glass,
   .ui-schedule--glass,
+  .ui-date-picker-field--glass .ui-date-picker__popover,
+  .ui-select-field--glass .ui-select__list,
   .ui-sidebar--glass,
   .ui-table-wrap--glass,
   .ui-tabs--glass,
@@ -3872,6 +3893,10 @@
     border-color: hsl(var(--line));
     background: hsl(var(--surface) / 0.94);
     box-shadow: var(--ui-shadow-lg);
+  }
+
+  .ui-date-picker-field--glass .ui-date-picker__popover > .ui-calendar {
+    background: transparent;
   }
 }
 }
@@ -4206,7 +4231,9 @@
 @layer lumen.glass {
   .ui-popover--glass:is(.ui-glass-subtle, .ui-glass-strong),
   .ui-hover-card--glass:is(.ui-glass-subtle, .ui-glass-strong),
-  .ui-menu--glass[data-ui-dropdown-menu]:is(.ui-glass-subtle, .ui-glass-strong) {
+  .ui-menu--glass[data-ui-dropdown-menu]:is(.ui-glass-subtle, .ui-glass-strong),
+  .ui-date-picker-field--glass:is(.ui-glass-subtle, .ui-glass-strong),
+  .ui-select-field--glass:is(.ui-glass-subtle, .ui-glass-strong) {
     border-color: transparent;
     background: none;
     box-shadow: none;
@@ -4216,7 +4243,9 @@
 
   .ui-popover--glass.ui-glass-subtle > :where(div, section, article, form, [role="dialog"]),
   .ui-hover-card--glass.ui-glass-subtle > :where(div, section, article, [role="tooltip"]),
-  .ui-menu--glass.ui-glass-subtle[data-ui-dropdown-menu] > [role="menu"] {
+  .ui-menu--glass.ui-glass-subtle[data-ui-dropdown-menu] > [role="menu"],
+  .ui-date-picker-field--glass.ui-glass-subtle .ui-date-picker__popover,
+  .ui-select-field--glass.ui-glass-subtle .ui-select__list {
     background:
       radial-gradient(140% 100% at 12% -8%, hsl(var(--glass-highlight)) 0%, transparent 38%),
       radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 40%),
@@ -4225,18 +4254,40 @@
 
   .ui-popover--glass.ui-glass-strong > :where(div, section, article, form, [role="dialog"]),
   .ui-hover-card--glass.ui-glass-strong > :where(div, section, article, [role="tooltip"]),
-  .ui-menu--glass.ui-glass-strong[data-ui-dropdown-menu] > [role="menu"] {
+  .ui-menu--glass.ui-glass-strong[data-ui-dropdown-menu] > [role="menu"],
+  .ui-date-picker-field--glass.ui-glass-strong .ui-date-picker__popover,
+  .ui-select-field--glass.ui-glass-strong .ui-select__list {
     background:
       radial-gradient(140% 100% at 12% -8%, hsl(var(--glass-highlight)) 0%, transparent 46%),
       radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 48%),
       hsl(var(--glass-bg-strong));
   }
 
-  :is(.ui-glass, .ui-glass-subtle, .ui-glass-strong, [class*="--glass"])[data-ui-glass-track] {
+  :is(.ui-glass, .ui-glass-subtle, .ui-glass-strong, [class*="--glass"])[data-ui-glass-track]:not(.ui-date-picker-field--glass):not(.ui-select-field--glass),
+  .ui-date-picker-field--glass[data-ui-glass-track] .ui-date-picker__popover,
+  .ui-select-field--glass[data-ui-glass-track] .ui-select__list {
     background:
       radial-gradient(24rem 24rem at var(--glass-x, 12%) var(--glass-y, -8%), hsl(var(--glass-highlight)) 0%, transparent 42%),
       radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 44%),
       hsl(var(--glass-bg));
+  }
+
+  .ui-glass-subtle[data-ui-glass-track]:not(.ui-date-picker-field--glass):not(.ui-select-field--glass),
+  .ui-date-picker-field--glass.ui-glass-subtle[data-ui-glass-track] .ui-date-picker__popover,
+  .ui-select-field--glass.ui-glass-subtle[data-ui-glass-track] .ui-select__list {
+    background:
+      radial-gradient(24rem 24rem at var(--glass-x, 12%) var(--glass-y, -8%), hsl(var(--glass-highlight)) 0%, transparent 38%),
+      radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 40%),
+      hsl(var(--glass-bg-subtle));
+  }
+
+  .ui-glass-strong[data-ui-glass-track]:not(.ui-date-picker-field--glass):not(.ui-select-field--glass),
+  .ui-date-picker-field--glass.ui-glass-strong[data-ui-glass-track] .ui-date-picker__popover,
+  .ui-select-field--glass.ui-glass-strong[data-ui-glass-track] .ui-select__list {
+    background:
+      radial-gradient(24rem 24rem at var(--glass-x, 12%) var(--glass-y, -8%), hsl(var(--glass-highlight)) 0%, transparent 46%),
+      radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 48%),
+      hsl(var(--glass-bg-strong));
   }
 }
 
@@ -4582,15 +4633,7 @@
 .ui-stepper__step[data-state="complete"] .ui-stepper__marker {
   border-color: hsl(var(--brand-solid));
   background: hsl(var(--brand-solid));
-  color: transparent;
-}
-.ui-stepper__step[data-state="complete"] .ui-stepper__marker::before {
-  content: "";
-  width: 0.625rem;
-  height: 0.35rem;
-  border-bottom: 2px solid hsl(var(--canvas));
-  border-left: 2px solid hsl(var(--canvas));
-  transform: translateY(-0.0625rem) rotate(-45deg);
+  color: hsl(var(--canvas));
 }
 .ui-stepper__step:not(:last-child)::after {
   content: "";
@@ -5347,7 +5390,8 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-speed-dial__trigger,
   .ui-speed-dial__icon,
-  .ui-speed-dial__actions {
+  .ui-speed-dial__actions,
+  .ui-speed-dial__actions li {
     transition: none;
   }
 }
