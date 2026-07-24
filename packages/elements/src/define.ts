@@ -5137,7 +5137,8 @@ class LumenMentionsBehaviorElement extends LumenElement {
 
 const setupSelectionDisclosure = (
   root: HTMLElement,
-  signal: AbortSignal
+  signal: AbortSignal,
+  rovingPanel = true
 ): { close: () => void, panel: HTMLElement, trigger: HTMLElement } | undefined => {
   const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
   const panel = root.querySelector<HTMLElement>('[data-ui-panel]')
@@ -5152,14 +5153,38 @@ const setupSelectionDisclosure = (
     setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
   }, { signal })
 
-  panel.addEventListener('keydown', event => {
-    if (event.key !== 'Escape') return
+  trigger.addEventListener('keydown', event => {
+    if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return
 
     event.preventDefault()
 
-    close()
+    setDisclosureOpen(trigger, panel, true)
 
-    trigger.focus({ preventScroll: true })
+    getFocusable(panel)[0]?.focus()
+  }, { signal })
+
+  panel.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      event.preventDefault()
+
+      close()
+
+      trigger.focus({ preventScroll: true })
+
+      return
+    }
+
+    if (!rovingPanel || !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+
+    const items = getFocusable(panel)
+
+    if (!items.length) return
+
+    event.preventDefault()
+
+    const currentIndex = Math.max(0, items.indexOf(document.activeElement as HTMLElement))
+
+    items[getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])]?.focus()
   }, { signal })
 
   document.addEventListener('pointerdown', event => {
@@ -5183,7 +5208,7 @@ class LumenCascaderBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    const disclosure = setupSelectionDisclosure(this, this.abortController.signal)
+    const disclosure = setupSelectionDisclosure(this, this.abortController.signal, false)
 
     if (!disclosure) return
 

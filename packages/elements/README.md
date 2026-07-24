@@ -74,10 +74,12 @@ Elements emit the same `ui-*` classes and `data-ui-*` attributes as the Astro pr
 remains the reference package, and the Web Components adapter now carries matching light-DOM
 behavior for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder,
 Toast, Tooltip, forms, Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable,
-and VirtualList: selection, validation, calendar grids, OTP segmentation, date range syncing, rich
-text command, context menu, schedule drag/drop, resizable pane sizing, theme, and range events,
-ARIA state, keyboard navigation, Escape/outside dismissal, focus return/trapping, native select
-form participation, and the document-level toast controller events.
+VirtualList, FileUpload, Tour, Anchor, Transfer, Mentions, Cascader, and TreeSelect: selection,
+validation, calendar grids, OTP segmentation, date range syncing, rich text command, context menu,
+schedule and file drag/drop, anchored tours, scroll spy, collection transfer, mention insertion,
+hierarchical selection, resizable pane sizing, theme, and range events, ARIA state, keyboard
+navigation, Escape/outside dismissal, focus return/trapping, native form participation, and the
+document-level toast controller events.
 
 ## Interactive behavior
 
@@ -88,6 +90,8 @@ Astro runtime's data event, validation, calendar grids, OTP segmentation, date r
 text command, context menu, schedule drag/drop, resizable pane sizing, theme export, ARIA,
 keyboard, Escape, dismissal, and toast controller semantics while keeping markup declarative and
 Declarative-Shadow-DOM friendly.
+FileUpload, Tour, Anchor, Transfer, Mentions, Cascader, and TreeSelect also run directly through
+their registered custom elements; no Astro runtime or host controller is required.
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
