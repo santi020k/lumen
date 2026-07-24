@@ -99,7 +99,7 @@
     {
       "name": "Accordion",
       "type": "component",
-      "description": "Stacks collapsible content sections.",
+      "description": "Stacks collapsible content sections as cards or a compact flush list.",
       "category": "Layout",
       "files": [
         "packages/astro/components/Accordion.astro",

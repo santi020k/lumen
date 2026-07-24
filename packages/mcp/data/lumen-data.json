@@ -3,6 +3,12 @@
     {
       "apiReference": [
         {
+          "attribute": "variant",
+          "defaultValue": "\"default\"",
+          "description": "Uses bordered cards by default or a compact, divider-led list with flush.",
+          "values": "\"default\" | \"flush\""
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -15,7 +21,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-accordion'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype AccordionVariant = 'default' | 'flush'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n  variant?: AccordionVariant\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-accordion',\n    variant === 'flush' && 'ui-accordion--flush'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-variant={variant}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Layout",
       "collections": [
         "Disclosure and navigation"
@@ -45,14 +51,20 @@
               "name": "className",
               "optional": true,
               "type": "string"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "AccordionVariant"
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-accordion'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ntype AccordionVariant = 'default' | 'flush'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n  variant?: AccordionVariant\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-accordion',\n    variant === 'flush' && 'ui-accordion--flush'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-variant={variant}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
+            "variant",
             "class, className",
             "...native attributes"
           ],
@@ -64,7 +76,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Accordion: { baseClassName: 'ui-accordion', tagName: 'lumen-accordion' }",
+          "source": "Accordion: {\n    attributeClasses: {\n      variant: { flush: 'ui-accordion--flush' }\n    },\n    baseClassName: 'ui-accordion',\n    defaults: { variant: 'default' },\n    tagName: 'lumen-accordion'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-accordion"
         },
@@ -74,9 +86,15 @@
           "importStatement": "import { Accordion } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
+          "props": [
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "AccordionVariant"
+            }
+          ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export type AccordionProps = ComponentPropsWithoutRef<'div'>\n\nexport const Accordion = ({ className, ...props }: AccordionProps) => (\n  <div className={composeClassName('ui-accordion', className)} {...props} />\n)",
+          "source": "export interface AccordionProps extends ComponentPropsWithoutRef<'div'> {\n  variant?: AccordionVariant\n}\n\nexport const Accordion = ({ className, variant = 'default', ...props }: AccordionProps) => (\n  <div\n    className={composeClassName('ui-accordion', variant === 'flush' && 'ui-accordion--flush', className)}\n    data-variant={variant}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -86,40 +104,55 @@
         "react": true
       },
       "guidance": {
-        "when": "Use for a list of related sections when people may open and compare more than one section.",
-        "distinction": "Use Collapsible for one standalone disclosure rather than a coordinated group."
+        "when": "Use for a list of related sections when people may open and compare more than one section. Use the flush variant for FAQs and content-led lists.",
+        "distinction": "Use Collapsible for one standalone disclosure rather than a coordinated group. Give child details the same native name when only one section should remain open."
       },
       "kebab": "accordion",
       "keyboardInteractions": [],
       "keywords": [
         "accordion",
         "and",
+        "child",
         "collapsible",
         "compare",
         "content",
         "coordinated",
+        "details",
         "disclosure",
+        "faqs",
+        "flush",
         "for",
+        "give",
         "group",
         "layout",
+        "led",
         "list",
+        "lists",
         "local",
         "may",
         "more",
+        "name",
+        "native",
         "navigation",
         "one",
+        "only",
         "open",
         "organize",
         "people",
         "progressive",
         "rather",
         "related",
+        "remain",
+        "same",
         "section",
         "sections",
+        "should",
         "stacks",
         "standalone",
         "than",
+        "the",
         "use",
+        "variant",
         "when",
         "with"
       ],
@@ -134,6 +167,11 @@
           "name": "className",
           "optional": true,
           "type": "string"
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "AccordionVariant"
         }
       ],
       "propsExtends": "HTMLAttributes<'div'>",

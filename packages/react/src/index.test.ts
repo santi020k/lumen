@@ -5,6 +5,8 @@ import { describe, expect, test, vi } from 'vitest'
 
 import * as LumenReact from './index.js'
 import {
+  Accordion,
+  type AccordionProps,
   Alert,
   type AlertProps,
   AnimatedNumber,
@@ -171,6 +173,17 @@ describe('@santi020k/lumen-react', () => {
 
     expect(button.props.className).toBe('ui-button ui-button--default ui-button--default-size')
     expect(button.props.type).toBe('button')
+  })
+
+  test('supports the flush accordion variant', () => {
+    const accordion = Accordion({
+      children: 'Frequently asked questions',
+      className: 'custom-accordion',
+      variant: 'flush'
+    }) as ReactElement<AccordionProps & { 'data-variant': string }>
+
+    expect(accordion.props.className).toBe('ui-accordion ui-accordion--flush custom-accordion')
+    expect(accordion.props['data-variant']).toBe('flush')
   })
 
   test('supports polymorphic cards and glass surfaces', () => {

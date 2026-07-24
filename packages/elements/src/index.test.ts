@@ -172,6 +172,16 @@ describe('@santi020k/lumen-elements', () => {
     expect(blockCode.classList.contains('ui-code--wrap')).toBe(true)
   })
 
+  test('supports the flush accordion variant', () => {
+    const accordion = document.createElement('lumen-accordion')
+
+    accordion.setAttribute('variant', 'flush')
+    document.body.append(accordion)
+
+    expect(accordion.classList.contains('ui-accordion--flush')).toBe(true)
+    expect(accordion.getAttribute('variant')).toBe('flush')
+  })
+
   test('dialog triggers manage focus, Escape, outside click, and return focus', () => {
     document.body.innerHTML = `
       <button id="open-dialog" data-ui-dialog-trigger="profile-dialog">Edit profile</button>

@@ -796,6 +796,9 @@ const runtimeEventsByComponent: Partial<Record<string, readonly RuntimeEventRow[
 }
 
 const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]>> = {
+  Accordion: [
+    apiRow('variant', '"default" | "flush"', '"default"', 'Uses bordered cards by default or a compact, divider-led list with flush.')
+  ],
   Alert: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the alert tone.')
   ],
@@ -1151,8 +1154,8 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
 
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   Accordion: {
-    when: 'Use for a list of related sections when people may open and compare more than one section.',
-    distinction: 'Use Collapsible for one standalone disclosure rather than a coordinated group.'
+    when: 'Use for a list of related sections when people may open and compare more than one section. Use the flush variant for FAQs and content-led lists.',
+    distinction: 'Use Collapsible for one standalone disclosure rather than a coordinated group. Give child details the same native name when only one section should remain open.'
   },
   Alert: {
     when: 'Use for a status or outcome that should remain visible near the content it affects.',

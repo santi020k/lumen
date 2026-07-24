@@ -101,7 +101,7 @@ export const lumenRegistry = {
     {
       "name": "Accordion",
       "type": "component",
-      "description": "Stacks collapsible content sections.",
+      "description": "Stacks collapsible content sections as cards or a compact flush list.",
       "category": "Layout",
       "files": [
         "packages/astro/components/Accordion.astro",
@@ -1420,7 +1420,13 @@ export const lumenRegistry = {
       "description": "Animates a formatted metric while keeping one stable accessible value.",
       "files": [
         "packages/astro/components/AnimatedNumber.astro",
+        "packages/astro/runtime/UIPrimitives.astro",
+        "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
+      ],
+      "dependencies": [
+        "styles",
+        "runtime"
       ]
     },
     {
@@ -1430,17 +1436,29 @@ export const lumenRegistry = {
       "description": "Reveals a group of direct children with tokenized, reduced-motion-aware staggering.",
       "files": [
         "packages/astro/components/RevealGroup.astro",
+        "packages/astro/runtime/UIPrimitives.astro",
+        "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
+      ],
+      "dependencies": [
+        "styles",
+        "runtime"
       ]
     },
     {
       "name": "ScrollReveal",
       "type": "component",
       "category": "Layout",
-      "description": "A Scroll Reveal component.",
+      "description": "Animates wrapped content as it first enters the viewport.",
       "files": [
         "packages/astro/components/ScrollReveal.astro",
+        "packages/astro/runtime/UIPrimitives.astro",
+        "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
+      ],
+      "dependencies": [
+        "styles",
+        "runtime"
       ]
     },
     {
