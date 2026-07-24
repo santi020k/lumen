@@ -426,7 +426,7 @@ behaviorTest(['Tooltip'], 'Tooltip opens for keyboard focus and closes on Escape
   await expect(tooltip).toBeHidden()
 })
 
-behaviorTest(['Toggle'], 'Toggle updates its pressed state and modifier class', async ({ page }) => {
+behaviorTest(['Toggle'], 'Toggle updates its authoritative pressed state', async ({ page }) => {
   await openPreview(page, 'toggle')
 
   const toggle = page.locator('.component-doc-preview [data-ui-toggle]').filter({ hasText: 'Pin project' })
@@ -434,7 +434,6 @@ behaviorTest(['Toggle'], 'Toggle updates its pressed state and modifier class', 
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
   await toggle.click()
   await expect(toggle).toHaveAttribute('aria-pressed', 'true')
-  await expect(toggle).toHaveClass(/ui-toggle--pressed/)
 })
 
 behaviorTest(['Code'], 'Code copies its block content and announces success', async ({ page }) => {

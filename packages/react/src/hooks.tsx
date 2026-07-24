@@ -1,4 +1,6 @@
 /* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context, react-refresh/only-export-components -- This package supports React 18 and intentionally keeps public hooks, context provider, and small helper components together in one library module. */
+'use client'
+
 import {
   coerceThemeBuilderExportFormat,
   composeClassName,

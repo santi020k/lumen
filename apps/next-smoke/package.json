@@ -1,0 +1,29 @@
+{
+  "name": "@santi020k/lumen-next-smoke",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "clean": "rm -rf .next",
+    "lint": "eslint . --no-warn-ignored",
+    "lint:fix": "eslint . --fix --no-warn-ignored",
+    "test": "vitest run --config ../../vitest.config.ts --project next-smoke --passWithNoTests",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@santi020k/lumen-react": "workspace:^",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}
