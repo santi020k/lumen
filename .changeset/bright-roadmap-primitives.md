@@ -1,9 +1,9 @@
 ---
-"@santi020k/lumen-astro": major
-"@santi020k/lumen-react": major
-"@santi020k/lumen-elements": major
-"@santi020k/lumen-core": major
-"@santi020k/lumen": major
+"@santi020k/lumen-astro": minor
+"@santi020k/lumen-react": minor
+"@santi020k/lumen-elements": minor
+"@santi020k/lumen-core": minor
+"@santi020k/lumen": minor
 ---
 
 Add competitor-informed product primitives, AI discovery docs, shared behavior helpers, and registry
