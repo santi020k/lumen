@@ -19,6 +19,7 @@ import { describe, expect, test, vi } from 'vitest'
 
 import {
   addLumenRegistryItem,
+  auditLumenTokenCss,
   getLumenRegistryEntries,
   getLumenRegistryItem,
   loadLumenRegistry,
@@ -29,6 +30,20 @@ import {
   lumenRegistry} from './index.js'
 
 describe('@santi020k/lumen umbrella package', () => {
+  test('audits semantic token declarations that use complete CSS colors', () => {
+    expect(auditLumenTokenCss(`
+      :root {
+        --surface: #fff;
+        --ink: hsl(220 20% 10%);
+        --line: 220 13% 86%;
+        --brand: var(--legacy-brand-channels);
+      }
+    `, 'theme.css')).toEqual([
+      expect.objectContaining({ file: 'theme.css', token: 'surface', value: '#fff' }),
+      expect.objectContaining({ file: 'theme.css', token: 'ink', value: 'hsl(220 20% 10%)' })
+    ])
+  })
+
   test('exports umbrella metadata and shared package metadata', () => {
     expect(lumen).toEqual({
       name: 'Lumen',

@@ -12,7 +12,7 @@ interface Option {
 type SelectOption = Option | string
 
 interface Props extends Omit<HTMLAttributes<'select'>, 'size'> {
-  class?: string
+  class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
   options?: SelectOption[]

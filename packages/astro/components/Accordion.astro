@@ -6,7 +6,7 @@ import type { HTMLAttributes } from 'astro/types'
 type AccordionVariant = 'default' | 'flush'
 
 interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   variant?: AccordionVariant
 }

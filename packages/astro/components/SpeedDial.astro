@@ -10,7 +10,7 @@ type SpeedDialAction = { icon?: string; label: string; value?: string }
 
 interface Props extends HTMLAttributes<'div'> {
   actions?: SpeedDialAction[]
-  class?: string
+  class?: string | null
   className?: string
   defaultOpen?: boolean
   direction?: 'up' | 'down' | 'left' | 'right'

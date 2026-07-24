@@ -7,6 +7,7 @@
   "description": "React primitive components for Lumen UI.",
   "type": "module",
   "sideEffects": [
+    "./layers.css",
     "./styles.css"
   ],
   "main": "./dist/index.js",
@@ -18,10 +19,12 @@
       "import": "./dist/index.js"
     },
     "./styles.css": "./styles.css",
+    "./layers.css": "./layers.css",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
+    "layers.css",
     "styles.css",
     "README.md",
     "LICENSE"

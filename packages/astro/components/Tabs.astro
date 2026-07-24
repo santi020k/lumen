@@ -4,15 +4,19 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+  initialValue?: string
+  storageKey?: string
 }
 
 const {
   class: classProp = '',
   className = '',
   glass = false,
+  initialValue,
+  storageKey,
   ...rest
 } = Astro.props
 
@@ -25,6 +29,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div
+  data-initial-value={initialValue}
+  data-storage-key={storageKey}
   data-ui-tabs
   class:list={classList}
   {...passthrough}

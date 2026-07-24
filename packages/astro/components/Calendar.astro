@@ -4,7 +4,7 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends Omit<HTMLAttributes<'div'>, 'value'> {
-  class?: string
+  class?: string | null
   className?: string
   disabled?: boolean
   glass?: boolean | 'subtle' | 'strong'

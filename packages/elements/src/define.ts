@@ -271,7 +271,8 @@ const elementConfigs = {
       variant: {
         glass: 'ui-card--glass',
         interactive: 'ui-card--interactive',
-        muted: 'ui-card--muted'
+        muted: 'ui-card--muted',
+        unstyled: 'ui-card--unstyled'
       }
     },
     baseClassName: 'ui-card',
@@ -384,7 +385,7 @@ const elementConfigs = {
   Item: { attributeClasses: glassAttributeClasses('ui-item--glass'), baseClassName: 'ui-item', tagName: 'lumen-item' },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
   Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
-  Link: { baseClassName: 'ui-link', tagName: 'lumen-link' },
+  Link: { attributeClasses: { variant: { inherit: 'ui-link--inherit' } }, baseClassName: 'ui-link', tagName: 'lumen-link' },
   Marker: {
     attributeClasses: {
       variant: {
@@ -422,7 +423,8 @@ const elementConfigs = {
   NavigationMenu: {
     attributeClasses: {
       glass: { strong: 'ui-navigation-menu--glass ui-glass-strong', subtle: 'ui-navigation-menu--glass ui-glass-subtle', true: 'ui-navigation-menu--glass' },
-      surface: { glass: 'ui-navigation-menu--glass' }
+      surface: { glass: 'ui-navigation-menu--glass' },
+      variant: { unstyled: 'ui-navigation-menu--unstyled' }
     },
     baseClassName: 'ui-navigation-menu',
     defaults: { 'data-ui-navigation-menu': '', surface: 'default' },
@@ -484,7 +486,8 @@ const elementConfigs = {
   Sidebar: {
     attributeClasses: {
       glass: { strong: 'ui-sidebar--glass ui-glass-strong', subtle: 'ui-sidebar--glass ui-glass-subtle', true: 'ui-sidebar--glass' },
-      surface: { glass: 'ui-sidebar--glass' }
+      surface: { glass: 'ui-sidebar--glass' },
+      variant: { unstyled: 'ui-sidebar--unstyled' }
     },
     baseClassName: 'ui-sidebar',
     defaults: { surface: 'default' },
@@ -522,7 +525,6 @@ const elementConfigs = {
     tagName: 'lumen-toast'
   },
   Toggle: {
-    attributeClasses: { pressed: { true: 'ui-toggle--pressed' } },
     baseClassName: 'ui-toggle',
     defaults: { 'aria-pressed': 'false', 'data-ui-toggle': '', role: 'button', tabindex: '0' },
     role: 'button',
@@ -601,7 +603,10 @@ const elementConfigs = {
   AnimatedLogo: { baseClassName: 'ui-animated-logo', tagName: 'lumen-animated-logo' },
   AnimatedPortrait: { baseClassName: 'ui-animated-portrait', tagName: 'lumen-animated-portrait' },
   ButtonLink: {
-    attributeClasses: { shape: { icon: 'ui-button-link--icon' } },
+    attributeClasses: {
+      shape: { icon: 'ui-button-link--icon' },
+      variant: { unstyled: 'ui-button-link--unstyled' }
+    },
     baseClassName: 'ui-button-link',
     tagName: 'lumen-button-link'
   },

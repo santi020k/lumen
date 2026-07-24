@@ -6,7 +6,7 @@ import type { HTMLAttributes } from 'astro/types'
 type SegmentedOption = string | { disabled?: boolean; label: string; value: string }
 
 interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   defaultValue?: string
   name?: string

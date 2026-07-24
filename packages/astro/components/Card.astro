@@ -5,10 +5,10 @@ import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
   as?: 'article' | 'div' | 'section'
-  class?: string
+  class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
-  variant?: 'default' | 'glass' | 'interactive' | 'muted'
+  variant?: 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 }
 
 const {
@@ -23,6 +23,7 @@ const {
 const isGlass = glass || variant === 'glass'
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
     'ui-card',
+    variant === 'unstyled' && 'ui-card--unstyled',
     variant === 'muted' && 'ui-card--muted',
     variant === 'interactive' && 'ui-card--interactive',
     isGlass && 'ui-card--glass',

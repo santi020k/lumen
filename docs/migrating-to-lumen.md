@@ -17,9 +17,21 @@ pnpm add @santi020k/lumen-astro
 Import the stylesheet globally in your main layout or Tailwind CSS entry:
 
 ```css
+@import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
 ```
+
+If the existing app already defines common custom properties such as `--surface`, `--ink`, or
+`--line`, audit them before importing Lumen:
+
+```bash
+lumen audit-tokens ./src
+```
+
+Lumen stores semantic colors as HSL channels (`220 13% 96%`) because components consume them with
+`hsl(var(--token))`. Complete values such as `#fff`, `rgb(...)`, or `hsl(...)` must be renamed or
+converted during incremental migration.
 
 For interactive primitives (Dialogs, Menus, Select, etc.), mount `UIPrimitives` once in your root layout:
 
@@ -88,3 +100,35 @@ In `private-website`'s global CSS, you likely have custom brand and background c
 ```
 
 By mapping your existing colors to these core HSL tokens, the entire Lumen catalog will automatically inherit your site's established brand identity without overriding individual component styles.
+
+At a theme boundary, override the complete minimum set so typography and page backgrounds remain
+consistent with component surfaces:
+
+```css
+:root[data-theme="product-light"] {
+  --canvas: 210 20% 98%;
+  --surface: 0 0% 100%;
+  --surface-muted: 210 20% 96%;
+  --surface-strong: 210 16% 90%;
+  --line: 210 14% 84%;
+  --ink: 220 25% 12%;
+  --ink-soft: 220 14% 32%;
+  --ink-muted: 220 10% 48%;
+  --brand: 264 92% 47%;
+  --brand-solid: 264 92% 40%;
+  --brand-soft: 264 60% 94%;
+  --accent: 168 76% 36%;
+  --success: 142 71% 36%;
+  --warning: 38 92% 50%;
+  --danger: 0 84% 60%;
+  --ui-font: Montserrat, ui-sans-serif, system-ui, sans-serif;
+}
+```
+
+## Navigation migration boundaries
+
+`NavigationMenu` is one arrow-key focus group. Wrap only one related set of primary navigation
+links; keep the site logo, theme switch, account menu, and unrelated utility actions outside that
+root so they retain independent Tab stops. Use `variant="unstyled"` when adopting the navigation
+semantics and runtime inside an established visual system. `Sidebar variant="unstyled"` and
+`Link variant="inherit"` provide the matching low-presentation migration path.

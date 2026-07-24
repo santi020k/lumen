@@ -4,7 +4,7 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'hr'> {
-  class?: string
+  class?: string | null
   className?: string
   orientation?: 'horizontal' | 'vertical'
 }

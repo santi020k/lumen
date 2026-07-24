@@ -737,6 +737,18 @@ export const runtimeEvents: RuntimeEventRow[] = [
     when: 'Fires after editable content changes or an editor command runs.'
   },
   {
+    detail: '{ storageKey?: string, value: string }',
+    name: 'ui:tabs-change',
+    target: 'Tabs root ([data-ui-tabs])',
+    when: 'Fires after pointer or keyboard activation changes the selected tab.'
+  },
+  {
+    detail: '{ previousTheme?: string, storageKey: string, theme: string }',
+    name: 'ui:theme-change',
+    target: 'ThemeToggle control ([data-ui-theme-toggle])',
+    when: 'Fires after ThemeToggle applies and persists a new document theme.'
+  },
+  {
     detail: "{ hue: number, accentHue: number, mode: 'generated' | 'manual', scheme: 'dark' | 'light', tokens: Record<string, string> }",
     name: 'ui:theme-change',
     target: 'ThemeBuilder root ([data-ui-theme-builder])',
@@ -870,14 +882,14 @@ const apiReferenceByComponent = {
   ],
   ButtonLink: [
     apiRow('href', 'string', '-', 'Sets the link destination.'),
-    apiRow('variant', '"primary" | "secondary" | "ghost" | "inline"', '"primary"', 'Controls the link emphasis.'),
+    apiRow('variant', '"primary" | "secondary" | "ghost" | "inline" | "unstyled"', '"primary"', 'Controls the link emphasis or removes presentation for migration use.'),
     apiRow('shape', '"default" | "icon"', '"default"', 'Renders a round icon-only link when set to "icon".'),
     apiRow('showArrow', 'boolean', 'false', 'Appends a directional arrow icon.'),
     apiRow('newTab', 'boolean', 'false', 'Opens the link in a new tab with safe rel attributes.')
   ],
   Card: [
     apiRow('as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'),
-    apiRow('variant', '"default" | "muted" | "interactive" | "glass"', '"default"', 'Controls the card surface and affordance; variant="glass" is kept as a compatibility alias.')
+    apiRow('variant', '"default" | "muted" | "interactive" | "glass" | "unstyled"', '"default"', 'Controls the card surface and affordance; unstyled keeps only semantics and hooks.')
   ],
   Calendar: [
     apiRow('disabled', 'boolean', 'false', 'Disables month navigation, date selection, and the hidden form input.'),
@@ -1046,6 +1058,8 @@ const apiReferenceByComponent = {
   ],
   Link: [
     apiRow('href', 'string', 'required', 'Sets the native anchor destination.'),
+    apiRow('newTab', 'boolean', 'false', 'Opens the destination in a new tab and safely adds noopener and noreferrer to rel.'),
+    apiRow('variant', '"default" | "inherit"', '"default"', 'Lets migration surfaces inherit surrounding link color and font weight.'),
     apiRow('target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.')
   ],
   Menubar: [
@@ -1067,7 +1081,8 @@ const apiReferenceByComponent = {
     apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls select height and font size.')
   ],
   NavigationMenu: [
-    surfaceApiRow
+    surfaceApiRow,
+    apiRow('variant', '"default" | "unstyled"', '"default"', 'Keeps navigation semantics and roving focus while removing Lumen container and child presentation.')
   ],
   NumberField: [
     apiRow('type', 'HTML input type', '"number"', 'Sets the native input type.')
@@ -1086,7 +1101,8 @@ const apiReferenceByComponent = {
     apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the height and font size of both controls.')
   ],
   Pill: [
-    apiRow('count', 'number | string', '-', 'Appends a muted count affix after the pill label.')
+    apiRow('count', 'number | string', '-', 'Appends a muted count affix after the pill label.'),
+    apiRow('href', 'string', '-', 'Renders the pill as a focusable anchor when it represents a destination.')
   ],
   Popover: [
     surfaceApiRow,
@@ -1141,7 +1157,8 @@ const apiReferenceByComponent = {
     ...dialogTriggerApiRows('sheet')
   ],
   Sidebar: [
-    surfaceApiRow
+    surfaceApiRow,
+    apiRow('variant', '"default" | "unstyled"', '"default"', 'Keeps aside semantics while removing Lumen layout and presentation.')
   ],
   Slider: [
     apiRow('type', 'HTML input type', '"range"', 'Sets the native input type.')
@@ -1180,8 +1197,10 @@ const apiReferenceByComponent = {
   ],
   Tabs: [
     apiRow('[role="tablist"]', 'child container', 'required', 'Groups the tab controls.'),
-    apiRow('[role="tab"]', 'child control', 'required', 'Connects each tab to a panel with aria-controls and reports selection with aria-selected.'),
-    apiRow('[role="tabpanel"]', 'child panel', 'required', 'Connects each panel to its tab with aria-labelledby and hides inactive panels.')
+    apiRow('[role="tab"]', 'child control', 'required', 'Pairs with a panel by data-value or source order; the Astro runtime generates stable ARIA relationships.'),
+    apiRow('[role="tabpanel"]', 'child panel', 'required', 'Pairs with a tab by data-value or source order and hides when inactive.'),
+    apiRow('initialValue', 'string', '-', 'Astro: selects the matching data-value before interaction.'),
+    apiRow('storageKey', 'string', '-', 'Astro: persists selection and synchronizes tab groups that share this key.')
   ],
   TagGroup: [
     apiRow('data-ui-tag', 'boolean attribute', '-', 'Marks each tag item for group behavior.'),
@@ -1197,7 +1216,8 @@ const apiReferenceByComponent = {
   ],
   ThemeToggle: [
     apiRow('storageKey', 'string', '"lumen-theme"', 'Sets the local-storage key used to persist the selected theme.'),
-    apiRow('lightLabel, darkLabel', 'string', '"Use light theme", "Use dark theme"', 'Sets accessible action labels for the two theme states.')
+    apiRow('lightTheme, darkTheme', 'string', '"light", "dark"', 'Sets the data-theme values toggled on the document element.'),
+    apiRow('controlled', 'boolean', 'false', 'Disables automatic theme changes when the host application owns theme state.')
   ],
   Toast: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the toast tone.'),
@@ -1216,6 +1236,7 @@ const apiReferenceByComponent = {
     apiRow('type', 'HTML input type', '"time"', 'Sets the native input type.')
   ],
   Toggle: [
+    apiRow('controlled', 'boolean', 'false', 'Disables automatic Astro state changes while retaining the cancelable ui:toggle-intent event.'),
     apiRow('pressed', 'boolean', 'false', 'Sets the initial pressed state.'),
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
   ],

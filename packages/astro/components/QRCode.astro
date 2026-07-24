@@ -5,7 +5,7 @@ import { renderSVG } from 'uqr'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'figure'> {
-  class?: string
+  class?: string | null
   className?: string
   size?: number
   src?: string

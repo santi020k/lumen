@@ -12,7 +12,7 @@ interface CountryOption {
 type Country = CountryOption | string
 
 interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
-  class?: string
+  class?: string | null
   className?: string
   countries?: Country[]
   countryLabel?: string

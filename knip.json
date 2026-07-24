@@ -25,7 +25,8 @@
     },
     "packages/astro": {
       "entry": [
-        "components/**/*.astro"
+        "components/**/*.astro",
+        "strict-props.fixture.astro"
       ],
       "project": [
         "**/*.{astro,ts}"

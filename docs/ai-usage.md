@@ -95,9 +95,14 @@ Import the stylesheet once in the app's global CSS, root layout, or app entry.
 If Tailwind is present, keep both imports in the same shared CSS entry.
 
 ```css
+@import "@santi020k/lumen-react/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-react/styles.css";
 ```
+
+Keep the layer prelude first. It places Tailwind base styles below Lumen components and Tailwind
+utilities above them, so consumer spacing, display, radius, width, and responsive visibility
+classes override Lumen defaults predictably.
 
 Astro apps should mount `UIPrimitives` once in the root layout when using interactive primitives
 such as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or
@@ -193,7 +198,9 @@ The shared catalog includes:
 
 - Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
   names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
-  when the icon carries meaning on its own.
+  when the icon carries meaning on its own. Lucide does not include brand marks such as GitHub;
+  render a project-owned SVG through the default `Icon` slot for brand and custom icons. Astro
+  reports unknown named icons during development instead of failing silently.
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.

@@ -10,7 +10,7 @@ interface CascaderOption {
 }
 
 export interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   name?: string
   options?: CascaderOption[]

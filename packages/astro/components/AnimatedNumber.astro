@@ -4,7 +4,7 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends Omit<HTMLAttributes<'span'>, 'prefix'> {
-  class?: string
+  class?: string | null
   className?: string
   decimals?: number
   duration?: 'fast' | 'standard' | 'slow'

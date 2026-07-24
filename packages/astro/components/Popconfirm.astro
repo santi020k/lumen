@@ -5,7 +5,7 @@ import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
   cancelLabel?: string
-  class?: string
+  class?: string | null
   className?: string
   confirmLabel?: string
   title?: string

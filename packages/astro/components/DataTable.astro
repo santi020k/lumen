@@ -30,7 +30,7 @@ type DataTableRow = Record<string, DataTableCell> & {
 }
 
 interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   columns?: DataTableColumn[]
   glass?: boolean | 'subtle' | 'strong'

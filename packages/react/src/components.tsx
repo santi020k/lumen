@@ -65,7 +65,7 @@ type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
 
 type ButtonVariant = 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
 
-type CardVariant = 'default' | 'glass' | 'interactive' | 'muted'
+type CardVariant = 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
@@ -585,6 +585,7 @@ export const Card = <T extends ElementType = 'div'>({
     className={composeClassName(
       variant === 'muted' && 'ui-card--muted',
       variant === 'interactive' && 'ui-card--interactive',
+      variant === 'unstyled' && 'ui-card--unstyled',
       (glass || variant === 'glass') && composeClassName('ui-card--glass', glassIntensityClass(glass)),
       className
     )}
@@ -1619,17 +1620,27 @@ export const PhoneInput = ({
   )
 }
 
-export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}
+export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {
+  variant?: 'default' | 'unstyled'
+}
 
-export const NavigationMenu = ({ className, glass = false, surface = 'default', ...props }: NavigationMenuProps) => (
+export const NavigationMenu = ({
+  className,
+  glass = false,
+  surface = 'default',
+  variant = 'default',
+  ...props
+}: NavigationMenuProps) => (
   <nav
     className={composeClassName(
       'ui-navigation-menu',
+      variant === 'unstyled' && 'ui-navigation-menu--unstyled',
       glassSurfaceClass('ui-navigation-menu', surface, glass),
       className
     )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-navigation-menu
+    data-variant={variant}
     {...props}
   />
 )
@@ -1943,12 +1954,26 @@ export const Sheet = ({ className, glass = false, surface = 'default', ...props 
   />
 )
 
-export interface SidebarProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}
+export interface SidebarProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {
+  variant?: 'default' | 'unstyled'
+}
 
-export const Sidebar = ({ className, glass = false, surface = 'default', ...props }: SidebarProps) => (
+export const Sidebar = ({
+  className,
+  glass = false,
+  surface = 'default',
+  variant = 'default',
+  ...props
+}: SidebarProps) => (
   <aside
-    className={composeClassName('ui-sidebar', glassSurfaceClass('ui-sidebar', surface, glass), className)}
+    className={composeClassName(
+      'ui-sidebar',
+      variant === 'unstyled' && 'ui-sidebar--unstyled',
+      glassSurfaceClass('ui-sidebar', surface, glass),
+      className
+    )}
     data-surface={resolveSurface(surface, glass)}
+    data-variant={variant}
     {...props}
   />
 )
@@ -2115,13 +2140,15 @@ export const Toast = ({
 )
 
 export interface ToggleProps extends ComponentPropsWithoutRef<'button'> {
+  controlled?: boolean
   pressed?: boolean
 }
 
-export const Toggle = ({ className, pressed = false, type = 'button', ...props }: ToggleProps) => (
+export const Toggle = ({ className, controlled = false, pressed = false, type = 'button', ...props }: ToggleProps) => (
   <button
     aria-pressed={pressed}
-    className={composeClassName('ui-toggle', pressed && 'ui-toggle--pressed', className)}
+    className={composeClassName('ui-toggle', className)}
+    data-ui-controlled={controlled || undefined}
     data-ui-toggle
     type={type}
     {...props}
@@ -2260,20 +2287,43 @@ export const Image = <T extends ElementType = 'img',>({
   })
 }
 
-export type LinkProps = ComponentPropsWithoutRef<'a'>
-export const Link = ({ className, ...props }: LinkProps) => (
-  <a className={composeClassName('ui-link', className)} {...props} />
+export type LinkProps = ComponentPropsWithoutRef<'a'> & {
+  newTab?: boolean
+  variant?: 'default' | 'inherit'
+}
+export const Link = ({
+  className,
+  newTab = false,
+  rel,
+  target,
+  variant = 'default',
+  ...props
+}: LinkProps) => (
+  <a
+    className={composeClassName('ui-link', variant === 'inherit' && 'ui-link--inherit', className)}
+    data-variant={variant}
+    rel={newTab ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ') : rel}
+    target={newTab ? '_blank' : target}
+    {...props}
+  />
 )
 
 export type PillProps = ComponentPropsWithoutRef<'span'> & {
   count?: number | string
+  href?: string
 }
-export const Pill = ({ className, count, children, ...props }: PillProps) => (
-  <span className={composeClassName('ui-pill', className)} {...props}>
-    {children}
-    {count !== undefined && <span className="ui-pill__count">{count}</span>}
-  </span>
-)
+export const Pill = ({ className, count, children, href, ...props }: PillProps) => {
+  const content = (
+    <>
+      {children}
+      {count !== undefined && <span className="ui-pill__count">{count}</span>}
+    </>
+  )
+
+  return href
+    ? <a className={composeClassName('ui-pill', className)} href={href} {...props}>{content}</a>
+    : <span className={composeClassName('ui-pill', className)} {...props}>{content}</span>
+}
 
 export type ProseProps = ComponentPropsWithoutRef<'div'>
 export const Prose = ({ className, ...props }: ProseProps) => (
@@ -2652,17 +2702,25 @@ export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps)
 
 export type ButtonLinkProps = ComponentPropsWithoutRef<'a'> & {
   shape?: 'default' | 'icon'
-  variant?: 'ghost' | 'inline' | 'primary' | 'secondary'
+  variant?: 'ghost' | 'inline' | 'primary' | 'secondary' | 'unstyled'
 }
 export const ButtonLink = ({ className, shape = 'default', variant = 'primary', ...props }: ButtonLinkProps) => {
-  const variantClass = variant === 'inline'
+  const variantClass = variant === 'unstyled'
+    ? 'ui-button-link--unstyled'
+    : variant === 'inline'
     ? 'ui-button ui-button--inline'
     : `ui-button ui-button--${variant} min-h-11 rounded-full border`
 
   const shapeClass = shape === 'icon' && variant !== 'inline' ? 'ui-button-link--icon' : undefined
 
   return (
-    <a className={composeClassName('ui-button-link group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, shapeClass, className)} {...props} />
+    <a className={composeClassName(
+      'ui-button-link',
+      variant !== 'unstyled' && 'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]',
+      variantClass,
+      shapeClass,
+      className
+    )} {...props} />
   )
 }
 

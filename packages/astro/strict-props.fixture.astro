@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import FormattedDate from './components/FormattedDate.astro'
+import Link from './components/Link.astro'
+
+const timeAttributes: HTMLAttributes<'time'> = {
+  class: null,
+  datetime: '2026-07-24'
+}
+
+const anchorAttributes: HTMLAttributes<'a'> = {
+  class: null,
+  href: '/docs'
+}
+---
+
+<FormattedDate {...timeAttributes}>July 24, 2026</FormattedDate>
+<Link {...anchorAttributes}>Documentation</Link>

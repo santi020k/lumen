@@ -7,7 +7,7 @@ type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 type CodeVariant = 'block' | 'inline'
 
 interface Props extends HTMLAttributes<'code'> {
-  class?: string
+  class?: string | null
   className?: string
   code?: string
   copy?: boolean

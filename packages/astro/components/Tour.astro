@@ -6,7 +6,7 @@ import type { HTMLAttributes } from 'astro/types'
 type TourStep = { content: string; target: string; title?: string }
 
 interface Props extends HTMLAttributes<'div'> {
-  class?: string
+  class?: string | null
   className?: string
   closeLabel?: string
   nextLabel?: string

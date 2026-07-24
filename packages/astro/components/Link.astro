@@ -4,23 +4,37 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'a'> {
-  class?: string
+  class?: string | null
   className?: string
+  newTab?: boolean
+  variant?: 'default' | 'inherit'
 }
 
 const {
   class: classProp = '',
   className = '',
+  newTab = false,
+  rel,
+  target,
+  variant = 'default',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-link'
+  'ui-link',
+  variant === 'inherit' && 'ui-link--inherit'
 ], classProp, className)
+
+const safeRel = newTab
+  ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ')
+  : rel
 ---
 
 <a
   class:list={classList}
+  data-variant={variant}
+  rel={safeRel}
+  target={newTab ? '_blank' : target}
   {...passthrough}
 >
   <slot />

@@ -121,3 +121,8 @@ export const lumen = {
   packageName: '@santi020k/lumen',
   scope: '@santi020k'
 } as const
+
+export {
+  auditLumenTokenCss,
+  type LumenTokenAuditFinding
+} from './token-audit.js'
