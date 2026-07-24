@@ -1,5 +1,5 @@
 ---
-import { Icon, SearchField } from '@santi020k/lumen-astro'
+import { Button, Icon, SearchField } from '@santi020k/lumen-astro'
 
 interface Props {
   class?: string
@@ -48,15 +48,16 @@ const searchIndexHref = '/docs-search.json'
       aria-expanded="false"
       data-docs-search-input
     />
-    <button
+    <Button
       class="docs-search__clear"
-      type="button"
+      size="icon"
+      variant="ghost"
       aria-label="Clear search"
       data-docs-search-clear
       hidden
     >
       <Icon decorative name="x" size="sm" />
-    </button>
+    </Button>
     <kbd class="docs-search__shortcut" aria-hidden="true">/</kbd>
   </div>
   <p id={`${inputId}-status`} class="sr-only" aria-live="polite" data-docs-search-status>

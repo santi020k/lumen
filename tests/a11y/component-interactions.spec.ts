@@ -35,25 +35,54 @@ test('Carousel controls move between pages of slides', async ({ page }) => {
   await expect.poll(() => viewport.evaluate(element => element.scrollLeft)).toBe(0)
 })
 
-test('Cascader opens, drills into a branch, and can reopen after selection', async ({ page }) => {
+test('Cascader keeps parent-first columns, switches branches, and reopens after selection', async ({ page }) => {
   await openPreview(page, 'cascader')
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.locator('[data-ui-cascader] [data-ui-trigger]')
   const panel = preview.locator('[data-ui-cascader] [data-ui-panel]')
+  const visibleColumns = panel.locator('.ui-cascader__column:visible')
 
   await expect(panel).toBeHidden()
   await trigger.click()
   await expect(panel).toBeVisible()
+  await expect(visibleColumns).toHaveCount(1)
+  await expect(visibleColumns.nth(0).getByRole('option')).toContainText(['Category A', 'Category B'])
 
-  await preview.getByRole('button', { name: 'Category A' }).click()
-  await preview.getByRole('button', { name: 'Item A1' }).click()
+  const categoryA = preview.getByRole('option', { name: 'Category A' })
+  const categoryB = preview.getByRole('option', { name: 'Category B' })
+
+  await categoryA.focus()
+  await categoryA.press('ArrowDown')
+  await expect(categoryB).toBeFocused()
+  await categoryB.press('Home')
+  await expect(categoryA).toBeFocused()
+  await categoryA.press('ArrowRight')
+  await expect(preview.getByRole('option', { name: 'Item A1' })).toBeFocused()
+  await page.keyboard.press('ArrowLeft')
+  await expect(categoryA).toBeFocused()
+  await expect(visibleColumns).toHaveCount(1)
+
+  await categoryA.click()
+  await expect(visibleColumns).toHaveCount(2)
+  await expect(visibleColumns.nth(0)).toContainText('Category A')
+  await expect(visibleColumns.nth(1).getByRole('option')).toHaveText(['Item A1', 'Item A2'])
+
+  await categoryB.click()
+  await expect(visibleColumns).toHaveCount(2)
+  await expect(visibleColumns.nth(1).getByRole('option')).toHaveText(['Item B1'])
+
+  await categoryA.click()
+  await preview.getByRole('option', { name: 'Item A1' }).click()
 
   await expect(trigger).toContainText('Item A1')
   await expect(panel).toBeHidden()
 
   await trigger.click()
   await expect(panel).toBeVisible()
+  await expect(visibleColumns).toHaveCount(2)
+  await expect(visibleColumns.nth(0)).toContainText('Category A')
+  await expect(visibleColumns.nth(1)).toContainText('Item A1')
 })
 
 test('ContextMenu opens from the keyboard and closes with Escape', async ({ page }) => {
@@ -166,6 +195,21 @@ test('Toast creates a live notification', async ({ page }) => {
 
   await expect(toast).toContainText('Published')
   await expect(toast).toContainText('The latest version is now live.')
+})
+
+test('Tour opens from its linked trigger and closes from its action', async ({ page }) => {
+  await openPreview(page, 'tour')
+
+  const preview = page.locator('.component-doc-preview')
+  const tour = preview.locator('[data-ui-tour]')
+
+  await expect(tour).toBeHidden()
+  await preview.getByRole('button', { name: 'Start guided tour' }).click()
+  await expect(tour).toBeVisible()
+  await expect(tour.getByRole('dialog')).toContainText('Click this button to get started.')
+
+  await tour.getByRole('button', { name: 'Done' }).click()
+  await expect(tour).toBeHidden()
 })
 
 test('Tabs switches panels with arrow keys', async ({ page }) => {

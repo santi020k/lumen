@@ -1,8 +1,9 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Breadcrumb, Card, Separator } from '@santi020k/lumen-astro'
+import { Breadcrumb, Card, Separator, Table } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
 import { frameworkGuides, frameworkSetups, reactHooksReference } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
@@ -38,16 +39,12 @@ if (!guide || !setup) {
       title={guide.title}
     >
       <Fragment slot="actions">
-        <a class="
-          ui-button ui-button--default-size ui-button--default no-underline
-        " href="#install-title">
+        <DocsActionLink href="#install-title">
           Install for React
-        </a>
-        <a class="
-          ui-button ui-button--default-size ui-button--outline no-underline
-        " href="#hooks-title">
+        </DocsActionLink>
+        <DocsActionLink href="#hooks-title" variant="outline">
           Explore hooks
-        </a>
+        </DocsActionLink>
       </Fragment>
     </DocsPageHero>
 
@@ -109,7 +106,7 @@ if (!guide || !setup) {
               <h4 class="
                 text-sm font-black tracking-[0.14em] text-ink-muted uppercase
               ">Options</h4>
-              <div class="
+              <Table class="
                 overflow-x-auto rounded-xl border border-line bg-surface
               ">
                 <table class="
@@ -146,7 +143,7 @@ if (!guide || !setup) {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </Table>
             </div>
           )}
 
@@ -154,7 +151,7 @@ if (!guide || !setup) {
             <h4 class="
               text-sm font-black tracking-[0.14em] text-ink-muted uppercase
             ">Controller (Returns)</h4>
-            <div class="
+            <Table class="
               overflow-x-auto rounded-xl border border-line bg-surface
             ">
               <table class="w-full min-w-176 border-collapse text-left text-sm">
@@ -183,7 +180,7 @@ if (!guide || !setup) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </Table>
           </div>
 
           <div class="space-y-2">

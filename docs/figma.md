@@ -7,6 +7,9 @@ For the reverse direction â€” implementing Figma designs with Lumen components â
 [figma-design-to-code.md](figma-design-to-code.md) and the machine-readable mapping in
 [`registry/figma-design-map.json`](../registry/figma-design-map.json).
 
+AI agents maintaining the library itself should follow the reusable
+[Figma AI working guide](figma-ai-working-guide.md).
+
 ## Figma Library File
 
 The Lumen Figma library lives at

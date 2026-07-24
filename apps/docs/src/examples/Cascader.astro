@@ -2,4 +2,21 @@
 import { Cascader } from '@santi020k/lumen-astro'
 ---
 
-<Cascader placeholder="Select category" options={[{ label: 'Category A', value: 'a', children: [{ label: 'Item A1', value: 'a1' }] }]} />
+<Cascader
+  placeholder="Select category"
+  options={[
+    {
+      children: [
+        { label: 'Item A1', value: 'a1' },
+        { label: 'Item A2', value: 'a2' }
+      ],
+      label: 'Category A',
+      value: 'a'
+    },
+    {
+      children: [{ label: 'Item B1', value: 'b1' }],
+      label: 'Category B',
+      value: 'b'
+    }
+  ]}
+/>

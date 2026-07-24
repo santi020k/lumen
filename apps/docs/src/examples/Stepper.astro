@@ -2,4 +2,11 @@
 import { Stepper } from '@santi020k/lumen-astro'
 ---
 
-<Stepper steps={['Step 1', 'Step 2', 'Step 3']} currentStep={1} />
+<Stepper
+  steps={[
+    { title: 'Account', description: 'Your profile is ready' },
+    { title: 'Workspace', description: 'Choose how your team works' },
+    { title: 'Review', description: 'Confirm and finish setup' }
+  ]}
+  currentStep={1}
+/>

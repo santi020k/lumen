@@ -155,7 +155,9 @@ describe('component docs snippets', () => {
     expect(imageExample).toContain('invertOnDark')
     expect(imageExample).toContain('layout="fixed"')
     expect(linkExample).toContain('href="/docs"')
-    expect(skipLinkExample).toContain('href="#preview-title"')
+    expect(skipLinkExample).toContain('href="#skip-link-demo-target"')
+    expect(skipLinkExample).toContain('id="skip-link-demo-target"')
+    expect(skipLinkExample).toContain('tabindex="-1"')
     expect(formattedDateExample).toContain('datetime="2026-07-23"')
   })
 

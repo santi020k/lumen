@@ -1,5 +1,8 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import {
+  renderLumenIconSvg,
+  resolveLumenAstroProps
+} from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
@@ -9,6 +12,7 @@ interface Props extends HTMLAttributes<'div'> {
   actions?: SpeedDialAction[]
   class?: string
   className?: string
+  defaultOpen?: boolean
   direction?: 'up' | 'down' | 'left' | 'right'
   label?: string
 }
@@ -17,6 +21,7 @@ const {
   actions = [],
   class: classProp = '',
   className = '',
+  defaultOpen = false,
   direction = 'up',
   label = 'Actions',
   ...rest
@@ -28,20 +33,41 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<div class:list={classList} data-direction={direction} data-ui-speed-dial {...passthrough}>
-  <button aria-expanded="false" aria-label={label} class="ui-speed-dial__trigger" data-ui-speed-dial-trigger type="button">
+<div
+  class:list={classList}
+  data-direction={direction}
+  data-state={defaultOpen ? 'open' : 'closed'}
+  data-ui-speed-dial
+  {...passthrough}
+>
+  <button
+    aria-expanded={defaultOpen ? 'true' : 'false'}
+    aria-haspopup="menu"
+    aria-label={label}
+    class="ui-speed-dial__trigger"
+    data-ui-speed-dial-trigger
+    type="button"
+  >
     <span aria-hidden="true" class="ui-speed-dial__icon"></span>
   </button>
-  <menu class="ui-speed-dial__actions" data-ui-speed-dial-actions>
-    {actions.map(action => (
-      <li>
+  <menu aria-label={label} class="ui-speed-dial__actions" data-ui-speed-dial-actions role="menu">
+    {actions.map((action, index) => (
+      <li role="presentation" style={`--ui-speed-dial-index: ${index}`}>
         <button
           aria-label={action.label}
           class="ui-speed-dial__action"
           data-icon={action.icon}
           data-value={action.value ?? action.label}
+          role="menuitem"
           type="button"
         >
+          {action.icon && (
+            <span
+              aria-hidden="true"
+              class="ui-speed-dial__action-icon ui-icon"
+              set:html={renderLumenIconSvg(action.icon)}
+            />
+          )}
           <span class="ui-speed-dial__action-label">{action.label}</span>
         </button>
       </li>

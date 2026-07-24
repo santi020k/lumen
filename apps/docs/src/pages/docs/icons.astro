@@ -1,8 +1,10 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
+import { Button, Input, Label } from '@santi020k/lumen-astro'
 import { lumenIcons, renderLumenIconSvg } from '@santi020k/lumen-core'
 
 import CodeBlock from '../../components/CodeBlock.astro'
+import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
@@ -79,18 +81,8 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
       title="A familiar symbol for every action."
     >
       <Fragment slot="actions">
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          "
-          href="#icon-catalog"
-        >Explore icons</a>
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          "
-          href="/docs/components/icon"
-        >View Icon API</a>
+        <DocsActionLink href="#icon-catalog">Explore icons</DocsActionLink>
+        <DocsActionLink href="/docs/components/icon" variant="outline">View Icon API</DocsActionLink>
       </Fragment>
 
       <div class="icons-hero-grid" slot="visual" aria-hidden="true">
@@ -131,10 +123,9 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
       </div>
 
       <div class="icons-search">
-        <label for="icon-search">Search the icon library</label>
-        <input
+        <Label for="icon-search">Search the icon library</Label>
+        <Input
           autocomplete="off"
-          class="ui-input"
           data-icon-search
           id="icon-search"
           placeholder={`Search ${iconCount} icons by name or alias...`}
@@ -152,15 +143,15 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
 
       <div class="icons-grid" data-icon-grid>
         {iconEntries.map(entry => (
-          <button
+          <Button
             data-icon-name={entry.name}
             data-icon-terms={entry.terms}
+            variant="ghost"
             title={`Copy "${entry.name}"`}
-            type="button"
           >
             <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
             <span>{entry.name}</span>
-          </button>
+          </Button>
         ))}
       </div>
     </section>

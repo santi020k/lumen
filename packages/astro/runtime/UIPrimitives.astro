@@ -219,6 +219,8 @@
           return
         }
 
+        if (root.hasAttribute('data-ui-cascader')) return
+
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
 
         const items = getFocusable(panel)
@@ -4087,6 +4089,83 @@
     }
   }
 
+  const closeSpeedDial = (root: HTMLElement, restoreFocus = false): void => {
+    const trigger = root.querySelector<HTMLButtonElement>('[data-ui-speed-dial-trigger]')
+
+    root.dataset.state = 'closed'
+    trigger?.setAttribute('aria-expanded', 'false')
+
+    if (restoreFocus) trigger?.focus()
+  }
+
+  const initSpeedDials = (scope: ParentNode): void => {
+    for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-speed-dial]')) {
+      const trigger = root.querySelector<HTMLButtonElement>('[data-ui-speed-dial-trigger]')
+      const actions = root.querySelector<HTMLElement>('[data-ui-speed-dial-actions]')
+
+      if (!trigger || !actions || root.dataset.uiBound === 'true') continue
+
+      const items = [...actions.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]')]
+
+      root.dataset.uiBound = 'true'
+      root.dataset.state = root.dataset.state === 'open' ? 'open' : 'closed'
+      trigger.setAttribute('aria-expanded', String(root.dataset.state === 'open'))
+
+      const open = (focusPosition?: 'first' | 'last') => {
+        root.dataset.state = 'open'
+        trigger.setAttribute('aria-expanded', 'true')
+
+        if (focusPosition === 'first') items[0]?.focus()
+
+        if (focusPosition === 'last') items.at(-1)?.focus()
+      }
+
+      trigger.addEventListener('click', () => {
+        if (root.dataset.state === 'open') {
+          closeSpeedDial(root)
+        } else {
+          open()
+        }
+      })
+
+      trigger.addEventListener('keydown', event => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+          event.preventDefault()
+          open('first')
+        } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+          event.preventDefault()
+          open('last')
+        } else if (event.key === 'Escape') {
+          closeSpeedDial(root)
+        }
+      })
+
+      actions.addEventListener('click', event => {
+        if ((event.target as HTMLElement).closest('[role="menuitem"], button, a')) {
+          closeSpeedDial(root)
+        }
+      })
+
+      actions.addEventListener('keydown', event => {
+        const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          closeSpeedDial(root, true)
+        } else if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault()
+          items[event.key === 'Home' ? 0 : items.length - 1]?.focus()
+        } else if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.key)) {
+          event.preventDefault()
+
+          const offset = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1
+
+          items[(currentIndex + offset + items.length) % items.length]?.focus()
+        }
+      })
+    }
+  }
+
   // cspell:disable-next-line
   const initCascaders = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-cascader]')) {
@@ -4097,18 +4176,36 @@
       const valueLabel = root.querySelector<HTMLElement>('[data-ui-cascader-value]')
       const input = root.querySelector<HTMLInputElement>('[data-ui-cascader-input]')
       const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
+      const panel = trigger ? getPanel(trigger) : null
+      const columns = [...root.querySelectorAll<HTMLElement>('.ui-cascader__column')]
 
       for (const option of root.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')) {
         option.addEventListener('click', () => {
           const column = option.closest<HTMLElement>('.ui-cascader__column')
 
           if (column) {
+            const columnIndex = columns.indexOf(column)
+
+            for (const descendant of columns.slice(columnIndex + 1)) {
+              descendant.hidden = true
+
+              for (const descendantOption of descendant.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
+                descendantOption.dataset.active = 'false'
+
+                descendantOption.setAttribute('aria-selected', 'false')
+              }
+            }
+
             for (const sibling of column.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
               sibling.dataset.active = 'false'
+
+              sibling.setAttribute('aria-selected', 'false')
             }
           }
 
           option.dataset.active = 'true'
+
+          option.setAttribute('aria-selected', 'true')
 
           const nextSelector = option.dataset.uiCascaderNext
           const next = nextSelector ? root.querySelector<HTMLElement>(nextSelector) : null
@@ -4129,8 +4226,6 @@
             input.value = value
           }
 
-          const panel = trigger ? getPanel(trigger) : null
-
           if (trigger && panel) {
             setOpen(trigger, panel, false)
           }
@@ -4138,6 +4233,58 @@
           root.dispatchEvent(new CustomEvent('ui:cascader-change', { bubbles: true, detail: { value } }))
         })
       }
+
+      panel?.addEventListener('keydown', event => {
+        const target = event.target
+
+        if (!(target instanceof HTMLElement)) return
+
+        const option = target.closest<HTMLButtonElement>('[data-ui-cascader-option]')
+        const column = option?.closest<HTMLElement>('.ui-cascader__column')
+
+        if (!option || !column) return
+
+        const columnIndex = columns.indexOf(column)
+        const options = [...column.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')]
+
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
+          event.preventDefault()
+
+          const currentIndex = options.indexOf(option)
+          const nextIndex = getLoopedIndex(event.key, currentIndex, options.length, ['ArrowDown'])
+
+          options[nextIndex]?.focus()
+
+          return
+        }
+
+        if (event.key === 'ArrowRight') {
+          const nextSelector = option.dataset.uiCascaderNext
+          const next = nextSelector ? root.querySelector<HTMLElement>(nextSelector) : null
+
+          if (!next) return
+
+          event.preventDefault()
+
+          option.click()
+
+          next.querySelector<HTMLElement>('[data-ui-cascader-option]')?.focus()
+
+          return
+        }
+
+        if (event.key !== 'ArrowLeft' || columnIndex <= 0) return
+
+        event.preventDefault()
+
+        const previousColumn = columns.findLast((candidate, index) => index < columnIndex && !candidate.hidden)
+
+        for (const descendant of columns.slice(columnIndex)) {
+          descendant.hidden = true
+        }
+
+        previousColumn?.querySelector<HTMLElement>('[data-ui-cascader-option][data-active="true"]')?.focus()
+      })
     }
   }
 
@@ -4282,6 +4429,8 @@
 
     initMentions(scope)
 
+    initSpeedDials(scope)
+
     // cspell:disable-next-line
     initCascaders(scope)
 
@@ -4335,6 +4484,12 @@
           closeContextMenu(menu)
         }
       }
+
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-speed-dial][data-state="open"]')) {
+        if (!root.contains(target)) {
+          closeSpeedDial(root)
+        }
+      }
     })
 
     document.addEventListener('keydown', event => {
@@ -4358,6 +4513,10 @@
 
       for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
         closeContextMenu(menu)
+      }
+
+      for (const root of document.querySelectorAll<HTMLElement>('[data-ui-speed-dial][data-state="open"]')) {
+        closeSpeedDial(root, root.contains(document.activeElement))
       }
     })
 

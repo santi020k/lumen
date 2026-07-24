@@ -2746,22 +2746,29 @@ interface CascaderColumn {
   root: boolean
 }
 
-const buildCascaderColumns = (options: CascaderOption[]): CascaderColumn[] => {
+const buildCascaderColumns = (options: CascaderOption[], idPrefix: string): CascaderColumn[] => {
   const columns: CascaderColumn[] = []
   let count = 0
 
   const build = (items: CascaderOption[], root: boolean): string => {
     count += 1
 
-    const id = `ui-cascader-col-${count}`
+    const id = `${idPrefix}-column-${count}`
 
-    const rendered = items.map(item => ({
+    const rendered: CascaderColumn['options'] = items.map(item => ({
       label: item.label,
-      nextId: item.children && item.children.length > 0 ? build(item.children, false) : undefined,
       value: item.value
     }))
 
     columns.push({ id, options: rendered, root })
+
+    for (const [index, item] of items.entries()) {
+      const renderedOption = rendered[index]
+
+      if (item.children && item.children.length > 0 && renderedOption) {
+        renderedOption.nextId = build(item.children, false)
+      }
+    }
 
     return id
   }
@@ -2773,24 +2780,29 @@ const buildCascaderColumns = (options: CascaderOption[]): CascaderColumn[] => {
 
 const emptyCascaderOptions: CascaderOption[] = []
 
-export const Cascader = ({ children, className, name, options = emptyCascaderOptions, placeholder = 'Select…', ...props }: CascaderProps) => {
-  const columns = buildCascaderColumns(options)
+export const Cascader = ({ children, className, id, name, options = emptyCascaderOptions, placeholder = 'Select…', ...props }: CascaderProps) => {
+  const generatedId = useId().replaceAll(':', '')
+  const cascaderId = id ?? `ui-cascader-${generatedId}`
+  const panelId = `${cascaderId}-panel`
+  const columns = buildCascaderColumns(options, cascaderId)
 
   return (
-    <div className={composeClassName('ui-cascader', className)} data-surface="default" data-ui-cascader data-ui-popover {...props}>
-      <button aria-expanded="false" aria-haspopup="listbox" className="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
+    <div className={composeClassName('ui-cascader', className)} data-surface="default" data-ui-cascader data-ui-popover id={id} {...props}>
+      <button aria-controls={panelId} aria-expanded="false" aria-haspopup="listbox" className="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger role="combobox" type="button">
         <span data-ui-cascader-placeholder={placeholder} data-ui-cascader-value>{placeholder}</span>
       </button>
-      <div className="ui-cascader__panel" data-ui-panel hidden>
+      <div className="ui-cascader__panel" data-ui-panel hidden id={panelId}>
         {columns.map(column => (
-          <ol className="ui-cascader__column" hidden={!column.root} id={column.id} key={column.id}>
+          <ol aria-label={column.root ? 'Options' : 'Sub-options'} className="ui-cascader__column" hidden={!column.root} id={column.id} key={column.id} role="listbox">
             {column.options.map(option => (
-              <li key={option.value}>
+              <li key={option.value} role="presentation">
                 <button
+                  aria-selected="false"
                   className="ui-cascader__option"
                   data-ui-cascader-next={option.nextId ? `#${option.nextId}` : undefined}
                   data-ui-cascader-option
                   data-value={option.value}
+                  role="option"
                   type="button"
                 >
                   <span>{option.label}</span>
@@ -2980,26 +2992,125 @@ export interface SpeedDialAction {
 }
 export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {
   actions?: SpeedDialAction[]
+  defaultOpen?: boolean
   direction?: 'down' | 'left' | 'right' | 'up'
   label?: string
 }
 
 const emptySpeedDialActions: SpeedDialAction[] = []
 
-export const SpeedDial = ({ actions = emptySpeedDialActions, children, className, direction = 'up', label = 'Actions', ...props }: SpeedDialProps) => (
-  <div className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)} data-direction={direction} data-ui-speed-dial {...props}>
-    <button aria-expanded="false" aria-label={label} className="ui-speed-dial__trigger" data-ui-speed-dial-trigger type="button">
-      <span aria-hidden="true" className="ui-speed-dial__icon" />
-    </button>
-    <menu className="ui-speed-dial__actions" data-ui-speed-dial-actions>
-      {actions.map(action => (
-        <li key={action.value ?? action.label}>
-          <button aria-label={action.label} className="ui-speed-dial__action" data-icon={action.icon} data-value={action.value ?? action.label} type="button">
-            <span className="ui-speed-dial__action-label">{action.label}</span>
-          </button>
-        </li>
-      ))}
-      {children}
-    </menu>
-  </div>
-)
+export const SpeedDial = ({
+  actions = emptySpeedDialActions,
+  children,
+  className,
+  defaultOpen = false,
+  direction = 'up',
+  label = 'Actions',
+  ...props
+}: SpeedDialProps) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+  const menuRef = useRef<HTMLMenuElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  const close = (restoreFocus = false) => {
+    setIsOpen(false)
+
+    if (restoreFocus) triggerRef.current?.focus()
+  }
+
+  const focusAction = (position: 'first' | 'last') => {
+    setIsOpen(true)
+    requestAnimationFrame(() => {
+      const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]')
+      const target = position === 'first' ? items?.[0] : items?.[items.length - 1]
+
+      target?.focus()
+    })
+  }
+
+  return (
+    <div
+      className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)}
+      data-direction={direction}
+      data-state={isOpen ? 'open' : 'closed'}
+      data-ui-bound="true"
+      data-ui-speed-dial
+      onBlur={event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) close()
+      }}
+      {...props}
+    >
+      <button
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+        aria-label={label}
+        className="ui-speed-dial__trigger"
+        data-ui-speed-dial-trigger
+        onClick={() => setIsOpen(open => !open)}
+        onKeyDown={event => {
+          if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+            event.preventDefault()
+            focusAction('first')
+          } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+            event.preventDefault()
+            focusAction('last')
+          } else if (event.key === 'Escape') {
+            close()
+          }
+        }}
+        ref={triggerRef}
+        type="button"
+      >
+        <span aria-hidden="true" className="ui-speed-dial__icon" />
+      </button>
+      <menu
+        aria-label={label}
+        className="ui-speed-dial__actions"
+        data-ui-speed-dial-actions
+        onClick={event => {
+          if ((event.target as HTMLElement).closest('[role="menuitem"], button, a')) close()
+        }}
+        onKeyDown={event => {
+          const items = [...(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]') ?? [])]
+          const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+
+          if (event.key === 'Escape') {
+            event.preventDefault()
+            close(true)
+          } else if (event.key === 'Home' || event.key === 'End') {
+            event.preventDefault()
+            items[event.key === 'Home' ? 0 : items.length - 1]?.focus()
+          } else if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.key)) {
+            event.preventDefault()
+            const offset = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1
+
+            items[(currentIndex + offset + items.length) % items.length]?.focus()
+          }
+        }}
+        ref={menuRef}
+        role="menu"
+      >
+        {actions.map((action, index) => (
+          <li key={action.value ?? action.label} role="presentation" style={{ '--ui-speed-dial-index': index } as CSSProperties}>
+            <button
+              aria-label={action.label}
+              className="ui-speed-dial__action"
+              data-icon={action.icon}
+              data-value={action.value ?? action.label}
+              role="menuitem"
+              type="button"
+            >
+              {action.icon && (
+                <span aria-hidden="true" className="ui-speed-dial__action-icon ui-icon">
+                  {renderLucideIcon(action.icon, `ui-icon__svg lucide-${action.icon}`)}
+                </span>
+              )}
+              <span className="ui-speed-dial__action-label">{action.label}</span>
+            </button>
+          </li>
+        ))}
+        {children}
+      </menu>
+    </div>
+  )
+}

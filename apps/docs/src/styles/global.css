@@ -1302,6 +1302,7 @@ pre code {
   display: grid;
   width: 1.9rem;
   height: 1.9rem;
+  min-height: 1.9rem;
   padding: 0;
   place-items: center;
   border: 0;

@@ -675,6 +675,13 @@ const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardI
     ['ArrowDown, ArrowUp on an option', 'Move focus through enabled options, wrapping at the ends.'],
     ['Home, End on an option', 'Move focus to the first or last enabled option.']
   ),
+  SpeedDial: keyboardRows(
+    ['Enter, Space on trigger', 'Open or close the action menu.'],
+    ['Arrow keys on trigger', 'Open the menu and move focus to its first or last action.'],
+    ['Arrow keys in menu', 'Move focus through actions, wrapping at either end.'],
+    ['Home, End in menu', 'Move focus to the first or last action.'],
+    ['Escape', 'Close the action menu and return focus to the trigger.']
+  ),
   Tabs: keyboardRows(
     ['ArrowRight', 'Activate and focus the next tab, wrapping at the end.'],
     ['ArrowLeft', 'Activate and focus the previous tab, wrapping at the start.'],
@@ -1062,6 +1069,13 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('aria-hidden', 'ARIA boolean string', 'true unless labelled', 'Overrides whether the loading indicator is exposed to assistive technology.'),
     apiRow('role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.')
   ],
+  SpeedDial: [
+    apiRow('actions', 'Array<{ icon?, label, value? }>', '[]', 'Creates labelled menu actions and renders optional Lumen icons.'),
+    apiRow('defaultOpen', 'boolean', 'false', 'Sets the initial expanded state.'),
+    apiRow('direction', '"up" | "down" | "left" | "right"', '"up"', 'Controls the direction in which actions expand.'),
+    apiRow('label', 'string', '"Actions"', 'Names both the trigger and its action menu for assistive technology.'),
+    apiRow('UIPrimitives', 'Astro runtime', 'required', 'Adds click-away dismissal and complete trigger and menu keyboard behavior. React provides equivalent behavior.')
+  ],
   Switch: [
     apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
     apiRow('role', 'ARIA role', '"switch"', 'Sets the switch role on the checkbox input.'),
@@ -1403,7 +1417,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['QRCode', 'Data display', 'Renders a scannable QR code for a URL or other short value.', '<QRCode value="https://example.com" size={160} aria-label="Open example.com" />'],
   ['Watermark', 'Layout', 'Overlays a text or image watermark on content.', '<Watermark content="Draft"><div>Content</div></Watermark>'],
   ['Affix', 'Layout', 'Keeps important controls visible after their original position scrolls out of view.', '<Affix offset={64}><Button>Save draft</Button></Affix>'],
-  ['SpeedDial', 'Navigation', 'Expands a floating primary action into a compact set of related actions.', '<SpeedDial><Button aria-label="Create">+</Button><Button>New file</Button><Button>New folder</Button></SpeedDial>']
+  ['SpeedDial', 'Navigation', 'Expands a floating primary action into a compact set of related actions.', '<SpeedDial actions={[{ icon: "file-plus-2", label: "New document" }, { icon: "folder-plus", label: "New folder" }]} label="Create new" />']
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
