@@ -307,7 +307,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         <Card class="docs-package-card">
           <div class="flex items-center justify-between gap-3">
             <h3 class="text-base font-bold text-ink">{name}</h3>
-            <Badge variant={status === 'Complete' ? 'success' : 'outline'}>{status}</Badge>
+            <Badge variant="outline">{status}</Badge>
           </div>
           <p class="font-mono text-xs text-ink-muted">{packageName}</p>
           <p class="text-sm/6 text-ink-soft">{description}</p>

@@ -682,6 +682,14 @@ const observedAttributeNames = [
 
 const hasDocument = (): boolean => typeof document !== 'undefined'
 
+const parseMotionDuration = (value: string): number => {
+  const parsedDuration = Number.parseFloat(value)
+
+  if (!Number.isFinite(parsedDuration)) return 300
+
+  return value.endsWith('ms') ? parsedDuration : parsedDuration * 1000
+}
+
 const createId = (prefix: string): string => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return `${prefix}-${crypto.randomUUID()}`
@@ -4917,10 +4925,12 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
     const decimals = Math.max(0, Math.min(20, Number(this.getAttribute('decimals')) || 0))
     const prefix = this.getAttribute('prefix') ?? ''
     const suffix = this.getAttribute('suffix') ?? ''
+
     const formatter = new Intl.NumberFormat(this.getAttribute('locale') || undefined, {
       maximumFractionDigits: decimals,
       minimumFractionDigits: decimals
     })
+
     const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
     const finalValue = format(value)
 
@@ -4943,10 +4953,7 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
       this.observer?.disconnect()
 
       const durationValue = getComputedStyle(this).getPropertyValue('--ui-motion-duration').trim()
-      const parsedDuration = Number.parseFloat(durationValue)
-      const duration = Number.isFinite(parsedDuration)
-        ? durationValue.endsWith('ms') ? parsedDuration : parsedDuration * 1000
-        : 300
+      const duration = parseMotionDuration(durationValue)
       const startedAt = performance.now()
 
       const update = (now: number) => {

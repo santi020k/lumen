@@ -32,8 +32,8 @@ describe('lumen-mcp data snapshot', () => {
     expect(dateRangePicker).toMatchObject({
       category: 'Forms',
       collections: ['Dates and time'],
-      dependencies: expect.arrayContaining(['DatePicker']) as unknown as string[],
-      description: expect.stringMatching(/date range|start and end date/i) as unknown as string
+      dependencies: expect.arrayContaining(['DatePicker']),
+      description: expect.stringMatching(/date range|start and end date/i)
     })
     expect(dateRangePicker?.apiReference).not.toHaveLength(0)
     expect(dateRangePicker?.frameworkDetails.astro.source).toContain('interface Props')

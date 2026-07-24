@@ -2296,7 +2296,16 @@ export const Particles = ({ className, density = 'medium', ...props }: Particles
 )
 
 type MotionAnimation = 'fade' | 'scale' | 'slide-up'
+
 type MotionDuration = 'fast' | 'slow' | 'standard'
+
+const parseMotionDuration = (value: string): number => {
+  const parsedDuration = Number.parseFloat(value)
+
+  if (!Number.isFinite(parsedDuration)) return 300
+
+  return value.endsWith('ms') ? parsedDuration : parsedDuration * 1000
+}
 
 export interface ScrollRevealProps extends ComponentPropsWithoutRef<'div'> {
   animation?: MotionAnimation
@@ -2464,16 +2473,20 @@ export const AnimatedNumber = ({
 }: AnimatedNumberProps) => {
   const outputRef = useRef<HTMLSpanElement>(null)
   const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
+
   const formatter = useMemo(() => new Intl.NumberFormat(locale, {
     maximumFractionDigits: safeDecimals,
     minimumFractionDigits: safeDecimals
   }), [locale, safeDecimals])
-  const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
+
+  const formattedValue = `${prefix}${formatter.format(value)}${suffix}`
 
   useEffect(() => {
     const output = outputRef.current
 
     if (!output) return
+
+    const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
 
     if (
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -2496,10 +2509,7 @@ export const AnimatedNumber = ({
       observer.disconnect()
 
       const durationValue = getComputedStyle(root).getPropertyValue('--ui-motion-duration').trim()
-      const parsedDuration = Number.parseFloat(durationValue)
-      const durationMs = Number.isFinite(parsedDuration)
-        ? durationValue.endsWith('ms') ? parsedDuration : parsedDuration * 1000
-        : 300
+      const durationMs = parseMotionDuration(durationValue)
       const startedAt = performance.now()
 
       const update = (now: number) => {
@@ -2522,8 +2532,6 @@ export const AnimatedNumber = ({
 
     return () => { observer.disconnect() }
   }, [formatter, from, prefix, suffix, value])
-
-  const formattedValue = format(value)
 
   return (
     <span

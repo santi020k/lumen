@@ -6,8 +6,8 @@ import { describe, expect, test, vi } from 'vitest'
 import * as LumenReact from './index.js'
 import {
   Alert,
-  AnimatedNumber,
   type AlertProps,
+  AnimatedNumber,
   Button,
   type ButtonProps,
   Calendar,
@@ -27,8 +27,8 @@ import {
   type InputProps,
   lumenComponentNames,
   Popover,
-  RevealGroup,
   Resizable,
+  RevealGroup,
   ScrollReveal,
   Select,
   Table,
@@ -145,16 +145,16 @@ describe('@santi020k/lumen-react', () => {
       duration: 'slow',
       once: false,
       threshold: 0.25
-    })) as ReactElement
+    })) as ReactElement<{ className?: string; style?: React.CSSProperties; 'data-ui-reveal-once'?: string; 'data-ui-reveal-threshold'?: number }>
     const revealGroup = withHookDispatcher(() => RevealGroup({
       children: 'Steps',
       stagger: 90
-    })) as ReactElement
+    })) as ReactElement<{ className?: string; style?: React.CSSProperties }>
     const animatedNumber = withHookDispatcher(() => AnimatedNumber({
       decimals: 1,
       suffix: '%',
       value: 99.8
-    })) as ReactElement
+    })) as ReactElement<{ className?: string; children: ReactElement<{ children: string }>[] }>
 
     expect(scrollReveal.props.className).toContain('ui-motion-duration-slow')
     expect(scrollReveal.props['data-ui-reveal-once']).toBe('false')
@@ -163,7 +163,7 @@ describe('@santi020k/lumen-react', () => {
     expect(revealGroup.props.className).toContain('ui-reveal-group-slide-up')
     expect(revealGroup.props.style).toMatchObject({ '--ui-reveal-stagger': '90ms' })
     expect(animatedNumber.props.className).toContain('ui-animated-number')
-    expect(animatedNumber.props.children[1].props.children).toBe('99.8%')
+    expect(animatedNumber.props.children[1]?.props.children).toBe('99.8%')
   })
 
   test('applies default button classes and type', () => {
