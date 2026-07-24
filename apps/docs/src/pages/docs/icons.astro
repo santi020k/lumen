@@ -1,6 +1,6 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Button, Input, Label } from '@santi020k/lumen-astro'
+import { Button, Input, Label, Link } from '@santi020k/lumen-astro'
 import { lumenIcons, renderLumenIconSvg } from '@santi020k/lumen-core'
 
 import CodeBlock from '../../components/CodeBlock.astro'
@@ -40,7 +40,18 @@ const iconEntries: IconEntry[] = [...byName.values()]
   }))
 
 const iconCount = iconEntries.length
-const featuredIcons = iconEntries.slice(0, 9)
+
+const featuredIcons = [
+  'search',
+  'house',
+  'calendar-days',
+  'message-circle',
+  'heart',
+  'star',
+  'bell',
+  'circle-check',
+  'settings'
+].map(name => renderLumenIconSvg(name))
 
 const astroUsage = `---
 import { Icon } from '@santi020k/lumen-astro'
@@ -86,11 +97,18 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
       </Fragment>
 
       <div class="icons-hero-grid" slot="visual" aria-hidden="true">
-        {featuredIcons.map(entry => (
-          <span class="ui-icon ui-icon--lg" set:html={entry.svg} />
+        {featuredIcons.map(svg => (
+          <span class="icons-hero-grid__tile">
+            <span class="ui-icon ui-icon--xl" set:html={svg} />
+          </span>
         ))}
       </div>
     </DocsPageHero>
+
+    <p class="icons-attribution">
+      Icons by <Link href="https://lucide.dev/" rel="noopener noreferrer" target="_blank">Lucide</Link>,
+      created and maintained by its open-source contributors.
+    </p>
 
     <section class="icons-section" aria-labelledby="usage-title">
       <div class="icons-section__heading">
@@ -227,31 +245,54 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
     gap: 3.5rem;
   }
 
+  .icons-attribution {
+    margin-top: -2.5rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.78rem;
+    text-align: right;
+  }
+
   .icons-hero-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.55rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
     padding: 0.75rem;
     border: 1px solid hsl(var(--line));
     border-radius: 1.1rem;
     background: hsl(var(--canvas) / 0.62);
+    box-shadow:
+      0 1rem 2.5rem hsl(var(--ink) / 0.06),
+      inset 0 1px 0 hsl(0 0% 100% / 0.18);
     backdrop-filter: blur(14px);
   }
 
-  .icons-hero-grid > span {
+  .icons-hero-grid__tile {
     display: grid;
-    aspect-ratio: 1;
+    min-height: 3.35rem;
     place-items: center;
     border: 1px solid hsl(var(--line));
     border-radius: 0.75rem;
     background: hsl(var(--surface) / 0.8);
     color: hsl(var(--brand));
-    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.16);
+    box-shadow:
+      0 0.2rem 0.7rem hsl(var(--ink) / 0.05),
+      inset 0 1px 0 hsl(0 0% 100% / 0.2);
   }
 
-  .icons-hero-grid > span:nth-child(2n) {
+  .icons-hero-grid__tile:nth-child(2n) {
     color: hsl(var(--ink-soft));
-    transform: translateY(0.3rem);
+  }
+
+  .icons-hero-grid__tile:nth-child(5) {
+    border-color: hsl(var(--brand) / 0.45);
+    background: linear-gradient(145deg, hsl(var(--brand)), hsl(var(--brand-solid)));
+    color: hsl(var(--canvas));
+    box-shadow: 0 0.55rem 1.2rem hsl(var(--brand) / 0.22);
+    transform: scale(1.04);
+  }
+
+  .icons-hero-grid__tile .ui-icon {
+    --ui-icon-size: 1.6rem;
   }
 
   .icons-section {
@@ -376,6 +417,12 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
     .icons-section__heading {
       grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
       align-items: end;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .icons-attribution {
+      text-align: left;
     }
   }
 

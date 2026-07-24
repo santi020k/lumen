@@ -49,32 +49,32 @@
   --brand-soft: 264 60% 94%;
   --accent: 264 95% 57%;
   --glow: 264 95% 70%;
-  --success: 134 61% 41%;
-  --warning: 35 85% 41%;
-  --danger: 6 63% 46%;
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --danger: 0 84% 60%;
 }
 
 :root[data-theme="santi020k-dark"] {
   color-scheme: dark;
   --app-font-sans: var(--santi020k-font-sans);
   --app-font-display: var(--santi020k-font-display);
-  --theme-bg: 260 18% 5%;
-  --canvas: 260 18% 5%;
-  --surface: 260 18% 8%;
-  --surface-muted: 260 18% 12%;
-  --surface-strong: 260 16% 18%;
-  --line: 260 16% 22%;
-  --ink: 260 12% 96%;
-  --ink-soft: 260 10% 75%;
-  --ink-muted: 260 8% 60%;
-  --brand: 264 95% 70%;
-  --brand-solid: 264 92% 58%;
-  --brand-soft: 264 50% 15%;
-  --accent: 280 95% 72%;
+  --theme-bg: 260 43% 8%;
+  --canvas: 260 43% 8%;
+  --surface: 260 30% 12%;
+  --surface-muted: 260 25% 15%;
+  --surface-strong: 260 20% 21%;
+  --line: 260 15% 30%;
+  --ink: 260 10% 88%;
+  --ink-soft: 260 8% 72%;
+  --ink-muted: 260 6% 56%;
+  --brand: 264 90% 58%;
+  --brand-solid: 264 90% 52%;
+  --brand-soft: 264 45% 18%;
+  --accent: 264 90% 68%;
   --glow: 270 90% 60%;
-  --success: 150 65% 52%;
-  --warning: 40 85% 60%;
-  --danger: 3 85% 65%;
+  --success: 142 71% 45%;
+  --warning: 38 92% 55%;
+  --danger: 0 84% 65%;
   --lumen-logo-accent: 174 76% 56%;
   --glass-bg: 260 22% 12% / 0.78;
   --glass-bg-subtle: 260 22% 12% / 0.64;
@@ -97,21 +97,21 @@
   color-scheme: light;
   --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
-  --theme-bg: 210 24% 98%;
-  --canvas: 210 24% 98%;
+  --theme-bg: 0 0% 100%;
+  --canvas: 0 0% 100%;
   --surface: 0 0% 100%;
-  --surface-muted: 210 22% 95%;
-  --surface-strong: 213 18% 88%;
-  --line: 214 17% 84%;
-  --ink: 216 28% 12%;
-  --ink-soft: 215 14% 35%;
-  --ink-muted: 215 10% 50%;
-  --brand: 201 96% 32%;
-  --brand-solid: 201 96% 28%;
-  --brand-soft: 198 64% 92%;
-  --accent: 169 78% 33%;
+  --surface-muted: 220 14% 96%;
+  --surface-strong: 220 13% 91%;
+  --line: 220 13% 86%;
+  --ink: 222 47% 11%;
+  --ink-soft: 215 16% 32%;
+  --ink-muted: 215 12% 48%;
+  --brand: 221 83% 53%;
+  --brand-solid: 221 83% 46%;
+  --brand-soft: 218 100% 97%;
+  --accent: 168 76% 36%;
   --glow: 38 92% 50%;
-  --success: 142 76% 36%;
+  --success: 142 71% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
 }
@@ -1372,6 +1372,34 @@ pre code {
 .docs-search__results > [role="option"][data-active="true"] {
   background: hsl(var(--brand-soft));
   outline: 1px solid hsl(var(--brand) / 0.18);
+}
+
+.docs-search__group-label {
+  margin: 0;
+  padding: 0.35rem 0.75rem 0.45rem;
+  color: hsl(var(--ink-muted));
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.docs-search__command-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.docs-search__command {
+  min-width: 5.6rem;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid hsl(var(--line) / 0.85);
+  border-radius: 0.35rem;
+  background: hsl(var(--surface-muted));
+  color: hsl(var(--brand));
+  font-family: var(--santi020k-font-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  font-weight: 800;
 }
 
 .docs-sidebar .ui-search-field {

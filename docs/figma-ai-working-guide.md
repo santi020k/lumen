@@ -50,28 +50,27 @@ Never assume the parent website tokens are unchanged because they matched during
 release. Read the parent file again whenever syncing the `santi020k` modes. If the parent project
 has intentionally changed, report the drift before rewriting a released Figma theme.
 
-## First-release baseline
+## Release baseline
 
-The published release was clean at the following baseline:
+The published release is clean at the following baseline:
 
-- 121 public component assets.
+- 123 public component assets.
 - 36 hidden icon-support components named `__IconAsset/*`.
-- 157 top-level local component/component-set assets in total.
-- 118 public assets with component properties.
+- 159 top-level local component/component-set assets in total.
+- 120 public assets with component properties.
 - Three intentional property-free public assets: `ColorPicker`, `Slider`, and `GradientDivider`.
 - 53 variables across three collections.
 - 38 text styles.
 - 8 effect styles.
-- 47 nodes with prototype reactions and 51 reactions in total.
+- 59 nodes with prototype reactions and 63 reactions in total.
 - No duplicate public asset names.
 - No missing public component descriptions.
 - No unused non-variant component properties.
 - No visible detached solid paints.
 - No variables missing descriptions or `WEB` code syntax.
 
-The post-publication dialog showed 170 unchanged publishable library items and 36 hidden support
-assets. The 121 public assets are the canonical component count; do not inflate that number with
-the hidden icon components.
+After publication, the library panel reported `No changes`. The 123 public assets are the current
+canonical component count; do not inflate that number with the 36 hidden icon components.
 
 ## Page organization
 
@@ -80,9 +79,10 @@ Keep the library ordered as follows:
 1. `Cover`
 2. `Getting Started`
 3. `Foundations`
-4. `Icons`
-5. Page divider
-6. `Components`
+4. `Glass Components`
+5. `Icons`
+6. Page divider
+7. `Components`
 7. `Form Controls`
 8. `Content Primitives`
 9. `Navigation Primitives`
@@ -238,7 +238,7 @@ can be expressed safely in the library:
 - Theme controls demonstrate their mode/state behavior.
 - Reveal-oriented utilities show the intended transition.
 
-The release baseline contains 51 reactions on 47 nodes across 17 interactive assets. This is not a
+The release baseline contains 63 reactions on 59 nodes. This is not a
 requirement that every component be interactive; static display primitives should remain static.
 
 After editing reactions, test them in Present mode and confirm there are no links to temporary QA
@@ -322,12 +322,12 @@ return {
 };
 ```
 
-Expected first-release result:
+Expected release result:
 
 ```json
 {
-  "total": 157,
-  "public": 121,
+  "total": 159,
+  "public": 123,
   "hidden": 36,
   "missingDescriptions": [],
   "unusedProperties": []
@@ -368,7 +368,7 @@ Also audit:
 
 Before publishing:
 
-1. Confirm the public catalog is 121/121 against the registry.
+1. Confirm the public catalog is 123/123 against the registry.
 2. Confirm no invalid assets, unused properties, missing descriptions, or duplicate names.
 3. Confirm all intended variables, styles, and assets are selected.
 4. Run four-mode visual QA.
