@@ -14,8 +14,8 @@ import {
 import type { InferGetStaticPropsType } from 'astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
-import CodeTabs from '../../../components/CodeTabs.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
+import FrameworkExample from '../../../components/FrameworkExample.astro'
 import {
   componentCollections,
   componentDocs,
@@ -218,34 +218,23 @@ export function HeroImage() {
       <div class="component-doc-heading">
         <span>01</span>
         <div>
-          <p>See it in context</p>
-          <h2 id="preview-title">Preview</h2>
-        </div>
-      </div>
-      <div class="component-doc-preview docs-preview">
-        <Example />
-      </div>
-    </section>
-
-    <section class="component-doc-section space-y-3" aria-labelledby="usage-title">
-      <div class="component-doc-heading">
-        <span>02</span>
-        <div>
-          <p>Copy a working example</p>
-          <h2 id="usage-title">Usage</h2>
+          <p>See it and copy it</p>
+          <h2 id="preview-title">Framework example</h2>
         </div>
       </div>
       <p class="max-w-2xl text-sm/7 text-ink-soft">
-        Choose the framework that fits your app. Each example uses its adapter’s native API and
-        assumes the framework-level setup is already complete.
+        Choose Astro, React, or Elements to compare native usage against the shared visual output.
+        Each example assumes the framework-level setup is already complete.
       </p>
-      <CodeTabs groupId={`code-${componentSlug}`} snippets={snippets} />
+      <FrameworkExample groupId={`code-${componentSlug}`} snippets={snippets}>
+        <Example />
+      </FrameworkExample>
     </section>
 
     {isImage && (
       <section class="component-doc-section space-y-5" aria-labelledby="image-optimization-title">
         <div class="component-doc-heading">
-          <span>03</span>
+          <span>02</span>
           <div>
             <p>Keep the host framework in control</p>
             <h2 id="image-optimization-title">Astro and Next.js optimization</h2>
@@ -356,7 +345,7 @@ export function HeroImage() {
 
     <section class="component-doc-section space-y-3" aria-labelledby="install-title">
       <div class="component-doc-heading">
-        <span>{isImage ? '04' : '03'}</span>
+        <span>{isImage ? '03' : '02'}</span>
         <div>
           <p>Choose your target</p>
           <h2 id="install-title">Add this component</h2>
@@ -408,10 +397,13 @@ export function HeroImage() {
           Glass reads best over vivid content, so place the surface above imagery or color.
         </p>
       </div>
-      <div class="docs-preview">
+      <FrameworkExample
+        groupId={`code-${componentSlug}-glass`}
+        previewClass=""
+        snippets={glassSnippets}
+      >
         <GlassExample />
-      </div>
-      <CodeTabs groupId={`code-${componentSlug}-glass`} snippets={glassSnippets} />
+      </FrameworkExample>
     </section>
   )}
 

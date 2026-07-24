@@ -74,14 +74,8 @@ const searchIndexHref = '/docs-search.json'
 </div>
 
 <script>
-  interface SearchItem {
-    category: string
-    description: string
-    href: string
-    keywords: string
-    title: string
-    type: string
-  }
+  import type { DocsSearchItem as SearchItem } from '../lib/docs-search'
+  import { getMatchedSearchItems, normalizeSearchText } from '../lib/docs-search'
 
   interface DocsSearchState {
     activeIndex: number
@@ -112,34 +106,6 @@ const searchIndexHref = '/docs-search.json'
     }
 
     return window.__lumenDocsSearchIndex
-  }
-
-  const normalizeSearchText = (value: string): string =>
-    value.toLowerCase().normalize('NFKD').replaceAll(/[\u0300-\u036f]/g, '')
-
-  const scoreSearchItem = (item: SearchItem, query: string): number => {
-    const title = normalizeSearchText(item.title)
-    const category = normalizeSearchText(item.category)
-    const keywords = normalizeSearchText(item.keywords)
-    const tokens = query.split(/\s+/).filter(Boolean)
-
-    if (!tokens.every(token => title.includes(token) || category.includes(token) || keywords.includes(token))) {
-      return 0
-    }
-
-    let score = 1
-
-    if (title === query) score += 80
-
-    if (title.startsWith(query)) score += 45
-
-    if (title.includes(query)) score += 25
-
-    if (category.includes(query)) score += 12
-
-    score += tokens.reduce((sum, token) => sum + (keywords.includes(token) ? 4 : 0), 0)
-
-    return score
   }
 
   const isSearchNavigationKey = (key: string): boolean =>
@@ -250,14 +216,6 @@ const searchIndexHref = '/docs-search.json'
 
     openSearchResults(state)
   }
-
-  const getMatchedSearchItems = (index: SearchItem[], query: string): SearchItem[] =>
-    index
-      .map(item => ({ item, score: scoreSearchItem(item, query) }))
-      .filter(result => result.score > 0)
-      .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
-      .slice(0, 8)
-      .map(result => result.item)
 
   const renderSearchResults = (state: DocsSearchState, index: SearchItem[]): void => {
     const query = normalizeSearchText(state.input.value.trim())

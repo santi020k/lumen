@@ -3,6 +3,8 @@
 
 // @vitest-environment jsdom
 
+import { lumenComponentNames } from '@santi020k/lumen-core'
+
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import {
@@ -18,6 +20,7 @@ import {
   enhanceLumenSchedules,
   LumenButtonElement,
   LumenCardElement,
+  lumenElementDefinitions,
   LumenIconElement,
   LumenToast
 } from './index.js'
@@ -64,6 +67,14 @@ afterEach(() => {
 })
 
 describe('@santi020k/lumen-elements', () => {
+  test('registers one custom element for every shared catalog name', () => {
+    expect(lumenElementDefinitions).toHaveLength(lumenComponentNames.length)
+
+    for (const [tagName, element] of lumenElementDefinitions) {
+      expect(customElements.get(tagName)).toBe(element)
+    }
+  })
+
   test('registers custom elements once', () => {
     defineLumenElements(customElements)
     defineLumenElements(customElements)
