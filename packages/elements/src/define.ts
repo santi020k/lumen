@@ -4753,6 +4753,581 @@ class LumenToastBehaviorElement extends LumenElement {
   }
 }
 
+class LumenFileUploadBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const input = this.querySelector<HTMLInputElement>('[data-ui-file-upload-input]')
+
+    if (!input) return
+
+    const files = this.querySelector<HTMLElement>('[data-ui-file-upload-files]')
+
+    const renderFiles = (): void => {
+      const selectedFiles = input.files ? [...input.files] : []
+
+      this.dataset.state = selectedFiles.length > 0 ? 'selected' : 'idle'
+
+      if (!files) return
+
+      if (selectedFiles.length === 1) {
+        files.textContent = selectedFiles[0]?.name ?? ''
+      } else {
+        files.textContent = selectedFiles.length > 1
+          ? `${selectedFiles.length} files selected`
+          : ''
+      }
+    }
+
+    input.addEventListener('change', renderFiles, { signal: this.abortController.signal })
+
+    this.addEventListener('dragover', event => {
+      if (input.disabled) return
+
+      event.preventDefault()
+
+      this.dataset.state = 'drag-over'
+    }, { signal: this.abortController.signal })
+
+    this.addEventListener('dragleave', event => {
+      if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return
+
+      this.dataset.state = input.files?.length ? 'selected' : 'idle'
+    }, { signal: this.abortController.signal })
+
+    this.addEventListener('drop', event => {
+      if (input.disabled) return
+
+      event.preventDefault()
+
+      if (event.dataTransfer) {
+        input.files = event.dataTransfer.files
+
+        input.dispatchEvent(new Event('change', { bubbles: true }))
+      }
+    }, { signal: this.abortController.signal })
+
+    renderFiles()
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+}
+
+class LumenAnchorBehaviorElement extends LumenElement {
+  private observer: IntersectionObserver | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.observer?.disconnect()
+
+    if (typeof IntersectionObserver === 'undefined') return
+
+    const links = [...this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
+    const byId = new Map<string, HTMLAnchorElement>()
+    const targets: HTMLElement[] = []
+
+    for (const link of links) {
+      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
+      const target = id ? document.getElementById(id) : null
+
+      if (target) {
+        byId.set(id, link)
+
+        targets.push(target)
+      }
+    }
+
+    if (!targets.length) return
+
+    this.observer = new IntersectionObserver(entries => {
+      const visibleEntry = entries.find(entry => entry.isIntersecting)
+
+      if (!visibleEntry) return
+
+      for (const link of links) {
+        link.dataset.active = 'false'
+      }
+
+      const active = byId.get(visibleEntry.target.id)
+
+      if (active) active.dataset.active = 'true'
+    }, { rootMargin: '0px 0px -70% 0px', threshold: 0 })
+
+    for (const target of targets) {
+      this.observer.observe(target)
+    }
+  }
+
+  override disconnectedCallback() {
+    this.observer?.disconnect()
+
+    this.observer = undefined
+  }
+}
+
+class LumenTourBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private opener: HTMLElement | null = null
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const popover = this.querySelector<HTMLElement>('[data-ui-tour-popover]')
+    const steps = [...this.querySelectorAll<HTMLElement>('[data-ui-tour-step]')]
+
+    if (!popover || !steps.length) return
+
+    let index = 0
+
+    const positionStep = (): void => {
+      const step = steps[index]
+
+      if (!step) return
+
+      for (const [stepIndex, node] of steps.entries()) {
+        node.hidden = stepIndex !== index
+      }
+
+      const target = step.dataset.target
+        ? document.querySelector<HTMLElement>(step.dataset.target)
+        : null
+
+      if (target) {
+        const rect = target.getBoundingClientRect()
+
+        popover.style.top = `${rect.bottom + 8}px`
+
+        popover.style.left = `${rect.left}px`
+      }
+    }
+
+    const open = (): void => {
+      this.hidden = false
+
+      index = 0
+
+      positionStep()
+    }
+
+    const close = (): void => {
+      this.hidden = true
+    }
+
+    this.addEventListener('click', event => {
+      const target = event.target
+
+      if (!(target instanceof HTMLElement)) return
+
+      if (target.closest('[data-ui-tour-next]')) {
+        if (index < steps.length - 1) {
+          index += 1
+
+          positionStep()
+        } else {
+          close()
+        }
+      } else if (target.closest('[data-ui-tour-prev]')) {
+        if (index > 0) {
+          index -= 1
+
+          positionStep()
+        }
+      } else if (target.closest('[data-ui-tour-close]') || target.hasAttribute('data-ui-tour-backdrop')) {
+        close()
+      }
+    }, { signal: this.abortController.signal })
+
+    this.opener = this.id
+      ? document.querySelector<HTMLElement>(`[data-ui-tour-open="#${this.id}"]`)
+      : null
+
+    this.opener?.addEventListener('click', open, { signal: this.abortController.signal })
+
+    const lumenWindow = window as Window & { LumenTours?: Record<string, () => void> }
+
+    lumenWindow.LumenTours ??= {}
+
+    if (this.id) lumenWindow.LumenTours[this.id] = open
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    this.opener = null
+
+    const lumenWindow = window as Window & { LumenTours?: Record<string, () => void> }
+
+    if (this.id && lumenWindow.LumenTours) Reflect.deleteProperty(lumenWindow.LumenTours, this.id)
+  }
+}
+
+class LumenTransferBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const lists = new Map<string, HTMLElement>()
+
+    for (const list of this.querySelectorAll<HTMLElement>('[data-ui-transfer-list]')) {
+      if (list.dataset.side) lists.set(list.dataset.side, list)
+    }
+
+    const move = (fromSide: string, toSide: string): void => {
+      const from = lists.get(fromSide)
+      const to = lists.get(toSide)
+
+      if (!from || !to) return
+
+      const moved: string[] = []
+
+      for (const checkbox of from.querySelectorAll<HTMLInputElement>('[data-ui-transfer-item]')) {
+        if (!checkbox.checked) continue
+
+        const item = checkbox.closest<HTMLElement>('.ui-transfer__item')
+
+        if (item) {
+          checkbox.checked = false
+
+          to.append(item)
+
+          moved.push(checkbox.value)
+        }
+      }
+
+      if (moved.length) {
+        this.dispatchEvent(new CustomEvent('ui:transfer-change', {
+          bubbles: true,
+          detail: { from: fromSide, to: toSide, values: moved }
+        }))
+      }
+    }
+
+    for (const button of this.querySelectorAll<HTMLButtonElement>('[data-ui-transfer-move]')) {
+      button.addEventListener('click', () => {
+        if (button.dataset.uiTransferMove === 'target') {
+          move('source', 'target')
+        } else if (button.dataset.uiTransferMove === 'source') {
+          move('target', 'source')
+        }
+      }, { signal: this.abortController.signal })
+    }
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+}
+
+class LumenMentionsBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private closeTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const input = this.querySelector<HTMLTextAreaElement>('[data-ui-mentions-input]')
+    const list = this.querySelector<HTMLElement>('[data-ui-mentions-list]')
+
+    if (!input || !list) return
+
+    const trigger = this.dataset.uiMentionsTrigger ?? '@'
+    const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const options = [...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')]
+
+    const close = (): void => {
+      list.hidden = true
+    }
+
+    const filter = (): void => {
+      const caret = input.selectionStart
+      const match = new RegExp(`${escapedTrigger}(\\w*)$`).exec(input.value.slice(0, caret))
+
+      if (!match) {
+        close()
+
+        return
+      }
+
+      const query = (match[1] ?? '').toLowerCase()
+      let visibleCount = 0
+
+      for (const option of options) {
+        const visible = (option.dataset.value ?? '').toLowerCase().startsWith(query)
+
+        option.hidden = !visible
+
+        if (visible) visibleCount += 1
+      }
+
+      list.hidden = visibleCount === 0
+    }
+
+    const insert = (value: string): void => {
+      const caret = input.selectionStart
+
+      const before = input.value.slice(0, caret)
+        .replace(new RegExp(`${escapedTrigger}\\w*$`), `${trigger}${value} `)
+
+      input.value = before + input.value.slice(caret)
+
+      input.focus()
+
+      input.setSelectionRange(before.length, before.length)
+
+      close()
+
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+
+    input.addEventListener('input', filter, { signal: this.abortController.signal })
+
+    input.addEventListener('keyup', filter, { signal: this.abortController.signal })
+
+    input.addEventListener('blur', () => {
+      this.closeTimer = globalThis.setTimeout(close, 120)
+    }, { signal: this.abortController.signal })
+
+    for (const option of options) {
+      option.addEventListener('mousedown', event => {
+        event.preventDefault()
+
+        insert(option.dataset.value ?? '')
+      }, { signal: this.abortController.signal })
+    }
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    if (this.closeTimer) globalThis.clearTimeout(this.closeTimer)
+
+    this.closeTimer = undefined
+  }
+}
+
+const setupSelectionDisclosure = (
+  root: HTMLElement,
+  signal: AbortSignal
+): { close: () => void, panel: HTMLElement, trigger: HTMLElement } | undefined => {
+  const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
+  const panel = root.querySelector<HTMLElement>('[data-ui-panel]')
+
+  if (!trigger || !panel) return undefined
+
+  const close = (): void => { setDisclosureOpen(trigger, panel, false); }
+
+  setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
+
+  trigger.addEventListener('click', () => {
+    setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
+  }, { signal })
+
+  panel.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return
+
+    event.preventDefault()
+
+    close()
+
+    trigger.focus({ preventScroll: true })
+  }, { signal })
+
+  document.addEventListener('pointerdown', event => {
+    const target = getOwnedTarget(event)
+
+    if (!target || root.contains(target)) return
+
+    close()
+  }, { signal })
+
+  return { close, panel, trigger }
+}
+
+class LumenCascaderBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const disclosure = setupSelectionDisclosure(this, this.abortController.signal)
+
+    if (!disclosure) return
+
+    const valueLabel = this.querySelector<HTMLElement>('[data-ui-cascader-value]')
+    const input = this.querySelector<HTMLInputElement>('[data-ui-cascader-input]')
+    const columns = [...this.querySelectorAll<HTMLElement>('.ui-cascader__column')]
+
+    for (const option of this.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')) {
+      option.addEventListener('click', () => {
+        const column = option.closest<HTMLElement>('.ui-cascader__column')
+
+        if (column) {
+          const columnIndex = columns.indexOf(column)
+
+          for (const descendant of columns.slice(columnIndex + 1)) {
+            descendant.hidden = true
+
+            for (const descendantOption of descendant.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
+              descendantOption.dataset.active = 'false'
+
+              descendantOption.setAttribute('aria-selected', 'false')
+            }
+          }
+
+          for (const sibling of column.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
+            sibling.dataset.active = 'false'
+
+            sibling.setAttribute('aria-selected', 'false')
+          }
+        }
+
+        option.dataset.active = 'true'
+
+        option.setAttribute('aria-selected', 'true')
+
+        const next = option.dataset.uiCascaderNext
+          ? this.querySelector<HTMLElement>(option.dataset.uiCascaderNext)
+          : null
+
+        if (next) {
+          next.hidden = false
+
+          return
+        }
+
+        const value = option.dataset.value ?? option.textContent.trim()
+
+        if (valueLabel) valueLabel.textContent = option.dataset.label ?? option.textContent.trim()
+
+        if (input) input.value = value
+
+        disclosure.close()
+
+        this.dispatchEvent(new CustomEvent('ui:cascader-change', { bubbles: true, detail: { value } }))
+      }, { signal: this.abortController.signal })
+    }
+
+    disclosure.panel.addEventListener('keydown', event => {
+      const target = event.target
+
+      if (!(target instanceof HTMLElement)) return
+
+      const option = target.closest<HTMLButtonElement>('[data-ui-cascader-option]')
+      const column = option?.closest<HTMLElement>('.ui-cascader__column')
+
+      if (!option || !column) return
+
+      const columnIndex = columns.indexOf(column)
+      const options = [...column.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')]
+
+      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault()
+
+        options[getLoopedIndex(event.key, options.indexOf(option), options.length, ['ArrowDown'])]?.focus()
+      } else if (event.key === 'ArrowRight') {
+        const next = option.dataset.uiCascaderNext
+          ? this.querySelector<HTMLElement>(option.dataset.uiCascaderNext)
+          : null
+
+        if (next) {
+          event.preventDefault()
+
+          option.click()
+
+          next.querySelector<HTMLElement>('[data-ui-cascader-option]')?.focus()
+        }
+      } else if (event.key === 'ArrowLeft' && columnIndex > 0) {
+        event.preventDefault()
+
+        for (const descendant of columns.slice(columnIndex)) descendant.hidden = true
+
+        columns.slice(0, columnIndex).reverse().find(candidate => !candidate.hidden)
+          ?.querySelector<HTMLElement>('[data-ui-cascader-option][data-active="true"]')
+          ?.focus()
+      }
+    }, { signal: this.abortController.signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+}
+
+class LumenTreeSelectBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const disclosure = setupSelectionDisclosure(this, this.abortController.signal)
+
+    if (!disclosure) return
+
+    const valueLabel = this.querySelector<HTMLElement>('[data-ui-tree-select-value]')
+    const input = this.querySelector<HTMLInputElement>('[data-ui-tree-select-input]')
+
+    for (const item of this.querySelectorAll<HTMLElement>('[data-ui-panel] [data-value]')) {
+      item.addEventListener('click', () => {
+        const value = item.dataset.value ?? ''
+
+        if (valueLabel) valueLabel.textContent = item.textContent.trim()
+
+        if (input) input.value = value
+
+        disclosure.close()
+
+        this.dispatchEvent(new CustomEvent('ui:tree-select-change', { bubbles: true, detail: { value } }))
+      }, { signal: this.abortController.signal })
+    }
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+  }
+}
+
 class LumenBackToTopBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
@@ -5118,13 +5693,17 @@ const createLumenBehaviorElementClass = (
 
 const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenElement>> = {
   AlertDialog: LumenDialogBehaviorElement,
+  Anchor: LumenAnchorBehaviorElement,
   AnimatedNumber: LumenAnimatedNumberBehaviorElement,
   BackToTop: LumenBackToTopBehaviorElement,
+  Cascader: LumenCascaderBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
+  FileUpload: LumenFileUploadBehaviorElement,
   Icon: LumenIconBehaviorElement,
   LanguageToggle: LumenLanguageToggleBehaviorElement,
+  Mentions: LumenMentionsBehaviorElement,
   Particles: LumenParticlesBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
   Rating: LumenRatingBehaviorElement,
@@ -5136,6 +5715,9 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   ThemeBuilder: LumenThemeBuilderBehaviorElement,
   ThemeToggle: LumenThemeToggleBehaviorElement,
   Toast: LumenToastBehaviorElement,
+  Tour: LumenTourBehaviorElement,
+  Transfer: LumenTransferBehaviorElement,
+  TreeSelect: LumenTreeSelectBehaviorElement,
   Tooltip: LumenTooltipBehaviorElement,
   VirtualList: LumenVirtualListBehaviorElement
 }

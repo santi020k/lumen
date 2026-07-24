@@ -140,11 +140,60 @@ describe('lumen code helpers', () => {
     expect(tokens.find(token => token.value === 'number')?.kind).toBe('type')
   })
 
-  test('passes through code for non-JavaScript languages', () => {
-    expect(tokenizeLumenCode('SELECT * FROM users', 'sql')).toEqual([
-      { start: 0, value: 'SELECT * FROM users' }
+  test('tokenizes YAML keys, values, booleans, numbers, and comments', () => {
+    const tokens = tokenizeLumenCode(`name: Astro Doctor
+enabled: true
+retries: 3
+paths: ['**/*.astro']
+# Run on pull requests`, 'yaml')
+
+    expect(tokens.find(token => token.value === 'name')?.kind).toBe('keyword')
+    expect(tokens.find(token => token.value === 'true')?.kind).toBe('type')
+    expect(tokens.find(token => token.value === '3')?.kind).toBe('accent')
+    expect(tokens.find(token => token.value === "'**/*.astro'")?.kind).toBe('string')
+    expect(tokens.find(token => token.value === '# Run on pull requests')?.kind).toBe('comment')
+  })
+
+  test('tokenizes shell commands with semantic token kinds', () => {
+    const tokens = tokenizeLumenCode('pnpm add -D "$PACKAGE" # install', 'bash')
+
+    expect(tokens.find(token => token.value === '-D')?.kind).toBe('type')
+    expect(tokens.find(token => token.value === '"$PACKAGE"')?.kind).toBe('string')
+    expect(tokens.find(token => token.value === '# install')?.kind).toBe('comment')
+  })
+
+  test('tokenizes JSON and markup language families', () => {
+    const jsonTokens = tokenizeLumenCode('{"enabled": true, "count": 2}', 'json')
+    const markupTokens = tokenizeLumenCode('<Image src="/hero.png" alt="Overview" />', 'astro')
+
+    expect(jsonTokens.find(token => token.value === '"enabled"')?.kind).toBe('keyword')
+    expect(jsonTokens.find(token => token.value === 'true')?.kind).toBe('type')
+    expect(markupTokens.find(token => token.value === 'Image')?.kind).toBe('keyword')
+    expect(markupTokens.find(token => token.value === 'src')?.kind).toBe('type')
+  })
+
+  test('tokenizes Markdown and Lua language families', () => {
+    const markdownTokens = tokenizeLumenCode('## Install\nUse `pnpm add`.', 'markdown')
+    const luaTokens = tokenizeLumenCode('local enabled = true -- ready', 'lua')
+
+    expect(markdownTokens.find(token => token.value === '##')?.kind).toBe('keyword')
+    expect(markdownTokens.find(token => token.value === '`pnpm add`')?.kind).toBe('string')
+    expect(luaTokens.find(token => token.value === 'local')?.kind).toBe('keyword')
+    expect(luaTokens.find(token => token.value === '-- ready')?.kind).toBe('comment')
+  })
+
+  test('tokenizes SQL language families', () => {
+    const sqlTokens = tokenizeLumenCode('SELECT name FROM projects WHERE active = 1', 'sql')
+
+    expect(sqlTokens.find(token => token.value === 'SELECT')?.kind).toBe('keyword')
+    expect(sqlTokens.find(token => token.value === '1')?.kind).toBe('accent')
+  })
+
+  test('passes through unsupported languages', () => {
+    expect(tokenizeLumenCode('opaque source', 'plaintext')).toEqual([
+      { start: 0, value: 'opaque source' }
     ])
-    expect(tokenizeLumenCode('', 'sql')).toEqual([])
+    expect(tokenizeLumenCode('', 'plaintext')).toEqual([])
   })
 })
 

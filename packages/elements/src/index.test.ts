@@ -64,6 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers()
+  vi.unstubAllGlobals()
 })
 
 describe('@santi020k/lumen-elements', () => {
@@ -905,6 +906,236 @@ describe('@santi020k/lumen-elements', () => {
     root?.dispatchEvent(new Event('mouseenter'))
     vi.advanceTimersByTime(250)
     expect(tip?.style.visibility).toBe('')
+  })
+
+  test('file upload tracks drag state, dropped files, and its live file summary', () => {
+    document.body.innerHTML = `
+      <lumen-file-upload>
+        <input data-ui-file-upload-input type="file">
+        <span data-ui-file-upload-files></span>
+      </lumen-file-upload>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-file-upload')!
+    const input = root.querySelector<HTMLInputElement>('input')!
+    const summary = root.querySelector<HTMLElement>('[data-ui-file-upload-files]')!
+    const file = new File(['hello'], 'hello.txt', { type: 'text/plain' })
+    let selectedFiles: File[] = []
+
+    Object.defineProperty(input, 'files', {
+      configurable: true,
+      get: () => selectedFiles,
+      set: value => {
+        selectedFiles = [...value as FileList]
+      }
+    })
+
+    const dragOver = new Event('dragover', { bubbles: true, cancelable: true })
+
+    expect(root.dispatchEvent(dragOver)).toBe(false)
+    expect(root.dataset.state).toBe('drag-over')
+
+    const drop = new Event('drop', { bubbles: true, cancelable: true })
+
+    Object.defineProperty(drop, 'dataTransfer', { value: { files: [file] } })
+    root.dispatchEvent(drop)
+
+    expect(root.dataset.state).toBe('selected')
+    expect(summary.textContent).toBe('hello.txt')
+  })
+
+  test('tour supports external and programmatic opening plus step navigation', () => {
+    document.body.innerHTML = `
+      <button data-ui-tour-open="#welcome-tour">Open</button>
+      <div id="tour-target"></div>
+      <lumen-tour id="welcome-tour" hidden>
+        <div data-ui-tour-backdrop></div>
+        <div data-ui-tour-popover>
+          <section data-target="#tour-target" data-ui-tour-step>
+            <button data-ui-tour-next>Next</button>
+          </section>
+          <section data-target="#tour-target" data-ui-tour-step hidden>
+            <button data-ui-tour-close>Done</button>
+          </section>
+        </div>
+      </lumen-tour>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-tour')!
+    const steps = root.querySelectorAll<HTMLElement>('[data-ui-tour-step]')
+    const lumenWindow = window as Window & { LumenTours?: Record<string, () => void> }
+
+    document.querySelector<HTMLButtonElement>('[data-ui-tour-open]')?.click()
+    expect(root.hidden).toBe(false)
+
+    root.querySelector<HTMLButtonElement>('[data-ui-tour-next]')?.click()
+    expect(steps[0]?.hidden).toBe(true)
+    expect(steps[1]?.hidden).toBe(false)
+
+    root.querySelector<HTMLButtonElement>('[data-ui-tour-close]')?.click()
+    expect(root.hidden).toBe(true)
+
+    lumenWindow.LumenTours?.['welcome-tour']?.()
+    expect(root.hidden).toBe(false)
+  })
+
+  test('anchor scroll spy marks the intersecting section link active', () => {
+    let observerCallback: IntersectionObserverCallback | undefined
+    const observe = vi.fn()
+    const disconnect = vi.fn()
+
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(callback: IntersectionObserverCallback) {
+        observerCallback = callback
+      }
+
+      disconnect = disconnect
+      observe = observe
+    })
+
+    document.body.innerHTML = `
+      <section id="intro"></section>
+      <section id="api"></section>
+      <lumen-anchor>
+        <a data-active="true" href="#intro">Intro</a>
+        <a data-active="false" href="#api">API</a>
+      </lumen-anchor>
+    `
+
+    const intro = document.querySelector<HTMLElement>('#intro')!
+    const api = document.querySelector<HTMLElement>('#api')!
+    const links = document.querySelectorAll<HTMLAnchorElement>('lumen-anchor a')
+
+    expect(observe).toHaveBeenCalledWith(intro)
+    expect(observe).toHaveBeenCalledWith(api)
+
+    observerCallback?.([
+      { isIntersecting: true, target: api } as IntersectionObserverEntry
+    ], {} as IntersectionObserver)
+
+    expect(links[0]?.dataset.active).toBe('false')
+    expect(links[1]?.dataset.active).toBe('true')
+  })
+
+  test('transfer moves checked items and emits the moved values', () => {
+    document.body.innerHTML = `
+      <lumen-transfer>
+        <ul data-side="source" data-ui-transfer-list>
+          <li class="ui-transfer__item"><input checked data-ui-transfer-item value="alpha"></li>
+        </ul>
+        <button data-ui-transfer-move="target">Move right</button>
+        <ul data-side="target" data-ui-transfer-list></ul>
+      </lumen-transfer>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-transfer')!
+    const events: CustomEvent[] = []
+
+    root.addEventListener('ui:transfer-change', event => {
+      events.push(event as CustomEvent)
+    })
+    root.querySelector<HTMLButtonElement>('[data-ui-transfer-move]')?.click()
+
+    expect(root.querySelector('[data-side="source"] .ui-transfer__item')).toBeNull()
+    expect(root.querySelector('[data-side="target"] .ui-transfer__item')).not.toBeNull()
+    expect(events[0]?.detail).toEqual({ from: 'source', to: 'target', values: ['alpha'] })
+  })
+
+  test('mentions filters suggestions and inserts the selected value at the caret', () => {
+    document.body.innerHTML = `
+      <lumen-mentions data-ui-mentions-trigger="@">
+        <textarea data-ui-mentions-input></textarea>
+        <ul data-ui-mentions-list hidden>
+          <li><button data-ui-mentions-option data-value="alice">Alice</button></li>
+          <li><button data-ui-mentions-option data-value="bob">Bob</button></li>
+        </ul>
+      </lumen-mentions>
+    `
+
+    const input = document.querySelector<HTMLTextAreaElement>('[data-ui-mentions-input]')!
+    const list = document.querySelector<HTMLElement>('[data-ui-mentions-list]')!
+    const options = list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')
+
+    input.value = 'Hello @al'
+    input.setSelectionRange(input.value.length, input.value.length)
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+
+    expect(list.hidden).toBe(false)
+    expect(options[0]?.hidden).toBe(false)
+    expect(options[1]?.hidden).toBe(true)
+
+    options[0]?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }))
+    expect(input.value).toBe('Hello @alice ')
+    expect(list.hidden).toBe(true)
+  })
+
+  test('cascader reveals child columns and commits a leaf selection', () => {
+    document.body.innerHTML = `
+      <lumen-cascader>
+        <button aria-expanded="false" data-ui-trigger>Choose</button>
+        <div data-ui-panel hidden>
+          <ol class="ui-cascader__column">
+            <li><button aria-selected="false" data-ui-cascader-next="#cities" data-ui-cascader-option data-value="country">Country</button></li>
+          </ol>
+          <ol class="ui-cascader__column" hidden id="cities">
+            <li><button aria-selected="false" data-label="Bogotá" data-ui-cascader-option data-value="bogota">Bogotá</button></li>
+          </ol>
+        </div>
+        <span data-ui-cascader-value>Select</span>
+        <input data-ui-cascader-input>
+      </lumen-cascader>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-cascader')!
+    const trigger = root.querySelector<HTMLButtonElement>('[data-ui-trigger]')!
+    const columns = root.querySelectorAll<HTMLElement>('.ui-cascader__column')
+    const options = root.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')
+    const events: CustomEvent[] = []
+
+    root.addEventListener('ui:cascader-change', event => {
+      events.push(event as CustomEvent)
+    })
+
+    trigger.click()
+    expect(trigger.getAttribute('aria-expanded')).toBe('true')
+
+    options[0]?.click()
+    expect(columns[1]?.hidden).toBe(false)
+
+    options[1]?.click()
+    expect(root.querySelector<HTMLInputElement>('[data-ui-cascader-input]')?.value).toBe('bogota')
+    expect(root.querySelector('[data-ui-cascader-value]')?.textContent).toBe('Bogotá')
+    expect(events[0]?.detail).toEqual({ value: 'bogota' })
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  test('tree select commits a value, closes its panel, and emits change', () => {
+    document.body.innerHTML = `
+      <lumen-tree-select>
+        <button aria-expanded="false" data-ui-trigger>Choose</button>
+        <div data-ui-panel hidden>
+          <button data-value="docs" role="treeitem">Documentation</button>
+        </div>
+        <span data-ui-tree-select-value>Select</span>
+        <input data-ui-tree-select-input>
+      </lumen-tree-select>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-tree-select')!
+    const trigger = root.querySelector<HTMLButtonElement>('[data-ui-trigger]')!
+    const events: CustomEvent[] = []
+
+    root.addEventListener('ui:tree-select-change', event => {
+      events.push(event as CustomEvent)
+    })
+
+    trigger.click()
+    root.querySelector<HTMLButtonElement>('[data-value="docs"]')?.click()
+
+    expect(root.querySelector<HTMLInputElement>('[data-ui-tree-select-input]')?.value).toBe('docs')
+    expect(root.querySelector('[data-ui-tree-select-value]')?.textContent).toBe('Documentation')
+    expect(events[0]?.detail).toEqual({ value: 'docs' })
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
   })
 
   test('toast controller creates, updates, dismisses, limits stacks, and pauses duration', () => {
