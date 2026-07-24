@@ -4,11 +4,13 @@
 import figma from 'figma'
 
 const instance = figma.selectedInstance
+
 const active = instance.getEnum('Active', {
   Details: 'details',
   Overview: 'overview',
   Settings: 'settings'
 })
+
 const overviewLabel = instance.getString('Overview label')
 const detailsLabel = instance.getString('Details label')
 const settingsLabel = instance.getString('Settings label')

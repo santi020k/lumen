@@ -34,10 +34,6 @@ const frameworkLinks = [
 
 const isCurrent = (href: string) => currentPath === href
 
-const currentComponent = componentDocs.find(component =>
-  isCurrent(`/docs/components/${toSlug(component.name)}`)
-)
-
 ---
 
 <BaseLayout description={description} title={title}>
@@ -99,7 +95,7 @@ const currentComponent = componentDocs.find(component =>
         {componentCategories.map(category => (
           <details
             class="docs-sidebar__group docs-sidebar__group--collapsible"
-            open={currentComponent?.category === category}
+            open
           >
             <summary>
               <span>{category}</span>

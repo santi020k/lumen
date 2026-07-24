@@ -11,10 +11,10 @@ For the reverse direction â€” implementing Figma designs with Lumen components â
 
 The Lumen Figma library lives at
 [Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
-`luQW2pTQ3jGGxSFPAAsfa9`). The release library contains 121 public component assets and 52 local
+`luQW2pTQ3jGGxSFPAAsfa9`). The release library contains 121 public component assets and 53 local
 variables across three collections:
 
-- `Color`: 45 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
+- `Color`: 46 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
   `santi020k Dark` modes.
 - `Radius`: four values (`sm`, `md`, `lg`, and `full`).
 - `Effects`: three semantic shadow variables in `Light` and `Dark` modes.

@@ -23,6 +23,26 @@ const {
 } = Astro.props
 
 const watermarkText = content ?? text
+const tileSize = Math.max(1, gap)
+const watermarkXmlEntities: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&apos;'
+}
+const escapedWatermarkText = watermarkText.replaceAll(
+  /[&<>"']/g,
+  character => watermarkXmlEntities[character] ?? character
+)
+const watermarkSvg = [
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${tileSize}" height="${tileSize}" viewBox="0 0 ${tileSize} ${tileSize}">`,
+  `<text x="${tileSize / 2}" y="${tileSize / 2}" dominant-baseline="middle" text-anchor="middle"`,
+  ` transform="rotate(${rotate} ${tileSize / 2} ${tileSize / 2})"`,
+  ' fill="black" font-family="system-ui, sans-serif" font-size="16" font-weight="500" letter-spacing="1.6">',
+  `${escapedWatermarkText}</text></svg>`
+].join('')
+const watermarkImage = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-watermark'
@@ -32,7 +52,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 <div
   class:list={classList}
   data-ui-watermark
-  style={`--ui-watermark-gap:${gap}px;--ui-watermark-rotate:${rotate}deg`}
+  style={`--ui-watermark-gap:${tileSize}px;--ui-watermark-image:${watermarkImage}`}
   {...passthrough}
 >
   <slot />

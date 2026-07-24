@@ -10,7 +10,7 @@ const showHelper = instance.getBoolean('Show helper')
 const control = instance.getInstanceSwap('Control')
 let controlCode
 
-if (control && control.type === 'INSTANCE') {
+if (control?.type === 'INSTANCE') {
   controlCode = control.executeTemplate().example
 }
 

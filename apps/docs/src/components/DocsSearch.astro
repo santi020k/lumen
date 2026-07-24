@@ -1,5 +1,5 @@
 ---
-import { SearchField } from '@santi020k/lumen-astro'
+import { Icon, SearchField } from '@santi020k/lumen-astro'
 
 interface Props {
   class?: string
@@ -34,23 +34,37 @@ const searchIndexHref = '/docs-search.json'
   data-docs-search-source={searchIndexHref}
 >
   <label class="sr-only" for={inputId}>Search docs</label>
-  <SearchField
-    id={inputId}
-    autocomplete="off"
-    class="w-full"
-    placeholder={placeholder}
-    role="combobox"
-    aria-autocomplete="list"
-    aria-controls={resultsId}
-    aria-expanded="false"
-    data-docs-search-input
-  />
+  <div class="docs-search__control">
+    <Icon class="docs-search__icon" decorative name="search" size="sm" />
+    <SearchField
+      id={inputId}
+      autocomplete="off"
+      class="w-full"
+      placeholder={placeholder}
+      role="combobox"
+      aria-autocomplete="list"
+      aria-controls={resultsId}
+      aria-describedby={`${inputId}-status`}
+      aria-expanded="false"
+      data-docs-search-input
+    />
+    <button
+      class="docs-search__clear"
+      type="button"
+      aria-label="Clear search"
+      data-docs-search-clear
+      hidden
+    >
+      <Icon decorative name="x" size="sm" />
+    </button>
+    <kbd class="docs-search__shortcut" aria-hidden="true">/</kbd>
+  </div>
+  <p id={`${inputId}-status`} class="sr-only" aria-live="polite" data-docs-search-status>
+    Type at least two characters to search.
+  </p>
   <div
     id={resultsId}
-    class="
-      absolute z-50 mt-2 hidden max-h-96 w-full overflow-y-auto rounded-xl
-      border border-line bg-surface p-2 shadow-xl
-    "
+    class="docs-search__results hidden"
     role="listbox"
     aria-label="Search results"
     data-docs-search-results
@@ -70,9 +84,11 @@ const searchIndexHref = '/docs-search.json'
 
   interface DocsSearchState {
     activeIndex: number
+    clearButton: HTMLButtonElement
     input: HTMLInputElement
     optionIdPrefix: string
     results: HTMLElement
+    status: HTMLElement
   }
 
   declare global {
@@ -151,6 +167,14 @@ const searchIndexHref = '/docs-search.json'
     state.activeIndex = -1
   }
 
+  const updateSearchControls = (state: DocsSearchState): void => {
+    const hasQuery = state.input.value.length > 0
+
+    state.clearButton.hidden = !hasQuery
+
+    state.input.classList.toggle('has-query', hasQuery)
+  }
+
   const setActiveSearchOption = (state: DocsSearchState, index: number): void => {
     const options = getSearchOptions(state.results)
 
@@ -217,9 +241,11 @@ const searchIndexHref = '/docs-search.json'
 
     empty.className = 'px-3 py-2 text-sm text-ink-soft'
 
-    empty.textContent = 'No results found.'
+    empty.textContent = `No results for “${state.input.value.trim()}”. Try a component, prop, or task.`
 
     state.results.append(empty)
+
+    state.status.textContent = 'No search results found.'
 
     openSearchResults(state)
   }
@@ -238,6 +264,10 @@ const searchIndexHref = '/docs-search.json'
     state.results.replaceChildren()
 
     if (query.length < 2) {
+      state.status.textContent = query.length === 1
+        ? 'Type one more character to search.'
+        : 'Type at least two characters to search.'
+
       closeSearchResults(state)
 
       return
@@ -254,6 +284,8 @@ const searchIndexHref = '/docs-search.json'
     for (const [resultIndex, item] of matchedResults.entries()) {
       state.results.append(createSearchOption(item, resultIndex, state.optionIdPrefix))
     }
+
+    state.status.textContent = `${matchedResults.length} search ${matchedResults.length === 1 ? 'result' : 'results'} available.`
 
     openSearchResults(state)
 
@@ -306,15 +338,26 @@ const searchIndexHref = '/docs-search.json'
 
       const input = root.querySelector<HTMLInputElement>('[data-docs-search-input]')
       const results = root.querySelector<HTMLElement>('[data-docs-search-results]')
+      const clearButton = root.querySelector<HTMLButtonElement>('[data-docs-search-clear]')
+      const status = root.querySelector<HTMLElement>('[data-docs-search-status]')
       const optionIdPrefix = root.dataset.docsSearchId ?? 'docs-search'
 
-      if (!input || !results) continue
+      if (!input || !results || !clearButton || !status) continue
 
       root.dataset.docsSearchBound = 'true'
 
-      const state: DocsSearchState = { activeIndex: -1, input, optionIdPrefix, results }
+      const state: DocsSearchState = {
+        activeIndex: -1,
+        clearButton,
+        input,
+        optionIdPrefix,
+        results,
+        status
+      }
 
       input.addEventListener('input', () => {
+        updateSearchControls(state)
+
         getDocsSearchIndex()
           .then(index => renderSearchResults(state, index))
           .catch(() => renderSearchResults(state, []))
@@ -334,12 +377,51 @@ const searchIndexHref = '/docs-search.json'
           .catch(() => handleSearchKeyDown(event, state, []))
       })
 
+      clearButton.addEventListener('click', () => {
+        input.value = ''
+
+        updateSearchControls(state)
+
+        closeSearchResults(state)
+
+        status.textContent = 'Search cleared.'
+
+        input.focus()
+      })
+
       document.addEventListener('click', event => {
         if (event.target instanceof Node && !root.contains(event.target)) {
           closeSearchResults(state)
         }
       })
     }
+
+    if (document.documentElement.dataset.docsSearchShortcutBound === 'true') return
+
+    document.documentElement.dataset.docsSearchShortcutBound = 'true'
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return
+
+      const target = event.target
+
+      if (
+        target instanceof HTMLInputElement
+        || target instanceof HTMLTextAreaElement
+        || (target instanceof HTMLElement && target.isContentEditable)
+      ) return
+
+      const visibleSearchInput = [...document.querySelectorAll<HTMLInputElement>('[data-docs-search-input]')]
+        .find(candidate => candidate.getClientRects().length > 0)
+
+      if (!visibleSearchInput) return
+
+      event.preventDefault()
+
+      visibleSearchInput.focus()
+
+      visibleSearchInput.select()
+    })
   }
 
   initDocsSearch()

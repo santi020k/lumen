@@ -5,6 +5,7 @@ import figma from 'figma'
 
 const instance = figma.selectedInstance
 const label = instance.getString('Label')
+
 const variant = instance.getEnum('Variant', {
   Default: 'default',
   Destructive: 'destructive',
@@ -13,18 +14,20 @@ const variant = instance.getEnum('Variant', {
   Outline: 'outline',
   Secondary: 'secondary'
 })
+
 const size = instance.getEnum('Size', {
   Default: 'default',
   Icon: 'icon',
   Lg: 'lg',
   Sm: 'sm'
 })
+
 const loading = instance.getBoolean('Loading')
 const disabled = instance.getBoolean('Disabled')
 const icon = instance.getInstanceSwap('Icon')
 let iconCode
 
-if (icon && icon.type === 'INSTANCE') {
+if (icon?.type === 'INSTANCE') {
   iconCode = icon.executeTemplate().example
 }
 

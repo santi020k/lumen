@@ -74,6 +74,15 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toMatch(/\.ui-avatar\s*\{[^}]*vertical-align: middle;/s)
   })
 
+  test('gives breadcrumb links, separators, and the current page distinct states', async () => {
+    const css = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(css).toMatch(/\.ui-breadcrumb li \+ li::before\s*\{/)
+    expect(css).toMatch(/\.ui-breadcrumb a:hover\s*\{[^}]*hsl\(var\(--brand\)\)/s)
+    expect(css).toMatch(/\.ui-breadcrumb a:focus-visible\s*\{[^}]*outline:/s)
+    expect(css).toMatch(/\.ui-breadcrumb \[aria-current="page"\]\s*\{[^}]*hsl\(var\(--ink\)\)/s)
+  })
+
   test('keeps icons from collapsing inside input groups', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
@@ -105,6 +114,18 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-code--inline')
     expect(styles).toContain('.ui-code--block')
     expect(styles).toContain('.ui-code__copy')
+  })
+
+  test('builds Watermark labels as repeatable masked text tiles', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/Watermark.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('encodeURIComponent(watermarkSvg)')
+    expect(component).toContain('--ui-watermark-image')
+    expect(styles).toContain('mask-image: var(--ui-watermark-image)')
+    expect(styles).toContain('mask-repeat: repeat')
   })
 
   test('wraps arbitrary inline SVG logos with shared animation styles', async () => {

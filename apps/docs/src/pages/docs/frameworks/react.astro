@@ -1,6 +1,6 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Card, Separator } from '@santi020k/lumen-astro'
+import { Breadcrumb, Card, Separator } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
@@ -20,11 +20,12 @@ if (!guide || !setup) {
   title="React - Lumen UI"
 >
   <div class="framework-page">
-    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
-      <a href="/docs">Docs</a>
-      <span aria-hidden="true">/</span>
-      <span aria-current="page">React</span>
-    </nav>
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><a href="/docs">Docs</a></li>
+        <li><span aria-current="page">React</span></li>
+      </ol>
+    </Breadcrumb>
 
     <DocsPageHero
       description="React components that preserve Lumen’s shared visual contract, paired with focused hooks for dialogs, menus, selects, and other interactive patterns."

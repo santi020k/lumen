@@ -1,6 +1,6 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Card, Separator } from '@santi020k/lumen-astro'
+import { Breadcrumb, Card, Separator } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
@@ -20,11 +20,12 @@ if (!guide || !setup) {
   title="Elements - Lumen UI"
 >
   <div class="framework-page">
-    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
-      <a href="/docs">Docs</a>
-      <span aria-hidden="true">/</span>
-      <span aria-current="page">Elements</span>
-    </nav>
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><a href="/docs">Docs</a></li>
+        <li><span aria-current="page">Elements</span></li>
+      </ol>
+    </Breadcrumb>
 
     <DocsPageHero
       description="Standards-based custom elements for the complete Lumen catalog, ready for plain HTML or any framework through the same shared class and data contract."

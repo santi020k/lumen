@@ -1,6 +1,6 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Badge, Icon, Separator, Tabs } from '@santi020k/lumen-astro'
+import { Badge, Breadcrumb, Icon, Separator, Tabs } from '@santi020k/lumen-astro'
 
 import type { InferGetStaticPropsType } from 'astro'
 
@@ -108,13 +108,13 @@ export function HeroImage() {
   title={`${component.name} - Lumen UI`}
 >
   <div class="component-doc-page">
-    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
-      <a href="/docs">Docs</a>
-      <span aria-hidden="true">/</span>
-      <a href="/docs/components">Components</a>
-      <span aria-hidden="true">/</span>
-      <span aria-current="page">{component.name}</span>
-    </nav>
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/docs/components">Components</a></li>
+        <li><span aria-current="page">{component.name}</span></li>
+      </ol>
+    </Breadcrumb>
 
     <header class="component-doc-hero">
       <div class="component-doc-hero__copy">

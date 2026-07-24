@@ -1144,11 +1144,13 @@ const syncDateRangePickerElement = (
 
   setDateRangeConstraint(end, 'min', start.value)
 
+
   setDateRangeConstraint(start, 'max', end.value)
 
   root.dataset.rangeState = getDateRangeState(start.value, end.value)
 
   const range: { end?: string; start?: string } = {}
+
 
   if (end.value) range.end = end.value
 
@@ -2907,17 +2909,49 @@ export interface WatermarkProps extends ComponentPropsWithoutRef<'div'> {
   rotate?: number
   text?: string
 }
-export const Watermark = ({ children, className, content, gap = 120, rotate = -22, style, text = 'Confidential', ...props }: WatermarkProps) => (
-  <div
-    className={composeClassName('ui-watermark', className)}
-    data-ui-watermark
-    style={{ ['--ui-watermark-gap' as string]: `${gap}px`, ['--ui-watermark-rotate' as string]: `${rotate}deg`, ...style }}
-    {...props}
-  >
-    {children}
-    <div aria-hidden="true" className="ui-watermark__overlay" data-text={content ?? text} />
-  </div>
-)
+export const Watermark = ({ children, className, content, gap = 120, rotate = -22, style, text = 'Confidential', ...props }: WatermarkProps) => {
+  const watermarkText = content ?? text
+  const tileSize = Math.max(1, gap)
+
+  const watermarkXmlEntities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&apos;'
+  }
+
+  const escapedWatermarkText = watermarkText.replaceAll(
+    /[&<>"']/g,
+    character => watermarkXmlEntities[character] ?? character
+  )
+
+  const watermarkSvg = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${tileSize}" height="${tileSize}" viewBox="0 0 ${tileSize} ${tileSize}">`,
+    `<text x="${tileSize / 2}" y="${tileSize / 2}" dominant-baseline="middle" text-anchor="middle"`,
+    ` transform="rotate(${rotate} ${tileSize / 2} ${tileSize / 2})"`,
+    ' fill="black" font-family="system-ui, sans-serif" font-size="16" font-weight="500" letter-spacing="1.6">',
+    `${escapedWatermarkText}</text></svg>`
+  ].join('')
+
+  const watermarkImage = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`
+
+  return (
+    <div
+      className={composeClassName('ui-watermark', className)}
+      data-ui-watermark
+      style={{
+        ['--ui-watermark-gap' as string]: `${tileSize}px`,
+        ['--ui-watermark-image' as string]: watermarkImage,
+        ...style
+      }}
+      {...props}
+    >
+      {children}
+      <div aria-hidden="true" className="ui-watermark__overlay" data-text={watermarkText} />
+    </div>
+  )
+}
 
 export interface AffixProps extends ComponentPropsWithoutRef<'div'> {
   offset?: number
