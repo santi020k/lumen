@@ -4,6 +4,16 @@ This document collects reusable improvements discovered while moving existing pr
 It is intentionally a backlog: migrations should preserve each product's current design, while
 library changes can be evaluated and implemented separately.
 
+## Implementation status
+
+The July 2026 migration pass added:
+
+- `lumen audit-tokens` plus channel-format guidance for semantic token collisions;
+- low-presentation contracts for `Card`, `ButtonLink`, `Link`, `NavigationMenu`, and `Sidebar`;
+- `Link newTab` parity and interactive `Pill href` rendering;
+- authoritative `[aria-pressed="true"]` styling plus controlled, cancelable Astro toggle intent;
+- catalog-wide nullable Astro `class` props for exact-optional-safe attribute passthrough.
+
 ## Dep Beacon
 
 ### Make semantic token adoption safer for existing stylesheets

@@ -3,6 +3,23 @@
 Observed while migrating the Astro Doctor documentation site to
 `@santi020k/lumen-astro@0.1.0`.
 
+## Implementation status
+
+The July 2026 migration pass implemented the reusable library work:
+
+- Astro `ThemeToggle` persistence, configured theme names, synchronization, events, and
+  navigation-safe idempotent initialization;
+- a published Tailwind layer-order prelude with a compile fixture covering spacing, display,
+  radius, width, and responsive visibility utilities;
+- inherit/unstyled variants for established visual systems;
+- Astro Tabs relationship generation, initial value, shared storage synchronization, and
+  `ui:tabs-change`;
+- development diagnostics and slotted-SVG guidance for unsupported Lucide/brand icons;
+- complete theme-boundary and `NavigationMenu` focus-group guidance.
+
+The broader downstream visual fixture remains complementary product-level coverage; Lumen's
+catalog visual suite and the focused Tailwind compile fixture cover the reusable library contracts.
+
 ## ThemeToggle behavior parity
 
 `ThemeToggle` renders the public control and theme-aware icons, but Astro's `UIPrimitives` does not

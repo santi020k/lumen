@@ -182,6 +182,7 @@ const help = [
   ''
 ].join('\n')
 
+// eslint-disable-next-line complexity -- Command dispatch keeps CLI exit behavior and output in one place.
 const run = async () => {
   let output = help
 
