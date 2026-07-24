@@ -2705,11 +2705,13 @@ export type ButtonLinkProps = ComponentPropsWithoutRef<'a'> & {
   variant?: 'ghost' | 'inline' | 'primary' | 'secondary' | 'unstyled'
 }
 export const ButtonLink = ({ className, shape = 'default', variant = 'primary', ...props }: ButtonLinkProps) => {
-  const variantClass = variant === 'unstyled'
-    ? 'ui-button-link--unstyled'
-    : variant === 'inline'
-    ? 'ui-button ui-button--inline'
-    : `ui-button ui-button--${variant} min-h-11 rounded-full border`
+  let variantClass = `ui-button ui-button--${variant} min-h-11 rounded-full border`
+
+  if (variant === 'unstyled') {
+    variantClass = 'ui-button-link--unstyled'
+  } else if (variant === 'inline') {
+    variantClass = 'ui-button ui-button--inline'
+  }
 
   const shapeClass = shape === 'icon' && variant !== 'inline' ? 'ui-button-link--icon' : undefined
 
