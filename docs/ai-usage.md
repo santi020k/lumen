@@ -140,6 +140,14 @@ behavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-r
 `usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track
 the Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.
 
+The React package entry is a client boundary. In Next.js, it can be imported by a Server Component
+without evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen
+subtree becomes a Client Component boundary. Vite and other client-rendered React applications use
+the same entry without additional setup.
+`Button`, `Link`, `ButtonLink`, and `Input` forward their DOM refs. `Button asChild` composes the
+button contract onto one child element, while `Input visualSize` controls presentation without
+shadowing the native numeric `size` attribute.
+
 ```tsx
 import '@santi020k/lumen-react/styles.css'
 import { Button, Card, Input, Label } from '@santi020k/lumen-react'

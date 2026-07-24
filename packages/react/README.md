@@ -33,6 +33,52 @@ export function SubscribeForm() {
 }
 ```
 
+## Next.js and server components
+
+The package entry is marked as a client module because the full catalog includes stateful
+components and behavior hooks. Next.js Server Components can import and render Lumen components;
+Next keeps the Lumen subtree behind the client boundary instead of evaluating React client APIs in
+the server runtime.
+
+```tsx
+// app/page.tsx — this file remains a Server Component.
+import { Badge, Card } from '@santi020k/lumen-react'
+
+export default function Page() {
+  return (
+    <Card>
+      <Badge>Ready</Badge>
+      Server-rendered page content
+    </Card>
+  )
+}
+```
+
+This boundary is specific to React environments that recognize the `"use client"` directive.
+Other React applications continue to consume the same package and exports normally.
+
+## Compatibility wrappers
+
+The common wrapper primitives preserve their underlying DOM handles. `Button`, `Link`,
+`ButtonLink`, and `Input` accept forwarded refs. Use `Button asChild` to apply the button contract
+to one existing React element without adding another DOM node:
+
+```tsx
+import { Button } from '@santi020k/lumen-react'
+import NextLink from 'next/link'
+
+<Button asChild variant="secondary">
+  <NextLink href="/projects">Projects</NextLink>
+</Button>
+```
+
+`Input` keeps the native numeric `size` attribute. Use `visualSize="sm"` or `visualSize="lg"` for
+Lumen's visual size modifiers:
+
+```tsx
+<Input size={32} visualSize="sm" />
+```
+
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```tsx

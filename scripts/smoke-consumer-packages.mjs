@@ -1,0 +1,168 @@
+import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
+import { access, mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+
+const repositoryRoot = resolve(import.meta.dirname, '..')
+const temporaryRoot = await mkdtemp(join(tmpdir(), 'lumen-consumer-packages-'))
+const archiveDirectory = join(temporaryRoot, 'archives')
+const consumerDirectory = join(temporaryRoot, 'consumer')
+const packageDirectories = ['lumen', 'core', 'astro', 'react', 'elements']
+
+const run = (command, args, cwd = repositoryRoot) => {
+  const result = spawnSync(command, args, {
+    cwd,
+    encoding: 'utf8',
+    stdio: 'pipe'
+  })
+
+  if (result.status !== 0) {
+    process.stderr.write(result.stdout)
+
+    process.stderr.write(result.stderr)
+
+    throw new Error(`${command} ${args.join(' ')} failed with status ${result.status}`)
+  }
+
+  return result.stdout
+}
+
+try {
+  await Promise.all([
+    mkdir(archiveDirectory, { recursive: true }),
+    mkdir(join(consumerDirectory, 'src', 'pages'), { recursive: true })
+  ])
+
+  for (const packageDirectory of packageDirectories) {
+    run(
+      'pnpm',
+      ['pack', '--pack-destination', archiveDirectory],
+      join(repositoryRoot, 'packages', packageDirectory)
+    )
+  }
+
+  const archives = (await readdir(archiveDirectory))
+    .filter(name => name.endsWith('.tgz'))
+    .map(name => join(archiveDirectory, name))
+
+  assert.equal(archives.length, packageDirectories.length)
+
+  await writeFile(
+    join(consumerDirectory, 'package.json'),
+    `${JSON.stringify({ name: 'lumen-consumer-smoke', private: true, type: 'module' }, null, 2)}\n`
+  )
+
+  run(
+    'npm',
+    [
+      'install',
+      '--ignore-scripts',
+      '--legacy-peer-deps',
+      '--no-audit',
+      '--no-fund',
+      ...archives,
+      'astro@7.1.3',
+      'jsdom@29.1.1',
+      'react@19.2.8',
+      'react-dom@19.2.8'
+    ],
+    consumerDirectory
+  )
+
+  await writeFile(
+    join(consumerDirectory, 'smoke.mjs'),
+    `import assert from 'node:assert/strict'
+import { JSDOM } from 'jsdom'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import { lumen } from '@santi020k/lumen'
+import { lumenComponentNames } from '@santi020k/lumen-core'
+import { Badge, Card } from '@santi020k/lumen-react'
+
+assert.equal(lumen.name, 'Lumen')
+assert.ok(lumenComponentNames.includes('Card'))
+
+const html = renderToStaticMarkup(
+  createElement(Card, null, createElement(Badge, null, 'Ready'))
+)
+
+assert.match(html, /ui-card/)
+assert.match(html, /ui-badge/)
+
+const dom = new JSDOM('<!doctype html><html><body></body></html>', {
+  pretendToBeVisual: true,
+  url: 'https://example.test'
+})
+
+for (const key of [
+  'AbortController',
+  'CustomEvent',
+  'Document',
+  'Element',
+  'Event',
+  'HTMLElement',
+  'HTMLInputElement',
+  'HTMLSelectElement',
+  'HTMLTextAreaElement',
+  'MutationObserver',
+  'Node'
+]) {
+  Object.defineProperty(globalThis, key, {
+    configurable: true,
+    value: dom.window[key]
+  })
+}
+
+Object.defineProperties(globalThis, {
+  customElements: { configurable: true, value: dom.window.customElements },
+  document: { configurable: true, value: dom.window.document },
+  localStorage: { configurable: true, value: dom.window.localStorage },
+  window: { configurable: true, value: dom.window }
+})
+
+const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
+
+defineLumenElements(dom.window.customElements)
+
+assert.ok(dom.window.customElements.get('lumen-card'))
+assert.ok(dom.window.customElements.get('lumen-dialog'))
+`
+  )
+
+  await writeFile(
+    join(consumerDirectory, 'src', 'pages', 'index.astro'),
+    `---
+import { Badge, Card } from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles.css'
+---
+
+<Card>
+  <Badge>Ready</Badge>
+  <p>Packed Astro consumer</p>
+</Card>
+`
+  )
+
+  run(process.execPath, ['smoke.mjs'], consumerDirectory)
+
+  run(
+    process.execPath,
+    [join(consumerDirectory, 'node_modules', 'astro', 'bin', 'astro.mjs'), 'build'],
+    consumerDirectory
+  )
+
+  await Promise.all([
+    access(join(consumerDirectory, 'dist', 'index.html')),
+    access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen', 'styles.css')),
+    access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-elements', 'styles.css')),
+    access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-react', 'styles.css'))
+  ])
+
+  process.stdout.write(
+    'Packed Core, umbrella, React, Elements, and Astro packages passed clean-consumer smoke tests\n'
+  )
+} finally {
+  await rm(temporaryRoot, { force: true, recursive: true })
+}

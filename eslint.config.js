@@ -25,6 +25,9 @@ const config = await defineConfig({
     'apps/docs': {
       preset: Preset.App
     },
+    'apps/next-smoke': {
+      preset: Preset.App
+    },
     'packages/astro': {
       preset: Preset.Library
     },

@@ -146,3 +146,4 @@ jobs:
           pnpm run check:bundle-size
           pnpm run check:framework-contracts
           pnpm run check:publish-dry-run
+          pnpm run check:consumer-packages

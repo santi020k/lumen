@@ -61,6 +61,7 @@ export default defineConfig({
       project('react', 'packages/react'),
       project('elements', 'packages/elements', { environment: 'jsdom' }),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),
+      project('next-smoke', 'apps/next-smoke', { passWithNoTests: true }),
       project('docs', 'apps/docs', { passWithNoTests: true })
     ],
     restoreMocks: true

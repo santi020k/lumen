@@ -62,6 +62,18 @@ interface ReactInternals {
   }
 }
 
+interface ForwardRefComponent {
+  render: (props: Record<string, unknown>, ref: unknown) => unknown
+}
+
+const renderComponent = (
+  component: unknown,
+  props: Record<string, unknown> = {},
+  ref: unknown = null
+): unknown => typeof component === 'function'
+  ? (component as (componentProps: Record<string, unknown>) => unknown)(props)
+  : (component as ForwardRefComponent).render(props, ref)
+
 const withHookDispatcher = <Value,>(callback: () => Value): Value => {
   const internals = (React as unknown as ReactInternals).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
   const previousDispatcher = internals.H
@@ -132,15 +144,20 @@ const makeDateRangeInput = (value: string): HTMLInputElement => {
 describe('@santi020k/lumen-react', () => {
   test('exports one React component for every shared catalog name', () => {
     for (const componentName of lumenComponentNames) {
-      expect(LumenReact[componentName]).toBeTypeOf('function')
+      const component = LumenReact[componentName] as unknown
+
+      expect(
+        typeof component === 'function'
+        || typeof (component as Partial<ForwardRefComponent>).render === 'function'
+      ).toBe(true)
     }
   })
 
   test('renders every catalog component with its documented defaults', () => {
     for (const componentName of lumenComponentNames) {
-      const component = LumenReact[componentName] as unknown as (props: Record<string, never>) => unknown
+      const component = LumenReact[componentName] as unknown
 
-      expect(() => withHookDispatcher(() => component({}))).not.toThrow()
+      expect(() => withHookDispatcher(() => renderComponent(component))).not.toThrow()
     }
   })
 
@@ -177,10 +194,29 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('applies default button classes and type', () => {
-    const button = Button({ children: 'Save' }) as ReactElement<ButtonProps>
+    const button = renderComponent(Button, { children: 'Save' }) as ReactElement<ButtonProps>
 
     expect(button.props.className).toBe('ui-button ui-button--default ui-button--default-size')
     expect(button.props.type).toBe('button')
+  })
+
+  test('composes Button through one child and forwards its ref', () => {
+    const ref = React.createRef<HTMLButtonElement>()
+    const child = React.createElement('a', { className: 'product-link', href: '/projects' }, 'Projects')
+    const slottedButton = renderComponent(Button, {
+      asChild: true,
+      children: child,
+      variant: 'secondary'
+    }, ref) as ReactElement<Record<string, unknown>>
+    const nativeButton = renderComponent(Button, { children: 'Save' }, ref) as ReactElement<Record<string, unknown>>
+
+    expect(slottedButton.type).toBe('a')
+    expect(slottedButton.props.className).toBe(
+      'ui-button ui-button--secondary ui-button--default-size product-link'
+    )
+    expect(slottedButton.props.href).toBe('/projects')
+    expect(slottedButton.props.ref).toBe(ref)
+    expect(nativeButton.props.ref).toBe(ref)
   })
 
   test('supports the flush accordion variant', () => {
@@ -279,9 +315,15 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('defaults inputs to text fields', () => {
-    const input = Input({ className: 'custom-input' }) as ReactElement<InputProps>
+    const ref = React.createRef<HTMLInputElement>()
+    const input = renderComponent(Input, {
+      className: 'custom-input',
+      size: 32
+    }, ref) as ReactElement<InputProps & { ref?: React.Ref<HTMLInputElement> }>
 
     expect(input.props.className).toBe('ui-input custom-input')
+    expect(input.props.ref).toBe(ref)
+    expect(input.props.size).toBe(32)
     expect(input.props.type).toBe('text')
   })
 
