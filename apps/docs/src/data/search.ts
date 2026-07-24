@@ -1,5 +1,6 @@
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
+import type { DocsSearchItem } from '../lib/docs-search'
 import { toSlug } from '../lib/routes'
 
 import {
@@ -13,15 +14,6 @@ import {
   runtimeEvents,
   themeSetups
 } from './docs'
-
-export interface DocsSearchItem {
-  category: string
-  description: string
-  href: string
-  keywords: string
-  title: string
-  type: 'Component' | 'Event' | 'Prop' | 'Recipe'
-}
 
 const canonicalComponentNames = new Set<string>(lumenComponentNames)
 

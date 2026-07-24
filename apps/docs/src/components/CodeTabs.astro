@@ -19,6 +19,7 @@ const { groupId, snippets } = Astro.props
       <button
         aria-controls={`${groupId}-panel-${index}`}
         aria-selected={index === 0 ? 'true' : 'false'}
+        data-framework={snippet.label}
         id={`${groupId}-tab-${index}`}
         role="tab"
       >{snippet.label}</button>

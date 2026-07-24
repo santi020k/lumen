@@ -3,6 +3,7 @@ import type { ReactElement } from 'react'
 import * as React from 'react'
 import { describe, expect, test, vi } from 'vitest'
 
+import * as LumenReact from './index.js'
 import {
   Alert,
   type AlertProps,
@@ -124,6 +125,12 @@ const makeDateRangeInput = (value: string): HTMLInputElement => {
 }
 
 describe('@santi020k/lumen-react', () => {
+  test('exports one React component for every shared catalog name', () => {
+    for (const componentName of lumenComponentNames) {
+      expect(LumenReact[componentName]).toBeTypeOf('function')
+    }
+  })
+
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
   })

@@ -1,5 +1,10 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import {
+  componentNameToSlug,
+  componentPageNames
+} from '../component-coverage.js'
+
 /* cspell:ignore valuenow */
 
 type Theme = 'dark' | 'light'
@@ -15,51 +20,7 @@ interface VisualScenario {
  * Cascade regressions (like glass variants being overridden) show up here
  * even when unit tests pass.
  */
-const componentSlugs = [
-  'alert',
-  'back-to-top',
-  'badge',
-  'button',
-  'calendar',
-  'callout',
-  'card',
-  'checkbox',
-  'command',
-  'context-menu',
-  'data-table',
-  'date-range-picker',
-  'dialog',
-  'dropdown-menu',
-  'eyebrow',
-  'field',
-  'floating-badge',
-  'formatted-date',
-  'image',
-  'input',
-  'input-otp',
-  'language-toggle',
-  'link',
-  'menubar',
-  'particles',
-  'pill',
-  'popover',
-  'prose',
-  'resizable',
-  'scroll-reveal',
-  'select',
-  'sidebar',
-  'skip-link',
-  'sonner',
-  'stat',
-  'switch',
-  'table',
-  'tabs',
-  'toast',
-  'tooltip',
-  'tree',
-  'tree-grid',
-  'virtual-list'
-]
+const componentSlugs = componentPageNames.map(componentNameToSlug)
 
 const themes: Theme[] = ['light', 'dark']
 

@@ -1,0 +1,73 @@
+{
+  "collection": "Color",
+  "modes": {
+    "Light": {
+      "canvas": "210 24% 98%",
+      "surface": "0 0% 100%",
+      "surface-muted": "210 22% 95%",
+      "surface-strong": "213 18% 88%",
+      "line": "214 17% 84%",
+      "ink": "216 28% 12%",
+      "ink-soft": "215 14% 35%",
+      "ink-muted": "215 10% 50%",
+      "brand": "201 96% 32%",
+      "brand-solid": "201 96% 28%",
+      "brand-soft": "198 64% 92%",
+      "accent": "169 78% 33%",
+      "success": "142 76% 36%",
+      "warning": "38 92% 50%",
+      "danger": "0 84% 60%"
+    },
+    "Dark": {
+      "canvas": "224 24% 8%",
+      "surface": "224 18% 11%",
+      "surface-muted": "223 16% 15%",
+      "surface-strong": "222 14% 22%",
+      "line": "222 14% 26%",
+      "ink": "210 20% 96%",
+      "ink-soft": "214 14% 77%",
+      "ink-muted": "216 10% 62%",
+      "brand": "199 91% 56%",
+      "brand-solid": "199 91% 36%",
+      "brand-soft": "199 84% 16%",
+      "accent": "166 76% 43%",
+      "success": "142 69% 45%",
+      "warning": "38 92% 55%",
+      "danger": "0 84% 65%"
+    },
+    "santi020k Light": {
+      "canvas": "268 20% 98%",
+      "surface": "268 20% 100%",
+      "surface-muted": "268 20% 96%",
+      "surface-strong": "268 15% 90%",
+      "line": "268 15% 84%",
+      "ink": "268 10% 20%",
+      "ink-soft": "268 8% 36%",
+      "ink-muted": "268 6% 28%",
+      "brand": "264 92% 47%",
+      "brand-solid": "264 92% 42%",
+      "brand-soft": "264 60% 94%",
+      "accent": "264 95% 57%",
+      "success": "134 61% 41%",
+      "warning": "35 85% 41%",
+      "danger": "6 63% 46%"
+    },
+    "santi020k Dark": {
+      "canvas": "260 18% 5%",
+      "surface": "260 18% 8%",
+      "surface-muted": "260 18% 12%",
+      "surface-strong": "260 16% 18%",
+      "line": "260 16% 22%",
+      "ink": "260 12% 96%",
+      "ink-soft": "260 10% 75%",
+      "ink-muted": "260 8% 60%",
+      "brand": "264 95% 70%",
+      "brand-solid": "264 92% 58%",
+      "brand-soft": "264 50% 15%",
+      "accent": "280 95% 72%",
+      "success": "150 65% 52%",
+      "warning": "40 85% 60%",
+      "danger": "3 85% 65%"
+    }
+  }
+}
