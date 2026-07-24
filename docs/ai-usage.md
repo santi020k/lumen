@@ -181,7 +181,7 @@ The shared catalog includes:
 `Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
 `NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
-`Slider`, `Sonner`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
+`Slider`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
 `TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and
 `VirtualList`.
 
@@ -253,7 +253,7 @@ The shared catalog includes:
   `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered
   Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`
   to get the same control props, CustomEvents, and error slot updates.
-- Use `Sonner` plus `Toast` for transient feedback. Static `<Toast>` markup works without
+- Use `Toast` for transient feedback. Static `<Toast>` markup works without
   JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with
   `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,
   or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with
@@ -274,13 +274,14 @@ uses these CustomEvents:
 | `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |
 | `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
 | `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |
-| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string }` | A `[data-ui-editor-command]` control runs `document.execCommand(command)`. |
+| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |
+| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |
 | `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \| 'manual', scheme: 'dark' \| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |
 | `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \| 'figma' \| 'tokens', tokens: Record<string, string> \| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |
 | `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |
 | `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |
 | `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |
-| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in a `Sonner` viewport. |
+| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |
 | `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |
 | `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |
 | `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |

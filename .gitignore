@@ -1,15 +1,60 @@
-node_modules
-dist
-.astro
-.turbo
+# Dependencies installed by Node.js package managers.
+node_modules/
+
+# Compiled packages and generated application output.
+dist/
+build/
+out/
+
+# Framework, bundler, and task-runner caches.
+.astro/
+.turbo/
+.vite/
+.cache/
+*.tsbuildinfo
+
+# Tool-specific caches.
 .eslintcache
+.stylelintcache
 .cspellcache
-coverage
-playwright-report
-test-results
-.DS_Store
-*.log
+
+# Test output and coverage reports.
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+blob-report/
+
+# Cloudflare Wrangler's local state and development variables.
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+!.dev.vars.*.example
+
+# Local environment files can contain credentials.
+# Keep sanitized templates available to contributors.
 .env
 .env.*
 !.env.example
+!.env.*.example
+
+# Runtime and package-manager logs.
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Operating-system metadata.
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
 .fuse_hidden*
+
+# Editor swap, backup, and project files.
+.idea/
+*.swp
+*.swo
+*~

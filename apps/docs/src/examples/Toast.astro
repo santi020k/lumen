@@ -1,14 +1,11 @@
 ---
 import {
   Button,
-  Sonner,
   Toast
 } from '@santi020k/lumen-astro'
 ---
 
 <lumen-toast-demo style="display: block;">
-  <Sonner aria-label="Notifications" placement="bottom-right" maxCount={4} />
-
   <div style="display: grid; gap: 1.25rem;">
     <div>
       <strong style="display: block; margin-bottom: 0.625rem;">Common feedback</strong>
@@ -57,10 +54,10 @@ import {
         }
       }
 
-      const createToast = (detail: Record<string, unknown>) => {
-        document.dispatchEvent(new CustomEvent('ui:toast', { detail }))
-      }
+      const createToast = (detail: Record<string, unknown>) =>
+        lumenWindow.LumenToast?.create(detail)
 
+      // eslint-disable-next-line complexity -- each branch mirrors one visible demo control.
       this.addEventListener('click', (e) => {
         const target = e.target as HTMLElement
         const btn = target.closest('[data-ex-toast]')
@@ -110,7 +107,7 @@ import {
       }
 
       case 'action': {
-        lumenWindow.LumenToast?.create({
+        createToast({
           action: { label: 'Undo', value: 'deploy' },
           description: 'lumen-docs was moved to production.',
           duration: 8000,
@@ -122,7 +119,7 @@ import {
       }
 
       case 'progress': {
-        const toastId = lumenWindow.LumenToast?.create({
+        const toastId = createToast({
           description: 'Preparing the production bundle.',
           duration: 10000,
           title: 'Deploying…'

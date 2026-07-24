@@ -19,16 +19,23 @@ const {
   ...rest
 } = Astro.props
 
-const inputId = id ?? 'ui-file-upload'
-
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-file-upload'
 ], classProp, className)
 ---
 
-<label class:list={classList} data-ui-file-upload for={inputId}>
-  <input class="ui-file-upload__input" data-ui-file-upload-input id={inputId} type="file" {...passthrough} />
-  <span aria-hidden="true" class="ui-file-upload__icon"></span>
+<label class:list={classList} data-ui-file-upload for={id}>
+  <input class="ui-file-upload__input" data-ui-file-upload-input id={id} type="file" {...passthrough} />
+  <svg
+    aria-hidden="true"
+    class="ui-file-upload__icon"
+    fill="none"
+    focusable="false"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 16V4m0 0L8 8m4-4 4 4"></path>
+    <path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"></path>
+  </svg>
   <span class="ui-file-upload__prompt">
     <slot>{label}</slot>
   </span>

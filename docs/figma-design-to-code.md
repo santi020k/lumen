@@ -55,7 +55,7 @@ Common Figma pattern → Lumen component mappings:
 | Progress bar | `Progress` |
 | Loading placeholder blocks | `Skeleton` |
 | Inline notification banner | `Alert` |
-| Transient corner notification | `Toast` / `Sonner` |
+| Transient corner notification | `Toast` |
 | Date picking UI | `DatePicker`, `DateRangePicker`, or `Calendar` |
 | Keyboard shortcut hint | `Kbd` |
 | Empty-state illustration block | `Empty` |

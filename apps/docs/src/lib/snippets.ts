@@ -134,24 +134,6 @@ export const Example = () => (
   />
 )
 `,
-  Sonner: `import { Button, Sonner } from '@santi020k/lumen-react'
-
-export const Example = () => (
-  <>
-    <Sonner aria-label="Notifications" />
-    <Button
-      variant="outline"
-      onClick={() => {
-        document.dispatchEvent(new CustomEvent('ui:toast', {
-          detail: { description: 'Your changes are live.', title: 'Saved', variant: 'success' }
-        }))
-      }}
-    >
-      Show toast
-    </Button>
-  </>
-)
-`
 }
 
 const elementsOverrides: Record<string, string> = {

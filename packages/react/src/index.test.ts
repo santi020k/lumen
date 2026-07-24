@@ -13,6 +13,7 @@ import {
   type CardProps,
   Code,
   DataTable,
+  DatePicker,
   Dialog,
   type DialogProps,
   DropdownMenu,
@@ -230,6 +231,30 @@ describe('@santi020k/lumen-react', () => {
     expect(firstDay?.props['data-date']).toBe('2026-06-29')
   })
 
+  test('renders DatePicker as a custom Calendar disclosure', () => {
+    const picker = withHookDispatcher(() => DatePicker({
+      'aria-label': 'Launch date',
+      defaultValue: '2026-07-24'
+    }) as ReactElement)
+    const rootProps = picker.props as Record<string, unknown>
+    const children = rootProps.children as ReactElement<Record<string, unknown>>[]
+    const native = children[0]
+    const control = children[1]
+    const controlChildren = control?.props.children as ReactElement<Record<string, unknown>>[]
+    const trigger = controlChildren[0]
+    const popover = controlChildren[1]
+    const calendar = popover?.props.children as ReactElement
+
+    expect(rootProps['data-ui-date-picker']).toBe(true)
+    expect(native?.props.type).toBe('date')
+    expect(native?.props['data-ui-enhanced']).toBe('true')
+    expect(native?.props.tabIndex).toBe(-1)
+    expect(trigger?.props['aria-label']).toBe('Launch date')
+    expect(trigger?.props['aria-expanded']).toBe(false)
+    expect(popover?.props.hidden).toBe(true)
+    expect(calendar.type).toBe(Calendar)
+  })
+
   test('exposes calendar selection helpers', () => {
     const changes: string[] = []
     const calendar = withHookDispatcher(() => useCalendar({
@@ -383,17 +408,25 @@ describe('@santi020k/lumen-react', () => {
       const editor = withHookDispatcher(() => useRichTextEditor({
         onCommand: detail => { commands.push(detail.command); }
       }))
-      const commandProps = editor.getCommandProps('bold')
+      const commandProps = editor.getCommandProps('bold', {
+        'data-ui-editor-value': 'strong'
+      })
+      const editableProps = editor.getEditableProps()
 
       expect(editor.rootProps['data-ui-rich-text-editor']).toBe(true)
       expect(commandProps['data-ui-editor-command']).toBe('bold')
       expect(commandProps.type).toBe('button')
+      expect(editableProps['data-ui-rich-text-editable']).toBe(true)
+      expect(editableProps.role).toBe('textbox')
 
       commandProps.onClick?.({
-        currentTarget: { closest: vi.fn(() => null) }
+        currentTarget: {
+          closest: vi.fn(() => null),
+          dataset: { uiEditorValue: 'strong' }
+        }
       } as unknown as Parameters<NonNullable<typeof commandProps.onClick>>[0])
 
-      expect(execCommand).toHaveBeenCalledWith('bold')
+      expect(execCommand).toHaveBeenCalledWith('bold', false, 'strong')
       expect(commands).toEqual(['bold'])
     } finally {
       if (documentDescriptor) {

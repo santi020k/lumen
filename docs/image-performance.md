@@ -22,7 +22,10 @@ responsive sources, cache behavior, and preload decisions.
 ## Astro
 
 `@santi020k/lumen-astro` delegates its `Image` component to `astro:assets`. Astro-specific props
-such as `layout`, `quality`, `format`, `widths`, `sizes`, and `inferSize` pass through.
+such as `layout`, `quality`, `format`, `widths`, `sizes`, `inferSize`, and `priority` pass through.
+Prefer a static import for local images so Astro can derive intrinsic dimensions and process the
+asset at build time. `layout="full-width"` and `layout="constrained"` generate responsive
+`srcset`, `sizes`, and layout styles; use `layout="fixed"` for images that should not grow.
 
 ```astro
 ---
@@ -30,8 +33,12 @@ import { Image } from '@santi020k/lumen-astro'
 import hero from '../assets/hero.jpg'
 ---
 
-<Image alt="Mountain valley at sunrise" layout="full-width" quality="high" src={hero} />
+<Image alt="Mountain valley at sunrise" layout="full-width" priority quality={80} src={hero} />
 ```
+
+Use `priority` only for the likely LCP image. Astro then applies eager loading, high fetch priority,
+and synchronous decoding. Public-directory and remote string sources need dimensions; use
+`inferSize` only for an authorized remote source whose dimensions are not already known.
 
 ## Next.js and React optimizers
 
@@ -41,18 +48,28 @@ remain available and Lumen adds the `ui-image` class to its output.
 ```tsx
 import NextImage from 'next/image'
 import { Image as LumenImage } from '@santi020k/lumen-react'
+import hero from './hero.jpg'
 
 <LumenImage
   alt="Mountain valley at sunrise"
   as={NextImage}
-  height={800}
+  placeholder="blur"
+  preload
   sizes="(max-width: 768px) 100vw, 50vw"
-  src="/hero.jpg"
-  width={1200}
+  src={hero}
+  style={{ height: 'auto', width: '100%' }}
 />
 ```
 
-This pattern also works with compatible React image components from a CMS or CDN.
+With an optimizer supplied through `as`, Lumen does not inject its native lazy-loading default.
+Next.js keeps control of resizing, format negotiation, caching, placeholders, and preloading. Add
+accurate `sizes` for responsive or `fill` images. String and remote sources need `width` and
+`height` unless `fill` is used; remote URLs also need a narrow `images.remotePatterns` entry.
+
+In Next.js 16+, use `preload` instead of the deprecated `priority` prop for the one clear LCP image.
+Do not combine `preload` with `loading` or `fetchPriority`. Leave below-the-fold images on the
+Next.js defaults. This `as` pattern also works with compatible React image components from a CMS or
+CDN.
 
 ## Other frameworks and generated markup
 

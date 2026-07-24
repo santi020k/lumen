@@ -9,6 +9,7 @@ import {
   defineLumenElements,
   enhanceLumenCalendars,
   enhanceLumenContextMenus,
+  enhanceLumenDatePickers,
   enhanceLumenDateRangePickers,
   enhanceLumenForms,
   enhanceLumenInputOTPs,
@@ -407,6 +408,37 @@ describe('@santi020k/lumen-elements', () => {
     expect(end?.hasAttribute('min')).toBe(false)
   })
 
+  test('date pickers install their disclosure behavior', () => {
+    document.body.innerHTML = `
+      <lumen-date-picker>
+        <input data-ui-date-picker-native type="date" value="2026-07-23" />
+        <div data-ui-date-picker-control hidden>
+          <button data-ui-date-picker-trigger aria-expanded="false">Choose date</button>
+          <span data-ui-date-picker-value>2026-07-23</span>
+        </div>
+        <div data-ui-date-picker-popover hidden></div>
+      </lumen-date-picker>
+    `
+
+    enhanceLumenDatePickers(document)
+
+    const root = document.querySelector<HTMLElement>('lumen-date-picker')
+    const native = document.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
+    const control = document.querySelector<HTMLElement>('[data-ui-date-picker-control]')
+    const trigger = document.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
+    const popover = document.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
+
+    expect(root?.dataset.uiBound).toBe('true')
+    expect(native?.dataset.uiEnhanced).toBe('true')
+    expect(control?.hidden).toBe(false)
+
+    trigger?.click()
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true')
+    expect(popover?.hidden).toBe(false)
+    expect(popover?.dataset.state).toBe('open')
+  })
+
   test('input OTP creates native input and visual segments', () => {
     document.body.innerHTML = `
       <lumen-input-otp length="4" name="code" value="12a3"></lumen-input-otp>
@@ -649,6 +681,7 @@ describe('@santi020k/lumen-elements', () => {
   test('rich text editor controls execute commands and emit events', () => {
     const execCommand = vi.fn(() => true)
     const commands: string[] = []
+    const changes: string[] = []
 
     Object.defineProperty(document, 'execCommand', {
       configurable: true,
@@ -658,6 +691,8 @@ describe('@santi020k/lumen-elements', () => {
     document.body.innerHTML = `
       <lumen-rich-text-editor>
         <button data-ui-editor-command="bold" type="button">Bold</button>
+        <button data-ui-editor-command="formatBlock" data-ui-editor-value="h2" type="button">Heading</button>
+        <div contenteditable="true"><p>Draft</p></div>
       </lumen-rich-text-editor>
     `
 
@@ -669,11 +704,23 @@ describe('@santi020k/lumen-elements', () => {
     root?.addEventListener('ui:editor-command', event => {
       commands.push((event as CustomEvent<{ command: string }>).detail.command)
     })
+    root?.addEventListener('ui:editor-change', event => {
+      changes.push((event as CustomEvent<{ html: string }>).detail.html)
+    })
 
     button?.click()
+    document.querySelector<HTMLButtonElement>('[data-ui-editor-value]')?.click()
+    document.querySelector<HTMLElement>('[contenteditable]')?.dispatchEvent(new KeyboardEvent('keydown', {
+      bubbles: true,
+      ctrlKey: true,
+      key: 'i'
+    }))
 
     expect(execCommand).toHaveBeenCalledWith('bold')
-    expect(commands).toEqual(['bold'])
+    expect(execCommand).toHaveBeenCalledWith('formatBlock', false, 'h2')
+    expect(execCommand).toHaveBeenCalledWith('italic')
+    expect(commands).toEqual(['bold', 'formatBlock', 'italic'])
+    expect(changes.at(-1)).toBe('<p>Draft</p>')
     expect(root?.dataset.uiEditorBound).toBe('true')
     expect(button?.dataset.uiEditorCommandBound).toBe('true')
   })

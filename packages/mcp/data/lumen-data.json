@@ -6961,7 +6961,7 @@
         {
           "attribute": "src",
           "defaultValue": "required",
-          "description": "Uses astro:assets in Astro; React can pass a framework optimizer through as.",
+          "description": "Uses astro:assets in Astro; React passes the source to the native img or the optimizer supplied through as.",
           "values": "ImageMetadata | string"
         },
         {
@@ -6972,9 +6972,45 @@
         },
         {
           "attribute": "loading",
-          "defaultValue": "\"lazy\"",
-          "description": "Defers off-screen image loading by default; use eager only for likely LCP images.",
+          "defaultValue": "Astro/native img: \"lazy\"",
+          "description": "Defers off-screen loading. When as is set in React, Lumen leaves the optimizer default untouched unless this prop is explicit.",
           "values": "\"lazy\" | \"eager\""
+        },
+        {
+          "attribute": "layout",
+          "defaultValue": "-",
+          "description": "Astro only: generates responsive dimensions, srcset, sizes, and layout styles through astro:assets.",
+          "values": "\"fixed\" | \"constrained\" | \"full-width\" | \"none\""
+        },
+        {
+          "attribute": "width, height",
+          "defaultValue": "source metadata or required",
+          "description": "Set intrinsic dimensions for public and remote sources. Astro and Next.js can derive them from supported static imports.",
+          "values": "number | string"
+        },
+        {
+          "attribute": "widths, sizes",
+          "defaultValue": "layout-dependent",
+          "description": "Astro responsive controls. Next.js also uses sizes to generate and select an efficient width-based srcset.",
+          "values": "number[]; string"
+        },
+        {
+          "attribute": "quality, format",
+          "defaultValue": "framework default",
+          "description": "Passes image encoding choices to astro:assets or to the React optimizer supplied through as.",
+          "values": "framework-supported values"
+        },
+        {
+          "attribute": "priority",
+          "defaultValue": "false",
+          "description": "Astro only: marks the likely LCP image for immediate loading, synchronous decoding, and high fetch priority.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "preload, fill, placeholder",
+          "defaultValue": "Next.js defaults",
+          "description": "Next.js only through as={NextImage}: keeps preloading, fill layout, and placeholder generation under next/image control.",
+          "values": "NextImage props"
         },
         {
           "attribute": "invertOnDark",
@@ -6985,7 +7021,7 @@
         {
           "attribute": "as",
           "defaultValue": "\"img\"",
-          "description": "React only: renders a compatible optimizer such as next/image while retaining Lumen classes.",
+          "description": "React only: renders a compatible optimizer such as next/image while retaining Lumen classes and forwarding optimizer props.",
           "values": "React ElementType"
         },
         {
@@ -7046,6 +7082,12 @@
             "src",
             "alt",
             "loading",
+            "layout",
+            "width, height",
+            "widths, sizes",
+            "quality, format",
+            "priority",
+            "preload, fill, placeholder",
             "invertOnDark",
             "as",
             "class, className",
@@ -15206,6 +15248,12 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Styles descendant headings, paragraphs, lists, blockquotes, and links without changing their HTML semantics.",
+          "values": "semantic HTML"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -15219,12 +15267,12 @@
         }
       ],
       "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-typography'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
-      "category": "Data display",
+      "category": "Layout",
       "collections": [],
       "dependencies": [
         "styles"
       ],
-      "description": "Applies Lumen text rhythm to article content.",
+      "description": "Gives hand-authored semantic text consistent Lumen spacing, color, and reading rhythm.",
       "files": [
         "packages/astro/components/Typography.astro",
         "packages/astro/styles/lumen.css"
@@ -15232,7 +15280,7 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
-          "example": "<Typography><h1>Release notes</h1><p>Lumen now includes production documentation.</p></Typography>",
+          "example": "<article aria-labelledby=\"release-notes-title\"><Typography><h2 id=\"release-notes-title\">Release notes</h2><p>Lumen now includes production documentation.</p><ul><li>Live component examples</li><li>Framework-specific usage</li></ul></Typography></article>",
           "importStatement": "import { Typography } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
@@ -15254,6 +15302,7 @@
         },
         "elements": {
           "attributes": [
+            "children",
             "class, className",
             "...native attributes"
           ],
@@ -15271,7 +15320,7 @@
         },
         "react": {
           "available": true,
-          "example": "<Typography><h1>Release notes</h1><p>Lumen now includes production documentation.</p></Typography>",
+          "example": "<article aria-labelledby=\"release-notes-title\"><Typography><h2 id=\"release-notes-title\">Release notes</h2><p>Lumen now includes production documentation.</p><ul><li>Live component examples</li><li>Framework-specific usage</li></ul></Typography></article>",
           "importStatement": "import { Typography } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -15286,19 +15335,66 @@
         "elements": true,
         "react": true
       },
-      "guidance": null,
+      "guidance": {
+        "when": "Wrap hand-authored headings, paragraphs, lists, blockquotes, and links when they should share Lumen’s text color, spacing, and reading rhythm.",
+        "distinction": "Typography is a styling-only div: it does not choose heading levels, add article semantics, constrain line length, or render Markdown. Keep semantic HTML inside it. Use Prose for rendered Markdown or CMS content and its readable 65ch width."
+      },
       "kebab": "typography",
       "keyboardInteractions": [],
       "keywords": [
-        "applies",
+        "65ch",
+        "add",
+        "and",
         "article",
+        "authored",
+        "blockquotes",
+        "choose",
+        "cms",
+        "color",
+        "consistent",
+        "constrain",
         "content",
-        "data",
-        "display",
+        "div",
+        "does",
+        "for",
+        "gives",
+        "hand",
+        "heading",
+        "headings",
+        "html",
+        "inside",
+        "its",
+        "keep",
+        "layout",
+        "length",
+        "levels",
+        "line",
+        "links",
+        "lists",
         "lumen",
+        "markdown",
+        "not",
+        "only",
+        "paragraphs",
+        "prose",
+        "readable",
+        "reading",
+        "render",
+        "rendered",
         "rhythm",
+        "semantic",
+        "semantics",
+        "share",
+        "should",
+        "spacing",
+        "styling",
         "text",
-        "typography"
+        "they",
+        "typography",
+        "use",
+        "when",
+        "width",
+        "wrap"
       ],
       "name": "Typography",
       "props": [

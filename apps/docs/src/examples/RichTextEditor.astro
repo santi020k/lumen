@@ -4,6 +4,13 @@ import { Button, ButtonGroup, Icon, RichTextEditor } from '@santi020k/lumen-astr
 
 <RichTextEditor>
   <div role="toolbar" aria-label="Editor toolbar">
+    <select data-ui-editor-command="formatBlock" aria-label="Text style">
+      <option value="p">Paragraph</option>
+      <option value="h2">Heading 2</option>
+      <option value="h3">Heading 3</option>
+      <option value="blockquote">Quote</option>
+      <option value="pre">Code block</option>
+    </select>
     <ButtonGroup>
       <Button data-ui-editor-command="bold" type="button" variant="ghost" size="icon" aria-label="Bold">
         <Icon name="bold" decorative />
@@ -27,8 +34,42 @@ import { Button, ButtonGroup, Icon, RichTextEditor } from '@santi020k/lumen-astr
         <Icon name="list-ordered" decorative />
       </Button>
     </ButtonGroup>
+    <ButtonGroup>
+      <Button data-ui-editor-command="justifyLeft" type="button" variant="ghost" size="icon" aria-label="Align left">
+        <Icon name="align-left" decorative />
+      </Button>
+      <Button data-ui-editor-command="justifyCenter" type="button" variant="ghost" size="icon" aria-label="Align center">
+        <Icon name="align-center" decorative />
+      </Button>
+      <Button data-ui-editor-command="justifyRight" type="button" variant="ghost" size="icon" aria-label="Align right">
+        <Icon name="align-right" decorative />
+      </Button>
+    </ButtonGroup>
+    <ButtonGroup>
+      <Button data-ui-editor-command="unlink" type="button" variant="ghost" size="icon" aria-label="Remove link">
+        <Icon name="unlink" decorative />
+      </Button>
+      <Button data-ui-editor-command="removeFormat" type="button" variant="ghost" size="icon" aria-label="Clear formatting">
+        <Icon name="remove-formatting" decorative />
+      </Button>
+    </ButtonGroup>
+    <ButtonGroup>
+      <Button data-ui-editor-command="undo" type="button" variant="ghost" size="icon" aria-label="Undo">
+        <Icon name="undo-2" decorative />
+      </Button>
+      <Button data-ui-editor-command="redo" type="button" variant="ghost" size="icon" aria-label="Redo">
+        <Icon name="redo-2" decorative />
+      </Button>
+    </ButtonGroup>
   </div>
-  <div contenteditable="true">
+  <div
+    contenteditable="true"
+    data-ui-rich-text-editable
+    role="textbox"
+    aria-label="Release notes"
+    aria-multiline="true"
+    spellcheck="true"
+  >
     <h2>v2.0 Release Notes</h2>
     <p>Draft release notes...</p>
     <ul>

@@ -102,7 +102,6 @@ Declarative-Shadow-DOM friendly.
   })
 </script>
 
-<lumen-sonner data-placement="bottom-right"></lumen-sonner>
 ```
 
 You can also use the shared document events: dispatch `ui:toast` to create, `ui:toast-update` to

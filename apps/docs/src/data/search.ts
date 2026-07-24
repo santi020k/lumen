@@ -3,7 +3,7 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 import { toSlug } from '../lib/routes'
 
 import {
-  componentNavigationDocs,
+  componentDocs,
   elementsApiReference,
   frameworkGuides,
   frameworkSetups,
@@ -33,7 +33,7 @@ const normalizeKeywords = (...values: string[]): string =>
     .trim()
     .toLowerCase()
 
-const componentItems: DocsSearchItem[] = componentNavigationDocs.map(component => ({
+const componentItems: DocsSearchItem[] = componentDocs.map(component => ({
   category: component.category,
   description: component.summary,
   href: `/docs/components/${toSlug(component.name)}`,
@@ -50,7 +50,7 @@ const componentItems: DocsSearchItem[] = componentNavigationDocs.map(component =
   type: 'Component'
 }))
 
-const propItems: DocsSearchItem[] = componentNavigationDocs.flatMap(component =>
+const propItems: DocsSearchItem[] = componentDocs.flatMap(component =>
   component.apiReference.map(row => ({
     category: component.name,
     description: row.description,
@@ -61,7 +61,7 @@ const propItems: DocsSearchItem[] = componentNavigationDocs.flatMap(component =>
   }))
 )
 
-const keyboardItems: DocsSearchItem[] = componentNavigationDocs.flatMap(component =>
+const keyboardItems: DocsSearchItem[] = componentDocs.flatMap(component =>
   (component.keyboardInteractions ?? []).map(row => ({
     category: component.name,
     description: row.action,
@@ -73,7 +73,7 @@ const keyboardItems: DocsSearchItem[] = componentNavigationDocs.flatMap(componen
 )
 
 const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
-  const owner = componentNavigationDocs.find(component => component.runtimeEvents?.some(item => item.name === event.name))
+  const owner = componentDocs.find(component => component.runtimeEvents?.some(item => item.name === event.name))
 
   return {
     category: owner?.name ?? 'Runtime',
