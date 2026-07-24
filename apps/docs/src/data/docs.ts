@@ -915,13 +915,13 @@ const apiReferenceByComponent = {
   ],
   Code: [
     apiRow('variant', '"inline" | "block"', '"inline"', 'Switches between inline code and a framed code block.'),
-    apiRow('code', 'string', '-', 'Renders a normalized multiline code string with lightweight token colors.'),
-    apiRow('language', 'string', '-', 'Labels the code language in block headers.'),
+    apiRow('code', 'string', '-', 'Renders normalized multiline code with semantic, theme-token-based syntax colors.'),
+    apiRow('language', 'string', '-', 'Labels and highlights JavaScript, TypeScript, JSON, YAML, Bash, Astro/HTML, Markdown, Lua, and SQL families. Unsupported languages remain readable plaintext.'),
     apiRow('label', 'string', '-', 'Adds a compact filename or title to the block header.'),
     apiRow('copy', 'boolean', 'false', 'Shows a copy button when UIPrimitives is mounted.'),
     apiRow('highlighted', 'boolean', 'false', 'Allows a pre-highlighted pre/code tree, such as Shiki output, to render directly.'),
     apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.'),
-    apiRow('wrap', 'boolean', 'false', 'Wraps long block-code lines instead of requiring horizontal scrolling.')
+    apiRow('wrap', 'boolean', 'false', 'Wraps long block-code lines instead of requiring horizontal scrolling; code blocks also stay within their flex or grid container.')
   ],
   Collapsible: [
     apiRow('open', 'boolean', 'false', 'Uses the native details open state to show the collapsible content.'),

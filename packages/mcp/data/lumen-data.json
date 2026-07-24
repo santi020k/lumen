@@ -22,7 +22,7 @@
       "Chart": "bf9cf9fdfcf44837369968e6b55a89c09e5d1aa9e283c9f2bab4c5589393c77f",
       "Checkbox": "d971d97482ba924a07d4891cc782dd14c87b9f8bdb7b4070181b2189748b8be1",
       "Collapsible": "7652876be7a40fc2451168ea8220c49a5ef0fcfddc04d6d5ff424e6d2d26a04a",
-      "Code": "78c93b7d308982d09f3c353e8c614eed9c8e8c64732db11216fbf630393db608",
+      "Code": "e2f5eea415e1d2212dcb782487b417806f7ba6a7b1469f1b74a082fe35523275",
       "Combobox": "93821fbc97e296cf426a53f52eda225b0361fba9c22a2f612436008be8efe4e2",
       "Command": "41c6175a15f7267bbf42fd00b74127571875e80a79d3f6700fad0abc3ccde09a",
       "ContextMenu": "93130a486b3e5c33c3ba05c510069bb51ab7be4a37ab0f1d45c50064527e8512",
@@ -3978,13 +3978,13 @@
         {
           "attribute": "code",
           "defaultValue": "-",
-          "description": "Renders a normalized multiline code string with lightweight token colors.",
+          "description": "Renders normalized multiline code with semantic, theme-token-based syntax colors.",
           "values": "string"
         },
         {
           "attribute": "language",
           "defaultValue": "-",
-          "description": "Labels the code language in block headers.",
+          "description": "Labels and highlights JavaScript, TypeScript, JSON, YAML, Bash, Astro/HTML, Markdown, Lua, and SQL families. Unsupported languages remain readable plaintext.",
           "values": "string"
         },
         {
@@ -4014,7 +4014,7 @@
         {
           "attribute": "wrap",
           "defaultValue": "false",
-          "description": "Wraps long block-code lines instead of requiring horizontal scrolling.",
+          "description": "Wraps long block-code lines instead of requiring horizontal scrolling; code blocks also stay within their flex or grid container.",
           "values": "boolean"
         },
         {
@@ -24562,7 +24562,7 @@
     "readme": "# Lumen\n\nLumen is a multi-framework primitive UI system from Santiago Molina. Install the package for your\nframework; it includes the shared Lumen foundation and standalone stylesheet. Consumers do not\nneed Tailwind configuration for Lumen components to render.\n\nThe monorepo layers framework adapters around a shared core:\n\n- `@santi020k/lumen` - shared stylesheet, CLI, registry metadata, and package map\n- `@santi020k/lumen-core` - tokens, component metadata, class composition, and shared behavior helpers\n- `@santi020k/lumen-astro` - Astro components and progressive-enhancement runtime\n- `@santi020k/lumen-react` - React components\n- `@santi020k/lumen-elements` - standards-based Web Components\n- `@santi020k/lumen-mcp` - Model Context Protocol server for AI agents\n- `apps/docs` - Astro documentation and demo site\n\n## Quick Start\n\nChoose one package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\nImport the stylesheet from the same framework package once in your global CSS file, root layout,\nor app entry. For example:\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nWith Tailwind, keep it in the same shared CSS entry:\n\n```css\n@import \"@santi020k/lumen-react/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nThe layer-order prelude lets Tailwind base styles run before Lumen components and keeps Tailwind\nutilities—including responsive `hidden` and display utilities—above Lumen component defaults.\n\nFor interactive Astro primitives, mount `UIPrimitives` once in your root layout:\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n## Development\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\n## Package Strategy\n\nThe `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.\n\n## Migration\n\nIf you are replacing an older internal design system or duplicated UI primitives, refer to the [Migration Guide](docs/migrating-to-lumen.md) for instructions on adopting Lumen incrementally and mapping existing tokens.\n\n## Agent and Registry Surfaces\n\nInstall the portable Lumen Agent Skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\nAI coding tools:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe canonical skill lives in [skills/lumen-ui](skills/lumen-ui). It teaches agents how to select,\ncompose, theme, and verify Lumen primitives while preserving the app's framework and architecture.\nPair it with [`@santi020k/lumen-mcp`](packages/mcp/README.md) when the agent should search the live\ncatalog and retrieve current component source, props, tokens, and rules.\n\nLumen also includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and\n[registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the\ncomponent catalog, setup rules, recipes, and installable file groups. The current roadmap lives in\n[docs/feature-roadmap.md](docs/feature-roadmap.md).\n\nFigma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for\nFigma variables and the Code Connect path for the\n[published Lumen UI Library](https://www.figma.com/community/file/1662337342676541513).\n[Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,\nother framework, CMS, and CDN optimizers while applying Lumen presentation.\n\nThe umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for\nlisting recipes, showing recipe contents, printing install commands, loading alternate registry\nmanifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge\nincoming recipe files with existing files, `--fail-on-conflict` for CI, or `--registry-token` /\n`LUMEN_REGISTRY_TOKEN` for private remote registries.\n"
   },
   "meta": {
-    "catalogHash": "b52588406792484316bb18eb4bc00e2817f8887af46b295f90c3503d31871308",
+    "catalogHash": "68bf0394a056963b42554a63bb0cd2f46768b075f132bb44b25f64812303f89c",
     "componentCount": 123,
     "packages": [
       "@santi020k/lumen-astro",

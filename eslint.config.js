@@ -117,5 +117,11 @@ export default [
         entryPoint: `${docsRoot}/src/styles/global.css`
       }
     }
+  },
+  {
+    files: ['packages/lumen/templates/**/*.{astro,tsx}'],
+    rules: {
+      'better-tailwindcss/no-unknown-classes': 'off'
+    }
   }
 ]

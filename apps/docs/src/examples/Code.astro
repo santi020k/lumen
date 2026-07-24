@@ -5,6 +5,17 @@ const themeExample = `
   const theme = "lumen";
   const accent = "hsl(var(--accent))";
 `
+
+const workflowExample = `
+  name: Lumen checks
+  on:
+    pull_request:
+  jobs:
+    validate:
+      runs-on: ubuntu-latest
+      steps:
+        - run: pnpm validate
+`
 ---
 
 <div class="grid gap-4">
@@ -13,10 +24,20 @@ const themeExample = `
 
   <p>Wrap prose-like output or long commands when horizontal scrolling would obscure the content.</p>
   <Code
-    code="feat(history): keep revision navigation stable across renames while preserving working-tree context"
-    label="commit-message.txt"
+    code={workflowExample}
+    copy
+    label=".github/workflows/validate.yml"
+    language="yaml"
     variant="block"
     wrap
+  />
+
+  <p>Language colors come from the active Lumen semantic theme tokens without a Shiki setup.</p>
+  <Code
+    code="pnpm add @santi020k/lumen-astro"
+    copy
+    language="bash"
+    variant="block"
   />
 
   <p>Override the syntax palette family with <Code>theme</Code>.</p>
