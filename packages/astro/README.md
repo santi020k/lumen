@@ -116,4 +116,6 @@ variants. The older `variant="glass"` form remains supported for cards. Overlay
 <Card glass>Glass card</Card>
 <Dialog glass>Glass dialog</Dialog>
 <Popover glass>Glass popover</Popover>
+<DatePicker glass="subtle" />
+<Select glass="strong" options={['Astro', 'React']} />
 ```

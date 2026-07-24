@@ -4750,6 +4750,12 @@
     {
       "apiReference": [
         {
+          "attribute": "glass",
+          "defaultValue": "false",
+          "description": "Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; \"subtle\" and \"strong\" adjust the fill intensity.",
+          "values": "boolean | \"subtle\" | \"strong\""
+        },
+        {
           "attribute": "value, defaultValue",
           "defaultValue": "-",
           "description": "Sets the selected date while the trigger shows a localized, human-readable value.",
@@ -4835,6 +4841,7 @@
         "elements": {
           "attributes": [
             "type",
+            "glass",
             "value, defaultValue",
             "min, max",
             "placeholder",
@@ -4850,7 +4857,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DatePicker: { baseClassName: 'ui-input ui-date-picker', defaults: { type: 'date' }, tagName: 'lumen-date-picker' }",
+          "source": "DatePicker: {\n    attributeClasses: glassAttributeClasses('ui-date-picker-field--glass'),\n    baseClassName: 'ui-input ui-date-picker',\n    defaults: { type: 'date' },\n    tagName: 'lumen-date-picker'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-date-picker"
         },
@@ -11699,7 +11706,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Select: { attributeClasses: { size: { lg: 'ui-select--lg', sm: 'ui-select--sm' } }, baseClassName: 'ui-select', tagName: 'lumen-select' }",
+          "source": "Select: {\n    attributeClasses: {\n      ...glassAttributeClasses('ui-select-field--glass'),\n      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' }\n    },\n    baseClassName: 'ui-select',\n    tagName: 'lumen-select'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-select"
         },

@@ -292,6 +292,8 @@ import { Button, Dialog } from '@santi020k/lumen-astro'
     expect(glassDocs.map(component => component.name)).toEqual([...glassComponentNames])
     expect(glassComponentNames.length).toBeGreaterThanOrEqual(30)
     expect(glassDocs.every(component => component.apiReference.some(row => row.attribute === 'glass'))).toBe(true)
+    expect(glassComponentNames).toContain('DatePicker')
+    expect(glassComponentNames).toContain('Select')
     expect(glassExampleCode).toContain('<Card glass>')
     expect(glassExampleCode).toContain('<Popover glass>')
     expect(glassExampleCode).toContain('<lumen-card glass>')

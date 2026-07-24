@@ -26,6 +26,7 @@ import {
   lumenComponentNames,
   Popover,
   Resizable,
+  Select,
   Table,
   type TableProps,
   ToastProvider,
@@ -252,7 +253,8 @@ describe('@santi020k/lumen-react', () => {
   test('renders DatePicker as a custom Calendar disclosure', () => {
     const picker = withHookDispatcher(() => DatePicker({
       'aria-label': 'Launch date',
-      defaultValue: '2026-07-24'
+      defaultValue: '2026-07-24',
+      glass: 'subtle'
     }) as ReactElement)
     const rootProps = picker.props as Record<string, unknown>
     const children = rootProps.children as ReactElement<Record<string, unknown>>[]
@@ -264,6 +266,8 @@ describe('@santi020k/lumen-react', () => {
     const calendar = popover?.props.children as ReactElement
 
     expect(rootProps['data-ui-date-picker']).toBe(true)
+    expect(rootProps.className).toBe('ui-date-picker-field ui-date-picker-field--glass ui-glass-subtle')
+    expect(rootProps['data-ui-glass-track']).toBe(true)
     expect(native?.props.type).toBe('date')
     expect(native?.props['data-ui-enhanced']).toBe('true')
     expect(native?.props.tabIndex).toBe(-1)
@@ -271,6 +275,18 @@ describe('@santi020k/lumen-react', () => {
     expect(trigger?.props['aria-expanded']).toBe(false)
     expect(popover?.props.hidden).toBe(true)
     expect(calendar.type).toBe(Calendar)
+  })
+
+  test('renders Select glass intensity on its enhanced field wrapper', () => {
+    const select = withHookDispatcher(() => Select({
+      glass: 'strong',
+      options: ['Astro', 'React'],
+      placeholder: 'Choose a framework'
+    }) as ReactElement)
+    const rootProps = select.props as Record<string, unknown>
+
+    expect(rootProps.className).toBe('ui-select-field ui-select-field--glass ui-glass-strong')
+    expect(rootProps['data-ui-glass-track']).toBe(true)
   })
 
   test('renders DateRangePicker as a synchronized custom range control', () => {
