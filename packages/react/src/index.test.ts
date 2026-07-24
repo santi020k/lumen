@@ -62,17 +62,14 @@ interface ReactInternals {
   }
 }
 
-interface ForwardRefComponent {
-  render: (props: Record<string, unknown>, ref: unknown) => unknown
-}
-
 const renderComponent = (
   component: unknown,
   props: Record<string, unknown> = {},
   ref: unknown = null
-): unknown => typeof component === 'function'
-  ? (component as (componentProps: Record<string, unknown>) => unknown)(props)
-  : (component as ForwardRefComponent).render(props, ref)
+): unknown => (component as (componentProps: Record<string, unknown>) => unknown)({
+  ...props,
+  ...(ref ? { ref } : {})
+})
 
 const withHookDispatcher = <Value,>(callback: () => Value): Value => {
   const internals = (React as unknown as ReactInternals).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
@@ -144,12 +141,7 @@ const makeDateRangeInput = (value: string): HTMLInputElement => {
 describe('@santi020k/lumen-react', () => {
   test('exports one React component for every shared catalog name', () => {
     for (const componentName of lumenComponentNames) {
-      const component = LumenReact[componentName] as unknown
-
-      expect(
-        typeof component === 'function'
-        || typeof (component as Partial<ForwardRefComponent>).render === 'function'
-      ).toBe(true)
+      expect(LumenReact[componentName]).toBeTypeOf('function')
     }
   })
 

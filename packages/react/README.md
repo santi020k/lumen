@@ -59,9 +59,9 @@ Other React applications continue to consume the same package and exports normal
 
 ## Compatibility wrappers
 
-The common wrapper primitives preserve their underlying DOM handles. `Button`, `Link`,
-`ButtonLink`, and `Input` accept forwarded refs. Use `Button asChild` to apply the button contract
-to one existing React element without adding another DOM node:
+The common wrapper primitives preserve their underlying DOM handles with React 19's ref-as-prop
+contract. `Button`, `Link`, `ButtonLink`, and `Input` accept `ref` directly. Use `Button asChild`
+to apply the button contract to one existing React element without adding another DOM node:
 
 ```tsx
 import { Button } from '@santi020k/lumen-react'

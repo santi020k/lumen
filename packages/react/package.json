@@ -52,7 +52,7 @@
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=19"
   },
   "engines": {
     "node": ">=22.12.0"

@@ -67,15 +67,8 @@ import {
 } from './index.js'
 
 type Props = Record<string, unknown>
-interface ForwardRefComponent {
-  render: (props: Record<string, unknown>, ref: unknown) => ReactElement | null
-}
 
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
-const renderForwardRef = (
-  component: unknown,
-  props: Record<string, unknown>
-): ReactElement | null => (component as ForwardRefComponent).render(props, null)
 const OptimizedImage = (_props: ComponentPropsWithoutRef<'img'> & { preload?: boolean }) => null
 
 describe('@santi020k/lumen-react components', () => {
@@ -203,9 +196,9 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('applies input size modifiers and typed input classes', () => {
-    expect(propsOf(renderForwardRef(Input, { visualSize: 'sm' }) ?? undefined).className).toBe('ui-input ui-input--sm')
-    expect(propsOf(renderForwardRef(Input, { visualSize: 'lg' }) ?? undefined).className).toBe('ui-input ui-input--lg')
-    expect(propsOf(renderForwardRef(Input, { size: 24 }) ?? undefined).size).toBe(24)
+    expect(propsOf(Input({ visualSize: 'sm' }) as ReactElement).className).toBe('ui-input ui-input--sm')
+    expect(propsOf(Input({ visualSize: 'lg' }) as ReactElement).className).toBe('ui-input ui-input--lg')
+    expect(propsOf(Input({ size: 24 }) as ReactElement).size).toBe(24)
     expect(propsOf(NumberField({}) as ReactElement).type).toBe('number')
     expect(propsOf(NumberField({}) as ReactElement).className).toBe('ui-input ui-number-field')
     expect(propsOf(SearchField({}) as ReactElement).type).toBe('search')
@@ -346,18 +339,17 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('supports migration-friendly links, pills, and navigation surfaces', () => {
-    const newTabLink = renderForwardRef(Link, {
+    const newTabLink = Link({
       href: 'https://example.com',
       newTab: true,
       rel: 'external'
-    }) ?? undefined
+    }) as ReactElement
     const linkedPill = Pill({ children: 'Topic', href: '/topics/lumen' }) as ReactElement
 
-    expect(newTabLink?.type).toBe('a')
+    expect(newTabLink.type).toBe('a')
     expect(propsOf(newTabLink).target).toBe('_blank')
     expect(propsOf(newTabLink).rel).toBe('external noopener noreferrer')
-    expect(propsOf(renderForwardRef(Link, { variant: 'inherit' }) ?? undefined).className)
-      .toBe('ui-link ui-link--inherit')
+    expect(propsOf(Link({ variant: 'inherit' }) as ReactElement).className).toBe('ui-link ui-link--inherit')
     expect(linkedPill.type).toBe('a')
     expect(propsOf(linkedPill).href).toBe('/topics/lumen')
     expect(propsOf(NavigationMenu({ variant: 'unstyled' }) as ReactElement).className)
