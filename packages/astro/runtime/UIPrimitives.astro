@@ -4093,10 +4093,13 @@
     const trigger = root.querySelector<HTMLButtonElement>('[data-ui-speed-dial-trigger]')
 
     root.dataset.state = 'closed'
+
     trigger?.setAttribute('aria-expanded', 'false')
 
     if (restoreFocus) trigger?.focus()
   }
+
+  const speedDialNavigationKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'End', 'Home']
 
   const initSpeedDials = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-speed-dial]')) {
@@ -4108,11 +4111,14 @@
       const items = [...actions.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]')]
 
       root.dataset.uiBound = 'true'
+
       root.dataset.state = root.dataset.state === 'open' ? 'open' : 'closed'
+
       trigger.setAttribute('aria-expanded', String(root.dataset.state === 'open'))
 
       const open = (focusPosition?: 'first' | 'last') => {
         root.dataset.state = 'open'
+
         trigger.setAttribute('aria-expanded', 'true')
 
         if (focusPosition === 'first') items[0]?.focus()
@@ -4129,14 +4135,20 @@
       })
 
       trigger.addEventListener('keydown', event => {
-        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+        if (event.key === 'Escape') closeSpeedDial(root)
+
+        if (['ArrowDown', 'ArrowRight'].includes(event.key)) {
           event.preventDefault()
+
           open('first')
-        } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+
+          return
+        }
+
+        if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {
           event.preventDefault()
+
           open('last')
-        } else if (event.key === 'Escape') {
-          closeSpeedDial(root)
         }
       })
 
@@ -4147,21 +4159,28 @@
       })
 
       actions.addEventListener('keydown', event => {
-        const currentIndex = items.indexOf(document.activeElement as HTMLElement)
-
         if (event.key === 'Escape') {
           event.preventDefault()
+
           closeSpeedDial(root, true)
-        } else if (event.key === 'Home' || event.key === 'End') {
-          event.preventDefault()
-          items[event.key === 'Home' ? 0 : items.length - 1]?.focus()
-        } else if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.key)) {
-          event.preventDefault()
 
-          const offset = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1
-
-          items[(currentIndex + offset + items.length) % items.length]?.focus()
+          return
         }
+
+        if (!speedDialNavigationKeys.includes(event.key)) return
+
+        const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+
+        const targetIndex = getLoopedIndex(
+          event.key,
+          currentIndex,
+          items.length,
+          ['ArrowDown', 'ArrowRight']
+        )
+
+        event.preventDefault()
+
+        items[targetIndex]?.focus()
       })
     }
   }

@@ -158,6 +158,10 @@ describe('component docs snippets', () => {
     expect(skipLinkExample).toContain('href="#skip-link-demo-target"')
     expect(skipLinkExample).toContain('id="skip-link-demo-target"')
     expect(skipLinkExample).toContain('tabindex="-1"')
+    expect(componentDocs.find(component => component.name === 'SkipLink')?.guidance?.when)
+      .toContain('first focusable element')
+    expect(componentDocs.find(component => component.name === 'SkipLink')?.guidance?.distinction)
+      .toContain('main content target')
     expect(formattedDateExample).toContain('datetime="2026-07-23"')
   })
 

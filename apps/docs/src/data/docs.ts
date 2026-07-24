@@ -258,6 +258,7 @@ export const glassComponentNames = [
   'Command',
   'ContextMenu',
   'DataTable',
+  'DatePicker',
   'Dialog',
   'Drawer',
   'DropdownMenu',
@@ -272,6 +273,7 @@ export const glassComponentNames = [
   'RichTextEditor',
   'ScrollArea',
   'Schedule',
+  'Select',
   'Sheet',
   'Sidebar',
   'Table',
@@ -284,11 +286,7 @@ export const glassComponentNames = [
 ] as const
 
 const glassComponentNameSet = new Set<string>(glassComponentNames)
-
-const glassApiComponentNameSet = new Set<string>([
-  ...glassComponentNames,
-  'Select'
-])
+const glassApiComponentNameSet = new Set<string>(glassComponentNames)
 
 export const figmaLibraryUrl = 'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
 
@@ -1258,6 +1256,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   Sheet: {
     when: 'Use for secondary details or workflows that stay visually connected to the current page.',
     distinction: 'Use Drawer for navigation or filters that slide in, and Dialog for a centered task that demands focus.'
+  },
+  SkipLink: {
+    when: 'Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.',
+    distinction: 'This is an accessibility shortcut, not visible navigation. Point its href to the main content target; the first Tab reveals the link, and activating it moves focus past the repeated navigation.'
   },
   Spinner: {
     when: 'Use for a short wait when progress cannot be measured.',

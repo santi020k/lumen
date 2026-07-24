@@ -1,0 +1,15 @@
+---
+import { Field, Label, Select } from '@santi020k/lumen-astro'
+---
+
+<div class="docs-glass-demo" style="justify-items: center;">
+  <Field style="min-width: min(100%, 22rem);">
+    <Label for="glass-framework">Framework</Label>
+    <Select
+      id="glass-framework"
+      glass="strong"
+      options={['Astro', 'React', 'Web Components']}
+      placeholder="Choose a framework"
+    />
+  </Field>
+</div>

@@ -85,6 +85,31 @@ test('Cascader keeps parent-first columns, switches branches, and reopens after 
   await expect(visibleColumns.nth(1)).toContainText('Item A1')
 })
 
+test('SpeedDial supports trigger, menu, and dismissal keyboard behavior', async ({ page }) => {
+  await openPreview(page, 'speed-dial')
+
+  const preview = page.locator('.component-doc-preview')
+  const root = preview.locator('[data-ui-speed-dial]')
+  const trigger = preview.getByRole('button', { name: 'Create new' })
+  const firstAction = preview.getByRole('menuitem', { name: 'New document' })
+  const lastAction = preview.getByRole('menuitem', { name: 'Upload media' })
+
+  await expect(root).toHaveAttribute('data-state', 'open')
+  await trigger.click()
+  await expect(root).toHaveAttribute('data-state', 'closed')
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+  await trigger.press('ArrowDown')
+  await expect(root).toHaveAttribute('data-state', 'open')
+  await expect(firstAction).toBeFocused()
+
+  await firstAction.press('End')
+  await expect(lastAction).toBeFocused()
+  await lastAction.press('Escape')
+  await expect(root).toHaveAttribute('data-state', 'closed')
+  await expect(trigger).toBeFocused()
+})
+
 test('ContextMenu opens from the keyboard and closes with Escape', async ({ page }) => {
   await openPreview(page, 'context-menu')
 

@@ -8,16 +8,17 @@ import { SkipLink } from '@santi020k/lumen-astro'
   aria-labelledby="skip-link-demo-title"
   style="max-width: 32rem; margin-inline: auto;"
 >
-  <p id="skip-link-demo-title"><strong>Keyboard-only shortcut</strong></p>
+  <p id="skip-link-demo-title"><strong>An escape hatch for keyboard users</strong></p>
   <p>
-    Press Tab to reveal the skip link at the top of the page, then press Enter to move focus here.
+    In an application, place the Skip Link first in the root layout. The first Tab reveals it;
+    pressing Enter bypasses repeated navigation and moves focus to the main content.
   </p>
   <div
     id="skip-link-demo-target"
     tabindex="-1"
     style="margin-top: 1rem; border: 1px solid hsl(var(--line)); border-radius: 0.75rem; padding: 1rem;"
   >
-    <strong>Component preview</strong>
-    <p>The skip link bypasses repeated navigation and lands on the main content.</p>
+    <strong>Main content target</strong>
+    <p>This is where focus lands after the keyboard user activates the Skip Link.</p>
   </div>
 </section>
