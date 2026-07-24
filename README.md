@@ -93,7 +93,8 @@ component catalog, setup rules, recipes, and installable file groups. The curren
 [docs/feature-roadmap.md](docs/feature-roadmap.md).
 
 Figma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for
-Figma variables and the Code Connect path for a published component library.
+Figma variables and the Code Connect path for the
+[published Lumen UI Library](https://www.figma.com/community/file/1662337342676541513).
 [Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,
 other framework, CMS, and CDN optimizers while applying Lumen presentation.
 

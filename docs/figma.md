@@ -22,6 +22,11 @@ variables across three collections:
 - `Radius`: four values (`sm`, `md`, `lg`, and `full`).
 - `Effects`: three semantic shadow variables in `Light` and `Dark` modes.
 
+The published library is available from the
+[Lumen UI Library on Figma Community](https://www.figma.com/community/file/1662337342676541513).
+Use the Community listing to add or duplicate the library; use the canonical design file above for
+exact component-node links and library maintenance.
+
 The file also provides 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
 Foundations, Glass Components, Icons, component-category, and Utilities pages. Inter is the primary
 interface and documentation family; Cascadia Mono is reserved for the small amount of code-style
