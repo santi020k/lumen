@@ -25,7 +25,7 @@
     "validate": "pnpm run build && pnpm run typecheck && pnpm run test && pnpm run lint && pnpm run lint:spell && pnpm run lint:knip && pnpm run check:registry && pnpm run check:publish-dry-run",
     "ok": "pnpm install --frozen-lockfile && pnpm run validate",
     "changeset": "changeset",
-    "version-packages": "changeset version && pnpm install --lockfile-only",
+    "version-packages": "changeset version && pnpm install --lockfile-only && pnpm --filter @santi020k/lumen-mcp run generate",
     "release": "pnpm run validate && changeset publish",
     "docs:dev": "pnpm --filter @santi020k/lumen-docs dev",
     "docs:build": "pnpm --filter @santi020k/lumen-docs build",
