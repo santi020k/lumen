@@ -5,6 +5,7 @@
 // and writes a single self-contained JSON payload the published server reads at
 // runtime. This keeps @santi020k/lumen-mcp installable without the whole repo.
 
+import { createHash } from 'node:crypto'
 import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -343,22 +344,148 @@ const toReactExample = (example) => example
   .replaceAll(/\bcontenteditable=/g, 'contentEditable=')
   .replaceAll(/\bstroke-width=/g, 'strokeWidth=')
 
+const reactHookByComponent = {
+  AlertDialog: 'useDialog',
+  Calendar: 'useCalendar',
+  ContextMenu: 'useContextMenu',
+  DateRangePicker: 'useDateRangePicker',
+  Dialog: 'useDialog',
+  Drawer: 'useDialog',
+  DropdownMenu: 'useDropdownMenu',
+  Field: 'useFormValidation',
+  InputOTP: 'useInputOTP',
+  Popover: 'usePopover',
+  Resizable: 'useResizable',
+  RichTextEditor: 'useRichTextEditor',
+  Schedule: 'useSchedule',
+  Select: 'useSelect',
+  Sheet: 'useDialog',
+  Tabs: 'useTabs',
+  ThemeBuilder: 'useThemeBuilder',
+  Toast: 'useToast',
+  Tooltip: 'useTooltip'
+}
+
+const reactExampleForComponent = (name, hook, fallback) => {
+  if (!hook) return toReactExample(fallback)
+
+  if (name === 'AlertDialog') {
+    return hook.code
+      .replaceAll('ConfirmDialog', 'DestructiveActionDialog')
+      .replaceAll('useDialog()', 'useDialog({ alert: true })')
+      .replaceAll('<Dialog ', '<AlertDialog ')
+      .replaceAll('</Dialog>', '</AlertDialog>')
+      .replaceAll('Button, Dialog, Card', 'AlertDialog, Button, Card')
+  }
+
+  if (name === 'Drawer' || name === 'Sheet') {
+    const example = hook.code
+      .replaceAll('ConfirmDialog', `${name}Example`)
+      .replaceAll('<Dialog ', `<${name} `)
+      .replaceAll('</Dialog>', `</${name}>`)
+      .replaceAll('Button, Dialog, Card', `Button, Card, ${name}`)
+
+    return name === 'Drawer'
+      ? example
+        .replaceAll('Open dialog', 'Open filters')
+        .replaceAll('Confirm action', 'Filters')
+        .replaceAll('Are you sure you want to continue?', 'Adjust the records shown in this view.')
+      : example
+        .replaceAll('Open dialog', 'Open details')
+        .replaceAll('Confirm action', 'Project details')
+        .replaceAll('Are you sure you want to continue?', 'Review supporting information without leaving the page.')
+  }
+
+  return hook.code
+}
+
+const toElementsExample = (example, elementComponents) => {
+  let converted = example
+
+  for (const [name, element] of elementComponents) {
+    converted = converted
+      .replaceAll(new RegExp(`<${name}(?=[\\s/>])`, 'g'), `<${element.tagName}`)
+      .replaceAll(`</${name}>`, `</${element.tagName}>`)
+  }
+
+  converted = converted
+    .replaceAll(/(\s[\w-]+)=\{(-?\d+(?:\.\d+)?)\}/g, '$1="$2"')
+    .replaceAll(/(\s[\w-]+)=\{true\}/g, '$1')
+    .replaceAll(/(\s[\w-]+)=\{false\}/g, '$1="false"')
+    .replaceAll(/<([\w-]+)([^<>]*?)\s*\/>/g, '<$1$2></$1>')
+
+  return converted.includes('{') ? '' : converted
+}
+
+const frameworkBehavior = ({ framework, hook, reactSource, runtimeRequired }) => {
+  if (framework === 'astro' && runtimeRequired) {
+    return {
+      mode: 'runtime',
+      setup:
+        "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+    }
+  }
+
+  if (framework === 'elements') {
+    return {
+      mode: 'registration',
+      setup:
+        'Call defineLumenElements() once before rendering Lumen custom elements.' +
+        (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '')
+    }
+  }
+
+  if (framework === 'react' && hook) {
+    return {
+      controller: hook.controller,
+      description: hook.description,
+      hook: hook.name,
+      mode: 'hook',
+      options: hook.options,
+      setup: `Use ${hook.name} from @santi020k/lumen-react; do not mount Astro UIPrimitives in React.`
+    }
+  }
+
+  if (framework === 'react' && runtimeRequired) {
+    const builtIn = /\buse[A-Z]\w+\(/.test(reactSource)
+
+    return {
+      mode: builtIn ? 'built-in' : 'adapter',
+      setup: builtIn
+        ? 'Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives.'
+        : 'The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives.'
+    }
+  }
+}
+
 const buildFrameworkDetails = ({
   astroSource,
   componentNames,
   doc,
   element,
+  elementComponents,
   hasAstro,
   name,
   parsedAstro,
-  react
+  react,
+  reactHooks,
+  runtimeRequired
 }) => {
   const exampleNames = componentNamesFromExample(doc.example, componentNames)
   const imports = exampleNames.length > 0 ? exampleNames : [name]
+  const hookName = reactHookByComponent[name]
+  const hook = hookName ? reactHooks.get(hookName) : undefined
+  const elementsExample = toElementsExample(doc.example, elementComponents)
+  const reactExample = reactExampleForComponent(name, hook, doc.example)
+
+  const reactImports = hook
+    ? reactExample.match(/^import .+$/gm)?.join('\n') ?? `import { ${hook.name} } from '@santi020k/lumen-react'`
+    : `import { ${imports.join(', ')} } from '@santi020k/lumen-react'`
 
   return {
     astro: {
       available: hasAstro,
+      behavior: frameworkBehavior({ framework: 'astro', runtimeRequired }),
       example: doc.example,
       importStatement: `import { ${imports.join(', ')} } from '@santi020k/lumen-astro'`,
       language: 'astro',
@@ -374,7 +501,8 @@ const buildFrameworkDetails = ({
         ...doc.apiReference.map((row) => row.attribute)
       ])],
       available: Boolean(element.source),
-      example: `<${element.tagName}></${element.tagName}>`,
+      behavior: frameworkBehavior({ framework: 'elements', runtimeRequired }),
+      example: elementsExample || `<${element.tagName}></${element.tagName}>`,
       importStatement: "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
       language: 'html',
       packageName: '@santi020k/lumen-elements',
@@ -387,8 +515,14 @@ const buildFrameworkDetails = ({
     },
     react: {
       available: react.available,
-      example: toReactExample(doc.example),
-      importStatement: `import { ${imports.join(', ')} } from '@santi020k/lumen-react'`,
+      behavior: frameworkBehavior({
+        framework: 'react',
+        hook,
+        reactSource: react.source,
+        runtimeRequired
+      }),
+      example: reactExample,
+      importStatement: reactImports,
       language: 'tsx',
       packageName: '@santi020k/lumen-react',
       props: react.props.props,
@@ -434,6 +568,7 @@ const main = async () => {
   const names = parseComponentNames(componentsSource)
   const docsData = await loadDocsData(docsSource)
   const docsByComponent = new Map(docsData.componentDocs.map((doc) => [doc.name, doc]))
+  const reactHooks = new Map(docsData.reactHooksReference.map((hook) => [hook.name, hook]))
   const registryComponents = new Map((registry.components ?? []).map((component) => [component.name, component]))
   const colors = parseTokenBlock(tokensSource, 'lumenColors')
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
@@ -490,10 +625,15 @@ const buildComponentData = async (name, ctx) => {
     componentNames: ctx.names,
     doc,
     element: ctx.elementComponents.get(name),
+    elementComponents: ctx.elementComponents,
     hasAstro,
     name,
     parsedAstro: parsed,
-    react: ctx.reactComponents.get(name)
+    react: ctx.reactComponents.get(name),
+    reactHooks: ctx.reactHooks,
+    runtimeRequired:
+      (registryComponent.dependencies ?? []).includes('runtime') ||
+      Boolean(reactHookByComponent[name])
   })
 
   return {
@@ -532,6 +672,7 @@ const buildComponentData = async (name, ctx) => {
     elementComponents,
     names,
     reactComponents,
+    reactHooks,
     recipesByComponent,
     registryComponents
   }
@@ -562,13 +703,40 @@ const buildComponentData = async (name, ctx) => {
       }
     })
 
+  const docs = { aiUsage, readme }
+
+  const tokens = {
+    colors,
+    glass,
+    semantic: semanticTokens,
+    themeAttribute: 'data-theme'
+  }
+
+  const packagePaths = {
+    '@santi020k/lumen-astro': 'packages/astro/package.json',
+    '@santi020k/lumen-core': 'packages/core/package.json',
+    '@santi020k/lumen-elements': 'packages/elements/package.json',
+    '@santi020k/lumen-mcp': 'packages/mcp/package.json',
+    '@santi020k/lumen-react': 'packages/react/package.json'
+  }
+
+  const packageVersions = {}
+
+  for (const [packageName, packagePath] of Object.entries(packagePaths)) {
+    const manifest = JSON.parse(await readFile(p(packagePath), 'utf8'))
+
+    packageVersions[packageName] = manifest.version
+  }
+
+  const catalogHash = createHash('sha256')
+    .update(JSON.stringify({ components, docs, recipes, rules, tokens }))
+    .digest('hex')
+
   const payload = {
     components,
-    docs: {
-      aiUsage,
-      readme
-    },
+    docs,
     meta: {
+      catalogHash,
       componentCount: components.length,
       packages: registry.packages ?? [
         '@santi020k/lumen-astro',
@@ -576,25 +744,38 @@ const buildComponentData = async (name, ctx) => {
         '@santi020k/lumen-elements',
         '@santi020k/lumen-core'
       ],
+      packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
+      schemaVersion: 2,
       serverVersion: packageJson.version
     },
     recipes,
     rules,
-    tokens: {
-      colors,
-      glass,
-      semantic: semanticTokens,
-      themeAttribute: 'data-theme'
-    }
+    tokens
   }
 
   const outDir = resolve(scriptDir, '..', 'data')
+  const outPath = join(outDir, 'lumen-data.json')
+  const output = `${JSON.stringify(payload, null, 2)}\n`
 
   await mkdir(outDir, { recursive: true })
 
-  await writeFile(join(outDir, 'lumen-data.json'), `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
+  if (process.argv.includes('--check')) {
+    const current = await readIfExists(outPath)
+
+    if (current !== output) {
+      throw new Error(
+        'Lumen MCP snapshot is stale. Run "pnpm --filter @santi020k/lumen-mcp generate".'
+      )
+    }
+
+    process.stdout.write('lumen-mcp: data/lumen-data.json is current\n')
+
+    return
+  }
+
+  await writeFile(outPath, output, 'utf8')
 
   process.stdout.write(
     `lumen-mcp: wrote data/lumen-data.json (${components.length} components, ` +

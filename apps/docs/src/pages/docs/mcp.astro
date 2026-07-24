@@ -1,6 +1,7 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import { Badge, Card, Icon } from '@santi020k/lumen-astro'
+import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
@@ -28,8 +29,13 @@ const tools = [
   ],
   [
     'lumen_search',
-    'Rank natural-language matches across descriptions, collections, props, attributes, recipes, tokens, and rules.',
+    'Rank tolerant natural-language matches across descriptions, framework contracts, recipes, tokens, and rules.',
     'search'
+  ],
+  [
+    'lumen_get_meta',
+    'Return the schema version, package versions, component count, and deterministic catalog hash.',
+    'fingerprint'
   ],
   [
     'lumen_get_tokens',
@@ -44,13 +50,15 @@ const tools = [
 ] as const
 
 const workflow = [
-  ['01', 'Discover', 'The agent calls lumen_list_components or lumen_search to find the right primitive for the task.'],
-  ['02', 'Read framework usage', 'lumen_get_component returns imports, styles, examples, props or attributes, accessibility behavior, and events for Astro, React, or Elements.'],
-  ['03', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
-  ['04', 'Follow the system', 'Structured tokens, resources, and rules keep generated code on Lumen’s semantic contract.']
+  ['01', 'Identify the snapshot', 'lumen_get_meta exposes the catalog hash and exact package versions bundled into the server.'],
+  ['02', 'Discover', 'The agent calls lumen_list_components or lumen_search with the target framework to find the right primitives.'],
+  ['03', 'Read framework usage', 'lumen_get_component returns authored examples and the required Astro runtime, React hook, or Elements registration contract.'],
+  ['04', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
+  ['05', 'Follow the system', 'Structured tokens, resources, and rules keep generated code on Lumen’s semantic contract.']
 ] as const
 
 const resources = [
+  ['lumen://meta', 'Snapshot provenance, package versions, and deterministic catalog hash.'],
   ['lumen://rules', 'Agent generation rules as Markdown.'],
   ['lumen://tokens', 'Structured semantic, color, glass, and theme tokens.'],
   ['lumen://components', 'Compact structured component catalog.'],
@@ -100,9 +108,9 @@ const genericConfig = `{
       description="A Model Context Protocol server that gives AI agents structured access to Lumen component contracts, framework usage, recipes, design tokens, resources, and generation rules."
       eyebrow="AI integration"
       stats={[
-        { label: 'Tools', value: 6 },
-        { label: 'Resources', value: 5 },
-        { label: 'Components', value: 121 },
+        { label: 'Tools', value: tools.length },
+        { label: 'Resources', value: resources.length },
+        { label: 'Components', value: lumenComponentNames.length },
       ]}
       title="Give agents the Lumen contract."
     >
@@ -143,7 +151,7 @@ const genericConfig = `{
       <div class="mcp-section__heading">
         <div>
           <p>What agents can do</p>
-          <h2 id="tools-title">Six focused tools</h2>
+          <h2 id="tools-title">Focused MCP tools</h2>
         </div>
         <p>
           Every tool returns readable text plus validated structured content, grounded in the same
@@ -172,7 +180,8 @@ const genericConfig = `{
         </div>
         <p>
           The server ships a self-contained snapshot of the catalog, so no repository checkout is
-          required. Point any MCP client at <code>npx -y {packageName}</code>.
+          required. With Node.js 20.20 or newer, point any MCP client at
+          <code>npx -y {packageName}</code>.
         </p>
       </div>
 

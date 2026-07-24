@@ -12,7 +12,7 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 - packages/core/src/components.ts: authoritative shared component catalog.
 - packages/astro/components: reference component markup and prop shapes.
 - packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.
-- @santi020k/lumen-mcp: Model Context Protocol server exposing structured component discovery, framework-aware usage/source, recipes, search, tokens, rules, and lumen:// resources for AI agents.
+- @santi020k/lumen-mcp: Model Context Protocol server exposing snapshot provenance, structured component discovery, framework-aware usage/source, recipes, tolerant search, tokens, rules, and lumen:// resources for AI agents.
 
 Install the portable Lumen Agent Skill:
 
@@ -39,6 +39,7 @@ import '@santi020k/lumen-astro/styles.css'
 
 Rules for agents:
 
+- When Lumen MCP is connected, read `lumen://meta` and `lumen://rules`, pass the target framework to `lumen_search`, and follow the framework behavior returned by `lumen_get_component`.
 - Prefer Astro unless the user explicitly targets React or Web Components.
 - In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.
 - In Web Components, registered `lumen-*` elements include behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip, including ARIA state, keyboard paths, Escape/outside dismissal, focus handling, native select form participation, and the shared toast controller.

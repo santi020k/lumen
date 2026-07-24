@@ -81,6 +81,7 @@ describe('Lumen MCP protocol server', () => {
         'lumen_get_component',
         'lumen_get_recipe',
         'lumen_search',
+        'lumen_get_meta',
         'lumen_get_tokens',
         'lumen_get_rules'
       ])
@@ -114,7 +115,7 @@ describe('Lumen MCP protocol server', () => {
 
   test('executes every catalog discovery tool over MCP', async () => {
     await withClient(async (client) => {
-      const [listResult, recipeResult, searchResult, tokensResult, rulesResult] = await Promise.all([
+      const [listResult, recipeResult, searchResult, metaResult, tokensResult, rulesResult] = await Promise.all([
         client.callTool({
           arguments: { framework: 'astro', query: 'button' },
           name: 'lumen_list_components'
@@ -127,6 +128,7 @@ describe('Lumen MCP protocol server', () => {
           arguments: { limit: 5, query: 'date input' },
           name: 'lumen_search'
         }),
+        client.callTool({ arguments: {}, name: 'lumen_get_meta' }),
         client.callTool({ arguments: {}, name: 'lumen_get_tokens' }),
         client.callTool({ arguments: {}, name: 'lumen_get_rules' })
       ])
@@ -134,10 +136,11 @@ describe('Lumen MCP protocol server', () => {
       expect(resultText(listResult)).toContain('Button')
       expect(resultText(recipeResult)).toContain('lumen add scheduler --target elements')
       expect(resultText(searchResult)).toContain('DatePicker')
+      expect(resultText(metaResult)).toContain('Catalog hash')
       expect(resultText(tokensResult)).toContain('Lumen design tokens')
       expect(resultText(rulesResult)).toContain('@santi020k/lumen')
 
-      for (const result of [listResult, recipeResult, searchResult, tokensResult, rulesResult]) {
+      for (const result of [listResult, recipeResult, searchResult, metaResult, tokensResult, rulesResult]) {
         expect(result.isError).toBe(false)
         expect(resultStructuredContent(result)).not.toEqual({})
       }
@@ -189,6 +192,7 @@ describe('Lumen MCP protocol server', () => {
       const templates = await client.listResourceTemplates()
 
       expect(resources.resources.some((resource) => resource.uri === 'lumen://rules')).toBe(true)
+      expect(resources.resources.some((resource) => resource.uri === 'lumen://meta')).toBe(true)
       expect(resources.resources.some((resource) => resource.uri === 'lumen://components/button'))
         .toBe(true)
       expect(templates.resourceTemplates.map((template) => template.uriTemplate)).toEqual([
