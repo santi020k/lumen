@@ -30,7 +30,6 @@
 
   interface RichTextCommandDocument {
     execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
-    queryCommandEnabled?: (command: string) => boolean
     queryCommandState?: (command: string) => boolean
     queryCommandValue?: (command: string) => string
   }
@@ -2643,6 +2642,7 @@
 
   const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
     if (control.dataset.uiEditorValue !== undefined) return control.dataset.uiEditorValue
+
     if (
       control instanceof HTMLInputElement
       || control instanceof HTMLSelectElement
@@ -2662,6 +2662,7 @@
 
       if (isLumenRichTextToggleCommand(command)) {
         active = commandDocument.queryCommandState?.(command) ?? false
+
         control.setAttribute('aria-pressed', String(active))
       } else if (command === 'formatBlock' && value) {
         const currentValue = commandDocument.queryCommandValue?.(command)
@@ -2673,14 +2674,12 @@
 
       control.dataset.state = active ? 'on' : 'off'
 
-      if (typeof commandDocument.queryCommandEnabled === 'function') {
-        control.toggleAttribute('disabled', !commandDocument.queryCommandEnabled(command))
-      }
     }
   }
 
   const dispatchRichTextChange = (root: HTMLElement): void => {
     const editable = root.querySelector<HTMLElement>(richTextEditorContentSelector)
+
     if (!editable) return
 
     const detail: LumenRichTextChangeDetail = {
@@ -2702,11 +2701,13 @@
     if (!command) return false
 
     const commandDocument = document as unknown as RichTextCommandDocument
+
     const executed = typeof commandDocument.execCommand === 'function'
       ? value === undefined
         ? commandDocument.execCommand(command)
         : commandDocument.execCommand(command, false, value)
       : false
+
     const detail: LumenRichTextCommandDetail = {
       command,
       executed,
@@ -2719,6 +2720,7 @@
     }))
 
     syncRichTextCommandStates(root)
+
     dispatchRichTextChange(root)
 
     return executed
@@ -2748,19 +2750,25 @@
           || !event.target.closest(richTextEditorContentSelector)) return
 
         const command = getLumenRichTextShortcut(event)
+
         if (!command) return
 
         event.preventDefault()
+
         executeRichTextCommand(root, command)
       })
+
       root.addEventListener('input', event => {
         if (!(event.target instanceof HTMLElement)
           || !event.target.closest(richTextEditorContentSelector)) return
 
         syncRichTextCommandStates(root)
+
         dispatchRichTextChange(root)
       })
+
       root.addEventListener('keyup', () => { syncRichTextCommandStates(root); })
+
       root.addEventListener('mouseup', () => { syncRichTextCommandStates(root); })
 
       syncRichTextCommandStates(root)
@@ -3342,6 +3350,12 @@
       if (!start || !end || start === end) continue
 
       const syncRange = (): void => {
+        const datePickers = root.querySelectorAll<HTMLElement>('[data-ui-date-picker]')
+
+        datePickers[0]?.setAttribute('data-range-part', 'start')
+
+        datePickers[datePickers.length - 1]?.setAttribute('data-range-part', 'end')
+
         if (start.value) {
           end.min = start.value
         } else {
@@ -3356,7 +3370,15 @@
 
         if (start.value && end.value && end.value < start.value) {
           end.value = start.value
+
+          end.dispatchEvent(new Event('change', { bubbles: true }))
         }
+
+        root.dataset.rangeState = start.value && end.value
+          ? 'complete'
+          : start.value
+            ? 'selecting-end'
+            : 'empty'
       }
 
       start.addEventListener('change', syncRange)
@@ -3756,11 +3778,13 @@
 
         if (!files) return
 
-        files.textContent = selectedFiles.length === 1
-          ? selectedFiles[0]?.name ?? ''
-          : selectedFiles.length > 1
+        if (selectedFiles.length === 1) {
+          files.textContent = selectedFiles[0]?.name ?? ''
+        } else {
+          files.textContent = selectedFiles.length > 1
             ? `${selectedFiles.length} files selected`
             : ''
+        }
       }
 
       input.addEventListener('change', renderFiles)

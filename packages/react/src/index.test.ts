@@ -14,6 +14,7 @@ import {
   Code,
   DataTable,
   DatePicker,
+  DateRangePicker,
   Dialog,
   type DialogProps,
   DropdownMenu,
@@ -253,6 +254,17 @@ describe('@santi020k/lumen-react', () => {
     expect(trigger?.props['aria-expanded']).toBe(false)
     expect(popover?.props.hidden).toBe(true)
     expect(calendar.type).toBe(Calendar)
+  })
+
+  test('renders DateRangePicker as a synchronized custom range control', () => {
+    const range = withHookDispatcher(() => DateRangePicker({
+      children: 'Range'
+    }) as ReactElement)
+    const rangeProps = range.props as Record<string, unknown>
+
+    expect(rangeProps.className).toBe('ui-date-range-picker')
+    expect(rangeProps['data-ui-date-range-picker']).toBe(true)
+    expect(rangeProps.onInput).toBeTypeOf('function')
   })
 
   test('exposes calendar selection helpers', () => {

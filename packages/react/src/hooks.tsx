@@ -47,7 +47,6 @@ type InputMode = NonNullable<ComponentPropsWithRef<'input'>['inputMode']>
 
 interface RichTextCommandDocument {
   execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
-  queryCommandEnabled?: (command: string) => boolean
   queryCommandState?: (command: string) => boolean
   queryCommandValue?: (command: string) => string
 }
@@ -356,7 +355,7 @@ export interface RichTextEditorController {
   executeCommand: (command: string, root?: HTMLElement | null, value?: string) => boolean
   getCommandProps: (
     command: string,
-    props?: ComponentPropsWithRef<'button'>
+    props?: LumenProps<'button'>
   ) => LumenProps<'button'>
   getEditableProps: (
     props?: ComponentPropsWithRef<'div'>
@@ -2236,14 +2235,28 @@ const richTextEditorContentSelector = '[data-ui-rich-text-editable], [contentedi
 
 const getRichTextChangeDetail = (root: HTMLElement | null): LumenRichTextChangeDetail | null => {
   const editable = root?.querySelector<HTMLElement>(richTextEditorContentSelector)
+
   if (!editable) return null
 
   return {
     html: editable.innerHTML,
-    text: editable.textContent ?? ''
+    text: editable.textContent
   }
 }
 
+const executeRichTextDocumentCommand = (
+  commandDocument: RichTextCommandDocument | undefined,
+  command: string,
+  value?: string
+): boolean => {
+  if (typeof commandDocument?.execCommand !== 'function') return false
+
+  return value === undefined
+    ? commandDocument.execCommand(command)
+    : commandDocument.execCommand(command, false, value)
+}
+
+// eslint-disable-next-line complexity -- Command-state normalization covers toggle and value-bearing controls together.
 const syncRichTextCommandStates = (root: HTMLElement | null): void => {
   if (!root || typeof document === 'undefined') return
 
@@ -2256,6 +2269,7 @@ const syncRichTextCommandStates = (root: HTMLElement | null): void => {
 
     if (isLumenRichTextToggleCommand(command)) {
       active = commandDocument.queryCommandState?.(command) ?? false
+
       control.setAttribute('aria-pressed', String(active))
     } else if (command === 'formatBlock' && value) {
       const currentValue = commandDocument.queryCommandValue?.(command)
@@ -2266,9 +2280,7 @@ const syncRichTextCommandStates = (root: HTMLElement | null): void => {
     }
 
     control.dataset.state = active ? 'on' : 'off'
-    if (typeof commandDocument.queryCommandEnabled === 'function') {
-      control.toggleAttribute('disabled', !commandDocument.queryCommandEnabled(command))
-    }
+
   }
 }
 
@@ -2280,6 +2292,7 @@ export const useRichTextEditor = ({
 
   const emitChange = useCallback((root: HTMLElement | null) => {
     const detail = getRichTextChangeDetail(root)
+
     if (!detail) return
 
     if (typeof CustomEvent !== 'undefined') {
@@ -2299,11 +2312,7 @@ export const useRichTextEditor = ({
       ? undefined
       : document as unknown as RichTextCommandDocument
 
-    const executed = typeof commandDocument?.execCommand === 'function'
-      ? value === undefined
-        ? commandDocument.execCommand(command)
-        : commandDocument.execCommand(command, false, value)
-      : false
+    const executed = executeRichTextDocumentCommand(commandDocument, command, value)
 
     const detail: RichTextEditorCommandDetail = {
       command,
@@ -2319,7 +2328,9 @@ export const useRichTextEditor = ({
     }
 
     onCommand?.(detail)
+
     syncRichTextCommandStates(root)
+
     emitChange(root)
 
     return executed
@@ -2345,13 +2356,16 @@ export const useRichTextEditor = ({
       const root = event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current
 
       syncRichTextCommandStates(root)
+
       emitChange(root)
     }),
     onKeyDown: composeHandlers(props.onKeyDown, event => {
       const command = getLumenRichTextShortcut(event)
+
       if (!command) return
 
       event.preventDefault()
+
       const root = event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current
 
       executeCommand(command, root)

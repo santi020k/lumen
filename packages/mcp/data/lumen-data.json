@@ -4750,10 +4750,28 @@
     {
       "apiReference": [
         {
-          "attribute": "type",
-          "defaultValue": "\"date\"",
-          "description": "Sets the native input type.",
-          "values": "HTML input type"
+          "attribute": "value, defaultValue",
+          "defaultValue": "-",
+          "description": "Sets the selected date while the trigger shows a localized, human-readable value.",
+          "values": "ISO date string (YYYY-MM-DD)"
+        },
+        {
+          "attribute": "min, max",
+          "defaultValue": "-",
+          "description": "Disables dates and month navigation outside the allowed range.",
+          "values": "ISO date string (YYYY-MM-DD)"
+        },
+        {
+          "attribute": "placeholder",
+          "defaultValue": "\"Choose a date\"",
+          "description": "Labels the trigger before a date is selected.",
+          "values": "string"
+        },
+        {
+          "attribute": "UIPrimitives",
+          "defaultValue": "required",
+          "description": "Enhances the form-backed input into the custom Calendar popover. React and registered Elements provide equivalent behavior.",
+          "values": "Astro runtime"
         },
         {
           "attribute": "class, className",
@@ -4768,7 +4786,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\nimport Calendar from './Calendar.astro'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'input'> {\n  class?: string\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  placeholder?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  placeholder,\n  required = false,\n  type = 'date',\n  value,\n  ...rest\n} = Astro.props\n\nconst datePickerId = id ?? `ui-date-picker-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${datePickerId}-trigger`\nconst popoverId = `${datePickerId}-popover`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-date-picker-field',\n    glass && 'ui-date-picker-field--glass',\n    glass === 'subtle' && 'ui-glass-subtle',\n    glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst selectedValue = value === undefined || value === null ? undefined : String(value)\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst placeholderText = placeholder ?? 'mm/dd/yyyy'\n---\n\n<div class:list={classList} data-ui-date-picker data-ui-glass-track={glass ? true : undefined}>\n  <input\n    class=\"ui-date-picker ui-date-picker__native\"\n    data-ui-date-picker-native\n    disabled={disabled}\n    id={datePickerId}\n    max={max}\n    min={min}\n    name={name}\n    required={required}\n    type={type}\n    value={value}\n    {...passthrough}\n  />\n\n  <div class=\"ui-date-picker__control\" data-ui-date-picker-control hidden>\n    <button\n      aria-controls={popoverId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"dialog\"\n      class=\"ui-input ui-date-picker ui-date-picker__trigger\"\n      data-ui-date-picker-trigger\n      disabled={disabled}\n      id={triggerId}\n      type=\"button\"\n    >\n      <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>\n    </button>\n\n    <div class=\"ui-date-picker__popover\" data-state=\"closed\" data-ui-date-picker-popover hidden id={popoverId} role=\"dialog\">\n      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />\n    </div>\n  </div>\n</div>\n",
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\nimport Calendar from './Calendar.astro'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'input'> {\n  class?: string\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  placeholder?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  placeholder,\n  required = false,\n  type = 'date',\n  value,\n  ...rest\n} = Astro.props\n\nconst datePickerId = id ?? `ui-date-picker-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${datePickerId}-trigger`\nconst popoverId = `${datePickerId}-popover`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-date-picker-field',\n    glass && 'ui-date-picker-field--glass',\n    glass === 'subtle' && 'ui-glass-subtle',\n    glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst selectedValue = value === undefined || value === null ? undefined : String(value)\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst placeholderText = placeholder ?? 'Choose a date'\nconst selectedDate = hasSelectedValue\n  ? new Date(`${selectedValue}T00:00:00.000Z`)\n  : undefined\nconst displayValue = selectedDate && !Number.isNaN(selectedDate.getTime())\n  ? new Intl.DateTimeFormat('en', {\n      day: 'numeric',\n      month: 'short',\n      timeZone: 'UTC',\n      year: 'numeric'\n    }).format(selectedDate)\n  : placeholderText\n---\n\n<div\n  class:list={classList}\n  data-placeholder={hasSelectedValue ? undefined : 'true'}\n  data-ui-date-picker\n  data-ui-glass-track={glass ? true : undefined}\n>\n  <input\n    class=\"ui-date-picker ui-date-picker__native\"\n    data-ui-date-picker-native\n    disabled={disabled}\n    id={datePickerId}\n    max={max}\n    min={min}\n    name={name}\n    placeholder={placeholder}\n    required={required}\n    type={type}\n    value={value}\n    {...passthrough}\n  />\n\n  <div class=\"ui-date-picker__control\" data-ui-date-picker-control hidden>\n    <button\n      aria-controls={popoverId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"dialog\"\n      aria-required={required ? 'true' : undefined}\n      class=\"ui-input ui-date-picker ui-date-picker__trigger\"\n      data-ui-date-picker-trigger\n      disabled={disabled}\n      id={triggerId}\n      type=\"button\"\n    >\n      <span data-ui-date-picker-value>{displayValue}</span>\n      <svg aria-hidden=\"true\" class=\"ui-date-picker__icon\" fill=\"none\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z\" />\n      </svg>\n    </button>\n\n    <div\n      aria-label=\"Choose date\"\n      class=\"ui-date-picker__popover\"\n      data-state=\"closed\"\n      data-ui-date-picker-popover\n      hidden\n      id={popoverId}\n      role=\"dialog\"\n    >\n      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />\n    </div>\n  </div>\n</div>\n",
       "category": "Forms",
       "collections": [
         "Dates and time"
@@ -4776,7 +4794,7 @@
       "dependencies": [
         "styles"
       ],
-      "description": "Provides a styled date input.",
+      "description": "Selects a date from a polished, accessible Calendar popover.",
       "files": [
         "packages/astro/components/DatePicker.astro",
         "packages/astro/styles/lumen.css"
@@ -4811,12 +4829,16 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'input'>",
-          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\nimport Calendar from './Calendar.astro'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'input'> {\n  class?: string\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  placeholder?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  placeholder,\n  required = false,\n  type = 'date',\n  value,\n  ...rest\n} = Astro.props\n\nconst datePickerId = id ?? `ui-date-picker-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${datePickerId}-trigger`\nconst popoverId = `${datePickerId}-popover`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-date-picker-field',\n    glass && 'ui-date-picker-field--glass',\n    glass === 'subtle' && 'ui-glass-subtle',\n    glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst selectedValue = value === undefined || value === null ? undefined : String(value)\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst placeholderText = placeholder ?? 'mm/dd/yyyy'\n---\n\n<div class:list={classList} data-ui-date-picker data-ui-glass-track={glass ? true : undefined}>\n  <input\n    class=\"ui-date-picker ui-date-picker__native\"\n    data-ui-date-picker-native\n    disabled={disabled}\n    id={datePickerId}\n    max={max}\n    min={min}\n    name={name}\n    required={required}\n    type={type}\n    value={value}\n    {...passthrough}\n  />\n\n  <div class=\"ui-date-picker__control\" data-ui-date-picker-control hidden>\n    <button\n      aria-controls={popoverId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"dialog\"\n      class=\"ui-input ui-date-picker ui-date-picker__trigger\"\n      data-ui-date-picker-trigger\n      disabled={disabled}\n      id={triggerId}\n      type=\"button\"\n    >\n      <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>\n    </button>\n\n    <div class=\"ui-date-picker__popover\" data-state=\"closed\" data-ui-date-picker-popover hidden id={popoverId} role=\"dialog\">\n      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />\n    </div>\n  </div>\n</div>\n",
+          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\nimport Calendar from './Calendar.astro'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'input'> {\n  class?: string\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  placeholder?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  placeholder,\n  required = false,\n  type = 'date',\n  value,\n  ...rest\n} = Astro.props\n\nconst datePickerId = id ?? `ui-date-picker-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${datePickerId}-trigger`\nconst popoverId = `${datePickerId}-popover`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-date-picker-field',\n    glass && 'ui-date-picker-field--glass',\n    glass === 'subtle' && 'ui-glass-subtle',\n    glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst selectedValue = value === undefined || value === null ? undefined : String(value)\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst placeholderText = placeholder ?? 'Choose a date'\nconst selectedDate = hasSelectedValue\n  ? new Date(`${selectedValue}T00:00:00.000Z`)\n  : undefined\nconst displayValue = selectedDate && !Number.isNaN(selectedDate.getTime())\n  ? new Intl.DateTimeFormat('en', {\n      day: 'numeric',\n      month: 'short',\n      timeZone: 'UTC',\n      year: 'numeric'\n    }).format(selectedDate)\n  : placeholderText\n---\n\n<div\n  class:list={classList}\n  data-placeholder={hasSelectedValue ? undefined : 'true'}\n  data-ui-date-picker\n  data-ui-glass-track={glass ? true : undefined}\n>\n  <input\n    class=\"ui-date-picker ui-date-picker__native\"\n    data-ui-date-picker-native\n    disabled={disabled}\n    id={datePickerId}\n    max={max}\n    min={min}\n    name={name}\n    placeholder={placeholder}\n    required={required}\n    type={type}\n    value={value}\n    {...passthrough}\n  />\n\n  <div class=\"ui-date-picker__control\" data-ui-date-picker-control hidden>\n    <button\n      aria-controls={popoverId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"dialog\"\n      aria-required={required ? 'true' : undefined}\n      class=\"ui-input ui-date-picker ui-date-picker__trigger\"\n      data-ui-date-picker-trigger\n      disabled={disabled}\n      id={triggerId}\n      type=\"button\"\n    >\n      <span data-ui-date-picker-value>{displayValue}</span>\n      <svg aria-hidden=\"true\" class=\"ui-date-picker__icon\" fill=\"none\" viewBox=\"0 0 24 24\">\n        <path d=\"M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z\" />\n      </svg>\n    </button>\n\n    <div\n      aria-label=\"Choose date\"\n      class=\"ui-date-picker__popover\"\n      data-state=\"closed\"\n      data-ui-date-picker-popover\n      hidden\n      id={popoverId}\n      role=\"dialog\"\n    >\n      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />\n    </div>\n  </div>\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "type",
+            "value, defaultValue",
+            "min, max",
+            "placeholder",
+            "UIPrimitives",
             "class, className",
             "...native attributes"
           ],
@@ -4840,13 +4862,28 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "defaultValue",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "onValueChange",
+              "optional": true,
+              "type": "(value: string) => void"
+            },
+            {
               "name": "placeholder",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "value",
               "optional": true,
               "type": "string"
             }
           ],
-          "propsExtends": "ComponentPropsWithoutRef<'input'> & SurfaceProps",
-          "source": "export type DatePickerProps = ComponentPropsWithoutRef<'input'> & SurfaceProps & {\n  placeholder?: string\n}\n\nexport const DatePicker = ({\n  className,\n  disabled,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  placeholder,\n  required,\n  type = 'date',\n  value,\n  ...props\n}: DatePickerProps) => {\n  const generatedId = useId()\n  const datePickerId = id ?? generatedId\n  const triggerId = `${datePickerId}-trigger`\n  const popoverId = `${datePickerId}-popover`\n  const selectedValue = value === undefined ? undefined : String(value)\n  const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\n  const placeholderText = placeholder ?? 'mm/dd/yyyy'\n  const maxStr = typeof max === 'string' ? max : typeof max === 'number' ? max.toString() : undefined\n  const minStr = typeof min === 'string' ? min : typeof min === 'number' ? min.toString() : undefined\n\n  return (\n    <div\n      className={composeClassName(\n        'ui-date-picker-field',\n        glass && 'ui-date-picker-field--glass',\n        glass === 'subtle' && 'ui-glass-subtle',\n        glass === 'strong' && 'ui-glass-strong',\n        className\n      )}\n      data-ui-date-picker\n      data-ui-glass-track={glass ? true : undefined}\n    >\n      <input\n        className=\"ui-date-picker ui-date-picker__native\"\n        data-ui-date-picker-native\n        disabled={disabled}\n        id={datePickerId}\n        max={max}\n        min={min}\n        name={name}\n        required={required}\n        type={type}\n        value={value}\n        {...props}\n      />\n      <div className=\"ui-date-picker__control\" data-ui-date-picker-control hidden>\n        <button\n          aria-controls={popoverId}\n          aria-expanded=\"false\"\n          aria-haspopup=\"dialog\"\n          className=\"ui-input ui-date-picker ui-date-picker__trigger\"\n          data-ui-date-picker-trigger\n          disabled={disabled}\n          id={triggerId}\n          type=\"button\"\n        >\n          <span data-ui-date-picker-value>{hasSelectedValue ? selectedValue : placeholderText}</span>\n        </button>\n        <div className=\"ui-date-picker__popover\" data-state=\"closed\" data-ui-date-picker-popover hidden id={popoverId} role=\"dialog\">\n          <Calendar max={maxStr} min={minStr} value={selectedValue} />\n        </div>\n      </div>\n    </div>\n  )\n}",
+          "propsExtends": "Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'type' | 'value'> & SurfaceProps",
+          "source": "export type DatePickerProps = Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'type' | 'value'> & SurfaceProps & {\n  defaultValue?: string\n  onValueChange?: (value: string) => void\n  placeholder?: string\n  value?: string\n}\n\nexport const DatePicker = ({\n  className,\n  defaultValue,\n  disabled,\n  glass = false,\n  id,\n  max,\n  min,\n  name,\n  onChange,\n  onInvalid,\n  onValueChange,\n  placeholder,\n  required,\n  value,\n  ...props\n}: DatePickerProps) => {\n  const generatedId = useId()\n  const datePickerId = id ?? generatedId\n  const triggerId = `${datePickerId}-trigger`\n  const popoverId = `${datePickerId}-popover`\n  const rootRef = useRef<HTMLDivElement | null>(null)\n  const inputRef = useRef<HTMLInputElement | null>(null)\n  const triggerRef = useRef<HTMLButtonElement | null>(null)\n  const [internalValue, setInternalValue] = useState(defaultValue ?? '')\n  const [open, setOpen] = useState(false)\n  const selectedValue = value ?? internalValue\n  const hasSelectedValue = selectedValue !== ''\n  const placeholderText = placeholder ?? 'Choose a date'\n  const maxStr = stringifyDatePickerConstraint(max)\n  const minStr = stringifyDatePickerConstraint(min)\n  const accessibleLabel = props['aria-label']\n\n  useEffect(() => {\n    if (!open) return\n\n    const handlePointerDown = (event: MouseEvent) => {\n      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false)\n    }\n\n    const handleKeyDown = (event: KeyboardEvent) => {\n      if (event.key !== 'Escape') return\n\n      setOpen(false)\n\n      triggerRef.current?.focus()\n    }\n\n    document.addEventListener('mousedown', handlePointerDown)\n\n    document.addEventListener('keydown', handleKeyDown)\n\n    return () => {\n      document.removeEventListener('mousedown', handlePointerDown)\n\n      document.removeEventListener('keydown', handleKeyDown)\n    }\n  }, [open])\n\n  const selectDate = (nextValue: string) => {\n    if (value === undefined) setInternalValue(nextValue)\n\n    onValueChange?.(nextValue)\n\n    if (inputRef.current) {\n      inputRef.current.value = nextValue\n\n      inputRef.current.dispatchEvent(new Event('input', { bubbles: true }))\n\n      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))\n    }\n\n    setOpen(false)\n\n    globalThis.setTimeout(() => triggerRef.current?.focus())\n  }\n\n  return (\n    <div\n      className={composeClassName(\n        'ui-date-picker-field',\n        glass && 'ui-date-picker-field--glass',\n        glass === 'subtle' && 'ui-glass-subtle',\n        glass === 'strong' && 'ui-glass-strong',\n        className\n      )}\n      data-placeholder={hasSelectedValue ? undefined : 'true'}\n      data-ui-date-picker\n      data-ui-glass-track={glass ? true : undefined}\n      ref={rootRef}\n    >\n      <input\n        aria-hidden=\"true\"\n        className=\"ui-date-picker ui-date-picker__native\"\n        data-ui-date-picker-native\n        data-ui-enhanced=\"true\"\n        disabled={disabled}\n        id={datePickerId}\n        max={max}\n        min={min}\n        name={name}\n        onChange={event => {\n          if (value === undefined) setInternalValue(event.currentTarget.value)\n\n          onChange?.(event)\n        }}\n        onInvalid={event => {\n          event.preventDefault()\n\n          triggerRef.current?.setAttribute('aria-invalid', 'true')\n\n          triggerRef.current?.focus()\n\n          onInvalid?.(event)\n        }}\n        ref={inputRef}\n        required={required}\n        tabIndex={-1}\n        type=\"date\"\n        value={selectedValue}\n        {...props}\n      />\n      <div className=\"ui-date-picker__control\" data-ui-date-picker-control>\n        <button\n          aria-controls={popoverId}\n          aria-expanded={open}\n          aria-haspopup=\"dialog\"\n          aria-label={accessibleLabel}\n          aria-required={required ?? undefined}\n          className=\"ui-input ui-date-picker ui-date-picker__trigger\"\n          data-ui-date-picker-trigger\n          disabled={disabled}\n          id={triggerId}\n          onClick={() => { setOpen(current => !current); }}\n          onKeyDown={event => {\n            if (event.key !== 'ArrowDown') return\n\n            event.preventDefault()\n\n            setOpen(true)\n          }}\n          ref={triggerRef}\n          type=\"button\"\n        >\n          <span data-ui-date-picker-value>{formatDatePickerDisplayValue(selectedValue, placeholderText)}</span>\n          <svg aria-hidden=\"true\" className=\"ui-date-picker__icon\" fill=\"none\" viewBox=\"0 0 24 24\">\n            <path d=\"M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z\" />\n          </svg>\n        </button>\n        <div\n          aria-label=\"Choose date\"\n          className=\"ui-date-picker__popover\"\n          data-state={open ? 'open' : 'closed'}\n          data-ui-date-picker-popover\n          hidden={!open}\n          id={popoverId}\n          role=\"dialog\"\n        >\n          <Calendar\n            disabled={disabled}\n            max={maxStr}\n            min={minStr}\n            onValueChange={selectDate}\n            value={selectedValue}\n          />\n        </div>\n      </div>\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -4857,8 +4894,34 @@
       },
       "guidance": null,
       "kebab": "date-picker",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Open the calendar popover.",
+          "key": "Enter, Space on trigger"
+        },
+        {
+          "action": "Open the calendar and move focus to the selected day, today, or first available day.",
+          "key": "ArrowDown on trigger"
+        },
+        {
+          "action": "Move focus by day or week without opening a browser-native date picker.",
+          "key": "Arrow keys in calendar"
+        },
+        {
+          "action": "Move to the same date in the next or previous month.",
+          "key": "PageDown, PageUp in calendar"
+        },
+        {
+          "action": "Select the focused date, close the popover, and return focus to the trigger.",
+          "key": "Enter, Space on a day"
+        },
+        {
+          "action": "Close the calendar without changing the value and return focus to the trigger.",
+          "key": "Escape"
+        }
+      ],
       "keywords": [
+        "accessible",
         "and",
         "calendar",
         "date",
@@ -4866,12 +4929,14 @@
         "dates",
         "focused",
         "forms",
+        "from",
         "input",
         "pick",
-        "provides",
+        "polished",
+        "popover",
         "range",
+        "selects",
         "single",
-        "styled",
         "surface",
         "time",
         "value"
@@ -4991,9 +5056,15 @@
           "importStatement": "import { DateRangePicker, DatePicker } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
+          "props": [
+            {
+              "name": "onRangeChange",
+              "optional": true,
+              "type": "(range: { end?: string; start?: string }) => void"
+            }
+          ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export type DateRangePickerProps = ComponentPropsWithoutRef<'div'>\n\nexport const DateRangePicker = ({ className, ...props }: DateRangePickerProps) => (\n  <div className={composeClassName('ui-date-range-picker', className)} data-ui-date-range-picker {...props} />\n)",
+          "source": "export type DateRangePickerProps = ComponentPropsWithoutRef<'div'> & {\n  onRangeChange?: (range: { end?: string; start?: string }) => void\n}\n\nexport const DateRangePicker = ({\n  className,\n  onInput,\n  onRangeChange,\n  ...props\n}: DateRangePickerProps) => {\n  const rootRef = useRef<HTMLDivElement | null>(null)\n\n  useEffect(() => {\n    if (rootRef.current) syncDateRangePickerElement(rootRef.current)\n  })\n\n  return (\n    <div\n      className={composeClassName('ui-date-range-picker', className)}\n      data-ui-date-range-picker\n      onInput={event => {\n        onInput?.(event)\n\n        onRangeChange?.(syncDateRangePickerElement(event.currentTarget))\n      }}\n      ref={rootRef}\n      {...props}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -10837,8 +10908,20 @@
         {
           "attribute": "data-ui-editor-command",
           "defaultValue": "-",
-          "description": "Marks toolbar controls that call document.execCommand(command) and emit ui:editor-command.",
-          "values": "bold | italic | underline | insertUnorderedList | insertOrderedList | createLink | unlink | formatBlock | removeFormat"
+          "description": "Runs formatting, block, alignment, history, link, list, or custom commands and emits ui:editor-command.",
+          "values": "string"
+        },
+        {
+          "attribute": "data-ui-editor-value",
+          "defaultValue": "-",
+          "description": "Supplies a value for commands such as formatBlock and createLink. Native select values are read automatically.",
+          "values": "string"
+        },
+        {
+          "attribute": "data-ui-rich-text-editable",
+          "defaultValue": "-",
+          "description": "Marks the editable content surface for shortcuts, state syncing, and ui:editor-change events.",
+          "values": "data attribute"
         },
         {
           "attribute": "class, className",
@@ -10903,6 +10986,8 @@
             "data-ui-rich-text-editor",
             "glass",
             "data-ui-editor-command",
+            "data-ui-editor-value",
+            "data-ui-rich-text-editable",
             "class, className",
             "...native attributes"
           ],
@@ -10982,10 +11067,16 @@
       ],
       "runtimeEvents": [
         {
-          "detail": "{ command: string }",
+          "detail": "{ command: string, executed: boolean, value?: string }",
           "name": "ui:editor-command",
           "target": "RichTextEditor root ([data-ui-rich-text-editor])",
-          "when": "Fires after a [data-ui-editor-command] control runs document.execCommand(command)."
+          "when": "Fires after a toolbar control or keyboard shortcut runs an editor command."
+        },
+        {
+          "detail": "{ html: string, text: string }",
+          "name": "ui:editor-change",
+          "target": "RichTextEditor root ([data-ui-rich-text-editor])",
+          "when": "Fires after editable content changes or an editor command runs."
         }
       ]
     },
@@ -12599,49 +12690,10 @@
       "runtimeEvents": []
     },
     {
-      "apiReference": [
-        {
-          "attribute": "placement",
-          "defaultValue": "\"bottom-right\"",
-          "description": "Positions the toast viewport.",
-          "values": "\"top-left\" | \"top-center\" | \"top-right\" | \"bottom-left\" | \"bottom-center\" | \"bottom-right\""
-        },
-        {
-          "attribute": "maxCount",
-          "defaultValue": "-",
-          "description": "Limits the number of runtime toasts kept in the viewport. The runtime default is 5 when omitted.",
-          "values": "number"
-        },
-        {
-          "attribute": "aria-atomic",
-          "defaultValue": "\"false\"",
-          "description": "Sets the live-region atomicity attribute.",
-          "values": "ARIA boolean string"
-        },
-        {
-          "attribute": "aria-live",
-          "defaultValue": "\"polite\"",
-          "description": "Sets the live-region announcement priority.",
-          "values": "\"off\" | \"polite\" | \"assertive\""
-        },
-        {
-          "attribute": "class, className",
-          "defaultValue": "\"\"",
-          "description": "Merges custom classes with the generated ui-* root classes.",
-          "values": "string"
-        },
-        {
-          "attribute": "...native attributes",
-          "defaultValue": "-",
-          "description": "Forwards standard attributes to the root element unless the component consumes them.",
-          "values": "HTML attributes"
-        }
-      ],
+      "apiReference": [],
       "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string\n  className?: string\n  maxCount?: number\n  placement?: 'bottom-center' | 'bottom-left' | 'bottom-right' | 'top-center' | 'top-left' | 'top-right'\n}\n\nconst {\n  'aria-atomic': ariaAtomic = 'false',\n  'aria-live': ariaLive = 'polite',\n  class: classProp = '',\n  className = '',\n  maxCount,\n  placement = 'bottom-right',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n    'ui-sonner'\n], classProp, className)\n---\n\n<div\n  aria-atomic={ariaAtomic}\n  aria-live={ariaLive}\n  data-ui-sonner\n  data-ui-toast-max={maxCount}\n  data-placement={placement}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Feedback",
-      "collections": [
-        "Status and messaging"
-      ],
+      "collections": [],
       "dependencies": [
         "styles",
         "runtime"
@@ -12655,7 +12707,7 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
-          "example": "<Sonner aria-live=\"polite\" />",
+          "example": "<Sonner />",
           "importStatement": "import { Sonner } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
@@ -12687,13 +12739,7 @@
         },
         "elements": {
           "attributes": [
-            "data-ui-sonner",
-            "placement",
-            "maxCount",
-            "aria-atomic",
-            "aria-live",
-            "class, className",
-            "...native attributes"
+            "data-ui-sonner"
           ],
           "available": true,
           "example": "<lumen-sonner></lumen-sonner>",
@@ -12709,7 +12755,7 @@
         },
         "react": {
           "available": true,
-          "example": "<Sonner aria-live=\"polite\" />",
+          "example": "<Sonner />",
           "importStatement": "import { Sonner } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -12724,45 +12770,17 @@
         "elements": true,
         "react": true
       },
-      "guidance": {
-        "when": "Mount once as the live-region viewport that receives programmatically created toast notifications.",
-        "distinction": "Toast is the notification surface; Sonner is the container and announcement region that manages multiple toasts."
-      },
+      "guidance": null,
       "kebab": "sonner",
       "keyboardInteractions": [],
       "keywords": [
-        "and",
-        "announcement",
-        "container",
-        "created",
-        "empty",
         "feedback",
         "for",
-        "guidance",
-        "inline",
-        "live",
-        "manages",
-        "messaging",
-        "mount",
-        "multiple",
-        "notification",
         "notifications",
-        "once",
-        "persistent",
-        "programmatically",
         "provides",
-        "receives",
-        "region",
-        "separate",
         "sonner",
-        "states",
-        "status",
-        "surface",
-        "that",
         "the",
         "toast",
-        "toasts",
-        "transient",
         "viewport"
       ],
       "name": "Sonner",
@@ -12790,26 +12808,7 @@
       ],
       "propsExtends": "HTMLAttributes<'div'>",
       "recipes": [],
-      "runtimeEvents": [
-        {
-          "detail": "{ id?: string, title?: string, description?: string, variant?: string, duration?: number, placement?: string, action?: { label: string } }",
-          "name": "ui:toast",
-          "target": "Document",
-          "when": "Creates a programmatic toast in the matching Sonner viewport."
-        },
-        {
-          "detail": "{ id: string, title?: string, description?: string, variant?: string, duration?: number }",
-          "name": "ui:toast-update",
-          "target": "Document",
-          "when": "Updates a programmatic toast created by ui:toast or window.LumenToast.create(detail)."
-        },
-        {
-          "detail": "{ id?: string }",
-          "name": "ui:toast-dismiss",
-          "target": "Document",
-          "when": "Dismisses one programmatic toast by id, or all runtime toasts when id is omitted."
-        }
-      ]
+      "runtimeEvents": []
     },
     {
       "apiReference": [
@@ -14132,15 +14131,15 @@
           "values": "\"default\" | \"destructive\" | \"success\" | \"warning\""
         },
         {
-          "attribute": "Sonner placement",
+          "attribute": "placement",
           "defaultValue": "\"bottom-right\"",
-          "description": "Positions the toast viewport mounted for programmatic notifications.",
+          "description": "Positions the notification viewport used for programmatic toasts.",
           "values": "\"top-left\" | \"top-center\" | \"top-right\" | \"bottom-left\" | \"bottom-center\" | \"bottom-right\""
         },
         {
-          "attribute": "Sonner maxCount",
+          "attribute": "max",
           "defaultValue": "5",
-          "description": "Limits the number of runtime toasts kept in the viewport.",
+          "description": "Limits the number of runtime toasts kept in the notification viewport.",
           "values": "number"
         },
         {
@@ -14238,8 +14237,8 @@
             "glass",
             "surface",
             "variant",
-            "Sonner placement",
-            "Sonner maxCount",
+            "placement",
+            "max",
             "window.LumenToast.create(detail)",
             "window.LumenToast.update(id, detail)",
             "window.LumenToast.dismiss(id?)",
@@ -14283,7 +14282,7 @@
       },
       "guidance": {
         "when": "Use for brief, non-blocking feedback after an action or background event.",
-        "distinction": "Use Alert when the message must remain in the page. Mount Sonner once as the viewport that positions, stacks, and announces programmatic Toast instances."
+        "distinction": "Use Alert when the message must remain in the page. The toast runtime creates its notification viewport automatically when needed."
       },
       "kebab": "toast",
       "keyboardInteractions": [
@@ -14298,10 +14297,11 @@
         "after",
         "alert",
         "and",
-        "announces",
+        "automatically",
         "background",
         "blocking",
         "brief",
+        "creates",
         "displays",
         "empty",
         "event",
@@ -14309,26 +14309,22 @@
         "for",
         "guidance",
         "inline",
-        "instances",
+        "its",
         "message",
         "messaging",
-        "mount",
         "must",
+        "needed",
         "non",
+        "notification",
         "notifications",
-        "once",
         "page",
         "persistent",
-        "positions",
-        "programmatic",
         "remain",
+        "runtime",
         "separate",
-        "sonner",
-        "stacks",
         "states",
         "status",
         "temporary",
-        "that",
         "the",
         "toast",
         "transient",
@@ -14371,7 +14367,7 @@
           "detail": "{ id?: string, title?: string, description?: string, variant?: string, duration?: number, placement?: string, action?: { label: string } }",
           "name": "ui:toast",
           "target": "Document",
-          "when": "Creates a programmatic toast in the matching Sonner viewport."
+          "when": "Creates a programmatic toast in the matching notification viewport."
         },
         {
           "detail": "{ id: string, title?: string, description?: string, variant?: string, duration?: number }",
@@ -17977,7 +17973,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'size'> {\n  class?: string\n  className?: string\n  label?: string\n  hint?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  label = 'Choose a file or drag it here',\n  hint,\n  id,\n  ...rest\n} = Astro.props\n\nconst inputId = id ?? 'ui-file-upload'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-file-upload'\n], classProp, className)\n---\n\n<label class:list={classList} data-ui-file-upload for={inputId}>\n  <input class=\"ui-file-upload__input\" data-ui-file-upload-input id={inputId} type=\"file\" {...passthrough} />\n  <span aria-hidden=\"true\" class=\"ui-file-upload__icon\"></span>\n  <span class=\"ui-file-upload__prompt\">\n    <slot>{label}</slot>\n  </span>\n  {hint && <span class=\"ui-file-upload__hint\">{hint}</span>}\n  <span aria-live=\"polite\" class=\"ui-file-upload__files\" data-ui-file-upload-files></span>\n</label>\n",
+      "astroSource": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'size'> {\n  class?: string\n  className?: string\n  label?: string\n  hint?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  label = 'Choose a file or drag it here',\n  hint,\n  id,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-file-upload'\n], classProp, className)\n---\n\n<label class:list={classList} data-ui-file-upload for={id}>\n  <input class=\"ui-file-upload__input\" data-ui-file-upload-input id={id} type=\"file\" {...passthrough} />\n  <svg\n    aria-hidden=\"true\"\n    class=\"ui-file-upload__icon\"\n    fill=\"none\"\n    focusable=\"false\"\n    viewBox=\"0 0 24 24\"\n  >\n    <path d=\"M12 16V4m0 0L8 8m4-4 4 4\"></path>\n    <path d=\"M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4\"></path>\n  </svg>\n  <span class=\"ui-file-upload__prompt\">\n    <slot>{label}</slot>\n  </span>\n  {hint && <span class=\"ui-file-upload__hint\">{hint}</span>}\n  <span aria-live=\"polite\" class=\"ui-file-upload__files\" data-ui-file-upload-files></span>\n</label>\n",
       "category": "Forms",
       "collections": [],
       "dependencies": [],
@@ -18016,7 +18012,7 @@
             }
           ],
           "propsExtends": "Omit<HTMLAttributes<'input'>, 'type' | 'size'>",
-          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'size'> {\n  class?: string\n  className?: string\n  label?: string\n  hint?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  label = 'Choose a file or drag it here',\n  hint,\n  id,\n  ...rest\n} = Astro.props\n\nconst inputId = id ?? 'ui-file-upload'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-file-upload'\n], classProp, className)\n---\n\n<label class:list={classList} data-ui-file-upload for={inputId}>\n  <input class=\"ui-file-upload__input\" data-ui-file-upload-input id={inputId} type=\"file\" {...passthrough} />\n  <span aria-hidden=\"true\" class=\"ui-file-upload__icon\"></span>\n  <span class=\"ui-file-upload__prompt\">\n    <slot>{label}</slot>\n  </span>\n  {hint && <span class=\"ui-file-upload__hint\">{hint}</span>}\n  <span aria-live=\"polite\" class=\"ui-file-upload__files\" data-ui-file-upload-files></span>\n</label>\n",
+          "source": "---\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport type { HTMLAttributes } from 'astro/types'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'size'> {\n  class?: string\n  className?: string\n  label?: string\n  hint?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  label = 'Choose a file or drag it here',\n  hint,\n  id,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-file-upload'\n], classProp, className)\n---\n\n<label class:list={classList} data-ui-file-upload for={id}>\n  <input class=\"ui-file-upload__input\" data-ui-file-upload-input id={id} type=\"file\" {...passthrough} />\n  <svg\n    aria-hidden=\"true\"\n    class=\"ui-file-upload__icon\"\n    fill=\"none\"\n    focusable=\"false\"\n    viewBox=\"0 0 24 24\"\n  >\n    <path d=\"M12 16V4m0 0L8 8m4-4 4 4\"></path>\n    <path d=\"M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4\"></path>\n  </svg>\n  <span class=\"ui-file-upload__prompt\">\n    <slot>{label}</slot>\n  </span>\n  {hint && <span class=\"ui-file-upload__hint\">{hint}</span>}\n  <span aria-live=\"polite\" class=\"ui-file-upload__files\" data-ui-file-upload-files></span>\n</label>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -18061,7 +18057,7 @@
             }
           ],
           "propsExtends": "Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'>",
-          "source": "export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> {\n  hint?: ReactNode\n  inputClassName?: string\n  label?: ReactNode\n}\n\nexport const FileUpload = ({ children, className, hint, id, inputClassName, label = 'Choose a file or drag it here', ...props }: FileUploadProps) => {\n  const inputId = id ?? 'ui-file-upload'\n\n  return (\n    <label className={composeClassName('ui-file-upload', className)} data-ui-file-upload htmlFor={inputId}>\n      <input className={composeClassName('ui-file-upload__input', inputClassName)} data-ui-file-upload-input id={inputId} type=\"file\" {...props} />\n      <span aria-hidden=\"true\" className=\"ui-file-upload__icon\" />\n      <span className=\"ui-file-upload__prompt\">{children ?? label}</span>\n      {hint && <span className=\"ui-file-upload__hint\">{hint}</span>}\n      <span aria-live=\"polite\" className=\"ui-file-upload__files\" data-ui-file-upload-files />\n    </label>\n  )\n}",
+          "source": "export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> {\n  hint?: ReactNode\n  inputClassName?: string\n  label?: ReactNode\n}\n\nexport const FileUpload = ({\n  children,\n  className,\n  hint,\n  id,\n  inputClassName,\n  label = 'Choose a file or drag it here',\n  onChange,\n  ...props\n}: FileUploadProps) => {\n  const generatedId = useId()\n  const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(':', '')}`\n  const [selectedFiles, setSelectedFiles] = useState<string[]>([])\n\n  const selectedFileText = selectedFiles.length > 1\n    ? `${selectedFiles.length} files selected`\n    : selectedFiles[0] ?? ''\n\n  return (\n    <label\n      className={composeClassName('ui-file-upload', className)}\n      data-state={selectedFiles.length > 0 ? 'selected' : 'idle'}\n      data-ui-file-upload\n      htmlFor={inputId}\n    >\n      <input\n        className={composeClassName('ui-file-upload__input', inputClassName)}\n        data-ui-file-upload-input\n        id={inputId}\n        onChange={event => {\n          setSelectedFiles([...(event.currentTarget.files ?? [])].map(file => file.name))\n\n          onChange?.(event)\n        }}\n        type=\"file\"\n        {...props}\n      />\n      <svg\n        aria-hidden=\"true\"\n        className=\"ui-file-upload__icon\"\n        fill=\"none\"\n        focusable=\"false\"\n        viewBox=\"0 0 24 24\"\n      >\n        <path d=\"M12 16V4m0 0L8 8m4-4 4 4\" />\n        <path d=\"M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4\" />\n      </svg>\n      <span className=\"ui-file-upload__prompt\">{children ?? label}</span>\n      {hint && <span className=\"ui-file-upload__hint\">{hint}</span>}\n      <span aria-live=\"polite\" className=\"ui-file-upload__files\" data-ui-file-upload-files>\n        {selectedFileText}\n      </span>\n    </label>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -20551,7 +20547,7 @@
     }
   ],
   "docs": {
-    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://rules`.\n2. Search for the use case with `lumen_search`.\n3. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n4. Read related multi-component guidance with `lumen_get_recipe`.\n5. Request `detail: \"source\"` only when the usage contract is insufficient.\n6. Read `lumen://tokens` before introducing custom styling.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,\n`Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,\n`NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Sonner`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`.\n\n## Product Recipes\n\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`. Astro `UIPrimitives` and registered Web Components bind those controls\n  directly; React apps can use `useRichTextEditor` for `rootProps`, `getCommandProps`, and\n  `executeCommand`. For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Sonner` plus `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:datatable-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string }` | A `[data-ui-editor-command]` control runs `document.execCommand(command)`. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in a `Sonner` viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Do not generate `surface=\"glass\"` for overlays; it is a deprecated alias that maps to `glass`.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
+    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://rules`.\n2. Search for the use case with `lumen_search`.\n3. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n4. Read related multi-component guidance with `lumen_get_recipe`.\n5. Request `detail: \"source\"` only when the usage contract is insufficient.\n6. Read `lumen://tokens` before introducing custom styling.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,\n`Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,\n`NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`.\n\n## Product Recipes\n\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:datatable-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Do not generate `surface=\"glass\"` for overlays; it is a deprecated alias that maps to `glass`.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
     "readme": "# Lumen\n\nLumen is a multi-framework primitive UI system from Santiago Molina. Install the package for your\nframework; it includes the shared Lumen foundation and standalone stylesheet. Consumers do not\nneed Tailwind configuration for Lumen components to render.\n\nThe monorepo layers framework adapters around a shared core:\n\n- `@santi020k/lumen` - shared stylesheet, CLI, registry metadata, and package map\n- `@santi020k/lumen-core` - tokens, component metadata, class composition, and shared behavior helpers\n- `@santi020k/lumen-astro` - Astro components and progressive-enhancement runtime\n- `@santi020k/lumen-react` - React components\n- `@santi020k/lumen-elements` - standards-based Web Components\n- `@santi020k/lumen-mcp` - Model Context Protocol server for AI agents\n- `apps/docs` - Astro documentation and demo site\n\n## Quick Start\n\nChoose one package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\nImport the stylesheet from the same framework package once in your global CSS file, root layout,\nor app entry. For example:\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nWith Tailwind, keep it in the same shared CSS entry:\n\n```css\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nFor interactive Astro primitives, mount `UIPrimitives` once in your root layout:\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n## Development\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\n## Package Strategy\n\nThe `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.\n\n## Migration\n\nIf you are replacing an older internal design system or duplicated UI primitives, refer to the [Migration Guide](docs/migrating-to-lumen.md) for instructions on adopting Lumen incrementally and mapping existing tokens.\n\n## Agent and Registry Surfaces\n\nInstall the portable Lumen Agent Skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\nAI coding tools:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe canonical skill lives in [skills/lumen-ui](skills/lumen-ui). It teaches agents how to select,\ncompose, theme, and verify Lumen primitives while preserving the app's framework and architecture.\nPair it with [`@santi020k/lumen-mcp`](packages/mcp/README.md) when the agent should search the live\ncatalog and retrieve current component source, props, tokens, and rules.\n\nLumen also includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and\n[registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the\ncomponent catalog, setup rules, recipes, and installable file groups. The current roadmap lives in\n[docs/feature-roadmap.md](docs/feature-roadmap.md).\n\nFigma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for\nFigma variables and the Code Connect path for a published component library.\n[Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,\nother framework, CMS, and CDN optimizers while applying Lumen presentation.\n\nThe umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for\nlisting recipes, showing recipe contents, printing install commands, loading alternate registry\nmanifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge\nincoming recipe files with existing files, `--fail-on-conflict` for CI, or `--registry-token` /\n`LUMEN_REGISTRY_TOKEN` for private remote registries.\n"
   },
   "meta": {

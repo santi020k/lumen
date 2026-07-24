@@ -329,6 +329,23 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-date-picker__popover > .ui-calendar')
   })
 
+  test('composes DateRangePicker from synchronized custom DatePickers', async () => {
+    const [component, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/DateRangePicker.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('data-ui-date-range-picker')
+    expect(runtime).toContain('const initDateRangePickers = (scope: ParentNode): void =>')
+    expect(runtime).toContain("setAttribute('data-range-part', 'start')")
+    expect(runtime).toContain("setAttribute('data-range-part', 'end')")
+    expect(runtime).toContain('root.dataset.rangeState')
+    expect(styles).toContain('.ui-date-range-picker::before')
+    expect(styles).toContain('[data-range-part="start"]')
+    expect(styles).toContain('@media (max-width: 40rem)')
+  })
+
   test('ships DataTable as a static table enhanced with sorting and selection', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),
