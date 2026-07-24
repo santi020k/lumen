@@ -3,6 +3,7 @@
 import { Badge, Card, Icon } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../components/CodeBlock.astro'
+import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
@@ -45,26 +46,19 @@ and include validation, loading, success, and keyboard states.`
       title="Give your AI the Lumen design system."
     >
       <Fragment slot="actions">
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          "
-          href="#install"
-        >
+        <DocsActionLink href="#install">
           Install the skill
           <Icon decorative name="arrow-down" size="sm" />
-        </a>
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          "
+        </DocsActionLink>
+        <DocsActionLink
           href={skillUrl}
           rel="noopener noreferrer"
           target="_blank"
+          variant="outline"
         >
           Read the source
           <Icon decorative name="arrow-up-right" size="sm" />
-        </a>
+        </DocsActionLink>
       </Fragment>
 
       <div class="skill-hero-card" slot="visual" aria-label="Lumen skill workflow">

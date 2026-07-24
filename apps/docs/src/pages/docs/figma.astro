@@ -2,6 +2,7 @@
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import { Badge, Card, Icon } from '@santi020k/lumen-astro'
 
+import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
@@ -54,25 +55,20 @@ const workflow = [
       title="One system from canvas to code."
     >
       <Fragment slot="actions">
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          "
+        <DocsActionLink
           href={figmaLibraryUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
           Open in Figma
           <Icon decorative name="arrow-up-right" size="sm" />
-        </a>
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          "
+        </DocsActionLink>
+        <DocsActionLink
           href="https://github.com/santi020k/lumen/blob/main/docs/figma.md"
           target="_blank"
           rel="noopener noreferrer"
-        >Read Figma notes</a>
+          variant="outline"
+        >Read Figma notes</DocsActionLink>
       </Fragment>
 
       <div class="figma-token-stack" slot="visual" aria-label="Semantic token preview">
@@ -149,14 +145,11 @@ const workflow = [
         </p>
       </div>
       <code>File key: {figmaFileKey}</code>
-      <a
-        class="
-          ui-button ui-button--default-size ui-button--default no-underline
-        "
+      <DocsActionLink
         href={figmaLibraryUrl}
         target="_blank"
         rel="noopener noreferrer"
-      >Open library</a>
+      >Open library</DocsActionLink>
     </Card>
   </div>
 </DocsLayout>

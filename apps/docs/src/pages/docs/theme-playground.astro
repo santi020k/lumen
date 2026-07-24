@@ -5,6 +5,7 @@ import {
   Button,
   ButtonGroup,
   Card,
+  ColorPicker,
   Field,
   Input,
   Label,
@@ -16,6 +17,7 @@ import {
 } from '@santi020k/lumen-astro'
 import { createThemeFromHue, lumenTokenNames } from '@santi020k/lumen-core'
 
+import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import PrimitiveShowcase from '../../components/PrimitiveShowcase.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
@@ -57,18 +59,8 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
       title="Shape a theme. See it live."
     >
       <Fragment slot="actions">
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          "
-          href="#theme-workbench"
-        >Start building</a>
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          "
-          href="/docs#themes"
-        >Read theme guide</a>
+        <DocsActionLink href="#theme-workbench">Start building</DocsActionLink>
+        <DocsActionLink href="/docs#themes" variant="outline">Read theme guide</DocsActionLink>
       </Fragment>
 
       <div class="theme-hero-swatches" slot="visual" aria-label="Generated theme preview">
@@ -187,7 +179,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
           <Field class="theme-playground__field">
             <Label for="theme-primary-hex">Primary</Label>
             <div class="theme-playground__hex-row">
-              <input
+              <ColorPicker
                 aria-label="Primary color"
                 class="theme-playground__color"
                 data-ui-theme-primary-color
@@ -209,7 +201,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
           <Field class="theme-playground__field">
             <Label for="theme-secondary-hex">Secondary</Label>
             <div class="theme-playground__hex-row">
-              <input
+              <ColorPicker
                 aria-label="Secondary color"
                 class="theme-playground__color"
                 data-ui-theme-secondary-color

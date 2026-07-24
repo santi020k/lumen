@@ -1,8 +1,9 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Breadcrumb, Card, Separator } from '@santi020k/lumen-astro'
+import { Breadcrumb, Card, Separator, Table } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
 import { elementsApiReference, frameworkGuides, frameworkSetups } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
@@ -38,16 +39,12 @@ if (!guide || !setup) {
       title={guide.title}
     >
       <Fragment slot="actions">
-        <a class="
-          ui-button ui-button--default-size ui-button--default no-underline
-        " href="#install-title">
+        <DocsActionLink href="#install-title">
           Install Elements
-        </a>
-        <a class="
-          ui-button ui-button--default-size ui-button--outline no-underline
-        " href="#api-title">
+        </DocsActionLink>
+        <DocsActionLink href="#api-title" variant="outline">
           Explore the API
-        </a>
+        </DocsActionLink>
       </Fragment>
     </DocsPageHero>
 
@@ -105,7 +102,7 @@ if (!guide || !setup) {
           </div>
 
           {api.rows.length > 0 && (
-            <div class="
+            <Table class="
               overflow-x-auto rounded-xl border border-line bg-surface
             ">
               <table class="w-full min-w-176 border-collapse text-left text-sm">
@@ -136,7 +133,7 @@ if (!guide || !setup) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </Table>
           )}
 
           <div class="space-y-2">

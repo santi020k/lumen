@@ -2,6 +2,7 @@
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import { Badge, Card, Icon } from '@santi020k/lumen-astro'
 
+import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
@@ -106,25 +107,20 @@ const genericConfig = `{
       title="Give agents the Lumen contract."
     >
       <Fragment slot="actions">
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          "
+        <DocsActionLink
           href={npmUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
           View on npm
           <Icon decorative name="arrow-up-right" size="sm" />
-        </a>
-        <a
-          class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          "
+        </DocsActionLink>
+        <DocsActionLink
           href={readmeUrl}
           target="_blank"
           rel="noopener noreferrer"
-        >Read the README</a>
+          variant="outline"
+        >Read the README</DocsActionLink>
       </Fragment>
 
       <div class="mcp-hero-card" slot="visual" aria-label="MCP tools preview">
@@ -274,14 +270,11 @@ const genericConfig = `{
         </p>
       </div>
       <code>npx -y {packageName}</code>
-      <a
-        class="
-          ui-button ui-button--default-size ui-button--default no-underline
-        "
+      <DocsActionLink
         href={npmUrl}
         target="_blank"
         rel="noopener noreferrer"
-      >Open on npm</a>
+      >Open on npm</DocsActionLink>
     </Card>
   </div>
 </DocsLayout>

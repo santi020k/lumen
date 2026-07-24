@@ -3,6 +3,7 @@
 import { Breadcrumb, Card } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
 import { frameworkGuides, frameworkSetups } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
@@ -38,16 +39,12 @@ if (!guide || !setup) {
       title={guide.title}
     >
       <Fragment slot="actions">
-        <a class="
-          ui-button ui-button--default-size ui-button--default no-underline
-        " href="#install-title">
+        <DocsActionLink href="#install-title">
           Install for Astro
-        </a>
-        <a class="
-          ui-button ui-button--default-size ui-button--outline no-underline
-        " href="/docs/components">
+        </DocsActionLink>
+        <DocsActionLink href="/docs/components" variant="outline">
           Browse components
-        </a>
+        </DocsActionLink>
       </Fragment>
     </DocsPageHero>
 

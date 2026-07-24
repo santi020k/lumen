@@ -5,5 +5,5 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<Tour steps={[{ target: '#demo-btn', content: 'Click this button to get started.' }]} />
-<Button id="demo-btn">Start guided tour</Button>
+<Tour id="demo-tour" steps={[{ target: '#demo-btn', content: 'Click this button to get started.' }]} />
+<Button data-ui-tour-open="#demo-tour" id="demo-btn">Start guided tour</Button>

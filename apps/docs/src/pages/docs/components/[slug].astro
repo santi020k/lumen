@@ -1,11 +1,21 @@
 ---
 /* eslint-disable better-tailwindcss/no-unknown-classes */
-import { Badge, Breadcrumb, Icon, Separator, Tabs } from '@santi020k/lumen-astro'
+import {
+  Badge,
+  Breadcrumb,
+  Icon,
+  Link,
+  Pagination,
+  Separator,
+  Table,
+  Tabs
+} from '@santi020k/lumen-astro'
 
 import type { InferGetStaticPropsType } from 'astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import CodeTabs from '../../../components/CodeTabs.astro'
+import DocsActionLink from '../../../components/DocsActionLink.astro'
 import {
   componentCollections,
   componentDocs,
@@ -129,27 +139,21 @@ export function HeroImage() {
         </h1>
         <p>{component.summary}</p>
         <div class="component-doc-hero__actions">
-          <a class="
-            ui-button ui-button--default-size ui-button--default no-underline
-          " href="#preview-title">
+          <DocsActionLink href="#preview-title">
             View preview
-          </a>
-          <a class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          " href="#api-title">
+          </DocsActionLink>
+          <DocsActionLink href="#api-title" variant="outline">
             API reference
-          </a>
-          <a
-            class="
-              ui-button ui-button--default-size ui-button--outline no-underline
-            "
+          </DocsActionLink>
+          <DocsActionLink
             href={figmaUrl}
             rel="noreferrer"
             target="_blank"
+            variant="outline"
           >
             <Icon decorative name="swatch-book" size="sm" />
             {component.figmaNodeId ? 'View in Figma' : 'Open Figma library'}
-          </a>
+          </DocsActionLink>
         </div>
       </div>
       <div class="component-doc-hero__meta" aria-label={`${component.name} support`}>
@@ -287,12 +291,12 @@ export function HeroImage() {
                 <code>format</code> only when the layout or delivery target calls for it.
               </li>
             </ul>
-            <a
-              class="ui-link text-sm"
+            <Link
+              class="text-sm"
               href="https://docs.astro.build/en/reference/modules/astro-assets/"
               rel="noreferrer"
               target="_blank"
-            >Astro Image reference</a>
+            >Astro Image reference</Link>
           </article>
 
           <article class="
@@ -328,12 +332,12 @@ export function HeroImage() {
                 and a real size.
               </li>
             </ul>
-            <a
-              class="ui-link text-sm"
+            <Link
+              class="text-sm"
               href="https://nextjs.org/docs/app/api-reference/components/image"
               rel="noreferrer"
               target="_blank"
-            >Next.js Image reference</a>
+            >Next.js Image reference</Link>
           </article>
         </div>
 
@@ -419,7 +423,7 @@ export function HeroImage() {
         same names; Elements use equivalent kebab-case attributes where custom elements expose them.
       </p>
     </div>
-    <div class="overflow-x-auto rounded-xl border border-line bg-surface">
+    <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
       <table class="w-full min-w-176 border-collapse text-left text-sm">
         <thead class="
           bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
@@ -451,7 +455,7 @@ export function HeroImage() {
           ))}
         </tbody>
       </table>
-    </div>
+    </Table>
   </section>
 
   {component.keyboardInteractions && (
@@ -464,7 +468,7 @@ export function HeroImage() {
           Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
         </p>
       </div>
-      <div class="overflow-x-auto rounded-xl border border-line bg-surface">
+      <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
         <table class="w-full min-w-xl border-collapse text-left text-sm">
           <thead class="
             bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
@@ -488,7 +492,7 @@ export function HeroImage() {
             ))}
           </tbody>
         </table>
-      </div>
+      </Table>
     </section>
   )}
 
@@ -502,7 +506,7 @@ export function HeroImage() {
           CustomEvents dispatched by the Astro UIPrimitives runtime for this component.
         </p>
       </div>
-      <div class="overflow-x-auto rounded-xl border border-line bg-surface">
+      <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
         <table class="w-full min-w-176 border-collapse text-left text-sm">
           <thead class="
             bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
@@ -532,29 +536,31 @@ export function HeroImage() {
             ))}
           </tbody>
         </table>
-      </div>
+      </Table>
     </section>
   )}
 
   <Separator class="my-10" />
 
-  <nav class="flex flex-wrap justify-between gap-3" aria-label="Component pagination">
+  <Pagination class="flex flex-wrap justify-between gap-3" aria-label="Component pagination">
     {previous
       ? (
-          <a class="
-            ui-button ui-button--default-size ui-button--outline no-underline
-          " href={`/docs/components/${toSlug(previous.name)}`}>
+          <DocsActionLink
+            href={`/docs/components/${toSlug(previous.name)}`}
+            variant="outline"
+          >
             Previous: {previous.name}
-          </a>
+          </DocsActionLink>
         )
       : <span />}
     {next && (
-      <a class="
-        ui-button ui-button--default-size ui-button--outline no-underline
-      " href={`/docs/components/${toSlug(next.name)}`}>
+      <DocsActionLink
+        href={`/docs/components/${toSlug(next.name)}`}
+        variant="outline"
+      >
         Next: {next.name}
-      </a>
+      </DocsActionLink>
     )}
-  </nav>
+  </Pagination>
   </div>
 </DocsLayout>

@@ -1,0 +1,42 @@
+---
+import { ButtonLink } from '@santi020k/lumen-astro'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'a'> {
+  class?: string
+  className?: string
+  href: string
+  variant?: 'default' | 'outline'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  href,
+  variant = 'default',
+  ...rest
+} = Astro.props
+---
+
+<ButtonLink
+  class:list={[
+    'docs-action-link ui-button--default-size',
+    variant === 'outline' && 'ui-button--outline',
+    classProp,
+    className
+  ]}
+  href={href}
+  variant={variant === 'outline' ? 'secondary' : 'primary'}
+  {...rest}
+>
+  <slot />
+</ButtonLink>
+
+<style>
+  :global(.docs-action-link.ui-button-link) {
+    min-height: 2.5rem;
+    border-radius: var(--ui-radius-sm);
+    padding: 0.5rem 1rem;
+  }
+</style>

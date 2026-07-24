@@ -13,6 +13,7 @@ import {
 } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../components/CodeBlock.astro'
+import DocsActionLink from '../../components/DocsActionLink.astro'
 import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
 import {
   componentDocs,
@@ -63,12 +64,8 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         runtime. Pick a framework below; the markup and class contract stay the same everywhere.
       </p>
       <div class="flex flex-wrap gap-3">
-        <a class="
-          ui-button ui-button--default-size ui-button--default no-underline
-        " href="#installation">Install Lumen</a>
-        <a class="
-          ui-button ui-button--default-size ui-button--outline no-underline
-        " href="/docs/components">Browse components</a>
+        <DocsActionLink href="#installation">Install Lumen</DocsActionLink>
+        <DocsActionLink href="/docs/components" variant="outline">Browse components</DocsActionLink>
       </div>
       <div class="docs-hero__stats" role="list" aria-label="Library overview">
         {heroStats.map(([value, label]) => (
@@ -347,12 +344,10 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       Every component page includes a live preview plus code for all three targets.
     </p>
     <div class="flex flex-wrap gap-3">
-      <a class="
-        ui-button ui-button--default-size ui-button--default no-underline
-      " href="/docs/components">Browse the component reference</a>
-      <a class="
-        ui-button ui-button--default-size ui-button--outline no-underline
-      " href="https://github.com/santi020k/lumen">View on GitHub</a>
+      <DocsActionLink href="/docs/components">Browse the component reference</DocsActionLink>
+      <DocsActionLink href="https://github.com/santi020k/lumen" variant="outline">
+        View on GitHub
+      </DocsActionLink>
     </div>
   </Card>
 </DocsLayout>

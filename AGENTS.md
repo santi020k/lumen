@@ -75,7 +75,8 @@ before release-oriented work or broad cross-package changes.
   snapshot with `pnpm --filter @santi020k/lumen-mcp run generate` after changing components, tokens, or `llms.txt`.
 - Figma workflows: implementing Figma designs with Lumen follows
   [docs/figma-design-to-code.md](docs/figma-design-to-code.md); token export to Figma lives in
-  [docs/figma.md](docs/figma.md).
+  [docs/figma.md](docs/figma.md); reusable AI maintenance instructions for the library live in
+  [docs/figma-ai-working-guide.md](docs/figma-ai-working-guide.md).
 - Tool-specific AI files should be tiny pointers back to this file.
 
 ## Imported Claude Cowork project instructions

@@ -32,21 +32,30 @@ interface RenderedColumn {
   root: boolean
 }
 
+const cascaderId = `ui-cascader-${Math.random().toString(36).slice(2)}`
+const panelId = `${cascaderId}-panel`
 let columnCount = 0
 const columns: RenderedColumn[] = []
 
 const buildColumn = (items: CascaderOption[], root: boolean): string => {
   columnCount += 1
 
-  const id = `ui-cascader-col-${columnCount}`
+  const id = `${cascaderId}-column-${columnCount}`
 
-  const rendered = items.map(item => ({
+  const rendered: RenderedColumn['options'] = items.map(item => ({
     label: item.label,
-    nextId: item.children && item.children.length > 0 ? buildColumn(item.children, false) : undefined,
     value: item.value
   }))
 
   columns.push({ id, options: rendered, root })
+
+  for (const [index, item] of items.entries()) {
+    const renderedOption = rendered[index]
+
+    if (item.children && item.children.length > 0 && renderedOption) {
+      renderedOption.nextId = buildColumn(item.children, false)
+    }
+  }
 
   return id
 }
@@ -61,20 +70,30 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div class:list={classList} data-surface="default" data-ui-cascader data-ui-popover {...passthrough}>
-  <button aria-expanded="false" aria-haspopup="listbox" class="ui-select ui-select__trigger ui-cascader__trigger" data-ui-trigger type="button">
+  <button
+    aria-controls={panelId}
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    class="ui-select ui-select__trigger ui-cascader__trigger"
+    data-ui-trigger
+    role="combobox"
+    type="button"
+  >
     <span data-ui-cascader-placeholder={placeholder} data-ui-cascader-value>{placeholder}</span>
   </button>
-  <div class="ui-cascader__panel" data-ui-panel hidden>
+  <div class="ui-cascader__panel" data-ui-panel hidden id={panelId}>
     {columns.map(column => (
-      <ol class="ui-cascader__column" hidden={!column.root} id={column.id}>
+      <ol aria-label={column.root ? 'Options' : 'Sub-options'} class="ui-cascader__column" hidden={!column.root} id={column.id} role="listbox">
         {column.options.map(option => (
-          <li>
+          <li role="presentation">
             <button
+              aria-selected="false"
               class="ui-cascader__option"
               data-label={option.label}
               data-ui-cascader-next={option.nextId ? `#${option.nextId}` : undefined}
               data-ui-cascader-option
               data-value={option.value}
+              role="option"
               type="button"
             >
               <span>{option.label}</span>
