@@ -136,6 +136,8 @@
     if (panel.hasAttribute('popover')) {
       try {
         if (open) {
+          panel.hidden = false
+
           panel.showPopover()
         } else {
           panel.hidePopover()
@@ -143,6 +145,8 @@
       } catch {
         /* popover already in requested state */
       }
+
+      panel.hidden = !open
     } else {
       panel.hidden = !open
     }
