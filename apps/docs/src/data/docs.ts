@@ -1,3 +1,5 @@
+import type { LumenComponentName } from '@santi020k/lumen-core'
+
 export interface ComponentDoc {
   apiReference: ComponentApiRow[]
   name: string
@@ -694,9 +696,15 @@ const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardI
 export const runtimeEvents: RuntimeEventRow[] = [
   {
     detail: '{ values: string[] }',
-    name: 'ui:datatable-selection-change',
+    name: 'ui:data-table-selection-change',
     target: 'DataTable root ([data-ui-datatable])',
     when: 'Fires after a selectable DataTable row checkbox, select-all checkbox, or form reset changes the selected row values.'
+  },
+  {
+    detail: '{ values: string[] }',
+    name: 'ui:datatable-selection-change',
+    target: 'DataTable root ([data-ui-datatable])',
+    when: 'Deprecated compatibility alias for ui:data-table-selection-change; planned for removal in Lumen 1.0.'
   },
   {
     detail: '{ eventId: string | undefined, slot: string | undefined }',
@@ -785,7 +793,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
 ]
 
 const runtimeEventsByComponent: Partial<Record<string, readonly RuntimeEventRow[]>> = {
-  DataTable: runtimeEvents.filter(event => event.name === 'ui:datatable-selection-change'),
+  DataTable: runtimeEvents.filter(event => event.name === 'ui:data-table-selection-change' || event.name === 'ui:datatable-selection-change'),
   Field: runtimeEvents.filter(event => event.name === 'ui:validate' || event.name === 'ui:invalid' || event.name === 'ui:valid'),
   RichTextEditor: runtimeEvents.filter(event => event.name.startsWith('ui:editor-')),
   Schedule: runtimeEvents.filter(event => event.name === 'ui:schedule-change'),
@@ -795,9 +803,12 @@ const runtimeEventsByComponent: Partial<Record<string, readonly RuntimeEventRow[
   VirtualList: runtimeEvents.filter(event => event.name === 'ui:virtual-list-range')
 }
 
-const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]>> = {
+const apiReferenceByComponent = {
   Accordion: [
     apiRow('variant', '"default" | "flush"', '"default"', 'Uses bordered cards by default or a compact, divider-led list with flush.')
+  ],
+  Agenda: [
+    apiRow('children', 'Astro slot | ReactNode | child nodes', 'required', 'Provides the chronological headings and semantic event list rendered inside the agenda surface.')
   ],
   Alert: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the alert tone.')
@@ -828,6 +839,13 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('--ui-animated-logo-duration', 'CSS time', '"700ms"', 'Customizes the reveal duration.'),
     apiRow('--ui-animated-logo-delay', 'CSS time', '"0ms"', 'Delays the reveal for coordinated compositions.')
   ],
+  AnimatedPortrait: [
+    apiRow('src', 'ImageMetadata | string', 'required', 'Sets the portrait image source.'),
+    apiRow('alt', 'string', 'required', 'Provides the portrait image accessible text.'),
+    apiRow('showFloatingBadges', 'boolean', 'false', 'Shows the optional experience and location facts around the portrait.'),
+    apiRow('badgeProps', '{ experience?, location? }', '-', 'Customizes the labels and values used by the floating facts.'),
+    apiRow('widths, sizes', 'number[]; string', 'responsive defaults', 'Controls responsive image candidate generation and selection.')
+  ],
   BackToTop: [
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.'),
     apiRow('data-ui-back-to-top', 'boolean attribute', 'generated', 'Marks the button for scroll-to-top behavior from the UIPrimitives runtime.')
@@ -846,6 +864,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('size', '"default" | "sm" | "lg" | "icon"', '"default"', 'Controls button height, padding, and icon-only sizing.'),
     apiRow('loading', 'boolean', 'false', 'Shows a spinner, sets aria-busy, and blocks pointer interaction while pending.'),
     apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
+  ],
+  ButtonGroup: [
+    apiRow('children', 'button controls', 'required', 'Groups related actions while preserving each child button’s native semantics.')
   ],
   ButtonLink: [
     apiRow('href', 'string', '-', 'Sets the link destination.'),
@@ -866,9 +887,15 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('name', 'string', '-', 'Sets the name of the hidden input that stores the selected ISO date.'),
     apiRow('value', 'YYYY-MM-DD string', '""', 'Sets the selected date and hidden input value.')
   ],
+  Callout: [
+    apiRow('children', 'phrasing or flow content', 'required', 'Provides the emphasized explanation, caveat, or instruction.')
+  ],
   Carousel: [
     apiRow('data-ui-carousel-viewport', 'boolean attribute', '-', 'Marks the scrollable slide viewport.'),
     apiRow('data-ui-carousel-prev, data-ui-carousel-next', 'boolean attribute', '-', 'Marks child controls that move the viewport backward or forward.')
+  ],
+  Chart: [
+    apiRow('children', 'header, SVG or canvas, and optional caption', 'required', 'Composes the chart presentation while the consumer owns the visualization data and accessible description.')
   ],
   Checkbox: [
     apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
@@ -883,6 +910,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('highlighted', 'boolean', 'false', 'Allows a pre-highlighted pre/code tree, such as Shiki output, to render directly.'),
     apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.'),
     apiRow('wrap', 'boolean', 'false', 'Wraps long block-code lines instead of requiring horizontal scrolling.')
+  ],
+  Collapsible: [
+    apiRow('open', 'boolean', 'false', 'Uses the native details open state to show the collapsible content.'),
+    apiRow('children', 'summary and flow content', 'required', 'Requires a summary trigger followed by the content controlled by native details behavior.')
   ],
   CoverImage: [
     apiRow('image', 'ImageMetadata', 'required', 'Sets the source image processed by astro:assets.'),
@@ -940,6 +971,19 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     disclosureTriggerApiRow,
     apiRow('[role="menu"]', 'child panel', '-', 'Marks the dropdown panel that contains role="menuitem" actions.')
   ],
+  Empty: [
+    apiRow('children', 'heading, description, and optional action', 'required', 'Composes the empty-state explanation and recovery action.')
+  ],
+  Eyebrow: [
+    apiRow('children', 'phrasing content', 'required', 'Provides the short category or context label that precedes a heading.')
+  ],
+  FloatingBadge: [
+    apiRow('children', 'number | short text', 'required', 'Provides the compact overlaid notification value.')
+  ],
+  FormattedDate: [
+    apiRow('datetime', 'valid HTML datetime string', 'required', 'Sets the machine-readable date or time value on the rendered time element.'),
+    apiRow('children', 'human-readable date text', 'required', 'Provides the localized text shown to people.')
+  ],
   HoverCard: [
     surfaceApiRow,
     disclosureTriggerApiRow
@@ -973,6 +1017,9 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.'),
     apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the field height and font size.')
   ],
+  InputGroup: [
+    apiRow('children', 'input plus prefixes, suffixes, or controls', 'required', 'Composes attached controls while preserving the input’s native label and form behavior.')
+  ],
   InputOTP: [
     apiRow('autocomplete', 'HTML autocomplete value', '"one-time-code"', 'Hints that password managers and mobile keyboards can offer one-time code autofill.'),
     apiRow('disabled', 'boolean', 'false', 'Disables the native input and generated visual segments.'),
@@ -984,11 +1031,31 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Marker: [
     apiRow('variant', '"default" | "success" | "warning" | "danger"', '"default"', 'Controls the marker tone.')
   ],
+  Item: [
+    apiRow('children', 'primary content, metadata, and optional actions', 'required', 'Composes one compact aligned row.')
+  ],
+  Kbd: [
+    apiRow('children', 'shortcut text', 'required', 'Provides the key name or shortcut sequence rendered by the semantic kbd element.')
+  ],
+  Label: [
+    apiRow('for', 'element id', '-', 'Associates the label with a form control in Astro and HTML; use htmlFor in React.')
+  ],
+  LanguageToggle: [
+    apiRow('children', 'locale label', 'required', 'Shows the current locale or language abbreviation.'),
+    apiRow('type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.')
+  ],
+  Link: [
+    apiRow('href', 'string', 'required', 'Sets the native anchor destination.'),
+    apiRow('target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.')
+  ],
   Menubar: [
     surfaceApiRow
   ],
   Message: [
     apiRow('from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the message for the author.')
+  ],
+  MessageScroller: [
+    apiRow('children', 'Message elements or activity rows', 'required', 'Provides the ordered feed inside the scrollable region.')
   ],
   Note: [
     apiRow('label', 'string', '-', 'Adds an emphasized label above the note content.'),
@@ -1004,6 +1071,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   ],
   NumberField: [
     apiRow('type', 'HTML input type', '"number"', 'Sets the native input type.')
+  ],
+  Pagination: [
+    apiRow('aria-label', 'string', '"Pagination"', 'Sets the accessible name of the pagination navigation landmark.'),
+    apiRow('children', 'links and current-page indicators', 'required', 'Provides native links; use aria-current="page" for the active page and rel for previous and next links.')
   ],
   PhoneInput: [
     apiRow('countries', 'Array<string | { label, value, disabled? }>', '[]', 'Populates the country dial-code select options.'),
@@ -1025,12 +1096,26 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('value', 'number', '0', 'Sets the current progress value, clamped between 0 and max.'),
     apiRow('max', 'number', '100', 'Sets the upper bound for progress.')
   ],
+  Prose: [
+    apiRow('children', 'rendered Markdown, CMS, or long-form HTML', 'required', 'Applies readable measure and typographic rhythm without changing the supplied semantics.')
+  ],
+  RadioGroup: [
+    apiRow('children', 'labelled radio inputs', 'required', 'Provides the mutually exclusive native controls inside the fieldset.'),
+    apiRow('aria-label, aria-labelledby', 'string', '-', 'Names the radio group when no visible legend is supplied.')
+  ],
   Resizable: [
     apiRow('defaultSizes', 'number[]', '-', 'Sets initial pane sizes as percentages, serialized for the runtime.'),
     apiRow('direction', '"horizontal" | "vertical"', '"horizontal"', 'Sets the resize axis and generated handle orientation.'),
     apiRow('maxSize', 'number | number[]', '-', 'Limits pane growth by percentage; pass an array for per-pane limits.'),
     apiRow('minSize', 'number | number[]', '-', 'Limits pane shrinkage by percentage; pass an array for per-pane limits.'),
     apiRow('resetOnDoubleClick', 'boolean', 'true', 'Restores default pane sizes when a resize handle is double-clicked.')
+  ],
+  Schedule: [
+    apiRow('data-ui-schedule-event', 'boolean attribute', '-', 'Marks a draggable event and exposes its id to the schedule change event.'),
+    apiRow('data-ui-schedule-slot', 'boolean attribute', '-', 'Marks a drop target and exposes its slot value to the schedule change event.')
+  ],
+  ScrollArea: [
+    apiRow('children', 'scrollable flow content', 'required', 'Provides the content inside the styled overflow container.')
   ],
   Select: [
     apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
@@ -1066,10 +1151,17 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('aria-hidden', 'ARIA boolean string', 'true unless labelled', 'Overrides whether the loading placeholder is exposed to assistive technology.'),
     apiRow('role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.')
   ],
+  SkipLink: [
+    apiRow('href', 'fragment URL', 'required', 'Targets the main-content id that receives navigation after repeated controls are bypassed.')
+  ],
   Spinner: [
     apiRow('aria-label, aria-labelledby', 'string', '-', 'Makes the spinner accessible and changes the default role to status.'),
     apiRow('aria-hidden', 'ARIA boolean string', 'true unless labelled', 'Overrides whether the loading indicator is exposed to assistive technology.'),
     apiRow('role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.')
+  ],
+  Sonner: [
+    apiRow('placement', '"bottom-center" | "bottom-left" | "bottom-right" | "top-center" | "top-left" | "top-right"', '"bottom-right"', 'Positions the notification viewport.'),
+    apiRow('maxCount', 'number', '3', 'Limits the number of simultaneously visible runtime toasts.')
   ],
   SpeedDial: [
     apiRow('actions', 'Array<{ icon?, label, value? }>', '[]', 'Creates labelled menu actions and renders optional Lumen icons.'),
@@ -1083,8 +1175,29 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('role', 'ARIA role', '"switch"', 'Sets the switch role on the checkbox input.'),
     apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
   ],
+  Table: [
+    apiRow('children', 'caption, thead, tbody, and tfoot', 'required', 'Provides semantic native table structure inside the styled wrapper.')
+  ],
+  Tabs: [
+    apiRow('[role="tablist"]', 'child container', 'required', 'Groups the tab controls.'),
+    apiRow('[role="tab"]', 'child control', 'required', 'Connects each tab to a panel with aria-controls and reports selection with aria-selected.'),
+    apiRow('[role="tabpanel"]', 'child panel', 'required', 'Connects each panel to its tab with aria-labelledby and hides inactive panels.')
+  ],
+  TagGroup: [
+    apiRow('data-ui-tag', 'boolean attribute', '-', 'Marks each tag item for group behavior.'),
+    apiRow('data-ui-tag-remove', 'boolean attribute', '-', 'Marks a labelled child control that removes its closest tag and emits ui:tag-remove.')
+  ],
   Textarea: [
     apiRow('rows', 'number', '4', 'Sets the visible text rows.')
+  ],
+  ThemeBuilder: [
+    apiRow('data-ui-theme-target', 'CSS selector', 'documentElement', 'Selects the element that receives generated theme variables.'),
+    apiRow('data-ui-theme-brand-hue', 'range or number input', '-', 'Controls the generated brand hue.'),
+    apiRow('data-ui-theme-export', 'button attribute', '-', 'Exports the current theme in the selected CSS, Figma, or design-token format.')
+  ],
+  ThemeToggle: [
+    apiRow('storageKey', 'string', '"lumen-theme"', 'Sets the local-storage key used to persist the selected theme.'),
+    apiRow('lightLabel, darkLabel', 'string', '"Use light theme", "Use dark theme"', 'Sets accessible action labels for the two theme states.')
   ],
   Toast: [
     apiRow('variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the toast tone.'),
@@ -1094,6 +1207,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('window.LumenToast.update(id, detail)', 'function', '-', 'Updates the title, description, variant, action, or duration for a runtime toast.'),
     apiRow('window.LumenToast.dismiss(id?)', 'function', '-', 'Dismisses one runtime toast, or all runtime toasts when id is omitted.'),
     surfaceApiRow
+  ],
+  Tooltip: [
+    disclosureTriggerApiRow,
+    apiRow('[role="tooltip"]', 'child panel', 'required', 'Provides the non-interactive explanation linked to the trigger with aria-describedby.')
   ],
   TimeField: [
     apiRow('type', 'HTML input type', '"time"', 'Sets the native input type.')
@@ -1149,8 +1266,93 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
   Stat: [
     apiRow('label', 'string', '-', 'The label describing the statistic.'),
     apiRow('value', 'string', '-', 'The numeric or text value of the statistic.')
+  ],
+  Meter: [
+    apiRow('value', 'number', 'required', 'Sets the current scalar value.'),
+    apiRow('min, max', 'number', '0, 100', 'Sets the inclusive measurement range.'),
+    apiRow('low, high, optimum', 'number', '-', 'Defines qualitative ranges for the native meter element.')
+  ],
+  Rating: [
+    apiRow('value', 'number', '0', 'Sets the selected or displayed score.'),
+    apiRow('max', 'number', '5', 'Sets the highest available score.'),
+    apiRow('readonly', 'boolean', 'false', 'Presents the rating without interactive score controls.')
+  ],
+  Timeline: [
+    apiRow('children', 'TimelineItem elements', 'required', 'Provides chronologically ordered milestones or activity events.')
+  ],
+  GradientDivider: [
+    apiRow('aria-hidden', 'ARIA boolean string', '"true"', 'Keeps the decorative gradient out of the accessibility tree unless explicitly overridden.')
+  ],
+  Stepper: [
+    apiRow('steps', 'Array<string | { label, description? }>', '[]', 'Defines the ordered steps.'),
+    apiRow('currentStep', 'number', '0', 'Sets the zero-based active step.'),
+    apiRow('orientation', '"horizontal" | "vertical"', '"horizontal"', 'Controls the step layout direction.')
+  ],
+  FileUpload: [
+    apiRow('label', 'string', '"Choose a file"', 'Sets the visible upload action label.'),
+    apiRow('hint', 'string', '-', 'Adds supporting file type or size guidance.'),
+    apiRow('accept, multiple, name', 'native file input attributes', '-', 'Controls accepted files and form submission.')
+  ],
+  Tour: [
+    apiRow('steps', 'Array<{ target, content, title? }>', '[]', 'Defines the ordered anchored guidance steps.'),
+    apiRow('nextLabel, closeLabel', 'string', '"Next", "Close"', 'Sets the tour navigation action labels.')
+  ],
+  Anchor: [
+    apiRow('items', 'Array<{ href, label }>', '[]', 'Defines the in-page navigation targets and labels.')
+  ],
+  Segmented: [
+    apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Defines the mutually exclusive visible options.'),
+    apiRow('value, defaultValue', 'string', '-', 'Controls or initializes the selected value.'),
+    apiRow('name', 'string', '-', 'Sets the submitted form field name.'),
+    apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the segment height and spacing.')
+  ],
+  Toolbar: [
+    apiRow('orientation', '"horizontal" | "vertical"', '"horizontal"', 'Sets the toolbar direction and keyboard navigation axis.'),
+    apiRow('aria-label, aria-labelledby', 'string', '-', 'Provides the toolbar accessible name.')
+  ],
+  Descriptions: [
+    apiRow('items', 'Array<{ label, value }>', '[]', 'Defines the labelled facts.'),
+    apiRow('columns', 'number', '1', 'Sets the preferred number of aligned columns.')
+  ],
+  Popconfirm: [
+    apiRow('title', 'string', '"Are you sure?"', 'Sets the concise confirmation question.'),
+    apiRow('confirmLabel, cancelLabel', 'string', '"Confirm", "Cancel"', 'Sets the action labels.')
+  ],
+  Transfer: [
+    apiRow('items, targetItems', 'TransferItem[]', '[]', 'Defines the available and initially chosen collections.'),
+    apiRow('sourceTitle, targetTitle', 'string', '"Available", "Selected"', 'Labels the two collections.'),
+    apiRow('name', 'string', '-', 'Sets the submitted values field name.')
+  ],
+  Cascader: [
+    apiRow('options', 'CascaderOption[]', '[]', 'Defines the hierarchical option branches.'),
+    apiRow('name', 'string', '-', 'Sets the submitted field name.'),
+    apiRow('placeholder', 'string', '"Select"', 'Sets the trigger text before a path is selected.')
+  ],
+  TreeSelect: [
+    apiRow('treeData', 'TreeNode[]', '[]', 'Defines the selectable hierarchy.'),
+    apiRow('name', 'string', '-', 'Sets the submitted field name.'),
+    apiRow('placeholder', 'string', '"Select"', 'Sets the trigger text before a node is selected.')
+  ],
+  Mentions: [
+    apiRow('options', 'Array<string | { label, value }>', '[]', 'Defines the mention suggestions.'),
+    apiRow('trigger', 'string', '"@"', 'Sets the character that opens suggestions.'),
+    apiRow('name, placeholder', 'string', '-', 'Sets the native textarea field name and hint.')
+  ],
+  QRCode: [
+    apiRow('value', 'string', 'required unless src is provided', 'Generates a QR code from the supplied value.'),
+    apiRow('src', 'string', '-', 'Uses an existing QR image instead of generating one.'),
+    apiRow('size', 'number', '160', 'Sets the rendered square dimensions.')
+  ],
+  Watermark: [
+    apiRow('content, text', 'string', '"Lumen"', 'Sets the repeated watermark text.'),
+    apiRow('gap', 'number', '96', 'Sets spacing between watermark marks.'),
+    apiRow('rotate', 'number', '-22', 'Sets the watermark rotation in degrees.')
+  ],
+  Affix: [
+    apiRow('position', '"top" | "bottom"', '"top"', 'Selects the viewport edge used for sticky positioning.'),
+    apiRow('offset, offsetTop, offsetBottom', 'number', '0', 'Sets the sticky inset in pixels; edge-specific values override offset.')
   ]
-}
+} satisfies Record<LumenComponentName, readonly ComponentApiRow[]>
 
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   Accordion: {
@@ -1449,7 +1651,7 @@ export const componentDocs: ComponentDoc[] = ([
 ] as const satisfies readonly ComponentDocTuple[]).map(([name, category, summary, example]) => ({
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
-    ...(apiReferenceByComponent[name] ?? []),
+    ...apiReferenceByComponent[name],
     ...commonApiRows
   ],
   ...(figmaNodeIdByComponent[name] ? { figmaNodeId: figmaNodeIdByComponent[name] } : {}),

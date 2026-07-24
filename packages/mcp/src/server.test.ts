@@ -82,6 +82,9 @@ describe('Lumen MCP protocol server', () => {
         'lumen_get_recipe',
         'lumen_search',
         'lumen_get_meta',
+        'lumen_get_catalog_manifest',
+        'lumen_diff_catalog',
+        'lumen_diagnose',
         'lumen_get_tokens',
         'lumen_get_rules'
       ])
@@ -173,6 +176,29 @@ describe('Lumen MCP protocol server', () => {
     })
   })
 
+  test('compares catalog manifests and reports snapshot health over MCP', async () => {
+    await withClient(async (client) => {
+      const manifest = await client.callTool({
+        arguments: {},
+        name: 'lumen_get_catalog_manifest'
+      })
+      const manifestContent = resultStructuredContent(manifest)
+      const [diff, diagnostics] = await Promise.all([
+        client.callTool({
+          arguments: {
+            baseline: manifestContent.manifest,
+            baselineCatalogHash: manifestContent.catalogHash
+          },
+          name: 'lumen_diff_catalog'
+        }),
+        client.callTool({ arguments: {}, name: 'lumen_diagnose' })
+      ])
+
+      expect(resultStructuredContent(diff)).toMatchObject({ unchanged: true })
+      expect(resultStructuredContent(diagnostics)).toMatchObject({ status: 'healthy' })
+    })
+  })
+
   test('preserves domain errors as MCP tool errors', async () => {
     await withClient(async (client) => {
       const result = await client.callTool({
@@ -193,6 +219,10 @@ describe('Lumen MCP protocol server', () => {
 
       expect(resources.resources.some((resource) => resource.uri === 'lumen://rules')).toBe(true)
       expect(resources.resources.some((resource) => resource.uri === 'lumen://meta')).toBe(true)
+      expect(resources.resources.some((resource) => resource.uri === 'lumen://catalog-manifest'))
+        .toBe(true)
+      expect(resources.resources.some((resource) => resource.uri === 'lumen://diagnostics'))
+        .toBe(true)
       expect(resources.resources.some((resource) => resource.uri === 'lumen://components/button'))
         .toBe(true)
       expect(templates.resourceTemplates.map((template) => template.uriTemplate)).toEqual([

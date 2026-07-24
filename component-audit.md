@@ -1,6 +1,9 @@
-# Lumen component audit
+# Lumen component audit (historical baseline)
 
-Date: 2026-07-06. Scope: all 79 Astro components (`packages/astro/components/`), main examples (`apps/docs/src/examples/`), glass examples (`apps/docs/src/examples/glass/`), shared CSS (`packages/astro/styles/lumen.css`), and runtime (`packages/astro/runtime/UIPrimitives.astro`).
+Date: 2026-07-06. This records the 79-component catalog audited on that date; it is not the
+current catalog inventory. Current component-page, framework-export, class, behavior-attribute,
+accessibility, and visual coverage is derived mechanically from
+`packages/core/src/components.ts`.
 
 Verified mechanically: every `ui-*` class emitted by components exists in `lumen.css` (no dangling classes), and runtime hooks were cross-checked against `data-ui-*` attributes.
 

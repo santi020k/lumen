@@ -4195,10 +4195,12 @@ class LumenDataTableBehaviorElement extends LumenElement {
     this.syncSelectionInputs(selectedValues)
 
     if (dispatch) {
-      this.dispatchEvent(new CustomEvent('ui:datatable-selection-change', {
-        bubbles: true,
-        detail: { values: selectedValues }
-      }))
+      const detail = { values: selectedValues }
+
+      this.dispatchEvent(new CustomEvent('ui:data-table-selection-change', { bubbles: true, detail }))
+
+      // Deprecated compatibility event. Remove in Lumen 1.0.
+      this.dispatchEvent(new CustomEvent('ui:datatable-selection-change', { bubbles: true, detail }))
     }
   }
 

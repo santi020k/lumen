@@ -1,4 +1,5 @@
 import type {
+  LumenCatalogManifest,
   LumenComponentSnapshot,
   LumenData,
   LumenFramework,
@@ -7,7 +8,14 @@ import type {
 } from './data.js'
 import { loadLumenData } from './data.js'
 
+export interface CatalogChanges {
+  added: string[]
+  changed: string[]
+  removed: string[]
+  unchanged: string[]
+}
 export type ComponentDetailLevel = 'source' | 'summary' | 'usage'
+
 export interface ComponentSummary {
   category: string
   collections: string[]
@@ -649,6 +657,155 @@ export const getMeta = (
     ...Object.entries(data.meta.packageVersions).map(([name, version]) => `- ${name}: ${version}`)
   ].join('\n')
 })
+
+const diffManifestSection = (
+  current: Record<string, string>,
+  baseline: Record<string, string>
+): CatalogChanges => {
+  const currentNames = Object.keys(current)
+  const baselineNames = Object.keys(baseline)
+
+  return {
+    added: currentNames.filter((name) => baseline[name] === undefined).sort(),
+    changed: currentNames
+      .filter((name) => baseline[name] !== undefined && baseline[name] !== current[name])
+      .sort(),
+    removed: baselineNames.filter((name) => current[name] === undefined).sort(),
+    unchanged: currentNames.filter((name) => baseline[name] === current[name]).sort()
+  }
+}
+
+export const getCatalogManifest = (
+  data: LumenData = loadLumenData()
+): LumenToolResult<{
+    catalogHash: string
+    manifest: LumenCatalogManifest
+    schemaVersion: number
+  }> => ({
+  data: {
+    catalogHash: data.meta.catalogHash,
+    manifest: data.catalogManifest,
+    schemaVersion: data.meta.schemaVersion
+  },
+  text: [
+    '# Lumen catalog manifest',
+    `Catalog hash: ${data.meta.catalogHash}`,
+    `Components: ${Object.keys(data.catalogManifest.components).length}`,
+    `Recipes: ${Object.keys(data.catalogManifest.recipes).length}`,
+    '',
+    'Keep this structured result and pass its manifest to lumen_diff_catalog after an MCP update.'
+  ].join('\n')
+})
+
+export const diffCatalog = (
+  args: {
+    baseline: LumenCatalogManifest
+    baselineCatalogHash?: string | undefined
+  },
+  data: LumenData = loadLumenData()
+): LumenToolResult<{
+    components: CatalogChanges
+    currentCatalogHash: string
+    recipes: CatalogChanges
+  unchanged: boolean
+}> => {
+  const components = diffManifestSection(data.catalogManifest.components, args.baseline.components)
+  const recipes = diffManifestSection(data.catalogManifest.recipes, args.baseline.recipes)
+
+  const changedCount = [
+    ...components.added,
+    ...components.changed,
+    ...components.removed,
+    ...recipes.added,
+    ...recipes.changed,
+    ...recipes.removed
+  ].length
+
+  const unchanged =
+    changedCount === 0 &&
+    (
+      args.baselineCatalogHash === undefined ||
+      args.baselineCatalogHash === data.meta.catalogHash
+    )
+
+  return {
+    data: {
+      components,
+      currentCatalogHash: data.meta.catalogHash,
+      recipes,
+      unchanged
+    },
+    text: unchanged
+      ? `The Lumen catalog is unchanged (${data.meta.catalogHash}).`
+      : [
+        '# Lumen catalog changes',
+        `Current catalog hash: ${data.meta.catalogHash}`,
+        `Changed entries: ${changedCount}`,
+        `Components — added: ${components.added.length}, changed: ${components.changed.length}, removed: ${components.removed.length}`,
+        `Recipes — added: ${recipes.added.length}, changed: ${recipes.changed.length}, removed: ${recipes.removed.length}`
+      ].join('\n')
+  }
+}
+
+export const diagnose = (
+  data: LumenData = loadLumenData()
+): LumenToolResult<{
+    checks: { message: string; name: string; status: 'fail' | 'pass' }[]
+    frameworkCoverage: Record<LumenFramework, number>
+    status: 'healthy' | 'issues'
+  }> => {
+  const componentNames = data.components.map((component) => component.name)
+
+  const frameworkCoverage = {
+    astro: data.components.filter((component) => component.frameworks.astro).length,
+    elements: data.components.filter((component) => component.frameworks.elements).length,
+    react: data.components.filter((component) => component.frameworks.react).length
+  }
+
+  const checks = [
+    {
+      message: `${data.components.length} component records match metadata.`,
+      name: 'component-count',
+      status: data.components.length === data.meta.componentCount ? 'pass' : 'fail'
+    },
+    {
+      message: 'Component names are unique.',
+      name: 'unique-components',
+      status: new Set(componentNames).size === componentNames.length ? 'pass' : 'fail'
+    },
+    {
+      message: 'Every component has a manifest fingerprint.',
+      name: 'component-manifest',
+      status: componentNames.every((name) => data.catalogManifest.components[name]) ? 'pass' : 'fail'
+    },
+    {
+      message: 'Every available framework contract has an example and import statement.',
+      name: 'framework-contracts',
+      status: data.components.every((component) =>
+        (Object.entries(component.frameworks) as [LumenFramework, boolean][]).every(
+          ([framework, available]) =>
+            !available ||
+            Boolean(component.frameworkDetails[framework].example.trim()) &&
+            Boolean(component.frameworkDetails[framework].importStatement.trim())
+        )
+      ) ? 'pass' : 'fail'
+    }
+  ] satisfies { message: string; name: string; status: 'fail' | 'pass' }[]
+
+  const status = checks.every((check) => check.status === 'pass') ? 'healthy' : 'issues'
+
+  return {
+    data: { checks, frameworkCoverage, status },
+    isError: status === 'issues',
+    text: [
+      `# Lumen MCP diagnostics: ${status}`,
+      `Catalog hash: ${data.meta.catalogHash}`,
+      `Framework coverage — Astro: ${frameworkCoverage.astro}, React: ${frameworkCoverage.react}, Elements: ${frameworkCoverage.elements}`,
+      '',
+      ...checks.map((check) => `- ${check.status.toUpperCase()} ${check.name}: ${check.message}`)
+    ].join('\n')
+  }
+}
 
 export const getTokens = (
   data: LumenData = loadLumenData()

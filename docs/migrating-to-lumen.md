@@ -51,10 +51,23 @@ Because Lumen uses standalone CSS and standard semantic markup, you can migrate 
 Lumen components communicate using standard DOM CustomEvents, primarily prefixed with `ui:`.
 
 -   **Forms**: `ui:validate`, `ui:invalid`, `ui:valid`
--   **Data**: `ui:datatable-selection-change`, `ui:virtual-list-range`
+-   **Data**: `ui:data-table-selection-change`, `ui:virtual-list-range`
 -   **Interactivity**: `ui:toast`, `ui:schedule-change`, `ui:theme-change`
 
 Listen to these events on the document, or on the component root `[data-ui-*]` elements.
+
+### Deprecated compatibility contracts
+
+Lumen keeps the following aliases during the pre-1.0 migration window:
+
+| Deprecated contract | Replacement | Removal |
+| --- | --- | --- |
+| `ui:datatable-selection-change` | `ui:data-table-selection-change` | Lumen 1.0 |
+| Overlay `surface="glass"` | `glass` or `glass="subtle"` / `glass="strong"` | Lumen 1.0 |
+
+DataTable currently emits both event names with the same `{ values: string[] }` detail. Subscribe
+only to the replacement event in new code. The `surface="glass"` alias continues to map to
+`glass={true}` until its removal.
 
 ## 4. Migrating from `private-website`
 

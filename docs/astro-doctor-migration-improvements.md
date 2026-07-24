@@ -60,6 +60,7 @@ Consider compound Astro primitives or a documented data-driven API that:
 - generates stable tab and panel relationships;
 - supports an initial value and a storage key;
 - synchronizes tab groups sharing the same key;
+- emits a documented selection event for both pointer and keyboard activation;
 - retains the existing keyboard behavior;
 - works without requiring consumers to duplicate activation logic.
 
@@ -101,3 +102,14 @@ visible on mobile.
 
 Lumen should avoid encoding display mode in a way that defeats responsive consumer classes, or
 document a stable visibility API for `Button`, `ButtonLink`, and similar primitives.
+
+## Complete theme-boundary overrides
+
+Lumen primitives set `font-family: var(--ui-font)` and some components consume `--canvas`, so
+overriding only `surface`, `ink`, `line`, and brand tokens leaves a migrated application with mixed
+typography and mismatched background semantics. Astro Doctor's body used Montserrat while every
+Lumen primitive silently reverted to the default Inter stack.
+
+The theming documentation should include a complete minimal override example covering `canvas`,
+all surface and text roles, brand and status roles, and `--ui-font`. A migration check could warn
+when the host body font and `--ui-font` resolve to visibly different stacks.

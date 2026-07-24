@@ -614,8 +614,14 @@ describe('@santi020k/lumen-elements', () => {
     const selectAll = document.querySelector<HTMLInputElement>('[data-ui-datatable-select-all]')
     const sortButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-ui-datatable-sort]')]
 
-    root?.addEventListener('ui:datatable-selection-change', event => {
+    root?.addEventListener('ui:data-table-selection-change', event => {
       selectionEvents.push((event as CustomEvent<{ values: string[] }>).detail.values)
+    })
+
+    let legacyEventCount = 0
+
+    root?.addEventListener('ui:datatable-selection-change', () => {
+      legacyEventCount += 1
     })
 
     expect(rowChecks).toHaveLength(2)
@@ -625,6 +631,7 @@ describe('@santi020k/lumen-elements', () => {
     rowChecks[1]?.click()
 
     expect(selectionEvents).toEqual([['alpha']])
+    expect(legacyEventCount).toBe(1)
     expect(rowChecks[1]?.closest('tr')?.dataset.state).toBe('selected')
     expect(new FormData(form!).getAll('orders')).toEqual(['alpha'])
 

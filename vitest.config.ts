@@ -45,7 +45,13 @@ export default defineConfig({
       ],
       provider: 'v8',
       reporter: coverageReporters,
-      reportsDirectory: 'coverage'
+      reportsDirectory: 'coverage',
+      thresholds: {
+        branches: 55,
+        functions: 63,
+        lines: 61,
+        statements: 58
+      }
     },
     includeTaskLocation: true,
     projects: [
