@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-docs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Documentation website for Lumen UI.",
   "type": "module",

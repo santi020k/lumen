@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-mcp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "publishConfig": {
     "access": "public"
   },
@@ -21,7 +21,13 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["bin", "dist", "data", "README.md", "LICENSE"],
+  "files": [
+    "bin",
+    "dist",
+    "data",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "lumen-mcp": "./bin/lumen-mcp.mjs"
   },
@@ -59,7 +65,15 @@
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
-  "keywords": ["lumen", "mcp", "model-context-protocol", "ai", "ui", "design-system", "astro"],
+  "keywords": [
+    "lumen",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "ui",
+    "design-system",
+    "astro"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"
