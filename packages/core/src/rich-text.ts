@@ -32,6 +32,20 @@ export interface LumenRichTextShortcutEvent {
 
 const toggleCommands = new Set<string>(lumenRichTextToggleCommands)
 
+const shortcuts: Readonly<Record<string, string>> = {
+  b: 'bold',
+  i: 'italic',
+  u: 'underline',
+  z: 'undo'
+}
+
+const shiftedShortcuts: Readonly<Record<string, string>> = {
+  7: 'insertOrderedList',
+  8: 'insertUnorderedList',
+  x: 'strikeThrough',
+  z: 'redo'
+}
+
 export const isLumenRichTextToggleCommand = (
   command: string
 ): command is LumenRichTextToggleCommand => toggleCommands.has(command)
@@ -43,19 +57,5 @@ export const getLumenRichTextShortcut = (
 
   const key = event.key.toLowerCase()
 
-  if (event.shiftKey) {
-    if (key === '7') return 'insertOrderedList'
-    if (key === '8') return 'insertUnorderedList'
-    if (key === 'x') return 'strikeThrough'
-    if (key === 'z') return 'redo'
-
-    return undefined
-  }
-
-  if (key === 'b') return 'bold'
-  if (key === 'i') return 'italic'
-  if (key === 'u') return 'underline'
-  if (key === 'z') return 'undo'
-
-  return undefined
+  return event.shiftKey ? shiftedShortcuts[key] : shortcuts[key]
 }

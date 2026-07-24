@@ -11,9 +11,9 @@ import {
   getVirtualRange,
   isLumenRichTextToggleCommand,
   type LumenComponentName,
+  lumenComponentNames,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
-  lumenComponentNames,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
@@ -41,7 +41,6 @@ type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElem
 
 interface RichTextCommandDocument {
   execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
-  queryCommandEnabled?: (command: string) => boolean
   queryCommandState?: (command: string) => boolean
   queryCommandValue?: (command: string) => string
 }
@@ -859,6 +858,7 @@ const installFormController = (): void => {
 
 const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
   if (control.dataset.uiEditorValue !== undefined) return control.dataset.uiEditorValue
+
   if (
     control instanceof HTMLInputElement
     || control instanceof HTMLSelectElement
@@ -878,6 +878,7 @@ const syncRichTextCommandStates = (root: HTMLElement): void => {
 
     if (isLumenRichTextToggleCommand(command)) {
       active = commandDocument.queryCommandState?.(command) ?? false
+
       control.setAttribute('aria-pressed', String(active))
     } else if (command === 'formatBlock' && value) {
       const currentValue = commandDocument.queryCommandValue?.(command)
@@ -889,19 +890,17 @@ const syncRichTextCommandStates = (root: HTMLElement): void => {
 
     control.dataset.state = active ? 'on' : 'off'
 
-    if (typeof commandDocument.queryCommandEnabled === 'function') {
-      control.toggleAttribute('disabled', !commandDocument.queryCommandEnabled(command))
-    }
   }
 }
 
 const dispatchRichTextChange = (root: HTMLElement): void => {
   const editable = root.querySelector<HTMLElement>(richTextEditorContentSelector)
+
   if (!editable) return
 
   const detail: LumenRichTextChangeDetail = {
     html: editable.innerHTML,
-    text: editable.textContent ?? ''
+    text: editable.textContent
   }
 
   root.dispatchEvent(new CustomEvent<LumenRichTextChangeDetail>('ui:editor-change', {
@@ -918,11 +917,14 @@ const executeRichTextCommand = (
   if (!command) return false
 
   const commandDocument = document as unknown as RichTextCommandDocument
-  const executed = typeof commandDocument.execCommand === 'function'
-    ? value === undefined
+  let executed = false
+
+  if (typeof commandDocument.execCommand === 'function') {
+    executed = value === undefined
       ? commandDocument.execCommand(command)
       : commandDocument.execCommand(command, false, value)
-    : false
+  }
+
   const detail: LumenRichTextCommandDetail = {
     command,
     executed,
@@ -935,6 +937,7 @@ const executeRichTextCommand = (
   }))
 
   syncRichTextCommandStates(root)
+
   dispatchRichTextChange(root)
 
   return executed
@@ -973,19 +976,25 @@ const initRichTextEditors = (scope: ParentNode): void => {
         || !event.target.closest(richTextEditorContentSelector)) return
 
       const command = getLumenRichTextShortcut(event)
+
       if (!command) return
 
       event.preventDefault()
+
       executeRichTextCommand(root, command)
     })
+
     root.addEventListener('input', event => {
       if (!(event.target instanceof HTMLElement)
         || !event.target.closest(richTextEditorContentSelector)) return
 
       syncRichTextCommandStates(root)
+
       dispatchRichTextChange(root)
     })
+
     root.addEventListener('keyup', () => { syncRichTextCommandStates(root); })
+
     root.addEventListener('mouseup', () => { syncRichTextCommandStates(root); })
 
     syncRichTextCommandStates(root)
@@ -1405,6 +1414,12 @@ const syncDateRangePicker = (root: HTMLElement): void => {
 
   if (!start || !end || start === end) return
 
+  const datePickers = root.querySelectorAll<HTMLElement>(datePickerSelector)
+
+  datePickers[0]?.setAttribute('data-range-part', 'start')
+
+  datePickers[datePickers.length - 1]?.setAttribute('data-range-part', 'end')
+
   if (start.value) {
     end.min = start.value
   } else {
@@ -1419,7 +1434,15 @@ const syncDateRangePicker = (root: HTMLElement): void => {
 
   if (start.value && end.value && end.value < start.value) {
     end.value = start.value
+
+    end.dispatchEvent(new Event('change', { bubbles: true }))
   }
+
+  root.dataset.rangeState = start.value && end.value
+    ? 'complete'
+    : start.value
+      ? 'selecting-end'
+      : 'empty'
 }
 
 const initDateRangePickers = (scope: ParentNode): void => {

@@ -19,7 +19,7 @@ export const RichTextEditorRecipe = () => {
         </ButtonGroup>
         <ToggleGroup><button {...editor.getCommandProps('insertUnorderedList')} type="button">List</button></ToggleGroup>
       </div>
-      <div contentEditable suppressContentEditableWarning>Draft release notes...</div>
+      <div {...editor.getEditableProps()}>Draft release notes...</div>
       <Textarea name="fallback" placeholder="Plain text fallback" />
     </RichTextEditor>
   )

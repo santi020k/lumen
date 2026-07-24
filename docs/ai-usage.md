@@ -232,9 +232,12 @@ The shared catalog includes:
   and `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
   Controls with `data-ui-editor-command` dispatch browser editing commands and emit
-  `ui:editor-command`. Astro `UIPrimitives` and registered Web Components bind those controls
-  directly; React apps can use `useRichTextEditor` for `rootProps`, `getCommandProps`, and
-  `executeCommand`. For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor
+  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing
+  commands. Editable surfaces support common formatting shortcuts, synchronize toggle
+  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`
+  and registered Web Components bind those controls directly; React apps can use
+  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.
+  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor
   package in the app and bridge toolbar buttons through the emitted command event instead of adding
   the editor engine to Lumen.
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,

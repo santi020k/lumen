@@ -394,9 +394,11 @@ describe('@santi020k/lumen-elements', () => {
 
     const start = document.querySelector<HTMLInputElement>('#start-date')
     const end = document.querySelector<HTMLInputElement>('#end-date')
+    const root = document.querySelector<HTMLElement>('lumen-date-range-picker')
 
     expect(end?.min).toBe('2026-07-10')
     expect(end?.value).toBe('2026-07-10')
+    expect(root?.dataset.rangeState).toBe('complete')
     expect(start?.dataset.uiDateRangeInputBound).toBe('true')
     expect(end?.dataset.uiDateRangeInputBound).toBe('true')
 
@@ -406,6 +408,7 @@ describe('@santi020k/lumen-elements', () => {
     }
 
     expect(end?.hasAttribute('min')).toBe(false)
+    expect(root?.dataset.rangeState).toBe('empty')
   })
 
   test('date pickers install their disclosure behavior', () => {

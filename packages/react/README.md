@@ -98,6 +98,8 @@ React is Lumen's visual adapter layer plus headless behavior hooks. The componen
 validation, calendar grids, OTP segmentation, date range syncing, rich text command, schedule
 drag/drop, theme export, resizable pane sizing, and toast controller semantics for React
 applications.
+`useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
+shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
 attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
 

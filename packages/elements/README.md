@@ -88,6 +88,9 @@ Astro runtime's data event, validation, calendar grids, OTP segmentation, date r
 text command, context menu, schedule drag/drop, resizable pane sizing, theme export, ARIA,
 keyboard, Escape, dismissal, and toast controller semantics while keeping markup declarative and
 Declarative-Shadow-DOM friendly.
+Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
+`createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
+formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
 
 ```html
 <script type="module">

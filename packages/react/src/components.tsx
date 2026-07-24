@@ -1108,10 +1108,81 @@ export const DatePicker = ({
 }
 /* eslint-enable complexity */
 
-export type DateRangePickerProps = ComponentPropsWithoutRef<'div'>
-export const DateRangePicker = ({ className, ...props }: DateRangePickerProps) => (
-  <div className={composeClassName('ui-date-range-picker', className)} data-ui-date-range-picker {...props} />
-)
+export type DateRangePickerProps = ComponentPropsWithoutRef<'div'> & {
+  onRangeChange?: (range: { end?: string; start?: string }) => void
+}
+
+const setDateRangeConstraint = (
+  input: HTMLInputElement,
+  property: 'max' | 'min',
+  value: string
+): void => {
+  if (value) input[property] = value
+  else input.removeAttribute(property)
+}
+
+const getDateRangeState = (start: string, end: string): string => {
+  if (!start) return 'empty'
+
+  return end ? 'complete' : 'selecting-end'
+}
+
+const syncDateRangePickerElement = (
+  root: HTMLDivElement
+): { end?: string; start?: string } => {
+  const inputs = [...root.querySelectorAll<HTMLInputElement>('[data-ui-date-picker-native]')]
+  const start = inputs[0]
+  const end = inputs.at(-1)
+
+  if (!(start && end) || start === end) return {}
+
+  const datePickers = root.querySelectorAll<HTMLElement>('[data-ui-date-picker]')
+
+  datePickers[0]?.setAttribute('data-range-part', 'start')
+
+  datePickers[datePickers.length - 1]?.setAttribute('data-range-part', 'end')
+
+  setDateRangeConstraint(end, 'min', start.value)
+
+  setDateRangeConstraint(start, 'max', end.value)
+
+  root.dataset.rangeState = getDateRangeState(start.value, end.value)
+
+  const range: { end?: string; start?: string } = {}
+
+  if (end.value) range.end = end.value
+
+  if (start.value) range.start = start.value
+
+  return range
+}
+
+export const DateRangePicker = ({
+  className,
+  onInput,
+  onRangeChange,
+  ...props
+}: DateRangePickerProps) => {
+  const rootRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (rootRef.current) syncDateRangePickerElement(rootRef.current)
+  })
+
+  return (
+    <div
+      className={composeClassName('ui-date-range-picker', className)}
+      data-ui-date-range-picker
+      onInput={event => {
+        onInput?.(event)
+
+        onRangeChange?.(syncDateRangePickerElement(event.currentTarget))
+      }}
+      ref={rootRef}
+      {...props}
+    />
+  )
+}
 
 export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>
 
@@ -2401,13 +2472,43 @@ export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<'input'>,
   inputClassName?: string
   label?: ReactNode
 }
-export const FileUpload = ({ children, className, hint, id, inputClassName, label = 'Choose a file or drag it here', ...props }: FileUploadProps) => {
+export const FileUpload = ({
+  children,
+  className,
+  hint,
+  id,
+  inputClassName,
+  label = 'Choose a file or drag it here',
+  onChange,
+  ...props
+}: FileUploadProps) => {
   const generatedId = useId()
   const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(':', '')}`
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+
+  const selectedFileText = selectedFiles.length > 1
+    ? `${selectedFiles.length} files selected`
+    : selectedFiles[0] ?? ''
 
   return (
-    <label className={composeClassName('ui-file-upload', className)} data-ui-file-upload htmlFor={inputId}>
-      <input className={composeClassName('ui-file-upload__input', inputClassName)} data-ui-file-upload-input id={inputId} type="file" {...props} />
+    <label
+      className={composeClassName('ui-file-upload', className)}
+      data-state={selectedFiles.length > 0 ? 'selected' : 'idle'}
+      data-ui-file-upload
+      htmlFor={inputId}
+    >
+      <input
+        className={composeClassName('ui-file-upload__input', inputClassName)}
+        data-ui-file-upload-input
+        id={inputId}
+        onChange={event => {
+          setSelectedFiles([...(event.currentTarget.files ?? [])].map(file => file.name))
+
+          onChange?.(event)
+        }}
+        type="file"
+        {...props}
+      />
       <svg
         aria-hidden="true"
         className="ui-file-upload__icon"
@@ -2420,7 +2521,9 @@ export const FileUpload = ({ children, className, hint, id, inputClassName, labe
       </svg>
       <span className="ui-file-upload__prompt">{children ?? label}</span>
       {hint && <span className="ui-file-upload__hint">{hint}</span>}
-      <span aria-live="polite" className="ui-file-upload__files" data-ui-file-upload-files />
+      <span aria-live="polite" className="ui-file-upload__files" data-ui-file-upload-files>
+        {selectedFileText}
+      </span>
     </label>
   )
 }

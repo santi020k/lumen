@@ -64,6 +64,14 @@ export {
   resolveLumenIconName
 } from './icons.js'
 export {
+  type LumenAstroPropsResult,
+  type LumenClassValue,
+  type LumenGlass,
+  type LumenSurfaceAlias,
+  resolveLumenAstroProps,
+  resolveLumenGlass
+} from './props.js'
+export {
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
   type LumenRichTextChangeDetail,
@@ -72,14 +80,6 @@ export {
   type LumenRichTextToggleCommand,
   lumenRichTextToggleCommands
 } from './rich-text.js'
-export {
-  type LumenAstroPropsResult,
-  type LumenClassValue,
-  type LumenGlass,
-  type LumenSurfaceAlias,
-  resolveLumenAstroProps,
-  resolveLumenGlass
-} from './props.js'
 export {
   canPlaceScheduleEvent,
   createScheduleSlots,

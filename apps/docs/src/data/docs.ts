@@ -904,7 +904,10 @@ const apiReferenceByComponent: Partial<Record<string, readonly ComponentApiRow[]
     apiRow('selectable', 'boolean', 'false', 'Enables selectable row behavior for the UIPrimitives runtime.')
   ],
   DateRangePicker: [
-    apiRow('data-ui-date-range-picker', 'boolean attribute', '-', 'Marks the container to sync min/max constraints between its child DatePicker inputs.')
+    apiRow('children', 'two DatePicker controls', 'required', 'Composes the start and end fields from the custom Calendar-backed DatePicker component.'),
+    apiRow('onRangeChange', '(range) => void', '-', 'React only: receives the synchronized start and end ISO date values.'),
+    apiRow('data-range-state', '"empty" | "selecting-end" | "complete"', 'runtime-managed', 'Exposes the current range progress for styling and product feedback.'),
+    apiRow('data-ui-date-range-picker', 'boolean attribute', '-', 'Marks the container so min/max constraints stay synchronized between its DatePicker children.')
   ],
   DatePicker: [
     apiRow('value, defaultValue', 'ISO date string (YYYY-MM-DD)', '-', 'Sets the selected date while the trigger shows a localized, human-readable value.'),
@@ -1309,7 +1312,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['ColorPicker', 'Forms', 'Captures a color token or brand swatch value.', '<ColorPicker name="brand" aria-label="Brand color" value="#2563eb" />'],
   ['DataTable', 'Data display', 'Styles dense tabular data and records.', '<DataTable><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Docs</td><td>Ready</td></tr></tbody></table></DataTable>'],
   ['DatePicker', 'Forms', 'Selects a date from a polished, accessible Calendar popover.', '<DatePicker name="launchDate" aria-label="Launch date" />'],
-  ['DateRangePicker', 'Forms', 'Groups start and end date controls for range selection.', '<DateRangePicker><DatePicker aria-label="Start date" /><DatePicker aria-label="End date" /></DateRangePicker>'],
+  ['DateRangePicker', 'Forms', 'Selects a start and end date through a cohesive pair of custom Calendar popovers.', '<DateRangePicker><DatePicker aria-label="Start date" /><DatePicker aria-label="End date" /></DateRangePicker>'],
   ['Dialog', 'Overlays', 'Presents modal content for focused tasks.', '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'],
   ['Direction', 'Layout', 'Controls directional layout and text flow.', '<Direction dir="rtl"><p>Localized content</p></Direction>'],
   ['Drawer', 'Overlays', 'Slides in supporting navigation, filters, or task panels.', '<Button data-ui-drawer-trigger="filters-drawer">Open filters</Button><Drawer id="filters-drawer"><p>Filter controls</p><Button data-ui-drawer-close>Close</Button></Drawer>'],
