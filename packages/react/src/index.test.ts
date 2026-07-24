@@ -45,7 +45,8 @@ import {
   useThemeBuilder,
   useToast,
   useTooltip,
-  VirtualList
+  VirtualList,
+  Watermark
 } from './index.js'
 
 interface ReactInternals {
@@ -198,6 +199,22 @@ describe('@santi020k/lumen-react', () => {
     expect(copyButtonProps['data-ui-code-copy']).toBe(true)
     expect(keyword.props.className).toBe('ui-code__token--keyword')
     expect(stringToken.props.className).toBe('ui-code__token--string')
+  })
+
+  test('renders a repeatable watermark tile from its content and layout props', () => {
+    const watermark = Watermark({
+      children: 'Protected content',
+      content: 'Draft & review',
+      gap: 144,
+      rotate: -30
+    }) as ReactElement
+    const props = watermark.props as Record<string, unknown>
+    const style = props.style as Record<string, string>
+
+    expect(style['--ui-watermark-gap']).toBe('144px')
+    expect(style['--ui-watermark-image']).toContain('data:image/svg+xml')
+    expect(decodeURIComponent(style['--ui-watermark-image'] ?? '')).toContain('Draft &amp; review')
+    expect(decodeURIComponent(style['--ui-watermark-image'] ?? '')).toContain('rotate(-30 72 72)')
   })
 
   test('defaults inputs to text fields', () => {

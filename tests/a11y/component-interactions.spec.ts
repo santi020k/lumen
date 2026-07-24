@@ -19,6 +19,22 @@ test('Combobox filters and commits a keyboard selection', async ({ page }) => {
   await expect(input).toHaveAttribute('aria-expanded', 'false')
 })
 
+test('Carousel controls move between pages of slides', async ({ page }) => {
+  await openPreview(page, 'carousel')
+
+  const preview = page.locator('.component-doc-preview')
+  const viewport = preview.locator('[data-ui-carousel-viewport]')
+
+  await expect(viewport).toHaveJSProperty('scrollLeft', 0)
+  await preview.getByRole('button', { name: 'Next' }).click()
+
+  await expect.poll(() => viewport.evaluate(element => element.scrollLeft)).toBeGreaterThan(0)
+
+  await preview.getByRole('button', { name: 'Previous' }).click()
+
+  await expect.poll(() => viewport.evaluate(element => element.scrollLeft)).toBe(0)
+})
+
 test('ContextMenu opens from the keyboard and closes with Escape', async ({ page }) => {
   await openPreview(page, 'context-menu')
 

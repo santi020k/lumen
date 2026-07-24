@@ -4,9 +4,14 @@ import { Button, Carousel } from '@santi020k/lumen-astro'
 
 <div class="docs-glass-demo">
   <Carousel aria-label="Glass releases" glass>
-    <article><strong>Astro surfaces</strong><p>Standalone CSS, zero config.</p></article>
-    <article><strong>React adapters</strong><p>Same classes, JSX ergonomics.</p></article>
-    <article><strong>Elements attributes</strong><p>Web Components with glass attributes.</p></article>
+    <div data-ui-carousel-viewport>
+      <article><strong>Astro surfaces</strong><p>Standalone CSS, zero config.</p></article>
+      <article><strong>React adapters</strong><p>Same classes, JSX ergonomics.</p></article>
+      <article><strong>Elements attributes</strong><p>Web Components with glass attributes.</p></article>
+      <article><strong>Shared tokens</strong><p>One visual language across every adapter.</p></article>
+      <article><strong>Agent metadata</strong><p>Structured guidance for generated interfaces.</p></article>
+      <article><strong>Accessible behavior</strong><p>Keyboard paths and semantic defaults included.</p></article>
+    </div>
     <footer>
       <Button size="sm" variant="outline" data-ui-carousel-prev>Previous</Button>
       <Button size="sm" variant="outline" data-ui-carousel-next>Next</Button>

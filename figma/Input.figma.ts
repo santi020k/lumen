@@ -5,6 +5,7 @@ import figma from 'figma'
 
 const instance = figma.selectedInstance
 const placeholder = instance.getString('Placeholder')
+
 const size = instance.getEnum('Size', {
   Default: 'default',
   Lg: 'lg',
