@@ -56,10 +56,13 @@ export interface LumenData {
     readme: string
   }
   meta: {
+    catalogHash: string
     componentCount: number
     packages: string[]
+    packageVersions: Record<string, string>
     registryName: string
     registryVersion: number
+    schemaVersion: number
     serverVersion: string
   }
   recipes: LumenRecipeSnapshot[]
@@ -77,6 +80,24 @@ export type LumenFramework = 'astro' | 'elements' | 'react'
 export interface LumenFrameworkSnapshot {
   attributes?: string[]
   available: boolean
+  behavior?: {
+    controller?: {
+      defaultValue: string
+      description: string
+      name: string
+      type: string
+    }[]
+    description?: string
+    hook?: string
+    mode: 'adapter' | 'built-in' | 'hook' | 'registration' | 'runtime'
+    options?: {
+      defaultValue: string
+      description: string
+      name: string
+      type: string
+    }[]
+    setup: string
+  }
   example: string
   importStatement: string
   language: 'astro' | 'html' | 'tsx'

@@ -4,6 +4,7 @@ import * as z from 'zod'
 import { loadLumenData } from './data.js'
 import {
   getComponent,
+  getMeta,
   getRecipe,
   getRules,
   getTokens,
@@ -74,6 +75,19 @@ const rulesOutputSchema = z.strictObject({
   rules: z.string().trim()
 })
 
+const metaOutputSchema = z.strictObject({
+  meta: z.strictObject({
+    catalogHash: z.string().trim().regex(/^[a-f0-9]{64}$/),
+    componentCount: z.int().min(0),
+    packages: z.array(z.string().trim()),
+    packageVersions: z.record(z.string(), z.string().trim()),
+    registryName: z.string().trim(),
+    registryVersion: z.int().min(1),
+    schemaVersion: z.int().min(1),
+    serverVersion: z.string().trim()
+  })
+})
+
 const structuredData = (data: unknown): Record<string, unknown> =>
   typeof data === 'object' && data !== null
     ? data as Record<string, unknown>
@@ -104,8 +118,8 @@ export const createLumenServer = (): McpServer => {
     { name: '@santi020k/lumen-mcp', version: data.meta.serverVersion },
     {
       instructions:
-        'Read lumen://rules before generating Lumen code. Search or list the catalog, then inspect ' +
-        'the selected component for the target framework at usage detail before requesting source.'
+        'Read lumen://meta and lumen://rules before generating Lumen code. Search or list the catalog, ' +
+        'then inspect the selected component for the target framework at usage detail before requesting source.'
     }
   )
 
@@ -183,6 +197,9 @@ export const createLumenServer = (): McpServer => {
         'Rank natural-language matches across descriptions, categories, curated collections, ' +
         'framework contracts, props, attributes, recipes, tokens, and agent rules.',
       inputSchema: z.strictObject({
+        framework: z.enum(['astro', 'react', 'elements'])
+          .optional()
+          .meta({ description: 'Only search framework-specific component contracts for this target.' }),
         limit: z.int().min(1).max(100)
           .optional()
           .meta({ description: 'Maximum results to return (1-100, default 20).' }),
@@ -192,6 +209,19 @@ export const createLumenServer = (): McpServer => {
       outputSchema: searchOutputSchema
     },
     (args) => toMcpResult(search(args))
+  )
+
+  server.registerTool(
+    'lumen_get_meta',
+    {
+      annotations: readOnlyAnnotations,
+      description:
+        'Return snapshot provenance: server and package versions, schema version, component count, ' +
+        'and a deterministic catalog hash for freshness checks.',
+      inputSchema: z.strictObject({}),
+      outputSchema: metaOutputSchema
+    },
+    () => toMcpResult(getMeta())
   )
 
   server.registerTool(
@@ -216,6 +246,16 @@ export const createLumenServer = (): McpServer => {
       outputSchema: rulesOutputSchema
     },
     () => toMcpResult(getRules())
+  )
+
+  server.registerResource(
+    'lumen-meta',
+    'lumen://meta',
+    {
+      description: 'Lumen MCP snapshot provenance and package versions.',
+      mimeType: 'application/json'
+    },
+    (uri) => jsonResource(uri, getMeta().data)
   )
 
   server.registerResource(

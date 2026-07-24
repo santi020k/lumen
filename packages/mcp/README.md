@@ -15,7 +15,8 @@ not need a checkout of the Lumen repository.
 | `lumen_list_components` | List components with descriptions, categories, framework availability, collections, and recipe membership. Filter by `framework`, `recipe`, or natural-language `query`. |
 | `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, accessibility, guidance, and events. |
 | `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
-| `lumen_search` | Rank natural-language matches across component descriptions, curated collections, props, attributes, recipes, tokens, and agent rules. |
+| `lumen_search` | Rank tolerant natural-language matches across component descriptions, curated collections, framework contracts, props, attributes, recipes, tokens, and agent rules. Optionally filter component contracts by framework. |
+| `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
 | `lumen_get_tokens` | Return semantic token names, base colors, glass tokens, and the theme attribute. |
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
@@ -25,6 +26,7 @@ Every tool returns both readable text and validated `structuredContent`.
 
 | Resource | Contents |
 | --- | --- |
+| `lumen://meta` | Snapshot provenance, package versions, and deterministic catalog hash. |
 | `lumen://rules` | Agent rules as Markdown. |
 | `lumen://tokens` | Structured design tokens. |
 | `lumen://components` | Compact component catalog. |
@@ -38,6 +40,8 @@ The stdio command for any MCP client is:
 ```bash
 npx -y @santi020k/lumen-mcp
 ```
+
+Node.js 20.20 or newer is supported.
 
 ### Codex
 
@@ -110,17 +114,19 @@ the same.
 
 ## Recommended agent workflow
 
-1. Read `lumen://rules`.
-2. Call `lumen_search` with the requested use case and target framework.
-3. Call `lumen_get_component` with `detail: "usage"`.
-4. Inspect a related recipe with `lumen_get_recipe` when the UI needs multiple primitives.
-5. Request `detail: "source"` only when the usage contract is insufficient.
-6. Use `lumen_get_tokens` before adding custom styling.
+1. Read `lumen://meta` to identify the bundled snapshot and package versions.
+2. Read `lumen://rules`.
+3. Call `lumen_search` with the requested use case and target framework.
+4. Call `lumen_get_component` with `detail: "usage"`.
+5. Follow the returned framework behavior section: mount Astro `UIPrimitives` once, use the named React hook/controller, or register custom elements once.
+6. Inspect a related recipe with `lumen_get_recipe` when the UI needs multiple primitives.
+7. Request `detail: "source"` only when the usage contract is insufficient.
+8. Use `lumen_get_tokens` before adding custom styling.
 
 Example calls:
 
 ```json
-{ "name": "lumen_search", "arguments": { "query": "accessible date input", "limit": 5 } }
+{ "name": "lumen_search", "arguments": { "query": "accessible date input", "framework": "react", "limit": 5 } }
 ```
 
 ```json
@@ -163,6 +169,8 @@ pnpm --filter @santi020k/lumen-mcp generate
 pnpm --filter @santi020k/lumen-mcp build
 pnpm --filter @santi020k/lumen-mcp test
 pnpm --filter @santi020k/lumen-mcp test:coverage
+pnpm --filter @santi020k/lumen-mcp check:snapshot
+pnpm --filter @santi020k/lumen-mcp smoke:package
 ```
 
 ## Programmatic use
@@ -172,11 +180,13 @@ The reusable handlers return readable text plus typed data:
 ```ts
 import {
   getComponent,
+  getMeta,
   getRecipe,
   search
 } from '@santi020k/lumen-mcp/tools'
 
 const matches = search({ limit: 5, query: 'date input' }).data.results
+const snapshot = getMeta().data.meta
 
 const component = getComponent({
   detail: 'usage',
@@ -209,7 +219,12 @@ const server = createLumenServer()
 - Design tokens, recipes, `docs/ai-usage.md`, and `llms.txt`.
 
 The output is deterministic and carries the package version used by the MCP
-initialization response.
+initialization response. It also includes every framework package version, a
+schema version, and a SHA-256 catalog hash. CI regenerates the snapshot and
+fails when the committed file is stale. The release group versions the MCP
+alongside Lumen framework packages, and the package smoke test installs the
+packed artifact into a temporary consumer project before making a real stdio
+handshake.
 
 ## License
 

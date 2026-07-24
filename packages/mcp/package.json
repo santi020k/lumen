@@ -33,9 +33,11 @@
   },
   "scripts": {
     "generate": "node scripts/generate-data.mjs",
+    "check:snapshot": "node scripts/generate-data.mjs --check",
     "build": "pnpm run generate && tsc -p tsconfig.build.json",
     "dev": "pnpm run generate && tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "local": "node bin/lumen-mcp-local.mjs",
+    "smoke:package": "pnpm run build && node scripts/smoke-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --config ../../vitest.config.ts --project mcp",
     "test:coverage": "vitest run --config ../../vitest.config.ts --project mcp --coverage",
@@ -54,7 +56,7 @@
     "vitest": "catalog:"
   },
   "engines": {
-    "node": ">=22.18.0"
+    "node": ">=20.20.0"
   },
   "repository": {
     "type": "git",

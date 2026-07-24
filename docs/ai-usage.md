@@ -55,12 +55,14 @@ args = ["-y", "@santi020k/lumen-mcp"]
 
 Use this sequence:
 
-1. Read `lumen://rules`.
-2. Search for the use case with `lumen_search`.
-3. Inspect the selected framework with `lumen_get_component` and `detail: "usage"`.
-4. Read related multi-component guidance with `lumen_get_recipe`.
-5. Request `detail: "source"` only when the usage contract is insufficient.
-6. Read `lumen://tokens` before introducing custom styling.
+1. Read `lumen://meta` to identify the catalog hash and bundled package versions.
+2. Read `lumen://rules`.
+3. Search for the use case with `lumen_search`, passing the target `framework` when known.
+4. Inspect the selected framework with `lumen_get_component` and `detail: "usage"`.
+5. Follow its framework behavior setup and hook/controller contract.
+6. Read related multi-component guidance with `lumen_get_recipe`.
+7. Request `detail: "source"` only when the usage contract is insufficient.
+8. Read `lumen://tokens` before introducing custom styling.
 
 Example framework-aware component request:
 
@@ -76,7 +78,7 @@ Example framework-aware component request:
 ```
 
 Stable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,
-`lumen://components/{name}`, and `lumen://recipes/{name}`. See
+`lumen://meta`, `lumen://components/{name}`, and `lumen://recipes/{name}`. See
 [`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,
 local repository, and programmatic examples.
 

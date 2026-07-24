@@ -14,6 +14,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  mcp-node-20:
+    name: MCP compatibility (Node 20)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20.20.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and test the MCP package
+        run: pnpm --filter @santi020k/lumen-mcp run build && pnpm --filter @santi020k/lumen-mcp run typecheck && pnpm --filter @santi020k/lumen-mcp run test
+
   build:
     name: Build and validate
     runs-on: ubuntu-latest
@@ -50,6 +72,10 @@ jobs:
 
       - name: Run CI checks
         run: pnpm exec turbo run build typecheck lint test
+
+      - name: Assert the generated MCP snapshot is committed
+        if: matrix.node-version == '22.x'
+        run: git diff --exit-code -- packages/mcp/data/lumen-data.json
 
       - name: Install Playwright Chromium
         if: matrix.node-version == '22.x'

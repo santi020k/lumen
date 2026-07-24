@@ -785,7 +785,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
 ]
 
 const runtimeEventsByComponent: Partial<Record<string, readonly RuntimeEventRow[]>> = {
-  DataTable: runtimeEvents.filter(event => event.name === 'ui-datatable-selectionchange'),
+  DataTable: runtimeEvents.filter(event => event.name === 'ui:datatable-selection-change'),
   Field: runtimeEvents.filter(event => event.name === 'ui:validate' || event.name === 'ui:invalid' || event.name === 'ui:valid'),
   RichTextEditor: runtimeEvents.filter(event => event.name.startsWith('ui:editor-')),
   Schedule: runtimeEvents.filter(event => event.name === 'ui:schedule-change'),

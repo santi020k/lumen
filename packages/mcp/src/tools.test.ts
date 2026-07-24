@@ -5,6 +5,7 @@ import { describe, expect, test } from 'vitest'
 import { loadLumenData } from './data.js'
 import {
   getComponent,
+  getMeta,
   getRecipe,
   getRules,
   getTokens,
@@ -20,6 +21,8 @@ describe('lumen-mcp data snapshot', () => {
 
     expect(data.components.length).toBeGreaterThan(50)
     expect(data.meta.componentCount).toBe(data.components.length)
+    expect(data.meta.catalogHash).toMatch(/^[a-f0-9]{64}$/)
+    expect(data.meta.schemaVersion).toBeGreaterThanOrEqual(2)
     expect(data.meta.serverVersion).toMatch(/^\d+\.\d+\.\d+/)
     expect(data.tokens.semantic).toContain('brand')
     expect(data.rules.length).toBeGreaterThan(0)
@@ -78,14 +81,46 @@ describe('lumen-mcp data snapshot', () => {
     }
   })
 
-  test('matches the package version and contains no volatile build timestamp', () => {
+  test('matches package versions and contains deterministic freshness metadata', () => {
     const data = loadLumenData()
     const packageJson = JSON.parse(
       readFsFile(new URL('../package.json', import.meta.url), 'utf8')
     ) as { version: string }
 
     expect(data.meta.serverVersion).toBe(packageJson.version)
+    expect(data.meta.packageVersions['@santi020k/lumen-mcp']).toBe(packageJson.version)
     expect(data.meta).not.toHaveProperty('generatedAt')
+  })
+
+  test('bundles framework-specific examples and behavior setup', () => {
+    const data = loadLumenData()
+    const dialog = resolveComponent('Dialog', data)
+    const dateRangePicker = resolveComponent('DateRangePicker', data)
+
+    expect(dialog?.frameworkDetails.react.example).toContain('useDialog()')
+    expect(dialog?.frameworkDetails.react.example).toContain('dialog.triggerProps')
+    expect(dialog?.frameworkDetails.react.example).not.toContain('data-ui-dialog-trigger')
+    expect(dialog?.frameworkDetails.react.behavior).toMatchObject({
+      hook: 'useDialog',
+      mode: 'hook'
+    })
+    expect(dialog?.frameworkDetails.elements.example).toContain('<lumen-dialog')
+    expect(dialog?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
+    expect(dateRangePicker?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
+
+    for (const name of ['AlertDialog', 'Dialog', 'Drawer', 'Sheet']) {
+      const react = resolveComponent(name, data)?.frameworkDetails.react
+
+      expect(react?.behavior).toMatchObject({ hook: 'useDialog', mode: 'hook' })
+      expect(react?.example).toContain('dialog.triggerProps')
+      expect(react?.example).not.toMatch(/data-ui-(?:alert-dialog|dialog|drawer|sheet)-trigger/)
+    }
+  })
+
+  test('associates runtime events with their components', () => {
+    expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
+      expect.objectContaining({ name: 'ui:datatable-selection-change' })
+    )
   })
 
   test('ships the package license', () => {
@@ -136,6 +171,11 @@ describe('listComponents', () => {
     expect(result.text).not.toContain('Button (button)')
   })
 
+  test('normalizes friendly recipe filters', () => {
+    expect(listComponents({ recipe: 'Advanced Fields' }).data.count)
+      .toBe(listComponents({ recipe: 'advanced-fields' }).data.count)
+  })
+
   test('returns a clear empty result', () => {
     expect(listComponents({ query: 'definitely-not-a-component' }).text)
       .toBe('No components matched the given filters.')
@@ -160,6 +200,16 @@ describe('getComponent', () => {
     expect(result.text).toContain('ButtonProps')
     expect(result.text).toContain('react reference source')
     expect(result.data.component).toHaveProperty('framework.source')
+  })
+
+  test('returns framework behavior setup with usage detail', () => {
+    const react = getComponent({ framework: 'react', name: 'Dialog' })
+    const astro = getComponent({ framework: 'astro', name: 'Dialog' })
+
+    expect(react.text).toContain('## Framework behavior')
+    expect(react.text).toContain('Hook: useDialog')
+    expect(react.text).toContain('dialog.triggerProps')
+    expect(astro.text).toContain('Mount UIPrimitives once')
   })
 
   test('returns Web Component registration, attributes, and tag usage', () => {
@@ -236,6 +286,26 @@ describe('search', () => {
       .toEqual(['date', 'input'])
   })
 
+  test.each([
+    ['admin dashboard', ['DataTable', 'Sidebar']],
+    ['booking calendar', ['Calendar', 'Schedule']],
+    ['sortable table pagination', ['DataTable', 'Pagination']],
+    ['dark mode theme', ['ThemeBuilder', 'ThemeToggle']]
+  ])('returns useful partial matches for %s', (query, expectedNames) => {
+    const names = search({ query }).data.results.map((result) => result.name)
+
+    expect(names).toEqual(expect.arrayContaining(expectedNames))
+  })
+
+  test('filters component contracts by framework', () => {
+    const result = search({ framework: 'react', query: 'dialog hook' })
+
+    expect(result.data.results[0]).toMatchObject({
+      frameworks: expect.arrayContaining(['react']),
+      name: 'Dialog'
+    })
+  })
+
   test('honors the result limit', () => {
     const result = search({ limit: 1, query: 'input' })
     const resultLines = result.text.split('\n').filter((line) => line.startsWith('component:'))
@@ -255,6 +325,13 @@ describe('search', () => {
 })
 
 describe('getTokens and getRules', () => {
+  test('returns deterministic snapshot metadata', () => {
+    const result = getMeta()
+
+    expect(result.text).toContain('Catalog hash:')
+    expect(result.data.meta.catalogHash).toMatch(/^[a-f0-9]{64}$/)
+  })
+
   test('returns tokens', () => {
     const result = getTokens()
 

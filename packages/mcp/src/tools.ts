@@ -42,6 +42,27 @@ const normalize = (value: string) =>
 const tokenize = (value: string): string[] =>
   normalize(value).split(/[^a-z0-9]+/).filter(Boolean)
 
+const searchStopWords = new Set([
+  'a', 'accessibility', 'accessible', 'admin', 'an', 'and', 'app', 'application', 'component', 'for',
+  'in', 'lumen', 'not', 'of', 'or', 'the', 'to', 'ui', 'with'
+])
+
+const searchTermAliases: Record<string, string[]> = {
+  booking: ['booking', 'schedule', 'calendar', 'appointment', 'date'],
+  dark: ['dark', 'theme'],
+  dashboard: ['dashboard', 'data-table', 'sidebar', 'chart', 'stat', 'metric'],
+  mode: ['mode', 'theme'],
+  pagination: ['pagination', 'paginated'],
+  sortable: ['sortable', 'sort']
+}
+
+const meaningfulSearchTerms = (value: string): string[] => {
+  const terms = tokenize(value)
+  const meaningful = terms.filter((term) => !searchStopWords.has(term))
+
+  return meaningful.length > 0 ? meaningful : terms
+}
+
 const availableFrameworks = (component: LumenComponentSnapshot): LumenFramework[] =>
   (Object.entries(component.frameworks) as [LumenFramework, boolean][])
     .filter(([, available]) => available)
@@ -77,10 +98,20 @@ export const resolveRecipe = (
   return data.recipes.find((recipe) => normalize(recipe.name) === target)
 }
 
-const frameworkSearchText = (component: LumenComponentSnapshot) =>
-  Object.values(component.frameworkDetails)
+const frameworkSearchText = (
+  component: LumenComponentSnapshot,
+  framework?: LumenFramework
+) =>
+  (framework
+    ? [component.frameworkDetails[framework]]
+    : Object.values(component.frameworkDetails))
     .flatMap((framework) => [
       framework.packageName,
+      framework.behavior?.description ?? '',
+      framework.behavior?.hook ?? '',
+      framework.behavior?.mode ?? '',
+      framework.behavior?.setup ?? '',
+      framework.example,
       framework.propsExtends ?? '',
       framework.props.map((prop) => `${prop.name} ${prop.type}`).join(' '),
       framework.attributes?.join(' ') ?? '',
@@ -88,13 +119,16 @@ const frameworkSearchText = (component: LumenComponentSnapshot) =>
     ])
     .join(' ')
 
-const componentSearchText = (component: LumenComponentSnapshot) => [
+const componentSearchText = (
+  component: LumenComponentSnapshot,
+  framework?: LumenFramework
+) => [
   component.name,
   component.kebab,
-  'accessible accessibility',
   component.description,
   component.category,
   component.collections.join(' '),
+  component.recipes.map((recipe) => recipe.name).join(' '),
   component.keywords.join(' '),
   component.dependencies.join(' '),
   component.guidance?.when ?? '',
@@ -102,7 +136,7 @@ const componentSearchText = (component: LumenComponentSnapshot) => [
   component.apiReference
     .map((row) => `${row.attribute} ${row.values} ${row.description}`)
     .join(' '),
-  frameworkSearchText(component)
+  frameworkSearchText(component, framework)
 ].join(' ')
 
 const scoreCandidate = (
@@ -112,17 +146,31 @@ const scoreCandidate = (
   primaryName = ''
 ) => {
   const normalizedText = normalize(searchableText)
-  const matchedTerms = terms.filter((term) => normalizedText.includes(term))
 
-  if (matchedTerms.length !== terms.length) return { matchedTerms, score: 0 }
+  const matchedTerms = terms.filter((term) =>
+    (searchTermAliases[term] ?? [term]).some((candidate) => normalizedText.includes(candidate))
+  )
 
-  const normalizedQuery = normalize(query)
+  if (matchedTerms.length === 0) return { matchedTerms, score: 0 }
+
+  const normalizedQuery = terms.join('-')
   const normalizedName = normalize(primaryName)
+  const coverage = matchedTerms.length / terms.length
 
-  let score = terms.reduce(
-    (total, term) => total + (normalizedName.includes(term) ? 20 : 5),
+  let score = matchedTerms.reduce(
+    (total, term) => total + (
+      (searchTermAliases[term] ?? [term]).some((candidate) => normalizedName.includes(candidate))
+        ? 20
+        : 5
+    ),
     0
   )
+
+  score += Math.round(coverage * 80)
+
+  score -= (terms.length - matchedTerms.length) * 3
+
+  if (terms.includes(normalizedName)) score += 50
 
   if (normalizedText.includes(normalizedQuery)) score += 100
 
@@ -138,15 +186,27 @@ const appendSearchResult = (
   terms: string[],
   searchableText: string
 ) => {
-  const match = scoreCandidate(query, terms, searchableText, candidate.name)
+  const match = scoreCandidate(
+    query,
+    terms,
+    searchableText,
+    candidate.kind === 'rule' ? '' : candidate.name
+  )
 
   if (match.score > 0) results.push({ ...candidate, ...match })
 }
 
-const collectSearchResults = (query: string, terms: string[], data: LumenData): SearchResult[] => {
+const collectSearchResults = (
+  query: string,
+  terms: string[],
+  data: LumenData,
+  framework?: LumenFramework
+): SearchResult[] => {
   const results: SearchResult[] = []
 
   for (const component of data.components) {
+    if (framework && !component.frameworks[framework]) continue
+
     appendSearchResult(
       results,
       {
@@ -158,7 +218,7 @@ const collectSearchResults = (query: string, terms: string[], data: LumenData): 
       },
       query,
       terms,
-      componentSearchText(component)
+      componentSearchText(component, framework)
     )
   }
 
@@ -217,16 +277,26 @@ export const listComponents = (
   data: LumenData = loadLumenData()
 ): LumenToolResult<{ components: ComponentSummary[]; count: number }> => {
   const query = args.query?.trim()
-  const queryTerms = query ? tokenize(query) : []
+  const queryTerms = query ? meaningfulSearchTerms(query) : []
+  const recipe = args.recipe ? resolveRecipe(args.recipe, data) : undefined
+  const recipeName = recipe?.name ?? (args.recipe ? normalize(args.recipe) : undefined)
 
   const matches = data.components.filter((component) => {
     if (args.framework && !component.frameworks[args.framework]) return false
 
-    if (args.recipe && !component.recipes.some((recipe) => recipe.name === args.recipe)) return false
+    if (
+      recipeName &&
+      !component.recipes.some((componentRecipe) => normalize(componentRecipe.name) === recipeName)
+    ) return false
 
     if (
       query &&
-      scoreCandidate(query, queryTerms, componentSearchText(component), component.name).score === 0
+      scoreCandidate(
+        query,
+        queryTerms,
+        componentSearchText(component, args.framework),
+        component.name
+      ).score === 0
     ) return false
 
     return true
@@ -315,6 +385,10 @@ const componentDetail = (
 }
 
 const formatProps = (framework: LumenFrameworkSnapshot): string => {
+  if (framework.attributes && framework.attributes.length > 0) {
+    return `Attributes:\n${framework.attributes.map((attribute) => `- ${attribute}`).join('\n')}`
+  }
+
   if (framework.props.length === 0) {
     return framework.propsExtends
       ? `Props extend ${framework.propsExtends}; no additional local props were detected.`
@@ -358,6 +432,34 @@ const formatComponentUsage = (
   sections.push('', formatProps(framework), '', '## Example', `\`\`\`${framework.language}`)
 
   sections.push(framework.example, '```')
+
+  if (framework.behavior) {
+    sections.push('', '## Framework behavior', framework.behavior.setup)
+
+    if (framework.behavior.hook) sections.push(`Hook: ${framework.behavior.hook}`)
+
+    if (framework.behavior.description) sections.push(framework.behavior.description)
+
+    if (framework.behavior.options && framework.behavior.options.length > 0) {
+      sections.push(
+        '',
+        'Hook options:',
+        ...framework.behavior.options.map((option) =>
+          `- ${option.name}: ${option.type} — ${option.description}`
+        )
+      )
+    }
+
+    if (framework.behavior.controller && framework.behavior.controller.length > 0) {
+      sections.push(
+        '',
+        'Controller values:',
+        ...framework.behavior.controller.map((value) =>
+          `- ${value.name}: ${value.type} — ${value.description}`
+        )
+      )
+    }
+  }
 
   if (component.guidance) {
     sections.push('', '## Guidance', component.guidance.when)
@@ -474,7 +576,11 @@ export const getRecipe = (
 }
 
 export const search = (
-  args: { limit?: number | undefined; query: string },
+  args: {
+    framework?: FrameworkFilter | undefined
+    limit?: number | undefined
+    query: string
+  },
   data: LumenData = loadLumenData()
 ): LumenToolResult<{ query: string; results: SearchResult[]; total: number }> => {
   const query = args.query.trim()
@@ -488,9 +594,26 @@ export const search = (
   }
 
   const limit = Math.max(1, Math.min(args.limit ?? 20, 100))
-  const results = collectSearchResults(query, tokenize(query), data)
 
-  results.sort((left, right) => right.score - left.score || left.name.localeCompare(right.name))
+  const results = collectSearchResults(
+    query,
+    meaningfulSearchTerms(query),
+    data,
+    args.framework
+  )
+
+  const kindPriority: Record<SearchResult['kind'], number> = {
+    component: 0,
+    recipe: 1,
+    rule: 3,
+    token: 2
+  }
+
+  results.sort((left, right) =>
+    right.score - left.score ||
+    kindPriority[left.kind] - kindPriority[right.kind] ||
+    left.name.localeCompare(right.name)
+  )
 
   const shown = results.slice(0, limit)
 
@@ -510,6 +633,22 @@ export const search = (
     ).join('\n')}`
   }
 }
+
+export const getMeta = (
+  data: LumenData = loadLumenData()
+): LumenToolResult<{ meta: LumenData['meta'] }> => ({
+  data: { meta: data.meta },
+  text: [
+    '# Lumen MCP snapshot',
+    `Server version: ${data.meta.serverVersion}`,
+    `Schema version: ${data.meta.schemaVersion}`,
+    `Catalog hash: ${data.meta.catalogHash}`,
+    `Components: ${data.meta.componentCount}`,
+    '',
+    '## Package versions',
+    ...Object.entries(data.meta.packageVersions).map(([name, version]) => `- ${name}: ${version}`)
+  ].join('\n')
+})
 
 export const getTokens = (
   data: LumenData = loadLumenData()
