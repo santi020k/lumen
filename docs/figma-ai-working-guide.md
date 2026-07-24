@@ -39,7 +39,8 @@ Use sources in this order:
 | ------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | Public component catalog                    | [`registry/lumen.registry.json`](../registry/lumen.registry.json)                           |
 | Figma component coverage and semantic roles | [`registry/figma-design-map.json`](../registry/figma-design-map.json)                       |
-| Lumen theme values                          | [`packages/lumen/styles.css`](../packages/lumen/styles.css)                                 |
+| Lumen product theme values                  | [`apps/docs/src/styles/global.css`](../apps/docs/src/styles/global.css)                      |
+| Reusable package fallback theme             | [`packages/lumen/styles.css`](../packages/lumen/styles.css)                                 |
 | Astro component appearance and behavior     | [`packages/astro`](../packages/astro)                                                       |
 | Shared component contracts and metadata     | [`packages/core`](../packages/core)                                                         |
 | santi020k theme values                      | `../website/src/styles/partials/tokens.css`                                                 |
@@ -49,6 +50,11 @@ Use sources in this order:
 Never assume the parent website tokens are unchanged because they matched during an earlier
 release. Read the parent file again whenever syncing the `santi020k` modes. If the parent project
 has intentionally changed, report the drift before rewriting a released Figma theme.
+
+The Lumen Figma `Light` and `Dark` modes follow the product overrides in the docs app. The package
+stylesheet is a reusable fallback and must not overwrite those product modes. Before changing color
+variables, compare the registry contract, the resolved deployed theme, and Figma. Do not update the
+contract and its source together merely to make a mismatch disappear.
 
 ## Release baseline
 

@@ -2,11 +2,10 @@ import { readFile } from 'node:fs/promises'
 
 const rootUrl = new URL('../', import.meta.url)
 
-const [contract, lumenCss, docsCss] = await Promise.all([
-  readFile(new URL('registry/figma-theme-tokens.json', rootUrl), 'utf8').then(JSON.parse),
-  readFile(new URL('packages/lumen/styles.css', rootUrl), 'utf8'),
-  readFile(new URL('apps/docs/src/styles/global.css', rootUrl), 'utf8')
-])
+const contract = await readFile(
+  new URL('registry/figma-theme-tokens.json', rootUrl),
+  'utf8'
+).then(JSON.parse)
 
 const readBlock = (css, marker) => {
   const markerIndex = css.indexOf(marker)
@@ -33,38 +32,23 @@ const readTokens = block =>
       .map(([, name, value]) => [name, value.trim()])
   )
 
-const sources = [
-  {
-    label: 'packages/lumen Light',
-    mode: 'Light',
-    tokens: readTokens(readBlock(lumenCss, ':root[data-theme="light"]'))
-  },
-  {
-    label: 'packages/lumen Dark',
-    mode: 'Dark',
-    tokens: readTokens(readBlock(lumenCss, ':root[data-theme="dark"]'))
-  },
-  {
-    label: 'docs Lumen Light',
-    mode: 'Light',
-    tokens: readTokens(readBlock(docsCss, ':root[data-theme="lumen-light"]'))
-  },
-  {
-    label: 'docs Lumen Dark',
-    mode: 'Dark',
-    tokens: readTokens(readBlock(docsCss, ':root[data-theme="lumen-dark"]'))
-  },
-  {
-    label: 'docs santi020k Light',
-    mode: 'santi020k Light',
-    tokens: readTokens(readBlock(docsCss, ':root[data-theme="santi020k-light"]'))
-  },
-  {
-    label: 'docs santi020k Dark',
-    mode: 'santi020k Dark',
-    tokens: readTokens(readBlock(docsCss, ':root[data-theme="santi020k-dark"]'))
+const cssByFile = new Map()
+
+const readCss = async file => {
+  if (!cssByFile.has(file)) {
+    cssByFile.set(file, await readFile(new URL(file, rootUrl), 'utf8'))
   }
-]
+
+  return cssByFile.get(file)
+}
+
+const sources = await Promise.all(
+  Object.entries(contract.sources).map(async ([mode, source]) => ({
+    label: `${source.role}: ${source.file} ${source.selector}`,
+    mode,
+    tokens: readTokens(readBlock(await readCss(source.file), source.selector))
+  }))
+)
 
 const mismatches = []
 
@@ -83,6 +67,41 @@ for (const source of sources) {
   }
 }
 
+for (const [mode, guardrail] of Object.entries(contract.guardrails ?? {})) {
+  const expected = contract.modes[mode]
+
+  for (const [token, value] of Object.entries(guardrail.anchors ?? {})) {
+    if (expected[token] !== value) {
+      mismatches.push({
+        actual: expected[token] ?? '<missing>',
+        expected: value,
+        source: `${guardrail.identity} identity guard`,
+        token
+      })
+    }
+  }
+
+  if (guardrail.mustDifferFrom) {
+    const fallback = guardrail.mustDifferFrom
+
+    const fallbackTokens = readTokens(
+      readBlock(await readCss(fallback.file), fallback.selector)
+    )
+
+    const tokenNames = Object.keys(expected)
+    const copiedFallback = tokenNames.every(token => fallbackTokens[token] === expected[token])
+
+    if (copiedFallback) {
+      mismatches.push({
+        actual: `${fallback.file} ${fallback.selector}`,
+        expected: `${guardrail.identity} product theme`,
+        source: fallback.reason,
+        token: '<entire mode>'
+      })
+    }
+  }
+}
+
 if (mismatches.length > 0) {
   process.stderr.write('Figma theme token contract mismatch:\n')
 
@@ -90,5 +109,7 @@ if (mismatches.length > 0) {
 
   process.exitCode = 1
 } else {
-  process.stdout.write(`Figma theme token contract matches ${sources.length} CSS theme blocks.\n`)
+  process.stdout.write(
+    `Figma theme token contract matches ${sources.length} authoritative CSS theme blocks.\n`
+  )
 }

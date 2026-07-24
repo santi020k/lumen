@@ -27,11 +27,11 @@ Foundations, Glass Components, Icons, component-category, and Utilities pages. I
 interface and documentation family; Cascadia Mono is reserved for the small amount of code-style
 text.
 
-Variables carry Web code syntax (`var(--token)`) and values matching
-`packages/lumen/styles.css`, which is imported by the Astro compatibility stylesheet. The `Light`
-and `Dark` modes are the Lumen palettes; the `santi020k Light` and `santi020k Dark` modes mirror the
-parent website project. Component fills, strokes, radii, and effects bind to those variables so
-switching modes does not require detached color overrides.
+Variables carry Web code syntax (`var(--token)`). The `Light` and `Dark` modes match the Lumen
+product overrides in `apps/docs/src/styles/global.css`; `packages/lumen/styles.css` provides the
+reusable package fallback and is not the source for those Figma modes. The `santi020k Light` and
+`santi020k Dark` modes mirror the parent website project. Component fills, strokes, radii, and
+effects bind to those variables so switching modes does not require detached color overrides.
 
 The component catalog includes editable text, boolean, instance-swap, and variant properties where
 the code API has a meaningful match. `Button`, for example, provides 24 `Variant` x `Size`

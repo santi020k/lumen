@@ -1,20 +1,56 @@
 {
   "collection": "Color",
+  "sources": {
+    "Light": {
+      "file": "apps/docs/src/styles/global.css",
+      "selector": ":root[data-theme=\"lumen-light\"]",
+      "role": "product-theme-override"
+    },
+    "Dark": {
+      "file": "apps/docs/src/styles/global.css",
+      "selector": ":root[data-theme=\"lumen-dark\"]",
+      "role": "product-theme-override"
+    },
+    "santi020k Light": {
+      "file": "apps/docs/src/styles/global.css",
+      "selector": ":root[data-theme=\"santi020k-light\"]",
+      "role": "parent-theme-mirror"
+    },
+    "santi020k Dark": {
+      "file": "apps/docs/src/styles/global.css",
+      "selector": ":root[data-theme=\"santi020k-dark\"]",
+      "role": "parent-theme-mirror"
+    }
+  },
+  "guardrails": {
+    "Light": {
+      "identity": "lumen-cyan",
+      "anchors": {
+        "brand": "201 96% 32%",
+        "accent": "169 78% 33%"
+      },
+      "mustDifferFrom": {
+        "file": "packages/lumen/styles.css",
+        "selector": ":root[data-theme=\"light\"]",
+        "reason": "The package palette is a reusable fallback, not the Lumen product theme."
+      }
+    }
+  },
   "modes": {
     "Light": {
-      "canvas": "0 0% 100%",
+      "canvas": "210 24% 98%",
       "surface": "0 0% 100%",
-      "surface-muted": "220 14% 96%",
-      "surface-strong": "220 13% 91%",
-      "line": "220 13% 86%",
-      "ink": "222 47% 11%",
-      "ink-soft": "215 16% 32%",
-      "ink-muted": "215 12% 48%",
-      "brand": "221 83% 53%",
-      "brand-solid": "221 83% 46%",
-      "brand-soft": "218 100% 97%",
-      "accent": "168 76% 36%",
-      "success": "142 71% 36%",
+      "surface-muted": "210 22% 95%",
+      "surface-strong": "213 18% 88%",
+      "line": "214 17% 84%",
+      "ink": "216 28% 12%",
+      "ink-soft": "215 14% 35%",
+      "ink-muted": "215 10% 50%",
+      "brand": "201 96% 32%",
+      "brand-solid": "201 96% 28%",
+      "brand-soft": "198 64% 92%",
+      "accent": "169 78% 33%",
+      "success": "142 76% 36%",
       "warning": "38 92% 50%",
       "danger": "0 84% 60%"
     },
