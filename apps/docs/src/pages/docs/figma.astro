@@ -6,7 +6,7 @@ import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
-const figmaLibraryUrl = 'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
+const figmaCommunityUrl = 'https://www.figma.com/community/file/1662337342676541513'
 const figmaFileKey = 'luQW2pTQ3jGGxSFPAAsfa9'
 
 const figmaDetails = [
@@ -56,11 +56,11 @@ const workflow = [
     >
       <Fragment slot="actions">
         <DocsActionLink
-          href={figmaLibraryUrl}
+          href={figmaCommunityUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open in Figma
+          Get the Figma library
           <Icon decorative name="arrow-up-right" size="sm" />
         </DocsActionLink>
         <DocsActionLink
@@ -138,18 +138,19 @@ const workflow = [
 
     <Card as="section" class="figma-file-card" aria-labelledby="file-title" glass="subtle">
       <div>
-        <Badge>Library file</Badge>
+        <Badge>Figma Community</Badge>
         <h2 id="file-title">Lumen UI Library</h2>
         <p>
-          Open the shared file for token references, component variants, and design-to-code review.
+          Add the published library to your Figma workflow for token references, component
+          variants, and design-to-code review.
         </p>
       </div>
       <code>File key: {figmaFileKey}</code>
       <DocsActionLink
-        href={figmaLibraryUrl}
+        href={figmaCommunityUrl}
         target="_blank"
         rel="noopener noreferrer"
-      >Open library</DocsActionLink>
+      >View in Community</DocsActionLink>
     </Card>
   </div>
 </DocsLayout>
