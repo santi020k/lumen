@@ -1,12 +1,10 @@
 name: CodeQL
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
   schedule:
-    - cron: '24 5 * * 3'
+    - cron: "24 5 * * 3"
   workflow_dispatch: {}
 
 permissions:
@@ -21,6 +19,11 @@ concurrency:
 jobs:
   analyze:
     name: Analyze JavaScript and TypeScript
+    if: >-
+      ${{
+        github.event_name != 'pull_request' ||
+        !startsWith(github.event.pull_request.title, 'chore(release): version packages')
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
