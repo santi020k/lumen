@@ -1,9 +1,7 @@
 ---
-import { Badge, Icon } from '@santi020k/lumen-astro'
+import { Badge, CodeTabs, Icon } from '@santi020k/lumen-astro'
 
 import type { FrameworkSnippet } from '../lib/snippets'
-
-import CodeTabs from './CodeTabs.astro'
 
 interface Props {
   groupId: string
@@ -16,6 +14,13 @@ const {
   previewClass = 'component-doc-preview',
   snippets
 } = Astro.props
+
+const codeTabItems = snippets.map(snippet => ({
+  code: snippet.code,
+  label: snippet.label,
+  language: snippet.lang,
+  value: snippet.label.toLowerCase()
+}))
 ---
 
 <div class="framework-example" data-framework-example={groupId}>
@@ -45,7 +50,12 @@ const {
         three packages share the same tokens and <code>ui-*</code> class contract.
       </span>
     </div>
-    <CodeTabs groupId={groupId} snippets={snippets} />
+    <CodeTabs
+      ariaLabel="Framework"
+      class="framework-example__code-tabs"
+      items={codeTabItems}
+      storageKey="lumen-docs-framework"
+    />
   </div>
 </div>
 
@@ -57,15 +67,18 @@ const {
       example.dataset.frameworkExampleReady = 'true'
 
       const label = example.querySelector<HTMLElement>('[data-framework-label]')
-      const tabs = example.querySelectorAll<HTMLButtonElement>('[data-framework]')
+      const tabsRoot = example.querySelector<HTMLElement>('.framework-example__code-tabs')
 
-      for (const tab of tabs) {
-        tab.addEventListener('click', () => {
-          const framework = tab.dataset.framework
+      const updateLabel = () => {
+        const selectedTab = tabsRoot?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+        const framework = selectedTab?.textContent?.trim()
 
-          if (framework && label) label.textContent = framework
-        })
+        if (framework && label) label.textContent = framework
       }
+
+      tabsRoot?.addEventListener('ui:tabs-change', updateLabel)
+
+      requestAnimationFrame(updateLabel)
     }
   }
 

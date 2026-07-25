@@ -164,6 +164,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-accordion details[open] > summary::after')
     expect(styles).toContain('.ui-accordion summary:focus-visible')
     expect(styles).toContain('.ui-accordion--flush details')
+    expect(styles).toContain('.ui-accordion--flush details[open] > summary::before')
+    expect(styles).toContain('.ui-collapsible[open]')
   })
 
   test('builds Watermark labels as repeatable masked text tiles', async () => {
