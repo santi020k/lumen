@@ -148,6 +148,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(index).toContain("export { default as CodeTabs } from './components/CodeTabs.astro'")
     expect(styles).toContain('.ui-code-tabs')
     expect(styles).toContain('.ui-code-tabs__tab[aria-selected="true"]')
+    expect(styles).toMatch(
+      /\.ui-code-tabs \.ui-code-tabs__tab\[aria-selected="true"\]\s*\{[^}]*background: hsl\(var\(--brand-soft\)\);[^}]*color: hsl\(var\(--brand\)\);/s
+    )
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 

@@ -2335,7 +2335,7 @@
 .ui-code-tabs .ui-code-tabs__tab[aria-selected="true"] {
   background: hsl(var(--brand-soft));
   box-shadow: none;
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-code-tabs .ui-code-tabs__tab:focus-visible {
