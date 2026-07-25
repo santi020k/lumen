@@ -7,6 +7,7 @@ interface Props extends HTMLAttributes<'dialog'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+  layout?: 'centered' | 'fullscreen'
   /**
    * @deprecated Use `glass` instead. `surface="glass"` maps to `glass={true}`.
    */
@@ -17,6 +18,7 @@ const {
   class: classProp = '',
   className = '',
   glass = false,
+  layout = 'centered',
   surface = 'default',
   ...rest
 } = Astro.props
@@ -24,6 +26,7 @@ const {
 const resolvedGlass = resolveLumenGlass(glass, surface)
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
     'ui-dialog',
+    layout === 'fullscreen' && 'ui-dialog--fullscreen',
     resolvedGlass && 'ui-dialog--glass',
     glass === 'subtle' && 'ui-glass-subtle',
     glass === 'strong' && 'ui-glass-strong'
@@ -32,6 +35,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <dialog
   data-surface={resolvedGlass ? 'glass' : 'default'}
+  data-layout={layout}
   data-ui-dialog
   class:list={classList}
   {...passthrough}

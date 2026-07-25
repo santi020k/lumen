@@ -63,6 +63,9 @@ catalogs:
     '@types/react-dom':
       specifier: ^19.2.3
       version: 19.2.3
+    '@types/semver':
+      specifier: ^7.7.1
+      version: 7.7.1
     '@vitest/coverage-v8':
       specifier: ^4.1.10
       version: 4.1.10
@@ -108,6 +111,9 @@ catalogs:
     react-dom:
       specifier: ^19.2.8
       version: 19.2.8
+    semver:
+      specifier: ^7.8.0
+      version: 7.8.5
     sharp:
       specifier: ^0.35.3
       version: 0.35.3
@@ -352,10 +358,16 @@ importers:
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../core
+      semver:
+        specifier: 'catalog:'
+        version: 7.8.5
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 26.1.1
+      '@types/semver':
+        specifier: 'catalog:'
+        version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.10(vitest@4.1.10)
@@ -3746,6 +3758,9 @@ packages:
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/send@1.2.1':
     resolution: {integrity: sha512-arsCikDvlU99zl1g69TcAB3mzZPpxgw0UQnaHeC1Nwb015xp8bknZv5rIfri9xTOcMuaVgvabfIRA7PSZVuZIQ==}
@@ -12754,6 +12769,8 @@ snapshots:
   '@types/sax@1.2.7':
     dependencies:
       '@types/node': 26.1.0
+
+  '@types/semver@7.7.1': {}
 
   '@types/send@1.2.1':
     dependencies:

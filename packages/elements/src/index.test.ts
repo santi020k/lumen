@@ -149,11 +149,14 @@ describe('@santi020k/lumen-elements', () => {
 
     card.setAttribute('glass', '')
     dialog.setAttribute('glass', '')
+    dialog.setAttribute('layout', 'fullscreen')
     table.setAttribute('glass', '')
     document.body.append(card, dialog, table)
 
     expect(card.classList.contains('ui-card--glass')).toBe(true)
     expect(dialog.classList.contains('ui-dialog--glass')).toBe(true)
+    expect(dialog.classList.contains('ui-dialog--fullscreen')).toBe(true)
+    expect(dialog.getAttribute('layout')).toBe('fullscreen')
     expect(table.classList.contains('ui-table-wrap--glass')).toBe(true)
     expect(dialog.getAttribute('surface')).toBe('default')
   })

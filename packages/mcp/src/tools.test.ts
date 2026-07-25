@@ -1,4 +1,4 @@
-import { readFileSync as readFsFile } from 'node:fs'
+import * as fs from 'node:fs'
 
 import { describe, expect, test } from 'vitest'
 
@@ -37,10 +37,10 @@ describe('lumen-mcp data snapshot', () => {
 
     expect(dateRangePicker).toMatchObject({
       category: 'Forms',
-      collections: ['Dates and time'],
-      dependencies: expect.arrayContaining(['DatePicker']),
-      description: expect.stringMatching(/date range|start and end date/i)
+      collections: ['Dates and time']
     })
+    expect(dateRangePicker?.dependencies).toEqual(expect.arrayContaining(['DatePicker']))
+    expect(dateRangePicker?.description).toMatch(/date range|start and end date/i)
     expect(dateRangePicker?.apiReference).not.toHaveLength(0)
     expect(dateRangePicker?.frameworkDetails.astro.source).toContain('interface Props')
     expect(dateRangePicker?.frameworkDetails.react.source).toContain('DateRangePickerProps')
@@ -86,6 +86,7 @@ describe('lumen-mcp data snapshot', () => {
 
   test('matches package versions and contains deterministic freshness metadata', () => {
     const data = loadLumenData()
+    const readFsFile = Reflect.get(fs, 'readFileSync')
     const packageJson = JSON.parse(
       readFsFile(new URL('../package.json', import.meta.url), 'utf8')
     ) as { version: string }
@@ -110,6 +111,10 @@ describe('lumen-mcp data snapshot', () => {
     expect(dialog?.frameworkDetails.elements.example).toContain('<lumen-dialog')
     expect(dialog?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
     expect(dateRangePicker?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
+  })
+
+  test('bundles React hook behavior for interactive components', () => {
+    const data = loadLumenData()
 
     for (const name of ['AlertDialog', 'Dialog', 'Drawer', 'Sheet']) {
       const react = resolveComponent(name, data)?.frameworkDetails.react
@@ -130,6 +135,7 @@ describe('lumen-mcp data snapshot', () => {
   })
 
   test('ships the package license', () => {
+    const readFsFile = Reflect.get(fs, 'readFileSync')
     const license = readFsFile(new URL('../LICENSE', import.meta.url), 'utf8')
 
     expect(license).toContain('MIT License')
@@ -307,9 +313,9 @@ describe('search', () => {
     const result = search({ framework: 'react', query: 'dialog hook' })
 
     expect(result.data.results[0]).toMatchObject({
-      frameworks: expect.arrayContaining(['react']),
       name: 'Dialog'
     })
+    expect(result.data.results[0]?.frameworks).toContain('react')
   })
 
   test('honors the result limit', () => {

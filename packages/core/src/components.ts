@@ -21,6 +21,7 @@ export const lumenComponentNames = [
   'Checkbox',
   'Collapsible',
   'Code',
+  'CodeTabs',
   'Combobox',
   'Command',
   'ContextMenu',

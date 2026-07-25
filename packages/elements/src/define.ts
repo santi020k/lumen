@@ -297,6 +297,11 @@ const elementConfigs = {
     defaults: { 'data-code-theme': 'auto', variant: 'inline' },
     tagName: 'lumen-code'
   },
+  CodeTabs: {
+    baseClassName: 'ui-code-tabs',
+    defaults: { 'data-ui-tabs': '' },
+    tagName: 'lumen-code-tabs'
+  },
   Combobox: { baseClassName: 'ui-combobox', defaults: { 'data-ui-combobox': '' }, tagName: 'lumen-combobox' },
   Command: { attributeClasses: glassAttributeClasses('ui-command--glass'), baseClassName: 'ui-command', defaults: { 'data-ui-command': '' }, tagName: 'lumen-command' },
   ColorPicker: { baseClassName: 'ui-color-picker', defaults: { type: 'color' }, tagName: 'lumen-color-picker' },
@@ -320,10 +325,11 @@ const elementConfigs = {
   Dialog: {
     attributeClasses: {
       glass: { strong: 'ui-dialog--glass ui-glass-strong', subtle: 'ui-dialog--glass ui-glass-subtle', true: 'ui-dialog--glass' },
+      layout: { fullscreen: 'ui-dialog--fullscreen' },
       surface: { glass: 'ui-dialog--glass' }
     },
     baseClassName: 'ui-dialog',
-    defaults: { 'data-ui-dialog': '', surface: 'default' },
+    defaults: { 'data-ui-dialog': '', layout: 'centered', surface: 'default' },
     tagName: 'lumen-dialog'
   },
   Direction: { baseClassName: 'ui-direction', defaults: { dir: 'ltr' }, tagName: 'lumen-direction' },
@@ -5722,6 +5728,7 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   AnimatedNumber: LumenAnimatedNumberBehaviorElement,
   BackToTop: LumenBackToTopBehaviorElement,
   Cascader: LumenCascaderBehaviorElement,
+  CodeTabs: LumenTabsBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
@@ -5843,6 +5850,7 @@ export const LumenChartElement = elementClasses.Chart
 export const LumenCheckboxElement = elementClasses.Checkbox
 export const LumenCollapsibleElement = elementClasses.Collapsible
 export const LumenCodeElement = elementClasses.Code
+export const LumenCodeTabsElement = elementClasses.CodeTabs
 export const LumenComboboxElement = elementClasses.Combobox
 export const LumenCommandElement = elementClasses.Command
 export const LumenColorPickerElement = elementClasses.ColorPicker

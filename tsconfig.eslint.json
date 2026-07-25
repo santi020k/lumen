@@ -13,6 +13,8 @@
     "packages/**/*.ts",
     "packages/**/*.d.ts",
     "packages/**/*.tsx",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "figma/**/*.ts",
+    "figma/**/*.d.ts"
   ]
 }

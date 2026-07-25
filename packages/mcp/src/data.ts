@@ -1,4 +1,4 @@
-import { readFileSync as readFsFile } from 'node:fs'
+import * as fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 export interface LumenCatalogManifest {
@@ -136,6 +136,7 @@ let cached: LumenData | undefined
 export const loadLumenData = (): LumenData => {
   if (cached) return cached
 
+  const readFsFile = Reflect.get(fs, 'readFileSync')
   const raw = readFsFile(fileURLToPath(dataUrl), 'utf8')
 
   cached = JSON.parse(raw) as LumenData

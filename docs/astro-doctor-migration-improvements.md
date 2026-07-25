@@ -1,7 +1,7 @@
 # Astro Doctor Migration Improvements
 
 Observed while migrating the Astro Doctor documentation site to
-`@santi020k/lumen-astro@0.1.0`.
+`@santi020k/lumen-astro@0.1.0`, with a follow-up validation against `0.2.0`.
 
 ## Implementation status
 
@@ -19,6 +19,84 @@ The July 2026 migration pass implemented the reusable library work:
 
 The broader downstream visual fixture remains complementary product-level coverage; Lumen's
 catalog visual suite and the focused Tailwind compile fixture cover the reusable library contracts.
+
+## Lumen 0.2.0 follow-up: Code and cascade integration
+
+Updating Astro Doctor from `@santi020k/lumen-astro@0.1.0` to `0.2.0` exposed a failure that passed
+Astro typechecking and linting but was visually severe: block-code headers, frames, and highlighted
+`pre` elements rendered as separate nested cards with large gaps.
+
+The failure had three interacting causes:
+
+- the application imported `styles.css` before Tailwind without importing `layers.css`, so the
+  first declaration of the cascade layers put the host `base` layer after Lumen's component layers;
+- the host's generic `pre` styles then beat Lumen's block-code reset, restoring a border, radius,
+  background, and padding on the highlighted `pre`;
+- an unlayered `.prose pre` rule reached inside Lumen's `<figure><pre>…</pre></figure>` structure
+  and added vertical margins even after the layer order was corrected.
+
+The working integration uses the published prelude and this exact order:
+
+```css
+@import "@santi020k/lumen-astro/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";
+```
+
+Host typography rules should also distinguish standalone prose blocks from component internals. For
+example, `.prose > pre` preserves spacing for a direct prose code block without styling the `pre`
+owned by Lumen's `Code` component.
+
+The Astro wrapper should use the public `Code` contract rather than reproducing internal classes or
+CSS:
+
+```astro
+---
+import { Code as HighlightedCode } from 'astro:components'
+import { Code } from '@santi020k/lumen-astro'
+---
+
+<Code
+  copy
+  highlighted
+  language="astro"
+  theme="auto"
+  variant="block"
+  wrap
+>
+  <HighlightedCode
+    code={source}
+    defaultColor={false}
+    lang="astro"
+    themes={{
+      dark: 'github-dark',
+      light: 'github-light'
+    }}
+  />
+</Code>
+```
+
+Passing `wrap` is preferable to manually adding `ui-code--wrap`, and consumers should not duplicate
+the component's width, overflow, whitespace, or wrapping rules. `highlighted` is the explicit
+contract that lets the slotted Astro highlighter provide the nested `pre` and `code`.
+
+Future improvements from this follow-up:
+
+- add the exact layer-prelude import order to every Astro, React, and Elements setup surface,
+  including the portable skill and generated setup snippets;
+- add a development diagnostic or audit check for `styles.css` used with Tailwind without the
+  matching `layers.css` prelude;
+- add a downstream compile/browser fixture with host `@layer base` rules for `pre` and an unlayered
+  `.prose pre` rule, then assert that a highlighted `Code` block still has one frame, no inner
+  border or radius, and no gap between its header and body;
+- document the highlighted Astro composition as a first-class recipe instead of requiring
+  consumers to infer the slot contract from source;
+- consider a small Astro adapter or example wrapper for `astro:components` `Code` so theme,
+  `defaultColor={false}`, language metadata, wrapping, and copy behavior stay aligned;
+- include computed-style or screenshot validation for structural CSS migrations because
+  typechecking, linting, and static builds cannot detect cascade-order regressions;
+- exercise the copy control with `UIPrimitives` mounted and verify both copied state and clipboard
+  payload in an interaction test.
 
 ## ThemeToggle behavior parity
 

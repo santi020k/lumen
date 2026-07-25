@@ -1,0 +1,30 @@
+---
+import { CodeTabs } from '@santi020k/lumen-astro'
+
+const installCommands = [
+  {
+    code: 'pnpm add @santi020k/lumen-astro',
+    label: 'pnpm',
+    language: 'bash',
+    value: 'pnpm'
+  },
+  {
+    code: 'npm install @santi020k/lumen-astro',
+    label: 'npm',
+    language: 'bash',
+    value: 'npm'
+  },
+  {
+    code: 'yarn add @santi020k/lumen-astro',
+    label: 'Yarn',
+    language: 'bash',
+    value: 'yarn'
+  }
+]
+---
+
+<CodeTabs
+  ariaLabel="Package manager"
+  items={installCommands}
+  storageKey="preferred-package-manager"
+/>

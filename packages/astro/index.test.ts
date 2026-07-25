@@ -63,6 +63,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
     expect(css).toContain('.ui-dialog--glass')
+    expect(css).toContain('.ui-dialog--fullscreen')
+    expect(css).toMatch(/\.ui-theme-toggle[^}]*:focus-visible|:where\([^)]*\.ui-theme-toggle[^)]*\):focus-visible/)
     expect(css).toContain('.ui-alert--glass')
     expect(css).toContain('.ui-table-wrap--glass')
     expect(css).toContain('.ui-date-picker-field--glass .ui-date-picker__popover')
@@ -130,6 +132,28 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-code__copy')
   })
 
+  test('composes accessible code tabs with shared persistence and code controls', async () => {
+    const [component, index, styles] = await Promise.all([
+      readFile(new URL('./components/CodeTabs.astro', packageRoot), 'utf8'),
+      readFile(new URL('./index.ts', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('items: readonly CodeTabItem[]')
+    expect(component).toContain('role="tablist"')
+    expect(component).toContain('role="tab"')
+    expect(component).toContain('role="tabpanel"')
+    expect(component).toContain('storageKey === undefined ? {} : { storageKey }')
+    expect(component).toContain('<Code')
+    expect(index).toContain("export { default as CodeTabs } from './components/CodeTabs.astro'")
+    expect(styles).toContain('.ui-code-tabs')
+    expect(styles).toContain('.ui-code-tabs__tab[aria-selected="true"]')
+    expect(styles).toMatch(
+      /\.ui-code-tabs \.ui-code-tabs__tab\[aria-selected="true"\]\s*\{[^}]*background: hsl\(var\(--brand-soft\)\);[^}]*color: hsl\(var\(--brand\)\);/s
+    )
+    expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
+  })
+
   test('styles native accordion disclosure affordances', async () => {
     const [component, styles] = await Promise.all([
       readFile(new URL('./components/Accordion.astro', packageRoot), 'utf8'),
@@ -143,6 +167,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-accordion details[open] > summary::after')
     expect(styles).toContain('.ui-accordion summary:focus-visible')
     expect(styles).toContain('.ui-accordion--flush details')
+    expect(styles).toContain('.ui-accordion--flush details[open] > summary::before')
+    expect(styles).toContain('.ui-collapsible[open]')
   })
 
   test('builds Watermark labels as repeatable masked text tiles', async () => {

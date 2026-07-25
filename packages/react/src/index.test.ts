@@ -234,9 +234,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('supports glass overlay surfaces', () => {
-    const dialog = withHookDispatcher(() => Dialog({ className: 'custom-dialog', glass: true }) as ReactElement<DialogProps>)
+    const dialog = withHookDispatcher(() => Dialog({
+      className: 'custom-dialog',
+      glass: true,
+      layout: 'fullscreen'
+    }) as ReactElement<DialogProps & { 'data-layout': string }>)
 
-    expect(dialog.props.className).toBe('ui-dialog ui-dialog--glass custom-dialog')
+    expect(dialog.props.className).toBe('ui-dialog ui-dialog--fullscreen ui-dialog--glass custom-dialog')
+    expect(dialog.props['data-layout']).toBe('fullscreen')
     expect(dialog.props['data-surface']).toBe('glass')
   })
 

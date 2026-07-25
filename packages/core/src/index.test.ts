@@ -72,6 +72,7 @@ import {
 describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
+    expect(lumenComponentNames).toContain('CodeTabs')
     expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('Tabs')
     expect(new Set(lumenComponentNames).size).toBe(lumenComponentNames.length)
@@ -455,15 +456,31 @@ describe('lumen product helpers', () => {
   test('exports theme tokens for design-token importers (effects and structure)', () => {
     const palette = createThemePalette('221 83% 53%', '168 76% 36%')
     const designTokens = exportThemeDesignTokens(palette)
+    const effect = designTokens.effect
+    const structure = designTokens.structure
 
-    expect(designTokens.effect?.['glass-blur']?.$type).toBe('dimension')
-    expect(designTokens.effect?.['glass-saturate']?.$value).toBe(1.7)
-    expect(designTokens.structure?.['ui-radius']?.$type).toBe('dimension')
-    expect(designTokens.structure?.['ui-radius']?.$value).toBe('0.625rem')
-    expect(designTokens.structure?.['ui-shadow-lg']?.$type).toBe('shadow')
-    expect(designTokens.structure?.['ui-font']?.$type).toBe('fontFamily')
-    expect(designTokens.structure?.['ui-duration']?.$type).toBe('duration')
-    expect(designTokens.structure?.['ui-ease']?.$type).toBe('cubicBezier')
+    if (!effect || !structure) throw new Error('Missing tokens')
+
+    const blur = effect['glass-blur']
+    const saturate = effect['glass-saturate']
+    const radius = structure['ui-radius']
+    const shadow = structure['ui-shadow-lg']
+    const font = structure['ui-font']
+    const duration = structure['ui-duration']
+    const ease = structure['ui-ease']
+
+    if (!blur || !saturate || !radius || !shadow || !font || !duration || !ease) {
+      throw new Error('Missing specific tokens')
+    }
+
+    expect(blur.$type).toBe('dimension')
+    expect(saturate.$value).toBe(1.7)
+    expect(radius.$type).toBe('dimension')
+    expect(radius.$value).toBe('0.625rem')
+    expect(shadow.$type).toBe('shadow')
+    expect(font.$type).toBe('fontFamily')
+    expect(duration.$type).toBe('duration')
+    expect(ease.$type).toBe('cubicBezier')
   })
 
   test('suggests readable ink and tunes low contrast themes', () => {

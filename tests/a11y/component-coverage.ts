@@ -26,6 +26,7 @@ export const runtimeBehaviorComponentNames = [
   'Carousel',
   'Cascader',
   'Code',
+  'CodeTabs',
   'Combobox',
   'Command',
   'ContextMenu',

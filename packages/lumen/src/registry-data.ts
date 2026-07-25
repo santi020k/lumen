@@ -397,6 +397,25 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "CodeTabs",
+      "type": "component",
+      "description": "Groups related code examples into accessible, persistent tabs.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/CodeTabs.astro",
+        "packages/astro/components/Code.astro",
+        "packages/astro/components/Tabs.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": [
+        "Code",
+        "Tabs",
+        "styles",
+        "runtime"
+      ]
+    },
+    {
       "name": "Combobox",
       "type": "component",
       "description": "Combines text entry and option selection.",

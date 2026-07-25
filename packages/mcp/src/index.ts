@@ -36,6 +36,56 @@ export interface LumenMcpHttpServer {
   url: URL
 }
 
+const toWebRequest = (request: ExpressRequest, host: string, options: LumenMcpHttpOptions): Request => {
+  const headers = new Headers()
+
+  for (const [name, value] of Object.entries(request.headers)) {
+    for (const item of Array.isArray(value) ? value : [value]) {
+      if (item !== undefined) headers.append(name, item)
+    }
+  }
+
+  const hostHeader = request.headers.host ?? `${host}:${options.port ?? 3000}`
+  const method = request.method
+
+  return new Request(
+    `http://${hostHeader}${request.url}`,
+    {
+      headers,
+      method,
+      ...(['GET', 'HEAD'].includes(method) ? {} : { body: JSON.stringify(request.body) })
+    }
+  )
+}
+
+const streamResponse = async (webResponse: Response, response: ExpressResponse) => {
+  response.statusCode = webResponse.status
+
+  for (const [name, value] of webResponse.headers.entries()) response.setHeader(name, value)
+
+  if (!webResponse.body) {
+    response.end()
+
+    return
+  }
+
+  const reader = webResponse.body.getReader()
+
+  response.once('close', () => {
+    reader.cancel().catch(() => { /* no-op */ })
+  })
+
+  while (!response.destroyed) {
+    const chunk = await reader.read()
+
+    if (chunk.done) break
+
+    response.write(Buffer.from(chunk.value))
+  }
+
+  if (!response.writableEnded) response.end()
+}
+
 /** Start a self-hostable Streamable HTTP transport. Defaults to loopback for safety. */
 export const startLumenMcpHttp = async (
   options: LumenMcpHttpOptions = {}
@@ -65,57 +115,13 @@ export const startLumenMcpHttp = async (
     try {
       await mcpServer.connect(transport)
 
-      const headers = new Headers()
-
-      for (const [name, value] of Object.entries(request.headers)) {
-        for (const item of Array.isArray(value) ? value : [value]) {
-          if (item !== undefined) headers.append(name, item)
-        }
-      }
-
-      const hostHeader = request.headers.host ?? `${host}:${options.port ?? 3000}`
-      const method = request.method
-
-      const webRequest = new Request(
-        `http://${hostHeader}${request.url}`,
-        {
-          headers,
-          method,
-          ...(['GET', 'HEAD'].includes(method)
-            ? {}
-            : { body: JSON.stringify(request.body) })
-        }
-      )
+      const webRequest = toWebRequest(request, host, options)
 
       const webResponse = await transport.handleRequest(webRequest, {
         parsedBody: request.body
       })
 
-      response.statusCode = webResponse.status
-
-      for (const [name, value] of webResponse.headers.entries()) response.setHeader(name, value)
-
-      if (!webResponse.body) {
-        response.end()
-
-        return
-      }
-
-      const reader = webResponse.body.getReader()
-
-      response.once('close', () => {
-        reader.cancel().catch(() => {})
-      })
-
-      while (!response.destroyed) {
-        const chunk = await reader.read()
-
-        if (chunk.done) break
-
-        response.write(Buffer.from(chunk.value))
-      }
-
-      if (!response.writableEnded) response.end()
+      await streamResponse(webResponse, response)
     } catch (error) {
       if (response.headersSent) throw error
 

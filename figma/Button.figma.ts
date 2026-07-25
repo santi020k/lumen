@@ -1,8 +1,11 @@
 // url=https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9/Lumen-UI-Library?node-id=6-69
 // source=packages/astro/components/Button.astro
 // component=Button
-import figma from 'figma'
+import _figma from 'figma'
 
+import type { FigmaStatic } from './types.ts'
+
+const figma = _figma as unknown as FigmaStatic
 const instance = figma.selectedInstance
 const label = instance.getString('Label')
 
