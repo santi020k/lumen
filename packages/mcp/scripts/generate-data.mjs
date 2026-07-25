@@ -5,8 +5,8 @@
 // and writes a single self-contained JSON payload the published server reads at
 // runtime. This keeps @santi020k/lumen-mcp installable without the whole repo.
 
-import { createHash } from 'node:crypto'
-import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { createHash, randomUUID } from 'node:crypto'
+import { access, mkdir, readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -906,7 +906,15 @@ const buildComponentData = async (name, ctx) => {
     return
   }
 
-  await writeFile(outPath, output, 'utf8')
+  const temporaryPath = `${outPath}.${process.pid}.${randomUUID()}.tmp`
+
+  try {
+    await writeFile(temporaryPath, output, 'utf8')
+
+    await rename(temporaryPath, outPath)
+  } finally {
+    await unlink(temporaryPath).catch(() => {})
+  }
 
   process.stdout.write(
     `lumen-mcp: wrote data/lumen-data.json (${components.length} components, ` +

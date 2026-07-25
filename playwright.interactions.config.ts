@@ -17,7 +17,7 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] }
     }
   ],
-  grep: /\b(?:Calendar navigates|Combobox filters|DataTable sorts|Dialog opens|Resizable changes|Select commits|Tabs switches|Tooltip opens)/,
+  grep: /\b(?:Calendar navigates|CodeTabs switches|Combobox filters|DataTable sorts|Dialog opens|Resizable changes|Select commits|Tabs switches|Tooltip opens)/,
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/a11y',

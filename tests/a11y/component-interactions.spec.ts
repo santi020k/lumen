@@ -284,6 +284,30 @@ behaviorTest(['Tabs'], 'Tabs switches panels with arrow keys', async ({ page }) 
   await expect(preview.getByRole('tabpanel', { name: 'React' })).toBeVisible()
 })
 
+behaviorTest(['CodeTabs'], 'CodeTabs switches examples and restores the persisted selection', async ({ page }) => {
+  await openPreview(page, 'code-tabs')
+
+  const preview = page.locator('.component-doc-preview')
+  const pnpmTab = preview.getByRole('tab', { name: 'pnpm', exact: true })
+  const npmTab = preview.getByRole('tab', { name: 'npm', exact: true })
+
+  await pnpmTab.focus()
+  await pnpmTab.press('ArrowRight')
+
+  await expect(npmTab).toBeFocused()
+  await expect(npmTab).toHaveAttribute('aria-selected', 'true')
+  await expect(preview.getByRole('tabpanel', { name: 'npm', exact: true })).toBeVisible()
+  await expect.poll(() => page.evaluate(
+    () => window.localStorage.getItem('preferred-package-manager')
+  )).toBe('npm')
+
+  await page.reload()
+
+  await expect(
+    page.locator('.component-doc-preview').getByRole('tab', { name: 'npm', exact: true })
+  ).toHaveAttribute('aria-selected', 'true')
+})
+
 behaviorTest(['TagGroup'], 'TagGroup removes a selected tag', async ({ page }) => {
   await openPreview(page, 'tag-group')
 
