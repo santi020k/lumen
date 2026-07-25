@@ -696,6 +696,14 @@ const buildContextData = async (files, registry, names) => {
   }
 }
 
+const getDocDefaults = (name, ctx, registryComponent) => ctx.docsByComponent.get(name) ?? {
+    apiReference: [],
+    category: registryComponent.category ?? 'Uncategorized',
+    example: `<${name} />`,
+    name,
+    summary: registryComponent.description ?? `${name} component.`
+  }
+
 const main = async () => {
   const repoRoot = await findRepoRoot(scriptDir)
   const p = (...parts) => resolve(repoRoot, ...parts)
@@ -728,14 +736,6 @@ const getAstroProps = async (name, ctx) => {
 
   return { astroSource, hasAstro, parsed }
 }
-
-const getDocDefaults = (name, ctx, registryComponent) => ctx.docsByComponent.get(name) ?? {
-    apiReference: [],
-    category: registryComponent.category ?? 'Uncategorized',
-    example: `<${name} />`,
-    name,
-    summary: registryComponent.description ?? `${name} component.`
-  }
 
 const buildComponentData = async (name, ctx) => {
   const { astroSource, hasAstro, parsed } = await getAstroProps(name, ctx)
