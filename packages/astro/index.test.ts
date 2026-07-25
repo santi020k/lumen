@@ -63,6 +63,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
     expect(css).toContain('.ui-dialog--glass')
+    expect(css).toContain('.ui-dialog--fullscreen')
+    expect(css).toMatch(/\.ui-theme-toggle[^}]*:focus-visible|:where\([^)]*\.ui-theme-toggle[^)]*\):focus-visible/)
     expect(css).toContain('.ui-alert--glass')
     expect(css).toContain('.ui-table-wrap--glass')
     expect(css).toContain('.ui-date-picker-field--glass .ui-date-picker__popover')

@@ -987,6 +987,7 @@ const apiReferenceByComponent = {
   ],
   Dialog: [
     surfaceApiRow,
+    apiRow('layout', '"centered" | "fullscreen"', '"centered"', 'Uses the standard centered panel or a viewport-filling native dialog shell.'),
     ...dialogTriggerApiRows('dialog')
   ],
   Direction: [

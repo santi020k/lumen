@@ -1239,12 +1239,15 @@ export const DateRangePicker = ({
   )
 }
 
-export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>
+export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'> & {
+  layout?: 'centered' | 'fullscreen'
+}
 
 export const Dialog = ({
   className,
   defaultOpen,
   glass = false,
+  layout = 'centered',
   onClick,
   onClose,
   onOpenChange,
@@ -1258,7 +1261,13 @@ export const Dialog = ({
     <dialog
       {...dialog.dialogProps}
       {...props}
-      className={composeClassName('ui-dialog', glassSurfaceClass('ui-dialog', surface, glass), className)}
+      className={composeClassName(
+        'ui-dialog',
+        layout === 'fullscreen' && 'ui-dialog--fullscreen',
+        glassSurfaceClass('ui-dialog', surface, glass),
+        className
+      )}
+      data-layout={layout}
       data-surface={resolveSurface(surface, glass)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}

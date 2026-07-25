@@ -1,22 +1,48 @@
-# Lumen
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="./apps/docs/public/logo.svg" alt="Lumen UI" width="239" height="60">
+  </a>
+</p>
 
-Lumen is a multi-framework primitive UI system from Santiago Molina. Install the package for your
-framework; it includes the shared Lumen foundation and standalone stylesheet. Consumers do not
-need Tailwind configuration for Lumen components to render.
+<h1 align="center">Lumen UI</h1>
 
-The monorepo layers framework adapters around a shared core:
+<p align="center">
+  A multi-framework UI system with 123 accessible primitives for Astro, React, and Web Components.
+</p>
 
-- `@santi020k/lumen` - shared stylesheet, CLI, registry metadata, and package map
-- `@santi020k/lumen-core` - tokens, component metadata, class composition, and shared behavior helpers
-- `@santi020k/lumen-astro` - Astro components and progressive-enhancement runtime
-- `@santi020k/lumen-react` - React components
-- `@santi020k/lumen-elements` - standards-based Web Components
-- `@santi020k/lumen-mcp` - Model Context Protocol server for AI agents
-- `apps/docs` - Astro documentation and demo site
+<p align="center">
+  <a href="https://lumen.santi020k.com">Documentation</a>
+  ·
+  <a href="https://lumen.santi020k.com/docs/components">Components</a>
+  ·
+  <a href="https://www.figma.com/community/file/1662337342676541513">Figma library</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
 
-## Quick Start
+<p align="center">
+  <a href="https://github.com/santi020k/lumen/actions"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square"></a>
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-astro"><img alt="npm version" src="https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm"></a>
+  <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-111827?style=flat-square"></a>
+</p>
 
-Choose one package for your framework:
+Lumen gives applications a consistent visual language without tying them to one rendering model.
+Its packages share tokens, component contracts, styles, and interaction patterns while keeping each
+framework's native authoring experience.
+
+- **Framework native:** Astro components, React primitives, and standards-based custom elements.
+- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion
+  support are built into the primitives.
+- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer
+  integration.
+- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an
+  application framework.
+- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP
+  server, `llms.txt`, and a machine-readable registry ship alongside the component system.
+
+## Quick start
+
+Install the package for your framework:
 
 ```bash
 # Astro
@@ -29,25 +55,24 @@ pnpm add @santi020k/lumen-react
 pnpm add @santi020k/lumen-elements
 ```
 
-Import the stylesheet from the same framework package once in your global CSS file, root layout,
-or app entry. For example:
+### Astro
 
-```css
-@import "@santi020k/lumen-react/styles.css";
+Import the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all
+interactive Lumen markup on the page.
+
+```astro
+---
+import '@santi020k/lumen-astro/styles.css'
+import { UIPrimitives } from '@santi020k/lumen-astro'
+---
+
+<html lang="en">
+  <body>
+    <slot />
+    <UIPrimitives />
+  </body>
+</html>
 ```
-
-With Tailwind, keep it in the same shared CSS entry:
-
-```css
-@import "@santi020k/lumen-react/layers.css";
-@import "tailwindcss";
-@import "@santi020k/lumen-react/styles.css";
-```
-
-The layer-order prelude lets Tailwind base styles run before Lumen components and keeps Tailwind
-utilities—including responsive `hidden` and display utilities—above Lumen component defaults.
-
-For interactive Astro primitives, mount `UIPrimitives` once in your root layout:
 
 ```astro
 ---
@@ -56,12 +81,105 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 
 <Card>
   <label for="email">Email</label>
-  <Input id="email" type="email" placeholder="you@example.com" />
+  <Input id="email" name="email" type="email" placeholder="you@example.com" />
   <Button>Subscribe</Button>
 </Card>
 ```
 
-## Development
+### React
+
+Load the stylesheet once from your app entry or global CSS:
+
+```tsx
+import '@santi020k/lumen-react/styles.css'
+import { Button, Card, Input } from '@santi020k/lumen-react'
+
+export function SubscribeForm() {
+  return (
+    <Card>
+      <label htmlFor="email">Email</label>
+      <Input id="email" name="email" type="email" placeholder="you@example.com" />
+      <Button>Subscribe</Button>
+    </Card>
+  )
+}
+```
+
+### Web Components
+
+Import the styles and register the elements once:
+
+```html
+<style>
+  @import "@santi020k/lumen-elements/styles.css";
+</style>
+
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<lumen-card>
+  <label for="email">Email</label>
+  <lumen-input id="email" name="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-button>Subscribe</lumen-button>
+</lumen-card>
+```
+
+See the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component
+examples, and API details.
+
+## Tailwind CSS
+
+Keep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace
+`lumen-astro` with the package for your framework.
+
+```css
+@import "@santi020k/lumen-astro/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";
+```
+
+This order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen
+component defaults.
+
+## Packages
+
+| Package | Purpose |
+| --- | --- |
+| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |
+| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |
+| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
+| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
+| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
+| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
+
+## AI and design workflows
+
+Install the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible
+coding agents:
+
+```bash
+npx skills add santi020k/lumen --skill lumen-ui
+```
+
+The skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with
+[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve
+current source, props, tokens, and usage rules.
+
+Additional machine-readable surfaces include:
+
+- [`llms.txt`](./llms.txt) for a concise project map.
+- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.
+- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
+  groups.
+- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.
+
+## Contributing
+
+Lumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in
+`packages/core`, while framework-specific behavior stays in its adapter package.
 
 ```bash
 pnpm install
@@ -69,41 +187,9 @@ pnpm run dev
 pnpm run validate
 ```
 
-## Package Strategy
+Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package
+changes require a changeset.
 
-The `@santi020k/` scope keeps the project aligned with the existing package family while the API stabilizes. If Lumen grows beyond personal projects, the package graph can later move to a dedicated `@lumen-ui/*` scope without changing the internal architecture.
+## License
 
-## Migration
-
-If you are replacing an older internal design system or duplicated UI primitives, refer to the [Migration Guide](docs/migrating-to-lumen.md) for instructions on adopting Lumen incrementally and mapping existing tokens.
-
-## Agent and Registry Surfaces
-
-Install the portable Lumen Agent Skill in Codex, Claude Code, Cursor, Windsurf, and other compatible
-AI coding tools:
-
-```bash
-npx skills add santi020k/lumen --skill lumen-ui
-```
-
-The canonical skill lives in [skills/lumen-ui](skills/lumen-ui). It teaches agents how to select,
-compose, theme, and verify Lumen primitives while preserving the app's framework and architecture.
-Pair it with [`@santi020k/lumen-mcp`](packages/mcp/README.md) when the agent should search the live
-catalog and retrieve current component source, props, tokens, and rules.
-
-Lumen also includes [llms.txt](llms.txt), [docs/ai-usage.md](docs/ai-usage.md), and
-[registry/lumen.registry.json](registry/lumen.registry.json) so app generators can discover the
-component catalog, setup rules, recipes, and installable file groups. The current roadmap lives in
-[docs/feature-roadmap.md](docs/feature-roadmap.md).
-
-Figma handoff guidance lives in [docs/figma.md](docs/figma.md), including theme token exports for
-Figma variables and the Code Connect path for the
-[published Lumen UI Library](https://www.figma.com/community/file/1662337342676541513).
-[Image performance guidance](docs/image-performance.md) explains how to retain Astro, Next.js,
-other framework, CMS, and CDN optimizers while applying Lumen presentation.
-
-The umbrella package also exposes `@santi020k/lumen/registry` and a small `lumen` command for
-listing recipes, showing recipe contents, printing install commands, loading alternate registry
-manifests, and adding starter recipe files with conflict-safe defaults. Use `--merge` to merge
-incoming recipe files with existing files, `--fail-on-conflict` for CI, or `--registry-token` /
-`LUMEN_REGISTRY_TOKEN` for private remote registries.
+Lumen is available under the [MIT License](./LICENSE).

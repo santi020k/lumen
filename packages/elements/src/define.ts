@@ -320,10 +320,11 @@ const elementConfigs = {
   Dialog: {
     attributeClasses: {
       glass: { strong: 'ui-dialog--glass ui-glass-strong', subtle: 'ui-dialog--glass ui-glass-subtle', true: 'ui-dialog--glass' },
+      layout: { fullscreen: 'ui-dialog--fullscreen' },
       surface: { glass: 'ui-dialog--glass' }
     },
     baseClassName: 'ui-dialog',
-    defaults: { 'data-ui-dialog': '', surface: 'default' },
+    defaults: { 'data-ui-dialog': '', layout: 'centered', surface: 'default' },
     tagName: 'lumen-dialog'
   },
   Direction: { baseClassName: 'ui-direction', defaults: { dir: 'ltr' }, tagName: 'lumen-direction' },
