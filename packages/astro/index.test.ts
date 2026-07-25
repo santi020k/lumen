@@ -132,6 +132,25 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-code__copy')
   })
 
+  test('composes accessible code tabs with shared persistence and code controls', async () => {
+    const [component, index, styles] = await Promise.all([
+      readFile(new URL('./components/CodeTabs.astro', packageRoot), 'utf8'),
+      readFile(new URL('./index.ts', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('items: readonly CodeTabItem[]')
+    expect(component).toContain('role="tablist"')
+    expect(component).toContain('role="tab"')
+    expect(component).toContain('role="tabpanel"')
+    expect(component).toContain('storageKey === undefined ? {} : { storageKey }')
+    expect(component).toContain('<Code')
+    expect(index).toContain("export { default as CodeTabs } from './components/CodeTabs.astro'")
+    expect(styles).toContain('.ui-code-tabs')
+    expect(styles).toContain('.ui-code-tabs__tab[aria-selected="true"]')
+    expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
+  })
+
   test('styles native accordion disclosure affordances', async () => {
     const [component, styles] = await Promise.all([
       readFile(new URL('./components/Accordion.astro', packageRoot), 'utf8'),

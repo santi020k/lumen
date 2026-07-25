@@ -238,7 +238,7 @@ describe('@santi020k/lumen-react', () => {
       className: 'custom-dialog',
       glass: true,
       layout: 'fullscreen'
-    }) as ReactElement<DialogProps>)
+    }) as ReactElement<DialogProps & { 'data-layout': string }>)
 
     expect(dialog.props.className).toBe('ui-dialog ui-dialog--fullscreen ui-dialog--glass custom-dialog')
     expect(dialog.props['data-layout']).toBe('fullscreen')

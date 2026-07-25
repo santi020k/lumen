@@ -47,6 +47,10 @@ const config = await defineConfig({
     'apps/next-smoke': {
       preset: Preset.App
     },
+    'figma': {
+      preset: Preset.Library,
+      runtime: Runtime.Node
+    },
     'packages/astro': {
       preset: Preset.Library
     },

@@ -79,60 +79,60 @@ const parseTokenBlock = (source, identifier) => {
 
 // Pull the `interface Props { ... }` body out of Astro frontmatter and turn it
 // into a compact list of { name, optional, type } records.
-const parseProps = (source) => {
-  let extendsClause = null
-  let body = ''
+const extractInterfaceBody = (source) => {
   const interfaceStart = source.indexOf('interface Props')
-  
-  if (interfaceStart === -1) {
-    const typeStart = source.indexOf('type Props')
-    
-    if (typeStart !== -1) {
-      const braceStart = source.indexOf('{', typeStart)
-      const end = source.indexOf('\n}', braceStart)
-      
-      if (braceStart !== -1 && end !== -1) {
-        const between = source.slice(typeStart + 10, braceStart).trim()
-        
-        if (between.startsWith('=') && between.endsWith('&')) {
-          extendsClause = between.slice(1, -1).trim()
-        }
-        
-        body = source.slice(braceStart + 1, end)
-      }
-    }
-  } else {
+
+  if (interfaceStart !== -1) {
     const braceStart = source.indexOf('{', interfaceStart)
     const end = source.indexOf('\n}', braceStart)
-    
+
     if (braceStart !== -1 && end !== -1) {
       const between = source.slice(interfaceStart + 15, braceStart).trim()
-      
-      if (between.startsWith('extends ')) {
-        extendsClause = between.slice(8).trim()
-      }
-      
-      body = source.slice(braceStart + 1, end)
+      const extendsClause = between.startsWith('extends ') ? between.slice(8).trim() : null
+
+      return { body: source.slice(braceStart + 1, end), extendsClause }
     }
   }
 
-  if (!body) return { extends: null, props: [] }
+  return null
+}
+
+const extractTypeBody = (source) => {
+  const typeStart = source.indexOf('type Props')
+
+  if (typeStart !== -1) {
+    const braceStart = source.indexOf('{', typeStart)
+    const end = source.indexOf('\n}', braceStart)
+
+    if (braceStart !== -1 && end !== -1) {
+      const between = source.slice(typeStart + 10, braceStart).trim()
+      const extendsClause = between.startsWith('=') && between.endsWith('&') ? between.slice(1, -1).trim() : null
+
+      return { body: source.slice(braceStart + 1, end), extendsClause }
+    }
+  }
+
+  return null
+}
+
+const parseProps = (source) => {
+  const extracted = extractInterfaceBody(source) || extractTypeBody(source)
+
+  if (!extracted?.body) return { extends: null, props: [] }
 
   const props = []
 
-  for (const line of body.split('\n')) {
+  for (const line of extracted.body.split('\n')) {
     const trimmed = line.trim()
 
     if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue
 
     const m = trimmed.match(/^([A-Za-z_][\w-]*)(\?)?\s*:\s*(.+?);?$/)
 
-    if (!m) continue
-
-    props.push({ name: m[1], optional: Boolean(m[2]), type: m[3].trim() })
+    if (m) props.push({ name: m[1], optional: Boolean(m[2]), type: m[3].trim() })
   }
 
-  return { extends: extendsClause, props }
+  return { extends: extracted.extendsClause, props }
 }
 
 const toKebab = (name) =>
@@ -185,18 +185,19 @@ const parseTypeScriptProps = (declaration, sourceFile) => {
   return { extends: null, props: [] }
 }
 
-const processReactStatement = (statement, componentNameSet, componentDeclarations, propDeclarations) => {
-  if (
-    (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) &&
-    statement.name.text.endsWith('Props')
-  ) {
-    propDeclarations.set(statement.name.text.slice(0, -5), statement)
-  }
+const processTypeStatement = (statement, propDeclarations) => {
+  if ((ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) && statement.name.text.endsWith('Props')) {
+      propDeclarations.set(statement.name.text.slice(0, -5), statement)
+    }
+}
 
+const processFunctionStatement = (statement, componentNameSet, componentDeclarations) => {
   if (ts.isFunctionDeclaration(statement) && statement.name && componentNameSet.has(statement.name.text)) {
     componentDeclarations.set(statement.name.text, statement)
   }
+}
 
+const processVariableStatement = (statement, componentNameSet, componentDeclarations) => {
   if (ts.isVariableStatement(statement)) {
     for (const declaration of statement.declarationList.declarations) {
       if (ts.isIdentifier(declaration.name) && componentNameSet.has(declaration.name.text)) {
@@ -204,6 +205,14 @@ const processReactStatement = (statement, componentNameSet, componentDeclaration
       }
     }
   }
+}
+
+const processReactStatement = (statement, componentNameSet, componentDeclarations, propDeclarations) => {
+  processTypeStatement(statement, propDeclarations)
+
+  processFunctionStatement(statement, componentNameSet, componentDeclarations)
+
+  processVariableStatement(statement, componentNameSet, componentDeclarations)
 }
 
 const parseReactComponents = (source, componentNames) => {
@@ -280,29 +289,33 @@ const processElementConfigProperty = (property, sourceFile) => {
   return { config: { attributes: [...new Set(attributes)].sort(), source: property.getText(sourceFile), tagName }, name }
 }
 
+const processElementStatement = (statement, entries, sourceFile) => {
+  if (!ts.isVariableStatement(statement)) return
+
+  for (const declaration of statement.declarationList.declarations) {
+    const initializer = declaration.initializer && unwrapExpression(declaration.initializer)
+
+    if (
+      !ts.isIdentifier(declaration.name) ||
+      declaration.name.text !== 'elementConfigs' ||
+      !initializer ||
+      !ts.isObjectLiteralExpression(initializer)
+    ) continue
+
+    for (const property of initializer.properties) {
+      const result = processElementConfigProperty(property, sourceFile)
+
+      if (result) entries.set(result.name, result.config)
+    }
+  }
+}
+
 const parseElementComponents = (source, componentNames) => {
   const sourceFile = ts.createSourceFile('define.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
   const entries = new Map()
 
   for (const statement of sourceFile.statements) {
-    if (!ts.isVariableStatement(statement)) continue
-
-    for (const declaration of statement.declarationList.declarations) {
-      const initializer = declaration.initializer && unwrapExpression(declaration.initializer)
-
-      if (
-        !ts.isIdentifier(declaration.name) ||
-        declaration.name.text !== 'elementConfigs' ||
-        !initializer ||
-        !ts.isObjectLiteralExpression(initializer)
-      ) continue
-
-      for (const property of initializer.properties) {
-        const result = processElementConfigProperty(property, sourceFile)
-
-        if (result) entries.set(result.name, result.config)
-      }
-    }
+    processElementStatement(statement, entries, sourceFile)
   }
 
   return new Map(componentNames.map((name) => [
@@ -421,7 +434,9 @@ const reactHookByComponent = {
 }
 
 const reactExampleForComponent = (name, hook, fallback) => {
-  if (reactExampleOverrides[name]) return reactExampleOverrides[name]
+  const override = Reflect.get(reactExampleOverrides, name)
+
+  if (override) return override
 
   if (!hook) return toReactExample(fallback)
 
@@ -460,13 +475,16 @@ const toElementsExample = (example, elementComponents) => {
 
   for (const [name, element] of elementComponents) {
     converted = converted
-      .replaceAll(new RegExp(`<${name}(?=[\\s/>])`, 'g'), `<${element.tagName}`)
+      .replaceAll(/<([A-Z][A-Za-z0-9]*)(?=[\s/>])/g, (match, p1) =>
+        p1 === name ? `<${element.tagName}` : match
+      )
       .replaceAll(`</${name}>`, `</${element.tagName}>`)
   }
 
   converted = converted
     .replaceAll(/<\/?TimelineItem>/g, (tag) => tag.startsWith('</') ? '</li>' : '<li>')
-    .replaceAll(/(\s[\w-]+)=\{(-?\d+(?:\.\d+)?)\}/g, '$1="$2"')
+    .replaceAll(/(\s[\w-]+)=\{(-?[0-9]+\.[0-9]+)\}/g, '$1="$2"')
+    .replaceAll(/(\s[\w-]+)=\{(-?[0-9]+)\}/g, '$1="$2"')
     .replaceAll(/(\s[\w-]+)=\{true\}/g, '$1')
     .replaceAll(/(\s[\w-]+)=\{false\}/g, '$1="false"')
     .replaceAll(/<([\w-]+)([^<>]*?)\s*\/>/g, '<$1$2></$1>')
@@ -474,25 +492,23 @@ const toElementsExample = (example, elementComponents) => {
   return converted.includes('{') ? '' : converted
 }
 
-const frameworkBehavior = ({ framework, hook, reactSource, runtimeRequired }) => {
-  if (framework === 'astro' && runtimeRequired) {
-    return {
-      mode: 'runtime',
-      setup:
-        "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
-    }
-  }
+const getAstroBehavior = (runtimeRequired) => {
+  if (!runtimeRequired) return
 
-  if (framework === 'elements') {
-    return {
-      mode: 'registration',
-      setup:
-        'Call defineLumenElements() once before rendering Lumen custom elements.' +
-        (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '')
-    }
+  return {
+    mode: 'runtime',
+    setup: "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
   }
+}
 
-  if (framework === 'react' && hook) {
+const getElementsBehavior = (runtimeRequired) => ({
+    mode: 'registration',
+    setup: 'Call defineLumenElements() once before rendering Lumen custom elements.' +
+      (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '')
+  })
+
+const getReactBehavior = (hook, reactSource, runtimeRequired) => {
+  if (hook) {
     return {
       controller: hook.controller,
       description: hook.description,
@@ -503,7 +519,7 @@ const frameworkBehavior = ({ framework, hook, reactSource, runtimeRequired }) =>
     }
   }
 
-  if (framework === 'react' && runtimeRequired) {
+  if (runtimeRequired) {
     const builtIn = /\buse[A-Z]\w+\(/.test(reactSource)
 
     return {
@@ -513,6 +529,14 @@ const frameworkBehavior = ({ framework, hook, reactSource, runtimeRequired }) =>
         : 'The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives.'
     }
   }
+}
+
+const frameworkBehavior = ({ framework, hook, reactSource, runtimeRequired }) => {
+  if (framework === 'astro') return getAstroBehavior(runtimeRequired)
+
+  if (framework === 'elements') return getElementsBehavior(runtimeRequired)
+
+  if (framework === 'react') return getReactBehavior(hook, reactSource, runtimeRequired)
 }
 
 const buildFrameworkDetails = ({
@@ -527,8 +551,13 @@ const buildFrameworkDetails = ({
   reactHooks,
   runtimeRequired
 }) => {
-  const hookName = reactHookByComponent[name]
-  const hook = name === 'Tabs' ? undefined : (hookName ? reactHooks.get(hookName) : undefined)
+  const hookName = Reflect.get(reactHookByComponent, name)
+  let hook
+
+  if (name !== 'Tabs' && hookName) {
+    hook = reactHooks.get(hookName)
+  }
+
   let elementsExample = toElementsExample(doc.example, elementComponents)
 
   if (name === 'ScrollCue') {
@@ -618,29 +647,64 @@ const keywordsForComponent = (doc, collections) => [...new Set(
     .filter((value) => value.length > 2)
 )].sort()
 
+const loadWorkspaceFiles = async (p) => ({
+    aiUsage: await readIfExists(p('docs/ai-usage.md')),
+    componentsSource: await readIfExists(p('packages/core/src/components.ts')),
+    docsSource: await readIfExists(p('apps/docs/src/data/docs.ts')),
+    elementsSource: await readIfExists(p('packages/elements/src/define.ts')),
+    reactSource: await readIfExists(p('packages/react/src/components.tsx')),
+    readme: await readIfExists(p('README.md')),
+    rules: await readIfExists(p('llms.txt')),
+    tokensSource: await readIfExists(p('packages/core/src/tokens.ts'))
+  })
+
+const loadRegistry = async (p) => {
+  try {
+    return JSON.parse(await readFile(p('registry/lumen.registry.json'), 'utf8'))
+  } catch {
+    return { items: [] }
+  }
+}
+
+const mapRecipesByComponent = (registry) => {
+  const map = new Map()
+
+  for (const item of registry.items ?? []) {
+    for (const componentName of item.components ?? []) {
+      const list = map.get(componentName) ?? []
+
+      list.push({ name: item.name, type: item.type })
+
+      map.set(componentName, list)
+    }
+  }
+
+  return map
+}
+
+const buildContextData = async (files, registry, names) => {
+  const docsData = await loadDocsData(files.docsSource)
+
+  return {
+    docsByComponent: new Map(docsData.componentDocs.map((doc) => [doc.name, doc])),
+    docsData,
+    elementComponents: parseElementComponents(files.elementsSource, names),
+    reactComponents: parseReactComponents(files.reactSource, names),
+    reactHooks: new Map(docsData.reactHooksReference.map((hook) => [hook.name, hook])),
+    recipesByComponent: mapRecipesByComponent(registry),
+    registryComponents: new Map((registry.components ?? []).map((component) => [component.name, component]))
+  }
+}
+
 const main = async () => {
   const repoRoot = await findRepoRoot(scriptDir)
   const p = (...parts) => resolve(repoRoot, ...parts)
-  const componentsSource = await readIfExists(p('packages/core/src/components.ts'))
-  const tokensSource = await readIfExists(p('packages/core/src/tokens.ts'))
-  const rules = await readIfExists(p('llms.txt'))
-  const readme = await readIfExists(p('README.md'))
-  const aiUsage = await readIfExists(p('docs/ai-usage.md'))
-  const docsSource = await readIfExists(p('apps/docs/src/data/docs.ts'))
+  const files = await loadWorkspaceFiles(p)
+  const { aiUsage, componentsSource, readme, rules, tokensSource } = files
   const packageJson = JSON.parse(await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8'))
-  let registry = { items: [] }
-
-  try {
-    registry = JSON.parse(await readFile(p('registry/lumen.registry.json'), 'utf8'))
-  } catch {
-    // registry optional for the snapshot
-  }
-
+  const registry = await loadRegistry(p)
   const names = parseComponentNames(componentsSource)
-  const docsData = await loadDocsData(docsSource)
-  const docsByComponent = new Map(docsData.componentDocs.map((doc) => [doc.name, doc]))
-  const reactHooks = new Map(docsData.reactHooksReference.map((hook) => [hook.name, hook]))
-  const registryComponents = new Map((registry.components ?? []).map((component) => [component.name, component]))
+  const ctxData = await buildContextData(files, registry, names)
   const colors = parseTokenBlock(tokensSource, 'lumenColors')
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
 
@@ -656,32 +720,16 @@ const main = async () => {
     (await exists(astroDir)) ? (await readdir(astroDir)).filter((f) => f.endsWith('.astro')) : []
   )
 
-  const reactSource = await readIfExists(p('packages/react/src/components.tsx'))
-  const elementsSource = await readIfExists(p('packages/elements/src/define.ts'))
-  const reactComponents = parseReactComponents(reactSource, names)
-  const elementComponents = parseElementComponents(elementsSource, names)
-  // Map recipe / component-set membership per component name.
-  const recipesByComponent = new Map()
-
-  for (const item of registry.items ?? []) {
-    for (const componentName of item.components ?? []) {
-      const list = recipesByComponent.get(componentName) ?? []
-
-      list.push({ name: item.name, type: item.type })
-
-      recipesByComponent.set(componentName, list)
-    }
-  }
-
-const buildComponentData = async (name, ctx) => {
+const getAstroProps = async (name, ctx) => {
   const fileName = `${name}.astro`
   const hasAstro = ctx.astroFiles.has(fileName)
   const astroSource = hasAstro ? await readFile(join(ctx.astroDir, fileName), 'utf8') : ''
   const parsed = hasAstro ? parseProps(astroSource) : { extends: null, props: [] }
-  const kebab = toKebab(name)
-  const registryComponent = ctx.registryComponents.get(name) ?? {}
 
-  const doc = ctx.docsByComponent.get(name) ?? {
+  return { astroSource, hasAstro, parsed }
+}
+
+const getDocDefaults = (name, ctx, registryComponent) => ctx.docsByComponent.get(name) ?? {
     apiReference: [],
     category: registryComponent.category ?? 'Uncategorized',
     example: `<${name} />`,
@@ -689,6 +737,11 @@ const buildComponentData = async (name, ctx) => {
     summary: registryComponent.description ?? `${name} component.`
   }
 
+const buildComponentData = async (name, ctx) => {
+  const { astroSource, hasAstro, parsed } = await getAstroProps(name, ctx)
+  const kebab = toKebab(name)
+  const registryComponent = ctx.registryComponents.get(name) ?? {}
+  const doc = getDocDefaults(name, ctx, registryComponent)
   const collections = ctx.docsData.componentCollections.filter((collection) => collection.names.includes(name))
 
   const frameworkDetails = buildFrameworkDetails({
@@ -701,9 +754,10 @@ const buildComponentData = async (name, ctx) => {
     parsedAstro: parsed,
     react: ctx.reactComponents.get(name),
     reactHooks: ctx.reactHooks,
+    reactSource: ctx.files.reactSource,
     runtimeRequired:
       (registryComponent.dependencies ?? []).includes('runtime') ||
-      Boolean(reactHookByComponent[name])
+      Boolean(Reflect.get(reactHookByComponent, name))
   })
 
   return {
@@ -737,14 +791,9 @@ const buildComponentData = async (name, ctx) => {
   const ctx = {
     astroDir,
     astroFiles,
-    docsByComponent,
-    docsData,
-    elementComponents,
+    files,
     names,
-    reactComponents,
-    reactHooks,
-    recipesByComponent,
-    registryComponents
+    ...ctxData
   }
 
   for (const name of names) {
@@ -795,7 +844,7 @@ const buildComponentData = async (name, ctx) => {
   for (const [packageName, packagePath] of Object.entries(packagePaths)) {
     const manifest = JSON.parse(await readFile(p(packagePath), 'utf8'))
 
-    packageVersions[packageName] = manifest.version
+    Reflect.set(packageVersions, packageName, manifest.version)
   }
 
   const catalogHash = createHash('sha256')

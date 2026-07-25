@@ -1,4 +1,16 @@
 export {
+  type ConsumerInventory,
+  type ConsumerReference,
+  type ConsumerRolloutOptions,
+  type ConsumerRolloutReport,
+  formatConsumerRollout,
+  inspectLumenConsumer,
+  type LumenFramework,
+  runConsumerRollout,
+  updateLumenManifestSource,
+  updateLumenWorkspaceSource
+} from './consumer-rollout.js'
+export {
   addLumenRegistryItem,
   getLumenRegistryEntries,
   getLumenRegistryItem,

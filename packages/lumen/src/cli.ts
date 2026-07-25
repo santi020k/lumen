@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+import { formatConsumerRollout, runConsumerRollout } from './consumer-rollout.js'
 import {
   addLumenRegistryItem,
   getLumenRegistryEntries,
@@ -28,7 +29,45 @@ const registryToken = registryTokenIndex >= 0 ? args[registryTokenIndex + 1] : p
 const targetIndex = args.indexOf('--target')
 const targetProvided = targetIndex >= 0
 const targetValue = targetIndex >= 0 ? args[targetIndex + 1] : undefined
+const applyRollout = args.includes('--apply')
+const allowDirty = args.includes('--allow-dirty')
+const noVerify = args.includes('--no-verify')
+const reportIndex = args.indexOf('--report')
+const reportPath = reportIndex >= 0 ? args[reportIndex + 1] : undefined
+
+const excludeValues = args.flatMap((value, index) => {
+  const nextValue = args[index + 1]
+
+  return value === '--exclude' && nextValue ? [nextValue] : []
+})
+
 let conflict: 'error' | 'merge' | 'skip' = 'skip'
+
+const getRolloutArguments = (): { repositories: string[]; targetVersion?: string } => {
+  const values: string[] = []
+  const optionsWithValues = new Set(['--exclude', '--report'])
+
+  for (let index = 1; index < args.length; index += 1) {
+    const value = args[index]
+
+    if (!value) continue
+
+    if (optionsWithValues.has(value)) {
+      index += 1
+
+      continue
+    }
+
+    if (!value.startsWith('--')) values.push(value)
+  }
+
+  const [targetVersion, ...repositories] = values
+
+  return {
+    repositories: repositories.length ? repositories : [process.cwd()],
+    ...(targetVersion ? { targetVersion } : {})
+  }
+}
 
 const getAddTarget = (value: string | undefined, provided = false): LumenAddTarget => {
   if (provided && !value) {
@@ -169,6 +208,7 @@ const help = [
   '  lumen add <name>       Install a recipe or component into the current project',
   '  lumen install          Print install commands',
   '  lumen audit-tokens     Report incompatible semantic color custom properties',
+  '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
   '',
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
@@ -179,6 +219,11 @@ const help = [
   '  --registry <source>    Load list/show data from a local or remote registry JSON file',
   '  --registry-token <key> Use a bearer token for private remote registries',
   '  --target <framework>   Generate wrappers or recipe starters for astro, react, or elements',
+  '  --apply                Apply a rollout (requires a target version)',
+  '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
+  '  --exclude <path>       Exclude a repository (repeatable)',
+  '  --no-verify            Skip downstream check, typecheck, build, and browser scripts',
+  '  --report <path>        Write the machine-readable rollout report as JSON',
   ''
 ].join('\n')
 
@@ -211,6 +256,22 @@ const run = async () => {
 
     case 'list': {
       output = formatList(registry)
+
+      break
+    }
+
+    case 'rollout': {
+      const rollout = getRolloutArguments()
+
+      output = formatConsumerRollout(await runConsumerRollout({
+        allowDirty,
+        apply: applyRollout,
+        exclude: excludeValues,
+        ...(reportPath ? { report: reportPath } : {}),
+        repositories: rollout.repositories,
+        ...(rollout.targetVersion ? { targetVersion: rollout.targetVersion } : {}),
+        verify: !noVerify
+      }))
 
       break
     }

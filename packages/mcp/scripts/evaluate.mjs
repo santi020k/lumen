@@ -51,9 +51,9 @@ try {
   if (!searchOnly) {
     const data = loadLumenData()
 
-    for (const component of data.components) {
+    const evaluateComponent = async (component) => {
       for (const framework of ['astro', 'react', 'elements']) {
-        if (!component.frameworks[framework]) continue
+        if (!Reflect.get(component.frameworks, framework)) continue
 
         const result = await client.callTool({
           arguments: { detail: 'usage', framework, name: component.name },
@@ -80,6 +80,10 @@ try {
 
         evaluatedContracts += 1
       }
+    }
+
+    for (const component of data.components) {
+      await evaluateComponent(component)
     }
 
     const diagnostics = await client.callTool({

@@ -65,6 +65,29 @@ Lucide intentionally excludes brand marks. For GitHub and other project-specific
 SVG in the default slot instead of passing an unsupported `name`; Astro warns about unknown named
 icons during development.
 
+## Code tabs
+
+Use `CodeTabs` for related install commands, language variants, or configuration examples. Each
+item supplies a stable value, visible label, code string, and optional language. A shared
+`storageKey` keeps matching instances synchronized and remembers the reader's selection.
+
+```astro
+---
+import { CodeTabs } from '@santi020k/lumen-astro'
+
+const installCommands = [
+  { value: 'pnpm', label: 'pnpm', code: 'pnpm add @santi020k/lumen-astro', language: 'bash' },
+  { value: 'npm', label: 'npm', code: 'npm install @santi020k/lumen-astro', language: 'bash' }
+]
+---
+
+<CodeTabs
+  ariaLabel="Package manager"
+  items={installCommands}
+  storageKey="preferred-package-manager"
+/>
+```
+
 ## Optimized images
 
 Lumen's Astro `Image` delegates to `astro:assets`, so imported image metadata, responsive layouts,

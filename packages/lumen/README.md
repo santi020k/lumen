@@ -36,3 +36,27 @@ and Elements targets.
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
 are incompatible with Lumen's HSL-channel token format and exits non-zero when it finds conflicts.
+
+## Coordinated consumer rollout
+
+Inventory one or more pnpm consumers before a release:
+
+```bash
+lumen rollout 0.2.0 ../site ../dashboard --exclude ../legacy
+```
+
+The report separates manifest, workspace-catalog, and lockfile references; identifies each
+framework; checks the declared pnpm and Node contracts; and reports the complete resolved Lumen
+package graph. Add `--report ./lumen-rollout.json` for a durable JSON record.
+
+After committing an intentional baseline in each consumer, apply the upgrade serially:
+
+```bash
+lumen rollout 0.2.0 ../site ../dashboard --apply --report ./lumen-rollout.json
+```
+
+The command preserves `catalog:` indirection and pinned/caret range style, temporarily admits the
+new release through `minimumReleaseAgeExclude`, runs installs through Corepack from each consumer
+root, removes obsolete Lumen release-age exceptions, verifies the unified resolved version, and
+runs available framework checks, builds, and browser scripts. It refuses dirty repositories,
+missing exact pnpm declarations, and unsupported Node runtimes unless `--allow-dirty` is explicit.

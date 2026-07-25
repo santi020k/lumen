@@ -1,6 +1,4 @@
-
 import { spawnSync } from 'node:child_process'
-import * as fs from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -9,6 +7,7 @@ const repoRoot = resolve(packageRoot, '../..')
 const distEntry = join(packageRoot, 'dist/index.js')
 
 const filesIn = async (directory) => {
+  const fs = await import('node:fs/promises')
   const entries = await fs.readdir(directory, { withFileTypes: true })
 
   const nested = await Promise.all(entries.map((entry) => {
@@ -21,6 +20,8 @@ const filesIn = async (directory) => {
 }
 
 const needsBuild = async () => {
+  const fs = await import('node:fs/promises')
+
   try {
     await fs.access(distEntry)
   } catch {

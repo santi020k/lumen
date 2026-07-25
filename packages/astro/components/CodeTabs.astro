@@ -1,0 +1,92 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+import Code from './Code.astro'
+import Tabs from './Tabs.astro'
+
+type CodeTheme = 'auto' | 'lumen' | 'santi020k'
+
+export interface CodeTabItem {
+  code: string
+  label: string
+  language?: string
+  value: string
+}
+
+interface Props extends HTMLAttributes<'div'> {
+  ariaLabel?: string
+  class?: string | null
+  className?: string
+  copy?: boolean
+  initialValue?: string
+  items: readonly CodeTabItem[]
+  storageKey?: string
+  theme?: CodeTheme
+  wrap?: boolean
+}
+
+const {
+  ariaLabel = 'Code examples',
+  class: classProp = '',
+  className = '',
+  copy = true,
+  initialValue,
+  items,
+  storageKey,
+  theme = 'auto',
+  wrap = true,
+  ...rest
+} = Astro.props
+
+const selectedValue = initialValue ?? items[0]?.value
+const tabsStateProps = {
+  ...(selectedValue === undefined ? {} : { initialValue: selectedValue }),
+  ...(storageKey === undefined ? {} : { storageKey })
+}
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  ['ui-code-tabs'],
+  classProp ?? '',
+  className
+)
+---
+
+<Tabs
+  class:list={classList}
+  {...tabsStateProps}
+  {...passthrough}
+>
+  <div class="ui-code-tabs__list" role="tablist" aria-label={ariaLabel}>
+    {items.map(item => (
+      <button
+        aria-selected={item.value === selectedValue ? 'true' : 'false'}
+        class="ui-code-tabs__tab"
+        data-value={item.value}
+        role="tab"
+        type="button"
+      >
+        {item.label}
+      </button>
+    ))}
+  </div>
+
+  {items.map(item => (
+    <div
+      class="ui-code-tabs__panel"
+      data-value={item.value}
+      hidden={item.value !== selectedValue}
+      role="tabpanel"
+    >
+      <Code
+        code={item.code}
+        copy={copy}
+        {...(item.language === undefined ? {} : { language: item.language })}
+        theme={theme}
+        variant="block"
+        wrap={wrap}
+      />
+    </div>
+  ))}
+</Tabs>

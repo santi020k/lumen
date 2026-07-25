@@ -106,25 +106,31 @@ export const resolveRecipe = (
   return data.recipes.find((recipe) => normalize(recipe.name) === target)
 }
 
+const frameworkBehaviorSearchText = (behavior: LumenFrameworkSnapshot['behavior']) => [
+  behavior?.description ?? '',
+  behavior?.hook ?? '',
+  behavior?.mode ?? '',
+  behavior?.setup ?? ''
+]
+
+const frameworkDetailsSearchText = (framework: LumenFrameworkSnapshot) => [
+  framework.packageName,
+  ...frameworkBehaviorSearchText(framework.behavior),
+  framework.example,
+  framework.propsExtends ?? '',
+  framework.props.map((prop) => `${prop.name} ${prop.type}`).join(' '),
+  framework.attributes?.join(' ') ?? '',
+  framework.tagName ?? ''
+]
+
 const frameworkSearchText = (
   component: LumenComponentSnapshot,
   framework?: LumenFramework
 ) =>
   (framework
-    ? [component.frameworkDetails[framework]]
+    ? [Reflect.get(component.frameworkDetails, framework)]
     : Object.values(component.frameworkDetails))
-    .flatMap((framework) => [
-      framework.packageName,
-      framework.behavior?.description ?? '',
-      framework.behavior?.hook ?? '',
-      framework.behavior?.mode ?? '',
-      framework.behavior?.setup ?? '',
-      framework.example,
-      framework.propsExtends ?? '',
-      framework.props.map((prop) => `${prop.name} ${prop.type}`).join(' '),
-      framework.attributes?.join(' ') ?? '',
-      framework.tagName ?? ''
-    ])
+    .flatMap(frameworkDetailsSearchText)
     .join(' ')
 
 const componentSearchText = (
@@ -156,7 +162,7 @@ const scoreCandidate = (
   const normalizedText = normalize(searchableText)
 
   const matchedTerms = terms.filter((term) =>
-    (searchTermAliases[term] ?? [term]).some((candidate) => normalizedText.includes(candidate))
+    ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).some((candidate) => normalizedText.includes(candidate))
   )
 
   if (matchedTerms.length === 0) return { matchedTerms, score: 0 }
@@ -167,7 +173,7 @@ const scoreCandidate = (
 
   let score = matchedTerms.reduce(
     (total, term) => total + (
-      (searchTermAliases[term] ?? [term]).some((candidate) => normalizedName.includes(candidate))
+      ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).some((candidate) => normalizedName.includes(candidate))
         ? 20
         : 5
     ),
@@ -213,7 +219,7 @@ const collectSearchResults = (
   const results: SearchResult[] = []
 
   for (const component of data.components) {
-    if (framework && !component.frameworks[framework]) continue
+    if (framework && !Reflect.get(component.frameworks, framework)) continue
 
     appendSearchResult(
       results,
@@ -414,61 +420,55 @@ const formatProps = (framework: LumenFrameworkSnapshot): string => {
   return `${header}\n${lines.join('\n')}`
 }
 
-const formatComponentUsage = (
+const buildSummarySections = (
   component: LumenComponentSnapshot,
   frameworkName: LumenFramework,
-  detail: ComponentDetailLevel
-) => {
-  const framework = getFrameworkDetail(component.frameworkDetails, frameworkName)
+  framework: LumenFrameworkSnapshot
+) => [
+  `# ${component.name}`,
+  component.description,
+  `Category: ${component.category}`,
+  `Framework: ${frameworkName}`,
+  `Package: ${framework.packageName}`,
+  `Import: ${framework.importStatement}`,
+  `Styles: ${framework.styleImport}`,
+  framework.tagName ? `Custom element: <${framework.tagName}>` : '',
+  component.recipes.length > 0
+    ? `Recipes: ${component.recipes.map((recipe) => recipe.name).join(', ')}`
+    : 'Recipes: none'
+].filter(Boolean)
 
-  const sections = [
-    `# ${component.name}`,
-    component.description,
-    `Category: ${component.category}`,
-    `Framework: ${frameworkName}`,
-    `Package: ${framework.packageName}`,
-    `Import: ${framework.importStatement}`,
-    `Styles: ${framework.styleImport}`,
-    framework.tagName ? `Custom element: <${framework.tagName}>` : '',
-    component.recipes.length > 0
-      ? `Recipes: ${component.recipes.map((recipe) => recipe.name).join(', ')}`
-      : 'Recipes: none'
-  ].filter(Boolean)
+const appendBehaviorSections = (sections: string[], behavior: LumenFrameworkSnapshot['behavior']) => {
+  if (!behavior) return
 
-  if (detail === 'summary') return sections.join('\n')
+  sections.push('', '## Framework behavior', behavior.setup)
 
-  sections.push('', formatProps(framework), '', '## Example', `\`\`\`${framework.language}`)
+  if (behavior.hook) sections.push(`Hook: ${behavior.hook}`)
 
-  sections.push(framework.example, '```')
+  if (behavior.description) sections.push(behavior.description)
 
-  if (framework.behavior) {
-    sections.push('', '## Framework behavior', framework.behavior.setup)
-
-    if (framework.behavior.hook) sections.push(`Hook: ${framework.behavior.hook}`)
-
-    if (framework.behavior.description) sections.push(framework.behavior.description)
-
-    if (framework.behavior.options && framework.behavior.options.length > 0) {
-      sections.push(
-        '',
-        'Hook options:',
-        ...framework.behavior.options.map((option) =>
-          `- ${option.name}: ${option.type} — ${option.description}`
-        )
+  if (behavior.options && behavior.options.length > 0) {
+    sections.push(
+      '',
+      'Hook options:',
+      ...behavior.options.map((option) =>
+        `- ${option.name}: ${option.type} — ${option.description}`
       )
-    }
-
-    if (framework.behavior.controller && framework.behavior.controller.length > 0) {
-      sections.push(
-        '',
-        'Controller values:',
-        ...framework.behavior.controller.map((value) =>
-          `- ${value.name}: ${value.type} — ${value.description}`
-        )
-      )
-    }
+    )
   }
 
+  if (behavior.controller && behavior.controller.length > 0) {
+    sections.push(
+      '',
+      'Controller values:',
+      ...behavior.controller.map((value) =>
+        `- ${value.name}: ${value.type} — ${value.description}`
+      )
+    )
+  }
+}
+
+const appendGuidanceSections = (sections: string[], component: LumenComponentSnapshot) => {
   if (component.guidance) {
     sections.push('', '## Guidance', component.guidance.when)
 
@@ -478,7 +478,21 @@ const formatComponentUsage = (
   if (component.keyboardInteractions.length > 0) {
     sections.push('', '## Keyboard interactions')
 
-    sections.push(...component.keyboardInteractions.map((row) => `- ${row.key}: ${row.action}`))
+    sections.push(
+      ...component.keyboardInteractions.map(
+        (interaction) => `- ${interaction.key}: ${interaction.action}`
+      )
+    )
+  }
+
+  if (component.apiReference.length > 0) {
+    sections.push('', '## API reference')
+
+    sections.push(
+      ...component.apiReference.map(
+        (row) => `- \`${row.attribute}\` ${row.values} — ${row.description}`
+      )
+    )
   }
 
   if (component.runtimeEvents.length > 0) {
@@ -486,11 +500,26 @@ const formatComponentUsage = (
 
     sections.push(...component.runtimeEvents.map((event) => `- ${event.name}: ${event.when}`))
   }
+}
+
+const formatComponentUsage = (
+  component: LumenComponentSnapshot,
+  frameworkName: LumenFramework,
+  detail: ComponentDetailLevel
+) => {
+  const framework = getFrameworkDetail(component.frameworkDetails, frameworkName)
+  const sections = buildSummarySections(component, frameworkName, framework)
+
+  if (detail === 'summary') return sections.join('\n')
+
+  sections.push('', formatProps(framework), '', '## Example', `\`\`\`${framework.language}`, framework.example, '```')
+
+  appendBehaviorSections(sections, framework.behavior)
+
+  appendGuidanceSections(sections, component)
 
   if (detail === 'source') {
-    sections.push('', `## ${frameworkName} reference source`)
-
-    sections.push(`\`\`\`${framework.language}`, framework.source.trimEnd(), '```')
+    sections.push('', `## ${frameworkName} reference source`, `\`\`\`${framework.language}`, framework.source.trimEnd(), '```')
   }
 
   return sections.join('\n')
@@ -666,12 +695,12 @@ const diffManifestSection = (
   const baselineNames = Object.keys(baseline)
 
   return {
-    added: currentNames.filter((name) => baseline[name] === undefined).sort(),
+    added: currentNames.filter((name) => (Reflect.get(baseline, name) as string | undefined) === undefined).sort(),
     changed: currentNames
-      .filter((name) => baseline[name] !== undefined && baseline[name] !== current[name])
+      .filter((name) => (Reflect.get(baseline, name) as string | undefined) !== undefined && Reflect.get(baseline, name) !== Reflect.get(current, name))
       .sort(),
-    removed: baselineNames.filter((name) => current[name] === undefined).sort(),
-    unchanged: currentNames.filter((name) => baseline[name] === current[name]).sort()
+    removed: baselineNames.filter((name) => (Reflect.get(current, name) as string | undefined) === undefined).sort(),
+    unchanged: currentNames.filter((name) => Reflect.get(baseline, name) === Reflect.get(current, name)).sort()
   }
 }
 
@@ -776,17 +805,20 @@ export const diagnose = (
     {
       message: 'Every component has a manifest fingerprint.',
       name: 'component-manifest',
-      status: componentNames.every((name) => data.catalogManifest.components[name]) ? 'pass' : 'fail'
+      status: componentNames.every((name) => Reflect.get(data.catalogManifest.components, name)) ? 'pass' : 'fail'
     },
     {
       message: 'Every available framework contract has an example and import statement.',
       name: 'framework-contracts',
       status: data.components.every((component) =>
         (Object.entries(component.frameworks) as [LumenFramework, boolean][]).every(
-          ([framework, available]) =>
-            !available ||
-            Boolean(component.frameworkDetails[framework].example.trim()) &&
-            Boolean(component.frameworkDetails[framework].importStatement.trim())
+          ([framework, available]) => {
+            if (!available) return true
+
+            const details = Reflect.get(component.frameworkDetails, framework) as LumenFrameworkSnapshot | undefined
+
+            return Boolean(details?.example.trim()) && Boolean(details?.importStatement.trim())
+          }
         )
       ) ? 'pass' : 'fail'
     }
