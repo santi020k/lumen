@@ -24903,16 +24903,16 @@
       "@santi020k/lumen-core"
     ],
     "packageVersions": {
-      "@santi020k/lumen-astro": "0.2.0",
-      "@santi020k/lumen-core": "0.2.0",
-      "@santi020k/lumen-elements": "0.2.0",
-      "@santi020k/lumen-mcp": "0.2.0",
-      "@santi020k/lumen-react": "0.2.0"
+      "@santi020k/lumen-astro": "0.3.0",
+      "@santi020k/lumen-core": "0.3.0",
+      "@santi020k/lumen-elements": "0.3.0",
+      "@santi020k/lumen-mcp": "0.3.0",
+      "@santi020k/lumen-react": "0.3.0"
     },
     "registryName": "lumen",
     "registryVersion": 1,
     "schemaVersion": 3,
-    "serverVersion": "0.2.0"
+    "serverVersion": "0.3.0"
   },
   "recipes": [
     {

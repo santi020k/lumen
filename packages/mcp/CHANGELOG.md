@@ -1,5 +1,12 @@
 # @santi020k/lumen-mcp
 
+## 0.3.0
+
+### Minor Changes
+
+- [#7](https://github.com/santi020k/lumen/pull/7) [`325ad43`](https://github.com/santi020k/lumen/commit/325ad438380de27f4cba8eda6878a2aad7a2b33f) Thanks [@santi020k](https://github.com/santi020k)! - Add `CodeTabs` to the shared catalog with accessible, synchronized, copyable code examples across
+  Astro, React, custom elements, and MCP discovery.
+
 ## 0.2.0
 
 ### Minor Changes
