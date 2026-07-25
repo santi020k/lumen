@@ -767,6 +767,23 @@ export const Code = ({
   )
 }
 
+export interface CodeTabItem {
+  code: string
+  label: string
+  language?: string
+  value: string
+}
+
+export interface CodeTabsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defaultValue'> {
+  ariaLabel?: string
+  copy?: boolean
+  initialValue?: string
+  items?: readonly CodeTabItem[]
+  storageKey?: string
+  theme?: CodeTheme
+  wrap?: boolean
+}
+
 export interface ComboboxProps extends ComponentPropsWithoutRef<'input'> {
   label?: ReactNode
   list: string
@@ -2143,6 +2160,105 @@ export const TabsPanel = ({ value, ...props }: TabsPanelProps) => {
   const tabs = requireContext(useContext(TabsContext), 'TabsPanel')
 
   return <div {...tabs.getPanelProps(value, props)} />
+}
+
+const emptyCodeTabItems: readonly CodeTabItem[] = []
+
+export const CodeTabs = ({
+  ariaLabel = 'Code examples',
+  className,
+  copy = true,
+  initialValue,
+  items = emptyCodeTabItems,
+  storageKey,
+  theme = 'auto',
+  wrap = true,
+  ...props
+}: CodeTabsProps) => {
+  const selectedValue = initialValue ?? items[0]?.value
+
+  const [value, setValue] = useState(() => {
+    let storedValue: string | null = null
+
+    if (storageKey && typeof localStorage !== 'undefined') {
+      try {
+        storedValue = localStorage.getItem(storageKey)
+      } catch {
+        // Storage can be unavailable in privacy modes; tab selection should still work.
+      }
+    }
+
+    return storedValue && items.some(item => item.value === storedValue)
+      ? storedValue
+      : (selectedValue ?? '')
+  })
+
+  useEffect(() => {
+    const synchronize = (event: Event) => {
+      const detail = (event as CustomEvent<{ storageKey?: string; value?: string }>).detail
+
+      if (
+        storageKey &&
+        detail.storageKey === storageKey &&
+        detail.value &&
+        items.some(item => item.value === detail.value)
+      ) {
+        setValue(detail.value)
+      }
+    }
+
+    document.addEventListener('ui:tabs-change', synchronize)
+
+    return () => {
+      document.removeEventListener('ui:tabs-change', synchronize)
+    }
+  }, [items, storageKey])
+
+  const selectValue = (nextValue: string) => {
+    setValue(nextValue)
+
+    if (storageKey) {
+      try {
+        localStorage.setItem(storageKey, nextValue)
+      } catch {
+        // Storage can be unavailable in privacy modes; tab selection should still work.
+      }
+    }
+
+    document.dispatchEvent(new CustomEvent('ui:tabs-change', {
+      detail: { storageKey, value: nextValue }
+    }))
+  }
+
+  return (
+    <Tabs
+      className={composeClassName('ui-code-tabs', className)}
+      data-storage-key={storageKey}
+      onValueChange={selectValue}
+      value={value}
+      {...props}
+    >
+      <TabsList aria-label={ariaLabel} className="ui-code-tabs__list">
+        {items.map(item => (
+          <TabsTrigger className="ui-code-tabs__tab" key={item.value} value={item.value}>
+            {item.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {items.map(item => (
+        <TabsPanel className="ui-code-tabs__panel" key={item.value} value={item.value}>
+          <Code
+            code={item.code}
+            copy={copy}
+            {...(item.language === undefined ? {} : { language: item.language })}
+            theme={theme}
+            variant="block"
+            wrap={wrap}
+          />
+        </TabsPanel>
+      ))}
+    </Tabs>
+  )
 }
 
 export type TagGroupProps = ComponentPropsWithoutRef<'div'>

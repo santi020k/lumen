@@ -3,6 +3,8 @@ import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { join, relative, resolve } from 'node:path'
 import { promisify } from 'node:util'
 
+import { satisfies } from 'semver'
+
 /* eslint-disable complexity -- Consumer inventory, semver checks, mutation, and verification intentionally evaluate full repository contracts. */
 
 const execFileAsync = promisify(execFile)
@@ -58,6 +60,11 @@ export interface ConsumerRolloutReport {
   })[]
   targetVersion?: string
 }
+
+export const consumerRolloutSucceeded = (report: ConsumerRolloutReport): boolean =>
+  report.repositories.every(repository =>
+    repository.valid && repository.commands.every(command => command.ok)
+  )
 
 interface PackageManifest {
   dependencies?: Record<string, string>
@@ -119,50 +126,13 @@ const readGitValue = async (root: string, args: string[]): Promise<string | unde
   }
 }
 
-const satisfiesNodeEngine = (engine: string | undefined): boolean | undefined => {
+export const satisfiesNodeEngine = (
+  engine: string | undefined,
+  currentVersion = process.versions.node
+): boolean | undefined => {
   if (!engine) return undefined
 
-  const current = process.versions.node.split('.').map(Number)
-
-  const compare = (version: number[]): number => {
-    for (let index = 0; index < 3; index += 1) {
-      const difference = (current[index] ?? 0) - (version[index] ?? 0)
-
-      if (difference !== 0) return Math.sign(difference)
-    }
-
-    return 0
-  }
-
-  const matchesGroup = (group: string): boolean => {
-    const constraints = [...group.matchAll(/(>=|<=|>|<|=|\^|~)?\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?/g)]
-
-    if (!constraints.length) return false
-
-    return constraints.every(match => {
-      const operator = match[1] ?? '='
-      const version = [Number(match[2]), Number(match[3] ?? 0), Number(match[4] ?? 0)]
-      const result = compare(version)
-
-      if (operator === '>') return result > 0
-
-      if (operator === '>=') return result >= 0
-
-      if (operator === '<') return result < 0
-
-      if (operator === '<=') return result <= 0
-
-      if (operator === '^' || operator === '~') {
-        return result >= 0 && current[0] === version[0]
-      }
-
-      return result === 0 || (
-        match[3] === undefined && current[0] === version[0]
-      )
-    })
-  }
-
-  return engine.split('||').some(matchesGroup)
+  return satisfies(currentVersion, engine)
 }
 
 const collectManifestReferences = (
@@ -404,7 +374,50 @@ const runCommand = async (
   }
 }
 
-const addReleaseAgeTarget = (source: string, packages: string[], version: string): string => {
+const parseFlowSequence = (source: string): string[] | undefined => {
+  const match = /^\[([\s\S]*)\]\s*(?:#.*)?$/.exec(source.trim())
+
+  if (!match) return undefined
+
+  const values: string[] = []
+  let current = ''
+  let quote: '"' | "'" | undefined
+
+  for (const character of match[1] ?? '') {
+    if (quote) {
+      current += character
+
+      if (character === quote) quote = undefined
+    } else if (character === '"' || character === "'") {
+      current += character
+
+      quote = character
+    } else if (character === ',') {
+      values.push(current)
+
+      current = ''
+    } else {
+      current += character
+    }
+  }
+
+  if (current.trim()) values.push(current)
+
+  return values.map(value => {
+    const trimmed = value.trim()
+
+    if (
+      (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'"))
+    ) {
+      return trimmed.slice(1, -1)
+    }
+
+    return trimmed
+  }).filter(Boolean)
+}
+
+export const addReleaseAgeTarget = (source: string, packages: string[], version: string): string => {
   if (!/^\s*minimumReleaseAgeExclude\s*:/m.test(source)) return source
 
   const lines = source.split(/\r?\n/)
@@ -412,13 +425,13 @@ const addReleaseAgeTarget = (source: string, packages: string[], version: string
   const declaration = lines[index] ?? ''
   const rootIndent = /^\s*/.exec(declaration)?.[0] ?? ''
   const indent = `${rootIndent}  `
+  const declarationValue = declaration.slice(declaration.indexOf(':') + 1)
+  const inlineValues = parseFlowSequence(declarationValue)
 
-  const inlineValues = [
-    ...declaration.slice(declaration.indexOf(':') + 1).matchAll(/['"]([^'"]+)['"]/g)
-  ].flatMap(match => match[1] ? [match[1]] : [])
+  if (declarationValue.trim() && !inlineValues) return source
 
   const existing = new Set([
-    ...inlineValues,
+    ...(inlineValues ?? []),
     ...lines.flatMap(line => {
       const value = /^\s*-\s*['"]?([^'"]+)['"]?\s*$/.exec(line)?.[1]
 
@@ -434,7 +447,7 @@ const addReleaseAgeTarget = (source: string, packages: string[], version: string
   if (declaration.slice(declaration.indexOf(':') + 1).trim()) {
     lines[index] = `${rootIndent}minimumReleaseAgeExclude:`
 
-    additions.unshift(...inlineValues.map(value => `${indent}- "${value}"`))
+    additions.unshift(...(inlineValues ?? []).map(value => `${indent}- "${value}"`))
   }
 
   lines.splice(index + 1, 0, ...additions)

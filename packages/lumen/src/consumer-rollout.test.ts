@@ -5,7 +5,11 @@ import { join } from 'node:path'
 import { describe, expect, test } from 'vitest'
 
 import {
+  addReleaseAgeTarget,
+  type ConsumerRolloutReport,
+  consumerRolloutSucceeded,
   inspectLumenConsumer,
+  satisfiesNodeEngine,
   updateLumenManifestSource,
   updateLumenWorkspaceSource
 } from './consumer-rollout.js'
@@ -45,6 +49,51 @@ catalog:
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('"@santi020k/lumen": 0.2.0')
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('"@santi020k/lumen-astro": ^0.2.0')
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('unrelated: 0.1.0')
+  })
+
+  test('evaluates complete Node engine ranges', () => {
+    expect(satisfiesNodeEngine('~22.12.0', '22.12.9')).toBe(true)
+    expect(satisfiesNodeEngine('~22.12.0', '22.13.0')).toBe(false)
+    expect(satisfiesNodeEngine('22.x', '22.13.0')).toBe(true)
+    expect(satisfiesNodeEngine('22.12.0 - 22.14.0', '22.13.0')).toBe(true)
+  })
+
+  test('preserves quoted and unquoted flow-style release-age exclusions', () => {
+    const source = `
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude: [webpack, "esbuild"]
+`
+    const updated = addReleaseAgeTarget(source, ['@santi020k/lumen-astro'], '0.2.0')
+
+    expect(updated).toContain('  - "webpack"')
+    expect(updated).toContain('  - "esbuild"')
+    expect(updated).toContain('  - "@santi020k/lumen-astro@0.2.0"')
+  })
+
+  test('reports command and post-upgrade validation failures to the CLI', () => {
+    const repository: ConsumerRolloutReport['repositories'][number] = {
+      branch: 'main',
+      commands: [{ command: 'corepack pnpm install', ok: false, output: 'failed' }],
+      currentCommit: 'abc123',
+      dirty: true,
+      frameworks: ['astro'],
+      nodeEngine: '>=22',
+      nodeEngineSatisfied: true,
+      packageManager: 'pnpm@10.32.1',
+      references: [],
+      repository: '/consumer',
+      resolvedVersions: {},
+      targetVersion: '0.2.0',
+      valid: false,
+      warnings: ['Upgrade did not complete.']
+    }
+
+    expect(consumerRolloutSucceeded({
+      generatedAt: '2026-07-25T00:00:00.000Z',
+      mode: 'apply',
+      repositories: [repository],
+      targetVersion: '0.2.0'
+    })).toBe(false)
   })
 
   test('inventories manifests, catalogs, lock files, frameworks, and environment contracts', async () => {

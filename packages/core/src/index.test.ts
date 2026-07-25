@@ -72,6 +72,7 @@ import {
 describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
+    expect(lumenComponentNames).toContain('CodeTabs')
     expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('Tabs')
     expect(new Set(lumenComponentNames).size).toBe(lumenComponentNames.length)

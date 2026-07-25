@@ -1,7 +1,11 @@
 import { readdir, readFile, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import { formatConsumerRollout, runConsumerRollout } from './consumer-rollout.js'
+import {
+  consumerRolloutSucceeded,
+  formatConsumerRollout,
+  runConsumerRollout
+} from './consumer-rollout.js'
 import {
   addLumenRegistryItem,
   getLumenRegistryEntries,
@@ -263,7 +267,7 @@ const run = async () => {
     case 'rollout': {
       const rollout = getRolloutArguments()
 
-      output = formatConsumerRollout(await runConsumerRollout({
+      const report = await runConsumerRollout({
         allowDirty,
         apply: applyRollout,
         exclude: excludeValues,
@@ -271,7 +275,11 @@ const run = async () => {
         repositories: rollout.repositories,
         ...(rollout.targetVersion ? { targetVersion: rollout.targetVersion } : {}),
         verify: !noVerify
-      }))
+      })
+
+      output = formatConsumerRollout(report)
+
+      if (!consumerRolloutSucceeded(report)) process.exitCode = 1
 
       break
     }

@@ -38,10 +38,12 @@
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {
-    "@santi020k/lumen-core": "workspace:^"
+    "@santi020k/lumen-core": "workspace:^",
+    "semver": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/semver": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
     "tailwindcss": "catalog:",
