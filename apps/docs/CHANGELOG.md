@@ -1,5 +1,14 @@
 # @santi020k/lumen-docs
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`325ad43`](https://github.com/santi020k/lumen/commit/325ad438380de27f4cba8eda6878a2aad7a2b33f), [`325ad43`](https://github.com/santi020k/lumen/commit/325ad438380de27f4cba8eda6878a2aad7a2b33f), [`069b6aa`](https://github.com/santi020k/lumen/commit/069b6aaf1e391aec9830ecaa98a6b9bf8c7420b7)]:
+  - @santi020k/lumen@0.3.0
+  - @santi020k/lumen-astro@0.3.0
+  - @santi020k/lumen-core@0.3.0
+
 ## 0.0.2
 
 ### Patch Changes

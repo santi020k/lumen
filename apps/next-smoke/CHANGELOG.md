@@ -1,5 +1,12 @@
 # @santi020k/lumen-next-smoke
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`325ad43`](https://github.com/santi020k/lumen/commit/325ad438380de27f4cba8eda6878a2aad7a2b33f), [`325ad43`](https://github.com/santi020k/lumen/commit/325ad438380de27f4cba8eda6878a2aad7a2b33f), [`069b6aa`](https://github.com/santi020k/lumen/commit/069b6aaf1e391aec9830ecaa98a6b9bf8c7420b7)]:
+  - @santi020k/lumen-react@0.3.0
+
 ## 0.0.1
 
 ### Patch Changes
