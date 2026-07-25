@@ -1,0 +1,299 @@
+---
+/* eslint-disable better-tailwindcss/no-unknown-classes -- This page's product-specific classes are defined in its scoped stylesheet. */
+import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
+
+import changelogSource from '../../../../packages/lumen/CHANGELOG.md?raw'
+import DocsActionLink from '../components/DocsActionLink.astro'
+import DocsPageHero from '../components/DocsPageHero.astro'
+import DocsLayout from '../layouts/DocsLayout.astro'
+import { parseChangelog } from '../lib/changelog'
+
+const releases = parseChangelog(changelogSource)
+const latestRelease = releases[0]
+
+const entryCount = releases.reduce(
+  (total, release) => total + release.sections.reduce(
+    (sectionTotal, section) => sectionTotal + section.entries.length,
+    0
+  ),
+  0
+)
+
+const changelogUrl = 'https://github.com/santi020k/lumen/blob/main/packages/lumen/CHANGELOG.md'
+---
+
+<DocsLayout
+  description="Follow new Lumen components, improvements, and fixes across Astro, React, and Web Components."
+  title="Changelog - Lumen UI"
+>
+  <div class="changelog-page">
+    <DocsPageHero
+      description="Every product-facing change to Lumen, collected from the same Changesets release history that publishes the packages."
+      eyebrow="Release notes"
+      stats={[
+        { label: 'Latest', value: latestRelease ? `v${latestRelease.version}` : '—' },
+        { label: 'Releases', value: releases.length },
+        { label: 'Changes', value: entryCount }
+      ]}
+      title="What changed in Lumen."
+    >
+      <Fragment slot="actions">
+        <DocsActionLink href="#releases">Read the latest release</DocsActionLink>
+        <DocsActionLink
+          href={changelogUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+          variant="outline"
+        >
+          View source
+          <Icon decorative name="arrow-up-right" size="sm" />
+        </DocsActionLink>
+      </Fragment>
+
+      <div class="changelog-hero-mark" slot="visual" aria-hidden="true">
+        <span><Icon decorative name="history" size="xl" /></span>
+        <div>
+          <small>Current release</small>
+          <strong>{latestRelease ? `v${latestRelease.version}` : 'Coming soon'}</strong>
+        </div>
+      </div>
+    </DocsPageHero>
+
+    <div class="changelog-intro">
+      <p>
+        Release notes focus on changes that affect people using Lumen. Internal dependency-only
+        updates are intentionally omitted from this view.
+      </p>
+      <Link href="https://github.com/santi020k/lumen/releases" rel="noopener noreferrer" target="_blank">
+        Browse GitHub releases
+        <Icon decorative name="arrow-up-right" size="sm" />
+      </Link>
+    </div>
+
+    <div class="changelog-releases" id="releases">
+      {releases.map((release, releaseIndex) => (
+        <Card
+          as="article"
+          class="changelog-release"
+          id={`v${release.version}`}
+        >
+          <header class="changelog-release__header">
+            <div>
+              <Badge variant={releaseIndex === 0 ? 'default' : 'outline'}>
+                {releaseIndex === 0 ? 'Latest release' : 'Release'}
+              </Badge>
+              <h2>Version {release.version}</h2>
+            </div>
+            <Link href={`#v${release.version}`} aria-label={`Link to version ${release.version}`}>
+              <Icon decorative name="link" size="sm" />
+            </Link>
+          </header>
+
+          <div class="changelog-release__sections">
+            {release.sections.map(section => (
+              <section aria-labelledby={`v${release.version}-${section.title.toLowerCase().replaceAll(' ', '-')}`}>
+                <div class="changelog-release__section-heading">
+                  <h3 id={`v${release.version}-${section.title.toLowerCase().replaceAll(' ', '-')}`}>
+                    {section.title}
+                  </h3>
+                  <Badge variant="outline">{section.entries.length}</Badge>
+                </div>
+                <ul class="changelog-release__entries">
+                  {section.entries.map(entry => (
+                    <li>
+                      {entry.paragraphs.map(paragraph => (
+                        <p set:html={paragraph} />
+                      ))}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </Card>
+      ))}
+    </div>
+  </div>
+</DocsLayout>
+
+<style>
+  .changelog-page {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .changelog-hero-mark {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--canvas) / 0.7);
+  }
+
+  .changelog-hero-mark > span {
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    border-radius: 0.85rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .changelog-hero-mark div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .changelog-hero-mark small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .changelog-hero-mark strong {
+    color: hsl(var(--ink));
+    font-size: 1.45rem;
+  }
+
+  .changelog-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .changelog-intro p {
+    max-width: 45rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  .changelog-intro :global(.ui-link) {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .changelog-releases {
+    display: grid;
+    gap: 1.5rem;
+    scroll-margin-top: 6rem;
+  }
+
+  .changelog-release {
+    scroll-margin-top: 6rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .changelog-release__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .changelog-release__header > div {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .changelog-release__header h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.8rem, 4vw, 2.75rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+  }
+
+  .changelog-release__header > :global(.ui-link) {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border-radius: 0.65rem;
+    color: hsl(var(--ink-muted));
+  }
+
+  .changelog-release__sections {
+    display: grid;
+    gap: 2rem;
+    padding-top: 1.75rem;
+  }
+
+  .changelog-release__section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .changelog-release__section-heading h3 {
+    color: hsl(var(--ink));
+    font-size: 1.15rem;
+    font-weight: 850;
+  }
+
+  .changelog-release__entries {
+    display: grid;
+    gap: 0;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .changelog-release__entries li {
+    position: relative;
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem 0 1rem 1.5rem;
+    border-top: 1px solid hsl(var(--line) / 0.72);
+    color: hsl(var(--ink-soft));
+    line-height: 1.75;
+  }
+
+  .changelog-release__entries li::before {
+    position: absolute;
+    top: 1.65rem;
+    left: 0.2rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: hsl(var(--brand));
+    content: "";
+  }
+
+  .changelog-release__entries :global(a) {
+    color: hsl(var(--brand));
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--brand) / 0.35);
+    text-underline-offset: 0.2em;
+  }
+
+  .changelog-release__entries :global(code) {
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.35rem;
+    background: hsl(var(--surface-muted));
+    color: hsl(var(--ink));
+    font-size: 0.88em;
+    padding: 0.1rem 0.35rem;
+  }
+
+  @media (max-width: 42rem) {
+    .changelog-intro {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

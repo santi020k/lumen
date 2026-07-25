@@ -126,6 +126,14 @@ const recipeItems: DocsSearchItem[] = [
     title: 'Icons catalog',
     type: 'Recipe'
   },
+  {
+    category: 'Releases',
+    description: 'Follow new Lumen components, improvements, and fixes across every framework package.',
+    href: '/changelog',
+    keywords: normalizeKeywords('changelog release notes releases versions updates new fixes migration history'),
+    title: 'Lumen changelog',
+    type: 'Recipe'
+  },
   ...frameworkSetups.map(setup => ({
     category: 'Framework setup',
     description: setup.note,
