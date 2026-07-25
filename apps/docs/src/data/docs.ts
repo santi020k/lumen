@@ -630,6 +630,11 @@ const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardI
     ['Home, End', 'Move focus to the first or last day in the current week row.'],
     ['PageDown, PageUp', 'Move focus to the same date in the next or previous month.']
   ),
+  CodeTabs: keyboardRows(
+    ['ArrowRight', 'Activate and focus the next code example, wrapping at the end.'],
+    ['ArrowLeft', 'Activate and focus the previous code example, wrapping at the start.'],
+    ['Home, End', 'Activate and focus the first or last code example.']
+  ),
   Combobox: keyboardRows(
     ['Escape in input or option', 'Close the listbox. Escape on an option also returns focus to the input.'],
     ['ArrowDown, ArrowUp in input', 'Open the listbox and move focus to the first or last visible option.'],
@@ -940,6 +945,15 @@ const apiReferenceByComponent = {
     apiRow('highlighted', 'boolean', 'false', 'Allows a pre-highlighted pre/code tree, such as Shiki output, to render directly.'),
     apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.'),
     apiRow('wrap', 'boolean', 'false', 'Wraps long block-code lines instead of requiring horizontal scrolling; code blocks also stay within their flex or grid container.')
+  ],
+  CodeTabs: [
+    apiRow('items', 'Array<{ code, label, language?, value }>', 'required', 'Defines the labelled code examples and their stable selection values.'),
+    apiRow('ariaLabel', 'string', '"Code examples"', 'Names the tab list for assistive technology.'),
+    apiRow('initialValue', 'string', 'first item value', 'Selects the matching code example before interaction.'),
+    apiRow('storageKey', 'string', '-', 'Persists selection and synchronizes CodeTabs instances that share this key.'),
+    apiRow('copy', 'boolean', 'true', 'Shows a copy button for each code example.'),
+    apiRow('theme', '"auto" | "lumen" | "santi020k"', '"auto"', 'Selects the code palette family.'),
+    apiRow('wrap', 'boolean', 'true', 'Wraps long code lines instead of requiring horizontal scrolling.')
   ],
   Collapsible: [
     apiRow('open', 'boolean', 'false', 'Uses the native details open state to show the collapsible content.'),
@@ -1588,6 +1602,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Checkbox', 'Forms', 'Captures a binary form value.', '<label><Checkbox name="updates" /> Email me product updates</label>'],
   ['Collapsible', 'Layout', 'Shows and hides one optional content region.', '<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>'],
   ['Code', 'Data display', 'Renders inline code and framed code blocks with theme-aware palettes.', '<Code code={`const theme = "lumen";\nconst accent = "hsl(var(--accent))";`} variant="block" language="ts" label="theme.ts" copy />'],
+  ['CodeTabs', 'Data display', 'Groups related code examples into accessible, persistent tabs.', '<CodeTabs ariaLabel="Package manager" items={[{ value: "pnpm", label: "pnpm", code: "pnpm add @santi020k/lumen-astro", language: "bash" }, { value: "npm", label: "npm", code: "npm install @santi020k/lumen-astro", language: "bash" }]} storageKey="preferred-package-manager" />'],
   ['Combobox', 'Forms', 'Combines text entry and option selection.', '<Combobox label="Framework" list="framework-options" options={["Astro", { label: "React", value: "react" }, { label: "Vue", value: "vue", disabled: true }]} placeholder="Search package" />'],
   ['Command', 'Navigation', 'Builds command palettes and filterable action lists.', '<Command><Input placeholder="Type a command..." /><button data-ui-command-item>Open docs</button></Command>'],
   ['ContextMenu', 'Overlays', 'Provides contextual actions for a selected object.', '<ContextMenu><button role="menuitem">Duplicate</button></ContextMenu>'],
