@@ -23,6 +23,9 @@ import {
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
   getContrastRatio,
+  getLumenIcon,
+  getLumenIconPack,
+  getRegisteredLumenIconNames,
   getScheduleConflicts,
   getVirtualRange,
   hslTokenToFigmaColor,
@@ -54,6 +57,7 @@ import {
   parseScheduleEvents,
   parseThemeCss,
   pinDataViewColumn,
+  registerLumenIconPack,
   renderLumenCodeHtml,
   renderLumenIconSvg,
   resizeScheduleEvent,
@@ -123,6 +127,33 @@ describe('lumen icon helpers', () => {
     expect(renderLumenIconSvg('search')).toContain('lucide-search')
     expect(renderLumenIconSvg('wand-sparkles')).toContain('lucide-wand-sparkles')
     expect(renderLumenIconSvg('missing')).toBe('')
+  })
+
+  test('registers namespaced filled icon packs without changing Lucide names', () => {
+    registerLumenIconPack('test-brand', {
+      example: {
+        height: 24,
+        name: 'example',
+        node: [['path', { d: 'M2 2h20v20H2z' }]],
+        source: 'test-brand',
+        style: 'fill',
+        width: 24
+      }
+    })
+
+    expect(lumenIconNames).not.toContain('test-brand:example')
+    expect(getRegisteredLumenIconNames()).toContain('test-brand:example')
+    expect(getLumenIconPack('TestBrand')?.example).toBeDefined()
+    expect(resolveLumenIconName('test-brand:Example')).toBe('test-brand:example')
+    expect(getLumenIcon('test-brand:example')?.style).toBe('fill')
+    expect(renderLumenIconSvg('test-brand:example')).toContain('fill="currentColor"')
+    expect(renderLumenIconSvg('test-brand:example')).toContain('stroke="none"')
+    expect(resolveLumenIconName('search')).toBe('search')
+  })
+
+  test('rejects invalid icon-pack prefixes', () => {
+    expect(() => { registerLumenIconPack('', {}); }).toThrow('must be non-empty')
+    expect(() => { registerLumenIconPack('brand:social', {}); }).toThrow('cannot contain colons')
   })
 })
 

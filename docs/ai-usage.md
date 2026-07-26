@@ -30,9 +30,22 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |
 | Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |
 | Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
+| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
+
+Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,
+install and register the optional pack once before rendering a namespaced icon:
+
+```ts
+import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
+
+registerLumenBrandIcons()
+```
+
+Then use `brand:github`, `brand:linkedin`, `brand:medium`, `brand:whatsapp`, or `brand:x` through
+the existing Astro, React, or Web Component `Icon` API.
 
 ## MCP-Assisted Workflow
 

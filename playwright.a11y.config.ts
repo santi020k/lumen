@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const port = process.env.LUMEN_A11Y_PORT ?? '4323'
+const baseURL = `http://127.0.0.1:${port}`
+
 export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   fullyParallel: true,
@@ -14,11 +17,11 @@ export default defineConfig({
   testDir: './tests/a11y',
   workers: 2,
   use: {
-    baseURL: 'http://127.0.0.1:4323'
+    baseURL
   },
   webServer: {
-    command: 'pnpm --filter @santi020k/lumen-docs exec astro build && pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port 4323',
+    command: `pnpm --filter @santi020k/lumen-docs exec astro build && pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: false,
-    url: 'http://127.0.0.1:4323'
+    url: baseURL
   }
 })

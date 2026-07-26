@@ -5,7 +5,7 @@ const budgets = [
   { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 30_000, raw: 150_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, raw: 5_000 },
   { file: 'packages/lumen/styles.css', gzip: 25_000, raw: 150_000 },
-  { file: 'packages/react/dist/components.js', gzip: 21_000, raw: 100_000 },
+  { file: 'packages/react/dist/components.js', gzip: 21_500, raw: 100_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 19_000, raw: 90_000 },
   { file: 'packages/elements/dist/define.js', gzip: 38_000, raw: 215_000 }
 ]

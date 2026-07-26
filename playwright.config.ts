@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const port = process.env.LUMEN_VISUAL_PORT ?? '4322'
+const baseURL = `http://127.0.0.1:${port}`
+
 /**
  * Visual regression suite for the docs component gallery.
  * First run: pnpm exec playwright install chromium && pnpm run test:visual:update
@@ -24,11 +27,11 @@ export default defineConfig({
   testDir: './tests/visual',
   workers: 2,
   use: {
-    baseURL: 'http://127.0.0.1:4322'
+    baseURL
   },
   webServer: {
-    command: 'pnpm --filter @santi020k/lumen-docs exec astro build && pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port 4322',
+    command: `pnpm --filter @santi020k/lumen-docs exec astro build && pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: false,
-    url: 'http://127.0.0.1:4322'
+    url: baseURL
   }
 })

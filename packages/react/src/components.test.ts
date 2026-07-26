@@ -1,3 +1,5 @@
+import { registerLumenIconPack } from '@santi020k/lumen-core'
+
 import type {
   ComponentPropsWithoutRef,
   ReactElement
@@ -222,6 +224,26 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(labelled).role).toBe('img')
     expect(propsOf(labelled)['aria-hidden']).toBeUndefined()
     expect(propsOf(labelled).className).toBe('ui-icon ui-icon--sm')
+  })
+
+  test('renders registered filled icon packs through the shared Icon API', () => {
+    registerLumenIconPack('brand-test', {
+      mark: {
+        height: 24,
+        name: 'mark',
+        node: [['path', { d: 'M2 2h20v20H2z' }]],
+        source: 'brand-test',
+        style: 'fill',
+        width: 24
+      }
+    })
+
+    const icon = Icon({ name: 'brand-test:mark' }) as ReactElement
+    const svg = propsOf(icon).children as ReactElement
+
+    expect(propsOf(svg).className).toBe('ui-icon__svg brand-test-mark')
+    expect(propsOf(svg).fill).toBe('currentColor')
+    expect(propsOf(svg).stroke).toBe('none')
   })
 
   test('resolves surface data attributes on glass-aware surfaces', () => {
