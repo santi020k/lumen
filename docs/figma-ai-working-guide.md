@@ -163,15 +163,16 @@ adequate contrast with white.
 
 ## Typography
 
-- Primary family: `Inter`.
+- Runtime CSS default: `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
+- Current published Figma family: `Inter`.
 - Code-only family: `Cascadia Mono`.
 - Cascadia Mono is intentionally limited to the small amount of code-style text.
 - The file contains 38 text styles.
 - Figma expects the Inter style names `Semi Bold` and `Extra Bold`, not `SemiBold` or `ExtraBold`.
 
-Do not change the Figma library to the parent website font merely because the website theme changed.
-Typography is a separate design decision. Reconcile it only when the design direction explicitly
-changes, then update styles and specimens together.
+The runtime default and current Figma styles intentionally remain documented as separate states.
+Do not silently rewrite Figma typography while syncing color tokens. Migrate the text styles only
+as an explicit design-library change, then update styles, specimens, and this guide together.
 
 ## Effects and visual bindings
 

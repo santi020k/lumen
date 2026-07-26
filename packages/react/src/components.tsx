@@ -218,13 +218,13 @@ const renderIconSvg = (icon: LumenIconData, className: string) => (
   <svg
     aria-hidden="true"
     className={className}
-    fill="none"
+    fill={icon.style === 'fill' ? 'currentColor' : 'none'}
     focusable="false"
     height="1em"
-    stroke="currentColor"
+    stroke={icon.style === 'fill' ? 'none' : 'currentColor'}
     strokeLinecap="round"
     strokeLinejoin="round"
-    strokeWidth="2"
+    strokeWidth={icon.style === 'fill' ? '0' : '2'}
     viewBox="0 0 24 24"
     width="1em"
     xmlns="http://www.w3.org/2000/svg"
@@ -233,7 +233,8 @@ const renderIconSvg = (icon: LumenIconData, className: string) => (
   </svg>
 )
 
-const renderNamedIcon = (icon: LumenIconData) => renderIconSvg(icon, `ui-icon__svg lucide-${icon.name}`)
+const renderNamedIcon = (icon: LumenIconData) =>
+  renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`)
 
 const renderLucideIcon = (name: string, className: string) => {
   const icon = getLumenIcon(name)

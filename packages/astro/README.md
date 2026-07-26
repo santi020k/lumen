@@ -18,6 +18,10 @@ enhances all matching Lumen markup on the page.
 @import "@santi020k/lumen-astro/styles.css";
 ```
 
+The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
+It declares the family stack but does not bundle or load font files. Load Montserrat once through
+your preferred delivery path, or override `--ui-font` in application CSS.
+
 With Tailwind, keep the Lumen import in the same shared CSS entry:
 
 ```css

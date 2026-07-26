@@ -203,7 +203,7 @@ document a stable visibility API for `Button`, `ButtonLink`, and similar primiti
 Lumen primitives set `font-family: var(--ui-font)` and some components consume `--canvas`, so
 overriding only `surface`, `ink`, `line`, and brand tokens leaves a migrated application with mixed
 typography and mismatched background semantics. Astro Doctor's body used Montserrat while every
-Lumen primitive silently reverted to the default Inter stack.
+Lumen primitive silently reverted to Lumen's previous default Inter stack.
 
 The theming documentation should include a complete minimal override example covering `canvas`,
 all surface and text roles, brand and status roles, and `--ui-font`. A migration check could warn

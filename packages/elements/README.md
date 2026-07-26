@@ -16,6 +16,10 @@ Load the shared stylesheet once from your app entry or global CSS.
 @import "@santi020k/lumen-elements/styles.css";
 ```
 
+The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
+It declares the family stack but does not bundle or load font files. Load Montserrat once through
+your preferred delivery path, or override `--ui-font` in application CSS.
+
 ## Usage
 
 Register the elements once, then use `lumen-*` tags anywhere HTML is valid.

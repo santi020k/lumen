@@ -5,8 +5,13 @@ import {
 } from '@lucide/icons'
 
 export type LumenIconNode = LucideIconNode
-export type LumenIconData = LucideIconData
+export type LumenIconStyle = 'fill' | 'stroke'
+export type LumenIconData = LucideIconData & {
+  source?: string
+  style?: LumenIconStyle
+}
 export type LumenIconName = string
+export type LumenIconPack = Readonly<Record<string, LumenIconData>>
 
 const toKebabCase = (value: string) =>
   value.trim()
@@ -15,6 +20,7 @@ const toKebabCase = (value: string) =>
     .toLowerCase()
 
 const lucideIconEntries = Object.entries(lucideIcons)
+const registeredIconPacks = new Map<string, LumenIconPack>()
 
 const createLumenIconEntries = () => {
   const entries: [string, LumenIconData][] = []
@@ -35,6 +41,41 @@ export const lumenIcons = Object.freeze(
 ) as Readonly<Record<string, LumenIconData>>
 
 export const lumenIconNames = Object.freeze(Object.keys(lumenIcons).sort())
+
+const parseIconName = (name: string) => {
+  const separatorIndex = name.indexOf(':')
+
+  if (separatorIndex < 0) {
+    return { iconName: toKebabCase(name) }
+  }
+
+  return {
+    iconName: toKebabCase(name.slice(separatorIndex + 1)),
+    prefix: toKebabCase(name.slice(0, separatorIndex))
+  }
+}
+
+export const registerLumenIconPack = (prefix: string, icons: LumenIconPack) => {
+  const normalizedPrefix = toKebabCase(prefix)
+
+  if (!normalizedPrefix || normalizedPrefix.includes(':')) {
+    throw new Error('Lumen icon pack prefixes must be non-empty and cannot contain colons.')
+  }
+
+  const normalizedIcons = Object.fromEntries(
+    Object.entries(icons).map(([name, icon]) => [toKebabCase(name), icon])
+  ) as LumenIconPack
+
+  registeredIconPacks.set(normalizedPrefix, Object.freeze(normalizedIcons))
+}
+
+export const getLumenIconPack = (prefix: string): LumenIconPack | undefined =>
+  registeredIconPacks.get(toKebabCase(prefix))
+
+export const getRegisteredLumenIconNames = () =>
+  [...registeredIconPacks.entries()]
+    .flatMap(([prefix, icons]) => Object.keys(icons).map(name => `${prefix}:${name}`))
+    .sort()
 
 const escapeHtmlAttribute = (value: string) =>
   value.replaceAll('&', '&amp;')
@@ -59,15 +100,23 @@ const renderIconNode = ([tagName, attributes, children]: LumenIconNode): string 
 }
 
 export const resolveLumenIconName = (name: string): LumenIconName | undefined => {
-  const normalized = toKebabCase(name)
+  const { iconName, prefix } = parseIconName(name)
 
-  return lumenIcons[normalized] ? normalized : undefined
+  if (!prefix) {
+    return lumenIcons[iconName] ? iconName : undefined
+  }
+
+  return registeredIconPacks.get(prefix)?.[iconName] ? `${prefix}:${iconName}` : undefined
 }
 
 export const getLumenIcon = (name: string): LumenIconData | undefined => {
   const resolvedName = resolveLumenIconName(name)
 
-  return resolvedName ? lumenIcons[resolvedName] : undefined
+  if (!resolvedName) return undefined
+
+  const { iconName, prefix } = parseIconName(resolvedName)
+
+  return prefix ? registeredIconPacks.get(prefix)?.[iconName] : lumenIcons[iconName]
 }
 
 export interface LumenIconSvgOptions {
@@ -79,18 +128,20 @@ export const renderLumenIconSvg = (name: string, options: LumenIconSvgOptions = 
 
   if (!icon) return ''
 
-  const className = ['ui-icon__svg', `lucide-${icon.name}`, options.className].filter(Boolean).join(' ')
+  const iconStyle = icon.style ?? 'stroke'
+  const source = icon.source ?? 'lucide'
+  const className = ['ui-icon__svg', `${source}-${icon.name}`, options.className].filter(Boolean).join(' ')
 
   return `<svg ${renderAttributes({
     'aria-hidden': 'true',
     class: className,
-    fill: 'none',
+    fill: iconStyle === 'fill' ? 'currentColor' : 'none',
     focusable: 'false',
     height: '1em',
-    stroke: 'currentColor',
+    stroke: iconStyle === 'stroke' ? 'currentColor' : 'none',
     'stroke-linecap': 'round',
     'stroke-linejoin': 'round',
-    'stroke-width': '2',
+    'stroke-width': iconStyle === 'stroke' ? '2' : '0',
     viewBox: '0 0 24 24',
     width: '1em',
     xmlns: 'http://www.w3.org/2000/svg'

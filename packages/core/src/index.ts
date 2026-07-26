@@ -80,11 +80,16 @@ export {
 } from './figma.js'
 export {
   getLumenIcon,
+  getLumenIconPack,
+  getRegisteredLumenIconNames,
   type LumenIconData,
   type LumenIconName,
   lumenIconNames,
   type LumenIconNode,
+  type LumenIconPack,
   lumenIcons,
+  type LumenIconStyle,
+  registerLumenIconPack,
   renderLumenIconSvg,
   resolveLumenIconName
 } from './icons.js'
