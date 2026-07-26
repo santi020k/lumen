@@ -214,24 +214,29 @@ const getIconAccessibility = ({
   }
 }
 
-const renderIconSvg = (icon: LumenIconData, className: string) => (
-  <svg
-    aria-hidden="true"
-    className={className}
-    fill={icon.style === 'fill' ? 'currentColor' : 'none'}
-    focusable="false"
-    height="1em"
-    stroke={icon.style === 'fill' ? 'none' : 'currentColor'}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={icon.style === 'fill' ? '0' : '2'}
-    viewBox="0 0 24 24"
-    width="1em"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {icon.node.map(renderIconNode)}
-  </svg>
-)
+const renderIconSvg = (icon: LumenIconData, className: string) => {
+  const width = 'size' in icon ? icon.size : icon.width
+  const height = 'size' in icon ? icon.size : icon.height
+
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill={icon.style === 'fill' ? 'currentColor' : 'none'}
+      focusable="false"
+      height="1em"
+      stroke={icon.style === 'fill' ? 'none' : 'currentColor'}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={icon.style === 'fill' ? '0' : '2'}
+      viewBox={`0 0 ${width} ${height}`}
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {icon.node.map(renderIconNode)}
+    </svg>
+  )
+}
 
 const renderNamedIcon = (icon: LumenIconData) =>
   renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`)

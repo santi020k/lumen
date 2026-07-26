@@ -130,6 +130,8 @@ export const renderLumenIconSvg = (name: string, options: LumenIconSvgOptions = 
 
   const iconStyle = icon.style ?? 'stroke'
   const source = icon.source ?? 'lucide'
+  const width = 'size' in icon ? icon.size : icon.width
+  const height = 'size' in icon ? icon.size : icon.height
   const className = ['ui-icon__svg', `${source}-${icon.name}`, options.className].filter(Boolean).join(' ')
 
   return `<svg ${renderAttributes({
@@ -142,7 +144,7 @@ export const renderLumenIconSvg = (name: string, options: LumenIconSvgOptions = 
     'stroke-linecap': 'round',
     'stroke-linejoin': 'round',
     'stroke-width': iconStyle === 'stroke' ? '2' : '0',
-    viewBox: '0 0 24 24',
+    viewBox: `0 0 ${width} ${height}`,
     width: '1em',
     xmlns: 'http://www.w3.org/2000/svg'
   })}>${icon.node.map(renderIconNode).join('')}</svg>`

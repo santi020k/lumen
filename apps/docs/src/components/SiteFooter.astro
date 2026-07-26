@@ -2,6 +2,7 @@
 import {
   Badge,
   ButtonLink,
+  Code,
   Icon,
   Link,
   Marker,
@@ -50,6 +51,27 @@ const footerGroups = [
 
 const currentYear = new Date().getFullYear()
 const componentCount = lumenComponentNames.length
+
+const frameworkLinks = [
+  {
+    href: '/docs/frameworks/astro',
+    icon: 'asterisk',
+    label: 'Astro',
+    meta: 'Reference'
+  },
+  {
+    href: '/docs/frameworks/react',
+    icon: 'atom',
+    label: 'React',
+    meta: 'Full catalog'
+  },
+  {
+    href: '/docs/frameworks/elements',
+    icon: 'blocks',
+    label: 'Elements',
+    meta: 'Web standards'
+  }
+] as const
 ---
 
 <footer class="docs-site-footer">
@@ -57,32 +79,70 @@ const componentCount = lumenComponentNames.length
     docs-site-footer__inner mx-auto w-full max-w-7xl px-5
     sm:px-8
   ">
-    <div class="docs-site-footer__statement">
+    <section
+      aria-labelledby="docs-site-footer-title"
+      class="docs-site-footer__statement"
+    >
       <div class="docs-site-footer__statement-copy">
         <div class="docs-site-footer__eyebrow">
-          <Marker variant="success">Open source</Marker>
+          <span class="docs-site-footer__kicker">
+            <Icon name="sparkles" size="sm" />
+            Build with Lumen
+          </span>
           <Badge variant="outline">{componentCount} primitives</Badge>
         </div>
-        <h2>Good interfaces feel<br /><em>inevitable.</em></h2>
+        <h2 id="docs-site-footer-title">
+          Pick your framework.<br /><em>Keep your system.</em>
+        </h2>
         <p>
-          Lumen gives every framework the same considered foundation—so your
-          product can feel coherent before the custom work even begins.
+          Start with the reference Astro package, use the complete React
+          catalog, or bring standards-based components anywhere HTML runs.
         </p>
+        <div class="docs-site-footer__actions">
+          <ButtonLink href="/docs" showArrow variant="primary">
+            Read the docs
+          </ButtonLink>
+          <ButtonLink
+            href="https://github.com/santi020k/lumen"
+            newTab
+            variant="secondary"
+          >
+            <GitHubIcon />
+            View on GitHub
+          </ButtonLink>
+        </div>
       </div>
-      <div class="docs-site-footer__actions">
-        <ButtonLink href="/docs" showArrow variant="primary">
-          Start building
-        </ButtonLink>
-        <ButtonLink
-          href="https://github.com/santi020k/lumen"
-          newTab
-          variant="secondary"
-        >
-          <GitHubIcon />
-          GitHub
-        </ButtonLink>
+
+      <div class="docs-site-footer__quickstart">
+        <div class="docs-site-footer__quickstart-heading">
+          <span>Quick start</span>
+          <Marker variant="success">Astro reference</Marker>
+        </div>
+        <Code
+          code="pnpm add @santi020k/lumen-astro"
+          copy
+          label="Install"
+          language="bash"
+          variant="block"
+        />
+        <div class="docs-site-footer__frameworks">
+          {frameworkLinks.map(framework => (
+            <Link
+              aria-label={`${framework.label} guide`}
+              class="docs-site-footer__framework"
+              href={framework.href}
+            >
+              <Icon name={framework.icon} size="sm" />
+              <span>
+                <strong>{framework.label}</strong>
+                <small>{framework.meta}</small>
+              </span>
+              <Icon name="arrow-right" size="sm" />
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
 
     <Separator />
 
@@ -92,11 +152,11 @@ const componentCount = lumenComponentNames.length
           <LumenLogo markClass="size-9" />
         </Link>
         <p>
-          Multi-framework UI primitives for Astro, React, and the platform.
+          Calm, accessible primitives for Astro, React, and the platform.
         </p>
         <span class="docs-site-footer__signature">
-          <Icon name="sparkles" size="sm" />
-          Built with Lumen
+          <Icon name="heart" size="sm" />
+          Open source
         </span>
       </div>
 
