@@ -7,5 +7,5 @@
 "@santi020k/lumen-react": patch
 ---
 
-Use the canonical Santi020k Montserrat family stack as Lumen's default interface font while keeping
-font loading and the `--ui-font` override under application control.
+Use the canonical Santi020k Montserrat family stack across Lumen interface text, including generated
+Watermark tiles, while keeping font loading and the `--ui-font` override under application control.

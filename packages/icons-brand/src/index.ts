@@ -6,20 +6,13 @@ import {
 } from '@santi020k/lumen-core'
 
 import {
-  faGithub,
-  faLinkedin,
-  faMedium,
-  faWhatsapp,
-  faXTwitter
+  fab,
+  type IconDefinition
 } from '@fortawesome/free-brands-svg-icons'
 
 export const lumenBrandIconPrefix = 'brand'
 
-interface FontAwesomeBrandIcon {
-  icon: [number, number, string[], string, string | string[]]
-}
-
-const createBrandIcon = (name: string, icon: FontAwesomeBrandIcon): LumenIconData => ({
+const createBrandIcon = (name: string, icon: IconDefinition): LumenIconData => ({
   height: icon.icon[1],
   name,
   node: (Array.isArray(icon.icon[4]) ? icon.icon[4] : [icon.icon[4]])
@@ -29,18 +22,32 @@ const createBrandIcon = (name: string, icon: FontAwesomeBrandIcon): LumenIconDat
   width: icon.icon[0]
 })
 
-export const lumenBrandIcons = Object.freeze({
-  github: createBrandIcon('github', faGithub),
-  linkedin: createBrandIcon('linkedin', faLinkedin),
-  medium: createBrandIcon('medium', faMedium),
-  whatsapp: createBrandIcon('whatsapp', faWhatsapp),
-  x: createBrandIcon('x', faXTwitter)
-})
+const createBrandCatalog = () => {
+  const icons = new Map<string, LumenIconData>()
+
+  for (const icon of Object.values(fab)) {
+    if (!icons.has(icon.iconName)) {
+      icons.set(icon.iconName, createBrandIcon(icon.iconName, icon))
+    }
+  }
+
+  const xTwitter = icons.get('x-twitter')
+
+  if (xTwitter) {
+    icons.set('x', { ...xTwitter, name: 'x' })
+  }
+
+  return Object.fromEntries(
+    [...icons.entries()].sort(([a], [b]) => a.localeCompare(b))
+  )
+}
+
+export const lumenBrandIcons = Object.freeze(createBrandCatalog())
 
 export type LumenBrandIconName = keyof typeof lumenBrandIcons
 
 export const lumenBrandIconNames = Object.freeze(
-  Object.keys(lumenBrandIcons).sort()
+  Object.keys(lumenBrandIcons)
 ) as readonly LumenBrandIconName[]
 
 export const registerLumenBrandIcons = () => {

@@ -44,8 +44,14 @@ import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 registerLumenBrandIcons()
 ```
 
-Then use `brand:github`, `brand:linkedin`, `brand:medium`, `brand:whatsapp`, or `brand:x` through
-the existing Astro, React, or Web Component `Icon` API.
+Then use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,
+`brand:figma`, `brand:linkedin`, `brand:whatsapp`, or `brand:youtube`, through the existing Astro,
+React, or Web Component `Icon` API. The package also provides `brand:x` as an alias for
+`brand:x-twitter`.
+
+Brand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.
+They still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as
+the default icon catalog.
 
 ## MCP-Assisted Workflow
 

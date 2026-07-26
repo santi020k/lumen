@@ -14,15 +14,22 @@ import {
 } from './index.js'
 
 describe('Lumen brand icons', () => {
-  test('ships the initial social brand set', () => {
-    expect(lumenBrandIconNames).toEqual([
+  test('ships the complete free brand catalog and the X convenience alias', () => {
+    expect(lumenBrandIconNames.length).toBeGreaterThan(570)
+    expect(lumenBrandIconNames).toEqual(expect.arrayContaining([
+      'apple',
+      'discord',
+      'figma',
       'github',
       'linkedin',
       'medium',
       'whatsapp',
-      'x'
-    ])
-    expect(lumenBrandIcons.github.style).toBe('fill')
+      'x',
+      'x-twitter',
+      'youtube'
+    ]))
+    expect(lumenBrandIcons.github?.style).toBe('fill')
+    expect(lumenBrandIcons.x?.node).toEqual(lumenBrandIcons['x-twitter']?.node)
   })
 
   test('registers namespaced icons with the shared renderer', () => {
@@ -35,6 +42,7 @@ describe('Lumen brand icons', () => {
     expect(resolveLumenIconName('brand:github')).toBe('brand:github')
     expect(getRegisteredLumenIconNames()).toContain('brand:linkedin')
     expect(getLumenIcon('brand:whatsapp')).toBe(lumenBrandIcons.whatsapp)
+    expect(getLumenIcon('brand:youtube')).toBe(lumenBrandIcons.youtube)
 
     const svg = renderLumenIconSvg('brand:x')
 
