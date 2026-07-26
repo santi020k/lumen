@@ -4,6 +4,7 @@ import type {
   ComponentPropsWithoutRef,
   ReactElement
 } from 'react'
+import { isValidElement } from 'react'
 import { describe, expect, test } from 'vitest'
 
 import {
@@ -441,6 +442,31 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(sparkline).role).toBe('img')
     expect(propsOf(sparkline)['aria-label']).toBe('Downloads increased from 4 to 8')
     expect(propsOf(sparkline).className).toBe('ui-sparkline ui-chart-tone--series-1')
+  })
+
+  test('renders the empty state when chart series contain no usable data', () => {
+    const series = [{
+      data: [],
+      id: 'downloads',
+      label: 'Downloads'
+    }]
+
+    for (const chart of [BarChart({ series }), LineChart({ series })]) {
+      const children = propsOf(chart as ReactElement).children
+      const elements = (Array.isArray(children) ? children : [children])
+        .filter(isValidElement)
+      const plot = elements.find(child =>
+        propsOf(child).className === 'ui-chart__plot'
+      )
+
+      expect(elements.some(child =>
+        propsOf(child).className === 'ui-chart__empty'
+      )).toBe(true)
+      expect(propsOf(plot).hidden).toBe(true)
+      expect(elements.some(child =>
+        propsOf(child).className === 'ui-chart__data'
+      )).toBe(false)
+    }
   })
 
   test('sets text direction default', () => {

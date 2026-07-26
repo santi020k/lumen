@@ -15,6 +15,7 @@ import {
   getLumenChartTicks,
   getLumenRichTextShortcut,
   getVirtualRange,
+  hasLumenChartData,
   isLumenRichTextToggleCommand,
   type LumenChartSeries,
   type LumenChartTone,
@@ -3434,7 +3435,7 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
     const series = this.series
 
-    if (series.length === 0) {
+    if (!hasLumenChartData(series)) {
       this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
 
       return
@@ -3492,7 +3493,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
     const series = this.series
 
-    if (series.length === 0) {
+    if (!hasLumenChartData(series)) {
       this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
 
       return

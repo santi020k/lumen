@@ -97,6 +97,12 @@ const defaultChartPadding = 4
 const finiteValues = (values: readonly (number | null)[]): number[] =>
   values.filter((value): value is number => value !== null && Number.isFinite(value))
 
+export const hasLumenChartData = (
+  series: readonly LumenChartSeries[]
+): boolean => series.some(item =>
+  item.data.some(datum => datum.y !== null && Number.isFinite(datum.y))
+)
+
 export const getLumenChartDomain = (
   values: readonly (number | null)[],
   includeZero = true

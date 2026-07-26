@@ -185,4 +185,21 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
     expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
   })
+
+  test('renders the empty state when chart series contain no usable data', () => {
+    const series = JSON.stringify([{
+      data: [],
+      id: 'downloads',
+      label: 'Downloads'
+    }])
+
+    for (const tagName of ['lumen-bar-chart', 'lumen-line-chart']) {
+      const chart = connect(tagName, { series })
+
+      expect(chart.querySelector('.ui-chart__empty')?.textContent)
+        .toBe('No chart data available.')
+      expect(chart.querySelector('.ui-chart__plot')).toBeNull()
+      expect(chart.querySelector('.ui-chart__data')).toBeNull()
+    }
+  })
 })

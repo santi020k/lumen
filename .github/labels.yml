@@ -1,0 +1,56 @@
+# GitHub labels synced by .github/workflows/labeler.yml.
+
+# Contribution type
+- name: "bug"
+  color: "d73a4a"
+  description: Something is not working
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: New feature or request
+
+- name: "documentation"
+  color: "0075ca"
+  description: Documentation changes
+
+# Automated path labels
+- name: "core"
+  color: "7c3aed"
+  description: Shared tokens, metadata, helpers, and umbrella package
+
+- name: "astro"
+  color: "6d28d9"
+  description: Astro components, styles, and runtime
+
+- name: "react"
+  color: "5b21b6"
+  description: React primitives
+
+- name: "elements"
+  color: "4c1d95"
+  description: Standards-based Web Components
+
+- name: "mcp"
+  color: "3b0764"
+  description: Lumen MCP server
+
+- name: "docs"
+  color: "4338ca"
+  description: Documentation site and project documentation
+
+- name: "ci"
+  color: "f9d0c4"
+  description: CI/CD and GitHub Actions changes
+
+- name: "dependencies"
+  color: "0366d6"
+  description: Dependency manifest or lockfile changes
+
+# Release
+- name: "skip-changelog"
+  color: "ededed"
+  description: This pull request does not need a changeset
+
+- name: "autorelease: pending"
+  color: "fbca04"
+  description: Changesets release pull request awaiting merge

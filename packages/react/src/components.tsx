@@ -10,6 +10,7 @@ import {
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenIcon,
+  hasLumenChartData,
   type LumenBarChartLayout,
   type LumenChartOrientation,
   type LumenChartSeries,
@@ -820,6 +821,7 @@ export const BarChart = ({
   ...props
 }: BarChartProps) => {
   const geometry = createLumenBarGeometry(series, { layout, orientation })
+  const hasData = hasLumenChartData(series)
   const ticks = getLumenChartTicks(geometry.domain)
   const categories = geometry.categories.map(category => category.label)
 
@@ -829,11 +831,11 @@ export const BarChart = ({
 
   return (
     <Chart className={composeClassName('ui-bar-chart', className)} {...props}>
-      {showLegend && <ChartLegend series={series} />}
-      {series.length === 0 && (
+      {showLegend && hasData && <ChartLegend series={series} />}
+      {!hasData && (
         <p className="ui-chart__empty" role="status">No chart data available.</p>
       )}
-      <div className="ui-chart__plot" hidden={series.length === 0}>
+      <div className="ui-chart__plot" hidden={!hasData}>
         <svg
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
@@ -904,7 +906,7 @@ export const BarChart = ({
           </g>
         </svg>
       </div>
-      {showTable && series.length > 0 && (
+      {showTable && hasData && (
         <ChartDataTable categories={categories} series={series} />
       )}
     </Chart>
@@ -934,6 +936,7 @@ export const LineChart = ({
   const height = 320
   const padding = 44
   const categories = getLumenChartCategories(series)
+  const hasData = hasLumenChartData(series)
   const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
   const domain = getLumenChartDomain([
@@ -960,11 +963,11 @@ export const LineChart = ({
 
   return (
     <Chart className={composeClassName('ui-line-chart', className)} {...props}>
-      {showLegend && <ChartLegend series={series} />}
-      {series.length === 0 && (
+      {showLegend && hasData && <ChartLegend series={series} />}
+      {!hasData && (
         <p className="ui-chart__empty" role="status">No chart data available.</p>
       )}
-      <div className="ui-chart__plot" hidden={series.length === 0}>
+      <div className="ui-chart__plot" hidden={!hasData}>
         <svg
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
@@ -1044,7 +1047,7 @@ export const LineChart = ({
           })}
         </svg>
       </div>
-      {showTable && series.length > 0 && (
+      {showTable && hasData && (
         <ChartDataTable categories={categories} series={series} />
       )}
     </Chart>

@@ -6,6 +6,7 @@ export {
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenChartValueRatio,
+  hasLumenChartData,
   type LumenBarChartLayout,
   type LumenBarGeometry,
   type LumenBarGeometryCategory,

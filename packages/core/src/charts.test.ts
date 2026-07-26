@@ -7,11 +7,31 @@ import {
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  hasLumenChartData,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from './charts.js'
 
 describe('Lumen chart helpers', () => {
+  test('detects usable chart data across empty and missing-value series', () => {
+    expect(hasLumenChartData([])).toBe(false)
+    expect(hasLumenChartData([{
+      data: [],
+      id: 'empty',
+      label: 'Empty'
+    }])).toBe(false)
+    expect(hasLumenChartData([{
+      data: [{ x: 'Mon', y: null }],
+      id: 'missing',
+      label: 'Missing'
+    }])).toBe(false)
+    expect(hasLumenChartData([{
+      data: [{ x: 'Mon', y: 0 }],
+      id: 'available',
+      label: 'Available'
+    }])).toBe(true)
+  })
+
   test('creates safe domains for empty, flat, positive, and mixed values', () => {
     expect(getLumenChartDomain([])).toEqual({ max: 1, min: 0 })
     expect(getLumenChartDomain([5])).toEqual({ max: 5, min: 0 })

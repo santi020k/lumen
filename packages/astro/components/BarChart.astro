@@ -2,6 +2,7 @@
 import {
   createLumenBarGeometry,
   getLumenChartTicks,
+  hasLumenChartData,
   type LumenBarChartLayout,
   type LumenChartOrientation,
   type LumenChartSeries,
@@ -42,6 +43,7 @@ const {
   ...rest
 } = Astro.props
 const geometry = createLumenBarGeometry(series, { layout, orientation })
+const hasData = hasLumenChartData(series)
 const ticks = getLumenChartTicks(geometry.domain)
 const categories = geometry.categories.map(category => category.label)
 const valueFor = (item: LumenChartSeries, category: number | string) =>
@@ -62,7 +64,7 @@ const margin = orientation === 'horizontal'
   {...rest}
 >
   {
-    showLegend && (
+    showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {series.map((item, index) => (
           <li class={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`}>
@@ -73,8 +75,8 @@ const margin = orientation === 'horizontal'
       </ul>
     )
   }
-  {series.length === 0 && <p class="ui-chart__empty" role="status">No chart data available.</p>}
-  <div class="ui-chart__plot" hidden={series.length === 0}>
+  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
@@ -151,7 +153,7 @@ const margin = orientation === 'horizontal'
     </svg>
   </div>
   {
-    showTable && series.length > 0 && (
+    showTable && hasData && (
       <details class="ui-chart__data">
         <summary>View chart data</summary>
         <div>

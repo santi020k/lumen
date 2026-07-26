@@ -92,6 +92,7 @@ describe('lumen core metadata', () => {
 
   test('exports chart tokens and deterministic geometry helpers', () => {
     expect(lumenChart.series1).toBeTruthy()
+    expect(lumenChart.series7).toBe('52 92% 45%')
     expect(lumenChart.sequentialHigh).toBeTruthy()
     expect(
       createLumenLineGeometry([{ x: 0, y: 1 }]).points

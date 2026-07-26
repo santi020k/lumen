@@ -5,6 +5,7 @@ import {
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  hasLumenChartData,
   type LumenChartSeries,
   resolveLumenChartTone,
   scaleLumenChartValue
@@ -48,6 +49,7 @@ const width = 640
 const height = 320
 const padding = 44
 const categories = getLumenChartCategories(series)
+const hasData = hasLumenChartData(series)
 const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 const domain = getLumenChartDomain([
   ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
@@ -81,7 +83,7 @@ const referenceY =
   {...rest}
 >
   {
-    showLegend && (
+    showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {series.map((item, index) => (
           <li class={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`}>
@@ -92,8 +94,8 @@ const referenceY =
       </ul>
     )
   }
-  {series.length === 0 && <p class="ui-chart__empty" role="status">No chart data available.</p>}
-  <div class="ui-chart__plot" hidden={series.length === 0}>
+  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
@@ -187,7 +189,7 @@ const referenceY =
     </svg>
   </div>
   {
-    showTable && series.length > 0 && (
+    showTable && hasData && (
       <details class="ui-chart__data">
         <summary>View chart data</summary>
         <div>
