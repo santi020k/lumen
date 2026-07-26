@@ -1,48 +1,58 @@
 core:
   - changed-files:
       - any-glob-to-any-file:
-          - 'packages/core/**'
-          - 'packages/lumen/**'
+          - "packages/core/**"
+          - "packages/lumen/**"
 
 astro:
   - changed-files:
       - any-glob-to-any-file:
-          - 'packages/astro/**'
+          - "packages/astro/**"
 
 react:
   - changed-files:
       - any-glob-to-any-file:
-          - 'packages/react/**'
+          - "packages/react/**"
 
 elements:
   - changed-files:
       - any-glob-to-any-file:
-          - 'packages/elements/**'
+          - "packages/elements/**"
+
+mcp:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/mcp/**"
 
 docs:
   - changed-files:
       - any-glob-to-any-file:
-          - 'apps/docs/**'
-          - '*.md'
+          - "apps/docs/**"
+          - "docs/**"
+          - "*.md"
 
 ci:
   - changed-files:
       - any-glob-to-any-file:
-          - '.github/**'
+          - ".github/**"
 
 dependencies:
   - changed-files:
       - any-glob-to-any-file:
-          - 'package.json'
-          - 'pnpm-lock.yaml'
-          - 'pnpm-workspace.yaml'
-          - 'apps/*/package.json'
-          - 'packages/*/package.json'
+          - "package.json"
+          - "pnpm-lock.yaml"
+          - "pnpm-workspace.yaml"
+          - "apps/*/package.json"
+          - "packages/*/package.json"
 
 skip-changelog:
   - head-branch:
-      - 'chore/*'
-      - 'ci/*'
-      - 'docs/*'
-      - 'renovate/*'
-      - 'dependabot/*'
+      - "chore/*"
+      - "ci/*"
+      - "docs/*"
+      - "renovate/*"
+      - "dependabot/*"
+
+"autorelease: pending":
+  - head-branch:
+      - "changeset-release/*"

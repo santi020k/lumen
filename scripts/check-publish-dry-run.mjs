@@ -6,6 +6,7 @@ const packages = [
   '@santi020k/lumen-astro',
   '@santi020k/lumen-react',
   '@santi020k/lumen-elements',
+  '@santi020k/lumen-icons-brand',
   '@santi020k/lumen-mcp'
 ]
 

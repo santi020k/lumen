@@ -1,0 +1,36 @@
+---
+import { LineChart } from '@santi020k/lumen-astro'
+
+const series = [
+  {
+    data: [
+      { x: 'Mon', y: 120 },
+      { x: 'Tue', y: 168 },
+      { x: 'Wed', y: 154 },
+      { x: 'Thu', y: 201 },
+      { x: 'Fri', y: 238 }
+    ],
+    id: 'views',
+    label: 'Page views'
+  },
+  {
+    data: [
+      { x: 'Mon', y: 82 },
+      { x: 'Tue', y: 104 },
+      { x: 'Wed', y: 97 },
+      { x: 'Thu', y: 128 },
+      { x: 'Fri', y: 146 }
+    ],
+    id: 'visits',
+    label: 'Visits'
+  }
+]
+---
+
+<LineChart
+  aria-label="Page views and visits from Monday through Friday"
+  area
+  caption="Traffic increased through the end of the week."
+  heading="Website traffic"
+  {series}
+/>

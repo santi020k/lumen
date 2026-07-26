@@ -2,4 +2,9 @@
 import { Anchor } from '@santi020k/lumen-astro'
 ---
 
-<Anchor items={[{ href: '#section-1', label: 'Introduction' }, { href: '#section-2', label: 'Usage' }]} />
+<Anchor
+  items={[
+    { depth: 2, href: '#section-1', label: 'Introduction' },
+    { depth: 3, href: '#section-2', label: 'Usage' }
+  ]}
+/>

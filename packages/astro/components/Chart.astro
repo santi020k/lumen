@@ -4,15 +4,23 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'figure'> {
+  caption?: string
   class?: string | null
   className?: string
+  description?: string
   glass?: boolean | 'subtle' | 'strong'
+  heading?: string
+  value?: string
 }
 
 const {
+  caption,
   class: classProp = '',
   className = '',
+  description,
   glass = false,
+  heading,
+  value,
   ...rest
 } = Astro.props
 
@@ -28,5 +36,20 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   class:list={classList}
   {...passthrough}
 >
+  {
+    (heading || description || value || Astro.slots.has('header')) && (
+      <header>
+        <slot name="header">
+          <div class="ui-chart__heading">
+            {heading && <h3>{heading}</h3>}
+            {description && <p>{description}</p>}
+          </div>
+          {value && <strong data-ui-chart-value>{value}</strong>}
+        </slot>
+        <slot name="actions" />
+      </header>
+    )
+  }
   <slot />
+  {caption && <figcaption>{caption}</figcaption>}
 </figure>

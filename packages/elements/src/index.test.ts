@@ -3,7 +3,10 @@
 
 // @vitest-environment jsdom
 
-import { lumenComponentNames } from '@santi020k/lumen-core'
+import {
+  lumenComponentNames,
+  registerLumenIconPack
+} from '@santi020k/lumen-core'
 
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
@@ -113,6 +116,24 @@ describe('@santi020k/lumen-elements', () => {
     vi.unstubAllGlobals()
   })
 
+  test('creates density-controlled drifting particles when motion is allowed', () => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      addEventListener: vi.fn(),
+      matches: false,
+      media: '(prefers-reduced-motion: reduce)',
+      onchange: null,
+      removeEventListener: vi.fn()
+    })))
+
+    const particles = document.createElement('lumen-particles')
+
+    particles.setAttribute('data-ui-particles', 'low')
+    document.body.append(particles)
+
+    expect(particles.hasAttribute('data-ui-particles-initialized')).toBe(true)
+    expect(particles.querySelectorAll('.ui-particles__particle')).toHaveLength(15)
+  })
+
   test('applies primitive classes when elements connect', () => {
     const button = document.createElement('lumen-button')
     const card = document.createElement('lumen-card')
@@ -140,6 +161,32 @@ describe('@santi020k/lumen-elements', () => {
     icon.setAttribute('decorative', '')
     expect(icon.getAttribute('aria-hidden')).toBe('true')
     expect(icon.hasAttribute('role')).toBe(false)
+  })
+
+  test('renders registered filled icon packs through lumen-icon', () => {
+    registerLumenIconPack('brand-test', {
+      mark: {
+        height: 24,
+        name: 'mark',
+        node: [['path', { d: 'M2 2h20v20H2z' }]],
+        source: 'brand-test',
+        style: 'fill',
+        width: 24
+      }
+    })
+
+    const icon = document.createElement('lumen-icon')
+
+    icon.setAttribute('name', 'brand-test:mark')
+    icon.setAttribute('label', 'Brand mark')
+    document.body.append(icon)
+
+    const svg = icon.querySelector('svg')
+
+    expect(svg?.classList.contains('brand-test-mark')).toBe(true)
+    expect(svg?.getAttribute('fill')).toBe('currentColor')
+    expect(svg?.getAttribute('stroke')).toBe('none')
+    expect(icon.getAttribute('aria-label')).toBe('Brand mark')
   })
 
   test('applies glass attribute classes', () => {

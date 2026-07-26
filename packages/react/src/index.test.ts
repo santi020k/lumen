@@ -31,8 +31,11 @@ import {
   Popover,
   Resizable,
   RevealGroup,
+  ScrollProgress,
   ScrollReveal,
   Select,
+  Stat,
+  type StatProps,
   Table,
   type TableProps,
   ToastProvider,
@@ -185,6 +188,23 @@ describe('@santi020k/lumen-react', () => {
     expect(animatedNumber.props.children[1]?.props.children).toBe('99.8%')
   })
 
+  test('renders an accessible document scroll progress primitive', () => {
+    const progress = withHookDispatcher(() => ScrollProgress({
+      'aria-label': 'Article progress',
+      position: 'bottom'
+    })) as ReactElement<{
+      'aria-label': string
+      'aria-valuenow': number
+      className: string
+      role: string
+    }>
+
+    expect(progress.props['aria-label']).toBe('Article progress')
+    expect(progress.props['aria-valuenow']).toBe(0)
+    expect(progress.props.className).toBe('ui-scroll-progress ui-scroll-progress--bottom')
+    expect(progress.props.role).toBe('progressbar')
+  })
+
   test('applies default button classes and type', () => {
     const button = renderComponent(Button, { children: 'Save' }) as ReactElement<ButtonProps>
 
@@ -231,6 +251,22 @@ describe('@santi020k/lumen-react', () => {
     expect(card.props.className).toBe('ui-card--interactive ui-card--glass custom-card')
     expect(card.props['data-variant']).toBe('interactive')
     expect(card.props.uiClassName).toBe('ui-card')
+  })
+
+  test('supports a semantic root element and visual variant for stats', () => {
+    const stat = Stat({
+      as: 'article',
+      children: 'Compared with last month',
+      className: 'custom-stat',
+      label: 'Revenue',
+      value: '$42k',
+      variant: 'accent'
+    }) as ReactElement<StatProps<'article'> & { 'data-variant': string; uiClassName: string }>
+
+    expect(stat.props.as).toBe('article')
+    expect(stat.props.className).toBe('ui-stat--accent custom-stat')
+    expect(stat.props['data-variant']).toBe('accent')
+    expect(stat.props.uiClassName).toBe('ui-stat')
   })
 
   test('supports glass overlay surfaces', () => {
@@ -307,8 +343,11 @@ describe('@santi020k/lumen-react', () => {
 
     expect(style['--ui-watermark-gap']).toBe('144px')
     expect(style['--ui-watermark-image']).toContain('data:image/svg+xml')
-    expect(decodeURIComponent(style['--ui-watermark-image'] ?? '')).toContain('Draft &amp; review')
-    expect(decodeURIComponent(style['--ui-watermark-image'] ?? '')).toContain('rotate(-30 72 72)')
+    const watermarkImage = decodeURIComponent(style['--ui-watermark-image'] ?? '')
+
+    expect(watermarkImage).toContain('Draft &amp; review')
+    expect(watermarkImage).toContain('rotate(-30 72 72)')
+    expect(watermarkImage).toContain('font-family="Montserrat, Avenir Next, Segoe UI, sans-serif"')
   })
 
   test('defaults inputs to text fields', () => {

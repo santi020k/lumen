@@ -67,6 +67,7 @@ const searchOutputSchema = z.strictObject({
 
 const tokensOutputSchema = z.strictObject({
   tokens: z.strictObject({
+    chart: z.record(z.string(), z.string().trim()),
     colors: z.record(z.string(), z.string().trim()),
     glass: z.record(z.string(), z.string().trim()),
     semantic: z.array(z.string().trim()),

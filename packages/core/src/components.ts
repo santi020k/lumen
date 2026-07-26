@@ -9,6 +9,7 @@ export const lumenComponentNames = [
   'Avatar',
   'BackToTop',
   'Badge',
+  'BarChart',
   'Breadcrumb',
   'Bubble',
   'Button',
@@ -48,6 +49,7 @@ export const lumenComponentNames = [
   'Kbd',
   'Label',
   'Link',
+  'LineChart',
   'Marker',
   'Menubar',
   'Message',
@@ -65,6 +67,7 @@ export const lumenComponentNames = [
   'Resizable',
   'RichTextEditor',
   'ScrollArea',
+  'ScrollProgress',
   'Schedule',
   'SearchField',
   'Select',
@@ -75,6 +78,7 @@ export const lumenComponentNames = [
   'SkipLink',
   'Slider',
   'Sonner',
+  'Sparkline',
   'Spinner',
   'Switch',
   'Table',
@@ -130,7 +134,7 @@ export type LumenComponentName = typeof lumenComponentNames[number]
 export interface LumenPackageTarget {
   name: string
   packageName: string
-  runtime: 'astro' | 'core' | 'elements' | 'react' | 'umbrella'
+  runtime: 'astro' | 'core' | 'elements' | 'icons' | 'react' | 'umbrella'
 }
 
 export const lumenPackages = [
@@ -138,5 +142,10 @@ export const lumenPackages = [
   { name: 'Lumen Core', packageName: '@santi020k/lumen-core', runtime: 'core' },
   { name: 'Lumen Astro', packageName: '@santi020k/lumen-astro', runtime: 'astro' },
   { name: 'Lumen React', packageName: '@santi020k/lumen-react', runtime: 'react' },
-  { name: 'Lumen Elements', packageName: '@santi020k/lumen-elements', runtime: 'elements' }
+  { name: 'Lumen Elements', packageName: '@santi020k/lumen-elements', runtime: 'elements' },
+  {
+    name: 'Lumen Brand Icons',
+    packageName: '@santi020k/lumen-icons-brand',
+    runtime: 'icons'
+  }
 ] as const satisfies readonly LumenPackageTarget[]

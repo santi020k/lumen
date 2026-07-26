@@ -1,0 +1,72 @@
+---
+import {
+  composeClassName,
+  createLumenLineGeometry,
+  type LumenChartTone,
+  resolveLumenChartTone
+} from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'span'> {
+  area?: boolean
+  class?: string | null
+  className?: string
+  label: string
+  showEndpoint?: boolean
+  tone?: LumenChartTone
+  values: readonly number[]
+}
+
+const {
+  area = false,
+  class: classProp = '',
+  className = '',
+  label,
+  showEndpoint = true,
+  tone,
+  values,
+  ...rest
+} = Astro.props
+const data = values.map((value, index) => ({ x: index, y: value }))
+const geometry = createLumenLineGeometry(data, {
+  height: 40,
+  padding: 3,
+  width: 120
+})
+const resolvedTone = resolveLumenChartTone(tone)
+const endpoint = geometry.points[geometry.points.length - 1]
+---
+
+<span
+  aria-label={label}
+  class={composeClassName(
+    'ui-sparkline',
+    `ui-chart-tone--${resolvedTone}`,
+    classProp,
+    className
+  )}
+  role="img"
+  {...rest}
+>
+  <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">
+    {
+      area &&
+        geometry.areaPaths.map((path) => (
+          <path class="ui-sparkline__area" d={path} />
+        ))
+    }
+    <path class="ui-sparkline__line" d={geometry.path} />
+    {
+      showEndpoint && endpoint && (
+        <circle
+          class="ui-sparkline__endpoint"
+          cx={endpoint.xCoordinate}
+          cy={endpoint.yCoordinate}
+          r="2.5"
+        />
+      )
+    }
+  </svg>
+  <span class="ui-sr-only">{label}</span>
+</span>

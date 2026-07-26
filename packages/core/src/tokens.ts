@@ -20,6 +20,25 @@ export const lumenColors = {
   warning: '38 92% 50%'
 } as const
 
+export const lumenChart = {
+  axis: 'var(--ink-muted)',
+  divergingMid: '220 13% 91%',
+  divergingNegative: '0 84% 60%',
+  divergingPositive: '221 83% 53%',
+  grid: 'var(--line)',
+  sequentialHigh: '221 83% 40%',
+  sequentialLow: '218 100% 97%',
+  sequentialMid: '221 83% 67%',
+  series1: '221 83% 53%',
+  series2: '168 76% 36%',
+  series3: '280 72% 56%',
+  series4: '25 95% 53%',
+  series5: '340 82% 55%',
+  series6: '190 82% 42%',
+  series7: '52 92% 45%',
+  series8: '215 16% 47%'
+} as const
+
 export const lumenGlass = {
   bg: '0 0% 100% / 0.55',
   bgStrong: '0 0% 100% / 0.72',
@@ -49,7 +68,7 @@ export const lumenShadow = {
 } as const
 
 export const lumenFont =
-  'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' as const
+  '"Montserrat", "Avenir Next", "Segoe UI", sans-serif' as const
 
 export const lumenMotion = {
   duration: '160ms',

@@ -1,0 +1,12 @@
+---
+import { Sparkline, Stat } from '@santi020k/lumen-astro'
+---
+
+<div style="display: flex; align-items: end; justify-content: space-between; gap: 1rem">
+  <Stat label="Downloads" value="18,420" />
+  <Sparkline
+    area
+    label="Downloads increased from 42 to 91"
+    values={[42, 48, 63, 58, 74, 91]}
+  />
+</div>

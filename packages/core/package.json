@@ -27,6 +27,10 @@
       "types": "./dist/code.d.ts",
       "import": "./dist/code.js"
     },
+    "./charts": {
+      "types": "./dist/charts.d.ts",
+      "import": "./dist/charts.js"
+    },
     "./data": {
       "types": "./dist/data.d.ts",
       "import": "./dist/data.js"

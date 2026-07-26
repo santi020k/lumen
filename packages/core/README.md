@@ -7,6 +7,27 @@ Most consumers should install a framework package such as `@santi020k/lumen-astr
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme
 tokens outside the shared stylesheet.
 
+## Chart Helpers
+
+`@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic
+domain, tick, scaling, line/area, and grouped/stacked bar geometry helpers. They render no DOM and
+perform no statistical analysis; framework packages use them to keep chart output aligned.
+
+```ts
+import {
+  createLumenLineGeometry,
+  type LumenChartSeries
+} from '@santi020k/lumen-core/charts'
+
+const series: LumenChartSeries = {
+  id: 'views',
+  label: 'Views',
+  data: [{ x: 'Mon', y: 42 }, { x: 'Tue', y: 68 }]
+}
+
+createLumenLineGeometry(series.data)
+```
+
 It also exports the Lucide-backed icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
 `renderLumenIconSvg` so framework adapters can render icons by name.
 

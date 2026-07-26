@@ -8,7 +8,7 @@ const repositoryRoot = resolve(import.meta.dirname, '..')
 const temporaryRoot = await mkdtemp(join(tmpdir(), 'lumen-consumer-packages-'))
 const archiveDirectory = join(temporaryRoot, 'archives')
 const consumerDirectory = join(temporaryRoot, 'consumer')
-const packageDirectories = ['lumen', 'core', 'astro', 'react', 'elements']
+const packageDirectories = ['lumen', 'core', 'astro', 'react', 'elements', 'icons-brand']
 
 const run = (command, args, cwd = repositoryRoot) => {
   const result = spawnSync(command, args, {
@@ -78,11 +78,16 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { lumen } from '@santi020k/lumen'
-import { lumenComponentNames } from '@santi020k/lumen-core'
+import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
+import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
 
 assert.equal(lumen.name, 'Lumen')
 assert.ok(lumenComponentNames.includes('Card'))
+
+registerLumenBrandIcons()
+
+assert.match(renderLumenIconSvg('brand:github'), /brand-github/)
 
 const html = renderToStaticMarkup(
   createElement(Card, null, createElement(Badge, null, 'Ready'))
@@ -161,7 +166,7 @@ import '@santi020k/lumen-astro/styles.css'
   ])
 
   process.stdout.write(
-    'Packed Core, umbrella, React, Elements, and Astro packages passed clean-consumer smoke tests\n'
+    'Packed Core, umbrella, React, Elements, Astro, and brand-icon packages passed clean-consumer smoke tests\n'
   )
 } finally {
   await rm(temporaryRoot, { force: true, recursive: true })

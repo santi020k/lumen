@@ -41,3 +41,15 @@ Add a changeset when a package consumer can observe the change: new components, 
 styling changes, exports, runtime behavior, or package metadata. Skip changesets for internal-only
 docs, tests, refactors, and CI maintenance.
 
+## Publishing
+
+All work merges into `main`; contributors do not create or merge a separate release branch.
+
+1. Each user-visible pull request includes a changeset.
+2. After it merges, the release workflow creates or updates `changeset-release/main`.
+3. Merge that automated pull request when the accumulated changes are ready to publish.
+4. The merge publishes the packages and creates the GitHub releases automatically.
+
+The feature pull request runs the complete validation suite. The automated release pull request runs
+only package build and publish dry-run checks because its generated changes are limited to versions,
+changelogs, the lockfile, and the MCP snapshot.

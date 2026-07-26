@@ -15,6 +15,18 @@ umbrella package only when you want the framework-neutral CLI or registry APIs:
 pnpm add @santi020k/lumen
 ```
 
+## Typography
+
+Lumen defaults `--ui-font` to the canonical Santi020k Montserrat family stack:
+
+```css
+--ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
+```
+
+The package declares the family but does not bundle or load font files. Applications should load
+Montserrat once through their preferred delivery path, or override `--ui-font` when using another
+typeface.
+
 The umbrella package also exposes typed registry metadata and the `lumen` CLI:
 
 ```bash

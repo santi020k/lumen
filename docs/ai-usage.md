@@ -30,9 +30,28 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |
 | Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |
 | Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
+| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
+
+Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,
+install and register the optional pack once before rendering a namespaced icon:
+
+```ts
+import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
+
+registerLumenBrandIcons()
+```
+
+Then use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,
+`brand:figma`, `brand:linkedin`, `brand:whatsapp`, or `brand:youtube`, through the existing Astro,
+React, or Web Component `Icon` API. The package also provides `brand:x` as an alias for
+`brand:x-twitter`.
+
+Brand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.
+They still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as
+the default icon catalog.
 
 ## MCP-Assisted Workflow
 
@@ -133,6 +152,16 @@ import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 </Card>
 ```
 
+`Stat` defaults to a `div`. Choose `as="article"` for a self-contained metric with supporting
+content, or `as="section"` for a labeled region. Do not use a semantic root solely for styling.
+Its visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and
+keep glass selective.
+
+For long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional
+heading `depth` when hierarchy matters. Use `ScrollProgress` for document position; keep `Progress`
+for application-controlled task completion. `Pill` accepts `neutral`, `brand`, and `outline`
+variants, plus native link and count composition.
+
 ## React
 
 React components share the same visual classes and data attributes as Astro components. For
@@ -147,6 +176,7 @@ the same entry without additional setup.
 `Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.
 `Button asChild` composes the button contract onto one child element, while `Input visualSize` controls
 presentation without shadowing the native numeric `size` attribute.
+`Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.
 
 ```tsx
 import '@santi020k/lumen-react/styles.css'
@@ -191,24 +221,30 @@ select form participation, and the same toast controller events as the Astro run
 The shared catalog includes:
 
 `Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,
-`Avatar`, `Badge`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,
+`Avatar`, `Badge`, `BarChart`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,
 `Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
-`Label`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
+`Label`, `LineChart`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
 `NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
-`Slider`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
+`Slider`, `Sparkline`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
 `TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and
 `VirtualList`.
 
 ## Product Recipes
 
+- Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical
+  comparison, and `LineChart` for ordered or time-series data. Pass already-aggregated
+  `LumenChartSeries` data; keep statistics, resampling, model evaluation, and domain calculations
+  in application code. Keep `showTable` enabled unless the same values are already available in a
+  nearby semantic table. Use `Chart` as the custom SVG/canvas escape hatch.
 - Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
   names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
-  when the icon carries meaning on its own. Lucide does not include brand marks such as GitHub;
-  render a project-owned SVG through the default `Icon` slot for brand and custom icons. Astro
-  reports unknown named icons during development instead of failing silently.
+  when the icon carries meaning on its own. Install and register
+  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as
+  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`
+  slot. Astro reports unknown named icons during development instead of failing silently.
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.

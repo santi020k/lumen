@@ -28,6 +28,7 @@ describe('lumen-mcp data snapshot', () => {
     expect(data.meta.schemaVersion).toBeGreaterThanOrEqual(2)
     expect(data.meta.serverVersion).toMatch(/^\d+\.\d+\.\d+/)
     expect(data.tokens.semantic).toContain('brand')
+    expect(data.tokens.chart.series1).toBeDefined()
     expect(data.rules.length).toBeGreaterThan(0)
   })
 
@@ -349,6 +350,8 @@ describe('getTokens and getRules', () => {
 
     expect(result.text).toContain('Semantic token names')
     expect(result.data.tokens.semantic).toContain('brand')
+    expect(result.data.tokens.chart.series1).toBeDefined()
+    expect(result.text).toContain('Data visualization tokens')
   })
 
   test('returns rules', () => {

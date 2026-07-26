@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const port = process.env.LUMEN_INTERACTIONS_PORT ?? '4324'
+const baseURL = `http://127.0.0.1:${port}`
+
 export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   fullyParallel: true,
@@ -24,11 +27,11 @@ export default defineConfig({
   testMatch: 'component-interactions.spec.ts',
   workers: 2,
   use: {
-    baseURL: 'http://127.0.0.1:4324'
+    baseURL
   },
   webServer: {
-    command: 'pnpm --filter @santi020k/lumen-docs exec astro build && pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port 4324',
+    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && LUMEN_DOCS_OUT_DIR=.astro/interactions-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=.astro/interactions-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: false,
-    url: 'http://127.0.0.1:4324'
+    url: baseURL
   }
 })

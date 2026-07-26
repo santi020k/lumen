@@ -28,9 +28,9 @@ Use the Community listing to add or duplicate the library; use the canonical des
 exact component-node links and library maintenance.
 
 The file also provides 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
-Foundations, Glass Components, Icons, component-category, and Utilities pages. Inter is the primary
-interface and documentation family; Cascadia Mono is reserved for the small amount of code-style
-text.
+Foundations, Glass Components, Icons, component-category, and Utilities pages. The canonical design
+file and Lumen's runtime CSS both use Montserrat for interface and documentation text. Cascadia Mono
+remains reserved for the small amount of code-style text.
 
 Variables carry Web code syntax (`var(--token)`). The `Light` and `Dark` modes match the Lumen
 product overrides in `apps/docs/src/styles/global.css`; `packages/lumen/styles.css` provides the

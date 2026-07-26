@@ -1,10 +1,12 @@
 ---
-import { Button, Input, Label, Link } from '@santi020k/lumen-astro'
+import { Link } from '@santi020k/lumen-astro'
 import { lumenIcons, renderLumenIconSvg } from '@santi020k/lumen-core'
 
 import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
+import IconCatalog from '../../components/IconCatalog.astro'
+import IconHeroGrid from '../../components/IconHeroGrid.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 interface IconEntry {
@@ -92,16 +94,10 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
     >
       <Fragment slot="actions">
         <DocsActionLink href="#icon-catalog">Explore icons</DocsActionLink>
-        <DocsActionLink href="/docs/components/icon" variant="outline">View Icon API</DocsActionLink>
+        <DocsActionLink href="/docs/brand-icons" variant="outline">Browse brand icons</DocsActionLink>
       </Fragment>
 
-      <div class="icons-hero-grid" slot="visual" aria-hidden="true">
-        {featuredIcons.map(svg => (
-          <span class="icons-hero-grid__tile">
-            <span class="ui-icon ui-icon--xl" set:html={svg} />
-          </span>
-        ))}
-      </div>
+      <IconHeroGrid icons={featuredIcons} slot="visual" />
     </DocsPageHero>
 
     <p class="icons-attribution">
@@ -128,115 +124,30 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
       </div>
     </section>
 
-    <section class="icons-section" id="icon-catalog" aria-labelledby="catalog-title">
+    <IconCatalog
+      description="Search by canonical name or alias, then select any tile to copy its component name."
+      entries={iconEntries}
+      id="icon-catalog"
+      searchLabel="Search the icon library"
+      title="Find your icon"
+    />
+
+    <section class="icons-section icons-section--brands" aria-labelledby="brand-icons-title">
       <div class="icons-section__heading">
         <div>
-          <p>Complete set</p>
-          <h2 id="catalog-title">Find your icon</h2>
+          <p>Need a logo?</p>
+          <h2 id="brand-icons-title">Brand marks have their own catalog</h2>
         </div>
         <p>
-          Search by canonical name or alias, then select any tile to copy its component name.
+          Browse more than 570 opt-in company and product marks without loading them into this
+          interface-icon page.
         </p>
       </div>
 
-      <div class="icons-search">
-        <Label for="icon-search">Search the icon library</Label>
-        <Input
-          autocomplete="off"
-          data-icon-search
-          id="icon-search"
-          placeholder={`Search ${iconCount} icons by name or alias...`}
-          spellcheck="false"
-          type="search"
-        />
-        <p data-icon-status>
-          Showing <span data-icon-visible-count>{iconCount}</span> of {iconCount} icons
-        </p>
-      </div>
-
-      <p class="icons-empty" data-icon-empty hidden>
-        No icons match your search.
-      </p>
-
-      <div class="icons-grid" data-icon-grid>
-        {iconEntries.map(entry => (
-          <Button
-            data-icon-name={entry.name}
-            data-icon-terms={entry.terms}
-            variant="ghost"
-            title={`Copy "${entry.name}"`}
-          >
-            <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
-            <span>{entry.name}</span>
-          </Button>
-        ))}
-      </div>
+      <DocsActionLink href="/docs/brand-icons">Explore brand icons</DocsActionLink>
     </section>
   </div>
 </DocsLayout>
-
-<script>
-  const grid = document.querySelector<HTMLElement>('[data-icon-grid]')
-  const search = document.querySelector<HTMLInputElement>('[data-icon-search]')
-  const empty = document.querySelector<HTMLElement>('[data-icon-empty]')
-  const visibleCount = document.querySelector<HTMLElement>('[data-icon-visible-count]')
-
-  if (grid && search) {
-    const cells = [...grid.querySelectorAll<HTMLButtonElement>('[data-icon-name]')]
-
-    const applyFilter = (raw: string) => {
-      const query = raw.trim().toLowerCase()
-      let visible = 0
-
-      for (const cell of cells) {
-        const terms = cell.dataset.iconTerms ?? ''
-        const match = query === '' || terms.includes(query)
-
-        cell.hidden = !match
-
-        if (match) visible += 1
-      }
-
-      if (visibleCount) visibleCount.textContent = String(visible)
-
-      if (empty) empty.hidden = visible !== 0
-    }
-
-    const flashCopied = (cell: HTMLButtonElement) => {
-      const label = cell.querySelector('span:last-child')
-
-      if (!label) return
-
-      const original = label.textContent
-
-      label.textContent = 'Copied!'
-
-      window.setTimeout(() => {
-        label.textContent = original
-      }, 1000)
-    }
-
-    search.addEventListener('input', event => {
-      applyFilter((event.target as HTMLInputElement).value)
-    })
-
-    grid.addEventListener('click', async event => {
-      const cell = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-icon-name]')
-
-      if (!cell) return
-
-      const name = cell.dataset.iconName ?? ''
-
-      try {
-        await navigator.clipboard.writeText(name)
-
-        flashCopied(cell)
-      } catch {
-        // Clipboard access can be blocked; ignore silently.
-      }
-    })
-  }
-</script>
 
 <style>
   .icons-page {
@@ -249,49 +160,6 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
     color: hsl(var(--ink-muted));
     font-size: 0.78rem;
     text-align: right;
-  }
-
-  .icons-hero-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.65rem;
-    padding: 0.75rem;
-    border: 1px solid hsl(var(--line));
-    border-radius: 1.1rem;
-    background: hsl(var(--canvas) / 0.62);
-    box-shadow:
-      0 1rem 2.5rem hsl(var(--ink) / 0.06),
-      inset 0 1px 0 hsl(0 0% 100% / 0.18);
-    backdrop-filter: blur(14px);
-  }
-
-  .icons-hero-grid__tile {
-    display: grid;
-    min-height: 3.35rem;
-    place-items: center;
-    border: 1px solid hsl(var(--line));
-    border-radius: 0.75rem;
-    background: hsl(var(--surface) / 0.8);
-    color: hsl(var(--brand));
-    box-shadow:
-      0 0.2rem 0.7rem hsl(var(--ink) / 0.05),
-      inset 0 1px 0 hsl(0 0% 100% / 0.2);
-  }
-
-  .icons-hero-grid__tile:nth-child(2n) {
-    color: hsl(var(--ink-soft));
-  }
-
-  .icons-hero-grid__tile:nth-child(5) {
-    border-color: hsl(var(--brand) / 0.45);
-    background: linear-gradient(145deg, hsl(var(--brand)), hsl(var(--brand-solid)));
-    color: hsl(var(--canvas));
-    box-shadow: 0 0.55rem 1.2rem hsl(var(--brand) / 0.22);
-    transform: scale(1.04);
-  }
-
-  .icons-hero-grid__tile .ui-icon {
-    --ui-icon-size: 1.6rem;
   }
 
   .icons-section {
@@ -335,81 +203,16 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
     gap: 0.85rem;
   }
 
-  .icons-search {
-    display: grid;
-    gap: 0.55rem;
-    max-width: 46rem;
-  }
-
-  .icons-search label {
-    color: hsl(var(--ink));
-    font-size: 0.8rem;
-    font-weight: 850;
-  }
-
-  .icons-search input {
-    height: 3.25rem;
-    border-radius: 0.9rem;
-    font-size: 1rem;
-  }
-
-  .icons-search p {
-    color: hsl(var(--ink-muted));
-    font-size: 0.8rem;
-  }
-
-  .icons-empty {
-    padding: 3rem 1rem;
-    border: 1px dashed hsl(var(--line));
-    border-radius: 1rem;
-    color: hsl(var(--ink-soft));
-    font-size: 0.9rem;
-    text-align: center;
-  }
-
-  .icons-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
-    gap: 0.6rem;
-  }
-
-  .icons-grid button {
-    display: flex;
-    aspect-ratio: 1;
-    min-width: 0;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.65rem;
-    padding: 0.75rem;
+  .icons-section--brands {
+    justify-items: start;
+    padding: 1.4rem;
     border: 1px solid hsl(var(--line));
-    border-radius: 0.9rem;
-    background: hsl(var(--surface));
-    color: hsl(var(--ink-soft));
-    cursor: pointer;
-    transition:
-      border-color 150ms ease,
-      background-color 150ms ease,
-      color 150ms ease,
-      transform 150ms ease;
+    border-radius: 1.2rem;
+    background: hsl(var(--surface-muted));
   }
 
-  .icons-grid button:hover {
-    border-color: hsl(var(--brand));
-    background: hsl(var(--brand-soft));
-    color: hsl(var(--brand));
-    transform: translateY(-2px);
-  }
-
-  .icons-grid button > span:last-child {
-    overflow: hidden;
+  .icons-section--brands .icons-section__heading {
     width: 100%;
-    color: hsl(var(--ink-muted));
-    font-size: 0.63rem;
-    line-height: 1.2;
-    text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   @media (min-width: 48rem) {

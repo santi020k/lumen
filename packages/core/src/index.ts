@@ -1,4 +1,30 @@
 export {
+  alignLumenChartSeries,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
+  getLumenChartCategories,
+  getLumenChartDomain,
+  getLumenChartTicks,
+  getLumenChartValueRatio,
+  hasLumenChartData,
+  type LumenBarChartLayout,
+  type LumenBarGeometry,
+  type LumenBarGeometryCategory,
+  type LumenBarGeometryMark,
+  type LumenBarGeometryOptions,
+  type LumenChartDatum,
+  type LumenChartDomain,
+  type LumenChartGeometryPoint,
+  type LumenChartOrientation,
+  type LumenChartSeries,
+  type LumenChartTone,
+  lumenChartTones,
+  type LumenLineGeometry,
+  type LumenLineGeometryOptions,
+  resolveLumenChartTone,
+  scaleLumenChartValue
+} from './charts.js'
+export {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenCodeTokenKind,
@@ -55,11 +81,16 @@ export {
 } from './figma.js'
 export {
   getLumenIcon,
+  getLumenIconPack,
+  getRegisteredLumenIconNames,
   type LumenIconData,
   type LumenIconName,
   lumenIconNames,
   type LumenIconNode,
+  type LumenIconPack,
   lumenIcons,
+  type LumenIconStyle,
+  registerLumenIconPack,
   renderLumenIconSvg,
   resolveLumenIconName
 } from './icons.js'
@@ -158,6 +189,7 @@ export {
 } from './theme-builder.js'
 export {
   composeClassName,
+  lumenChart,
   lumenColors,
   lumenDarkTheme,
   lumenFont,

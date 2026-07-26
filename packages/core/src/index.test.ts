@@ -10,6 +10,8 @@ import {
   createDataViewState,
   createDataViewStorageKey,
   createFigmaVariableName,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
   createScheduleSlots,
   createScheduleStorageKey,
   createThemeBuilderTokens,
@@ -21,17 +23,22 @@ import {
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
   getContrastRatio,
+  getLumenIcon,
+  getLumenIconPack,
+  getRegisteredLumenIconNames,
   getScheduleConflicts,
   getVirtualRange,
   hslTokenToFigmaColor,
   hslTokenToHexColor,
   loadDataViewState,
   loadScheduleEvents,
+  lumenChart,
   lumenCodeTokenClassNames,
   lumenColors,
   lumenColorTokenNames,
   lumenComponentNames,
   lumenDarkTheme,
+  lumenFont,
   lumenGlass,
   lumenGlassEffectTokenNames,
   lumenGlassTokenNames,
@@ -50,6 +57,7 @@ import {
   parseScheduleEvents,
   parseThemeCss,
   pinDataViewColumn,
+  registerLumenIconPack,
   renderLumenCodeHtml,
   renderLumenIconSvg,
   resizeScheduleEvent,
@@ -73,9 +81,29 @@ describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
     expect(lumenComponentNames).toContain('CodeTabs')
+    expect(lumenComponentNames).toContain('BarChart')
     expect(lumenComponentNames).toContain('Icon')
+    expect(lumenComponentNames).toContain('LineChart')
+    expect(lumenComponentNames).toContain('Sparkline')
+    expect(lumenComponentNames).toContain('ScrollProgress')
     expect(lumenComponentNames).toContain('Tabs')
     expect(new Set(lumenComponentNames).size).toBe(lumenComponentNames.length)
+  })
+
+  test('exports chart tokens and deterministic geometry helpers', () => {
+    expect(lumenChart.series1).toBeTruthy()
+    expect(lumenChart.series7).toBe('52 92% 45%')
+    expect(lumenChart.sequentialHigh).toBeTruthy()
+    expect(
+      createLumenLineGeometry([{ x: 0, y: 1 }]).points
+    ).toHaveLength(1)
+    expect(
+      createLumenBarGeometry([{
+        data: [{ x: 'A', y: 1 }],
+        id: 'a',
+        label: 'A'
+      }]).marks
+    ).toHaveLength(1)
   })
 
   test('describes all package targets', () => {
@@ -84,7 +112,8 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-core',
       '@santi020k/lumen-astro',
       '@santi020k/lumen-react',
-      '@santi020k/lumen-elements'
+      '@santi020k/lumen-elements',
+      '@santi020k/lumen-icons-brand'
     ])
   })
 })
@@ -100,6 +129,33 @@ describe('lumen icon helpers', () => {
     expect(renderLumenIconSvg('search')).toContain('lucide-search')
     expect(renderLumenIconSvg('wand-sparkles')).toContain('lucide-wand-sparkles')
     expect(renderLumenIconSvg('missing')).toBe('')
+  })
+
+  test('registers namespaced filled icon packs without changing Lucide names', () => {
+    registerLumenIconPack('test-brand', {
+      example: {
+        height: 24,
+        name: 'example',
+        node: [['path', { d: 'M2 2h20v20H2z' }]],
+        source: 'test-brand',
+        style: 'fill',
+        width: 24
+      }
+    })
+
+    expect(lumenIconNames).not.toContain('test-brand:example')
+    expect(getRegisteredLumenIconNames()).toContain('test-brand:example')
+    expect(getLumenIconPack('TestBrand')?.example).toBeDefined()
+    expect(resolveLumenIconName('test-brand:Example')).toBe('test-brand:example')
+    expect(getLumenIcon('test-brand:example')?.style).toBe('fill')
+    expect(renderLumenIconSvg('test-brand:example')).toContain('fill="currentColor"')
+    expect(renderLumenIconSvg('test-brand:example')).toContain('stroke="none"')
+    expect(resolveLumenIconName('search')).toBe('search')
+  })
+
+  test('rejects invalid icon-pack prefixes', () => {
+    expect(() => { registerLumenIconPack('', {}); }).toThrow('must be non-empty')
+    expect(() => { registerLumenIconPack('brand:social', {}); }).toThrow('cannot contain colons')
   })
 })
 
@@ -372,7 +428,7 @@ describe('lumen product helpers', () => {
     expect(parseThemeCss(css).accent).toBe('168 76% 36%')
     expect(parseThemeCss(css)['glass-refraction']).toBe('221 83% 53% / 0.08')
     expect(parseThemeCss(css)['ui-radius-sm']).toBe('0.375rem')
-    expect(parseThemeCss(css)['ui-font']).toContain('Inter')
+    expect(parseThemeCss(css)['ui-font']).toContain('Montserrat')
     expect(parseThemeCss(css)['ui-ease-emphasized']).toBe('cubic-bezier(0.22, 1, 0.36, 1)')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
@@ -530,6 +586,7 @@ describe('lumen theme tokens', () => {
     expect(lumenStructureTokenNames).toContain('ui-shadow-md')
     expect(lumenStructureTokenNames).toContain('ui-ease')
     expect(lumenTokenNames).toContain('ui-font')
+    expect(lumenFont).toBe('"Montserrat", "Avenir Next", "Segoe UI", sans-serif')
     expect(lumenRadius.base).toBe('0.625rem')
     expect(lumenMotion.ease).toContain('cubic-bezier')
   })

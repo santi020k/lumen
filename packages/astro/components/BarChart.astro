@@ -1,0 +1,185 @@
+---
+import {
+  createLumenBarGeometry,
+  getLumenChartTicks,
+  hasLumenChartData,
+  type LumenBarChartLayout,
+  type LumenChartOrientation,
+  type LumenChartSeries,
+  resolveLumenChartTone,
+  scaleLumenChartValue
+} from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  caption?: string
+  class?: string | null
+  className?: string
+  description?: string
+  glass?: boolean | 'subtle' | 'strong'
+  heading?: string
+  layout?: LumenBarChartLayout
+  orientation?: LumenChartOrientation
+  series: readonly LumenChartSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+}
+
+const {
+  caption,
+  class: classProp = '',
+  className = '',
+  description,
+  glass = false,
+  heading,
+  layout = 'grouped',
+  orientation = 'vertical',
+  series,
+  showLegend = series.length > 1,
+  showTable = true,
+  ...rest
+} = Astro.props
+const geometry = createLumenBarGeometry(series, { layout, orientation })
+const hasData = hasLumenChartData(series)
+const ticks = getLumenChartTicks(geometry.domain)
+const categories = geometry.categories.map(category => category.label)
+const valueFor = (item: LumenChartSeries, category: number | string) =>
+  item.data.find(datum => datum.x === category)?.y ?? null
+const labelFor = (item: LumenChartSeries, category: number | string) =>
+  item.data.find(datum => datum.x === category)?.label
+const margin = orientation === 'horizontal'
+  ? { bottom: 24, left: 112, right: 20, top: 16 }
+  : { bottom: 52, left: 52, right: 16, top: 16 }
+---
+
+<Chart
+  class:list={['ui-bar-chart', classProp, className]}
+  {caption}
+  {description}
+  {glass}
+  {heading}
+  {...rest}
+>
+  {
+    showLegend && hasData && (
+      <ul class="ui-chart__legend" aria-label="Chart legend">
+        {series.map((item, index) => (
+          <li class={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`}>
+            <span aria-hidden="true" />
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot" hidden={!hasData}>
+    <svg
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+    >
+      <g class="ui-chart__grid">
+        {
+          ticks.map((tick) => {
+            const coordinate =
+              orientation === 'horizontal'
+                ? scaleLumenChartValue(
+                    tick,
+                    geometry.domain,
+                    margin.left,
+                    geometry.width - margin.right
+                  )
+                : scaleLumenChartValue(
+                    tick,
+                    geometry.domain,
+                    geometry.height - margin.bottom,
+                    margin.top
+                  )
+
+            return orientation === 'horizontal' ? (
+              <line
+                x1={coordinate}
+                x2={coordinate}
+                y1={margin.top}
+                y2={geometry.height - margin.bottom}
+              />
+            ) : (
+              <line
+                x1={margin.left}
+                x2={geometry.width - margin.right}
+                y1={coordinate}
+                y2={coordinate}
+              />
+            )
+          })
+        }
+      </g>
+      <g class="ui-chart__axis-labels">
+        {
+          geometry.categories.map((category) => (
+            <text
+              dominant-baseline={orientation === 'horizontal' ? 'middle' : undefined}
+              text-anchor={orientation === 'horizontal' ? 'end' : 'middle'}
+              x={category.x}
+              y={category.y}
+            >
+              {String(category.label)}
+            </text>
+          ))
+        }
+      </g>
+      <g class="ui-bar-chart__marks">
+        {
+          geometry.marks.map((mark) => (
+            <rect
+              class={`ui-chart-tone--${mark.tone}`}
+              height={mark.height}
+              rx="4"
+              width={mark.width}
+              x={mark.x}
+              y={mark.y}
+            >
+              <title>
+                {`${String(mark.category)} · ${mark.seriesLabel}: ${mark.value}`}
+              </title>
+            </rect>
+          ))
+        }
+      </g>
+    </svg>
+  </div>
+  {
+    showTable && hasData && (
+      <details class="ui-chart__data">
+        <summary>View chart data</summary>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                {series.map(item => <th scope="col">{item.label}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {categories.map(category => (
+                <tr>
+                  <th scope="row">{String(category)}</th>
+                  {series.map(item => (
+                    <td>
+                      {labelFor(item, category) ??
+                        String(valueFor(item, category) ?? 'Not available')}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    )
+  }
+</Chart>

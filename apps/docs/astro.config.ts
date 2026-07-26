@@ -10,6 +10,9 @@ export default defineConfig({
     service: passthroughImageService()
   },
   integrations: [mdx(), sitemap()],
+  ...(process.env.LUMEN_DOCS_OUT_DIR
+    ? { outDir: process.env.LUMEN_DOCS_OUT_DIR }
+    : {}),
   site: process.env.PUBLIC_SITE_URL ?? 'https://lumen.santi020k.com',
   vite: {
     resolve: {

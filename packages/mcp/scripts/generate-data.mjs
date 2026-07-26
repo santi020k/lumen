@@ -713,6 +713,7 @@ const main = async () => {
   const registry = await loadRegistry(p)
   const names = parseComponentNames(componentsSource)
   const ctxData = await buildContextData(files, registry, names)
+  const chart = parseTokenBlock(tokensSource, 'lumenChart')
   const colors = parseTokenBlock(tokensSource, 'lumenColors')
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
 
@@ -825,6 +826,7 @@ const buildComponentData = async (name, ctx) => {
   const docs = { aiUsage, readme }
 
   const tokens = {
+    chart,
     colors,
     glass,
     semantic: semanticTokens,

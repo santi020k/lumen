@@ -1,0 +1,227 @@
+---
+import {
+  alignLumenChartSeries,
+  createLumenLineGeometry,
+  getLumenChartCategories,
+  getLumenChartDomain,
+  getLumenChartTicks,
+  hasLumenChartData,
+  type LumenChartSeries,
+  resolveLumenChartTone,
+  scaleLumenChartValue
+} from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  area?: boolean
+  caption?: string
+  class?: string | null
+  className?: string
+  description?: string
+  glass?: boolean | 'subtle' | 'strong'
+  heading?: string
+  markers?: boolean
+  referenceValue?: number
+  series: readonly LumenChartSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+}
+
+const {
+  area = false,
+  caption,
+  class: classProp = '',
+  className = '',
+  description,
+  glass = false,
+  heading,
+  markers = true,
+  referenceValue,
+  series,
+  showLegend = series.length > 1,
+  showTable = true,
+  ...rest
+} = Astro.props
+const width = 640
+const height = 320
+const padding = 44
+const categories = getLumenChartCategories(series)
+const hasData = hasLumenChartData(series)
+const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+const domain = getLumenChartDomain([
+  ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
+  referenceValue ?? null
+], false)
+const geometries = alignedSeries.map(item =>
+  createLumenLineGeometry(item.data, {
+    domain,
+    height,
+    includeZero: false,
+    padding,
+    width
+  })
+)
+const ticks = getLumenChartTicks(domain)
+const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+const valueFor = (item: LumenChartSeries, category: number | string) =>
+  item.data.find(datum => datum.x === category)
+const referenceY =
+  referenceValue === undefined
+    ? undefined
+    : scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+---
+
+<Chart
+  class:list={['ui-line-chart', classProp, className]}
+  {caption}
+  {description}
+  {glass}
+  {heading}
+  {...rest}
+>
+  {
+    showLegend && hasData && (
+      <ul class="ui-chart__legend" aria-label="Chart legend">
+        {series.map((item, index) => (
+          <li class={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`}>
+            <span aria-hidden="true" />
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot" hidden={!hasData}>
+    <svg
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <g class="ui-chart__grid">
+        {
+          ticks.map((tick) => {
+            const y = scaleLumenChartValue(
+              tick,
+              domain,
+              height - padding,
+              padding
+            )
+
+            return (
+              <>
+                <line x1={padding} x2={width - padding} y1={y} y2={y} />
+                <text x={padding - 8} y={y}>
+                  {Number(tick.toPrecision(4))}
+                </text>
+              </>
+            )
+          })
+        }
+      </g>
+      <g class="ui-chart__axis-labels">
+        {
+          categories.map((category, index) => {
+            if (
+              index % labelStep !== 0 &&
+              index !== categories.length - 1
+            )
+              return null
+
+            const denominator = Math.max(1, categories.length - 1)
+            const x =
+              padding + (index / denominator) * (width - padding * 2)
+
+            return (
+              <text text-anchor="middle" x={x} y={height - 14}>
+                {String(category)}
+              </text>
+            )
+          })
+        }
+      </g>
+      {
+        referenceY !== undefined && (
+          <line
+            class="ui-chart__reference"
+            x1={padding}
+            x2={width - padding}
+            y1={referenceY}
+            y2={referenceY}
+          />
+        )
+      }
+      {
+        geometries.map((geometry, index) => {
+          const item = series[index]
+
+          if (!item) return null
+
+          const tone = resolveLumenChartTone(item.tone, index)
+
+          return (
+            <g class={`ui-line-chart__series ui-chart-tone--${tone}`}>
+              {area &&
+                geometry.areaPaths.map(path => (
+                  <path class="ui-line-chart__area" d={path} />
+                ))}
+              <path class="ui-line-chart__line" d={geometry.path} />
+              {markers &&
+                geometry.points.map(point => (
+                  <circle
+                    class="ui-line-chart__point"
+                    cx={point.xCoordinate}
+                    cy={point.yCoordinate}
+                    r="3"
+                  >
+                    <title>
+                      {`${point.label ?? String(point.x)} · ${item.label}: ${point.y}`}
+                    </title>
+                  </circle>
+                ))}
+            </g>
+          )
+        })
+      }
+    </svg>
+  </div>
+  {
+    showTable && hasData && (
+      <details class="ui-chart__data">
+        <summary>View chart data</summary>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                {series.map(item => <th scope="col">{item.label}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {categories.map(category => (
+                <tr>
+                  <th scope="row">{String(category)}</th>
+                  {series.map(item => {
+                    const datum = valueFor(item, category)
+
+                    return (
+                      <td>
+                        {datum?.label ??
+                          (datum?.y === null || datum === undefined
+                            ? 'Not available'
+                            : String(datum.y))}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    )
+  }
+</Chart>

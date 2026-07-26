@@ -204,7 +204,7 @@ const lumenRadiusTokens: Pick<LumenThemeTokens, LumenRadiusTokenName> = {
 }
 
 const lumenTypographyTokens: Pick<LumenThemeTokens, LumenTypographyTokenName> = {
-  'ui-font': 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+  'ui-font': '"Montserrat", "Avenir Next", "Segoe UI", sans-serif'
 }
 
 const lumenMotionTokens: Pick<LumenThemeTokens, LumenMotionTokenName> = {

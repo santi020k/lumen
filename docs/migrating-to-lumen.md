@@ -121,7 +121,7 @@ consistent with component surfaces:
   --success: 142 71% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
-  --ui-font: Montserrat, ui-sans-serif, system-ui, sans-serif;
+  --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
 }
 ```
 

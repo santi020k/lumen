@@ -20,7 +20,7 @@ jobs:
     if: >-
       ${{
         !contains(github.event.pull_request.labels.*.name, 'skip-changelog') &&
-        !startsWith(github.event.pull_request.title, 'chore(release): version packages')
+        !startsWith(github.head_ref, 'changeset-release/')
       }}
     steps:
       - name: Check out repository

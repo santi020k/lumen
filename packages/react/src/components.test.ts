@@ -1,19 +1,24 @@
+import { registerLumenIconPack } from '@santi020k/lumen-core'
+
 import type {
   ComponentPropsWithoutRef,
   ReactElement
 } from 'react'
+import { isValidElement } from 'react'
 import { describe, expect, test } from 'vitest'
 
 import {
   Accordion,
   Agenda,
   Alert,
+  Anchor,
   AnimatedLogo,
   AspectRatio,
   Attachment,
   Autocomplete,
   Avatar,
   Badge,
+  BarChart,
   Breadcrumb,
   Bubble,
   ButtonGroup,
@@ -35,6 +40,7 @@ import {
   Item,
   Kbd,
   Label,
+  LineChart,
   Link,
   Marker,
   Message,
@@ -54,6 +60,7 @@ import {
   Skeleton,
   Slider,
   Sonner,
+  Sparkline,
   Spinner,
   Switch,
   TagGroup,
@@ -220,6 +227,26 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(labelled).className).toBe('ui-icon ui-icon--sm')
   })
 
+  test('renders registered filled icon packs through the shared Icon API', () => {
+    registerLumenIconPack('brand-test', {
+      mark: {
+        height: 24,
+        name: 'mark',
+        node: [['path', { d: 'M2 2h20v20H2z' }]],
+        source: 'brand-test',
+        style: 'fill',
+        width: 24
+      }
+    })
+
+    const icon = Icon({ name: 'brand-test:mark' }) as ReactElement
+    const svg = propsOf(icon).children as ReactElement
+
+    expect(propsOf(svg).className).toBe('ui-icon__svg brand-test-mark')
+    expect(propsOf(svg).fill).toBe('currentColor')
+    expect(propsOf(svg).stroke).toBe('none')
+  })
+
   test('resolves surface data attributes on glass-aware surfaces', () => {
     expect(propsOf(HoverCard({}) as ReactElement)['data-surface']).toBe('default')
     expect(propsOf(HoverCard({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
@@ -344,7 +371,18 @@ describe('@santi020k/lumen-react components', () => {
       newTab: true,
       rel: 'external'
     }) as ReactElement
-    const linkedPill = Pill({ children: 'Topic', href: '/topics/lumen' }) as ReactElement
+    const linkedPill = Pill({
+      children: 'Topic',
+      count: 4,
+      href: '/topics/lumen',
+      variant: 'brand'
+    }) as ReactElement
+    const anchor = Anchor({
+      items: [{ depth: 3, href: '#usage', label: 'Usage' }]
+    }) as ReactElement
+    const anchorChildren = propsOf(anchor).children as [ReactElement, unknown]
+    const anchorItems = propsOf(anchorChildren[0]).children as ReactElement[]
+    const anchorLink = propsOf(anchorItems[0]).children as ReactElement
 
     expect(newTabLink.type).toBe('a')
     expect(propsOf(newTabLink).target).toBe('_blank')
@@ -352,6 +390,9 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Link({ variant: 'inherit' }) as ReactElement).className).toBe('ui-link ui-link--inherit')
     expect(linkedPill.type).toBe('a')
     expect(propsOf(linkedPill).href).toBe('/topics/lumen')
+    expect(propsOf(linkedPill).className).toBe('ui-pill ui-pill--brand')
+    expect(propsOf(linkedPill)['data-variant']).toBe('brand')
+    expect(propsOf(anchorLink)['data-depth']).toBe(3)
     expect(propsOf(NavigationMenu({ variant: 'unstyled' }) as ReactElement).className)
       .toBe('ui-navigation-menu ui-navigation-menu--unstyled')
     expect(propsOf(Sidebar({ variant: 'unstyled' }) as ReactElement).className)
@@ -365,6 +406,67 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Chart({}) as ReactElement).className).toBe('ui-chart')
     expect(propsOf(Sheet({}) as ReactElement)['data-ui-sheet']).toBe(true)
     expect(propsOf(Sheet({}) as ReactElement)['data-surface']).toBe('default')
+  })
+
+  test('renders data chart primitives from shared series contracts', () => {
+    const series = [{
+      data: [
+        { x: 'Mon', y: 4 },
+        { x: 'Tue', y: 8 }
+      ],
+      id: 'downloads',
+      label: 'Downloads'
+    }]
+    const bars = BarChart({
+      heading: 'Package downloads',
+      orientation: 'horizontal',
+      series
+    }) as ReactElement
+    const line = LineChart({
+      area: true,
+      referenceValue: 6,
+      series
+    }) as ReactElement
+    const sparkline = Sparkline({
+      area: true,
+      label: 'Downloads increased from 4 to 8',
+      values: [4, 8]
+    }) as ReactElement
+
+    expect(bars.type).toBe(Chart)
+    expect(propsOf(bars).className).toBe('ui-bar-chart')
+    expect(propsOf(bars).heading).toBe('Package downloads')
+    expect(line.type).toBe(Chart)
+    expect(propsOf(line).className).toBe('ui-line-chart')
+    expect(sparkline.type).toBe('span')
+    expect(propsOf(sparkline).role).toBe('img')
+    expect(propsOf(sparkline)['aria-label']).toBe('Downloads increased from 4 to 8')
+    expect(propsOf(sparkline).className).toBe('ui-sparkline ui-chart-tone--series-1')
+  })
+
+  test('renders the empty state when chart series contain no usable data', () => {
+    const series = [{
+      data: [],
+      id: 'downloads',
+      label: 'Downloads'
+    }]
+
+    for (const chart of [BarChart({ series }), LineChart({ series })]) {
+      const children = propsOf(chart as ReactElement).children
+      const elements = (Array.isArray(children) ? children : [children])
+        .filter(isValidElement)
+      const plot = elements.find(child =>
+        propsOf(child).className === 'ui-chart__plot'
+      )
+
+      expect(elements.some(child =>
+        propsOf(child).className === 'ui-chart__empty'
+      )).toBe(true)
+      expect(propsOf(plot).hidden).toBe(true)
+      expect(elements.some(child =>
+        propsOf(child).className === 'ui-chart__data'
+      )).toBe(false)
+    }
   })
 
   test('sets text direction default', () => {

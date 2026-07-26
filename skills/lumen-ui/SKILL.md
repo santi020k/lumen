@@ -45,6 +45,8 @@ Treat Astro as the reference surface, while following the user's existing stack.
 - Mount `UIPrimitives` once in an Astro root layout when interactive primitives are present.
 - Use React behavior hooks for behavior-heavy React primitives; do not mount the Astro runtime.
 - Register Lumen custom elements once before using `lumen-*` elements.
+- Use `CodeTabs` for related commands, languages, or configuration examples instead of building a
+  parallel tab controller.
 - Use accessible names, native semantics, visible focus, keyboard paths, and meaningful empty,
   loading, error, success, disabled, and destructive states.
 - Use Lucide names through Lumen's `Icon`; do not substitute emoji for interface icons.

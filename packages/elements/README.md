@@ -16,6 +16,10 @@ Load the shared stylesheet once from your app entry or global CSS.
 @import "@santi020k/lumen-elements/styles.css";
 ```
 
+The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
+It declares the family stack but does not bundle or load font files. Load Montserrat once through
+your preferred delivery path, or override `--ui-font` in application CSS.
+
 ## Usage
 
 Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
@@ -43,6 +47,43 @@ Use `lumen-icon` for Lucide icons by name across framework adapters.
 </lumen-button>
 <lumen-icon name="search" label="Search"></lumen-icon>
 ```
+
+Use `lumen-scroll-progress` on long reading surfaces. Registration supplies its scroll behavior,
+accessible value, and top or bottom positioning.
+
+```html
+<lumen-scroll-progress
+  aria-label="Article reading progress"
+  position="top"
+></lumen-scroll-progress>
+```
+
+## Statistics
+
+Use `variant="default"` for the original neutral surface, `variant="accent"` for a featured metric,
+or `variant="glass"` for selective translucency.
+
+```html
+<lumen-stat label="Active workspaces" value="1,234" variant="accent">
+  <p>Across all production organizations.</p>
+</lumen-stat>
+```
+
+## Data visualization
+
+Set serializable `series` data through the JavaScript property for application data. The JSON
+attribute form is useful for static HTML and server output.
+
+```html
+<lumen-line-chart
+  aria-label="Views by day"
+  heading="Website traffic"
+  series='[{"id":"views","label":"Views","data":[{"x":"Mon","y":42},{"x":"Tue","y":68}]}]'
+></lumen-line-chart>
+```
+
+`lumen-sparkline` also accepts comma-separated or JSON `values`. Bar and line charts include a
+revealable semantic table unless `show-table="false"` is set.
 
 ## Optimized images
 
@@ -90,7 +131,7 @@ Astro runtime's data event, validation, calendar grids, OTP segmentation, date r
 text command, context menu, schedule drag/drop, resizable pane sizing, theme export, ARIA,
 keyboard, Escape, dismissal, and toast controller semantics while keeping markup declarative and
 Declarative-Shadow-DOM friendly.
-FileUpload, Tour, Anchor, Transfer, Mentions, Cascader, and TreeSelect also run directly through
+FileUpload, Tour, Anchor, ScrollProgress, Transfer, Mentions, Cascader, and TreeSelect also run directly through
 their registered custom elements; no Astro runtime or host controller is required.
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common

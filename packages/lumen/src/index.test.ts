@@ -65,6 +65,7 @@ describe('@santi020k/lumen umbrella package', () => {
       'data-collections',
       'theme-builder',
       'rich-text-editor',
+      'data-visualization',
       'ai-docs',
       'figma-design-to-code'
     ])

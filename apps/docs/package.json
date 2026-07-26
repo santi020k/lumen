@@ -23,6 +23,7 @@
     "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-astro": "workspace:^",
     "@santi020k/lumen-core": "workspace:^",
+    "@santi020k/lumen-icons-brand": "workspace:^",
     "@santi020k/theme": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "astro": "catalog:",

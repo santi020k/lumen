@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -14,8 +12,41 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  classify:
+    name: Classify pull request
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      playwright: ${{ steps.paths.outputs.playwright }}
+      release-pr: ${{ steps.release.outputs.value }}
+    steps:
+      - name: Detect release pull request
+        id: release
+        env:
+          IS_RELEASE_PR: "${{ startsWith(github.head_ref, 'changeset-release/') }}"
+        run: echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Detect Playwright-related changes
+        id: paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          if grep -Eq '^(apps/docs/|packages/|tests/a11y/|tests/visual/|playwright(\.[^/]*)?\.config\.ts$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+            echo "playwright=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "playwright=false" >> "$GITHUB_OUTPUT"
+          fi
+
   browser-contracts:
     name: Browser interaction contracts
+    needs: classify
+    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -41,6 +72,8 @@ jobs:
 
   visual-regression:
     name: Visual regression
+    needs: classify
+    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
     runs-on: macos-14
     timeout-minutes: 20
     steps:
@@ -66,6 +99,8 @@ jobs:
 
   mcp-node-20:
     name: MCP compatibility (Node 20)
+    needs: classify
+    if: needs.classify.outputs.release-pr != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -88,11 +123,12 @@ jobs:
 
   build:
     name: Build and validate
+    needs: classify
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       matrix:
-        node-version: [22.x, 24.x]
+        node-version: '${{ fromJSON(needs.classify.outputs.release-pr == ''true'' && ''["22.x"]'' || ''["22.x","24.x"]'') }}'
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
@@ -121,29 +157,34 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run CI checks
+        if: needs.classify.outputs.release-pr != 'true'
         run: pnpm exec turbo run build typecheck lint test
 
       - name: Assert the generated MCP snapshot is committed
-        if: matrix.node-version == '22.x'
+        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
         run: git diff --exit-code -- packages/mcp/data/lumen-data.json
 
       - name: Run MCP quality evaluations
-        if: matrix.node-version == '22.x'
+        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
         run: pnpm run check:mcp-evaluation
 
       - name: Install Playwright Chromium
-        if: matrix.node-version == '22.x'
+        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run accessibility checks
-        if: matrix.node-version == '22.x'
+        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
         run: pnpm run test:a11y
 
       - name: Repository checks
-        if: matrix.node-version == '22.x'
+        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
         run: |
           pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
           pnpm run check:bundle-size
           pnpm run check:framework-contracts
           pnpm run check:publish-dry-run
           pnpm run check:consumer-packages
+
+      - name: Validate release packages
+        if: needs.classify.outputs.release-pr == 'true'
+        run: pnpm run build && pnpm run check:publish-dry-run

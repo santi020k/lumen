@@ -73,12 +73,39 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships the pill shell and count affix styles', async () => {
-    const css = await readFile(sharedStylesUrl, 'utf8')
+    const [component, css] = await Promise.all([
+      readFile(new URL('./components/Pill.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
 
+    expect(component).toContain("variant?: 'brand' | 'neutral' | 'outline'")
+    expect(component).toContain("variant = 'neutral'")
+    expect(component).toContain('data-variant={variant}')
     expect(css).toMatch(/\.ui-pill\s*\{/)
+    expect(css).toContain('.ui-pill--brand')
+    expect(css).toContain('.ui-pill--outline')
     expect(css).toMatch(/\.ui-pill__count\s*\{/)
     expect(css).toContain('border-left: 1px solid hsl(var(--line))')
     expect(css).toContain('color: hsl(var(--ink-muted))')
+  })
+
+  test('ships hierarchical anchors and document scroll progress', async () => {
+    const [anchor, scrollProgress, runtime, css] = await Promise.all([
+      readFile(new URL('./components/Anchor.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ScrollProgress.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(anchor).toContain('depth?: AnchorDepth')
+    expect(anchor).toContain('data-depth={item.depth}')
+    expect(scrollProgress).toContain('data-ui-scroll-progress')
+    expect(scrollProgress).toContain('role="progressbar"')
+    expect(runtime).toContain('initScrollProgress(scope)')
+    expect(runtime).toContain("root.setAttribute('aria-valuenow'")
+    expect(css).toContain('.ui-scroll-progress')
+    expect(css).toContain('.ui-scroll-progress--bottom')
+    expect(css).toContain('.ui-anchor a[data-depth="3"]')
   })
 
   test('aligns image and fallback avatars consistently in inline groups', async () => {
@@ -101,6 +128,24 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(css).toContain('.ui-input-group > :where(span, strong):not(.ui-icon)')
     expect(css).toMatch(/\.ui-input-group > \.ui-icon\s*\{[^}]*margin-inline-start: 0\.75rem;/s)
+  })
+
+  test('supports semantic roots and visual variants for Stat', async () => {
+    const stat = await readFile(new URL('./components/Stat.astro', packageRoot), 'utf8')
+    const css = await readFile(sharedStylesUrl, 'utf8')
+
+    expect(stat).toContain("as?: 'article' | 'div' | 'section'")
+    expect(stat).toContain("variant?: 'accent' | 'default' | 'glass'")
+    expect(stat).toContain("as: Tag = 'div'")
+    expect(stat).toContain("variant = 'default'")
+    expect(stat).toContain('<Tag')
+    expect(stat).toContain('data-variant={variant}')
+    expect(stat).toContain('</Tag>')
+    expect(css).toContain('.ui-stat--accent')
+    expect(css).toContain('.ui-stat--glass')
+    expect(css).not.toContain('.ui-stat--accent::before')
+    expect(css).not.toContain('.ui-stat--accent::after')
+    expect(css).not.toContain('-webkit-text-fill-color')
   })
 
   test('styles native meter tracks and values with shared color tokens', async () => {
@@ -178,6 +223,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     expect(component).toContain('encodeURIComponent(watermarkSvg)')
+    expect(component).toContain('font-family="Montserrat, Avenir Next, Segoe UI, sans-serif"')
     expect(component).toContain('--ui-watermark-image')
     expect(styles).toContain('mask-image: var(--ui-watermark-image)')
     expect(styles).toContain('mask-repeat: repeat')
@@ -279,6 +325,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(languageToggle).not.toContain('<lumen-language-toggle')
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')
+    expect(particles).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')")
+    expect(particles).toContain("particle.className = 'ui-particles__particle'")
+    expect(particles).toContain("document.addEventListener('astro:after-swap'")
     expect(scrollReveal).toContain('<div')
     expect(scrollReveal).not.toContain('<lumen-scroll-reveal')
     const motionController = await readFile(new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8')
@@ -291,6 +340,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(motionController).toContain('const initBackToTopButtons = (scope: ParentNode): void =>')
     expect(motionController).toContain('const initScrollReveals = (scope: ParentNode): void =>')
     expect(styles).toContain('.ui-particles')
+    expect(styles).toContain('.ui-particles__particle')
+    expect(styles).toContain('@keyframes ui-particle-drift')
     expect(styles).toContain('.ui-scroll-reveal.is-revealed')
     expect(styles).toContain('.ui-sr-only')
     expect(styles).toContain('[data-theme$="-dark"]')
@@ -539,6 +590,35 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-sonner[data-placement^="top"]')
     expect(styles).toContain('.ui-sonner[data-placement$="center"]')
     expect(styles).toContain('.ui-toast__action')
+  })
+
+  test('ships accessible, tokenized chart primitives with shared data fallbacks', async () => {
+    const [barChart, chart, lineChart, sparkline, styles] = await Promise.all([
+      readFile(new URL('./components/BarChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Chart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/LineChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Sparkline.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(chart).toContain('heading?: string')
+    expect(chart).toContain('ui-chart__heading')
+    expect(barChart).toContain('createLumenBarGeometry')
+    expect(barChart).toContain('View chart data')
+    expect(barChart).toContain("layout = 'grouped'")
+    expect(lineChart).toContain('createLumenLineGeometry')
+    expect(lineChart).toContain('hasLumenChartData')
+    expect(lineChart).toContain('referenceValue?: number')
+    expect(lineChart).toContain('Not available')
+    expect(sparkline).toContain('label: string')
+    expect(sparkline).toContain('role="img"')
+    expect(styles).toContain('--chart-series-8')
+    expect(styles).toContain('--chart-series-7: 52 92% 45%;')
+    expect(styles).toContain('.ui-chart__legend')
+    expect(styles).toContain('.ui-chart__data')
+    expect(styles).toContain('.ui-line-chart__line')
+    expect(styles).toContain('.ui-bar-chart__marks')
+    expect(styles).toContain('.ui-sparkline__line')
   })
 
   test('ships ThemeBuilder as a scoped token playground runtime', async () => {
