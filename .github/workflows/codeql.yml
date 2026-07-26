@@ -22,7 +22,7 @@ jobs:
     if: >-
       ${{
         github.event_name != 'pull_request' ||
-        !startsWith(github.event.pull_request.title, 'chore(release): version packages')
+        !startsWith(github.head_ref, 'changeset-release/')
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 30

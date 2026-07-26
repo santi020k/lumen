@@ -1,0 +1,60 @@
+---
+interface Props {
+  icons: string[]
+}
+
+const { icons } = Astro.props
+---
+
+<div data-icon-hero-grid aria-hidden="true">
+  {icons.map(icon => (
+    <span data-icon-hero-tile>
+      <span class="ui-icon ui-icon--xl" set:html={icon} />
+    </span>
+  ))}
+</div>
+
+<style is:global>
+  [data-icon-hero-grid] {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / 0.62);
+    box-shadow:
+      0 1rem 2.5rem hsl(var(--ink) / 0.06),
+      inset 0 1px 0 hsl(0 0% 100% / 0.18);
+    backdrop-filter: blur(14px);
+  }
+
+  [data-icon-hero-tile] {
+    display: grid;
+    min-height: 3.35rem;
+    place-items: center;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.75rem;
+    background: hsl(var(--surface) / 0.8);
+    color: hsl(var(--brand));
+    box-shadow:
+      0 0.2rem 0.7rem hsl(var(--ink) / 0.05),
+      inset 0 1px 0 hsl(0 0% 100% / 0.2);
+  }
+
+  [data-icon-hero-tile]:nth-child(2n) {
+    color: hsl(var(--ink-soft));
+  }
+
+  [data-icon-hero-tile]:nth-child(5) {
+    border-color: hsl(var(--brand) / 0.45);
+    background: linear-gradient(145deg, hsl(var(--brand)), hsl(var(--brand-solid)));
+    color: hsl(var(--canvas));
+    box-shadow: 0 0.55rem 1.2rem hsl(var(--brand) / 0.22);
+    transform: scale(1.04);
+  }
+
+  [data-icon-hero-tile] .ui-icon {
+    --ui-icon-size: 1.6rem;
+  }
+</style>

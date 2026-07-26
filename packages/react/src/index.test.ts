@@ -343,8 +343,11 @@ describe('@santi020k/lumen-react', () => {
 
     expect(style['--ui-watermark-gap']).toBe('144px')
     expect(style['--ui-watermark-image']).toContain('data:image/svg+xml')
-    expect(decodeURIComponent(style['--ui-watermark-image'] ?? '')).toContain('Draft &amp; review')
-    expect(decodeURIComponent(style['--ui-watermark-image'] ?? '')).toContain('rotate(-30 72 72)')
+    const watermarkImage = decodeURIComponent(style['--ui-watermark-image'] ?? '')
+
+    expect(watermarkImage).toContain('Draft &amp; review')
+    expect(watermarkImage).toContain('rotate(-30 72 72)')
+    expect(watermarkImage).toContain('font-family="Montserrat, Avenir Next, Segoe UI, sans-serif"')
   })
 
   test('defaults inputs to text fields', () => {

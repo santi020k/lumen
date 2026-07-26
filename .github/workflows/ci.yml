@@ -23,7 +23,7 @@ jobs:
       - name: Detect release pull request
         id: release
         env:
-          IS_RELEASE_PR: "${{ startsWith(github.event.pull_request.title, 'chore(release): version packages') }}"
+          IS_RELEASE_PR: "${{ startsWith(github.head_ref, 'changeset-release/') }}"
         run: echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v6

@@ -1,0 +1,290 @@
+---
+import { Button, Input, Label } from '@santi020k/lumen-astro'
+
+interface IconEntry {
+  name: string
+  svg: string
+  terms: string
+}
+
+interface Props {
+  description: string
+  emptyMessage?: string
+  entries: IconEntry[]
+  eyebrow?: string
+  id: string
+  searchLabel: string
+  title: string
+}
+
+const {
+  description,
+  emptyMessage = 'No icons match your search.',
+  entries,
+  eyebrow = 'Complete set',
+  id,
+  searchLabel,
+  title
+} = Astro.props
+
+const searchId = `${id}-search`
+---
+
+<section
+  data-icon-catalog
+  id={id}
+  aria-labelledby={`${id}-title`}
+>
+  <div data-icon-catalog-heading>
+    <div>
+      <p>{eyebrow}</p>
+      <h2 id={`${id}-title`}>{title}</h2>
+    </div>
+    <p>{description}</p>
+  </div>
+
+  <div data-icon-catalog-search>
+    <Label for={searchId}>{searchLabel}</Label>
+    <Input
+      autocomplete="off"
+      data-icon-search
+      id={searchId}
+      placeholder={`Search ${entries.length} icons by name...`}
+      spellcheck="false"
+      type="search"
+    />
+    <p data-icon-status>
+      Showing <span data-icon-visible-count>{entries.length}</span> of {entries.length} icons
+    </p>
+  </div>
+
+  <p data-icon-empty hidden>
+    {emptyMessage}
+  </p>
+
+  <div data-icon-grid>
+    {entries.map(entry => (
+      <Button
+        data-icon-name={entry.name}
+        data-icon-terms={entry.terms}
+        variant="ghost"
+        title={`Copy "${entry.name}"`}
+      >
+        <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
+        <span>{entry.name}</span>
+      </Button>
+    ))}
+  </div>
+</section>
+
+<script>
+  const filterIconCells = (
+    cells: HTMLButtonElement[],
+    empty: HTMLElement | null,
+    visibleCount: HTMLElement | null,
+    raw: string
+  ) => {
+    const query = raw.trim().toLowerCase()
+    let visible = 0
+
+    for (const cell of cells) {
+      const terms = cell.dataset.iconTerms ?? ''
+      const match = query === '' || terms.includes(query)
+
+      cell.hidden = !match
+
+      if (match) visible += 1
+    }
+
+    if (visibleCount) visibleCount.textContent = String(visible)
+
+    if (empty) empty.hidden = visible !== 0
+  }
+
+  const flashCopiedIcon = (cell: HTMLButtonElement) => {
+    const label = cell.querySelector('span:last-child')
+
+    if (!label) return
+
+    const original = label.textContent
+
+    label.textContent = 'Copied!'
+
+    window.setTimeout(() => {
+      label.textContent = original
+    }, 1000)
+  }
+
+  const setupIconCatalogs = () => {
+    const catalogs = document.querySelectorAll<HTMLElement>('[data-icon-catalog]')
+
+    for (const catalog of catalogs) {
+      if (catalog.dataset.iconCatalogReady === 'true') continue
+
+      const grid = catalog.querySelector<HTMLElement>('[data-icon-grid]')
+      const search = catalog.querySelector<HTMLInputElement>('[data-icon-search]')
+      const empty = catalog.querySelector<HTMLElement>('[data-icon-empty]')
+      const visibleCount = catalog.querySelector<HTMLElement>('[data-icon-visible-count]')
+
+      if (!grid || !search) continue
+
+      catalog.dataset.iconCatalogReady = 'true'
+
+      const cells = [...grid.querySelectorAll<HTMLButtonElement>('[data-icon-name]')]
+
+      search.addEventListener('input', event => {
+        filterIconCells(cells, empty, visibleCount, (event.target as HTMLInputElement).value)
+      })
+
+      grid.addEventListener('click', async event => {
+        const cell = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-icon-name]')
+
+        if (!cell) return
+
+        try {
+          await navigator.clipboard.writeText(cell.dataset.iconName ?? '')
+
+          flashCopiedIcon(cell)
+        } catch {
+          // Clipboard access can be blocked; leave the catalog usable without copy feedback.
+        }
+      })
+    }
+  }
+
+  setupIconCatalogs()
+
+  document.addEventListener('astro:page-load', setupIconCatalogs)
+</script>
+
+<style is:global>
+  [data-icon-catalog] {
+    display: grid;
+    gap: 1.4rem;
+    scroll-margin-top: 6rem;
+  }
+
+  [data-icon-catalog-heading] {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  [data-icon-catalog-heading] > div > p {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  [data-icon-catalog-heading] h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  [data-icon-catalog-heading] > p {
+    max-width: 36rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  [data-icon-catalog-search] {
+    display: grid;
+    gap: 0.55rem;
+    max-width: 46rem;
+  }
+
+  [data-icon-catalog-search] label {
+    color: hsl(var(--ink));
+    font-size: 0.8rem;
+    font-weight: 850;
+  }
+
+  [data-icon-catalog-search] input {
+    height: 3.25rem;
+    border-radius: 0.9rem;
+    font-size: 1rem;
+  }
+
+  [data-icon-catalog-search] p {
+    color: hsl(var(--ink-muted));
+    font-size: 0.8rem;
+  }
+
+  [data-icon-empty] {
+    padding: 3rem 1rem;
+    border: 1px dashed hsl(var(--line));
+    border-radius: 1rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  [data-icon-grid] {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: 0.6rem;
+  }
+
+  [data-icon-grid] button {
+    display: flex;
+    aspect-ratio: 1;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.9rem;
+    background: hsl(var(--surface));
+    color: hsl(var(--ink-soft));
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  [data-icon-grid] button:hover {
+    border-color: hsl(var(--brand));
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    transform: translateY(-2px);
+  }
+
+  [data-icon-grid] button > span:last-child {
+    overflow: hidden;
+    width: 100%;
+    color: hsl(var(--ink-muted));
+    font-size: 0.63rem;
+    line-height: 1.2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 48rem) {
+    [data-icon-catalog-heading] {
+      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-icon-grid] button {
+      transition: none;
+    }
+
+    [data-icon-grid] button:hover {
+      transform: none;
+    }
+  }
+</style>

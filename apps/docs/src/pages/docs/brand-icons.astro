@@ -1,0 +1,203 @@
+---
+import { Link } from '@santi020k/lumen-astro'
+import { renderLumenIconSvg } from '@santi020k/lumen-core'
+import {
+  lumenBrandIconNames,
+  registerLumenBrandIcons
+} from '@santi020k/lumen-icons-brand'
+
+import CodeBlock from '../../components/CodeBlock.astro'
+import DocsActionLink from '../../components/DocsActionLink.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import IconCatalog from '../../components/IconCatalog.astro'
+import IconHeroGrid from '../../components/IconHeroGrid.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+registerLumenBrandIcons()
+
+const brandEntries = lumenBrandIconNames.map(name => {
+  const componentName = `brand:${name}`
+
+  return {
+    name: componentName,
+    svg: renderLumenIconSvg(componentName),
+    terms: `${name} ${componentName}`
+  }
+})
+
+const brandCount = brandEntries.length
+
+const featuredIcons = [
+  'github',
+  'apple',
+  'discord',
+  'figma',
+  'x',
+  'linkedin',
+  'youtube',
+  'whatsapp',
+  'medium'
+].map(name => renderLumenIconSvg(`brand:${name}`))
+
+const setupUsage = `import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
+
+registerLumenBrandIcons()
+
+// Use the same Icon component in Astro or React.
+<Icon name="brand:github" label="GitHub" />
+<Icon name="brand:figma" decorative />
+
+// The same registered name works in Elements.
+<lumen-icon name="brand:youtube" label="YouTube"></lumen-icon>`
+---
+
+<DocsLayout
+  description={`Browse ${brandCount} namespaced brand icons through the same accessible Lumen Icon API.`}
+  title="Brand icons - Lumen UI"
+>
+  <div class="icons-page">
+    <DocsPageHero
+      description="Recognizable company and product marks in an opt-in package, presented with the same sizing, color, accessibility, search, and copy experience as Lumen interface icons."
+      eyebrow="Brand icon library"
+      stats={[
+        { label: 'Icon names', value: brandCount },
+        { label: 'Package', value: 'Optional' },
+        { label: 'Component API', value: 1 }
+      ]}
+      title="The right mark, in the right system."
+    >
+      <Fragment slot="actions">
+        <DocsActionLink href="#brand-icon-catalog">Explore brand icons</DocsActionLink>
+        <DocsActionLink href="/docs/icons" variant="outline">Browse interface icons</DocsActionLink>
+      </Fragment>
+
+      <IconHeroGrid icons={featuredIcons} slot="visual" />
+    </DocsPageHero>
+
+    <p class="icons-attribution">
+      Brand paths from <Link
+        href="https://fontawesome.com/"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Font Awesome Free
+      </Link>.
+      Follow each trademark owner's usage guidelines.
+    </p>
+
+    <section class="icons-section" aria-labelledby="brand-setup-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>Opt in once</p>
+          <h2 id="brand-setup-title">One icon API, accurate silhouettes</h2>
+        </div>
+        <p>
+          Brand marks retain their recognizable filled geometry instead of being redrawn as Lucide
+          outlines. They still inherit Lumen sizing, alignment, current color, and accessible-label
+          behavior.
+        </p>
+      </div>
+
+      <CodeBlock code={setupUsage} lang="tsx" title="Register the optional package" />
+    </section>
+
+    <IconCatalog
+      description="Search the complete free brand catalog, then select a tile to copy its namespaced Lumen icon name."
+      emptyMessage="No brand icons match your search."
+      entries={brandEntries}
+      eyebrow="Optional catalog"
+      id="brand-icon-catalog"
+      searchLabel="Search the brand icon library"
+      title="Find a brand icon"
+    />
+
+    <section class="icons-section icons-section--brands" aria-labelledby="interface-icons-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>Need an action icon?</p>
+          <h2 id="interface-icons-title">Interface symbols have their own catalog</h2>
+        </div>
+        <p>
+          Browse the complete Lucide set for actions, navigation, status, controls, and other
+          product-interface needs.
+        </p>
+      </div>
+
+      <DocsActionLink href="/docs/icons">Explore interface icons</DocsActionLink>
+    </section>
+  </div>
+</DocsLayout>
+
+<style>
+  .icons-page {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  .icons-attribution {
+    margin-top: -2.5rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.78rem;
+    text-align: right;
+  }
+
+  .icons-section {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .icons-section__heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .icons-section__heading > div > p {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .icons-section__heading h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+  }
+
+  .icons-section__heading > p {
+    max-width: 36rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .icons-section--brands {
+    justify-items: start;
+    padding: 1.4rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.2rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .icons-section--brands .icons-section__heading {
+    width: 100%;
+  }
+
+  @media (min-width: 48rem) {
+    .icons-section__heading {
+      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
+      align-items: end;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .icons-attribution {
+      text-align: left;
+    }
+  }
+</style>

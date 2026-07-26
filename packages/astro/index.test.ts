@@ -223,6 +223,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     expect(component).toContain('encodeURIComponent(watermarkSvg)')
+    expect(component).toContain('font-family="Montserrat, Avenir Next, Segoe UI, sans-serif"')
     expect(component).toContain('--ui-watermark-image')
     expect(styles).toContain('mask-image: var(--ui-watermark-image)')
     expect(styles).toContain('mask-repeat: repeat')
