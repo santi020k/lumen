@@ -1,8 +1,8 @@
-export interface ChangelogEntry {
+interface ChangelogEntry {
   paragraphs: string[]
 }
 
-export interface ChangelogSection {
+interface ChangelogSection {
   entries: ChangelogEntry[]
   title: string
 }

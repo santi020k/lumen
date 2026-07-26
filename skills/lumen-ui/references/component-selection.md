@@ -12,12 +12,13 @@ component docs before implementation.
 | Search or suggestion input | `SearchField`, `Autocomplete`, `Combobox`, `Command` |
 | Boolean or mode choice | `Checkbox`, `Switch`, `Toggle`, `ToggleGroup`, `RadioGroup` |
 | Compact metadata or status | `Badge`, `Marker`, `Pill`, `TagGroup` |
-| Inline guidance or feedback | `Alert`, `Callout`, `Note`, `Progress`, `Spinner`, `Skeleton` |
+| Inline guidance or feedback | `Alert`, `Callout`, `Note`, `Progress`, `ScrollProgress`, `Spinner`, `Skeleton` |
 | Transient feedback | `Sonner`, `Toast` |
 | Blocking decision | `Dialog`, `AlertDialog` |
 | Supplemental side surface | `Drawer`, `Sheet` |
 | Anchored supplemental content | `Popover`, `HoverCard`, `Tooltip` |
 | Navigation | `Breadcrumb`, `NavigationMenu`, `Tabs`, `Pagination`, `Sidebar` |
+| Long-form local navigation | `Anchor`, optionally paired with `ScrollProgress` |
 | Related code or command variants | `CodeTabs` |
 | Structured content | `Card`, `Item`, `Table`, `DataTable`, `Descriptions` |
 | Hierarchical or large collections | `Tree`, `TreeGrid`, `VirtualList` |
@@ -54,8 +55,11 @@ result.
 
 ### Dashboard
 
-Start from the decisions the user needs to make. Use `Stat`, `Chart`, `Progress`, or `Table` only for
-real measures with labels, time ranges, and context. Avoid filling space with invented metrics.
+Start from the decisions the user needs to make. Use `Stat` for one value, `Sparkline` for a compact
+trend, `BarChart` for categorical comparison, `LineChart` for ordered trends, and `Chart` for a
+specialized custom plot. Keep numerical analysis in application code and preserve each chart's
+semantic table. Use `Progress` only for task completion and `Table` when exact records matter more
+than shape. Avoid filling space with invented metrics.
 
 ### Scheduling
 

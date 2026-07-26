@@ -3,7 +3,7 @@ import { Stat } from '@santi020k/lumen-astro'
 ---
 
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr));">
-  <Stat label="Active workspaces" value="1,234" />
-  <Stat label="Deploy success" value="99.8%" />
-  <Stat label="Median build" value="42s" />
+  <Stat as="article" label="Active workspaces" value="1,234" />
+  <Stat as="article" label="Deploy success" value="99.8%" variant="accent" />
+  <Stat as="article" label="Median build" value="42s" variant="glass" />
 </div>

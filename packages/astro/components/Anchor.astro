@@ -3,7 +3,13 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import type { HTMLAttributes } from 'astro/types'
 
-type AnchorLink = { href: string; label: string }
+type AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6
+
+type AnchorLink = {
+  depth?: AnchorDepth
+  href: string
+  label: string
+}
 
 export interface Props extends HTMLAttributes<'nav'> {
   class?: string | null
@@ -34,7 +40,13 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     <ol>
       {items.map((item, index) => (
         <li>
-          <a data-active={index === 0 ? 'true' : 'false'} href={item.href}>{item.label}</a>
+          <a
+            data-active={index === 0 ? 'true' : 'false'}
+            data-depth={item.depth}
+            href={item.href}
+          >
+            {item.label}
+          </a>
         </li>
       ))}
     </ol>

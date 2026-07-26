@@ -4112,6 +4112,47 @@
     }
   }
 
+  let scrollProgressFrame = 0
+
+  const updateScrollProgress = (): void => {
+    scrollProgressFrame = 0
+
+    const scrollingElement = document.scrollingElement ?? document.documentElement
+    const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
+
+    const percentage = maximum > 0
+      ? Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100))
+      : 0
+
+    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')) {
+      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+
+      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
+
+      if (bar) bar.style.transform = `scaleX(${percentage / 100})`
+    }
+  }
+
+  const requestScrollProgressUpdate = (): void => {
+    if (scrollProgressFrame) return
+
+    scrollProgressFrame = requestAnimationFrame(updateScrollProgress)
+  }
+
+  const initScrollProgress = (scope: ParentNode): void => {
+    if (!scope.querySelector('[data-ui-scroll-progress]')) return
+
+    requestScrollProgressUpdate()
+
+    if (document.documentElement.dataset.uiScrollProgressBound === 'true') return
+
+    document.documentElement.dataset.uiScrollProgressBound = 'true'
+
+    window.addEventListener('resize', requestScrollProgressUpdate, { passive: true })
+
+    window.addEventListener('scroll', requestScrollProgressUpdate, { passive: true })
+  }
+
   const initTours = (scope: ParentNode): void => {
     for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tour]')) {
       if (root.dataset.uiBound === 'true') continue
@@ -4653,6 +4694,8 @@
     initFileUploads(scope)
 
     initAnchors(scope)
+
+    initScrollProgress(scope)
 
     initTours(scope)
 

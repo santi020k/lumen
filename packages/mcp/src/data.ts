@@ -74,6 +74,7 @@ export interface LumenData {
   recipes: LumenRecipeSnapshot[]
   rules: string
   tokens: {
+    chart: Record<string, string>
     colors: Record<string, string>
     glass: Record<string, string>
     semantic: string[]

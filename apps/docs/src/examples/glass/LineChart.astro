@@ -1,0 +1,27 @@
+---
+import { LineChart } from '@santi020k/lumen-astro'
+
+const series = [
+  {
+    data: [
+      { x: 'Mon', y: 94 },
+      { x: 'Tue', y: 96 },
+      { x: 'Wed', y: 95 },
+      { x: 'Thu', y: 98 }
+    ],
+    id: 'coverage',
+    label: 'Coverage'
+  }
+]
+---
+
+<div class="docs-glass-demo">
+  <LineChart
+    aria-label="Test coverage"
+    area
+    glass
+    heading="Coverage"
+    referenceValue={95}
+    {series}
+  />
+</div>

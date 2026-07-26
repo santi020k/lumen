@@ -252,6 +252,7 @@ export const glassComponentNames = [
   'AlertDialog',
   'Agenda',
   'Attachment',
+  'BarChart',
   'Bubble',
   'Calendar',
   'Card',
@@ -268,6 +269,7 @@ export const glassComponentNames = [
   'Field',
   'HoverCard',
   'Item',
+  'LineChart',
   'Menubar',
   'MessageScroller',
   'NavigationMenu',
@@ -444,12 +446,17 @@ export const componentCollections: ComponentCollection[] = [
   {
     title: 'Status and messaging',
     description: 'Separate persistent guidance, inline status, empty states, and transient notifications.',
-    names: ['Alert', 'Callout', 'Note', 'Empty', 'Message', 'Toast']
+    names: ['Alert', 'Callout', 'Note', 'Empty', 'Message', 'ScrollProgress', 'Toast']
   },
   {
     title: 'Structured data',
     description: 'Choose the lightest structure that supports the required hierarchy and interaction.',
     names: ['Descriptions', 'Table', 'DataTable', 'Tree', 'TreeGrid', 'VirtualList']
+  },
+  {
+    title: 'Data visualization',
+    description: 'Match compact metrics, custom plots, categorical comparisons, and ordered trends to the question.',
+    names: ['Stat', 'Meter', 'Sparkline', 'Chart', 'BarChart', 'LineChart']
   },
   {
     title: 'Disclosure and navigation',
@@ -888,6 +895,14 @@ const apiReferenceByComponent = {
   Badge: [
     apiRow('variant', '"default" | "secondary" | "outline" | "destructive" | "success" | "warning"', '"default"', 'Controls the badge tone.')
   ],
+  BarChart: [
+    apiRow('series', 'LumenChartSeries[]', 'required', 'Provides already-aggregated categorical values and stable series metadata.'),
+    apiRow('orientation', '"horizontal" | "vertical"', '"vertical"', 'Controls whether values extend across the x or y axis.'),
+    apiRow('layout', '"grouped" | "stacked"', '"grouped"', 'Places series beside one another or combines their positive and negative totals.'),
+    apiRow('showLegend', 'boolean', 'true for multiple series', 'Shows the color-independent series key.'),
+    apiRow('showTable', 'boolean', 'true', 'Provides a revealable semantic table containing every plotted value.'),
+    apiRow('heading, description, caption', 'string', '-', 'Adds visible chart context without replacing the accessible name.')
+  ],
   Bubble: [
     apiRow('from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the bubble for the message author.')
   ],
@@ -930,7 +945,9 @@ const apiReferenceByComponent = {
     apiRow('data-ui-carousel-prev, data-ui-carousel-next', 'boolean attribute', '-', 'Marks child controls that move the viewport backward or forward.')
   ],
   Chart: [
-    apiRow('children', 'header, SVG or canvas, and optional caption', 'required', 'Composes the chart presentation while the consumer owns the visualization data and accessible description.')
+    apiRow('children', 'custom SVG, canvas, HTML plot, and optional table', 'required', 'Composes a specialized visualization while the consumer owns its data and accessible description.'),
+    apiRow('heading, description, value', 'string', '-', 'Builds the standard visible chart header without consuming the native title attribute.'),
+    apiRow('caption', 'string', '-', 'Adds a semantic figcaption after the custom plot.')
   ],
   Checkbox: [
     apiRow('checked, defaultChecked', 'boolean', '-', 'Uses the native checkbox checked state.'),
@@ -1095,6 +1112,14 @@ const apiReferenceByComponent = {
     apiRow('variant', '"default" | "inherit"', '"default"', 'Lets migration surfaces inherit surrounding link color and font weight.'),
     apiRow('target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.')
   ],
+  LineChart: [
+    apiRow('series', 'LumenChartSeries[]', 'required', 'Provides ordered, already-aggregated points; null y values create visible gaps.'),
+    apiRow('area', 'boolean', 'false', 'Adds a tokenized fill between each line segment and the zero or domain baseline.'),
+    apiRow('markers', 'boolean', 'true', 'Shows point markers as a second visual cue and exposes per-point SVG titles.'),
+    apiRow('referenceValue', 'number', '-', 'Draws a dashed threshold or comparison line across the plot.'),
+    apiRow('showLegend', 'boolean', 'true for multiple series', 'Shows the color-independent series key.'),
+    apiRow('showTable', 'boolean', 'true', 'Provides a revealable semantic table containing every plotted value.')
+  ],
   Menubar: [
     surfaceApiRow
   ],
@@ -1135,7 +1160,8 @@ const apiReferenceByComponent = {
   ],
   Pill: [
     apiRow('count', 'number | string', '-', 'Appends a muted count affix after the pill label.'),
-    apiRow('href', 'string', '-', 'Renders the pill as a focusable anchor when it represents a destination.')
+    apiRow('href', 'string', '-', 'Renders the pill as a focusable anchor when it represents a destination.'),
+    apiRow('variant', '"neutral" | "brand" | "outline"', '"neutral"', 'Controls the pill emphasis without changing its metadata semantics.')
   ],
   Popover: [
     surfaceApiRow,
@@ -1165,6 +1191,10 @@ const apiReferenceByComponent = {
   ],
   ScrollArea: [
     apiRow('children', 'scrollable flow content', 'required', 'Provides the content inside the styled overflow container.')
+  ],
+  ScrollProgress: [
+    apiRow('position', '"top" | "bottom"', '"top"', 'Pins the progress indicator to a viewport edge.'),
+    apiRow('aria-label', 'string', '"Reading progress"', 'Names the live document-progress indicator for assistive technology.')
   ],
   Select: [
     apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Creates native option elements.'),
@@ -1212,6 +1242,13 @@ const apiReferenceByComponent = {
   Sonner: [
     apiRow('placement', '"bottom-center" | "bottom-left" | "bottom-right" | "top-center" | "top-left" | "top-right"', '"bottom-right"', 'Positions the notification viewport.'),
     apiRow('maxCount', 'number', '3', 'Limits the number of simultaneously visible runtime toasts.')
+  ],
+  Sparkline: [
+    apiRow('values', 'number[]', 'required', 'Provides ordered values for the compact trend.'),
+    apiRow('label', 'string', 'required', 'Communicates the trend in text because the SVG is intentionally decorative.'),
+    apiRow('area', 'boolean', 'false', 'Adds a subtle tokenized fill below the line.'),
+    apiRow('showEndpoint', 'boolean', 'true', 'Marks the latest value with a color-independent endpoint.'),
+    apiRow('tone', 'LumenChartTone', '"series-1"', 'Selects a categorical or explicitly semantic chart tone.')
   ],
   SpeedDial: [
     apiRow('actions', 'Array<{ icon?, label, value? }>', '[]', 'Creates labelled menu actions and renders optional Lumen icons.'),
@@ -1318,6 +1355,8 @@ const apiReferenceByComponent = {
     apiRow('threshold', 'number', '0.15', 'Sets the visible intersection ratio that starts the reveal.')
   ],
   Stat: [
+    apiRow('as', '"article" | "div" | "section"', '"div"', 'Changes the root element when the statistic is a standalone semantic region.'),
+    apiRow('variant', '"accent" | "default" | "glass"', '"default"', 'Changes the surface treatment while preserving the same metric structure.'),
     apiRow('label', 'string', '-', 'The label describing the statistic.'),
     apiRow('value', 'string', '-', 'The numeric or text value of the statistic.')
   ],
@@ -1352,7 +1391,7 @@ const apiReferenceByComponent = {
     apiRow('nextLabel, closeLabel', 'string', '"Next", "Close"', 'Sets the tour navigation action labels.')
   ],
   Anchor: [
-    apiRow('items', 'Array<{ href, label }>', '[]', 'Defines the in-page navigation targets and labels.')
+    apiRow('items', 'Array<{ href, label, depth? }>', '[]', 'Defines the in-page navigation targets, labels, and optional heading depth from 1 through 6.')
   ],
   Segmented: [
     apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Defines the mutually exclusive visible options.'),
@@ -1429,6 +1468,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use as an inline label for status, category, plan, or other compact metadata.',
     distinction: 'Use FloatingBadge for an overlaid notification count, Pill for a label with an attached count, or Marker for dot-led operational status.'
   },
+  BarChart: {
+    when: 'Use to compare categories, rankings, or discrete periods from already-aggregated values.',
+    distinction: 'Use LineChart for continuous ordered trends and Sparkline for a compact trend attached to one metric.'
+  },
   Bubble: {
     when: 'Use for the visible text container of one chat message or short comment.',
     distinction: 'Use Message to compose the full row, including avatar, author, timestamp, and a Bubble.'
@@ -1485,6 +1528,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use to align a compact row of primary text, supporting metadata, badges, icons, or actions in a list or results view.',
     distinction: 'Item provides visual layout only: it renders a div and adds no list semantics or interaction. Wrap it in a semantic list item when needed, and use a Link or Button for clickable behavior.'
   },
+  LineChart: {
+    when: 'Use to show how one or more ordered series change, including missing values and thresholds.',
+    distinction: 'Use BarChart for categorical magnitude comparisons and Sparkline when axes and exact values are unnecessary.'
+  },
   Marker: {
     when: 'Use for compact operational status where a colored dot should carry the visual signal.',
     distinction: 'Use Badge for a filled metadata label and Pill for a label paired with a count.'
@@ -1515,7 +1562,7 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   },
   Progress: {
     when: 'Use to communicate how much of a task, upload, or process has completed.',
-    distinction: 'Use Meter for a stable measurement, Spinner for indeterminate short waits, or Skeleton while page structure is loading.'
+    distinction: 'Use ScrollProgress for document position, Meter for a stable measurement, Spinner for indeterminate short waits, or Skeleton while page structure is loading.'
   },
   Prose: {
     when: 'Use around rendered Markdown, CMS content, or other long-form content you do not style element by element.',
@@ -1524,6 +1571,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   Schedule: {
     when: 'Use to arrange events across time slots, days, or resources when people need to review or change when work happens.',
     distinction: 'Use Calendar for choosing dates and Agenda for a chronological list. Schedule is the time-grid surface for positioned events, conflicts, drag and drop, and rescheduling workflows.'
+  },
+  ScrollProgress: {
+    when: 'Use on long reading surfaces when readers benefit from knowing how far they have moved through the current document.',
+    distinction: 'Use Progress for task completion supplied by application state. ScrollProgress derives its value from the document scroll position.'
   },
   Segmented: {
     when: 'Use for a small set of mutually exclusive views or values that should remain visible at once.',
@@ -1545,9 +1596,13 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use for a short wait when progress cannot be measured.',
     distinction: 'Use Progress when completion can be quantified and Skeleton when reserving the shape of loading content.'
   },
+  Sparkline: {
+    when: 'Use beside a metric when a compact trend adds meaning and at least two valid samples exist.',
+    distinction: 'Use LineChart when axes, multiple series, thresholds, exact values, or a data table are important.'
+  },
   Stat: {
     when: 'Use to pair one prominent metric with its concise label.',
-    distinction: 'Use Chart when the trend or relationship matters, or Descriptions for several equally weighted key–value facts.'
+    distinction: 'Use as="article" when the metric and its supporting content stand alone. Use variant="accent" for a featured metric and variant="glass" on a selective translucent surface. Use Chart when the trend or relationship matters, or Descriptions for several equally weighted key–value facts.'
   },
   Switch: {
     when: 'Use for a setting that takes effect immediately when turned on or off.',
@@ -1590,6 +1645,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Avatar', 'Data display', 'Represents a person, team, or entity.', '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'],
   ['BackToTop', 'Navigation', 'Returns user to the top of the page.', '<BackToTop aria-label="Back to top">↑ Top</BackToTop>'],
   ['Badge', 'Data display', 'Labels status, type, plan, or count information.', '<Badge variant="secondary">Astro</Badge>'],
+  ['BarChart', 'Data display', 'Compares categorical or discrete-period values with grouped and stacked bars.', '<BarChart aria-label="Downloads by project" heading="Package downloads" orientation="horizontal" series={[{ id: "downloads", label: "Downloads", data: [{ x: "Lumen", y: 18420 }, { x: "Observatory", y: 6320 }] }]} />'],
   ['Breadcrumb', 'Navigation', 'Shows page hierarchy and parent navigation.', '<Breadcrumb><ol><li><a href="/docs">Docs</a></li><li><span aria-current="page">Components</span></li></ol></Breadcrumb>'],
   ['Bubble', 'Data display', 'Frames chat messages and short comments.', '<Bubble from="user">Can you summarize the release?</Bubble>'],
   ['Button', 'Actions', 'Triggers primary, secondary, destructive, and quiet actions.', '<Button variant="default">Save changes</Button><Button variant="secondary">Cancel</Button>'],
@@ -1629,6 +1685,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Kbd', 'Data display', 'Displays keyboard shortcuts.', '<p>Open the command menu with <Kbd>Cmd K</Kbd>.</p>'],
   ['Label', 'Forms', 'Labels form controls with consistent spacing.', '<Label for="workspace">Workspace name</Label><Input id="workspace" />'],
   ['Link', 'Navigation', 'Styles ordinary text navigation while preserving native anchor behavior.', '<Link href="/docs">Read the documentation</Link>'],
+  ['LineChart', 'Data display', 'Shows ordered trends, multiple series, missing-value gaps, areas, markers, and reference values.', '<LineChart aria-label="Website traffic" heading="Page views and visits" series={[{ id: "views", label: "Page views", data: [{ x: "Mon", y: 120 }, { x: "Tue", y: 168 }] }, { id: "visits", label: "Visits", data: [{ x: "Mon", y: 82 }, { x: "Tue", y: 104 }] }]} />'],
   ['Marker', 'Data display', 'Highlights status, position, or annotations.', '<Marker variant="success">Live</Marker>'],
   ['Menubar', 'Navigation', 'Creates horizontal application menus.', '<Menubar><button role="menuitem">File</button><button role="menuitem">View</button></Menubar>'],
   ['Message', 'Data display', 'Structures a chat, activity, or system message.', '<Message><Avatar>LM</Avatar><Bubble>Lumen components are installed.</Bubble></Message>'],
@@ -1638,7 +1695,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['NumberField', 'Forms', 'Captures constrained numeric values.', '<NumberField min="1" max="10" step="1" aria-label="Seats" />'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
   ['PhoneInput', 'Forms', 'Pairs a country dial-code select with a telephone number input.', '<PhoneInput name="phone" countryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />'],
-  ['Pill', 'Data display', 'Pairs a rounded text label with an optional trailing count.', '<Pill count={12}>Notifications</Pill>'],
+  ['Pill', 'Data display', 'Pairs a rounded text label with an optional trailing count.', '<Pill count={12} variant="brand">Notifications</Pill>'],
   ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],
   ['Prose', 'Layout', 'Adds readable spacing and typography to rendered Markdown or CMS content.', '<Prose><h2>Release notes</h2><p>Long-form content receives consistent reading rhythm.</p></Prose>'],
@@ -1646,6 +1703,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Resizable', 'Layout', 'Frames panes that can be resized.', '<Resizable><aside>Navigation</aside><main>Editor</main></Resizable>'],
   ['RichTextEditor', 'Forms', 'Frames rich text toolbar and editing compositions.', '<RichTextEditor><div role="toolbar"><ButtonGroup><Button data-ui-editor-command="bold">B</Button><Button data-ui-editor-command="italic">I</Button></ButtonGroup></div><div contenteditable="true">Draft release notes...</div></RichTextEditor>'],
   ['ScrollArea', 'Layout', 'Provides a styled scroll container.', '<ScrollArea style="max-height: 18rem"><p>Long release notes...</p></ScrollArea>'],
+  ['ScrollProgress', 'Feedback', 'Shows the reader’s current position in a long document.', '<ScrollProgress aria-label="Article reading progress" />'],
   ['Schedule', 'Data display', 'Displays calendar events across day, week, or resource grids.', '<Schedule><header><h2>Launch week</h2></header><div data-ui-schedule-grid><article data-ui-schedule-event>Planning</article><article data-ui-schedule-event>Ship</article></div></Schedule>'],
   ['SearchField', 'Forms', 'Captures search queries with native search semantics.', '<SearchField name="q" placeholder="Search docs" />'],
   ['Select', 'Forms', 'Provides an enhanced single-choice list when text search is not needed.', '<Select name="framework" options={["Astro", "React", "Web Components"]} placeholder="Choose a framework" />'],
@@ -1655,6 +1713,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Skeleton', 'Feedback', 'Reserves space during loading states.', '<Skeleton style="height: 2.5rem" aria-label="Loading profile" />'],
   ['SkipLink', 'Navigation', 'Lets keyboard users bypass repeated navigation and move directly to main content.', '<SkipLink href="#main">Skip to main content</SkipLink>'],
   ['Slider', 'Forms', 'Captures numeric values across a bounded range.', '<Slider name="opacity" min="0" max="100" value="80" />'],
+  ['Sparkline', 'Data display', 'Shows a compact, text-labelled trend beside an existing metric.', '<Sparkline label="Downloads increased from 42 to 91" values={[42, 48, 63, 58, 74, 91]} area />'],
   ['Spinner', 'Feedback', 'Indicates short loading states.', '<Spinner aria-label="Saving" />'],
   ['Switch', 'Forms', 'Toggles a single setting on or off.', '<Switch name="notifications" aria-label="Enable notifications" />'],
   ['Table', 'Data display', 'Styles semantic tables for records and comparisons.', '<Table><thead><tr><th>Package</th><th>Status</th></tr></thead><tbody><tr><td>Astro</td><td>Complete</td></tr></tbody></Table>'],
@@ -1677,7 +1736,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['AnimatedNumber', 'Data display', 'Animates a formatted metric while keeping one stable accessible value.', '<AnimatedNumber value={1234} prefix="$" />'],
   ['RevealGroup', 'Layout', 'Reveals a group of direct children with tokenized, reduced-motion-aware staggering.', '<RevealGroup stagger={80}><Card>Plan</Card><Card>Build</Card><Card>Ship</Card></RevealGroup>'],
   ['ScrollReveal', 'Layout', 'Animates wrapped content as it first enters the viewport.', '<ScrollReveal animation="slide-up"><article>New release highlights</article></ScrollReveal>'],
-  ['Stat', 'Data display', 'Pairs one prominent metric with a concise descriptive label.', '<Stat label="Active workspaces" value="1,234" />'],
+  ['Stat', 'Data display', 'Pairs one prominent metric with a concise descriptive label.', '<Stat label="Active workspaces" value="1,234" variant="accent" />'],
   ['Meter', 'Data display', 'Displays a scalar value within a known range.', '<Meter aria-label="Storage used" value={64} min={0} max={100}>64%</Meter>'],
   ['Note', 'Data display', 'Keeps supplementary information visually attached to nearby content.', '<Note label="Compatibility">Requires Safari 16.4 or newer.</Note>'],
   ['Rating', 'Data display', 'Collects or presents a bounded star-based score.', '<Rating aria-label="Rate this component" value={4} max={5} />'],
@@ -1690,7 +1749,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['Stepper', 'Navigation', 'Shows a person’s current position and progress through an ordered multi-step flow.', '<Stepper steps={["Account", "Workspace", "Review"]} currentStep={1} />'],
   ['FileUpload', 'Forms', 'Collects files through a picker or drag-and-drop target.', '<FileUpload accept="image/*" aria-label="Upload profile image" />'],
   ['Tour', 'Overlays', 'Guides people through product features using a sequence of anchored steps.', '<Tour steps={[{ target: "#publish", content: "Publish your changes when they are ready." }]} />'],
-  ['Anchor', 'Navigation', 'Links to sections within a long page and exposes the page’s local structure.', '<Anchor items={[{ href: "#installation", label: "Installation" }, { href: "#usage", label: "Usage" }]} />'],
+  ['Anchor', 'Navigation', 'Links to sections within a long page and exposes the page’s local structure.', '<Anchor items={[{ href: "#installation", label: "Installation", depth: 2 }, { href: "#usage", label: "Usage", depth: 3 }]} />'],
   ['Segmented', 'Forms', 'Presents a small, always-visible set of mutually exclusive values.', '<Segmented options={["Day", "Week", "Month"]} aria-label="Calendar view" />'],
   ['Toolbar', 'Layout', 'Groups frequently used controls into one compact action row.', '<Toolbar aria-label="Text formatting"><Button>Bold</Button><Button>Italic</Button></Toolbar>'],
   ['Descriptions', 'Data display', 'Presents a set of labeled facts as an aligned key–value list.', '<Descriptions items={[{ label: "Owner", value: "Alice" }, { label: "Status", value: "Active" }]} />'],

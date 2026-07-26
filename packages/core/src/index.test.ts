@@ -10,6 +10,8 @@ import {
   createDataViewState,
   createDataViewStorageKey,
   createFigmaVariableName,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
   createScheduleSlots,
   createScheduleStorageKey,
   createThemeBuilderTokens,
@@ -27,11 +29,13 @@ import {
   hslTokenToHexColor,
   loadDataViewState,
   loadScheduleEvents,
+  lumenChart,
   lumenCodeTokenClassNames,
   lumenColors,
   lumenColorTokenNames,
   lumenComponentNames,
   lumenDarkTheme,
+  lumenFont,
   lumenGlass,
   lumenGlassEffectTokenNames,
   lumenGlassTokenNames,
@@ -73,9 +77,28 @@ describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
     expect(lumenComponentNames).toContain('CodeTabs')
+    expect(lumenComponentNames).toContain('BarChart')
     expect(lumenComponentNames).toContain('Icon')
+    expect(lumenComponentNames).toContain('LineChart')
+    expect(lumenComponentNames).toContain('Sparkline')
+    expect(lumenComponentNames).toContain('ScrollProgress')
     expect(lumenComponentNames).toContain('Tabs')
     expect(new Set(lumenComponentNames).size).toBe(lumenComponentNames.length)
+  })
+
+  test('exports chart tokens and deterministic geometry helpers', () => {
+    expect(lumenChart.series1).toBeTruthy()
+    expect(lumenChart.sequentialHigh).toBeTruthy()
+    expect(
+      createLumenLineGeometry([{ x: 0, y: 1 }]).points
+    ).toHaveLength(1)
+    expect(
+      createLumenBarGeometry([{
+        data: [{ x: 'A', y: 1 }],
+        id: 'a',
+        label: 'A'
+      }]).marks
+    ).toHaveLength(1)
   })
 
   test('describes all package targets', () => {
@@ -372,7 +395,7 @@ describe('lumen product helpers', () => {
     expect(parseThemeCss(css).accent).toBe('168 76% 36%')
     expect(parseThemeCss(css)['glass-refraction']).toBe('221 83% 53% / 0.08')
     expect(parseThemeCss(css)['ui-radius-sm']).toBe('0.375rem')
-    expect(parseThemeCss(css)['ui-font']).toContain('Inter')
+    expect(parseThemeCss(css)['ui-font']).toContain('Montserrat')
     expect(parseThemeCss(css)['ui-ease-emphasized']).toBe('cubic-bezier(0.22, 1, 0.36, 1)')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
@@ -530,6 +553,7 @@ describe('lumen theme tokens', () => {
     expect(lumenStructureTokenNames).toContain('ui-shadow-md')
     expect(lumenStructureTokenNames).toContain('ui-ease')
     expect(lumenTokenNames).toContain('ui-font')
+    expect(lumenFont).toBe('"Montserrat", "Avenir Next", "Segoe UI", sans-serif')
     expect(lumenRadius.base).toBe('0.625rem')
     expect(lumenMotion.ease).toContain('cubic-bezier')
   })

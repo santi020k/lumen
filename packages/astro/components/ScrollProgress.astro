@@ -1,0 +1,38 @@
+---
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+  position?: 'bottom' | 'top'
+}
+
+const {
+  'aria-label': ariaLabel = 'Reading progress',
+  class: classProp = '',
+  className = '',
+  position = 'top',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-scroll-progress',
+  position === 'bottom' && 'ui-scroll-progress--bottom'
+], classProp, className)
+---
+
+<div
+  aria-label={ariaLabel}
+  aria-valuemax="100"
+  aria-valuemin="0"
+  aria-valuenow="0"
+  class:list={classList}
+  data-position={position}
+  data-ui-scroll-progress
+  role="progressbar"
+  {...passthrough}
+>
+  <span class="ui-scroll-progress__bar"></span>
+</div>

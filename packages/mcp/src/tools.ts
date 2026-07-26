@@ -843,6 +843,7 @@ export const getTokens = (
   data: LumenData = loadLumenData()
 ): LumenToolResult<{ tokens: LumenData['tokens'] }> => {
   const { tokens } = data
+  const chartLines = Object.entries(tokens.chart).map(([name, value]) => `- ${name}: ${value}`)
 
   const colorLines = Object.entries(tokens.colors).map(
     ([name, value]) => `- ${name}: hsl(${value})`
@@ -859,6 +860,9 @@ export const getTokens = (
     '',
     '## Base color values',
     colorLines.join('\n'),
+    '',
+    '## Data visualization tokens',
+    chartLines.join('\n'),
     '',
     '## Glass surface tokens',
     glassLines.join('\n')

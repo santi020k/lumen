@@ -33,6 +33,37 @@ export function SubscribeForm() {
 }
 ```
 
+For long articles, `Anchor` accepts an optional heading `depth` and `ScrollProgress` tracks the
+document without requiring a separate hook.
+
+```tsx
+import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
+
+<ScrollProgress aria-label="Article reading progress" />
+<Anchor items={[
+  { depth: 2, href: '#install', label: 'Install' },
+  { depth: 3, href: '#react', label: 'React' }
+]} />
+```
+
+## Data visualization
+
+`Sparkline`, `BarChart`, and `LineChart` accept the shared `LumenChartSeries` contract and render
+without an external charting dependency. Bar and line charts expose a revealable semantic data
+table by default.
+
+```tsx
+import { LineChart } from '@santi020k/lumen-react'
+
+const series = [{
+  id: 'views',
+  label: 'Views',
+  data: [{ x: 'Mon', y: 42 }, { x: 'Tue', y: 68 }]
+}]
+
+<LineChart aria-label="Views by day" heading="Website traffic" series={series} />
+```
+
 ## Next.js and server components
 
 The package entry is marked as a client module because the full catalog includes stateful
@@ -176,3 +207,17 @@ Load `@santi020k/lumen-react/styles.css` once in your app, then use the shared g
 <DatePicker glass="subtle" />
 <Select glass="strong" options={['Astro', 'React']} />
 ```
+
+## Semantic stat roots
+
+`Stat` renders a `div` by default. Use `as="article"` when the metric and its supporting content
+form a standalone item, or `as="section"` when it is a labeled region in a larger view.
+
+```tsx
+<Stat as="article" label="Active workspaces" value="1,234" variant="accent">
+  <p>Across all production organizations.</p>
+</Stat>
+```
+
+Use `variant="default"` for the original neutral surface, `variant="accent"` for a featured metric,
+or `variant="glass"` for selective translucency.

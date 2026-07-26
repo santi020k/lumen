@@ -23,8 +23,8 @@
 }
 
 :root {
-  --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+  --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
+  --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --app-font-brand: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --lumen-logo-accent: 174 76% 28%;
   --lumen-logo-dot: 38 92% 50%;
@@ -95,8 +95,8 @@
 :root[data-theme="light"],
 :root[data-theme="lumen-light"] {
   color-scheme: light;
-  --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+  --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
+  --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: 210 24% 98%;
   --canvas: 210 24% 98%;
   --surface: 0 0% 100%;
@@ -119,8 +119,8 @@
 :root[data-theme="dark"],
 :root[data-theme="lumen-dark"] {
   color-scheme: dark;
-  --app-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --app-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+  --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
+  --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: 224 24% 8%;
   --canvas: 224 24% 8%;
   --surface: 224 18% 11%;

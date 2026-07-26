@@ -29,3 +29,49 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 >
   <slot />
 </div>
+
+<script>
+  type ParticleDensity = 'low' | 'medium' | 'high'
+
+  const densityConfig: Record<ParticleDensity, number> = {
+    low: 15,
+    medium: 25,
+    high: 40
+  }
+
+  const particleTones = [
+    'var(--brand)',
+    'var(--accent)',
+    'var(--glow, var(--brand))'
+  ]
+
+  const initParticles = (scope: ParentNode = document) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    for (const container of scope.querySelectorAll<HTMLElement>('[data-ui-particles]')) {
+      if (container.hasAttribute('data-ui-particles-initialized')) continue
+
+      container.setAttribute('data-ui-particles-initialized', '')
+
+      const density = (container.dataset.uiParticles || 'medium') as ParticleDensity
+      const count = densityConfig[density]
+
+      for (let index = 0; index < count; index++) {
+        const particle = document.createElement('span')
+        const size = Math.random() * 12 + 8
+
+        particle.className = 'ui-particles__particle'
+        particle.style.setProperty('--ui-particle-delay', `${Math.random() * 8}s`)
+        particle.style.setProperty('--ui-particle-duration', `${20 + Math.random() * 15}s`)
+        particle.style.setProperty('--ui-particle-left', `${Math.random() * 100}%`)
+        particle.style.setProperty('--ui-particle-size', `${size}px`)
+        particle.style.setProperty('--ui-particle-tone', particleTones[Math.floor(Math.random() * particleTones.length)])
+        particle.style.setProperty('--ui-particle-top', `${Math.random() * 100}%`)
+        container.appendChild(particle)
+      }
+    }
+  }
+
+  initParticles()
+  document.addEventListener('astro:after-swap', () => initParticles())
+</script>

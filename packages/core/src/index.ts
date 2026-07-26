@@ -1,4 +1,29 @@
 export {
+  alignLumenChartSeries,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
+  getLumenChartCategories,
+  getLumenChartDomain,
+  getLumenChartTicks,
+  getLumenChartValueRatio,
+  type LumenBarChartLayout,
+  type LumenBarGeometry,
+  type LumenBarGeometryCategory,
+  type LumenBarGeometryMark,
+  type LumenBarGeometryOptions,
+  type LumenChartDatum,
+  type LumenChartDomain,
+  type LumenChartGeometryPoint,
+  type LumenChartOrientation,
+  type LumenChartSeries,
+  type LumenChartTone,
+  lumenChartTones,
+  type LumenLineGeometry,
+  type LumenLineGeometryOptions,
+  resolveLumenChartTone,
+  scaleLumenChartValue
+} from './charts.js'
+export {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenCodeTokenKind,
@@ -158,6 +183,7 @@ export {
 } from './theme-builder.js'
 export {
   composeClassName,
+  lumenChart,
   lumenColors,
   lumenDarkTheme,
   lumenFont,

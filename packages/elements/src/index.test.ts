@@ -113,6 +113,24 @@ describe('@santi020k/lumen-elements', () => {
     vi.unstubAllGlobals()
   })
 
+  test('creates density-controlled drifting particles when motion is allowed', () => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      addEventListener: vi.fn(),
+      matches: false,
+      media: '(prefers-reduced-motion: reduce)',
+      onchange: null,
+      removeEventListener: vi.fn()
+    })))
+
+    const particles = document.createElement('lumen-particles')
+
+    particles.setAttribute('data-ui-particles', 'low')
+    document.body.append(particles)
+
+    expect(particles.hasAttribute('data-ui-particles-initialized')).toBe(true)
+    expect(particles.querySelectorAll('.ui-particles__particle')).toHaveLength(15)
+  })
+
   test('applies primitive classes when elements connect', () => {
     const button = document.createElement('lumen-button')
     const card = document.createElement('lumen-card')

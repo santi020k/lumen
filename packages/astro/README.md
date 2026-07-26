@@ -61,6 +61,44 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 <Icon name="search" label="Search" />
 ```
 
+## Long-form navigation
+
+`Anchor` accepts an optional heading `depth` so article tables of contents can preserve their
+hierarchy. `ScrollProgress` derives reading progress from the document and pins the indicator to
+the top or bottom viewport edge. Both use the single root `UIPrimitives` runtime.
+
+```astro
+---
+import { Anchor, ScrollProgress } from '@santi020k/lumen-astro'
+---
+
+<ScrollProgress aria-label="Article reading progress" />
+<Anchor items={[
+  { depth: 2, href: '#install', label: 'Install' },
+  { depth: 3, href: '#astro', label: 'Astro' }
+]} />
+```
+
+## Data visualization
+
+Use `Sparkline` beside a metric, `BarChart` for categorical comparison, and `LineChart` for ordered
+trends. The chart components accept already-aggregated series, use Lumen data-color tokens, and
+include a revealable semantic data table by default.
+
+```astro
+---
+import { LineChart } from '@santi020k/lumen-astro'
+
+const series = [{
+  id: 'views',
+  label: 'Views',
+  data: [{ x: 'Mon', y: 42 }, { x: 'Tue', y: 68 }]
+}]
+---
+
+<LineChart aria-label="Views by day" heading="Website traffic" {series} />
+```
+
 Lucide intentionally excludes brand marks. For GitHub and other project-specific icons, put the
 SVG in the default slot instead of passing an unsupported `name`; Astro warns about unknown named
 icons during development.
@@ -168,3 +206,17 @@ variants. The older `variant="glass"` form remains supported for cards. Overlay
 <DatePicker glass="subtle" />
 <Select glass="strong" options={['Astro', 'React']} />
 ```
+
+## Semantic stat roots
+
+`Stat` renders a `div` by default. Use `as="article"` when the metric and its supporting content
+form a standalone item, or `as="section"` when it is a labeled region in a larger view.
+
+```astro
+<Stat as="article" label="Active workspaces" value="1,234" variant="accent">
+  <p>Across all production organizations.</p>
+</Stat>
+```
+
+Use `variant="default"` for the original neutral surface, `variant="accent"` for a featured metric,
+or `variant="glass"` for selective translucency.

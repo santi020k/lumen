@@ -54,6 +54,14 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(classesOf(connect('lumen-marker', { variant: 'success' }))).toEqual(['ui-marker', 'ui-marker--success'].sort())
   })
 
+  test('maps pill variants to semantic modifier classes', () => {
+    expect(classesOf(connect('lumen-pill'))).toEqual(['ui-pill'])
+    expect(classesOf(connect('lumen-pill', { variant: 'brand' })))
+      .toEqual(['ui-pill', 'ui-pill--brand'].sort())
+    expect(classesOf(connect('lumen-pill', { variant: 'outline' })))
+      .toEqual(['ui-pill', 'ui-pill--outline'].sort())
+  })
+
   test('marks separator orientation with class and aria attribute defaults', () => {
     const horizontal = connect('lumen-separator')
     const vertical = connect('lumen-separator', { orientation: 'vertical' })
@@ -89,6 +97,12 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(connect('lumen-pagination').getAttribute('aria-label')).toBe('Pagination')
     expect(connect('lumen-tag-group').getAttribute('role')).toBe('list')
     expect(connect('lumen-progress').getAttribute('role')).toBe('progressbar')
+    const scrollProgress = connect('lumen-scroll-progress')
+
+    expect(scrollProgress.getAttribute('aria-label')).toBe('Reading progress')
+    expect(scrollProgress.getAttribute('aria-valuenow')).toBe('0')
+    expect(scrollProgress.getAttribute('role')).toBe('progressbar')
+    expect(scrollProgress.querySelector('.ui-scroll-progress__bar')).not.toBeNull()
     expect(connect('lumen-radio-group').hasAttribute('data-ui-radio-group')).toBe(true)
     expect(connect('lumen-collapsible').hasAttribute('data-ui-collapsible')).toBe(true)
   })
@@ -120,5 +134,55 @@ describe('@santi020k/lumen-elements primitives', () => {
 
     expect(badge.classList.contains('ui-badge--secondary')).toBe(false)
     expect(badge.classList.contains('ui-badge--destructive')).toBe(true)
+  })
+
+  test('maps stat variants and preserves the default surface', () => {
+    const defaultStat = connect('lumen-stat')
+    const stat = connect('lumen-stat', { variant: 'accent' })
+
+    expect(defaultStat.getAttribute('variant')).toBe('default')
+    expect(classesOf(defaultStat)).toEqual(['ui-stat'])
+    expect(classesOf(stat)).toEqual(['ui-stat', 'ui-stat--accent'].sort())
+
+    stat.setAttribute('variant', 'glass')
+
+    expect(classesOf(stat)).toEqual(['ui-stat', 'ui-stat--glass'].sort())
+  })
+
+  test('renders chart elements from serializable data with accessible tables', () => {
+    const series = JSON.stringify([
+      {
+        data: [
+          { x: 'Mon', y: 4 },
+          { label: '8 downloads', x: 'Tue', y: 8 }
+        ],
+        id: 'downloads',
+        label: 'Downloads'
+      }
+    ])
+    const bars = connect('lumen-bar-chart', {
+      heading: 'Package downloads',
+      orientation: 'horizontal',
+      series
+    })
+    const line = connect('lumen-line-chart', {
+      'reference-value': '6',
+      area: '',
+      series
+    })
+    const sparkline = connect('lumen-sparkline', {
+      label: 'Downloads increased from 4 to 8',
+      values: '4,8'
+    })
+
+    expect(bars.getAttribute('role')).toBe('figure')
+    expect(bars.querySelectorAll('rect')).toHaveLength(2)
+    expect(bars.querySelector('h3')?.textContent).toBe('Package downloads')
+    expect(bars.querySelector('details table')?.textContent).toContain('8 downloads')
+    expect(line.querySelector('.ui-line-chart__line')).not.toBeNull()
+    expect(line.querySelector('.ui-chart__reference')).not.toBeNull()
+    expect(sparkline.getAttribute('role')).toBe('img')
+    expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
+    expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
   })
 })

@@ -2,13 +2,25 @@
 
 /* eslint-disable @eslint-react/no-children-only, @eslint-react/no-clone-element, @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen uses React 19 ref props and context provider syntax that remains explicit for readability, and intentionally clones one child for polymorphic composition. */
 import {
+  alignLumenChartSeries,
   composeClassName,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
+  getLumenChartCategories,
+  getLumenChartDomain,
+  getLumenChartTicks,
   getLumenIcon,
+  type LumenBarChartLayout,
+  type LumenChartOrientation,
+  type LumenChartSeries,
+  type LumenChartTone,
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenIconData,
   type LumenIconName,
   type LumenIconNode,
+  resolveLumenChartTone,
+  scaleLumenChartValue,
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
 
@@ -134,6 +146,8 @@ const emptyOptions: SelectOption[] = []
 const emptyStringOptions: string[] = []
 const emptyDataTableColumns: DataTableColumn[] = []
 const emptyDataTableRows: DataTableRow[] = []
+const emptyChartSeries: LumenChartSeries[] = []
+const emptyChartValues: number[] = []
 
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
   variant === defaultVariant ? false : `${base}--${variant}`
@@ -644,11 +658,393 @@ export const Carousel = ({ className, glass = false, ...props }: CarouselProps) 
 )
 
 export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
+  caption?: ReactNode
+  description?: ReactNode
   glass?: LumenGlassProp
+  heading?: ReactNode
+  value?: ReactNode
 }
-export const Chart = ({ className, glass = false, ...props }: ChartProps) => (
-  <figure className={composeClassName('ui-chart', glassClass('ui-chart', glass), className)} {...props} />
+export const Chart = ({
+  caption,
+  children,
+  className,
+  description,
+  glass = false,
+  heading,
+  value,
+  ...props
+}: ChartProps) => (
+  <figure className={composeClassName('ui-chart', glassClass('ui-chart', glass), className)} {...props}>
+    {(heading || description || value) && (
+      <header>
+        <div className="ui-chart__heading">
+          {heading && <h3>{heading}</h3>}
+          {description && <p>{description}</p>}
+        </div>
+        {value && <strong data-ui-chart-value>{value}</strong>}
+      </header>
+    )}
+    {children}
+    {caption && <figcaption>{caption}</figcaption>}
+  </figure>
 )
+
+interface ChartLegendProps {
+  series: readonly LumenChartSeries[]
+}
+
+const ChartLegend = ({ series }: ChartLegendProps) => (
+  <ul aria-label="Chart legend" className="ui-chart__legend">
+    {series.map((item, index) => (
+      <li className={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`} key={item.id}>
+        <span aria-hidden="true" />
+        {item.label}
+      </li>
+    ))}
+  </ul>
+)
+
+interface ChartDataTableProps {
+  categories: readonly (number | string)[]
+  series: readonly LumenChartSeries[]
+}
+
+const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
+  <details className="ui-chart__data">
+    <summary>View chart data</summary>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            {series.map(item => <th key={item.id} scope="col">{item.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {categories.map(category => (
+            <tr key={`${typeof category}:${String(category)}`}>
+              <th scope="row">{String(category)}</th>
+              {series.map(item => {
+                const datum = item.data.find(candidate => candidate.x === category)
+
+                return (
+                  <td key={item.id}>
+                    {datum?.label ??
+                      (datum?.y === null || datum === undefined
+                        ? 'Not available'
+                        : String(datum.y))}
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+)
+
+export interface SparklineProps extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
+  area?: boolean
+  label?: string
+  showEndpoint?: boolean
+  tone?: LumenChartTone
+  values?: readonly number[]
+}
+
+export const Sparkline = ({
+  area = false,
+  className,
+  label = 'Trend',
+  showEndpoint = true,
+  tone,
+  values = emptyChartValues,
+  ...props
+}: SparklineProps) => {
+  const geometry = createLumenLineGeometry(
+    values.map((value, index) => ({ x: index, y: value })),
+    { height: 40, padding: 3, width: 120 }
+  )
+
+  const resolvedTone = resolveLumenChartTone(tone)
+  const endpoint = geometry.points.at(-1)
+
+  return (
+    <span
+      aria-label={label}
+      className={composeClassName('ui-sparkline', `ui-chart-tone--${resolvedTone}`, className)}
+      role="img"
+      {...props}
+    >
+      <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">
+        {area && geometry.areaPaths.map(path => (
+          <path className="ui-sparkline__area" d={path} key={path} />
+        ))}
+        <path className="ui-sparkline__line" d={geometry.path} />
+        {showEndpoint && endpoint && (
+          <circle
+            className="ui-sparkline__endpoint"
+            cx={endpoint.xCoordinate}
+            cy={endpoint.yCoordinate}
+            r="2.5"
+          />
+        )}
+      </svg>
+      <span className="ui-sr-only">{label}</span>
+    </span>
+  )
+}
+
+export interface BarChartProps extends Omit<ChartProps, 'children'> {
+  layout?: LumenBarChartLayout
+  orientation?: LumenChartOrientation
+  series?: readonly LumenChartSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+}
+
+/* eslint-disable complexity -- Chart renderers keep optional semantic and SVG layers colocated. */
+export const BarChart = ({
+  className,
+  layout = 'grouped',
+  orientation = 'vertical',
+  series = emptyChartSeries,
+  showLegend = series.length > 1,
+  showTable = true,
+  ...props
+}: BarChartProps) => {
+  const geometry = createLumenBarGeometry(series, { layout, orientation })
+  const ticks = getLumenChartTicks(geometry.domain)
+  const categories = geometry.categories.map(category => category.label)
+
+  const margin = orientation === 'horizontal'
+    ? { bottom: 24, left: 112, right: 20, top: 16 }
+    : { bottom: 52, left: 52, right: 16, top: 16 }
+
+  return (
+    <Chart className={composeClassName('ui-bar-chart', className)} {...props}>
+      {showLegend && <ChartLegend series={series} />}
+      {series.length === 0 && (
+        <p className="ui-chart__empty" role="status">No chart data available.</p>
+      )}
+      <div className="ui-chart__plot" hidden={series.length === 0}>
+        <svg
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
+          viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+        >
+          <g className="ui-chart__grid">
+            {ticks.map(tick => {
+              const coordinate = orientation === 'horizontal'
+                ? scaleLumenChartValue(
+                    tick,
+                    geometry.domain,
+                    margin.left,
+                    geometry.width - margin.right
+                  )
+                : scaleLumenChartValue(
+                    tick,
+                    geometry.domain,
+                    geometry.height - margin.bottom,
+                    margin.top
+                  )
+
+              return orientation === 'horizontal' ? (
+                <line
+                  key={tick}
+                  x1={coordinate}
+                  x2={coordinate}
+                  y1={margin.top}
+                  y2={geometry.height - margin.bottom}
+                />
+              ) : (
+                <line
+                  key={tick}
+                  x1={margin.left}
+                  x2={geometry.width - margin.right}
+                  y1={coordinate}
+                  y2={coordinate}
+                />
+              )
+            })}
+          </g>
+          <g className="ui-chart__axis-labels">
+            {geometry.categories.map(category => (
+              <text
+                dominantBaseline={orientation === 'horizontal' ? 'middle' : undefined}
+                key={`${typeof category.label}:${String(category.label)}`}
+                textAnchor={orientation === 'horizontal' ? 'end' : 'middle'}
+                x={category.x}
+                y={category.y}
+              >
+                {String(category.label)}
+              </text>
+            ))}
+          </g>
+          <g className="ui-bar-chart__marks">
+            {geometry.marks.map(mark => (
+              <rect
+                className={`ui-chart-tone--${mark.tone}`}
+                height={mark.height}
+                key={`${mark.seriesId}:${String(mark.category)}`}
+                rx="4"
+                width={mark.width}
+                x={mark.x}
+                y={mark.y}
+              >
+                <title>{`${String(mark.category)} · ${mark.seriesLabel}: ${mark.value}`}</title>
+              </rect>
+            ))}
+          </g>
+        </svg>
+      </div>
+      {showTable && series.length > 0 && (
+        <ChartDataTable categories={categories} series={series} />
+      )}
+    </Chart>
+  )
+}
+
+export interface LineChartProps extends Omit<ChartProps, 'children'> {
+  area?: boolean
+  markers?: boolean
+  referenceValue?: number
+  series?: readonly LumenChartSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+}
+
+export const LineChart = ({
+  area = false,
+  className,
+  markers = true,
+  referenceValue,
+  series = emptyChartSeries,
+  showLegend = series.length > 1,
+  showTable = true,
+  ...props
+}: LineChartProps) => {
+  const width = 640
+  const height = 320
+  const padding = 44
+  const categories = getLumenChartCategories(series)
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+  const domain = getLumenChartDomain([
+    ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
+    referenceValue ?? null
+  ], false)
+
+  const geometries = alignedSeries.map(item =>
+    createLumenLineGeometry(item.data, {
+      domain,
+      height,
+      includeZero: false,
+      padding,
+      width
+    })
+  )
+
+  const ticks = getLumenChartTicks(domain)
+  const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+
+  const referenceY = referenceValue === undefined
+    ? undefined
+    : scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+
+  return (
+    <Chart className={composeClassName('ui-line-chart', className)} {...props}>
+      {showLegend && <ChartLegend series={series} />}
+      {series.length === 0 && (
+        <p className="ui-chart__empty" role="status">No chart data available.</p>
+      )}
+      <div className="ui-chart__plot" hidden={series.length === 0}>
+        <svg
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
+          viewBox={`0 0 ${width} ${height}`}
+        >
+          <g className="ui-chart__grid">
+            {ticks.map(tick => {
+              const y = scaleLumenChartValue(tick, domain, height - padding, padding)
+
+              return (
+                <Fragment key={tick}>
+                  <line x1={padding} x2={width - padding} y1={y} y2={y} />
+                  <text x={padding - 8} y={y}>{Number(tick.toPrecision(4))}</text>
+                </Fragment>
+              )
+            })}
+          </g>
+          <g className="ui-chart__axis-labels">
+            {categories.map((category, index) => {
+              if (index % labelStep !== 0 && index !== categories.length - 1) return null
+
+              const denominator = Math.max(1, categories.length - 1)
+              const x = padding + (index / denominator) * (width - padding * 2)
+
+              return (
+                <text
+                  key={`${typeof category}:${String(category)}`}
+                  textAnchor="middle"
+                  x={x}
+                  y={height - 14}
+                >
+                  {String(category)}
+                </text>
+              )
+            })}
+          </g>
+          {referenceY !== undefined && (
+            <line
+              className="ui-chart__reference"
+              x1={padding}
+              x2={width - padding}
+              y1={referenceY}
+              y2={referenceY}
+            />
+          )}
+          {geometries.map((geometry, index) => {
+            const item = series[index]
+
+            if (!item) return null
+
+            const tone = resolveLumenChartTone(item.tone, index)
+
+            return (
+              <g
+                className={`ui-line-chart__series ui-chart-tone--${tone}`}
+                key={item.id}
+              >
+                {area && geometry.areaPaths.map(path => (
+                  <path className="ui-line-chart__area" d={path} key={path} />
+                ))}
+                <path className="ui-line-chart__line" d={geometry.path} />
+                {markers && geometry.points.map(point => (
+                  <circle
+                    className="ui-line-chart__point"
+                    cx={point.xCoordinate}
+                    cy={point.yCoordinate}
+                    key={`${typeof point.x}:${String(point.x)}`}
+                    r="3"
+                  >
+                    <title>
+                      {`${point.label ?? String(point.x)} · ${item.label}: ${String(point.y)}`}
+                    </title>
+                  </circle>
+                ))}
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+      {showTable && series.length > 0 && (
+        <ChartDataTable categories={categories} series={series} />
+      )}
+    </Chart>
+  )
+}
+/* eslint-enable complexity */
 
 export type CheckboxProps = Omit<ComponentPropsWithoutRef<'input'>, 'type'>
 export const Checkbox = ({ className, ...props }: CheckboxProps) => (
@@ -1898,6 +2294,84 @@ export const ScrollArea = ({ className, glass = false, ...props }: ScrollAreaPro
   <div className={composeClassName('ui-scroll-area', glassClass('ui-scroll-area', glass), className)} {...props} />
 )
 
+export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {
+  position?: 'bottom' | 'top'
+}
+export const ScrollProgress = ({
+  'aria-label': ariaLabel = 'Reading progress',
+  className,
+  position = 'top',
+  ...props
+}: ScrollProgressProps) => {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (!root) return
+
+    let frame = 0
+
+    const update = () => {
+      frame = 0
+
+      const scrollingElement = document.scrollingElement ?? document.documentElement
+      const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
+
+      const percentage = maximum > 0
+        ? Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100))
+        : 0
+
+      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+
+      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
+
+      if (bar) bar.style.transform = `scaleX(${percentage / 100})`
+    }
+
+    const scheduleUpdate = () => {
+      if (frame) return
+
+      frame = window.requestAnimationFrame(update)
+    }
+
+    scheduleUpdate()
+
+    window.addEventListener('resize', scheduleUpdate, { passive: true })
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true })
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame)
+
+      window.removeEventListener('resize', scheduleUpdate)
+
+      window.removeEventListener('scroll', scheduleUpdate)
+    }
+  }, [])
+
+  return (
+    <div
+      aria-label={ariaLabel}
+      aria-valuemax={100}
+      aria-valuemin={0}
+      aria-valuenow={0}
+      className={composeClassName(
+        'ui-scroll-progress',
+        position === 'bottom' && 'ui-scroll-progress--bottom',
+        className
+      )}
+      data-position={position}
+      data-ui-scroll-progress
+      ref={rootRef}
+      role="progressbar"
+      {...props}
+    >
+      <span className="ui-scroll-progress__bar" />
+    </div>
+  )
+}
+
 export interface ScheduleProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
 }
@@ -2486,8 +2960,16 @@ export const Link = ({
 export type PillProps = ComponentPropsWithoutRef<'span'> & {
   count?: number | string
   href?: string
+  variant?: 'brand' | 'neutral' | 'outline'
 }
-export const Pill = ({ className, count, children, href, ...props }: PillProps) => {
+export const Pill = ({
+  className,
+  count,
+  children,
+  href,
+  variant = 'neutral',
+  ...props
+}: PillProps) => {
   const content = (
     <>
       {children}
@@ -2496,8 +2978,25 @@ export const Pill = ({ className, count, children, href, ...props }: PillProps) 
   )
 
   return href
-    ? <a className={composeClassName('ui-pill', className)} href={href} {...props}>{content}</a>
-    : <span className={composeClassName('ui-pill', className)} {...props}>{content}</span>
+    ? (
+        <a
+          className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
+          data-variant={variant}
+          href={href}
+          {...props}
+        >
+          {content}
+        </a>
+      )
+    : (
+        <span
+          className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
+          data-variant={variant}
+          {...props}
+        >
+          {content}
+        </span>
+      )
 }
 
 export type ProseProps = ComponentPropsWithoutRef<'div'>
@@ -2527,9 +3026,57 @@ export const LanguageToggle = ({ className, type = 'button', ...props }: Languag
 export interface ParticlesProps extends ComponentPropsWithoutRef<'div'> {
   density?: 'low' | 'medium' | 'high'
 }
-export const Particles = ({ className, density = 'medium', ...props }: ParticlesProps) => (
-  <div aria-hidden="true" className={composeClassName('ui-particles', className)} data-ui-particles={density} {...props} />
-)
+
+interface ParticleItem {
+  id: string
+  style: CSSProperties
+}
+
+const particleDensityConfig = { high: 40, low: 15, medium: 25 } as const
+
+const particleTones = [
+  'var(--brand)',
+  'var(--accent)',
+  'var(--glow, var(--brand))'
+]
+
+const createParticles = (density: NonNullable<ParticlesProps['density']>): ParticleItem[] =>
+  Array.from({ length: particleDensityConfig[density] }, (_, index) => {
+    const size = Math.random() * 12 + 8
+    const left = Math.random() * 100
+    const top = Math.random() * 100
+
+    return {
+      id: `${index}-${left}-${top}`,
+      style: {
+        '--ui-particle-delay': `${Math.random() * 8}s`,
+        '--ui-particle-duration': `${20 + Math.random() * 15}s`,
+        '--ui-particle-left': `${left}%`,
+        '--ui-particle-size': `${size}px`,
+        '--ui-particle-tone': particleTones[Math.floor(Math.random() * particleTones.length)],
+        '--ui-particle-top': `${top}%`
+      } as CSSProperties
+    }
+  })
+
+export const Particles = ({ children, className, density = 'medium', ...props }: ParticlesProps) => {
+  const [particles, setParticles] = useState<ParticleItem[]>([])
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    // Particle geometry is client-only to keep SSR output stable while retaining per-load variation.
+    // eslint-disable-next-line @eslint-react/set-state-in-effect
+    setParticles(createParticles(density))
+  }, [density])
+
+  return (
+    <div aria-hidden="true" className={composeClassName('ui-particles', className)} data-ui-particles={density} {...props}>
+      {children}
+      {particles.map(particle => <span className="ui-particles__particle" key={particle.id} style={particle.style} />)}
+    </div>
+  )
+}
 
 type MotionAnimation = 'fade' | 'scale' | 'slide-up'
 
@@ -2781,16 +3328,32 @@ export const AnimatedNumber = ({
   )
 }
 
-export interface StatProps extends ComponentPropsWithoutRef<'div'> {
+export type StatProps<T extends ElementType = 'div'> = PrimitiveProps & {
+  as?: T
   label?: string
   value?: string
+  variant?: 'accent' | 'default' | 'glass'
 }
-export const Stat = ({ className, label, value, children, ...props }: StatProps) => (
-  <div className={composeClassName('ui-stat', className)} {...props}>
+export const Stat = <T extends ElementType = 'div'>({
+  as,
+  className,
+  label,
+  value,
+  variant = 'default',
+  children,
+  ...props
+}: StatProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    className={composeClassName(variant !== 'default' && `ui-stat--${variant}`, className)}
+    data-variant={variant}
+    {...props}
+    uiClassName="ui-stat"
+  >
     {label && <div className="ui-stat-label">{label}</div>}
     {value && <div className="ui-stat-value">{value}</div>}
     {children}
-  </div>
+  </Primitive>
 )
 
 export type MeterProps = ComponentPropsWithoutRef<'meter'>
@@ -3060,6 +3623,7 @@ export const Tour = ({ children, className, closeLabel = 'Done', hidden = true, 
 )
 
 export interface AnchorLink {
+  depth?: 1 | 2 | 3 | 4 | 5 | 6
   href: string
   label: ReactNode
 }
@@ -3075,7 +3639,13 @@ export const Anchor = ({ 'aria-label': ariaLabel = 'On this page', children, cla
       <ol>
         {items.map((item, index) => (
           <li key={item.href}>
-            <a data-active={index === 0 ? 'true' : 'false'} href={item.href}>{item.label}</a>
+            <a
+              data-active={index === 0 ? 'true' : 'false'}
+              data-depth={item.depth}
+              href={item.href}
+            >
+              {item.label}
+            </a>
           </li>
         ))}
       </ol>

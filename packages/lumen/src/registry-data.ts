@@ -79,6 +79,18 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "data-visualization",
+      "type": "recipe",
+      "components": [
+        "Chart",
+        "Sparkline",
+        "BarChart",
+        "LineChart",
+        "Stat",
+        "Meter"
+      ]
+    },
+    {
       "name": "ai-docs",
       "type": "documentation",
       "files": [
@@ -229,6 +241,21 @@ export const lumenRegistry = {
         "packages/astro/styles/lumen.css"
       ],
       "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "BarChart",
+      "type": "component",
+      "description": "Compares categorical or discrete-period values with grouped and stacked bars.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/BarChart.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Chart",
         "styles"
       ]
     },
@@ -791,6 +818,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "LineChart",
+      "type": "component",
+      "description": "Shows ordered trends, multiple series, missing-value gaps, areas, markers, and reference values.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/LineChart.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Chart",
+        "styles"
+      ]
+    },
+    {
       "name": "Marker",
       "type": "component",
       "description": "Highlights status, position, or annotations.",
@@ -1036,6 +1078,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      "name": "ScrollProgress",
+      "type": "component",
+      "description": "Shows how far a reader has progressed through the current document.",
+      "category": "Feedback",
+      "files": [
+        "packages/astro/components/ScrollProgress.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": [
+        "styles",
+        "runtime"
+      ]
+    },
+    {
       "name": "Schedule",
       "type": "component",
       "description": "Displays calendar events across day, week, or resource grids.",
@@ -1173,6 +1230,19 @@ export const lumenRegistry = {
       "dependencies": [
         "styles",
         "runtime"
+      ]
+    },
+    {
+      "name": "Sparkline",
+      "type": "component",
+      "description": "Shows a compact, text-labelled trend beside an existing metric.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/Sparkline.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
       ]
     },
     {

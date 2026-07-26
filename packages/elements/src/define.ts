@@ -1,15 +1,24 @@
 /* eslint-disable complexity, @typescript-eslint/no-non-null-assertion */
 
 import {
+  alignLumenChartSeries,
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
   composeClassName,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  getLumenChartCategories,
+  getLumenChartDomain,
+  getLumenChartTicks,
   getLumenRichTextShortcut,
   getVirtualRange,
   isLumenRichTextToggleCommand,
+  type LumenChartSeries,
+  type LumenChartTone,
+  lumenChartTones,
   type LumenComponentName,
   lumenComponentNames,
   type LumenRichTextChangeDetail,
@@ -20,6 +29,8 @@ import {
   normalizeThemeBuilderHex,
   parseThemeCss,
   renderLumenIconSvg,
+  resolveLumenChartTone,
+  scaleLumenChartValue,
   scoreThemeContrast,
   tuneThemeContrast} from '@santi020k/lumen-core'
 
@@ -227,6 +238,13 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-badge'
   },
+  BarChart: {
+    attributeClasses: glassAttributeClasses('ui-chart--glass'),
+    baseClassName: 'ui-chart ui-bar-chart',
+    defaults: { layout: 'grouped', orientation: 'vertical' },
+    role: 'figure',
+    tagName: 'lumen-bar-chart'
+  },
   Breadcrumb: { baseClassName: 'ui-breadcrumb', defaults: { 'aria-label': 'Breadcrumb' }, tagName: 'lumen-breadcrumb' },
   Bubble: {
     attributeClasses: { from: { user: 'ui-bubble--user' }, ...glassAttributeClasses('ui-bubble--glass') },
@@ -392,6 +410,12 @@ const elementConfigs = {
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
   Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
   Link: { attributeClasses: { variant: { inherit: 'ui-link--inherit' } }, baseClassName: 'ui-link', tagName: 'lumen-link' },
+  LineChart: {
+    attributeClasses: glassAttributeClasses('ui-chart--glass'),
+    baseClassName: 'ui-chart ui-line-chart',
+    role: 'figure',
+    tagName: 'lumen-line-chart'
+  },
   Marker: {
     attributeClasses: {
       variant: {
@@ -438,7 +462,17 @@ const elementConfigs = {
   },
   Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
   PhoneInput: { baseClassName: 'ui-phone-input ui-input-group', tagName: 'lumen-phone-input' },
-  Pill: { baseClassName: 'ui-pill', tagName: 'lumen-pill' },
+  Pill: {
+    attributeClasses: {
+      variant: {
+        brand: 'ui-pill--brand',
+        outline: 'ui-pill--outline'
+      }
+    },
+    baseClassName: 'ui-pill',
+    defaults: { variant: 'neutral' },
+    tagName: 'lumen-pill'
+  },
   Popover: {
     attributeClasses: {
       glass: { strong: 'ui-popover--glass ui-glass-strong', subtle: 'ui-popover--glass ui-glass-subtle', true: 'ui-popover--glass' },
@@ -459,6 +493,22 @@ const elementConfigs = {
   },
   RichTextEditor: { attributeClasses: glassAttributeClasses('ui-rich-text-editor--glass'), baseClassName: 'ui-rich-text-editor', defaults: { 'data-ui-rich-text-editor': '' }, tagName: 'lumen-rich-text-editor' },
   ScrollArea: { attributeClasses: glassAttributeClasses('ui-scroll-area--glass'), baseClassName: 'ui-scroll-area', tagName: 'lumen-scroll-area' },
+  ScrollProgress: {
+    attributeClasses: {
+      position: { bottom: 'ui-scroll-progress--bottom' }
+    },
+    baseClassName: 'ui-scroll-progress',
+    defaults: {
+      'aria-label': 'Reading progress',
+      'aria-valuemax': '100',
+      'aria-valuemin': '0',
+      'aria-valuenow': '0',
+      'data-ui-scroll-progress': '',
+      position: 'top',
+      role: 'progressbar'
+    },
+    tagName: 'lumen-scroll-progress'
+  },
   Schedule: { attributeClasses: glassAttributeClasses('ui-schedule--glass'), baseClassName: 'ui-schedule', defaults: { 'data-ui-schedule': '' }, tagName: 'lumen-schedule' },
   SearchField: { baseClassName: 'ui-input ui-search-field', defaults: { type: 'search' }, tagName: 'lumen-search-field' },
   Select: {
@@ -503,6 +553,7 @@ const elementConfigs = {
   SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' },
   Slider: { baseClassName: 'ui-slider', defaults: { type: 'range' }, tagName: 'lumen-slider' },
   Sonner: { baseClassName: 'ui-sonner', defaults: { 'data-ui-sonner': '' }, tagName: 'lumen-sonner' },
+  Sparkline: { baseClassName: 'ui-sparkline', tagName: 'lumen-sparkline' },
   Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
   Switch: { baseClassName: 'ui-switch', defaults: { role: 'switch', type: 'checkbox' }, tagName: 'lumen-switch' },
   Table: { attributeClasses: glassAttributeClasses('ui-table-wrap--glass'), baseClassName: 'ui-table-wrap', tagName: 'lumen-table' },
@@ -590,7 +641,17 @@ const elementConfigs = {
     defaults: { animation: 'fade', duration: 'slow', once: 'true', threshold: '0.15' },
     tagName: 'lumen-scroll-reveal'
   },
-  Stat: { baseClassName: 'ui-stat', tagName: 'lumen-stat' },
+  Stat: {
+    attributeClasses: {
+      variant: {
+        accent: 'ui-stat--accent',
+        glass: 'ui-stat--glass'
+      }
+    },
+    baseClassName: 'ui-stat',
+    defaults: { variant: 'default' },
+    tagName: 'lumen-stat'
+  },
   Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
   Note: {
     attributeClasses: {
@@ -674,7 +735,9 @@ const elementConfigs = {
 
 const observedAttributeNames = [
   'animation',
+  'area',
   'border-position',
+  'caption',
   'decimals',
   'delay',
   'decorative',
@@ -683,21 +746,31 @@ const observedAttributeNames = [
   'duration',
   'from',
   'glass',
+  'heading',
   'hover',
   'label',
   'locale',
+  'layout',
+  'markers',
   'name',
   'orientation',
   'position',
   'prefix',
   'pressed',
+  'reference-value',
+  'series',
   'shape',
+  'show-endpoint',
+  'show-legend',
+  'show-table',
   'size',
   'surface',
   'stagger',
   'suffix',
   'threshold',
+  'tone',
   'value',
+  'values',
   'variant'
 ]
 
@@ -3113,6 +3186,395 @@ export class LumenElement extends HTMLElement {
   }
 }
 
+const escapeChartHtml = (value: number | string): string =>
+  String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+
+const chartBooleanAttribute = (
+  element: HTMLElement,
+  name: string,
+  defaultValue: boolean
+): boolean => {
+  if (!element.hasAttribute(name)) return defaultValue
+
+  return element.getAttribute(name) !== 'false'
+}
+
+const parseChartSeries = (value: string | null): LumenChartSeries[] => {
+  if (!value) return []
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.flatMap((candidate, seriesIndex) => {
+      if (
+        typeof candidate !== 'object' ||
+        candidate === null
+      )
+        return []
+
+      const record = candidate as Record<string, unknown>
+
+      if (!Array.isArray(record.data)) return []
+
+      const candidateData = record.data as unknown[]
+
+      const data = candidateData.flatMap(datum => {
+        if (
+          typeof datum !== 'object' ||
+          datum === null ||
+          !('x' in datum) ||
+          !('y' in datum)
+        )
+          return []
+
+        const point = datum as Record<string, unknown>
+
+        if (
+          (typeof point.x !== 'string' && typeof point.x !== 'number') ||
+          (point.y !== null && (typeof point.y !== 'number' || !Number.isFinite(point.y)))
+        )
+          return []
+
+        return [{
+          ...(typeof point.label === 'string' ? { label: point.label } : {}),
+          x: point.x,
+          y: point.y
+        }]
+      })
+
+      const tone = typeof record.tone === 'string' &&
+        lumenChartTones.includes(record.tone as LumenChartTone)
+        ? record.tone as LumenChartTone
+        : undefined
+
+      return [{
+        data,
+        id: typeof record.id === 'string' ? record.id : `series-${seriesIndex + 1}`,
+        label: typeof record.label === 'string' ? record.label : `Series ${seriesIndex + 1}`,
+        ...(tone ? { tone } : {})
+      }]
+    })
+  } catch {
+    return []
+  }
+}
+
+const chartHeaderHtml = (element: HTMLElement): string => {
+  const heading = element.getAttribute('heading')
+  const description = element.getAttribute('description')
+  const value = element.getAttribute('value')
+
+  if (!heading && !description && !value) return ''
+
+  return `<header><div class="ui-chart__heading">${heading ? `<h3>${escapeChartHtml(heading)}</h3>` : ''}${description ? `<p>${escapeChartHtml(description)}</p>` : ''}</div>${value ? `<strong data-ui-chart-value>${escapeChartHtml(value)}</strong>` : ''}</header>`
+}
+
+const chartCaptionHtml = (element: HTMLElement): string => {
+  const caption = element.getAttribute('caption')
+
+  return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
+}
+
+const chartLegendHtml = (series: readonly LumenChartSeries[]): string =>
+  `<ul class="ui-chart__legend" aria-label="Chart legend">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
+
+const chartDataTableHtml = (
+  categories: readonly (number | string)[],
+  series: readonly LumenChartSeries[]
+): string => {
+  const headers = series
+    .map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
+    .join('')
+
+  const rows = categories.map(category => {
+    const cells = series.map(item => {
+      const datum = item.data.find(candidate => candidate.x === category)
+
+      const value = datum?.label ??
+        (datum?.y === null || datum === undefined ? 'Not available' : String(datum.y))
+
+      return `<td>${escapeChartHtml(value)}</td>`
+    }).join('')
+
+    return `<tr><th scope="row">${escapeChartHtml(category)}</th>${cells}</tr>`
+  }).join('')
+
+  return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
+}
+
+abstract class LumenDataChartBehaviorElement extends LumenElement {
+  #series: readonly LumenChartSeries[] | undefined
+
+  get series(): readonly LumenChartSeries[] {
+    return this.#series ?? parseChartSeries(this.getAttribute('series'))
+  }
+
+  set series(value: readonly LumenChartSeries[]) {
+    this.#series = value
+
+    this.renderChart()
+  }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderChart()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected abstract renderChart(): void
+}
+
+class LumenSparklineBehaviorElement extends LumenElement {
+  #toneClass: string | undefined
+  #values: readonly number[] | undefined
+
+  get values(): readonly number[] {
+    if (this.#values) return this.#values
+
+    const source = this.getAttribute('values')
+
+    if (!source) return []
+
+    try {
+      const parsed: unknown = JSON.parse(source)
+
+      if (Array.isArray(parsed))
+        return parsed.filter(
+          (value): value is number => typeof value === 'number' && Number.isFinite(value)
+        )
+    } catch {
+      return source
+        .split(',')
+        .map(value => Number(value.trim()))
+        .filter(Number.isFinite)
+    }
+
+    return []
+  }
+
+  set values(value: readonly number[]) {
+    this.#values = value
+
+    this.renderSparkline()
+  }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderSparkline()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.renderSparkline()
+  }
+
+  private renderSparkline() {
+    const values = this.values
+
+    if (values.length === 0) {
+      const label = this.getAttribute('label') ?? 'No trend data available.'
+
+      this.setAttribute('aria-label', label)
+
+      this.setAttribute('role', 'img')
+
+      this.innerHTML = `<span class="ui-sr-only">${escapeChartHtml(label)}</span>`
+
+      return
+    }
+
+    const label = this.getAttribute('label') ?? 'Trend'
+    const toneAttribute = this.getAttribute('tone')
+
+    const tone = resolveLumenChartTone(
+      toneAttribute && lumenChartTones.includes(toneAttribute as LumenChartTone)
+        ? toneAttribute as LumenChartTone
+        : undefined
+    )
+
+    const geometry = createLumenLineGeometry(
+      values.map((value, index) => ({ x: index, y: value })),
+      { height: 40, padding: 3, width: 120 }
+    )
+
+    const area = chartBooleanAttribute(this, 'area', false)
+    const showEndpoint = chartBooleanAttribute(this, 'show-endpoint', true)
+    const endpoint = geometry.points.at(-1)
+
+    if (this.#toneClass) this.classList.remove(this.#toneClass)
+
+    this.#toneClass = `ui-chart-tone--${tone}`
+
+    this.classList.add(this.#toneClass)
+
+    this.setAttribute('aria-label', label)
+
+    this.setAttribute('role', 'img')
+
+    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map(path => `<path class="ui-sparkline__area" d="${path}"></path>`).join('') : ''}<path class="ui-sparkline__line" d="${geometry.path}"></path>${showEndpoint && endpoint ? `<circle class="ui-sparkline__endpoint" cx="${endpoint.xCoordinate}" cy="${endpoint.yCoordinate}" r="2.5"></circle>` : ''}</svg><span class="ui-sr-only">${escapeChartHtml(label)}</span>`
+  }
+}
+
+class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
+  protected renderChart() {
+    const series = this.series
+
+    if (series.length === 0) {
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
+
+      return
+    }
+
+    const orientation = this.getAttribute('orientation') === 'horizontal'
+      ? 'horizontal'
+      : 'vertical'
+
+    const layout = this.getAttribute('layout') === 'stacked' ? 'stacked' : 'grouped'
+    const geometry = createLumenBarGeometry(series, { layout, orientation })
+    const ticks = getLumenChartTicks(geometry.domain)
+
+    const margin = orientation === 'horizontal'
+      ? { bottom: 24, left: 112, right: 20, top: 16 }
+      : { bottom: 52, left: 52, right: 16, top: 16 }
+
+    const grid = ticks.map(tick => {
+      const coordinate = orientation === 'horizontal'
+        ? scaleLumenChartValue(
+            tick,
+            geometry.domain,
+            margin.left,
+            geometry.width - margin.right
+          )
+        : scaleLumenChartValue(
+            tick,
+            geometry.domain,
+            geometry.height - margin.bottom,
+            margin.top
+          )
+
+      return orientation === 'horizontal'
+        ? `<line x1="${coordinate}" x2="${coordinate}" y1="${margin.top}" y2="${geometry.height - margin.bottom}"></line>`
+        : `<line x1="${margin.left}" x2="${geometry.width - margin.right}" y1="${coordinate}" y2="${coordinate}"></line>`
+    }).join('')
+
+    const labels = geometry.categories.map(category =>
+      `<text dominant-baseline="${orientation === 'horizontal' ? 'middle' : 'auto'}" text-anchor="${orientation === 'horizontal' ? 'end' : 'middle'}" x="${category.x}" y="${category.y}">${escapeChartHtml(category.label)}</text>`
+    ).join('')
+
+    const marks = geometry.marks.map(mark =>
+      `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}" rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}"><title>${escapeChartHtml(`${String(mark.category)} · ${mark.seriesLabel}: ${mark.value}`)}</title></rect>`
+    ).join('')
+
+    const showLegend = chartBooleanAttribute(this, 'show-legend', series.length > 1)
+    const showTable = chartBooleanAttribute(this, 'show-table', true)
+    const categories = geometry.categories.map(category => category.label)
+
+    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series) : ''}${chartCaptionHtml(this)}`
+  }
+}
+
+class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
+  protected renderChart() {
+    const series = this.series
+
+    if (series.length === 0) {
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
+
+      return
+    }
+
+    const width = 640
+    const height = 320
+    const padding = 44
+    const categories = getLumenChartCategories(series)
+    const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+    const referenceAttribute = this.getAttribute('reference-value')
+    const parsedReference = referenceAttribute === null ? undefined : Number(referenceAttribute)
+
+    const referenceValue = parsedReference !== undefined && Number.isFinite(parsedReference)
+      ? parsedReference
+      : undefined
+
+    const domain = getLumenChartDomain([
+      ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
+      referenceValue ?? null
+    ], false)
+
+    const geometries = alignedSeries.map(item =>
+      createLumenLineGeometry(item.data, {
+        domain,
+        height,
+        includeZero: false,
+        padding,
+        width
+      })
+    )
+
+    const ticks = getLumenChartTicks(domain)
+    const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+
+    const grid = ticks.map(tick => {
+      const y = scaleLumenChartValue(tick, domain, height - padding, padding)
+
+      return `<line x1="${padding}" x2="${width - padding}" y1="${y}" y2="${y}"></line><text x="${padding - 8}" y="${y}">${Number(tick.toPrecision(4))}</text>`
+    }).join('')
+
+    const labels = categories.map((category, index) => {
+      if (index % labelStep !== 0 && index !== categories.length - 1) return ''
+
+      const denominator = Math.max(1, categories.length - 1)
+      const x = padding + (index / denominator) * (width - padding * 2)
+
+      return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(category)}</text>`
+    }).join('')
+
+    const area = chartBooleanAttribute(this, 'area', false)
+    const markers = chartBooleanAttribute(this, 'markers', true)
+
+    const paths = geometries.map((geometry, index) => {
+      const item = series[index]
+
+      if (!item) return ''
+
+      const tone = resolveLumenChartTone(item.tone, index)
+
+      const areaPaths = area
+        ? geometry.areaPaths.map(path => `<path class="ui-line-chart__area" d="${path}"></path>`).join('')
+        : ''
+
+      const points = markers
+        ? geometry.points.map(point => `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3"><title>${escapeChartHtml(`${point.label ?? String(point.x)} · ${item.label}: ${String(point.y)}`)}</title></circle>`).join('')
+        : ''
+
+      return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}<path class="ui-line-chart__line" d="${geometry.path}"></path>${points}</g>`
+    }).join('')
+
+    const reference = referenceValue === undefined
+      ? ''
+      : `<line class="ui-chart__reference" x1="${padding}" x2="${width - padding}" y1="${scaleLumenChartValue(referenceValue, domain, height - padding, padding)}" y2="${scaleLumenChartValue(referenceValue, domain, height - padding, padding)}"></line>`
+
+    const showLegend = chartBooleanAttribute(this, 'show-legend', series.length > 1)
+    const showTable = chartBooleanAttribute(this, 'show-table', true)
+
+    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g>${reference}${paths}</svg></div>${showTable ? chartDataTableHtml(categories, series) : ''}${chartCaptionHtml(this)}`
+  }
+}
+
 class LumenIconBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
@@ -4882,6 +5344,80 @@ class LumenAnchorBehaviorElement extends LumenElement {
   }
 }
 
+class LumenScrollProgressBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private frame = 0
+
+  private update = () => {
+    this.frame = 0
+
+    const scrollingElement = document.scrollingElement ?? document.documentElement
+    const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
+
+    const percentage = maximum > 0
+      ? Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100))
+      : 0
+
+    let bar = this.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+
+    if (!bar) {
+      bar = document.createElement('span')
+
+      bar.className = 'ui-scroll-progress__bar'
+
+      this.append(bar)
+    }
+
+    this.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
+
+    bar.style.transform = `scaleX(${percentage / 100})`
+  }
+
+  private scheduleUpdate = () => {
+    if (this.frame) return
+
+    if (typeof requestAnimationFrame === 'undefined') {
+      this.update()
+
+      return
+    }
+
+    this.frame = requestAnimationFrame(this.update)
+  }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    window.addEventListener('resize', this.scheduleUpdate, {
+      passive: true,
+      signal: this.abortController.signal
+    })
+
+    window.addEventListener('scroll', this.scheduleUpdate, {
+      passive: true,
+      signal: this.abortController.signal
+    })
+
+    this.update()
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    if (this.frame && typeof cancelAnimationFrame !== 'undefined') {
+      cancelAnimationFrame(this.frame)
+    }
+
+    this.frame = 0
+  }
+}
+
 class LumenTourBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private opener: HTMLElement | null = null
@@ -5387,35 +5923,43 @@ class LumenParticlesBehaviorElement extends LumenElement {
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    if (this.children.length > 0) return
+    if (this.hasAttribute('data-ui-particles-initialized')) return
+
+    this.setAttribute('data-ui-particles-initialized', '')
 
     type ParticleDensity = 'low' | 'medium' | 'high'
 
     const densityConfig: Record<ParticleDensity, number> = { low: 15, medium: 25, high: 40 }
+
+    const particleTones = [
+      'var(--brand)',
+      'var(--accent)',
+      'var(--glow, var(--brand))'
+    ]
+
     const density = (this.getAttribute('data-ui-particles') || 'medium') as ParticleDensity
     const count = densityConfig[density]
 
     for (let i = 0; i < count; i++) {
-      const el = document.createElement('div')
+      const particle = document.createElement('span')
       const size = Math.random() * 12 + 8
-      const left = Math.random() * 100
-      const top = Math.random() * 100
-      const delay = Math.random() * 8
-      const duration = 20 + Math.random() * 15
 
-      el.style.cssText = `
-        position: absolute;
-        left: ${left}%;
-        top: ${top}%;
-        width: ${size}px;
-        height: ${size}px;
-        border-radius: 50%;
-        background: var(--ui-surface-strong, currentColor);
-        opacity: 0.1;
-        animation: ui-particle-drift ${duration}s ease-in-out ${delay}s infinite;
-      `
+      particle.className = 'ui-particles__particle'
 
-      this.appendChild(el)
+      const particleStyles = {
+        '--ui-particle-delay': `${Math.random() * 8}s`,
+        '--ui-particle-duration': `${20 + Math.random() * 15}s`,
+        '--ui-particle-left': `${Math.random() * 100}%`,
+        '--ui-particle-size': `${size}px`,
+        '--ui-particle-tone': particleTones[Math.floor(Math.random() * particleTones.length)] ?? 'var(--brand)',
+        '--ui-particle-top': `${Math.random() * 100}%`
+      }
+
+      for (const [property, value] of Object.entries(particleStyles)) {
+        particle.style.setProperty(property, value)
+      }
+
+      this.appendChild(particle)
     }
   }
 }
@@ -5727,6 +6271,7 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   Anchor: LumenAnchorBehaviorElement,
   AnimatedNumber: LumenAnimatedNumberBehaviorElement,
   BackToTop: LumenBackToTopBehaviorElement,
+  BarChart: LumenBarChartBehaviorElement,
   Cascader: LumenCascaderBehaviorElement,
   CodeTabs: LumenTabsBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
@@ -5735,14 +6280,17 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   FileUpload: LumenFileUploadBehaviorElement,
   Icon: LumenIconBehaviorElement,
   LanguageToggle: LumenLanguageToggleBehaviorElement,
+  LineChart: LumenLineChartBehaviorElement,
   Mentions: LumenMentionsBehaviorElement,
   Particles: LumenParticlesBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
   Rating: LumenRatingBehaviorElement,
   RevealGroup: LumenRevealGroupBehaviorElement,
+  ScrollProgress: LumenScrollProgressBehaviorElement,
   ScrollReveal: LumenScrollRevealBehaviorElement,
   Select: LumenSelectBehaviorElement,
   Sonner: LumenSonnerBehaviorElement,
+  Sparkline: LumenSparklineBehaviorElement,
   Tabs: LumenTabsBehaviorElement,
   ThemeBuilder: LumenThemeBuilderBehaviorElement,
   ThemeToggle: LumenThemeToggleBehaviorElement,
@@ -5839,6 +6387,7 @@ export const LumenAttachmentElement = elementClasses.Attachment
 export const LumenAutocompleteElement = elementClasses.Autocomplete
 export const LumenAvatarElement = elementClasses.Avatar
 export const LumenBadgeElement = elementClasses.Badge
+export const LumenBarChartElement = elementClasses.BarChart
 export const LumenBreadcrumbElement = elementClasses.Breadcrumb
 export const LumenBubbleElement = elementClasses.Bubble
 export const LumenButtonElement = elementClasses.Button
@@ -5873,6 +6422,7 @@ export const LumenNumberFieldElement = elementClasses.NumberField
 export const LumenItemElement = elementClasses.Item
 export const LumenKbdElement = elementClasses.Kbd
 export const LumenLabelElement = elementClasses.Label
+export const LumenLineChartElement = elementClasses.LineChart
 export const LumenMarkerElement = elementClasses.Marker
 export const LumenMenubarElement = elementClasses.Menubar
 export const LumenMessageElement = elementClasses.Message
@@ -5887,6 +6437,7 @@ export const LumenRadioGroupElement = elementClasses.RadioGroup
 export const LumenResizableElement = elementClasses.Resizable
 export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
+export const LumenScrollProgressElement = elementClasses.ScrollProgress
 export const LumenScheduleElement = elementClasses.Schedule
 export const LumenSearchFieldElement = elementClasses.SearchField
 export const LumenSelectElement = elementClasses.Select
@@ -5896,6 +6447,7 @@ export const LumenSidebarElement = elementClasses.Sidebar
 export const LumenSkeletonElement = elementClasses.Skeleton
 export const LumenSliderElement = elementClasses.Slider
 export const LumenSonnerElement = elementClasses.Sonner
+export const LumenSparklineElement = elementClasses.Sparkline
 export const LumenSpinnerElement = elementClasses.Spinner
 export const LumenSwitchElement = elementClasses.Switch
 export const LumenTableElement = elementClasses.Table

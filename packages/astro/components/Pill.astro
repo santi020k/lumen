@@ -8,6 +8,7 @@ interface Props extends HTMLAttributes<'span'> {
   className?: string
   count?: number | string
   href?: string
+  variant?: 'brand' | 'neutral' | 'outline'
 }
 
 const {
@@ -15,20 +16,22 @@ const {
   className = '',
   count,
   href,
+  variant = 'neutral',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-pill'
+  'ui-pill',
+  variant !== 'neutral' && `ui-pill--${variant}`
 ], classProp, className)
 ---
 
 {href
-  ? <a class:list={classList} href={href} {...passthrough}>
+  ? <a class:list={classList} data-variant={variant} href={href} {...passthrough}>
       <slot />
       {count != null && <span class="ui-pill__count">{count}</span>}
     </a>
-  : <span class:list={classList} {...passthrough}>
+  : <span class:list={classList} data-variant={variant} {...passthrough}>
       <slot />
       {count != null && <span class="ui-pill__count">{count}</span>}
     </span>
