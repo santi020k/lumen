@@ -1,0 +1,24 @@
+---
+import { PieChart } from '@santi020k/lumen-astro'
+
+const series = {
+  data: [
+    { label: 'Astro', x: 'astro', y: 58 },
+    { label: 'React', x: 'react', y: 29 },
+    { label: 'Elements', x: 'elements', y: 13 }
+  ],
+  id: 'frameworks',
+  label: 'Framework share'
+}
+---
+
+<div class="docs-glass-demo">
+  <PieChart
+    aria-label="Framework share"
+    centerLabel="Projects"
+    centerValue="1,280"
+    glass
+    heading="Framework share"
+    {series}
+  />
+</div>

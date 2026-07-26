@@ -1,0 +1,23 @@
+---
+import { PieChart } from '@santi020k/lumen-astro'
+
+const series = {
+  data: [
+    { label: 'Astro', x: 'astro', y: 46 },
+    { label: 'React', x: 'react', y: 31 },
+    { label: 'Web Components', x: 'elements', y: 15 },
+    { label: 'Other', x: 'other', y: 8 }
+  ],
+  id: 'frameworks',
+  label: 'Framework share'
+}
+---
+
+<PieChart
+  aria-label="Package usage by framework"
+  caption="Share of active Lumen projects."
+  centerLabel="Projects"
+  centerValue="2,480"
+  heading="Framework usage"
+  {series}
+/>

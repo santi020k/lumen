@@ -6,11 +6,13 @@ import {
   composeClassName,
   createLumenBarGeometry,
   createLumenLineGeometry,
+  createLumenPieGeometry,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenIcon,
   hasLumenChartData,
+  hasLumenPieData,
   type LumenBarChartLayout,
   type LumenChartOrientation,
   type LumenChartSeries,
@@ -20,6 +22,7 @@ import {
   type LumenIconData,
   type LumenIconName,
   type LumenIconNode,
+  type LumenPieChartVariant,
   resolveLumenChartTone,
   scaleLumenChartValue,
   tokenizeLumenCode
@@ -148,6 +151,13 @@ const emptyStringOptions: string[] = []
 const emptyDataTableColumns: DataTableColumn[] = []
 const emptyDataTableRows: DataTableRow[] = []
 const emptyChartSeries: LumenChartSeries[] = []
+
+const emptyPieSeries: LumenChartSeries = {
+  data: [],
+  id: 'pie',
+  label: 'Values'
+}
+
 const emptyChartValues: number[] = []
 
 const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
@@ -751,6 +761,12 @@ const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
   </details>
 )
 
+const formatChartPercentage = (percentage: number) =>
+  new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+    style: 'percent'
+  }).format(percentage)
+
 export interface SparklineProps extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
   area?: boolean
   label?: string
@@ -1049,6 +1065,111 @@ export const LineChart = ({
       </div>
       {showTable && hasData && (
         <ChartDataTable categories={categories} series={series} />
+      )}
+    </Chart>
+  )
+}
+
+export interface PieChartProps extends Omit<ChartProps, 'children'> {
+  centerLabel?: ReactNode
+  centerValue?: ReactNode
+  series?: LumenChartSeries
+  showLegend?: boolean
+  showTable?: boolean
+  valueFormatter?: (value: number) => string
+  variant?: LumenPieChartVariant
+}
+
+export const PieChart = ({
+  centerLabel,
+  centerValue,
+  className,
+  series = emptyPieSeries,
+  showLegend = true,
+  showTable = true,
+  valueFormatter = String,
+  variant = 'donut',
+  ...props
+}: PieChartProps) => {
+  const geometry = createLumenPieGeometry(series.data, { variant })
+  const hasData = hasLumenPieData(series.data)
+
+  return (
+    <Chart
+      className={composeClassName('ui-pie-chart', `ui-pie-chart--${variant}`, className)}
+      {...props}
+    >
+      {showLegend && hasData && (
+        <ul aria-label="Chart legend" className="ui-chart__legend">
+          {geometry.slices.map(slice => (
+            <li
+              className={`ui-chart-tone--${slice.tone}`}
+              key={`${typeof slice.x}:${String(slice.x)}`}
+            >
+              <span aria-hidden="true" />
+              {slice.label}
+            </li>
+          ))}
+        </ul>
+      )}
+      {!hasData && (
+        <p className="ui-chart__empty" role="status">No chart data available.</p>
+      )}
+      <div
+        className="ui-chart__plot ui-pie-chart__plot"
+        hidden={!hasData}
+      >
+        <svg
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
+          viewBox={`0 0 ${geometry.size} ${geometry.size}`}
+        >
+          <g className="ui-pie-chart__slices">
+            {geometry.slices.map(slice => (
+              <path
+                className={`ui-chart-tone--${slice.tone}`}
+                d={slice.path}
+                fillRule="evenodd"
+                key={`${typeof slice.x}:${String(slice.x)}`}
+              >
+                <title>
+                  {`${slice.label}: ${valueFormatter(slice.value)} (${formatChartPercentage(slice.percentage)})`}
+                </title>
+              </path>
+            ))}
+          </g>
+        </svg>
+        {variant === 'donut' && (centerLabel || centerValue) && (
+          <div aria-hidden="true" className="ui-pie-chart__center">
+            {centerValue && <strong>{centerValue}</strong>}
+            {centerLabel && <span>{centerLabel}</span>}
+          </div>
+        )}
+      </div>
+      {showTable && hasData && (
+        <details className="ui-chart__data">
+          <summary>View chart data</summary>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                {geometry.slices.map(slice => (
+                  <tr key={`${typeof slice.x}:${String(slice.x)}`}>
+                    <th scope="row">{slice.label}</th>
+                    <td>{valueFormatter(slice.value)}</td>
+                    <td>{formatChartPercentage(slice.percentage)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
       )}
     </Chart>
   )

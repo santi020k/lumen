@@ -12,6 +12,7 @@ import {
   createFigmaVariableName,
   createLumenBarGeometry,
   createLumenLineGeometry,
+  createLumenPieGeometry,
   createScheduleSlots,
   createScheduleStorageKey,
   createThemeBuilderTokens,
@@ -103,6 +104,9 @@ describe('lumen core metadata', () => {
         id: 'a',
         label: 'A'
       }]).marks
+    ).toHaveLength(1)
+    expect(
+      createLumenPieGeometry([{ x: 'A', y: 1 }]).slices
     ).toHaveLength(1)
   })
 

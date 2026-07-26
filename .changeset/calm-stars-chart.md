@@ -8,6 +8,7 @@
 ---
 
 Add shared chart contracts, geometry helpers, visualization tokens, and accessible `Sparkline`,
-`BarChart`, and `LineChart` components across Astro, React, and Web Components. Expand `Chart` with
-standard heading, description, value, and caption composition while preserving custom plot
-children.
+`BarChart`, `LineChart`, and `PieChart` components across Astro, React, and Web Components. The new
+pie renderer defaults to a donut, supports part-to-whole legends and center content, and includes
+a revealable semantic data table. Expand `Chart` with standard heading, description, value, and
+caption composition while preserving custom plot children.

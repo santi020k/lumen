@@ -10,8 +10,9 @@ tokens outside the shared stylesheet.
 ## Chart Helpers
 
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic
-domain, tick, scaling, line/area, and grouped/stacked bar geometry helpers. They render no DOM and
-perform no statistical analysis; framework packages use them to keep chart output aligned.
+domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry helpers. They render
+no DOM and perform no statistical analysis; framework packages use them to keep chart output
+aligned.
 
 ```ts
 import {

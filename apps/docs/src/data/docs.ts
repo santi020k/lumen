@@ -273,6 +273,7 @@ export const glassComponentNames = [
   'Menubar',
   'MessageScroller',
   'NavigationMenu',
+  'PieChart',
   'Popover',
   'RichTextEditor',
   'ScrollArea',
@@ -455,8 +456,8 @@ export const componentCollections: ComponentCollection[] = [
   },
   {
     title: 'Data visualization',
-    description: 'Match compact metrics, custom plots, categorical comparisons, and ordered trends to the question.',
-    names: ['Stat', 'Meter', 'Sparkline', 'Chart', 'BarChart', 'LineChart']
+    description: 'Match compact metrics, custom plots, categorical comparisons, ordered trends, and part-to-whole breakdowns to the question.',
+    names: ['Stat', 'Meter', 'Sparkline', 'Chart', 'BarChart', 'LineChart', 'PieChart']
   },
   {
     title: 'Disclosure and navigation',
@@ -1158,6 +1159,14 @@ const apiReferenceByComponent = {
     apiRow('placeholder', 'string', '"Phone number"', 'Sets the placeholder for the number input.'),
     apiRow('size', '"default" | "sm" | "lg"', '"default"', 'Controls the height and font size of both controls.')
   ],
+  PieChart: [
+    apiRow('series', 'LumenChartSeries', 'required', 'Provides one already-aggregated series whose positive finite data points become slices.'),
+    apiRow('variant', '"donut" | "pie"', '"donut"', 'Uses a center opening by default or renders a traditional pie.'),
+    apiRow('centerLabel, centerValue', 'string | ReactNode', '-', 'Adds optional visual summary content in the donut center.'),
+    apiRow('showLegend', 'boolean', 'true', 'Shows the color-independent category key.'),
+    apiRow('showTable', 'boolean', 'true', 'Provides a revealable semantic table with category, value, and share columns.'),
+    apiRow('valueFormatter', '(value: number) => string', 'String', 'Formats values in SVG titles and the semantic table for Astro and React; Web Components expose the equivalent JavaScript property.')
+  ],
   Pill: [
     apiRow('count', 'number | string', '-', 'Appends a muted count affix after the pill label.'),
     apiRow('href', 'string', '-', 'Renders the pill as a focusable anchor when it represents a destination.'),
@@ -1548,6 +1557,10 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use for supplementary information that should stay attached to nearby content.',
     distinction: 'Use Callout for stronger editorial emphasis and Alert for status that requires attention.'
   },
+  PieChart: {
+    when: 'Use for a part-to-whole breakdown with one series, non-negative values, and a small number of meaningful categories.',
+    distinction: 'Prefer the default donut for a center total. Use BarChart when precise comparison or more than roughly seven categories matters, and do not use PieChart for negative values or change over time.'
+  },
   Pill: {
     when: 'Use for a rounded label that may include a separate trailing count.',
     distinction: 'Use Badge for status variants, FloatingBadge for an overlaid notification, or TagGroup for interactive/removable tags.'
@@ -1695,6 +1708,7 @@ export const componentDocs: ComponentDoc[] = ([
   ['NumberField', 'Forms', 'Captures constrained numeric values.', '<NumberField min="1" max="10" step="1" aria-label="Seats" />'],
   ['Pagination', 'Navigation', 'Moves through paginated records or result sets.', '<Pagination><a href="?page=1">Previous</a><a aria-current="page" href="?page=2">2</a><a href="?page=3">Next</a></Pagination>'],
   ['PhoneInput', 'Forms', 'Pairs a country dial-code select with a telephone number input.', '<PhoneInput name="phone" countryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />'],
+  ['PieChart', 'Data display', 'Shows part-to-whole relationships as an accessible donut or pie chart.', '<PieChart aria-label="Framework share" centerLabel="Projects" centerValue="2,480" heading="Framework usage" series={{ id: "frameworks", label: "Framework share", data: [{ label: "Astro", x: "astro", y: 46 }, { label: "React", x: "react", y: 31 }, { label: "Web Components", x: "elements", y: 23 }] }} />'],
   ['Pill', 'Data display', 'Pairs a rounded text label with an optional trailing count.', '<Pill count={12} variant="brand">Notifications</Pill>'],
   ['Popover', 'Overlays', 'Displays lightweight floating content from a trigger.', '<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>'],
   ['Progress', 'Feedback', 'Shows completion, loading progress, or quota usage.', '<Progress value={64} max={100} aria-label="Upload progress" />'],

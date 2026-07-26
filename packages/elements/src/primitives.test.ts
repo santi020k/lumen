@@ -170,6 +170,18 @@ describe('@santi020k/lumen-elements primitives', () => {
       area: '',
       series
     })
+    const pie = connect('lumen-pie-chart', {
+      'center-label': 'Total',
+      'center-value': '12',
+      series: JSON.stringify([{
+        data: [
+          { label: 'Astro', tone: 'brand', x: 'astro', y: 8 },
+          { label: 'React', x: 'react', y: 4 }
+        ],
+        id: 'share',
+        label: 'Downloads'
+      }])
+    })
     const sparkline = connect('lumen-sparkline', {
       label: 'Downloads increased from 4 to 8',
       values: '4,8'
@@ -181,6 +193,9 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(bars.querySelector('details table')?.textContent).toContain('8 downloads')
     expect(line.querySelector('.ui-line-chart__line')).not.toBeNull()
     expect(line.querySelector('.ui-chart__reference')).not.toBeNull()
+    expect(pie.querySelectorAll('.ui-pie-chart__slices path')).toHaveLength(2)
+    expect(pie.querySelector('.ui-pie-chart__center')?.textContent).toBe('12Total')
+    expect(pie.querySelector('details table')?.textContent).toContain('67%')
     expect(sparkline.getAttribute('role')).toBe('img')
     expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
     expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
@@ -193,7 +208,11 @@ describe('@santi020k/lumen-elements primitives', () => {
       label: 'Downloads'
     }])
 
-    for (const tagName of ['lumen-bar-chart', 'lumen-line-chart']) {
+    for (const tagName of [
+      'lumen-bar-chart',
+      'lumen-line-chart',
+      'lumen-pie-chart'
+    ]) {
       const chart = connect(tagName, { series })
 
       expect(chart.querySelector('.ui-chart__empty')?.textContent)

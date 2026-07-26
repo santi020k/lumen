@@ -1,0 +1,133 @@
+---
+import {
+  createLumenPieGeometry,
+  hasLumenPieData,
+  type LumenChartSeries,
+  type LumenPieChartVariant
+} from '@santi020k/lumen-core'
+
+import type { HTMLAttributes } from 'astro/types'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  caption?: string
+  centerLabel?: string
+  centerValue?: string
+  class?: string | null
+  className?: string
+  description?: string
+  glass?: boolean | 'subtle' | 'strong'
+  heading?: string
+  series: LumenChartSeries
+  showLegend?: boolean
+  showTable?: boolean
+  valueFormatter?: (value: number) => string
+  variant?: LumenPieChartVariant
+}
+
+const {
+  caption,
+  centerLabel,
+  centerValue,
+  class: classProp = '',
+  className = '',
+  description,
+  glass = false,
+  heading,
+  series,
+  showLegend = true,
+  showTable = true,
+  valueFormatter = String,
+  variant = 'donut',
+  ...rest
+} = Astro.props
+const geometry = createLumenPieGeometry(series.data, { variant })
+const hasData = hasLumenPieData(series.data)
+const percentageFor = (percentage: number) =>
+  new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+    style: 'percent'
+  }).format(percentage)
+---
+
+<Chart
+  class:list={['ui-pie-chart', `ui-pie-chart--${variant}`, classProp, className]}
+  {caption}
+  {description}
+  {glass}
+  {heading}
+  {...rest}
+>
+  {
+    showLegend && hasData && (
+      <ul class="ui-chart__legend" aria-label="Chart legend">
+        {geometry.slices.map(slice => (
+          <li class={`ui-chart-tone--${slice.tone}`}>
+            <span aria-hidden="true" />
+            {slice.label}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot ui-pie-chart__plot" hidden={!hasData}>
+    <svg
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox={`0 0 ${geometry.size} ${geometry.size}`}
+    >
+      <g class="ui-pie-chart__slices">
+        {
+          geometry.slices.map(slice => (
+            <path
+              class={`ui-chart-tone--${slice.tone}`}
+              d={slice.path}
+              fill-rule="evenodd"
+            >
+              <title>
+                {`${slice.label}: ${valueFormatter(slice.value)} (${percentageFor(slice.percentage)})`}
+              </title>
+            </path>
+          ))
+        }
+      </g>
+    </svg>
+    {
+      variant === 'donut' && (centerLabel || centerValue) && (
+        <div class="ui-pie-chart__center" aria-hidden="true">
+          {centerValue && <strong>{centerValue}</strong>}
+          {centerLabel && <span>{centerLabel}</span>}
+        </div>
+      )
+    }
+  </div>
+  {
+    showTable && hasData && (
+      <details class="ui-chart__data">
+        <summary>View chart data</summary>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col">Value</th>
+                <th scope="col">Share</th>
+              </tr>
+            </thead>
+            <tbody>
+              {geometry.slices.map(slice => (
+                <tr>
+                  <th scope="row">{slice.label}</th>
+                  <td>{valueFormatter(slice.value)}</td>
+                  <td>{percentageFor(slice.percentage)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    )
+  }
+</Chart>

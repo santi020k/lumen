@@ -59,6 +59,7 @@ export const lumenComponentNames = [
   'NumberField',
   'Pagination',
   'PhoneInput',
+  'PieChart',
   'Pill',
   'Popover',
   'Progress',

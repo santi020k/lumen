@@ -52,9 +52,9 @@ import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
 
 ## Data visualization
 
-`Sparkline`, `BarChart`, and `LineChart` accept the shared `LumenChartSeries` contract and render
-without an external charting dependency. Bar and line charts expose a revealable semantic data
-table by default.
+`Sparkline`, `BarChart`, `LineChart`, and `PieChart` use the shared `LumenChartSeries` contract and
+render without an external charting dependency. Data charts expose a revealable semantic table by
+default. `PieChart` accepts one series and defaults to a donut presentation.
 
 ```tsx
 import { LineChart } from '@santi020k/lumen-react'

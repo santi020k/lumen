@@ -19,6 +19,7 @@ export type LumenChartTone = typeof lumenChartTones[number]
 
 export interface LumenChartDatum {
   label?: string
+  tone?: LumenChartTone
   x: number | string
   y: number | null
 }
@@ -91,6 +92,32 @@ export interface LumenBarGeometryOptions {
   width?: number
 }
 
+export type LumenPieChartVariant = 'donut' | 'pie'
+
+export interface LumenPieGeometrySlice {
+  label: string
+  path: string
+  percentage: number
+  tone: LumenChartTone
+  value: number
+  x: number | string
+}
+
+export interface LumenPieGeometry {
+  center: number
+  innerRadius: number
+  outerRadius: number
+  size: number
+  slices: readonly LumenPieGeometrySlice[]
+  total: number
+}
+
+export interface LumenPieGeometryOptions {
+  padding?: number
+  size?: number
+  variant?: LumenPieChartVariant
+}
+
 const defaultChartSize = 100
 const defaultChartPadding = 4
 
@@ -101,6 +128,12 @@ export const hasLumenChartData = (
   series: readonly LumenChartSeries[]
 ): boolean => series.some(item =>
   item.data.some(datum => datum.y !== null && Number.isFinite(datum.y))
+)
+
+export const hasLumenPieData = (
+  data: readonly LumenChartDatum[]
+): boolean => data.some(datum =>
+  datum.y !== null && Number.isFinite(datum.y) && datum.y > 0
 )
 
 export const getLumenChartDomain = (
@@ -160,6 +193,152 @@ export const resolveLumenChartTone = (
   tone: LumenChartTone | undefined,
   index = 0
 ): LumenChartTone => tone ?? lumenChartTones[index % 8] ?? 'series-1'
+
+interface LumenPolarPoint {
+  x: number
+  y: number
+}
+
+const polarPoint = (
+  center: number,
+  radius: number,
+  angle: number
+): LumenPolarPoint => {
+  const radians = angle * Math.PI / 180
+
+  return {
+    x: center + Math.cos(radians) * radius,
+    y: center + Math.sin(radians) * radius
+  }
+}
+
+const formatPieCoordinate = (value: number): string => value.toFixed(3)
+
+const pieArc = (
+  radius: number,
+  largeArc: boolean,
+  sweep: 0 | 1,
+  point: LumenPolarPoint
+): string =>
+  `A ${formatPieCoordinate(radius)} ${formatPieCoordinate(radius)} 0 ${largeArc ? 1 : 0} ${sweep} ${formatPieCoordinate(point.x)} ${formatPieCoordinate(point.y)}`
+
+const fullPiePath = (
+  center: number,
+  outerRadius: number,
+  innerRadius: number
+): string => {
+  const topOuter = polarPoint(center, outerRadius, -90)
+  const bottomOuter = polarPoint(center, outerRadius, 90)
+
+  const outer = [
+    `M ${formatPieCoordinate(topOuter.x)} ${formatPieCoordinate(topOuter.y)}`,
+    pieArc(outerRadius, true, 1, bottomOuter),
+    pieArc(outerRadius, true, 1, topOuter),
+    'Z'
+  ]
+
+  if (innerRadius === 0) return outer.join(' ')
+
+  const topInner = polarPoint(center, innerRadius, -90)
+  const bottomInner = polarPoint(center, innerRadius, 90)
+
+  return [
+    ...outer,
+    `M ${formatPieCoordinate(topInner.x)} ${formatPieCoordinate(topInner.y)}`,
+    pieArc(innerRadius, true, 0, bottomInner),
+    pieArc(innerRadius, true, 0, topInner),
+    'Z'
+  ].join(' ')
+}
+
+const pieSlicePath = (
+  center: number,
+  outerRadius: number,
+  innerRadius: number,
+  startAngle: number,
+  endAngle: number
+): string => {
+  if (endAngle - startAngle >= 359.999) {
+    return fullPiePath(center, outerRadius, innerRadius)
+  }
+
+  const outerStart = polarPoint(center, outerRadius, startAngle)
+  const outerEnd = polarPoint(center, outerRadius, endAngle)
+  const largeArc = endAngle - startAngle > 180
+
+  if (innerRadius === 0) {
+    return [
+      `M ${formatPieCoordinate(center)} ${formatPieCoordinate(center)}`,
+      `L ${formatPieCoordinate(outerStart.x)} ${formatPieCoordinate(outerStart.y)}`,
+      pieArc(outerRadius, largeArc, 1, outerEnd),
+      'Z'
+    ].join(' ')
+  }
+
+  const innerStart = polarPoint(center, innerRadius, startAngle)
+  const innerEnd = polarPoint(center, innerRadius, endAngle)
+
+  return [
+    `M ${formatPieCoordinate(outerStart.x)} ${formatPieCoordinate(outerStart.y)}`,
+    pieArc(outerRadius, largeArc, 1, outerEnd),
+    `L ${formatPieCoordinate(innerEnd.x)} ${formatPieCoordinate(innerEnd.y)}`,
+    pieArc(innerRadius, largeArc, 0, innerStart),
+    'Z'
+  ].join(' ')
+}
+
+export const createLumenPieGeometry = (
+  data: readonly LumenChartDatum[],
+  options: LumenPieGeometryOptions = {}
+): LumenPieGeometry => {
+  const size = Math.max(1, options.size ?? 320)
+  const padding = Math.max(0, options.padding ?? 12)
+  const center = size / 2
+  const outerRadius = Math.max(0, center - padding)
+  const innerRadius = options.variant === 'pie' ? 0 : outerRadius * 0.58
+
+  const available = data.filter((datum): datum is LumenChartDatum & { y: number } =>
+    datum.y !== null && Number.isFinite(datum.y) && datum.y > 0
+  )
+
+  const total = available.reduce((sum, datum) => sum + datum.y, 0)
+  let angle = -90
+
+  const slices = available.map((datum, index) => {
+    const percentage = total === 0 ? 0 : datum.y / total
+    const startAngle = angle
+
+    const endAngle = index === available.length - 1
+      ? 270
+      : startAngle + percentage * 360
+
+    angle = endAngle
+
+    return {
+      label: datum.label ?? String(datum.x),
+      path: pieSlicePath(
+        center,
+        outerRadius,
+        innerRadius,
+        startAngle,
+        endAngle
+      ),
+      percentage,
+      tone: resolveLumenChartTone(datum.tone, index),
+      value: datum.y,
+      x: datum.x
+    }
+  })
+
+  return {
+    center,
+    innerRadius,
+    outerRadius,
+    size,
+    slices,
+    total
+  }
+}
 
 const splitGeometrySegments = (
   data: readonly LumenChartDatum[],

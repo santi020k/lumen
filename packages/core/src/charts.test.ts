@@ -4,10 +4,12 @@ import {
   alignLumenChartSeries,
   createLumenBarGeometry,
   createLumenLineGeometry,
+  createLumenPieGeometry,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
   hasLumenChartData,
+  hasLumenPieData,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from './charts.js'
@@ -93,6 +95,39 @@ describe('Lumen chart helpers', () => {
     expect(resolveLumenChartTone(undefined, 0)).toBe('series-1')
     expect(resolveLumenChartTone(undefined, 8)).toBe('series-1')
     expect(resolveLumenChartTone('danger', 0)).toBe('danger')
+  })
+
+  test('builds pie and donut slices from positive finite values', () => {
+    const data = [
+      { label: 'Core', tone: 'brand' as const, x: 'core', y: 60 },
+      { label: 'Astro', x: 'astro', y: 30 },
+      { label: 'Ignored', x: 'ignored', y: -10 },
+      { label: 'Missing', x: 'missing', y: null }
+    ]
+    const donut = createLumenPieGeometry(data)
+    const pie = createLumenPieGeometry(data, { variant: 'pie' })
+
+    expect(hasLumenPieData(data)).toBe(true)
+    expect(donut.total).toBe(90)
+    expect(donut.slices).toHaveLength(2)
+    expect(donut.slices[0]).toMatchObject({
+      label: 'Core',
+      percentage: 2 / 3,
+      tone: 'brand',
+      value: 60
+    })
+    expect(donut.innerRadius).toBeGreaterThan(0)
+    expect(pie.innerRadius).toBe(0)
+    expect(pie.slices[0]?.path).toContain('M 160.000 160.000')
+  })
+
+  test('creates a valid full-circle path for one pie slice', () => {
+    const geometry = createLumenPieGeometry([
+      { x: 'All', y: 100 }
+    ])
+
+    expect(geometry.slices[0]?.path.match(/ A /g)).toHaveLength(4)
+    expect(hasLumenPieData([{ x: 'Zero', y: 0 }])).toBe(false)
   })
 
   test('lays out grouped and stacked bars in both orientations', () => {

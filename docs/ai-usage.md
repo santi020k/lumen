@@ -226,7 +226,7 @@ The shared catalog includes:
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
 `Label`, `LineChart`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
-`NumberField`, `Pagination`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
+`NumberField`, `Pagination`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
 `Slider`, `Sparkline`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
 `TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and
@@ -235,10 +235,12 @@ The shared catalog includes:
 ## Product Recipes
 
 - Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical
-  comparison, and `LineChart` for ordered or time-series data. Pass already-aggregated
-  `LumenChartSeries` data; keep statistics, resampling, model evaluation, and domain calculations
-  in application code. Keep `showTable` enabled unless the same values are already available in a
-  nearby semantic table. Use `Chart` as the custom SVG/canvas escape hatch.
+  comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small
+  part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,
+  resampling, model evaluation, and domain calculations in application code. Keep `showTable`
+  enabled unless the same values are already available in a nearby semantic table. Prefer a bar
+  chart when precise slice comparison matters or the pie would exceed roughly seven categories.
+  Use `Chart` as the custom SVG/canvas escape hatch.
 - Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
   names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
   when the icon carries meaning on its own. Install and register

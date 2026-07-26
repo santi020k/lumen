@@ -593,10 +593,11 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships accessible, tokenized chart primitives with shared data fallbacks', async () => {
-    const [barChart, chart, lineChart, sparkline, styles] = await Promise.all([
+    const [barChart, chart, lineChart, pieChart, sparkline, styles] = await Promise.all([
       readFile(new URL('./components/BarChart.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Chart.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/LineChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Sparkline.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
@@ -610,6 +611,10 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(lineChart).toContain('hasLumenChartData')
     expect(lineChart).toContain('referenceValue?: number')
     expect(lineChart).toContain('Not available')
+    expect(pieChart).toContain('createLumenPieGeometry')
+    expect(pieChart).toContain("variant = 'donut'")
+    expect(pieChart).toContain('centerValue?: string')
+    expect(pieChart).toContain('View chart data')
     expect(sparkline).toContain('label: string')
     expect(sparkline).toContain('role="img"')
     expect(styles).toContain('--chart-series-8')
@@ -618,6 +623,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-chart__data')
     expect(styles).toContain('.ui-line-chart__line')
     expect(styles).toContain('.ui-bar-chart__marks')
+    expect(styles).toContain('.ui-pie-chart__slices')
     expect(styles).toContain('.ui-sparkline__line')
   })
 
