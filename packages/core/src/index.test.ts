@@ -111,7 +111,8 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-core',
       '@santi020k/lumen-astro',
       '@santi020k/lumen-react',
-      '@santi020k/lumen-elements'
+      '@santi020k/lumen-elements',
+      '@santi020k/lumen-icons-brand'
     ])
   })
 })

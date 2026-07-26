@@ -235,9 +235,10 @@ The shared catalog includes:
   nearby semantic table. Use `Chart` as the custom SVG/canvas escape hatch.
 - Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
   names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
-  when the icon carries meaning on its own. Lucide does not include brand marks such as GitHub;
-  render a project-owned SVG through the default `Icon` slot for brand and custom icons. Astro
-  reports unknown named icons during development instead of failing silently.
+  when the icon carries meaning on its own. Install and register
+  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as
+  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`
+  slot. Astro reports unknown named icons during development instead of failing silently.
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.

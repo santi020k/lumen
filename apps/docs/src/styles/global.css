@@ -568,7 +568,7 @@ body {
   text-transform: uppercase;
 }
 
-.docs-site-footer__quickstart > .ui-code--block {
+.docs-site-footer__quickstart > .ui-code-tabs {
   margin: 0;
 }
 

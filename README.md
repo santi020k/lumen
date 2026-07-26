@@ -152,6 +152,7 @@ component defaults.
 | [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |
 | [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
 | [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
+| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |
 | [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
 | [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
 

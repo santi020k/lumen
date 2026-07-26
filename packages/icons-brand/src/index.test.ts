@@ -28,9 +28,11 @@ describe('Lumen brand icons', () => {
   test('registers namespaced icons with the shared renderer', () => {
     expect(resolveLumenIconName('brand:github')).toBeUndefined()
 
-    registerLumenBrandIcons()
+    const registeredIcons = registerLumenBrandIcons()
 
-    expect(resolveLumenIconName('brand:GitHub')).toBe('brand:github')
+    expect(registeredIcons?.github).toBe(lumenBrandIcons.github)
+
+    expect(resolveLumenIconName('brand:github')).toBe('brand:github')
     expect(getRegisteredLumenIconNames()).toContain('brand:linkedin')
     expect(getLumenIcon('brand:whatsapp')).toBe(lumenBrandIcons.whatsapp)
 

@@ -2,7 +2,7 @@
 import {
   Badge,
   ButtonLink,
-  Code,
+  CodeTabs,
   Icon,
   Link,
   Marker,
@@ -54,24 +54,34 @@ const componentCount = lumenComponentNames.length
 
 const frameworkLinks = [
   {
+    command: 'pnpm add @santi020k/lumen-astro',
     href: '/docs/frameworks/astro',
     icon: 'asterisk',
     label: 'Astro',
     meta: 'Reference'
   },
   {
+    command: 'pnpm add @santi020k/lumen-react',
     href: '/docs/frameworks/react',
     icon: 'atom',
     label: 'React',
     meta: 'Full catalog'
   },
   {
+    command: 'pnpm add @santi020k/lumen-elements',
     href: '/docs/frameworks/elements',
     icon: 'blocks',
     label: 'Elements',
     meta: 'Web standards'
   }
 ] as const
+
+const installTabs = frameworkLinks.map(framework => ({
+  code: framework.command,
+  label: framework.label,
+  language: 'bash',
+  value: framework.label.toLowerCase()
+}))
 ---
 
 <footer class="docs-site-footer">
@@ -116,14 +126,12 @@ const frameworkLinks = [
       <div class="docs-site-footer__quickstart">
         <div class="docs-site-footer__quickstart-heading">
           <span>Quick start</span>
-          <Marker variant="success">Astro reference</Marker>
+          <Marker variant="success">3 packages</Marker>
         </div>
-        <Code
-          code="pnpm add @santi020k/lumen-astro"
-          copy
-          label="Install"
-          language="bash"
-          variant="block"
+        <CodeTabs
+          ariaLabel="Choose a framework package"
+          items={installTabs}
+          storageKey="lumen-footer-framework"
         />
         <div class="docs-site-footer__frameworks">
           {frameworkLinks.map(framework => (

@@ -1,4 +1,5 @@
 import {
+  getLumenIconPack,
   type LumenIconData,
   type LumenIconNode,
   registerLumenIconPack
@@ -44,4 +45,6 @@ export const lumenBrandIconNames = Object.freeze(
 
 export const registerLumenBrandIcons = () => {
   registerLumenIconPack(lumenBrandIconPrefix, lumenBrandIcons)
+
+  return getLumenIconPack(lumenBrandIconPrefix)
 }
