@@ -95,11 +95,16 @@ const percentageFor = (percentage: number) =>
       </g>
     </svg>
     {
-      variant === 'donut' && (centerLabel || centerValue) && (
-        <div class="ui-pie-chart__center" aria-hidden="true">
-          {centerValue && <strong>{centerValue}</strong>}
-          {centerLabel && <span>{centerLabel}</span>}
-        </div>
+      variant === 'donut' && (centerLabel != null || centerValue != null) && (
+        <>
+          <div class="ui-pie-chart__center" aria-hidden="true">
+            {centerValue != null && <strong>{centerValue}</strong>}
+            {centerLabel != null && <span>{centerLabel}</span>}
+          </div>
+          <div class="ui-sr-only">
+            {centerValue} {centerLabel}
+          </div>
+        </>
       )
     }
   </div>

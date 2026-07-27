@@ -1139,11 +1139,16 @@ export const PieChart = ({
             ))}
           </g>
         </svg>
-        {variant === 'donut' && (centerLabel || centerValue) && (
-          <div aria-hidden="true" className="ui-pie-chart__center">
-            {centerValue && <strong>{centerValue}</strong>}
-            {centerLabel && <span>{centerLabel}</span>}
-          </div>
+        {variant === 'donut' && (centerLabel != null || centerValue != null) && (
+          <>
+            <div aria-hidden="true" className="ui-pie-chart__center">
+              {centerValue != null && <strong>{centerValue}</strong>}
+              {centerLabel != null && <span>{centerLabel}</span>}
+            </div>
+            <div className="ui-sr-only">
+              {centerValue} {centerLabel}
+            </div>
+          </>
         )}
       </div>
       {showTable && hasData && (

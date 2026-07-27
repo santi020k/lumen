@@ -8,6 +8,7 @@ out/
 
 # Framework, bundler, and task-runner caches.
 .astro/
+.astro-doctor/
 .next/
 .turbo/
 .vite/
