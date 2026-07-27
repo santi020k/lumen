@@ -16,6 +16,7 @@ export default defineConfig({
   },
   forbidOnly: Boolean(process.env.CI),
   fullyParallel: true,
+  maxFailures: process.env.CI ? 10 : 0,
   projects: [
     {
       name: 'chromium',
@@ -23,7 +24,7 @@ export default defineConfig({
     }
   ],
   reporter: process.env.CI ? 'github' : 'list',
-  retries: process.env.CI ? 2 : 0,
+  retries: 0,
   testDir: './tests/visual',
   workers: 2,
   use: {

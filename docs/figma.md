@@ -14,10 +14,10 @@ AI agents maintaining the library itself should follow the reusable
 
 The Lumen Figma library lives at
 [Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
-`luQW2pTQ3jGGxSFPAAsfa9`). The release library contains 123 public component assets and 53 local
+`luQW2pTQ3jGGxSFPAAsfa9`). The canonical file contains 128 public component assets and 69 local
 variables across three collections:
 
-- `Color`: 46 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
+- `Color`: 62 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
   `santi020k Dark` modes.
 - `Radius`: four values (`sm`, `md`, `lg`, and `full`).
 - `Effects`: three semantic shadow variables in `Light` and `Dark` modes.
@@ -46,9 +46,10 @@ props, so `Variant=Destructive, Size=Sm` corresponds to
 prototype transitions for toggles, disclosures, tabs, selection controls, menus, theme controls,
 and reveal behavior.
 
-`AnimatedNumber` and `RevealGroup` complete the current 123-component code registry. Their Figma
-variants expose representative duration and state transitions while their descriptions and
-properties mirror the Astro behavior contracts.
+The data-visualization family includes the general `Chart` asset plus dedicated `Sparkline`,
+`BarChart`, `LineChart`, and `PieChart` assets. `ScrollProgress` lives on the Utilities page. These
+assets use the 16 `color/chart/*` variables for categorical, sequential, diverging, axis, and grid
+roles and have been checked in all four Color modes.
 
 ## Theme Tokens
 

@@ -64,7 +64,7 @@
     { "pattern": "keyboard shortcut hint", "components": ["Kbd"] },
     { "pattern": "code block or inline code", "components": ["Code"] },
     { "pattern": "tabbed package-manager, language, or configuration code examples", "components": ["CodeTabs", "Code"] },
-    { "pattern": "chart or graph", "components": ["Chart", "BarChart", "LineChart", "Sparkline"] },
+    { "pattern": "chart or graph", "components": ["Chart", "BarChart", "LineChart", "PieChart", "Sparkline"] },
     { "pattern": "image with fixed proportions", "components": ["AspectRatio"] },
     { "pattern": "carousel of slides", "components": ["Carousel"] },
     { "pattern": "resizable split panes", "components": ["Resizable"] },

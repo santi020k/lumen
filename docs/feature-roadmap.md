@@ -25,9 +25,10 @@ surface; React and Web Components expose the same class and data contracts.
   <framework>`.
 - Scheduling surfaces: `Schedule` and `Agenda`.
 - Advanced data surfaces: `DataTable`, `Tree`, `TreeGrid`, and `VirtualList`.
-- Data visualization: shared chart types, scales, ticks, line/area and grouped/stacked bar geometry;
-  tokenized `Chart`, `Sparkline`, `BarChart`, and `LineChart` surfaces; revealable data tables; and
-  Astro, React, and Elements parity without a charting runtime dependency.
+- Data visualization: shared chart types, scales, ticks, line/area, grouped/stacked bar, and
+  pie/donut geometry; tokenized `Chart`, `Sparkline`, `BarChart`, `LineChart`, and `PieChart`
+  surfaces; revealable data tables; and Astro, React, and Elements parity without a charting
+  runtime dependency.
 - Theme tooling surface: `ThemeBuilder`.
 - Rich text composition surface: `RichTextEditor`.
 - Advanced fields: `Autocomplete`, `NumberField`, `SearchField`, `TimeField`, `DateRangePicker`,

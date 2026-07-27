@@ -8,6 +8,7 @@ import {
   composeClassName,
   createLumenBarGeometry,
   createLumenLineGeometry,
+  createLumenPieGeometry,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
   getLumenChartCategories,
@@ -16,12 +17,14 @@ import {
   getLumenRichTextShortcut,
   getVirtualRange,
   hasLumenChartData,
+  hasLumenPieData,
   isLumenRichTextToggleCommand,
   type LumenChartSeries,
   type LumenChartTone,
   lumenChartTones,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenPieGeometrySlice,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
   type LumenThemeBuilderExportFormat,
@@ -438,6 +441,19 @@ const elementConfigs = {
     defaults: { 'data-ui-menubar': '', surface: 'default' },
     tagName: 'lumen-menubar'
   },
+  PieChart: {
+    attributeClasses: {
+      ...glassAttributeClasses('ui-chart--glass'),
+      variant: {
+        donut: 'ui-pie-chart--donut',
+        pie: 'ui-pie-chart--pie'
+      }
+    },
+    baseClassName: 'ui-chart ui-pie-chart',
+    defaults: { variant: 'donut' },
+    role: 'figure',
+    tagName: 'lumen-pie-chart'
+  },
   Message: {
     attributeClasses: {
       from: {
@@ -739,6 +755,8 @@ const observedAttributeNames = [
   'area',
   'border-position',
   'caption',
+  'center-label',
+  'center-value',
   'decimals',
   'delay',
   'decorative',
@@ -3245,6 +3263,10 @@ const parseChartSeries = (value: string | null): LumenChartSeries[] => {
 
         return [{
           ...(typeof point.label === 'string' ? { label: point.label } : {}),
+          ...(typeof point.tone === 'string' &&
+            lumenChartTones.includes(point.tone as LumenChartTone)
+            ? { tone: point.tone as LumenChartTone }
+            : {}),
           x: point.x,
           y: point.y
         }]
@@ -3309,6 +3331,12 @@ const chartDataTableHtml = (
 
   return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
 }
+
+const chartPercentage = (percentage: number): string =>
+  new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+    style: 'percent'
+  }).format(percentage)
 
 abstract class LumenDataChartBehaviorElement extends LumenElement {
   #series: readonly LumenChartSeries[] | undefined
@@ -3573,6 +3601,64 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     const showTable = chartBooleanAttribute(this, 'show-table', true)
 
     this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g>${reference}${paths}</svg></div>${showTable ? chartDataTableHtml(categories, series) : ''}${chartCaptionHtml(this)}`
+  }
+}
+
+class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
+  #valueFormatter: ((value: number) => string) | undefined
+
+  get valueFormatter(): (value: number) => string {
+    return this.#valueFormatter ?? String
+  }
+
+  set valueFormatter(value: (value: number) => string) {
+    this.#valueFormatter = value
+
+    this.renderChart()
+  }
+
+  protected renderChart() {
+    const series = this.series[0]
+
+    if (!series || !hasLumenPieData(series.data)) {
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
+
+      return
+    }
+
+    const variant = this.getAttribute('variant') === 'pie' ? 'pie' : 'donut'
+    const geometry = createLumenPieGeometry(series.data, { variant })
+    const showLegend = chartBooleanAttribute(this, 'show-legend', true)
+    const showTable = chartBooleanAttribute(this, 'show-table', true)
+
+    const legend = showLegend
+      ? `<ul class="ui-chart__legend" aria-label="Chart legend">${geometry.slices.map(slice => `<li class="ui-chart-tone--${slice.tone}"><span aria-hidden="true"></span>${escapeChartHtml(slice.label)}</li>`).join('')}</ul>`
+      : ''
+
+    const slices = geometry.slices.map(slice =>
+      `<path class="ui-chart-tone--${slice.tone}" d="${slice.path}" fill-rule="evenodd"><title>${escapeChartHtml(`${slice.label}: ${this.valueFormatter(slice.value)} (${chartPercentage(slice.percentage)})`)}</title></path>`
+    ).join('')
+
+    const centerLabel = this.getAttribute('center-label')
+    const centerValue = this.getAttribute('center-value')
+
+    const center = variant === 'donut' && (centerLabel || centerValue)
+      ? `<div class="ui-pie-chart__center" aria-hidden="true">${centerValue ? `<strong>${escapeChartHtml(centerValue)}</strong>` : ''}${centerLabel ? `<span>${escapeChartHtml(centerLabel)}</span>` : ''}</div>`
+      : ''
+
+    const table = showTable
+      ? this.pieDataTable(geometry.slices)
+      : ''
+
+    this.innerHTML = `${chartHeaderHtml(this)}${legend}<div class="ui-chart__plot ui-pie-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.size} ${geometry.size}"><g class="ui-pie-chart__slices">${slices}</g></svg>${center}</div>${table}${chartCaptionHtml(this)}`
+  }
+
+  private pieDataTable(slices: readonly LumenPieGeometrySlice[]): string {
+    const rows = slices.map(slice =>
+      `<tr><th scope="row">${escapeChartHtml(slice.label)}</th><td>${escapeChartHtml(this.valueFormatter(slice.value))}</td><td>${escapeChartHtml(chartPercentage(slice.percentage))}</td></tr>`
+    ).join('')
+
+    return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th><th scope="col">Value</th><th scope="col">Share</th></tr></thead><tbody>${rows}</tbody></table></div></details>`
   }
 }
 
@@ -6284,6 +6370,7 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   LineChart: LumenLineChartBehaviorElement,
   Mentions: LumenMentionsBehaviorElement,
   Particles: LumenParticlesBehaviorElement,
+  PieChart: LumenPieChartBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
   Rating: LumenRatingBehaviorElement,
   RevealGroup: LumenRevealGroupBehaviorElement,
@@ -6432,6 +6519,7 @@ export const LumenNativeSelectElement = elementClasses.NativeSelect
 export const LumenNavigationMenuElement = elementClasses.NavigationMenu
 export const LumenPaginationElement = elementClasses.Pagination
 export const LumenPhoneInputElement = elementClasses.PhoneInput
+export const LumenPieChartElement = elementClasses.PieChart
 export const LumenPopoverElement = elementClasses.Popover
 export const LumenProgressElement = elementClasses.Progress
 export const LumenRadioGroupElement = elementClasses.RadioGroup

@@ -86,6 +86,7 @@ export const lumenRegistry = {
         "Sparkline",
         "BarChart",
         "LineChart",
+        "PieChart",
         "Stat",
         "Meter"
       ]
@@ -958,6 +959,21 @@ export const lumenRegistry = {
       "dependencies": [
         "Input",
         "NativeSelect",
+        "styles"
+      ]
+    },
+    {
+      "name": "PieChart",
+      "type": "component",
+      "description": "Shows part-to-whole relationships as an accessible donut or pie chart.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/PieChart.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Chart",
         "styles"
       ]
     },

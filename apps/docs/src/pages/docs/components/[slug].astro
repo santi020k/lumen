@@ -533,23 +533,44 @@ export function HeroImage() {
 
   <Separator class="my-10" />
 
-  <Pagination class="flex flex-wrap justify-between gap-3" aria-label="Component pagination">
+  <Pagination class="component-doc-pagination" aria-label="Component pagination">
     {previous
       ? (
           <DocsActionLink
+            aria-label={`Previous component: ${previous.name}`}
+            class="
+              component-doc-pagination__link
+              component-doc-pagination__link--previous
+            "
             href={`/docs/components/${toSlug(previous.name)}`}
             variant="outline"
           >
-            Previous: {previous.name}
+            <span class="component-doc-pagination__icon" aria-hidden="true">
+              <Icon name="arrow-left" size="sm" />
+            </span>
+            <span class="component-doc-pagination__copy">
+              <small>Previous component</small>
+              <strong>{previous.name}</strong>
+            </span>
           </DocsActionLink>
         )
       : <span />}
     {next && (
       <DocsActionLink
+        aria-label={`Next component: ${next.name}`}
+        class="
+          component-doc-pagination__link component-doc-pagination__link--next
+        "
         href={`/docs/components/${toSlug(next.name)}`}
         variant="outline"
       >
-        Next: {next.name}
+        <span class="component-doc-pagination__copy">
+          <small>Next component</small>
+          <strong>{next.name}</strong>
+        </span>
+        <span class="component-doc-pagination__icon" aria-hidden="true">
+          <Icon name="arrow-right" size="sm" />
+        </span>
       </DocsActionLink>
     )}
   </Pagination>

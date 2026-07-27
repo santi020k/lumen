@@ -49,6 +49,7 @@ import {
   NavigationMenu,
   NumberField,
   Pagination,
+  PieChart,
   Pill,
   Progress,
   RadioGroup,
@@ -427,6 +428,18 @@ describe('@santi020k/lumen-react components', () => {
       referenceValue: 6,
       series
     }) as ReactElement
+    const pie = PieChart({
+      centerLabel: 'Total',
+      centerValue: '12',
+      series: {
+        data: [
+          { label: 'Astro', x: 'astro', y: 8 },
+          { label: 'React', x: 'react', y: 4 }
+        ],
+        id: 'downloads',
+        label: 'Downloads'
+      }
+    }) as ReactElement
     const sparkline = Sparkline({
       area: true,
       label: 'Downloads increased from 4 to 8',
@@ -438,6 +451,8 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(bars).heading).toBe('Package downloads')
     expect(line.type).toBe(Chart)
     expect(propsOf(line).className).toBe('ui-line-chart')
+    expect(pie.type).toBe(Chart)
+    expect(propsOf(pie).className).toBe('ui-pie-chart ui-pie-chart--donut')
     expect(sparkline.type).toBe('span')
     expect(propsOf(sparkline).role).toBe('img')
     expect(propsOf(sparkline)['aria-label']).toBe('Downloads increased from 4 to 8')
@@ -445,18 +460,23 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('renders the empty state when chart series contain no usable data', () => {
-    const series = [{
+    const pieSeries = {
       data: [],
       id: 'downloads',
       label: 'Downloads'
-    }]
+    }
+    const series = [pieSeries]
 
-    for (const chart of [BarChart({ series }), LineChart({ series })]) {
+    for (const chart of [
+      BarChart({ series }),
+      LineChart({ series }),
+      PieChart({ series: pieSeries })
+    ]) {
       const children = propsOf(chart as ReactElement).children
       const elements = (Array.isArray(children) ? children : [children])
         .filter(isValidElement)
       const plot = elements.find(child =>
-        propsOf(child).className === 'ui-chart__plot'
+        String(propsOf(child).className).includes('ui-chart__plot')
       )
 
       expect(elements.some(child =>

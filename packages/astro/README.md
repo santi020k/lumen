@@ -85,9 +85,10 @@ import { Anchor, ScrollProgress } from '@santi020k/lumen-astro'
 
 ## Data visualization
 
-Use `Sparkline` beside a metric, `BarChart` for categorical comparison, and `LineChart` for ordered
-trends. The chart components accept already-aggregated series, use Lumen data-color tokens, and
-include a revealable semantic data table by default.
+Use `Sparkline` beside a metric, `BarChart` for categorical comparison, `LineChart` for ordered
+trends, and `PieChart` for a small part-to-whole breakdown. The chart components accept
+already-aggregated series, use Lumen data-color tokens, and include a revealable semantic data
+table by default.
 
 ```astro
 ---
@@ -102,6 +103,9 @@ const series = [{
 
 <LineChart aria-label="Views by day" heading="Website traffic" {series} />
 ```
+
+`PieChart` accepts one `LumenChartSeries`; its data points become slices. It defaults to
+`variant="donut"` and also supports `variant="pie"`.
 
 Lucide intentionally excludes brand marks. For GitHub and other project-specific icons, put the
 SVG in the default slot instead of passing an unsupported `name`; Astro warns about unknown named
