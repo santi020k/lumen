@@ -75,8 +75,17 @@ The published release is clean at the following baseline:
 - No visible detached solid paints.
 - No variables missing descriptions or `WEB` code syntax.
 
-After publication, the library panel reported `No changes`. The 123 public assets are the current
-canonical component count; do not inflate that number with the 36 hidden icon components.
+After publication, the library panel reported `No changes`. The 123 public assets are the published
+baseline count; do not inflate that number with the 36 hidden icon components.
+
+## Current maintenance state
+
+The canonical working file now contains 128 public component assets and 69 variables. The additions
+since the published baseline are `Sparkline`, `BarChart`, `LineChart`, `PieChart`, and
+`ScrollProgress`, plus 16 `color/chart/*` variables. The chart assets live on Data Display,
+`ScrollProgress` lives on Utilities, and the chart token specimens live on Foundations. Treat the
+123-asset figures above as the historical published baseline until the updated library is published
+through the Figma UI.
 
 ## Page organization
 

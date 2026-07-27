@@ -460,16 +460,17 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('renders the empty state when chart series contain no usable data', () => {
-    const series = [{
+    const pieSeries = {
       data: [],
       id: 'downloads',
       label: 'Downloads'
-    }]
+    }
+    const series = [pieSeries]
 
     for (const chart of [
       BarChart({ series }),
       LineChart({ series }),
-      PieChart({ series: series[0]! })
+      PieChart({ series: pieSeries })
     ]) {
       const children = propsOf(chart as ReactElement).children
       const elements = (Array.isArray(children) ? children : [children])
