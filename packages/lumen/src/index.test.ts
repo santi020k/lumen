@@ -246,9 +246,13 @@ describe('@santi020k/lumen umbrella package', () => {
           expect(source).toContain(sourceMarkers[templateName])
           expect(stylesheet).toContain('.lumen-template__shell')
 
-          if (target === 'astro') expect(source).toContain('@santi020k/lumen-astro')
-          if (target === 'react') expect(source).toContain('@santi020k/lumen-react')
-          if (target === 'elements') expect(source).toContain('defineLumenElements()')
+          const frameworkMarkers = {
+            astro: '@santi020k/lumen-astro',
+            elements: 'defineLumenElements()',
+            react: '@santi020k/lumen-react'
+          }
+
+          expect(source).toContain(frameworkMarkers[target])
         } finally {
           await rm(cwd, { force: true, recursive: true })
         }

@@ -4,14 +4,15 @@ const homeBadge = { background: 'rgba(167,139,250,0.16)', border: 'rgba(167,139,
 const docsBadge = { background: 'rgba(96,165,250,0.14)', border: 'rgba(96,165,250,0.34)', text: '#2563eb' }
 const componentsBadge = { background: 'rgba(20,184,166,0.14)', border: 'rgba(20,184,166,0.34)', text: '#0f766e' }
 
-const escapeHtml = value => value
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll('\'', '&#39;')
+const escapeHtml = (value) =>
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 
-const getTitleSize = title => {
+const getTitleSize = (title) => {
   if (title.length <= 24) return 88
 
   if (title.length <= 44) return 74
@@ -21,7 +22,7 @@ const getTitleSize = title => {
   return 50
 }
 
-const getBadge = type => {
+const getBadge = (type) => {
   if (type === 'Home') return homeBadge
 
   if (type === 'Components') return componentsBadge
@@ -29,7 +30,7 @@ const getBadge = type => {
   return docsBadge
 }
 
-const appendEllipsis = value => `${value.replace(/[,.!?;:]?$/, '')}...`
+const appendEllipsis = (value) => `${value.replace(/[,.!?;:]?$/, '')}...`
 
 const wrapText = (value, maxLineLength, maxLines) => {
   const words = value.split(/\s+/)
@@ -64,8 +65,10 @@ const wrapText = (value, maxLineLength, maxLines) => {
   return lines
 }
 
-const renderTextLines = (lines, options) => lines
-  .map((line, index) => `
+const renderTextLines = (lines, options) =>
+  lines
+    .map(
+      (line, index) => `
     <text
       x="${options.x}"
       y="${options.y + index * options.lineHeight}"
@@ -74,8 +77,9 @@ const renderTextLines = (lines, options) => lines
       font-size="${options.fontSize}"
       font-weight="${options.fontWeight}"
     >${escapeHtml(line)}</text>
-  `)
-  .join('')
+  `,
+    )
+    .join('')
 
 const renderCard = ({ description, title, type }) => {
   const titleSize = getTitleSize(title)
@@ -130,7 +134,7 @@ const renderCard = ({ description, title, type }) => {
   `
 }
 
-export const renderOgCard = async props => {
+export const renderOgCard = async (props) => {
   const svg = Buffer.from(renderCard(props).trim())
 
   return sharp(svg).webp({ effort: 0, quality: 82 }).toBuffer()

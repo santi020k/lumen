@@ -1,13 +1,6 @@
 /* eslint-disable complexity */
-import {
-  exportThemeDesignTokens,
-  exportThemeFigmaVariables
-} from './figma.js'
-import {
-  createThemeFromHue,
-  exportThemeCss,
-  type LumenThemeTokens
-} from './theme.js'
+import { exportThemeDesignTokens, exportThemeFigmaVariables } from './figma.js'
+import { createThemeFromHue, exportThemeCss, type LumenThemeTokens } from './theme.js'
 
 export type LumenThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
 
@@ -32,26 +25,19 @@ export interface LumenThemeBuilderResult {
   tokens: LumenThemeTokens
 }
 
-export const coerceThemeBuilderExportFormat = (
-  value?: string | null
-): LumenThemeBuilderExportFormat => {
+export const coerceThemeBuilderExportFormat = (value?: string | null): LumenThemeBuilderExportFormat => {
   if (value === 'figma' || value === 'tokens') return value
 
   return 'css'
 }
 
-export const coerceThemeBuilderMode = (
-  value?: string | null
-): LumenThemeBuilderMode => value === 'manual' ? 'manual' : 'generated'
+export const coerceThemeBuilderMode = (value?: string | null): LumenThemeBuilderMode =>
+  value === 'manual' ? 'manual' : 'generated'
 
-export const coerceThemeBuilderScheme = (
-  value?: string | null
-): LumenThemeBuilderScheme => value === 'dark' ? 'dark' : 'light'
+export const coerceThemeBuilderScheme = (value?: string | null): LumenThemeBuilderScheme =>
+  value === 'dark' ? 'dark' : 'light'
 
-export const normalizeThemeBuilderHue = (
-  value: number | string | null | undefined,
-  fallback = 0
-): number => {
+export const normalizeThemeBuilderHue = (value: number | string | null | undefined, fallback = 0): number => {
   const parsed = Number(value)
 
   if (!Number.isFinite(parsed)) return fallback
@@ -69,9 +55,7 @@ export const normalizeThemeBuilderHex = (value: string): string | null => {
   return /^[\da-f]{6}$/i.test(hex) ? `#${hex.toLowerCase()}` : null
 }
 
-export const themeBuilderHexToHsl = (
-  value: string
-): { hue: number, value: string } | null => {
+export const themeBuilderHexToHsl = (value: string): { hue: number; value: string } | null => {
   const normalized = normalizeThemeBuilderHex(value)
 
   if (!normalized) return null
@@ -102,29 +86,25 @@ export const themeBuilderHexToHsl = (
 
   return {
     hue: normalizedHue,
-    value: `${normalizedHue} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%`
+    value: `${normalizedHue} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%`,
   }
 }
 
-export const createThemeBuilderTokens = (
-  options: LumenThemeBuilderOptions = {}
-): LumenThemeBuilderResult => {
+export const createThemeBuilderTokens = (options: LumenThemeBuilderOptions = {}): LumenThemeBuilderResult => {
   const hue = normalizeThemeBuilderHue(options.hue)
 
-  const accentHue = normalizeThemeBuilderHue(
-    options.accentHue, normalizeThemeBuilderHue(hue + 150)
-  )
+  const accentHue = normalizeThemeBuilderHue(options.accentHue, normalizeThemeBuilderHue(hue + 150))
 
   const mode = coerceThemeBuilderMode(options.mode)
   const scheme = coerceThemeBuilderScheme(options.scheme)
   const primary = options.primaryColor ? themeBuilderHexToHsl(options.primaryColor) : null
   const secondary = options.secondaryColor ? themeBuilderHexToHsl(options.secondaryColor) : null
-  const baseHue = mode === 'manual' ? primary?.hue ?? hue : hue
-  const baseAccentHue = mode === 'manual' ? secondary?.hue ?? accentHue : accentHue
+  const baseHue = mode === 'manual' ? (primary?.hue ?? hue) : hue
+  const baseAccentHue = mode === 'manual' ? (secondary?.hue ?? accentHue) : accentHue
 
   const tokens = createThemeFromHue(baseHue, {
     accentHue: baseAccentHue,
-    scheme
+    scheme,
   })
 
   if (mode === 'manual') {
@@ -144,25 +124,27 @@ export const createThemeBuilderTokens = (
     hue: baseHue,
     mode,
     scheme,
-    tokens
+    tokens,
   }
 }
 
-export const exportThemeBuilderCss = (
-  tokens: LumenThemeTokens,
-  scheme: LumenThemeBuilderScheme
-): string => exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
+export const exportThemeBuilderCss = (tokens: LumenThemeTokens, scheme: LumenThemeBuilderScheme): string =>
+  exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
 
 export const exportThemeBuilderValue = (
   tokens: LumenThemeTokens,
   scheme: LumenThemeBuilderScheme,
-  format: LumenThemeBuilderExportFormat
+  format: LumenThemeBuilderExportFormat,
 ): string => {
   if (format === 'figma') {
-    return JSON.stringify(exportThemeFigmaVariables(tokens, {
-      collectionName: 'Lumen',
-      modeName: scheme === 'dark' ? 'Dark' : 'Light'
-    }), null, 2)
+    return JSON.stringify(
+      exportThemeFigmaVariables(tokens, {
+        collectionName: 'Lumen',
+        modeName: scheme === 'dark' ? 'Dark' : 'Light',
+      }),
+      null,
+      2,
+    )
   }
 
   if (format === 'tokens') {

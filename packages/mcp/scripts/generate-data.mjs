@@ -14,7 +14,7 @@ import ts from 'typescript'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 
-const findRepoRoot = async start => {
+const findRepoRoot = async (start) => {
   let dir = start
 
   for (let depth = 0; depth < 10; depth += 1) {
@@ -34,7 +34,7 @@ const findRepoRoot = async start => {
   throw new Error('Could not locate repo root (pnpm-workspace.yaml).')
 }
 
-const exists = async path => {
+const exists = async (path) => {
   try {
     await access(path)
 
@@ -44,15 +44,15 @@ const exists = async path => {
   }
 }
 
-const readIfExists = async path => (await exists(path)) ? readFile(path, 'utf8') : ''
+const readIfExists = async (path) => ((await exists(path)) ? readFile(path, 'utf8') : '')
 
 // Extract the quoted entries of `export const lumenComponentNames = [ ... ]`.
-const parseComponentNames = source => {
+const parseComponentNames = (source) => {
   const match = source.match(/lumenComponentNames\s*=\s*\[([\s\S]*?)\]\s*as const/)
 
   if (!match) return []
 
-  return [...match[1].matchAll(/'([^']+)'/g)].map(m => m[1])
+  return [...match[1].matchAll(/'([^']+)'/g)].map((m) => m[1])
 }
 
 // Parse a `key: 'value'` object literal block into a record.
@@ -79,7 +79,7 @@ const parseTokenBlock = (source, identifier) => {
 
 // Pull the `interface Props { ... }` body out of Astro frontmatter and turn it
 // into a compact list of { name, optional, type } records.
-const extractInterfaceBody = source => {
+const extractInterfaceBody = (source) => {
   const interfaceStart = source.indexOf('interface Props')
 
   if (interfaceStart !== -1) {
@@ -97,7 +97,7 @@ const extractInterfaceBody = source => {
   return null
 }
 
-const extractTypeBody = source => {
+const extractTypeBody = (source) => {
   const typeStart = source.indexOf('type Props')
 
   if (typeStart !== -1) {
@@ -115,7 +115,7 @@ const extractTypeBody = source => {
   return null
 }
 
-const parseProps = source => {
+const parseProps = (source) => {
   const extracted = extractInterfaceBody(source) || extractTypeBody(source)
 
   if (!extracted?.body) return { extends: null, props: [] }
@@ -135,49 +135,56 @@ const parseProps = source => {
   return { extends: extracted.extendsClause, props }
 }
 
-const toKebab = name => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').replaceAll(/[\s_]+/g, '-').toLowerCase()
+const toKebab = (name) =>
+  name
+    .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replaceAll(/[\s_]+/g, '-')
+    .toLowerCase()
 
-const parseMemberProps = (members, sourceFile) => members.flatMap(member => {
-  if (!ts.isPropertySignature(member) || !member.name || !member.type) return []
+const parseMemberProps = (members, sourceFile) =>
+  members.flatMap((member) => {
+    if (!ts.isPropertySignature(member) || !member.name || !member.type) return []
 
-  const name = member.name.getText(sourceFile).replaceAll(/['"]/g, '')
+    const name = member.name.getText(sourceFile).replaceAll(/['"]/g, '')
 
-  return [{
-    name,
-    optional: Boolean(member.questionToken),
-    type: member.type.getText(sourceFile)
-  }]
-})
+    return [
+      {
+        name,
+        optional: Boolean(member.questionToken),
+        type: member.type.getText(sourceFile),
+      },
+    ]
+  })
 
 const parseTypeScriptProps = (declaration, sourceFile) => {
   if (!declaration) return { extends: null, props: [] }
 
   if (ts.isInterfaceDeclaration(declaration)) {
-    const extended = declaration.heritageClauses
-      ?.flatMap(clause => clause.types.map(type => type.getText(sourceFile)))
-      .join(', ') || null
+    const extended =
+      declaration.heritageClauses
+        ?.flatMap((clause) => clause.types.map((type) => type.getText(sourceFile)))
+        .join(', ') || null
 
     return {
       extends: extended,
-      props: parseMemberProps(declaration.members, sourceFile)
+      props: parseMemberProps(declaration.members, sourceFile),
     }
   }
 
   if (ts.isTypeAliasDeclaration(declaration)) {
-    const parts = ts.isIntersectionTypeNode(declaration.type) ?
-      [...declaration.type.types] :
-      [declaration.type]
+    const parts = ts.isIntersectionTypeNode(declaration.type) ? [...declaration.type.types] : [declaration.type]
 
     const literals = parts.filter(ts.isTypeLiteralNode)
 
-    const extended = parts
-      .filter(part => !ts.isTypeLiteralNode(part))
-      .map(part => part.getText(sourceFile))
-      .join(' & ') || null
+    const extended =
+      parts
+        .filter((part) => !ts.isTypeLiteralNode(part))
+        .map((part) => part.getText(sourceFile))
+        .join(' & ') || null
 
     return {
       extends: extended,
-      props: literals.flatMap(literal => parseMemberProps(literal.members, sourceFile))
+      props: literals.flatMap((literal) => parseMemberProps(literal.members, sourceFile)),
     }
   }
 
@@ -185,7 +192,10 @@ const parseTypeScriptProps = (declaration, sourceFile) => {
 }
 
 const processTypeStatement = (statement, propDeclarations) => {
-  if ((ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) && statement.name.text.endsWith('Props')) {
+  if (
+    (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) &&
+    statement.name.text.endsWith('Props')
+  ) {
     propDeclarations.set(statement.name.text.slice(0, -5), statement)
   }
 }
@@ -224,33 +234,34 @@ const parseReactComponents = (source, componentNames) => {
     processReactStatement(statement, componentNameSet, componentDeclarations, propDeclarations)
   }
 
-  return new Map(componentNames.map(name => {
-    const componentDeclaration = componentDeclarations.get(name)
-    const propsDeclaration = propDeclarations.get(name)
-    const props = parseTypeScriptProps(propsDeclaration, sourceFile)
+  return new Map(
+    componentNames.map((name) => {
+      const componentDeclaration = componentDeclarations.get(name)
+      const propsDeclaration = propDeclarations.get(name)
+      const props = parseTypeScriptProps(propsDeclaration, sourceFile)
 
-    const snippets = [propsDeclaration, componentDeclaration]
-      .filter(Boolean)
-      .map(declaration => declaration.getText(sourceFile))
+      const snippets = [propsDeclaration, componentDeclaration]
+        .filter(Boolean)
+        .map((declaration) => declaration.getText(sourceFile))
 
-    return [name, {
-      available: Boolean(componentDeclaration),
-      props,
-      source: snippets.join('\n\n')
-    }]
-  }))
+      return [
+        name,
+        {
+          available: Boolean(componentDeclaration),
+          props,
+          source: snippets.join('\n\n'),
+        },
+      ]
+    }),
+  )
 }
 
 const propertyName = (property, sourceFile) => property.name?.getText(sourceFile).replaceAll(/['"]/g, '')
 
-const unwrapExpression = expression => {
+const unwrapExpression = (expression) => {
   let current = expression
 
-  while (
-    ts.isAsExpression(current) ||
-    ts.isParenthesizedExpression(current) ||
-    ts.isSatisfiesExpression(current)
-  ) {
+  while (ts.isAsExpression(current) || ts.isParenthesizedExpression(current) || ts.isSatisfiesExpression(current)) {
     current = current.expression
   }
 
@@ -262,27 +273,30 @@ const processElementConfigProperty = (property, sourceFile) => {
 
   const name = propertyName(property, sourceFile)
   const config = property.initializer
-  const tagNameProperty = config.properties.find(entry => ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName')
+  const tagNameProperty = config.properties.find(
+    (entry) => ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName',
+  )
 
-  const tagName = tagNameProperty &&
-    ts.isPropertyAssignment(tagNameProperty) &&
-    ts.isStringLiteral(tagNameProperty.initializer) ?
-    tagNameProperty.initializer.text :
-    `lumen-${toKebab(name)}`
+  const tagName =
+    tagNameProperty && ts.isPropertyAssignment(tagNameProperty) && ts.isStringLiteral(tagNameProperty.initializer)
+      ? tagNameProperty.initializer.text
+      : `lumen-${toKebab(name)}`
 
-  const attributes = config.properties.flatMap(entry => {
+  const attributes = config.properties.flatMap((entry) => {
     if (
       !ts.isPropertyAssignment(entry) ||
       !ts.isObjectLiteralExpression(entry.initializer) ||
       !['attributeClasses', 'defaults'].includes(propertyName(entry, sourceFile))
-    ) return []
+    )
+      return []
 
-    return entry.initializer.properties
-      .map(attribute => propertyName(attribute, sourceFile))
-      .filter(Boolean)
+    return entry.initializer.properties.map((attribute) => propertyName(attribute, sourceFile)).filter(Boolean)
   })
 
-  return { config: { attributes: [...new Set(attributes)].sort(), source: property.getText(sourceFile), tagName }, name }
+  return {
+    config: { attributes: [...new Set(attributes)].sort(), source: property.getText(sourceFile), tagName },
+    name,
+  }
 }
 
 const processElementStatement = (statement, entries, sourceFile) => {
@@ -296,7 +310,8 @@ const processElementStatement = (statement, entries, sourceFile) => {
       declaration.name.text !== 'elementConfigs' ||
       !initializer ||
       !ts.isObjectLiteralExpression(initializer)
-    ) continue
+    )
+      continue
 
     for (const property of initializer.properties) {
       const result = processElementConfigProperty(property, sourceFile)
@@ -314,22 +329,24 @@ const parseElementComponents = (source, componentNames) => {
     processElementStatement(statement, entries, sourceFile)
   }
 
-  return new Map(componentNames.map(name => [
-    name,
-    entries.get(name) ?? {
-      attributes: [],
-      source: '',
-      tagName: `lumen-${toKebab(name)}`
-    }
-  ]))
+  return new Map(
+    componentNames.map((name) => [
+      name,
+      entries.get(name) ?? {
+        attributes: [],
+        source: '',
+        tagName: `lumen-${toKebab(name)}`,
+      },
+    ]),
+  )
 }
 
-const loadDocsData = async source => {
+const loadDocsData = async (source) => {
   const transpiled = ts.transpileModule(source, {
     compilerOptions: {
       module: ts.ModuleKind.ES2022,
-      target: ts.ScriptTarget.ES2022
-    }
+      target: ts.ScriptTarget.ES2022,
+    },
   }).outputText
 
   const dataUrl = `data:text/javascript;base64,${Buffer.from(transpiled).toString('base64')}`
@@ -337,52 +354,52 @@ const loadDocsData = async source => {
   return import(dataUrl)
 }
 
-const componentNamesFromExample = example => [...example.matchAll(/<\/?([A-Z][A-Za-z0-9]*)\b/g)]
-  .map(match => match[1])
-  .filter((name, index, names) => names.indexOf(name) === index)
+const componentNamesFromExample = (example) =>
+  [...example.matchAll(/<\/?([A-Z][A-Za-z0-9]*)\b/g)]
+    .map((match) => match[1])
+    .filter((name, index, names) => names.indexOf(name) === index)
 
-const reactStyleValue = value => {
+const reactStyleValue = (value) => {
   const properties = value
     .split(';')
-    .map(declaration => declaration.trim())
+    .map((declaration) => declaration.trim())
     .filter(Boolean)
-    .map(declaration => {
+    .map((declaration) => {
       const separator = declaration.indexOf(':')
 
       if (separator === -1) return ''
 
-      const property = declaration.slice(0, separator).trim()
+      const property = declaration
+        .slice(0, separator)
+        .trim()
         .replaceAll(/-([a-z])/g, (_, letter) => letter.toUpperCase())
 
       const propertyValue = declaration.slice(separator + 1).trim()
 
-      return `${property}: '${propertyValue.replaceAll('\'', '\\\'')}'`
+      return `${property}: '${propertyValue.replaceAll("'", "\\'")}'`
     })
     .filter(Boolean)
 
   return `style={{ ${properties.join(', ')} }}`
 }
 
-const toReactExample = example => example
-  .replaceAll(/\bclass=/g, 'className=')
-  .replaceAll(/\bfor=/g, 'htmlFor=')
-  .replaceAll(/\bdatetime=/g, 'dateTime=')
-  .replaceAll(/\binputmode=/g, 'inputMode=')
-  .replaceAll(/\bcontenteditable=/g, 'contentEditable=')
-  .replaceAll(/\bstroke-width=/g, 'strokeWidth=')
-  .replaceAll(/style="([^"]*)"/g, (_, value) => reactStyleValue(value))
+const toReactExample = (example) =>
+  example
+    .replaceAll(/\bclass=/g, 'className=')
+    .replaceAll(/\bfor=/g, 'htmlFor=')
+    .replaceAll(/\bdatetime=/g, 'dateTime=')
+    .replaceAll(/\binputmode=/g, 'inputMode=')
+    .replaceAll(/\bcontenteditable=/g, 'contentEditable=')
+    .replaceAll(/\bstroke-width=/g, 'strokeWidth=')
+    .replaceAll(/style="([^"]*)"/g, (_, value) => reactStyleValue(value))
 
 const reactExampleOverrides = {
-  AnimatedPortrait:
-    '<AnimatedPortrait><img src="/portrait.jpg" alt="Portrait of Ana" /></AnimatedPortrait>',
-  ButtonLink:
-    '<ButtonLink href="/docs">Read the docs <span aria-hidden="true">→</span></ButtonLink>',
+  AnimatedPortrait: '<AnimatedPortrait><img src="/portrait.jpg" alt="Portrait of Ana" /></AnimatedPortrait>',
+  ButtonLink: '<ButtonLink href="/docs">Read the docs <span aria-hidden="true">→</span></ButtonLink>',
   Combobox:
     '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Vue"]} placeholder="Search package" />',
-  CoverImage:
-    '<CoverImage showBottomGradient><Image src="/cover.jpg" alt="Abstract purple forms" /></CoverImage>',
-  Image:
-    '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
+  CoverImage: '<CoverImage showBottomGradient><Image src="/cover.jpg" alt="Abstract purple forms" /></CoverImage>',
+  Image: '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
   PhoneInput:
     '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
   Tabs: `import { Tabs, TabsList, TabsPanel, TabsTrigger } from '@santi020k/lumen-react'
@@ -403,8 +420,7 @@ export function SettingsTabs() {
     </Tabs>
   )
 }`,
-  VirtualList:
-    '<VirtualList style={{ height: \'16rem\' }}><div>Row 1</div><div>Row 2</div></VirtualList>'
+  VirtualList: "<VirtualList style={{ height: '16rem' }}><div>Row 1</div><div>Row 2</div></VirtualList>",
 }
 
 const reactHookByComponent = {
@@ -426,7 +442,7 @@ const reactHookByComponent = {
   Tabs: 'useTabs',
   ThemeBuilder: 'useThemeBuilder',
   Toast: 'useToast',
-  Tooltip: 'useTooltip'
+  Tooltip: 'useTooltip',
 }
 
 const reactExampleForComponent = (name, hook, fallback) => {
@@ -452,15 +468,15 @@ const reactExampleForComponent = (name, hook, fallback) => {
       .replaceAll('</Dialog>', `</${name}>`)
       .replaceAll('Button, Dialog, Card', `Button, Card, ${name}`)
 
-    return name === 'Drawer' ?
-      example
-        .replaceAll('Open dialog', 'Open filters')
-        .replaceAll('Confirm action', 'Filters')
-        .replaceAll('Are you sure you want to continue?', 'Adjust the records shown in this view.') :
-      example
-        .replaceAll('Open dialog', 'Open details')
-        .replaceAll('Confirm action', 'Project details')
-        .replaceAll('Are you sure you want to continue?', 'Review supporting information without leaving the page.')
+    return name === 'Drawer'
+      ? example
+          .replaceAll('Open dialog', 'Open filters')
+          .replaceAll('Confirm action', 'Filters')
+          .replaceAll('Are you sure you want to continue?', 'Adjust the records shown in this view.')
+      : example
+          .replaceAll('Open dialog', 'Open details')
+          .replaceAll('Confirm action', 'Project details')
+          .replaceAll('Are you sure you want to continue?', 'Review supporting information without leaving the page.')
   }
 
   return hook.code
@@ -471,12 +487,12 @@ const toElementsExample = (example, elementComponents) => {
 
   for (const [name, element] of elementComponents) {
     converted = converted
-      .replaceAll(/<([A-Z][A-Za-z0-9]*)(?=[\s/>])/g, (match, p1) => p1 === name ? `<${element.tagName}` : match)
+      .replaceAll(/<([A-Z][A-Za-z0-9]*)(?=[\s/>])/g, (match, p1) => (p1 === name ? `<${element.tagName}` : match))
       .replaceAll(`</${name}>`, `</${element.tagName}>`)
   }
 
   converted = converted
-    .replaceAll(/<\/?TimelineItem>/g, tag => tag.startsWith('</') ? '</li>' : '<li>')
+    .replaceAll(/<\/?TimelineItem>/g, (tag) => (tag.startsWith('</') ? '</li>' : '<li>'))
     .replaceAll(/(\s[\w-]+)=\{(-?[0-9]+\.[0-9]+)\}/g, '$1="$2"')
     .replaceAll(/(\s[\w-]+)=\{(-?[0-9]+)\}/g, '$1="$2"')
     .replaceAll(/(\s[\w-]+)=\{true\}/g, '$1')
@@ -486,19 +502,20 @@ const toElementsExample = (example, elementComponents) => {
   return converted.includes('{') ? '' : converted
 }
 
-const getAstroBehavior = runtimeRequired => {
+const getAstroBehavior = (runtimeRequired) => {
   if (!runtimeRequired) return
 
   return {
     mode: 'runtime',
-    setup: 'Mount UIPrimitives once in the application\'s root layout; do not mount it beside each component.'
+    setup: "Mount UIPrimitives once in the application's root layout; do not mount it beside each component.",
   }
 }
 
-const getElementsBehavior = runtimeRequired => ({
+const getElementsBehavior = (runtimeRequired) => ({
   mode: 'registration',
-  setup: 'Call defineLumenElements() once before rendering Lumen custom elements.' +
-    (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '')
+  setup:
+    'Call defineLumenElements() once before rendering Lumen custom elements.' +
+    (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : ''),
 })
 
 const getReactBehavior = (hook, reactSource, runtimeRequired) => {
@@ -509,7 +526,7 @@ const getReactBehavior = (hook, reactSource, runtimeRequired) => {
       hook: hook.name,
       mode: 'hook',
       options: hook.options,
-      setup: `Use ${hook.name} from @santi020k/lumen-react; do not mount Astro UIPrimitives in React.`
+      setup: `Use ${hook.name} from @santi020k/lumen-react; do not mount Astro UIPrimitives in React.`,
     }
   }
 
@@ -518,9 +535,9 @@ const getReactBehavior = (hook, reactSource, runtimeRequired) => {
 
     return {
       mode: builtIn ? 'built-in' : 'adapter',
-      setup: builtIn ?
-        'Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives.' :
-        'The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives.'
+      setup: builtIn
+        ? 'Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives.'
+        : 'The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives.',
     }
   }
 }
@@ -543,7 +560,7 @@ const buildFrameworkDetails = ({
   parsedAstro,
   react,
   reactHooks,
-  runtimeRequired
+  runtimeRequired,
 }) => {
   const hookName = Reflect.get(reactHookByComponent, name)
   let hook
@@ -572,9 +589,9 @@ const buildFrameworkDetails = ({
   const reactExampleNames = componentNamesFromExample(reactExample)
   const reactImportsList = reactExampleNames.length > 0 ? reactExampleNames : [name]
 
-  const reactImports = hook ?
-    reactExample.match(/^import .+$/gm)?.join('\n') ?? `import { ${hook.name} } from '@santi020k/lumen-react'` :
-    `import { ${reactImportsList.join(', ')} } from '@santi020k/lumen-react'`
+  const reactImports = hook
+    ? (reactExample.match(/^import .+$/gm)?.join('\n') ?? `import { ${hook.name} } from '@santi020k/lumen-react'`)
+    : `import { ${reactImportsList.join(', ')} } from '@santi020k/lumen-react'`
 
   return {
     astro: {
@@ -587,25 +604,22 @@ const buildFrameworkDetails = ({
       props: parsedAstro.props,
       propsExtends: parsedAstro.extends,
       source: astroSource,
-      styleImport: 'import \'@santi020k/lumen-astro/styles.css\''
+      styleImport: "import '@santi020k/lumen-astro/styles.css'",
     },
     elements: {
-      attributes: [...new Set([
-        ...element.attributes,
-        ...doc.apiReference.map(row => row.attribute)
-      ])],
+      attributes: [...new Set([...element.attributes, ...doc.apiReference.map((row) => row.attribute)])],
       available: Boolean(element.source),
       behavior: frameworkBehavior({ framework: 'elements', runtimeRequired }),
       example: elementsExample || `<${element.tagName}></${element.tagName}>`,
-      importStatement: 'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'',
+      importStatement: "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
       language: 'html',
       packageName: '@santi020k/lumen-elements',
       props: [],
       propsExtends: 'HTMLElement attributes',
       registration: 'defineLumenElements()',
       source: element.source,
-      styleImport: 'import \'@santi020k/lumen-elements/styles.css\'',
-      tagName: element.tagName
+      styleImport: "import '@santi020k/lumen-elements/styles.css'",
+      tagName: element.tagName,
     },
     react: {
       available: react.available,
@@ -613,7 +627,7 @@ const buildFrameworkDetails = ({
         framework: 'react',
         hook,
         reactSource: react.source,
-        runtimeRequired
+        runtimeRequired,
       }),
       example: reactExample,
       importStatement: reactImports,
@@ -622,26 +636,29 @@ const buildFrameworkDetails = ({
       props: react.props.props,
       propsExtends: react.props.extends,
       source: react.source,
-      styleImport: 'import \'@santi020k/lumen-react/styles.css\''
-    }
+      styleImport: "import '@santi020k/lumen-react/styles.css'",
+    },
   }
 }
 
-const keywordsForComponent = (doc, collections) => [...new Set(
+const keywordsForComponent = (doc, collections) =>
   [
-    doc.name,
-    doc.category,
-    doc.summary,
-    doc.guidance?.when,
-    doc.guidance?.distinction,
-    ...collections.flatMap(collection => [collection.title, collection.description])
-  ]
-    .filter(Boolean)
-    .flatMap(value => value.toLowerCase().split(/[^a-z0-9]+/))
-    .filter(value => value.length > 2)
-)].sort()
+    ...new Set(
+      [
+        doc.name,
+        doc.category,
+        doc.summary,
+        doc.guidance?.when,
+        doc.guidance?.distinction,
+        ...collections.flatMap((collection) => [collection.title, collection.description]),
+      ]
+        .filter(Boolean)
+        .flatMap((value) => value.toLowerCase().split(/[^a-z0-9]+/))
+        .filter((value) => value.length > 2),
+    ),
+  ].sort()
 
-const loadWorkspaceFiles = async p => ({
+const loadWorkspaceFiles = async (p) => ({
   aiUsage: await readIfExists(p('docs/ai-usage.md')),
   componentsSource: await readIfExists(p('packages/core/src/components.ts')),
   docsSource: await readIfExists(p('apps/docs/src/data/docs.ts')),
@@ -649,10 +666,10 @@ const loadWorkspaceFiles = async p => ({
   reactSource: await readIfExists(p('packages/react/src/components.tsx')),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
-  tokensSource: await readIfExists(p('packages/core/src/tokens.ts'))
+  tokensSource: await readIfExists(p('packages/core/src/tokens.ts')),
 })
 
-const loadRegistry = async p => {
+const loadRegistry = async (p) => {
   try {
     return JSON.parse(await readFile(p('registry/lumen.registry.json'), 'utf8'))
   } catch {
@@ -660,7 +677,7 @@ const loadRegistry = async p => {
   }
 }
 
-const mapRecipesByComponent = registry => {
+const mapRecipesByComponent = (registry) => {
   const map = new Map()
 
   for (const item of registry.items ?? []) {
@@ -680,23 +697,24 @@ const buildContextData = async (files, registry, names) => {
   const docsData = await loadDocsData(files.docsSource)
 
   return {
-    docsByComponent: new Map(docsData.componentDocs.map(doc => [doc.name, doc])),
+    docsByComponent: new Map(docsData.componentDocs.map((doc) => [doc.name, doc])),
     docsData,
     elementComponents: parseElementComponents(files.elementsSource, names),
     reactComponents: parseReactComponents(files.reactSource, names),
-    reactHooks: new Map(docsData.reactHooksReference.map(hook => [hook.name, hook])),
+    reactHooks: new Map(docsData.reactHooksReference.map((hook) => [hook.name, hook])),
     recipesByComponent: mapRecipesByComponent(registry),
-    registryComponents: new Map((registry.components ?? []).map(component => [component.name, component]))
+    registryComponents: new Map((registry.components ?? []).map((component) => [component.name, component])),
   }
 }
 
-const getDocDefaults = (name, ctx, registryComponent) => ctx.docsByComponent.get(name) ?? {
-  apiReference: [],
-  category: registryComponent.category ?? 'Uncategorized',
-  example: `<${name} />`,
-  name,
-  summary: registryComponent.description ?? `${name} component.`
-}
+const getDocDefaults = (name, ctx, registryComponent) =>
+  ctx.docsByComponent.get(name) ?? {
+    apiReference: [],
+    category: registryComponent.category ?? 'Uncategorized',
+    example: `<${name} />`,
+    name,
+    summary: registryComponent.description ?? `${name} component.`,
+  }
 
 const main = async () => {
   const repoRoot = await findRepoRoot(scriptDir)
@@ -726,13 +744,13 @@ const main = async () => {
     'accent',
     'success',
     'warning',
-    'danger'
+    'danger',
   ]
 
   const astroDir = p('packages/astro/components')
 
   const astroFiles = new Set(
-    (await exists(astroDir)) ? (await readdir(astroDir)).filter(f => f.endsWith('.astro')) : []
+    (await exists(astroDir)) ? (await readdir(astroDir)).filter((f) => f.endsWith('.astro')) : [],
   )
 
   const getAstroProps = async (name, ctx) => {
@@ -749,7 +767,7 @@ const main = async () => {
     const kebab = toKebab(name)
     const registryComponent = ctx.registryComponents.get(name) ?? {}
     const doc = getDocDefaults(name, ctx, registryComponent)
-    const collections = ctx.docsData.componentCollections.filter(collection => collection.names.includes(name))
+    const collections = ctx.docsData.componentCollections.filter((collection) => collection.names.includes(name))
 
     const frameworkDetails = buildFrameworkDetails({
       astroSource,
@@ -763,15 +781,14 @@ const main = async () => {
       reactHooks: ctx.reactHooks,
       reactSource: ctx.files.reactSource,
       runtimeRequired:
-      (registryComponent.dependencies ?? []).includes('runtime') ||
-      Boolean(Reflect.get(reactHookByComponent, name))
+        (registryComponent.dependencies ?? []).includes('runtime') || Boolean(Reflect.get(reactHookByComponent, name)),
     })
 
     return {
       apiReference: doc.apiReference,
       astroSource,
       category: doc.category,
-      collections: collections.map(collection => collection.title),
+      collections: collections.map((collection) => collection.title),
       dependencies: registryComponent.dependencies ?? [],
       description: doc.summary,
       files: registryComponent.files ?? [],
@@ -779,7 +796,7 @@ const main = async () => {
       frameworks: {
         astro: hasAstro,
         elements: frameworkDetails.elements.available,
-        react: frameworkDetails.react.available
+        react: frameworkDetails.react.available,
       },
       guidance: doc.guidance ?? null,
       kebab,
@@ -789,7 +806,7 @@ const main = async () => {
       props: parsed.props,
       propsExtends: parsed.extends,
       recipes: ctx.recipesByComponent.get(name) ?? [],
-      runtimeEvents: doc.runtimeEvents ?? []
+      runtimeEvents: doc.runtimeEvents ?? [],
     }
   }
 
@@ -800,32 +817,33 @@ const main = async () => {
     astroFiles,
     files,
     names,
-    ...ctxData
+    ...ctxData,
   }
 
   for (const name of names) {
     components.push(await buildComponentData(name, ctx))
   }
 
-  const componentMap = new Map(components.map(component => [component.name, component]))
+  const componentMap = new Map(components.map((component) => [component.name, component]))
 
   const recipes = (registry.items ?? [])
-    .filter(item => item.type === 'recipe' || item.type === 'component-set')
-    .map(item => {
-      const recipeComponents = (item.components ?? []).map(name => componentMap.get(name)).filter(Boolean)
-      const categories = [...new Set(recipeComponents.map(component => component.category))].sort()
+    .filter((item) => item.type === 'recipe' || item.type === 'component-set')
+    .map((item) => {
+      const recipeComponents = (item.components ?? []).map((name) => componentMap.get(name)).filter(Boolean)
+      const categories = [...new Set(recipeComponents.map((component) => component.category))].sort()
 
       return {
         ...item,
         categories,
-        description: item.type === 'component-set' ?
-          'The complete Lumen component catalog and shared runtime foundation.' :
-          `${/^[aeiou]/i.test(item.name) ? 'An' : 'A'} ${item.name.replaceAll('-', ' ')} composition using ${recipeComponents.map(component => component.name).join(', ')}.`,
+        description:
+          item.type === 'component-set'
+            ? 'The complete Lumen component catalog and shared runtime foundation.'
+            : `${/^[aeiou]/i.test(item.name) ? 'An' : 'A'} ${item.name.replaceAll('-', ' ')} composition using ${recipeComponents.map((component) => component.name).join(', ')}.`,
         install: {
           astro: `lumen add ${item.name} --target astro`,
           elements: `lumen add ${item.name} --target elements`,
-          react: `lumen add ${item.name} --target react`
-        }
+          react: `lumen add ${item.name} --target react`,
+        },
       }
     })
 
@@ -836,7 +854,7 @@ const main = async () => {
     colors,
     glass,
     semantic: semanticTokens,
-    themeAttribute: 'data-theme'
+    themeAttribute: 'data-theme',
   }
 
   const packagePaths = {
@@ -844,7 +862,7 @@ const main = async () => {
     '@santi020k/lumen-core': 'packages/core/package.json',
     '@santi020k/lumen-elements': 'packages/elements/package.json',
     '@santi020k/lumen-mcp': 'packages/mcp/package.json',
-    '@santi020k/lumen-react': 'packages/react/package.json'
+    '@santi020k/lumen-react': 'packages/react/package.json',
   }
 
   const packageVersions = {}
@@ -860,14 +878,15 @@ const main = async () => {
     .digest('hex')
 
   const catalogManifest = {
-    components: Object.fromEntries(components.map(component => [
-      component.name,
-      createHash('sha256').update(JSON.stringify(component)).digest('hex')
-    ])),
-    recipes: Object.fromEntries(recipes.map(recipe => [
-      recipe.name,
-      createHash('sha256').update(JSON.stringify(recipe)).digest('hex')
-    ]))
+    components: Object.fromEntries(
+      components.map((component) => [
+        component.name,
+        createHash('sha256').update(JSON.stringify(component)).digest('hex'),
+      ]),
+    ),
+    recipes: Object.fromEntries(
+      recipes.map((recipe) => [recipe.name, createHash('sha256').update(JSON.stringify(recipe)).digest('hex')]),
+    ),
   }
 
   const payload = {
@@ -881,17 +900,17 @@ const main = async () => {
         '@santi020k/lumen-astro',
         '@santi020k/lumen-react',
         '@santi020k/lumen-elements',
-        '@santi020k/lumen-core'
+        '@santi020k/lumen-core',
       ],
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
       schemaVersion: 3,
-      serverVersion: packageJson.version
+      serverVersion: packageJson.version,
     },
     recipes,
     rules,
-    tokens
+    tokens,
   }
 
   const outDir = resolve(scriptDir, '..', 'data')
@@ -904,9 +923,7 @@ const main = async () => {
     const current = await readIfExists(outPath)
 
     if (current !== output) {
-      throw new Error(
-        'Lumen MCP snapshot is stale. Run "pnpm --filter @santi020k/lumen-mcp generate".'
-      )
+      throw new Error('Lumen MCP snapshot is stale. Run "pnpm --filter @santi020k/lumen-mcp generate".')
     }
 
     process.stdout.write('lumen-mcp: data/lumen-data.json is current\n')
@@ -926,11 +943,11 @@ const main = async () => {
 
   process.stdout.write(
     `lumen-mcp: wrote data/lumen-data.json (${components.length} components, ` +
-    `${Object.keys(colors).length} color tokens, ${rules.length} bytes of rules)\n`
+      `${Object.keys(colors).length} color tokens, ${rules.length} bytes of rules)\n`,
   )
 }
 
-main().catch(error => {
+main().catch((error) => {
   process.stderr.write(String(error) + '\n')
 
   process.exitCode = 1

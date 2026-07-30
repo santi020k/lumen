@@ -19,33 +19,34 @@ const addPage = (pathname, props) => {
 
   specs.push({
     outputPath: path.join(outputDirectory, `${slug}.webp`),
-    props
+    props,
   })
 }
 
 addPage('/', {
   description: `A multi-framework primitive UI system with ${componentDocs.length} components for Astro, React, and Web Components.`,
   title: 'Write it once. Ship it in any framework.',
-  type: 'Home'
+  type: 'Home',
 })
 
 addPage('/docs', {
-  description: 'Install Lumen UI, load the shared stylesheet, and use one semantic component contract across every target.',
+  description:
+    'Install Lumen UI, load the shared stylesheet, and use one semantic component contract across every target.',
   title: 'One primitive system, three framework targets.',
-  type: 'Docs'
+  type: 'Docs',
 })
 
 addPage('/docs/components', {
   description: `Browse ${componentDocs.length} Lumen UI primitives with live previews and usage examples for Astro, React, and Elements.`,
   title: 'Components',
-  type: 'Components'
+  type: 'Components',
 })
 
 for (const component of componentDocs) {
   addPage(`/docs/components/${toSlug(component.name)}`, {
     description: `${component.summary} Usage examples for Astro, React, and Elements.`,
     title: component.name,
-    type: component.category
+    type: component.category,
   })
 }
 
@@ -61,7 +62,7 @@ const generateOne = async ({ outputPath, props }) => {
   process.stdout.write(`  write ${path.relative(root, outputPath)}\n`)
 }
 
-const pending = force ? specs : specs.filter(spec => !fs.existsSync(spec.outputPath))
+const pending = force ? specs : specs.filter((spec) => !fs.existsSync(spec.outputPath))
 const start = performance.now()
 
 process.stdout.write(`\nGenerating ${pending.length}/${specs.length} OG images...\n`)

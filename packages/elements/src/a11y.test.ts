@@ -14,8 +14,8 @@ const runAxe = async (html: string) => {
   const results = await axe.run(document.body, {
     rules: {
       'color-contrast': { enabled: false },
-      region: { enabled: false }
-    }
+      region: { enabled: false },
+    },
   })
 
   return results.violations

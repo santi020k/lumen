@@ -135,6 +135,9 @@ catalogs:
     react-dom:
       specifier: ^19.2.8
       version: 19.2.8
+    react-hook-form:
+      specifier: ^7.76.1
+      version: 7.83.0
     semver:
       specifier: ^7.8.0
       version: 7.8.5
@@ -528,6 +531,30 @@ importers:
       react:
         specifier: 'catalog:'
         version: 19.2.8
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@26.1.1)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
+
+  packages/react-hook-form:
+    devDependencies:
+      '@santi020k/lumen-react':
+        specifier: workspace:^
+        version: link:../react
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.17
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 4.1.10(vitest@4.1.10)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.8
+      react-hook-form:
+        specifier: 'catalog:'
+        version: 7.83.0(react@19.2.8)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -7275,6 +7302,12 @@ packages:
     resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
       react: ^19.2.8
+
+  react-hook-form@7.83.0:
+    resolution: {integrity: sha512-AXt8cMCmx5a7u4uvpb2uRFVrWQhllI4pV+LSykxIac/hjt44TnQkmX9BKuQi2i+LDC62esmiLpilkav+kjVf/A==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
@@ -16166,6 +16199,10 @@ snapshots:
     dependencies:
       react: 19.2.8
       scheduler: 0.27.0
+
+  react-hook-form@7.83.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
 
   react-is@17.0.2: {}
 

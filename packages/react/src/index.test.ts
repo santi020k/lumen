@@ -57,7 +57,7 @@ import {
   useToast,
   useTooltip,
   VirtualList,
-  Watermark
+  Watermark,
 } from './index.js'
 
 interface ReactInternals {
@@ -66,14 +66,11 @@ interface ReactInternals {
   }
 }
 
-const renderComponent = (
-  component: unknown,
-  props: Record<string, unknown> = {},
-  ref: unknown = null
-): unknown => (component as (componentProps: Record<string, unknown>) => unknown)({
-  ...props,
-  ...(ref ? { ref } : {})
-})
+const renderComponent = (component: unknown, props: Record<string, unknown> = {}, ref: unknown = null): unknown =>
+  (component as (componentProps: Record<string, unknown>) => unknown)({
+    ...props,
+    ...(ref ? { ref } : {}),
+  })
 
 const withHookDispatcher = <Value>(callback: () => Value): Value => {
   const internals = (React as unknown as ReactInternals).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
@@ -99,19 +96,16 @@ const withHookDispatcher = <Value>(callback: () => Value): Value => {
     useState: (initialValue: unknown) => {
       const index = stateIndex++
 
-      states[index] ??= typeof initialValue === 'function' ?
-        (initialValue as () => unknown)() :
-        initialValue
+      states[index] ??= typeof initialValue === 'function' ? (initialValue as () => unknown)() : initialValue
 
       return [
         states[index],
         (nextValue: unknown) => {
-          states[index] = typeof nextValue === 'function' ?
-            (nextValue as (previous: unknown) => unknown)(states[index]) :
-            nextValue
-        }
+          states[index] =
+            typeof nextValue === 'function' ? (nextValue as (previous: unknown) => unknown)(states[index]) : nextValue
+        },
       ]
-    }
+    },
   }
 
   try {
@@ -136,7 +130,7 @@ const makeDateRangeInput = (value: string): HTMLInputElement => {
       if (name === 'max') input.max = undefined
       if (name === 'min') input.min = undefined
     }),
-    value
+    value,
   }
 
   return input as unknown as HTMLInputElement
@@ -162,22 +156,33 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('exposes the shared motion vocabulary on React primitives', () => {
-    const scrollReveal = withHookDispatcher(() => ScrollReveal({
-      animation: 'slide-up',
-      delay: 60,
-      duration: 'slow',
-      once: false,
-      threshold: 0.25
-    })) as ReactElement<{ className?: string, style?: React.CSSProperties, 'data-ui-reveal-once'?: string, 'data-ui-reveal-threshold'?: number }>
-    const revealGroup = withHookDispatcher(() => RevealGroup({
-      children: 'Steps',
-      stagger: 90
-    })) as ReactElement<{ className?: string, style?: React.CSSProperties }>
-    const animatedNumber = withHookDispatcher(() => AnimatedNumber({
-      decimals: 1,
-      suffix: '%',
-      value: 99.8
-    })) as ReactElement<{ className?: string, children: ReactElement<{ children: string }>[] }>
+    const scrollReveal = withHookDispatcher(() =>
+      ScrollReveal({
+        animation: 'slide-up',
+        delay: 60,
+        duration: 'slow',
+        once: false,
+        threshold: 0.25,
+      }),
+    ) as ReactElement<{
+      className?: string
+      style?: React.CSSProperties
+      'data-ui-reveal-once'?: string
+      'data-ui-reveal-threshold'?: number
+    }>
+    const revealGroup = withHookDispatcher(() =>
+      RevealGroup({
+        children: 'Steps',
+        stagger: 90,
+      }),
+    ) as ReactElement<{ className?: string; style?: React.CSSProperties }>
+    const animatedNumber = withHookDispatcher(() =>
+      AnimatedNumber({
+        decimals: 1,
+        suffix: '%',
+        value: 99.8,
+      }),
+    ) as ReactElement<{ className?: string; children: ReactElement<{ children: string }>[] }>
 
     expect(scrollReveal.props.className).toContain('ui-motion-duration-slow')
     expect(scrollReveal.props['data-ui-reveal-once']).toBe('false')
@@ -190,10 +195,12 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders an accessible document scroll progress primitive', () => {
-    const progress = withHookDispatcher(() => ScrollProgress({
-      'aria-label': 'Article progress',
-      position: 'bottom'
-    })) as ReactElement<{
+    const progress = withHookDispatcher(() =>
+      ScrollProgress({
+        'aria-label': 'Article progress',
+        position: 'bottom',
+      }),
+    ) as ReactElement<{
       'aria-label': string
       'aria-valuenow': number
       className: string
@@ -216,17 +223,19 @@ describe('@santi020k/lumen-react', () => {
   test('composes Button through one child and forwards its ref', () => {
     const ref = React.createRef<HTMLButtonElement>()
     const child = React.createElement('a', { className: 'product-link', href: '/projects' }, 'Projects')
-    const slottedButton = renderComponent(Button, {
-      asChild: true,
-      children: child,
-      variant: 'secondary'
-    }, ref) as ReactElement<Record<string, unknown>>
+    const slottedButton = renderComponent(
+      Button,
+      {
+        asChild: true,
+        children: child,
+        variant: 'secondary',
+      },
+      ref,
+    ) as ReactElement<Record<string, unknown>>
     const nativeButton = renderComponent(Button, { children: 'Save' }, ref) as ReactElement<Record<string, unknown>>
 
     expect(slottedButton.type).toBe('a')
-    expect(slottedButton.props.className).toBe(
-      'ui-button ui-button--secondary ui-button--default-size product-link'
-    )
+    expect(slottedButton.props.className).toBe('ui-button ui-button--secondary ui-button--default-size product-link')
     expect(slottedButton.props.href).toBe('/projects')
     expect(slottedButton.props.ref).toBe(ref)
     expect(nativeButton.props.ref).toBe(ref)
@@ -236,7 +245,7 @@ describe('@santi020k/lumen-react', () => {
     const accordion = Accordion({
       children: 'Frequently asked questions',
       className: 'custom-accordion',
-      variant: 'flush'
+      variant: 'flush',
     }) as ReactElement<AccordionProps & { 'data-variant': string }>
 
     expect(accordion.props.className).toBe('ui-accordion ui-accordion--flush custom-accordion')
@@ -261,8 +270,8 @@ describe('@santi020k/lumen-react', () => {
       className: 'custom-stat',
       label: 'Revenue',
       value: '$42k',
-      variant: 'accent'
-    }) as ReactElement<StatProps<'article'> & { 'data-variant': string, uiClassName: string }>
+      variant: 'accent',
+    }) as ReactElement<StatProps<'article'> & { 'data-variant': string; uiClassName: string }>
 
     expect(stat.props.as).toBe('article')
     expect(stat.props.className).toBe('ui-stat--accent custom-stat')
@@ -271,11 +280,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('supports glass overlay surfaces', () => {
-    const dialog = withHookDispatcher(() => Dialog({
-      className: 'custom-dialog',
-      glass: true,
-      layout: 'fullscreen'
-    }) as ReactElement<DialogProps & { 'data-layout': string }>)
+    const dialog = withHookDispatcher(
+      () =>
+        Dialog({
+          className: 'custom-dialog',
+          glass: true,
+          layout: 'fullscreen',
+        }) as ReactElement<DialogProps & { 'data-layout': string }>,
+    )
 
     expect(dialog.props.className).toBe('ui-dialog ui-dialog--fullscreen ui-dialog--glass custom-dialog')
     expect(dialog.props['data-layout']).toBe('fullscreen')
@@ -301,7 +313,7 @@ describe('@santi020k/lumen-react', () => {
       language: 'ts',
       theme: 'santi020k',
       variant: 'block',
-      wrap: true
+      wrap: true,
     }) as ReactElement
     const inlineProps = inlineCode.props as Record<string, unknown>
     const blockProps = blockCode.props as Record<string, unknown>
@@ -337,7 +349,7 @@ describe('@santi020k/lumen-react', () => {
       children: 'Protected content',
       content: 'Draft & review',
       gap: 144,
-      rotate: -30
+      rotate: -30,
     }) as ReactElement
     const props = watermark.props as Record<string, unknown>
     const style = props.style as Record<string, string>
@@ -353,10 +365,14 @@ describe('@santi020k/lumen-react', () => {
 
   test('defaults inputs to text fields', () => {
     const ref = React.createRef<HTMLInputElement>()
-    const input = renderComponent(Input, {
-      className: 'custom-input',
-      size: 32
-    }, ref) as ReactElement<InputProps & { ref?: React.Ref<HTMLInputElement> }>
+    const input = renderComponent(
+      Input,
+      {
+        className: 'custom-input',
+        size: 32,
+      },
+      ref,
+    ) as ReactElement<InputProps & { ref?: React.Ref<HTMLInputElement> }>
 
     expect(input.props.className).toBe('ui-input custom-input')
     expect(input.props.ref).toBe(ref)
@@ -365,11 +381,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders calendar grid and hidden input', () => {
-    const calendar = withHookDispatcher(() => Calendar({
-      month: '2026-07',
-      name: 'delivery',
-      value: '2026-07-10'
-    }) as ReactElement)
+    const calendar = withHookDispatcher(
+      () =>
+        Calendar({
+          month: '2026-07',
+          name: 'delivery',
+          value: '2026-07-10',
+        }) as ReactElement,
+    )
     const calendarProps = calendar.props as Record<string, unknown>
     const children = calendarProps.children as ReactElement<Record<string, unknown>>[]
     const input = children[0]
@@ -390,11 +409,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders DatePicker as a custom Calendar disclosure', () => {
-    const picker = withHookDispatcher(() => DatePicker({
-      'aria-label': 'Launch date',
-      defaultValue: '2026-07-24',
-      glass: 'subtle'
-    }) as ReactElement)
+    const picker = withHookDispatcher(
+      () =>
+        DatePicker({
+          'aria-label': 'Launch date',
+          defaultValue: '2026-07-24',
+          glass: 'subtle',
+        }) as ReactElement,
+    )
     const rootProps = picker.props as Record<string, unknown>
     const children = rootProps.children as ReactElement<Record<string, unknown>>[]
     const native = children[0]
@@ -417,11 +439,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders Select glass intensity on its enhanced field wrapper', () => {
-    const select = withHookDispatcher(() => Select({
-      glass: 'strong',
-      options: ['Astro', 'React'],
-      placeholder: 'Choose a framework'
-    }) as ReactElement)
+    const select = withHookDispatcher(
+      () =>
+        Select({
+          glass: 'strong',
+          options: ['Astro', 'React'],
+          placeholder: 'Choose a framework',
+        }) as ReactElement,
+    )
     const rootProps = select.props as Record<string, unknown>
 
     expect(rootProps.className).toBe('ui-select-field ui-select-field--glass ui-glass-strong')
@@ -429,9 +454,12 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders DateRangePicker as a synchronized custom range control', () => {
-    const range = withHookDispatcher(() => DateRangePicker({
-      children: 'Range'
-    }) as ReactElement)
+    const range = withHookDispatcher(
+      () =>
+        DateRangePicker({
+          children: 'Range',
+        }) as ReactElement,
+    )
     const rangeProps = range.props as Record<string, unknown>
 
     expect(rangeProps.className).toBe('ui-date-range-picker')
@@ -441,12 +469,14 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes calendar selection helpers', () => {
     const changes: string[] = []
-    const calendar = withHookDispatcher(() => useCalendar({
-      month: '2026-07',
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
+    const calendar = withHookDispatcher(() =>
+      useCalendar({
+        month: '2026-07',
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
 
     calendar.selectDate('2026-07-15')
 
@@ -457,11 +487,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders input OTP as native input plus visual segments', () => {
-    const otp = withHookDispatcher(() => InputOTP({
-      defaultValue: '12a3',
-      length: 4,
-      name: 'code'
-    }) as ReactElement)
+    const otp = withHookDispatcher(
+      () =>
+        InputOTP({
+          defaultValue: '12a3',
+          length: 4,
+          name: 'code',
+        }) as ReactElement,
+    )
     const otpProps = otp.props as Record<string, unknown>
     const children = otpProps.children as ReactElement<Record<string, unknown>>[]
     const nativeInput = children[0]
@@ -486,21 +519,23 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes input OTP sanitizing props', () => {
     const changes: string[] = []
-    const otp = withHookDispatcher(() => useInputOTP({
-      length: 4,
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
+    const otp = withHookDispatcher(() =>
+      useInputOTP({
+        length: 4,
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
     const input = {
       selectionStart: 6,
-      value: '12ab34'
+      value: '12ab34',
     } as HTMLInputElement
     const inputProps = otp.getInputProps()
     const segmentProps = otp.getSegmentProps(2)
 
     inputProps.onInput?.({
-      currentTarget: input
+      currentTarget: input,
     } as unknown as Parameters<NonNullable<typeof inputProps.onInput>>[0])
 
     expect(input.value).toBe('1234')
@@ -511,13 +546,15 @@ describe('@santi020k/lumen-react', () => {
 
   test('sanitizes input OTP setValue and exposes native input props', () => {
     const changes: string[] = []
-    const otp = withHookDispatcher(() => useInputOTP({
-      invalid: true,
-      length: 4,
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
+    const otp = withHookDispatcher(() =>
+      useInputOTP({
+        invalid: true,
+        length: 4,
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
     const inputProps = otp.getInputProps()
 
     expect(inputProps.autoComplete).toBe('one-time-code')
@@ -543,7 +580,7 @@ describe('@santi020k/lumen-react', () => {
     const field = Field({
       children: 'Email',
       controlId: 'email',
-      describedBy: 'email-hint'
+      describedBy: 'email-hint',
     }) as ReactElement<FieldProps>
     const fieldProps = field.props as FieldProps & Record<`data-${string}`, unknown>
     const validation = withHookDispatcher(() => useFormValidation())
@@ -560,11 +597,13 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes date range picker syncing props', () => {
     const changes: unknown[] = []
-    const picker = withHookDispatcher(() => useDateRangePicker({
-      onRangeChange: detail => {
-        changes.push(detail)
-      }
-    }))
+    const picker = withHookDispatcher(() =>
+      useDateRangePicker({
+        onRangeChange: (detail) => {
+          changes.push(detail)
+        },
+      }),
+    )
     const start = makeDateRangeInput('2026-07-10')
     const end = makeDateRangeInput('2026-07-08')
     const startProps = picker.getStartProps()
@@ -575,10 +614,10 @@ describe('@santi020k/lumen-react', () => {
     expect(endProps.type).toBe('date')
 
     startProps.onChange?.({
-      currentTarget: start
+      currentTarget: start,
     } as unknown as Parameters<NonNullable<typeof startProps.onChange>>[0])
     endProps.onChange?.({
-      currentTarget: end
+      currentTarget: end,
     } as unknown as Parameters<NonNullable<typeof endProps.onChange>>[0])
 
     expect(end.min).toBe('2026-07-10')
@@ -593,17 +632,19 @@ describe('@santi020k/lumen-react', () => {
 
     Object.defineProperty(globalThis, 'document', {
       configurable: true,
-      value: { execCommand }
+      value: { execCommand },
     })
 
     try {
-      const editor = withHookDispatcher(() => useRichTextEditor({
-        onCommand: detail => {
-          commands.push(detail.command)
-        }
-      }))
+      const editor = withHookDispatcher(() =>
+        useRichTextEditor({
+          onCommand: (detail) => {
+            commands.push(detail.command)
+          },
+        }),
+      )
       const commandProps = editor.getCommandProps('bold', {
-        'data-ui-editor-value': 'strong'
+        'data-ui-editor-value': 'strong',
       })
       const editableProps = editor.getEditableProps()
 
@@ -616,8 +657,8 @@ describe('@santi020k/lumen-react', () => {
       commandProps.onClick?.({
         currentTarget: {
           closest: vi.fn(() => null),
-          dataset: { uiEditorValue: 'strong' }
-        }
+          dataset: { uiEditorValue: 'strong' },
+        },
       } as unknown as Parameters<NonNullable<typeof commandProps.onClick>>[0])
 
       expect(execCommand).toHaveBeenCalledWith('bold', false, 'strong')
@@ -633,30 +674,32 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes schedule drag and drop props', () => {
     const changes: unknown[] = []
-    const schedule = withHookDispatcher(() => useSchedule({
-      onChange: detail => {
-        changes.push(detail)
-      }
-    }))
+    const schedule = withHookDispatcher(() =>
+      useSchedule({
+        onChange: (detail) => {
+          changes.push(detail)
+        },
+      }),
+    )
     const root = {
       dataset: {},
-      dispatchEvent: vi.fn()
+      dispatchEvent: vi.fn(),
     } as unknown as HTMLElement
     const scheduleEvent = {
       closest: vi.fn(() => root),
       id: 'schedule-planning',
-      textContent: 'Planning'
+      textContent: 'Planning',
     } as unknown as HTMLElement
     const slot = {
       closest: vi.fn(() => root),
-      dataset: {}
+      dataset: {},
     } as unknown as HTMLElement
     const transferData: Record<string, string> = {}
     const dataTransfer = {
       getData: vi.fn((type: string) => transferData[type] ?? ''),
       setData: vi.fn((type: string, value: string) => {
         transferData[type] = value
-      })
+      }),
     }
     const eventProps = schedule.getEventProps('schedule-planning')
     const slotProps = schedule.getSlotProps('friday')
@@ -670,21 +713,21 @@ describe('@santi020k/lumen-react', () => {
 
     eventProps.onDragStart?.({
       currentTarget: scheduleEvent,
-      dataTransfer
+      dataTransfer,
     } as unknown as Parameters<NonNullable<typeof eventProps.onDragStart>>[0])
 
     expect(dataTransfer.setData).toHaveBeenCalledWith('text/plain', 'schedule-planning')
     expect(root.dataset.uiDragging).toBe('true')
 
     eventProps.onDragEnd?.({
-      currentTarget: scheduleEvent
+      currentTarget: scheduleEvent,
     } as Parameters<NonNullable<typeof eventProps.onDragEnd>>[0])
 
     expect(root.dataset.uiDragging).toBeUndefined()
 
     slotProps.onDragOver?.({
       currentTarget: slot,
-      preventDefault: vi.fn()
+      preventDefault: vi.fn(),
     } as unknown as Parameters<NonNullable<typeof slotProps.onDragOver>>[0])
 
     expect(slot.dataset.state).toBe('drag-over')
@@ -692,7 +735,7 @@ describe('@santi020k/lumen-react', () => {
     slotProps.onDrop?.({
       currentTarget: slot,
       dataTransfer,
-      preventDefault: vi.fn()
+      preventDefault: vi.fn(),
     } as unknown as Parameters<NonNullable<typeof slotProps.onDrop>>[0])
 
     expect(slot.dataset.state).toBeUndefined()
@@ -703,14 +746,14 @@ describe('@santi020k/lumen-react', () => {
     const table = DataTable({
       columns: [
         { key: 'name', sortable: true },
-        { key: 'count', sort: 'number', sortable: true }
+        { key: 'count', sort: 'number', sortable: true },
       ],
       name: 'rows',
       rows: [
         { count: { sortValue: 2, value: '2' }, id: 'beta', name: 'Beta' },
-        { count: { sortValue: 1, value: '1' }, id: 'alpha', name: 'Alpha' }
+        { count: { sortValue: 1, value: '1' }, id: 'alpha', name: 'Alpha' },
       ],
-      selectable: true
+      selectable: true,
     }) as ReactElement
     const tableProps = table.props as Record<string, unknown> & {
       children: ReactElement<Record<string, unknown>>
@@ -740,13 +783,16 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders resizable panes with separator handles', () => {
-    const resizable = withHookDispatcher(() => Resizable({
-      children: [
-        React.createElement('aside', { key: 'nav' }, 'Navigation'),
-        React.createElement('main', { key: 'main' }, 'Editor')
-      ],
-      defaultSizes: [25, 75]
-    }) as ReactElement)
+    const resizable = withHookDispatcher(
+      () =>
+        Resizable({
+          children: [
+            React.createElement('aside', { key: 'nav' }, 'Navigation'),
+            React.createElement('main', { key: 'main' }, 'Editor'),
+          ],
+          defaultSizes: [25, 75],
+        }) as ReactElement,
+    )
     const resizableProps = resizable.props as Record<string, unknown>
     const children = resizableProps.children as ReactElement<Record<string, unknown>>[]
     const firstFragmentChildren = children[0]?.props.children as ReactElement<Record<string, unknown>>[]
@@ -764,20 +810,22 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes resizable keyboard sizing props', () => {
     const changes: number[][] = []
-    const resizable = withHookDispatcher(() => useResizable({
-      defaultSizes: [30, 70],
-      onSizesChange: sizes => {
-        changes.push(sizes)
-      },
-      panelCount: 2
-    }))
+    const resizable = withHookDispatcher(() =>
+      useResizable({
+        defaultSizes: [30, 70],
+        onSizesChange: (sizes) => {
+          changes.push(sizes)
+        },
+        panelCount: 2,
+      }),
+    )
     const handleProps = resizable.getHandleProps(0)
     const preventDefault = vi.fn()
 
     handleProps.onKeyDown?.({
       key: 'ArrowRight',
       preventDefault,
-      shiftKey: false
+      shiftKey: false,
     } as unknown as Parameters<NonNullable<typeof handleProps.onKeyDown>>[0])
 
     expect(preventDefault).toHaveBeenCalled()
@@ -786,19 +834,21 @@ describe('@santi020k/lumen-react', () => {
 
   test('resizes with keyboard steps, bounds, and double-click reset', () => {
     const changes: number[][] = []
-    const resizable = withHookDispatcher(() => useResizable({
-      defaultSizes: [30, 70],
-      onSizesChange: sizes => {
-        changes.push(sizes)
-      },
-      panelCount: 2
-    }))
+    const resizable = withHookDispatcher(() =>
+      useResizable({
+        defaultSizes: [30, 70],
+        onSizesChange: (sizes) => {
+          changes.push(sizes)
+        },
+        panelCount: 2,
+      }),
+    )
     const handle = resizable.getHandleProps(0)
-    const key = (init: { key: string, shiftKey?: boolean }): void => {
+    const key = (init: { key: string; shiftKey?: boolean }): void => {
       handle.onKeyDown?.({
         preventDefault: vi.fn(),
         shiftKey: false,
-        ...init
+        ...init,
       } as unknown as Parameters<NonNullable<typeof handle.onKeyDown>>[0])
     }
 
@@ -840,12 +890,14 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes context menu trigger and menu props', () => {
     const changes: boolean[] = []
-    const contextMenu = withHookDispatcher(() => useContextMenu({
-      id: 'actions-menu',
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
+    const contextMenu = withHookDispatcher(() =>
+      useContextMenu({
+        id: 'actions-menu',
+        onOpenChange: (open) => {
+          changes.push(open)
+        },
+      }),
+    )
 
     expect(contextMenu.triggerProps['data-ui-context-menu-trigger']).toBe('actions-menu')
     expect(contextMenu.triggerProps['aria-haspopup']).toBe('menu')
@@ -858,9 +910,9 @@ describe('@santi020k/lumen-react', () => {
       clientX: 24,
       clientY: 32,
       currentTarget: {
-        getBoundingClientRect: () => ({ left: 0, top: 0 })
+        getBoundingClientRect: () => ({ left: 0, top: 0 }),
       },
-      preventDefault: vi.fn()
+      preventDefault: vi.fn(),
     } as unknown as Parameters<NonNullable<typeof contextMenu.triggerProps.onContextMenu>>[0])
 
     expect(changes).toEqual([true])
@@ -883,12 +935,14 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('exposes select listbox state and option selection', () => {
-    const select = withHookDispatcher(() => useSelect({
-      defaultValue: 'beta',
-      options: ['Alpha', { label: 'Beta', value: 'beta' }],
-      placeholder: 'Pick one',
-      required: true
-    }))
+    const select = withHookDispatcher(() =>
+      useSelect({
+        defaultValue: 'beta',
+        options: ['Alpha', { label: 'Beta', value: 'beta' }],
+        placeholder: 'Pick one',
+        required: true,
+      }),
+    )
     const option = select.getOptionProps({ label: 'Beta', value: 'beta' })
 
     expect(select.rootProps['data-ui-select']).toBe(true)
@@ -903,11 +957,13 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('exposes theme builder tokens and control props', () => {
-    const theme = withHookDispatcher(() => useThemeBuilder({
-      defaultAccentHue: 140,
-      defaultHue: 260,
-      defaultScheme: 'dark'
-    }))
+    const theme = withHookDispatcher(() =>
+      useThemeBuilder({
+        defaultAccentHue: 140,
+        defaultHue: 260,
+        defaultScheme: 'dark',
+      }),
+    )
     const manualMode = theme.getModeProps('manual')
     const figmaFormat = theme.getExportFormatProps('figma')
 
@@ -931,16 +987,18 @@ describe('@santi020k/lumen-react', () => {
   test('exposes theme builder scheme, hue, and color control props', () => {
     const schemes: string[] = []
     const hues: number[] = []
-    const theme = withHookDispatcher(() => useThemeBuilder({
-      defaultHue: 260,
-      defaultScheme: 'dark',
-      onHueChange: value => {
-        hues.push(value)
-      },
-      onSchemeChange: value => {
-        schemes.push(value)
-      }
-    }))
+    const theme = withHookDispatcher(() =>
+      useThemeBuilder({
+        defaultHue: 260,
+        defaultScheme: 'dark',
+        onHueChange: (value) => {
+          hues.push(value)
+        },
+        onSchemeChange: (value) => {
+          schemes.push(value)
+        },
+      }),
+    )
 
     expect(theme.getSchemeProps('dark')['aria-pressed']).toBe(true)
     expect(theme.getSchemeProps('light')['aria-pressed']).toBe(false)
@@ -954,11 +1012,13 @@ describe('@santi020k/lumen-react', () => {
     expect(theme.exportButtonProps.type).toBe('button')
     expect(theme.outputProps.readOnly).toBe(true)
 
-    theme.getSchemeProps('light').onClick?.({} as Parameters<NonNullable<ReturnType<typeof theme.getSchemeProps>['onClick']>>[0])
+    theme
+      .getSchemeProps('light')
+      .onClick?.({} as Parameters<NonNullable<ReturnType<typeof theme.getSchemeProps>['onClick']>>[0])
     expect(schemes).toEqual(['light'])
 
     theme.hueProps.onChange?.({
-      currentTarget: { value: '120' }
+      currentTarget: { value: '120' },
     } as unknown as Parameters<NonNullable<typeof theme.hueProps.onChange>>[0])
     expect(hues).toEqual([120])
   })
@@ -973,13 +1033,16 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('exposes toast provider controller api', () => {
-    const provider = withHookDispatcher(() => ToastProvider({ maxCount: 2, placement: 'top-right' }) as ReactElement<{
-      value: {
-        create: (detail: { title: string }) => string
-        dismiss: (id?: string) => void
-        update: (id: string, detail: { title: string }) => void
-      }
-    }>)
+    const provider = withHookDispatcher(
+      () =>
+        ToastProvider({ maxCount: 2, placement: 'top-right' }) as ReactElement<{
+          value: {
+            create: (detail: { title: string }) => string
+            dismiss: (id?: string) => void
+            update: (id: string, detail: { title: string }) => void
+          }
+        }>,
+    )
     const id = provider.props.value.create({ title: 'Saved' })
 
     expect(id).toMatch(/^ui-toast-/)
@@ -989,11 +1052,13 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes modal dialog aria contracts and open toggles', () => {
     const changes: boolean[] = []
-    const dialog = withHookDispatcher(() => useDialog({
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
+    const dialog = withHookDispatcher(() =>
+      useDialog({
+        onOpenChange: (open) => {
+          changes.push(open)
+        },
+      }),
+    )
 
     expect(dialog.dialogProps.role).toBe('dialog')
     expect(dialog.dialogProps['aria-modal']).toBe(true)
@@ -1011,32 +1076,36 @@ describe('@santi020k/lumen-react', () => {
 
   test('closes non-alert dialogs on backdrop click but keeps alerts modal', () => {
     const alertChanges: boolean[] = []
-    const alert = withHookDispatcher(() => useDialog({
-      alert: true,
-      onOpenChange: open => {
-        alertChanges.push(open)
-      }
-    }))
+    const alert = withHookDispatcher(() =>
+      useDialog({
+        alert: true,
+        onOpenChange: (open) => {
+          alertChanges.push(open)
+        },
+      }),
+    )
 
     expect(alert.dialogProps.role).toBe('alertdialog')
     expect(alert.dialogProps['data-ui-alert-dialog']).toBe(true)
     expect(alert.dialogProps['data-ui-dialog']).toBeUndefined()
 
     alert.dialogProps.onClick?.({
-      target: null
+      target: null,
     } as unknown as Parameters<NonNullable<typeof alert.dialogProps.onClick>>[0])
 
     expect(alertChanges).toEqual([])
 
     const dialogChanges: boolean[] = []
-    const dialog = withHookDispatcher(() => useDialog({
-      onOpenChange: open => {
-        dialogChanges.push(open)
-      }
-    }))
+    const dialog = withHookDispatcher(() =>
+      useDialog({
+        onOpenChange: (open) => {
+          dialogChanges.push(open)
+        },
+      }),
+    )
 
     dialog.dialogProps.onClick?.({
-      target: null
+      target: null,
     } as unknown as Parameters<NonNullable<typeof dialog.dialogProps.onClick>>[0])
 
     expect(dialogChanges).toEqual([false])
@@ -1048,12 +1117,14 @@ describe('@santi020k/lumen-react', () => {
 
   test('activates tabs through trigger clicks', () => {
     const changes: string[] = []
-    const tabs = withHookDispatcher(() => useTabs({
-      defaultValue: 'overview',
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
+    const tabs = withHookDispatcher(() =>
+      useTabs({
+        defaultValue: 'overview',
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
     const settings = tabs.getTriggerProps('settings')
 
     settings.onClick?.({} as Parameters<NonNullable<typeof settings.onClick>>[0])
@@ -1063,12 +1134,14 @@ describe('@santi020k/lumen-react', () => {
 
   test('selects enabled options and ignores disabled ones', () => {
     const changes: string[] = []
-    const select = withHookDispatcher(() => useSelect({
-      onValueChange: value => {
-        changes.push(value)
-      },
-      options: ['Alpha', { label: 'Beta', value: 'beta' }, { disabled: true, label: 'Gamma', value: 'gamma' }]
-    }))
+    const select = withHookDispatcher(() =>
+      useSelect({
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+        options: ['Alpha', { label: 'Beta', value: 'beta' }, { disabled: true, label: 'Gamma', value: 'gamma' }],
+      }),
+    )
     const beta = select.getOptionProps({ label: 'Beta', value: 'beta' })
     const gamma = select.getOptionProps({ disabled: true, label: 'Gamma', value: 'gamma' })
 
@@ -1093,15 +1166,17 @@ describe('@santi020k/lumen-react', () => {
 
   test('syncs the native select change back to state', () => {
     const changes: string[] = []
-    const select = withHookDispatcher(() => useSelect({
-      onValueChange: value => {
-        changes.push(value)
-      },
-      options: ['Alpha', 'Beta']
-    }))
+    const select = withHookDispatcher(() =>
+      useSelect({
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+        options: ['Alpha', 'Beta'],
+      }),
+    )
 
     select.nativeSelectProps.onChange?.({
-      currentTarget: { value: 'Beta' }
+      currentTarget: { value: 'Beta' },
     } as unknown as Parameters<NonNullable<typeof select.nativeSelectProps.onChange>>[0])
 
     expect(changes).toEqual(['Beta'])
@@ -1109,11 +1184,13 @@ describe('@santi020k/lumen-react', () => {
 
   test('toggles disclosure open state through the trigger', () => {
     const changes: boolean[] = []
-    const popover = withHookDispatcher(() => usePopover({
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
+    const popover = withHookDispatcher(() =>
+      usePopover({
+        onOpenChange: (open) => {
+          changes.push(open)
+        },
+      }),
+    )
 
     popover.triggerProps.onClick?.({} as Parameters<NonNullable<typeof popover.triggerProps.onClick>>[0])
 
@@ -1122,16 +1199,18 @@ describe('@santi020k/lumen-react', () => {
 
   test('closes an open disclosure panel on Escape', () => {
     const changes: boolean[] = []
-    const dropdown = withHookDispatcher(() => useDropdownMenu({
-      defaultOpen: true,
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
+    const dropdown = withHookDispatcher(() =>
+      useDropdownMenu({
+        defaultOpen: true,
+        onOpenChange: (open) => {
+          changes.push(open)
+        },
+      }),
+    )
 
     dropdown.panelProps.onKeyDown?.({
       key: 'Escape',
-      preventDefault: vi.fn()
+      preventDefault: vi.fn(),
     } as unknown as Parameters<NonNullable<typeof dropdown.panelProps.onKeyDown>>[0])
 
     expect(changes).toEqual([false])
@@ -1139,16 +1218,18 @@ describe('@santi020k/lumen-react', () => {
 
   test('dismisses tooltips on mouse leave and Escape', () => {
     const changes: boolean[] = []
-    const tooltip = withHookDispatcher(() => useTooltip({
-      defaultOpen: true,
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
+    const tooltip = withHookDispatcher(() =>
+      useTooltip({
+        defaultOpen: true,
+        onOpenChange: (open) => {
+          changes.push(open)
+        },
+      }),
+    )
 
     tooltip.rootProps.onMouseLeave?.({} as Parameters<NonNullable<typeof tooltip.rootProps.onMouseLeave>>[0])
     tooltip.rootProps.onKeyDown?.({
-      key: 'Escape'
+      key: 'Escape',
     } as Parameters<NonNullable<typeof tooltip.rootProps.onKeyDown>>[0])
 
     expect(changes).toEqual([false, false])
@@ -1159,12 +1240,14 @@ describe('@santi020k/lumen-react', () => {
 
     try {
       const changes: boolean[] = []
-      const tooltip = withHookDispatcher(() => useTooltip({
-        delay: 0,
-        onOpenChange: open => {
-          changes.push(open)
-        }
-      }))
+      const tooltip = withHookDispatcher(() =>
+        useTooltip({
+          delay: 0,
+          onOpenChange: (open) => {
+            changes.push(open)
+          },
+        }),
+      )
 
       tooltip.rootProps.onFocus?.({} as Parameters<NonNullable<typeof tooltip.rootProps.onFocus>>[0])
 
@@ -1184,10 +1267,14 @@ describe('@santi020k/lumen-react', () => {
       closest: () => null,
       dataset: {} as Record<string, string>,
       removeAttribute: vi.fn(),
-      setAttribute: vi.fn()
+      setAttribute: vi.fn(),
     }
 
-    validation.setFieldValidity(control as unknown as Parameters<typeof validation.setFieldValidity>[0], true, 'Required')
+    validation.setFieldValidity(
+      control as unknown as Parameters<typeof validation.setFieldValidity>[0],
+      true,
+      'Required',
+    )
 
     expect(control.setAttribute).toHaveBeenCalledWith('aria-invalid', 'true')
     expect(control.dataset.uiValidationInvalid).toBe('true')
@@ -1203,23 +1290,27 @@ describe('@santi020k/lumen-react', () => {
     const control = {
       form: null,
       validity: { valid: true },
-      value: ''
+      value: '',
     }
 
-    expect(validation.validateControl(control as unknown as Parameters<typeof validation.validateControl>[0])).toBe(true)
+    expect(validation.validateControl(control as unknown as Parameters<typeof validation.validateControl>[0])).toBe(
+      true,
+    )
   })
 
   test('builds a six-week calendar grid with weekday and month labels', () => {
-    const calendar = withHookDispatcher(() => useCalendar({
-      month: '2026-07',
-      name: 'delivery',
-      value: '2026-07-10'
-    }))
+    const calendar = withHookDispatcher(() =>
+      useCalendar({
+        month: '2026-07',
+        name: 'delivery',
+        value: '2026-07-10',
+      }),
+    )
 
     expect(calendar.month).toBe('2026-07')
     expect(calendar.weekdays).toHaveLength(7)
     expect(calendar.weeks).toHaveLength(6)
-    expect(calendar.weeks.every(week => week.length === 7)).toBe(true)
+    expect(calendar.weeks.every((week) => week.length === 7)).toBe(true)
     expect(calendar.label).toContain('2026')
     expect(calendar.inputProps.name).toBe('delivery')
     expect(calendar.inputProps.type).toBe('hidden')
@@ -1230,13 +1321,15 @@ describe('@santi020k/lumen-react', () => {
 
   test('clamps calendar selection to the max boundary and disables forward navigation', () => {
     const changes: string[] = []
-    const calendar = withHookDispatcher(() => useCalendar({
-      max: '2026-07-15',
-      month: '2026-07',
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
+    const calendar = withHookDispatcher(() =>
+      useCalendar({
+        max: '2026-07-15',
+        month: '2026-07',
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
 
     calendar.selectDate('2026-07-20')
 
@@ -1246,13 +1339,15 @@ describe('@santi020k/lumen-react', () => {
 
   test('ignores calendar selection while disabled', () => {
     const changes: string[] = []
-    const calendar = withHookDispatcher(() => useCalendar({
-      disabled: true,
-      month: '2026-07',
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
+    const calendar = withHookDispatcher(() =>
+      useCalendar({
+        disabled: true,
+        month: '2026-07',
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
 
     calendar.selectDate('2026-07-10')
 
@@ -1262,13 +1357,15 @@ describe('@santi020k/lumen-react', () => {
 
   test('exposes calendar day cell props and click selection', () => {
     const changes: string[] = []
-    const calendar = withHookDispatcher(() => useCalendar({
-      month: '2026-07',
-      onValueChange: value => {
-        changes.push(value)
-      }
-    }))
-    const firstOfMonth = calendar.weeks.flat().find(day => day.date === '2026-07-01')
+    const calendar = withHookDispatcher(() =>
+      useCalendar({
+        month: '2026-07',
+        onValueChange: (value) => {
+          changes.push(value)
+        },
+      }),
+    )
+    const firstOfMonth = calendar.weeks.flat().find((day) => day.date === '2026-07-01')
 
     if (!firstOfMonth) throw new Error('Expected 2026-07-01 in the calendar grid.')
 
@@ -1285,7 +1382,9 @@ describe('@santi020k/lumen-react', () => {
 
   test('composes popover and dropdown surfaces over disclosure hooks', () => {
     const popover = withHookDispatcher(() => Popover({ glass: true }) as ReactElement<{ children: ReactElement }>)
-    const dropdown = withHookDispatcher(() => DropdownMenu({ surface: 'glass' }) as ReactElement<{ children: ReactElement }>)
+    const dropdown = withHookDispatcher(
+      () => DropdownMenu({ surface: 'glass' }) as ReactElement<{ children: ReactElement }>,
+    )
     const popoverProps = popover.props.children.props as Record<string, unknown>
     const dropdownRoot = dropdown.props.children
     const dropdownProps = dropdownRoot.props as Record<string, unknown>

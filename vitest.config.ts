@@ -10,7 +10,8 @@ const alias = {
   '@santi020k/lumen-core': fileURLToPath(new URL('./packages/core/src/index.ts', import.meta.url)),
   '@santi020k/lumen-elements': fileURLToPath(new URL('./packages/elements/src/index.ts', import.meta.url)),
   '@santi020k/lumen-icons-brand': fileURLToPath(new URL('./packages/icons-brand/src/index.ts', import.meta.url)),
-  '@santi020k/lumen-react': fileURLToPath(new URL('./packages/react/src/index.ts', import.meta.url))
+  '@santi020k/lumen-react': fileURLToPath(new URL('./packages/react/src/index.ts', import.meta.url)),
+  '@santi020k/lumen-react-hook-form': fileURLToPath(new URL('./packages/react-hook-form/src/index.tsx', import.meta.url))
 }
 
 const coverageReporters = process.env.CI ? ['text', 'lcov'] : ['text', 'html']
@@ -60,6 +61,7 @@ export default defineConfig({
       project('lumen', 'packages/lumen'),
       project('mcp', 'packages/mcp'),
       project('react', 'packages/react'),
+      project('react-hook-form', 'packages/react-hook-form'),
       project('elements', 'packages/elements', { environment: 'jsdom' }),
       project('icons-brand', 'packages/icons-brand'),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),

@@ -9,7 +9,8 @@ export interface LumenTokenAuditFinding {
 }
 
 const declarationPattern = /--([a-z][\w-]*)\s*:\s*([^;}\n]+)/giu
-const channelPattern = /^(?:var\(.+\)|-?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|grad|rad|turn)?\s+-?(?:\d+(?:\.\d+)?|\.\d+)%\s+-?(?:\d+(?:\.\d+)?|\.\d+)%(?:\s*\/\s*(?:\d+(?:\.\d+)?|\.\d+)%?)?)$/iu
+const channelPattern =
+  /^(?:var\(.+\)|-?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|grad|rad|turn)?\s+-?(?:\d+(?:\.\d+)?|\.\d+)%\s+-?(?:\d+(?:\.\d+)?|\.\d+)%(?:\s*\/\s*(?:\d+(?:\.\d+)?|\.\d+)%?)?)$/iu
 const semanticTokens = new Set<string>(lumenSemanticColorTokenNames)
 
 export const auditLumenTokenCss = (source: string, file = '<input>'): LumenTokenAuditFinding[] => {
@@ -31,7 +32,7 @@ export const auditLumenTokenCss = (source: string, file = '<input>'): LumenToken
       file,
       line,
       token,
-      value
+      value,
     })
   }
 
