@@ -7,6 +7,7 @@ import {
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartSeries,
   resolveLumenChartTone,
@@ -88,10 +89,7 @@ const referenceY =
     showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {series.map((item, index) => (
-          <li class={`
-            ui-chart-tone--${resolveLumenChartTone(item.tone, index)}
-          `}
-          >
+          <li class={getLumenChartToneClassName(item.tone, index)}>
             <span aria-hidden="true" />
             {item.label}
           </li>
@@ -166,11 +164,7 @@ const referenceY =
           const tone = resolveLumenChartTone(item.tone, index)
 
           return (
-            <g class={`
-              ui-line-chart__series
-              ui-chart-tone--${tone}
-            `}
-            >
+            <g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>
               {area &&
                 geometry.areaPaths.map(path => (
                   <path class="ui-line-chart__area" d={path} />

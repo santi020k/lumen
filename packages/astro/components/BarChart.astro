@@ -4,11 +4,11 @@ import type { HTMLAttributes } from 'astro/types'
 import {
   createLumenBarGeometry,
   getLumenChartTicks,
+  getLumenChartToneClassName,
   hasLumenChartData,
   type LumenBarChartLayout,
   type LumenChartOrientation,
   type LumenChartSeries,
-  resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
@@ -67,10 +67,7 @@ const margin = orientation === 'horizontal' ?
     showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {series.map((item, index) => (
-          <li class={`
-            ui-chart-tone--${resolveLumenChartTone(item.tone, index)}
-          `}
-          >
+          <li class={getLumenChartToneClassName(item.tone, index)}>
             <span aria-hidden="true" />
             {item.label}
           </li>
@@ -135,9 +132,7 @@ const margin = orientation === 'horizontal' ?
         {
           geometry.marks.map(mark => (
             <rect
-              class={`
-                ui-chart-tone--${mark.tone}
-              `}
+              class={getLumenChartToneClassName(mark.tone)}
               height={mark.height}
               rx="4"
               width={mark.width}

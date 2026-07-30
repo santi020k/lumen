@@ -1,0 +1,66 @@
+{
+  "name": "@santi020k/lumen-react-hook-form",
+  "version": "0.4.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Optional React Hook Form adapters for Lumen composite controls.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config ../../vitest.config.ts --project react-hook-form",
+    "test:coverage": "vitest run --config ../../vitest.config.ts --project react-hook-form --coverage",
+    "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
+    "clean": "rm -rf dist coverage"
+  },
+  "peerDependencies": {
+    "@santi020k/lumen-react": "^0.4.0",
+    "react": ">=19",
+    "react-hook-form": ">=7.76.0 <8"
+  },
+  "devDependencies": {
+    "@santi020k/lumen-react": "workspace:^",
+    "@types/react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-hook-form": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/lumen.git",
+    "directory": "packages/react-hook-form"
+  },
+  "homepage": "https://lumen.santi020k.com/docs/forms/react-hook-form",
+  "bugs": {
+    "url": "https://github.com/santi020k/lumen/issues"
+  },
+  "author": {
+    "name": "Santiago Molina",
+    "url": "https://santi020k.com"
+  },
+  "license": "MIT"
+}

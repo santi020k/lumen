@@ -22,6 +22,12 @@ import {
   Breadcrumb,
   Bubble,
   ButtonGroup,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   Carousel,
   Chart,
   Checkbox,
@@ -63,6 +69,12 @@ import {
   Sonner,
   Sparkline,
   Spinner,
+  Stat,
+  StatDescription,
+  StatIcon,
+  StatLabel,
+  StatTrend,
+  StatValue,
   Switch,
   TagGroup,
   Textarea,
@@ -87,6 +99,28 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Skeleton({}) as ReactElement).className).toBe('ui-skeleton')
     expect(propsOf(Kbd({}) as ReactElement).className).toBe('ui-kbd')
     expect(propsOf(Label({}) as ReactElement).className).toBe('ui-label')
+  })
+
+  test('composes Card through stable public parts', () => {
+    expect(propsOf(Card({}) as ReactElement).className).toBe('ui-card')
+    expect(propsOf(Card({}) as ReactElement)['data-slot']).toBe('card')
+    expect(propsOf(CardHeader({}) as ReactElement).className).toBe('ui-card__header')
+    expect(propsOf(CardTitle({ as: 'h3' }) as ReactElement).className).toBe('ui-card__title')
+    expect((CardTitle({ as: 'h3' }) as ReactElement).type).toBe('h3')
+    expect(propsOf(CardDescription({}) as ReactElement)['data-slot']).toBe('card-description')
+    expect(propsOf(CardContent({}) as ReactElement).className).toBe('ui-card__content')
+    expect(propsOf(CardFooter({}) as ReactElement).className).toBe('ui-card__footer')
+  })
+
+  test('composes Stat parts and semantic trend tones', () => {
+    expect(propsOf(Stat({ variant: 'bare' }) as ReactElement).className).toBe('ui-stat ui-stat--bare')
+    expect(propsOf(StatLabel({}) as ReactElement)['data-slot']).toBe('stat-label')
+    expect(propsOf(StatValue({ as: 'output' }) as ReactElement).className).toBe('ui-stat-value')
+    expect((StatValue({ as: 'output' }) as ReactElement).type).toBe('output')
+    expect(propsOf(StatDescription({}) as ReactElement).className).toBe('ui-stat-description')
+    expect(propsOf(StatIcon({}) as ReactElement).className).toBe('ui-stat-icon')
+    expect(propsOf(StatTrend({ tone: 'success' }) as ReactElement).className)
+      .toBe('ui-stat-trend ui-stat-trend--success')
   })
 
   test('keeps native images lazy and supports framework image renderers', () => {

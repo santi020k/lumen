@@ -24,21 +24,31 @@ import {
       <Card class="lumen-template__metric"><Stat label="At-risk projects" value="2" /><Badge variant="destructive">Needs help</Badge></Card>
       <Card class="lumen-template__metric"><Stat label="Delivery velocity" value="46 pts" /><Badge variant="success">+6.4%</Badge></Card>
     </section>
-    <section class="lumen-template__grid"><Card class="lumen-template__panel"><h2>Active workstreams</h2><p>Mobile checkout · 72%</p><Progress aria-label="Mobile checkout is 72% complete" value={72} /><p>Billing migration · 54%</p><Progress aria-label="Billing migration is 54% complete" value={54} /></Card><Card
-      class="lumen-template__panel"
-      id="activity"
-                                                                                                                                                                                                                                                                                                                    ><h2>Recent activity</h2><Timeline><TimelineItem>Amina completed checkout validation</TimelineItem><TimelineItem>Jon reviewed billing retries</TimelineItem><TimelineItem>Nora moved tokens to review</TimelineItem></Timeline>
-    </Card>
+    <section class="lumen-template__grid">
+      <Card class="lumen-template__panel">
+        <h2>Active workstreams</h2>
+        <p>Mobile checkout · 72%</p>
+        <Progress aria-label="Mobile checkout is 72% complete" value={72} />
+        <p>Billing migration · 54%</p>
+        <Progress aria-label="Billing migration is 54% complete" value={54} />
+      </Card>
+      <Card class="lumen-template__panel" id="activity">
+        <h2>Recent activity</h2>
+        <Timeline>
+          <TimelineItem>Amina completed checkout validation</TimelineItem>
+          <TimelineItem>Jon reviewed billing retries</TimelineItem>
+          <TimelineItem>Nora moved tokens to review</TimelineItem>
+        </Timeline>
+      </Card>
     </section>
-    <Card class="lumen-template__panel" id="projects"><div class="
-      lumen-template__section-header
-    "
-    ><h2>Priority projects</h2><Button variant="ghost">View all</Button>
-    </div><Table class="
-                                                        lumen-template__table
-                                                      "
-    ><table><thead><tr><th>Project</th><th>Owner</th><th>Status</th><th>Progress</th></tr></thead><tbody><tr><td>Mobile checkout</td><td>Amina</td><td><Badge variant="success">Active</Badge></td><td>72%</td></tr><tr><td>Billing migration</td><td>Jon</td><td><Badge variant="destructive">At risk</Badge></td><td>54%</td></tr></tbody></table>
-    </Table>
+    <Card class="lumen-template__panel" id="projects">
+      <div class="lumen-template__section-header">
+        <h2>Priority projects</h2>
+        <Button variant="ghost">View all</Button>
+      </div>
+      <Table class="lumen-template__table">
+        <table><thead><tr><th>Project</th><th>Owner</th><th>Status</th><th>Progress</th></tr></thead><tbody><tr><td>Mobile checkout</td><td>Amina</td><td><Badge variant="success">Active</Badge></td><td>72%</td></tr><tr><td>Billing migration</td><td>Jon</td><td><Badge variant="destructive">At risk</Badge></td><td>54%</td></tr></tbody></table>
+      </Table>
     </Card>
   </main>
 </div>

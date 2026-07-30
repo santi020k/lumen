@@ -17,24 +17,22 @@ import {
 <main class="lumen-template lumen-template__form-shell">
   <Card class="lumen-template__form">
     <Stepper currentStep={1} steps={['Account', 'Workspace', 'Preferences', 'Invite']} />
-    <header><p class="lumen-template__muted">Step 2 of 4</p><h1>Create your workspace</h1><p class="
-      lumen-template__muted
-    "
-    >We’ll prepare the right starting point.
-    </p>
+    <header>
+      <p class="lumen-template__muted">Step 2 of 4</p>
+      <h1>Create your workspace</h1>
+      <p class="lumen-template__muted">We’ll prepare the right starting point.</p>
     </header>
     <form class="lumen-template__form">
       <Field class="lumen-template__field"><Label for="workspace-name">Workspace name</Label><Input id="workspace-name" name="workspace" placeholder="Northstar Labs" required /></Field>
       <Field class="lumen-template__field"><Label for="work-email">Work email</Label><Input aria-invalid="true" id="work-email" name="email" type="email" value="maya@example" required /><Alert role="alert" variant="destructive">Enter a complete email address.</Alert></Field>
-      <fieldset class="lumen-template__choices"><legend>What are you setting up?</legend><label class="
-        lumen-template__choice
-      "
-      ><input checked name="intent" type="radio" value="team" /> A team workspace
-      </label><label class="
-                                                                                           lumen-template__choice
-                                                                                         "
-      ><input name="intent" type="radio" value="personal" /> A personal workspace
-      </label>
+      <fieldset class="lumen-template__choices">
+        <legend>What are you setting up?</legend>
+        <label class="lumen-template__choice">
+          <input checked name="intent" type="radio" value="team" /> A team workspace
+        </label>
+        <label class="lumen-template__choice">
+          <input name="intent" type="radio" value="personal" /> A personal workspace
+        </label>
       </fieldset>
       <label><Checkbox checked name="updates" value="updates" /> Send occasional onboarding tips</label>
       <div><div class="lumen-template__section-header"><span>Setup progress</span><strong>50%</strong></div><Progress aria-label="Setup is 50% complete" value={50} /></div>

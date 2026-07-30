@@ -42,8 +42,9 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <button
-  class:list={classList}
   aria-busy={loading || undefined}
+  class:list={classList}
+  data-slot="button"
   disabled={isDisabled || undefined}
   type={type}
   {...passthrough}

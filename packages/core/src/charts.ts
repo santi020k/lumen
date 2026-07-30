@@ -94,6 +94,28 @@ export interface LumenBarGeometryOptions {
 
 export type LumenPieChartVariant = 'donut' | 'pie'
 
+const lumenChartToneClassNames: Record<LumenChartTone, string> = {
+  accent: 'ui-chart-tone--accent',
+  brand: 'ui-chart-tone--brand',
+  danger: 'ui-chart-tone--danger',
+  neutral: 'ui-chart-tone--neutral',
+  'series-1': 'ui-chart-tone--series-1',
+  'series-2': 'ui-chart-tone--series-2',
+  'series-3': 'ui-chart-tone--series-3',
+  'series-4': 'ui-chart-tone--series-4',
+  'series-5': 'ui-chart-tone--series-5',
+  'series-6': 'ui-chart-tone--series-6',
+  'series-7': 'ui-chart-tone--series-7',
+  'series-8': 'ui-chart-tone--series-8',
+  success: 'ui-chart-tone--success',
+  warning: 'ui-chart-tone--warning'
+}
+
+const lumenPieChartVariantClassNames: Record<LumenPieChartVariant, string> = {
+  donut: 'ui-pie-chart--donut',
+  pie: 'ui-pie-chart--pie'
+}
+
 export interface LumenPieGeometrySlice {
   label: string
   path: string
@@ -187,6 +209,15 @@ export const resolveLumenChartTone = (
   tone: LumenChartTone | undefined,
   index = 0
 ): LumenChartTone => tone ?? lumenChartTones[index % 8] ?? 'series-1'
+
+export const getLumenChartToneClassName = (
+  tone: LumenChartTone | undefined,
+  index = 0
+): string => lumenChartToneClassNames[resolveLumenChartTone(tone, index)]
+
+export const getLumenPieChartVariantClassName = (
+  variant: LumenPieChartVariant
+): string => lumenPieChartVariantClassNames[variant]
 
 interface LumenPolarPoint {
   x: number

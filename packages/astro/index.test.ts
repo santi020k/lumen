@@ -145,6 +145,42 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).not.toContain('-webkit-text-fill-color')
   })
 
+  test('ships stable compound Card and Stat parts across the public surface', async () => {
+    const [index, card, stat, cardTitle, statTrend, css] = await Promise.all([
+      readFile(new URL('./index.ts', packageRoot), 'utf8'),
+      readFile(new URL('./components/Card.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Stat.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/CardTitle.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/StatTrend.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    for (const component of [
+      'CardContent',
+      'CardDescription',
+      'CardFooter',
+      'CardHeader',
+      'CardTitle',
+      'StatDescription',
+      'StatIcon',
+      'StatLabel',
+      'StatTrend',
+      'StatValue'
+    ]) {
+      expect(index).toContain(`export { default as ${component} }`)
+    }
+
+    expect(card).toContain('data-slot="card"')
+    expect(stat).toContain('data-slot="stat"')
+    expect(stat).toContain('\'bare\'')
+    expect(cardTitle).toContain('data-slot="card-title"')
+    expect(statTrend).toContain('data-slot="stat-trend"')
+    expect(css).toContain('--ui-card-padding')
+    expect(css).toContain('.ui-card__header')
+    expect(css).toContain('.ui-stat--bare')
+    expect(css).toContain('.ui-stat-trend--success')
+  })
+
   test('styles native meter tracks and values with shared color tokens', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 

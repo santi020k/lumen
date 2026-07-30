@@ -34,7 +34,9 @@ import {
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenChartToneClassName,
   getLumenIcon,
+  getLumenPieChartVariantClassName,
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
@@ -485,6 +487,7 @@ export interface ButtonProps extends ComponentPropsWithRef<'button'> {
 }
 
 interface ButtonChildProps extends HTMLAttributes<HTMLElement> {
+  'data-slot'?: string
   ref?: Ref<HTMLElement> | undefined
 }
 
@@ -517,6 +520,7 @@ export const Button = ({
       'aria-busy': loading ? true : undefined,
       'aria-disabled': disabled ? true : undefined,
       className: composeClassName(buttonClassName, child.props.className),
+      'data-slot': 'button',
       ref: ref as Ref<HTMLElement>,
       children: (
         <>
@@ -531,6 +535,7 @@ export const Button = ({
     <button
       aria-busy={loading || undefined}
       className={buttonClassName}
+      data-slot="button"
       disabled={disabled}
       ref={ref}
       type={type}
@@ -723,12 +728,7 @@ interface ChartLegendProps {
 const ChartLegend = ({ series }: ChartLegendProps) => (
   <ul aria-label="Chart legend" className="ui-chart__legend">
     {series.map((item, index) => (
-      <li
-        className={`
-          ui-chart-tone--${resolveLumenChartTone(item.tone, index)}
-        `}
-        key={item.id}
-      >
+      <li className={getLumenChartToneClassName(item.tone, index)} key={item.id}>
         <span aria-hidden="true" />
         {item.label}
       </li>
@@ -917,9 +917,7 @@ export const BarChart = ({
           <g className="ui-bar-chart__marks">
             {geometry.marks.map(mark => (
               <rect
-                className={`
-                  ui-chart-tone--${mark.tone}
-                `}
+                className={getLumenChartToneClassName(mark.tone)}
                 height={mark.height}
                 key={`${mark.seriesId}:${String(mark.category)}`}
                 rx="4"
@@ -1047,10 +1045,10 @@ export const LineChart = ({
 
             return (
               <g
-                className={`
-                  ui-line-chart__series
-                  ui-chart-tone--${tone}
-                `}
+                className={composeClassName(
+                  'ui-line-chart__series',
+                  getLumenChartToneClassName(tone)
+                )}
                 key={item.id}
               >
                 {area && geometry.areaPaths.map(path => (
@@ -1110,16 +1108,18 @@ export const PieChart = ({
 
   return (
     <Chart
-      className={composeClassName('ui-pie-chart', `ui-pie-chart--${variant}`, className)}
+      className={composeClassName(
+        'ui-pie-chart',
+        getLumenPieChartVariantClassName(variant),
+        className
+      )}
       {...props}
     >
       {showLegend && hasData && (
         <ul aria-label="Chart legend" className="ui-chart__legend">
           {geometry.slices.map(slice => (
             <li
-              className={`
-                ui-chart-tone--${slice.tone}
-              `}
+              className={getLumenChartToneClassName(slice.tone)}
               key={`${typeof slice.x}:${String(slice.x)}`}
             >
               <span aria-hidden="true" />
@@ -1143,9 +1143,7 @@ export const PieChart = ({
           <g className="ui-pie-chart__slices">
             {geometry.slices.map(slice => (
               <path
-                className={`
-                  ui-chart-tone--${slice.tone}
-                `}
+                className={getLumenChartToneClassName(slice.tone)}
                 d={slice.path}
                 fillRule="evenodd"
                 key={`${typeof slice.x}:${String(slice.x)}`}
@@ -1325,6 +1323,7 @@ export const Code = ({
         className={composeClassName('ui-code ui-code--block', wrap && 'ui-code--wrap', className)}
         data-code-theme={theme}
         data-language={language}
+        data-slot="code"
         data-ui-code
         {...props}
       >
@@ -1339,6 +1338,7 @@ export const Code = ({
       className={composeClassName('ui-code ui-code--inline', className)}
       data-code-theme={theme}
       data-language={language}
+      data-slot="code"
       {...props}
     >
       {code ?? children}
@@ -1564,6 +1564,7 @@ export const DataTable = ({
 
 export type DatePickerProps = Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'type' | 'value'> & SurfaceProps & {
   defaultValue?: string
+  inputRef?: Ref<HTMLInputElement>
   onValueChange?: (value: string) => void
   placeholder?: string
   value?: string
@@ -1593,6 +1594,7 @@ export const DatePicker = ({
   disabled,
   glass = false,
   id,
+  inputRef,
   max,
   min,
   name,
@@ -1609,7 +1611,7 @@ export const DatePicker = ({
   const triggerId = `${datePickerId}-trigger`
   const popoverId = `${datePickerId}-popover`
   const rootRef = useRef<HTMLDivElement | null>(null)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const nativeInputRef = useRef<HTMLInputElement | null>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [internalValue, setInternalValue] = useState(defaultValue ?? '')
   const [open, setOpen] = useState(false)
@@ -1651,12 +1653,12 @@ export const DatePicker = ({
 
     onValueChange?.(nextValue)
 
-    if (inputRef.current) {
-      inputRef.current.value = nextValue
+    if (nativeInputRef.current) {
+      nativeInputRef.current.value = nextValue
 
-      inputRef.current.dispatchEvent(new Event('input', { bubbles: true }))
+      nativeInputRef.current.dispatchEvent(new Event('input', { bubbles: true }))
 
-      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
+      nativeInputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
     }
 
     setOpen(false)
@@ -1698,7 +1700,11 @@ export const DatePicker = ({
 
           onInvalid?.(event)
         }}
-        ref={inputRef}
+        ref={node => {
+          nativeInputRef.current = node
+
+          setRefValue(inputRef, node)
+        }}
         required={required}
         tabIndex={-1}
         type="date"
@@ -2333,7 +2339,7 @@ export const InputGroup = ({ className, ...props }: InputGroupProps) => (
   <div className={composeClassName('ui-input-group', className)} {...props} />
 )
 
-export interface InputOTPProps extends Omit<ComponentPropsWithoutRef<'input'>, 'className' | 'maxLength' | 'type'> {
+export interface InputOTPProps extends Omit<ComponentPropsWithRef<'input'>, 'className' | 'maxLength' | 'type'> {
   className?: string | undefined
   inputClassName?: string | undefined
   length?: number
@@ -2350,6 +2356,7 @@ export const InputOTP = ({
   length = 6,
   maxLength = length,
   pattern = '[0-9]*',
+  ref,
   value,
   ...props
 }: InputOTPProps) => {
@@ -2378,6 +2385,11 @@ export const InputOTP = ({
           maxLength,
           pattern
         })}
+        ref={node => {
+          otp.inputRef.current = node
+
+          setRefValue(ref, node)
+        }}
       />
       <div {...otp.segmentsProps}>
         {otp.segmentIndexes.map(index => (
@@ -2569,6 +2581,7 @@ export const NavigationMenu = ({
     className={composeClassName(
       'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', surface, glass), className
     )}
+    data-slot="navigation-menu"
     data-surface={resolveSurface(surface, glass)}
     data-ui-navigation-menu
     data-variant={variant}
@@ -2848,6 +2861,7 @@ export interface SelectProps extends Omit<
   'defaultValue' | 'disabled' | 'id' | 'name' | 'onChange' | 'options' | 'placeholder' | 'required' | 'size' | 'value'
 >, SelectOptions {
   glass?: LumenGlassProp
+  inputRef?: Ref<HTMLSelectElement>
   onChange?: ComponentPropsWithoutRef<'select'>['onChange']
   size?: 'default' | 'lg' | 'md' | 'sm'
 }
@@ -2867,6 +2881,7 @@ export const Select = ({
   disabled = false,
   glass = false,
   id,
+  inputRef,
   name,
   onChange,
   onValueChange,
@@ -2902,6 +2917,7 @@ export const Select = ({
         {...props}
         className={composeClassName('ui-select ui-select__native', sizeClass)}
         onChange={composeHandlers(onChange, select.nativeSelectProps.onChange)}
+        ref={inputRef}
       >
         {placeholder && <option data-ui-select-placeholder disabled value="">{placeholder}</option>}
         {children}
@@ -3190,6 +3206,7 @@ export const Sidebar = ({
     className={composeClassName(
       'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', surface, glass), className
     )}
+    data-slot="sidebar"
     data-surface={resolveSurface(surface, glass)}
     data-variant={variant}
     {...props}
@@ -3243,7 +3260,11 @@ export interface TableProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
 }
 export const Table = ({ className, glass = false, ...props }: TableProps) => (
-  <div className={composeClassName('ui-table-wrap', glassClass('ui-table-wrap', glass), className)} {...props} />
+  <div
+    className={composeClassName('ui-table-wrap', glassClass('ui-table-wrap', glass), className)}
+    data-slot="table"
+    {...props}
+  />
 )
 
 export interface TabsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue' | 'id' | 'onChange'>, Omit<TabsOptions, 'id'> {
@@ -3377,6 +3398,7 @@ export const CodeTabs = ({
   return (
     <Tabs
       className={composeClassName('ui-code-tabs', className)}
+      data-slot="code-tabs"
       data-storage-key={storageKey}
       onValueChange={selectValue}
       value={value}
@@ -3616,6 +3638,7 @@ export const Link = ({
 }: LinkProps) => (
   <a
     className={composeClassName('ui-link', variant === 'inherit' && 'ui-link--inherit', className)}
+    data-slot="link"
     data-variant={variant}
     ref={ref}
     rel={newTab ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ') : rel}
@@ -3678,7 +3701,7 @@ export const SkipLink = ({ className, ...props }: SkipLinkProps) => (
 
 export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
 export const ThemeToggle = ({ className, type = 'button', ...props }: ThemeToggleProps) => (
-  <button className={composeClassName('ui-theme-toggle', className)} type={type} {...props}>
+  <button className={composeClassName('ui-theme-toggle', className)} data-slot="theme-toggle" type={type} {...props}>
     <span className="ui-sr-only">Toggle color theme</span>
     <Icon className="ui-theme-toggle__sun" name="sun" />
     <Icon className="ui-theme-toggle__moon" name="moon" />
@@ -3994,11 +4017,10 @@ export const AnimatedNumber = ({
   )
 }
 
-export type StatProps<T extends ElementType = 'div'> = PrimitiveProps & {
-  as?: T
+export type StatProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T> & {
   label?: string
   value?: string
-  variant?: 'accent' | 'default' | 'glass'
+  variant?: 'accent' | 'bare' | 'default' | 'glass'
 }
 export const Stat = <T extends ElementType = 'div'>({
   as,
@@ -4012,14 +4034,49 @@ export const Stat = <T extends ElementType = 'div'>({
   <Primitive
     {...(as ? { as } : {})}
     className={composeClassName(variant !== 'default' && `ui-stat--${variant}`, className)}
+    data-slot="stat"
     data-variant={variant}
     {...props}
     uiClassName="ui-stat"
   >
-    {label && <div className="ui-stat-label">{label}</div>}
-    {value && <div className="ui-stat-value">{value}</div>}
+    {label && <div className="ui-stat-label" data-slot="stat-label">{label}</div>}
+    {value && <div className="ui-stat-value" data-slot="stat-value">{value}</div>}
     {children}
   </Primitive>
+)
+
+export type StatLabelProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
+export const StatLabel = <T extends ElementType = 'div'>({ as, ...props }: StatLabelProps<T>) => (
+  <Primitive {...(as ? { as } : {})} data-slot="stat-label" {...props} uiClassName="ui-stat-label" />
+)
+
+export type StatValueProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
+export const StatValue = <T extends ElementType = 'div'>({ as, ...props }: StatValueProps<T>) => (
+  <Primitive {...(as ? { as } : {})} data-slot="stat-value" {...props} uiClassName="ui-stat-value" />
+)
+
+export type StatDescriptionProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
+export const StatDescription = <T extends ElementType = 'div'>({ as, ...props }: StatDescriptionProps<T>) => (
+  <Primitive {...(as ? { as } : {})} data-slot="stat-description" {...props} uiClassName="ui-stat-description" />
+)
+
+export type StatIconProps = ComponentPropsWithRef<'span'>
+export const StatIcon = ({ className, ...props }: StatIconProps) => (
+  <span className={composeClassName('ui-stat-icon', className)} data-slot="stat-icon" {...props} />
+)
+
+type StatTrendTone = 'danger' | 'neutral' | 'success' | 'warning'
+
+export type StatTrendProps = ComponentPropsWithRef<'span'> & {
+  tone?: StatTrendTone
+}
+export const StatTrend = ({ className, tone = 'neutral', ...props }: StatTrendProps) => (
+  <span
+    className={composeClassName('ui-stat-trend', `ui-stat-trend--${tone}`, className)}
+    data-slot="stat-trend"
+    data-tone={tone}
+    {...props}
+  />
 )
 
 export type MeterProps = ComponentPropsWithoutRef<'meter'>
@@ -4142,6 +4199,7 @@ export const ButtonLink = ({
       className={composeClassName(
         'ui-button-link', variant !== 'unstyled' && 'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, shapeClass, className
       )}
+      data-slot="button-link"
       ref={ref}
       {...props}
     />

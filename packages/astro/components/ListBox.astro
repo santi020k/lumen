@@ -35,7 +35,7 @@ const {
 const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
 
 const selectedValues = new Set(
-  Array.isArray(value) ? value.map(String) : value === undefined ? [] : [String(value)]
+  Array.isArray(value) ? value : value === undefined ? [] : [value]
 )
 
 const controlId = id ?? `ui-list-box-${name ?? 'field'}`
@@ -63,7 +63,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-list-box'],
     {normalizedOptions.map(option => (
       <option
         disabled={option.disabled}
-        selected={selectedValues.has(String(option.value))}
+        selected={selectedValues.has(option.value)}
         value={option.value}
       >
         {option.label}
@@ -83,7 +83,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-list-box'],
     {normalizedOptions.map(option => (
       <div
         aria-disabled={option.disabled ? 'true' : undefined}
-        aria-selected={selectedValues.has(String(option.value)) ? 'true' : 'false'}
+        aria-selected={selectedValues.has(option.value) ? 'true' : 'false'}
         data-ui-list-box-option
         data-value={option.value}
         role="option"

@@ -31,13 +31,14 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <button
-  type={type}
   class:list={classList}
   data-dark-theme={darkTheme}
   data-light-theme={lightTheme}
+  data-slot="theme-toggle"
   data-storage-key={storageKey}
   data-ui-controlled={controlled || undefined}
   data-ui-theme-toggle
+  type={type}
   {...passthrough}
 >
   <span class="ui-sr-only">Toggle color theme</span>

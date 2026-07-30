@@ -28,22 +28,29 @@ const sources = { data: [{ x: 'Online', y: 812 }, { x: 'Marketplace', y: 286 }, 
       <Card class="lumen-template__metric"><Stat label="Return rate" value="2.1%" /><Badge variant="success">-0.4%</Badge></Card>
     </section>
     <section class="lumen-template__grid"><BarChart heading="Sales this week" series={sales} /><PieChart centerLabel="orders" centerValue="1,284" heading="Order sources" series={sources} /></section>
-    <section class="lumen-template__grid" id="inventory"><Card class="
-      lumen-template__panel
-    "
-                                                         ><h2>Fulfillment</h2><Stat label="Orders ready" value="42" /><Progress aria-label="42 of 58 orders fulfilled" max={58} value={42} />
-                                                         </Card><Card class="lumen-template__panel"
-    ><h2>Inventory signals</h2><ul class="lumen-template__list"><li>3 products below safety stock</li><li>8 transfers arriving this week</li><li>94% inventory accuracy</li>
-                               </ul>
-           </Card>
+    <section class="lumen-template__grid" id="inventory">
+      <Card class="lumen-template__panel">
+        <h2>Fulfillment</h2>
+        <Stat label="Orders ready" value="42" />
+        <Progress aria-label="42 of 58 orders fulfilled" max={58} value={42} />
+      </Card>
+      <Card class="lumen-template__panel">
+        <h2>Inventory signals</h2>
+        <ul class="lumen-template__list">
+          <li>3 products below safety stock</li>
+          <li>8 transfers arriving this week</li>
+          <li>94% inventory accuracy</li>
+        </ul>
+      </Card>
     </section>
-    <Card class="lumen-template__panel" id="orders"><div class="
-      lumen-template__section-header
-    "
-                                                    ><h2>Recent orders</h2><Button variant="ghost">View all</Button>
-                                                    </div><Table class="lumen-template__table"
-    ><table><thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th></tr></thead><tbody><tr><td>#10482</td><td>Nora Singh</td><td><Badge variant="success">Completed</Badge></td><td>$148.00</td></tr><tr><td>#10481</td><td>Theo Martin</td><td><Badge variant="warning">Pending</Badge></td><td>$84.50</td></tr></tbody></table>
-          </Table>
+    <Card class="lumen-template__panel" id="orders">
+      <div class="lumen-template__section-header">
+        <h2>Recent orders</h2>
+        <Button variant="ghost">View all</Button>
+      </div>
+      <Table class="lumen-template__table">
+        <table><thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th></tr></thead><tbody><tr><td>#10482</td><td>Nora Singh</td><td><Badge variant="success">Completed</Badge></td><td>$148.00</td></tr><tr><td>#10481</td><td>Theo Martin</td><td><Badge variant="warning">Pending</Badge></td><td>$84.50</td></tr></tbody></table>
+      </Table>
     </Card>
   </main>
 </div>

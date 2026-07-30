@@ -92,7 +92,7 @@ for (const slug of componentSlugs) {
       const getControlName = (control: HTMLElement) => {
         const labelledBy = control.getAttribute('aria-labelledby')
           ?.split(/\s+/)
-          .map(id => document.getElementById(id)?.textContent?.trim())
+          .map(id => document.getElementById(id)?.textContent.trim())
           .filter(Boolean)
           .join(' ')
         const labelledByText = labelledBy?.trim()
@@ -101,14 +101,14 @@ for (const slug of componentSlugs) {
 
         const id = control.id
         const explicitLabel = id
-          ? previewElement.querySelector<HTMLLabelElement>(`label[for="${CSS.escape(id)}"]`)?.textContent?.trim()
+          ? previewElement.querySelector<HTMLLabelElement>(`label[for="${CSS.escape(id)}"]`)?.textContent.trim()
           : undefined
 
         return (
           control.getAttribute('aria-label')?.trim()
           || explicitLabel
-          || control.closest('label')?.textContent?.trim()
-          || control.textContent?.trim()
+          || control.closest('label')?.textContent.trim()
+          || control.textContent.trim()
           || control.getAttribute('title')?.trim()
           || control.getAttribute('placeholder')?.trim()
           || ''

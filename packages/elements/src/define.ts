@@ -275,7 +275,7 @@ const elementConfigs = {
       loading: { true: 'ui-button--loading' }
     },
     baseClassName: 'ui-button',
-    defaults: { role: 'button', size: 'default', tabindex: '0', variant: 'default' },
+    defaults: { 'data-slot': 'button', role: 'button', size: 'default', tabindex: '0', variant: 'default' },
     role: 'button',
     tagName: 'lumen-button'
   },
@@ -297,8 +297,33 @@ const elementConfigs = {
       }
     },
     baseClassName: 'ui-card',
-    defaults: { variant: 'default' },
+    defaults: { 'data-slot': 'card', variant: 'default' },
     tagName: 'lumen-card'
+  },
+  CardContent: {
+    baseClassName: 'ui-card__content',
+    defaults: { 'data-slot': 'card-content' },
+    tagName: 'lumen-card-content'
+  },
+  CardDescription: {
+    baseClassName: 'ui-card__description',
+    defaults: { 'data-slot': 'card-description' },
+    tagName: 'lumen-card-description'
+  },
+  CardFooter: {
+    baseClassName: 'ui-card__footer',
+    defaults: { 'data-slot': 'card-footer' },
+    tagName: 'lumen-card-footer'
+  },
+  CardHeader: {
+    baseClassName: 'ui-card__header',
+    defaults: { 'data-slot': 'card-header' },
+    tagName: 'lumen-card-header'
+  },
+  CardTitle: {
+    baseClassName: 'ui-card__title',
+    defaults: { 'data-slot': 'card-title' },
+    tagName: 'lumen-card-title'
   },
   Carousel: { attributeClasses: glassAttributeClasses('ui-carousel--glass'), baseClassName: 'ui-carousel', defaults: { 'data-ui-carousel': '' }, tagName: 'lumen-carousel' },
   Chart: { attributeClasses: glassAttributeClasses('ui-chart--glass'), baseClassName: 'ui-chart', tagName: 'lumen-chart' },
@@ -326,12 +351,12 @@ const elementConfigs = {
       }
     },
     baseClassName: 'ui-code',
-    defaults: { 'data-code-theme': 'auto', variant: 'inline' },
+    defaults: { 'data-code-theme': 'auto', 'data-slot': 'code', variant: 'inline' },
     tagName: 'lumen-code'
   },
   CodeTabs: {
     baseClassName: 'ui-code-tabs',
-    defaults: { 'data-ui-tabs': '' },
+    defaults: { 'data-slot': 'code-tabs', 'data-ui-tabs': '' },
     tagName: 'lumen-code-tabs'
   },
   Combobox: { baseClassName: 'ui-combobox', defaults: { 'data-ui-combobox': '' }, tagName: 'lumen-combobox' },
@@ -462,7 +487,7 @@ const elementConfigs = {
   Item: { attributeClasses: glassAttributeClasses('ui-item--glass'), baseClassName: 'ui-item', tagName: 'lumen-item' },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
   Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
-  Link: { attributeClasses: { variant: { inherit: 'ui-link--inherit' } }, baseClassName: 'ui-link', tagName: 'lumen-link' },
+  Link: { attributeClasses: { variant: { inherit: 'ui-link--inherit' } }, baseClassName: 'ui-link', defaults: { 'data-slot': 'link' }, tagName: 'lumen-link' },
   LineChart: {
     attributeClasses: glassAttributeClasses('ui-chart--glass'),
     baseClassName: 'ui-chart ui-line-chart',
@@ -524,7 +549,7 @@ const elementConfigs = {
       variant: { unstyled: 'ui-navigation-menu--unstyled' }
     },
     baseClassName: 'ui-navigation-menu',
-    defaults: { 'data-ui-navigation-menu': '', surface: 'default' },
+    defaults: { 'data-slot': 'navigation-menu', 'data-ui-navigation-menu': '', surface: 'default' },
     tagName: 'lumen-navigation-menu'
   },
   Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
@@ -614,7 +639,7 @@ const elementConfigs = {
       variant: { unstyled: 'ui-sidebar--unstyled' }
     },
     baseClassName: 'ui-sidebar',
-    defaults: { surface: 'default' },
+    defaults: { 'data-slot': 'sidebar', surface: 'default' },
     tagName: 'lumen-sidebar'
   },
   Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
@@ -624,12 +649,12 @@ const elementConfigs = {
   Sparkline: { baseClassName: 'ui-sparkline', tagName: 'lumen-sparkline' },
   Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
   Switch: { baseClassName: 'ui-switch', defaults: { role: 'switch', type: 'checkbox' }, tagName: 'lumen-switch' },
-  Table: { attributeClasses: glassAttributeClasses('ui-table-wrap--glass'), baseClassName: 'ui-table-wrap', tagName: 'lumen-table' },
+  Table: { attributeClasses: glassAttributeClasses('ui-table-wrap--glass'), baseClassName: 'ui-table-wrap', defaults: { 'data-slot': 'table' }, tagName: 'lumen-table' },
   Tabs: { attributeClasses: glassAttributeClasses('ui-tabs--glass'), baseClassName: 'ui-tabs', defaults: { 'data-ui-tabs': '' }, tagName: 'lumen-tabs' },
   TagGroup: { baseClassName: 'ui-tag-group', defaults: { role: 'list' }, tagName: 'lumen-tag-group' },
   Textarea: { baseClassName: 'ui-textarea', defaults: { rows: '4' }, tagName: 'lumen-textarea' },
   ThemeBuilder: { attributeClasses: glassAttributeClasses('ui-theme-builder--glass'), baseClassName: 'ui-theme-builder', defaults: { 'data-ui-theme-builder': '' }, tagName: 'lumen-theme-builder' },
-  ThemeToggle: { baseClassName: 'ui-theme-toggle', tagName: 'lumen-theme-toggle' },
+  ThemeToggle: { baseClassName: 'ui-theme-toggle', defaults: { 'data-slot': 'theme-toggle' }, tagName: 'lumen-theme-toggle' },
   TimeField: { baseClassName: 'ui-input ui-time-field', defaults: { type: 'time' }, tagName: 'lumen-time-field' },
   Toast: {
     attributeClasses: {
@@ -714,12 +739,46 @@ const elementConfigs = {
     attributeClasses: {
       variant: {
         accent: 'ui-stat--accent',
+        bare: 'ui-stat--bare',
         glass: 'ui-stat--glass'
       }
     },
     baseClassName: 'ui-stat',
-    defaults: { variant: 'default' },
+    defaults: { 'data-slot': 'stat', variant: 'default' },
     tagName: 'lumen-stat'
+  },
+  StatDescription: {
+    baseClassName: 'ui-stat-description',
+    defaults: { 'data-slot': 'stat-description' },
+    tagName: 'lumen-stat-description'
+  },
+  StatIcon: {
+    baseClassName: 'ui-stat-icon',
+    defaults: { 'data-slot': 'stat-icon' },
+    tagName: 'lumen-stat-icon'
+  },
+  StatLabel: {
+    baseClassName: 'ui-stat-label',
+    defaults: { 'data-slot': 'stat-label' },
+    tagName: 'lumen-stat-label'
+  },
+  StatTrend: {
+    attributeClasses: {
+      tone: {
+        danger: 'ui-stat-trend--danger',
+        neutral: 'ui-stat-trend--neutral',
+        success: 'ui-stat-trend--success',
+        warning: 'ui-stat-trend--warning'
+      }
+    },
+    baseClassName: 'ui-stat-trend',
+    defaults: { 'data-slot': 'stat-trend', tone: 'neutral' },
+    tagName: 'lumen-stat-trend'
+  },
+  StatValue: {
+    baseClassName: 'ui-stat-value',
+    defaults: { 'data-slot': 'stat-value' },
+    tagName: 'lumen-stat-value'
   },
   Stack: {
     attributeClasses: {
@@ -762,6 +821,7 @@ const elementConfigs = {
       variant: { unstyled: 'ui-button-link--unstyled' }
     },
     baseClassName: 'ui-button-link',
+    defaults: { 'data-slot': 'button-link' },
     tagName: 'lumen-button-link'
   },
   CoverImage: {
@@ -6829,6 +6889,11 @@ export const LumenButtonElement = elementClasses.Button
 export const LumenButtonGroupElement = elementClasses.ButtonGroup
 export const LumenCalendarElement = elementClasses.Calendar
 export const LumenCardElement = elementClasses.Card
+export const LumenCardContentElement = elementClasses.CardContent
+export const LumenCardDescriptionElement = elementClasses.CardDescription
+export const LumenCardFooterElement = elementClasses.CardFooter
+export const LumenCardHeaderElement = elementClasses.CardHeader
+export const LumenCardTitleElement = elementClasses.CardTitle
 export const LumenCarouselElement = elementClasses.Carousel
 export const LumenChartElement = elementClasses.Chart
 export const LumenCheckboxElement = elementClasses.Checkbox
@@ -6906,6 +6971,11 @@ export const LumenAnimatedNumberElement = elementClasses.AnimatedNumber
 export const LumenRevealGroupElement = elementClasses.RevealGroup
 export const LumenScrollRevealElement = elementClasses.ScrollReveal
 export const LumenStatElement = elementClasses.Stat
+export const LumenStatDescriptionElement = elementClasses.StatDescription
+export const LumenStatIconElement = elementClasses.StatIcon
+export const LumenStatLabelElement = elementClasses.StatLabel
+export const LumenStatTrendElement = elementClasses.StatTrend
+export const LumenStatValueElement = elementClasses.StatValue
 export const LumenMeterElement = elementClasses.Meter
 export const LumenNoteElement = elementClasses.Note
 export const LumenRatingElement = elementClasses.Rating

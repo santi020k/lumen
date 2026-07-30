@@ -44,6 +44,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 <a
   aria-label={ariaLabel}
   class:list={classList}
+  data-slot="button-link"
   href={href}
   rel={newTab ? 'noreferrer noopener' : undefined}
   target={newTab ? '_blank' : undefined}

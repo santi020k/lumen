@@ -36,9 +36,9 @@ const {
 } = Astro.props
 
 const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
-const selectedValue = value === undefined || value === null ? undefined : String(value)
+const selectedValue = value === undefined || value === null ? undefined : value
 const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
-const selectedOption = normalizedOptions.find(option => String(option.value) === selectedValue)
+const selectedOption = normalizedOptions.find(option => option.value === selectedValue)
 const selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`
 const triggerId = `${selectId}-trigger`
 const listId = `${selectId}-listbox`
@@ -76,7 +76,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     {placeholder && <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value="">{placeholder}</option>}
     <slot />
     {normalizedOptions.map(option => (
-      <option disabled={option.disabled} selected={selectedValue === String(option.value)} value={option.value}>{option.label}</option>
+      <option disabled={option.disabled} selected={selectedValue === option.value} value={option.value}>{option.label}</option>
     ))}
   </select>
 
@@ -104,7 +104,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
       {normalizedOptions.map(option => (
         <button
           aria-disabled={option.disabled ? 'true' : undefined}
-          aria-selected={selectedValue === String(option.value) ? 'true' : 'false'}
+          aria-selected={selectedValue === option.value ? 'true' : 'false'}
           data-ui-select-option
           data-value={option.value}
           disabled={option.disabled}

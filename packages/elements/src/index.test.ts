@@ -145,6 +145,25 @@ describe('@santi020k/lumen-elements', () => {
     expect([...card.classList]).toEqual(['ui-card'])
   })
 
+  test('registers stable compound Card and Stat part contracts', () => {
+    const cardHeader = document.createElement('lumen-card-header')
+    const cardTitle = document.createElement('lumen-card-title')
+    const stat = document.createElement('lumen-stat')
+    const statTrend = document.createElement('lumen-stat-trend')
+
+    stat.setAttribute('variant', 'bare')
+    statTrend.setAttribute('tone', 'success')
+    document.body.append(cardHeader, cardTitle, stat, statTrend)
+
+    expect([...cardHeader.classList]).toEqual(['ui-card__header'])
+    expect(cardHeader.dataset.slot).toBe('card-header')
+    expect([...cardTitle.classList]).toEqual(['ui-card__title'])
+    expect(stat.classList.contains('ui-stat--bare')).toBe(true)
+    expect(stat.dataset.slot).toBe('stat')
+    expect(statTrend.classList.contains('ui-stat-trend--success')).toBe(true)
+    expect(statTrend.dataset.slot).toBe('stat-trend')
+  })
+
   test('renders named Lucide icons with accessible labels', () => {
     const icon = document.createElement('lumen-icon')
 

@@ -884,6 +884,26 @@ const apiReferenceByComponent = {
     apiRow('as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'),
     apiRow('variant', '"default" | "muted" | "interactive" | "glass" | "unstyled"', '"default"', 'Controls the card surface and affordance; unstyled keeps only semantics and hooks.')
   ],
+  CardContent: [
+    apiRow('as', '"div" | "section"', '"div"', 'Changes the content wrapper without imposing section semantics by default.'),
+    apiRow('data-slot', '"card-content"', 'generated', 'Provides the stable public styling hook for the card body.')
+  ],
+  CardDescription: [
+    apiRow('as', '"div" | "p"', '"div"', 'Uses a paragraph only when the supplied content is phrasing content.'),
+    apiRow('data-slot', '"card-description"', 'generated', 'Provides the stable public styling hook for supporting copy.')
+  ],
+  CardFooter: [
+    apiRow('as', '"div" | "footer"', '"div"', 'Uses a footer landmark only when the card content has matching sectioning semantics.'),
+    apiRow('data-slot', '"card-footer"', 'generated', 'Provides the stable public styling hook for card actions.')
+  ],
+  CardHeader: [
+    apiRow('as', '"div" | "header"', '"div"', 'Uses a header only when the card content has matching sectioning semantics.'),
+    apiRow('data-slot', '"card-header"', 'generated', 'Provides the stable public styling hook for introductory content.')
+  ],
+  CardTitle: [
+    apiRow('as', '"div" | "h2" | "h3" | "h4"', '"div"', 'Lets the consumer choose the heading level that matches the page hierarchy.'),
+    apiRow('data-slot', '"card-title"', 'generated', 'Provides the stable public styling hook for the card title.')
+  ],
   Calendar: [
     apiRow('disabled', 'boolean', 'false', 'Disables month navigation, date selection, and the hidden form input.'),
     apiRow('max', 'YYYY-MM-DD string', '-', 'Disables dates after the inclusive maximum date.'),
@@ -1319,9 +1339,29 @@ const apiReferenceByComponent = {
   ],
   Stat: [
     apiRow('as', '"article" | "div" | "section"', '"div"', 'Changes the root element when the statistic is a standalone semantic region.'),
-    apiRow('variant', '"accent" | "default" | "glass"', '"default"', 'Changes the surface treatment while preserving the same metric structure.'),
+    apiRow('variant', '"accent" | "bare" | "default" | "glass"', '"default"', 'Changes the surface treatment; bare removes framing when composed inside Card.'),
     apiRow('label', 'string', '-', 'The label describing the statistic.'),
     apiRow('value', 'string', '-', 'The numeric or text value of the statistic.')
+  ],
+  StatDescription: [
+    apiRow('as', '"div" | "p"', '"div"', 'Uses a paragraph only when the supporting content is phrasing content.'),
+    apiRow('data-slot', '"stat-description"', 'generated', 'Provides the stable public styling hook for metric context.')
+  ],
+  StatIcon: [
+    apiRow('children', 'Icon or custom artwork', 'required', 'Adds a decorative or labelled visual associated with the metric.'),
+    apiRow('data-slot', '"stat-icon"', 'generated', 'Provides the stable public styling hook for the icon container.')
+  ],
+  StatLabel: [
+    apiRow('as', '"div" | "span"', '"div"', 'Changes the label wrapper without adding heading semantics.'),
+    apiRow('data-slot', '"stat-label"', 'generated', 'Provides the stable public styling hook for the metric label.')
+  ],
+  StatTrend: [
+    apiRow('tone', '"neutral" | "success" | "warning" | "danger"', '"neutral"', 'Applies a semantic trend tone; visible text or an accessible name must communicate its meaning.'),
+    apiRow('data-slot', '"stat-trend"', 'generated', 'Provides the stable public styling hook for a delta or comparison.')
+  ],
+  StatValue: [
+    apiRow('as', '"div" | "output" | "span"', '"div"', 'Uses output only when the value is the result of a user action or calculation.'),
+    apiRow('data-slot', '"stat-value"', 'generated', 'Provides the stable public styling hook for the prominent value.')
   ],
   Meter: [
     apiRow('value', 'number', 'required', 'Sets the current scalar value.'),
@@ -1407,6 +1447,54 @@ const apiReferenceByComponent = {
   Affix: [
     apiRow('position', '"top" | "bottom"', '"top"', 'Selects the viewport edge used for sticky positioning.'),
     apiRow('offset, offsetTop, offsetBottom', 'number', '0', 'Sets the sticky inset in pixels; edge-specific values override offset.')
+  ],
+  CheckboxGroup: [
+    apiRow('legend', 'string', '-', 'Adds the visible fieldset legend for the related checkbox choices.'),
+    apiRow('orientation', '"horizontal" | "vertical"', '"vertical"', 'Controls the visual arrangement without changing fieldset semantics.'),
+    apiRow('invalid', 'boolean', 'false', 'Marks the group invalid for validation feedback.')
+  ],
+  Container: [
+    apiRow('as', '"article" | "div" | "main" | "section"', '"div"', 'Changes the semantic root.'),
+    apiRow('size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size.')
+  ],
+  ErrorSummary: [
+    apiRow('errors', 'LumenFormErrorInput', '-', 'Normalizes form and field errors into a linked summary.'),
+    apiRow('heading', 'string', '"There is a problem"', 'Sets the summary heading.'),
+    apiRow('id', 'string', '"ui-error-summary"', 'Sets the focus target and heading relationship.')
+  ],
+  FieldError: [
+    apiRow('message', 'string', '-', 'Shows the error text and reveals the live field error region.'),
+    apiRow('children', 'phrasing content', '-', 'Overrides the message prop with authored content.')
+  ],
+  Form: [
+    apiRow('enhance', 'boolean', 'true', 'Enables Lumen constraint-validation enhancement.'),
+    apiRow('status', '"idle" | "submitting" | "success" | "error"', '"idle"', 'Exposes submission state and aria-busy.')
+  ],
+  Grid: [
+    apiRow('as', '"div" | "ol" | "section" | "ul"', '"div"', 'Changes the semantic root.'),
+    apiRow('columns', '1 | 2 | 3 | 4 | 6 | 12 | "auto"', '"auto"', 'Controls the preferred column count.'),
+    apiRow('gap', '"none" | "sm" | "md" | "lg" | "xl"', '"md"', 'Controls spacing between items.'),
+    apiRow('minItemWidth', 'CSS length', '-', 'Sets the responsive minimum item width in auto mode.')
+  ],
+  ListBox: [
+    apiRow('options', 'Array<string | { label, value, disabled? }>', '[]', 'Defines the selectable options.'),
+    apiRow('value', 'string | string[]', '-', 'Controls the selected value or values.'),
+    apiRow('multiple', 'boolean', 'false', 'Allows more than one selected value while preserving native form submission.')
+  ],
+  PasswordField: [
+    apiRow('label', 'string', '"Password"', 'Labels the password input.'),
+    apiRow('hint, error', 'string', '-', 'Adds described hint or error content.'),
+    apiRow('showLabel, hideLabel', 'string', '"Show password", "Hide password"', 'Names the visibility toggle states.')
+  ],
+  Stack: [
+    apiRow('as', '"article" | "div" | "fieldset" | "nav" | "section"', '"div"', 'Changes the semantic root.'),
+    apiRow('direction', '"horizontal" | "vertical"', '"vertical"', 'Controls the primary layout axis.'),
+    apiRow('gap', '"none" | "sm" | "md" | "lg" | "xl"', '"md"', 'Controls spacing between children.'),
+    apiRow('align, justify, wrap', 'layout props', 'stretch, start, false', 'Controls cross-axis alignment, distribution, and wrapping.')
+  ],
+  VisuallyHidden: [
+    apiRow('focusable', 'boolean', 'false', 'Reveals the content on focus for keyboard-accessible skip or helper controls.'),
+    apiRow('children', 'phrasing content', 'required', 'Provides content for assistive technology.')
   ]
 } satisfies Record<LumenComponentName, readonly ComponentApiRow[]>
 

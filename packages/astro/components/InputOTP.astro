@@ -24,7 +24,7 @@ const {
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input-otp-field'
 ], classProp, className)
 
-const segments = Array.from({ length: Math.max(1, Number(length) || 6) }, (_, index) => index)
+const segments = Array.from({ length: Math.max(1, length || 6) }, (_, index) => index)
 ---
 
 <div

@@ -43,20 +43,20 @@ for (const slug of templateSlugs) {
       const nameFor = (control: HTMLElement) => {
         const labelledBy = control.getAttribute('aria-labelledby')
           ?.split(/\s+/)
-          .map(id => document.getElementById(id)?.textContent?.trim())
+          .map(id => document.getElementById(id)?.textContent.trim())
           .filter(Boolean)
           .join(' ')
         const explicitLabel = control.id
           ? main.querySelector<HTMLLabelElement>(
               `label[for="${CSS.escape(control.id)}"]`
-            )?.textContent?.trim()
+            )?.textContent.trim()
           : undefined
 
         return control.getAttribute('aria-label')?.trim()
           || labelledBy
           || explicitLabel
-          || control.closest('label')?.textContent?.trim()
-          || control.textContent?.trim()
+          || control.closest('label')?.textContent.trim()
+          || control.textContent.trim()
           || control.getAttribute('placeholder')?.trim()
           || ''
       }
@@ -80,7 +80,9 @@ for (const slug of templateSlugs) {
 test('template theme and onboarding choice remain keyboard operable', async ({ page }) => {
   await page.goto('/templates/analytics-dashboard')
 
-  const themeToggle = page.getByRole('button', { name: 'Switch color mode' }).last()
+  const themeToggle = page.locator(
+    '.template-shell__topbar-actions .ui-theme-toggle'
+  )
   const initialTheme = await page.locator('html').getAttribute('data-theme')
 
   await themeToggle.focus()
