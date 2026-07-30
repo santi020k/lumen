@@ -785,6 +785,8 @@ const initListBoxes = (scope: ParentNode): void => {
 
           syncActive()
 
+          if (root.dataset.selectionFollowsFocus === 'true') commitOption(activeIndex)
+
           return
         }
       }
@@ -808,6 +810,8 @@ const initListBoxes = (scope: ParentNode): void => {
         )
 
         syncActive()
+
+        if (root.dataset.selectionFollowsFocus === 'true') commitOption(activeIndex)
       } else if (event.key === 'End') {
         event.preventDefault()
 
@@ -820,6 +824,8 @@ const initListBoxes = (scope: ParentNode): void => {
         }
 
         syncActive()
+
+        if (root.dataset.selectionFollowsFocus === 'true') commitOption(activeIndex)
       } else if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
 
@@ -843,6 +849,8 @@ const initListBoxes = (scope: ParentNode): void => {
           activeIndex = nextIndex
 
           syncActive()
+
+          if (root.dataset.selectionFollowsFocus === 'true') commitOption(activeIndex)
         }
       }
     })

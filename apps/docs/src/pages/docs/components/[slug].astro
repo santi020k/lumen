@@ -60,8 +60,8 @@ const next = index >= 0 && index < componentDocs.length - 1 ?
   undefined
 
 const requiresAstroRuntime = Boolean(
-  component.keyboardInteractions ||
-  component.runtimeEvents ||
+  component.keyboardInteractions ??
+  component.runtimeEvents ??
   component.apiReference.some(row => /UIPrimitives|runtime/i.test(row.description))
 )
 

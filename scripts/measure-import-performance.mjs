@@ -94,7 +94,7 @@ const runBuild = async (name, iteration) => {
 
   for await (const chunk of child.stderr) stderr += chunk
 
-  const exitCode = await new Promise(resolveExit => child.once('close', resolveExit))
+  const exitCode = await new Promise(resolve => child.once('close', resolve))
 
   clearInterval(sampler)
 

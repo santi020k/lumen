@@ -2,4 +2,14 @@
 import { ListBox } from '@santi020k/lumen-astro'
 ---
 
-<ListBox label="Team members" multiple name="members" options={['Amina', 'Theo', 'Luca']} value={['Amina']} />
+<ListBox
+  label="Team members"
+  multiple
+  name="members"
+  options={[
+    { label: 'Amina', section: 'Design', value: 'amina' },
+    { label: 'Luca', section: 'Design', value: 'luca' },
+    { label: 'Theo', section: 'Engineering', value: 'theo' }
+  ]}
+  value={['amina']}
+/>

@@ -1,72 +1,87 @@
-import sharp from 'sharp'
+import sharp from "sharp";
 
-const homeBadge = { background: 'rgba(167,139,250,0.16)', border: 'rgba(167,139,250,0.36)', text: '#7c3aed' }
-const docsBadge = { background: 'rgba(96,165,250,0.14)', border: 'rgba(96,165,250,0.34)', text: '#2563eb' }
-const componentsBadge = { background: 'rgba(20,184,166,0.14)', border: 'rgba(20,184,166,0.34)', text: '#0f766e' }
+const homeBadge = {
+  background: "rgba(167,139,250,0.16)",
+  border: "rgba(167,139,250,0.36)",
+  text: "#7c3aed",
+};
+const docsBadge = {
+  background: "rgba(96,165,250,0.14)",
+  border: "rgba(96,165,250,0.34)",
+  text: "#2563eb",
+};
+const componentsBadge = {
+  background: "rgba(20,184,166,0.14)",
+  border: "rgba(20,184,166,0.34)",
+  text: "#0f766e",
+};
 
-const escapeHtml = value => value
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll('\'', '&#39;')
+const escapeHtml = (value) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 
-const getTitleSize = title => {
-  if (title.length <= 24) return 88
+const getTitleSize = (title) => {
+  if (title.length <= 24) return 88;
 
-  if (title.length <= 44) return 74
+  if (title.length <= 44) return 74;
 
-  if (title.length <= 64) return 60
+  if (title.length <= 64) return 60;
 
-  return 50
-}
+  return 50;
+};
 
-const getBadge = type => {
-  if (type === 'Home') return homeBadge
+const getBadge = (type) => {
+  if (type === "Home") return homeBadge;
 
-  if (type === 'Components') return componentsBadge
+  if (type === "Components") return componentsBadge;
 
-  return docsBadge
-}
+  return docsBadge;
+};
 
-const appendEllipsis = value => `${value.replace(/[,.!?;:]?$/, '')}...`
+const appendEllipsis = (value) => `${value.replace(/[,.!?;:]?$/, "")}...`;
 
 const wrapText = (value, maxLineLength, maxLines) => {
-  const words = value.split(/\s+/)
-  const lines = []
-  let line = ''
-  let truncated = false
+  const words = value.split(/\s+/);
+  const lines = [];
+  let line = "";
+  let truncated = false;
 
   for (const word of words) {
-    const nextLine = line ? `${line} ${word}` : word
+    const nextLine = line ? `${line} ${word}` : word;
 
     if (nextLine.length > maxLineLength && line) {
-      lines.push(line)
+      lines.push(line);
 
-      line = word
+      line = word;
     } else {
-      line = nextLine
+      line = nextLine;
     }
 
     if (lines.length === maxLines) {
-      truncated = true
+      truncated = true;
 
-      break
+      break;
     }
   }
 
-  if (line && lines.length < maxLines) lines.push(line)
+  if (line && lines.length < maxLines) lines.push(line);
 
-  const lastLine = lines.at(-1)
+  const lastLine = lines.at(-1);
 
-  if (truncated && lastLine) return [...lines.slice(0, -1), appendEllipsis(lastLine)]
+  if (truncated && lastLine)
+    return [...lines.slice(0, -1), appendEllipsis(lastLine)];
 
-  return lines
-}
+  return lines;
+};
 
-const renderTextLines = (lines, options) => lines
-  .map(
-    (line, index) => `
+const renderTextLines = (lines, options) =>
+  lines
+    .map(
+      (line, index) => `
     <text
       x="${options.x}"
       y="${options.y + index * options.lineHeight}"
@@ -75,16 +90,16 @@ const renderTextLines = (lines, options) => lines
       font-size="${options.fontSize}"
       font-weight="${options.fontWeight}"
     >${escapeHtml(line)}</text>
-  `
-  )
-  .join('')
+  `,
+    )
+    .join("");
 
 const renderCard = ({ description, title, type }) => {
-  const titleSize = getTitleSize(title)
-  const badge = getBadge(type)
-  const titleLines = wrapText(title, titleSize >= 74 ? 25 : 34, 3)
-  const descriptionLines = wrapText(description, 74, 2)
-  const descriptionY = 342 + (titleLines.length - 1) * titleSize * 1.06 + 44
+  const titleSize = getTitleSize(title);
+  const badge = getBadge(type);
+  const titleLines = wrapText(title, titleSize >= 74 ? 25 : 34, 3);
+  const descriptionLines = wrapText(description, 74, 2);
+  const descriptionY = 342 + (titleLines.length - 1) * titleSize * 1.06 + 44;
 
   return `
     <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
@@ -123,17 +138,17 @@ const renderCard = ({ description, title, type }) => {
       <text x="1024" y="116" fill="${badge.text}" font-family="Montserrat, Arial, sans-serif" font-size="16" font-weight="900" letter-spacing="2" text-anchor="middle">${escapeHtml(type).toUpperCase()}</text>
 
       <rect x="64" y="254" width="116" height="4" rx="2" fill="#7c3aed" />
-      ${renderTextLines(titleLines, { fill: '#110c1d', fontSize: titleSize, fontWeight: 900, lineHeight: titleSize * 1.06, x: 64, y: 342 })}
-      ${renderTextLines(descriptionLines, { fill: 'rgba(17,12,29,0.68)', fontSize: 24, fontWeight: 400, lineHeight: 36, x: 64, y: descriptionY })}
+      ${renderTextLines(titleLines, { fill: "#110c1d", fontSize: titleSize, fontWeight: 900, lineHeight: titleSize * 1.06, x: 64, y: 342 })}
+      ${renderTextLines(descriptionLines, { fill: "rgba(17,12,29,0.68)", fontSize: 24, fontWeight: 400, lineHeight: 36, x: 64, y: descriptionY })}
 
       <text x="64" y="574" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif" font-size="18" font-weight="900">Astro · React · Web Components</text>
       <text x="1136" y="574" fill="rgba(17,12,29,0.52)" font-family="Montserrat, Arial, sans-serif" font-size="18" font-weight="900" text-anchor="end">Semantic primitives for product interfaces</text>
     </svg>
-  `
-}
+  `;
+};
 
-export const renderOgCard = async props => {
-  const svg = Buffer.from(renderCard(props).trim())
+export const renderOgCard = async (props) => {
+  const svg = Buffer.from(renderCard(props).trim());
 
-  return sharp(svg).webp({ effort: 0, quality: 82 }).toBuffer()
-}
+  return sharp(svg).webp({ effort: 0, quality: 82 }).toBuffer();
+};

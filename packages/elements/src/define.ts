@@ -36,2039 +36,2484 @@ import {
   resolveLumenChartTone,
   scaleLumenChartValue,
   scoreThemeContrast,
-  tuneThemeContrast
-} from '@santi020k/lumen-core'
+  tuneThemeContrast,
+} from "@santi020k/lumen-core";
 
-type AttributeClassMap = Record<string, Record<string, string>>
+type AttributeClassMap = Record<string, Record<string, string>>;
 
-type ToastPlacement = 'bottom-center' | 'bottom-left' | 'bottom-right' | 'top-center' | 'top-left' | 'top-right'
+type ToastPlacement =
+  | "bottom-center"
+  | "bottom-left"
+  | "bottom-right"
+  | "top-center"
+  | "top-left"
+  | "top-right";
 
-type ToastVariant = string
+type ToastVariant = string;
 
-type DataTableSortDirection = 'ascending' | 'descending' | 'none'
+type DataTableSortDirection = "ascending" | "descending" | "none";
 
-type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+type NativeFormControl =
+  HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
 interface RichTextCommandDocument {
-  execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
-  queryCommandState?: (command: string) => boolean
-  queryCommandValue?: (command: string) => string
+  execCommand?: (command: string, showUi?: boolean, value?: string) => boolean;
+  queryCommandState?: (command: string) => boolean;
+  queryCommandValue?: (command: string) => string;
 }
 
 export interface ToastAction {
-  event?: string
-  label?: string
-  onClick?: (event: MouseEvent, toast: HTMLElement) => void
-  value?: unknown
+  event?: string;
+  label?: string;
+  onClick?: (event: MouseEvent, toast: HTMLElement) => void;
+  value?: unknown;
 }
 
 export interface ToastDetail {
-  action?: ToastAction
-  description?: string
-  duration?: number
-  id?: string
-  max?: number
-  placement?: ToastPlacement
-  title?: string
-  variant?: ToastVariant
+  action?: ToastAction;
+  description?: string;
+  duration?: number;
+  id?: string;
+  max?: number;
+  placement?: ToastPlacement;
+  title?: string;
+  variant?: ToastVariant;
 }
 
 export interface ToastApi {
-  create: (detail: ToastDetail) => string
-  dismiss: (id?: string) => void
-  update: (id: string, detail: ToastDetail) => void
+  create: (detail: ToastDetail) => string;
+  dismiss: (id?: string) => void;
+  update: (id: string, detail: ToastDetail) => void;
 }
 
 interface LumenElementConfig {
-  attributeClasses?: AttributeClassMap
-  baseClassName: string
-  defaults?: Record<string, string>
-  role?: string
-  tagName: string
+  attributeClasses?: AttributeClassMap;
+  baseClassName: string;
+  defaults?: Record<string, string>;
+  role?: string;
+  tagName: string;
 }
 
-const registry = new Set<string>()
-const appliedClassNames = new WeakMap<HTMLElement, string[]>()
+const registry = new Set<string>();
+const appliedClassNames = new WeakMap<HTMLElement, string[]>();
 
 const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])'
-].join(',')
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
 
 // cspell:ignore activedescendant multiselectable spinbutton
 const fieldControlSelector = [
   'input:not([type="hidden"])',
-  'select',
-  'textarea',
+  "select",
+  "textarea",
   '[contenteditable="true"]',
   '[role="combobox"]',
   '[role="listbox"]',
   '[role="spinbutton"]',
-  '[role="textbox"]'
-].join(',')
+  '[role="textbox"]',
+].join(",");
 
-const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
-const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
-const richTextEditorSelector = '[data-ui-rich-text-editor]'
-const richTextEditorCommandSelector = '[data-ui-editor-command]'
-const richTextEditorContentSelector = '[data-ui-rich-text-editable], [contenteditable="true"]'
-const scheduleSelector = '[data-ui-schedule]'
-const scheduleEventSelector = '[data-ui-schedule-event]'
-const scheduleSlotSelector = '[data-ui-schedule-slot]'
-const resizableSelector = '[data-ui-resizable]'
-const resizableHandleSelector = '[data-ui-resizable-handle]'
-const resizableHandleTemplateSelector = '[data-ui-resizable-handle-template]'
-const contextMenuSelector = '[data-ui-context-menu]'
-const contextMenuTriggerSelector = '[data-ui-context-menu-trigger]'
-const dateRangePickerSelector = '[data-ui-date-range-picker]'
-const dateRangePickerInputSelector = 'input[type="date"]'
-const inputOtpSelector = '[data-ui-input-otp], lumen-input-otp'
-const inputOtpNativeSelector = '[data-ui-input-otp-native]'
-const inputOtpSegmentSelector = '[data-ui-input-otp-segment]'
-const inputOtpSegmentsSelector = '[data-ui-input-otp-segments]'
-const calendarSelector = '[data-ui-calendar], lumen-calendar'
-const calendarInputSelector = '[data-ui-calendar-input]'
-const calendarLabelSelector = '[data-ui-calendar-label]'
-const calendarGridSelector = '[data-ui-calendar-grid]'
-const calendarDaySelector = '[data-ui-calendar-day]'
-const datePickerSelector = '[data-ui-date-picker], lumen-date-picker'
-const datePickerNativeSelector = '[data-ui-date-picker-native]'
-const datePickerControlSelector = '[data-ui-date-picker-control]'
-const datePickerTriggerSelector = '[data-ui-date-picker-trigger]'
-const datePickerValueSelector = '[data-ui-date-picker-value]'
-const datePickerPopoverSelector = '[data-ui-date-picker-popover]'
-const formControlSelector = ['input:not([type="hidden"])', 'select', 'textarea'].join(',')
-const selectOptionSelector = '[data-ui-select-option]'
-const defaultToastDuration = 5000
-const defaultToastMax = 5
-const toastCloseDelay = 240
+const fieldDescriptionSelector =
+  "[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error";
+const fieldErrorSelector = "[data-ui-field-error], .ui-field__error";
+const richTextEditorSelector = "[data-ui-rich-text-editor]";
+const richTextEditorCommandSelector = "[data-ui-editor-command]";
+const richTextEditorContentSelector =
+  '[data-ui-rich-text-editable], [contenteditable="true"]';
+const scheduleSelector = "[data-ui-schedule]";
+const scheduleEventSelector = "[data-ui-schedule-event]";
+const scheduleSlotSelector = "[data-ui-schedule-slot]";
+const resizableSelector = "[data-ui-resizable]";
+const resizableHandleSelector = "[data-ui-resizable-handle]";
+const resizableHandleTemplateSelector = "[data-ui-resizable-handle-template]";
+const contextMenuSelector = "[data-ui-context-menu]";
+const contextMenuTriggerSelector = "[data-ui-context-menu-trigger]";
+const dateRangePickerSelector = "[data-ui-date-range-picker]";
+const dateRangePickerInputSelector = 'input[type="date"]';
+const inputOtpSelector = "[data-ui-input-otp], lumen-input-otp";
+const inputOtpNativeSelector = "[data-ui-input-otp-native]";
+const inputOtpSegmentSelector = "[data-ui-input-otp-segment]";
+const inputOtpSegmentsSelector = "[data-ui-input-otp-segments]";
+const calendarSelector = "[data-ui-calendar], lumen-calendar";
+const calendarInputSelector = "[data-ui-calendar-input]";
+const calendarLabelSelector = "[data-ui-calendar-label]";
+const calendarGridSelector = "[data-ui-calendar-grid]";
+const calendarDaySelector = "[data-ui-calendar-day]";
+const datePickerSelector = "[data-ui-date-picker], lumen-date-picker";
+const datePickerNativeSelector = "[data-ui-date-picker-native]";
+const datePickerControlSelector = "[data-ui-date-picker-control]";
+const datePickerTriggerSelector = "[data-ui-date-picker-trigger]";
+const datePickerValueSelector = "[data-ui-date-picker-value]";
+const datePickerPopoverSelector = "[data-ui-date-picker-popover]";
+const formControlSelector = [
+  'input:not([type="hidden"])',
+  "select",
+  "textarea",
+].join(",");
+const selectOptionSelector = "[data-ui-select-option]";
+const defaultToastDuration = 5000;
+const defaultToastMax = 5;
+const toastCloseDelay = 240;
 
 const validityMessageAttributes = [
-  ['valueMissing', 'data-error-required'],
-  ['typeMismatch', 'data-error-type'],
-  ['patternMismatch', 'data-error-pattern'],
-  ['tooShort', 'data-error-too-short'],
-  ['tooLong', 'data-error-too-long'],
-  ['rangeUnderflow', 'data-error-min'],
-  ['rangeOverflow', 'data-error-max'],
-  ['stepMismatch', 'data-error-step'],
-  ['badInput', 'data-error-bad-input'],
-  ['customError', 'data-error-custom']
-] as const
+  ["valueMissing", "data-error-required"],
+  ["typeMismatch", "data-error-type"],
+  ["patternMismatch", "data-error-pattern"],
+  ["tooShort", "data-error-too-short"],
+  ["tooLong", "data-error-too-long"],
+  ["rangeUnderflow", "data-error-min"],
+  ["rangeOverflow", "data-error-max"],
+  ["stepMismatch", "data-error-step"],
+  ["badInput", "data-error-bad-input"],
+  ["customError", "data-error-custom"],
+] as const;
 
 const toastTimers = new WeakMap<
   HTMLElement,
   {
-    cleanup: (() => void) | undefined
-    remaining: number
-    startedAt: number
-    timer: ReturnType<typeof globalThis.setTimeout> | undefined
+    cleanup: (() => void) | undefined;
+    remaining: number;
+    startedAt: number;
+    timer: ReturnType<typeof globalThis.setTimeout> | undefined;
   }
->()
+>();
 
-const mergeClassNames = (...classNames: (boolean | string | null | undefined)[]) => composeClassName(...classNames)
-  .split(/\s+/)
-  .filter(Boolean)
+const mergeClassNames = (
+  ...classNames: (boolean | string | null | undefined)[]
+) =>
+  composeClassName(...classNames)
+    .split(/\s+/)
+    .filter(Boolean);
 
 const glassAttributeClasses = (className: string) => ({
   glass: {
     strong: `${className} ui-glass-strong`,
     subtle: `${className} ui-glass-subtle`,
-    true: className
+    true: className,
   },
-  surface: { glass: className }
-})
+  surface: { glass: className },
+});
 
 const elementConfigs = {
   Accordion: {
     attributeClasses: {
-      variant: { flush: 'ui-accordion--flush' }
+      variant: { flush: "ui-accordion--flush" },
     },
-    baseClassName: 'ui-accordion',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-accordion'
+    baseClassName: "ui-accordion",
+    defaults: { variant: "default" },
+    tagName: "lumen-accordion",
   },
   Alert: {
     attributeClasses: {
       glass: {
-        strong: 'ui-alert--glass ui-glass-strong',
-        subtle: 'ui-alert--glass ui-glass-subtle',
-        true: 'ui-alert--glass'
+        strong: "ui-alert--glass ui-glass-strong",
+        subtle: "ui-alert--glass ui-glass-subtle",
+        true: "ui-alert--glass",
       },
       variant: {
-        destructive: 'ui-alert--destructive',
-        success: 'ui-alert--success',
-        warning: 'ui-alert--warning'
-      }
+        destructive: "ui-alert--destructive",
+        success: "ui-alert--success",
+        warning: "ui-alert--warning",
+      },
     },
-    baseClassName: 'ui-alert',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-alert'
+    baseClassName: "ui-alert",
+    defaults: { variant: "default" },
+    tagName: "lumen-alert",
   },
   AlertDialog: {
     attributeClasses: {
       glass: {
-        strong: 'ui-dialog--glass ui-glass-strong',
-        subtle: 'ui-dialog--glass ui-glass-subtle',
-        true: 'ui-dialog--glass'
+        strong: "ui-dialog--glass ui-glass-strong",
+        subtle: "ui-dialog--glass ui-glass-subtle",
+        true: "ui-dialog--glass",
       },
-      surface: { glass: 'ui-dialog--glass' }
+      surface: { glass: "ui-dialog--glass" },
     },
-    baseClassName: 'ui-dialog ui-alert-dialog',
-    defaults: { 'data-ui-alert-dialog': '', surface: 'default' },
-    tagName: 'lumen-alert-dialog'
+    baseClassName: "ui-dialog ui-alert-dialog",
+    defaults: { "data-ui-alert-dialog": "", surface: "default" },
+    tagName: "lumen-alert-dialog",
   },
   Agenda: {
-    attributeClasses: glassAttributeClasses('ui-agenda--glass'),
-    baseClassName: 'ui-agenda',
-    tagName: 'lumen-agenda'
+    attributeClasses: glassAttributeClasses("ui-agenda--glass"),
+    baseClassName: "ui-agenda",
+    tagName: "lumen-agenda",
   },
-  AspectRatio: { baseClassName: 'ui-aspect-ratio', tagName: 'lumen-aspect-ratio' },
+  AspectRatio: {
+    baseClassName: "ui-aspect-ratio",
+    tagName: "lumen-aspect-ratio",
+  },
   Attachment: {
-    attributeClasses: glassAttributeClasses('ui-attachment--glass'),
-    baseClassName: 'ui-attachment',
-    tagName: 'lumen-attachment'
+    attributeClasses: glassAttributeClasses("ui-attachment--glass"),
+    baseClassName: "ui-attachment",
+    tagName: "lumen-attachment",
   },
   Autocomplete: {
-    baseClassName: 'ui-input ui-autocomplete',
-    defaults: { role: 'combobox', type: 'search' },
-    tagName: 'lumen-autocomplete'
+    baseClassName: "ui-input ui-autocomplete",
+    defaults: { role: "combobox", type: "search" },
+    tagName: "lumen-autocomplete",
   },
-  Avatar: { baseClassName: 'ui-avatar', tagName: 'lumen-avatar' },
-  BackToTop: { baseClassName: 'ui-back-to-top', tagName: 'lumen-back-to-top' },
+  Avatar: { baseClassName: "ui-avatar", tagName: "lumen-avatar" },
+  BackToTop: { baseClassName: "ui-back-to-top", tagName: "lumen-back-to-top" },
   Badge: {
     attributeClasses: {
       variant: {
-        default: 'ui-badge--default',
-        destructive: 'ui-badge--destructive',
-        outline: 'ui-badge--outline',
-        secondary: 'ui-badge--secondary',
-        success: 'ui-badge--success',
-        warning: 'ui-badge--warning'
-      }
+        default: "ui-badge--default",
+        destructive: "ui-badge--destructive",
+        outline: "ui-badge--outline",
+        secondary: "ui-badge--secondary",
+        success: "ui-badge--success",
+        warning: "ui-badge--warning",
+      },
     },
-    baseClassName: 'ui-badge',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-badge'
+    baseClassName: "ui-badge",
+    defaults: { variant: "default" },
+    tagName: "lumen-badge",
   },
   BarChart: {
     attributeClasses: {
-      ...glassAttributeClasses('ui-chart--glass'),
-      presentation: { bare: 'ui-chart--bare' }
+      ...glassAttributeClasses("ui-chart--glass"),
+      presentation: { bare: "ui-chart--bare" },
     },
-    baseClassName: 'ui-chart ui-bar-chart',
-    defaults: { layout: 'grouped', orientation: 'vertical' },
-    role: 'figure',
-    tagName: 'lumen-bar-chart'
+    baseClassName: "ui-chart ui-bar-chart",
+    defaults: { layout: "grouped", orientation: "vertical" },
+    role: "figure",
+    tagName: "lumen-bar-chart",
   },
-  Breadcrumb: { baseClassName: 'ui-breadcrumb', defaults: { 'aria-label': 'Breadcrumb' }, tagName: 'lumen-breadcrumb' },
+  Breadcrumb: {
+    baseClassName: "ui-breadcrumb",
+    defaults: { "aria-label": "Breadcrumb" },
+    tagName: "lumen-breadcrumb",
+  },
   Bubble: {
-    attributeClasses: { from: { user: 'ui-bubble--user' }, ...glassAttributeClasses('ui-bubble--glass') },
-    baseClassName: 'ui-bubble',
-    defaults: { from: 'assistant' },
-    tagName: 'lumen-bubble'
+    attributeClasses: {
+      from: { user: "ui-bubble--user" },
+      ...glassAttributeClasses("ui-bubble--glass"),
+    },
+    baseClassName: "ui-bubble",
+    defaults: { from: "assistant" },
+    tagName: "lumen-bubble",
   },
   Button: {
     attributeClasses: {
       variant: {
-        default: 'ui-button--default',
-        destructive: 'ui-button--destructive',
-        ghost: 'ui-button--ghost',
-        link: 'ui-button--link',
-        outline: 'ui-button--outline',
-        secondary: 'ui-button--secondary'
+        default: "ui-button--default",
+        destructive: "ui-button--destructive",
+        ghost: "ui-button--ghost",
+        link: "ui-button--link",
+        outline: "ui-button--outline",
+        secondary: "ui-button--secondary",
       },
       size: {
-        default: 'ui-button--default-size',
-        icon: 'ui-button--icon',
-        lg: 'ui-button--lg',
-        sm: 'ui-button--sm'
+        default: "ui-button--default-size",
+        icon: "ui-button--icon",
+        lg: "ui-button--lg",
+        sm: "ui-button--sm",
       },
-      disabled: { true: 'ui-button--disabled' },
-      loading: { true: 'ui-button--loading' }
+      disabled: { true: "ui-button--disabled" },
+      loading: { true: "ui-button--loading" },
     },
-    baseClassName: 'ui-button',
-    defaults: { 'data-slot': 'button', role: 'button', size: 'default', tabindex: '0', variant: 'default' },
-    role: 'button',
-    tagName: 'lumen-button'
+    baseClassName: "ui-button",
+    defaults: {
+      "data-slot": "button",
+      role: "button",
+      size: "default",
+      tabindex: "0",
+      variant: "default",
+    },
+    role: "button",
+    tagName: "lumen-button",
   },
-  ButtonGroup: { baseClassName: 'ui-button-group', tagName: 'lumen-button-group' },
+  ButtonGroup: {
+    baseClassName: "ui-button-group",
+    tagName: "lumen-button-group",
+  },
   Calendar: {
-    attributeClasses: glassAttributeClasses('ui-calendar--glass'),
-    baseClassName: 'ui-calendar',
-    defaults: { 'data-ui-calendar': '' },
-    tagName: 'lumen-calendar'
+    attributeClasses: glassAttributeClasses("ui-calendar--glass"),
+    baseClassName: "ui-calendar",
+    defaults: { "data-ui-calendar": "" },
+    tagName: "lumen-calendar",
   },
-  Callout: { baseClassName: 'ui-callout', tagName: 'lumen-callout' },
+  Callout: { baseClassName: "ui-callout", tagName: "lumen-callout" },
   Card: {
     attributeClasses: {
       glass: {
-        strong: 'ui-card--glass ui-glass-strong',
-        subtle: 'ui-card--glass ui-glass-subtle',
-        true: 'ui-card--glass'
+        strong: "ui-card--glass ui-glass-strong",
+        subtle: "ui-card--glass ui-glass-subtle",
+        true: "ui-card--glass",
       },
       variant: {
-        glass: 'ui-card--glass',
-        interactive: 'ui-card--interactive',
-        muted: 'ui-card--muted',
-        unstyled: 'ui-card--unstyled'
-      }
+        glass: "ui-card--glass",
+        interactive: "ui-card--interactive",
+        muted: "ui-card--muted",
+        unstyled: "ui-card--unstyled",
+      },
     },
-    baseClassName: 'ui-card',
-    defaults: { 'data-slot': 'card', variant: 'default' },
-    tagName: 'lumen-card'
+    baseClassName: "ui-card",
+    defaults: { "data-slot": "card", variant: "default" },
+    tagName: "lumen-card",
   },
   CardContent: {
-    baseClassName: 'ui-card__content',
-    defaults: { 'data-slot': 'card-content' },
-    tagName: 'lumen-card-content'
+    baseClassName: "ui-card__content",
+    defaults: { "data-slot": "card-content" },
+    tagName: "lumen-card-content",
   },
   CardDescription: {
-    baseClassName: 'ui-card__description',
-    defaults: { 'data-slot': 'card-description' },
-    tagName: 'lumen-card-description'
+    baseClassName: "ui-card__description",
+    defaults: { "data-slot": "card-description" },
+    tagName: "lumen-card-description",
   },
   CardFooter: {
-    baseClassName: 'ui-card__footer',
-    defaults: { 'data-slot': 'card-footer' },
-    tagName: 'lumen-card-footer'
+    baseClassName: "ui-card__footer",
+    defaults: { "data-slot": "card-footer" },
+    tagName: "lumen-card-footer",
   },
   CardHeader: {
-    baseClassName: 'ui-card__header',
-    defaults: { 'data-slot': 'card-header' },
-    tagName: 'lumen-card-header'
+    baseClassName: "ui-card__header",
+    defaults: { "data-slot": "card-header" },
+    tagName: "lumen-card-header",
   },
   CardTitle: {
-    baseClassName: 'ui-card__title',
-    defaults: { 'data-slot': 'card-title' },
-    tagName: 'lumen-card-title'
+    baseClassName: "ui-card__title",
+    defaults: { "data-slot": "card-title" },
+    tagName: "lumen-card-title",
   },
   Carousel: {
-    attributeClasses: glassAttributeClasses('ui-carousel--glass'),
-    baseClassName: 'ui-carousel',
-    defaults: { 'data-ui-carousel': '' },
-    tagName: 'lumen-carousel'
+    attributeClasses: glassAttributeClasses("ui-carousel--glass"),
+    baseClassName: "ui-carousel",
+    defaults: { "data-ui-carousel": "" },
+    tagName: "lumen-carousel",
   },
   Chart: {
     attributeClasses: {
-      ...glassAttributeClasses('ui-chart--glass'),
-      presentation: { bare: 'ui-chart--bare' }
+      ...glassAttributeClasses("ui-chart--glass"),
+      presentation: { bare: "ui-chart--bare" },
     },
-    baseClassName: 'ui-chart',
-    tagName: 'lumen-chart'
+    baseClassName: "ui-chart",
+    tagName: "lumen-chart",
   },
-  Checkbox: { baseClassName: 'ui-checkbox', defaults: { type: 'checkbox' }, tagName: 'lumen-checkbox' },
+  Checkbox: {
+    baseClassName: "ui-checkbox",
+    defaults: { type: "checkbox" },
+    tagName: "lumen-checkbox",
+  },
   CheckboxGroup: {
     attributeClasses: {
       orientation: {
-        horizontal: 'ui-checkbox-group--horizontal',
-        vertical: 'ui-checkbox-group--vertical'
-      }
+        horizontal: "ui-checkbox-group--horizontal",
+        vertical: "ui-checkbox-group--vertical",
+      },
     },
-    baseClassName: 'ui-checkbox-group',
-    defaults: { 'data-ui-checkbox-group': '', orientation: 'vertical', role: 'group' },
-    tagName: 'lumen-checkbox-group'
+    baseClassName: "ui-checkbox-group",
+    defaults: {
+      "data-ui-checkbox-group": "",
+      orientation: "vertical",
+      role: "group",
+    },
+    tagName: "lumen-checkbox-group",
   },
   Collapsible: {
-    baseClassName: 'ui-collapsible',
-    defaults: { 'data-ui-collapsible': '' },
-    tagName: 'lumen-collapsible'
+    baseClassName: "ui-collapsible",
+    defaults: { "data-ui-collapsible": "" },
+    tagName: "lumen-collapsible",
   },
   Code: {
     attributeClasses: {
       variant: {
-        block: 'ui-code--block',
-        inline: 'ui-code--inline'
+        block: "ui-code--block",
+        inline: "ui-code--inline",
       },
       wrap: {
-        true: 'ui-code--wrap'
-      }
+        true: "ui-code--wrap",
+      },
     },
-    baseClassName: 'ui-code',
-    defaults: { 'data-code-theme': 'auto', 'data-slot': 'code', variant: 'inline' },
-    tagName: 'lumen-code'
+    baseClassName: "ui-code",
+    defaults: {
+      "data-code-theme": "auto",
+      "data-slot": "code",
+      variant: "inline",
+    },
+    tagName: "lumen-code",
   },
   CodeTabs: {
-    baseClassName: 'ui-code-tabs',
-    defaults: { 'data-slot': 'code-tabs', 'data-ui-tabs': '' },
-    tagName: 'lumen-code-tabs'
+    baseClassName: "ui-code-tabs",
+    defaults: { "data-slot": "code-tabs", "data-ui-tabs": "" },
+    tagName: "lumen-code-tabs",
   },
-  Combobox: { baseClassName: 'ui-combobox', defaults: { 'data-ui-combobox': '' }, tagName: 'lumen-combobox' },
+  Combobox: {
+    baseClassName: "ui-combobox",
+    defaults: { "data-ui-combobox": "" },
+    tagName: "lumen-combobox",
+  },
   Container: {
     attributeClasses: {
       size: {
-        full: 'ui-container--full',
-        lg: 'ui-container--lg',
-        md: 'ui-container--md',
-        sm: 'ui-container--sm'
-      }
+        full: "ui-container--full",
+        lg: "ui-container--lg",
+        md: "ui-container--md",
+        sm: "ui-container--sm",
+      },
     },
-    baseClassName: 'ui-container',
-    defaults: { 'data-ui-container': '', size: 'lg' },
-    tagName: 'lumen-container'
+    baseClassName: "ui-container",
+    defaults: { "data-ui-container": "", size: "lg" },
+    tagName: "lumen-container",
   },
   Command: {
-    attributeClasses: glassAttributeClasses('ui-command--glass'),
-    baseClassName: 'ui-command',
-    defaults: { 'data-ui-command': '' },
-    tagName: 'lumen-command'
+    attributeClasses: glassAttributeClasses("ui-command--glass"),
+    baseClassName: "ui-command",
+    defaults: { "data-ui-command": "" },
+    tagName: "lumen-command",
   },
-  ColorPicker: { baseClassName: 'ui-color-picker', defaults: { type: 'color' }, tagName: 'lumen-color-picker' },
+  ColorPicker: {
+    baseClassName: "ui-color-picker",
+    defaults: { type: "color" },
+    tagName: "lumen-color-picker",
+  },
   ContextMenu: {
     attributeClasses: {
       glass: {
-        strong: 'ui-menu--glass ui-glass-strong',
-        subtle: 'ui-menu--glass ui-glass-subtle',
-        true: 'ui-menu--glass'
+        strong: "ui-menu--glass ui-glass-strong",
+        subtle: "ui-menu--glass ui-glass-subtle",
+        true: "ui-menu--glass",
       },
-      surface: { glass: 'ui-menu--glass' }
+      surface: { glass: "ui-menu--glass" },
     },
-    baseClassName: 'ui-menu',
-    defaults: { 'data-ui-context-menu': '', role: 'menu', surface: 'default' },
-    tagName: 'lumen-context-menu'
+    baseClassName: "ui-menu",
+    defaults: { "data-ui-context-menu": "", role: "menu", surface: "default" },
+    tagName: "lumen-context-menu",
   },
   DataTable: {
-    attributeClasses: glassAttributeClasses('ui-data-table--glass'),
-    baseClassName: 'ui-data-table',
-    defaults: { 'data-ui-datatable': '' },
-    tagName: 'lumen-data-table'
+    attributeClasses: glassAttributeClasses("ui-data-table--glass"),
+    baseClassName: "ui-data-table",
+    defaults: { "data-ui-datatable": "" },
+    tagName: "lumen-data-table",
   },
   DatePicker: {
-    attributeClasses: glassAttributeClasses('ui-date-picker-field--glass'),
-    baseClassName: 'ui-input ui-date-picker',
-    defaults: { type: 'date' },
-    tagName: 'lumen-date-picker'
+    attributeClasses: glassAttributeClasses("ui-date-picker-field--glass"),
+    baseClassName: "ui-input ui-date-picker",
+    defaults: { type: "date" },
+    tagName: "lumen-date-picker",
   },
   DateRangePicker: {
-    baseClassName: 'ui-date-range-picker',
-    defaults: { 'data-ui-date-range-picker': '' },
-    tagName: 'lumen-date-range-picker'
+    baseClassName: "ui-date-range-picker",
+    defaults: { "data-ui-date-range-picker": "" },
+    tagName: "lumen-date-range-picker",
   },
   Dialog: {
     attributeClasses: {
       glass: {
-        strong: 'ui-dialog--glass ui-glass-strong',
-        subtle: 'ui-dialog--glass ui-glass-subtle',
-        true: 'ui-dialog--glass'
+        strong: "ui-dialog--glass ui-glass-strong",
+        subtle: "ui-dialog--glass ui-glass-subtle",
+        true: "ui-dialog--glass",
       },
-      layout: { fullscreen: 'ui-dialog--fullscreen' },
-      surface: { glass: 'ui-dialog--glass' }
+      layout: { fullscreen: "ui-dialog--fullscreen" },
+      surface: { glass: "ui-dialog--glass" },
     },
-    baseClassName: 'ui-dialog',
-    defaults: { 'data-ui-dialog': '', layout: 'centered', surface: 'default' },
-    tagName: 'lumen-dialog'
+    baseClassName: "ui-dialog",
+    defaults: { "data-ui-dialog": "", layout: "centered", surface: "default" },
+    tagName: "lumen-dialog",
   },
-  Direction: { baseClassName: 'ui-direction', defaults: { dir: 'ltr' }, tagName: 'lumen-direction' },
+  Direction: {
+    baseClassName: "ui-direction",
+    defaults: { dir: "ltr" },
+    tagName: "lumen-direction",
+  },
   Drawer: {
     attributeClasses: {
       glass: {
-        strong: 'ui-drawer--glass ui-glass-strong',
-        subtle: 'ui-drawer--glass ui-glass-subtle',
-        true: 'ui-drawer--glass'
+        strong: "ui-drawer--glass ui-glass-strong",
+        subtle: "ui-drawer--glass ui-glass-subtle",
+        true: "ui-drawer--glass",
       },
-      surface: { glass: 'ui-drawer--glass' }
+      surface: { glass: "ui-drawer--glass" },
     },
-    baseClassName: 'ui-drawer',
-    defaults: { 'data-ui-drawer': '', surface: 'default' },
-    tagName: 'lumen-drawer'
+    baseClassName: "ui-drawer",
+    defaults: { "data-ui-drawer": "", surface: "default" },
+    tagName: "lumen-drawer",
   },
   DropdownMenu: {
     attributeClasses: {
       glass: {
-        strong: 'ui-menu--glass ui-glass-strong',
-        subtle: 'ui-menu--glass ui-glass-subtle',
-        true: 'ui-menu--glass'
+        strong: "ui-menu--glass ui-glass-strong",
+        subtle: "ui-menu--glass ui-glass-subtle",
+        true: "ui-menu--glass",
       },
-      surface: { glass: 'ui-menu--glass' }
+      surface: { glass: "ui-menu--glass" },
     },
-    baseClassName: 'ui-menu',
-    defaults: { 'data-ui-dropdown-menu': '', surface: 'default' },
-    tagName: 'lumen-dropdown-menu'
+    baseClassName: "ui-menu",
+    defaults: { "data-ui-dropdown-menu": "", surface: "default" },
+    tagName: "lumen-dropdown-menu",
   },
   Empty: {
-    attributeClasses: glassAttributeClasses('ui-empty--glass'),
-    baseClassName: 'ui-empty',
-    tagName: 'lumen-empty'
+    attributeClasses: glassAttributeClasses("ui-empty--glass"),
+    baseClassName: "ui-empty",
+    tagName: "lumen-empty",
   },
   ErrorSummary: {
-    baseClassName: 'ui-error-summary',
-    defaults: { 'data-ui-error-summary': '', tabindex: '-1' },
-    tagName: 'lumen-error-summary'
+    baseClassName: "ui-error-summary",
+    defaults: { "data-ui-error-summary": "", tabindex: "-1" },
+    tagName: "lumen-error-summary",
   },
-  Eyebrow: { baseClassName: 'ui-eyebrow', tagName: 'lumen-eyebrow' },
+  Eyebrow: { baseClassName: "ui-eyebrow", tagName: "lumen-eyebrow" },
   Field: {
-    attributeClasses: glassAttributeClasses('ui-field--glass'),
-    baseClassName: 'ui-field',
-    defaults: { 'data-ui-field': '' },
-    tagName: 'lumen-field'
+    attributeClasses: glassAttributeClasses("ui-field--glass"),
+    baseClassName: "ui-field",
+    defaults: { "data-ui-field": "" },
+    tagName: "lumen-field",
   },
   FieldError: {
-    baseClassName: 'ui-field-error',
-    defaults: { 'data-ui-field-error': '' },
-    tagName: 'lumen-field-error'
+    baseClassName: "ui-field-error",
+    defaults: { "data-ui-field-error": "" },
+    tagName: "lumen-field-error",
   },
-  FloatingBadge: { baseClassName: 'ui-floating-badge', tagName: 'lumen-floating-badge' },
-  Form: { baseClassName: 'ui-form', defaults: { 'data-ui-form': '' }, tagName: 'lumen-form' },
-  FormattedDate: { baseClassName: 'ui-formatted-date', tagName: 'lumen-formatted-date' },
+  FloatingBadge: {
+    baseClassName: "ui-floating-badge",
+    tagName: "lumen-floating-badge",
+  },
+  Form: {
+    baseClassName: "ui-form",
+    defaults: { "data-ui-form": "" },
+    tagName: "lumen-form",
+  },
+  FormattedDate: {
+    baseClassName: "ui-formatted-date",
+    tagName: "lumen-formatted-date",
+  },
   Grid: {
     attributeClasses: {
       columns: {
-        1: 'ui-grid--columns-1',
-        2: 'ui-grid--columns-2',
-        3: 'ui-grid--columns-3',
-        4: 'ui-grid--columns-4',
-        6: 'ui-grid--columns-6',
-        12: 'ui-grid--columns-12',
-        auto: 'ui-grid--columns-auto'
+        1: "ui-grid--columns-1",
+        2: "ui-grid--columns-2",
+        3: "ui-grid--columns-3",
+        4: "ui-grid--columns-4",
+        6: "ui-grid--columns-6",
+        12: "ui-grid--columns-12",
+        auto: "ui-grid--columns-auto",
       },
       gap: {
-        lg: 'ui-grid--gap-lg',
-        md: 'ui-grid--gap-md',
-        none: 'ui-grid--gap-none',
-        sm: 'ui-grid--gap-sm',
-        xl: 'ui-grid--gap-xl'
-      }
+        lg: "ui-grid--gap-lg",
+        md: "ui-grid--gap-md",
+        none: "ui-grid--gap-none",
+        sm: "ui-grid--gap-sm",
+        xl: "ui-grid--gap-xl",
+      },
     },
-    baseClassName: 'ui-grid',
-    defaults: { 'data-ui-grid': '', columns: 'auto', gap: 'md' },
-    tagName: 'lumen-grid'
+    baseClassName: "ui-grid",
+    defaults: { "data-ui-grid": "", columns: "auto", gap: "md" },
+    tagName: "lumen-grid",
   },
   HoverCard: {
     attributeClasses: {
       glass: {
-        strong: 'ui-hover-card--glass ui-glass-strong',
-        subtle: 'ui-hover-card--glass ui-glass-subtle',
-        true: 'ui-hover-card--glass'
+        strong: "ui-hover-card--glass ui-glass-strong",
+        subtle: "ui-hover-card--glass ui-glass-subtle",
+        true: "ui-hover-card--glass",
       },
-      surface: { glass: 'ui-hover-card--glass' }
+      surface: { glass: "ui-hover-card--glass" },
     },
-    baseClassName: 'ui-hover-card',
-    defaults: { 'data-ui-hover-card': '', surface: 'default' },
-    tagName: 'lumen-hover-card'
+    baseClassName: "ui-hover-card",
+    defaults: { "data-ui-hover-card": "", surface: "default" },
+    tagName: "lumen-hover-card",
   },
   Icon: {
     attributeClasses: {
       size: {
-        lg: 'ui-icon--lg',
-        sm: 'ui-icon--sm',
-        xl: 'ui-icon--xl'
-      }
+        lg: "ui-icon--lg",
+        sm: "ui-icon--sm",
+        xl: "ui-icon--xl",
+      },
     },
-    baseClassName: 'ui-icon',
-    defaults: { size: 'default' },
-    tagName: 'lumen-icon'
+    baseClassName: "ui-icon",
+    defaults: { size: "default" },
+    tagName: "lumen-icon",
   },
   Image: {
     attributeClasses: {
-      'invert-on-dark': { true: 'ui-image--invert-dark' }
+      "invert-on-dark": { true: "ui-image--invert-dark" },
     },
-    baseClassName: 'ui-image',
-    tagName: 'lumen-image'
+    baseClassName: "ui-image",
+    tagName: "lumen-image",
   },
   Input: {
-    attributeClasses: { size: { lg: 'ui-input--lg', sm: 'ui-input--sm' } },
-    baseClassName: 'ui-input',
-    defaults: { type: 'text' },
-    tagName: 'lumen-input'
+    attributeClasses: { size: { lg: "ui-input--lg", sm: "ui-input--sm" } },
+    baseClassName: "ui-input",
+    defaults: { type: "text" },
+    tagName: "lumen-input",
   },
-  InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
+  InputGroup: { baseClassName: "ui-input-group", tagName: "lumen-input-group" },
   InputOTP: {
-    baseClassName: 'ui-input-otp-field',
-    defaults: { 'data-ui-input-otp': '', 'data-ui-input-otp-length': '6' },
-    tagName: 'lumen-input-otp'
+    baseClassName: "ui-input-otp-field",
+    defaults: { "data-ui-input-otp": "", "data-ui-input-otp-length": "6" },
+    tagName: "lumen-input-otp",
   },
   NumberField: {
-    baseClassName: 'ui-input ui-number-field',
-    defaults: { type: 'number' },
-    tagName: 'lumen-number-field'
+    baseClassName: "ui-input ui-number-field",
+    defaults: { type: "number" },
+    tagName: "lumen-number-field",
   },
-  Item: { attributeClasses: glassAttributeClasses('ui-item--glass'), baseClassName: 'ui-item', tagName: 'lumen-item' },
-  Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
-  Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
+  Item: {
+    attributeClasses: glassAttributeClasses("ui-item--glass"),
+    baseClassName: "ui-item",
+    tagName: "lumen-item",
+  },
+  Kbd: { baseClassName: "ui-kbd", tagName: "lumen-kbd" },
+  Label: { baseClassName: "ui-label", tagName: "lumen-label" },
   Link: {
-    attributeClasses: { variant: { inherit: 'ui-link--inherit' } },
-    baseClassName: 'ui-link',
-    defaults: { 'data-slot': 'link' },
-    tagName: 'lumen-link'
+    attributeClasses: { variant: { inherit: "ui-link--inherit" } },
+    baseClassName: "ui-link",
+    defaults: { "data-slot": "link" },
+    tagName: "lumen-link",
   },
   LineChart: {
     attributeClasses: {
-      ...glassAttributeClasses('ui-chart--glass'),
-      presentation: { bare: 'ui-chart--bare' }
+      ...glassAttributeClasses("ui-chart--glass"),
+      presentation: { bare: "ui-chart--bare" },
     },
-    baseClassName: 'ui-chart ui-line-chart',
-    role: 'figure',
-    tagName: 'lumen-line-chart'
+    baseClassName: "ui-chart ui-line-chart",
+    role: "figure",
+    tagName: "lumen-line-chart",
   },
-  ListBox: { baseClassName: 'ui-list-box', defaults: { 'data-ui-list-box': '' }, tagName: 'lumen-list-box' },
+  ListBox: {
+    baseClassName: "ui-list-box",
+    defaults: { "data-ui-list-box": "" },
+    tagName: "lumen-list-box",
+  },
   Marker: {
     attributeClasses: {
       variant: {
-        danger: 'ui-marker--danger',
-        success: 'ui-marker--success',
-        warning: 'ui-marker--warning'
-      }
+        danger: "ui-marker--danger",
+        success: "ui-marker--success",
+        warning: "ui-marker--warning",
+      },
     },
-    baseClassName: 'ui-marker',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-marker'
+    baseClassName: "ui-marker",
+    defaults: { variant: "default" },
+    tagName: "lumen-marker",
   },
   Menubar: {
     attributeClasses: {
       glass: {
-        strong: 'ui-menubar--glass ui-glass-strong',
-        subtle: 'ui-menubar--glass ui-glass-subtle',
-        true: 'ui-menubar--glass'
+        strong: "ui-menubar--glass ui-glass-strong",
+        subtle: "ui-menubar--glass ui-glass-subtle",
+        true: "ui-menubar--glass",
       },
-      surface: { glass: 'ui-menubar--glass' }
+      surface: { glass: "ui-menubar--glass" },
     },
-    baseClassName: 'ui-menubar',
-    defaults: { 'data-ui-menubar': '', surface: 'default' },
-    tagName: 'lumen-menubar'
+    baseClassName: "ui-menubar",
+    defaults: { "data-ui-menubar": "", surface: "default" },
+    tagName: "lumen-menubar",
   },
   PieChart: {
     attributeClasses: {
-      ...glassAttributeClasses('ui-chart--glass'),
+      ...glassAttributeClasses("ui-chart--glass"),
       variant: {
-        donut: 'ui-pie-chart--donut',
-        pie: 'ui-pie-chart--pie'
-      }
+        donut: "ui-pie-chart--donut",
+        pie: "ui-pie-chart--pie",
+      },
     },
-    baseClassName: 'ui-chart ui-pie-chart',
-    defaults: { variant: 'donut' },
-    role: 'figure',
-    tagName: 'lumen-pie-chart'
+    baseClassName: "ui-chart ui-pie-chart",
+    defaults: { variant: "donut" },
+    role: "figure",
+    tagName: "lumen-pie-chart",
   },
   Message: {
     attributeClasses: {
       from: {
-        assistant: 'ui-message--assistant',
-        user: 'ui-message--user'
-      }
+        assistant: "ui-message--assistant",
+        user: "ui-message--user",
+      },
     },
-    baseClassName: 'ui-message',
-    defaults: { from: 'assistant' },
-    tagName: 'lumen-message'
+    baseClassName: "ui-message",
+    defaults: { from: "assistant" },
+    tagName: "lumen-message",
   },
   MessageScroller: {
-    attributeClasses: glassAttributeClasses('ui-message-scroller--glass'),
-    baseClassName: 'ui-message-scroller',
-    tagName: 'lumen-message-scroller'
+    attributeClasses: glassAttributeClasses("ui-message-scroller--glass"),
+    baseClassName: "ui-message-scroller",
+    tagName: "lumen-message-scroller",
   },
   NativeSelect: {
-    attributeClasses: { size: { lg: 'ui-select--lg', sm: 'ui-select--sm' } },
-    baseClassName: 'ui-select',
-    tagName: 'lumen-native-select'
+    attributeClasses: { size: { lg: "ui-select--lg", sm: "ui-select--sm" } },
+    baseClassName: "ui-select",
+    tagName: "lumen-native-select",
   },
   NavigationMenu: {
     attributeClasses: {
       glass: {
-        strong: 'ui-navigation-menu--glass ui-glass-strong',
-        subtle: 'ui-navigation-menu--glass ui-glass-subtle',
-        true: 'ui-navigation-menu--glass'
+        strong: "ui-navigation-menu--glass ui-glass-strong",
+        subtle: "ui-navigation-menu--glass ui-glass-subtle",
+        true: "ui-navigation-menu--glass",
       },
-      surface: { glass: 'ui-navigation-menu--glass' },
-      variant: { unstyled: 'ui-navigation-menu--unstyled' }
+      surface: { glass: "ui-navigation-menu--glass" },
+      variant: { unstyled: "ui-navigation-menu--unstyled" },
     },
-    baseClassName: 'ui-navigation-menu',
-    defaults: { 'data-slot': 'navigation-menu', 'data-ui-navigation-menu': '', surface: 'default' },
-    tagName: 'lumen-navigation-menu'
+    baseClassName: "ui-navigation-menu",
+    defaults: {
+      "data-slot": "navigation-menu",
+      "data-ui-navigation-menu": "",
+      surface: "default",
+    },
+    tagName: "lumen-navigation-menu",
   },
-  Pagination: { baseClassName: 'ui-pagination', defaults: { 'aria-label': 'Pagination' }, tagName: 'lumen-pagination' },
+  Pagination: {
+    baseClassName: "ui-pagination",
+    defaults: { "aria-label": "Pagination" },
+    tagName: "lumen-pagination",
+  },
   PasswordField: {
-    baseClassName: 'ui-password-field',
-    defaults: { 'data-ui-password-field': '' },
-    tagName: 'lumen-password-field'
+    baseClassName: "ui-password-field",
+    defaults: { "data-ui-password-field": "" },
+    tagName: "lumen-password-field",
   },
-  PhoneInput: { baseClassName: 'ui-phone-input ui-input-group', tagName: 'lumen-phone-input' },
+  PhoneInput: {
+    baseClassName: "ui-phone-input ui-input-group",
+    tagName: "lumen-phone-input",
+  },
   Pill: {
     attributeClasses: {
       variant: {
-        brand: 'ui-pill--brand',
-        outline: 'ui-pill--outline'
-      }
+        brand: "ui-pill--brand",
+        outline: "ui-pill--outline",
+      },
     },
-    baseClassName: 'ui-pill',
-    defaults: { variant: 'neutral' },
-    tagName: 'lumen-pill'
+    baseClassName: "ui-pill",
+    defaults: { variant: "neutral" },
+    tagName: "lumen-pill",
   },
   Popover: {
     attributeClasses: {
       glass: {
-        strong: 'ui-popover--glass ui-glass-strong',
-        subtle: 'ui-popover--glass ui-glass-subtle',
-        true: 'ui-popover--glass'
+        strong: "ui-popover--glass ui-glass-strong",
+        subtle: "ui-popover--glass ui-glass-subtle",
+        true: "ui-popover--glass",
       },
-      surface: { glass: 'ui-popover--glass' }
+      surface: { glass: "ui-popover--glass" },
     },
-    baseClassName: 'ui-popover',
-    defaults: { 'data-ui-popover': '', surface: 'default' },
-    tagName: 'lumen-popover'
+    baseClassName: "ui-popover",
+    defaults: { "data-ui-popover": "", surface: "default" },
+    tagName: "lumen-popover",
   },
-  Progress: { baseClassName: 'ui-progress', defaults: { role: 'progressbar' }, tagName: 'lumen-progress' },
-  Prose: { baseClassName: 'ui-prose', tagName: 'lumen-prose' },
+  Progress: {
+    baseClassName: "ui-progress",
+    defaults: { role: "progressbar" },
+    tagName: "lumen-progress",
+  },
+  Prose: { baseClassName: "ui-prose", tagName: "lumen-prose" },
   RadioGroup: {
-    baseClassName: 'ui-radio-group',
-    defaults: { 'data-ui-radio-group': '' },
-    tagName: 'lumen-radio-group'
+    baseClassName: "ui-radio-group",
+    defaults: { "data-ui-radio-group": "" },
+    tagName: "lumen-radio-group",
   },
   Resizable: {
-    attributeClasses: { 'data-orientation': { vertical: 'ui-resizable--vertical' } },
-    baseClassName: 'ui-resizable',
-    defaults: { 'data-orientation': 'horizontal', 'data-ui-resizable': '', 'data-ui-resizable-reset': 'true' },
-    tagName: 'lumen-resizable'
+    attributeClasses: {
+      "data-orientation": { vertical: "ui-resizable--vertical" },
+    },
+    baseClassName: "ui-resizable",
+    defaults: {
+      "data-orientation": "horizontal",
+      "data-ui-resizable": "",
+      "data-ui-resizable-reset": "true",
+    },
+    tagName: "lumen-resizable",
   },
   RichTextEditor: {
-    attributeClasses: glassAttributeClasses('ui-rich-text-editor--glass'),
-    baseClassName: 'ui-rich-text-editor',
-    defaults: { 'data-ui-rich-text-editor': '' },
-    tagName: 'lumen-rich-text-editor'
+    attributeClasses: glassAttributeClasses("ui-rich-text-editor--glass"),
+    baseClassName: "ui-rich-text-editor",
+    defaults: { "data-ui-rich-text-editor": "" },
+    tagName: "lumen-rich-text-editor",
   },
   ScrollArea: {
-    attributeClasses: glassAttributeClasses('ui-scroll-area--glass'),
-    baseClassName: 'ui-scroll-area',
-    tagName: 'lumen-scroll-area'
+    attributeClasses: glassAttributeClasses("ui-scroll-area--glass"),
+    baseClassName: "ui-scroll-area",
+    tagName: "lumen-scroll-area",
   },
   ScrollProgress: {
     attributeClasses: {
-      position: { bottom: 'ui-scroll-progress--bottom' }
+      position: { bottom: "ui-scroll-progress--bottom" },
     },
-    baseClassName: 'ui-scroll-progress',
+    baseClassName: "ui-scroll-progress",
     defaults: {
-      'aria-label': 'Reading progress',
-      'aria-valuemax': '100',
-      'aria-valuemin': '0',
-      'aria-valuenow': '0',
-      'data-ui-scroll-progress': '',
-      position: 'top',
-      role: 'progressbar'
+      "aria-label": "Reading progress",
+      "aria-valuemax": "100",
+      "aria-valuemin": "0",
+      "aria-valuenow": "0",
+      "data-ui-scroll-progress": "",
+      position: "top",
+      role: "progressbar",
     },
-    tagName: 'lumen-scroll-progress'
+    tagName: "lumen-scroll-progress",
   },
   Schedule: {
-    attributeClasses: glassAttributeClasses('ui-schedule--glass'),
-    baseClassName: 'ui-schedule',
-    defaults: { 'data-ui-schedule': '' },
-    tagName: 'lumen-schedule'
+    attributeClasses: glassAttributeClasses("ui-schedule--glass"),
+    baseClassName: "ui-schedule",
+    defaults: { "data-ui-schedule": "" },
+    tagName: "lumen-schedule",
   },
   SearchField: {
-    baseClassName: 'ui-input ui-search-field',
-    defaults: { type: 'search' },
-    tagName: 'lumen-search-field'
+    baseClassName: "ui-input ui-search-field",
+    defaults: { type: "search" },
+    tagName: "lumen-search-field",
   },
   Select: {
     attributeClasses: {
-      ...glassAttributeClasses('ui-select-field--glass'),
-      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' }
+      ...glassAttributeClasses("ui-select-field--glass"),
+      size: { lg: "ui-select--lg", sm: "ui-select--sm" },
     },
-    baseClassName: 'ui-select',
-    tagName: 'lumen-select'
+    baseClassName: "ui-select",
+    tagName: "lumen-select",
   },
   Separator: {
     attributeClasses: {
       orientation: {
-        horizontal: 'ui-separator--horizontal',
-        vertical: 'ui-separator--vertical'
-      }
+        horizontal: "ui-separator--horizontal",
+        vertical: "ui-separator--vertical",
+      },
     },
-    baseClassName: 'ui-separator',
-    defaults: { orientation: 'horizontal' },
-    tagName: 'lumen-separator'
+    baseClassName: "ui-separator",
+    defaults: { orientation: "horizontal" },
+    tagName: "lumen-separator",
   },
   Sheet: {
     attributeClasses: {
       glass: {
-        strong: 'ui-sheet--glass ui-glass-strong',
-        subtle: 'ui-sheet--glass ui-glass-subtle',
-        true: 'ui-sheet--glass'
+        strong: "ui-sheet--glass ui-glass-strong",
+        subtle: "ui-sheet--glass ui-glass-subtle",
+        true: "ui-sheet--glass",
       },
-      surface: { glass: 'ui-sheet--glass' }
+      surface: { glass: "ui-sheet--glass" },
     },
-    baseClassName: 'ui-sheet',
-    defaults: { 'data-ui-sheet': '', surface: 'default' },
-    tagName: 'lumen-sheet'
+    baseClassName: "ui-sheet",
+    defaults: { "data-ui-sheet": "", surface: "default" },
+    tagName: "lumen-sheet",
   },
   Sidebar: {
     attributeClasses: {
       glass: {
-        strong: 'ui-sidebar--glass ui-glass-strong',
-        subtle: 'ui-sidebar--glass ui-glass-subtle',
-        true: 'ui-sidebar--glass'
+        strong: "ui-sidebar--glass ui-glass-strong",
+        subtle: "ui-sidebar--glass ui-glass-subtle",
+        true: "ui-sidebar--glass",
       },
-      surface: { glass: 'ui-sidebar--glass' },
-      variant: { unstyled: 'ui-sidebar--unstyled' }
+      surface: { glass: "ui-sidebar--glass" },
+      variant: { unstyled: "ui-sidebar--unstyled" },
     },
-    baseClassName: 'ui-sidebar',
-    defaults: { 'data-slot': 'sidebar', surface: 'default' },
-    tagName: 'lumen-sidebar'
+    baseClassName: "ui-sidebar",
+    defaults: { "data-slot": "sidebar", surface: "default" },
+    tagName: "lumen-sidebar",
   },
-  Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
-  SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' },
-  Slider: { baseClassName: 'ui-slider', defaults: { type: 'range' }, tagName: 'lumen-slider' },
-  Sonner: { baseClassName: 'ui-sonner', defaults: { 'data-ui-sonner': '' }, tagName: 'lumen-sonner' },
-  Sparkline: { baseClassName: 'ui-sparkline', tagName: 'lumen-sparkline' },
-  Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
-  Switch: { baseClassName: 'ui-switch', defaults: { role: 'switch', type: 'checkbox' }, tagName: 'lumen-switch' },
+  Skeleton: { baseClassName: "ui-skeleton", tagName: "lumen-skeleton" },
+  SkipLink: { baseClassName: "ui-skip-link", tagName: "lumen-skip-link" },
+  Slider: {
+    baseClassName: "ui-slider",
+    defaults: { type: "range" },
+    tagName: "lumen-slider",
+  },
+  Sonner: {
+    baseClassName: "ui-sonner",
+    defaults: { "data-ui-sonner": "" },
+    tagName: "lumen-sonner",
+  },
+  Sparkline: { baseClassName: "ui-sparkline", tagName: "lumen-sparkline" },
+  Spinner: { baseClassName: "ui-spinner", tagName: "lumen-spinner" },
+  Switch: {
+    baseClassName: "ui-switch",
+    defaults: { role: "switch", type: "checkbox" },
+    tagName: "lumen-switch",
+  },
   Table: {
-    attributeClasses: glassAttributeClasses('ui-table-wrap--glass'),
-    baseClassName: 'ui-table-wrap',
-    defaults: { 'data-slot': 'table' },
-    tagName: 'lumen-table'
+    attributeClasses: glassAttributeClasses("ui-table-wrap--glass"),
+    baseClassName: "ui-table-wrap",
+    defaults: { "data-slot": "table" },
+    tagName: "lumen-table",
   },
   Tabs: {
-    attributeClasses: glassAttributeClasses('ui-tabs--glass'),
-    baseClassName: 'ui-tabs',
-    defaults: { 'data-ui-tabs': '' },
-    tagName: 'lumen-tabs'
+    attributeClasses: glassAttributeClasses("ui-tabs--glass"),
+    baseClassName: "ui-tabs",
+    defaults: { "data-ui-tabs": "" },
+    tagName: "lumen-tabs",
   },
-  TagGroup: { baseClassName: 'ui-tag-group', defaults: { role: 'list' }, tagName: 'lumen-tag-group' },
-  Textarea: { baseClassName: 'ui-textarea', defaults: { rows: '4' }, tagName: 'lumen-textarea' },
+  TagGroup: {
+    baseClassName: "ui-tag-group",
+    defaults: { role: "list" },
+    tagName: "lumen-tag-group",
+  },
+  Textarea: {
+    baseClassName: "ui-textarea",
+    defaults: { rows: "4" },
+    tagName: "lumen-textarea",
+  },
   ThemeBuilder: {
-    attributeClasses: glassAttributeClasses('ui-theme-builder--glass'),
-    baseClassName: 'ui-theme-builder',
-    defaults: { 'data-ui-theme-builder': '' },
-    tagName: 'lumen-theme-builder'
+    attributeClasses: glassAttributeClasses("ui-theme-builder--glass"),
+    baseClassName: "ui-theme-builder",
+    defaults: { "data-ui-theme-builder": "" },
+    tagName: "lumen-theme-builder",
   },
   ThemeToggle: {
-    baseClassName: 'ui-theme-toggle',
-    defaults: { 'data-slot': 'theme-toggle' },
-    tagName: 'lumen-theme-toggle'
+    baseClassName: "ui-theme-toggle",
+    defaults: { "data-slot": "theme-toggle" },
+    tagName: "lumen-theme-toggle",
   },
-  TimeField: { baseClassName: 'ui-input ui-time-field', defaults: { type: 'time' }, tagName: 'lumen-time-field' },
+  TimeField: {
+    baseClassName: "ui-input ui-time-field",
+    defaults: { type: "time" },
+    tagName: "lumen-time-field",
+  },
   Toast: {
     attributeClasses: {
       glass: {
-        true: 'ui-toast--glass'
+        true: "ui-toast--glass",
       },
       surface: {
-        glass: 'ui-toast--glass'
+        glass: "ui-toast--glass",
       },
       variant: {
-        destructive: 'ui-toast--destructive',
-        success: 'ui-toast--success',
-        warning: 'ui-toast--warning'
-      }
+        destructive: "ui-toast--destructive",
+        success: "ui-toast--success",
+        warning: "ui-toast--warning",
+      },
     },
-    baseClassName: 'ui-toast',
-    defaults: { surface: 'default', variant: 'default' },
-    tagName: 'lumen-toast'
+    baseClassName: "ui-toast",
+    defaults: { surface: "default", variant: "default" },
+    tagName: "lumen-toast",
   },
   Toggle: {
-    baseClassName: 'ui-toggle',
-    defaults: { 'aria-pressed': 'false', 'data-ui-toggle': '', role: 'button', tabindex: '0' },
-    role: 'button',
-    tagName: 'lumen-toggle'
+    baseClassName: "ui-toggle",
+    defaults: {
+      "aria-pressed": "false",
+      "data-ui-toggle": "",
+      role: "button",
+      tabindex: "0",
+    },
+    role: "button",
+    tagName: "lumen-toggle",
   },
   ToggleGroup: {
-    baseClassName: 'ui-toggle-group',
-    defaults: { 'data-ui-toggle-group': '' },
-    tagName: 'lumen-toggle-group'
+    baseClassName: "ui-toggle-group",
+    defaults: { "data-ui-toggle-group": "" },
+    tagName: "lumen-toggle-group",
   },
-  Tooltip: { baseClassName: 'ui-tooltip', tagName: 'lumen-tooltip' },
+  Tooltip: { baseClassName: "ui-tooltip", tagName: "lumen-tooltip" },
   Tree: {
-    attributeClasses: glassAttributeClasses('ui-tree--glass'),
-    baseClassName: 'ui-tree',
-    defaults: { role: 'tree' },
-    tagName: 'lumen-tree'
+    attributeClasses: glassAttributeClasses("ui-tree--glass"),
+    baseClassName: "ui-tree",
+    defaults: { role: "tree" },
+    tagName: "lumen-tree",
   },
   TreeGrid: {
-    attributeClasses: glassAttributeClasses('ui-tree-grid--glass'),
-    baseClassName: 'ui-tree-grid',
-    defaults: { role: 'treegrid' },
-    tagName: 'lumen-tree-grid'
+    attributeClasses: glassAttributeClasses("ui-tree-grid--glass"),
+    baseClassName: "ui-tree-grid",
+    defaults: { role: "treegrid" },
+    tagName: "lumen-tree-grid",
   },
-  Typography: { baseClassName: 'ui-typography', tagName: 'lumen-typography' },
+  Typography: { baseClassName: "ui-typography", tagName: "lumen-typography" },
   VirtualList: {
-    attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
-    baseClassName: 'ui-virtual-list',
-    defaults: { 'data-ui-virtual-list': '' },
-    tagName: 'lumen-virtual-list'
+    attributeClasses: glassAttributeClasses("ui-virtual-list--glass"),
+    baseClassName: "ui-virtual-list",
+    defaults: { "data-ui-virtual-list": "" },
+    tagName: "lumen-virtual-list",
   },
   VisuallyHidden: {
-    baseClassName: 'ui-visually-hidden',
-    defaults: { 'data-ui-visually-hidden': '' },
-    tagName: 'lumen-visually-hidden'
+    baseClassName: "ui-visually-hidden",
+    defaults: { "data-ui-visually-hidden": "" },
+    tagName: "lumen-visually-hidden",
   },
-  LanguageToggle: { baseClassName: 'ui-language-toggle', tagName: 'lumen-language-toggle' },
-  Particles: { baseClassName: 'ui-particles', tagName: 'lumen-particles' },
+  LanguageToggle: {
+    baseClassName: "ui-language-toggle",
+    tagName: "lumen-language-toggle",
+  },
+  Particles: { baseClassName: "ui-particles", tagName: "lumen-particles" },
   AnimatedNumber: {
     attributeClasses: {
       duration: {
-        fast: 'ui-motion-duration-fast',
-        slow: 'ui-motion-duration-slow',
-        standard: 'ui-motion-duration-standard'
-      }
+        fast: "ui-motion-duration-fast",
+        slow: "ui-motion-duration-slow",
+        standard: "ui-motion-duration-standard",
+      },
     },
-    baseClassName: 'ui-animated-number',
-    defaults: { duration: 'slow', from: '0' },
-    tagName: 'lumen-animated-number'
+    baseClassName: "ui-animated-number",
+    defaults: { duration: "slow", from: "0" },
+    tagName: "lumen-animated-number",
   },
   RevealGroup: {
     attributeClasses: {
       animation: {
-        fade: 'ui-reveal-group-fade',
-        scale: 'ui-reveal-group-scale',
-        'slide-up': 'ui-reveal-group-slide-up'
+        fade: "ui-reveal-group-fade",
+        scale: "ui-reveal-group-scale",
+        "slide-up": "ui-reveal-group-slide-up",
       },
       duration: {
-        fast: 'ui-motion-duration-fast',
-        slow: 'ui-motion-duration-slow',
-        standard: 'ui-motion-duration-standard'
-      }
+        fast: "ui-motion-duration-fast",
+        slow: "ui-motion-duration-slow",
+        standard: "ui-motion-duration-standard",
+      },
     },
-    baseClassName: 'ui-reveal-group',
-    defaults: { animation: 'slide-up', duration: 'slow', once: 'true', threshold: '0.15' },
-    tagName: 'lumen-reveal-group'
+    baseClassName: "ui-reveal-group",
+    defaults: {
+      animation: "slide-up",
+      duration: "slow",
+      once: "true",
+      threshold: "0.15",
+    },
+    tagName: "lumen-reveal-group",
   },
   ScrollReveal: {
     attributeClasses: {
       animation: {
-        fade: 'ui-scroll-reveal-fade',
-        scale: 'ui-scroll-reveal-scale',
-        'slide-up': 'ui-scroll-reveal-slide-up'
+        fade: "ui-scroll-reveal-fade",
+        scale: "ui-scroll-reveal-scale",
+        "slide-up": "ui-scroll-reveal-slide-up",
       },
       duration: {
-        fast: 'ui-motion-duration-fast',
-        slow: 'ui-motion-duration-slow',
-        standard: 'ui-motion-duration-standard'
-      }
+        fast: "ui-motion-duration-fast",
+        slow: "ui-motion-duration-slow",
+        standard: "ui-motion-duration-standard",
+      },
     },
-    baseClassName: 'ui-scroll-reveal',
-    defaults: { animation: 'fade', duration: 'slow', once: 'true', threshold: '0.15' },
-    tagName: 'lumen-scroll-reveal'
+    baseClassName: "ui-scroll-reveal",
+    defaults: {
+      animation: "fade",
+      duration: "slow",
+      once: "true",
+      threshold: "0.15",
+    },
+    tagName: "lumen-scroll-reveal",
   },
   Stat: {
     attributeClasses: {
       variant: {
-        accent: 'ui-stat--accent',
-        bare: 'ui-stat--bare',
-        glass: 'ui-stat--glass'
-      }
+        accent: "ui-stat--accent",
+        bare: "ui-stat--bare",
+        glass: "ui-stat--glass",
+      },
     },
-    baseClassName: 'ui-stat',
-    defaults: { 'data-slot': 'stat', variant: 'default' },
-    tagName: 'lumen-stat'
+    baseClassName: "ui-stat",
+    defaults: { "data-slot": "stat", variant: "default" },
+    tagName: "lumen-stat",
   },
   StatDescription: {
-    baseClassName: 'ui-stat-description',
-    defaults: { 'data-slot': 'stat-description' },
-    tagName: 'lumen-stat-description'
+    baseClassName: "ui-stat-description",
+    defaults: { "data-slot": "stat-description" },
+    tagName: "lumen-stat-description",
   },
   StatIcon: {
-    baseClassName: 'ui-stat-icon',
-    defaults: { 'data-slot': 'stat-icon' },
-    tagName: 'lumen-stat-icon'
+    baseClassName: "ui-stat-icon",
+    defaults: { "data-slot": "stat-icon" },
+    tagName: "lumen-stat-icon",
   },
   StatLabel: {
-    baseClassName: 'ui-stat-label',
-    defaults: { 'data-slot': 'stat-label' },
-    tagName: 'lumen-stat-label'
+    baseClassName: "ui-stat-label",
+    defaults: { "data-slot": "stat-label" },
+    tagName: "lumen-stat-label",
   },
   StatTrend: {
     attributeClasses: {
       tone: {
-        danger: 'ui-stat-trend--danger',
-        neutral: 'ui-stat-trend--neutral',
-        success: 'ui-stat-trend--success',
-        warning: 'ui-stat-trend--warning'
-      }
+        danger: "ui-stat-trend--danger",
+        neutral: "ui-stat-trend--neutral",
+        success: "ui-stat-trend--success",
+        warning: "ui-stat-trend--warning",
+      },
     },
-    baseClassName: 'ui-stat-trend',
-    defaults: { 'data-slot': 'stat-trend', tone: 'neutral' },
-    tagName: 'lumen-stat-trend'
+    baseClassName: "ui-stat-trend",
+    defaults: { "data-slot": "stat-trend", tone: "neutral" },
+    tagName: "lumen-stat-trend",
   },
   StatValue: {
-    baseClassName: 'ui-stat-value',
-    defaults: { 'data-slot': 'stat-value' },
-    tagName: 'lumen-stat-value'
+    baseClassName: "ui-stat-value",
+    defaults: { "data-slot": "stat-value" },
+    tagName: "lumen-stat-value",
   },
   Stack: {
     attributeClasses: {
       direction: {
-        horizontal: 'ui-stack--horizontal',
-        vertical: 'ui-stack--vertical'
+        horizontal: "ui-stack--horizontal",
+        vertical: "ui-stack--vertical",
       },
       gap: {
-        lg: 'ui-stack--gap-lg',
-        md: 'ui-stack--gap-md',
-        none: 'ui-stack--gap-none',
-        sm: 'ui-stack--gap-sm',
-        xl: 'ui-stack--gap-xl'
-      }
+        lg: "ui-stack--gap-lg",
+        md: "ui-stack--gap-md",
+        none: "ui-stack--gap-none",
+        sm: "ui-stack--gap-sm",
+        xl: "ui-stack--gap-xl",
+      },
     },
-    baseClassName: 'ui-stack',
-    defaults: { 'data-ui-stack': '', direction: 'vertical', gap: 'md' },
-    tagName: 'lumen-stack'
+    baseClassName: "ui-stack",
+    defaults: { "data-ui-stack": "", direction: "vertical", gap: "md" },
+    tagName: "lumen-stack",
   },
-  Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
+  Meter: { baseClassName: "ui-meter", tagName: "lumen-meter" },
   Note: {
     attributeClasses: {
-      'border-position': {
-        left: 'ui-note--border-left',
-        none: 'ui-note--border-none',
-        right: 'ui-note--border-right'
-      }
+      "border-position": {
+        left: "ui-note--border-left",
+        none: "ui-note--border-none",
+        right: "ui-note--border-right",
+      },
     },
-    baseClassName: 'ui-note',
-    defaults: { 'border-position': 'left' },
-    tagName: 'lumen-note'
+    baseClassName: "ui-note",
+    defaults: { "border-position": "left" },
+    tagName: "lumen-note",
   },
-  Rating: { baseClassName: 'ui-rating', tagName: 'lumen-rating' },
-  Timeline: { baseClassName: 'ui-timeline', tagName: 'lumen-timeline' },
-  AnimatedLogo: { baseClassName: 'ui-animated-logo', tagName: 'lumen-animated-logo' },
-  AnimatedPortrait: { baseClassName: 'ui-animated-portrait', tagName: 'lumen-animated-portrait' },
+  Rating: { baseClassName: "ui-rating", tagName: "lumen-rating" },
+  Timeline: { baseClassName: "ui-timeline", tagName: "lumen-timeline" },
+  AnimatedLogo: {
+    baseClassName: "ui-animated-logo",
+    tagName: "lumen-animated-logo",
+  },
+  AnimatedPortrait: {
+    baseClassName: "ui-animated-portrait",
+    tagName: "lumen-animated-portrait",
+  },
   ButtonLink: {
     attributeClasses: {
-      shape: { icon: 'ui-button-link--icon' },
-      variant: { unstyled: 'ui-button-link--unstyled' }
+      shape: { icon: "ui-button-link--icon" },
+      variant: { unstyled: "ui-button-link--unstyled" },
     },
-    baseClassName: 'ui-button-link',
-    defaults: { 'data-slot': 'button-link' },
-    tagName: 'lumen-button-link'
+    baseClassName: "ui-button-link",
+    defaults: { "data-slot": "button-link" },
+    tagName: "lumen-button-link",
   },
   CoverImage: {
-    attributeClasses: { hover: { true: 'ui-cover-image--hover' } },
-    baseClassName: 'ui-cover-image',
-    tagName: 'lumen-cover-image'
+    attributeClasses: { hover: { true: "ui-cover-image--hover" } },
+    baseClassName: "ui-cover-image",
+    tagName: "lumen-cover-image",
   },
-  GradientDivider: { baseClassName: 'ui-gradient-divider', tagName: 'lumen-gradient-divider' },
+  GradientDivider: {
+    baseClassName: "ui-gradient-divider",
+    tagName: "lumen-gradient-divider",
+  },
   Stepper: {
-    attributeClasses: { orientation: { vertical: 'ui-stepper--vertical' } },
-    baseClassName: 'ui-stepper',
-    defaults: { orientation: 'horizontal' },
-    tagName: 'lumen-stepper'
+    attributeClasses: { orientation: { vertical: "ui-stepper--vertical" } },
+    baseClassName: "ui-stepper",
+    defaults: { orientation: "horizontal" },
+    tagName: "lumen-stepper",
   },
   FileUpload: {
-    baseClassName: 'ui-file-upload',
-    defaults: { 'data-ui-file-upload': '' },
-    tagName: 'lumen-file-upload'
+    baseClassName: "ui-file-upload",
+    defaults: { "data-ui-file-upload": "" },
+    tagName: "lumen-file-upload",
   },
-  Tour: { baseClassName: 'ui-tour', defaults: { 'data-ui-tour': '' }, tagName: 'lumen-tour' },
+  Tour: {
+    baseClassName: "ui-tour",
+    defaults: { "data-ui-tour": "" },
+    tagName: "lumen-tour",
+  },
   Anchor: {
-    baseClassName: 'ui-anchor',
-    defaults: { 'aria-label': 'On this page', 'data-ui-anchor': '' },
-    tagName: 'lumen-anchor'
+    baseClassName: "ui-anchor",
+    defaults: { "aria-label": "On this page", "data-ui-anchor": "" },
+    tagName: "lumen-anchor",
   },
   Segmented: {
-    attributeClasses: { size: { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' } },
-    baseClassName: 'ui-segmented',
-    defaults: { role: 'group' },
-    tagName: 'lumen-segmented'
+    attributeClasses: {
+      size: { lg: "ui-segmented--lg", sm: "ui-segmented--sm" },
+    },
+    baseClassName: "ui-segmented",
+    defaults: { role: "group" },
+    tagName: "lumen-segmented",
   },
   Toolbar: {
-    attributeClasses: { orientation: { vertical: 'ui-toolbar--vertical' } },
-    baseClassName: 'ui-toolbar',
-    defaults: { 'aria-label': 'Toolbar', 'data-ui-toolbar': '', orientation: 'horizontal', role: 'toolbar' },
-    tagName: 'lumen-toolbar'
+    attributeClasses: { orientation: { vertical: "ui-toolbar--vertical" } },
+    baseClassName: "ui-toolbar",
+    defaults: {
+      "aria-label": "Toolbar",
+      "data-ui-toolbar": "",
+      orientation: "horizontal",
+      role: "toolbar",
+    },
+    tagName: "lumen-toolbar",
   },
-  Descriptions: { baseClassName: 'ui-descriptions', tagName: 'lumen-descriptions' },
+  Descriptions: {
+    baseClassName: "ui-descriptions",
+    tagName: "lumen-descriptions",
+  },
   Popconfirm: {
-    baseClassName: 'ui-popover ui-popconfirm',
-    defaults: { 'data-ui-popconfirm': '', 'data-ui-popover': '' },
-    tagName: 'lumen-popconfirm'
+    baseClassName: "ui-popover ui-popconfirm",
+    defaults: { "data-ui-popconfirm": "", "data-ui-popover": "" },
+    tagName: "lumen-popconfirm",
   },
-  Transfer: { baseClassName: 'ui-transfer', defaults: { 'data-ui-transfer': '' }, tagName: 'lumen-transfer' },
-  Cascader: { baseClassName: 'ui-cascader', defaults: { 'data-ui-cascader': '' }, tagName: 'lumen-cascader' },
+  Transfer: {
+    baseClassName: "ui-transfer",
+    defaults: { "data-ui-transfer": "" },
+    tagName: "lumen-transfer",
+  },
+  Cascader: {
+    baseClassName: "ui-cascader",
+    defaults: { "data-ui-cascader": "" },
+    tagName: "lumen-cascader",
+  },
   TreeSelect: {
-    baseClassName: 'ui-tree-select',
-    defaults: { 'data-ui-tree-select': '' },
-    tagName: 'lumen-tree-select'
+    baseClassName: "ui-tree-select",
+    defaults: { "data-ui-tree-select": "" },
+    tagName: "lumen-tree-select",
   },
-  Mentions: { baseClassName: 'ui-mentions', defaults: { 'data-ui-mentions': '' }, tagName: 'lumen-mentions' },
-  QRCode: { baseClassName: 'ui-qr-code', tagName: 'lumen-qr-code' },
-  Watermark: { baseClassName: 'ui-watermark', defaults: { 'data-ui-watermark': '' }, tagName: 'lumen-watermark' },
+  Mentions: {
+    baseClassName: "ui-mentions",
+    defaults: { "data-ui-mentions": "" },
+    tagName: "lumen-mentions",
+  },
+  QRCode: { baseClassName: "ui-qr-code", tagName: "lumen-qr-code" },
+  Watermark: {
+    baseClassName: "ui-watermark",
+    defaults: { "data-ui-watermark": "" },
+    tagName: "lumen-watermark",
+  },
   Affix: {
-    attributeClasses: { position: { bottom: 'ui-affix--bottom' } },
-    baseClassName: 'ui-affix',
-    defaults: { position: 'top' },
-    tagName: 'lumen-affix'
+    attributeClasses: { position: { bottom: "ui-affix--bottom" } },
+    baseClassName: "ui-affix",
+    defaults: { position: "top" },
+    tagName: "lumen-affix",
   },
   SpeedDial: {
     attributeClasses: {
       direction: {
-        down: 'ui-speed-dial--down',
-        left: 'ui-speed-dial--left',
-        right: 'ui-speed-dial--right',
-        up: 'ui-speed-dial--up'
-      }
+        down: "ui-speed-dial--down",
+        left: "ui-speed-dial--left",
+        right: "ui-speed-dial--right",
+        up: "ui-speed-dial--up",
+      },
     },
-    baseClassName: 'ui-speed-dial',
-    defaults: { 'data-ui-speed-dial': '', direction: 'up' },
-    tagName: 'lumen-speed-dial'
-  }
-} as const satisfies Record<(typeof lumenComponentNames)[number], LumenElementConfig>
+    baseClassName: "ui-speed-dial",
+    defaults: { "data-ui-speed-dial": "", direction: "up" },
+    tagName: "lumen-speed-dial",
+  },
+} as const satisfies Record<
+  (typeof lumenComponentNames)[number],
+  LumenElementConfig
+>;
 
 const observedAttributeNames = [
-  'animation',
-  'area',
-  'autocomplete',
-  'border-position',
-  'caption',
-  'center-label',
-  'center-value',
-  'checked',
-  'columns',
-  'decimals',
-  'delay',
-  'decorative',
-  'direction',
-  'disabled',
-  'duration',
-  'from',
-  'form',
-  'gap',
-  'glass',
-  'heading',
-  'hover',
-  'label',
-  'locale',
-  'layout',
-  'markers',
-  'max',
-  'maxlength',
-  'min',
-  'minlength',
-  'multiple',
-  'name',
-  'orientation',
-  'pattern',
-  'position',
-  'placeholder',
-  'readonly',
-  'required',
-  'rows',
-  'prefix',
-  'pressed',
-  'reference-value',
-  'series',
-  'shape',
-  'show-endpoint',
-  'show-legend',
-  'show-table',
-  'size',
-  'surface',
-  'stagger',
-  'step',
-  'suffix',
-  'threshold',
-  'tone',
-  'type',
-  'value',
-  'values',
-  'variant'
-]
+  "animation",
+  "area",
+  "autocomplete",
+  "border-position",
+  "caption",
+  "center-label",
+  "center-value",
+  "checked",
+  "columns",
+  "decimals",
+  "delay",
+  "decorative",
+  "direction",
+  "disabled",
+  "duration",
+  "from",
+  "form",
+  "gap",
+  "glass",
+  "heading",
+  "hover",
+  "label",
+  "locale",
+  "layout",
+  "markers",
+  "max",
+  "maxlength",
+  "min",
+  "minlength",
+  "multiple",
+  "name",
+  "orientation",
+  "pattern",
+  "position",
+  "placeholder",
+  "readonly",
+  "required",
+  "rows",
+  "prefix",
+  "pressed",
+  "reference-value",
+  "series",
+  "shape",
+  "show-endpoint",
+  "show-legend",
+  "show-table",
+  "size",
+  "surface",
+  "stagger",
+  "step",
+  "suffix",
+  "threshold",
+  "tone",
+  "type",
+  "value",
+  "values",
+  "variant",
+];
 
-const hasDocument = (): boolean => typeof document !== 'undefined'
+const hasDocument = (): boolean => typeof document !== "undefined";
 
 const parseMotionDuration = (value: string): number => {
-  const parsedDuration = Number.parseFloat(value)
+  const parsedDuration = Number.parseFloat(value);
 
-  if (!Number.isFinite(parsedDuration)) return 300
+  if (!Number.isFinite(parsedDuration)) return 300;
 
-  return value.endsWith('ms') ? parsedDuration : parsedDuration * 1000
-}
+  return value.endsWith("ms") ? parsedDuration : parsedDuration * 1000;
+};
 
 const createId = (prefix: string): string => {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return `${prefix}-${crypto.randomUUID()}`
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return `${prefix}-${crypto.randomUUID()}`;
   }
 
-  return `${prefix}-${Math.random().toString(36).slice(2)}`
-}
+  return `${prefix}-${Math.random().toString(36).slice(2)}`;
+};
 
 const isElementVisible = (element: HTMLElement): boolean => {
-  if (typeof element.checkVisibility === 'function') {
-    return element.checkVisibility()
+  if (typeof element.checkVisibility === "function") {
+    return element.checkVisibility();
   }
 
-  return element.offsetParent !== null || element.getClientRects().length > 0
-}
+  return element.offsetParent !== null || element.getClientRects().length > 0;
+};
 
 const getFocusable = (root: ParentNode | null): HTMLElement[] => {
-  if (!root) return []
+  if (!root) return [];
 
   return [...root.querySelectorAll<HTMLElement>(focusableSelector)].filter(
-    element => !element.hasAttribute('hidden') && isElementVisible(element)
-  )
-}
+    (element) => !element.hasAttribute("hidden") && isElementVisible(element),
+  );
+};
 
-const getOwnedTarget = (event: Event): Node | null => (event.target instanceof Node ? event.target : null)
+const getOwnedTarget = (event: Event): Node | null =>
+  event.target instanceof Node ? event.target : null;
 
-const getScopedElements = <ScopedElement extends Element>(scope: ParentNode, selector: string): ScopedElement[] => {
-  const elements = [...scope.querySelectorAll<ScopedElement>(selector)]
+const getScopedElements = <ScopedElement extends Element>(
+  scope: ParentNode,
+  selector: string,
+): ScopedElement[] => {
+  const elements = [...scope.querySelectorAll<ScopedElement>(selector)];
 
   if (scope instanceof Element && scope.matches(selector)) {
-    elements.unshift(scope as ScopedElement)
+    elements.unshift(scope as ScopedElement);
   }
 
-  return elements
-}
+  return elements;
+};
 
-const getClosestScopedElement = (scope: ParentNode, selector: string): Element | null => scope instanceof Element ? scope.closest(selector) : null
-const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl => element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement
+const getClosestScopedElement = (
+  scope: ParentNode,
+  selector: string,
+): Element | null =>
+  scope instanceof Element ? scope.closest(selector) : null;
+const isNativeFormControl = (
+  element: EventTarget | null,
+): element is NativeFormControl =>
+  element instanceof HTMLInputElement ||
+  element instanceof HTMLSelectElement ||
+  element instanceof HTMLTextAreaElement;
 
 const getFieldControl = (root: HTMLElement): HTMLElement | null => {
-  const controlId = root.dataset.uiFieldControl
+  const controlId = root.dataset.uiFieldControl;
 
   if (controlId && hasDocument()) {
-    const control = document.getElementById(controlId)
+    const control = document.getElementById(controlId);
 
-    if (control instanceof HTMLElement) return control
+    if (control instanceof HTMLElement) return control;
   }
 
-  return root.querySelector<HTMLElement>(fieldControlSelector)
-}
+  return root.querySelector<HTMLElement>(fieldControlSelector);
+};
 
 const getFieldDescriptionId = (element: HTMLElement): string => {
   if (!element.id) {
-    element.id = createId('ui-field-description')
+    element.id = createId("ui-field-description");
   }
 
-  return element.id
-}
+  return element.id;
+};
 
-const getFieldRoot = (control: HTMLElement): HTMLElement | null => control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+const getFieldRoot = (control: HTMLElement): HTMLElement | null =>
+  control.closest<HTMLElement>(".ui-field, [data-ui-field]");
 
-const getValidationMessage = (control: NativeFormControl, field: HTMLElement | null): string => {
+const getValidationMessage = (
+  control: NativeFormControl,
+  field: HTMLElement | null,
+): string => {
   for (const [validityKey, attributeName] of validityMessageAttributes) {
-    if (!control.validity[validityKey]) continue
+    if (!control.validity[validityKey]) continue;
 
-    return control.getAttribute(attributeName) ?? field?.getAttribute(attributeName) ?? control.validationMessage
+    return (
+      control.getAttribute(attributeName) ??
+      field?.getAttribute(attributeName) ??
+      control.validationMessage
+    );
   }
 
-  return control.validationMessage
-}
+  return control.validationMessage;
+};
 
-const setFieldValidity = (control: NativeFormControl, invalid: boolean, message = ''): void => {
-  const field = getFieldRoot(control)
+const setFieldValidity = (
+  control: NativeFormControl,
+  invalid: boolean,
+  message = "",
+): void => {
+  const field = getFieldRoot(control);
 
   if (invalid) {
-    control.setAttribute('aria-invalid', 'true')
+    control.setAttribute("aria-invalid", "true");
 
-    control.dataset.uiValidationInvalid = 'true'
-  } else if (control.dataset.uiValidationInvalid === 'true') {
-    control.removeAttribute('aria-invalid')
+    control.dataset.uiValidationInvalid = "true";
+  } else if (control.dataset.uiValidationInvalid === "true") {
+    control.removeAttribute("aria-invalid");
 
-    delete control.dataset.uiValidationInvalid
+    delete control.dataset.uiValidationInvalid;
   }
 
-  if (!field) return
+  if (!field) return;
 
-  field.dataset.invalid = String(invalid)
+  field.dataset.invalid = String(invalid);
 
   for (const error of field.querySelectorAll<HTMLElement>(fieldErrorSelector)) {
-    error.dataset.uiValidationErrorBound = 'true'
+    error.dataset.uiValidationErrorBound = "true";
 
-    error.hidden = !invalid
+    error.hidden = !invalid;
 
-    error.textContent = invalid ? message : ''
+    error.textContent = invalid ? message : "";
   }
-}
+};
 
-const validateControl = (control: NativeFormControl, form: HTMLFormElement): boolean => {
+const validateControl = (
+  control: NativeFormControl,
+  form: HTMLFormElement,
+): boolean => {
   form.dispatchEvent(
-    new CustomEvent('ui:validate', {
+    new CustomEvent("ui:validate", {
       bubbles: true,
-      detail: { control, form, value: control.value }
-    })
-  )
+      detail: { control, form, value: control.value },
+    }),
+  );
 
-  const invalid = !control.validity.valid
-  const message = invalid ? getValidationMessage(control, getFieldRoot(control)) : ''
+  const invalid = !control.validity.valid;
+  const message = invalid
+    ? getValidationMessage(control, getFieldRoot(control))
+    : "";
 
-  setFieldValidity(control, invalid, message)
+  setFieldValidity(control, invalid, message);
 
-  return !invalid
-}
+  return !invalid;
+};
 
-const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [...form.querySelectorAll<NativeFormControl>(formControlSelector)].filter(
-  control => control.form === form && !control.disabled
-)
+const getFormControls = (form: HTMLFormElement): NativeFormControl[] =>
+  [...form.querySelectorAll<NativeFormControl>(formControlSelector)].filter(
+    (control) => control.form === form && !control.disabled,
+  );
 
-const validateForm = (form: HTMLFormElement): NativeFormControl[] => getFormControls(form).filter(control => !validateControl(control, form))
+const validateForm = (form: HTMLFormElement): NativeFormControl[] =>
+  getFormControls(form).filter((control) => !validateControl(control, form));
 
 const initLumenFields = (scope: ParentNode): void => {
-  for (const root of getScopedElements<HTMLElement>(scope, '.ui-field, [data-ui-field]')) {
-    if (root.dataset.uiFieldBound === 'true') continue
+  for (const root of getScopedElements<HTMLElement>(
+    scope,
+    ".ui-field, [data-ui-field]",
+  )) {
+    if (root.dataset.uiFieldBound === "true") continue;
 
-    const control = getFieldControl(root)
+    const control = getFieldControl(root);
 
-    if (!control) continue
+    if (!control) continue;
 
-    root.dataset.uiFieldBound = 'true'
+    root.dataset.uiFieldBound = "true";
 
-    const existingIds = control.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? []
-    const configuredIds = root.dataset.uiFieldDescribedby?.trim().split(/\s+/) ?? []
-    const descriptionIds = [...root.querySelectorAll<HTMLElement>(fieldDescriptionSelector)].map(element => getFieldDescriptionId(element))
-    const describedBy = [...new Set([...existingIds, ...configuredIds, ...descriptionIds].filter(Boolean))]
+    const existingIds =
+      control.getAttribute("aria-describedby")?.trim().split(/\s+/) ?? [];
+    const configuredIds =
+      root.dataset.uiFieldDescribedby?.trim().split(/\s+/) ?? [];
+    const descriptionIds = [
+      ...root.querySelectorAll<HTMLElement>(fieldDescriptionSelector),
+    ].map((element) => getFieldDescriptionId(element));
+    const describedBy = [
+      ...new Set(
+        [...existingIds, ...configuredIds, ...descriptionIds].filter(Boolean),
+      ),
+    ];
 
     if (describedBy.length) {
-      control.setAttribute('aria-describedby', describedBy.join(' '))
+      control.setAttribute("aria-describedby", describedBy.join(" "));
     }
   }
-}
+};
 
 const initLumenForms = (scope: ParentNode): void => {
-  for (const form of getScopedElements<HTMLFormElement>(scope, 'form[data-ui-form]')) {
-    if (form.dataset.uiFormBound === 'true') continue
+  for (const form of getScopedElements<HTMLFormElement>(
+    scope,
+    "form[data-ui-form]",
+  )) {
+    if (form.dataset.uiFormBound === "true") continue;
 
-    form.dataset.uiFormBound = 'true'
+    form.dataset.uiFormBound = "true";
 
-    form.noValidate = true
+    form.noValidate = true;
 
-    const setStatus = (status: 'error' | 'idle' | 'submitting'): void => {
-      form.dataset.status = status
+    const setStatus = (status: "error" | "idle" | "submitting"): void => {
+      form.dataset.status = status;
 
-      if (status === 'submitting') form.setAttribute('aria-busy', 'true')
-      else form.removeAttribute('aria-busy')
-    }
+      if (status === "submitting") form.setAttribute("aria-busy", "true");
+      else form.removeAttribute("aria-busy");
+    };
 
-    form.addEventListener('click', event => {
-      const target = event.target
+    form.addEventListener("click", (event) => {
+      const target = event.target;
 
-      if (!(target instanceof Element)) return
+      if (!(target instanceof Element)) return;
 
-      const link = target.closest<HTMLAnchorElement>('[data-ui-error-summary] a[href^="#"]')
-      const controlId = link?.hash.slice(1)
-      const control = controlId ? document.getElementById(controlId) : null
+      const link = target.closest<HTMLAnchorElement>(
+        '[data-ui-error-summary] a[href^="#"]',
+      );
+      const controlId = link?.hash.slice(1);
+      const control = controlId ? document.getElementById(controlId) : null;
 
-      if (!link || !(control instanceof HTMLElement) || !form.contains(control)) return
+      if (!link || !(control instanceof HTMLElement) || !form.contains(control))
+        return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      control.focus({ preventScroll: true })
+      control.focus({ preventScroll: true });
 
-      control.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    })
+      control.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
 
-    form.addEventListener('focusout', event => {
-      if (!isNativeFormControl(event.target) || event.target.form !== form) return
+    form.addEventListener("focusout", (event) => {
+      if (!isNativeFormControl(event.target) || event.target.form !== form)
+        return;
 
-      const valid = validateControl(event.target, form)
+      const valid = validateControl(event.target, form);
 
       form.dispatchEvent(
-        new CustomEvent(valid ? 'ui:valid' : 'ui:invalid', {
+        new CustomEvent(valid ? "ui:valid" : "ui:invalid", {
           bubbles: true,
-          detail: valid ? { control: event.target, form } : { control: event.target, controls: [event.target], form }
-        })
-      )
-    })
+          detail: valid
+            ? { control: event.target, form }
+            : { control: event.target, controls: [event.target], form },
+        }),
+      );
+    });
 
-    form.addEventListener('submit', event => {
-      if (form.dataset.status === 'submitting') {
-        event.preventDefault()
+    form.addEventListener("submit", (event) => {
+      if (form.dataset.status === "submitting") {
+        event.preventDefault();
 
-        return
+        return;
       }
 
-      const invalidControls = validateForm(form)
+      const invalidControls = validateForm(form);
 
       if (invalidControls.length) {
-        event.preventDefault()
+        event.preventDefault();
 
-        setStatus('error')
+        setStatus("error");
 
-        const firstInvalid = invalidControls[0]
-        const errorSummary = form.querySelector<HTMLElement>('[data-ui-error-summary]:not([hidden])')
+        const firstInvalid = invalidControls[0];
+        const errorSummary = form.querySelector<HTMLElement>(
+          "[data-ui-error-summary]:not([hidden])",
+        );
 
-        if (!firstInvalid) return
+        if (!firstInvalid) return;
 
         form.dispatchEvent(
-          new CustomEvent('ui:invalid', {
+          new CustomEvent("ui:invalid", {
             bubbles: true,
-            detail: { control: firstInvalid, controls: invalidControls, form }
-          })
-        )
+            detail: { control: firstInvalid, controls: invalidControls, form },
+          }),
+        );
 
         if (errorSummary) {
-          errorSummary.focus({ preventScroll: true })
+          errorSummary.focus({ preventScroll: true });
         } else {
-          firstInvalid.focus({ preventScroll: true })
+          firstInvalid.focus({ preventScroll: true });
 
-          firstInvalid.reportValidity()
+          firstInvalid.reportValidity();
         }
 
-        return
+        return;
       }
 
       form.dispatchEvent(
-        new CustomEvent('ui:valid', {
+        new CustomEvent("ui:valid", {
           bubbles: true,
-          detail: { controls: getFormControls(form), form }
-        })
-      )
+          detail: { controls: getFormControls(form), form },
+        }),
+      );
 
-      setStatus('submitting')
+      setStatus("submitting");
 
       queueMicrotask(() => {
-        if (event.defaultPrevented) setStatus('idle')
-      })
-    })
+        if (event.defaultPrevented) setStatus("idle");
+      });
+    });
 
-    form.addEventListener('reset', () => {
-      setStatus('idle')
-    })
+    form.addEventListener("reset", () => {
+      setStatus("idle");
+    });
   }
-}
+};
 
-export const enhanceLumenPasswordFields = (scope: ParentNode = document): void => {
-  for (const root of getScopedElements<HTMLElement>(scope, 'lumen-password-field, [data-ui-password-field]')) {
-    if (root.dataset.uiPasswordBound === 'true') continue
+export const enhanceLumenPasswordFields = (
+  scope: ParentNode = document,
+): void => {
+  for (const root of getScopedElements<HTMLElement>(
+    scope,
+    "lumen-password-field, [data-ui-password-field]",
+  )) {
+    if (root.dataset.uiPasswordBound === "true") continue;
 
-    let input = root.querySelector<HTMLInputElement>('input[data-ui-password-input], input[type="password"]')
+    let input = root.querySelector<HTMLInputElement>(
+      'input[data-ui-password-input], input[type="password"]',
+    );
 
-    if (!input && root.localName === 'lumen-password-field') {
-      input = document.createElement('input')
+    if (!input && root.localName === "lumen-password-field") {
+      input = document.createElement("input");
 
-      input.className = 'ui-input'
+      input.className = "ui-input";
 
-      input.dataset.uiPasswordInput = ''
+      input.dataset.uiPasswordInput = "";
 
-      input.type = 'password'
+      input.type = "password";
 
       for (const attribute of [
-        'autocomplete',
-        'disabled',
-        'form',
-        'id',
-        'maxlength',
-        'minlength',
-        'name',
-        'pattern',
-        'placeholder',
-        'readonly',
-        'required',
-        'value'
+        "autocomplete",
+        "disabled",
+        "form",
+        "id",
+        "maxlength",
+        "minlength",
+        "name",
+        "pattern",
+        "placeholder",
+        "readonly",
+        "required",
+        "value",
       ]) {
-        const attributeValue = root.getAttribute(attribute)
+        const attributeValue = root.getAttribute(attribute);
 
-        if (attributeValue !== null) input.setAttribute(attribute, attributeValue)
+        if (attributeValue !== null)
+          input.setAttribute(attribute, attributeValue);
       }
 
-      root.append(input)
+      root.append(input);
     }
 
-    if (!input) continue
+    if (!input) continue;
 
-    let toggle = root.querySelector<HTMLButtonElement>('[data-ui-password-toggle]')
+    let toggle = root.querySelector<HTMLButtonElement>(
+      "[data-ui-password-toggle]",
+    );
 
     if (!toggle) {
-      toggle = document.createElement('button')
+      toggle = document.createElement("button");
 
-      toggle.className = 'ui-button ui-button--ghost ui-button--icon'
+      toggle.className = "ui-button ui-button--ghost ui-button--icon";
 
-      toggle.dataset.uiPasswordToggle = ''
+      toggle.dataset.uiPasswordToggle = "";
 
-      toggle.type = 'button'
+      toggle.type = "button";
 
-      toggle.innerHTML = '<span aria-hidden="true">Show</span>'
+      toggle.innerHTML = '<span aria-hidden="true">Show</span>';
 
-      root.append(toggle)
+      root.append(toggle);
     }
 
-    root.dataset.uiPasswordBound = 'true'
+    root.dataset.uiPasswordBound = "true";
 
-    const showLabel = root.dataset.showLabel ?? 'Show password'
-    const hideLabel = root.dataset.hideLabel ?? 'Hide password'
-    const visibleLabel = toggle.querySelector<HTMLElement>('span')
+    const showLabel = root.dataset.showLabel ?? "Show password";
+    const hideLabel = root.dataset.hideLabel ?? "Hide password";
+    const visibleLabel = toggle.querySelector<HTMLElement>("span");
 
     const setVisible = (visible: boolean): void => {
-      input.type = visible ? 'text' : 'password'
+      input.type = visible ? "text" : "password";
 
-      toggle.setAttribute('aria-controls', input.id)
+      toggle.setAttribute("aria-controls", input.id);
 
-      toggle.setAttribute('aria-label', visible ? hideLabel : showLabel)
+      toggle.setAttribute("aria-label", visible ? hideLabel : showLabel);
 
-      toggle.setAttribute('aria-pressed', String(visible))
+      toggle.setAttribute("aria-pressed", String(visible));
 
-      if (visibleLabel) visibleLabel.textContent = visible ? 'Hide' : 'Show'
-    }
+      if (visibleLabel) visibleLabel.textContent = visible ? "Hide" : "Show";
+    };
 
-    toggle.addEventListener('click', () => {
-      setVisible(input.type === 'password')
+    toggle.addEventListener("click", () => {
+      setVisible(input.type === "password");
 
-      input.focus({ preventScroll: true })
-    })
+      input.focus({ preventScroll: true });
+    });
 
-    input.form?.addEventListener('reset', () => {
-      setVisible(false)
-    })
+    input.form?.addEventListener("reset", () => {
+      setVisible(false);
+    });
 
-    const form = input.form
+    const form = input.form;
 
-    if (form && typeof MutationObserver !== 'undefined') {
+    if (form && typeof MutationObserver !== "undefined") {
       const hideAfterSuccess = (): void => {
-        if (form.dataset.status === 'success') setVisible(false)
-      }
+        if (form.dataset.status === "success") setVisible(false);
+      };
 
-      const observer = new MutationObserver(hideAfterSuccess)
+      const observer = new MutationObserver(hideAfterSuccess);
 
-      observer.observe(form, { attributeFilter: ['data-status'], attributes: true })
+      observer.observe(form, {
+        attributeFilter: ["data-status"],
+        attributes: true,
+      });
 
-      hideAfterSuccess()
+      hideAfterSuccess();
     }
 
-    setVisible(false)
+    setVisible(false);
   }
-}
+};
 
-const getListBoxSelectedValues = (select: HTMLSelectElement): string[] => [...select.selectedOptions].map(option => option.value)
+const getListBoxSelectedValues = (select: HTMLSelectElement): string[] =>
+  [...select.selectedOptions].map((option) => option.value);
 
 export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
-  for (const root of getScopedElements<HTMLElement>(scope, 'lumen-list-box, [data-ui-list-box]')) {
-    if (root.dataset.uiListBoxBound === 'true') continue
+  for (const root of getScopedElements<HTMLElement>(
+    scope,
+    "lumen-list-box, [data-ui-list-box]",
+  )) {
+    if (root.dataset.uiListBoxBound === "true") continue;
 
-    let select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native], select')
+    let select = root.querySelector<HTMLSelectElement>(
+      "[data-ui-list-box-native], select",
+    );
 
-    if (!select && root.localName === 'lumen-list-box') {
-      select = document.createElement('select')
+    if (!select && root.localName === "lumen-list-box") {
+      select = document.createElement("select");
 
-      select.dataset.uiListBoxNative = ''
+      select.dataset.uiListBoxNative = "";
 
-      for (const attribute of ['disabled', 'form', 'id', 'multiple', 'name', 'required', 'size']) {
-        const attributeValue = root.getAttribute(attribute)
+      for (const attribute of [
+        "disabled",
+        "form",
+        "id",
+        "multiple",
+        "name",
+        "required",
+        "size",
+      ]) {
+        const attributeValue = root.getAttribute(attribute);
 
-        if (attributeValue !== null) select.setAttribute(attribute, attributeValue)
+        if (attributeValue !== null)
+          select.setAttribute(attribute, attributeValue);
       }
 
       const optionNodes = [...root.children].filter(
-        child => child instanceof HTMLOptionElement || child instanceof HTMLOptGroupElement
-      )
+        (child) =>
+          child instanceof HTMLOptionElement ||
+          child instanceof HTMLOptGroupElement,
+      );
 
-      select.append(...optionNodes)
+      select.append(...optionNodes);
 
-      root.prepend(select)
+      root.prepend(select);
     }
 
-    if (!select?.options.length) continue
+    if (!select) continue;
 
-    select.dataset.uiListBoxNative = ''
+    select.dataset.uiListBoxNative = "";
 
-    select.dataset.uiListBoxEnhanced = 'true'
+    select.dataset.uiListBoxEnhanced = "true";
 
-    let list = root.querySelector<HTMLElement>('[data-ui-list-box-list]')
+    const loading =
+      root.hasAttribute("loading") || root.dataset.loading === "true";
+
+    if (loading) select.disabled = true;
+
+    let list = root.querySelector<HTMLElement>("[data-ui-list-box-list]");
 
     if (!list) {
-      list = document.createElement('div')
+      list = document.createElement("div");
 
-      list.className = 'ui-list-box__list'
+      list.className = "ui-list-box__list";
 
-      list.dataset.uiListBoxList = ''
+      list.dataset.uiListBoxList = "";
 
-      list.setAttribute('role', 'listbox')
+      list.setAttribute("role", "listbox");
 
-      list.tabIndex = select.disabled ? -1 : 0
+      list.tabIndex = select.disabled ? -1 : 0;
 
-      list.toggleAttribute('aria-multiselectable', select.multiple)
+      list.toggleAttribute("aria-multiselectable", select.multiple);
+
+      const nativeGroups = new Map<HTMLOptGroupElement, HTMLElement>();
 
       for (const nativeOption of select.options) {
-        const option = document.createElement('div')
+        const option = document.createElement("div");
 
-        option.className = 'ui-list-box__option'
+        option.className = "ui-list-box__option";
 
-        option.dataset.uiListBoxOption = ''
+        option.dataset.uiListBoxOption = "";
 
-        option.dataset.value = nativeOption.value
+        option.dataset.value = nativeOption.value;
 
-        option.textContent = nativeOption.textContent
+        option.textContent = nativeOption.textContent;
 
-        option.setAttribute('role', 'option')
+        option.setAttribute("role", "option");
 
-        if (nativeOption.disabled) option.setAttribute('aria-disabled', 'true')
+        if (nativeOption.disabled) option.setAttribute("aria-disabled", "true");
 
-        list.append(option)
+        const nativeGroup = nativeOption.parentElement;
+
+        if (nativeGroup instanceof HTMLOptGroupElement) {
+          let group = nativeGroups.get(nativeGroup);
+
+          if (!group) {
+            group = document.createElement("div");
+
+            const label = document.createElement("div");
+            const labelId = `${select.id || "ui-list-box"}-group-${nativeGroups.size}`;
+
+            group.setAttribute("aria-labelledby", labelId);
+
+            group.setAttribute("role", "group");
+
+            label.className = "ui-list-box__section";
+
+            label.id = labelId;
+
+            label.textContent = nativeGroup.label;
+
+            group.append(label);
+
+            nativeGroups.set(nativeGroup, group);
+
+            list.append(group);
+          }
+
+          group.append(option);
+        } else {
+          list.append(option);
+        }
       }
 
-      root.append(list)
+      root.append(list);
     }
 
-    const options = [...list.querySelectorAll<HTMLElement>('[data-ui-list-box-option]')]
+    const options = [
+      ...list.querySelectorAll<HTMLElement>("[data-ui-list-box-option]"),
+    ];
 
-    if (!options.length) continue
+    list.toggleAttribute("aria-busy", loading);
 
-    root.dataset.uiListBoxBound = 'true'
+    if (!options.length) {
+      const message = document.createElement("div");
+
+      message.className = loading
+        ? "ui-list-box__status"
+        : "ui-list-box__empty";
+
+      message.setAttribute("role", loading ? "status" : "option");
+
+      if (!loading) message.setAttribute("aria-disabled", "true");
+
+      message.textContent = loading
+        ? (root.getAttribute("loading-message") ?? "Loading options")
+        : (root.getAttribute("empty-message") ?? "No options available");
+
+      list.append(message);
+
+      root.dataset.uiListBoxBound = "true";
+
+      continue;
+    }
+
+    root.dataset.uiListBoxBound = "true";
 
     let activeIndex = Math.max(
-      0, options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
-    )
+      0,
+      options.findIndex(
+        (option) => option.getAttribute("aria-disabled") !== "true",
+      ),
+    );
 
-    let typeahead = ''
-    let typeaheadTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+    let typeahead = "";
+    let typeaheadTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
 
     const syncActive = (): void => {
       options.forEach((option, index) => {
-        option.id ||= `${select.id || 'ui-list-box'}-option-${index}`
+        option.id ||= `${select.id || "ui-list-box"}-option-${index}`;
 
-        option.dataset.active = index === activeIndex ? 'true' : 'false'
-      })
+        option.dataset.active = index === activeIndex ? "true" : "false";
+      });
 
-      const activeOption = options[activeIndex]
+      const activeOption = options[activeIndex];
 
-      if (activeOption) list.setAttribute('aria-activedescendant', activeOption.id)
-    }
+      if (activeOption)
+        list.setAttribute("aria-activedescendant", activeOption.id);
+    };
 
     const syncSelected = (): void => {
-      const selectedValues = new Set(getListBoxSelectedValues(select))
+      const selectedValues = new Set(getListBoxSelectedValues(select));
 
-      options.forEach(option => {
-        option.setAttribute('aria-selected', String(selectedValues.has(option.dataset.value ?? '')))
-      })
-    }
+      options.forEach((option) => {
+        option.setAttribute(
+          "aria-selected",
+          String(selectedValues.has(option.dataset.value ?? "")),
+        );
+      });
+    };
 
     const commitOption = (index: number): void => {
-      const option = options[index]
+      const option = options[index];
 
-      if (!option || option.getAttribute('aria-disabled') === 'true' || select.disabled) return
+      if (
+        !option ||
+        option.getAttribute("aria-disabled") === "true" ||
+        select.disabled
+      )
+        return;
 
-      const nativeOption = [...select.options].find(item => item.value === option.dataset.value)
+      const nativeOption = [...select.options].find(
+        (item) => item.value === option.dataset.value,
+      );
 
-      if (!nativeOption) return
+      if (!nativeOption) return;
 
-      if (select.multiple) nativeOption.selected = !nativeOption.selected
-      else select.value = nativeOption.value
+      if (select.multiple) nativeOption.selected = !nativeOption.selected;
+      else select.value = nativeOption.value;
 
-      syncSelected()
+      syncSelected();
 
-      select.dispatchEvent(new Event('input', { bubbles: true, composed: true }))
+      select.dispatchEvent(
+        new Event("input", { bubbles: true, composed: true }),
+      );
 
-      select.dispatchEvent(new Event('change', { bubbles: true, composed: true }))
+      select.dispatchEvent(
+        new Event("change", { bubbles: true, composed: true }),
+      );
 
       root.dispatchEvent(
-        new CustomEvent('ui:list-box-change', {
+        new CustomEvent("ui:list-box-change", {
           bubbles: true,
           composed: true,
-          detail: { values: getListBoxSelectedValues(select) }
-        })
-      )
-    }
+          detail: { values: getListBoxSelectedValues(select) },
+        }),
+      );
+    };
 
     const moveActive = (direction: 1 | -1): void => {
-      let nextIndex = activeIndex
+      let nextIndex = activeIndex;
 
       for (const _option of options) {
-        nextIndex = (nextIndex + direction + options.length) % options.length
+        nextIndex = (nextIndex + direction + options.length) % options.length;
 
-        if (options[nextIndex]?.getAttribute('aria-disabled') !== 'true') {
-          activeIndex = nextIndex
+        if (options[nextIndex]?.getAttribute("aria-disabled") !== "true") {
+          activeIndex = nextIndex;
 
-          syncActive()
+          syncActive();
 
-          return
+          if (root.dataset.selectionFollowsFocus === "true")
+            commitOption(activeIndex);
+
+          return;
         }
       }
-    }
+    };
 
-    list.addEventListener('keydown', event => {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault()
+    list.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
 
-        moveActive(1)
-      } else if (event.key === 'ArrowUp') {
-        event.preventDefault()
+        moveActive(1);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
 
-        moveActive(-1)
-      } else if (event.key === 'Home') {
-        event.preventDefault()
+        moveActive(-1);
+      } else if (event.key === "Home") {
+        event.preventDefault();
 
         activeIndex = Math.max(
-          0, options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
-        )
+          0,
+          options.findIndex(
+            (option) => option.getAttribute("aria-disabled") !== "true",
+          ),
+        );
 
-        syncActive()
-      } else if (event.key === 'End') {
-        event.preventDefault()
+        syncActive();
+
+        if (root.dataset.selectionFollowsFocus === "true")
+          commitOption(activeIndex);
+      } else if (event.key === "End") {
+        event.preventDefault();
 
         for (let index = options.length - 1; index >= 0; index -= 1) {
-          if (options[index]?.getAttribute('aria-disabled') !== 'true') {
-            activeIndex = index
+          if (options[index]?.getAttribute("aria-disabled") !== "true") {
+            activeIndex = index;
 
-            break
+            break;
           }
         }
 
-        syncActive()
-      } else if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault()
+        syncActive();
 
-        commitOption(activeIndex)
-      } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-        typeahead += event.key.toLowerCase()
+        if (root.dataset.selectionFollowsFocus === "true")
+          commitOption(activeIndex);
+      } else if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
 
-        if (typeaheadTimer) globalThis.clearTimeout(typeaheadTimer)
+        commitOption(activeIndex);
+      } else if (
+        event.key.length === 1 &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey
+      ) {
+        typeahead += event.key.toLowerCase();
+
+        if (typeaheadTimer) globalThis.clearTimeout(typeaheadTimer);
 
         typeaheadTimer = globalThis.setTimeout(() => {
-          typeahead = ''
-        }, 700)
+          typeahead = "";
+        }, 700);
 
         const nextIndex = options.findIndex(
-          option => option.getAttribute('aria-disabled') !== 'true' &&
-            option.textContent.trim().toLowerCase().startsWith(typeahead)
-        )
+          (option) =>
+            option.getAttribute("aria-disabled") !== "true" &&
+            option.textContent.trim().toLowerCase().startsWith(typeahead),
+        );
 
         if (nextIndex >= 0) {
-          activeIndex = nextIndex
+          activeIndex = nextIndex;
 
-          syncActive()
+          syncActive();
+
+          if (root.dataset.selectionFollowsFocus === "true")
+            commitOption(activeIndex);
         }
       }
-    })
+    });
 
     options.forEach((option, index) => {
-      option.addEventListener('click', () => {
-        activeIndex = index
+      option.addEventListener("click", () => {
+        activeIndex = index;
 
-        syncActive()
+        syncActive();
 
-        commitOption(index)
-      })
-    })
+        commitOption(index);
+      });
+    });
 
-    select.addEventListener('change', syncSelected)
+    select.addEventListener("change", syncSelected);
 
-    select.form?.addEventListener('reset', () => {
+    select.form?.addEventListener("reset", () => {
       globalThis.setTimeout(() => {
-        syncSelected()
+        syncSelected();
 
         activeIndex = Math.max(
-          0, options.findIndex(option => option.getAttribute('aria-selected') === 'true')
-        )
+          0,
+          options.findIndex(
+            (option) => option.getAttribute("aria-selected") === "true",
+          ),
+        );
 
-        syncActive()
-      })
-    })
+        syncActive();
+      });
+    });
 
-    syncSelected()
+    syncSelected();
 
-    syncActive()
+    syncActive();
   }
-}
+};
 
 export const enhanceLumenForms = (scope: ParentNode = document): void => {
-  initLumenFields(scope)
+  initLumenFields(scope);
 
-  initLumenForms(scope)
-}
+  initLumenForms(scope);
+};
 
 const installFormController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsFormsBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsFormsBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsFormsBound = 'true'
+  document.documentElement.dataset.uiElementsFormsBound = "true";
 
-  enhanceLumenForms(document)
+  enhanceLumenForms(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenForms(node)
+          enhanceLumenForms(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 
 const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
-  if (control.dataset.uiEditorValue !== undefined) return control.dataset.uiEditorValue
+  if (control.dataset.uiEditorValue !== undefined)
+    return control.dataset.uiEditorValue;
 
   if (
     control instanceof HTMLInputElement ||
     control instanceof HTMLSelectElement ||
     control instanceof HTMLTextAreaElement
   )
-    return control.value
+    return control.value;
 
-  return undefined
-}
+  return undefined;
+};
 
 const syncRichTextCommandStates = (root: HTMLElement): void => {
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument = document as unknown as RichTextCommandDocument;
 
-  for (const control of root.querySelectorAll<HTMLElement>(richTextEditorCommandSelector)) {
-    const command = control.dataset.uiEditorCommand ?? ''
-    const value = getRichTextCommandValue(control)
-    let active = false
+  for (const control of root.querySelectorAll<HTMLElement>(
+    richTextEditorCommandSelector,
+  )) {
+    const command = control.dataset.uiEditorCommand ?? "";
+    const value = getRichTextCommandValue(control);
+    let active = false;
 
     if (isLumenRichTextToggleCommand(command)) {
-      active = commandDocument.queryCommandState?.(command) ?? false
+      active = commandDocument.queryCommandState?.(command) ?? false;
 
-      control.setAttribute('aria-pressed', String(active))
-    } else if (command === 'formatBlock' && value) {
-      const currentValue = commandDocument.queryCommandValue?.(command).replaceAll(/[<>]/g, '').toLowerCase()
+      control.setAttribute("aria-pressed", String(active));
+    } else if (command === "formatBlock" && value) {
+      const currentValue = commandDocument
+        .queryCommandValue?.(command)
+        .replaceAll(/[<>]/g, "")
+        .toLowerCase();
 
-      active = currentValue === value.replaceAll(/[<>]/g, '').toLowerCase()
+      active = currentValue === value.replaceAll(/[<>]/g, "").toLowerCase();
     }
 
-    control.dataset.state = active ? 'on' : 'off'
+    control.dataset.state = active ? "on" : "off";
   }
-}
+};
 
 const dispatchRichTextChange = (root: HTMLElement): void => {
-  const editable = root.querySelector<HTMLElement>(richTextEditorContentSelector)
+  const editable = root.querySelector<HTMLElement>(
+    richTextEditorContentSelector,
+  );
 
-  if (!editable) return
+  if (!editable) return;
 
   const detail: LumenRichTextChangeDetail = {
     html: editable.innerHTML,
-    text: editable.textContent
-  }
+    text: editable.textContent,
+  };
 
   root.dispatchEvent(
-    new CustomEvent<LumenRichTextChangeDetail>('ui:editor-change', {
+    new CustomEvent<LumenRichTextChangeDetail>("ui:editor-change", {
       bubbles: true,
-      detail
-    })
-  )
-}
+      detail,
+    }),
+  );
+};
 
-const executeRichTextCommand = (root: HTMLElement, command: string, value?: string): boolean => {
-  if (!command) return false
+const executeRichTextCommand = (
+  root: HTMLElement,
+  command: string,
+  value?: string,
+): boolean => {
+  if (!command) return false;
 
-  const commandDocument = document as unknown as RichTextCommandDocument
-  let executed = false
+  const commandDocument = document as unknown as RichTextCommandDocument;
+  let executed = false;
 
-  if (typeof commandDocument.execCommand === 'function') {
+  if (typeof commandDocument.execCommand === "function") {
     executed =
-      value === undefined ? commandDocument.execCommand(command) : commandDocument.execCommand(command, false, value)
+      value === undefined
+        ? commandDocument.execCommand(command)
+        : commandDocument.execCommand(command, false, value);
   }
 
   const detail: LumenRichTextCommandDetail = {
     command,
     executed,
-    ...(value === undefined ? {} : { value })
-  }
+    ...(value === undefined ? {} : { value }),
+  };
 
   root.dispatchEvent(
-    new CustomEvent<LumenRichTextCommandDetail>('ui:editor-command', {
+    new CustomEvent<LumenRichTextCommandDetail>("ui:editor-command", {
       bubbles: true,
-      detail
-    })
-  )
+      detail,
+    }),
+  );
 
-  syncRichTextCommandStates(root)
+  syncRichTextCommandStates(root);
 
-  dispatchRichTextChange(root)
+  dispatchRichTextChange(root);
 
-  return executed
-}
+  return executed;
+};
 
 const initRichTextEditors = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, richTextEditorSelector)
-  const roots = getScopedElements<HTMLElement>(scope, richTextEditorSelector)
+  const closestRoot = getClosestScopedElement(scope, richTextEditorSelector);
+  const roots = getScopedElements<HTMLElement>(scope, richTextEditorSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    if (root.dataset.uiEditorBound === 'true') continue
+    if (root.dataset.uiEditorBound === "true") continue;
 
-    root.dataset.uiEditorBound = 'true'
+    root.dataset.uiEditorBound = "true";
 
-    for (const control of root.querySelectorAll<HTMLElement>(richTextEditorCommandSelector)) {
-      control.dataset.uiEditorCommandBound = 'true'
+    for (const control of root.querySelectorAll<HTMLElement>(
+      richTextEditorCommandSelector,
+    )) {
+      control.dataset.uiEditorCommandBound = "true";
 
       const execute = () => {
-        executeRichTextCommand(root, control.dataset.uiEditorCommand ?? '', getRichTextCommandValue(control))
-      }
+        executeRichTextCommand(
+          root,
+          control.dataset.uiEditorCommand ?? "",
+          getRichTextCommandValue(control),
+        );
+      };
 
-      if (control instanceof HTMLSelectElement) control.addEventListener('change', execute)
-      else control.addEventListener('click', execute)
+      if (control instanceof HTMLSelectElement)
+        control.addEventListener("change", execute);
+      else control.addEventListener("click", execute);
     }
 
-    root.addEventListener('keydown', event => {
-      if (!(event.target instanceof HTMLElement) || !event.target.closest(richTextEditorContentSelector)) return
+    root.addEventListener("keydown", (event) => {
+      if (
+        !(event.target instanceof HTMLElement) ||
+        !event.target.closest(richTextEditorContentSelector)
+      )
+        return;
 
-      const command = getLumenRichTextShortcut(event)
+      const command = getLumenRichTextShortcut(event);
 
-      if (!command) return
+      if (!command) return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      executeRichTextCommand(root, command)
-    })
+      executeRichTextCommand(root, command);
+    });
 
-    root.addEventListener('input', event => {
-      if (!(event.target instanceof HTMLElement) || !event.target.closest(richTextEditorContentSelector)) return
+    root.addEventListener("input", (event) => {
+      if (
+        !(event.target instanceof HTMLElement) ||
+        !event.target.closest(richTextEditorContentSelector)
+      )
+        return;
 
-      syncRichTextCommandStates(root)
+      syncRichTextCommandStates(root);
 
-      dispatchRichTextChange(root)
-    })
+      dispatchRichTextChange(root);
+    });
 
-    root.addEventListener('keyup', () => {
-      syncRichTextCommandStates(root)
-    })
+    root.addEventListener("keyup", () => {
+      syncRichTextCommandStates(root);
+    });
 
-    root.addEventListener('mouseup', () => {
-      syncRichTextCommandStates(root)
-    })
+    root.addEventListener("mouseup", () => {
+      syncRichTextCommandStates(root);
+    });
 
-    syncRichTextCommandStates(root)
+    syncRichTextCommandStates(root);
   }
-}
+};
 
-export const enhanceLumenRichTextEditors = (scope: ParentNode = document): void => {
-  initRichTextEditors(scope)
-}
+export const enhanceLumenRichTextEditors = (
+  scope: ParentNode = document,
+): void => {
+  initRichTextEditors(scope);
+};
 
 const installRichTextEditorController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsRichTextEditorsBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsRichTextEditorsBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsRichTextEditorsBound = 'true'
+  document.documentElement.dataset.uiElementsRichTextEditorsBound = "true";
 
-  enhanceLumenRichTextEditors(document)
+  enhanceLumenRichTextEditors(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenRichTextEditors(node)
+          enhanceLumenRichTextEditors(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 
-const getScheduleTransferValue = (event: HTMLElement): string => event.id || event.textContent.trim()
+const getScheduleTransferValue = (event: HTMLElement): string =>
+  event.id || event.textContent.trim();
 
 const initSchedules = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, scheduleSelector)
-  const roots = getScopedElements<HTMLElement>(scope, scheduleSelector)
+  const closestRoot = getClosestScopedElement(scope, scheduleSelector);
+  const roots = getScopedElements<HTMLElement>(scope, scheduleSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    root.dataset.uiScheduleBound = 'true'
+    root.dataset.uiScheduleBound = "true";
 
-    for (const scheduleEvent of root.querySelectorAll<HTMLElement>(scheduleEventSelector)) {
-      if (scheduleEvent.dataset.uiScheduleEventBound === 'true') continue
+    for (const scheduleEvent of root.querySelectorAll<HTMLElement>(
+      scheduleEventSelector,
+    )) {
+      if (scheduleEvent.dataset.uiScheduleEventBound === "true") continue;
 
-      scheduleEvent.dataset.uiScheduleEventBound = 'true'
+      scheduleEvent.dataset.uiScheduleEventBound = "true";
 
-      scheduleEvent.draggable = scheduleEvent.draggable || scheduleEvent.dataset.uiDraggable === 'true'
+      scheduleEvent.draggable =
+        scheduleEvent.draggable || scheduleEvent.dataset.uiDraggable === "true";
 
-      scheduleEvent.addEventListener('dragstart', event => {
-        event.dataTransfer?.setData('text/plain', getScheduleTransferValue(scheduleEvent))
+      scheduleEvent.addEventListener("dragstart", (event) => {
+        event.dataTransfer?.setData(
+          "text/plain",
+          getScheduleTransferValue(scheduleEvent),
+        );
 
-        root.dataset.uiDragging = 'true'
-      })
+        root.dataset.uiDragging = "true";
+      });
 
-      scheduleEvent.addEventListener('dragend', () => {
-        delete root.dataset.uiDragging
-      })
+      scheduleEvent.addEventListener("dragend", () => {
+        delete root.dataset.uiDragging;
+      });
     }
 
-    for (const slot of root.querySelectorAll<HTMLElement>(scheduleSlotSelector)) {
-      if (slot.dataset.uiScheduleSlotBound === 'true') continue
+    for (const slot of root.querySelectorAll<HTMLElement>(
+      scheduleSlotSelector,
+    )) {
+      if (slot.dataset.uiScheduleSlotBound === "true") continue;
 
-      slot.dataset.uiScheduleSlotBound = 'true'
+      slot.dataset.uiScheduleSlotBound = "true";
 
-      slot.addEventListener('dragover', event => {
-        event.preventDefault()
+      slot.addEventListener("dragover", (event) => {
+        event.preventDefault();
 
-        slot.dataset.state = 'drag-over'
-      })
+        slot.dataset.state = "drag-over";
+      });
 
-      slot.addEventListener('dragleave', () => {
-        delete slot.dataset.state
-      })
+      slot.addEventListener("dragleave", () => {
+        delete slot.dataset.state;
+      });
 
-      slot.addEventListener('drop', event => {
-        event.preventDefault()
+      slot.addEventListener("drop", (event) => {
+        event.preventDefault();
 
-        delete slot.dataset.state
+        delete slot.dataset.state;
 
-        const draggedId = event.dataTransfer?.getData('text/plain')
-        const dragged = draggedId ? document.getElementById(draggedId) : null
+        const draggedId = event.dataTransfer?.getData("text/plain");
+        const dragged = draggedId ? document.getElementById(draggedId) : null;
 
         if (dragged instanceof HTMLElement) {
-          slot.append(dragged)
+          slot.append(dragged);
         }
 
         root.dispatchEvent(
-          new CustomEvent('ui:schedule-change', {
+          new CustomEvent("ui:schedule-change", {
             bubbles: true,
             detail: {
               ...(draggedId ? { eventId: draggedId } : {}),
-              ...(slot.dataset.uiScheduleSlot ? { slot: slot.dataset.uiScheduleSlot } : {})
-            }
-          })
-        )
-      })
+              ...(slot.dataset.uiScheduleSlot
+                ? { slot: slot.dataset.uiScheduleSlot }
+                : {}),
+            },
+          }),
+        );
+      });
     }
   }
-}
+};
 
 export const enhanceLumenSchedules = (scope: ParentNode = document): void => {
-  initSchedules(scope)
-}
+  initSchedules(scope);
+};
 
 const installScheduleController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsSchedulesBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsSchedulesBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsSchedulesBound = 'true'
+  document.documentElement.dataset.uiElementsSchedulesBound = "true";
 
-  enhanceLumenSchedules(document)
+  enhanceLumenSchedules(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenSchedules(node)
+          enhanceLumenSchedules(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 
 /* cspell:ignore valuenow */
 /* eslint-disable @stylistic/padding-line-between-statements -- Resizable mirrors Astro's compact pane sizing runtime. */
-const parseResizableNumberList = (value: string | undefined, count: number, fallback: number): number[] => {
-  const values = (value ?? '')
-    .split(',')
-    .map(item => Number.parseFloat(item.trim()))
-    .filter(Number.isFinite)
+const parseResizableNumberList = (
+  value: string | undefined,
+  count: number,
+  fallback: number,
+): number[] => {
+  const values = (value ?? "")
+    .split(",")
+    .map((item) => Number.parseFloat(item.trim()))
+    .filter(Number.isFinite);
 
-  return Array.from({ length: count }, (_, index) => values[index] ?? values[0] ?? fallback)
-}
+  return Array.from(
+    { length: count },
+    (_, index) => values[index] ?? values[0] ?? fallback,
+  );
+};
 
 const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
-  const fallbackSize = 100 / Math.max(1, count)
+  const fallbackSize = 100 / Math.max(1, count);
   const usableSizes = Array.from({ length: count }, (_, index) => {
-    const size = sizes[index] ?? fallbackSize
+    const size = sizes[index] ?? fallbackSize;
 
-    return Number.isFinite(size) && size > 0 ? size : fallbackSize
-  })
-  const total = usableSizes.reduce((sum, size) => sum + size, 0)
+    return Number.isFinite(size) && size > 0 ? size : fallbackSize;
+  });
+  const total = usableSizes.reduce((sum, size) => sum + size, 0);
 
-  if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
+  if (total <= 0) return Array.from({ length: count }, () => fallbackSize);
 
-  return usableSizes.map(size => (size / total) * 100)
-}
+  return usableSizes.map((size) => (size / total) * 100);
+};
 
-const getResizablePanes = (root: HTMLElement): HTMLElement[] => [...root.children].filter(
-  (child): child is HTMLElement => child instanceof HTMLElement &&
-    !child.hasAttribute('data-ui-resizable-handle') &&
-    !child.hasAttribute('data-ui-resizable-handle-template')
-)
+const getResizablePanes = (root: HTMLElement): HTMLElement[] =>
+  [...root.children].filter(
+    (child): child is HTMLElement =>
+      child instanceof HTMLElement &&
+      !child.hasAttribute("data-ui-resizable-handle") &&
+      !child.hasAttribute("data-ui-resizable-handle-template"),
+  );
 
 const applyResizableSizes = (
   root: HTMLElement,
@@ -2076,819 +2521,998 @@ const applyResizableSizes = (
   handles: HTMLElement[],
   sizes: number[],
   minSizes: number[],
-  maxSizes: number[]
+  maxSizes: number[],
 ): void => {
   for (const [index, pane] of panes.entries()) {
-    pane.dataset.uiResizablePanel = ''
-    pane.style.setProperty('--ui-resizable-size', `${sizes[index] ?? 0}%`)
+    pane.dataset.uiResizablePanel = "";
+    pane.style.setProperty("--ui-resizable-size", `${sizes[index] ?? 0}%`);
   }
 
   for (const handle of handles) {
-    const index = Number.parseInt(handle.dataset.index ?? '0', 10)
+    const index = Number.parseInt(handle.dataset.index ?? "0", 10);
 
-    handle.setAttribute('aria-valuemin', String(Math.round(minSizes[index] ?? 0)))
-    handle.setAttribute('aria-valuemax', String(Math.round(maxSizes[index] ?? 100)))
-    handle.setAttribute('aria-valuenow', String(Math.round(sizes[index] ?? 0)))
+    handle.setAttribute(
+      "aria-valuemin",
+      String(Math.round(minSizes[index] ?? 0)),
+    );
+    handle.setAttribute(
+      "aria-valuemax",
+      String(Math.round(maxSizes[index] ?? 100)),
+    );
+    handle.setAttribute("aria-valuenow", String(Math.round(sizes[index] ?? 0)));
   }
-}
+};
 
 const resizeResizablePair = (
   sizes: number[],
   minSizes: number[],
   maxSizes: number[],
   index: number,
-  nextSize: number
+  nextSize: number,
 ): void => {
-  const nextIndex = index + 1
-  const total = (sizes[index] ?? 0) + (sizes[nextIndex] ?? 0)
-  const min = Math.max(minSizes[index] ?? 0, total - (maxSizes[nextIndex] ?? 100))
-  const max = Math.min(maxSizes[index] ?? 100, total - (minSizes[nextIndex] ?? 0))
-  const paneSize = Math.min(max, Math.max(min, nextSize))
+  const nextIndex = index + 1;
+  const total = (sizes[index] ?? 0) + (sizes[nextIndex] ?? 0);
+  const min = Math.max(
+    minSizes[index] ?? 0,
+    total - (maxSizes[nextIndex] ?? 100),
+  );
+  const max = Math.min(
+    maxSizes[index] ?? 100,
+    total - (minSizes[nextIndex] ?? 0),
+  );
+  const paneSize = Math.min(max, Math.max(min, nextSize));
 
-  sizes[index] = paneSize
-  sizes[nextIndex] = total - paneSize
-}
+  sizes[index] = paneSize;
+  sizes[nextIndex] = total - paneSize;
+};
 
 const createResizableHandle = (
   root: HTMLElement,
   index: number,
-  separatorOrientation: 'horizontal' | 'vertical'
+  separatorOrientation: "horizontal" | "vertical",
 ): HTMLButtonElement => {
-  const template = root.querySelector<HTMLTemplateElement>(`:scope > ${resizableHandleTemplateSelector}`)
+  const template = root.querySelector<HTMLTemplateElement>(
+    `:scope > ${resizableHandleTemplateSelector}`,
+  );
   const handleFromTemplate = template?.content
     .querySelector<HTMLButtonElement>(resizableHandleSelector)
-    ?.cloneNode(true)
-  const handle = handleFromTemplate instanceof HTMLButtonElement ? handleFromTemplate : document.createElement('button')
+    ?.cloneNode(true);
+  const handle =
+    handleFromTemplate instanceof HTMLButtonElement
+      ? handleFromTemplate
+      : document.createElement("button");
 
-  handle.type = 'button'
-  handle.className = 'ui-resizable__handle'
-  handle.dataset.uiResizableHandle = ''
-  handle.dataset.index = String(index)
-  handle.tabIndex = 0
-  handle.setAttribute('aria-label', `Resize panel ${index + 1}`)
-  handle.setAttribute('role', 'separator')
-  handle.setAttribute('aria-orientation', separatorOrientation)
+  handle.type = "button";
+  handle.className = "ui-resizable__handle";
+  handle.dataset.uiResizableHandle = "";
+  handle.dataset.index = String(index);
+  handle.tabIndex = 0;
+  handle.setAttribute("aria-label", `Resize panel ${index + 1}`);
+  handle.setAttribute("role", "separator");
+  handle.setAttribute("aria-orientation", separatorOrientation);
 
-  return handle
-}
+  return handle;
+};
 
 const initResizableGroups = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, resizableSelector)
-  const roots = getScopedElements<HTMLElement>(scope, resizableSelector)
+  const closestRoot = getClosestScopedElement(scope, resizableSelector);
+  const roots = getScopedElements<HTMLElement>(scope, resizableSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === "true") continue;
 
-    if (root.getAttribute('direction') === 'vertical') {
-      root.dataset.orientation = 'vertical'
+    if (root.getAttribute("direction") === "vertical") {
+      root.dataset.orientation = "vertical";
     }
 
-    const panes = getResizablePanes(root)
+    const panes = getResizablePanes(root);
 
-    if (panes.length < 2) continue
+    if (panes.length < 2) continue;
 
-    root.dataset.uiBound = 'true'
-    root.dataset.uiResizableEnhanced = 'true'
-    root.classList.toggle('ui-resizable--vertical', root.dataset.orientation === 'vertical')
+    root.dataset.uiBound = "true";
+    root.dataset.uiResizableEnhanced = "true";
+    root.classList.toggle(
+      "ui-resizable--vertical",
+      root.dataset.orientation === "vertical",
+    );
 
-    const direction = root.dataset.orientation === 'vertical' ? 'vertical' : 'horizontal'
-    const separatorOrientation = direction === 'horizontal' ? 'vertical' : 'horizontal'
-    const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
-    const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
-    const minSizes = parseResizableNumberList(root.dataset.uiResizableMinSize, panes.length, 12)
-    const maxSizes = parseResizableNumberList(root.dataset.uiResizableMaxSize, panes.length, 88)
+    const direction =
+      root.dataset.orientation === "vertical" ? "vertical" : "horizontal";
+    const separatorOrientation =
+      direction === "horizontal" ? "vertical" : "horizontal";
+    const axis = direction === "horizontal" ? "clientX" : "clientY";
+    const sizeProperty = direction === "horizontal" ? "width" : "height";
+    const minSizes = parseResizableNumberList(
+      root.dataset.uiResizableMinSize,
+      panes.length,
+      12,
+    );
+    const maxSizes = parseResizableNumberList(
+      root.dataset.uiResizableMaxSize,
+      panes.length,
+      88,
+    );
     const initialSizes = normalizeResizableSizes(
-      parseResizableNumberList(root.dataset.uiResizableDefaultSizes, panes.length, 100 / panes.length), panes.length
-    )
-    let sizes = [...initialSizes]
-    const handles: HTMLElement[] = []
+      parseResizableNumberList(
+        root.dataset.uiResizableDefaultSizes,
+        panes.length,
+        100 / panes.length,
+      ),
+      panes.length,
+    );
+    let sizes = [...initialSizes];
+    const handles: HTMLElement[] = [];
 
     for (const [index, pane] of panes.entries()) {
-      pane.dataset.uiResizablePanel = ''
+      pane.dataset.uiResizablePanel = "";
 
-      if (index >= panes.length - 1) continue
+      if (index >= panes.length - 1) continue;
 
       const existingHandle =
-        pane.nextElementSibling instanceof HTMLElement && pane.nextElementSibling.matches(resizableHandleSelector) ?
-          (pane.nextElementSibling as HTMLButtonElement) :
-          null
-      const handle = existingHandle ?? createResizableHandle(root, index, separatorOrientation)
+        pane.nextElementSibling instanceof HTMLElement &&
+        pane.nextElementSibling.matches(resizableHandleSelector)
+          ? (pane.nextElementSibling as HTMLButtonElement)
+          : null;
+      const handle =
+        existingHandle ??
+        createResizableHandle(root, index, separatorOrientation);
 
       if (!existingHandle) {
-        pane.after(handle)
+        pane.after(handle);
       }
 
-      handles.push(handle)
+      handles.push(handle);
 
-      let startPosition = 0
-      let startSize = 0
-      let containerSize = 1
+      let startPosition = 0;
+      let startSize = 0;
+      let containerSize = 1;
 
       const applySizes = (): void => {
-        applyResizableSizes(root, panes, handles, sizes, minSizes, maxSizes)
-      }
+        applyResizableSizes(root, panes, handles, sizes, minSizes, maxSizes);
+      };
 
       const resizePair = (nextSize: number): void => {
-        resizeResizablePair(sizes, minSizes, maxSizes, index, nextSize)
-        applySizes()
-      }
+        resizeResizablePair(sizes, minSizes, maxSizes, index, nextSize);
+        applySizes();
+      };
 
-      handle.addEventListener('pointerdown', event => {
-        if (event.button !== 0) return
+      handle.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
 
-        event.preventDefault()
+        event.preventDefault();
 
-        startPosition = event[axis]
-        startSize = sizes[index] ?? 0
-        containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty])
-        root.dataset.resizing = 'true'
-        handle.dataset.active = 'true'
-        handle.setPointerCapture(event.pointerId)
-      })
+        startPosition = event[axis];
+        startSize = sizes[index] ?? 0;
+        containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty]);
+        root.dataset.resizing = "true";
+        handle.dataset.active = "true";
+        handle.setPointerCapture(event.pointerId);
+      });
 
-      handle.addEventListener('pointermove', event => {
-        if (handle.dataset.active !== 'true') return
+      handle.addEventListener("pointermove", (event) => {
+        if (handle.dataset.active !== "true") return;
 
-        const delta = ((event[axis] - startPosition) / containerSize) * 100
+        const delta = ((event[axis] - startPosition) / containerSize) * 100;
 
-        resizePair(startSize + delta)
-      })
+        resizePair(startSize + delta);
+      });
 
-      handle.addEventListener('pointerup', event => {
-        if (handle.dataset.active !== 'true') return
+      handle.addEventListener("pointerup", (event) => {
+        if (handle.dataset.active !== "true") return;
 
-        delete handle.dataset.active
-        delete root.dataset.resizing
-        handle.releasePointerCapture(event.pointerId)
-      })
+        delete handle.dataset.active;
+        delete root.dataset.resizing;
+        handle.releasePointerCapture(event.pointerId);
+      });
 
-      handle.addEventListener('dblclick', () => {
-        if (root.dataset.uiResizableReset !== 'true') return
+      handle.addEventListener("dblclick", () => {
+        if (root.dataset.uiResizableReset !== "true") return;
 
-        sizes = [...initialSizes]
-        applySizes()
-      })
+        sizes = [...initialSizes];
+        applySizes();
+      });
 
-      handle.addEventListener('keydown', event => {
-        const step = event.shiftKey ? 10 : 2
+      handle.addEventListener("keydown", (event) => {
+        const step = event.shiftKey ? 10 : 2;
         const keyDeltas: Record<string, number> =
-          direction === 'horizontal' ? { ArrowLeft: -step, ArrowRight: step } : { ArrowDown: step, ArrowUp: -step }
+          direction === "horizontal"
+            ? { ArrowLeft: -step, ArrowRight: step }
+            : { ArrowDown: step, ArrowUp: -step };
 
-        if (event.key === 'Home') {
-          event.preventDefault()
+        if (event.key === "Home") {
+          event.preventDefault();
 
-          resizePair(minSizes[index] ?? 0)
+          resizePair(minSizes[index] ?? 0);
 
-          return
+          return;
         }
 
-        if (event.key === 'End') {
-          event.preventDefault()
+        if (event.key === "End") {
+          event.preventDefault();
 
-          resizePair(maxSizes[index] ?? 100)
+          resizePair(maxSizes[index] ?? 100);
 
-          return
+          return;
         }
 
-        const delta = keyDeltas[event.key]
+        const delta = keyDeltas[event.key];
 
-        if (delta === undefined) return
+        if (delta === undefined) return;
 
-        event.preventDefault()
+        event.preventDefault();
 
-        resizePair((sizes[index] ?? 0) + delta)
-      })
+        resizePair((sizes[index] ?? 0) + delta);
+      });
     }
 
-    applyResizableSizes(root, panes, handles, sizes, minSizes, maxSizes)
+    applyResizableSizes(root, panes, handles, sizes, minSizes, maxSizes);
   }
-}
+};
 
 export const enhanceLumenResizable = (scope: ParentNode = document): void => {
-  initResizableGroups(scope)
-}
+  initResizableGroups(scope);
+};
 
 const installResizableController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsResizableBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsResizableBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsResizableBound = 'true'
+  document.documentElement.dataset.uiElementsResizableBound = "true";
 
-  enhanceLumenResizable(document)
+  enhanceLumenResizable(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenResizable(node)
+          enhanceLumenResizable(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 /* eslint-enable @stylistic/padding-line-between-statements */
 
 const getLoopedIndex = (
   key: string,
   currentIndex: number,
   itemCount: number,
-  forwardKeys: readonly string[]
+  forwardKeys: readonly string[],
 ): number => {
-  const lastIndex = itemCount - 1
+  const lastIndex = itemCount - 1;
 
-  if (key === 'Home') return 0
+  if (key === "Home") return 0;
 
-  if (key === 'End') return lastIndex
+  if (key === "End") return lastIndex;
 
-  if (forwardKeys.includes(key)) return (currentIndex + 1) % itemCount
+  if (forwardKeys.includes(key)) return (currentIndex + 1) % itemCount;
 
-  return (currentIndex - 1 + itemCount) % itemCount
-}
+  return (currentIndex - 1 + itemCount) % itemCount;
+};
 
 const syncDateRangePicker = (root: HTMLElement): void => {
-  const inputs = [...root.querySelectorAll<HTMLInputElement>(dateRangePickerInputSelector)]
-  const start = inputs[0]
-  const end = inputs.at(-1)
+  const inputs = [
+    ...root.querySelectorAll<HTMLInputElement>(dateRangePickerInputSelector),
+  ];
+  const start = inputs[0];
+  const end = inputs.at(-1);
 
-  if (!start || !end || start === end) return
+  if (!start || !end || start === end) return;
 
-  const datePickers = root.querySelectorAll<HTMLElement>(datePickerSelector)
+  const datePickers = root.querySelectorAll<HTMLElement>(datePickerSelector);
 
-  datePickers[0]?.setAttribute('data-range-part', 'start')
+  datePickers[0]?.setAttribute("data-range-part", "start");
 
-  datePickers[datePickers.length - 1]?.setAttribute('data-range-part', 'end')
+  datePickers[datePickers.length - 1]?.setAttribute("data-range-part", "end");
 
   if (start.value) {
-    end.min = start.value
+    end.min = start.value;
   } else {
-    end.removeAttribute('min')
+    end.removeAttribute("min");
   }
 
   if (end.value) {
-    start.max = end.value
+    start.max = end.value;
   } else {
-    start.removeAttribute('max')
+    start.removeAttribute("max");
   }
 
   if (start.value && end.value && end.value < start.value) {
-    end.value = start.value
+    end.value = start.value;
 
-    end.dispatchEvent(new Event('change', { bubbles: true }))
+    end.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
-  let rangeState = 'empty'
+  let rangeState = "empty";
 
   if (start.value && end.value) {
-    rangeState = 'complete'
+    rangeState = "complete";
   } else if (start.value) {
-    rangeState = 'selecting-end'
+    rangeState = "selecting-end";
   }
 
-  root.dataset.rangeState = rangeState
-}
+  root.dataset.rangeState = rangeState;
+};
 
 const initDateRangePickers = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, dateRangePickerSelector)
-  const roots = getScopedElements<HTMLElement>(scope, dateRangePickerSelector)
+  const closestRoot = getClosestScopedElement(scope, dateRangePickerSelector);
+  const roots = getScopedElements<HTMLElement>(scope, dateRangePickerSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    for (const input of root.querySelectorAll<HTMLInputElement>(dateRangePickerInputSelector)) {
-      if (input.dataset.uiDateRangeInputBound === 'true') continue
+    for (const input of root.querySelectorAll<HTMLInputElement>(
+      dateRangePickerInputSelector,
+    )) {
+      if (input.dataset.uiDateRangeInputBound === "true") continue;
 
-      input.dataset.uiDateRangeInputBound = 'true'
+      input.dataset.uiDateRangeInputBound = "true";
 
-      input.addEventListener('change', () => {
-        syncDateRangePicker(root)
-      })
+      input.addEventListener("change", () => {
+        syncDateRangePicker(root);
+      });
     }
 
-    syncDateRangePicker(root)
+    syncDateRangePicker(root);
   }
-}
+};
 
 const initDatePickers = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, datePickerSelector)
-  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
+  const closestRoot = getClosestScopedElement(scope, datePickerSelector);
+  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === "true") continue;
 
-    const native = root.querySelector<HTMLInputElement>(datePickerNativeSelector)
-    const control = root.querySelector<HTMLElement>(datePickerControlSelector)
-    const trigger = root.querySelector<HTMLElement>(datePickerTriggerSelector)
-    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector)
-    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector)
-    const calendar = root.querySelector<HTMLElement>(calendarSelector)
+    const native = root.querySelector<HTMLInputElement>(
+      datePickerNativeSelector,
+    );
+    const control = root.querySelector<HTMLElement>(datePickerControlSelector);
+    const trigger = root.querySelector<HTMLElement>(datePickerTriggerSelector);
+    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector);
+    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector);
+    const calendar = root.querySelector<HTMLElement>(calendarSelector);
 
-    if (!native || !control || !trigger || !popover) continue
+    if (!native || !control || !trigger || !popover) continue;
 
-    root.dataset.uiBound = 'true'
+    root.dataset.uiBound = "true";
 
-    native.dataset.uiEnhanced = 'true'
+    native.dataset.uiEnhanced = "true";
 
-    control.hidden = false
+    control.hidden = false;
 
     const closePopover = (): void => {
-      popover.hidden = true
+      popover.hidden = true;
 
-      popover.dataset.state = 'closed'
+      popover.dataset.state = "closed";
 
-      trigger.setAttribute('aria-expanded', 'false')
+      trigger.setAttribute("aria-expanded", "false");
 
       // eslint-disable-next-line no-use-before-define -- the paired callbacks reference each other.
-      document.removeEventListener('click', handleOutsideClick)
-    }
+      document.removeEventListener("click", handleOutsideClick);
+    };
 
     const handleOutsideClick = (event: MouseEvent): void => {
-      if (!(event.target instanceof Node)) return
+      if (!(event.target instanceof Node)) return;
 
       if (!popover.contains(event.target) && !trigger.contains(event.target)) {
-        closePopover()
+        closePopover();
       }
-    }
+    };
 
     const openPopover = (): void => {
       if (calendar) {
-        if (native.min) calendar.dataset.uiCalendarMin = native.min
-        else delete calendar.dataset.uiCalendarMin
+        if (native.min) calendar.dataset.uiCalendarMin = native.min;
+        else delete calendar.dataset.uiCalendarMin;
 
-        if (native.max) calendar.dataset.uiCalendarMax = native.max
-        else delete calendar.dataset.uiCalendarMax
+        if (native.max) calendar.dataset.uiCalendarMax = native.max;
+        else delete calendar.dataset.uiCalendarMax;
       }
 
-      popover.hidden = false
+      popover.hidden = false;
 
-      popover.dataset.state = 'open'
+      popover.dataset.state = "open";
 
-      trigger.setAttribute('aria-expanded', 'true')
+      trigger.setAttribute("aria-expanded", "true");
 
       globalThis.setTimeout(() => {
-        document.addEventListener('click', handleOutsideClick)
-      })
-    }
+        document.addEventListener("click", handleOutsideClick);
+      });
+    };
 
-    trigger.addEventListener('click', () => {
+    trigger.addEventListener("click", () => {
       if (popover.hidden) {
-        openPopover()
+        openPopover();
       } else {
-        closePopover()
+        closePopover();
       }
-    })
+    });
 
-    popover.addEventListener('change', event => {
-      const target = event.target
+    popover.addEventListener("change", (event) => {
+      const target = event.target;
 
-      if (target instanceof HTMLInputElement && target.hasAttribute('data-ui-calendar-input')) {
-        const newDate = target.value
+      if (
+        target instanceof HTMLInputElement &&
+        target.hasAttribute("data-ui-calendar-input")
+      ) {
+        const newDate = target.value;
 
-        native.value = newDate
+        native.value = newDate;
 
-        if (valueEl) valueEl.textContent = newDate || 'mm/dd/yyyy'
+        if (valueEl) valueEl.textContent = newDate || "mm/dd/yyyy";
 
-        native.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }))
+        native.dispatchEvent(
+          new Event("change", { bubbles: true, cancelable: true }),
+        );
 
-        closePopover()
+        closePopover();
       }
-    })
+    });
   }
-}
+};
 
-export const enhanceLumenDateRangePickers = (scope: ParentNode = document): void => {
-  initDateRangePickers(scope)
-}
+export const enhanceLumenDateRangePickers = (
+  scope: ParentNode = document,
+): void => {
+  initDateRangePickers(scope);
+};
 
 const installDateRangePickerController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsDateRangePickersBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsDateRangePickersBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsDateRangePickersBound = 'true'
+  document.documentElement.dataset.uiElementsDateRangePickersBound = "true";
 
-  enhanceLumenDateRangePickers(document)
+  enhanceLumenDateRangePickers(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenDateRangePickers(node)
+          enhanceLumenDateRangePickers(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 
 export const enhanceLumenDatePickers = (scope: ParentNode = document): void => {
-  initDatePickers(scope)
-}
+  initDatePickers(scope);
+};
 
 const installDatePickerController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsDatePickersBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsDatePickersBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsDatePickersBound = 'true'
+  document.documentElement.dataset.uiElementsDatePickersBound = "true";
 
-  enhanceLumenDatePickers(document)
+  enhanceLumenDatePickers(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenDatePickers(node)
+          enhanceLumenDatePickers(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 
 /* eslint-disable @stylistic/padding-line-between-statements -- InputOTP mirrors Astro's compact DOM synchronization runtime. */
-const defaultInputOtpLength = 6
-const defaultInputOtpPattern = '[0-9]*'
+const defaultInputOtpLength = 6;
+const defaultInputOtpPattern = "[0-9]*";
 
-const normalizeInputOtpLength = (value: string | null | undefined): number => Math.max(1, Number.parseInt(value ?? '', 10) || defaultInputOtpLength)
+const normalizeInputOtpLength = (value: string | null | undefined): number =>
+  Math.max(1, Number.parseInt(value ?? "", 10) || defaultInputOtpLength);
 
-const getInputOtpLength = (root: HTMLElement): number => normalizeInputOtpLength(
-  root.getAttribute('length') ?? root.getAttribute('maxlength') ?? root.dataset.uiInputOtpLength
-)
+const getInputOtpLength = (root: HTMLElement): number =>
+  normalizeInputOtpLength(
+    root.getAttribute("length") ??
+      root.getAttribute("maxlength") ??
+      root.dataset.uiInputOtpLength,
+  );
 
-const sanitizeInputOtpValue = (input: HTMLInputElement, value: string, length: number): string => {
-  const numericOnly = input.inputMode === 'numeric' || input.getAttribute('pattern') === defaultInputOtpPattern
-  const normalized = numericOnly ? value.replaceAll(/\D/g, '') : value.replaceAll(/\s/g, '')
+const sanitizeInputOtpValue = (
+  input: HTMLInputElement,
+  value: string,
+  length: number,
+): string => {
+  const numericOnly =
+    input.inputMode === "numeric" ||
+    input.getAttribute("pattern") === defaultInputOtpPattern;
+  const normalized = numericOnly
+    ? value.replaceAll(/\D/g, "")
+    : value.replaceAll(/\s/g, "");
 
-  return normalized.slice(0, length)
-}
+  return normalized.slice(0, length);
+};
 
 const createInputOtpSegment = (index: number): HTMLButtonElement => {
-  const segment = document.createElement('button')
-  const char = document.createElement('span')
+  const segment = document.createElement("button");
+  const char = document.createElement("span");
 
-  segment.ariaHidden = 'true'
-  segment.className = 'ui-input-otp__segment'
-  segment.dataset.index = String(index)
-  segment.dataset.uiInputOtpSegment = ''
-  segment.tabIndex = -1
-  segment.type = 'button'
+  segment.ariaHidden = "true";
+  segment.className = "ui-input-otp__segment";
+  segment.dataset.index = String(index);
+  segment.dataset.uiInputOtpSegment = "";
+  segment.tabIndex = -1;
+  segment.type = "button";
 
-  char.dataset.uiInputOtpChar = ''
-  char.textContent = '\u00a0'
+  char.dataset.uiInputOtpChar = "";
+  char.textContent = "\u00a0";
 
-  segment.append(char)
+  segment.append(char);
 
-  return segment
-}
+  return segment;
+};
 
-const copyInputOtpAttribute = (root: HTMLElement, input: HTMLInputElement, name: string): void => {
-  if (!root.hasAttribute(name) || input.hasAttribute(name)) return
+const copyInputOtpAttribute = (
+  root: HTMLElement,
+  input: HTMLInputElement,
+  name: string,
+): void => {
+  if (!root.hasAttribute(name) || input.hasAttribute(name)) return;
 
-  input.setAttribute(name, root.getAttribute(name) ?? '')
-}
+  input.setAttribute(name, root.getAttribute(name) ?? "");
+};
 
-const ensureInputOtpNativeInput = (root: HTMLElement, length: number): HTMLInputElement => {
-  let input = root.querySelector<HTMLInputElement>(inputOtpNativeSelector)
-  const created = !input
+const ensureInputOtpNativeInput = (
+  root: HTMLElement,
+  length: number,
+): HTMLInputElement => {
+  let input = root.querySelector<HTMLInputElement>(inputOtpNativeSelector);
+  const created = !input;
 
   if (!input) {
-    input = document.createElement('input')
+    input = document.createElement("input");
 
-    root.prepend(input)
+    root.prepend(input);
   }
 
-  input.classList.add('ui-input-otp', 'ui-input-otp__native')
-  input.dataset.uiInputOtpNative = ''
+  input.classList.add("ui-input-otp", "ui-input-otp__native");
+  input.dataset.uiInputOtpNative = "";
 
-  if (!input.hasAttribute('autocomplete')) {
-    input.setAttribute('autocomplete', root.getAttribute('autocomplete') ?? 'one-time-code')
+  if (!input.hasAttribute("autocomplete")) {
+    input.setAttribute(
+      "autocomplete",
+      root.getAttribute("autocomplete") ?? "one-time-code",
+    );
   }
 
-  if (!input.hasAttribute('inputmode')) {
-    input.setAttribute('inputmode', root.getAttribute('inputmode') ?? 'numeric')
+  if (!input.hasAttribute("inputmode")) {
+    input.setAttribute(
+      "inputmode",
+      root.getAttribute("inputmode") ?? "numeric",
+    );
   }
 
-  if (!input.hasAttribute('maxlength')) {
-    input.setAttribute('maxlength', root.getAttribute('maxlength') ?? root.getAttribute('length') ?? String(length))
+  if (!input.hasAttribute("maxlength")) {
+    input.setAttribute(
+      "maxlength",
+      root.getAttribute("maxlength") ??
+        root.getAttribute("length") ??
+        String(length),
+    );
   }
 
-  if (!input.hasAttribute('pattern')) {
-    input.setAttribute('pattern', root.getAttribute('pattern') ?? defaultInputOtpPattern)
+  if (!input.hasAttribute("pattern")) {
+    input.setAttribute(
+      "pattern",
+      root.getAttribute("pattern") ?? defaultInputOtpPattern,
+    );
   }
 
-  if (!input.hasAttribute('type')) {
-    input.setAttribute('type', 'text')
+  if (!input.hasAttribute("type")) {
+    input.setAttribute("type", "text");
   }
 
-  for (const name of ['aria-describedby', 'aria-label', 'name', 'placeholder']) {
-    copyInputOtpAttribute(root, input, name)
+  for (const name of [
+    "aria-describedby",
+    "aria-label",
+    "name",
+    "placeholder",
+  ]) {
+    copyInputOtpAttribute(root, input, name);
   }
 
-  input.disabled = root.hasAttribute('disabled') || input.disabled
-  input.required = root.hasAttribute('required') || input.required
+  input.disabled = root.hasAttribute("disabled") || input.disabled;
+  input.required = root.hasAttribute("required") || input.required;
 
-  if (root.hasAttribute('aria-invalid') && !input.hasAttribute('aria-invalid')) {
-    input.setAttribute('aria-invalid', root.getAttribute('aria-invalid') ?? 'true')
+  if (
+    root.hasAttribute("aria-invalid") &&
+    !input.hasAttribute("aria-invalid")
+  ) {
+    input.setAttribute(
+      "aria-invalid",
+      root.getAttribute("aria-invalid") ?? "true",
+    );
   }
 
-  if (created && root.hasAttribute('value')) {
-    input.value = root.getAttribute('value') ?? ''
+  if (created && root.hasAttribute("value")) {
+    input.value = root.getAttribute("value") ?? "";
   }
 
-  return input
-}
+  return input;
+};
 
 const ensureInputOtpSegmentsRoot = (root: HTMLElement): HTMLElement => {
-  let segmentsRoot = root.querySelector<HTMLElement>(inputOtpSegmentsSelector)
+  let segmentsRoot = root.querySelector<HTMLElement>(inputOtpSegmentsSelector);
 
   if (!segmentsRoot) {
-    segmentsRoot = document.createElement('div')
+    segmentsRoot = document.createElement("div");
 
-    root.append(segmentsRoot)
+    root.append(segmentsRoot);
   }
 
-  segmentsRoot.classList.add('ui-input-otp__segments')
-  segmentsRoot.dataset.uiInputOtpSegments = ''
+  segmentsRoot.classList.add("ui-input-otp__segments");
+  segmentsRoot.dataset.uiInputOtpSegments = "";
 
-  return segmentsRoot
-}
+  return segmentsRoot;
+};
 
-const ensureInputOtpSegments = (segmentsRoot: HTMLElement, length: number): HTMLButtonElement[] => {
-  const segments = [...segmentsRoot.querySelectorAll<HTMLButtonElement>(inputOtpSegmentSelector)]
+const ensureInputOtpSegments = (
+  segmentsRoot: HTMLElement,
+  length: number,
+): HTMLButtonElement[] => {
+  const segments = [
+    ...segmentsRoot.querySelectorAll<HTMLButtonElement>(
+      inputOtpSegmentSelector,
+    ),
+  ];
 
   for (let index = segments.length; index < length; index += 1) {
-    const segment = createInputOtpSegment(index)
+    const segment = createInputOtpSegment(index);
 
-    segmentsRoot.append(segment)
+    segmentsRoot.append(segment);
 
-    segments.push(segment)
+    segments.push(segment);
   }
 
   for (const segment of segments.splice(length)) {
-    segment.remove()
+    segment.remove();
   }
 
   for (const [index, segment] of segments.entries()) {
-    segment.classList.add('ui-input-otp__segment')
-    segment.dataset.index = String(index)
-    segment.dataset.uiInputOtpSegment = ''
-    segment.setAttribute('aria-hidden', 'true')
-    segment.tabIndex = -1
-    segment.type = 'button'
+    segment.classList.add("ui-input-otp__segment");
+    segment.dataset.index = String(index);
+    segment.dataset.uiInputOtpSegment = "";
+    segment.setAttribute("aria-hidden", "true");
+    segment.tabIndex = -1;
+    segment.type = "button";
 
-    if (!segment.querySelector('[data-ui-input-otp-char]')) {
-      const char = document.createElement('span')
+    if (!segment.querySelector("[data-ui-input-otp-char]")) {
+      const char = document.createElement("span");
 
-      char.dataset.uiInputOtpChar = ''
+      char.dataset.uiInputOtpChar = "";
 
-      segment.append(char)
+      segment.append(char);
     }
   }
 
-  return segments
-}
+  return segments;
+};
 
 const syncInputOtpSegments = (
   root: HTMLElement,
   input: HTMLInputElement,
   segments: HTMLButtonElement[],
-  length: number
+  length: number,
 ): void => {
-  const value = sanitizeInputOtpValue(input, input.value, length)
+  const value = sanitizeInputOtpValue(input, input.value, length);
 
   if (input.value !== value) {
-    input.value = value
+    input.value = value;
   }
 
-  const activeIndex = Math.min(length - 1, Math.max(0, input.selectionStart ?? value.length))
+  const activeIndex = Math.min(
+    length - 1,
+    Math.max(0, input.selectionStart ?? value.length),
+  );
 
-  root.dataset.disabled = input.disabled ? 'true' : 'false'
-  root.dataset.invalid = input.getAttribute('aria-invalid') === 'true' ? 'true' : 'false'
+  root.dataset.disabled = input.disabled ? "true" : "false";
+  root.dataset.invalid =
+    input.getAttribute("aria-invalid") === "true" ? "true" : "false";
 
   for (const [index, segment] of segments.entries()) {
-    const char = segment.querySelector<HTMLElement>('[data-ui-input-otp-char]')
+    const char = segment.querySelector<HTMLElement>("[data-ui-input-otp-char]");
 
-    segment.disabled = input.disabled
-    segment.dataset.active = String(document.activeElement === input && index === activeIndex)
+    segment.disabled = input.disabled;
+    segment.dataset.active = String(
+      document.activeElement === input && index === activeIndex,
+    );
 
     if (char) {
-      char.textContent = value[index] ?? '\u00a0'
+      char.textContent = value[index] ?? "\u00a0";
     }
   }
-}
+};
 
 const initInputOtpFields = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, inputOtpSelector)
-  const roots = getScopedElements<HTMLElement>(scope, inputOtpSelector)
+  const closestRoot = getClosestScopedElement(scope, inputOtpSelector);
+  const roots = getScopedElements<HTMLElement>(scope, inputOtpSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === "true") continue;
 
-    const length = getInputOtpLength(root)
-    const input = ensureInputOtpNativeInput(root, length)
-    const segmentsRoot = ensureInputOtpSegmentsRoot(root)
-    const segments = ensureInputOtpSegments(segmentsRoot, length)
+    const length = getInputOtpLength(root);
+    const input = ensureInputOtpNativeInput(root, length);
+    const segmentsRoot = ensureInputOtpSegmentsRoot(root);
+    const segments = ensureInputOtpSegments(segmentsRoot, length);
 
-    root.dataset.uiBound = 'true'
-    root.dataset.uiInputOtpLength = String(length)
-    input.dataset.uiEnhanced = 'true'
-    segmentsRoot.hidden = false
+    root.dataset.uiBound = "true";
+    root.dataset.uiInputOtpLength = String(length);
+    input.dataset.uiEnhanced = "true";
+    segmentsRoot.hidden = false;
 
     const syncSegments = (): void => {
-      syncInputOtpSegments(root, input, segments, length)
-    }
+      syncInputOtpSegments(root, input, segments, length);
+    };
 
     const setSelection = (index: number): void => {
-      const position = Math.min(input.value.length, Math.max(0, index))
+      const position = Math.min(input.value.length, Math.max(0, index));
 
-      input.focus({ preventScroll: true })
+      input.focus({ preventScroll: true });
 
-      input.setSelectionRange(position, position)
+      input.setSelectionRange(position, position);
 
-      syncSegments()
-    }
+      syncSegments();
+    };
 
     const setValue = (value: string): void => {
-      input.value = sanitizeInputOtpValue(input, value, length)
+      input.value = sanitizeInputOtpValue(input, value, length);
 
-      input.setSelectionRange(input.value.length, input.value.length)
+      input.setSelectionRange(input.value.length, input.value.length);
 
-      input.dispatchEvent(new Event('input', { bubbles: true }))
-      input.dispatchEvent(new Event('change', { bubbles: true }))
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
 
-      syncSegments()
-    }
+      syncSegments();
+    };
 
-    syncSegments()
+    syncSegments();
 
-    input.addEventListener('input', syncSegments)
-    input.addEventListener('change', syncSegments)
-    input.addEventListener('focus', syncSegments)
-    input.addEventListener('blur', syncSegments)
-    input.addEventListener('click', syncSegments)
-    input.addEventListener('keyup', syncSegments)
-    input.addEventListener('keydown', event => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault()
+    input.addEventListener("input", syncSegments);
+    input.addEventListener("change", syncSegments);
+    input.addEventListener("focus", syncSegments);
+    input.addEventListener("blur", syncSegments);
+    input.addEventListener("click", syncSegments);
+    input.addEventListener("keyup", syncSegments);
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
 
-        setSelection((input.selectionStart ?? input.value.length) - 1)
+        setSelection((input.selectionStart ?? input.value.length) - 1);
 
-        return
+        return;
       }
 
-      if (event.key === 'ArrowRight') {
-        event.preventDefault()
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
 
-        setSelection((input.selectionStart ?? input.value.length) + 1)
+        setSelection((input.selectionStart ?? input.value.length) + 1);
 
-        return
+        return;
       }
 
-      if (event.key === 'Home') {
-        event.preventDefault()
+      if (event.key === "Home") {
+        event.preventDefault();
 
-        setSelection(0)
+        setSelection(0);
 
-        return
+        return;
       }
 
-      if (event.key === 'End') {
-        event.preventDefault()
+      if (event.key === "End") {
+        event.preventDefault();
 
-        setSelection(input.value.length)
+        setSelection(input.value.length);
       }
-    })
-    input.addEventListener('paste', event => {
-      const pasted = event.clipboardData?.getData('text') ?? ''
+    });
+    input.addEventListener("paste", (event) => {
+      const pasted = event.clipboardData?.getData("text") ?? "";
 
-      if (!pasted) return
+      if (!pasted) return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      setValue(pasted)
-    })
-    input.form?.addEventListener('reset', () => {
-      globalThis.setTimeout(syncSegments)
-    })
+      setValue(pasted);
+    });
+    input.form?.addEventListener("reset", () => {
+      globalThis.setTimeout(syncSegments);
+    });
 
     for (const [index, segment] of segments.entries()) {
-      segment.addEventListener('click', () => {
-        setSelection(index)
-      })
+      segment.addEventListener("click", () => {
+        setSelection(index);
+      });
     }
   }
-}
+};
 
 export const enhanceLumenInputOTPs = (scope: ParentNode = document): void => {
-  initInputOtpFields(scope)
-}
+  initInputOtpFields(scope);
+};
 
 const installInputOtpController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsInputOtpBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsInputOtpBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsInputOtpBound = 'true'
+  document.documentElement.dataset.uiElementsInputOtpBound = "true";
 
-  enhanceLumenInputOTPs(document)
+  enhanceLumenInputOTPs(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenInputOTPs(node)
+          enhanceLumenInputOTPs(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 /* eslint-enable @stylistic/padding-line-between-statements */
 
 /* cspell:ignore lsaquo rsaquo */
 /* eslint-disable @stylistic/padding-line-between-statements -- Calendar mirrors Astro's UTC date grid runtime. */
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
-const calendarMonthPattern = /^\d{4}-\d{2}$/
+const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+const calendarMonthPattern = /^\d{4}-\d{2}$/;
 
 const parseCalendarDate = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarDatePattern.test(value)) return null
+  if (!value || !calendarDatePattern.test(value)) return null;
 
-  const [year = Number.NaN, month = Number.NaN, day = Number.NaN] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
+  const [year = Number.NaN, month = Number.NaN, day = Number.NaN] = value
+    .split("-")
+    .map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
 
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day ? date : null
-}
+  return date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+    ? date
+    : null;
+};
 
 const parseCalendarMonth = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarMonthPattern.test(value)) return null
+  if (!value || !calendarMonthPattern.test(value)) return null;
 
-  const [year = Number.NaN, month = Number.NaN] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, 1))
+  const [year = Number.NaN, month = Number.NaN] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, 1));
 
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ? date : null
-}
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1
+    ? date
+    : null;
+};
 
-const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const addCalendarDays = (date: Date, days: number): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
-const getCalendarDaysInMonth = (date: Date): number => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
+const formatCalendarDate = (date: Date): string =>
+  date.toISOString().slice(0, 10);
+const formatCalendarMonth = (date: Date): string =>
+  date.toISOString().slice(0, 7);
+const addCalendarDays = (date: Date, days: number): Date =>
+  new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate() + days,
+    ),
+  );
+const getCalendarDaysInMonth = (date: Date): number =>
+  new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0),
+  ).getUTCDate();
 const addCalendarMonths = (date: Date, months: number): Date => {
-  const targetMonth = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1))
+  const targetMonth = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1),
+  );
 
   return new Date(
     Date.UTC(
-      targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), Math.min(date.getUTCDate(), getCalendarDaysInMonth(targetMonth))
-    )
-  )
-}
-const compareCalendarDates = (date: Date, other: Date | null): number => other ? formatCalendarDate(date).localeCompare(formatCalendarDate(other)) : 0
+      targetMonth.getUTCFullYear(),
+      targetMonth.getUTCMonth(),
+      Math.min(date.getUTCDate(), getCalendarDaysInMonth(targetMonth)),
+    ),
+  );
+};
+const compareCalendarDates = (date: Date, other: Date | null): number =>
+  other ? formatCalendarDate(date).localeCompare(formatCalendarDate(other)) : 0;
 const getCalendarToday = (): Date => {
-  const today = new Date()
+  const today = new Date();
 
-  return new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
-}
-const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
-const getCalendarLocale = (): string => document.documentElement.lang || navigator.language || 'en'
+  return new Date(
+    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()),
+  );
+};
+const getCalendarGridStart = (month: Date): Date =>
+  addCalendarDays(month, -((month.getUTCDay() + 6) % 7));
+const getCalendarLocale = (): string =>
+  document.documentElement.lang || navigator.language || "en";
 
-const isCalendarDateDisabled = (root: HTMLElement, date: Date, min: Date | null, max: Date | null): boolean => root.dataset.disabled === 'true' || compareCalendarDates(date, min) < 0 || compareCalendarDates(date, max) > 0
+const isCalendarDateDisabled = (
+  root: HTMLElement,
+  date: Date,
+  min: Date | null,
+  max: Date | null,
+): boolean =>
+  root.dataset.disabled === "true" ||
+  compareCalendarDates(date, min) < 0 ||
+  compareCalendarDates(date, max) > 0;
 
-const clampCalendarDate = (date: Date, min: Date | null, max: Date | null): Date => {
-  if (min && compareCalendarDates(date, min) < 0) return min
-  if (max && compareCalendarDates(date, max) > 0) return max
+const clampCalendarDate = (
+  date: Date,
+  min: Date | null,
+  max: Date | null,
+): Date => {
+  if (min && compareCalendarDates(date, min) < 0) return min;
+  if (max && compareCalendarDates(date, max) > 0) return max;
 
-  return date
-}
+  return date;
+};
 
 const getCalendarFocusDate = (
   root: HTMLElement,
   month: Date,
   min: Date | null,
   max: Date | null,
-  requestedDate?: Date | null
+  requestedDate?: Date | null,
 ): Date => {
-  const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
-  const today = getCalendarToday()
-  const candidates = [requestedDate, selectedDate, today, month]
+  const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue);
+  const today = getCalendarToday();
+  const candidates = [requestedDate, selectedDate, today, month];
 
   for (const candidate of candidates) {
     if (
@@ -2896,1008 +3520,1217 @@ const getCalendarFocusDate = (
       formatCalendarMonth(candidate) === formatCalendarMonth(month) &&
       !isCalendarDateDisabled(root, candidate, min, max)
     ) {
-      return candidate
+      return candidate;
     }
   }
 
   for (let index = 0; index < getCalendarDaysInMonth(month); index += 1) {
-    const date = addCalendarDays(month, index)
+    const date = addCalendarDays(month, index);
 
-    if (!isCalendarDateDisabled(root, date, min, max)) return date
+    if (!isCalendarDateDisabled(root, date, min, max)) return date;
   }
 
-  return month
-}
+  return month;
+};
 
 const ensureCalendarStructure = (root: HTMLElement): void => {
-  root.id ||= createId('ui-calendar')
+  root.id ||= createId("ui-calendar");
 
-  const labelId = `${root.id}-label`
-  const selectedDate = parseCalendarDate(root.getAttribute('value') ?? root.dataset.uiCalendarValue)
-  const minDate = parseCalendarDate(root.getAttribute('min') ?? root.dataset.uiCalendarMin)
-  const maxDate = parseCalendarDate(root.getAttribute('max') ?? root.dataset.uiCalendarMax)
+  const labelId = `${root.id}-label`;
+  const selectedDate = parseCalendarDate(
+    root.getAttribute("value") ?? root.dataset.uiCalendarValue,
+  );
+  const minDate = parseCalendarDate(
+    root.getAttribute("min") ?? root.dataset.uiCalendarMin,
+  );
+  const maxDate = parseCalendarDate(
+    root.getAttribute("max") ?? root.dataset.uiCalendarMax,
+  );
   const monthDate =
-    parseCalendarMonth(root.getAttribute('month') ?? root.dataset.uiCalendarMonth) ??
-    (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : null) ??
-    new Date(Date.UTC(getCalendarToday().getUTCFullYear(), getCalendarToday().getUTCMonth(), 1))
-  let input = root.querySelector<HTMLInputElement>(calendarInputSelector)
+    parseCalendarMonth(
+      root.getAttribute("month") ?? root.dataset.uiCalendarMonth,
+    ) ??
+    (selectedDate
+      ? new Date(
+          Date.UTC(
+            selectedDate.getUTCFullYear(),
+            selectedDate.getUTCMonth(),
+            1,
+          ),
+        )
+      : null) ??
+    new Date(
+      Date.UTC(
+        getCalendarToday().getUTCFullYear(),
+        getCalendarToday().getUTCMonth(),
+        1,
+      ),
+    );
+  let input = root.querySelector<HTMLInputElement>(calendarInputSelector);
 
-  root.dataset.uiCalendarInitialMonth ??= formatCalendarMonth(monthDate)
-  root.dataset.uiCalendarMonth ||= formatCalendarMonth(monthDate)
+  root.dataset.uiCalendarInitialMonth ??= formatCalendarMonth(monthDate);
+  root.dataset.uiCalendarMonth ||= formatCalendarMonth(monthDate);
 
-  if (minDate) root.dataset.uiCalendarMin = formatCalendarDate(minDate)
-  if (maxDate) root.dataset.uiCalendarMax = formatCalendarDate(maxDate)
-  if (selectedDate) root.dataset.uiCalendarValue = formatCalendarDate(selectedDate)
-  if (root.hasAttribute('disabled')) root.dataset.disabled = 'true'
+  if (minDate) root.dataset.uiCalendarMin = formatCalendarDate(minDate);
+  if (maxDate) root.dataset.uiCalendarMax = formatCalendarDate(maxDate);
+  if (selectedDate)
+    root.dataset.uiCalendarValue = formatCalendarDate(selectedDate);
+  if (root.hasAttribute("disabled")) root.dataset.disabled = "true";
 
   if (!input) {
-    input = document.createElement('input')
-    input.type = 'hidden'
-    input.dataset.uiCalendarInput = ''
-    root.prepend(input)
+    input = document.createElement("input");
+    input.type = "hidden";
+    input.dataset.uiCalendarInput = "";
+    root.prepend(input);
   }
 
-  input.disabled = root.dataset.disabled === 'true'
-  input.value = root.dataset.uiCalendarValue ?? ''
+  input.disabled = root.dataset.disabled === "true";
+  input.value = root.dataset.uiCalendarValue ?? "";
 
-  if (root.hasAttribute('name') && !input.name) {
-    input.name = root.getAttribute('name') ?? ''
+  if (root.hasAttribute("name") && !input.name) {
+    input.name = root.getAttribute("name") ?? "";
   }
 
-  if (!root.querySelector('[data-ui-calendar-prev]')) {
-    const header = document.createElement('div')
-    const previous = document.createElement('button')
-    const label = document.createElement('strong')
-    const next = document.createElement('button')
+  if (!root.querySelector("[data-ui-calendar-prev]")) {
+    const header = document.createElement("div");
+    const previous = document.createElement("button");
+    const label = document.createElement("strong");
+    const next = document.createElement("button");
 
-    header.className = 'ui-calendar__header'
-    previous.type = 'button'
-    previous.className = 'ui-calendar__nav'
-    previous.dataset.uiCalendarPrev = ''
-    previous.setAttribute('aria-label', 'Previous month')
-    previous.innerHTML = '<span aria-hidden="true">&lsaquo;</span>'
-    label.className = 'ui-calendar__label'
-    label.dataset.uiCalendarLabel = ''
-    label.id = labelId
-    next.type = 'button'
-    next.className = 'ui-calendar__nav'
-    next.dataset.uiCalendarNext = ''
-    next.setAttribute('aria-label', 'Next month')
-    next.innerHTML = '<span aria-hidden="true">&rsaquo;</span>'
-    header.append(previous, label, next)
-    input.after(header)
+    header.className = "ui-calendar__header";
+    previous.type = "button";
+    previous.className = "ui-calendar__nav";
+    previous.dataset.uiCalendarPrev = "";
+    previous.setAttribute("aria-label", "Previous month");
+    previous.innerHTML = '<span aria-hidden="true">&lsaquo;</span>';
+    label.className = "ui-calendar__label";
+    label.dataset.uiCalendarLabel = "";
+    label.id = labelId;
+    next.type = "button";
+    next.className = "ui-calendar__nav";
+    next.dataset.uiCalendarNext = "";
+    next.setAttribute("aria-label", "Next month");
+    next.innerHTML = '<span aria-hidden="true">&rsaquo;</span>';
+    header.append(previous, label, next);
+    input.after(header);
   }
 
-  const label = root.querySelector<HTMLElement>(calendarLabelSelector)
+  const label = root.querySelector<HTMLElement>(calendarLabelSelector);
 
   if (label) {
-    label.id ||= labelId
+    label.id ||= labelId;
   }
 
   if (!root.querySelector(calendarGridSelector)) {
-    const table = document.createElement('table')
+    const table = document.createElement("table");
 
-    table.className = 'ui-calendar__grid'
-    table.dataset.uiCalendarGrid = ''
-    table.role = 'grid'
-    table.setAttribute('aria-labelledby', label?.id ?? labelId)
-    root.append(table)
+    table.className = "ui-calendar__grid";
+    table.dataset.uiCalendarGrid = "";
+    table.role = "grid";
+    table.setAttribute("aria-labelledby", label?.id ?? labelId);
+    root.append(table);
   }
-}
+};
 
-const syncCalendarNavigation = (root: HTMLElement, month: Date, min: Date | null, max: Date | null): void => {
-  const previous = root.querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')
-  const next = root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
-  const disabled = root.dataset.disabled === 'true'
-  const previousMonthLastDay = addCalendarDays(month, -1)
-  const nextMonthFirstDay = addCalendarMonths(month, 1)
+const syncCalendarNavigation = (
+  root: HTMLElement,
+  month: Date,
+  min: Date | null,
+  max: Date | null,
+): void => {
+  const previous = root.querySelector<HTMLButtonElement>(
+    "[data-ui-calendar-prev]",
+  );
+  const next = root.querySelector<HTMLButtonElement>("[data-ui-calendar-next]");
+  const disabled = root.dataset.disabled === "true";
+  const previousMonthLastDay = addCalendarDays(month, -1);
+  const nextMonthFirstDay = addCalendarMonths(month, 1);
 
-  if (previous) previous.disabled = disabled || compareCalendarDates(previousMonthLastDay, min) < 0
-  if (next) next.disabled = disabled || compareCalendarDates(nextMonthFirstDay, max) > 0
-}
+  if (previous)
+    previous.disabled =
+      disabled || compareCalendarDates(previousMonthLastDay, min) < 0;
+  if (next)
+    next.disabled =
+      disabled || compareCalendarDates(nextMonthFirstDay, max) > 0;
+};
 
-const renderCalendar = (root: HTMLElement, requestedFocusDate?: Date | null, shouldFocus = false): void => {
-  const label = root.querySelector<HTMLElement>(calendarLabelSelector)
-  const grid = root.querySelector<HTMLElement>(calendarGridSelector)
+const renderCalendar = (
+  root: HTMLElement,
+  requestedFocusDate?: Date | null,
+  shouldFocus = false,
+): void => {
+  const label = root.querySelector<HTMLElement>(calendarLabelSelector);
+  const grid = root.querySelector<HTMLElement>(calendarGridSelector);
 
-  if (!label || !grid) return
+  if (!label || !grid) return;
 
-  const locale = getCalendarLocale()
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
-  const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
-  const todayIso = formatCalendarDate(getCalendarToday())
+  const locale = getCalendarLocale();
+  const min = parseCalendarDate(root.dataset.uiCalendarMin);
+  const max = parseCalendarDate(root.dataset.uiCalendarMax);
+  const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue);
+  const todayIso = formatCalendarDate(getCalendarToday());
   const month =
     parseCalendarMonth(root.dataset.uiCalendarMonth) ??
-    (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : null) ??
-    getCalendarToday()
-  const visibleMonth = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1))
-  const focusDate = getCalendarFocusDate(root, visibleMonth, min, max, requestedFocusDate)
-  const focusIso = formatCalendarDate(focusDate)
-  const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
-  const monthLabel = new Intl.DateTimeFormat(locale, { month: 'long', timeZone: 'UTC', year: 'numeric' }).format(
-    visibleMonth
-  )
+    (selectedDate
+      ? new Date(
+          Date.UTC(
+            selectedDate.getUTCFullYear(),
+            selectedDate.getUTCMonth(),
+            1,
+          ),
+        )
+      : null) ??
+    getCalendarToday();
+  const visibleMonth = new Date(
+    Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1),
+  );
+  const focusDate = getCalendarFocusDate(
+    root,
+    visibleMonth,
+    min,
+    max,
+    requestedFocusDate,
+  );
+  const focusIso = formatCalendarDate(focusDate);
+  const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : "";
+  const monthLabel = new Intl.DateTimeFormat(locale, {
+    month: "long",
+    timeZone: "UTC",
+    year: "numeric",
+  }).format(visibleMonth);
   const dayLabel = new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'long',
-    timeZone: 'UTC',
-    weekday: 'long',
-    year: 'numeric'
-  })
-  const weekdayLabel = new Intl.DateTimeFormat(locale, { timeZone: 'UTC', weekday: 'short' })
-  const header = document.createElement('thead')
-  const headerRow = document.createElement('tr')
-  const body = document.createElement('tbody')
-  const firstCell = getCalendarGridStart(visibleMonth)
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+    weekday: "long",
+    year: "numeric",
+  });
+  const weekdayLabel = new Intl.DateTimeFormat(locale, {
+    timeZone: "UTC",
+    weekday: "short",
+  });
+  const header = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const body = document.createElement("tbody");
+  const firstCell = getCalendarGridStart(visibleMonth);
 
-  root.dataset.uiCalendarMonth = formatCalendarMonth(visibleMonth)
-  label.textContent = monthLabel
-  syncCalendarNavigation(root, visibleMonth, min, max)
-  headerRow.role = 'row'
+  root.dataset.uiCalendarMonth = formatCalendarMonth(visibleMonth);
+  label.textContent = monthLabel;
+  syncCalendarNavigation(root, visibleMonth, min, max);
+  headerRow.role = "row";
 
   for (let index = 0; index < 7; index += 1) {
-    const cell = document.createElement('th')
+    const cell = document.createElement("th");
 
-    cell.scope = 'col'
-    cell.role = 'columnheader'
-    cell.textContent = weekdayLabel.format(new Date(Date.UTC(2026, 0, 5 + index)))
-    headerRow.append(cell)
+    cell.scope = "col";
+    cell.role = "columnheader";
+    cell.textContent = weekdayLabel.format(
+      new Date(Date.UTC(2026, 0, 5 + index)),
+    );
+    headerRow.append(cell);
   }
 
-  header.append(headerRow)
+  header.append(headerRow);
 
   for (let rowIndex = 0; rowIndex < 6; rowIndex += 1) {
-    const row = document.createElement('tr')
+    const row = document.createElement("tr");
 
-    row.role = 'row'
+    row.role = "row";
 
     for (let columnIndex = 0; columnIndex < 7; columnIndex += 1) {
-      const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex)
-      const dateIso = formatCalendarDate(date)
-      const cell = document.createElement('td')
-      const unavailable = isCalendarDateDisabled(root, date, min, max)
+      const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex);
+      const dateIso = formatCalendarDate(date);
+      const cell = document.createElement("td");
+      const unavailable = isCalendarDateDisabled(root, date, min, max);
 
-      cell.role = 'gridcell'
-      cell.tabIndex = !unavailable && dateIso === focusIso ? 0 : -1
-      cell.textContent = String(date.getUTCDate())
-      cell.dataset.date = dateIso
-      cell.dataset.uiCalendarDay = ''
-      cell.setAttribute('aria-label', dayLabel.format(date))
-      cell.setAttribute('aria-selected', String(selectedIso === dateIso))
+      cell.role = "gridcell";
+      cell.tabIndex = !unavailable && dateIso === focusIso ? 0 : -1;
+      cell.textContent = String(date.getUTCDate());
+      cell.dataset.date = dateIso;
+      cell.dataset.uiCalendarDay = "";
+      cell.setAttribute("aria-label", dayLabel.format(date));
+      cell.setAttribute("aria-selected", String(selectedIso === dateIso));
 
-      if (unavailable) cell.setAttribute('aria-disabled', 'true')
-      if (formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth)) cell.dataset.outside = 'true'
-      if (dateIso === todayIso) cell.dataset.today = 'true'
-      if (selectedIso === dateIso) cell.dataset.selected = 'true'
+      if (unavailable) cell.setAttribute("aria-disabled", "true");
+      if (formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth))
+        cell.dataset.outside = "true";
+      if (dateIso === todayIso) cell.dataset.today = "true";
+      if (selectedIso === dateIso) cell.dataset.selected = "true";
 
-      row.append(cell)
+      row.append(cell);
     }
 
-    body.append(row)
+    body.append(row);
   }
 
-  grid.replaceChildren(header, body)
+  grid.replaceChildren(header, body);
 
   if (shouldFocus) {
-    root.querySelector<HTMLElement>(`${calendarDaySelector}[data-date="${focusIso}"]`)?.focus({ preventScroll: true })
+    root
+      .querySelector<HTMLElement>(
+        `${calendarDaySelector}[data-date="${focusIso}"]`,
+      )
+      ?.focus({ preventScroll: true });
   }
-}
+};
 
 const selectCalendarDate = (root: HTMLElement, date: Date): void => {
-  const input = root.querySelector<HTMLInputElement>(calendarInputSelector)
+  const input = root.querySelector<HTMLInputElement>(calendarInputSelector);
 
-  if (!input || root.dataset.disabled === 'true') return
+  if (!input || root.dataset.disabled === "true") return;
 
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
-  const nextDate = clampCalendarDate(date, min, max)
+  const min = parseCalendarDate(root.dataset.uiCalendarMin);
+  const max = parseCalendarDate(root.dataset.uiCalendarMax);
+  const nextDate = clampCalendarDate(date, min, max);
 
-  if (isCalendarDateDisabled(root, nextDate, min, max)) return
+  if (isCalendarDateDisabled(root, nextDate, min, max)) return;
 
-  input.value = formatCalendarDate(nextDate)
-  root.dataset.uiCalendarValue = input.value
-  root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
-  input.dispatchEvent(new Event('input', { bubbles: true }))
-  input.dispatchEvent(new Event('change', { bubbles: true }))
-  renderCalendar(root, nextDate, true)
-}
+  input.value = formatCalendarDate(nextDate);
+  root.dataset.uiCalendarValue = input.value;
+  root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.dispatchEvent(new Event("change", { bubbles: true }));
+  renderCalendar(root, nextDate, true);
+};
 
 const focusCalendarDate = (root: HTMLElement, date: Date): void => {
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
-  const nextDate = clampCalendarDate(date, min, max)
+  const min = parseCalendarDate(root.dataset.uiCalendarMin);
+  const max = parseCalendarDate(root.dataset.uiCalendarMax);
+  const nextDate = clampCalendarDate(date, min, max);
 
-  root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
-  renderCalendar(root, nextDate, true)
-}
+  root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate);
+  renderCalendar(root, nextDate, true);
+};
 
-const moveCalendarFocus = (root: HTMLElement, currentDate: Date, key: string): void => {
-  const column = (currentDate.getUTCDay() + 6) % 7
+const moveCalendarFocus = (
+  root: HTMLElement,
+  currentDate: Date,
+  key: string,
+): void => {
+  const column = (currentDate.getUTCDay() + 6) % 7;
   const keyOffsets: Record<string, number> = {
     ArrowDown: 7,
     ArrowLeft: -1,
     ArrowRight: 1,
     ArrowUp: -7,
     End: 6 - column,
-    Home: -column
+    Home: -column,
+  };
+
+  if (key === "PageDown" || key === "PageUp") {
+    focusCalendarDate(
+      root,
+      addCalendarMonths(currentDate, key === "PageDown" ? 1 : -1),
+    );
+
+    return;
   }
 
-  if (key === 'PageDown' || key === 'PageUp') {
-    focusCalendarDate(root, addCalendarMonths(currentDate, key === 'PageDown' ? 1 : -1))
-
-    return
-  }
-
-  const offset = keyOffsets[key]
+  const offset = keyOffsets[key];
 
   if (offset !== undefined) {
-    focusCalendarDate(root, addCalendarDays(currentDate, offset))
+    focusCalendarDate(root, addCalendarDays(currentDate, offset));
   }
-}
+};
 
 const initCalendars = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, calendarSelector)
-  const roots = getScopedElements<HTMLElement>(scope, calendarSelector)
+  const closestRoot = getClosestScopedElement(scope, calendarSelector);
+  const roots = getScopedElements<HTMLElement>(scope, calendarSelector);
 
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
+    roots.unshift(closestRoot);
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === "true") continue;
 
-    ensureCalendarStructure(root)
+    ensureCalendarStructure(root);
 
-    const input = root.querySelector<HTMLInputElement>(calendarInputSelector)
+    const input = root.querySelector<HTMLInputElement>(calendarInputSelector);
 
-    if (!input) continue
+    if (!input) continue;
 
-    root.dataset.uiBound = 'true'
-    renderCalendar(root)
-    root.querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')?.addEventListener('click', () => {
-      const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
+    root.dataset.uiBound = "true";
+    renderCalendar(root);
+    root
+      .querySelector<HTMLButtonElement>("[data-ui-calendar-prev]")
+      ?.addEventListener("click", () => {
+        const month = parseCalendarMonth(root.dataset.uiCalendarMonth);
 
-      if (!month) return
+        if (!month) return;
 
-      const nextMonth = addCalendarMonths(month, -1)
+        const nextMonth = addCalendarMonths(month, -1);
 
-      root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
-      renderCalendar(root, nextMonth, true)
-    })
-    root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')?.addEventListener('click', () => {
-      const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
+        root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth);
+        renderCalendar(root, nextMonth, true);
+      });
+    root
+      .querySelector<HTMLButtonElement>("[data-ui-calendar-next]")
+      ?.addEventListener("click", () => {
+        const month = parseCalendarMonth(root.dataset.uiCalendarMonth);
 
-      if (!month) return
+        if (!month) return;
 
-      const nextMonth = addCalendarMonths(month, 1)
+        const nextMonth = addCalendarMonths(month, 1);
 
-      root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
-      renderCalendar(root, nextMonth, true)
-    })
-    root.addEventListener('click', event => {
-      const target = event.target
+        root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth);
+        renderCalendar(root, nextMonth, true);
+      });
+    root.addEventListener("click", (event) => {
+      const target = event.target;
 
-      if (!(target instanceof Element)) return
+      if (!(target instanceof Element)) return;
 
-      const cell = target.closest<HTMLElement>(calendarDaySelector)
+      const cell = target.closest<HTMLElement>(calendarDaySelector);
 
-      if (!cell || !root.contains(cell) || cell.getAttribute('aria-disabled') === 'true') return
+      if (
+        !cell ||
+        !root.contains(cell) ||
+        cell.getAttribute("aria-disabled") === "true"
+      )
+        return;
 
-      const date = parseCalendarDate(cell.dataset.date)
+      const date = parseCalendarDate(cell.dataset.date);
 
-      if (date) selectCalendarDate(root, date)
-    })
-    root.addEventListener('keydown', event => {
-      const target = event.target
+      if (date) selectCalendarDate(root, date);
+    });
+    root.addEventListener("keydown", (event) => {
+      const target = event.target;
 
-      if (!(target instanceof HTMLElement) || !target.hasAttribute('data-ui-calendar-day')) return
+      if (
+        !(target instanceof HTMLElement) ||
+        !target.hasAttribute("data-ui-calendar-day")
+      )
+        return;
 
-      const date = parseCalendarDate(target.dataset.date)
+      const date = parseCalendarDate(target.dataset.date);
 
-      if (!date) return
+      if (!date) return;
 
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault()
-        selectCalendarDate(root, date)
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectCalendarDate(root, date);
 
-        return
+        return;
       }
 
       if (
-        event.key !== 'ArrowDown' &&
-        event.key !== 'ArrowLeft' &&
-        event.key !== 'ArrowRight' &&
-        event.key !== 'ArrowUp' &&
-        event.key !== 'End' &&
-        event.key !== 'Home' &&
-        event.key !== 'PageDown' &&
-        event.key !== 'PageUp'
+        event.key !== "ArrowDown" &&
+        event.key !== "ArrowLeft" &&
+        event.key !== "ArrowRight" &&
+        event.key !== "ArrowUp" &&
+        event.key !== "End" &&
+        event.key !== "Home" &&
+        event.key !== "PageDown" &&
+        event.key !== "PageUp"
       ) {
-        return
+        return;
       }
 
-      event.preventDefault()
-      moveCalendarFocus(root, date, event.key)
-    })
-    input.form?.addEventListener('reset', () => {
+      event.preventDefault();
+      moveCalendarFocus(root, date, event.key);
+    });
+    input.form?.addEventListener("reset", () => {
       globalThis.setTimeout(() => {
-        root.dataset.uiCalendarValue = input.value
-        root.dataset.uiCalendarMonth = root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
-        renderCalendar(root)
-      })
-    })
+        root.dataset.uiCalendarValue = input.value;
+        root.dataset.uiCalendarMonth =
+          root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth;
+        renderCalendar(root);
+      });
+    });
   }
-}
+};
 
 export const enhanceLumenCalendars = (scope: ParentNode = document): void => {
-  initCalendars(scope)
-}
+  initCalendars(scope);
+};
 
 const installCalendarController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsCalendarsBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsCalendarsBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsCalendarsBound = 'true'
-  enhanceLumenCalendars(document)
+  document.documentElement.dataset.uiElementsCalendarsBound = "true";
+  enhanceLumenCalendars(document);
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenCalendars(node)
+          enhanceLumenCalendars(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 /* eslint-enable @stylistic/padding-line-between-statements */
 
 const closeContextMenu = (menu: HTMLElement): void => {
-  if (menu.dataset.state !== 'open') return
+  if (menu.dataset.state !== "open") return;
 
-  menu.dataset.state = 'closed'
+  menu.dataset.state = "closed";
 
-  menu.hidden = true
-}
+  menu.hidden = true;
+};
 
 const closeOpenContextMenus = (except?: HTMLElement): void => {
-  if (!hasDocument()) return
+  if (!hasDocument()) return;
 
-  for (const menu of document.querySelectorAll<HTMLElement>(`${contextMenuSelector}[data-state="open"]`)) {
+  for (const menu of document.querySelectorAll<HTMLElement>(
+    `${contextMenuSelector}[data-state="open"]`,
+  )) {
     if (menu !== except) {
-      closeContextMenu(menu)
+      closeContextMenu(menu);
     }
   }
-}
+};
 
 const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
-  closeOpenContextMenus(menu)
+  closeOpenContextMenus(menu);
 
-  menu.hidden = false
+  menu.hidden = false;
 
-  menu.style.position = 'fixed'
+  menu.style.position = "fixed";
 
-  menu.style.zIndex = '60'
+  menu.style.zIndex = "60";
 
-  menu.dataset.state = 'open'
+  menu.dataset.state = "open";
 
-  const rect = menu.getBoundingClientRect()
-  const left = Math.max(8, Math.min(x, window.innerWidth - rect.width - 8))
-  const top = Math.max(8, Math.min(y, window.innerHeight - rect.height - 8))
+  const rect = menu.getBoundingClientRect();
+  const left = Math.max(8, Math.min(x, window.innerWidth - rect.width - 8));
+  const top = Math.max(8, Math.min(y, window.innerHeight - rect.height - 8));
 
-  menu.style.left = `${left}px`
+  menu.style.left = `${left}px`;
 
-  menu.style.top = `${top}px`
+  menu.style.top = `${top}px`;
 
-  getFocusable(menu)[0]?.focus()
-}
+  getFocusable(menu)[0]?.focus();
+};
 
 const initContextMenus = (scope: ParentNode): void => {
-  for (const trigger of getScopedElements<HTMLElement>(scope, contextMenuTriggerSelector)) {
-    if (trigger.dataset.uiContextMenuBound === 'true') continue
+  for (const trigger of getScopedElements<HTMLElement>(
+    scope,
+    contextMenuTriggerSelector,
+  )) {
+    if (trigger.dataset.uiContextMenuBound === "true") continue;
 
-    const menuId = trigger.getAttribute('data-ui-context-menu-trigger')
-    const menu = menuId && hasDocument() ? document.getElementById(menuId) : null
+    const menuId = trigger.getAttribute("data-ui-context-menu-trigger");
+    const menu =
+      menuId && hasDocument() ? document.getElementById(menuId) : null;
 
-    if (!(menu instanceof HTMLElement)) continue
+    if (!(menu instanceof HTMLElement)) continue;
 
-    trigger.dataset.uiContextMenuBound = 'true'
+    trigger.dataset.uiContextMenuBound = "true";
 
-    menu.hidden = true
+    menu.hidden = true;
 
-    menu.dataset.state = 'closed'
+    menu.dataset.state = "closed";
 
-    trigger.addEventListener('contextmenu', event => {
-      event.preventDefault()
+    trigger.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
 
-      openContextMenuAt(menu, event.clientX, event.clientY)
-    })
+      openContextMenuAt(menu, event.clientX, event.clientY);
+    });
 
-    trigger.addEventListener('keydown', event => {
-      if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return
+    trigger.addEventListener("keydown", (event) => {
+      if (
+        event.key !== "ContextMenu" &&
+        !(event.shiftKey && event.key === "F10")
+      )
+        return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      const rect = trigger.getBoundingClientRect()
+      const rect = trigger.getBoundingClientRect();
 
-      openContextMenuAt(menu, rect.left + 16, rect.top + 16)
-    })
+      openContextMenuAt(menu, rect.left + 16, rect.top + 16);
+    });
 
-    if (menu.dataset.uiContextMenuMenuBound === 'true') continue
+    if (menu.dataset.uiContextMenuMenuBound === "true") continue;
 
-    menu.dataset.uiContextMenuMenuBound = 'true'
+    menu.dataset.uiContextMenuMenuBound = "true";
 
-    menu.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
+    menu.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
 
-        closeContextMenu(menu)
+        closeContextMenu(menu);
 
-        trigger.focus({ preventScroll: true })
+        trigger.focus({ preventScroll: true });
 
-        return
+        return;
       }
 
-      if (!['ArrowDown', 'ArrowUp', 'End', 'Home'].includes(event.key)) return
+      if (!["ArrowDown", "ArrowUp", "End", "Home"].includes(event.key)) return;
 
-      const items = getFocusable(menu)
+      const items = getFocusable(menu);
 
-      if (items.length === 0) return
+      if (items.length === 0) return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+      const currentIndex = items.indexOf(document.activeElement as HTMLElement);
 
-      items[getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])]?.focus()
-    })
+      items[
+        getLoopedIndex(event.key, currentIndex, items.length, ["ArrowDown"])
+      ]?.focus();
+    });
 
-    menu.addEventListener('click', event => {
-      if (event.target instanceof HTMLElement && event.target.closest('[role="menuitem"]')) {
-        closeContextMenu(menu)
+    menu.addEventListener("click", (event) => {
+      if (
+        event.target instanceof HTMLElement &&
+        event.target.closest('[role="menuitem"]')
+      ) {
+        closeContextMenu(menu);
       }
-    })
+    });
   }
-}
+};
 
-export const enhanceLumenContextMenus = (scope: ParentNode = document): void => {
-  initContextMenus(scope)
-}
+export const enhanceLumenContextMenus = (
+  scope: ParentNode = document,
+): void => {
+  initContextMenus(scope);
+};
 
 const installContextMenuController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsContextMenusBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsContextMenusBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsContextMenusBound = 'true'
+  document.documentElement.dataset.uiElementsContextMenusBound = "true";
 
-  enhanceLumenContextMenus(document)
+  enhanceLumenContextMenus(document);
 
-  document.addEventListener('pointerdown', event => {
-    const target = getOwnedTarget(event)
+  document.addEventListener("pointerdown", (event) => {
+    const target = getOwnedTarget(event);
 
-    if (!target) return
+    if (!target) return;
 
-    for (const menu of document.querySelectorAll<HTMLElement>(`${contextMenuSelector}[data-state="open"]`)) {
+    for (const menu of document.querySelectorAll<HTMLElement>(
+      `${contextMenuSelector}[data-state="open"]`,
+    )) {
       if (!menu.contains(target)) {
-        closeContextMenu(menu)
+        closeContextMenu(menu);
       }
     }
-  })
+  });
 
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      closeOpenContextMenus()
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeOpenContextMenus();
     }
-  })
+  });
 
-  if (typeof MutationObserver === 'undefined') return
+  if (typeof MutationObserver === "undefined") return;
 
-  const observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenContextMenus(node)
+          enhanceLumenContextMenus(node);
         }
       }
     }
-  })
+  });
 
-  observer.observe(document.documentElement, { childList: true, subtree: true })
-}
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+};
 
-const getDataTableSortValue = (cell: HTMLTableCellElement | undefined): string => {
-  if (!cell) return ''
+const getDataTableSortValue = (
+  cell: HTMLTableCellElement | undefined,
+): string => {
+  if (!cell) return "";
 
-  return cell.dataset.sortValue ?? cell.textContent.trim()
-}
+  return cell.dataset.sortValue ?? cell.textContent.trim();
+};
 
-const compareDataTableValues = (value: string, other: string, sortType: string | undefined): number => {
-  const numericValue = Number(value.replaceAll(',', ''))
-  const numericOther = Number(other.replaceAll(',', ''))
+const compareDataTableValues = (
+  value: string,
+  other: string,
+  sortType: string | undefined,
+): number => {
+  const numericValue = Number(value.replaceAll(",", ""));
+  const numericOther = Number(other.replaceAll(",", ""));
 
   const useNumeric =
-    sortType === 'number' ||
-    (sortType !== 'string' &&
-      value.trim() !== '' &&
-      other.trim() !== '' &&
+    sortType === "number" ||
+    (sortType !== "string" &&
+      value.trim() !== "" &&
+      other.trim() !== "" &&
       Number.isFinite(numericValue) &&
-      Number.isFinite(numericOther))
+      Number.isFinite(numericOther));
 
   if (useNumeric) {
-    return numericValue - numericOther
+    return numericValue - numericOther;
   }
 
-  return value.localeCompare(other, undefined, { numeric: true, sensitivity: 'base' })
-}
+  return value.localeCompare(other, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
+};
 
-const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] => [...(table.tBodies[0]?.rows ?? [])]
-const getDataTableRowValue = (row: HTMLTableRowElement, index: number): string => row.dataset.value || row.id || String(index)
+const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] => [
+  ...(table.tBodies[0]?.rows ?? []),
+];
+const getDataTableRowValue = (
+  row: HTMLTableRowElement,
+  index: number,
+): string => row.dataset.value || row.id || String(index);
 
 const getNextDataTableSortDirection = (
   currentColumn: string | undefined,
   columnIndex: number,
-  currentDirection: string | null
+  currentDirection: string | null,
 ): DataTableSortDirection => {
-  if (currentColumn !== String(columnIndex) || currentDirection === 'none') return 'ascending'
+  if (currentColumn !== String(columnIndex) || currentDirection === "none")
+    return "ascending";
 
-  if (currentDirection === 'ascending') return 'descending'
+  if (currentDirection === "ascending") return "descending";
 
-  return 'none'
-}
+  return "none";
+};
 
 const getControlledPanel = (trigger: HTMLElement): HTMLElement | null => {
-  const controls = trigger.getAttribute('aria-controls')
+  const controls = trigger.getAttribute("aria-controls");
 
   if (controls && hasDocument()) {
-    return document.getElementById(controls)
+    return document.getElementById(controls);
   }
 
-  return trigger.nextElementSibling instanceof HTMLElement ? trigger.nextElementSibling : null
-}
+  return trigger.nextElementSibling instanceof HTMLElement
+    ? trigger.nextElementSibling
+    : null;
+};
 
-const setDisclosureOpen = (trigger: HTMLElement, panel: HTMLElement, open: boolean): void => {
-  trigger.setAttribute('aria-expanded', String(open))
+const setDisclosureOpen = (
+  trigger: HTMLElement,
+  panel: HTMLElement,
+  open: boolean,
+): void => {
+  trigger.setAttribute("aria-expanded", String(open));
 
-  panel.hidden = !open
+  panel.hidden = !open;
 
-  panel.dataset.state = open ? 'open' : 'closed'
-}
+  panel.dataset.state = open ? "open" : "closed";
+};
 
-const isPrintableKey = (event: KeyboardEvent): boolean => event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
+const isPrintableKey = (event: KeyboardEvent): boolean =>
+  event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey;
 
 const escapeCssIdentifier = (value: string): string => {
-  if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
-    return CSS.escape(value)
+  if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
+    return CSS.escape(value);
   }
 
-  return value.replaceAll(/["#.:?[\\\]]/g, '\\$&')
-}
+  return value.replaceAll(/["#.:?[\\\]]/g, "\\$&");
+};
 
-const isToastPlacement = (placement: string | undefined): placement is ToastPlacement => placement === 'top-left' ||
-  placement === 'top-center' ||
-  placement === 'top-right' ||
-  placement === 'bottom-left' ||
-  placement === 'bottom-center' ||
-  placement === 'bottom-right'
+const isToastPlacement = (
+  placement: string | undefined,
+): placement is ToastPlacement =>
+  placement === "top-left" ||
+  placement === "top-center" ||
+  placement === "top-right" ||
+  placement === "bottom-left" ||
+  placement === "bottom-center" ||
+  placement === "bottom-right";
 
-const getToastPlacement = (placement: string | undefined): ToastPlacement => isToastPlacement(placement) ? placement : 'bottom-right'
+const getToastPlacement = (placement: string | undefined): ToastPlacement =>
+  isToastPlacement(placement) ? placement : "bottom-right";
 
 const getToastVariantClass = (variant: ToastVariant): string | false => {
-  if (variant === 'success') return 'ui-toast--success'
+  if (variant === "success") return "ui-toast--success";
 
-  if (variant === 'warning') return 'ui-toast--warning'
+  if (variant === "warning") return "ui-toast--warning";
 
-  if (variant === 'destructive') return 'ui-toast--destructive'
+  if (variant === "destructive") return "ui-toast--destructive";
 
-  return false
-}
+  return false;
+};
 
-const normalizeToastViewport = (viewport: HTMLElement, placement?: string): void => {
-  viewport.classList.add('ui-sonner')
+const normalizeToastViewport = (
+  viewport: HTMLElement,
+  placement?: string,
+): void => {
+  viewport.classList.add("ui-sonner");
 
-  viewport.dataset.uiSonner = ''
+  viewport.dataset.uiSonner = "";
 
-  viewport.dataset.placement = getToastPlacement(placement ?? viewport.dataset.placement)
+  viewport.dataset.placement = getToastPlacement(
+    placement ?? viewport.dataset.placement,
+  );
 
-  viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')
+  viewport.setAttribute(
+    "aria-live",
+    viewport.getAttribute("aria-live") ?? "polite",
+  );
 
-  viewport.setAttribute('aria-atomic', viewport.getAttribute('aria-atomic') ?? 'false')
+  viewport.setAttribute(
+    "aria-atomic",
+    viewport.getAttribute("aria-atomic") ?? "false",
+  );
 
-  viewport.setAttribute('aria-label', viewport.getAttribute('aria-label') ?? 'Notifications')
-}
+  viewport.setAttribute(
+    "aria-label",
+    viewport.getAttribute("aria-label") ?? "Notifications",
+  );
+};
 
-const getToastViewport = (placement: string | undefined): HTMLElement | null => {
-  if (!hasDocument()) return null
+const getToastViewport = (
+  placement: string | undefined,
+): HTMLElement | null => {
+  if (!hasDocument()) return null;
 
-  const resolvedPlacement = getToastPlacement(placement)
-  const shouldUseAnyViewport = placement === undefined
+  const resolvedPlacement = getToastPlacement(placement);
+  const shouldUseAnyViewport = placement === undefined;
 
   const existing =
-    document.querySelector<HTMLElement>(`[data-ui-sonner][data-placement="${resolvedPlacement}"]`) ??
-    (shouldUseAnyViewport ? document.querySelector<HTMLElement>('[data-ui-sonner]') : null)
+    document.querySelector<HTMLElement>(
+      `[data-ui-sonner][data-placement="${resolvedPlacement}"]`,
+    ) ??
+    (shouldUseAnyViewport
+      ? document.querySelector<HTMLElement>("[data-ui-sonner]")
+      : null);
 
   if (existing) {
-    normalizeToastViewport(existing, existing.dataset.placement ?? resolvedPlacement)
+    normalizeToastViewport(
+      existing,
+      existing.dataset.placement ?? resolvedPlacement,
+    );
 
-    return existing
+    return existing;
   }
 
-  const tagName = typeof customElements !== 'undefined' && customElements.get('lumen-sonner') ? 'lumen-sonner' : 'div'
-  const viewport = document.createElement(tagName)
+  const tagName =
+    typeof customElements !== "undefined" && customElements.get("lumen-sonner")
+      ? "lumen-sonner"
+      : "div";
+  const viewport = document.createElement(tagName);
 
-  normalizeToastViewport(viewport, resolvedPlacement)
+  normalizeToastViewport(viewport, resolvedPlacement);
 
-  document.body.append(viewport)
+  document.body.append(viewport);
 
-  return viewport
-}
+  return viewport;
+};
 
 const clearToastTimer = (toast: HTMLElement): void => {
-  const timer = toastTimers.get(toast)
+  const timer = toastTimers.get(toast);
 
-  if (!timer) return
+  if (!timer) return;
 
   if (timer.timer) {
-    globalThis.clearTimeout(timer.timer)
+    globalThis.clearTimeout(timer.timer);
   }
 
-  timer.cleanup?.()
+  timer.cleanup?.();
 
-  toastTimers.delete(toast)
-}
+  toastTimers.delete(toast);
+};
 
 const dismissToastElement = (toast: HTMLElement): void => {
-  clearToastTimer(toast)
+  clearToastTimer(toast);
 
-  toast.dataset.state = 'closed'
+  toast.dataset.state = "closed";
 
   globalThis.setTimeout(() => {
-    toast.remove()
-  }, toastCloseDelay)
-}
+    toast.remove();
+  }, toastCloseDelay);
+};
 
 const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
-  clearToastTimer(toast)
+  clearToastTimer(toast);
 
-  if (!Number.isFinite(duration) || duration <= 0) return
+  if (!Number.isFinite(duration) || duration <= 0) return;
 
   const timerState: {
-    cleanup: (() => void) | undefined
-    remaining: number
-    startedAt: number
-    timer: ReturnType<typeof globalThis.setTimeout> | undefined
+    cleanup: (() => void) | undefined;
+    remaining: number;
+    startedAt: number;
+    timer: ReturnType<typeof globalThis.setTimeout> | undefined;
   } = {
     cleanup: undefined,
     remaining: duration,
     startedAt: Date.now(),
-    timer: undefined as ReturnType<typeof globalThis.setTimeout> | undefined
-  }
+    timer: undefined as ReturnType<typeof globalThis.setTimeout> | undefined,
+  };
 
   const start = (): void => {
-    timerState.startedAt = Date.now()
+    timerState.startedAt = Date.now();
 
     timerState.timer = globalThis.setTimeout(() => {
-      dismissToastElement(toast)
-    }, timerState.remaining)
-  }
+      dismissToastElement(toast);
+    }, timerState.remaining);
+  };
 
   const pause = (): void => {
     if (timerState.timer) {
-      globalThis.clearTimeout(timerState.timer)
+      globalThis.clearTimeout(timerState.timer);
     }
 
-    timerState.remaining = Math.max(0, timerState.remaining - (Date.now() - timerState.startedAt))
-  }
+    timerState.remaining = Math.max(
+      0,
+      timerState.remaining - (Date.now() - timerState.startedAt),
+    );
+  };
 
   const resume = (): void => {
-    if (timerState.remaining > 0) start()
-  }
+    if (timerState.remaining > 0) start();
+  };
 
   timerState.cleanup = () => {
-    toast.removeEventListener('mouseenter', pause)
+    toast.removeEventListener("mouseenter", pause);
 
-    toast.removeEventListener('mouseleave', resume)
+    toast.removeEventListener("mouseleave", resume);
 
-    toast.removeEventListener('focusin', pause)
+    toast.removeEventListener("focusin", pause);
 
-    toast.removeEventListener('focusout', resume)
-  }
+    toast.removeEventListener("focusout", resume);
+  };
 
-  toast.addEventListener('mouseenter', pause)
+  toast.addEventListener("mouseenter", pause);
 
-  toast.addEventListener('mouseleave', resume)
+  toast.addEventListener("mouseleave", resume);
 
-  toast.addEventListener('focusin', pause)
+  toast.addEventListener("focusin", pause);
 
-  toast.addEventListener('focusout', resume)
+  toast.addEventListener("focusout", resume);
 
-  toastTimers.set(toast, timerState)
+  toastTimers.set(toast, timerState);
 
-  start()
-}
+  start();
+};
 
 const setToastContent = (toast: HTMLElement, detail: ToastDetail): void => {
-  const title = detail.title ?? toast.dataset.title ?? 'Notification'
-  const description = detail.description ?? toast.dataset.description ?? ''
-  const variant = detail.variant ?? toast.dataset.variant ?? 'default'
-  const variantClass = getToastVariantClass(variant)
+  const title = detail.title ?? toast.dataset.title ?? "Notification";
+  const description = detail.description ?? toast.dataset.description ?? "";
+  const variant = detail.variant ?? toast.dataset.variant ?? "default";
+  const variantClass = getToastVariantClass(variant);
 
-  toast.className = variantClass ? `ui-toast ${variantClass}` : 'ui-toast'
+  toast.className = variantClass ? `ui-toast ${variantClass}` : "ui-toast";
 
-  toast.dataset.uiToast = ''
+  toast.dataset.uiToast = "";
 
-  toast.dataset.variant = variant
+  toast.dataset.variant = variant;
 
-  toast.dataset.title = title
+  toast.dataset.title = title;
 
-  toast.dataset.description = description
+  toast.dataset.description = description;
 
-  toast.setAttribute('variant', variant)
+  toast.setAttribute("variant", variant);
 
-  toast.setAttribute('role', variant === 'destructive' ? 'alert' : 'status')
+  toast.setAttribute("role", variant === "destructive" ? "alert" : "status");
 
-  toast.setAttribute('aria-live', variant === 'destructive' ? 'assertive' : 'polite')
+  toast.setAttribute(
+    "aria-live",
+    variant === "destructive" ? "assertive" : "polite",
+  );
 
-  toast.replaceChildren()
+  toast.replaceChildren();
 
-  const body = document.createElement('div')
-  const heading = document.createElement('strong')
+  const body = document.createElement("div");
+  const heading = document.createElement("strong");
 
-  body.className = 'ui-toast__body'
+  body.className = "ui-toast__body";
 
-  heading.textContent = title
+  heading.textContent = title;
 
-  body.append(heading)
+  body.append(heading);
 
   if (description) {
-    const text = document.createElement('p')
+    const text = document.createElement("p");
 
-    text.textContent = description
+    text.textContent = description;
 
-    body.append(text)
+    body.append(text);
   }
 
-  toast.append(body)
+  toast.append(body);
 
   if (detail.action?.label) {
-    const action = document.createElement('button')
+    const action = document.createElement("button");
 
-    action.className = 'ui-button ui-button--secondary ui-button--sm ui-toast__action'
+    action.className =
+      "ui-button ui-button--secondary ui-button--sm ui-toast__action";
 
-    action.type = 'button'
+    action.type = "button";
 
-    action.textContent = detail.action.label
+    action.textContent = detail.action.label;
 
-    action.addEventListener('click', event => {
-      detail.action?.onClick?.(event, toast)
+    action.addEventListener("click", (event) => {
+      detail.action?.onClick?.(event, toast);
 
       toast.dispatchEvent(
-        new CustomEvent(detail.action?.event ?? 'ui:toast-action', {
+        new CustomEvent(detail.action?.event ?? "ui:toast-action", {
           bubbles: true,
-          detail: { id: toast.id, value: detail.action?.value }
-        })
-      )
+          detail: { id: toast.id, value: detail.action?.value },
+        }),
+      );
 
-      dismissToastElement(toast)
-    })
+      dismissToastElement(toast);
+    });
 
-    toast.append(action)
+    toast.append(action);
   }
 
-  const dismiss = document.createElement('button')
+  const dismiss = document.createElement("button");
 
-  dismiss.className = 'ui-toast__dismiss'
+  dismiss.className = "ui-toast__dismiss";
 
-  dismiss.type = 'button'
+  dismiss.type = "button";
 
-  dismiss.setAttribute('aria-label', 'Dismiss notification')
+  dismiss.setAttribute("aria-label", "Dismiss notification");
 
-  dismiss.textContent = 'Dismiss'
+  dismiss.textContent = "Dismiss";
 
-  dismiss.addEventListener('click', () => {
-    dismissToastElement(toast)
-  })
+  dismiss.addEventListener("click", () => {
+    dismissToastElement(toast);
+  });
 
-  toast.append(dismiss)
-}
+  toast.append(dismiss);
+};
 
 export const LumenToast: ToastApi = {
   create(detail) {
-    const viewport = getToastViewport(detail.placement)
+    const viewport = getToastViewport(detail.placement);
 
-    if (!viewport) return detail.id ?? createId('ui-toast')
+    if (!viewport) return detail.id ?? createId("ui-toast");
 
-    const id = detail.id ?? createId('ui-toast')
-    const duration = detail.duration ?? defaultToastDuration
-    const max = detail.max ?? Number(viewport.dataset.uiToastMax ?? defaultToastMax)
-    const existingToast = document.getElementById(id)
+    const id = detail.id ?? createId("ui-toast");
+    const duration = detail.duration ?? defaultToastDuration;
+    const max =
+      detail.max ?? Number(viewport.dataset.uiToastMax ?? defaultToastMax);
+    const existingToast = document.getElementById(id);
 
-    if (existingToast instanceof HTMLElement && existingToast.hasAttribute('data-ui-toast')) {
-      existingToast.dataset.state = 'open'
+    if (
+      existingToast instanceof HTMLElement &&
+      existingToast.hasAttribute("data-ui-toast")
+    ) {
+      existingToast.dataset.state = "open";
 
-      setToastContent(existingToast, detail)
+      setToastContent(existingToast, detail);
 
-      viewport.append(existingToast)
+      viewport.append(existingToast);
 
-      scheduleToastDismiss(existingToast, duration)
+      scheduleToastDismiss(existingToast, duration);
 
-      return id
+      return id;
     }
 
-    const tagName = typeof customElements !== 'undefined' && customElements.get('lumen-toast') ? 'lumen-toast' : 'aside'
-    const toast = document.createElement(tagName)
+    const tagName =
+      typeof customElements !== "undefined" && customElements.get("lumen-toast")
+        ? "lumen-toast"
+        : "aside";
+    const toast = document.createElement(tagName);
 
-    toast.id = id
+    toast.id = id;
 
-    toast.dataset.state = 'open'
+    toast.dataset.state = "open";
 
-    toast.addEventListener('keydown', event => {
-      if (event.key !== 'Escape') return
+    toast.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      dismissToastElement(toast)
-    })
+      dismissToastElement(toast);
+    });
 
-    setToastContent(toast, detail)
+    setToastContent(toast, detail);
 
-    viewport.append(toast)
+    viewport.append(toast);
 
-    scheduleToastDismiss(toast, duration)
+    scheduleToastDismiss(toast, duration);
 
-    const toasts = [...viewport.querySelectorAll<HTMLElement>('[data-ui-toast]')]
+    const toasts = [
+      ...viewport.querySelectorAll<HTMLElement>("[data-ui-toast]"),
+    ];
 
-    for (const staleToast of toasts.slice(0, Math.max(0, toasts.length - max))) {
-      dismissToastElement(staleToast)
+    for (const staleToast of toasts.slice(
+      0,
+      Math.max(0, toasts.length - max),
+    )) {
+      dismissToastElement(staleToast);
     }
 
-    return id
+    return id;
   },
   dismiss(id) {
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    const selector = id ? `#${escapeCssIdentifier(id)}` : '[data-ui-toast]'
+    const selector = id ? `#${escapeCssIdentifier(id)}` : "[data-ui-toast]";
 
     for (const toast of document.querySelectorAll<HTMLElement>(selector)) {
-      if (toast.hasAttribute('data-ui-toast')) {
-        dismissToastElement(toast)
+      if (toast.hasAttribute("data-ui-toast")) {
+        dismissToastElement(toast);
       }
     }
   },
   update(id, detail) {
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    const toast = document.getElementById(id)
+    const toast = document.getElementById(id);
 
-    if (!(toast instanceof HTMLElement) || !toast.hasAttribute('data-ui-toast')) return
+    if (!(toast instanceof HTMLElement) || !toast.hasAttribute("data-ui-toast"))
+      return;
 
-    setToastContent(toast, { ...detail, id })
+    setToastContent(toast, { ...detail, id });
 
     if (detail.duration !== undefined) {
-      scheduleToastDismiss(toast, detail.duration)
+      scheduleToastDismiss(toast, detail.duration);
     }
-  }
-}
+  },
+};
 
 const installToastController = (): void => {
-  if (!hasDocument() || document.documentElement.dataset.uiElementsToastsBound === 'true') return
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsToastsBound === "true"
+  )
+    return;
 
-  document.documentElement.dataset.uiElementsToastsBound = 'true'
+  document.documentElement.dataset.uiElementsToastsBound = "true";
 
-  ;(globalThis as typeof globalThis & { LumenToast?: ToastApi }).LumenToast = LumenToast
+  (globalThis as typeof globalThis & { LumenToast?: ToastApi }).LumenToast =
+    LumenToast;
 
-  for (const viewport of document.querySelectorAll<HTMLElement>('[data-ui-sonner]')) {
-    normalizeToastViewport(viewport)
+  for (const viewport of document.querySelectorAll<HTMLElement>(
+    "[data-ui-sonner]",
+  )) {
+    normalizeToastViewport(viewport);
   }
 
-  document.addEventListener('ui:toast', event => {
-    LumenToast.create(event instanceof CustomEvent ? (event.detail as ToastDetail) : {})
-  })
+  document.addEventListener("ui:toast", (event) => {
+    LumenToast.create(
+      event instanceof CustomEvent ? (event.detail as ToastDetail) : {},
+    );
+  });
 
-  document.addEventListener('ui:toast-update', event => {
-    const detail = event instanceof CustomEvent ? (event.detail as ToastDetail) : {}
+  document.addEventListener("ui:toast-update", (event) => {
+    const detail =
+      event instanceof CustomEvent ? (event.detail as ToastDetail) : {};
 
     if (detail.id) {
-      LumenToast.update(detail.id, detail)
+      LumenToast.update(detail.id, detail);
     }
-  })
+  });
 
-  document.addEventListener('ui:toast-dismiss', event => {
-    const detail = event instanceof CustomEvent ? (event.detail as { id?: string }) : {}
+  document.addEventListener("ui:toast-dismiss", (event) => {
+    const detail =
+      event instanceof CustomEvent ? (event.detail as { id?: string }) : {};
 
-    LumenToast.dismiss(detail.id)
-  })
-}
+    LumenToast.dismiss(detail.id);
+  });
+};
 
 export class LumenElement extends HTMLElement {
-  static config: LumenElementConfig
+  static config: LumenElementConfig;
 
   static get observedAttributes() {
-    return observedAttributeNames
+    return observedAttributeNames;
   }
 
   connectedCallback() {
-    this.applyDefaults()
+    this.applyDefaults();
 
-    this.applyClassNames()
+    this.applyClassNames();
   }
 
   disconnectedCallback() {
     /* Subclasses clean up behavior listeners when needed. */
   }
 
-  attributeChangedCallback(_name?: string, _previousValue?: string | null, _value?: string | null) {
-    this.applyClassNames()
+  attributeChangedCallback(
+    _name?: string,
+    _previousValue?: string | null,
+    _value?: string | null,
+  ) {
+    this.applyClassNames();
   }
 
   protected get config() {
-    return (this.constructor as typeof LumenElement).config
+    return (this.constructor as typeof LumenElement).config;
   }
 
   private applyDefaults() {
     for (const [name, value] of Object.entries(this.config.defaults ?? {})) {
       if (!this.hasAttribute(name)) {
-        this.setAttribute(name, value)
+        this.setAttribute(name, value);
       }
     }
 
-    if (this.config.role && !this.hasAttribute('role')) {
-      this.setAttribute('role', this.config.role)
+    if (this.config.role && !this.hasAttribute("role")) {
+      this.setAttribute("role", this.config.role);
     }
   }
 
   private applyClassNames() {
-    const previousClassNames = appliedClassNames.get(this) ?? []
+    const previousClassNames = appliedClassNames.get(this) ?? [];
 
     for (const className of previousClassNames) {
-      this.classList.remove(className)
+      this.classList.remove(className);
     }
 
-    const classNames = mergeClassNames(this.config.baseClassName)
+    const classNames = mergeClassNames(this.config.baseClassName);
 
-    for (const [attributeName, classMap] of Object.entries(this.config.attributeClasses ?? {})) {
-      const attributeValue = this.hasAttribute(attributeName) ?
-        this.getAttribute(attributeName) || 'true' :
-        this.config.defaults?.[attributeName]
+    for (const [attributeName, classMap] of Object.entries(
+      this.config.attributeClasses ?? {},
+    )) {
+      const attributeValue = this.hasAttribute(attributeName)
+        ? this.getAttribute(attributeName) || "true"
+        : this.config.defaults?.[attributeName];
 
-      const className = attributeValue ? classMap[attributeValue] : undefined
+      const className = attributeValue ? classMap[attributeValue] : undefined;
 
       if (className) {
-        classNames.push(...mergeClassNames(className))
+        classNames.push(...mergeClassNames(className));
       }
     }
 
-    this.classList.add(...classNames)
+    this.classList.add(...classNames);
 
-    appliedClassNames.set(this, classNames)
+    appliedClassNames.set(this, classNames);
   }
 }
 
-type LumenScalarNativeControl = HTMLInputElement | HTMLTextAreaElement
+type LumenScalarNativeControl = HTMLInputElement | HTMLTextAreaElement;
 
 const scalarControlAttributes = [
-  'accept',
-  'aria-describedby',
-  'aria-label',
-  'aria-labelledby',
-  'autocomplete',
-  'disabled',
-  'form',
-  'inputmode',
-  'max',
-  'maxlength',
-  'min',
-  'minlength',
-  'multiple',
-  'pattern',
-  'placeholder',
-  'readonly',
-  'required',
-  'rows',
-  'step'
-] as const
+  "accept",
+  "aria-describedby",
+  "aria-label",
+  "aria-labelledby",
+  "autocomplete",
+  "disabled",
+  "form",
+  "inputmode",
+  "max",
+  "maxlength",
+  "min",
+  "minlength",
+  "multiple",
+  "pattern",
+  "placeholder",
+  "readonly",
+  "required",
+  "rows",
+  "step",
+] as const;
 
 const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
   badInput: validity.badInput,
@@ -3909,1816 +4742,2100 @@ const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
   tooLong: validity.tooLong,
   tooShort: validity.tooShort,
   typeMismatch: validity.typeMismatch,
-  valueMissing: validity.valueMissing
-})
+  valueMissing: validity.valueMissing,
+});
 
 class LumenScalarFormControlElement extends LumenElement {
-  static formAssociated = true
-  static nativeTagName: 'input' | 'textarea' = 'input'
+  static formAssociated = true;
+  static nativeTagName: "input" | "textarea" = "input";
 
-  private control: LumenScalarNativeControl | undefined
-  private defaultCheckedState = false
-  private defaultValueState = ''
-  private eventController: AbortController | undefined
-  private internals: ElementInternals | undefined
+  private control: LumenScalarNativeControl | undefined;
+  private defaultCheckedState = false;
+  private defaultValueState = "";
+  private eventController: AbortController | undefined;
+  private internals: ElementInternals | undefined;
 
   constructor() {
-    super()
+    super();
 
-    if (typeof this.attachInternals === 'function') {
-      const internals = this.attachInternals()
+    if (typeof this.attachInternals === "function") {
+      const internals = this.attachInternals();
 
-      if (typeof internals.setFormValue === 'function' && typeof internals.setValidity === 'function') {
-        this.internals = internals
+      if (
+        typeof internals.setFormValue === "function" &&
+        typeof internals.setValidity === "function"
+      ) {
+        this.internals = internals;
       }
     }
   }
 
   get checked(): boolean {
-    return this.control instanceof HTMLInputElement && this.control.checked
+    return this.control instanceof HTMLInputElement && this.control.checked;
   }
 
   set checked(checked: boolean) {
     if (this.control instanceof HTMLInputElement) {
-      this.control.checked = checked
+      this.control.checked = checked;
 
-      this.syncFormState()
+      this.syncFormState();
     }
 
-    this.toggleAttribute('checked', checked)
+    this.toggleAttribute("checked", checked);
   }
 
   get defaultChecked(): boolean {
-    return this.defaultCheckedState
+    return this.defaultCheckedState;
   }
 
   set defaultChecked(checked: boolean) {
-    this.defaultCheckedState = checked
+    this.defaultCheckedState = checked;
 
-    this.toggleAttribute('checked', checked)
+    this.toggleAttribute("checked", checked);
   }
 
   get defaultValue(): string {
-    return this.defaultValueState
+    return this.defaultValueState;
   }
 
   set defaultValue(value: string) {
-    this.defaultValueState = value
+    this.defaultValueState = value;
 
-    this.setAttribute('value', value)
+    this.setAttribute("value", value);
   }
 
   get disabled(): boolean {
-    return this.hasAttribute('disabled')
+    return this.hasAttribute("disabled");
   }
 
   set disabled(disabled: boolean) {
-    this.toggleAttribute('disabled', disabled)
+    this.toggleAttribute("disabled", disabled);
   }
 
   get form(): HTMLFormElement | null {
-    return this.internals?.form ?? this.control?.form ?? null
+    return this.internals?.form ?? this.control?.form ?? null;
   }
 
   get labels(): NodeList | null {
-    return this.internals?.labels ?? null
+    return this.internals?.labels ?? null;
   }
 
   get name(): string {
-    return this.getAttribute('name') ?? ''
+    return this.getAttribute("name") ?? "";
   }
 
   set name(name: string) {
-    this.setAttribute('name', name)
+    this.setAttribute("name", name);
   }
 
   get type(): string {
-    if (this.control instanceof HTMLInputElement) return this.control.type
+    if (this.control instanceof HTMLInputElement) return this.control.type;
 
-    return 'textarea'
+    return "textarea";
   }
 
   get validationMessage(): string {
-    return this.internals?.validationMessage ?? this.control?.validationMessage ?? ''
+    return (
+      this.internals?.validationMessage ?? this.control?.validationMessage ?? ""
+    );
   }
 
   get validity(): ValidityState {
-    return this.internals?.validity ?? this.control?.validity ?? ({} as ValidityState)
+    return (
+      this.internals?.validity ??
+      this.control?.validity ??
+      ({} as ValidityState)
+    );
   }
 
   get value(): string {
-    return this.control?.value ?? this.getAttribute('value') ?? ''
+    return this.control?.value ?? this.getAttribute("value") ?? "";
   }
 
   set value(value: string) {
     if (this.control) {
-      this.control.value = value
+      this.control.value = value;
 
-      this.syncFormState()
+      this.syncFormState();
 
-      return
+      return;
     }
 
-    this.setAttribute('value', value)
+    this.setAttribute("value", value);
   }
 
   get willValidate(): boolean {
-    return this.internals?.willValidate ?? this.control?.willValidate ?? false
+    return this.internals?.willValidate ?? this.control?.willValidate ?? false;
   }
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.defaultValueState = this.getAttribute('value') ?? this.textContent
+    this.defaultValueState = this.getAttribute("value") ?? this.textContent;
 
-    this.defaultCheckedState = this.hasAttribute('checked')
+    this.defaultCheckedState = this.hasAttribute("checked");
 
-    this.ensureControl()
+    this.ensureControl();
 
-    this.syncControlAttributes()
+    this.syncControlAttributes();
 
-    this.syncFormState()
+    this.syncFormState();
   }
 
   override disconnectedCallback() {
-    this.eventController?.abort()
+    this.eventController?.abort();
 
-    this.eventController = undefined
+    this.eventController = undefined;
   }
 
-  override attributeChangedCallback(name: string, previousValue: string | null, value: string | null) {
-    super.attributeChangedCallback()
+  override attributeChangedCallback(
+    name: string,
+    previousValue: string | null,
+    value: string | null,
+  ) {
+    super.attributeChangedCallback();
 
-    if (previousValue === value || !this.control) return
+    if (previousValue === value || !this.control) return;
 
-    this.syncControlAttributes()
+    this.syncControlAttributes();
 
-    if (name === 'value') {
-      this.defaultValueState = value ?? ''
+    if (name === "value") {
+      this.defaultValueState = value ?? "";
 
-      this.control.value = this.defaultValueState
+      this.control.value = this.defaultValueState;
     }
 
-    if (name === 'checked' && this.control instanceof HTMLInputElement) {
-      this.defaultCheckedState = value !== null
+    if (name === "checked" && this.control instanceof HTMLInputElement) {
+      this.defaultCheckedState = value !== null;
 
-      this.control.checked = this.defaultCheckedState
+      this.control.checked = this.defaultCheckedState;
     }
 
-    this.syncFormState()
+    this.syncFormState();
   }
 
   checkValidity(): boolean {
-    const valid = this.control?.checkValidity() ?? true
+    const valid = this.control?.checkValidity() ?? true;
 
-    this.syncFormState()
+    this.syncFormState();
 
-    return valid
+    return valid;
   }
 
   override focus(options?: FocusOptions): void {
-    this.control?.focus(options)
+    this.control?.focus(options);
   }
 
   formDisabledCallback(disabled: boolean): void {
-    if (this.control) this.control.disabled = disabled || this.disabled
+    if (this.control) this.control.disabled = disabled || this.disabled;
   }
 
   formResetCallback(): void {
-    if (!this.control) return
+    if (!this.control) return;
 
-    this.control.value = this.defaultValueState
+    this.control.value = this.defaultValueState;
 
     if (this.control instanceof HTMLInputElement) {
-      this.control.checked = this.defaultCheckedState
+      this.control.checked = this.defaultCheckedState;
     }
 
-    this.syncFormState()
+    this.syncFormState();
   }
 
   formStateRestoreCallback(state: File | FormData | string | null): void {
-    if (typeof state === 'string') this.value = state
+    if (typeof state === "string") this.value = state;
   }
 
   reportValidity(): boolean {
-    const valid = this.control?.reportValidity() ?? true
+    const valid = this.control?.reportValidity() ?? true;
 
-    this.syncFormState()
+    this.syncFormState();
 
-    return valid
+    return valid;
   }
 
   setCustomValidity(message: string): void {
-    this.control?.setCustomValidity(message)
+    this.control?.setCustomValidity(message);
 
-    this.syncFormState()
+    this.syncFormState();
   }
 
   private ensureControl(): void {
-    const existingControl = this.querySelector<LumenScalarNativeControl>('[data-ui-element-control]')
+    const existingControl = this.querySelector<LumenScalarNativeControl>(
+      "[data-ui-element-control]",
+    );
 
     if (existingControl) {
-      this.control = existingControl
+      this.control = existingControl;
 
-      return
+      return;
     }
 
-    const Constructor = this.constructor as typeof LumenScalarFormControlElement
-    const control = document.createElement(Constructor.nativeTagName)
+    const Constructor = this
+      .constructor as typeof LumenScalarFormControlElement;
+    const control = document.createElement(Constructor.nativeTagName);
 
-    control.dataset.uiElementControl = ''
+    control.dataset.uiElementControl = "";
 
-    control.className = this.className
+    control.className = this.className;
 
-    control.defaultValue = this.defaultValueState
+    control.defaultValue = this.defaultValueState;
 
-    control.value = this.defaultValueState
+    control.value = this.defaultValueState;
 
     if (control instanceof HTMLInputElement) {
-      control.defaultChecked = this.defaultCheckedState
+      control.defaultChecked = this.defaultCheckedState;
 
-      control.checked = this.defaultCheckedState
+      control.checked = this.defaultCheckedState;
     }
 
-    this.style.display = 'contents'
+    this.style.display = "contents";
 
-    this.replaceChildren(control)
+    this.replaceChildren(control);
 
-    this.control = control
+    this.control = control;
 
-    this.eventController?.abort()
+    this.eventController?.abort();
 
-    this.eventController = new AbortController()
+    this.eventController = new AbortController();
 
-    for (const eventName of ['change', 'input'] as const) {
+    for (const eventName of ["change", "input"] as const) {
       control.addEventListener(
-        eventName, event => {
-          event.stopPropagation()
+        eventName,
+        (event) => {
+          event.stopPropagation();
 
-          this.syncFormState()
+          this.syncFormState();
 
-          this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }))
-        }, { signal: this.eventController.signal }
-      )
+          this.dispatchEvent(
+            new Event(eventName, { bubbles: true, composed: true }),
+          );
+        },
+        { signal: this.eventController.signal },
+      );
     }
   }
 
   private syncControlAttributes(): void {
-    const control = this.control
+    const control = this.control;
 
-    if (!control) return
+    if (!control) return;
 
-    control.className = this.className
+    control.className = this.className;
 
     for (const name of scalarControlAttributes) {
-      const value = this.getAttribute(name)
+      const value = this.getAttribute(name);
 
-      if (value === null || (name === 'form' && this.internals)) {
-        control.removeAttribute(name)
+      if (value === null || (name === "form" && this.internals)) {
+        control.removeAttribute(name);
       } else {
-        control.setAttribute(name, value)
+        control.setAttribute(name, value);
       }
     }
 
     if (control instanceof HTMLInputElement) {
-      control.type = this.getAttribute('type') ?? this.config.defaults?.type ?? 'text'
+      control.type =
+        this.getAttribute("type") ?? this.config.defaults?.type ?? "text";
     }
 
-    if (this.id) control.id = `${this.id}-control`
+    if (this.id) control.id = `${this.id}-control`;
 
     if (this.internals) {
-      control.removeAttribute('name')
+      control.removeAttribute("name");
     } else if (this.name) {
-      control.name = this.name
+      control.name = this.name;
     } else {
-      control.removeAttribute('name')
+      control.removeAttribute("name");
     }
   }
 
   private syncFormState(): void {
-    const control = this.control
+    const control = this.control;
 
-    if (!control) return
+    if (!control) return;
 
-    const checkedControl = control instanceof HTMLInputElement && ['checkbox', 'radio'].includes(control.type)
-    const submittedValue = checkedControl && !control.checked ? null : control.value
+    const checkedControl =
+      control instanceof HTMLInputElement &&
+      ["checkbox", "radio"].includes(control.type);
+    const submittedValue =
+      checkedControl && !control.checked ? null : control.value;
 
     if (this.internals) {
-      this.internals.setFormValue(submittedValue, control.value)
+      this.internals.setFormValue(submittedValue, control.value);
 
       if (control.validity.valid) {
-        this.internals.setValidity({})
+        this.internals.setValidity({});
       } else {
-        this.internals.setValidity(getValidityFlags(control.validity), control.validationMessage, control)
+        this.internals.setValidity(
+          getValidityFlags(control.validity),
+          control.validationMessage,
+          control,
+        );
       }
     }
 
     if (control.validity.valid) {
-      this.removeAttribute('aria-invalid')
+      this.removeAttribute("aria-invalid");
     } else {
-      this.setAttribute('aria-invalid', 'true')
+      this.setAttribute("aria-invalid", "true");
     }
   }
 }
 
 class LumenTextareaFormControlElement extends LumenScalarFormControlElement {
-  static override nativeTagName = 'textarea' as const
+  static override nativeTagName = "textarea" as const;
 }
 
 class LumenPasswordFieldBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (hasDocument()) enhanceLumenPasswordFields(this)
+    if (hasDocument()) enhanceLumenPasswordFields(this);
   }
 }
 
 class LumenListBoxBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (hasDocument()) enhanceLumenListBoxes(this)
+    if (hasDocument()) enhanceLumenListBoxes(this);
   }
 }
 
-const escapeChartHtml = (value: number | string): string => String(value)
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll('\'', '&#39;')
+const escapeChartHtml = (value: number | string): string =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 
-const chartBooleanAttribute = (element: HTMLElement, name: string, defaultValue: boolean): boolean => {
-  if (!element.hasAttribute(name)) return defaultValue
+const chartBooleanAttribute = (
+  element: HTMLElement,
+  name: string,
+  defaultValue: boolean,
+): boolean => {
+  if (!element.hasAttribute(name)) return defaultValue;
 
-  return element.getAttribute(name) !== 'false'
-}
+  return element.getAttribute(name) !== "false";
+};
 
 const parseChartSeries = (value: string | null): LumenChartSeries[] => {
-  if (!value) return []
+  if (!value) return [];
 
   try {
-    const parsed: unknown = JSON.parse(value)
+    const parsed: unknown = JSON.parse(value);
 
-    if (!Array.isArray(parsed)) return []
+    if (!Array.isArray(parsed)) return [];
 
     return parsed.flatMap((candidate, seriesIndex) => {
-      if (typeof candidate !== 'object' || candidate === null) return []
+      if (typeof candidate !== "object" || candidate === null) return [];
 
-      const record = candidate as Record<string, unknown>
+      const record = candidate as Record<string, unknown>;
 
-      if (!Array.isArray(record.data)) return []
+      if (!Array.isArray(record.data)) return [];
 
-      const candidateData = record.data as unknown[]
+      const candidateData = record.data as unknown[];
 
-      const data = candidateData.flatMap(datum => {
-        if (typeof datum !== 'object' || datum === null || !('x' in datum) || !('y' in datum)) return []
+      const data = candidateData.flatMap((datum) => {
+        if (
+          typeof datum !== "object" ||
+          datum === null ||
+          !("x" in datum) ||
+          !("y" in datum)
+        )
+          return [];
 
-        const point = datum as Record<string, unknown>
+        const point = datum as Record<string, unknown>;
 
         if (
-          (typeof point.x !== 'string' && typeof point.x !== 'number') ||
-          (point.y !== null && (typeof point.y !== 'number' || !Number.isFinite(point.y)))
+          (typeof point.x !== "string" && typeof point.x !== "number") ||
+          (point.y !== null &&
+            (typeof point.y !== "number" || !Number.isFinite(point.y)))
         )
-          return []
+          return [];
 
         return [
           {
-            ...(typeof point.label === 'string' ? { label: point.label } : {}),
-            ...(typeof point.tone === 'string' && lumenChartTones.includes(point.tone as LumenChartTone) ?
-              { tone: point.tone as LumenChartTone } :
-              {}),
+            ...(typeof point.label === "string" ? { label: point.label } : {}),
+            ...(typeof point.tone === "string" &&
+            lumenChartTones.includes(point.tone as LumenChartTone)
+              ? { tone: point.tone as LumenChartTone }
+              : {}),
             x: point.x,
-            y: point.y
-          }
-        ]
-      })
+            y: point.y,
+          },
+        ];
+      });
 
       const tone =
-        typeof record.tone === 'string' && lumenChartTones.includes(record.tone as LumenChartTone) ?
-          (record.tone as LumenChartTone) :
-          undefined
+        typeof record.tone === "string" &&
+        lumenChartTones.includes(record.tone as LumenChartTone)
+          ? (record.tone as LumenChartTone)
+          : undefined;
 
       return [
         {
           data,
-          id: typeof record.id === 'string' ? record.id : `series-${seriesIndex + 1}`,
-          label: typeof record.label === 'string' ? record.label : `Series ${seriesIndex + 1}`,
-          ...(tone ? { tone } : {})
-        }
-      ]
-    })
+          id:
+            typeof record.id === "string"
+              ? record.id
+              : `series-${seriesIndex + 1}`,
+          label:
+            typeof record.label === "string"
+              ? record.label
+              : `Series ${seriesIndex + 1}`,
+          ...(tone ? { tone } : {}),
+        },
+      ];
+    });
   } catch {
-    return []
+    return [];
   }
-}
+};
 
 const chartHeaderHtml = (element: HTMLElement): string => {
-  const heading = element.getAttribute('heading')
-  const description = element.getAttribute('description')
-  const value = element.getAttribute('value')
+  const heading = element.getAttribute("heading");
+  const description = element.getAttribute("description");
+  const value = element.getAttribute("value");
 
-  if (!heading && !description && !value) return ''
+  if (!heading && !description && !value) return "";
 
-  return `<header><div class="ui-chart__heading">${heading ? `<h3>${escapeChartHtml(heading)}</h3>` : ''}${description ? `<p>${escapeChartHtml(description)}</p>` : ''}</div>${value ? `<strong data-ui-chart-value>${escapeChartHtml(value)}</strong>` : ''}</header>`
-}
+  return `<header><div class="ui-chart__heading">${heading ? `<h3>${escapeChartHtml(heading)}</h3>` : ""}${description ? `<p>${escapeChartHtml(description)}</p>` : ""}</div>${value ? `<strong data-ui-chart-value>${escapeChartHtml(value)}</strong>` : ""}</header>`;
+};
 
 const chartCaptionHtml = (element: HTMLElement): string => {
-  const caption = element.getAttribute('caption')
+  const caption = element.getAttribute("caption");
 
-  return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
-}
+  return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : "";
+};
 
-const chartLegendHtml = (series: readonly LumenChartSeries[]): string => `<ul class="ui-chart__legend" aria-label="Chart legend">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
+const chartLegendHtml = (series: readonly LumenChartSeries[]): string =>
+  `<ul class="ui-chart__legend" aria-label="Chart legend">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join("")}</ul>`;
 
 const chartDataTableHtml = (
   categories: readonly (number | string)[],
   series: readonly LumenChartSeries[],
   formatCategory: (category: number | string) => string = String,
-  formatValue: (value: number) => string = String
+  formatValue: (value: number) => string = String,
 ): string => {
-  const headers = series.map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`).join('')
+  const headers = series
+    .map((item) => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
+    .join("");
 
   const rows = categories
-    .map(category => {
+    .map((category) => {
       const cells = series
-        .map(item => {
-          const datum = item.data.find(candidate => candidate.x === category)
+        .map((item) => {
+          const datum = item.data.find((candidate) => candidate.x === category);
 
           const value =
-            datum?.label ?? (datum?.y === null || datum === undefined ? 'Not available' : formatValue(datum.y))
+            datum?.label ??
+            (datum?.y === null || datum === undefined
+              ? "Not available"
+              : formatValue(datum.y));
 
-          return `<td>${escapeChartHtml(value)}</td>`
+          return `<td>${escapeChartHtml(value)}</td>`;
         })
-        .join('')
+        .join("");
 
       const label =
-        series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+        series
+          .flatMap((item) => item.data)
+          .find((datum) => datum.x === category)?.xLabel ??
+        formatCategory(category);
 
-      return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`
+      return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`;
     })
-    .join('')
+    .join("");
 
-  return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
-}
+  return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`;
+};
 
-const chartPercentage = (percentage: number): string => new Intl.NumberFormat(undefined, {
-  maximumFractionDigits: percentage < 0.01 ? 1 : 0,
-  style: 'percent'
-}).format(percentage)
+const chartPercentage = (percentage: number): string =>
+  new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+    style: "percent",
+  }).format(percentage);
 
 abstract class LumenDataChartBehaviorElement extends LumenElement {
-  #categoryFormatter: ((category: number | string) => string) | undefined
-  #series: readonly LumenChartSeries[] | undefined
-  #valueFormatter: ((value: number) => string) | undefined
+  #categoryFormatter: ((category: number | string) => string) | undefined;
+  #series: readonly LumenChartSeries[] | undefined;
+  #valueFormatter: ((value: number) => string) | undefined;
 
   get categoryFormatter(): (category: number | string) => string {
-    return this.#categoryFormatter ?? String
+    return this.#categoryFormatter ?? String;
   }
 
   set categoryFormatter(value: (category: number | string) => string) {
-    this.#categoryFormatter = value
+    this.#categoryFormatter = value;
 
-    this.renderChart()
+    this.renderChart();
   }
 
   get series(): readonly LumenChartSeries[] {
-    return this.#series ?? parseChartSeries(this.getAttribute('series'))
+    return this.#series ?? parseChartSeries(this.getAttribute("series"));
   }
 
   set series(value: readonly LumenChartSeries[]) {
-    this.#series = value
+    this.#series = value;
 
-    this.renderChart()
+    this.renderChart();
   }
 
   get valueFormatter(): (value: number) => string {
-    return this.#valueFormatter ?? String
+    return this.#valueFormatter ?? String;
   }
 
   set valueFormatter(value: (value: number) => string) {
-    this.#valueFormatter = value
+    this.#valueFormatter = value;
 
-    this.renderChart()
+    this.renderChart();
   }
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.renderChart()
+    this.renderChart();
   }
 
   override attributeChangedCallback() {
-    super.attributeChangedCallback()
+    super.attributeChangedCallback();
 
-    if (this.isConnected) this.renderChart()
+    if (this.isConnected) this.renderChart();
   }
 
-  protected abstract renderChart(): void
+  protected abstract renderChart(): void;
 }
 
 class LumenSparklineBehaviorElement extends LumenElement {
-  #toneClass: string | undefined
-  #values: readonly number[] | undefined
+  #toneClass: string | undefined;
+  #values: readonly number[] | undefined;
 
   get values(): readonly number[] {
-    if (this.#values) return this.#values
+    if (this.#values) return this.#values;
 
-    const source = this.getAttribute('values')
+    const source = this.getAttribute("values");
 
-    if (!source) return []
+    if (!source) return [];
 
     try {
-      const parsed: unknown = JSON.parse(source)
+      const parsed: unknown = JSON.parse(source);
 
       if (Array.isArray(parsed))
-        return parsed.filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
+        return parsed.filter(
+          (value): value is number =>
+            typeof value === "number" && Number.isFinite(value),
+        );
     } catch {
       return source
-        .split(',')
-        .map(value => Number(value.trim()))
-        .filter(Number.isFinite)
+        .split(",")
+        .map((value) => Number(value.trim()))
+        .filter(Number.isFinite);
     }
 
-    return []
+    return [];
   }
 
   set values(value: readonly number[]) {
-    this.#values = value
+    this.#values = value;
 
-    this.renderSparkline()
+    this.renderSparkline();
   }
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.renderSparkline()
+    this.renderSparkline();
   }
 
   override attributeChangedCallback() {
-    super.attributeChangedCallback()
+    super.attributeChangedCallback();
 
-    if (this.isConnected) this.renderSparkline()
+    if (this.isConnected) this.renderSparkline();
   }
 
   private renderSparkline() {
-    const values = this.values
+    const values = this.values;
 
     if (values.length === 0) {
-      const label = this.getAttribute('label') ?? 'No trend data available.'
+      const label = this.getAttribute("label") ?? "No trend data available.";
 
-      this.setAttribute('aria-label', label)
+      this.setAttribute("aria-label", label);
 
-      this.setAttribute('role', 'img')
+      this.setAttribute("role", "img");
 
-      this.innerHTML = `<span class="ui-sr-only">${escapeChartHtml(label)}</span>`
+      this.innerHTML = `<span class="ui-sr-only">${escapeChartHtml(label)}</span>`;
 
-      return
+      return;
     }
 
-    const label = this.getAttribute('label') ?? 'Trend'
-    const toneAttribute = this.getAttribute('tone')
+    const label = this.getAttribute("label") ?? "Trend";
+    const toneAttribute = this.getAttribute("tone");
 
     const tone = resolveLumenChartTone(
-      toneAttribute && lumenChartTones.includes(toneAttribute as LumenChartTone) ?
-        (toneAttribute as LumenChartTone) :
-        undefined
-    )
+      toneAttribute && lumenChartTones.includes(toneAttribute as LumenChartTone)
+        ? (toneAttribute as LumenChartTone)
+        : undefined,
+    );
 
     const geometry = createLumenLineGeometry(
-      values.map((value, index) => ({ x: index, y: value })), { height: 40, padding: 3, width: 120 }
-    )
+      values.map((value, index) => ({ x: index, y: value })),
+      { height: 40, padding: 3, width: 120 },
+    );
 
-    const area = chartBooleanAttribute(this, 'area', false)
-    const showEndpoint = chartBooleanAttribute(this, 'show-endpoint', true)
-    const endpoint = geometry.points.at(-1)
+    const area = chartBooleanAttribute(this, "area", false);
+    const showEndpoint = chartBooleanAttribute(this, "show-endpoint", true);
+    const endpoint = geometry.points.at(-1);
 
-    if (this.#toneClass) this.classList.remove(this.#toneClass)
+    if (this.#toneClass) this.classList.remove(this.#toneClass);
 
-    this.#toneClass = `ui-chart-tone--${tone}`
+    this.#toneClass = `ui-chart-tone--${tone}`;
 
-    this.classList.add(this.#toneClass)
+    this.classList.add(this.#toneClass);
 
-    this.setAttribute('aria-label', label)
+    this.setAttribute("aria-label", label);
 
-    this.setAttribute('role', 'img')
+    this.setAttribute("role", "img");
 
-    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map(path => `<path class="ui-sparkline__area" d="${path}"></path>`).join('') : ''}<path class="ui-sparkline__line" d="${geometry.path}"></path>${showEndpoint && endpoint ? `<circle class="ui-sparkline__endpoint" cx="${endpoint.xCoordinate}" cy="${endpoint.yCoordinate}" r="2.5"></circle>` : ''}</svg><span class="ui-sr-only">${escapeChartHtml(label)}</span>`
+    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map((path) => `<path class="ui-sparkline__area" d="${path}"></path>`).join("") : ""}<path class="ui-sparkline__line" d="${geometry.path}"></path>${showEndpoint && endpoint ? `<circle class="ui-sparkline__endpoint" cx="${endpoint.xCoordinate}" cy="${endpoint.yCoordinate}" r="2.5"></circle>` : ""}</svg><span class="ui-sr-only">${escapeChartHtml(label)}</span>`;
   }
 }
 
 class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = this.series
+    const series = this.series;
 
     if (!hasLumenChartData(series)) {
-      const emptyLabel = this.getAttribute('empty-label') ?? 'No chart data available.'
+      const emptyLabel =
+        this.getAttribute("empty-label") ?? "No chart data available.";
 
-      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">${escapeChartHtml(emptyLabel)}</p>${chartCaptionHtml(this)}`
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">${escapeChartHtml(emptyLabel)}</p>${chartCaptionHtml(this)}`;
 
-      return
+      return;
     }
 
-    const orientation = this.getAttribute('orientation') === 'horizontal' ? 'horizontal' : 'vertical'
-    const layout = this.getAttribute('layout') === 'stacked' ? 'stacked' : 'grouped'
-    const categoryWidthValue = Number(this.getAttribute('category-width'))
-    const categoryWidth = Number.isFinite(categoryWidthValue) && categoryWidthValue > 0 ? categoryWidthValue : undefined
+    const orientation =
+      this.getAttribute("orientation") === "horizontal"
+        ? "horizontal"
+        : "vertical";
+    const layout =
+      this.getAttribute("layout") === "stacked" ? "stacked" : "grouped";
+    const categoryWidthValue = Number(this.getAttribute("category-width"));
+    const categoryWidth =
+      Number.isFinite(categoryWidthValue) && categoryWidthValue > 0
+        ? categoryWidthValue
+        : undefined;
 
     const geometry = createLumenBarGeometry(series, {
       ...(categoryWidth === undefined ? {} : { categoryWidth }),
       layout,
-      orientation
-    })
+      orientation,
+    });
 
-    const ticks = getLumenChartTicks(geometry.domain)
+    const ticks = getLumenChartTicks(geometry.domain);
 
     const margin =
-      orientation === 'horizontal' ?
-        { bottom: 24, left: Math.max(64, Math.min(240, categoryWidth ?? 112)), right: 20, top: 16 } :
-        { bottom: 52, left: 52, right: 16, top: 16 }
+      orientation === "horizontal"
+        ? {
+            bottom: 24,
+            left: Math.max(64, Math.min(240, categoryWidth ?? 112)),
+            right: 20,
+            top: 16,
+          }
+        : { bottom: 52, left: 52, right: 16, top: 16 };
 
     const grid = ticks
-      .map(tick => {
+      .map((tick) => {
         const coordinate =
-          orientation === 'horizontal' ?
-            scaleLumenChartValue(tick, geometry.domain, margin.left, geometry.width - margin.right) :
-            scaleLumenChartValue(tick, geometry.domain, geometry.height - margin.bottom, margin.top)
+          orientation === "horizontal"
+            ? scaleLumenChartValue(
+                tick,
+                geometry.domain,
+                margin.left,
+                geometry.width - margin.right,
+              )
+            : scaleLumenChartValue(
+                tick,
+                geometry.domain,
+                geometry.height - margin.bottom,
+                margin.top,
+              );
 
-        return orientation === 'horizontal' ?
-          `<line x1="${coordinate}" x2="${coordinate}" y1="${margin.top}" y2="${geometry.height - margin.bottom}"></line>` :
-          `<line x1="${margin.left}" x2="${geometry.width - margin.right}" y1="${coordinate}" y2="${coordinate}"></line>`
+        return orientation === "horizontal"
+          ? `<line x1="${coordinate}" x2="${coordinate}" y1="${margin.top}" y2="${geometry.height - margin.bottom}"></line>`
+          : `<line x1="${margin.left}" x2="${geometry.width - margin.right}" y1="${coordinate}" y2="${coordinate}"></line>`;
       })
-      .join('')
+      .join("");
 
     const labels = geometry.categories
       .map(
-        category => `<text dominant-baseline="${orientation === 'horizontal' ? 'middle' : 'auto'}" text-anchor="${orientation === 'horizontal' ? 'end' : 'middle'}" x="${category.x}" y="${category.y}">${escapeChartHtml(category.label)}</text>`
+        (category) =>
+          `<text dominant-baseline="${orientation === "horizontal" ? "middle" : "auto"}" text-anchor="${orientation === "horizontal" ? "end" : "middle"}" x="${category.x}" y="${category.y}">${escapeChartHtml(category.label)}</text>`,
       )
-      .join('')
+      .join("");
 
     const marks = geometry.marks
       .map(
-        mark => `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}" rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}"><title>${escapeChartHtml(`${series.flatMap(item => item.data).find(datum => datum.x === mark.category)?.xLabel ?? this.categoryFormatter(mark.category)} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`)}</title></rect>`
+        (mark) =>
+          `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}" rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}"><title>${escapeChartHtml(`${series.flatMap((item) => item.data).find((datum) => datum.x === mark.category)?.xLabel ?? this.categoryFormatter(mark.category)} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`)}</title></rect>`,
       )
-      .join('')
+      .join("");
 
-    const showLegend = chartBooleanAttribute(this, 'show-legend', series.length > 1)
-    const showTable = chartBooleanAttribute(this, 'show-table', true)
-    const categories = geometry.categories.map(category => category.category)
+    const showLegend = chartBooleanAttribute(
+      this,
+      "show-legend",
+      series.length > 1,
+    );
+    const showTable = chartBooleanAttribute(this, "show-table", true);
+    const categories = geometry.categories.map((category) => category.category);
 
-    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ""}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ""}${chartCaptionHtml(this)}`;
   }
 }
 
 class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = this.series
+    const series = this.series;
 
     if (!hasLumenChartData(series)) {
-      const emptyLabel = this.getAttribute('empty-label') ?? 'No chart data available.'
+      const emptyLabel =
+        this.getAttribute("empty-label") ?? "No chart data available.";
 
-      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">${escapeChartHtml(emptyLabel)}</p>${chartCaptionHtml(this)}`
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">${escapeChartHtml(emptyLabel)}</p>${chartCaptionHtml(this)}`;
 
-      return
+      return;
     }
 
-    const width = 640
-    const height = 320
-    const padding = 44
-    const categories = getLumenChartCategories(series)
-    const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
-    const referenceAttribute = this.getAttribute('reference-value')
-    const parsedReference = referenceAttribute === null ? undefined : Number(referenceAttribute)
+    const width = 640;
+    const height = 320;
+    const padding = 44;
+    const categories = getLumenChartCategories(series);
+    const alignedSeries = series.map((item) =>
+      alignLumenChartSeries(item, categories),
+    );
+    const referenceAttribute = this.getAttribute("reference-value");
+    const parsedReference =
+      referenceAttribute === null ? undefined : Number(referenceAttribute);
 
     const referenceValue =
-      parsedReference !== undefined && Number.isFinite(parsedReference) ? parsedReference : undefined
+      parsedReference !== undefined && Number.isFinite(parsedReference)
+        ? parsedReference
+        : undefined;
 
     const domain = getLumenChartDomain(
-      [...alignedSeries.flatMap(item => item.data.map(datum => datum.y)), referenceValue ?? null], false
-    )
+      [
+        ...alignedSeries.flatMap((item) => item.data.map((datum) => datum.y)),
+        referenceValue ?? null,
+      ],
+      false,
+    );
 
-    const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-      domain,
-      height,
-      includeZero: false,
-      padding,
-      width
-    }))
+    const geometries = alignedSeries.map((item) =>
+      createLumenLineGeometry(item.data, {
+        domain,
+        height,
+        includeZero: false,
+        padding,
+        width,
+      }),
+    );
 
-    const ticks = getLumenChartTicks(domain)
-    const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+    const ticks = getLumenChartTicks(domain);
+    const labelStep = Math.max(1, Math.ceil(categories.length / 8));
 
     const grid = ticks
-      .map(tick => {
-        const y = scaleLumenChartValue(tick, domain, height - padding, padding)
+      .map((tick) => {
+        const y = scaleLumenChartValue(tick, domain, height - padding, padding);
 
-        return `<line x1="${padding}" x2="${width - padding}" y1="${y}" y2="${y}"></line><text x="${padding - 8}" y="${y}">${escapeChartHtml(this.valueFormatter(tick))}</text>`
+        return `<line x1="${padding}" x2="${width - padding}" y1="${y}" y2="${y}"></line><text x="${padding - 8}" y="${y}">${escapeChartHtml(this.valueFormatter(tick))}</text>`;
       })
-      .join('')
+      .join("");
 
     const labels = categories
       .map((category, index) => {
-        if (index % labelStep !== 0 && index !== categories.length - 1) return ''
+        if (index % labelStep !== 0 && index !== categories.length - 1)
+          return "";
 
-        const denominator = Math.max(1, categories.length - 1)
-        const x = padding + (index / denominator) * (width - padding * 2)
+        const denominator = Math.max(1, categories.length - 1);
+        const x = padding + (index / denominator) * (width - padding * 2);
 
         const label =
-          series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ??
-          this.categoryFormatter(category)
+          series
+            .flatMap((item) => item.data)
+            .find((datum) => datum.x === category)?.xLabel ??
+          this.categoryFormatter(category);
 
-        return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(label)}</text>`
+        return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(label)}</text>`;
       })
-      .join('')
+      .join("");
 
-    const area = chartBooleanAttribute(this, 'area', false)
-    const markersAttribute = this.getAttribute('markers') ?? 'auto'
-    const numericMarkerStep = Number(markersAttribute)
+    const area = chartBooleanAttribute(this, "area", false);
+    const markersAttribute = this.getAttribute("markers") ?? "auto";
+    const numericMarkerStep = Number(markersAttribute);
+    let markerStep = 1;
 
-    const markerStep =
-      markersAttribute === 'false' || markersAttribute === 'none' ?
-        Number.POSITIVE_INFINITY :
-        Number.isFinite(numericMarkerStep) && numericMarkerStep > 0 ?
-          Math.max(1, Math.round(numericMarkerStep)) :
-          markersAttribute === 'auto' ?
-            Math.max(1, Math.ceil(categories.length / 24)) :
-            1
+    if (markersAttribute === "false" || markersAttribute === "none") {
+      markerStep = Number.POSITIVE_INFINITY;
+    } else if (Number.isFinite(numericMarkerStep) && numericMarkerStep > 0) {
+      markerStep = Math.max(1, Math.round(numericMarkerStep));
+    } else if (markersAttribute === "auto") {
+      markerStep = Math.max(1, Math.ceil(categories.length / 24));
+    }
 
     const paths = geometries
       .map((geometry, index) => {
-        const item = series[index]
+        const item = series[index];
 
-        if (!item) return ''
+        if (!item) return "";
 
-        const tone = resolveLumenChartTone(item.tone, index)
+        const tone = resolveLumenChartTone(item.tone, index);
 
-        const areaPaths = area ?
-          geometry.areaPaths.map(path => `<path class="ui-line-chart__area" d="${path}"></path>`).join('') :
-          ''
+        const areaPaths = area
+          ? geometry.areaPaths
+              .map(
+                (path) =>
+                  `<path class="ui-line-chart__area" d="${path}"></path>`,
+              )
+              .join("")
+          : "";
 
-        const points = Number.isFinite(markerStep) ?
-          geometry.points
-            .map((point, pointIndex) => pointIndex % markerStep === 0 ?
-              `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3"><title>${escapeChartHtml(`${point.xLabel ?? this.categoryFormatter(point.x)} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`)}</title></circle>` :
-              '')
-            .join('') :
-          ''
+        const points = Number.isFinite(markerStep)
+          ? geometry.points
+              .map((point, pointIndex) =>
+                pointIndex % markerStep === 0
+                  ? `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3"><title>${escapeChartHtml(`${point.xLabel ?? this.categoryFormatter(point.x)} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`)}</title></circle>`
+                  : "",
+              )
+              .join("")
+          : "";
 
-        return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}<path class="ui-line-chart__line" d="${geometry.path}"></path>${points}</g>`
+        return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}<path class="ui-line-chart__line" d="${geometry.path}"></path>${points}</g>`;
       })
-      .join('')
+      .join("");
 
     const reference =
-      referenceValue === undefined ?
-        '' :
-        `<line class="ui-chart__reference" x1="${padding}" x2="${width - padding}" y1="${scaleLumenChartValue(referenceValue, domain, height - padding, padding)}" y2="${scaleLumenChartValue(referenceValue, domain, height - padding, padding)}"></line>`
+      referenceValue === undefined
+        ? ""
+        : `<line class="ui-chart__reference" x1="${padding}" x2="${width - padding}" y1="${scaleLumenChartValue(referenceValue, domain, height - padding, padding)}" y2="${scaleLumenChartValue(referenceValue, domain, height - padding, padding)}"></line>`;
 
-    const showLegend = chartBooleanAttribute(this, 'show-legend', series.length > 1)
-    const showTable = chartBooleanAttribute(this, 'show-table', true)
+    const showLegend = chartBooleanAttribute(
+      this,
+      "show-legend",
+      series.length > 1,
+    );
+    const showTable = chartBooleanAttribute(this, "show-table", true);
 
-    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g>${reference}${paths}</svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ""}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g>${reference}${paths}</svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ""}${chartCaptionHtml(this)}`;
   }
 }
 
 class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = this.series[0]
+    const series = this.series[0];
 
     if (!series || !hasLumenPieData(series.data)) {
-      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`;
 
-      return
+      return;
     }
 
-    const variant = this.getAttribute('variant') === 'pie' ? 'pie' : 'donut'
-    const geometry = createLumenPieGeometry(series.data, { variant })
-    const showLegend = chartBooleanAttribute(this, 'show-legend', true)
-    const showTable = chartBooleanAttribute(this, 'show-table', true)
+    const variant = this.getAttribute("variant") === "pie" ? "pie" : "donut";
+    const geometry = createLumenPieGeometry(series.data, { variant });
+    const showLegend = chartBooleanAttribute(this, "show-legend", true);
+    const showTable = chartBooleanAttribute(this, "show-table", true);
 
-    const legend = showLegend ?
-      `<ul class="ui-chart__legend" aria-label="Chart legend">${geometry.slices.map(slice => `<li class="ui-chart-tone--${slice.tone}"><span aria-hidden="true"></span>${escapeChartHtml(slice.label)}</li>`).join('')}</ul>` :
-      ''
+    const legend = showLegend
+      ? `<ul class="ui-chart__legend" aria-label="Chart legend">${geometry.slices.map((slice) => `<li class="ui-chart-tone--${slice.tone}"><span aria-hidden="true"></span>${escapeChartHtml(slice.label)}</li>`).join("")}</ul>`
+      : "";
 
     const slices = geometry.slices
       .map(
-        slice => `<path class="ui-chart-tone--${slice.tone}" d="${slice.path}" fill-rule="evenodd"><title>${escapeChartHtml(`${slice.label}: ${this.valueFormatter(slice.value)} (${chartPercentage(slice.percentage)})`)}</title></path>`
+        (slice) =>
+          `<path class="ui-chart-tone--${slice.tone}" d="${slice.path}" fill-rule="evenodd"><title>${escapeChartHtml(`${slice.label}: ${this.valueFormatter(slice.value)} (${chartPercentage(slice.percentage)})`)}</title></path>`,
       )
-      .join('')
+      .join("");
 
-    const centerLabel = this.getAttribute('center-label')
-    const centerValue = this.getAttribute('center-value')
+    const centerLabel = this.getAttribute("center-label");
+    const centerValue = this.getAttribute("center-value");
 
     const center =
-      variant === 'donut' && (centerLabel || centerValue) ?
-        `<div class="ui-pie-chart__center" aria-hidden="true">${centerValue ? `<strong>${escapeChartHtml(centerValue)}</strong>` : ''}${centerLabel ? `<span>${escapeChartHtml(centerLabel)}</span>` : ''}</div>` :
-        ''
+      variant === "donut" && (centerLabel || centerValue)
+        ? `<div class="ui-pie-chart__center" aria-hidden="true">${centerValue ? `<strong>${escapeChartHtml(centerValue)}</strong>` : ""}${centerLabel ? `<span>${escapeChartHtml(centerLabel)}</span>` : ""}</div>`
+        : "";
 
-    const table = showTable ? this.pieDataTable(geometry.slices) : ''
+    const table = showTable ? this.pieDataTable(geometry.slices) : "";
 
-    this.innerHTML = `${chartHeaderHtml(this)}${legend}<div class="ui-chart__plot ui-pie-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.size} ${geometry.size}"><g class="ui-pie-chart__slices">${slices}</g></svg>${center}</div>${table}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${legend}<div class="ui-chart__plot ui-pie-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.size} ${geometry.size}"><g class="ui-pie-chart__slices">${slices}</g></svg>${center}</div>${table}${chartCaptionHtml(this)}`;
   }
 
   private pieDataTable(slices: readonly LumenPieGeometrySlice[]): string {
     const rows = slices
       .map(
-        slice => `<tr><th scope="row">${escapeChartHtml(slice.label)}</th><td>${escapeChartHtml(this.valueFormatter(slice.value))}</td><td>${escapeChartHtml(chartPercentage(slice.percentage))}</td></tr>`
+        (slice) =>
+          `<tr><th scope="row">${escapeChartHtml(slice.label)}</th><td>${escapeChartHtml(this.valueFormatter(slice.value))}</td><td>${escapeChartHtml(chartPercentage(slice.percentage))}</td></tr>`,
       )
-      .join('')
+      .join("");
 
-    return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th><th scope="col">Value</th><th scope="col">Share</th></tr></thead><tbody>${rows}</tbody></table></div></details>`
+    return `<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th><th scope="col">Value</th><th scope="col">Share</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
   }
 }
 
 class LumenIconBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.renderIcon()
+    this.renderIcon();
   }
 
   override attributeChangedCallback() {
-    super.attributeChangedCallback()
+    super.attributeChangedCallback();
 
-    this.renderIcon()
+    this.renderIcon();
   }
 
   private renderIcon() {
-    const name = this.getAttribute('name')
-    const label = this.getAttribute('label') ?? this.getAttribute('aria-label')
-    const isDecorative = this.hasAttribute('decorative') || !label
+    const name = this.getAttribute("name");
+    const label = this.getAttribute("label") ?? this.getAttribute("aria-label");
+    const isDecorative = this.hasAttribute("decorative") || !label;
 
     if (name) {
-      const svg = renderLumenIconSvg(name)
+      const svg = renderLumenIconSvg(name);
 
       if (svg !== this.innerHTML) {
-        this.innerHTML = svg
+        this.innerHTML = svg;
       }
     }
 
     if (isDecorative) {
-      this.setAttribute('aria-hidden', 'true')
+      this.setAttribute("aria-hidden", "true");
 
-      this.removeAttribute('aria-label')
+      this.removeAttribute("aria-label");
 
-      this.removeAttribute('role')
+      this.removeAttribute("role");
     } else {
-      this.removeAttribute('aria-hidden')
+      this.removeAttribute("aria-hidden");
 
-      this.setAttribute('aria-label', label)
+      this.setAttribute("aria-label", label);
 
-      this.setAttribute('role', 'img')
+      this.setAttribute("role", "img");
     }
   }
 }
 
 class LumenDialogBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private lastTrigger: HTMLElement | undefined
+  private abortController: AbortController | undefined;
+  private lastTrigger: HTMLElement | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupDialog(this.abortController.signal)
+    this.setupDialog(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 
   show(trigger?: HTMLElement): void {
-    this.openDialog(trigger)
+    this.openDialog(trigger);
   }
 
   close(): void {
-    this.closeDialog()
+    this.closeDialog();
   }
 
   private get isAlertDialog(): boolean {
-    return this.hasAttribute('data-ui-alert-dialog') || this.tagName.toLowerCase() === 'lumen-alert-dialog'
+    return (
+      this.hasAttribute("data-ui-alert-dialog") ||
+      this.tagName.toLowerCase() === "lumen-alert-dialog"
+    );
   }
 
   private get nativeDialog(): HTMLDialogElement | null {
-    const dialog = this.querySelector('dialog')
+    const dialog = this.querySelector("dialog");
 
-    return dialog instanceof HTMLDialogElement ? dialog : null
+    return dialog instanceof HTMLDialogElement ? dialog : null;
   }
 
   private get dialogRoot(): HTMLElement {
-    return this.nativeDialog ?? this
+    return this.nativeDialog ?? this;
   }
 
   private setupDialog(signal: AbortSignal): void {
-    const dialog = this.dialogRoot
-    const initiallyOpen = this.hasAttribute('open') || this.nativeDialog?.open === true
+    const dialog = this.dialogRoot;
+    const initiallyOpen =
+      this.hasAttribute("open") || this.nativeDialog?.open === true;
 
-    dialog.setAttribute('aria-modal', 'true')
+    dialog.setAttribute("aria-modal", "true");
 
-    dialog.setAttribute('role', this.isAlertDialog ? 'alertdialog' : 'dialog')
+    dialog.setAttribute("role", this.isAlertDialog ? "alertdialog" : "dialog");
 
     if (!this.nativeDialog) {
-      this.hidden = !initiallyOpen
+      this.hidden = !initiallyOpen;
 
-      this.dataset.state = initiallyOpen ? 'open' : 'closed'
+      this.dataset.state = initiallyOpen ? "open" : "closed";
     }
 
     this.nativeDialog?.addEventListener(
-      'click', event => {
+      "click",
+      (event) => {
         if (event.target === this.nativeDialog && !this.isAlertDialog) {
-          this.closeDialog()
+          this.closeDialog();
         }
-      }, { signal }
-    )
+      },
+      { signal },
+    );
 
     this.nativeDialog?.addEventListener(
-      'close', () => {
-        this.returnFocus()
-      }, { signal }
-    )
+      "close",
+      () => {
+        this.returnFocus();
+      },
+      { signal },
+    );
 
     this.addEventListener(
-      'click', event => {
-        const target = getOwnedTarget(event)
+      "click",
+      (event) => {
+        const target = getOwnedTarget(event);
 
         const closeButton =
-          target instanceof Element ? target.closest('[data-ui-dialog-close], [data-ui-alert-dialog-close]') : null
+          target instanceof Element
+            ? target.closest(
+                "[data-ui-dialog-close], [data-ui-alert-dialog-close]",
+              )
+            : null;
 
         if (closeButton) {
-          this.closeDialog()
+          this.closeDialog();
         }
-      }, { signal }
-    )
+      },
+      { signal },
+    );
 
     this.addEventListener(
-      'keydown', event => {
-        if (event.key === 'Escape') {
-          event.preventDefault()
+      "keydown",
+      (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
 
-          this.closeDialog()
+          this.closeDialog();
 
-          return
+          return;
         }
 
-        if (event.key !== 'Tab') return
+        if (event.key !== "Tab") return;
 
-        this.trapFocus(event)
-      }, { signal }
-    )
+        this.trapFocus(event);
+      },
+      { signal },
+    );
 
     document.addEventListener(
-      'click', event => {
-        const target = getOwnedTarget(event)
+      "click",
+      (event) => {
+        const target = getOwnedTarget(event);
 
         const trigger =
-          target instanceof Element ?
-            target.closest<HTMLElement>('[data-ui-dialog-trigger], [data-ui-alert-dialog-trigger]') :
-            null
+          target instanceof Element
+            ? target.closest<HTMLElement>(
+                "[data-ui-dialog-trigger], [data-ui-alert-dialog-trigger]",
+              )
+            : null;
 
-        const targetId = trigger?.dataset.uiDialogTrigger ?? trigger?.dataset.uiAlertDialogTrigger
+        const targetId =
+          trigger?.dataset.uiDialogTrigger ??
+          trigger?.dataset.uiAlertDialogTrigger;
 
-        if (!trigger || targetId !== this.id) return
+        if (!trigger || targetId !== this.id) return;
 
-        this.openDialog(trigger)
-      }, { signal }
-    )
+        this.openDialog(trigger);
+      },
+      { signal },
+    );
 
     document.addEventListener(
-      'pointerdown', event => {
-        if (!this.isOpen() || this.isAlertDialog) return
+      "pointerdown",
+      (event) => {
+        if (!this.isOpen() || this.isAlertDialog) return;
 
-        const target = getOwnedTarget(event)
+        const target = getOwnedTarget(event);
 
-        if (!target || this.contains(target)) return
+        if (!target || this.contains(target)) return;
 
-        this.closeDialog()
-      }, { signal }
-    )
+        this.closeDialog();
+      },
+      { signal },
+    );
   }
 
   private isOpen(): boolean {
-    return this.nativeDialog?.open === true || this.hasAttribute('open') || this.dataset.state === 'open'
+    return (
+      this.nativeDialog?.open === true ||
+      this.hasAttribute("open") ||
+      this.dataset.state === "open"
+    );
   }
 
   private openDialog(trigger?: HTMLElement): void {
     if (trigger) {
       if (!trigger.id) {
-        trigger.id = createId('ui-trigger')
+        trigger.id = createId("ui-trigger");
       }
 
-      this.lastTrigger = trigger
+      this.lastTrigger = trigger;
     }
 
-    const dialog = this.nativeDialog
+    const dialog = this.nativeDialog;
 
     if (dialog) {
-      if (typeof dialog.showModal === 'function' && !dialog.open) {
-        dialog.showModal()
+      if (typeof dialog.showModal === "function" && !dialog.open) {
+        dialog.showModal();
       } else {
-        dialog.setAttribute('open', '')
+        dialog.setAttribute("open", "");
       }
     } else {
-      this.hidden = false
+      this.hidden = false;
 
-      this.setAttribute('open', '')
+      this.setAttribute("open", "");
 
-      this.dataset.state = 'open'
+      this.dataset.state = "open";
     }
 
-    getFocusable(this.dialogRoot)[0]?.focus({ preventScroll: true })
+    getFocusable(this.dialogRoot)[0]?.focus({ preventScroll: true });
   }
 
   private closeDialog(): void {
-    const dialog = this.nativeDialog
+    const dialog = this.nativeDialog;
 
     if (dialog?.open) {
-      dialog.close()
+      dialog.close();
 
-      return
+      return;
     }
 
     if (!dialog) {
-      this.hidden = true
+      this.hidden = true;
 
-      this.removeAttribute('open')
+      this.removeAttribute("open");
 
-      this.dataset.state = 'closed'
+      this.dataset.state = "closed";
 
-      this.returnFocus()
+      this.returnFocus();
     }
   }
 
   private returnFocus(): void {
-    this.lastTrigger?.focus({ preventScroll: true })
+    this.lastTrigger?.focus({ preventScroll: true });
   }
 
   private trapFocus(event: KeyboardEvent): void {
-    const focusable = getFocusable(this.dialogRoot)
+    const focusable = getFocusable(this.dialogRoot);
 
-    if (!focusable.length) return
+    if (!focusable.length) return;
 
-    const first = focusable[0]
-    const last = focusable.at(-1)
+    const first = focusable[0];
+    const last = focusable.at(-1);
 
-    if (!first || !last) return
+    if (!first || !last) return;
 
     if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault()
+      event.preventDefault();
 
-      last.focus()
+      last.focus();
 
-      return
+      return;
     }
 
     if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault()
+      event.preventDefault();
 
-      first.focus()
+      first.focus();
     }
   }
 }
 
 class LumenDisclosureBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupDisclosure(this.abortController.signal)
+    this.setupDisclosure(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 
   private setupDisclosure(signal: AbortSignal): void {
-    const trigger = this.querySelector<HTMLElement>('[data-ui-trigger]')
+    const trigger = this.querySelector<HTMLElement>("[data-ui-trigger]");
 
-    if (!trigger) return
+    if (!trigger) return;
 
-    const panel = getControlledPanel(trigger)
+    const panel = getControlledPanel(trigger);
 
-    if (!panel) return
+    if (!panel) return;
 
-    trigger.setAttribute('aria-haspopup', trigger.getAttribute('aria-haspopup') ?? 'menu')
+    trigger.setAttribute(
+      "aria-haspopup",
+      trigger.getAttribute("aria-haspopup") ?? "menu",
+    );
 
-    setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
+    setDisclosureOpen(
+      trigger,
+      panel,
+      trigger.getAttribute("aria-expanded") === "true",
+    );
 
     const close = (): void => {
-      setDisclosureOpen(trigger, panel, false)
-    }
+      setDisclosureOpen(trigger, panel, false);
+    };
 
     const open = (): void => {
-      setDisclosureOpen(trigger, panel, true)
-    }
+      setDisclosureOpen(trigger, panel, true);
+    };
 
     trigger.addEventListener(
-      'click', () => {
-        setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
-      }, { signal }
-    )
+      "click",
+      () => {
+        setDisclosureOpen(
+          trigger,
+          panel,
+          trigger.getAttribute("aria-expanded") !== "true",
+        );
+      },
+      { signal },
+    );
 
     trigger.addEventListener(
-      'keydown', event => {
-        if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return
+      "keydown",
+      (event) => {
+        if (
+          event.key !== "ArrowDown" &&
+          event.key !== "Enter" &&
+          event.key !== " "
+        )
+          return;
 
-        event.preventDefault()
+        event.preventDefault();
 
-        open()
+        open();
 
-        getFocusable(panel)[0]?.focus()
-      }, { signal }
-    )
+        getFocusable(panel)[0]?.focus();
+      },
+      { signal },
+    );
 
     panel.addEventListener(
-      'keydown', event => {
-        if (event.key === 'Escape') {
-          event.preventDefault()
+      "keydown",
+      (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
 
-          close()
+          close();
 
-          trigger.focus({ preventScroll: true })
+          trigger.focus({ preventScroll: true });
 
-          return
+          return;
         }
 
-        const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
+        const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
 
-        if (!keys.includes(event.key)) return
+        if (!keys.includes(event.key)) return;
 
-        const items = getFocusable(panel)
+        const items = getFocusable(panel);
 
-        if (!items.length) return
+        if (!items.length) return;
 
-        event.preventDefault()
+        event.preventDefault();
 
-        const currentIndex = items.indexOf(document.activeElement as HTMLElement)
-        const nextItem = items[getLoopedIndex(event.key, Math.max(0, currentIndex), items.length, ['ArrowDown'])]
+        const currentIndex = items.indexOf(
+          document.activeElement as HTMLElement,
+        );
+        const nextItem =
+          items[
+            getLoopedIndex(event.key, Math.max(0, currentIndex), items.length, [
+              "ArrowDown",
+            ])
+          ];
 
-        nextItem?.focus()
-      }, { signal }
-    )
+        nextItem?.focus();
+      },
+      { signal },
+    );
 
     document.addEventListener(
-      'pointerdown', event => {
-        if (trigger.getAttribute('aria-expanded') !== 'true') return
+      "pointerdown",
+      (event) => {
+        if (trigger.getAttribute("aria-expanded") !== "true") return;
 
-        const target = getOwnedTarget(event)
+        const target = getOwnedTarget(event);
 
-        if (!target || this.contains(target) || panel.contains(target)) return
+        if (!target || this.contains(target) || panel.contains(target)) return;
 
-        close()
-      }, { signal }
-    )
+        close();
+      },
+      { signal },
+    );
   }
 }
 
 class LumenTabsBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupTabs(this.abortController.signal)
+    this.setupTabs(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 
   private setupTabs(signal: AbortSignal): void {
-    const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')]
-    const panels = [...this.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
+    const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')];
+    const panels = [...this.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
 
-    if (!tabs.length || !panels.length) return
+    if (!tabs.length || !panels.length) return;
 
     const activate = (tab: HTMLElement): void => {
       for (const item of tabs) {
-        const selected = item === tab
-        const panelId = item.getAttribute('aria-controls')
-        const panel = panelId ? document.getElementById(panelId) : null
+        const selected = item === tab;
+        const panelId = item.getAttribute("aria-controls");
+        const panel = panelId ? document.getElementById(panelId) : null;
 
-        item.setAttribute('aria-selected', String(selected))
+        item.setAttribute("aria-selected", String(selected));
 
-        item.tabIndex = selected ? 0 : -1
+        item.tabIndex = selected ? 0 : -1;
 
         if (panel) {
-          panel.hidden = !selected
+          panel.hidden = !selected;
         }
       }
-    }
+    };
 
-    activate(tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]!)
+    activate(
+      tabs.find((tab) => tab.getAttribute("aria-selected") === "true") ??
+        tabs[0]!,
+    );
 
     for (const tab of tabs) {
       tab.addEventListener(
-        'click', () => {
-          activate(tab)
-        }, { signal }
-      )
+        "click",
+        () => {
+          activate(tab);
+        },
+        { signal },
+      );
 
       tab.addEventListener(
-        'keydown', event => {
-          const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+        "keydown",
+        (event) => {
+          const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
 
-          if (!keys.includes(event.key)) return
+          if (!keys.includes(event.key)) return;
 
-          event.preventDefault()
+          event.preventDefault();
 
-          const currentIndex = tabs.indexOf(tab)
-          const nextTab = tabs[getLoopedIndex(event.key, Math.max(0, currentIndex), tabs.length, ['ArrowRight'])]
+          const currentIndex = tabs.indexOf(tab);
+          const nextTab =
+            tabs[
+              getLoopedIndex(
+                event.key,
+                Math.max(0, currentIndex),
+                tabs.length,
+                ["ArrowRight"],
+              )
+            ];
 
           if (nextTab) {
-            activate(nextTab)
+            activate(nextTab);
 
-            nextTab.focus()
+            nextTab.focus();
           }
-        }, { signal }
-      )
+        },
+        { signal },
+      );
     }
   }
 }
 
 class LumenSelectBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private typeahead = ''
-  private typeaheadTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  private abortController: AbortController | undefined;
+  private typeahead = "";
+  private typeaheadTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.dataset.uiSelect = ''
+    this.dataset.uiSelect = "";
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupSelect(this.abortController.signal)
+    this.setupSelect(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
 
     if (this.typeaheadTimer) {
-      globalThis.clearTimeout(this.typeaheadTimer)
+      globalThis.clearTimeout(this.typeaheadTimer);
 
-      this.typeaheadTimer = undefined
+      this.typeaheadTimer = undefined;
     }
   }
 
   private setupSelect(signal: AbortSignal): void {
-    const select = this.ensureNativeSelect()
-    const control = this.ensureControl(select)
-    const trigger = control.querySelector<HTMLButtonElement>('[data-ui-select-trigger]')
-    const listbox = control.querySelector<HTMLElement>('[data-ui-select-list]')
+    const select = this.ensureNativeSelect();
+    const control = this.ensureControl(select);
+    const trigger = control.querySelector<HTMLButtonElement>(
+      "[data-ui-select-trigger]",
+    );
+    const listbox = control.querySelector<HTMLElement>("[data-ui-select-list]");
 
-    if (!trigger || !listbox) return
+    if (!trigger || !listbox) return;
 
-    this.renderOptions(select, listbox)
+    this.renderOptions(select, listbox);
 
-    control.hidden = false
+    control.hidden = false;
 
-    select.dataset.uiEnhanced = 'true'
+    select.dataset.uiEnhanced = "true";
 
-    select.dataset.uiSelectNative = ''
+    select.dataset.uiSelectNative = "";
 
-    select.tabIndex = -1
+    select.tabIndex = -1;
 
-    select.setAttribute('aria-hidden', 'true')
+    select.setAttribute("aria-hidden", "true");
 
-    trigger.disabled = select.disabled
+    trigger.disabled = select.disabled;
 
-    trigger.setAttribute('aria-haspopup', 'listbox')
+    trigger.setAttribute("aria-haspopup", "listbox");
 
-    trigger.setAttribute('role', 'combobox')
+    trigger.setAttribute("role", "combobox");
 
-    for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) {
-      const value = select.getAttribute(attribute)
+    for (const attribute of [
+      "aria-label",
+      "aria-labelledby",
+      "aria-describedby",
+      "aria-invalid",
+    ]) {
+      const value = select.getAttribute(attribute);
 
       if (value) {
-        trigger.setAttribute(attribute, value)
+        trigger.setAttribute(attribute, value);
       }
     }
 
     if (select.required) {
-      trigger.setAttribute('aria-required', 'true')
+      trigger.setAttribute("aria-required", "true");
     }
 
-    if (!trigger.hasAttribute('aria-label') && !trigger.hasAttribute('aria-labelledby')) {
-      const label = [...select.labels].find(item => item.textContent.trim())
+    if (
+      !trigger.hasAttribute("aria-label") &&
+      !trigger.hasAttribute("aria-labelledby")
+    ) {
+      const label = [...select.labels].find((item) => item.textContent.trim());
 
       if (label?.textContent) {
-        trigger.setAttribute('aria-label', label.textContent.trim())
+        trigger.setAttribute("aria-label", label.textContent.trim());
       }
     }
 
     for (const label of select.labels) {
       label.addEventListener(
-        'click', event => {
-          event.preventDefault()
+        "click",
+        (event) => {
+          event.preventDefault();
 
-          trigger.focus({ preventScroll: true })
-        }, { signal }
-      )
+          trigger.focus({ preventScroll: true });
+        },
+        { signal },
+      );
     }
 
-    this.syncValue(select, trigger)
+    this.syncValue(select, trigger);
 
-    this.closeSelect(trigger, listbox)
+    this.closeSelect(trigger, listbox);
 
     trigger.addEventListener(
-      'click', () => {
-        if (trigger.getAttribute('aria-expanded') === 'true') {
-          this.closeSelect(trigger, listbox)
+      "click",
+      () => {
+        if (trigger.getAttribute("aria-expanded") === "true") {
+          this.closeSelect(trigger, listbox);
         } else {
-          this.openSelect(trigger, listbox)
+          this.openSelect(trigger, listbox);
         }
-      }, { signal }
-    )
+      },
+      { signal },
+    );
 
     trigger.addEventListener(
-      'keydown', event => {
-        if (this.handleTypeahead(event)) return
+      "keydown",
+      (event) => {
+        if (this.handleTypeahead(event)) return;
 
-        if (event.key === 'Escape') {
-          this.closeSelect(trigger, listbox)
+        if (event.key === "Escape") {
+          this.closeSelect(trigger, listbox);
 
-          return
+          return;
         }
 
-        const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End', 'Enter', ' ']
+        const keys = ["ArrowDown", "ArrowUp", "Home", "End", "Enter", " "];
 
-        if (!keys.includes(event.key)) return
+        if (!keys.includes(event.key)) return;
 
-        event.preventDefault()
+        event.preventDefault();
 
-        this.openSelect(trigger, listbox)
+        this.openSelect(trigger, listbox);
 
-        if (event.key === 'Enter' || event.key === ' ') {
-          ;
+        if (event.key === "Enter" || event.key === " ") {
+          (this.getSelectedItem() ?? this.getEnabledItems()[0])?.focus();
 
-          (this.getSelectedItem() ?? this.getEnabledItems()[0])?.focus()
-
-          return
+          return;
         }
 
-        this.focusOption(event.key)
-      }, { signal }
-    )
+        this.focusOption(event.key);
+      },
+      { signal },
+    );
 
     select.addEventListener(
-      'change', () => {
-        this.syncValue(select, trigger)
-      }, { signal }
-    )
+      "change",
+      () => {
+        this.syncValue(select, trigger);
+      },
+      { signal },
+    );
 
     select.form?.addEventListener(
-      'reset', () => {
+      "reset",
+      () => {
         globalThis.setTimeout(() => {
-          this.syncValue(select, trigger)
-        })
-      }, { signal }
-    )
+          this.syncValue(select, trigger);
+        });
+      },
+      { signal },
+    );
 
     for (const item of this.getItems()) {
-      item.tabIndex = -1
+      item.tabIndex = -1;
 
       item.addEventListener(
-        'click', () => {
-          this.selectOption(select, trigger, listbox, item)
-        }, { signal }
-      )
+        "click",
+        () => {
+          this.selectOption(select, trigger, listbox, item);
+        },
+        { signal },
+      );
 
       item.addEventListener(
-        'keydown', event => {
-          if (this.handleTypeahead(event, item)) return
+        "keydown",
+        (event) => {
+          if (this.handleTypeahead(event, item)) return;
 
-          if (event.key === 'Escape') {
-            this.closeSelect(trigger, listbox)
+          if (event.key === "Escape") {
+            this.closeSelect(trigger, listbox);
 
-            trigger.focus({ preventScroll: true })
+            trigger.focus({ preventScroll: true });
 
-            return
+            return;
           }
 
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
 
-            this.selectOption(select, trigger, listbox, item)
+            this.selectOption(select, trigger, listbox, item);
 
-            return
+            return;
           }
 
-          const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
+          const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
 
-          if (!keys.includes(event.key)) return
+          if (!keys.includes(event.key)) return;
 
-          event.preventDefault()
+          event.preventDefault();
 
-          this.focusOption(event.key, item)
-        }, { signal }
-      )
+          this.focusOption(event.key, item);
+        },
+        { signal },
+      );
     }
 
     document.addEventListener(
-      'pointerdown', event => {
-        if (trigger.getAttribute('aria-expanded') !== 'true') return
+      "pointerdown",
+      (event) => {
+        if (trigger.getAttribute("aria-expanded") !== "true") return;
 
-        const target = getOwnedTarget(event)
+        const target = getOwnedTarget(event);
 
-        if (!target || this.contains(target)) return
+        if (!target || this.contains(target)) return;
 
-        this.closeSelect(trigger, listbox)
-      }, { signal }
-    )
+        this.closeSelect(trigger, listbox);
+      },
+      { signal },
+    );
   }
 
   private ensureNativeSelect(): HTMLSelectElement {
-    const existing = this.querySelector<HTMLSelectElement>('[data-ui-select-native], select')
+    const existing = this.querySelector<HTMLSelectElement>(
+      "[data-ui-select-native], select",
+    );
 
-    if (existing) return existing
+    if (existing) return existing;
 
-    const select = document.createElement('select')
+    const select = document.createElement("select");
 
     const directOptions = [...this.children].filter(
-      (child): child is HTMLOptionElement => child instanceof HTMLOptionElement
-    )
+      (child): child is HTMLOptionElement => child instanceof HTMLOptionElement,
+    );
 
-    select.className = 'ui-select ui-select__native'
+    select.className = "ui-select ui-select__native";
 
-    select.dataset.uiSelectNative = ''
+    select.dataset.uiSelectNative = "";
 
-    for (const attribute of ['id', 'name', 'required', 'disabled', 'value']) {
-      const value = this.getAttribute(attribute)
+    for (const attribute of ["id", "name", "required", "disabled", "value"]) {
+      const value = this.getAttribute(attribute);
 
       if (value !== null) {
-        select.setAttribute(attribute, value)
+        select.setAttribute(attribute, value);
       }
     }
 
     for (const option of directOptions) {
-      select.append(option)
+      select.append(option);
     }
 
-    this.prepend(select)
+    this.prepend(select);
 
-    return select
+    return select;
   }
 
   private ensureControl(select: HTMLSelectElement): HTMLElement {
-    const existing = this.querySelector<HTMLElement>('[data-ui-select-control]')
+    const existing = this.querySelector<HTMLElement>(
+      "[data-ui-select-control]",
+    );
 
-    if (existing) return existing
+    if (existing) return existing;
 
-    const control = document.createElement('div')
-    const trigger = document.createElement('button')
-    const value = document.createElement('span')
-    const listbox = document.createElement('div')
-    const selectId = select.id || createId('ui-select')
+    const control = document.createElement("div");
+    const trigger = document.createElement("button");
+    const value = document.createElement("span");
+    const listbox = document.createElement("div");
+    const selectId = select.id || createId("ui-select");
 
-    select.id = selectId
+    select.id = selectId;
 
-    control.className = 'ui-select__control'
+    control.className = "ui-select__control";
 
-    control.dataset.uiSelectControl = ''
+    control.dataset.uiSelectControl = "";
 
-    control.hidden = true
+    control.hidden = true;
 
-    trigger.className = 'ui-select ui-select__trigger'
+    trigger.className = "ui-select ui-select__trigger";
 
-    trigger.dataset.uiSelectTrigger = ''
+    trigger.dataset.uiSelectTrigger = "";
 
-    trigger.id = `${selectId}-trigger`
+    trigger.id = `${selectId}-trigger`;
 
-    trigger.type = 'button'
+    trigger.type = "button";
 
-    trigger.setAttribute('aria-controls', `${selectId}-listbox`)
+    trigger.setAttribute("aria-controls", `${selectId}-listbox`);
 
-    trigger.setAttribute('aria-expanded', 'false')
+    trigger.setAttribute("aria-expanded", "false");
 
-    trigger.setAttribute('aria-haspopup', 'listbox')
+    trigger.setAttribute("aria-haspopup", "listbox");
 
-    value.dataset.uiSelectValue = ''
+    value.dataset.uiSelectValue = "";
 
-    listbox.className = 'ui-select__list'
+    listbox.className = "ui-select__list";
 
-    listbox.dataset.uiSelectList = ''
+    listbox.dataset.uiSelectList = "";
 
-    listbox.dataset.state = 'closed'
+    listbox.dataset.state = "closed";
 
-    listbox.hidden = true
+    listbox.hidden = true;
 
-    listbox.id = `${selectId}-listbox`
+    listbox.id = `${selectId}-listbox`;
 
-    listbox.setAttribute('role', 'listbox')
+    listbox.setAttribute("role", "listbox");
 
-    trigger.append(value)
+    trigger.append(value);
 
-    control.append(trigger, listbox)
+    control.append(trigger, listbox);
 
-    select.after(control)
+    select.after(control);
 
-    return control
+    return control;
   }
 
   private renderOptions(select: HTMLSelectElement, listbox: HTMLElement): void {
     const items = [...select.options]
-      .filter(option => !option.hasAttribute('data-ui-select-placeholder'))
-      .map(option => {
-        const item = document.createElement('button')
+      .filter((option) => !option.hasAttribute("data-ui-select-placeholder"))
+      .map((option) => {
+        const item = document.createElement("button");
 
-        item.type = 'button'
+        item.type = "button";
 
-        item.setAttribute('role', 'option')
+        item.setAttribute("role", "option");
 
-        item.dataset.uiSelectOption = ''
+        item.dataset.uiSelectOption = "";
 
-        item.dataset.value = option.value
+        item.dataset.value = option.value;
 
-        item.textContent = option.label
+        item.textContent = option.label;
 
         if (option.disabled) {
-          item.disabled = true
+          item.disabled = true;
 
-          item.setAttribute('aria-disabled', 'true')
+          item.setAttribute("aria-disabled", "true");
         }
 
-        return item
-      })
+        return item;
+      });
 
-    listbox.replaceChildren(...items)
+    listbox.replaceChildren(...items);
   }
 
   private syncValue(select: HTMLSelectElement, trigger: HTMLElement): void {
-    const value = this.querySelector<HTMLElement>('[data-ui-select-value]')
+    const value = this.querySelector<HTMLElement>("[data-ui-select-value]");
 
-    if (!value) return
+    if (!value) return;
 
-    const selectedOption = select.selectedOptions[0]
-    const placeholder = select.querySelector<HTMLOptionElement>('[data-ui-select-placeholder]')
-    const hasSelection = Boolean(selectedOption && !selectedOption.hasAttribute('data-ui-select-placeholder'))
-    const selectedLabel = hasSelection && selectedOption ? selectedOption.label : ''
+    const selectedOption = select.selectedOptions[0];
+    const placeholder = select.querySelector<HTMLOptionElement>(
+      "[data-ui-select-placeholder]",
+    );
+    const hasSelection = Boolean(
+      selectedOption &&
+      !selectedOption.hasAttribute("data-ui-select-placeholder"),
+    );
+    const selectedLabel =
+      hasSelection && selectedOption ? selectedOption.label : "";
 
-    value.textContent = hasSelection ? selectedLabel : placeholder?.textContent.trim() || 'Select an option'
+    value.textContent = hasSelection
+      ? selectedLabel
+      : placeholder?.textContent.trim() || "Select an option";
 
-    this.dataset.placeholder = hasSelection ? 'false' : 'true'
+    this.dataset.placeholder = hasSelection ? "false" : "true";
 
-    trigger.setAttribute('aria-expanded', trigger.getAttribute('aria-expanded') ?? 'false')
+    trigger.setAttribute(
+      "aria-expanded",
+      trigger.getAttribute("aria-expanded") ?? "false",
+    );
 
     for (const item of this.getItems()) {
-      item.setAttribute('aria-selected', String(hasSelection && item.dataset.value === select.value))
+      item.setAttribute(
+        "aria-selected",
+        String(hasSelection && item.dataset.value === select.value),
+      );
     }
   }
 
   private openSelect(trigger: HTMLElement, listbox: HTMLElement): void {
-    trigger.setAttribute('aria-expanded', 'true')
+    trigger.setAttribute("aria-expanded", "true");
 
-    listbox.hidden = false
+    listbox.hidden = false;
 
-    listbox.dataset.state = 'open'
+    listbox.dataset.state = "open";
   }
 
   private closeSelect(trigger: HTMLElement, listbox: HTMLElement): void {
-    trigger.setAttribute('aria-expanded', 'false')
+    trigger.setAttribute("aria-expanded", "false");
 
-    listbox.hidden = true
+    listbox.hidden = true;
 
-    listbox.dataset.state = 'closed'
+    listbox.dataset.state = "closed";
   }
 
   private getItems(): HTMLElement[] {
-    return [...this.querySelectorAll<HTMLElement>(selectOptionSelector)]
+    return [...this.querySelectorAll<HTMLElement>(selectOptionSelector)];
   }
 
   private getEnabledItems(): HTMLElement[] {
     return this.getItems().filter(
-      item => !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
-    )
+      (item) =>
+        !item.hasAttribute("disabled") &&
+        item.getAttribute("aria-disabled") !== "true",
+    );
   }
 
   private getSelectedItem(): HTMLElement | undefined {
-    return this.getEnabledItems().find(item => item.getAttribute('aria-selected') === 'true')
+    return this.getEnabledItems().find(
+      (item) => item.getAttribute("aria-selected") === "true",
+    );
   }
 
-  private selectOption(select: HTMLSelectElement, trigger: HTMLElement, listbox: HTMLElement, item: HTMLElement): void {
-    if (item.hasAttribute('disabled') || item.getAttribute('aria-disabled') === 'true') return
+  private selectOption(
+    select: HTMLSelectElement,
+    trigger: HTMLElement,
+    listbox: HTMLElement,
+    item: HTMLElement,
+  ): void {
+    if (
+      item.hasAttribute("disabled") ||
+      item.getAttribute("aria-disabled") === "true"
+    )
+      return;
 
-    select.value = item.dataset.value ?? ''
+    select.value = item.dataset.value ?? "";
 
-    select.dispatchEvent(new Event('input', { bubbles: true }))
+    select.dispatchEvent(new Event("input", { bubbles: true }));
 
-    select.dispatchEvent(new Event('change', { bubbles: true }))
+    select.dispatchEvent(new Event("change", { bubbles: true }));
 
-    this.syncValue(select, trigger)
+    this.syncValue(select, trigger);
 
-    this.closeSelect(trigger, listbox)
+    this.closeSelect(trigger, listbox);
 
-    trigger.focus({ preventScroll: true })
+    trigger.focus({ preventScroll: true });
   }
 
   private focusOption(key: string, currentItem?: HTMLElement): void {
-    const items = this.getEnabledItems()
+    const items = this.getEnabledItems();
 
-    if (!items.length) return
+    if (!items.length) return;
 
-    const current = currentItem ?? this.getSelectedItem() ?? items[0]
+    const current = currentItem ?? this.getSelectedItem() ?? items[0];
 
-    if (!current) return
+    if (!current) return;
 
-    const currentIndex = items.indexOf(current)
-    const nextItem = items[getLoopedIndex(key, Math.max(0, currentIndex), items.length, ['ArrowDown'])]
+    const currentIndex = items.indexOf(current);
+    const nextItem =
+      items[
+        getLoopedIndex(key, Math.max(0, currentIndex), items.length, [
+          "ArrowDown",
+        ])
+      ];
 
-    nextItem?.focus()
+    nextItem?.focus();
   }
 
-  private handleTypeahead(event: KeyboardEvent, currentItem?: HTMLElement): boolean {
-    if (!isPrintableKey(event)) return false
+  private handleTypeahead(
+    event: KeyboardEvent,
+    currentItem?: HTMLElement,
+  ): boolean {
+    if (!isPrintableKey(event)) return false;
 
-    event.preventDefault()
+    event.preventDefault();
 
-    this.typeahead += event.key.toLowerCase()
+    this.typeahead += event.key.toLowerCase();
 
     if (this.typeaheadTimer) {
-      globalThis.clearTimeout(this.typeaheadTimer)
+      globalThis.clearTimeout(this.typeaheadTimer);
     }
 
     this.typeaheadTimer = globalThis.setTimeout(() => {
-      this.typeahead = ''
-    }, 700)
+      this.typeahead = "";
+    }, 700);
 
-    const trigger = this.querySelector<HTMLElement>('[data-ui-select-trigger]')
-    const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
+    const trigger = this.querySelector<HTMLElement>("[data-ui-select-trigger]");
+    const listbox = this.querySelector<HTMLElement>("[data-ui-select-list]");
 
     if (trigger && listbox) {
-      this.openSelect(trigger, listbox)
+      this.openSelect(trigger, listbox);
     }
 
-    this.focusTypeaheadOption(currentItem)
+    this.focusTypeaheadOption(currentItem);
 
-    return true
+    return true;
   }
 
   private focusTypeaheadOption(currentItem?: HTMLElement): void {
-    const items = this.getEnabledItems()
+    const items = this.getEnabledItems();
 
-    if (!items.length || !this.typeahead) return
+    if (!items.length || !this.typeahead) return;
 
-    const current = currentItem ?? this.getSelectedItem() ?? items[0]
+    const current = currentItem ?? this.getSelectedItem() ?? items[0];
 
-    if (!current) return
+    if (!current) return;
 
-    const currentIndex = items.indexOf(current)
-    const startIndex = Math.max(0, currentIndex + 1)
-    const orderedItems = [...items.slice(startIndex), ...items.slice(0, startIndex)]
-    const nextItem = orderedItems.find(item => item.textContent.trim().toLowerCase().startsWith(this.typeahead))
+    const currentIndex = items.indexOf(current);
+    const startIndex = Math.max(0, currentIndex + 1);
+    const orderedItems = [
+      ...items.slice(startIndex),
+      ...items.slice(0, startIndex),
+    ];
+    const nextItem = orderedItems.find((item) =>
+      item.textContent.trim().toLowerCase().startsWith(this.typeahead),
+    );
 
-    nextItem?.focus()
+    nextItem?.focus();
   }
 }
 
 class LumenDataTableBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    if (this.hasAttribute('selectable') && this.dataset.uiDatatableSelectable !== 'true') {
-      this.dataset.uiDatatableSelectable = 'true'
+    if (
+      this.hasAttribute("selectable") &&
+      this.dataset.uiDatatableSelectable !== "true"
+    ) {
+      this.dataset.uiDatatableSelectable = "true";
     }
 
-    if (this.hasAttribute('name') && !this.dataset.uiDatatableName) {
-      this.dataset.uiDatatableName = this.getAttribute('name') ?? ''
+    if (this.hasAttribute("name") && !this.dataset.uiDatatableName) {
+      this.dataset.uiDatatableName = this.getAttribute("name") ?? "";
     }
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupDataTable(this.abortController.signal)
+    this.setupDataTable(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 
   private setupDataTable(signal: AbortSignal): void {
-    const table = this.querySelector<HTMLTableElement>('table')
+    const table = this.querySelector<HTMLTableElement>("table");
 
-    if (!table) return
+    if (!table) return;
 
-    this.setupSelection(table, signal)
+    this.setupSelection(table, signal);
 
-    this.setupSorting(table, signal)
+    this.setupSorting(table, signal);
   }
 
   private setupSorting(table: HTMLTableElement, signal: AbortSignal): void {
-    const body = table.tBodies[0]
+    const body = table.tBodies[0];
 
-    if (!body) return
+    if (!body) return;
 
     for (const [index, row] of [...body.rows].entries()) {
-      row.dataset.uiDatatableIndex = row.dataset.uiDatatableIndex ?? String(index)
+      row.dataset.uiDatatableIndex =
+        row.dataset.uiDatatableIndex ?? String(index);
     }
 
-    const headers = [...table.querySelectorAll<HTMLTableCellElement>('thead th')].filter(
-      header => header.dataset.uiDatatableSortable === 'true' ||
-        header.dataset.sortable === 'true' ||
-        header.hasAttribute('data-sortable')
-    )
+    const headers = [
+      ...table.querySelectorAll<HTMLTableCellElement>("thead th"),
+    ].filter(
+      (header) =>
+        header.dataset.uiDatatableSortable === "true" ||
+        header.dataset.sortable === "true" ||
+        header.hasAttribute("data-sortable"),
+    );
 
     for (const header of headers) {
-      const row = header.parentElement
-      const columnIndex = row ? [...row.children].indexOf(header) : -1
+      const row = header.parentElement;
+      const columnIndex = row ? [...row.children].indexOf(header) : -1;
 
-      if (columnIndex < 0) continue
+      if (columnIndex < 0) continue;
 
-      header.dataset.uiDatatableColumn = String(columnIndex)
+      header.dataset.uiDatatableColumn = String(columnIndex);
 
-      header.setAttribute('aria-sort', header.getAttribute('aria-sort') ?? 'none')
+      header.setAttribute(
+        "aria-sort",
+        header.getAttribute("aria-sort") ?? "none",
+      );
 
-      const button = this.ensureSortButton(header)
+      const button = this.ensureSortButton(header);
 
       button.addEventListener(
-        'click', () => {
+        "click",
+        () => {
           const nextDirection = getNextDataTableSortDirection(
-            this.dataset.uiDatatableSortColumn, columnIndex, header.getAttribute('aria-sort')
-          )
+            this.dataset.uiDatatableSortColumn,
+            columnIndex,
+            header.getAttribute("aria-sort"),
+          );
 
-          this.updateSort(table, header, nextDirection)
+          this.updateSort(table, header, nextDirection);
 
-          this.sortRows(table, header, columnIndex, nextDirection)
-        }, { signal }
-      )
+          this.sortRows(table, header, columnIndex, nextDirection);
+        },
+        { signal },
+      );
     }
   }
 
   private ensureSortButton(header: HTMLTableCellElement): HTMLButtonElement {
-    const existing = header.querySelector<HTMLButtonElement>('[data-ui-datatable-sort]')
+    const existing = header.querySelector<HTMLButtonElement>(
+      "[data-ui-datatable-sort]",
+    );
 
-    if (existing) return existing
+    if (existing) return existing;
 
-    const button = document.createElement('button')
+    const button = document.createElement("button");
 
-    button.type = 'button'
+    button.type = "button";
 
-    button.className = 'ui-data-table__sort'
+    button.className = "ui-data-table__sort";
 
-    button.dataset.uiDatatableSort = ''
+    button.dataset.uiDatatableSort = "";
 
     while (header.firstChild) {
-      button.append(header.firstChild)
+      button.append(header.firstChild);
     }
 
-    header.append(button)
+    header.append(button);
 
-    return button
+    return button;
   }
 
-  private updateSort(table: HTMLTableElement, header: HTMLTableCellElement, direction: DataTableSortDirection): void {
-    for (const item of table.querySelectorAll<HTMLTableCellElement>('thead th[aria-sort]')) {
-      item.setAttribute('aria-sort', item === header ? direction : 'none')
+  private updateSort(
+    table: HTMLTableElement,
+    header: HTMLTableCellElement,
+    direction: DataTableSortDirection,
+  ): void {
+    for (const item of table.querySelectorAll<HTMLTableCellElement>(
+      "thead th[aria-sort]",
+    )) {
+      item.setAttribute("aria-sort", item === header ? direction : "none");
 
-      item.dataset.sort = item === header ? direction : 'none'
+      item.dataset.sort = item === header ? direction : "none";
     }
 
-    this.dataset.uiDatatableSortDirection = direction
+    this.dataset.uiDatatableSortDirection = direction;
 
-    if (direction === 'none') {
-      delete this.dataset.uiDatatableSortColumn
+    if (direction === "none") {
+      delete this.dataset.uiDatatableSortColumn;
     } else {
-      this.dataset.uiDatatableSortColumn = header.dataset.uiDatatableColumn ?? ''
+      this.dataset.uiDatatableSortColumn =
+        header.dataset.uiDatatableColumn ?? "";
     }
   }
 
@@ -5726,544 +6843,713 @@ class LumenDataTableBehaviorElement extends LumenElement {
     table: HTMLTableElement,
     header: HTMLTableCellElement,
     columnIndex: number,
-    direction: DataTableSortDirection
+    direction: DataTableSortDirection,
   ): void {
-    const body = table.tBodies[0]
+    const body = table.tBodies[0];
 
-    if (!body) return
+    if (!body) return;
 
-    const rows = [...body.rows]
-    const sortType = header.dataset.uiDatatableSortType
+    const rows = [...body.rows];
+    const sortType = header.dataset.uiDatatableSortType;
 
     rows.sort((row, other) => {
-      if (direction === 'none') {
-        return Number(row.dataset.uiDatatableIndex ?? '0') - Number(other.dataset.uiDatatableIndex ?? '0')
+      if (direction === "none") {
+        return (
+          Number(row.dataset.uiDatatableIndex ?? "0") -
+          Number(other.dataset.uiDatatableIndex ?? "0")
+        );
       }
 
       const result = compareDataTableValues(
-        getDataTableSortValue(row.cells[columnIndex]), getDataTableSortValue(other.cells[columnIndex]), sortType
-      )
+        getDataTableSortValue(row.cells[columnIndex]),
+        getDataTableSortValue(other.cells[columnIndex]),
+        sortType,
+      );
 
       return (
-        (direction === 'ascending' ? result : -result) ||
-        Number(row.dataset.uiDatatableIndex ?? '0') - Number(other.dataset.uiDatatableIndex ?? '0')
-      )
-    })
+        (direction === "ascending" ? result : -result) ||
+        Number(row.dataset.uiDatatableIndex ?? "0") -
+          Number(other.dataset.uiDatatableIndex ?? "0")
+      );
+    });
 
     for (const row of rows) {
-      body.append(row)
+      body.append(row);
     }
   }
 
   private setupSelection(table: HTMLTableElement, signal: AbortSignal): void {
-    const selectable = this.dataset.uiDatatableSelectable === 'true' || this.hasAttribute('selectable')
+    const selectable =
+      this.dataset.uiDatatableSelectable === "true" ||
+      this.hasAttribute("selectable");
 
-    if (!selectable) return
+    if (!selectable) return;
 
-    const headRow = table.tHead?.rows[0]
-    const body = table.tBodies[0]
+    const headRow = table.tHead?.rows[0];
+    const body = table.tBodies[0];
 
-    if (!headRow || !body) return
+    if (!headRow || !body) return;
 
-    const selectAll = this.ensureSelectAll(headRow)
+    const selectAll = this.ensureSelectAll(headRow);
 
     for (const [index, row] of getDataTableRows(table).entries()) {
-      const checkbox = this.ensureRowSelect(row, index)
+      const checkbox = this.ensureRowSelect(row, index);
 
       checkbox.addEventListener(
-        'change', () => {
-          this.syncSelection(table, selectAll, true)
-        }, { signal }
-      )
+        "change",
+        () => {
+          this.syncSelection(table, selectAll, true);
+        },
+        { signal },
+      );
     }
 
     selectAll.addEventListener(
-      'change', () => {
-        for (const checkbox of table.querySelectorAll<HTMLInputElement>('[data-ui-datatable-row-select]')) {
-          checkbox.checked = selectAll.checked
+      "change",
+      () => {
+        for (const checkbox of table.querySelectorAll<HTMLInputElement>(
+          "[data-ui-datatable-row-select]",
+        )) {
+          checkbox.checked = selectAll.checked;
         }
 
-        this.syncSelection(table, selectAll, true)
-      }, { signal }
-    )
+        this.syncSelection(table, selectAll, true);
+      },
+      { signal },
+    );
 
-    this.closest('form')?.addEventListener(
-      'reset', () => {
+    this.closest("form")?.addEventListener(
+      "reset",
+      () => {
         globalThis.setTimeout(() => {
-          this.syncSelection(table, selectAll, true)
-        })
-      }, { signal }
-    )
+          this.syncSelection(table, selectAll, true);
+        });
+      },
+      { signal },
+    );
 
-    this.syncSelection(table, selectAll)
+    this.syncSelection(table, selectAll);
   }
 
   private ensureSelectAll(headRow: HTMLTableRowElement): HTMLInputElement {
-    const existing = headRow.querySelector<HTMLInputElement>('[data-ui-datatable-select-all]')
+    const existing = headRow.querySelector<HTMLInputElement>(
+      "[data-ui-datatable-select-all]",
+    );
 
-    if (existing) return existing
+    if (existing) return existing;
 
-    const headerCell = document.createElement('th')
-    const selectAll = document.createElement('input')
+    const headerCell = document.createElement("th");
+    const selectAll = document.createElement("input");
 
-    headerCell.className = 'ui-data-table__selection'
+    headerCell.className = "ui-data-table__selection";
 
-    headerCell.scope = 'col'
+    headerCell.scope = "col";
 
-    selectAll.type = 'checkbox'
+    selectAll.type = "checkbox";
 
-    selectAll.className = 'ui-data-table__checkbox'
+    selectAll.className = "ui-data-table__checkbox";
 
-    selectAll.dataset.uiDatatableSelectAll = ''
+    selectAll.dataset.uiDatatableSelectAll = "";
 
-    selectAll.setAttribute('aria-label', 'Select all rows')
+    selectAll.setAttribute("aria-label", "Select all rows");
 
-    headerCell.append(selectAll)
+    headerCell.append(selectAll);
 
-    headRow.prepend(headerCell)
+    headRow.prepend(headerCell);
 
-    return selectAll
+    return selectAll;
   }
 
-  private ensureRowSelect(row: HTMLTableRowElement, index: number): HTMLInputElement {
-    const existing = row.querySelector<HTMLInputElement>('[data-ui-datatable-row-select]')
+  private ensureRowSelect(
+    row: HTMLTableRowElement,
+    index: number,
+  ): HTMLInputElement {
+    const existing = row.querySelector<HTMLInputElement>(
+      "[data-ui-datatable-row-select]",
+    );
 
-    row.dataset.uiDatatableRow = ''
+    row.dataset.uiDatatableRow = "";
 
-    row.dataset.value = getDataTableRowValue(row, index)
+    row.dataset.value = getDataTableRowValue(row, index);
 
-    if (existing) return existing
+    if (existing) return existing;
 
-    const cell = document.createElement('td')
-    const checkbox = document.createElement('input')
-    const selected = row.dataset.state === 'selected' || row.getAttribute('aria-selected') === 'true'
+    const cell = document.createElement("td");
+    const checkbox = document.createElement("input");
+    const selected =
+      row.dataset.state === "selected" ||
+      row.getAttribute("aria-selected") === "true";
 
-    cell.className = 'ui-data-table__selection'
+    cell.className = "ui-data-table__selection";
 
-    checkbox.type = 'checkbox'
+    checkbox.type = "checkbox";
 
-    checkbox.className = 'ui-data-table__checkbox'
+    checkbox.className = "ui-data-table__checkbox";
 
-    checkbox.dataset.uiDatatableRowSelect = ''
+    checkbox.dataset.uiDatatableRowSelect = "";
 
-    checkbox.checked = selected
+    checkbox.checked = selected;
 
-    checkbox.defaultChecked = selected
+    checkbox.defaultChecked = selected;
 
-    checkbox.setAttribute('aria-label', `Select row ${index + 1}`)
+    checkbox.setAttribute("aria-label", `Select row ${index + 1}`);
 
-    cell.append(checkbox)
+    cell.append(checkbox);
 
-    row.prepend(cell)
+    row.prepend(cell);
 
-    return checkbox
+    return checkbox;
   }
 
-  private syncSelection(table: HTMLTableElement, selectAll: HTMLInputElement, dispatch = false): void {
-    const rows = getDataTableRows(table)
-    const selectedValues: string[] = []
+  private syncSelection(
+    table: HTMLTableElement,
+    selectAll: HTMLInputElement,
+    dispatch = false,
+  ): void {
+    const rows = getDataTableRows(table);
+    const selectedValues: string[] = [];
 
     for (const [index, row] of rows.entries()) {
-      const checkbox = row.querySelector<HTMLInputElement>('[data-ui-datatable-row-select]')
-      const selected = checkbox?.checked === true
+      const checkbox = row.querySelector<HTMLInputElement>(
+        "[data-ui-datatable-row-select]",
+      );
+      const selected = checkbox?.checked === true;
 
-      row.setAttribute('aria-selected', String(selected))
+      row.setAttribute("aria-selected", String(selected));
 
       if (selected) {
-        row.dataset.state = 'selected'
+        row.dataset.state = "selected";
 
-        selectedValues.push(getDataTableRowValue(row, index))
+        selectedValues.push(getDataTableRowValue(row, index));
       } else {
-        delete row.dataset.state
+        delete row.dataset.state;
       }
     }
 
-    selectAll.checked = rows.length > 0 && selectedValues.length === rows.length
+    selectAll.checked =
+      rows.length > 0 && selectedValues.length === rows.length;
 
-    selectAll.indeterminate = selectedValues.length > 0 && selectedValues.length < rows.length
+    selectAll.indeterminate =
+      selectedValues.length > 0 && selectedValues.length < rows.length;
 
-    this.syncSelectionInputs(selectedValues)
+    this.syncSelectionInputs(selectedValues);
 
     if (dispatch) {
-      const detail = { values: selectedValues }
+      const detail = { values: selectedValues };
 
-      this.dispatchEvent(new CustomEvent('ui:data-table-selection-change', { bubbles: true, detail }))
+      this.dispatchEvent(
+        new CustomEvent("ui:data-table-selection-change", {
+          bubbles: true,
+          detail,
+        }),
+      );
 
       // Deprecated compatibility event. Remove in Lumen 1.0.
-      this.dispatchEvent(new CustomEvent('ui:datatable-selection-change', { bubbles: true, detail }))
+      this.dispatchEvent(
+        new CustomEvent("ui:datatable-selection-change", {
+          bubbles: true,
+          detail,
+        }),
+      );
     }
   }
 
   private syncSelectionInputs(selectedValues: string[]): void {
-    const name = this.dataset.uiDatatableName
-    let inputs = this.querySelector<HTMLElement>('[data-ui-datatable-inputs]')
+    const name = this.dataset.uiDatatableName;
+    let inputs = this.querySelector<HTMLElement>("[data-ui-datatable-inputs]");
 
     if (name) {
       if (!inputs) {
-        inputs = document.createElement('div')
+        inputs = document.createElement("div");
 
-        inputs.hidden = true
+        inputs.hidden = true;
 
-        inputs.dataset.uiDatatableInputs = ''
+        inputs.dataset.uiDatatableInputs = "";
 
-        this.append(inputs)
+        this.append(inputs);
       }
 
       inputs.replaceChildren(
-        ...selectedValues.map(value => {
-          const input = document.createElement('input')
+        ...selectedValues.map((value) => {
+          const input = document.createElement("input");
 
-          input.type = 'hidden'
+          input.type = "hidden";
 
-          input.name = name
+          input.name = name;
 
-          input.value = value
+          input.value = value;
 
-          return input
-        })
-      )
+          return input;
+        }),
+      );
     } else {
-      inputs?.replaceChildren()
+      inputs?.replaceChildren();
     }
   }
 }
 
 class LumenVirtualListBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupVirtualList(this.abortController.signal)
+    this.setupVirtualList(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 
   private setupVirtualList(signal: AbortSignal): void {
-    const items = [...this.children].filter((child): child is HTMLElement => child instanceof HTMLElement)
+    const items = [...this.children].filter(
+      (child): child is HTMLElement => child instanceof HTMLElement,
+    );
 
-    if (!items.length) return
+    if (!items.length) return;
 
     const update = (): void => {
-      const overscan = this.getNumberAttribute('data-ui-overscan', 'overscan', 4, 0)
-      const itemSize = this.getNumberAttribute('data-ui-item-size', 'item-size', 44)
-      const range = getVirtualRange(this.scrollTop, this.clientHeight, itemSize, items.length, overscan)
+      const overscan = this.getNumberAttribute(
+        "data-ui-overscan",
+        "overscan",
+        4,
+        0,
+      );
+      const itemSize = this.getNumberAttribute(
+        "data-ui-item-size",
+        "item-size",
+        44,
+      );
+      const range = getVirtualRange(
+        this.scrollTop,
+        this.clientHeight,
+        itemSize,
+        items.length,
+        overscan,
+      );
 
       for (const [index, item] of items.entries()) {
-        item.hidden = index < range.startIndex || index > range.endIndex
+        item.hidden = index < range.startIndex || index > range.endIndex;
       }
 
       this.dispatchEvent(
-        new CustomEvent('ui:virtual-list-range', {
+        new CustomEvent("ui:virtual-list-range", {
           bubbles: true,
-          detail: range
-        })
-      )
-    }
+          detail: range,
+        }),
+      );
+    };
 
-    this.addEventListener('scroll', update, { passive: true, signal })
+    this.addEventListener("scroll", update, { passive: true, signal });
 
-    update()
+    update();
   }
 
-  private getNumberAttribute(dataAttribute: string, attribute: string, fallback: number, minimum = 1): number {
-    const value = Number(this.getAttribute(dataAttribute) ?? this.getAttribute(attribute) ?? fallback)
+  private getNumberAttribute(
+    dataAttribute: string,
+    attribute: string,
+    fallback: number,
+    minimum = 1,
+  ): number {
+    const value = Number(
+      this.getAttribute(dataAttribute) ??
+        this.getAttribute(attribute) ??
+        fallback,
+    );
 
-    return Number.isFinite(value) && value >= minimum ? value : fallback
+    return Number.isFinite(value) && value >= minimum ? value : fallback;
   }
 }
 
 class LumenThemeBuilderBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private currentExportFormat: LumenThemeBuilderExportFormat = 'css'
-  private currentExportValue = ''
-  private currentScheme: LumenThemeBuilderScheme = 'light'
-  private currentTokens: LumenThemeTokens | null = null
+  private abortController: AbortController | undefined;
+  private currentExportFormat: LumenThemeBuilderExportFormat = "css";
+  private currentExportValue = "";
+  private currentScheme: LumenThemeBuilderScheme = "light";
+  private currentTokens: LumenThemeTokens | null = null;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupThemeBuilder(this.abortController.signal)
+    this.setupThemeBuilder(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 
   private setupThemeBuilder(signal: AbortSignal): void {
-    const brandHue = this.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue], [data-ui-theme-hue]')
-    const brandHueNumber = this.querySelector<HTMLInputElement>('[data-ui-theme-brand-hue-number]')
-    const accentHue = this.querySelector<HTMLInputElement>('[data-ui-theme-accent-hue]')
-    const accentHueNumber = this.querySelector<HTMLInputElement>('[data-ui-theme-accent-hue-number]')
-    const primaryColor = this.querySelector<HTMLInputElement>('[data-ui-theme-primary-color]')
-    const primaryHex = this.querySelector<HTMLInputElement>('[data-ui-theme-primary-hex]')
-    const secondaryColor = this.querySelector<HTMLInputElement>('[data-ui-theme-secondary-color]')
-    const secondaryHex = this.querySelector<HTMLInputElement>('[data-ui-theme-secondary-hex]')
-    const exportButton = this.querySelector<HTMLButtonElement>('[data-ui-theme-export]')
-    const output = this.querySelector<HTMLTextAreaElement | HTMLOutputElement>('[data-ui-theme-output]')
-    const exportFormatButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-export-format]')]
-    const modeButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-mode]')]
-    const schemeButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')]
-    const importButton = this.querySelector<HTMLButtonElement>('[data-ui-theme-import]')
-    const checkContrastButton = this.querySelector<HTMLButtonElement>('[data-ui-theme-check-contrast]')
-    const scoreElement = this.querySelector<HTMLElement>('[data-ui-theme-contrast-score]')
-    const statusElement = this.querySelector<HTMLElement>('[data-ui-theme-contrast-status]')
+    const brandHue = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-brand-hue], [data-ui-theme-hue]",
+    );
+    const brandHueNumber = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-brand-hue-number]",
+    );
+    const accentHue = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-accent-hue]",
+    );
+    const accentHueNumber = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-accent-hue-number]",
+    );
+    const primaryColor = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-primary-color]",
+    );
+    const primaryHex = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-primary-hex]",
+    );
+    const secondaryColor = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-secondary-color]",
+    );
+    const secondaryHex = this.querySelector<HTMLInputElement>(
+      "[data-ui-theme-secondary-hex]",
+    );
+    const exportButton = this.querySelector<HTMLButtonElement>(
+      "[data-ui-theme-export]",
+    );
+    const output = this.querySelector<HTMLTextAreaElement | HTMLOutputElement>(
+      "[data-ui-theme-output]",
+    );
+    const exportFormatButtons = [
+      ...this.querySelectorAll<HTMLButtonElement>(
+        "[data-ui-theme-export-format]",
+      ),
+    ];
+    const modeButtons = [
+      ...this.querySelectorAll<HTMLButtonElement>("[data-ui-theme-mode]"),
+    ];
+    const schemeButtons = [
+      ...this.querySelectorAll<HTMLButtonElement>("[data-ui-theme-scheme]"),
+    ];
+    const importButton = this.querySelector<HTMLButtonElement>(
+      "[data-ui-theme-import]",
+    );
+    const checkContrastButton = this.querySelector<HTMLButtonElement>(
+      "[data-ui-theme-check-contrast]",
+    );
+    const scoreElement = this.querySelector<HTMLElement>(
+      "[data-ui-theme-contrast-score]",
+    );
+    const statusElement = this.querySelector<HTMLElement>(
+      "[data-ui-theme-contrast-status]",
+    );
 
     this.currentExportFormat = coerceThemeBuilderExportFormat(
-      this.getButtonValue(exportFormatButtons, 'data-ui-theme-export-format', 'css')
-    )
+      this.getButtonValue(
+        exportFormatButtons,
+        "data-ui-theme-export-format",
+        "css",
+      ),
+    );
 
     this.currentScheme = coerceThemeBuilderScheme(
-      this.getButtonValue(schemeButtons, 'data-ui-theme-scheme', this.getDefaultScheme())
-    )
+      this.getButtonValue(
+        schemeButtons,
+        "data-ui-theme-scheme",
+        this.getDefaultScheme(),
+      ),
+    );
 
     const updateContrastUi = (tokens: LumenThemeTokens) => {
-      if (!scoreElement && !statusElement) return
+      if (!scoreElement && !statusElement) return;
 
-      const score = scoreThemeContrast(tokens, 'ink', 'canvas')
+      const score = scoreThemeContrast(tokens, "ink", "canvas");
 
-      if (scoreElement) scoreElement.textContent = String(score.ratio)
+      if (scoreElement) scoreElement.textContent = String(score.ratio);
 
       if (statusElement) {
-        statusElement.textContent = score.wcagAA ? 'Passes WCAG AA' : 'Fails WCAG AA'
+        statusElement.textContent = score.wcagAA
+          ? "Passes WCAG AA"
+          : "Fails WCAG AA";
 
-        statusElement.dataset.status = score.wcagAA ? 'pass' : 'fail'
+        statusElement.dataset.status = score.wcagAA ? "pass" : "fail";
       }
-    }
+    };
 
     const update = (dispatch = true): void => {
       const result = createThemeBuilderTokens({
-        accentHue: accentHue?.value ?? accentHueNumber?.value ?? this.getAttribute('data-ui-theme-accent-hue') ?? null,
+        accentHue:
+          accentHue?.value ??
+          accentHueNumber?.value ??
+          this.getAttribute("data-ui-theme-accent-hue") ??
+          null,
         hue:
           brandHue?.value ??
           brandHueNumber?.value ??
-          this.getAttribute('data-ui-theme-brand-hue') ??
-          this.getAttribute('data-ui-theme-hue') ??
+          this.getAttribute("data-ui-theme-brand-hue") ??
+          this.getAttribute("data-ui-theme-hue") ??
           null,
-        mode: this.getButtonValue(modeButtons, 'data-ui-theme-mode', 'generated'),
+        mode: this.getButtonValue(
+          modeButtons,
+          "data-ui-theme-mode",
+          "generated",
+        ),
         primaryColor: primaryHex?.value ?? primaryColor?.value ?? null,
         scheme: this.currentScheme,
-        secondaryColor: secondaryHex?.value ?? secondaryColor?.value ?? null
-      })
+        secondaryColor: secondaryHex?.value ?? secondaryColor?.value ?? null,
+      });
 
-      this.currentScheme = result.scheme
+      this.currentScheme = result.scheme;
 
-      this.currentTokens = result.tokens
+      this.currentTokens = result.tokens;
 
-      const target = this.getTarget()
+      const target = this.getTarget();
 
       if (target) {
-        this.applyTokens(target, result.tokens, result.scheme)
+        this.applyTokens(target, result.tokens, result.scheme);
       }
 
-      this.writeExport(output)
+      this.writeExport(output);
 
-      updateContrastUi(result.tokens)
+      updateContrastUi(result.tokens);
 
       if (dispatch) {
         this.dispatchEvent(
-          new CustomEvent('ui:theme-change', {
+          new CustomEvent("ui:theme-change", {
             bubbles: true,
-            detail: result
-          })
-        )
+            detail: result,
+          }),
+        );
       }
-    }
+    };
 
-    this.bindHueInputs(brandHue, brandHueNumber, update, signal)
+    this.bindHueInputs(brandHue, brandHueNumber, update, signal);
 
-    this.bindHueInputs(accentHue, accentHueNumber, update, signal)
+    this.bindHueInputs(accentHue, accentHueNumber, update, signal);
 
-    this.bindHexInputs(primaryColor, primaryHex, update, signal)
+    this.bindHexInputs(primaryColor, primaryHex, update, signal);
 
-    this.bindHexInputs(secondaryColor, secondaryHex, update, signal)
+    this.bindHexInputs(secondaryColor, secondaryHex, update, signal);
 
     for (const button of exportFormatButtons) {
       button.addEventListener(
-        'click', () => {
-          this.currentExportFormat = coerceThemeBuilderExportFormat(button.getAttribute('data-ui-theme-export-format'))
+        "click",
+        () => {
+          this.currentExportFormat = coerceThemeBuilderExportFormat(
+            button.getAttribute("data-ui-theme-export-format"),
+          );
 
-          this.setPressedState(exportFormatButtons, 'data-ui-theme-export-format', this.currentExportFormat)
+          this.setPressedState(
+            exportFormatButtons,
+            "data-ui-theme-export-format",
+            this.currentExportFormat,
+          );
 
-          this.writeExport(output)
-        }, { signal }
-      )
+          this.writeExport(output);
+        },
+        { signal },
+      );
     }
 
     for (const button of modeButtons) {
       button.addEventListener(
-        'click', () => {
+        "click",
+        () => {
           this.setPressedState(
-            modeButtons, 'data-ui-theme-mode', coerceThemeBuilderMode(button.getAttribute('data-ui-theme-mode'))
-          )
+            modeButtons,
+            "data-ui-theme-mode",
+            coerceThemeBuilderMode(button.getAttribute("data-ui-theme-mode")),
+          );
 
-          update()
-        }, { signal }
-      )
+          update();
+        },
+        { signal },
+      );
     }
 
     for (const button of schemeButtons) {
       button.addEventListener(
-        'click', () => {
-          this.currentScheme = coerceThemeBuilderScheme(button.getAttribute('data-ui-theme-scheme'))
+        "click",
+        () => {
+          this.currentScheme = coerceThemeBuilderScheme(
+            button.getAttribute("data-ui-theme-scheme"),
+          );
 
-          this.setPressedState(schemeButtons, 'data-ui-theme-scheme', this.currentScheme)
+          this.setPressedState(
+            schemeButtons,
+            "data-ui-theme-scheme",
+            this.currentScheme,
+          );
 
-          update()
-        }, { signal }
-      )
+          update();
+        },
+        { signal },
+      );
     }
 
     exportButton?.addEventListener(
-      'click', () => {
+      "click",
+      () => {
         if (this.currentTokens) {
-          this.writeExport(output)
+          this.writeExport(output);
         } else {
-          update(false)
+          update(false);
         }
 
-        const value = output?.value || this.currentExportValue
+        const value = output?.value || this.currentExportValue;
 
-        navigator.clipboard.writeText(value).catch(() => null)
+        navigator.clipboard.writeText(value).catch(() => null);
 
         this.dispatchEvent(
-          new CustomEvent('ui:theme-export', {
+          new CustomEvent("ui:theme-export", {
             bubbles: true,
             detail: {
-              css: this.currentExportFormat === 'css' ? value : undefined,
+              css: this.currentExportFormat === "css" ? value : undefined,
               format: this.currentExportFormat,
               tokens: this.currentTokens,
-              value
-            }
-          })
-        )
-      }, { signal }
-    )
+              value,
+            },
+          }),
+        );
+      },
+      { signal },
+    );
 
     importButton?.addEventListener(
-      'click', () => {
-        const value = output?.value || ''
+      "click",
+      () => {
+        const value = output?.value || "";
 
-        if (!value) return
+        if (!value) return;
 
-        const parsed = parseThemeCss(value)
+        const parsed = parseThemeCss(value);
 
-        if (Object.keys(parsed).length === 0) return
+        if (Object.keys(parsed).length === 0) return;
 
-        this.currentTokens = parsed
+        this.currentTokens = parsed;
 
-        const target = this.getTarget()
+        const target = this.getTarget();
 
         if (target) {
-          this.applyTokens(target, this.currentTokens, this.currentScheme)
+          this.applyTokens(target, this.currentTokens, this.currentScheme);
         }
 
-        this.writeExport(output)
+        this.writeExport(output);
 
-        updateContrastUi(this.currentTokens)
+        updateContrastUi(this.currentTokens);
 
         this.dispatchEvent(
-          new CustomEvent('ui:theme-change', {
+          new CustomEvent("ui:theme-change", {
             bubbles: true,
             detail: {
               accentHue: 0,
               hue: 0,
-              mode: 'manual',
+              mode: "manual",
               scheme: this.currentScheme,
-              tokens: this.currentTokens
-            }
-          })
-        )
-      }, { signal }
-    )
+              tokens: this.currentTokens,
+            },
+          }),
+        );
+      },
+      { signal },
+    );
 
     checkContrastButton?.addEventListener(
-      'click', () => {
-        if (!this.currentTokens) return
+      "click",
+      () => {
+        if (!this.currentTokens) return;
 
-        this.currentTokens = tuneThemeContrast(this.currentTokens, 'ink', 'canvas')
+        this.currentTokens = tuneThemeContrast(
+          this.currentTokens,
+          "ink",
+          "canvas",
+        );
 
-        const target = this.getTarget()
+        const target = this.getTarget();
 
         if (target) {
-          this.applyTokens(target, this.currentTokens, this.currentScheme)
+          this.applyTokens(target, this.currentTokens, this.currentScheme);
         }
 
-        this.writeExport(output)
+        this.writeExport(output);
 
-        updateContrastUi(this.currentTokens)
+        updateContrastUi(this.currentTokens);
 
         this.dispatchEvent(
-          new CustomEvent('ui:theme-change', {
+          new CustomEvent("ui:theme-change", {
             bubbles: true,
             detail: {
               accentHue: 0,
               hue: 0,
-              mode: 'manual',
+              mode: "manual",
               scheme: this.currentScheme,
-              tokens: this.currentTokens
-            }
-          })
-        )
-      }, { signal }
-    )
+              tokens: this.currentTokens,
+            },
+          }),
+        );
+      },
+      { signal },
+    );
 
-    update(false)
+    update(false);
   }
 
   private getDefaultScheme(): LumenThemeBuilderScheme {
-    return document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
+    return document.documentElement.dataset.theme?.includes("dark")
+      ? "dark"
+      : "light";
   }
 
   private getTarget(): HTMLElement | null {
-    const selector = this.dataset.uiThemeTarget
+    const selector = this.dataset.uiThemeTarget;
 
-    if (!selector) return document.documentElement
+    if (!selector) return document.documentElement;
 
     try {
-      return document.querySelector<HTMLElement>(selector)
+      return document.querySelector<HTMLElement>(selector);
     } catch {
-      return null
+      return null;
     }
   }
 
-  private getButtonValue(buttons: HTMLButtonElement[], attribute: string, fallback: string): string {
+  private getButtonValue(
+    buttons: HTMLButtonElement[],
+    attribute: string,
+    fallback: string,
+  ): string {
     const activeButton = buttons.find(
-      button => button.getAttribute('aria-selected') === 'true' || button.getAttribute('aria-pressed') === 'true'
-    )
+      (button) =>
+        button.getAttribute("aria-selected") === "true" ||
+        button.getAttribute("aria-pressed") === "true",
+    );
 
-    return activeButton?.getAttribute(attribute) ?? this.getAttribute(attribute) ?? fallback
+    return (
+      activeButton?.getAttribute(attribute) ??
+      this.getAttribute(attribute) ??
+      fallback
+    );
   }
 
-  private setPressedState(buttons: HTMLButtonElement[], attribute: string, value: string): void {
+  private setPressedState(
+    buttons: HTMLButtonElement[],
+    attribute: string,
+    value: string,
+  ): void {
     for (const button of buttons) {
-      const isPressed = button.getAttribute(attribute) === value
+      const isPressed = button.getAttribute(attribute) === value;
 
-      if (button.hasAttribute('aria-pressed')) {
-        button.setAttribute('aria-pressed', String(isPressed))
+      if (button.hasAttribute("aria-pressed")) {
+        button.setAttribute("aria-pressed", String(isPressed));
       }
 
-      button.classList.toggle('ui-button--secondary', isPressed)
+      button.classList.toggle("ui-button--secondary", isPressed);
 
-      button.classList.toggle('ui-button--outline', !isPressed)
+      button.classList.toggle("ui-button--outline", !isPressed);
     }
   }
 
@@ -6271,1279 +7557,1535 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     range: HTMLInputElement | null,
     number: HTMLInputElement | null,
     onChange: () => void,
-    signal: AbortSignal
+    signal: AbortSignal,
   ): void {
-    const sync = (source: HTMLInputElement, target: HTMLInputElement | null): void => {
+    const sync = (
+      source: HTMLInputElement,
+      target: HTMLInputElement | null,
+    ): void => {
       if (target) {
-        target.value = source.value
+        target.value = source.value;
       }
 
-      onChange()
-    }
+      onChange();
+    };
 
     range?.addEventListener(
-      'input', () => {
-        sync(range, number)
-      }, { signal }
-    )
+      "input",
+      () => {
+        sync(range, number);
+      },
+      { signal },
+    );
 
     number?.addEventListener(
-      'input', () => {
-        sync(number, range)
-      }, { signal }
-    )
+      "input",
+      () => {
+        sync(number, range);
+      },
+      { signal },
+    );
   }
 
   private bindHexInputs(
     color: HTMLInputElement | null,
     text: HTMLInputElement | null,
     onChange: () => void,
-    signal: AbortSignal
+    signal: AbortSignal,
   ): void {
     color?.addEventListener(
-      'input', () => {
+      "input",
+      () => {
         if (text) {
-          text.value = color.value
+          text.value = color.value;
 
-          text.removeAttribute('aria-invalid')
+          text.removeAttribute("aria-invalid");
         }
 
-        onChange()
-      }, { signal }
-    )
+        onChange();
+      },
+      { signal },
+    );
 
     text?.addEventListener(
-      'input', () => {
-        const normalized = normalizeThemeBuilderHex(text.value)
+      "input",
+      () => {
+        const normalized = normalizeThemeBuilderHex(text.value);
 
         if (normalized) {
-          if (color) color.value = normalized
+          if (color) color.value = normalized;
 
-          text.removeAttribute('aria-invalid')
+          text.removeAttribute("aria-invalid");
 
-          onChange()
+          onChange();
         } else {
-          text.setAttribute('aria-invalid', 'true')
+          text.setAttribute("aria-invalid", "true");
         }
-      }, { signal }
-    )
+      },
+      { signal },
+    );
   }
 
-  private applyTokens(target: HTMLElement, tokens: LumenThemeTokens, scheme: LumenThemeBuilderScheme): void {
-    target.style.colorScheme = scheme
+  private applyTokens(
+    target: HTMLElement,
+    tokens: LumenThemeTokens,
+    scheme: LumenThemeBuilderScheme,
+  ): void {
+    target.style.colorScheme = scheme;
 
     for (const [token, value] of Object.entries(tokens)) {
-      target.style.setProperty(`--${token}`, value)
+      target.style.setProperty(`--${token}`, value);
     }
   }
 
-  private writeExport(output: HTMLTextAreaElement | HTMLOutputElement | null): void {
-    if (!this.currentTokens) return
+  private writeExport(
+    output: HTMLTextAreaElement | HTMLOutputElement | null,
+  ): void {
+    if (!this.currentTokens) return;
 
-    this.currentExportValue = exportThemeBuilderValue(this.currentTokens, this.currentScheme, this.currentExportFormat)
+    this.currentExportValue = exportThemeBuilderValue(
+      this.currentTokens,
+      this.currentScheme,
+      this.currentExportFormat,
+    );
 
     if (output) {
-      output.value = this.currentExportValue
+      output.value = this.currentExportValue;
     }
   }
 }
 
 class LumenTooltipBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private showTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  private abortController: AbortController | undefined;
+  private showTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    this.setupTooltip(this.abortController.signal)
+    this.setupTooltip(this.abortController.signal);
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
 
-    this.clearTimer()
+    this.clearTimer();
   }
 
   private setupTooltip(signal: AbortSignal): void {
-    const tip = this.querySelector<HTMLElement>('[role="tooltip"]')
+    const tip = this.querySelector<HTMLElement>('[role="tooltip"]');
 
     const trigger = this.querySelector<HTMLElement>(
-      '[data-ui-tooltip-trigger], [data-ui-trigger], button, a[href], input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
+      '[data-ui-tooltip-trigger], [data-ui-trigger], button, a[href], input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
 
-    if (!tip) return
+    if (!tip) return;
 
     if (trigger && !trigger.closest('[role="tooltip"]')) {
       if (!tip.id) {
-        tip.id = createId('ui-tooltip')
+        tip.id = createId("ui-tooltip");
       }
 
-      const describedBy = new Set((trigger.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean))
+      const describedBy = new Set(
+        (trigger.getAttribute("aria-describedby") ?? "")
+          .split(/\s+/)
+          .filter(Boolean),
+      );
 
-      describedBy.add(tip.id)
+      describedBy.add(tip.id);
 
-      trigger.setAttribute('aria-describedby', [...describedBy].join(' '))
+      trigger.setAttribute("aria-describedby", [...describedBy].join(" "));
     }
 
     const show = (delay: number): void => {
-      this.clearTimer()
+      this.clearTimer();
 
       this.showTimer = globalThis.setTimeout(() => {
-        tip.style.removeProperty('visibility')
-      }, delay)
-    }
+        tip.style.removeProperty("visibility");
+      }, delay);
+    };
 
     const hide = (): void => {
-      this.clearTimer()
+      this.clearTimer();
 
-      tip.style.visibility = 'hidden'
-    }
-
-    this.addEventListener(
-      'mouseenter', () => {
-        show(250)
-      }, { signal }
-    )
-
-    this.addEventListener('mouseleave', hide, { signal })
+      tip.style.visibility = "hidden";
+    };
 
     this.addEventListener(
-      'focusin', () => {
-        show(0)
-      }, { signal }
-    )
+      "mouseenter",
+      () => {
+        show(250);
+      },
+      { signal },
+    );
 
-    this.addEventListener('focusout', hide, { signal })
+    this.addEventListener("mouseleave", hide, { signal });
 
     this.addEventListener(
-      'keydown', event => {
-        if (event.key === 'Escape') {
-          hide()
+      "focusin",
+      () => {
+        show(0);
+      },
+      { signal },
+    );
+
+    this.addEventListener("focusout", hide, { signal });
+
+    this.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape") {
+          hide();
         }
-      }, { signal }
-    )
+      },
+      { signal },
+    );
   }
 
   private clearTimer(): void {
-    if (!this.showTimer) return
+    if (!this.showTimer) return;
 
-    globalThis.clearTimeout(this.showTimer)
+    globalThis.clearTimeout(this.showTimer);
 
-    this.showTimer = undefined
+    this.showTimer = undefined;
   }
 }
 
 class LumenSonnerBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    normalizeToastViewport(this)
+    normalizeToastViewport(this);
 
-    installToastController()
+    installToastController();
   }
 }
 
 class LumenToastBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.dataset.uiToast = ''
-
-    this.setAttribute(
-      'role', this.getAttribute('role') ?? (this.getAttribute('variant') === 'destructive' ? 'alert' : 'status')
-    )
+    this.dataset.uiToast = "";
 
     this.setAttribute(
-      'aria-live', this.getAttribute('aria-live') ?? (this.getAttribute('variant') === 'destructive' ? 'assertive' : 'polite')
-    )
+      "role",
+      this.getAttribute("role") ??
+        (this.getAttribute("variant") === "destructive" ? "alert" : "status"),
+    );
 
-    this.abortController?.abort()
+    this.setAttribute(
+      "aria-live",
+      this.getAttribute("aria-live") ??
+        (this.getAttribute("variant") === "destructive"
+          ? "assertive"
+          : "polite"),
+    );
 
-    this.abortController = new AbortController()
+    this.abortController?.abort();
+
+    this.abortController = new AbortController();
 
     this.addEventListener(
-      'keydown', event => {
-        if (event.key !== 'Escape') return
+      "keydown",
+      (event) => {
+        if (event.key !== "Escape") return;
 
-        event.preventDefault()
+        event.preventDefault();
 
-        dismissToastElement(this)
-      }, { signal: this.abortController.signal }
-    )
+        dismissToastElement(this);
+      },
+      { signal: this.abortController.signal },
+    );
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
 
-    clearToastTimer(this)
+    clearToastTimer(this);
   }
 }
 
 class LumenFileUploadBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    const input = this.querySelector<HTMLInputElement>('[data-ui-file-upload-input]')
+    const input = this.querySelector<HTMLInputElement>(
+      "[data-ui-file-upload-input]",
+    );
 
-    if (!input) return
+    if (!input) return;
 
-    const files = this.querySelector<HTMLElement>('[data-ui-file-upload-files]')
+    const files = this.querySelector<HTMLElement>(
+      "[data-ui-file-upload-files]",
+    );
 
     const renderFiles = (): void => {
-      const selectedFiles = input.files ? [...input.files] : []
+      const selectedFiles = input.files ? [...input.files] : [];
 
-      this.dataset.state = selectedFiles.length > 0 ? 'selected' : 'idle'
+      this.dataset.state = selectedFiles.length > 0 ? "selected" : "idle";
 
-      if (!files) return
+      if (!files) return;
 
       if (selectedFiles.length === 1) {
-        files.textContent = selectedFiles[0]?.name ?? ''
+        files.textContent = selectedFiles[0]?.name ?? "";
       } else {
-        files.textContent = selectedFiles.length > 1 ? `${selectedFiles.length} files selected` : ''
+        files.textContent =
+          selectedFiles.length > 1
+            ? `${selectedFiles.length} files selected`
+            : "";
       }
-    }
+    };
 
-    input.addEventListener('change', renderFiles, { signal: this.abortController.signal })
-
-    this.addEventListener(
-      'dragover', event => {
-        if (input.disabled) return
-
-        event.preventDefault()
-
-        this.dataset.state = 'drag-over'
-      }, { signal: this.abortController.signal }
-    )
+    input.addEventListener("change", renderFiles, {
+      signal: this.abortController.signal,
+    });
 
     this.addEventListener(
-      'dragleave', event => {
-        if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return
+      "dragover",
+      (event) => {
+        if (input.disabled) return;
 
-        this.dataset.state = input.files?.length ? 'selected' : 'idle'
-      }, { signal: this.abortController.signal }
-    )
+        event.preventDefault();
+
+        this.dataset.state = "drag-over";
+      },
+      { signal: this.abortController.signal },
+    );
 
     this.addEventListener(
-      'drop', event => {
-        if (input.disabled) return
+      "dragleave",
+      (event) => {
+        if (
+          event.relatedTarget instanceof Node &&
+          this.contains(event.relatedTarget)
+        )
+          return;
 
-        event.preventDefault()
+        this.dataset.state = input.files?.length ? "selected" : "idle";
+      },
+      { signal: this.abortController.signal },
+    );
+
+    this.addEventListener(
+      "drop",
+      (event) => {
+        if (input.disabled) return;
+
+        event.preventDefault();
 
         if (event.dataTransfer) {
-          input.files = event.dataTransfer.files
+          input.files = event.dataTransfer.files;
 
-          input.dispatchEvent(new Event('change', { bubbles: true }))
+          input.dispatchEvent(new Event("change", { bubbles: true }));
         }
-      }, { signal: this.abortController.signal }
-    )
+      },
+      { signal: this.abortController.signal },
+    );
 
-    renderFiles()
+    renderFiles();
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 }
 
 class LumenAnchorBehaviorElement extends LumenElement {
-  private observer: IntersectionObserver | undefined
+  private observer: IntersectionObserver | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.observer?.disconnect()
+    this.observer?.disconnect();
 
-    if (typeof IntersectionObserver === 'undefined') return
+    if (typeof IntersectionObserver === "undefined") return;
 
-    const links = [...this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-    const byId = new Map<string, HTMLAnchorElement>()
-    const targets: HTMLElement[] = []
+    const links = [...this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const byId = new Map<string, HTMLAnchorElement>();
+    const targets: HTMLElement[] = [];
 
     for (const link of links) {
-      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
+      const id = decodeURIComponent(link.getAttribute("href")?.slice(1) ?? "");
+      const target = id ? document.getElementById(id) : null;
 
       if (target) {
-        byId.set(id, link)
+        byId.set(id, link);
 
-        targets.push(target)
+        targets.push(target);
       }
     }
 
-    if (!targets.length) return
+    if (!targets.length) return;
 
     this.observer = new IntersectionObserver(
-      entries => {
-        const visibleEntry = entries.find(entry => entry.isIntersecting)
+      (entries) => {
+        const visibleEntry = entries.find((entry) => entry.isIntersecting);
 
-        if (!visibleEntry) return
+        if (!visibleEntry) return;
 
         for (const link of links) {
-          link.dataset.active = 'false'
+          link.dataset.active = "false";
         }
 
-        const active = byId.get(visibleEntry.target.id)
+        const active = byId.get(visibleEntry.target.id);
 
-        if (active) active.dataset.active = 'true'
-      }, { rootMargin: '0px 0px -70% 0px', threshold: 0 }
-    )
+        if (active) active.dataset.active = "true";
+      },
+      { rootMargin: "0px 0px -70% 0px", threshold: 0 },
+    );
 
     for (const target of targets) {
-      this.observer.observe(target)
+      this.observer.observe(target);
     }
   }
 
   override disconnectedCallback() {
-    this.observer?.disconnect()
+    this.observer?.disconnect();
 
-    this.observer = undefined
+    this.observer = undefined;
   }
 }
 
 class LumenScrollProgressBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private frame = 0
+  private abortController: AbortController | undefined;
+  private frame = 0;
 
   private update = () => {
-    this.frame = 0
+    this.frame = 0;
 
-    const scrollingElement = document.scrollingElement ?? document.documentElement
-    const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
-    const percentage = maximum > 0 ? Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)) : 0
-    let bar = this.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+    const scrollingElement =
+      document.scrollingElement ?? document.documentElement;
+    const maximum =
+      scrollingElement.scrollHeight - scrollingElement.clientHeight;
+    const percentage =
+      maximum > 0
+        ? Math.min(
+            100,
+            Math.max(0, (scrollingElement.scrollTop / maximum) * 100),
+          )
+        : 0;
+    let bar = this.querySelector<HTMLElement>(".ui-scroll-progress__bar");
 
     if (!bar) {
-      bar = document.createElement('span')
+      bar = document.createElement("span");
 
-      bar.className = 'ui-scroll-progress__bar'
+      bar.className = "ui-scroll-progress__bar";
 
-      this.append(bar)
+      this.append(bar);
     }
 
-    this.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
+    this.setAttribute("aria-valuenow", `${Math.round(percentage)}`);
 
-    bar.style.transform = `scaleX(${percentage / 100})`
-  }
+    bar.style.transform = `scaleX(${percentage / 100})`;
+  };
 
   private scheduleUpdate = () => {
-    if (this.frame) return
+    if (this.frame) return;
 
-    if (typeof requestAnimationFrame === 'undefined') {
-      this.update()
+    if (typeof requestAnimationFrame === "undefined") {
+      this.update();
 
-      return
+      return;
     }
 
-    this.frame = requestAnimationFrame(this.update)
-  }
+    this.frame = requestAnimationFrame(this.update);
+  };
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    window.addEventListener('resize', this.scheduleUpdate, {
+    window.addEventListener("resize", this.scheduleUpdate, {
       passive: true,
-      signal: this.abortController.signal
-    })
+      signal: this.abortController.signal,
+    });
 
-    window.addEventListener('scroll', this.scheduleUpdate, {
+    window.addEventListener("scroll", this.scheduleUpdate, {
       passive: true,
-      signal: this.abortController.signal
-    })
+      signal: this.abortController.signal,
+    });
 
-    this.update()
+    this.update();
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
 
-    if (this.frame && typeof cancelAnimationFrame !== 'undefined') {
-      cancelAnimationFrame(this.frame)
+    if (this.frame && typeof cancelAnimationFrame !== "undefined") {
+      cancelAnimationFrame(this.frame);
     }
 
-    this.frame = 0
+    this.frame = 0;
   }
 }
 
 class LumenTourBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private opener: HTMLElement | null = null
+  private abortController: AbortController | undefined;
+  private opener: HTMLElement | null = null;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    const popover = this.querySelector<HTMLElement>('[data-ui-tour-popover]')
-    const steps = [...this.querySelectorAll<HTMLElement>('[data-ui-tour-step]')]
+    const popover = this.querySelector<HTMLElement>("[data-ui-tour-popover]");
+    const steps = [
+      ...this.querySelectorAll<HTMLElement>("[data-ui-tour-step]"),
+    ];
 
-    if (!popover || !steps.length) return
+    if (!popover || !steps.length) return;
 
-    let index = 0
+    let index = 0;
 
     const positionStep = (): void => {
-      const step = steps[index]
+      const step = steps[index];
 
-      if (!step) return
+      if (!step) return;
 
       for (const [stepIndex, node] of steps.entries()) {
-        node.hidden = stepIndex !== index
+        node.hidden = stepIndex !== index;
       }
 
-      const target = step.dataset.target ? document.querySelector<HTMLElement>(step.dataset.target) : null
+      const target = step.dataset.target
+        ? document.querySelector<HTMLElement>(step.dataset.target)
+        : null;
 
       if (target) {
-        const rect = target.getBoundingClientRect()
+        const rect = target.getBoundingClientRect();
 
-        popover.style.top = `${rect.bottom + 8}px`
+        popover.style.top = `${rect.bottom + 8}px`;
 
-        popover.style.left = `${rect.left}px`
+        popover.style.left = `${rect.left}px`;
       }
-    }
+    };
 
     const open = (): void => {
-      this.hidden = false
+      this.hidden = false;
 
-      index = 0
+      index = 0;
 
-      positionStep()
-    }
+      positionStep();
+    };
 
     const close = (): void => {
-      this.hidden = true
-    }
+      this.hidden = true;
+    };
 
     this.addEventListener(
-      'click', event => {
-        const target = event.target
+      "click",
+      (event) => {
+        const target = event.target;
 
-        if (!(target instanceof HTMLElement)) return
+        if (!(target instanceof HTMLElement)) return;
 
-        if (target.closest('[data-ui-tour-next]')) {
+        if (target.closest("[data-ui-tour-next]")) {
           if (index < steps.length - 1) {
-            index += 1
+            index += 1;
 
-            positionStep()
+            positionStep();
           } else {
-            close()
+            close();
           }
-        } else if (target.closest('[data-ui-tour-prev]')) {
+        } else if (target.closest("[data-ui-tour-prev]")) {
           if (index > 0) {
-            index -= 1
+            index -= 1;
 
-            positionStep()
+            positionStep();
           }
-        } else if (target.closest('[data-ui-tour-close]') || target.hasAttribute('data-ui-tour-backdrop')) {
-          close()
+        } else if (
+          target.closest("[data-ui-tour-close]") ||
+          target.hasAttribute("data-ui-tour-backdrop")
+        ) {
+          close();
         }
-      }, { signal: this.abortController.signal }
-    )
+      },
+      { signal: this.abortController.signal },
+    );
 
-    this.opener = this.id ? document.querySelector<HTMLElement>(`[data-ui-tour-open="#${this.id}"]`) : null
+    this.opener = this.id
+      ? document.querySelector<HTMLElement>(`[data-ui-tour-open="#${this.id}"]`)
+      : null;
 
-    this.opener?.addEventListener('click', open, { signal: this.abortController.signal })
+    this.opener?.addEventListener("click", open, {
+      signal: this.abortController.signal,
+    });
 
-    const lumenWindow = window as Window & { LumenTours?: Record<string, () => void> }
+    const lumenWindow = window as Window & {
+      LumenTours?: Record<string, () => void>;
+    };
 
-    lumenWindow.LumenTours ??= {}
+    lumenWindow.LumenTours ??= {};
 
-    if (this.id) lumenWindow.LumenTours[this.id] = open
+    if (this.id) lumenWindow.LumenTours[this.id] = open;
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
 
-    this.opener = null
+    this.opener = null;
 
-    const lumenWindow = window as Window & { LumenTours?: Record<string, () => void> }
+    const lumenWindow = window as Window & {
+      LumenTours?: Record<string, () => void>;
+    };
 
-    if (this.id && lumenWindow.LumenTours) Reflect.deleteProperty(lumenWindow.LumenTours, this.id)
+    if (this.id && lumenWindow.LumenTours)
+      Reflect.deleteProperty(lumenWindow.LumenTours, this.id);
   }
 }
 
 class LumenTransferBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    const lists = new Map<string, HTMLElement>()
+    const lists = new Map<string, HTMLElement>();
 
-    for (const list of this.querySelectorAll<HTMLElement>('[data-ui-transfer-list]')) {
-      if (list.dataset.side) lists.set(list.dataset.side, list)
+    for (const list of this.querySelectorAll<HTMLElement>(
+      "[data-ui-transfer-list]",
+    )) {
+      if (list.dataset.side) lists.set(list.dataset.side, list);
     }
 
     const move = (fromSide: string, toSide: string): void => {
-      const from = lists.get(fromSide)
-      const to = lists.get(toSide)
+      const from = lists.get(fromSide);
+      const to = lists.get(toSide);
 
-      if (!from || !to) return
+      if (!from || !to) return;
 
-      const moved: string[] = []
+      const moved: string[] = [];
 
-      for (const checkbox of from.querySelectorAll<HTMLInputElement>('[data-ui-transfer-item]')) {
-        if (!checkbox.checked) continue
+      for (const checkbox of from.querySelectorAll<HTMLInputElement>(
+        "[data-ui-transfer-item]",
+      )) {
+        if (!checkbox.checked) continue;
 
-        const item = checkbox.closest<HTMLElement>('.ui-transfer__item')
+        const item = checkbox.closest<HTMLElement>(".ui-transfer__item");
 
         if (item) {
-          checkbox.checked = false
+          checkbox.checked = false;
 
-          to.append(item)
+          to.append(item);
 
-          moved.push(checkbox.value)
+          moved.push(checkbox.value);
         }
       }
 
       if (moved.length) {
         this.dispatchEvent(
-          new CustomEvent('ui:transfer-change', {
+          new CustomEvent("ui:transfer-change", {
             bubbles: true,
-            detail: { from: fromSide, to: toSide, values: moved }
-          })
-        )
+            detail: { from: fromSide, to: toSide, values: moved },
+          }),
+        );
       }
-    }
+    };
 
-    for (const button of this.querySelectorAll<HTMLButtonElement>('[data-ui-transfer-move]')) {
+    for (const button of this.querySelectorAll<HTMLButtonElement>(
+      "[data-ui-transfer-move]",
+    )) {
       button.addEventListener(
-        'click', () => {
-          if (button.dataset.uiTransferMove === 'target') {
-            move('source', 'target')
-          } else if (button.dataset.uiTransferMove === 'source') {
-            move('target', 'source')
+        "click",
+        () => {
+          if (button.dataset.uiTransferMove === "target") {
+            move("source", "target");
+          } else if (button.dataset.uiTransferMove === "source") {
+            move("target", "source");
           }
-        }, { signal: this.abortController.signal }
-      )
+        },
+        { signal: this.abortController.signal },
+      );
     }
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 }
 
 class LumenMentionsBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private closeTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  private abortController: AbortController | undefined;
+  private closeTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    const input = this.querySelector<HTMLTextAreaElement>('[data-ui-mentions-input]')
-    const list = this.querySelector<HTMLElement>('[data-ui-mentions-list]')
+    const input = this.querySelector<HTMLTextAreaElement>(
+      "[data-ui-mentions-input]",
+    );
+    const list = this.querySelector<HTMLElement>("[data-ui-mentions-list]");
 
-    if (!input || !list) return
+    if (!input || !list) return;
 
-    const trigger = this.dataset.uiMentionsTrigger ?? '@'
-    const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const options = [...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')]
+    const trigger = this.dataset.uiMentionsTrigger ?? "@";
+    const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const options = [
+      ...list.querySelectorAll<HTMLButtonElement>("[data-ui-mentions-option]"),
+    ];
 
     const close = (): void => {
-      list.hidden = true
-    }
+      list.hidden = true;
+    };
 
     const filter = (): void => {
-      const caret = input.selectionStart
-      const match = new RegExp(`${escapedTrigger}(\\w*)$`).exec(input.value.slice(0, caret))
+      const caret = input.selectionStart;
+      const match = new RegExp(`${escapedTrigger}(\\w*)$`).exec(
+        input.value.slice(0, caret),
+      );
 
       if (!match) {
-        close()
+        close();
 
-        return
+        return;
       }
 
-      const query = (match[1] ?? '').toLowerCase()
-      let visibleCount = 0
+      const query = (match[1] ?? "").toLowerCase();
+      let visibleCount = 0;
 
       for (const option of options) {
-        const visible = (option.dataset.value ?? '').toLowerCase().startsWith(query)
+        const visible = (option.dataset.value ?? "")
+          .toLowerCase()
+          .startsWith(query);
 
-        option.hidden = !visible
+        option.hidden = !visible;
 
-        if (visible) visibleCount += 1
+        if (visible) visibleCount += 1;
       }
 
-      list.hidden = visibleCount === 0
-    }
+      list.hidden = visibleCount === 0;
+    };
 
     const insert = (value: string): void => {
-      const caret = input.selectionStart
-      const before = input.value.slice(0, caret).replace(new RegExp(`${escapedTrigger}\\w*$`), `${trigger}${value} `)
+      const caret = input.selectionStart;
+      const before = input.value
+        .slice(0, caret)
+        .replace(new RegExp(`${escapedTrigger}\\w*$`), `${trigger}${value} `);
 
-      input.value = before + input.value.slice(caret)
+      input.value = before + input.value.slice(caret);
 
-      input.focus()
+      input.focus();
 
-      input.setSelectionRange(before.length, before.length)
+      input.setSelectionRange(before.length, before.length);
 
-      close()
+      close();
 
-      input.dispatchEvent(new Event('input', { bubbles: true }))
-    }
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    };
 
-    input.addEventListener('input', filter, { signal: this.abortController.signal })
+    input.addEventListener("input", filter, {
+      signal: this.abortController.signal,
+    });
 
-    input.addEventListener('keyup', filter, { signal: this.abortController.signal })
+    input.addEventListener("keyup", filter, {
+      signal: this.abortController.signal,
+    });
 
     input.addEventListener(
-      'blur', () => {
-        this.closeTimer = globalThis.setTimeout(close, 120)
-      }, { signal: this.abortController.signal }
-    )
+      "blur",
+      () => {
+        this.closeTimer = globalThis.setTimeout(close, 120);
+      },
+      { signal: this.abortController.signal },
+    );
 
     for (const option of options) {
       option.addEventListener(
-        'mousedown', event => {
-          event.preventDefault()
+        "mousedown",
+        (event) => {
+          event.preventDefault();
 
-          insert(option.dataset.value ?? '')
-        }, { signal: this.abortController.signal }
-      )
+          insert(option.dataset.value ?? "");
+        },
+        { signal: this.abortController.signal },
+      );
     }
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
 
-    if (this.closeTimer) globalThis.clearTimeout(this.closeTimer)
+    if (this.closeTimer) globalThis.clearTimeout(this.closeTimer);
 
-    this.closeTimer = undefined
+    this.closeTimer = undefined;
   }
 }
 
 const setupSelectionDisclosure = (
   root: HTMLElement,
   signal: AbortSignal,
-  rovingPanel = true
-): { close: () => void, panel: HTMLElement, trigger: HTMLElement } | undefined => {
-  const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
-  const panel = root.querySelector<HTMLElement>('[data-ui-panel]')
+  rovingPanel = true,
+):
+  | { close: () => void; panel: HTMLElement; trigger: HTMLElement }
+  | undefined => {
+  const trigger = root.querySelector<HTMLElement>("[data-ui-trigger]");
+  const panel = root.querySelector<HTMLElement>("[data-ui-panel]");
 
-  if (!trigger || !panel) return undefined
+  if (!trigger || !panel) return undefined;
 
   const close = (): void => {
-    setDisclosureOpen(trigger, panel, false)
-  }
+    setDisclosureOpen(trigger, panel, false);
+  };
 
-  setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
-
-  trigger.addEventListener(
-    'click', () => {
-      setDisclosureOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
-    }, { signal }
-  )
+  setDisclosureOpen(
+    trigger,
+    panel,
+    trigger.getAttribute("aria-expanded") === "true",
+  );
 
   trigger.addEventListener(
-    'keydown', event => {
-      if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return
+    "click",
+    () => {
+      setDisclosureOpen(
+        trigger,
+        panel,
+        trigger.getAttribute("aria-expanded") !== "true",
+      );
+    },
+    { signal },
+  );
 
-      event.preventDefault()
+  trigger.addEventListener(
+    "keydown",
+    (event) => {
+      if (!["ArrowDown", "Enter", " "].includes(event.key)) return;
 
-      setDisclosureOpen(trigger, panel, true)
+      event.preventDefault();
 
-      getFocusable(panel)[0]?.focus()
-    }, { signal }
-  )
+      setDisclosureOpen(trigger, panel, true);
+
+      getFocusable(panel)[0]?.focus();
+    },
+    { signal },
+  );
 
   panel.addEventListener(
-    'keydown', event => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
+    "keydown",
+    (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
 
-        close()
+        close();
 
-        trigger.focus({ preventScroll: true })
+        trigger.focus({ preventScroll: true });
 
-        return
+        return;
       }
 
-      if (!rovingPanel || !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+      if (
+        !rovingPanel ||
+        !["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
+      )
+        return;
 
-      const items = getFocusable(panel)
+      const items = getFocusable(panel);
 
-      if (!items.length) return
+      if (!items.length) return;
 
-      event.preventDefault()
+      event.preventDefault();
 
-      const currentIndex = Math.max(0, items.indexOf(document.activeElement as HTMLElement))
+      const currentIndex = Math.max(
+        0,
+        items.indexOf(document.activeElement as HTMLElement),
+      );
 
-      items[getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])]?.focus()
-    }, { signal }
-  )
+      items[
+        getLoopedIndex(event.key, currentIndex, items.length, ["ArrowDown"])
+      ]?.focus();
+    },
+    { signal },
+  );
 
   document.addEventListener(
-    'pointerdown', event => {
-      const target = getOwnedTarget(event)
+    "pointerdown",
+    (event) => {
+      const target = getOwnedTarget(event);
 
-      if (!target || root.contains(target)) return
+      if (!target || root.contains(target)) return;
 
-      close()
-    }, { signal }
-  )
+      close();
+    },
+    { signal },
+  );
 
-  return { close, panel, trigger }
-}
+  return { close, panel, trigger };
+};
 
 class LumenCascaderBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    const disclosure = setupSelectionDisclosure(this, this.abortController.signal, false)
+    const disclosure = setupSelectionDisclosure(
+      this,
+      this.abortController.signal,
+      false,
+    );
 
-    if (!disclosure) return
+    if (!disclosure) return;
 
-    const valueLabel = this.querySelector<HTMLElement>('[data-ui-cascader-value]')
-    const input = this.querySelector<HTMLInputElement>('[data-ui-cascader-input]')
-    const columns = [...this.querySelectorAll<HTMLElement>('.ui-cascader__column')]
+    const valueLabel = this.querySelector<HTMLElement>(
+      "[data-ui-cascader-value]",
+    );
+    const input = this.querySelector<HTMLInputElement>(
+      "[data-ui-cascader-input]",
+    );
+    const columns = [
+      ...this.querySelectorAll<HTMLElement>(".ui-cascader__column"),
+    ];
 
-    for (const option of this.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')) {
+    for (const option of this.querySelectorAll<HTMLButtonElement>(
+      "[data-ui-cascader-option]",
+    )) {
       option.addEventListener(
-        'click', () => {
-          const column = option.closest<HTMLElement>('.ui-cascader__column')
+        "click",
+        () => {
+          const column = option.closest<HTMLElement>(".ui-cascader__column");
 
           if (column) {
-            const columnIndex = columns.indexOf(column)
+            const columnIndex = columns.indexOf(column);
 
             for (const descendant of columns.slice(columnIndex + 1)) {
-              descendant.hidden = true
+              descendant.hidden = true;
 
-              for (const descendantOption of descendant.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
-                descendantOption.dataset.active = 'false'
+              for (const descendantOption of descendant.querySelectorAll<HTMLElement>(
+                "[data-ui-cascader-option]",
+              )) {
+                descendantOption.dataset.active = "false";
 
-                descendantOption.setAttribute('aria-selected', 'false')
+                descendantOption.setAttribute("aria-selected", "false");
               }
             }
 
-            for (const sibling of column.querySelectorAll<HTMLElement>('[data-ui-cascader-option]')) {
-              sibling.dataset.active = 'false'
+            for (const sibling of column.querySelectorAll<HTMLElement>(
+              "[data-ui-cascader-option]",
+            )) {
+              sibling.dataset.active = "false";
 
-              sibling.setAttribute('aria-selected', 'false')
+              sibling.setAttribute("aria-selected", "false");
             }
           }
 
-          option.dataset.active = 'true'
+          option.dataset.active = "true";
 
-          option.setAttribute('aria-selected', 'true')
+          option.setAttribute("aria-selected", "true");
 
-          const next = option.dataset.uiCascaderNext ?
-            this.querySelector<HTMLElement>(option.dataset.uiCascaderNext) :
-            null
+          const next = option.dataset.uiCascaderNext
+            ? this.querySelector<HTMLElement>(option.dataset.uiCascaderNext)
+            : null;
 
           if (next) {
-            next.hidden = false
+            next.hidden = false;
 
-            return
+            return;
           }
 
-          const value = option.dataset.value ?? option.textContent.trim()
+          const value = option.dataset.value ?? option.textContent.trim();
 
-          if (valueLabel) valueLabel.textContent = option.dataset.label ?? option.textContent.trim()
+          if (valueLabel)
+            valueLabel.textContent =
+              option.dataset.label ?? option.textContent.trim();
 
-          if (input) input.value = value
+          if (input) input.value = value;
 
-          disclosure.close()
+          disclosure.close();
 
-          this.dispatchEvent(new CustomEvent('ui:cascader-change', { bubbles: true, detail: { value } }))
-        }, { signal: this.abortController.signal }
-      )
+          this.dispatchEvent(
+            new CustomEvent("ui:cascader-change", {
+              bubbles: true,
+              detail: { value },
+            }),
+          );
+        },
+        { signal: this.abortController.signal },
+      );
     }
 
     disclosure.panel.addEventListener(
-      'keydown', event => {
-        const target = event.target
+      "keydown",
+      (event) => {
+        const target = event.target;
 
-        if (!(target instanceof HTMLElement)) return
+        if (!(target instanceof HTMLElement)) return;
 
-        const option = target.closest<HTMLButtonElement>('[data-ui-cascader-option]')
-        const column = option?.closest<HTMLElement>('.ui-cascader__column')
+        const option = target.closest<HTMLButtonElement>(
+          "[data-ui-cascader-option]",
+        );
+        const column = option?.closest<HTMLElement>(".ui-cascader__column");
 
-        if (!option || !column) return
+        if (!option || !column) return;
 
-        const columnIndex = columns.indexOf(column)
-        const options = [...column.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')]
+        const columnIndex = columns.indexOf(column);
+        const options = [
+          ...column.querySelectorAll<HTMLButtonElement>(
+            "[data-ui-cascader-option]",
+          ),
+        ];
 
-        if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-          event.preventDefault()
+        if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+          event.preventDefault();
 
-          options[getLoopedIndex(event.key, options.indexOf(option), options.length, ['ArrowDown'])]?.focus()
-        } else if (event.key === 'ArrowRight') {
-          const next = option.dataset.uiCascaderNext ?
-            this.querySelector<HTMLElement>(option.dataset.uiCascaderNext) :
-            null
+          options[
+            getLoopedIndex(event.key, options.indexOf(option), options.length, [
+              "ArrowDown",
+            ])
+          ]?.focus();
+        } else if (event.key === "ArrowRight") {
+          const next = option.dataset.uiCascaderNext
+            ? this.querySelector<HTMLElement>(option.dataset.uiCascaderNext)
+            : null;
 
           if (next) {
-            event.preventDefault()
+            event.preventDefault();
 
-            option.click()
+            option.click();
 
-            next.querySelector<HTMLElement>('[data-ui-cascader-option]')?.focus()
+            next
+              .querySelector<HTMLElement>("[data-ui-cascader-option]")
+              ?.focus();
           }
-        } else if (event.key === 'ArrowLeft' && columnIndex > 0) {
-          event.preventDefault()
+        } else if (event.key === "ArrowLeft" && columnIndex > 0) {
+          event.preventDefault();
 
-          for (const descendant of columns.slice(columnIndex)) descendant.hidden = true
+          for (const descendant of columns.slice(columnIndex))
+            descendant.hidden = true;
 
           columns
             .slice(0, columnIndex)
             .reverse()
-            .find(candidate => !candidate.hidden)
-            ?.querySelector<HTMLElement>('[data-ui-cascader-option][data-active="true"]')
-            ?.focus()
+            .find((candidate) => !candidate.hidden)
+            ?.querySelector<HTMLElement>(
+              '[data-ui-cascader-option][data-active="true"]',
+            )
+            ?.focus();
         }
-      }, { signal: this.abortController.signal }
-    )
+      },
+      { signal: this.abortController.signal },
+    );
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 }
 
 class LumenTreeSelectBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private abortController: AbortController | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = new AbortController()
+    this.abortController = new AbortController();
 
-    const disclosure = setupSelectionDisclosure(this, this.abortController.signal)
+    const disclosure = setupSelectionDisclosure(
+      this,
+      this.abortController.signal,
+    );
 
-    if (!disclosure) return
+    if (!disclosure) return;
 
-    const valueLabel = this.querySelector<HTMLElement>('[data-ui-tree-select-value]')
-    const input = this.querySelector<HTMLInputElement>('[data-ui-tree-select-input]')
+    const valueLabel = this.querySelector<HTMLElement>(
+      "[data-ui-tree-select-value]",
+    );
+    const input = this.querySelector<HTMLInputElement>(
+      "[data-ui-tree-select-input]",
+    );
 
-    for (const item of this.querySelectorAll<HTMLElement>('[data-ui-panel] [data-value]')) {
+    for (const item of this.querySelectorAll<HTMLElement>(
+      "[data-ui-panel] [data-value]",
+    )) {
       item.addEventListener(
-        'click', () => {
-          const value = item.dataset.value ?? ''
+        "click",
+        () => {
+          const value = item.dataset.value ?? "";
 
-          if (valueLabel) valueLabel.textContent = item.textContent.trim()
+          if (valueLabel) valueLabel.textContent = item.textContent.trim();
 
-          if (input) input.value = value
+          if (input) input.value = value;
 
-          disclosure.close()
+          disclosure.close();
 
-          this.dispatchEvent(new CustomEvent('ui:tree-select-change', { bubbles: true, detail: { value } }))
-        }, { signal: this.abortController.signal }
-      )
+          this.dispatchEvent(
+            new CustomEvent("ui:tree-select-change", {
+              bubbles: true,
+              detail: { value },
+            }),
+          );
+        },
+        { signal: this.abortController.signal },
+      );
     }
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.abortController?.abort();
 
-    this.abortController = undefined
+    this.abortController = undefined;
   }
 }
 
 class LumenBackToTopBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    })
+    this.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   }
 }
 
 class LumenLanguageToggleBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('language-change'))
-    })
+    this.addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("language-change"));
+    });
   }
 }
 
 class LumenParticlesBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    if (this.hasAttribute('data-ui-particles-initialized')) return
+    if (this.hasAttribute("data-ui-particles-initialized")) return;
 
-    this.setAttribute('data-ui-particles-initialized', '')
+    this.setAttribute("data-ui-particles-initialized", "");
 
-    type ParticleDensity = 'low' | 'medium' | 'high'
+    type ParticleDensity = "low" | "medium" | "high";
 
-    const densityConfig: Record<ParticleDensity, number> = { low: 15, medium: 25, high: 40 }
-    const particleTones = ['var(--brand)', 'var(--accent)', 'var(--glow, var(--brand))']
-    const density = (this.getAttribute('data-ui-particles') || 'medium') as ParticleDensity
-    const count = densityConfig[density]
+    const densityConfig: Record<ParticleDensity, number> = {
+      low: 15,
+      medium: 25,
+      high: 40,
+    };
+    const particleTones = [
+      "var(--brand)",
+      "var(--accent)",
+      "var(--glow, var(--brand))",
+    ];
+    const density = (this.getAttribute("data-ui-particles") ||
+      "medium") as ParticleDensity;
+    const count = densityConfig[density];
 
     for (let i = 0; i < count; i++) {
-      const particle = document.createElement('span')
-      const size = Math.random() * 12 + 8
+      const particle = document.createElement("span");
+      const size = Math.random() * 12 + 8;
 
-      particle.className = 'ui-particles__particle'
+      particle.className = "ui-particles__particle";
 
       const particleStyles = {
-        '--ui-particle-delay': `${Math.random() * 8}s`,
-        '--ui-particle-duration': `${20 + Math.random() * 15}s`,
-        '--ui-particle-left': `${Math.random() * 100}%`,
-        '--ui-particle-size': `${size}px`,
-        '--ui-particle-tone': particleTones[Math.floor(Math.random() * particleTones.length)] ?? 'var(--brand)',
-        '--ui-particle-top': `${Math.random() * 100}%`
-      }
+        "--ui-particle-delay": `${Math.random() * 8}s`,
+        "--ui-particle-duration": `${20 + Math.random() * 15}s`,
+        "--ui-particle-left": `${Math.random() * 100}%`,
+        "--ui-particle-size": `${size}px`,
+        "--ui-particle-tone":
+          particleTones[Math.floor(Math.random() * particleTones.length)] ??
+          "var(--brand)",
+        "--ui-particle-top": `${Math.random() * 100}%`,
+      };
 
       for (const [property, value] of Object.entries(particleStyles)) {
-        particle.style.setProperty(property, value)
+        particle.style.setProperty(property, value);
       }
 
-      this.appendChild(particle)
+      this.appendChild(particle);
     }
   }
 }
 
 class LumenRatingBehaviorElement extends LumenElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.addEventListener('click', e => {
-      if (this.getAttribute('data-readonly') === 'true') return
+    this.addEventListener("click", (e) => {
+      if (this.getAttribute("data-readonly") === "true") return;
 
-      const button = (e.target as HTMLElement).closest<HTMLButtonElement>('.ui-rating__star')
+      const button = (e.target as HTMLElement).closest<HTMLButtonElement>(
+        ".ui-rating__star",
+      );
 
-      if (!button) return
+      if (!button) return;
 
-      const stars = [...this.querySelectorAll<HTMLButtonElement>('.ui-rating__star')]
-      const index = stars.indexOf(button)
+      const stars = [
+        ...this.querySelectorAll<HTMLButtonElement>(".ui-rating__star"),
+      ];
+      const index = stars.indexOf(button);
 
-      if (index === -1) return
+      if (index === -1) return;
 
-      const newValue = index + 1
+      const newValue = index + 1;
 
-      this.setAttribute('data-value', newValue.toString())
+      this.setAttribute("data-value", newValue.toString());
 
       for (const [i, star] of stars.entries()) {
-        star.setAttribute('data-active', i < newValue ? 'true' : 'false')
+        star.setAttribute("data-active", i < newValue ? "true" : "false");
       }
 
-      this.dispatchEvent(new CustomEvent('change', { detail: { value: newValue } }))
-    })
+      this.dispatchEvent(
+        new CustomEvent("change", { detail: { value: newValue } }),
+      );
+    });
   }
 }
 
 class LumenScrollRevealBehaviorElement extends LumenElement {
-  private observer: IntersectionObserver | undefined
+  private observer: IntersectionObserver | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.dataset.uiScrollRevealBound = 'true'
+    this.dataset.uiScrollRevealBound = "true";
 
-    const delay = Math.max(0, Number(this.getAttribute('delay')) || 0)
+    const delay = Math.max(0, Number(this.getAttribute("delay")) || 0);
 
-    this.style.setProperty('--ui-reveal-delay', `${delay}ms`)
+    this.style.setProperty("--ui-reveal-delay", `${delay}ms`);
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') {
-      this.classList.add('is-revealed')
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      this.classList.add("is-revealed");
 
-      return
+      return;
     }
 
-    const once = this.getAttribute('once') !== 'false'
-    const threshold = Math.min(1, Math.max(0, Number(this.getAttribute('threshold')) || 0))
+    const once = this.getAttribute("once") !== "false";
+    const threshold = Math.min(
+      1,
+      Math.max(0, Number(this.getAttribute("threshold")) || 0),
+    );
 
     this.observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         for (const entry of entries) {
-          entry.target.classList.toggle('is-revealed', entry.isIntersecting)
+          entry.target.classList.toggle("is-revealed", entry.isIntersecting);
 
           if (entry.isIntersecting && once) {
-            this.observer?.unobserve(entry.target)
+            this.observer?.unobserve(entry.target);
           }
         }
-      }, { threshold }
-    )
+      },
+      { threshold },
+    );
 
-    this.observer.observe(this)
+    this.observer.observe(this);
   }
 
   override disconnectedCallback() {
-    this.observer?.disconnect()
+    this.observer?.disconnect();
 
-    this.observer = undefined
+    this.observer = undefined;
   }
 }
 
 class LumenRevealGroupBehaviorElement extends LumenScrollRevealBehaviorElement {
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    const stagger = Math.max(0, Number(this.getAttribute('stagger')) || 80)
+    const stagger = Math.max(0, Number(this.getAttribute("stagger")) || 80);
 
-    this.style.setProperty('--ui-reveal-stagger', `${stagger}ms`)
+    this.style.setProperty("--ui-reveal-stagger", `${stagger}ms`);
 
     for (const [index, child] of [...this.children].entries()) {
       if (child instanceof HTMLElement) {
-        child.style.setProperty('--ui-reveal-index', String(index))
+        child.style.setProperty("--ui-reveal-index", String(index));
       }
     }
   }
 }
 
 class LumenAnimatedNumberBehaviorElement extends LumenElement {
-  private animationFrame: number | undefined
-  private observer: IntersectionObserver | undefined
+  private animationFrame: number | undefined;
+  private observer: IntersectionObserver | undefined;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.animateValue()
+    this.animateValue();
   }
 
   override attributeChangedCallback() {
-    super.attributeChangedCallback()
+    super.attributeChangedCallback();
 
-    if (this.isConnected) this.animateValue()
+    if (this.isConnected) this.animateValue();
   }
 
   override disconnectedCallback() {
-    this.observer?.disconnect()
+    this.observer?.disconnect();
 
-    if (this.animationFrame !== undefined) cancelAnimationFrame(this.animationFrame)
+    if (this.animationFrame !== undefined)
+      cancelAnimationFrame(this.animationFrame);
   }
 
   private animateValue() {
-    if (!hasDocument()) return
+    if (!hasDocument()) return;
 
-    this.observer?.disconnect()
+    this.observer?.disconnect();
 
-    if (this.animationFrame !== undefined) cancelAnimationFrame(this.animationFrame)
+    if (this.animationFrame !== undefined)
+      cancelAnimationFrame(this.animationFrame);
 
-    const from = Number(this.getAttribute('from'))
-    const value = Number(this.getAttribute('value'))
+    const from = Number(this.getAttribute("from"));
+    const value = Number(this.getAttribute("value"));
 
-    if (!Number.isFinite(from) || !Number.isFinite(value)) return
+    if (!Number.isFinite(from) || !Number.isFinite(value)) return;
 
-    const decimals = Math.max(0, Math.min(20, Number(this.getAttribute('decimals')) || 0))
-    const prefix = this.getAttribute('prefix') ?? ''
-    const suffix = this.getAttribute('suffix') ?? ''
+    const decimals = Math.max(
+      0,
+      Math.min(20, Number(this.getAttribute("decimals")) || 0),
+    );
+    const prefix = this.getAttribute("prefix") ?? "";
+    const suffix = this.getAttribute("suffix") ?? "";
 
-    const formatter = new Intl.NumberFormat(this.getAttribute('locale') || undefined, {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
-    })
+    const formatter = new Intl.NumberFormat(
+      this.getAttribute("locale") || undefined,
+      {
+        maximumFractionDigits: decimals,
+        minimumFractionDigits: decimals,
+      },
+    );
 
-    const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
-    const finalValue = format(value)
+    const format = (current: number) =>
+      `${prefix}${formatter.format(current)}${suffix}`;
+    const finalValue = format(value);
 
-    this.setAttribute('aria-label', finalValue)
+    this.setAttribute("aria-label", finalValue);
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') {
-      this.textContent = finalValue
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      this.textContent = finalValue;
 
-      return
+      return;
     }
 
-    this.textContent = format(from)
+    this.textContent = format(from);
 
     this.observer = new IntersectionObserver(
-      entries => {
-        if (!entries.some(entry => entry.isIntersecting)) return
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
 
-        this.observer?.disconnect()
+        this.observer?.disconnect();
 
-        const durationValue = getComputedStyle(this).getPropertyValue('--ui-motion-duration').trim()
-        const duration = parseMotionDuration(durationValue)
-        const startedAt = performance.now()
+        const durationValue = getComputedStyle(this)
+          .getPropertyValue("--ui-motion-duration")
+          .trim();
+        const duration = parseMotionDuration(durationValue);
+        const startedAt = performance.now();
 
         const update = (now: number) => {
-          const progress = Math.min(1, (now - startedAt) / Math.max(1, duration))
-          const eased = 1 - Math.pow(1 - progress, 3)
+          const progress = Math.min(
+            1,
+            (now - startedAt) / Math.max(1, duration),
+          );
+          const eased = 1 - Math.pow(1 - progress, 3);
 
-          this.textContent = format(from + (value - from) * eased)
+          this.textContent = format(from + (value - from) * eased);
 
           if (progress < 1) {
-            this.animationFrame = requestAnimationFrame(update)
+            this.animationFrame = requestAnimationFrame(update);
           } else {
-            this.textContent = finalValue
+            this.textContent = finalValue;
           }
-        }
+        };
 
-        this.animationFrame = requestAnimationFrame(update)
-      }, { threshold: 0.15 }
-    )
+        this.animationFrame = requestAnimationFrame(update);
+      },
+      { threshold: 0.15 },
+    );
 
-    this.observer.observe(this)
+    this.observer.observe(this);
   }
 }
 
 class LumenThemeToggleBehaviorElement extends LumenElement {
-  #isAnimating = false
+  #isAnimating = false;
 
   override connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    this.setAttribute('role', 'switch')
+    this.setAttribute("role", "switch");
 
-    this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
+    this.setAttribute("aria-checked", String(this.#rootInDarkMode()));
 
-    this.addEventListener('click', () => {
-      if (this.#isAnimating) return
+    this.addEventListener("click", () => {
+      if (this.#isAnimating) return;
 
-      const isDark = this.#rootInDarkMode()
-      const newTheme = isDark ? 'light' : 'dark'
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const isDark = this.#rootInDarkMode();
+      const newTheme = isDark ? "light" : "dark";
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
       if (prefersReducedMotion) {
-        this.#dispatchChange(newTheme)
+        this.#dispatchChange(newTheme);
 
-        return
+        return;
       }
 
-      this.#circularReveal(isDark, newTheme)
-    })
+      this.#circularReveal(isDark, newTheme);
+    });
   }
 
   #rootInDarkMode() {
-    const doc = document.documentElement
+    const doc = document.documentElement;
 
-    return doc.getAttribute('data-theme') === 'dark' || doc.classList.contains('dark')
+    return (
+      doc.getAttribute("data-theme") === "dark" ||
+      doc.classList.contains("dark")
+    );
   }
 
   #dispatchChange(newTheme: string) {
-    const doc = document.documentElement
+    const doc = document.documentElement;
 
-    doc.setAttribute('data-theme', newTheme)
+    doc.setAttribute("data-theme", newTheme);
 
-    if (newTheme === 'dark') {
-      doc.classList.add('dark')
+    if (newTheme === "dark") {
+      doc.classList.add("dark");
     } else {
-      doc.classList.remove('dark')
+      doc.classList.remove("dark");
     }
 
-    localStorage.setItem('theme', newTheme)
+    localStorage.setItem("theme", newTheme);
 
-    window.dispatchEvent(new CustomEvent('theme-change', { detail: newTheme }))
+    window.dispatchEvent(new CustomEvent("theme-change", { detail: newTheme }));
 
-    this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
+    this.setAttribute("aria-checked", String(this.#rootInDarkMode()));
   }
 
   #circularReveal(isDark: boolean, newTheme: string) {
-    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+    const isTouchDevice = window.matchMedia(
+      "(hover: none) and (pointer: coarse)",
+    ).matches;
 
     if (isTouchDevice) {
-      this.#dispatchChange(newTheme)
+      this.#dispatchChange(newTheme);
 
-      return
+      return;
     }
 
-    this.#isAnimating = true
+    this.#isAnimating = true;
 
-    const rect = this.getBoundingClientRect()
-    const x = Math.round(rect.left + rect.width / 2)
-    const y = Math.round(rect.top + rect.height / 2)
-    const maxRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
-    const oldBg = isDark ? 'hsl(277 20% 10%)' : 'hsl(268 20% 98%)'
-    const overlay = document.createElement('div')
+    const rect = this.getBoundingClientRect();
+    const x = Math.round(rect.left + rect.width / 2);
+    const y = Math.round(rect.top + rect.height / 2);
+    const maxRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+    const oldBg = isDark ? "hsl(277 20% 10%)" : "hsl(268 20% 98%)";
+    const overlay = document.createElement("div");
 
-    overlay.setAttribute('aria-hidden', 'true')
+    overlay.setAttribute("aria-hidden", "true");
 
     Object.assign(overlay.style, {
-      position: 'fixed',
-      inset: '0',
-      zIndex: '99999',
-      pointerEvents: 'none',
+      position: "fixed",
+      inset: "0",
+      zIndex: "99999",
+      pointerEvents: "none",
       backgroundColor: oldBg,
       clipPath: `circle(${maxRadius}px at ${x}px ${y}px)`,
-      willChange: 'clip-path'
-    })
+      willChange: "clip-path",
+    });
 
-    document.body.appendChild(overlay)
+    document.body.appendChild(overlay);
 
-    this.#dispatchChange(newTheme)
+    this.#dispatchChange(newTheme);
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        overlay.style.transition = 'clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)'
+        overlay.style.transition =
+          "clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)";
 
-        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`
+        overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
 
         const done = () => {
-          overlay.remove()
+          overlay.remove();
 
-          this.#isAnimating = false
-        }
+          this.#isAnimating = false;
+        };
 
-        overlay.addEventListener('transitionend', done, { once: true })
+        overlay.addEventListener("transitionend", done, { once: true });
 
-        setTimeout(done, 750)
-      })
-    })
+        setTimeout(done, 750);
+      });
+    });
   }
 }
 
-const createLumenElementClass = (config: LumenElementConfig) => class extends LumenElement {
-  static override config = config
-}
+const createLumenElementClass = (config: LumenElementConfig) =>
+  class extends LumenElement {
+    static override config = config;
+  };
 
-const createLumenBehaviorElementClass = (BaseElement: typeof LumenElement, config: LumenElementConfig) => class extends BaseElement {
-  static override config = config
-}
+const createLumenBehaviorElementClass = (
+  BaseElement: typeof LumenElement,
+  config: LumenElementConfig,
+) =>
+  class extends BaseElement {
+    static override config = config;
+  };
 
-const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenElement>> = {
+const behaviorElementClasses: Partial<
+  Record<LumenComponentName, typeof LumenElement>
+> = {
   AlertDialog: LumenDialogBehaviorElement,
   Anchor: LumenAnchorBehaviorElement,
   AnimatedNumber: LumenAnimatedNumberBehaviorElement,
@@ -7588,208 +9130,218 @@ const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenEle
   Transfer: LumenTransferBehaviorElement,
   TreeSelect: LumenTreeSelectBehaviorElement,
   Tooltip: LumenTooltipBehaviorElement,
-  VirtualList: LumenVirtualListBehaviorElement
-}
+  VirtualList: LumenVirtualListBehaviorElement,
+};
 
 const elementClasses = Object.fromEntries(
-  lumenComponentNames.map(componentName => {
-    const behaviorClass = behaviorElementClasses[componentName]
+  lumenComponentNames.map((componentName) => {
+    const behaviorClass = behaviorElementClasses[componentName];
 
     if (behaviorClass) {
-      return [componentName, createLumenBehaviorElementClass(behaviorClass, elementConfigs[componentName])]
+      return [
+        componentName,
+        createLumenBehaviorElementClass(
+          behaviorClass,
+          elementConfigs[componentName],
+        ),
+      ];
     }
 
-    return [componentName, createLumenElementClass(elementConfigs[componentName])]
-  })
-) as Record<LumenComponentName, typeof LumenElement>
+    return [
+      componentName,
+      createLumenElementClass(elementConfigs[componentName]),
+    ];
+  }),
+) as Record<LumenComponentName, typeof LumenElement>;
 
-const elementDefinitions = lumenComponentNames.map(componentName => {
-  const config = elementConfigs[componentName]
+const elementDefinitions = lumenComponentNames.map((componentName) => {
+  const config = elementConfigs[componentName];
 
-  return [config.tagName, elementClasses[componentName]] as const
-})
+  return [config.tagName, elementClasses[componentName]] as const;
+});
 
 export const enhanceLumenElements = (scope: ParentNode = document): void => {
-  enhanceLumenDateRangePickers(scope)
+  enhanceLumenDateRangePickers(scope);
 
-  enhanceLumenDatePickers(scope)
+  enhanceLumenDatePickers(scope);
 
-  enhanceLumenInputOTPs(scope)
+  enhanceLumenInputOTPs(scope);
 
-  initLumenFields(scope)
+  initLumenFields(scope);
 
-  initLumenForms(scope)
+  initLumenForms(scope);
 
-  enhanceLumenPasswordFields(scope)
+  enhanceLumenPasswordFields(scope);
 
-  enhanceLumenListBoxes(scope)
-}
+  enhanceLumenListBoxes(scope);
+};
 
 export const defineLumenElements = (
-  customElementsRegistry: CustomElementRegistry | undefined = typeof customElements === 'undefined' ?
-    undefined :
-    customElements
+  customElementsRegistry:
+    CustomElementRegistry | undefined = typeof customElements === "undefined"
+    ? undefined
+    : customElements,
 ) => {
-  if (!customElementsRegistry) return
+  if (!customElementsRegistry) return;
 
   for (const [name, element] of elementDefinitions) {
     if (!registry.has(name) && !customElementsRegistry.get(name)) {
-      customElementsRegistry.define(name, element)
+      customElementsRegistry.define(name, element);
 
-      registry.add(name)
+      registry.add(name);
     }
   }
 
-  installToastController()
+  installToastController();
 
-  installFormController()
+  installFormController();
 
-  installRichTextEditorController()
+  installRichTextEditorController();
 
-  installScheduleController()
+  installScheduleController();
 
-  installResizableController()
+  installResizableController();
 
-  installContextMenuController()
+  installContextMenuController();
 
-  installDateRangePickerController()
+  installDateRangePickerController();
 
-  installDatePickerController()
+  installDatePickerController();
 
-  installInputOtpController()
+  installInputOtpController();
 
-  installCalendarController()
-}
+  installCalendarController();
+};
 
 export const installLumenControllers = (): void => {
-  installDateRangePickerController()
+  installDateRangePickerController();
 
-  installDatePickerController()
+  installDatePickerController();
 
-  installInputOtpController()
-}
+  installInputOtpController();
+};
 
-export const lumenElementDefinitions = elementDefinitions
+export const lumenElementDefinitions = elementDefinitions;
 
-export const LumenAccordionElement = elementClasses.Accordion
-export const LumenAlertElement = elementClasses.Alert
-export const LumenAlertDialogElement = elementClasses.AlertDialog
-export const LumenAgendaElement = elementClasses.Agenda
-export const LumenAspectRatioElement = elementClasses.AspectRatio
-export const LumenAttachmentElement = elementClasses.Attachment
-export const LumenAutocompleteElement = elementClasses.Autocomplete
-export const LumenAvatarElement = elementClasses.Avatar
-export const LumenBadgeElement = elementClasses.Badge
-export const LumenBarChartElement = elementClasses.BarChart
-export const LumenBreadcrumbElement = elementClasses.Breadcrumb
-export const LumenBubbleElement = elementClasses.Bubble
-export const LumenButtonElement = elementClasses.Button
-export const LumenButtonGroupElement = elementClasses.ButtonGroup
-export const LumenCalendarElement = elementClasses.Calendar
-export const LumenCardElement = elementClasses.Card
-export const LumenCardContentElement = elementClasses.CardContent
-export const LumenCardDescriptionElement = elementClasses.CardDescription
-export const LumenCardFooterElement = elementClasses.CardFooter
-export const LumenCardHeaderElement = elementClasses.CardHeader
-export const LumenCardTitleElement = elementClasses.CardTitle
-export const LumenCarouselElement = elementClasses.Carousel
-export const LumenChartElement = elementClasses.Chart
-export const LumenCheckboxElement = elementClasses.Checkbox
-export const LumenCollapsibleElement = elementClasses.Collapsible
-export const LumenCodeElement = elementClasses.Code
-export const LumenCodeTabsElement = elementClasses.CodeTabs
-export const LumenComboboxElement = elementClasses.Combobox
-export const LumenCommandElement = elementClasses.Command
-export const LumenColorPickerElement = elementClasses.ColorPicker
-export const LumenContextMenuElement = elementClasses.ContextMenu
-export const LumenDataTableElement = elementClasses.DataTable
-export const LumenDatePickerElement = elementClasses.DatePicker
-export const LumenDateRangePickerElement = elementClasses.DateRangePicker
-export const LumenDialogElement = elementClasses.Dialog
-export const LumenDirectionElement = elementClasses.Direction
-export const LumenDrawerElement = elementClasses.Drawer
-export const LumenDropdownMenuElement = elementClasses.DropdownMenu
-export const LumenEmptyElement = elementClasses.Empty
-export const LumenFieldElement = elementClasses.Field
-export const LumenHoverCardElement = elementClasses.HoverCard
-export const LumenIconElement = elementClasses.Icon
-export const LumenInputElement = elementClasses.Input
-export const LumenInputGroupElement = elementClasses.InputGroup
-export const LumenInputOTPElement = elementClasses.InputOTP
-export const LumenNumberFieldElement = elementClasses.NumberField
-export const LumenItemElement = elementClasses.Item
-export const LumenKbdElement = elementClasses.Kbd
-export const LumenLabelElement = elementClasses.Label
-export const LumenLineChartElement = elementClasses.LineChart
-export const LumenMarkerElement = elementClasses.Marker
-export const LumenMenubarElement = elementClasses.Menubar
-export const LumenMessageElement = elementClasses.Message
-export const LumenMessageScrollerElement = elementClasses.MessageScroller
-export const LumenNativeSelectElement = elementClasses.NativeSelect
-export const LumenNavigationMenuElement = elementClasses.NavigationMenu
-export const LumenPaginationElement = elementClasses.Pagination
-export const LumenPhoneInputElement = elementClasses.PhoneInput
-export const LumenPieChartElement = elementClasses.PieChart
-export const LumenPopoverElement = elementClasses.Popover
-export const LumenProgressElement = elementClasses.Progress
-export const LumenRadioGroupElement = elementClasses.RadioGroup
-export const LumenResizableElement = elementClasses.Resizable
-export const LumenRichTextEditorElement = elementClasses.RichTextEditor
-export const LumenScrollAreaElement = elementClasses.ScrollArea
-export const LumenScrollProgressElement = elementClasses.ScrollProgress
-export const LumenScheduleElement = elementClasses.Schedule
-export const LumenSearchFieldElement = elementClasses.SearchField
-export const LumenSelectElement = elementClasses.Select
-export const LumenSeparatorElement = elementClasses.Separator
-export const LumenSheetElement = elementClasses.Sheet
-export const LumenSidebarElement = elementClasses.Sidebar
-export const LumenSkeletonElement = elementClasses.Skeleton
-export const LumenSliderElement = elementClasses.Slider
-export const LumenSonnerElement = elementClasses.Sonner
-export const LumenSparklineElement = elementClasses.Sparkline
-export const LumenSpinnerElement = elementClasses.Spinner
-export const LumenSwitchElement = elementClasses.Switch
-export const LumenTableElement = elementClasses.Table
-export const LumenTabsElement = elementClasses.Tabs
-export const LumenTagGroupElement = elementClasses.TagGroup
-export const LumenTextareaElement = elementClasses.Textarea
-export const LumenThemeBuilderElement = elementClasses.ThemeBuilder
-export const LumenTimeFieldElement = elementClasses.TimeField
-export const LumenToastElement = elementClasses.Toast
-export const LumenToggleElement = elementClasses.Toggle
-export const LumenToggleGroupElement = elementClasses.ToggleGroup
-export const LumenTooltipElement = elementClasses.Tooltip
-export const LumenTreeElement = elementClasses.Tree
-export const LumenTreeGridElement = elementClasses.TreeGrid
-export const LumenTypographyElement = elementClasses.Typography
-export const LumenVirtualListElement = elementClasses.VirtualList
-export const LumenLanguageToggleElement = elementClasses.LanguageToggle
-export const LumenParticlesElement = elementClasses.Particles
-export const LumenAnimatedNumberElement = elementClasses.AnimatedNumber
-export const LumenRevealGroupElement = elementClasses.RevealGroup
-export const LumenScrollRevealElement = elementClasses.ScrollReveal
-export const LumenStatElement = elementClasses.Stat
-export const LumenStatDescriptionElement = elementClasses.StatDescription
-export const LumenStatIconElement = elementClasses.StatIcon
-export const LumenStatLabelElement = elementClasses.StatLabel
-export const LumenStatTrendElement = elementClasses.StatTrend
-export const LumenStatValueElement = elementClasses.StatValue
-export const LumenMeterElement = elementClasses.Meter
-export const LumenNoteElement = elementClasses.Note
-export const LumenRatingElement = elementClasses.Rating
-export const LumenTimelineElement = elementClasses.Timeline
-export const LumenAnimatedLogoElement = elementClasses.AnimatedLogo
-export const LumenAnimatedPortraitElement = elementClasses.AnimatedPortrait
-export const LumenButtonLinkElement = elementClasses.ButtonLink
-export const LumenCoverImageElement = elementClasses.CoverImage
-export const LumenGradientDividerElement = elementClasses.GradientDivider
-export const LumenCheckboxGroupElement = elementClasses.CheckboxGroup
-export const LumenContainerElement = elementClasses.Container
-export const LumenErrorSummaryElement = elementClasses.ErrorSummary
-export const LumenFieldErrorElement = elementClasses.FieldError
-export const LumenFormElement = elementClasses.Form
-export const LumenGridElement = elementClasses.Grid
-export const LumenListBoxElement = elementClasses.ListBox
-export const LumenPasswordFieldElement = elementClasses.PasswordField
-export const LumenStackElement = elementClasses.Stack
-export const LumenVisuallyHiddenElement = elementClasses.VisuallyHidden
+export const LumenAccordionElement = elementClasses.Accordion;
+export const LumenAlertElement = elementClasses.Alert;
+export const LumenAlertDialogElement = elementClasses.AlertDialog;
+export const LumenAgendaElement = elementClasses.Agenda;
+export const LumenAspectRatioElement = elementClasses.AspectRatio;
+export const LumenAttachmentElement = elementClasses.Attachment;
+export const LumenAutocompleteElement = elementClasses.Autocomplete;
+export const LumenAvatarElement = elementClasses.Avatar;
+export const LumenBadgeElement = elementClasses.Badge;
+export const LumenBarChartElement = elementClasses.BarChart;
+export const LumenBreadcrumbElement = elementClasses.Breadcrumb;
+export const LumenBubbleElement = elementClasses.Bubble;
+export const LumenButtonElement = elementClasses.Button;
+export const LumenButtonGroupElement = elementClasses.ButtonGroup;
+export const LumenCalendarElement = elementClasses.Calendar;
+export const LumenCardElement = elementClasses.Card;
+export const LumenCardContentElement = elementClasses.CardContent;
+export const LumenCardDescriptionElement = elementClasses.CardDescription;
+export const LumenCardFooterElement = elementClasses.CardFooter;
+export const LumenCardHeaderElement = elementClasses.CardHeader;
+export const LumenCardTitleElement = elementClasses.CardTitle;
+export const LumenCarouselElement = elementClasses.Carousel;
+export const LumenChartElement = elementClasses.Chart;
+export const LumenCheckboxElement = elementClasses.Checkbox;
+export const LumenCollapsibleElement = elementClasses.Collapsible;
+export const LumenCodeElement = elementClasses.Code;
+export const LumenCodeTabsElement = elementClasses.CodeTabs;
+export const LumenComboboxElement = elementClasses.Combobox;
+export const LumenCommandElement = elementClasses.Command;
+export const LumenColorPickerElement = elementClasses.ColorPicker;
+export const LumenContextMenuElement = elementClasses.ContextMenu;
+export const LumenDataTableElement = elementClasses.DataTable;
+export const LumenDatePickerElement = elementClasses.DatePicker;
+export const LumenDateRangePickerElement = elementClasses.DateRangePicker;
+export const LumenDialogElement = elementClasses.Dialog;
+export const LumenDirectionElement = elementClasses.Direction;
+export const LumenDrawerElement = elementClasses.Drawer;
+export const LumenDropdownMenuElement = elementClasses.DropdownMenu;
+export const LumenEmptyElement = elementClasses.Empty;
+export const LumenFieldElement = elementClasses.Field;
+export const LumenHoverCardElement = elementClasses.HoverCard;
+export const LumenIconElement = elementClasses.Icon;
+export const LumenInputElement = elementClasses.Input;
+export const LumenInputGroupElement = elementClasses.InputGroup;
+export const LumenInputOTPElement = elementClasses.InputOTP;
+export const LumenNumberFieldElement = elementClasses.NumberField;
+export const LumenItemElement = elementClasses.Item;
+export const LumenKbdElement = elementClasses.Kbd;
+export const LumenLabelElement = elementClasses.Label;
+export const LumenLineChartElement = elementClasses.LineChart;
+export const LumenMarkerElement = elementClasses.Marker;
+export const LumenMenubarElement = elementClasses.Menubar;
+export const LumenMessageElement = elementClasses.Message;
+export const LumenMessageScrollerElement = elementClasses.MessageScroller;
+export const LumenNativeSelectElement = elementClasses.NativeSelect;
+export const LumenNavigationMenuElement = elementClasses.NavigationMenu;
+export const LumenPaginationElement = elementClasses.Pagination;
+export const LumenPhoneInputElement = elementClasses.PhoneInput;
+export const LumenPieChartElement = elementClasses.PieChart;
+export const LumenPopoverElement = elementClasses.Popover;
+export const LumenProgressElement = elementClasses.Progress;
+export const LumenRadioGroupElement = elementClasses.RadioGroup;
+export const LumenResizableElement = elementClasses.Resizable;
+export const LumenRichTextEditorElement = elementClasses.RichTextEditor;
+export const LumenScrollAreaElement = elementClasses.ScrollArea;
+export const LumenScrollProgressElement = elementClasses.ScrollProgress;
+export const LumenScheduleElement = elementClasses.Schedule;
+export const LumenSearchFieldElement = elementClasses.SearchField;
+export const LumenSelectElement = elementClasses.Select;
+export const LumenSeparatorElement = elementClasses.Separator;
+export const LumenSheetElement = elementClasses.Sheet;
+export const LumenSidebarElement = elementClasses.Sidebar;
+export const LumenSkeletonElement = elementClasses.Skeleton;
+export const LumenSliderElement = elementClasses.Slider;
+export const LumenSonnerElement = elementClasses.Sonner;
+export const LumenSparklineElement = elementClasses.Sparkline;
+export const LumenSpinnerElement = elementClasses.Spinner;
+export const LumenSwitchElement = elementClasses.Switch;
+export const LumenTableElement = elementClasses.Table;
+export const LumenTabsElement = elementClasses.Tabs;
+export const LumenTagGroupElement = elementClasses.TagGroup;
+export const LumenTextareaElement = elementClasses.Textarea;
+export const LumenThemeBuilderElement = elementClasses.ThemeBuilder;
+export const LumenTimeFieldElement = elementClasses.TimeField;
+export const LumenToastElement = elementClasses.Toast;
+export const LumenToggleElement = elementClasses.Toggle;
+export const LumenToggleGroupElement = elementClasses.ToggleGroup;
+export const LumenTooltipElement = elementClasses.Tooltip;
+export const LumenTreeElement = elementClasses.Tree;
+export const LumenTreeGridElement = elementClasses.TreeGrid;
+export const LumenTypographyElement = elementClasses.Typography;
+export const LumenVirtualListElement = elementClasses.VirtualList;
+export const LumenLanguageToggleElement = elementClasses.LanguageToggle;
+export const LumenParticlesElement = elementClasses.Particles;
+export const LumenAnimatedNumberElement = elementClasses.AnimatedNumber;
+export const LumenRevealGroupElement = elementClasses.RevealGroup;
+export const LumenScrollRevealElement = elementClasses.ScrollReveal;
+export const LumenStatElement = elementClasses.Stat;
+export const LumenStatDescriptionElement = elementClasses.StatDescription;
+export const LumenStatIconElement = elementClasses.StatIcon;
+export const LumenStatLabelElement = elementClasses.StatLabel;
+export const LumenStatTrendElement = elementClasses.StatTrend;
+export const LumenStatValueElement = elementClasses.StatValue;
+export const LumenMeterElement = elementClasses.Meter;
+export const LumenNoteElement = elementClasses.Note;
+export const LumenRatingElement = elementClasses.Rating;
+export const LumenTimelineElement = elementClasses.Timeline;
+export const LumenAnimatedLogoElement = elementClasses.AnimatedLogo;
+export const LumenAnimatedPortraitElement = elementClasses.AnimatedPortrait;
+export const LumenButtonLinkElement = elementClasses.ButtonLink;
+export const LumenCoverImageElement = elementClasses.CoverImage;
+export const LumenGradientDividerElement = elementClasses.GradientDivider;
+export const LumenCheckboxGroupElement = elementClasses.CheckboxGroup;
+export const LumenContainerElement = elementClasses.Container;
+export const LumenErrorSummaryElement = elementClasses.ErrorSummary;
+export const LumenFieldErrorElement = elementClasses.FieldError;
+export const LumenFormElement = elementClasses.Form;
+export const LumenGridElement = elementClasses.Grid;
+export const LumenListBoxElement = elementClasses.ListBox;
+export const LumenPasswordFieldElement = elementClasses.PasswordField;
+export const LumenStackElement = elementClasses.Stack;
+export const LumenVisuallyHiddenElement = elementClasses.VisuallyHidden;

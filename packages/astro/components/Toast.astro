@@ -15,6 +15,10 @@ interface Props extends HTMLAttributes<'aside'> {
   variant?: 'default' | 'destructive' | 'success' | 'warning'
 }
 
+type InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }
+
+const internalProps: InternalProps = Astro.props
+
 const {
   'aria-live': ariaLive,
   class: classProp = '',
@@ -24,7 +28,7 @@ const {
   surface = 'default',
   variant = 'default',
   ...rest
-} = Astro.props
+} = internalProps
 
 const resolvedGlass = resolveLumenGlass(glass, surface)
 

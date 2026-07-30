@@ -98,11 +98,11 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
       </g>
     </svg>
     {
-      variant === 'donut' && (centerLabel != null || centerValue != null) && (
+      variant === 'donut' && (centerLabel !== undefined || centerValue !== undefined) && (
         <>
           <div class="ui-pie-chart__center" aria-hidden="true">
-            {centerValue != null && <strong>{centerValue}</strong>}
-            {centerLabel != null && <span>{centerLabel}</span>}
+            {centerValue !== undefined && <strong>{centerValue}</strong>}
+            {centerLabel !== undefined && <span>{centerLabel}</span>}
           </div>
           <div class="ui-sr-only">
             {centerValue} {centerLabel}

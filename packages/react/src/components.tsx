@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 /* eslint-disable @eslint-react/no-children-only, @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen uses React 19 ref props and context provider syntax that remains explicit for readability, and intentionally clones one child for polymorphic composition. */
 import type {
@@ -9,8 +9,8 @@ import type {
   HTMLAttributes,
   ReactNode,
   Ref,
-  RefObject
-} from 'react'
+  RefObject,
+} from "react";
 import {
   Children,
   cloneElement,
@@ -23,8 +23,8 @@ import {
   useId,
   useMemo,
   useRef,
-  useState
-} from 'react'
+  useState,
+} from "react";
 
 import {
   alignLumenChartSeries,
@@ -55,9 +55,9 @@ import {
   normalizeLumenFormErrors,
   resolveLumenChartTone,
   scaleLumenChartValue,
-  tokenizeLumenCode
-} from '@santi020k/lumen-core'
-import { renderSVG } from 'uqr'
+  tokenizeLumenCode,
+} from "@santi020k/lumen-core";
+import { renderSVG } from "uqr";
 
 import {
   type DialogOptions,
@@ -79,279 +79,369 @@ import {
   useResizable,
   useSelect,
   useTabs,
-  useTooltip
-} from './hooks.js'
+  useTooltip,
+} from "./hooks.js";
 
-type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
+type AlertVariant = "default" | "destructive" | "success" | "warning";
 
-type AccordionVariant = 'default' | 'flush'
+type AccordionVariant = "default" | "flush";
 
-type BadgeVariant = AlertVariant | 'outline' | 'secondary'
+type BadgeVariant = AlertVariant | "outline" | "secondary";
 
-type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
+type ButtonSize = "default" | "icon" | "lg" | "sm";
 
-type ButtonVariant = 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+type ButtonVariant =
+  "default" | "destructive" | "ghost" | "link" | "outline" | "secondary";
 
-type CardVariant = 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
+type CardVariant = "default" | "glass" | "interactive" | "muted" | "unstyled";
 
-type CodeTheme = 'auto' | 'lumen' | 'santi020k'
+type CodeTheme = "auto" | "lumen" | "santi020k";
 
-type CodeVariant = 'block' | 'inline'
+type CodeVariant = "block" | "inline";
 
-type IconSize = 'default' | 'lg' | 'sm' | 'xl'
+type IconSize = "default" | "lg" | "sm" | "xl";
 
 export type DataTableCell =
-  | boolean |
-  null |
-  number |
-  string |
-  undefined |
-  {
-    label?: boolean | null | number | string
-    sortValue?: boolean | null | number | string
-    value?: boolean | null | number | string
-  }
+  | boolean
+  | null
+  | number
+  | string
+  | undefined
+  | {
+      label?: boolean | null | number | string;
+      sortValue?: boolean | null | number | string;
+      value?: boolean | null | number | string;
+    };
 
 export interface DataTableColumn {
-  header?: string
-  key: string
-  label?: string
-  sort?: 'number' | 'string'
-  sortable?: boolean
+  header?: string;
+  key: string;
+  label?: string;
+  sort?: "number" | "string";
+  sortable?: boolean;
 }
 
 export type DataTableRow = Record<string, DataTableCell> & {
-  id?: number | string
-  rowValue?: number | string
-  value?: number | string
-}
+  id?: number | string;
+  rowValue?: number | string;
+  value?: number | string;
+};
 
-type MessageFrom = 'assistant' | 'user'
+type MessageFrom = "assistant" | "user";
 
-type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
+type MarkerVariant = "danger" | "default" | "success" | "warning";
 
-type Orientation = 'horizontal' | 'vertical'
+type Orientation = "horizontal" | "vertical";
 
-type SurfaceVariant = 'default' | 'glass'
+type SurfaceVariant = "default" | "glass";
 
-type EventHandler<Event> = (event: Event) => void
+type EventHandler<Event> = (event: Event) => void;
 
-const setRefValue = <Value,>(ref: Ref<Value> | undefined, value: Value | null): void => {
-  if (typeof ref === 'function') {
-    ref(value)
+const setRefValue = <Value,>(
+  ref: Ref<Value> | undefined,
+  value: Value | null,
+): void => {
+  if (typeof ref === "function") {
+    ref(value);
   } else if (ref) {
-    ref.current = value
+    ref.current = value;
   }
-}
+};
 
-export type LumenGlassProp = boolean | 'subtle' | 'strong'
+export type LumenGlassProp = boolean | "subtle" | "strong";
 
 interface SurfaceProps {
-  'data-surface'?: SurfaceVariant
-  glass?: LumenGlassProp
-  surface?: SurfaceVariant
+  "data-surface"?: SurfaceVariant;
+  glass?: LumenGlassProp;
+  surface?: SurfaceVariant;
 }
 
 export interface Option {
-  disabled?: boolean
-  label: string
-  value: string
+  disabled?: boolean;
+  label: string;
+  section?: string;
+  value: string;
 }
 
-type SelectOption = Option | string
+type SelectOption = Option | string;
 
-const emptyOptions: SelectOption[] = []
-const emptyStringOptions: string[] = []
-const emptyDataTableColumns: DataTableColumn[] = []
-const emptyDataTableRows: DataTableRow[] = []
-const emptyChartSeries: LumenChartSeries[] = []
+const emptyOptions: SelectOption[] = [];
+const emptyStringOptions: string[] = [];
+const emptyDataTableColumns: DataTableColumn[] = [];
+const emptyDataTableRows: DataTableRow[] = [];
+const emptyChartSeries: LumenChartSeries[] = [];
 
 const emptyPieSeries: LumenChartSeries = {
   data: [],
-  id: 'pie',
-  label: 'Values'
-}
+  id: "pie",
+  label: "Values",
+};
 
-const emptyChartValues: number[] = []
-const variantClass = (base: string, variant: string, defaultVariant = 'default') => variant === defaultVariant ? false : `${base}--${variant}`
-const iconSizeClass = (size: IconSize) => (size === 'default' ? undefined : `ui-icon--${size}`)
+const emptyChartValues: number[] = [];
+const variantClass = (
+  base: string,
+  variant: string,
+  defaultVariant = "default",
+) => (variant === defaultVariant ? false : `${base}--${variant}`);
+const iconSizeClass = (size: IconSize) =>
+  size === "default" ? undefined : `ui-icon--${size}`;
 
 const reactSvgAttributeNames: Record<string, string> = {
-  'clip-rule': 'clipRule',
-  'fill-rule': 'fillRule',
-  'stroke-dasharray': 'strokeDasharray',
-  'stroke-dashoffset': 'strokeDashoffset',
-  'stroke-linecap': 'strokeLinecap',
-  'stroke-linejoin': 'strokeLinejoin',
-  'stroke-miterlimit': 'strokeMiterlimit',
-  'stroke-width': 'strokeWidth',
-  tabindex: 'tabIndex'
-}
+  "clip-rule": "clipRule",
+  "fill-rule": "fillRule",
+  "stroke-dasharray": "strokeDasharray",
+  "stroke-dashoffset": "strokeDashoffset",
+  "stroke-linecap": "strokeLinecap",
+  "stroke-linejoin": "strokeLinejoin",
+  "stroke-miterlimit": "strokeMiterlimit",
+  "stroke-width": "strokeWidth",
+  tabindex: "tabIndex",
+};
 
-const toReactSvgAttributes = (attributes: Record<string, string>) => Object.fromEntries(Object.entries(attributes).map(([name, value]) => [reactSvgAttributeNames[name] ?? name, value]))
+const toReactSvgAttributes = (attributes: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(attributes).map(([name, value]) => [
+      reactSvgAttributeNames[name] ?? name,
+      value,
+    ]),
+  );
 
-const renderIconNode = ([tagName, attributes, children]: LumenIconNode, index: number): ReactNode => createElement(
-  tagName, {
-    ...toReactSvgAttributes(attributes),
-    key: attributes.key ?? index
-  }, children?.map(renderIconNode)
-)
+const renderIconNode = (
+  [tagName, attributes, children]: LumenIconNode,
+  index: number,
+): ReactNode =>
+  createElement(
+    tagName,
+    {
+      ...toReactSvgAttributes(attributes),
+      key: attributes.key ?? index,
+    },
+    children?.map(renderIconNode),
+  );
 
 interface IconAccessibilityOptions {
-  ariaHidden: boolean | 'false' | 'true' | undefined
-  ariaLabel: string | undefined
-  decorative: boolean | undefined
-  label: string | undefined
-  role: string | undefined
+  ariaHidden: boolean | "false" | "true" | undefined;
+  ariaLabel: string | undefined;
+  decorative: boolean | undefined;
+  label: string | undefined;
+  role: string | undefined;
 }
 
-const getIconAccessibility = ({ ariaHidden, ariaLabel, decorative, label, role }: IconAccessibilityOptions) => {
-  const accessibleLabel = label ?? ariaLabel
-  const isDecorative = decorative ?? !accessibleLabel
+const getIconAccessibility = ({
+  ariaHidden,
+  ariaLabel,
+  decorative,
+  label,
+  role,
+}: IconAccessibilityOptions) => {
+  const accessibleLabel = label ?? ariaLabel;
+  const isDecorative = decorative ?? !accessibleLabel;
 
   if (isDecorative) {
     return {
       ariaHidden: ariaHidden ?? true,
       ariaLabel: undefined,
-      role
-    }
+      role,
+    };
   }
 
   return {
     ariaHidden,
     ariaLabel: accessibleLabel,
-    role: role ?? 'img'
-  }
-}
+    role: role ?? "img",
+  };
+};
 
 const renderIconSvg = (icon: LumenIconData, className: string) => {
-  const width = 'size' in icon ? icon.size : icon.width
-  const height = 'size' in icon ? icon.size : icon.height
+  const width = "size" in icon ? icon.size : icon.width;
+  const height = "size" in icon ? icon.size : icon.height;
 
   return (
     <svg
       aria-hidden="true"
       className={className}
-      fill={icon.style === 'fill' ? 'currentColor' : 'none'}
+      fill={icon.style === "fill" ? "currentColor" : "none"}
       focusable="false"
       height="1em"
-      stroke={icon.style === 'fill' ? 'none' : 'currentColor'}
+      stroke={icon.style === "fill" ? "none" : "currentColor"}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={icon.style === 'fill' ? '0' : '2'}
+      strokeWidth={icon.style === "fill" ? "0" : "2"}
       viewBox={`0 0 ${width} ${height}`}
       width="1em"
       xmlns="http://www.w3.org/2000/svg"
     >
       {icon.node.map(renderIconNode)}
     </svg>
-  )
-}
+  );
+};
 
-const renderNamedIcon = (icon: LumenIconData) => renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`)
+const renderNamedIcon = (icon: LumenIconData) =>
+  renderIconSvg(icon, `ui-icon__svg ${icon.source ?? "lucide"}-${icon.name}`);
 
 const renderLucideIcon = (name: string, className: string) => {
-  const icon = getLumenIcon(name)
+  const icon = getLumenIcon(name);
 
-  return icon ? renderIconSvg(icon, className) : null
-}
+  return icon ? renderIconSvg(icon, className) : null;
+};
 
-const resolveSurface = (surface: SurfaceVariant, glass?: LumenGlassProp): SurfaceVariant => glass || surface === 'glass' ? 'glass' : surface
-const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ? 'ui-glass-subtle' : glass === 'strong' && 'ui-glass-strong'
-const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: LumenGlassProp) => resolveSurface(surface, glass) === 'glass' && composeClassName(`${base}--glass`, glassIntensityClass(glass))
-const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) && composeClassName(`${base}--glass`, glassIntensityClass(glass))
-const normalizeOption = (option: SelectOption): Option => typeof option === 'string' ? { label: option, value: option } : option
+const resolveSurface = (
+  surface: SurfaceVariant,
+  glass?: LumenGlassProp,
+): SurfaceVariant => (glass || surface === "glass" ? "glass" : surface);
+const glassIntensityClass = (glass?: LumenGlassProp) =>
+  glass === "subtle"
+    ? "ui-glass-subtle"
+    : glass === "strong" && "ui-glass-strong";
+const glassSurfaceClass = (
+  base: string,
+  surface: SurfaceVariant,
+  glass?: LumenGlassProp,
+) =>
+  resolveSurface(surface, glass) === "glass" &&
+  composeClassName(`${base}--glass`, glassIntensityClass(glass));
+const glassClass = (base: string, glass?: LumenGlassProp) =>
+  Boolean(glass) &&
+  composeClassName(`${base}--glass`, glassIntensityClass(glass));
+const normalizeOption = (option: SelectOption): Option =>
+  typeof option === "string" ? { label: option, value: option } : option;
 
 const isDataTableCellObject = (
-  cell: DataTableCell
-): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null
+  cell: DataTableCell,
+): cell is Exclude<
+  DataTableCell,
+  boolean | null | number | string | undefined
+> => typeof cell === "object" && cell !== null;
 
 const formatDataTableCell = (cell: DataTableCell): string => {
-  const value = isDataTableCellObject(cell) ? (cell.label ?? cell.value) : cell
+  const value = isDataTableCellObject(cell) ? (cell.label ?? cell.value) : cell;
 
-  return value === undefined || value === null ? '' : String(value)
-}
+  return value === undefined || value === null ? "" : String(value);
+};
 
 const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
-  if (!isDataTableCellObject(cell) || cell.sortValue === undefined || cell.sortValue === null) return undefined
+  if (
+    !isDataTableCellObject(cell) ||
+    cell.sortValue === undefined ||
+    cell.sortValue === null
+  )
+    return undefined;
 
-  return String(cell.sortValue)
-}
+  return String(cell.sortValue);
+};
 
-const getDataTableRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)
+const getDataTableRowValue = (row: DataTableRow, index: number): string =>
+  String(row.rowValue ?? row.value ?? row.id ?? index);
 
-const toInputValue = (value: ComponentPropsWithoutRef<'input'>['value']): string | undefined => {
-  if (value === undefined) return undefined
+const toInputValue = (
+  value: ComponentPropsWithoutRef<"input">["value"],
+): string | undefined => {
+  if (value === undefined) return undefined;
 
-  return String(value)
-}
+  return String(value);
+};
 
 const composeHandlers =
-  <Event,>(userHandler: EventHandler<Event> | undefined, lumenHandler: EventHandler<Event> | undefined) => (event: Event) => {
-    userHandler?.(event)
+  <Event,>(
+    userHandler: EventHandler<Event> | undefined,
+    lumenHandler: EventHandler<Event> | undefined,
+  ) =>
+  (event: Event) => {
+    userHandler?.(event);
 
-    lumenHandler?.(event)
-  }
+    lumenHandler?.(event);
+  };
 
-type PrimitiveProps = ComponentPropsWithoutRef<'div'> & {
-  [key: string]: unknown
-  as?: ElementType
-}
+type PrimitiveProps = ComponentPropsWithoutRef<"div"> & {
+  [key: string]: unknown;
+  as?: ElementType;
+};
 
-export type LumenPrimitiveProps<T extends ElementType = 'div'> = {
-  as?: T
-} & Omit<ComponentPropsWithRef<T>, 'as'>
+export type LumenPrimitiveProps<T extends ElementType = "div"> = {
+  as?: T;
+} & Omit<ComponentPropsWithRef<T>, "as">;
 
-const Primitive = ({ as, className, uiClassName, ...props }: PrimitiveProps & { uiClassName: string }) => {
-  const Tag = as ?? 'div'
-  const safeClassName = typeof className === 'string' ? className : undefined
+const Primitive = ({
+  as,
+  className,
+  uiClassName,
+  ...props
+}: PrimitiveProps & { uiClassName: string }) => {
+  const Tag = as ?? "div";
+  const safeClassName = typeof className === "string" ? className : undefined;
 
-  return <Tag className={composeClassName(uiClassName, safeClassName)} {...props} />
-}
+  return (
+    <Tag className={composeClassName(uiClassName, safeClassName)} {...props} />
+  );
+};
 
-const DropdownMenuContext = createContext<DropdownMenuController | null>(null)
-const PopoverContext = createContext<PopoverController | null>(null)
-const TabsContext = createContext<TabsController | null>(null)
-const TooltipContext = createContext<TooltipController | null>(null)
+const DropdownMenuContext = createContext<DropdownMenuController | null>(null);
+const PopoverContext = createContext<PopoverController | null>(null);
+const TabsContext = createContext<TabsController | null>(null);
+const TooltipContext = createContext<TooltipController | null>(null);
 
-const requireContext = <Value,>(context: Value | null, componentName: string): Value => {
+const requireContext = <Value,>(
+  context: Value | null,
+  componentName: string,
+): Value => {
   if (!context) {
-    throw new Error(`${componentName} must be used inside its matching Lumen root component.`)
+    throw new Error(
+      `${componentName} must be used inside its matching Lumen root component.`,
+    );
   }
 
-  return context
+  return context;
+};
+
+export interface AccordionProps extends ComponentPropsWithoutRef<"div"> {
+  variant?: AccordionVariant;
 }
 
-export interface AccordionProps extends ComponentPropsWithoutRef<'div'> {
-  variant?: AccordionVariant
-}
-
-export const Accordion = ({ className, variant = 'default', ...props }: AccordionProps) => (
+export const Accordion = ({
+  className,
+  variant = "default",
+  ...props
+}: AccordionProps) => (
   <div
-    className={composeClassName('ui-accordion', variant === 'flush' && 'ui-accordion--flush', className)}
-    data-variant={variant}
-    {...props}
-  />
-)
-
-export interface AlertProps extends ComponentPropsWithoutRef<'aside'> {
-  glass?: LumenGlassProp
-  variant?: AlertVariant
-}
-
-export const Alert = ({ className, glass = false, variant = 'default', ...props }: AlertProps) => (
-  <aside
     className={composeClassName(
-      'ui-alert', variantClass('ui-alert', variant), glassClass('ui-alert', glass), className
+      "ui-accordion",
+      variant === "flush" && "ui-accordion--flush",
+      className,
     )}
     data-variant={variant}
     {...props}
   />
-)
+);
 
-export type AlertDialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
+export interface AlertProps extends ComponentPropsWithoutRef<"aside"> {
+  glass?: LumenGlassProp;
+  variant?: AlertVariant;
+}
+
+export const Alert = ({
+  className,
+  glass = false,
+  variant = "default",
+  ...props
+}: AlertProps) => (
+  <aside
+    className={composeClassName(
+      "ui-alert",
+      variantClass("ui-alert", variant),
+      glassClass("ui-alert", glass),
+      className,
+    )}
+    data-variant={variant}
+    {...props}
+  />
+);
+
+export type AlertDialogProps = Omit<
+  ComponentPropsWithoutRef<"dialog">,
+  "open"
+> &
   SurfaceProps &
-  Omit<DialogOptions, 'id'>
+  Omit<DialogOptions, "id">;
 
 export const AlertDialog = ({
   className,
@@ -361,122 +451,182 @@ export const AlertDialog = ({
   onClose,
   onOpenChange,
   open,
-  surface = 'default',
+  surface = "default",
   ...props
 }: AlertDialogProps) => {
-  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })
+  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open });
 
   return (
     <dialog
       {...dialog.dialogProps}
       {...props}
       className={composeClassName(
-        'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', surface, glass), className
+        "ui-dialog ui-alert-dialog",
+        glassSurfaceClass("ui-dialog", surface, glass),
+        className,
       )}
       data-surface={resolveSurface(surface, glass)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
-  )
-}
+  );
+};
 
-export interface AgendaProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
+export interface AgendaProps extends ComponentPropsWithoutRef<"section"> {
+  glass?: LumenGlassProp;
 }
 export const Agenda = ({ className, glass = false, ...props }: AgendaProps) => (
-  <section className={composeClassName('ui-agenda', glassClass('ui-agenda', glass), className)} {...props} />
-)
+  <section
+    className={composeClassName(
+      "ui-agenda",
+      glassClass("ui-agenda", glass),
+      className,
+    )}
+    {...props}
+  />
+);
 
-export interface AspectRatioProps extends ComponentPropsWithoutRef<'div'> {
-  ratio?: string
+export interface AspectRatioProps extends ComponentPropsWithoutRef<"div"> {
+  ratio?: string;
 }
 
-export const AspectRatio = ({ className, ratio = '16 / 9', style, ...props }: AspectRatioProps) => (
-  <div className={composeClassName('ui-aspect-ratio', className)} style={{ aspectRatio: ratio, ...style }} {...props} />
-)
+export const AspectRatio = ({
+  className,
+  ratio = "16 / 9",
+  style,
+  ...props
+}: AspectRatioProps) => (
+  <div
+    className={composeClassName("ui-aspect-ratio", className)}
+    style={{ aspectRatio: ratio, ...style }}
+    {...props}
+  />
+);
 
-export interface AttachmentProps extends ComponentPropsWithoutRef<'article'> {
-  glass?: LumenGlassProp
-  href?: string
+export interface AttachmentProps extends ComponentPropsWithoutRef<"article"> {
+  glass?: LumenGlassProp;
+  href?: string;
 }
 
-export interface AutocompleteProps extends ComponentPropsWithoutRef<'input'> {
-  list: string
+export interface AutocompleteProps extends ComponentPropsWithoutRef<"input"> {
+  list: string;
 }
 
-export const Autocomplete = ({ className, type = 'search', ...props }: AutocompleteProps) => (
+export const Autocomplete = ({
+  className,
+  type = "search",
+  ...props
+}: AutocompleteProps) => (
   <input
     aria-autocomplete="list"
-    className={composeClassName('ui-input ui-autocomplete', className)}
+    className={composeClassName("ui-input ui-autocomplete", className)}
     role="combobox"
     type={type}
     {...props}
   />
-)
+);
 
-export const Attachment = ({ className, glass = false, href, ...props }: AttachmentProps) => {
-  const nextClassName = composeClassName('ui-attachment', glassClass('ui-attachment', glass), className)
+export const Attachment = ({
+  className,
+  glass = false,
+  href,
+  ...props
+}: AttachmentProps) => {
+  const nextClassName = composeClassName(
+    "ui-attachment",
+    glassClass("ui-attachment", glass),
+    className,
+  );
 
-  return href ?
-    (
-      <a className={nextClassName} href={href} {...props} />
-    ) :
-    (
-      <article className={nextClassName} {...props} />
-    )
+  return href ? (
+    <a className={nextClassName} href={href} {...props} />
+  ) : (
+    <article className={nextClassName} {...props} />
+  );
+};
+
+export interface AvatarProps extends ComponentPropsWithoutRef<"span"> {
+  alt?: string;
+  fallback?: ReactNode;
+  src?: string;
 }
 
-export interface AvatarProps extends ComponentPropsWithoutRef<'span'> {
-  alt?: string
-  fallback?: ReactNode
-  src?: string
-}
-
-export const Avatar = ({ alt = '', children, className, fallback, src, ...props }: AvatarProps) => (
-  <span className={composeClassName('ui-avatar', className)} {...props}>
+export const Avatar = ({
+  alt = "",
+  children,
+  className,
+  fallback,
+  src,
+  ...props
+}: AvatarProps) => (
+  <span className={composeClassName("ui-avatar", className)} {...props}>
     {src ? <img alt={alt} src={src} /> : <span>{fallback}</span>}
     {children}
   </span>
-)
+);
 
-export interface BadgeProps extends ComponentPropsWithRef<'span'> {
-  variant?: BadgeVariant
+export interface BadgeProps extends ComponentPropsWithRef<"span"> {
+  variant?: BadgeVariant;
 }
 
-export const Badge = ({ className, variant = 'default', ...props }: BadgeProps) => (
-  <span className={composeClassName('ui-badge', `ui-badge--${variant}`, className)} data-variant={variant} {...props} />
-)
+export const Badge = ({
+  className,
+  variant = "default",
+  ...props
+}: BadgeProps) => (
+  <span
+    className={composeClassName("ui-badge", `ui-badge--${variant}`, className)}
+    data-variant={variant}
+    {...props}
+  />
+);
 
-export type BreadcrumbProps = ComponentPropsWithoutRef<'nav'>
-export const Breadcrumb = ({ 'aria-label': ariaLabel = 'Breadcrumb', className, ...props }: BreadcrumbProps) => (
-  <nav aria-label={ariaLabel} className={composeClassName('ui-breadcrumb', className)} {...props} />
-)
+export type BreadcrumbProps = ComponentPropsWithoutRef<"nav">;
+export const Breadcrumb = ({
+  "aria-label": ariaLabel = "Breadcrumb",
+  className,
+  ...props
+}: BreadcrumbProps) => (
+  <nav
+    aria-label={ariaLabel}
+    className={composeClassName("ui-breadcrumb", className)}
+    {...props}
+  />
+);
 
-export interface BubbleProps extends ComponentPropsWithoutRef<'article'> {
-  from?: MessageFrom
-  glass?: LumenGlassProp
+export interface BubbleProps extends ComponentPropsWithoutRef<"article"> {
+  from?: MessageFrom;
+  glass?: LumenGlassProp;
 }
 
-export const Bubble = ({ className, from = 'assistant', glass = false, ...props }: BubbleProps) => (
+export const Bubble = ({
+  className,
+  from = "assistant",
+  glass = false,
+  ...props
+}: BubbleProps) => (
   <article
     className={composeClassName(
-      'ui-bubble', from === 'user' && 'ui-bubble--user', glassClass('ui-bubble', glass), className
+      "ui-bubble",
+      from === "user" && "ui-bubble--user",
+      glassClass("ui-bubble", glass),
+      className,
     )}
     data-from={from}
     {...props}
   />
-)
+);
 
-export interface ButtonProps extends ComponentPropsWithRef<'button'> {
-  asChild?: boolean
-  loading?: boolean
-  size?: ButtonSize
-  variant?: ButtonVariant
+export interface ButtonProps extends ComponentPropsWithRef<"button"> {
+  asChild?: boolean;
+  loading?: boolean;
+  size?: ButtonSize;
+  variant?: ButtonVariant;
 }
 
 interface ButtonChildProps extends HTMLAttributes<HTMLElement> {
-  'data-slot'?: string
-  ref?: Ref<HTMLElement> | undefined
+  "data-slot"?: string;
+  ref?: Ref<HTMLElement> | undefined;
 }
 
 /* eslint-disable complexity -- The compatibility path resolves native, slotted, loading, size, and disabled states in one public component. */
@@ -487,23 +637,30 @@ export const Button = ({
   disabled,
   loading = false,
   ref,
-  size = 'default',
-  type = 'button',
-  variant = 'default',
+  size = "default",
+  type = "button",
+  variant = "default",
   ...props
 }: ButtonProps) => {
   const buttonClassName = composeClassName(
-    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, disabled && 'ui-button--disabled', loading && 'ui-button--loading', className
-  )
+    "ui-button",
+    `ui-button--${variant}`,
+    size === "default" ? "ui-button--default-size" : `ui-button--${size}`,
+    disabled && "ui-button--disabled",
+    loading && "ui-button--loading",
+    className,
+  );
 
   if (asChild) {
-    const child = Children.only(children)
+    const child = Children.only(children);
 
     if (!isValidElement<ButtonChildProps>(child)) {
-      throw new TypeError('Button with asChild requires exactly one React element child.')
+      throw new TypeError(
+        "Button with asChild requires exactly one React element child.",
+      );
     }
 
-    const ChildComponent = child.type
+    const ChildComponent = child.type;
 
     return (
       <ChildComponent
@@ -518,7 +675,7 @@ export const Button = ({
         {loading && <span aria-hidden="true" className="ui-spinner" />}
         {child.props.children}
       </ChildComponent>
-    )
+    );
   }
 
   return (
@@ -534,26 +691,26 @@ export const Button = ({
       {loading && <span aria-hidden="true" className="ui-spinner" />}
       {children}
     </button>
-  )
-}
+  );
+};
 /* eslint-enable complexity */
 
-export type ButtonGroupProps = ComponentPropsWithoutRef<'div'>
+export type ButtonGroupProps = ComponentPropsWithoutRef<"div">;
 export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
-  <div className={composeClassName('ui-button-group', className)} {...props} />
-)
+  <div className={composeClassName("ui-button-group", className)} {...props} />
+);
 
-export interface CalendarProps extends ComponentPropsWithoutRef<'div'> {
-  defaultValue?: string | undefined
-  disabled?: boolean | undefined
-  glass?: LumenGlassProp
-  locale?: string | undefined
-  max?: string | undefined
-  min?: string | undefined
-  month?: string | undefined
-  name?: string | undefined
-  onValueChange?: ((value: string) => void) | undefined
-  value?: string | undefined
+export interface CalendarProps extends ComponentPropsWithoutRef<"div"> {
+  defaultValue?: string | undefined;
+  disabled?: boolean | undefined;
+  glass?: LumenGlassProp;
+  locale?: string | undefined;
+  max?: string | undefined;
+  min?: string | undefined;
+  month?: string | undefined;
+  name?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  value?: string | undefined;
 }
 export const Calendar = ({
   className,
@@ -578,14 +735,18 @@ export const Calendar = ({
     month,
     name,
     onValueChange,
-    value
-  })
+    value,
+  });
 
   return (
     <div
       {...props}
       {...calendar.rootProps}
-      className={composeClassName(calendar.rootProps.className, glassClass('ui-calendar', glass), className)}
+      className={composeClassName(
+        calendar.rootProps.className,
+        glassClass("ui-calendar", glass),
+        className,
+      )}
       data-ui-glass-track={glass ? true : undefined}
     >
       <input {...calendar.inputProps} />
@@ -601,7 +762,7 @@ export const Calendar = ({
       <table {...calendar.gridProps}>
         <thead>
           <tr role="row">
-            {calendar.weekdays.map(weekday => (
+            {calendar.weekdays.map((weekday) => (
               <th key={weekday} role="columnheader" scope="col">
                 {weekday}
               </th>
@@ -609,9 +770,9 @@ export const Calendar = ({
           </tr>
         </thead>
         <tbody>
-          {calendar.weeks.map(week => (
-            <tr key={week[0]?.date ?? 'week'} role="row">
-              {week.map(day => (
+          {calendar.weeks.map((week) => (
+            <tr key={week[0]?.date ?? "week"} role="row">
+              {week.map((day) => (
                 <td key={day.date} {...calendar.getDayProps(day)}>
                   {day.day}
                 </td>
@@ -621,81 +782,144 @@ export const Calendar = ({
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export type CardProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T> & {
-  'data-variant'?: CardVariant
-  glass?: LumenGlassProp
-  variant?: CardVariant
-}
+export type CardProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T> & {
+    "data-variant"?: CardVariant;
+    glass?: LumenGlassProp;
+    variant?: CardVariant;
+  };
 
-export const Card = <T extends ElementType = 'div'>({
+export const Card = <T extends ElementType = "div">({
   as,
   className,
   glass = false,
-  variant = 'default',
+  variant = "default",
   ...props
 }: CardProps<T>) => (
   <Primitive
     {...(as ? { as } : {})}
     className={composeClassName(
-      variant === 'muted' && 'ui-card--muted', variant === 'interactive' && 'ui-card--interactive', variant === 'unstyled' && 'ui-card--unstyled', (glass || variant === 'glass') && composeClassName('ui-card--glass', glassIntensityClass(glass)), className
+      variant === "muted" && "ui-card--muted",
+      variant === "interactive" && "ui-card--interactive",
+      variant === "unstyled" && "ui-card--unstyled",
+      (glass || variant === "glass") &&
+        composeClassName("ui-card--glass", glassIntensityClass(glass)),
+      className,
     )}
     data-slot="card"
     data-variant={variant}
     {...props}
     uiClassName="ui-card"
   />
-)
+);
 
-export type CardHeaderProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const CardHeader = <T extends ElementType = 'div'>({ as, ...props }: CardHeaderProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="card-header" {...props} uiClassName="ui-card__header" />
-)
+export type CardHeaderProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const CardHeader = <T extends ElementType = "div">({
+  as,
+  ...props
+}: CardHeaderProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="card-header"
+    {...props}
+    uiClassName="ui-card__header"
+  />
+);
 
-export type CardTitleProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const CardTitle = <T extends ElementType = 'div'>({ as, ...props }: CardTitleProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="card-title" {...props} uiClassName="ui-card__title" />
-)
+export type CardTitleProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const CardTitle = <T extends ElementType = "div">({
+  as,
+  ...props
+}: CardTitleProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="card-title"
+    {...props}
+    uiClassName="ui-card__title"
+  />
+);
 
-export type CardDescriptionProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const CardDescription = <T extends ElementType = 'div'>({ as, ...props }: CardDescriptionProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="card-description" {...props} uiClassName="ui-card__description" />
-)
+export type CardDescriptionProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const CardDescription = <T extends ElementType = "div">({
+  as,
+  ...props
+}: CardDescriptionProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="card-description"
+    {...props}
+    uiClassName="ui-card__description"
+  />
+);
 
-export type CardContentProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const CardContent = <T extends ElementType = 'div'>({ as, ...props }: CardContentProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="card-content" {...props} uiClassName="ui-card__content" />
-)
+export type CardContentProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const CardContent = <T extends ElementType = "div">({
+  as,
+  ...props
+}: CardContentProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="card-content"
+    {...props}
+    uiClassName="ui-card__content"
+  />
+);
 
-export type CardFooterProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const CardFooter = <T extends ElementType = 'div'>({ as, ...props }: CardFooterProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="card-footer" {...props} uiClassName="ui-card__footer" />
-)
+export type CardFooterProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const CardFooter = <T extends ElementType = "div">({
+  as,
+  ...props
+}: CardFooterProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="card-footer"
+    {...props}
+    uiClassName="ui-card__footer"
+  />
+);
 
-export interface CarouselProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
+export interface CarouselProps extends ComponentPropsWithoutRef<"section"> {
+  glass?: LumenGlassProp;
 }
-export const Carousel = ({ className, glass = false, ...props }: CarouselProps) => (
+export const Carousel = ({
+  className,
+  glass = false,
+  ...props
+}: CarouselProps) => (
   <section
-    className={composeClassName('ui-carousel', glassClass('ui-carousel', glass), className)}
+    className={composeClassName(
+      "ui-carousel",
+      glassClass("ui-carousel", glass),
+      className,
+    )}
     data-ui-carousel
     {...props}
   />
-)
+);
 
-export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
-  caption?: ReactNode
-  description?: ReactNode
-  glass?: LumenGlassProp
-  heading?: ReactNode
-  presentation?: 'bare' | 'default'
-  value?: ReactNode
+export interface ChartProps extends ComponentPropsWithoutRef<"figure"> {
+  caption?: ReactNode;
+  description?: ReactNode;
+  glass?: LumenGlassProp;
+  heading?: ReactNode;
+  presentation?: "bare" | "default";
+  value?: ReactNode;
 }
 
-const ChartHeader = ({ description, heading, value }: Pick<ChartProps, 'description' | 'heading' | 'value'>) => {
-  if (!heading && !description && !value) return null
+const ChartHeader = ({
+  description,
+  heading,
+  value,
+}: Pick<ChartProps, "description" | "heading" | "value">) => {
+  if (!heading && !description && !value) return null;
 
   return (
     <header>
@@ -705,8 +929,8 @@ const ChartHeader = ({ description, heading, value }: Pick<ChartProps, 'descript
       </div>
       {value && <strong data-ui-chart-value>{value}</strong>}
     </header>
-  )
-}
+  );
+};
 
 export const Chart = ({
   caption,
@@ -715,13 +939,16 @@ export const Chart = ({
   description,
   glass = false,
   heading,
-  presentation = 'default',
+  presentation = "default",
   value,
   ...props
 }: ChartProps) => (
   <figure
     className={composeClassName(
-      'ui-chart', presentation === 'bare' && 'ui-chart--bare', glassClass('ui-chart', glass), className
+      "ui-chart",
+      presentation === "bare" && "ui-chart--bare",
+      glassClass("ui-chart", glass),
+      className,
     )}
     {...props}
   >
@@ -729,31 +956,39 @@ export const Chart = ({
     {children}
     {caption && <figcaption>{caption}</figcaption>}
   </figure>
-)
+);
 
 interface ChartLegendProps {
-  series: readonly LumenChartSeries[]
+  series: readonly LumenChartSeries[];
 }
 
 const ChartLegend = ({ series }: ChartLegendProps) => (
   <ul aria-label="Chart legend" className="ui-chart__legend">
     {series.map((item, index) => (
-      <li className={getLumenChartToneClassName(item.tone, index)} key={item.id}>
+      <li
+        className={getLumenChartToneClassName(item.tone, index)}
+        key={item.id}
+      >
         <span aria-hidden="true" />
         {item.label}
       </li>
     ))}
   </ul>
-)
+);
 
 interface ChartDataTableProps {
-  categories: readonly (number | string)[]
-  formatCategory?: (category: number | string) => string
-  formatValue?: (value: number) => string
-  series: readonly LumenChartSeries[]
+  categories: readonly (number | string)[];
+  formatCategory?: (category: number | string) => string;
+  formatValue?: (value: number) => string;
+  series: readonly LumenChartSeries[];
 }
 
-const ChartDataTable = ({ categories, formatCategory = String, formatValue = String, series }: ChartDataTableProps) => (
+const ChartDataTable = ({
+  categories,
+  formatCategory = String,
+  formatValue = String,
+  series,
+}: ChartDataTableProps) => (
   <details className="ui-chart__data">
     <summary>View chart data</summary>
     <div>
@@ -761,7 +996,7 @@ const ChartDataTable = ({ categories, formatCategory = String, formatValue = Str
         <thead>
           <tr>
             <th scope="col">Category</th>
-            {series.map(item => (
+            {series.map((item) => (
               <th key={item.id} scope="col">
                 {item.label}
               </th>
@@ -769,21 +1004,27 @@ const ChartDataTable = ({ categories, formatCategory = String, formatValue = Str
           </tr>
         </thead>
         <tbody>
-          {categories.map(category => (
+          {categories.map((category) => (
             <tr key={`${typeof category}:${String(category)}`}>
               <th scope="row">
-                {series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ??
+                {series
+                  .flatMap((item) => item.data)
+                  .find((datum) => datum.x === category)?.xLabel ??
                   formatCategory(category)}
               </th>
-              {series.map(item => {
-                const datum = item.data.find(candidate => candidate.x === category)
+              {series.map((item) => {
+                const datum = item.data.find(
+                  (candidate) => candidate.x === category,
+                );
 
                 return (
                   <td key={item.id}>
                     {datum?.label ??
-                      (datum?.y === null || datum === undefined ? 'Not available' : formatValue(datum.y))}
+                      (datum?.y === null || datum === undefined
+                        ? "Not available"
+                        : formatValue(datum.y))}
                   </td>
-                )
+                );
               })}
             </tr>
           ))}
@@ -791,83 +1032,94 @@ const ChartDataTable = ({ categories, formatCategory = String, formatValue = Str
       </table>
     </div>
   </details>
-)
+);
 
-const formatChartPercentage = (percentage: number) => new Intl.NumberFormat(undefined, {
-  maximumFractionDigits: percentage < 0.01 ? 1 : 0,
-  style: 'percent'
-}).format(percentage)
+const formatChartPercentage = (percentage: number) =>
+  new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+    style: "percent",
+  }).format(percentage);
 
-export interface SparklineProps extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
-  area?: boolean
-  label?: string
-  showEndpoint?: boolean
-  tone?: LumenChartTone
-  values?: readonly number[]
+export interface SparklineProps extends Omit<
+  ComponentPropsWithoutRef<"span">,
+  "children"
+> {
+  area?: boolean;
+  label?: string;
+  showEndpoint?: boolean;
+  tone?: LumenChartTone;
+  values?: readonly number[];
 }
 
 export const Sparkline = ({
   area = false,
   className,
-  label = 'Trend',
+  label = "Trend",
   showEndpoint = true,
   tone,
   values = emptyChartValues,
   ...props
 }: SparklineProps) => {
   const geometry = createLumenLineGeometry(
-    values.map((value, index) => ({ x: index, y: value })), { height: 40, padding: 3, width: 120 }
-  )
+    values.map((value, index) => ({ x: index, y: value })),
+    { height: 40, padding: 3, width: 120 },
+  );
 
-  const resolvedTone = resolveLumenChartTone(tone)
-  const endpoint = geometry.points.at(-1)
+  const resolvedTone = resolveLumenChartTone(tone);
+  const endpoint = geometry.points.at(-1);
 
   return (
     <span
       aria-label={label}
-      className={composeClassName('ui-sparkline', `ui-chart-tone--${resolvedTone}`, className)}
+      className={composeClassName(
+        "ui-sparkline",
+        `ui-chart-tone--${resolvedTone}`,
+        className,
+      )}
       role="img"
       {...props}
     >
       <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">
-        {area && geometry.areaPaths.map(path => (
-          <path
-            className="ui-sparkline__area"
-            d={path}
-            key={path}
-          />
-        ))}
+        {area &&
+          geometry.areaPaths.map((path) => (
+            <path className="ui-sparkline__area" d={path} key={path} />
+          ))}
         <path className="ui-sparkline__line" d={geometry.path} />
         {showEndpoint && endpoint && (
-          <circle className="ui-sparkline__endpoint" cx={endpoint.xCoordinate} cy={endpoint.yCoordinate} r="2.5" />
+          <circle
+            className="ui-sparkline__endpoint"
+            cx={endpoint.xCoordinate}
+            cy={endpoint.yCoordinate}
+            r="2.5"
+          />
         )}
       </svg>
       <span className="ui-sr-only">{label}</span>
     </span>
-  )
-}
+  );
+};
 
-export interface BarChartProps extends Omit<ChartProps, 'children'> {
-  categoryWidth?: number
-  emptyLabel?: ReactNode
-  formatCategory?: (category: number | string) => string
-  formatValue?: (value: number) => string
-  layout?: LumenBarChartLayout
-  orientation?: LumenChartOrientation
-  series?: readonly LumenChartSeries[]
-  showLegend?: boolean
-  showTable?: boolean
+export interface BarChartProps extends Omit<ChartProps, "children"> {
+  categoryWidth?: number;
+  emptyLabel?: ReactNode;
+  formatCategory?: (category: number | string) => string;
+  formatValue?: (value: number) => string;
+  layout?: LumenBarChartLayout;
+  orientation?: LumenChartOrientation;
+  series?: readonly LumenChartSeries[];
+  showLegend?: boolean;
+  showTable?: boolean;
 }
 
 /* eslint-disable complexity -- Chart renderers keep optional semantic and SVG layers colocated. */
 export const BarChart = ({
   categoryWidth,
   className,
-  emptyLabel = 'No chart data available.',
+  emptyLabel = "No chart data available.",
   formatCategory = String,
   formatValue = String,
-  layout = 'grouped',
-  orientation = 'vertical',
+  layout = "grouped",
+  orientation = "vertical",
   series = emptyChartSeries,
   showLegend = series.length > 1,
   showTable = true,
@@ -876,20 +1128,25 @@ export const BarChart = ({
   const geometry = createLumenBarGeometry(series, {
     ...(categoryWidth === undefined ? {} : { categoryWidth }),
     layout,
-    orientation
-  })
+    orientation,
+  });
 
-  const hasData = hasLumenChartData(series)
-  const ticks = getLumenChartTicks(geometry.domain)
-  const categories = geometry.categories.map(category => category.category)
+  const hasData = hasLumenChartData(series);
+  const ticks = getLumenChartTicks(geometry.domain);
+  const categories = geometry.categories.map((category) => category.category);
 
   const margin =
-    orientation === 'horizontal' ?
-      { bottom: 24, left: Math.max(64, Math.min(240, categoryWidth ?? 112)), right: 20, top: 16 } :
-      { bottom: 52, left: 52, right: 16, top: 16 }
+    orientation === "horizontal"
+      ? {
+          bottom: 24,
+          left: Math.max(64, Math.min(240, categoryWidth ?? 112)),
+          right: 20,
+          top: 16,
+        }
+      : { bottom: 52, left: 52, right: 16, top: 16 };
 
   return (
-    <Chart className={composeClassName('ui-bar-chart', className)} {...props}>
+    <Chart className={composeClassName("ui-bar-chart", className)} {...props}>
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
@@ -903,27 +1160,49 @@ export const BarChart = ({
           viewBox={`0 0 ${geometry.width} ${geometry.height}`}
         >
           <g className="ui-chart__grid">
-            {ticks.map(tick => {
+            {ticks.map((tick) => {
               const coordinate =
-                orientation === 'horizontal' ?
-                  scaleLumenChartValue(tick, geometry.domain, margin.left, geometry.width - margin.right) :
-                  scaleLumenChartValue(tick, geometry.domain, geometry.height - margin.bottom, margin.top)
+                orientation === "horizontal"
+                  ? scaleLumenChartValue(
+                      tick,
+                      geometry.domain,
+                      margin.left,
+                      geometry.width - margin.right,
+                    )
+                  : scaleLumenChartValue(
+                      tick,
+                      geometry.domain,
+                      geometry.height - margin.bottom,
+                      margin.top,
+                    );
 
-              return orientation === 'horizontal' ?
-                (
-                  <line key={tick} x1={coordinate} x2={coordinate} y1={margin.top} y2={geometry.height - margin.bottom} />
-                ) :
-                (
-                  <line key={tick} x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />
-                )
+              return orientation === "horizontal" ? (
+                <line
+                  key={tick}
+                  x1={coordinate}
+                  x2={coordinate}
+                  y1={margin.top}
+                  y2={geometry.height - margin.bottom}
+                />
+              ) : (
+                <line
+                  key={tick}
+                  x1={margin.left}
+                  x2={geometry.width - margin.right}
+                  y1={coordinate}
+                  y2={coordinate}
+                />
+              );
             })}
           </g>
           <g className="ui-chart__axis-labels">
-            {geometry.categories.map(category => (
+            {geometry.categories.map((category) => (
               <text
-                dominantBaseline={orientation === 'horizontal' ? 'middle' : undefined}
+                dominantBaseline={
+                  orientation === "horizontal" ? "middle" : undefined
+                }
                 key={`${typeof category.label}:${String(category.label)}`}
-                textAnchor={orientation === 'horizontal' ? 'end' : 'middle'}
+                textAnchor={orientation === "horizontal" ? "end" : "middle"}
                 x={category.x}
                 y={category.y}
               >
@@ -932,7 +1211,7 @@ export const BarChart = ({
             ))}
           </g>
           <g className="ui-bar-chart__marks">
-            {geometry.marks.map(mark => (
+            {geometry.marks.map((mark) => (
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
                 height={mark.height}
@@ -944,7 +1223,9 @@ export const BarChart = ({
               >
                 <title>
                   {`${
-                    series.flatMap(item => item.data).find(datum => datum.x === mark.category)?.xLabel ??
+                    series
+                      .flatMap((item) => item.data)
+                      .find((datum) => datum.x === mark.category)?.xLabel ??
                     formatCategory(mark.category)
                   } · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
                 </title>
@@ -962,72 +1243,85 @@ export const BarChart = ({
         />
       )}
     </Chart>
-  )
+  );
+};
+
+export interface LineChartProps extends Omit<ChartProps, "children"> {
+  area?: boolean;
+  emptyLabel?: ReactNode;
+  formatCategory?: (category: number | string) => string;
+  formatValue?: (value: number) => string;
+  markers?: "all" | "auto" | "none" | boolean | number;
+  referenceValue?: number;
+  series?: readonly LumenChartSeries[];
+  showLegend?: boolean;
+  showTable?: boolean;
 }
 
-export interface LineChartProps extends Omit<ChartProps, 'children'> {
-  area?: boolean
-  emptyLabel?: ReactNode
-  formatCategory?: (category: number | string) => string
-  formatValue?: (value: number) => string
-  markers?: 'all' | 'auto' | 'none' | boolean | number
-  referenceValue?: number
-  series?: readonly LumenChartSeries[]
-  showLegend?: boolean
-  showTable?: boolean
-}
+const getLineChartMarkerStep = (
+  markers: LineChartProps["markers"],
+  categoryCount: number,
+): number => {
+  if (markers === false || markers === "none") return Number.POSITIVE_INFINITY;
 
-const getLineChartMarkerStep = (markers: LineChartProps['markers'], categoryCount: number): number => {
-  if (markers === false || markers === 'none') return Number.POSITIVE_INFINITY
+  if (typeof markers === "number") return Math.max(1, Math.round(markers));
 
-  if (typeof markers === 'number') return Math.max(1, Math.round(markers))
+  if (markers === "auto") return Math.max(1, Math.ceil(categoryCount / 24));
 
-  if (markers === 'auto') return Math.max(1, Math.ceil(categoryCount / 24))
-
-  return 1
-}
+  return 1;
+};
 
 export const LineChart = ({
   area = false,
   className,
-  emptyLabel = 'No chart data available.',
+  emptyLabel = "No chart data available.",
   formatCategory = String,
   formatValue = String,
-  markers = 'auto',
+  markers = "auto",
   referenceValue,
   series = emptyChartSeries,
   showLegend = series.length > 1,
   showTable = true,
   ...props
 }: LineChartProps) => {
-  const width = 640
-  const height = 320
-  const padding = 44
-  const categories = getLumenChartCategories(series)
-  const hasData = hasLumenChartData(series)
-  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+  const width = 640;
+  const height = 320;
+  const padding = 44;
+  const categories = getLumenChartCategories(series);
+  const hasData = hasLumenChartData(series);
+  const alignedSeries = series.map((item) =>
+    alignLumenChartSeries(item, categories),
+  );
 
   const domain = getLumenChartDomain(
-    [...alignedSeries.flatMap(item => item.data.map(datum => datum.y)), referenceValue ?? null], false
-  )
+    [
+      ...alignedSeries.flatMap((item) => item.data.map((datum) => datum.y)),
+      referenceValue ?? null,
+    ],
+    false,
+  );
 
-  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-    domain,
-    height,
-    includeZero: false,
-    padding,
-    width
-  }))
+  const geometries = alignedSeries.map((item) =>
+    createLumenLineGeometry(item.data, {
+      domain,
+      height,
+      includeZero: false,
+      padding,
+      width,
+    }),
+  );
 
-  const ticks = getLumenChartTicks(domain)
-  const labelStep = Math.max(1, Math.ceil(categories.length / 8))
-  const markerStep = getLineChartMarkerStep(markers, categories.length)
+  const ticks = getLumenChartTicks(domain);
+  const labelStep = Math.max(1, Math.ceil(categories.length / 8));
+  const markerStep = getLineChartMarkerStep(markers, categories.length);
 
   const referenceY =
-    referenceValue === undefined ? undefined : scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+    referenceValue === undefined
+      ? undefined
+      : scaleLumenChartValue(referenceValue, domain, height - padding, padding);
 
   return (
-    <Chart className={composeClassName('ui-line-chart', className)} {...props}>
+    <Chart className={composeClassName("ui-line-chart", className)} {...props}>
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
@@ -1035,10 +1329,19 @@ export const LineChart = ({
         </p>
       )}
       <div className="ui-chart__plot" hidden={!hasData}>
-        <svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox={`0 0 ${width} ${height}`}>
+        <svg
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
+          viewBox={`0 0 ${width} ${height}`}
+        >
           <g className="ui-chart__grid">
-            {ticks.map(tick => {
-              const y = scaleLumenChartValue(tick, domain, height - padding, padding)
+            {ticks.map((tick) => {
+              const y = scaleLumenChartValue(
+                tick,
+                domain,
+                height - padding,
+                padding,
+              );
 
               return (
                 <Fragment key={tick}>
@@ -1047,62 +1350,80 @@ export const LineChart = ({
                     {formatValue(tick)}
                   </text>
                 </Fragment>
-              )
+              );
             })}
           </g>
           <g className="ui-chart__axis-labels">
             {categories.map((category, index) => {
-              if (index % labelStep !== 0 && index !== categories.length - 1) return null
+              if (index % labelStep !== 0 && index !== categories.length - 1)
+                return null;
 
-              const denominator = Math.max(1, categories.length - 1)
-              const x = padding + (index / denominator) * (width - padding * 2)
+              const denominator = Math.max(1, categories.length - 1);
+              const x = padding + (index / denominator) * (width - padding * 2);
 
               return (
-                <text key={`${typeof category}:${String(category)}`} textAnchor="middle" x={x} y={height - 14}>
-                  {series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ??
+                <text
+                  key={`${typeof category}:${String(category)}`}
+                  textAnchor="middle"
+                  x={x}
+                  y={height - 14}
+                >
+                  {series
+                    .flatMap((item) => item.data)
+                    .find((datum) => datum.x === category)?.xLabel ??
                     formatCategory(category)}
                 </text>
-              )
+              );
             })}
           </g>
           {referenceY !== undefined && (
-            <line className="ui-chart__reference" x1={padding} x2={width - padding} y1={referenceY} y2={referenceY} />
+            <line
+              className="ui-chart__reference"
+              x1={padding}
+              x2={width - padding}
+              y1={referenceY}
+              y2={referenceY}
+            />
           )}
           {geometries.map((geometry, index) => {
-            const item = series[index]
+            const item = series[index];
 
-            if (!item) return null
+            if (!item) return null;
 
-            const tone = resolveLumenChartTone(item.tone, index)
+            const tone = resolveLumenChartTone(item.tone, index);
 
             return (
-              <g className={composeClassName('ui-line-chart__series', getLumenChartToneClassName(tone))} key={item.id}>
-                {area && geometry.areaPaths.map(path => (
-                  <path
-                    className="ui-line-chart__area"
-                    d={path}
-                    key={path}
-                  />
-                ))}
+              <g
+                className={composeClassName(
+                  "ui-line-chart__series",
+                  getLumenChartToneClassName(tone),
+                )}
+                key={item.id}
+              >
+                {area &&
+                  geometry.areaPaths.map((path) => (
+                    <path className="ui-line-chart__area" d={path} key={path} />
+                  ))}
                 <path className="ui-line-chart__line" d={geometry.path} />
                 {Number.isFinite(markerStep) &&
                   geometry.points.map(
-                    (point, pointIndex) => pointIndex % markerStep === 0 && (
-                      <circle
-                        className="ui-line-chart__point"
-                        cx={point.xCoordinate}
-                        cy={point.yCoordinate}
-                        key={`${typeof point.x}:${String(point.x)}`}
-                        r="3"
-                      >
-                        <title>
-                          {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
-                        </title>
-                      </circle>
-                    )
+                    (point, pointIndex) =>
+                      pointIndex % markerStep === 0 && (
+                        <circle
+                          className="ui-line-chart__point"
+                          cx={point.xCoordinate}
+                          cy={point.yCoordinate}
+                          key={`${typeof point.x}:${String(point.x)}`}
+                          r="3"
+                        >
+                          <title>
+                            {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                          </title>
+                        </circle>
+                      ),
                   )}
               </g>
-            )
+            );
           })}
         </svg>
       </div>
@@ -1115,17 +1436,17 @@ export const LineChart = ({
         />
       )}
     </Chart>
-  )
-}
+  );
+};
 
-export interface PieChartProps extends Omit<ChartProps, 'children'> {
-  centerLabel?: ReactNode
-  centerValue?: ReactNode
-  series?: LumenChartSeries
-  showLegend?: boolean
-  showTable?: boolean
-  valueFormatter?: (value: number) => string
-  variant?: LumenPieChartVariant
+export interface PieChartProps extends Omit<ChartProps, "children"> {
+  centerLabel?: ReactNode;
+  centerValue?: ReactNode;
+  series?: LumenChartSeries;
+  showLegend?: boolean;
+  showTable?: boolean;
+  valueFormatter?: (value: number) => string;
+  variant?: LumenPieChartVariant;
 }
 
 export const PieChart = ({
@@ -1136,23 +1457,30 @@ export const PieChart = ({
   showLegend = true,
   showTable = true,
   valueFormatter = String,
-  variant = 'donut',
+  variant = "donut",
   ...props
 }: PieChartProps) => {
-  const geometry = createLumenPieGeometry(series.data, { variant })
-  const hasData = hasLumenPieData(series.data)
-  const hasCenterLabel = centerLabel !== null && centerLabel !== undefined
-  const hasCenterValue = centerValue !== null && centerValue !== undefined
+  const geometry = createLumenPieGeometry(series.data, { variant });
+  const hasData = hasLumenPieData(series.data);
+  const hasCenterLabel = centerLabel !== null && centerLabel !== undefined;
+  const hasCenterValue = centerValue !== null && centerValue !== undefined;
 
   return (
     <Chart
-      className={composeClassName('ui-pie-chart', getLumenPieChartVariantClassName(variant), className)}
+      className={composeClassName(
+        "ui-pie-chart",
+        getLumenPieChartVariantClassName(variant),
+        className,
+      )}
       {...props}
     >
       {showLegend && hasData && (
         <ul aria-label="Chart legend" className="ui-chart__legend">
-          {geometry.slices.map(slice => (
-            <li className={getLumenChartToneClassName(slice.tone)} key={`${typeof slice.x}:${String(slice.x)}`}>
+          {geometry.slices.map((slice) => (
+            <li
+              className={getLumenChartToneClassName(slice.tone)}
+              key={`${typeof slice.x}:${String(slice.x)}`}
+            >
               <span aria-hidden="true" />
               {slice.label}
             </li>
@@ -1165,9 +1493,13 @@ export const PieChart = ({
         </p>
       )}
       <div className="ui-chart__plot ui-pie-chart__plot" hidden={!hasData}>
-        <svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox={`0 0 ${geometry.size} ${geometry.size}`}>
+        <svg
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
+          viewBox={`0 0 ${geometry.size} ${geometry.size}`}
+        >
           <g className="ui-pie-chart__slices">
-            {geometry.slices.map(slice => (
+            {geometry.slices.map((slice) => (
               <path
                 className={getLumenChartToneClassName(slice.tone)}
                 d={slice.path}
@@ -1181,16 +1513,14 @@ export const PieChart = ({
             ))}
           </g>
         </svg>
-        {variant === 'donut' && (hasCenterLabel || hasCenterValue) && (
+        {variant === "donut" && (hasCenterLabel || hasCenterValue) && (
           <>
             <div aria-hidden="true" className="ui-pie-chart__center">
               {hasCenterValue && <strong>{centerValue}</strong>}
               {hasCenterLabel && <span>{centerLabel}</span>}
             </div>
             <div className="ui-sr-only">
-              {centerValue}
-              {' '}
-              {centerLabel}
+              {centerValue} {centerLabel}
             </div>
           </>
         )}
@@ -1208,7 +1538,7 @@ export const PieChart = ({
                 </tr>
               </thead>
               <tbody>
-                {geometry.slices.map(slice => (
+                {geometry.slices.map((slice) => (
                   <tr key={`${typeof slice.x}:${String(slice.x)}`}>
                     <th scope="row">{slice.label}</th>
                     <td>{valueFormatter(slice.value)}</td>
@@ -1221,19 +1551,24 @@ export const PieChart = ({
         </details>
       )}
     </Chart>
-  )
-}
+  );
+};
 /* eslint-enable complexity */
 
-export type CheckboxProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
+export type CheckboxProps = Omit<ComponentPropsWithRef<"input">, "type">;
 export const Checkbox = ({ className, ref, ...props }: CheckboxProps) => (
-  <input className={composeClassName('ui-checkbox', className)} ref={ref} type="checkbox" {...props} />
-)
+  <input
+    className={composeClassName("ui-checkbox", className)}
+    ref={ref}
+    type="checkbox"
+    {...props}
+  />
+);
 
-export interface CheckboxGroupProps extends ComponentPropsWithRef<'fieldset'> {
-  invalid?: boolean
-  legend?: ReactNode
-  orientation?: Orientation
+export interface CheckboxGroupProps extends ComponentPropsWithRef<"fieldset"> {
+  invalid?: boolean;
+  legend?: ReactNode;
+  orientation?: Orientation;
 }
 
 export const CheckboxGroup = ({
@@ -1241,13 +1576,17 @@ export const CheckboxGroup = ({
   className,
   invalid = false,
   legend,
-  orientation = 'vertical',
+  orientation = "vertical",
   ...props
 }: CheckboxGroupProps) => (
   <fieldset
     aria-invalid={invalid || undefined}
-    className={composeClassName('ui-checkbox-group', `ui-checkbox-group--${orientation}`, className)}
-    data-invalid={invalid ? 'true' : undefined}
+    className={composeClassName(
+      "ui-checkbox-group",
+      `ui-checkbox-group--${orientation}`,
+      className,
+    )}
+    data-invalid={invalid ? "true" : undefined}
     data-orientation={orientation}
     data-ui-checkbox-group
     {...props}
@@ -1255,51 +1594,70 @@ export const CheckboxGroup = ({
     {legend && <legend>{legend}</legend>}
     {children}
   </fieldset>
-)
+);
 
-export type CollapsibleProps = ComponentPropsWithoutRef<'details'>
+export type CollapsibleProps = ComponentPropsWithoutRef<"details">;
 export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
-  <details className={composeClassName('ui-collapsible', className)} data-ui-collapsible {...props} />
-)
+  <details
+    className={composeClassName("ui-collapsible", className)}
+    data-ui-collapsible
+    {...props}
+  />
+);
 
-export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
-  code?: string
-  copy?: boolean
-  highlighted?: boolean
-  label?: ReactNode
-  language?: string
-  theme?: CodeTheme
-  variant?: CodeVariant
-  wrap?: boolean
+export interface CodeProps extends ComponentPropsWithoutRef<"figure"> {
+  code?: string;
+  copy?: boolean;
+  highlighted?: boolean;
+  label?: ReactNode;
+  language?: string;
+  theme?: CodeTheme;
+  variant?: CodeVariant;
+  wrap?: boolean;
 }
 
 const renderCodeToken = (token: LumenCodeToken) => {
-  if (!token.kind) return token.value
+  if (!token.kind) return token.value;
 
   return (
-    <span className={lumenCodeTokenClassNames[token.kind]} key={`${token.start}-${token.kind}`}>
+    <span
+      className={lumenCodeTokenClassNames[token.kind]}
+      key={`${token.start}-${token.kind}`}
+    >
       {token.value}
     </span>
-  )
-}
+  );
+};
 
-const renderCodeChildren = (code: string | undefined, children: ReactNode, language?: string) => code === undefined ? children : tokenizeLumenCode(code, language).map(renderCodeToken)
+const renderCodeChildren = (
+  code: string | undefined,
+  children: ReactNode,
+  language?: string,
+) =>
+  code === undefined
+    ? children
+    : tokenizeLumenCode(code, language).map(renderCodeToken);
 
 const renderCodeCopyButton = () => (
-  <button aria-label="Copy code to clipboard" className="ui-code__copy" data-ui-code-copy type="button">
-    {renderLucideIcon('copy', 'ui-code__copy-icon')}
-    {renderLucideIcon('check', 'ui-code__check-icon')}
+  <button
+    aria-label="Copy code to clipboard"
+    className="ui-code__copy"
+    data-ui-code-copy
+    type="button"
+  >
+    {renderLucideIcon("copy", "ui-code__copy-icon")}
+    {renderLucideIcon("check", "ui-code__check-icon")}
   </button>
-)
+);
 
 interface CodeHeaderOptions {
-  copy: boolean
-  label: ReactNode
-  language: string | undefined
+  copy: boolean;
+  label: ReactNode;
+  language: string | undefined;
 }
 
 const renderCodeHeader = ({ copy, label, language }: CodeHeaderOptions) => {
-  if (!copy && !label && !language) return null
+  if (!copy && !label && !language) return null;
 
   return (
     <figcaption className="ui-code__header">
@@ -1314,8 +1672,8 @@ const renderCodeHeader = ({ copy, label, language }: CodeHeaderOptions) => {
       </span>
       {copy && renderCodeCopyButton()}
     </figcaption>
-  )
-}
+  );
+};
 
 export const Code = ({
   children,
@@ -1325,17 +1683,21 @@ export const Code = ({
   highlighted = false,
   label,
   language,
-  theme = 'auto',
-  variant = 'inline',
+  theme = "auto",
+  variant = "inline",
   wrap = false,
   ...props
 }: CodeProps) => {
-  const codeChildren = renderCodeChildren(code, children, language)
+  const codeChildren = renderCodeChildren(code, children, language);
 
-  if (variant === 'block') {
+  if (variant === "block") {
     return (
       <figure
-        className={composeClassName('ui-code ui-code--block', wrap && 'ui-code--wrap', className)}
+        className={composeClassName(
+          "ui-code ui-code--block",
+          wrap && "ui-code--wrap",
+          className,
+        )}
         data-code-theme={theme}
         data-language={language}
         data-slot="code"
@@ -1343,22 +1705,20 @@ export const Code = ({
         {...props}
       >
         {renderCodeHeader({ copy, label, language })}
-        {highlighted ?
-          (
-            children
-          ) :
-          (
-            <pre>
-              <code>{codeChildren}</code>
-            </pre>
-          )}
+        {highlighted ? (
+          children
+        ) : (
+          <pre>
+            <code>{codeChildren}</code>
+          </pre>
+        )}
       </figure>
-    )
+    );
   }
 
   return (
     <code
-      className={composeClassName('ui-code ui-code--inline', className)}
+      className={composeClassName("ui-code ui-code--inline", className)}
       data-code-theme={theme}
       data-language={language}
       data-slot="code"
@@ -1366,31 +1726,34 @@ export const Code = ({
     >
       {code ?? children}
     </code>
-  )
-}
+  );
+};
 
 export interface CodeTabItem {
-  code: string
-  label: string
-  language?: string
-  value: string
+  code: string;
+  label: string;
+  language?: string;
+  value: string;
 }
 
-export interface CodeTabsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defaultValue'> {
-  ariaLabel?: string
-  copy?: boolean
-  initialValue?: string
-  items?: readonly CodeTabItem[]
-  storageKey?: string
-  theme?: CodeTheme
-  wrap?: boolean
+export interface CodeTabsProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children" | "defaultValue"
+> {
+  ariaLabel?: string;
+  copy?: boolean;
+  initialValue?: string;
+  items?: readonly CodeTabItem[];
+  storageKey?: string;
+  theme?: CodeTheme;
+  wrap?: boolean;
 }
 
-export interface ComboboxProps extends ComponentPropsWithoutRef<'input'> {
-  label?: ReactNode
-  list: string
-  options?: string[]
-  wrapperClassName?: string
+export interface ComboboxProps extends ComponentPropsWithoutRef<"input"> {
+  label?: ReactNode;
+  list: string;
+  options?: string[];
+  wrapperClassName?: string;
 }
 
 export const Combobox = ({
@@ -1404,38 +1767,42 @@ export const Combobox = ({
   onFocus,
   onKeyDown,
   options = emptyStringOptions,
-  type = 'text',
+  type = "text",
   value: valueProp,
   wrapperClassName,
   ...props
 }: ComboboxProps) => {
-  const inputId = id ?? `${list}-input`
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(() => String(defaultValue ?? ''))
-  const renderedValue = valueProp ?? value
-  const query = String(renderedValue).trim().toLowerCase()
+  const inputId = id ?? `${list}-input`;
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(() => String(defaultValue ?? ""));
+  const renderedValue = valueProp ?? value;
+  const query = String(renderedValue).trim().toLowerCase();
 
   const visibleOptions = useMemo(
-    () => options.filter(option => !query || option.toLowerCase().includes(query)), [options, query]
-  )
+    () =>
+      options.filter(
+        (option) => !query || option.toLowerCase().includes(query),
+      ),
+    [options, query],
+  );
 
   const selectOption = (option: string) => {
     if (valueProp === undefined) {
-      setValue(option)
+      setValue(option);
     }
 
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   return (
     <div
-      className={composeClassName('ui-combobox', wrapperClassName)}
+      className={composeClassName("ui-combobox", wrapperClassName)}
       data-ui-combobox
-      onBlur={event => {
-        const nextTarget = event.relatedTarget
+      onBlur={(event) => {
+        const nextTarget = event.relatedTarget;
 
         if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
-          setOpen(false)
+          setOpen(false);
         }
       }}
     >
@@ -1448,43 +1815,48 @@ export const Combobox = ({
         aria-autocomplete="list"
         aria-controls={list}
         aria-expanded={open}
-        className={composeClassName('ui-input', className)}
+        className={composeClassName("ui-input", className)}
         id={inputId}
         role="combobox"
         type={type}
         value={renderedValue}
         onBlur={onBlur}
-        onChange={event => {
+        onChange={(event) => {
           if (valueProp === undefined) {
-            setValue(event.currentTarget.value)
+            setValue(event.currentTarget.value);
           }
 
-          setOpen(true)
+          setOpen(true);
 
-          onChange?.(event)
+          onChange?.(event);
         }}
-        onFocus={event => {
-          setOpen(true)
+        onFocus={(event) => {
+          setOpen(true);
 
-          onFocus?.(event)
+          onFocus?.(event);
         }}
-        onKeyDown={event => {
-          if (event.key === 'Escape') {
-            setOpen(false)
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            setOpen(false);
           }
 
-          if (event.key === 'Enter' && visibleOptions[0]) {
-            event.preventDefault()
+          if (event.key === "Enter" && visibleOptions[0]) {
+            event.preventDefault();
 
-            selectOption(visibleOptions[0])
+            selectOption(visibleOptions[0]);
           }
 
-          onKeyDown?.(event)
+          onKeyDown?.(event);
         }}
         {...props}
       />
-      <div className="ui-combobox__list" hidden={!open} id={list} role="listbox">
-        {visibleOptions.map(option => (
+      <div
+        className="ui-combobox__list"
+        hidden={!open}
+        id={list}
+        role="listbox"
+      >
+        {visibleOptions.map((option) => (
           <button
             data-ui-combobox-option
             data-value={option}
@@ -1492,10 +1864,10 @@ export const Combobox = ({
             role="option"
             type="button"
             onClick={() => {
-              selectOption(option)
+              selectOption(option);
             }}
-            onMouseDown={event => {
-              event.preventDefault()
+            onMouseDown={(event) => {
+              event.preventDefault();
             }}
           >
             {option}
@@ -1503,43 +1875,69 @@ export const Combobox = ({
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export interface CommandProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
+export interface CommandProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
 }
-export const Command = ({ className, glass = false, ...props }: CommandProps) => (
+export const Command = ({
+  className,
+  glass = false,
+  ...props
+}: CommandProps) => (
   <div
-    className={composeClassName('ui-command', glassClass('ui-command', glass), className)}
+    className={composeClassName(
+      "ui-command",
+      glassClass("ui-command", glass),
+      className,
+    )}
     data-ui-command
     {...props}
   />
-)
+);
 
-export interface ContextMenuProps extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}
+export interface ContextMenuProps
+  extends ComponentPropsWithoutRef<"menu">, SurfaceProps {}
 
-export const ContextMenu = ({ className, glass = false, surface = 'default', ...props }: ContextMenuProps) => (
+export const ContextMenu = ({
+  className,
+  glass = false,
+  surface = "default",
+  ...props
+}: ContextMenuProps) => (
   <menu
-    className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
+    className={composeClassName(
+      "ui-menu",
+      glassSurfaceClass("ui-menu", surface, glass),
+      className,
+    )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-context-menu
-    role={props.role ?? 'menu'}
+    role={props.role ?? "menu"}
     {...props}
   />
-)
+);
 
-export type ColorPickerProps = ComponentPropsWithoutRef<'input'>
-export const ColorPicker = ({ className, type = 'color', ...props }: ColorPickerProps) => (
-  <input className={composeClassName('ui-color-picker', className)} type={type} {...props} />
-)
+export type ColorPickerProps = ComponentPropsWithoutRef<"input">;
+export const ColorPicker = ({
+  className,
+  type = "color",
+  ...props
+}: ColorPickerProps) => (
+  <input
+    className={composeClassName("ui-color-picker", className)}
+    type={type}
+    {...props}
+  />
+);
 
-export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
-  columns?: DataTableColumn[]
-  glass?: LumenGlassProp
-  name?: string
-  rows?: DataTableRow[]
-  selectable?: boolean
+export interface DataTableProps extends ComponentPropsWithoutRef<"div"> {
+  columns?: DataTableColumn[];
+  glass?: LumenGlassProp;
+  name?: string;
+  rows?: DataTableRow[];
+  selectable?: boolean;
 }
 export const DataTable = ({
   children,
@@ -1552,78 +1950,93 @@ export const DataTable = ({
   ...props
 }: DataTableProps) => (
   <div
-    className={composeClassName('ui-data-table', glassClass('ui-data-table', glass), className)}
+    className={composeClassName(
+      "ui-data-table",
+      glassClass("ui-data-table", glass),
+      className,
+    )}
     data-ui-datatable
     data-ui-datatable-name={name}
-    data-ui-datatable-selectable={selectable ? 'true' : undefined}
+    data-ui-datatable-selectable={selectable ? "true" : undefined}
     data-ui-glass-track={glass ? true : undefined}
     {...props}
   >
-    {columns.length > 0 ?
-      (
-        <table>
-          <thead>
-            <tr>
-              {columns.map(column => (
-                <th
-                  data-ui-datatable-sort-type={column.sort}
-                  data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
+    {columns.length > 0 ? (
+      <table>
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th
+                data-ui-datatable-sort-type={column.sort}
+                data-ui-datatable-sortable={
+                  column.sortable ? "true" : undefined
+                }
+                key={column.key}
+                scope="col"
+              >
+                {column.header ?? column.label ?? column.key}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr
+              data-ui-datatable-row
+              data-value={getDataTableRowValue(row, rowIndex)}
+              key={getDataTableRowValue(row, rowIndex)}
+            >
+              {columns.map((column) => (
+                <td
+                  data-sort-value={getDataTableSortValue(row[column.key])}
                   key={column.key}
-                  scope="col"
                 >
-                  {column.header ?? column.label ?? column.key}
-                </th>
+                  {formatDataTableCell(row[column.key])}
+                </td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr
-                data-ui-datatable-row
-                data-value={getDataTableRowValue(row, rowIndex)}
-                key={getDataTableRowValue(row, rowIndex)}
-              >
-                {columns.map(column => (
-                  <td data-sort-value={getDataTableSortValue(row[column.key])} key={column.key}>
-                    {formatDataTableCell(row[column.key])}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) :
-      (
-        children
-      )}
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      children
+    )}
   </div>
-)
+);
 
-export type DatePickerProps = Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'type' | 'value'> &
+export type DatePickerProps = Omit<
+  ComponentPropsWithoutRef<"input">,
+  "defaultValue" | "type" | "value"
+> &
   SurfaceProps & {
-    defaultValue?: string
-    inputRef?: Ref<HTMLInputElement>
-    onValueChange?: (value: string) => void
-    placeholder?: string
-    value?: string
-  }
+    defaultValue?: string;
+    inputRef?: Ref<HTMLInputElement>;
+    onValueChange?: (value: string) => void;
+    placeholder?: string;
+    value?: string;
+  };
 
-const formatDatePickerDisplayValue = (value: string | undefined, placeholder: string): string => {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return placeholder
+const formatDatePickerDisplayValue = (
+  value: string | undefined,
+  placeholder: string,
+): string => {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return placeholder;
 
-  const date = new Date(`${value}T00:00:00.000Z`)
+  const date = new Date(`${value}T00:00:00.000Z`);
 
-  if (Number.isNaN(date.getTime())) return placeholder
+  if (Number.isNaN(date.getTime())) return placeholder;
 
   return new Intl.DateTimeFormat(undefined, {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC',
-    year: 'numeric'
-  }).format(date)
-}
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+    year: "numeric",
+  }).format(date);
+};
 
-const stringifyDatePickerConstraint = (value: number | string | undefined): string | undefined => value === undefined ? undefined : String(value)
+const stringifyDatePickerConstraint = (
+  value: number | string | undefined,
+): string | undefined => (value === undefined ? undefined : String(value));
 
 /* eslint-disable complexity -- DatePicker coordinates controlled input, disclosure, Calendar, and native form contracts. */
 export const DatePicker = ({
@@ -1644,72 +2057,84 @@ export const DatePicker = ({
   value,
   ...props
 }: DatePickerProps) => {
-  const generatedId = useId()
-  const datePickerId = id ?? generatedId
-  const triggerId = `${datePickerId}-trigger`
-  const popoverId = `${datePickerId}-popover`
-  const rootRef = useRef<HTMLDivElement | null>(null)
-  const nativeInputRef = useRef<HTMLInputElement | null>(null)
-  const triggerRef = useRef<HTMLButtonElement | null>(null)
-  const [internalValue, setInternalValue] = useState(defaultValue ?? '')
-  const [open, setOpen] = useState(false)
-  const selectedValue = value ?? internalValue
-  const hasSelectedValue = selectedValue !== ''
-  const placeholderText = placeholder ?? 'Choose a date'
-  const maxStr = stringifyDatePickerConstraint(max)
-  const minStr = stringifyDatePickerConstraint(min)
-  const accessibleLabel = props['aria-label']
+  const generatedId = useId();
+  const datePickerId = id ?? generatedId;
+  const triggerId = `${datePickerId}-trigger`;
+  const popoverId = `${datePickerId}-popover`;
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const nativeInputRef = useRef<HTMLInputElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+  const [open, setOpen] = useState(false);
+  const selectedValue = value ?? internalValue;
+  const hasSelectedValue = selectedValue !== "";
+  const placeholderText = placeholder ?? "Choose a date";
+  const maxStr = stringifyDatePickerConstraint(max);
+  const minStr = stringifyDatePickerConstraint(min);
+  const accessibleLabel = props["aria-label"];
 
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
     const handlePointerDown = (event: MouseEvent) => {
-      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false)
-    }
+      if (
+        event.target instanceof Node &&
+        !rootRef.current?.contains(event.target)
+      )
+        setOpen(false);
+    };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
+      if (event.key !== "Escape") return;
 
-      setOpen(false)
+      setOpen(false);
 
-      triggerRef.current?.focus()
-    }
+      triggerRef.current?.focus();
+    };
 
-    document.addEventListener('mousedown', handlePointerDown)
+    document.addEventListener("mousedown", handlePointerDown);
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('mousedown', handlePointerDown)
+      document.removeEventListener("mousedown", handlePointerDown);
 
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [open])
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   const selectDate = (nextValue: string) => {
-    if (value === undefined) setInternalValue(nextValue)
+    if (value === undefined) setInternalValue(nextValue);
 
-    onValueChange?.(nextValue)
+    onValueChange?.(nextValue);
 
     if (nativeInputRef.current) {
-      nativeInputRef.current.value = nextValue
+      nativeInputRef.current.value = nextValue;
 
-      nativeInputRef.current.dispatchEvent(new Event('input', { bubbles: true }))
+      nativeInputRef.current.dispatchEvent(
+        new Event("input", { bubbles: true }),
+      );
 
-      nativeInputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
+      nativeInputRef.current.dispatchEvent(
+        new Event("change", { bubbles: true }),
+      );
     }
 
-    setOpen(false)
+    setOpen(false);
 
-    globalThis.setTimeout(() => triggerRef.current?.focus())
-  }
+    globalThis.setTimeout(() => triggerRef.current?.focus());
+  };
 
   return (
     <div
       className={composeClassName(
-        'ui-date-picker-field', glass && 'ui-date-picker-field--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong', className
+        "ui-date-picker-field",
+        glass && "ui-date-picker-field--glass",
+        glass === "subtle" && "ui-glass-subtle",
+        glass === "strong" && "ui-glass-strong",
+        className,
       )}
-      data-placeholder={hasSelectedValue ? undefined : 'true'}
+      data-placeholder={hasSelectedValue ? undefined : "true"}
       data-ui-date-picker
       data-ui-glass-track={glass ? true : undefined}
       ref={rootRef}
@@ -1724,24 +2149,24 @@ export const DatePicker = ({
         max={max}
         min={min}
         name={name}
-        onChange={event => {
-          if (value === undefined) setInternalValue(event.currentTarget.value)
+        onChange={(event) => {
+          if (value === undefined) setInternalValue(event.currentTarget.value);
 
-          onChange?.(event)
+          onChange?.(event);
         }}
-        onInvalid={event => {
-          event.preventDefault()
+        onInvalid={(event) => {
+          event.preventDefault();
 
-          triggerRef.current?.setAttribute('aria-invalid', 'true')
+          triggerRef.current?.setAttribute("aria-invalid", "true");
 
-          triggerRef.current?.focus()
+          triggerRef.current?.focus();
 
-          onInvalid?.(event)
+          onInvalid?.(event);
         }}
-        ref={node => {
-          nativeInputRef.current = node
+        ref={(node) => {
+          nativeInputRef.current = node;
 
-          setRefValue(inputRef, node)
+          setRefValue(inputRef, node);
         }}
         required={required}
         tabIndex={-1}
@@ -1761,240 +2186,322 @@ export const DatePicker = ({
           disabled={disabled}
           id={triggerId}
           onClick={() => {
-            setOpen(current => !current)
+            setOpen((current) => !current);
           }}
-          onKeyDown={event => {
-            if (event.key !== 'ArrowDown') return
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowDown") return;
 
-            event.preventDefault()
+            event.preventDefault();
 
-            setOpen(true)
+            setOpen(true);
           }}
           ref={triggerRef}
           type="button"
         >
-          <span data-ui-date-picker-value>{formatDatePickerDisplayValue(selectedValue, placeholderText)}</span>
-          <svg aria-hidden="true" className="ui-date-picker__icon" fill="none" viewBox="0 0 24 24">
+          <span data-ui-date-picker-value>
+            {formatDatePickerDisplayValue(selectedValue, placeholderText)}
+          </span>
+          <svg
+            aria-hidden="true"
+            className="ui-date-picker__icon"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
             <path d="M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
           </svg>
         </button>
         <div
           aria-label="Choose date"
           className="ui-date-picker__popover"
-          data-state={open ? 'open' : 'closed'}
+          data-state={open ? "open" : "closed"}
           data-ui-date-picker-popover
           hidden={!open}
           id={popoverId}
           role="dialog"
         >
-          <Calendar disabled={disabled} max={maxStr} min={minStr} onValueChange={selectDate} value={selectedValue} />
+          <Calendar
+            disabled={disabled}
+            max={maxStr}
+            min={minStr}
+            onValueChange={selectDate}
+            value={selectedValue}
+          />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 /* eslint-enable complexity */
 
-export type DateRangePickerProps = ComponentPropsWithoutRef<'div'> & {
-  onRangeChange?: (range: { end?: string, start?: string }) => void
-}
+export type DateRangePickerProps = ComponentPropsWithoutRef<"div"> & {
+  onRangeChange?: (range: { end?: string; start?: string }) => void;
+};
 
-const setDateRangeConstraint = (input: HTMLInputElement, property: 'max' | 'min', value: string): void => {
-  if (value) input[property] = value
-  else input.removeAttribute(property)
-}
+const setDateRangeConstraint = (
+  input: HTMLInputElement,
+  property: "max" | "min",
+  value: string,
+): void => {
+  if (value) input[property] = value;
+  else input.removeAttribute(property);
+};
 
 const getDateRangeState = (start: string, end: string): string => {
-  if (!start) return 'empty'
+  if (!start) return "empty";
 
-  return end ? 'complete' : 'selecting-end'
-}
+  return end ? "complete" : "selecting-end";
+};
 
-const syncDateRangePickerElement = (root: HTMLDivElement): { end?: string, start?: string } => {
-  const inputs = [...root.querySelectorAll<HTMLInputElement>('[data-ui-date-picker-native]')]
-  const start = inputs[0]
-  const end = inputs.at(-1)
+const syncDateRangePickerElement = (
+  root: HTMLDivElement,
+): { end?: string; start?: string } => {
+  const inputs = [
+    ...root.querySelectorAll<HTMLInputElement>("[data-ui-date-picker-native]"),
+  ];
+  const start = inputs[0];
+  const end = inputs.at(-1);
 
-  if (!(start && end) || start === end) return {}
+  if (!(start && end) || start === end) return {};
 
-  const datePickers = root.querySelectorAll<HTMLElement>('[data-ui-date-picker]')
+  const datePickers = root.querySelectorAll<HTMLElement>(
+    "[data-ui-date-picker]",
+  );
 
-  datePickers[0]?.setAttribute('data-range-part', 'start')
+  datePickers[0]?.setAttribute("data-range-part", "start");
 
-  datePickers[datePickers.length - 1]?.setAttribute('data-range-part', 'end')
+  datePickers[datePickers.length - 1]?.setAttribute("data-range-part", "end");
 
-  setDateRangeConstraint(end, 'min', start.value)
+  setDateRangeConstraint(end, "min", start.value);
 
-  setDateRangeConstraint(start, 'max', end.value)
+  setDateRangeConstraint(start, "max", end.value);
 
-  root.dataset.rangeState = getDateRangeState(start.value, end.value)
+  root.dataset.rangeState = getDateRangeState(start.value, end.value);
 
-  const range: { end?: string, start?: string } = {}
+  const range: { end?: string; start?: string } = {};
 
-  if (end.value) range.end = end.value
+  if (end.value) range.end = end.value;
 
-  if (start.value) range.start = start.value
+  if (start.value) range.start = start.value;
 
-  return range
-}
+  return range;
+};
 
-export const DateRangePicker = ({ className, onInput, onRangeChange, ...props }: DateRangePickerProps) => {
-  const rootRef = useRef<HTMLDivElement | null>(null)
+export const DateRangePicker = ({
+  className,
+  onInput,
+  onRangeChange,
+  ...props
+}: DateRangePickerProps) => {
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (rootRef.current) syncDateRangePickerElement(rootRef.current)
-  })
+    if (rootRef.current) syncDateRangePickerElement(rootRef.current);
+  });
 
   return (
     <div
-      className={composeClassName('ui-date-range-picker', className)}
+      className={composeClassName("ui-date-range-picker", className)}
       data-ui-date-range-picker
-      onInput={event => {
-        onInput?.(event)
+      onInput={(event) => {
+        onInput?.(event);
 
-        onRangeChange?.(syncDateRangePickerElement(event.currentTarget))
+        onRangeChange?.(syncDateRangePickerElement(event.currentTarget));
       }}
       ref={rootRef}
       {...props}
     />
-  )
-}
+  );
+};
 
-export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
+export type DialogProps = Omit<ComponentPropsWithoutRef<"dialog">, "open"> &
   SurfaceProps &
-  Omit<DialogOptions, 'id'> & {
-    layout?: 'centered' | 'fullscreen'
-  }
+  Omit<DialogOptions, "id"> & {
+    layout?: "centered" | "fullscreen";
+  };
 
 export const Dialog = ({
   className,
   defaultOpen,
   glass = false,
-  layout = 'centered',
+  layout = "centered",
   onClick,
   onClose,
   onOpenChange,
   open,
-  surface = 'default',
+  surface = "default",
   ...props
 }: DialogProps) => {
-  const dialog = useDialog({ defaultOpen, onOpenChange, open })
+  const dialog = useDialog({ defaultOpen, onOpenChange, open });
 
   return (
     <dialog
       {...dialog.dialogProps}
       {...props}
       className={composeClassName(
-        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', surface, glass), className
+        "ui-dialog",
+        layout === "fullscreen" && "ui-dialog--fullscreen",
+        glassSurfaceClass("ui-dialog", surface, glass),
+        className,
       )}
       data-layout={layout}
       data-surface={resolveSurface(surface, glass)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
-  )
-}
+  );
+};
 
-export type DirectionProps = ComponentPropsWithoutRef<'div'>
-export const Direction = ({ className, dir = 'ltr', ...props }: DirectionProps) => (
-  <div className={composeClassName('ui-direction', className)} dir={dir} {...props} />
-)
-
-export interface ContainerProps extends ComponentPropsWithRef<'div'> {
-  as?: ElementType
-  size?: 'full' | 'lg' | 'md' | 'sm'
-}
-
-export const Container = ({ as = 'div', className, size = 'lg', ...props }: ContainerProps) => createElement(as, {
-  className: composeClassName('ui-container', `ui-container--${size}`, className),
-  'data-size': size,
-  'data-ui-container': true,
+export type DirectionProps = ComponentPropsWithoutRef<"div">;
+export const Direction = ({
+  className,
+  dir = "ltr",
   ...props
-})
+}: DirectionProps) => (
+  <div
+    className={composeClassName("ui-direction", className)}
+    dir={dir}
+    {...props}
+  />
+);
 
-export interface GridProps extends ComponentPropsWithRef<'div'> {
-  as?: ElementType
-  columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
-  minItemWidth?: string
+export interface ContainerProps extends ComponentPropsWithRef<"div"> {
+  as?: ElementType;
+  size?: "full" | "lg" | "md" | "sm";
 }
 
-type LumenCSSProperties = CSSProperties & Record<`--ui-${string}`, number | string | undefined>
+export const Container = ({
+  as = "div",
+  className,
+  size = "lg",
+  ...props
+}: ContainerProps) =>
+  createElement(as, {
+    className: composeClassName(
+      "ui-container",
+      `ui-container--${size}`,
+      className,
+    ),
+    "data-size": size,
+    "data-ui-container": true,
+    ...props,
+  });
+
+export interface GridProps extends ComponentPropsWithRef<"div"> {
+  as?: ElementType;
+  columns?: 1 | 2 | 3 | 4 | 6 | 12 | "auto";
+  gap?: "lg" | "md" | "none" | "sm" | "xl";
+  minItemWidth?: string;
+}
+
+type LumenCSSProperties = CSSProperties &
+  Record<`--ui-${string}`, number | string | undefined>;
 
 export const Grid = ({
-  as = 'div',
+  as = "div",
   className,
-  columns = 'auto',
-  gap = 'md',
+  columns = "auto",
+  gap = "md",
   minItemWidth,
   style,
   ...props
 }: GridProps) => {
   const gridStyle: LumenCSSProperties = {
     ...style,
-    '--ui-grid-min': minItemWidth
-  }
+    "--ui-grid-min": minItemWidth,
+  };
 
   return createElement(as, {
-    className: composeClassName('ui-grid', `ui-grid--columns-${columns}`, `ui-grid--gap-${gap}`, className),
-    'data-columns': columns,
-    'data-ui-grid': true,
+    className: composeClassName(
+      "ui-grid",
+      `ui-grid--columns-${columns}`,
+      `ui-grid--gap-${gap}`,
+      className,
+    ),
+    "data-columns": columns,
+    "data-ui-grid": true,
     style: gridStyle,
-    ...props
-  })
-}
+    ...props,
+  });
+};
 
-export interface StackProps extends ComponentPropsWithRef<'div'> {
-  align?: 'center' | 'end' | 'start' | 'stretch'
-  as?: ElementType
-  direction?: Orientation
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
-  justify?: 'between' | 'center' | 'end' | 'start'
-  wrap?: boolean
+export interface StackProps extends ComponentPropsWithRef<"div"> {
+  align?: "center" | "end" | "start" | "stretch";
+  as?: ElementType;
+  direction?: Orientation;
+  gap?: "lg" | "md" | "none" | "sm" | "xl";
+  justify?: "between" | "center" | "end" | "start";
+  wrap?: boolean;
 }
 
 export const Stack = ({
-  align = 'stretch',
-  as = 'div',
+  align = "stretch",
+  as = "div",
   className,
-  direction = 'vertical',
-  gap = 'md',
-  justify = 'start',
+  direction = "vertical",
+  gap = "md",
+  justify = "start",
   wrap = false,
   ...props
-}: StackProps) => createElement(as, {
-  className: composeClassName(
-    'ui-stack', `ui-stack--${direction}`, `ui-stack--gap-${gap}`, `ui-stack--align-${align}`, `ui-stack--justify-${justify}`, wrap && 'ui-stack--wrap', className
-  ),
-  'data-direction': direction,
-  'data-ui-stack': true,
-  ...props
-})
+}: StackProps) =>
+  createElement(as, {
+    className: composeClassName(
+      "ui-stack",
+      `ui-stack--${direction}`,
+      `ui-stack--gap-${gap}`,
+      `ui-stack--align-${align}`,
+      `ui-stack--justify-${justify}`,
+      wrap && "ui-stack--wrap",
+      className,
+    ),
+    "data-direction": direction,
+    "data-ui-stack": true,
+    ...props,
+  });
 
-export interface VisuallyHiddenProps extends ComponentPropsWithRef<'span'> {
-  focusable?: boolean
+export interface VisuallyHiddenProps extends ComponentPropsWithRef<"span"> {
+  focusable?: boolean;
 }
 
-export const VisuallyHidden = ({ className, focusable = false, ...props }: VisuallyHiddenProps) => (
+export const VisuallyHidden = ({
+  className,
+  focusable = false,
+  ...props
+}: VisuallyHiddenProps) => (
   <span
-    className={composeClassName('ui-visually-hidden', focusable && 'ui-visually-hidden--focusable', className)}
+    className={composeClassName(
+      "ui-visually-hidden",
+      focusable && "ui-visually-hidden--focusable",
+      className,
+    )}
     data-ui-visually-hidden
     {...props}
   />
-)
+);
 
-export interface DrawerProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
+export interface DrawerProps
+  extends ComponentPropsWithoutRef<"dialog">, SurfaceProps {}
 
-export const Drawer = ({ className, glass = false, surface = 'default', ...props }: DrawerProps) => (
+export const Drawer = ({
+  className,
+  glass = false,
+  surface = "default",
+  ...props
+}: DrawerProps) => (
   <dialog
-    className={composeClassName('ui-drawer', glassSurfaceClass('ui-drawer', surface, glass), className)}
+    className={composeClassName(
+      "ui-drawer",
+      glassSurfaceClass("ui-drawer", surface, glass),
+      className,
+    )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-drawer
     {...props}
   />
-)
+);
 
-export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> & SurfaceProps & Omit<DropdownMenuOptions, 'id'>
+export type DropdownMenuProps = ComponentPropsWithoutRef<"menu"> &
+  SurfaceProps &
+  Omit<DropdownMenuOptions, "id">;
 
 export const DropdownMenu = ({
   children,
@@ -2003,29 +2510,40 @@ export const DropdownMenu = ({
   glass = false,
   onOpenChange,
   open,
-  surface = 'default',
+  surface = "default",
   ...props
 }: DropdownMenuProps) => {
-  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })
+  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open });
 
   return (
     <DropdownMenuContext.Provider value={menu}>
       <menu
         {...menu.rootProps}
         {...props}
-        className={composeClassName('ui-menu', glassSurfaceClass('ui-menu', surface, glass), className)}
+        className={composeClassName(
+          "ui-menu",
+          glassSurfaceClass("ui-menu", surface, glass),
+          className,
+        )}
         data-surface={resolveSurface(surface, glass)}
         data-ui-dropdown-menu
       >
         {children}
       </menu>
     </DropdownMenuContext.Provider>
-  )
-}
+  );
+};
 
-export type DropdownMenuTriggerProps = ComponentPropsWithoutRef<'button'>
-export const DropdownMenuTrigger = ({ onClick, onKeyDown, ...props }: DropdownMenuTriggerProps) => {
-  const menu = requireContext(useContext(DropdownMenuContext), 'DropdownMenuTrigger')
+export type DropdownMenuTriggerProps = ComponentPropsWithoutRef<"button">;
+export const DropdownMenuTrigger = ({
+  onClick,
+  onKeyDown,
+  ...props
+}: DropdownMenuTriggerProps) => {
+  const menu = requireContext(
+    useContext(DropdownMenuContext),
+    "DropdownMenuTrigger",
+  );
 
   return (
     <button
@@ -2033,58 +2551,72 @@ export const DropdownMenuTrigger = ({ onClick, onKeyDown, ...props }: DropdownMe
       {...props}
       onClick={composeHandlers(onClick, menu.triggerProps.onClick)}
       onKeyDown={composeHandlers(onKeyDown, menu.triggerProps.onKeyDown)}
-      type={props.type ?? 'button'}
+      type={props.type ?? "button"}
     />
-  )
-}
+  );
+};
 
-export type DropdownMenuContentProps = ComponentPropsWithoutRef<'div'>
-export const DropdownMenuContent = ({ className, onKeyDown, ...props }: DropdownMenuContentProps) => {
-  const menu = requireContext(useContext(DropdownMenuContext), 'DropdownMenuContent')
+export type DropdownMenuContentProps = ComponentPropsWithoutRef<"div">;
+export const DropdownMenuContent = ({
+  className,
+  onKeyDown,
+  ...props
+}: DropdownMenuContentProps) => {
+  const menu = requireContext(
+    useContext(DropdownMenuContext),
+    "DropdownMenuContent",
+  );
 
   return (
     <div
       {...menu.panelProps}
       {...props}
-      className={composeClassName('ui-menu__content', className)}
+      className={composeClassName("ui-menu__content", className)}
       onKeyDown={composeHandlers(onKeyDown, menu.panelProps.onKeyDown)}
-      role={props.role ?? 'menu'}
+      role={props.role ?? "menu"}
     />
-  )
-}
+  );
+};
 
-export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
+export interface EmptyProps extends ComponentPropsWithoutRef<"section"> {
+  glass?: LumenGlassProp;
 }
 export const Empty = ({ className, glass = false, ...props }: EmptyProps) => (
-  <section className={composeClassName('ui-empty', glassClass('ui-empty', glass), className)} {...props} />
-)
+  <section
+    className={composeClassName(
+      "ui-empty",
+      glassClass("ui-empty", glass),
+      className,
+    )}
+    {...props}
+  />
+);
 
-export interface ErrorSummaryProps extends ComponentPropsWithoutRef<'section'> {
-  errors?: LumenFormErrorInput
-  heading?: ReactNode
+export interface ErrorSummaryProps extends ComponentPropsWithoutRef<"section"> {
+  errors?: LumenFormErrorInput;
+  heading?: ReactNode;
 }
 
 export const ErrorSummary = ({
   className,
   errors,
-  heading = 'There is a problem',
-  id = 'ui-error-summary',
+  heading = "There is a problem",
+  id = "ui-error-summary",
   ...props
 }: ErrorSummaryProps) => {
-  const normalizedErrors = normalizeLumenFormErrors(errors)
+  const normalizedErrors = normalizeLumenFormErrors(errors);
 
-  const allErrors: { controlId?: string, message: string, name?: string }[] = [
-    ...normalizedErrors.form.map(message => ({ message })),
-    ...normalizedErrors.fields
-  ]
+  const allErrors: { controlId?: string; message: string; name?: string }[] = [
+    ...normalizedErrors.form.map((message) => ({ message })),
+    ...normalizedErrors.fields,
+  ];
 
-  const headingId = `${id}-heading`
+  const headingId = `${id}-heading`;
 
   return (
     <section
       aria-labelledby={headingId}
-      className={composeClassName('ui-error-summary', className)}
+      className={composeClassName("ui-error-summary", className)}
       data-ui-error-summary
       hidden={allErrors.length === 0}
       id={id}
@@ -2093,24 +2625,30 @@ export const ErrorSummary = ({
     >
       <h2 id={headingId}>{heading}</h2>
       <ul>
-        {allErrors.map(error => (
-          <li key={`${error.name ?? 'form'}:${error.controlId ?? ''}:${error.message}`}>
-            {error.controlId ? <a href={`#${error.controlId}`}>{error.message}</a> : error.message}
+        {allErrors.map((error) => (
+          <li
+            key={`${error.name ?? "form"}:${error.controlId ?? ""}:${error.message}`}
+          >
+            {error.controlId ? (
+              <a href={`#${error.controlId}`}>{error.message}</a>
+            ) : (
+              error.message
+            )}
           </li>
         ))}
       </ul>
     </section>
-  )
-}
+  );
+};
 
-export interface FieldProps extends ComponentPropsWithoutRef<'div'> {
-  controlId?: string
-  describedBy?: string
-  glass?: LumenGlassProp
-  invalid?: boolean
+export interface FieldProps extends ComponentPropsWithoutRef<"div"> {
+  controlId?: string;
+  describedBy?: string;
+  glass?: LumenGlassProp;
+  invalid?: boolean;
 }
 export const Field = ({
-  'aria-describedby': ariaDescribedby,
+  "aria-describedby": ariaDescribedby,
   className,
   controlId,
   describedBy,
@@ -2118,186 +2656,240 @@ export const Field = ({
   invalid = false,
   ...props
 }: FieldProps) => {
-  const fieldDescribedBy = [ariaDescribedby, describedBy].filter(Boolean).join(' ') || undefined
+  const fieldDescribedBy =
+    [ariaDescribedby, describedBy].filter(Boolean).join(" ") || undefined;
 
   return (
     <div
       aria-describedby={ariaDescribedby}
-      className={composeClassName('ui-field', glassClass('ui-field', glass), className)}
-      data-invalid={invalid ? 'true' : undefined}
+      className={composeClassName(
+        "ui-field",
+        glassClass("ui-field", glass),
+        className,
+      )}
+      data-invalid={invalid ? "true" : undefined}
       data-ui-field
       data-ui-field-control={controlId}
       data-ui-field-describedby={fieldDescribedBy}
       {...props}
     />
-  )
+  );
+};
+
+export interface FieldErrorProps extends ComponentPropsWithoutRef<"p"> {
+  message?: ReactNode;
 }
 
-export interface FieldErrorProps extends ComponentPropsWithoutRef<'p'> {
-  message?: ReactNode
-}
-
-export const FieldError = ({ children, className, hidden, message, ...props }: FieldErrorProps) => {
-  const content = message ?? children
+export const FieldError = ({
+  children,
+  className,
+  hidden,
+  message,
+  ...props
+}: FieldErrorProps) => {
+  const content = message ?? children;
 
   return (
     <p
-      className={composeClassName('ui-field-error', className)}
+      className={composeClassName("ui-field-error", className)}
       data-ui-field-error
       hidden={hidden ?? !content}
       {...props}
     >
       {content}
     </p>
-  )
+  );
+};
+
+export interface FormProps extends ComponentPropsWithRef<"form"> {
+  enhance?: boolean;
+  status?: LumenFormStatus;
 }
 
-export interface FormProps extends ComponentPropsWithRef<'form'> {
-  enhance?: boolean
-  status?: LumenFormStatus
-}
-
-export const Form = ({ 'aria-busy': ariaBusy, className, enhance = false, status = 'idle', ...props }: FormProps) => (
+export const Form = ({
+  "aria-busy": ariaBusy,
+  className,
+  enhance = false,
+  status = "idle",
+  ...props
+}: FormProps) => (
   <form
-    aria-busy={ariaBusy ?? (status === 'submitting' ? true : undefined)}
-    className={composeClassName('ui-form', className)}
+    aria-busy={ariaBusy ?? (status === "submitting" ? true : undefined)}
+    className={composeClassName("ui-form", className)}
     data-status={status}
     data-ui-form={enhance ? true : undefined}
     {...props}
   />
-)
+);
 
-export interface HoverCardProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}
+export interface HoverCardProps
+  extends ComponentPropsWithoutRef<"aside">, SurfaceProps {}
 
-export const HoverCard = ({ className, glass = false, surface = 'default', ...props }: HoverCardProps) => (
+export const HoverCard = ({
+  className,
+  glass = false,
+  surface = "default",
+  ...props
+}: HoverCardProps) => (
   <aside
-    className={composeClassName('ui-hover-card', glassSurfaceClass('ui-hover-card', surface, glass), className)}
+    className={composeClassName(
+      "ui-hover-card",
+      glassSurfaceClass("ui-hover-card", surface, glass),
+      className,
+    )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-hover-card
     {...props}
   />
-)
+);
 
-export interface IconProps extends ComponentPropsWithoutRef<'span'> {
-  decorative?: boolean
-  label?: string
-  name?: LumenIconName
-  size?: IconSize
+export interface IconProps extends ComponentPropsWithoutRef<"span"> {
+  decorative?: boolean;
+  label?: string;
+  name?: LumenIconName;
+  size?: IconSize;
 }
 
 export const Icon = ({
-  'aria-hidden': ariaHidden,
-  'aria-label': ariaLabel,
+  "aria-hidden": ariaHidden,
+  "aria-label": ariaLabel,
   children,
   className,
   decorative,
   label,
   name,
   role,
-  size = 'default',
+  size = "default",
   ...props
 }: IconProps) => {
-  const icon = name ? getLumenIcon(name) : undefined
-  const accessibility = getIconAccessibility({ ariaHidden, ariaLabel, decorative, label, role })
+  const icon = name ? getLumenIcon(name) : undefined;
+  const accessibility = getIconAccessibility({
+    ariaHidden,
+    ariaLabel,
+    decorative,
+    label,
+    role,
+  });
 
   return (
     <span
       aria-hidden={accessibility.ariaHidden}
       aria-label={accessibility.ariaLabel}
-      className={composeClassName('ui-icon', iconSizeClass(size), className)}
+      className={composeClassName("ui-icon", iconSizeClass(size), className)}
       role={accessibility.role}
       {...props}
     >
       {icon ? renderNamedIcon(icon) : children}
     </span>
-  )
-}
+  );
+};
 
-export interface InputProps extends ComponentPropsWithRef<'input'> {
-  visualSize?: 'default' | 'lg' | 'sm'
+export interface InputProps extends ComponentPropsWithRef<"input"> {
+  visualSize?: "default" | "lg" | "sm";
 }
-export const Input = ({ className, ref, type = 'text', visualSize = 'default', ...props }: InputProps) => (
+export const Input = ({
+  className,
+  ref,
+  type = "text",
+  visualSize = "default",
+  ...props
+}: InputProps) => (
   <input
     className={composeClassName(
-      'ui-input', visualSize === 'sm' && 'ui-input--sm', visualSize === 'lg' && 'ui-input--lg', className
+      "ui-input",
+      visualSize === "sm" && "ui-input--sm",
+      visualSize === "lg" && "ui-input--lg",
+      className,
     )}
     ref={ref}
     type={type}
     {...props}
   />
-)
+);
 
-export type LabelProps = ComponentPropsWithRef<'label'>
+export type LabelProps = ComponentPropsWithRef<"label">;
 export const Label = ({ className, ...props }: LabelProps) => (
-  <label className={composeClassName('ui-label', className)} {...props} />
-)
+  <label className={composeClassName("ui-label", className)} {...props} />
+);
 
-export interface PasswordFieldProps extends Omit<InputProps, 'type' | 'visualSize'> {
-  error?: ReactNode
-  hideLabel?: string
-  hint?: ReactNode
-  label?: ReactNode
-  showLabel?: string
+export interface PasswordFieldProps extends Omit<
+  InputProps,
+  "type" | "visualSize"
+> {
+  error?: ReactNode;
+  hideLabel?: string;
+  hint?: ReactNode;
+  label?: ReactNode;
+  showLabel?: string;
 }
 
 const getPasswordFieldDescribedBy = (
   ariaDescribedBy: string | undefined,
   hintId: string | undefined,
-  errorId: string | undefined
-): string | undefined => [ariaDescribedBy, hintId, errorId].filter(Boolean).join(' ') || undefined
+  errorId: string | undefined,
+): string | undefined =>
+  [ariaDescribedBy, hintId, errorId].filter(Boolean).join(" ") || undefined;
 
-const usePasswordVisibility = (inputRef: RefObject<HTMLInputElement | null>) => {
-  const [visible, setVisible] = useState(false)
+const usePasswordVisibility = (
+  inputRef: RefObject<HTMLInputElement | null>,
+) => {
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const form = inputRef.current?.form
+    const form = inputRef.current?.form;
 
-    if (!form) return
+    if (!form) return;
 
     const handleReset = () => {
-      setVisible(false)
-    }
+      setVisible(false);
+    };
 
     const hideAfterSuccess = () => {
-      if (form.dataset.status === 'success') setVisible(false)
-    }
+      if (form.dataset.status === "success") setVisible(false);
+    };
 
-    form.addEventListener('reset', handleReset)
+    form.addEventListener("reset", handleReset);
 
-    const observer = new MutationObserver(hideAfterSuccess)
+    const observer = new MutationObserver(hideAfterSuccess);
 
-    observer.observe(form, { attributeFilter: ['data-status'], attributes: true })
+    observer.observe(form, {
+      attributeFilter: ["data-status"],
+      attributes: true,
+    });
 
-    hideAfterSuccess()
+    hideAfterSuccess();
 
     return () => {
-      form.removeEventListener('reset', handleReset)
+      form.removeEventListener("reset", handleReset);
 
-      observer.disconnect()
-    }
-  }, [inputRef])
+      observer.disconnect();
+    };
+  }, [inputRef]);
 
   const toggleVisibility = () => {
-    setVisible(current => !current)
+    setVisible((current) => !current);
 
-    inputRef.current?.focus({ preventScroll: true })
-  }
+    inputRef.current?.focus({ preventScroll: true });
+  };
 
-  return { toggleVisibility, visible }
-}
+  return { toggleVisibility, visible };
+};
 
 interface PasswordFieldControlProps {
-  controlId: string
-  describedBy: string | undefined
-  error: ReactNode
-  forwardedRef: Ref<HTMLInputElement> | undefined
-  hideLabel: string
-  inputProps: Omit<InputProps, 'aria-describedby' | 'className' | 'id' | 'name' | 'ref' | 'type'>
-  inputRef: RefObject<HTMLInputElement | null>
-  name: string | undefined
-  showLabel: string
-  toggleVisibility: () => void
-  visible: boolean
+  controlId: string;
+  describedBy: string | undefined;
+  error: ReactNode;
+  forwardedRef: Ref<HTMLInputElement> | undefined;
+  hideLabel: string;
+  inputProps: Omit<
+    InputProps,
+    "aria-describedby" | "className" | "id" | "name" | "ref" | "type"
+  >;
+  inputRef: RefObject<HTMLInputElement | null>;
+  name: string | undefined;
+  showLabel: string;
+  toggleVisibility: () => void;
+  visible: boolean;
 }
 
 const PasswordFieldControl = ({
@@ -2311,7 +2903,7 @@ const PasswordFieldControl = ({
   name,
   showLabel,
   toggleVisibility,
-  visible
+  visible,
 }: PasswordFieldControlProps) => (
   <div className="ui-password-field__control" data-ui-password-field>
     <Input
@@ -2320,12 +2912,12 @@ const PasswordFieldControl = ({
       aria-invalid={error ? true : undefined}
       id={controlId}
       name={name}
-      ref={node => {
-        inputRef.current = node
+      ref={(node) => {
+        inputRef.current = node;
 
-        setRefValue(forwardedRef, node)
+        setRefValue(forwardedRef, node);
       }}
-      type={visible ? 'text' : 'password'}
+      type={visible ? "text" : "password"}
     />
     <Button
       aria-controls={controlId}
@@ -2337,19 +2929,24 @@ const PasswordFieldControl = ({
       type="button"
       variant="ghost"
     >
-      <span aria-hidden="true">{visible ? 'Hide' : 'Show'}</span>
+      <span aria-hidden="true">{visible ? "Hide" : "Show"}</span>
     </Button>
   </div>
-)
+);
 
 interface PasswordFieldMessagesProps {
-  error: ReactNode
-  errorId: string
-  hint: ReactNode
-  hintId: string | undefined
+  error: ReactNode;
+  errorId: string;
+  hint: ReactNode;
+  hintId: string | undefined;
 }
 
-const PasswordFieldMessages = ({ error, errorId, hint, hintId }: PasswordFieldMessagesProps) => (
+const PasswordFieldMessages = ({
+  error,
+  errorId,
+  hint,
+  hintId,
+}: PasswordFieldMessagesProps) => (
   <>
     {hint && (
       <p className="ui-field__hint" data-ui-field-hint id={hintId}>
@@ -2358,32 +2955,36 @@ const PasswordFieldMessages = ({ error, errorId, hint, hintId }: PasswordFieldMe
     )}
     <FieldError id={errorId} message={error} />
   </>
-)
+);
 
 export const PasswordField = ({
-  'aria-describedby': ariaDescribedby,
+  "aria-describedby": ariaDescribedby,
   className,
   error,
-  hideLabel = 'Hide password',
+  hideLabel = "Hide password",
   hint,
   id,
-  label = 'Password',
+  label = "Password",
   name,
   ref,
-  showLabel = 'Show password',
+  showLabel = "Show password",
   ...props
 }: PasswordFieldProps) => {
-  const generatedId = useId()
-  const controlId = id ?? `ui-password-${generatedId}`
-  const hintId = hint ? `${controlId}-hint` : undefined
-  const errorId = `${controlId}-error`
-  const describedBy = getPasswordFieldDescribedBy(ariaDescribedby, hintId, error ? errorId : undefined)
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const { toggleVisibility, visible } = usePasswordVisibility(inputRef)
+  const generatedId = useId();
+  const controlId = id ?? `ui-password-${generatedId}`;
+  const hintId = hint ? `${controlId}-hint` : undefined;
+  const errorId = `${controlId}-error`;
+  const describedBy = getPasswordFieldDescribedBy(
+    ariaDescribedby,
+    hintId,
+    error ? errorId : undefined,
+  );
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { toggleVisibility, visible } = usePasswordVisibility(inputRef);
 
   return (
     <Field
-      className={composeClassName('ui-password-field', className)}
+      className={composeClassName("ui-password-field", className)}
       controlId={controlId}
       invalid={Boolean(error)}
       {...(describedBy ? { describedBy } : {})}
@@ -2402,33 +3003,41 @@ export const PasswordField = ({
         toggleVisibility={toggleVisibility}
         visible={visible}
       />
-      <PasswordFieldMessages error={error} errorId={errorId} hint={hint} hintId={hintId} />
+      <PasswordFieldMessages
+        error={error}
+        errorId={errorId}
+        hint={hint}
+        hintId={hintId}
+      />
     </Field>
-  )
-}
+  );
+};
 
-export type InputGroupProps = ComponentPropsWithoutRef<'div'>
+export type InputGroupProps = ComponentPropsWithoutRef<"div">;
 export const InputGroup = ({ className, ...props }: InputGroupProps) => (
-  <div className={composeClassName('ui-input-group', className)} {...props} />
-)
+  <div className={composeClassName("ui-input-group", className)} {...props} />
+);
 
-export interface InputOTPProps extends Omit<ComponentPropsWithRef<'input'>, 'className' | 'maxLength' | 'type'> {
-  className?: string | undefined
-  inputClassName?: string | undefined
-  length?: number
-  maxLength?: number
+export interface InputOTPProps extends Omit<
+  ComponentPropsWithRef<"input">,
+  "className" | "maxLength" | "type"
+> {
+  className?: string | undefined;
+  inputClassName?: string | undefined;
+  length?: number;
+  maxLength?: number;
 }
 
 export const InputOTP = ({
-  'aria-invalid': ariaInvalid,
+  "aria-invalid": ariaInvalid,
   className,
   defaultValue,
   disabled = false,
   inputClassName,
-  inputMode = 'numeric',
+  inputMode = "numeric",
   length = 6,
   maxLength = length,
-  pattern = '[0-9]*',
+  pattern = "[0-9]*",
   ref,
   value,
   ...props
@@ -2438,98 +3047,152 @@ export const InputOTP = ({
     disabled,
     inputMode,
     inputRef: ref,
-    invalid: ariaInvalid === true || ariaInvalid === 'true',
+    invalid: ariaInvalid === true || ariaInvalid === "true",
     length,
     pattern,
-    value: toInputValue(value)
-  })
+    value: toInputValue(value),
+  });
 
   return (
-    <div {...otp.rootProps} className={composeClassName(otp.rootProps.className, className)}>
+    <div
+      {...otp.rootProps}
+      className={composeClassName(otp.rootProps.className, className)}
+    >
       <input
         {...otp.getInputProps({
           ...props,
-          'aria-invalid': ariaInvalid,
+          "aria-invalid": ariaInvalid,
           className: inputClassName,
           disabled,
           inputMode,
           maxLength,
-          pattern
+          pattern,
         })}
       />
       <div {...otp.segmentsProps}>
-        {otp.segmentIndexes.map(index => (
+        {otp.segmentIndexes.map((index) => (
           <button key={index} {...otp.getSegmentProps(index)} type="button">
             <span data-ui-input-otp-char>{otp.getSegmentChar(index)}</span>
           </button>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export type NumberFieldProps = ComponentPropsWithRef<'input'>
-export const NumberField = ({ className, ref, type = 'number', ...props }: NumberFieldProps) => (
-  <input className={composeClassName('ui-input ui-number-field', className)} ref={ref} type={type} {...props} />
-)
+export type NumberFieldProps = ComponentPropsWithRef<"input">;
+export const NumberField = ({
+  className,
+  ref,
+  type = "number",
+  ...props
+}: NumberFieldProps) => (
+  <input
+    className={composeClassName("ui-input ui-number-field", className)}
+    ref={ref}
+    type={type}
+    {...props}
+  />
+);
 
-export interface ItemProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
+export interface ItemProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
 }
 export const Item = ({ className, glass = false, ...props }: ItemProps) => (
-  <div className={composeClassName('ui-item', glassClass('ui-item', glass), className)} {...props} />
-)
+  <div
+    className={composeClassName(
+      "ui-item",
+      glassClass("ui-item", glass),
+      className,
+    )}
+    {...props}
+  />
+);
 
-export type KbdProps = ComponentPropsWithoutRef<'kbd'>
+export type KbdProps = ComponentPropsWithoutRef<"kbd">;
 export const Kbd = ({ className, ...props }: KbdProps) => (
-  <kbd className={composeClassName('ui-kbd', className)} {...props} />
-)
+  <kbd className={composeClassName("ui-kbd", className)} {...props} />
+);
 
-export interface MarkerProps extends ComponentPropsWithoutRef<'span'> {
-  variant?: MarkerVariant
+export interface MarkerProps extends ComponentPropsWithoutRef<"span"> {
+  variant?: MarkerVariant;
 }
 
-export const Marker = ({ className, variant = 'default', ...props }: MarkerProps) => (
+export const Marker = ({
+  className,
+  variant = "default",
+  ...props
+}: MarkerProps) => (
   <span
-    className={composeClassName('ui-marker', variantClass('ui-marker', variant), className)}
+    className={composeClassName(
+      "ui-marker",
+      variantClass("ui-marker", variant),
+      className,
+    )}
     data-variant={variant}
     {...props}
   />
-)
+);
 
-export interface MenubarProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}
+export interface MenubarProps
+  extends ComponentPropsWithoutRef<"nav">, SurfaceProps {}
 
-export const Menubar = ({ className, glass = false, surface = 'default', ...props }: MenubarProps) => (
+export const Menubar = ({
+  className,
+  glass = false,
+  surface = "default",
+  ...props
+}: MenubarProps) => (
   <nav
-    className={composeClassName('ui-menubar', glassSurfaceClass('ui-menubar', surface, glass), className)}
+    className={composeClassName(
+      "ui-menubar",
+      glassSurfaceClass("ui-menubar", surface, glass),
+      className,
+    )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-menubar
     {...props}
   />
-)
+);
 
-export interface MessageProps extends ComponentPropsWithoutRef<'article'> {
-  from?: MessageFrom
+export interface MessageProps extends ComponentPropsWithoutRef<"article"> {
+  from?: MessageFrom;
 }
 
-export const Message = ({ className, from = 'assistant', ...props }: MessageProps) => (
-  <article className={composeClassName('ui-message', `ui-message--${from}`, className)} data-from={from} {...props} />
-)
-
-export interface MessageScrollerProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
-}
-export const MessageScroller = ({ className, glass = false, ...props }: MessageScrollerProps) => (
-  <div
-    className={composeClassName('ui-message-scroller', glassClass('ui-message-scroller', glass), className)}
+export const Message = ({
+  className,
+  from = "assistant",
+  ...props
+}: MessageProps) => (
+  <article
+    className={composeClassName("ui-message", `ui-message--${from}`, className)}
+    data-from={from}
     {...props}
   />
-)
+);
 
-export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {
-  options?: SelectOption[]
-  placeholder?: string
-  visualSize?: 'default' | 'lg' | 'sm'
+export interface MessageScrollerProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
+}
+export const MessageScroller = ({
+  className,
+  glass = false,
+  ...props
+}: MessageScrollerProps) => (
+  <div
+    className={composeClassName(
+      "ui-message-scroller",
+      glassClass("ui-message-scroller", glass),
+      className,
+    )}
+    {...props}
+  />
+);
+
+export interface NativeSelectProps extends ComponentPropsWithRef<"select"> {
+  options?: SelectOption[];
+  placeholder?: string;
+  visualSize?: "default" | "lg" | "sm";
 }
 
 export const NativeSelect = ({
@@ -2540,15 +3203,21 @@ export const NativeSelect = ({
   placeholder,
   ref,
   value,
-  visualSize = 'default',
+  visualSize = "default",
   ...props
 }: NativeSelectProps) => {
-  const placeholderDefaultValue = placeholder && value === undefined && defaultValue === undefined ? '' : undefined
+  const placeholderDefaultValue =
+    placeholder && value === undefined && defaultValue === undefined
+      ? ""
+      : undefined;
 
   return (
     <select
       className={composeClassName(
-        'ui-select', visualSize === 'sm' && 'ui-select--sm', visualSize === 'lg' && 'ui-select--lg', className
+        "ui-select",
+        visualSize === "sm" && "ui-select--sm",
+        visualSize === "lg" && "ui-select--lg",
+        className,
       )}
       defaultValue={defaultValue ?? placeholderDefaultValue}
       ref={ref}
@@ -2561,69 +3230,89 @@ export const NativeSelect = ({
         </option>
       )}
       {children}
-      {options.map(normalizeOption).map(option => (
-        <option disabled={option.disabled} key={option.value} value={option.value}>
+      {options.map(normalizeOption).map((option) => (
+        <option
+          disabled={option.disabled}
+          key={option.value}
+          value={option.value}
+        >
           {option.label}
         </option>
       ))}
     </select>
-  )
+  );
+};
+
+export interface PhoneInputProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "defaultValue"
+> {
+  countries?: SelectOption[];
+  countryLabel?: string;
+  countryName?: string;
+  defaultCountryValue?: string;
+  defaultValue?: string;
+  name?: string;
+  placeholder?: string;
+  size?: "default" | "lg" | "sm";
 }
 
-export interface PhoneInputProps extends Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue'> {
-  countries?: SelectOption[]
-  countryLabel?: string
-  countryName?: string
-  defaultCountryValue?: string
-  defaultValue?: string
-  name?: string
-  placeholder?: string
-  size?: 'default' | 'lg' | 'sm'
-}
-
-const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
-  if (size === 'sm') {
-    return { inputClass: 'ui-input--sm', selectClass: 'ui-select--sm' }
+const phoneInputSizeModifiers = (size: "default" | "lg" | "sm") => {
+  if (size === "sm") {
+    return { inputClass: "ui-input--sm", selectClass: "ui-select--sm" };
   }
 
-  if (size === 'lg') {
-    return { inputClass: 'ui-input--lg', selectClass: 'ui-select--lg' }
+  if (size === "lg") {
+    return { inputClass: "ui-input--lg", selectClass: "ui-select--lg" };
   }
 
-  return { inputClass: undefined, selectClass: undefined }
-}
+  return { inputClass: undefined, selectClass: undefined };
+};
 
 export const PhoneInput = ({
   className,
   countries = emptyOptions,
-  countryLabel = 'Country code',
-  countryName = 'country',
+  countryLabel = "Country code",
+  countryName = "country",
   defaultCountryValue,
   defaultValue,
-  name = 'phone',
-  placeholder = 'Phone number',
-  size = 'default',
+  name = "phone",
+  placeholder = "Phone number",
+  size = "default",
   ...props
 }: PhoneInputProps) => {
-  const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+  const { selectClass, inputClass } = phoneInputSizeModifiers(size);
 
   return (
-    <div className={composeClassName('ui-phone-input ui-input-group', className)} {...props}>
+    <div
+      className={composeClassName("ui-phone-input ui-input-group", className)}
+      {...props}
+    >
       <select
         aria-label={countryLabel}
-        className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+        className={composeClassName(
+          "ui-select ui-phone-input__country",
+          selectClass,
+        )}
         defaultValue={defaultCountryValue}
         name={countryName}
       >
-        {countries.map(normalizeOption).map(option => (
-          <option disabled={option.disabled} key={option.value} value={option.value}>
+        {countries.map(normalizeOption).map((option) => (
+          <option
+            disabled={option.disabled}
+            key={option.value}
+            value={option.value}
+          >
             {option.label}
           </option>
         ))}
       </select>
       <input
         autoComplete="tel"
-        className={composeClassName('ui-input ui-phone-input__number', inputClass)}
+        className={composeClassName(
+          "ui-input ui-phone-input__number",
+          inputClass,
+        )}
         defaultValue={defaultValue}
         inputMode="tel"
         name={name}
@@ -2631,23 +3320,27 @@ export const PhoneInput = ({
         type="tel"
       />
     </div>
-  )
-}
+  );
+};
 
-export interface NavigationMenuProps extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {
-  variant?: 'default' | 'unstyled'
+export interface NavigationMenuProps
+  extends ComponentPropsWithoutRef<"nav">, SurfaceProps {
+  variant?: "default" | "unstyled";
 }
 
 export const NavigationMenu = ({
   className,
   glass = false,
-  surface = 'default',
-  variant = 'default',
+  surface = "default",
+  variant = "default",
   ...props
 }: NavigationMenuProps) => (
   <nav
     className={composeClassName(
-      'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', surface, glass), className
+      "ui-navigation-menu",
+      variant === "unstyled" && "ui-navigation-menu--unstyled",
+      glassSurfaceClass("ui-navigation-menu", surface, glass),
+      className,
     )}
     data-slot="navigation-menu"
     data-surface={resolveSurface(surface, glass)}
@@ -2655,14 +3348,24 @@ export const NavigationMenu = ({
     data-variant={variant}
     {...props}
   />
-)
+);
 
-export type PaginationProps = ComponentPropsWithoutRef<'nav'>
-export const Pagination = ({ 'aria-label': ariaLabel = 'Pagination', className, ...props }: PaginationProps) => (
-  <nav aria-label={ariaLabel} className={composeClassName('ui-pagination', className)} {...props} />
-)
+export type PaginationProps = ComponentPropsWithoutRef<"nav">;
+export const Pagination = ({
+  "aria-label": ariaLabel = "Pagination",
+  className,
+  ...props
+}: PaginationProps) => (
+  <nav
+    aria-label={ariaLabel}
+    className={composeClassName("ui-pagination", className)}
+    {...props}
+  />
+);
 
-export type PopoverProps = ComponentPropsWithoutRef<'div'> & SurfaceProps & Omit<PopoverOptions, 'id'>
+export type PopoverProps = ComponentPropsWithoutRef<"div"> &
+  SurfaceProps &
+  Omit<PopoverOptions, "id">;
 
 export const Popover = ({
   children,
@@ -2671,29 +3374,37 @@ export const Popover = ({
   glass = false,
   onOpenChange,
   open,
-  surface = 'default',
+  surface = "default",
   ...props
 }: PopoverProps) => {
-  const popover = usePopover({ defaultOpen, onOpenChange, open })
+  const popover = usePopover({ defaultOpen, onOpenChange, open });
 
   return (
     <PopoverContext.Provider value={popover}>
       <div
         {...popover.rootProps}
         {...props}
-        className={composeClassName('ui-popover', glassSurfaceClass('ui-popover', surface, glass), className)}
+        className={composeClassName(
+          "ui-popover",
+          glassSurfaceClass("ui-popover", surface, glass),
+          className,
+        )}
         data-surface={resolveSurface(surface, glass)}
         data-ui-popover
       >
         {children}
       </div>
     </PopoverContext.Provider>
-  )
-}
+  );
+};
 
-export type PopoverTriggerProps = ComponentPropsWithoutRef<'button'>
-export const PopoverTrigger = ({ onClick, onKeyDown, ...props }: PopoverTriggerProps) => {
-  const popover = requireContext(useContext(PopoverContext), 'PopoverTrigger')
+export type PopoverTriggerProps = ComponentPropsWithoutRef<"button">;
+export const PopoverTrigger = ({
+  onClick,
+  onKeyDown,
+  ...props
+}: PopoverTriggerProps) => {
+  const popover = requireContext(useContext(PopoverContext), "PopoverTrigger");
 
   return (
     <button
@@ -2701,180 +3412,232 @@ export const PopoverTrigger = ({ onClick, onKeyDown, ...props }: PopoverTriggerP
       {...props}
       onClick={composeHandlers(onClick, popover.triggerProps.onClick)}
       onKeyDown={composeHandlers(onKeyDown, popover.triggerProps.onKeyDown)}
-      type={props.type ?? 'button'}
+      type={props.type ?? "button"}
     />
-  )
-}
+  );
+};
 
-export type PopoverPanelProps = ComponentPropsWithoutRef<'div'>
+export type PopoverPanelProps = ComponentPropsWithoutRef<"div">;
 export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
-  const popover = requireContext(useContext(PopoverContext), 'PopoverPanel')
+  const popover = requireContext(useContext(PopoverContext), "PopoverPanel");
 
-  return <div {...popover.panelProps} {...props} onKeyDown={composeHandlers(onKeyDown, popover.panelProps.onKeyDown)} />
+  return (
+    <div
+      {...popover.panelProps}
+      {...props}
+      onKeyDown={composeHandlers(onKeyDown, popover.panelProps.onKeyDown)}
+    />
+  );
+};
+
+export interface ProgressProps extends ComponentPropsWithoutRef<"div"> {
+  max?: number;
+  value?: number;
 }
 
-export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {
-  max?: number
-  value?: number
-}
-
-export const Progress = ({ className, max = 100, value = 0, ...props }: ProgressProps) => {
-  const safeMax = max > 0 ? max : 100
-  const safeValue = Math.min(safeMax, Math.max(0, value))
-  const percentage = (safeValue / safeMax) * 100
+export const Progress = ({
+  className,
+  max = 100,
+  value = 0,
+  ...props
+}: ProgressProps) => {
+  const safeMax = max > 0 ? max : 100;
+  const safeValue = Math.min(safeMax, Math.max(0, value));
+  const percentage = (safeValue / safeMax) * 100;
 
   return (
     <div
       aria-valuemax={safeMax}
       aria-valuemin={0}
       aria-valuenow={safeValue}
-      className={composeClassName('ui-progress', className)}
+      className={composeClassName("ui-progress", className)}
       role="progressbar"
       {...props}
     >
       <span className="ui-progress__bar" style={{ width: `${percentage}%` }} />
     </div>
-  )
-}
+  );
+};
 
-export type RadioGroupProps = ComponentPropsWithoutRef<'fieldset'>
+export type RadioGroupProps = ComponentPropsWithoutRef<"fieldset">;
 export const RadioGroup = ({ className, ...props }: RadioGroupProps) => (
-  <fieldset className={composeClassName('ui-radio-group', className)} data-ui-radio-group {...props} />
-)
+  <fieldset
+    className={composeClassName("ui-radio-group", className)}
+    data-ui-radio-group
+    {...props}
+  />
+);
 
 /* eslint-disable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element -- Resizable preserves pane element tags while injecting pane sizing props and handles. */
 interface ResizablePaneProps {
-  className?: string | undefined
-  style?: CSSProperties | undefined
+  className?: string | undefined;
+  style?: CSSProperties | undefined;
 }
 
-export interface ResizableProps extends ComponentPropsWithoutRef<'div'> {
-  defaultSizes?: number[] | undefined
-  direction?: ResizableDirection | undefined
-  maxSize?: number | number[] | undefined
-  minSize?: number | number[] | undefined
-  resetOnDoubleClick?: boolean | undefined
+export interface ResizableProps extends ComponentPropsWithoutRef<"div"> {
+  defaultSizes?: number[] | undefined;
+  direction?: ResizableDirection | undefined;
+  maxSize?: number | number[] | undefined;
+  minSize?: number | number[] | undefined;
+  resetOnDoubleClick?: boolean | undefined;
 }
 
-const renderResizablePane = (child: ReactNode, index: number, panelProps: ComponentPropsWithoutRef<'div'>) => {
+const renderResizablePane = (
+  child: ReactNode,
+  index: number,
+  panelProps: ComponentPropsWithoutRef<"div">,
+) => {
   if (isValidElement<ResizablePaneProps>(child)) {
-    const childProps = child.props
+    const childProps = child.props;
 
     return cloneElement(child, {
       ...panelProps,
       className: composeClassName(childProps.className, panelProps.className),
       style: {
         ...childProps.style,
-        ...panelProps.style
-      }
-    })
+        ...panelProps.style,
+      },
+    });
   }
 
-  return <div {...panelProps}>{child}</div>
-}
+  return <div {...panelProps}>{child}</div>;
+};
 
 export const Resizable = ({
   children,
   className,
   defaultSizes,
-  direction = 'horizontal',
+  direction = "horizontal",
   maxSize,
   minSize,
   resetOnDoubleClick = true,
   ...props
 }: ResizableProps) => {
-  const panes = Children.toArray(children)
+  const panes = Children.toArray(children);
   const resizable = useResizable({
     defaultSizes,
     direction,
     maxSize,
     minSize,
     panelCount: panes.length,
-    resetOnDoubleClick
-  })
+    resetOnDoubleClick,
+  });
 
   return (
-    <div {...props} {...resizable.rootProps} className={composeClassName(resizable.rootProps.className, className)}>
+    <div
+      {...props}
+      {...resizable.rootProps}
+      className={composeClassName(resizable.rootProps.className, className)}
+    >
       {panes.map((child, index) => (
         <Fragment key={index}>
           {renderResizablePane(child, index, resizable.getPanelProps(index))}
-          {index < panes.length - 1 && <button {...resizable.getHandleProps(index)} type="button" />}
+          {index < panes.length - 1 && (
+            <button {...resizable.getHandleProps(index)} type="button" />
+          )}
         </Fragment>
       ))}
     </div>
-  )
-}
+  );
+};
 /* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
 
-export interface RichTextEditorProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
+export interface RichTextEditorProps extends ComponentPropsWithoutRef<"section"> {
+  glass?: LumenGlassProp;
 }
-export const RichTextEditor = ({ className, glass = false, ...props }: RichTextEditorProps) => (
+export const RichTextEditor = ({
+  className,
+  glass = false,
+  ...props
+}: RichTextEditorProps) => (
   <section
-    className={composeClassName('ui-rich-text-editor', glassClass('ui-rich-text-editor', glass), className)}
+    className={composeClassName(
+      "ui-rich-text-editor",
+      glassClass("ui-rich-text-editor", glass),
+      className,
+    )}
     data-ui-rich-text-editor
     {...props}
   />
-)
+);
 
-export interface ScrollAreaProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
+export interface ScrollAreaProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
 }
-export const ScrollArea = ({ className, glass = false, ...props }: ScrollAreaProps) => (
-  <div className={composeClassName('ui-scroll-area', glassClass('ui-scroll-area', glass), className)} {...props} />
-)
+export const ScrollArea = ({
+  className,
+  glass = false,
+  ...props
+}: ScrollAreaProps) => (
+  <div
+    className={composeClassName(
+      "ui-scroll-area",
+      glassClass("ui-scroll-area", glass),
+      className,
+    )}
+    {...props}
+  />
+);
 
-export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {
-  position?: 'bottom' | 'top'
+export interface ScrollProgressProps extends ComponentPropsWithoutRef<"div"> {
+  position?: "bottom" | "top";
 }
 export const ScrollProgress = ({
-  'aria-label': ariaLabel = 'Reading progress',
+  "aria-label": ariaLabel = "Reading progress",
   className,
-  position = 'top',
+  position = "top",
   ...props
 }: ScrollProgressProps) => {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const root = rootRef.current
+    const root = rootRef.current;
 
-    if (!root) return
+    if (!root) return;
 
-    let frame = 0
+    let frame = 0;
 
     const update = () => {
-      frame = 0
+      frame = 0;
 
-      const scrollingElement = document.scrollingElement ?? document.documentElement
-      const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
-      const percentage = maximum > 0 ? Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)) : 0
-      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+      const scrollingElement =
+        document.scrollingElement ?? document.documentElement;
+      const maximum =
+        scrollingElement.scrollHeight - scrollingElement.clientHeight;
+      const percentage =
+        maximum > 0
+          ? Math.min(
+              100,
+              Math.max(0, (scrollingElement.scrollTop / maximum) * 100),
+            )
+          : 0;
+      const bar = root.querySelector<HTMLElement>(".ui-scroll-progress__bar");
 
-      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
+      root.setAttribute("aria-valuenow", `${Math.round(percentage)}`);
 
-      if (bar) bar.style.transform = `scaleX(${percentage / 100})`
-    }
+      if (bar) bar.style.transform = `scaleX(${percentage / 100})`;
+    };
 
     const scheduleUpdate = () => {
-      if (frame) return
+      if (frame) return;
 
-      frame = window.requestAnimationFrame(update)
-    }
+      frame = window.requestAnimationFrame(update);
+    };
 
-    scheduleUpdate()
+    scheduleUpdate();
 
-    window.addEventListener('resize', scheduleUpdate, { passive: true })
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
 
-    window.addEventListener('scroll', scheduleUpdate, { passive: true })
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
 
     return () => {
-      if (frame) window.cancelAnimationFrame(frame)
+      if (frame) window.cancelAnimationFrame(frame);
 
-      window.removeEventListener('resize', scheduleUpdate)
+      window.removeEventListener("resize", scheduleUpdate);
 
-      window.removeEventListener('scroll', scheduleUpdate)
-    }
-  }, [])
+      window.removeEventListener("scroll", scheduleUpdate);
+    };
+  }, []);
 
   return (
     <div
@@ -2883,7 +3646,9 @@ export const ScrollProgress = ({
       aria-valuemin={0}
       aria-valuenow={0}
       className={composeClassName(
-        'ui-scroll-progress', position === 'bottom' && 'ui-scroll-progress--bottom', className
+        "ui-scroll-progress",
+        position === "bottom" && "ui-scroll-progress--bottom",
+        className,
       )}
       data-position={position}
       data-ui-scroll-progress
@@ -2893,54 +3658,72 @@ export const ScrollProgress = ({
     >
       <span className="ui-scroll-progress__bar" />
     </div>
-  )
-}
+  );
+};
 
-export interface ScheduleProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
+export interface ScheduleProps extends ComponentPropsWithoutRef<"section"> {
+  glass?: LumenGlassProp;
 }
-export const Schedule = ({ className, glass = false, ...props }: ScheduleProps) => (
+export const Schedule = ({
+  className,
+  glass = false,
+  ...props
+}: ScheduleProps) => (
   <section
-    className={composeClassName('ui-schedule', glassClass('ui-schedule', glass), className)}
+    className={composeClassName(
+      "ui-schedule",
+      glassClass("ui-schedule", glass),
+      className,
+    )}
     data-ui-schedule
     {...props}
   />
-)
+);
 
-export type SearchFieldProps = ComponentPropsWithRef<'input'>
-export const SearchField = ({ className, ref, type = 'search', ...props }: SearchFieldProps) => (
-  <input className={composeClassName('ui-input ui-search-field', className)} ref={ref} type={type} {...props} />
-)
+export type SearchFieldProps = ComponentPropsWithRef<"input">;
+export const SearchField = ({
+  className,
+  ref,
+  type = "search",
+  ...props
+}: SearchFieldProps) => (
+  <input
+    className={composeClassName("ui-input ui-search-field", className)}
+    ref={ref}
+    type={type}
+    {...props}
+  />
+);
 
 export interface SelectProps
   extends
-  Omit<
-    NativeSelectProps,
-    | 'defaultValue' |
-    'disabled' |
-    'id' |
-    'name' |
-    'onChange' |
-    'options' |
-    'placeholder' |
-    'required' |
-    'size' |
-    'value'
-  >,
-  SelectOptions {
-  glass?: LumenGlassProp
-  inputRef?: Ref<HTMLSelectElement>
-  onChange?: ComponentPropsWithoutRef<'select'>['onChange']
-  size?: 'default' | 'lg' | 'md' | 'sm'
+    Omit<
+      NativeSelectProps,
+      | "defaultValue"
+      | "disabled"
+      | "id"
+      | "name"
+      | "onChange"
+      | "options"
+      | "placeholder"
+      | "required"
+      | "size"
+      | "value"
+    >,
+    SelectOptions {
+  glass?: LumenGlassProp;
+  inputRef?: Ref<HTMLSelectElement>;
+  onChange?: ComponentPropsWithoutRef<"select">["onChange"];
+  size?: "default" | "lg" | "md" | "sm";
 }
 
-const getSelectSizeClass = (size: SelectProps['size']) => {
-  if (size === 'sm') return 'ui-select--sm'
+const getSelectSizeClass = (size: SelectProps["size"]) => {
+  if (size === "sm") return "ui-select--sm";
 
-  if (size === 'lg') return 'ui-select--lg'
+  if (size === "lg") return "ui-select--lg";
 
-  return false
-}
+  return false;
+};
 
 export const Select = ({
   children,
@@ -2956,7 +3739,7 @@ export const Select = ({
   options = emptyOptions,
   placeholder,
   required = false,
-  size = 'default',
+  size = "default",
   value,
   ...props
 }: SelectProps) => {
@@ -2969,21 +3752,25 @@ export const Select = ({
     options,
     placeholder,
     required,
-    value
-  })
+    value,
+  });
 
-  const sizeClass = getSelectSizeClass(size)
+  const sizeClass = getSelectSizeClass(size);
 
   return (
     <div
       {...select.rootProps}
-      className={composeClassName('ui-select-field', glassClass('ui-select-field', glass), className)}
+      className={composeClassName(
+        "ui-select-field",
+        glassClass("ui-select-field", glass),
+        className,
+      )}
       data-ui-glass-track={glass ? true : undefined}
     >
       <select
         {...select.nativeSelectProps}
         {...props}
-        className={composeClassName('ui-select ui-select__native', sizeClass)}
+        className={composeClassName("ui-select ui-select__native", sizeClass)}
         onChange={composeHandlers(onChange, select.nativeSelectProps.onChange)}
         ref={inputRef}
       >
@@ -2993,8 +3780,12 @@ export const Select = ({
           </option>
         )}
         {children}
-        {select.options.map(option => (
-          <option disabled={option.disabled} key={option.value} value={option.value}>
+        {select.options.map((option) => (
+          <option
+            disabled={option.disabled}
+            key={option.value}
+            value={option.value}
+          >
             {option.label}
           </option>
         ))}
@@ -3003,182 +3794,265 @@ export const Select = ({
       <div {...select.controlProps} className="ui-select__control">
         <button
           {...select.triggerProps}
-          className={composeClassName('ui-select ui-select__trigger', sizeClass)}
-          type={select.triggerProps.type ?? 'button'}
+          className={composeClassName(
+            "ui-select ui-select__trigger",
+            sizeClass,
+          )}
+          type={select.triggerProps.type ?? "button"}
         >
           <span data-ui-select-value>{select.triggerText}</span>
         </button>
 
         <div {...select.listProps} className="ui-select__list">
-          {select.options.map(option => {
-            const optionProps = select.getOptionProps(option)
+          {select.options.map((option) => {
+            const optionProps = select.getOptionProps(option);
 
             return (
-              <button key={option.value} {...optionProps} type={optionProps.type ?? 'button'}>
+              <button
+                key={option.value}
+                {...optionProps}
+                type={optionProps.type ?? "button"}
+              >
                 {option.label}
               </button>
-            )
+            );
           })}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export interface ListBoxProps extends Omit<
-  ComponentPropsWithRef<'select'>,
-  'children' | 'defaultValue' | 'onChange' | 'size' | 'value'
+  ComponentPropsWithRef<"select">,
+  "children" | "defaultValue" | "onChange" | "size" | "value"
 > {
-  defaultValue?: string | string[]
-  label?: ReactNode
-  onValueChange?: (values: string[]) => void
-  options?: SelectOption[]
-  value?: string | string[]
+  defaultValue?: string | string[];
+  emptyMessage?: ReactNode;
+  label?: ReactNode;
+  loading?: boolean;
+  loadingMessage?: ReactNode;
+  onValueChange?: (values: string[]) => void;
+  options?: SelectOption[];
+  selectionFollowsFocus?: boolean;
+  value?: string | string[];
 }
 
-const normalizeListBoxValues = (value: string | string[] | undefined): string[] => {
-  if (value === undefined) return []
-
-  return Array.isArray(value) ? value : [value]
+interface ListBoxOptionGroup {
+  label?: string;
+  options: (Option & { index: number })[];
 }
+
+const groupListBoxOptions = (options: Option[]): ListBoxOptionGroup[] => {
+  const groups: ListBoxOptionGroup[] = [];
+
+  options.forEach((option, index) => {
+    const currentGroup = groups.at(-1);
+
+    if (!currentGroup || currentGroup.label !== option.section) {
+      groups.push({
+        ...(option.section ? { label: option.section } : {}),
+        options: [{ ...option, index }],
+      });
+
+      return;
+    }
+
+    currentGroup.options.push({ ...option, index });
+  });
+
+  return groups;
+};
+
+const normalizeListBoxValues = (
+  value: string | string[] | undefined,
+): string[] => {
+  if (value === undefined) return [];
+
+  return Array.isArray(value) ? value : [value];
+};
 
 const findLastEnabledOptionIndex = (options: readonly Option[]): number => {
-  let lastEnabledIndex = -1
+  let lastEnabledIndex = -1;
 
   for (const [index, option] of options.entries()) {
-    if (!option.disabled) lastEnabledIndex = index
+    if (!option.disabled) lastEnabledIndex = index;
   }
 
-  return lastEnabledIndex
-}
+  return lastEnabledIndex;
+};
 
 const getListBoxSelectedValues = (
   controlledValue: string | string[] | undefined,
-  internalValues: string[]
-): string[] => (controlledValue === undefined ? internalValues : normalizeListBoxValues(controlledValue))
+  internalValues: string[],
+): string[] =>
+  controlledValue === undefined
+    ? internalValues
+    : normalizeListBoxValues(controlledValue);
 
-const getListBoxSelectValue = (multiple: boolean, selectedValues: string[]): string | string[] => multiple ? selectedValues : (selectedValues[0] ?? '')
-const optionalTrue = (value: boolean | undefined): true | undefined => (value ? true : undefined)
+const getListBoxSelectValue = (
+  multiple: boolean,
+  selectedValues: string[],
+): string | string[] => (multiple ? selectedValues : (selectedValues[0] ?? ""));
+const optionalTrue = (value: boolean | undefined): true | undefined =>
+  value ? true : undefined;
 
-const ListBoxLabel = ({ controlId, label }: { controlId: string, label: ReactNode }) => label ?
-  (
+const ListBoxLabel = ({
+  controlId,
+  label,
+}: {
+  controlId: string;
+  label: ReactNode;
+}) =>
+  label ? (
     <label className="ui-label" htmlFor={controlId}>
       {label}
     </label>
-  ) :
-  null
+  ) : null;
 
 export const ListBox = ({
   className,
   defaultValue,
   disabled = false,
+  emptyMessage = "No options available",
   id,
   label,
+  loading = false,
+  loadingMessage = "Loading options",
   multiple = false,
   name,
   onValueChange,
   options = emptyOptions,
   ref,
   required = false,
+  selectionFollowsFocus = false,
   value,
   ...props
 }: ListBoxProps) => {
-  const generatedId = useId()
-  const controlId = id ?? `ui-list-box-${generatedId}`
+  const generatedId = useId();
+  const controlId = id ?? `ui-list-box-${generatedId}`;
 
   const normalizedOptions = useMemo(
-    () => options.map(option => (typeof option === 'string' ? { label: option, value: option } : option)), [options]
-  )
+    () =>
+      options.map((option) =>
+        typeof option === "string" ? { label: option, value: option } : option,
+      ),
+    [options],
+  );
+  const optionGroups = useMemo(
+    () => groupListBoxOptions(normalizedOptions),
+    [normalizedOptions],
+  );
 
-  const [internalValues, setInternalValues] = useState(() => normalizeListBoxValues(defaultValue))
-  const selectedValues = getListBoxSelectedValues(value, internalValues)
-  const selectedSet = new Set(selectedValues)
+  const [internalValues, setInternalValues] = useState(() =>
+    normalizeListBoxValues(defaultValue),
+  );
+  const selectedValues = getListBoxSelectedValues(value, internalValues);
+  const selectedSet = new Set(selectedValues);
 
   const firstEnabledIndex = Math.max(
-    0, normalizedOptions.findIndex(option => !option.disabled)
-  )
+    0,
+    normalizedOptions.findIndex((option) => !option.disabled),
+  );
 
-  const [activeIndex, setActiveIndex] = useState(firstEnabledIndex)
-  const selectRef = useRef<HTMLSelectElement | null>(null)
+  const [activeIndex, setActiveIndex] = useState(firstEnabledIndex);
+  const selectRef = useRef<HTMLSelectElement | null>(null);
+  const typeaheadRef = useRef("");
+  const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
   const commitValues = (nextValues: string[]) => {
     if (value === undefined) {
-      setInternalValues(nextValues)
+      setInternalValues(nextValues);
     }
 
-    onValueChange?.(nextValues)
+    onValueChange?.(nextValues);
 
-    const select = selectRef.current
+    const select = selectRef.current;
 
-    if (!select) return
+    if (!select) return;
 
     for (const option of select.options) {
-      option.selected = nextValues.includes(option.value)
+      option.selected = nextValues.includes(option.value);
     }
 
-    select.dispatchEvent(new Event('input', { bubbles: true }))
+    select.dispatchEvent(new Event("input", { bubbles: true }));
 
-    select.dispatchEvent(new Event('change', { bubbles: true }))
-  }
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  };
 
   const selectOption = (index: number) => {
-    const option = normalizedOptions[index]
+    const option = normalizedOptions[index];
 
-    if (!option || option.disabled || disabled) return
+    if (!option || option.disabled || disabled || loading) return;
 
-    const optionValue = option.value
-    let nextValues: string[]
+    const optionValue = option.value;
+    let nextValues: string[];
 
     if (!multiple) {
-      nextValues = [optionValue]
+      nextValues = [optionValue];
     } else if (selectedSet.has(optionValue)) {
-      nextValues = selectedValues.filter(selectedValue => selectedValue !== optionValue)
+      nextValues = selectedValues.filter(
+        (selectedValue) => selectedValue !== optionValue,
+      );
     } else {
-      nextValues = [...selectedValues, optionValue]
+      nextValues = [...selectedValues, optionValue];
     }
 
-    commitValues(nextValues)
-  }
+    commitValues(nextValues);
+  };
 
   const moveActive = (direction: 1 | -1) => {
-    if (!normalizedOptions.length) return
+    if (!normalizedOptions.length || loading) return;
 
-    let nextIndex = activeIndex
+    let nextIndex = activeIndex;
 
     for (const _option of normalizedOptions) {
-      nextIndex = (nextIndex + direction + normalizedOptions.length) % normalizedOptions.length
+      nextIndex =
+        (nextIndex + direction + normalizedOptions.length) %
+        normalizedOptions.length;
 
       if (!normalizedOptions[nextIndex]?.disabled) {
-        setActiveIndex(nextIndex)
+        setActiveIndex(nextIndex);
 
-        return
+        if (selectionFollowsFocus) selectOption(nextIndex);
+
+        return;
       }
     }
-  }
+  };
+
+  useEffect(
+    () => () => {
+      if (typeaheadTimerRef.current) clearTimeout(typeaheadTimerRef.current);
+    },
+    [],
+  );
 
   useEffect(() => {
-    const select = selectRef.current
-    const form = select?.form
+    const select = selectRef.current;
+    const form = select?.form;
 
-    if (!form || value !== undefined) return
+    if (!form || value !== undefined) return;
 
     const handleReset = () => {
-      setInternalValues(normalizeListBoxValues(defaultValue))
+      setInternalValues(normalizeListBoxValues(defaultValue));
 
-      setActiveIndex(firstEnabledIndex)
-    }
+      setActiveIndex(firstEnabledIndex);
+    };
 
-    form.addEventListener('reset', handleReset)
+    form.addEventListener("reset", handleReset);
 
     return () => {
-      form.removeEventListener('reset', handleReset)
-    }
-  }, [defaultValue, firstEnabledIndex, value])
+      form.removeEventListener("reset", handleReset);
+    };
+  }, [defaultValue, firstEnabledIndex, value]);
 
   return (
     <div
-      className={composeClassName('ui-list-box', className)}
-      data-multiple={multiple ? 'true' : undefined}
+      className={composeClassName("ui-list-box", className)}
+      data-multiple={multiple ? "true" : undefined}
       data-ui-list-box
     >
       <ListBoxLabel controlId={controlId} label={label} />
@@ -3187,184 +4061,325 @@ export const ListBox = ({
         className="ui-list-box__native"
         data-ui-enhanced
         data-ui-list-box-native
-        disabled={disabled}
+        disabled={disabled || loading}
         id={controlId}
         multiple={multiple}
         name={name}
-        ref={node => {
-          selectRef.current = node
+        ref={(node) => {
+          selectRef.current = node;
 
-          setRefValue(ref, node)
+          setRefValue(ref, node);
         }}
         required={required}
         value={getListBoxSelectValue(multiple, selectedValues)}
       >
-        {normalizedOptions.map(option => (
-          <option disabled={option.disabled} key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {optionGroups.map((group, groupIndex) => {
+          const nativeOptions = group.options.map((option) => (
+            <option
+              disabled={option.disabled}
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ));
+
+          return group.label ? (
+            <optgroup key={`${group.label}-${groupIndex}`} label={group.label}>
+              {nativeOptions}
+            </optgroup>
+          ) : (
+            <Fragment key={`options-${groupIndex}`}>{nativeOptions}</Fragment>
+          );
+        })}
       </select>
       <div
-        aria-disabled={optionalTrue(disabled)}
+        aria-busy={optionalTrue(loading)}
+        aria-disabled={optionalTrue(disabled || loading)}
         aria-multiselectable={optionalTrue(multiple)}
         className="ui-list-box__list"
         data-ui-list-box-list
-        onKeyDown={event => {
-          if (event.key === 'ArrowDown') {
-            event.preventDefault()
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
 
-            moveActive(1)
-          } else if (event.key === 'ArrowUp') {
-            event.preventDefault()
+            moveActive(1);
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
 
-            moveActive(-1)
-          } else if (event.key === 'Home') {
-            event.preventDefault()
+            moveActive(-1);
+          } else if (event.key === "Home") {
+            event.preventDefault();
 
-            setActiveIndex(firstEnabledIndex)
-          } else if (event.key === 'End') {
-            event.preventDefault()
+            setActiveIndex(firstEnabledIndex);
 
-            const lastEnabledIndex = findLastEnabledOptionIndex(normalizedOptions)
+            if (selectionFollowsFocus) selectOption(firstEnabledIndex);
+          } else if (event.key === "End") {
+            event.preventDefault();
 
-            if (lastEnabledIndex >= 0) setActiveIndex(lastEnabledIndex)
-          } else if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
+            const lastEnabledIndex =
+              findLastEnabledOptionIndex(normalizedOptions);
 
-            selectOption(activeIndex)
+            if (lastEnabledIndex >= 0) {
+              setActiveIndex(lastEnabledIndex);
+
+              if (selectionFollowsFocus) selectOption(lastEnabledIndex);
+            }
+          } else if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+
+            selectOption(activeIndex);
+          } else if (
+            event.key.length === 1 &&
+            !event.ctrlKey &&
+            !event.metaKey &&
+            !event.altKey
+          ) {
+            typeaheadRef.current += event.key.toLowerCase();
+
+            if (typeaheadTimerRef.current)
+              clearTimeout(typeaheadTimerRef.current);
+
+            typeaheadTimerRef.current = setTimeout(() => {
+              typeaheadRef.current = "";
+            }, 700);
+
+            const nextIndex = normalizedOptions.findIndex(
+              (option) =>
+                !option.disabled &&
+                option.label.toLowerCase().startsWith(typeaheadRef.current),
+            );
+
+            if (nextIndex >= 0) {
+              setActiveIndex(nextIndex);
+
+              if (selectionFollowsFocus) selectOption(nextIndex);
+            }
           }
         }}
         role="listbox"
-        tabIndex={disabled ? undefined : 0}
+        tabIndex={disabled || loading ? undefined : 0}
       >
-        {normalizedOptions.map((option, index) => (
+        {!loading && !normalizedOptions.length ? (
           <div
-            aria-disabled={optionalTrue(option.disabled)}
-            aria-selected={selectedSet.has(option.value)}
-            className={composeClassName('ui-list-box__option', index === activeIndex && 'ui-list-box__option--active')}
-            data-active={index === activeIndex ? 'true' : undefined}
-            data-ui-list-box-option
-            data-value={option.value}
-            key={option.value}
-            onClick={() => {
-              setActiveIndex(index)
-
-              selectOption(index)
-            }}
+            aria-disabled="true"
+            className="ui-list-box__empty"
             role="option"
           >
-            {option.label}
+            {emptyMessage}
           </div>
-        ))}
+        ) : null}
+        {!loading &&
+          optionGroups.map((group, groupIndex) => {
+            const groupLabelId = group.label
+              ? `${controlId}-group-${groupIndex}`
+              : undefined;
+            const renderedOptions = group.options.map((option) => (
+              <div
+                aria-disabled={optionalTrue(option.disabled)}
+                aria-selected={selectedSet.has(option.value)}
+                className={composeClassName(
+                  "ui-list-box__option",
+                  option.index === activeIndex && "ui-list-box__option--active",
+                )}
+                data-active={option.index === activeIndex ? "true" : undefined}
+                data-ui-list-box-option
+                data-value={option.value}
+                key={option.value}
+                onClick={() => {
+                  setActiveIndex(option.index);
+
+                  selectOption(option.index);
+                }}
+                role="option"
+              >
+                {option.label}
+              </div>
+            ));
+
+            return group.label ? (
+              <div
+                aria-labelledby={groupLabelId}
+                key={`${group.label}-${groupIndex}`}
+                role="group"
+              >
+                <div className="ui-list-box__section" id={groupLabelId}>
+                  {group.label}
+                </div>
+                {renderedOptions}
+              </div>
+            ) : (
+              <Fragment key={`options-${groupIndex}`}>
+                {renderedOptions}
+              </Fragment>
+            );
+          })}
       </div>
+      {loading ? (
+        <p className="ui-list-box__status" role="status">
+          {loadingMessage}
+        </p>
+      ) : null}
     </div>
-  )
+  );
+};
+
+export interface SeparatorProps extends ComponentPropsWithoutRef<"hr"> {
+  orientation?: Orientation;
 }
 
-export interface SeparatorProps extends ComponentPropsWithoutRef<'hr'> {
-  orientation?: Orientation
-}
-
-export const Separator = ({ className, orientation = 'horizontal', ...props }: SeparatorProps) => (
+export const Separator = ({
+  className,
+  orientation = "horizontal",
+  ...props
+}: SeparatorProps) => (
   <hr
     aria-orientation={orientation}
-    className={composeClassName('ui-separator', `ui-separator--${orientation}`, className)}
+    className={composeClassName(
+      "ui-separator",
+      `ui-separator--${orientation}`,
+      className,
+    )}
     data-orientation={orientation}
     {...props}
   />
-)
+);
 
-export interface SheetProps extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
+export interface SheetProps
+  extends ComponentPropsWithoutRef<"dialog">, SurfaceProps {}
 
-export const Sheet = ({ className, glass = false, surface = 'default', ...props }: SheetProps) => (
+export const Sheet = ({
+  className,
+  glass = false,
+  surface = "default",
+  ...props
+}: SheetProps) => (
   <dialog
-    className={composeClassName('ui-sheet', glassSurfaceClass('ui-sheet', surface, glass), className)}
+    className={composeClassName(
+      "ui-sheet",
+      glassSurfaceClass("ui-sheet", surface, glass),
+      className,
+    )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-sheet
     {...props}
   />
-)
+);
 
-export interface SidebarProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {
-  variant?: 'default' | 'unstyled'
+export interface SidebarProps
+  extends ComponentPropsWithoutRef<"aside">, SurfaceProps {
+  variant?: "default" | "unstyled";
 }
 
 export const Sidebar = ({
   className,
   glass = false,
-  surface = 'default',
-  variant = 'default',
+  surface = "default",
+  variant = "default",
   ...props
 }: SidebarProps) => (
   <aside
     className={composeClassName(
-      'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', surface, glass), className
+      "ui-sidebar",
+      variant === "unstyled" && "ui-sidebar--unstyled",
+      glassSurfaceClass("ui-sidebar", surface, glass),
+      className,
     )}
     data-slot="sidebar"
     data-surface={resolveSurface(surface, glass)}
     data-variant={variant}
     {...props}
   />
-)
+);
 
-export type SkeletonProps = ComponentPropsWithRef<'div'>
+export type SkeletonProps = ComponentPropsWithRef<"div">;
 export const Skeleton = ({ className, ...props }: SkeletonProps) => (
-  <div className={composeClassName('ui-skeleton', className)} {...props} />
-)
+  <div className={composeClassName("ui-skeleton", className)} {...props} />
+);
 
-export type SliderProps = ComponentPropsWithRef<'input'>
-export const Slider = ({ className, ref, type = 'range', ...props }: SliderProps) => (
-  <input className={composeClassName('ui-slider', className)} ref={ref} type={type} {...props} />
-)
+export type SliderProps = ComponentPropsWithRef<"input">;
+export const Slider = ({
+  className,
+  ref,
+  type = "range",
+  ...props
+}: SliderProps) => (
+  <input
+    className={composeClassName("ui-slider", className)}
+    ref={ref}
+    type={type}
+    {...props}
+  />
+);
 
-export type SonnerProps = ComponentPropsWithoutRef<'div'>
+export type SonnerProps = ComponentPropsWithoutRef<"div">;
 export const Sonner = ({ className, ...props }: SonnerProps) => (
-  <div className={composeClassName('ui-sonner', className)} data-ui-sonner {...props} />
-)
+  <div
+    className={composeClassName("ui-sonner", className)}
+    data-ui-sonner
+    {...props}
+  />
+);
 
-export type SpinnerProps = ComponentPropsWithoutRef<'span'>
+export type SpinnerProps = ComponentPropsWithoutRef<"span">;
 export const Spinner = ({
-  'aria-hidden': ariaHidden,
-  'aria-label': ariaLabel,
-  'aria-labelledby': ariaLabelledby,
+  "aria-hidden": ariaHidden,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
   className,
   role,
   ...props
 }: SpinnerProps) => {
-  const isAccessible = Boolean(ariaLabel || ariaLabelledby)
+  const isAccessible = Boolean(ariaLabel || ariaLabelledby);
 
   return (
     <span
       aria-hidden={ariaHidden ?? (isAccessible ? undefined : true)}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledby}
-      className={composeClassName('ui-spinner', className)}
-      role={role ?? (isAccessible ? 'status' : undefined)}
+      className={composeClassName("ui-spinner", className)}
+      role={role ?? (isAccessible ? "status" : undefined)}
       {...props}
     />
-  )
-}
+  );
+};
 
-export type SwitchProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
-export const Switch = ({ className, ref, role = 'switch', ...props }: SwitchProps) => (
-  <input className={composeClassName('ui-switch', className)} ref={ref} role={role} type="checkbox" {...props} />
-)
+export type SwitchProps = Omit<ComponentPropsWithRef<"input">, "type">;
+export const Switch = ({
+  className,
+  ref,
+  role = "switch",
+  ...props
+}: SwitchProps) => (
+  <input
+    className={composeClassName("ui-switch", className)}
+    ref={ref}
+    role={role}
+    type="checkbox"
+    {...props}
+  />
+);
 
-export interface TableProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
+export interface TableProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
 }
 export const Table = ({ className, glass = false, ...props }: TableProps) => (
   <div
-    className={composeClassName('ui-table-wrap', glassClass('ui-table-wrap', glass), className)}
+    className={composeClassName(
+      "ui-table-wrap",
+      glassClass("ui-table-wrap", glass),
+      className,
+    )}
     data-slot="table"
     {...props}
   />
-)
+);
 
 export interface TabsProps
-  extends Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue' | 'id' | 'onChange'>, Omit<TabsOptions, 'id'> {
-  glass?: LumenGlassProp
+  extends
+    Omit<ComponentPropsWithoutRef<"div">, "defaultValue" | "id" | "onChange">,
+    Omit<TabsOptions, "id"> {
+  glass?: LumenGlassProp;
 }
 export const Tabs = ({
   children,
@@ -3376,124 +4391,140 @@ export const Tabs = ({
   value,
   ...props
 }: TabsProps) => {
-  const tabs = useTabs({ defaultValue, onValueChange, orientation, value })
+  const tabs = useTabs({ defaultValue, onValueChange, orientation, value });
 
   return (
     <TabsContext.Provider value={tabs}>
       <div
         {...tabs.rootProps}
         {...props}
-        className={composeClassName('ui-tabs', glassClass('ui-tabs', glass), className)}
+        className={composeClassName(
+          "ui-tabs",
+          glassClass("ui-tabs", glass),
+          className,
+        )}
       >
         {children}
       </div>
     </TabsContext.Provider>
-  )
-}
+  );
+};
 
-export type TabsListProps = ComponentPropsWithoutRef<'div'>
+export type TabsListProps = ComponentPropsWithoutRef<"div">;
 export const TabsList = ({ ...props }: TabsListProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsList')
+  const tabs = requireContext(useContext(TabsContext), "TabsList");
 
-  return <div {...tabs.listProps} {...props} />
-}
+  return <div {...tabs.listProps} {...props} />;
+};
 
-export interface TabsTriggerProps extends ComponentPropsWithoutRef<'button'> {
-  value: string
+export interface TabsTriggerProps extends ComponentPropsWithoutRef<"button"> {
+  value: string;
 }
-export const TabsTrigger = ({ onClick, onKeyDown, value, ...props }: TabsTriggerProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsTrigger')
+export const TabsTrigger = ({
+  onClick,
+  onKeyDown,
+  value,
+  ...props
+}: TabsTriggerProps) => {
+  const tabs = requireContext(useContext(TabsContext), "TabsTrigger");
 
   return (
     <button
       {...tabs.getTriggerProps(value, props)}
       onClick={composeHandlers(onClick, tabs.getTriggerProps(value).onClick)}
-      onKeyDown={composeHandlers(onKeyDown, tabs.getTriggerProps(value).onKeyDown)}
-      type={props.type ?? 'button'}
+      onKeyDown={composeHandlers(
+        onKeyDown,
+        tabs.getTriggerProps(value).onKeyDown,
+      )}
+      type={props.type ?? "button"}
     />
-  )
-}
+  );
+};
 
-export interface TabsPanelProps extends ComponentPropsWithoutRef<'div'> {
-  value: string
+export interface TabsPanelProps extends ComponentPropsWithoutRef<"div"> {
+  value: string;
 }
 export const TabsPanel = ({ value, ...props }: TabsPanelProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsPanel')
+  const tabs = requireContext(useContext(TabsContext), "TabsPanel");
 
-  return <div {...tabs.getPanelProps(value, props)} />
-}
+  return <div {...tabs.getPanelProps(value, props)} />;
+};
 
-const emptyCodeTabItems: readonly CodeTabItem[] = []
+const emptyCodeTabItems: readonly CodeTabItem[] = [];
 
 export const CodeTabs = ({
-  ariaLabel = 'Code examples',
+  ariaLabel = "Code examples",
   className,
   copy = true,
   initialValue,
   items = emptyCodeTabItems,
   storageKey,
-  theme = 'auto',
+  theme = "auto",
   wrap = true,
   ...props
 }: CodeTabsProps) => {
-  const selectedValue = initialValue ?? items[0]?.value
+  const selectedValue = initialValue ?? items[0]?.value;
 
   const [value, setValue] = useState(() => {
-    let storedValue: string | null = null
+    let storedValue: string | null = null;
 
-    if (storageKey && typeof localStorage !== 'undefined') {
+    if (storageKey && typeof localStorage !== "undefined") {
       try {
-        storedValue = localStorage.getItem(storageKey)
+        storedValue = localStorage.getItem(storageKey);
       } catch {
         // Storage can be unavailable in privacy modes; tab selection should still work.
       }
     }
 
-    return storedValue && items.some(item => item.value === storedValue) ? storedValue : (selectedValue ?? '')
-  })
+    return storedValue && items.some((item) => item.value === storedValue)
+      ? storedValue
+      : (selectedValue ?? "");
+  });
 
   useEffect(() => {
     const synchronize = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey?: string, value?: string }>).detail
+      const detail = (
+        event as CustomEvent<{ storageKey?: string; value?: string }>
+      ).detail;
 
       if (
         storageKey &&
         detail.storageKey === storageKey &&
         detail.value &&
-        items.some(item => item.value === detail.value)
+        items.some((item) => item.value === detail.value)
       ) {
-        setValue(detail.value)
+        setValue(detail.value);
       }
-    }
+    };
 
-    document.addEventListener('ui:tabs-change', synchronize)
+    document.addEventListener("ui:tabs-change", synchronize);
 
     return () => {
-      document.removeEventListener('ui:tabs-change', synchronize)
-    }
-  }, [items, storageKey])
+      document.removeEventListener("ui:tabs-change", synchronize);
+    };
+  }, [items, storageKey]);
 
   const selectValue = (nextValue: string) => {
-    setValue(nextValue)
+    setValue(nextValue);
 
     if (storageKey) {
       try {
-        localStorage.setItem(storageKey, nextValue)
+        localStorage.setItem(storageKey, nextValue);
       } catch {
         // Storage can be unavailable in privacy modes; tab selection should still work.
       }
     }
 
     document.dispatchEvent(
-      new CustomEvent('ui:tabs-change', {
-        detail: { storageKey, value: nextValue }
-      })
-    )
-  }
+      new CustomEvent("ui:tabs-change", {
+        detail: { storageKey, value: nextValue },
+      }),
+    );
+  };
 
   return (
     <Tabs
-      className={composeClassName('ui-code-tabs', className)}
+      className={composeClassName("ui-code-tabs", className)}
       data-slot="code-tabs"
       data-storage-key={storageKey}
       onValueChange={selectValue}
@@ -3501,18 +4532,28 @@ export const CodeTabs = ({
       {...props}
     >
       <TabsList aria-label={ariaLabel} className="ui-code-tabs__list">
-        {items.map(item => (
-          <TabsTrigger className="ui-code-tabs__tab" key={item.value} value={item.value}>
+        {items.map((item) => (
+          <TabsTrigger
+            className="ui-code-tabs__tab"
+            key={item.value}
+            value={item.value}
+          >
             {item.label}
           </TabsTrigger>
         ))}
       </TabsList>
-      {items.map(item => (
-        <TabsPanel className="ui-code-tabs__panel" key={item.value} value={item.value}>
+      {items.map((item) => (
+        <TabsPanel
+          className="ui-code-tabs__panel"
+          key={item.value}
+          value={item.value}
+        >
           <Code
             code={item.code}
             copy={copy}
-            {...(item.language === undefined ? {} : { language: item.language })}
+            {...(item.language === undefined
+              ? {}
+              : { language: item.language })}
             theme={theme}
             variant="block"
             wrap={wrap}
@@ -3520,83 +4561,134 @@ export const CodeTabs = ({
         </TabsPanel>
       ))}
     </Tabs>
-  )
+  );
+};
+
+export type TagGroupProps = ComponentPropsWithoutRef<"div">;
+export const TagGroup = ({
+  className,
+  role = "list",
+  ...props
+}: TagGroupProps) => (
+  <div
+    className={composeClassName("ui-tag-group", className)}
+    role={role}
+    {...props}
+  />
+);
+
+export type TextareaProps = ComponentPropsWithRef<"textarea">;
+export const Textarea = ({
+  className,
+  ref,
+  rows = 4,
+  ...props
+}: TextareaProps) => (
+  <textarea
+    className={composeClassName("ui-textarea", className)}
+    ref={ref}
+    rows={rows}
+    {...props}
+  />
+);
+
+export interface ThemeBuilderProps extends ComponentPropsWithoutRef<"section"> {
+  glass?: LumenGlassProp;
 }
-
-export type TagGroupProps = ComponentPropsWithoutRef<'div'>
-export const TagGroup = ({ className, role = 'list', ...props }: TagGroupProps) => (
-  <div className={composeClassName('ui-tag-group', className)} role={role} {...props} />
-)
-
-export type TextareaProps = ComponentPropsWithRef<'textarea'>
-export const Textarea = ({ className, ref, rows = 4, ...props }: TextareaProps) => (
-  <textarea className={composeClassName('ui-textarea', className)} ref={ref} rows={rows} {...props} />
-)
-
-export interface ThemeBuilderProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
-}
-export const ThemeBuilder = ({ className, glass = false, ...props }: ThemeBuilderProps) => (
+export const ThemeBuilder = ({
+  className,
+  glass = false,
+  ...props
+}: ThemeBuilderProps) => (
   <section
-    className={composeClassName('ui-theme-builder', glassClass('ui-theme-builder', glass), className)}
+    className={composeClassName(
+      "ui-theme-builder",
+      glassClass("ui-theme-builder", glass),
+      className,
+    )}
     data-ui-theme-builder
     {...props}
   />
-)
+);
 
-export type TimeFieldProps = ComponentPropsWithRef<'input'>
-export const TimeField = ({ className, ref, type = 'time', ...props }: TimeFieldProps) => (
-  <input className={composeClassName('ui-input ui-time-field', className)} ref={ref} type={type} {...props} />
-)
+export type TimeFieldProps = ComponentPropsWithRef<"input">;
+export const TimeField = ({
+  className,
+  ref,
+  type = "time",
+  ...props
+}: TimeFieldProps) => (
+  <input
+    className={composeClassName("ui-input ui-time-field", className)}
+    ref={ref}
+    type={type}
+    {...props}
+  />
+);
 
-export interface ToastProps extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {
-  variant?: AlertVariant
+export interface ToastProps
+  extends ComponentPropsWithoutRef<"aside">, SurfaceProps {
+  variant?: AlertVariant;
 }
 
 export const Toast = ({
-  'aria-live': ariaLive,
+  "aria-live": ariaLive,
   className,
   glass = false,
   role,
-  surface = 'default',
-  variant = 'default',
+  surface = "default",
+  variant = "default",
   ...props
 }: ToastProps) => (
   <aside
-    aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}
+    aria-live={ariaLive ?? (variant === "destructive" ? "assertive" : "polite")}
     className={composeClassName(
-      'ui-toast', variantClass('ui-toast', variant), glassSurfaceClass('ui-toast', surface, glass), className
+      "ui-toast",
+      variantClass("ui-toast", variant),
+      glassSurfaceClass("ui-toast", surface, glass),
+      className,
     )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-toast
     data-variant={variant}
-    role={role ?? (variant === 'destructive' ? 'alert' : 'status')}
+    role={role ?? (variant === "destructive" ? "alert" : "status")}
     {...props}
   />
-)
+);
 
-export interface ToggleProps extends ComponentPropsWithoutRef<'button'> {
-  controlled?: boolean
-  pressed?: boolean
+export interface ToggleProps extends ComponentPropsWithoutRef<"button"> {
+  controlled?: boolean;
+  pressed?: boolean;
 }
 
-export const Toggle = ({ className, controlled = false, pressed = false, type = 'button', ...props }: ToggleProps) => (
+export const Toggle = ({
+  className,
+  controlled = false,
+  pressed = false,
+  type = "button",
+  ...props
+}: ToggleProps) => (
   <button
     aria-pressed={pressed}
-    className={composeClassName('ui-toggle', className)}
+    className={composeClassName("ui-toggle", className)}
     data-ui-controlled={controlled || undefined}
     data-ui-toggle
     type={type}
     {...props}
   />
-)
+);
 
-export type ToggleGroupProps = ComponentPropsWithoutRef<'div'>
+export type ToggleGroupProps = ComponentPropsWithoutRef<"div">;
 export const ToggleGroup = ({ className, ...props }: ToggleGroupProps) => (
-  <div className={composeClassName('ui-toggle-group', className)} data-ui-toggle-group {...props} />
-)
+  <div
+    className={composeClassName("ui-toggle-group", className)}
+    data-ui-toggle-group
+    {...props}
+  />
+);
 
-export type TooltipProps = ComponentPropsWithoutRef<'span'> & Omit<TooltipOptions, 'id'>
+export type TooltipProps = ComponentPropsWithoutRef<"span"> &
+  Omit<TooltipOptions, "id">;
 export const Tooltip = ({
   children,
   className,
@@ -3609,386 +4701,526 @@ export const Tooltip = ({
   open,
   ...props
 }: TooltipProps) => {
-  const tooltip = useTooltip({ defaultOpen, delay, onOpenChange, open })
+  const tooltip = useTooltip({ defaultOpen, delay, onOpenChange, open });
 
   return (
     <TooltipContext.Provider value={tooltip}>
       <span
         {...tooltip.rootProps}
         {...props}
-        className={composeClassName('ui-tooltip', className)}
+        className={composeClassName("ui-tooltip", className)}
         onKeyDown={composeHandlers(onKeyDown, tooltip.rootProps.onKeyDown)}
-        onMouseEnter={composeHandlers(onMouseEnter, tooltip.rootProps.onMouseEnter)}
-        onMouseLeave={composeHandlers(onMouseLeave, tooltip.rootProps.onMouseLeave)}
+        onMouseEnter={composeHandlers(
+          onMouseEnter,
+          tooltip.rootProps.onMouseEnter,
+        )}
+        onMouseLeave={composeHandlers(
+          onMouseLeave,
+          tooltip.rootProps.onMouseLeave,
+        )}
       >
         {children}
       </span>
     </TooltipContext.Provider>
-  )
-}
+  );
+};
 
-export type TooltipContentProps = ComponentPropsWithoutRef<'span'>
+export type TooltipContentProps = ComponentPropsWithoutRef<"span">;
 export const TooltipContent = ({ ...props }: TooltipContentProps) => {
-  const tooltip = requireContext(useContext(TooltipContext), 'TooltipContent')
+  const tooltip = requireContext(useContext(TooltipContext), "TooltipContent");
 
-  return <span {...tooltip.tooltipProps} {...props} />
-}
+  return <span {...tooltip.tooltipProps} {...props} />;
+};
 
-export interface TreeProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
+export interface TreeProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
 }
-export const Tree = ({ className, glass = false, role = 'tree', ...props }: TreeProps) => (
-  <div className={composeClassName('ui-tree', glassClass('ui-tree', glass), className)} role={role} {...props} />
-)
-
-export interface TreeGridProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
-}
-export const TreeGrid = ({ className, glass = false, role = 'treegrid', ...props }: TreeGridProps) => (
+export const Tree = ({
+  className,
+  glass = false,
+  role = "tree",
+  ...props
+}: TreeProps) => (
   <div
-    className={composeClassName('ui-tree-grid', glassClass('ui-tree-grid', glass), className)}
+    className={composeClassName(
+      "ui-tree",
+      glassClass("ui-tree", glass),
+      className,
+    )}
     role={role}
     {...props}
   />
-)
+);
 
-export type TypographyProps = ComponentPropsWithoutRef<'div'>
-export const Typography = ({ className, ...props }: TypographyProps) => (
-  <div className={composeClassName('ui-typography', className)} {...props} />
-)
-
-export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
-  itemSize?: number | string
-  overscan?: number | string
+export interface TreeGridProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
 }
-export const VirtualList = ({ className, glass = false, itemSize, overscan, ...props }: VirtualListProps) => (
+export const TreeGrid = ({
+  className,
+  glass = false,
+  role = "treegrid",
+  ...props
+}: TreeGridProps) => (
   <div
-    className={composeClassName('ui-virtual-list', glassClass('ui-virtual-list', glass), className)}
+    className={composeClassName(
+      "ui-tree-grid",
+      glassClass("ui-tree-grid", glass),
+      className,
+    )}
+    role={role}
+    {...props}
+  />
+);
+
+export type TypographyProps = ComponentPropsWithoutRef<"div">;
+export const Typography = ({ className, ...props }: TypographyProps) => (
+  <div className={composeClassName("ui-typography", className)} {...props} />
+);
+
+export interface VirtualListProps extends ComponentPropsWithoutRef<"div"> {
+  glass?: LumenGlassProp;
+  itemSize?: number | string;
+  overscan?: number | string;
+}
+export const VirtualList = ({
+  className,
+  glass = false,
+  itemSize,
+  overscan,
+  ...props
+}: VirtualListProps) => (
+  <div
+    className={composeClassName(
+      "ui-virtual-list",
+      glassClass("ui-virtual-list", glass),
+      className,
+    )}
     data-ui-item-size={itemSize}
     data-ui-overscan={overscan}
     data-ui-virtual-list
     {...props}
   />
-)
+);
 
-export type BackToTopProps = ComponentPropsWithoutRef<'button'>
-export const BackToTop = ({ className, type = 'button', ...props }: BackToTopProps) => (
-  <button className={composeClassName('ui-back-to-top', className)} type={type} {...props} />
-)
+export type BackToTopProps = ComponentPropsWithoutRef<"button">;
+export const BackToTop = ({
+  className,
+  type = "button",
+  ...props
+}: BackToTopProps) => (
+  <button
+    className={composeClassName("ui-back-to-top", className)}
+    type={type}
+    {...props}
+  />
+);
 
-export type CalloutProps = ComponentPropsWithoutRef<'aside'>
+export type CalloutProps = ComponentPropsWithoutRef<"aside">;
 export const Callout = ({ className, ...props }: CalloutProps) => (
-  <aside className={composeClassName('ui-callout', className)} {...props} />
-)
+  <aside className={composeClassName("ui-callout", className)} {...props} />
+);
 
-export type EyebrowProps = ComponentPropsWithoutRef<'p'>
+export type EyebrowProps = ComponentPropsWithoutRef<"p">;
 export const Eyebrow = ({ className, ...props }: EyebrowProps) => (
-  <p className={composeClassName('ui-eyebrow', className)} {...props} />
-)
+  <p className={composeClassName("ui-eyebrow", className)} {...props} />
+);
 
-export type FloatingBadgeProps = ComponentPropsWithoutRef<'span'>
+export type FloatingBadgeProps = ComponentPropsWithoutRef<"span">;
 export const FloatingBadge = ({ className, ...props }: FloatingBadgeProps) => (
-  <span className={composeClassName('ui-floating-badge', className)} {...props} />
-)
+  <span
+    className={composeClassName("ui-floating-badge", className)}
+    {...props}
+  />
+);
 
-export type FormattedDateProps = ComponentPropsWithoutRef<'time'>
+export type FormattedDateProps = ComponentPropsWithoutRef<"time">;
 export const FormattedDate = ({ className, ...props }: FormattedDateProps) => (
-  <time className={composeClassName('ui-formatted-date', className)} {...props} />
-)
+  <time
+    className={composeClassName("ui-formatted-date", className)}
+    {...props}
+  />
+);
 
-export type ImageProps<T extends ElementType = 'img'> = {
-  as?: T
-  className?: string
-  invertOnDark?: boolean
-  loading?: 'eager' | 'lazy'
-} & Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'loading'>
+export type ImageProps<T extends ElementType = "img"> = {
+  as?: T;
+  className?: string;
+  invertOnDark?: boolean;
+  loading?: "eager" | "lazy";
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "className" | "loading">;
 
-export const Image = <T extends ElementType = 'img'>({
+export const Image = <T extends ElementType = "img">({
   as,
   className,
   invertOnDark = false,
   loading,
   ...props
 }: ImageProps<T>) => {
-  const Component = as ?? 'img'
-  const resolvedLoading = loading ?? (as ? undefined : 'lazy')
+  const Component = as ?? "img";
+  const resolvedLoading = loading ?? (as ? undefined : "lazy");
 
   return createElement(Component, {
     ...props,
-    className: composeClassName('ui-image', invertOnDark && 'ui-image--invert-dark', className),
-    ...(resolvedLoading ? { loading: resolvedLoading } : {})
-  })
-}
+    className: composeClassName(
+      "ui-image",
+      invertOnDark && "ui-image--invert-dark",
+      className,
+    ),
+    ...(resolvedLoading ? { loading: resolvedLoading } : {}),
+  });
+};
 
-export type LinkProps = ComponentPropsWithRef<'a'> & {
-  newTab?: boolean
-  variant?: 'default' | 'inherit'
-}
-export const Link = ({ className, newTab = false, ref, rel, target, variant = 'default', ...props }: LinkProps) => (
+export type LinkProps = ComponentPropsWithRef<"a"> & {
+  newTab?: boolean;
+  variant?: "default" | "inherit";
+};
+export const Link = ({
+  className,
+  newTab = false,
+  ref,
+  rel,
+  target,
+  variant = "default",
+  ...props
+}: LinkProps) => (
   <a
-    className={composeClassName('ui-link', variant === 'inherit' && 'ui-link--inherit', className)}
+    className={composeClassName(
+      "ui-link",
+      variant === "inherit" && "ui-link--inherit",
+      className,
+    )}
     data-slot="link"
     data-variant={variant}
     ref={ref}
-    rel={newTab ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ') : rel}
-    target={newTab ? '_blank' : target}
+    rel={
+      newTab
+        ? [
+            ...new Set(`${rel ?? ""} noopener noreferrer`.trim().split(/\s+/)),
+          ].join(" ")
+        : rel
+    }
+    target={newTab ? "_blank" : target}
     {...props}
   />
-)
+);
 
-export type PillProps = ComponentPropsWithoutRef<'span'> & {
-  count?: number | string
-  href?: string
-  variant?: 'brand' | 'neutral' | 'outline'
-}
-export const Pill = ({ className, count, children, href, variant = 'neutral', ...props }: PillProps) => {
+export type PillProps = ComponentPropsWithoutRef<"span"> & {
+  count?: number | string;
+  href?: string;
+  variant?: "brand" | "neutral" | "outline";
+};
+export const Pill = ({
+  className,
+  count,
+  children,
+  href,
+  variant = "neutral",
+  ...props
+}: PillProps) => {
   const content = (
     <>
       {children}
       {count !== undefined && <span className="ui-pill__count">{count}</span>}
     </>
-  )
+  );
 
-  return href ?
-    (
-      <a
-        className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
-        data-variant={variant}
-        href={href}
-        {...props}
-      >
-        {content}
-      </a>
-    ) :
-    (
-      <span
-        className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
-        data-variant={variant}
-        {...props}
-      >
-        {content}
-      </span>
-    )
-}
+  return href ? (
+    <a
+      className={composeClassName(
+        "ui-pill",
+        variantClass("ui-pill", variant, "neutral"),
+        className,
+      )}
+      data-variant={variant}
+      href={href}
+      {...props}
+    >
+      {content}
+    </a>
+  ) : (
+    <span
+      className={composeClassName(
+        "ui-pill",
+        variantClass("ui-pill", variant, "neutral"),
+        className,
+      )}
+      data-variant={variant}
+      {...props}
+    >
+      {content}
+    </span>
+  );
+};
 
-export type ProseProps = ComponentPropsWithoutRef<'div'>
+export type ProseProps = ComponentPropsWithoutRef<"div">;
 export const Prose = ({ className, ...props }: ProseProps) => (
-  <div className={composeClassName('ui-prose', className)} {...props} />
-)
+  <div className={composeClassName("ui-prose", className)} {...props} />
+);
 
-export type SkipLinkProps = ComponentPropsWithoutRef<'a'>
+export type SkipLinkProps = ComponentPropsWithoutRef<"a">;
 export const SkipLink = ({ className, ...props }: SkipLinkProps) => (
-  <a className={composeClassName('ui-skip-link', className)} {...props} />
-)
+  <a className={composeClassName("ui-skip-link", className)} {...props} />
+);
 
-export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
-export const ThemeToggle = ({ className, type = 'button', ...props }: ThemeToggleProps) => (
-  <button className={composeClassName('ui-theme-toggle', className)} data-slot="theme-toggle" type={type} {...props}>
+export type ThemeToggleProps = ComponentPropsWithoutRef<"button">;
+export const ThemeToggle = ({
+  className,
+  type = "button",
+  ...props
+}: ThemeToggleProps) => (
+  <button
+    className={composeClassName("ui-theme-toggle", className)}
+    data-slot="theme-toggle"
+    type={type}
+    {...props}
+  >
     <span className="ui-sr-only">Toggle color theme</span>
     <Icon className="ui-theme-toggle__sun" name="sun" />
     <Icon className="ui-theme-toggle__moon" name="moon" />
   </button>
-)
+);
 
-export type LanguageToggleProps = ComponentPropsWithoutRef<'button'>
-export const LanguageToggle = ({ className, type = 'button', ...props }: LanguageToggleProps) => (
-  <button className={composeClassName('ui-language-toggle', className)} type={type} {...props} />
-)
+export type LanguageToggleProps = ComponentPropsWithoutRef<"button">;
+export const LanguageToggle = ({
+  className,
+  type = "button",
+  ...props
+}: LanguageToggleProps) => (
+  <button
+    className={composeClassName("ui-language-toggle", className)}
+    type={type}
+    {...props}
+  />
+);
 
-export interface ParticlesProps extends ComponentPropsWithoutRef<'div'> {
-  density?: 'low' | 'medium' | 'high'
+export interface ParticlesProps extends ComponentPropsWithoutRef<"div"> {
+  density?: "low" | "medium" | "high";
 }
 
 interface ParticleItem {
-  id: string
-  style: CSSProperties
+  id: string;
+  style: CSSProperties;
 }
 
-const particleDensityConfig = { high: 40, low: 15, medium: 25 } as const
-const particleTones = ['var(--brand)', 'var(--accent)', 'var(--glow, var(--brand))']
+const particleDensityConfig = { high: 40, low: 15, medium: 25 } as const;
+const particleTones = [
+  "var(--brand)",
+  "var(--accent)",
+  "var(--glow, var(--brand))",
+];
 
-const createParticles = (density: NonNullable<ParticlesProps['density']>): ParticleItem[] => Array.from({ length: particleDensityConfig[density] }, (_, index) => {
-  const size = Math.random() * 12 + 8
-  const left = Math.random() * 100
-  const top = Math.random() * 100
+const createParticles = (
+  density: NonNullable<ParticlesProps["density"]>,
+): ParticleItem[] =>
+  Array.from({ length: particleDensityConfig[density] }, (_, index) => {
+    const size = Math.random() * 12 + 8;
+    const left = Math.random() * 100;
+    const top = Math.random() * 100;
 
-  return {
-    id: `${index}-${left}-${top}`,
-    style: {
-      '--ui-particle-delay': `${Math.random() * 8}s`,
-      '--ui-particle-duration': `${20 + Math.random() * 15}s`,
-      '--ui-particle-left': `${left}%`,
-      '--ui-particle-size': `${size}px`,
-      '--ui-particle-tone': particleTones[Math.floor(Math.random() * particleTones.length)],
-      '--ui-particle-top': `${top}%`
-    } as CSSProperties
-  }
-})
+    return {
+      id: `${index}-${left}-${top}`,
+      style: {
+        "--ui-particle-delay": `${Math.random() * 8}s`,
+        "--ui-particle-duration": `${20 + Math.random() * 15}s`,
+        "--ui-particle-left": `${left}%`,
+        "--ui-particle-size": `${size}px`,
+        "--ui-particle-tone":
+          particleTones[Math.floor(Math.random() * particleTones.length)],
+        "--ui-particle-top": `${top}%`,
+      } as CSSProperties,
+    };
+  });
 
-export const Particles = ({ children, className, density = 'medium', ...props }: ParticlesProps) => {
-  const [particles, setParticles] = useState<ParticleItem[]>([])
+export const Particles = ({
+  children,
+  className,
+  density = "medium",
+  ...props
+}: ParticlesProps) => {
+  const [particles, setParticles] = useState<ParticleItem[]>([]);
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     // Particle geometry is client-only to keep SSR output stable while retaining per-load variation.
     // eslint-disable-next-line @eslint-react/set-state-in-effect
-    setParticles(createParticles(density))
-  }, [density])
+    setParticles(createParticles(density));
+  }, [density]);
 
   return (
     <div
       aria-hidden="true"
-      className={composeClassName('ui-particles', className)}
+      className={composeClassName("ui-particles", className)}
       data-ui-particles={density}
       {...props}
     >
       {children}
-      {particles.map(particle => (
-        <span className="ui-particles__particle" key={particle.id} style={particle.style} />
+      {particles.map((particle) => (
+        <span
+          className="ui-particles__particle"
+          key={particle.id}
+          style={particle.style}
+        />
       ))}
     </div>
-  )
-}
+  );
+};
 
-type MotionAnimation = 'fade' | 'scale' | 'slide-up'
+type MotionAnimation = "fade" | "scale" | "slide-up";
 
-type MotionDuration = 'fast' | 'slow' | 'standard'
+type MotionDuration = "fast" | "slow" | "standard";
 
 const parseMotionDuration = (value: string): number => {
-  const parsedDuration = Number.parseFloat(value)
+  const parsedDuration = Number.parseFloat(value);
 
-  if (!Number.isFinite(parsedDuration)) return 300
+  if (!Number.isFinite(parsedDuration)) return 300;
 
-  return value.endsWith('ms') ? parsedDuration : parsedDuration * 1000
-}
+  return value.endsWith("ms") ? parsedDuration : parsedDuration * 1000;
+};
 
-export interface ScrollRevealProps extends ComponentPropsWithoutRef<'div'> {
-  animation?: MotionAnimation
-  delay?: number
-  duration?: MotionDuration
-  once?: boolean
-  threshold?: number
+export interface ScrollRevealProps extends ComponentPropsWithoutRef<"div"> {
+  animation?: MotionAnimation;
+  delay?: number;
+  duration?: MotionDuration;
+  once?: boolean;
+  threshold?: number;
 }
 export const ScrollReveal = ({
-  animation = 'fade',
+  animation = "fade",
   className,
   delay = 0,
-  duration = 'slow',
+  duration = "slow",
   once = true,
   style,
   threshold = 0.15,
   ...props
 }: ScrollRevealProps) => {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const root = rootRef.current
+    const root = rootRef.current;
 
-    if (!root) return
+    if (!root) return;
 
-    root.dataset.uiScrollRevealBound = 'true'
+    root.dataset.uiScrollRevealBound = "true";
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') {
-      root.classList.add('is-revealed')
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      root.classList.add("is-revealed");
 
-      return
+      return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry) return
+        if (!entry) return;
 
-        root.classList.toggle('is-revealed', entry.isIntersecting)
+        root.classList.toggle("is-revealed", entry.isIntersecting);
 
-        if (entry.isIntersecting && once) observer.disconnect()
-      }, { threshold: Math.min(1, Math.max(0, threshold)) }
-    )
+        if (entry.isIntersecting && once) observer.disconnect();
+      },
+      { threshold: Math.min(1, Math.max(0, threshold)) },
+    );
 
-    observer.observe(root)
+    observer.observe(root);
 
     return () => {
-      observer.disconnect()
-    }
-  }, [once, threshold])
+      observer.disconnect();
+    };
+  }, [once, threshold]);
 
   return (
     <div
       className={composeClassName(
-        'ui-scroll-reveal', `ui-scroll-reveal-${animation}`, `ui-motion-duration-${duration}`, className
+        "ui-scroll-reveal",
+        `ui-scroll-reveal-${animation}`,
+        `ui-motion-duration-${duration}`,
+        className,
       )}
       data-ui-reveal-once={String(once)}
       data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
       data-ui-scroll-reveal
       ref={rootRef}
-      style={{ ...style, '--ui-reveal-delay': `${Math.max(0, delay)}ms` } as CSSProperties}
+      style={
+        {
+          ...style,
+          "--ui-reveal-delay": `${Math.max(0, delay)}ms`,
+        } as CSSProperties
+      }
       {...props}
     />
-  )
-}
+  );
+};
 
-export interface RevealGroupProps extends ComponentPropsWithoutRef<'div'> {
-  animation?: MotionAnimation
-  delay?: number
-  duration?: MotionDuration
-  once?: boolean
-  stagger?: number
-  threshold?: number
+export interface RevealGroupProps extends ComponentPropsWithoutRef<"div"> {
+  animation?: MotionAnimation;
+  delay?: number;
+  duration?: MotionDuration;
+  once?: boolean;
+  stagger?: number;
+  threshold?: number;
 }
 export const RevealGroup = ({
-  animation = 'slide-up',
+  animation = "slide-up",
   className,
   delay = 0,
-  duration = 'slow',
+  duration = "slow",
   once = true,
   stagger = 80,
   style,
   threshold = 0.15,
   ...props
 }: RevealGroupProps) => {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const root = rootRef.current
+    const root = rootRef.current;
 
-    if (!root) return
+    if (!root) return;
 
-    root.dataset.uiScrollRevealBound = 'true'
+    root.dataset.uiScrollRevealBound = "true";
 
     for (const [index, child] of [...root.children].entries()) {
       if (child instanceof HTMLElement) {
-        child.style.setProperty('--ui-reveal-index', String(index))
+        child.style.setProperty("--ui-reveal-index", String(index));
       }
     }
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') {
-      root.classList.add('is-revealed')
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      root.classList.add("is-revealed");
 
-      return
+      return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry) return
+        if (!entry) return;
 
-        root.classList.toggle('is-revealed', entry.isIntersecting)
+        root.classList.toggle("is-revealed", entry.isIntersecting);
 
-        if (entry.isIntersecting && once) observer.disconnect()
-      }, { threshold: Math.min(1, Math.max(0, threshold)) }
-    )
+        if (entry.isIntersecting && once) observer.disconnect();
+      },
+      { threshold: Math.min(1, Math.max(0, threshold)) },
+    );
 
-    observer.observe(root)
+    observer.observe(root);
 
     return () => {
-      observer.disconnect()
-    }
-  }, [once, threshold])
+      observer.disconnect();
+    };
+  }, [once, threshold]);
 
   return (
     <div
       className={composeClassName(
-        'ui-reveal-group', `ui-reveal-group-${animation}`, `ui-motion-duration-${duration}`, className
+        "ui-reveal-group",
+        `ui-reveal-group-${animation}`,
+        `ui-motion-duration-${duration}`,
+        className,
       )}
       data-ui-reveal-group
       data-ui-reveal-once={String(once)}
@@ -3997,103 +5229,122 @@ export const RevealGroup = ({
       style={
         {
           ...style,
-          '--ui-reveal-delay': `${Math.max(0, delay)}ms`,
-          '--ui-reveal-stagger': `${Math.max(0, stagger)}ms`
+          "--ui-reveal-delay": `${Math.max(0, delay)}ms`,
+          "--ui-reveal-stagger": `${Math.max(0, stagger)}ms`,
         } as CSSProperties
       }
       {...props}
     />
-  )
-}
+  );
+};
 
-export interface AnimatedNumberProps extends Omit<ComponentPropsWithoutRef<'span'>, 'prefix'> {
-  decimals?: number
-  duration?: MotionDuration
-  from?: number
-  locale?: string
-  prefix?: string
-  suffix?: string
-  value: number
+export interface AnimatedNumberProps extends Omit<
+  ComponentPropsWithoutRef<"span">,
+  "prefix"
+> {
+  decimals?: number;
+  duration?: MotionDuration;
+  from?: number;
+  locale?: string;
+  prefix?: string;
+  suffix?: string;
+  value: number;
 }
 export const AnimatedNumber = ({
   className,
   decimals = 0,
-  duration = 'slow',
+  duration = "slow",
   from = 0,
   locale,
-  prefix = '',
-  suffix = '',
+  prefix = "",
+  suffix = "",
   value,
   ...props
 }: AnimatedNumberProps) => {
-  const outputRef = useRef<HTMLSpanElement>(null)
-  const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
+  const outputRef = useRef<HTMLSpanElement>(null);
+  const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)));
 
   const formatter = useMemo(
-    () => new Intl.NumberFormat(locale, {
-      maximumFractionDigits: safeDecimals,
-      minimumFractionDigits: safeDecimals
-    }), [locale, safeDecimals]
-  )
+    () =>
+      new Intl.NumberFormat(locale, {
+        maximumFractionDigits: safeDecimals,
+        minimumFractionDigits: safeDecimals,
+      }),
+    [locale, safeDecimals],
+  );
 
-  const formattedValue = `${prefix}${formatter.format(value)}${suffix}`
+  const formattedValue = `${prefix}${formatter.format(value)}${suffix}`;
 
   useEffect(() => {
-    const output = outputRef.current
+    const output = outputRef.current;
 
-    if (!output) return
+    if (!output) return;
 
-    const format = (current: number) => `${prefix}${formatter.format(current)}${suffix}`
+    const format = (current: number) =>
+      `${prefix}${formatter.format(current)}${suffix}`;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver === 'undefined') {
-      output.textContent = format(value)
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      output.textContent = format(value);
 
-      return
+      return;
     }
 
-    output.textContent = format(from)
+    output.textContent = format(from);
 
-    const root = output.parentElement
+    const root = output.parentElement;
 
-    if (!root) return
+    if (!root) return;
 
     const observer = new IntersectionObserver(
-      entries => {
-        if (!entries.some(entry => entry.isIntersecting)) return
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
 
-        observer.disconnect()
+        observer.disconnect();
 
-        const durationValue = getComputedStyle(root).getPropertyValue('--ui-motion-duration').trim()
-        const durationMs = parseMotionDuration(durationValue)
-        const startedAt = performance.now()
+        const durationValue = getComputedStyle(root)
+          .getPropertyValue("--ui-motion-duration")
+          .trim();
+        const durationMs = parseMotionDuration(durationValue);
+        const startedAt = performance.now();
 
         const update = (now: number) => {
-          const progress = Math.min(1, (now - startedAt) / Math.max(1, durationMs))
-          const eased = 1 - Math.pow(1 - progress, 3)
+          const progress = Math.min(
+            1,
+            (now - startedAt) / Math.max(1, durationMs),
+          );
+          const eased = 1 - Math.pow(1 - progress, 3);
 
-          output.textContent = format(from + (value - from) * eased)
+          output.textContent = format(from + (value - from) * eased);
 
           if (progress < 1) {
-            requestAnimationFrame(update)
+            requestAnimationFrame(update);
           } else {
-            output.textContent = format(value)
+            output.textContent = format(value);
           }
-        }
+        };
 
-        requestAnimationFrame(update)
-      }, { threshold: 0.15 }
-    )
+        requestAnimationFrame(update);
+      },
+      { threshold: 0.15 },
+    );
 
-    observer.observe(root)
+    observer.observe(root);
 
     return () => {
-      observer.disconnect()
-    }
-  }, [formatter, from, prefix, suffix, value])
+      observer.disconnect();
+    };
+  }, [formatter, from, prefix, suffix, value]);
 
   return (
     <span
-      className={composeClassName('ui-animated-number', `ui-motion-duration-${duration}`, className)}
+      className={composeClassName(
+        "ui-animated-number",
+        `ui-motion-duration-${duration}`,
+        className,
+      )}
       data-ui-animated-number
       {...props}
     >
@@ -4102,26 +5353,30 @@ export const AnimatedNumber = ({
       </span>
       <span className="ui-sr-only">{formattedValue}</span>
     </span>
-  )
-}
+  );
+};
 
-export type StatProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T> & {
-  label?: string
-  value?: string
-  variant?: 'accent' | 'bare' | 'default' | 'glass'
-}
-export const Stat = <T extends ElementType = 'div'>({
+export type StatProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T> & {
+    label?: string;
+    value?: string;
+    variant?: "accent" | "bare" | "default" | "glass";
+  };
+export const Stat = <T extends ElementType = "div">({
   as,
   className,
   label,
   value,
-  variant = 'default',
+  variant = "default",
   children,
   ...props
 }: StatProps<T>) => (
   <Primitive
     {...(as ? { as } : {})}
-    className={composeClassName(variant !== 'default' && `ui-stat--${variant}`, className)}
+    className={composeClassName(
+      variant !== "default" && `ui-stat--${variant}`,
+      className,
+    )}
     data-slot="stat"
     data-variant={variant}
     {...props}
@@ -4139,81 +5394,143 @@ export const Stat = <T extends ElementType = 'div'>({
     )}
     {children}
   </Primitive>
-)
+);
 
-export type StatLabelProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const StatLabel = <T extends ElementType = 'div'>({ as, ...props }: StatLabelProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="stat-label" {...props} uiClassName="ui-stat-label" />
-)
+export type StatLabelProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const StatLabel = <T extends ElementType = "div">({
+  as,
+  ...props
+}: StatLabelProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="stat-label"
+    {...props}
+    uiClassName="ui-stat-label"
+  />
+);
 
-export type StatValueProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const StatValue = <T extends ElementType = 'div'>({ as, ...props }: StatValueProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="stat-value" {...props} uiClassName="ui-stat-value" />
-)
+export type StatValueProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const StatValue = <T extends ElementType = "div">({
+  as,
+  ...props
+}: StatValueProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="stat-value"
+    {...props}
+    uiClassName="ui-stat-value"
+  />
+);
 
-export type StatDescriptionProps<T extends ElementType = 'div'> = LumenPrimitiveProps<T>
-export const StatDescription = <T extends ElementType = 'div'>({ as, ...props }: StatDescriptionProps<T>) => (
-  <Primitive {...(as ? { as } : {})} data-slot="stat-description" {...props} uiClassName="ui-stat-description" />
-)
+export type StatDescriptionProps<T extends ElementType = "div"> =
+  LumenPrimitiveProps<T>;
+export const StatDescription = <T extends ElementType = "div">({
+  as,
+  ...props
+}: StatDescriptionProps<T>) => (
+  <Primitive
+    {...(as ? { as } : {})}
+    data-slot="stat-description"
+    {...props}
+    uiClassName="ui-stat-description"
+  />
+);
 
-export type StatIconProps = ComponentPropsWithRef<'span'>
+export type StatIconProps = ComponentPropsWithRef<"span">;
 export const StatIcon = ({ className, ...props }: StatIconProps) => (
-  <span className={composeClassName('ui-stat-icon', className)} data-slot="stat-icon" {...props} />
-)
-
-type StatTrendTone = 'danger' | 'neutral' | 'success' | 'warning'
-
-export type StatTrendProps = ComponentPropsWithRef<'span'> & {
-  tone?: StatTrendTone
-}
-export const StatTrend = ({ className, tone = 'neutral', ...props }: StatTrendProps) => (
   <span
-    className={composeClassName('ui-stat-trend', `ui-stat-trend--${tone}`, className)}
+    className={composeClassName("ui-stat-icon", className)}
+    data-slot="stat-icon"
+    {...props}
+  />
+);
+
+type StatTrendTone = "danger" | "neutral" | "success" | "warning";
+
+export type StatTrendProps = ComponentPropsWithRef<"span"> & {
+  tone?: StatTrendTone;
+};
+export const StatTrend = ({
+  className,
+  tone = "neutral",
+  ...props
+}: StatTrendProps) => (
+  <span
+    className={composeClassName(
+      "ui-stat-trend",
+      `ui-stat-trend--${tone}`,
+      className,
+    )}
     data-slot="stat-trend"
     data-tone={tone}
     {...props}
   />
-)
+);
 
-export type MeterProps = ComponentPropsWithoutRef<'meter'>
+export type MeterProps = ComponentPropsWithoutRef<"meter">;
 export const Meter = ({ className, ...props }: MeterProps) => (
-  <meter className={composeClassName('ui-meter', className)} {...props} />
-)
+  <meter className={composeClassName("ui-meter", className)} {...props} />
+);
 
-export interface NoteProps extends ComponentPropsWithoutRef<'div'> {
-  label?: string
-  borderPosition?: 'left' | 'right' | 'none'
+export interface NoteProps extends ComponentPropsWithoutRef<"div"> {
+  label?: string;
+  borderPosition?: "left" | "right" | "none";
 }
-export const Note = ({ className, label, borderPosition = 'left', children, ...props }: NoteProps) => (
-  <div className={composeClassName('ui-note', `ui-note--border-${borderPosition}`, className)} {...props}>
+export const Note = ({
+  className,
+  label,
+  borderPosition = "left",
+  children,
+  ...props
+}: NoteProps) => (
+  <div
+    className={composeClassName(
+      "ui-note",
+      `ui-note--border-${borderPosition}`,
+      className,
+    )}
+    {...props}
+  >
     {label && <p className="ui-note__label">{label}</p>}
     <div className="ui-note__content">{children}</div>
   </div>
-)
+);
 
-export interface RatingProps extends ComponentPropsWithoutRef<'div'> {
-  value?: number
-  max?: number
-  readonly?: boolean
+export interface RatingProps extends ComponentPropsWithoutRef<"div"> {
+  value?: number;
+  max?: number;
+  readonly?: boolean;
 }
-export const Rating = ({ className, value = 0, max = 5, readonly = false, ...props }: RatingProps) => {
-  const stars = Array.from({ length: max }, (_, i) => i + 1)
+export const Rating = ({
+  className,
+  value = 0,
+  max = 5,
+  readonly = false,
+  ...props
+}: RatingProps) => {
+  const stars = Array.from({ length: max }, (_, i) => i + 1);
 
   return (
     <div
-      className={composeClassName('ui-rating', readonly && 'ui-rating--readonly', className)}
+      className={composeClassName(
+        "ui-rating",
+        readonly && "ui-rating--readonly",
+        className,
+      )}
       data-ui-rating
       data-value={value}
       data-max={max}
-      data-readonly={readonly ? 'true' : 'false'}
+      data-readonly={readonly ? "true" : "false"}
       {...props}
     >
-      {stars.map(star => (
+      {stars.map((star) => (
         <button
           key={star}
           type="button"
           className="ui-rating__star"
-          data-active={star <= value ? 'true' : 'false'}
+          data-active={star <= value ? "true" : "false"}
           disabled={readonly}
           aria-label={`Rate ${star} out of ${max}`}
         >
@@ -4233,86 +5550,110 @@ export const Rating = ({ className, value = 0, max = 5, readonly = false, ...pro
         </button>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export type TimelineProps = ComponentPropsWithoutRef<'ol'>
+export type TimelineProps = ComponentPropsWithoutRef<"ol">;
 export const Timeline = ({ className, ...props }: TimelineProps) => (
-  <ol className={composeClassName('ui-timeline', className)} {...props} />
-)
+  <ol className={composeClassName("ui-timeline", className)} {...props} />
+);
 
-export type TimelineItemProps = ComponentPropsWithoutRef<'li'> & {
-  dot?: React.ReactNode
-}
-export const TimelineItem = ({ className, children, dot, ...props }: TimelineItemProps) => (
-  <li className={composeClassName('ui-timeline-item', className)} {...props}>
+export type TimelineItemProps = ComponentPropsWithoutRef<"li"> & {
+  dot?: React.ReactNode;
+};
+export const TimelineItem = ({
+  className,
+  children,
+  dot,
+  ...props
+}: TimelineItemProps) => (
+  <li className={composeClassName("ui-timeline-item", className)} {...props}>
     <div className="ui-timeline-item__tail" />
     <div className="ui-timeline-item__dot">{dot}</div>
     <div className="ui-timeline-item__content">{children}</div>
   </li>
-)
+);
 
-export type AnimatedLogoProps = ComponentPropsWithoutRef<'span'> & {
-  animation?: 'reveal' | 'sequence'
-}
-export const AnimatedLogo = ({ animation = 'reveal', className, ...props }: AnimatedLogoProps) => (
+export type AnimatedLogoProps = ComponentPropsWithoutRef<"span"> & {
+  animation?: "reveal" | "sequence";
+};
+export const AnimatedLogo = ({
+  animation = "reveal",
+  className,
+  ...props
+}: AnimatedLogoProps) => (
   <span
-    className={composeClassName('ui-animated-logo', className)}
+    className={composeClassName("ui-animated-logo", className)}
     data-animation={animation}
     data-ui-animated-logo
     {...props}
   />
-)
+);
 
-export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>
-export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps) => (
+export type AnimatedPortraitProps = ComponentPropsWithoutRef<"div">;
+export const AnimatedPortrait = ({
+  className,
+  ...props
+}: AnimatedPortraitProps) => (
   <div
     className={composeClassName(
-      'ui-animated-portrait relative isolate w-full animate-reveal-lcp motion-reduce:animate-none', className
+      "ui-animated-portrait relative isolate w-full animate-reveal-lcp motion-reduce:animate-none",
+      className,
     )}
     {...props}
   />
-)
+);
 
-export type ButtonLinkProps = ComponentPropsWithRef<'a'> & {
-  asChild?: boolean
-  shape?: 'default' | 'icon'
-  variant?: 'ghost' | 'inline' | 'primary' | 'secondary' | 'unstyled'
-}
+export type ButtonLinkProps = ComponentPropsWithRef<"a"> & {
+  asChild?: boolean;
+  shape?: "default" | "icon";
+  variant?: "ghost" | "inline" | "primary" | "secondary" | "unstyled";
+};
 
-const getButtonLinkVariantClass = (variant: NonNullable<ButtonLinkProps['variant']>): string => {
-  if (variant === 'unstyled') return 'ui-button-link--unstyled'
+const getButtonLinkVariantClass = (
+  variant: NonNullable<ButtonLinkProps["variant"]>,
+): string => {
+  if (variant === "unstyled") return "ui-button-link--unstyled";
 
-  if (variant === 'inline') return 'ui-button ui-button--inline'
+  if (variant === "inline") return "ui-button ui-button--inline";
 
-  return `ui-button ui-button--${variant} min-h-11 rounded-full border`
-}
+  return `ui-button ui-button--${variant} min-h-11 rounded-full border`;
+};
 
 export const ButtonLink = ({
   asChild = false,
   children,
   className,
   ref,
-  shape = 'default',
-  variant = 'primary',
+  shape = "default",
+  variant = "primary",
   ...props
 }: ButtonLinkProps) => {
-  const variantClass = getButtonLinkVariantClass(variant)
-  const shapeClass = shape === 'icon' && variant !== 'inline' ? 'ui-button-link--icon' : undefined
+  const variantClass = getButtonLinkVariantClass(variant);
+  const shapeClass =
+    shape === "icon" && variant !== "inline"
+      ? "ui-button-link--icon"
+      : undefined;
 
   const buttonLinkClassName = composeClassName(
-    'ui-button-link', variant !== 'unstyled' &&
-    'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, shapeClass, className
-  )
+    "ui-button-link",
+    variant !== "unstyled" &&
+      "group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]",
+    variantClass,
+    shapeClass,
+    className,
+  );
 
   if (asChild) {
-    const child = Children.only(children)
+    const child = Children.only(children);
 
     if (!isValidElement<ButtonChildProps>(child)) {
-      throw new Error('ButtonLink with asChild requires exactly one valid React element child.')
+      throw new Error(
+        "ButtonLink with asChild requires exactly one valid React element child.",
+      );
     }
 
-    const ChildComponent = child.type
+    const ChildComponent = child.type;
 
     return (
       <ChildComponent
@@ -4324,20 +5665,25 @@ export const ButtonLink = ({
       >
         {child.props.children}
       </ChildComponent>
-    )
+    );
   }
 
   return (
-    <a className={buttonLinkClassName} data-slot="button-link" ref={ref} {...props}>
+    <a
+      className={buttonLinkClassName}
+      data-slot="button-link"
+      ref={ref}
+      {...props}
+    >
       {children}
     </a>
-  )
-}
+  );
+};
 
-export type CoverImageProps = ComponentPropsWithoutRef<'div'> & {
-  hover?: boolean
-  showBottomGradient?: boolean
-}
+export type CoverImageProps = ComponentPropsWithoutRef<"div"> & {
+  hover?: boolean;
+  showBottomGradient?: boolean;
+};
 export const CoverImage = ({
   className,
   hover = false,
@@ -4347,25 +5693,30 @@ export const CoverImage = ({
 }: CoverImageProps) => (
   <div
     className={composeClassName(
-      'ui-cover-image relative overflow-hidden bg-surface-muted', hover && 'ui-cover-image--hover', className
+      "ui-cover-image relative overflow-hidden bg-surface-muted",
+      hover && "ui-cover-image--hover",
+      className,
     )}
     {...props}
   >
     {children}
     {showBottomGradient && (
-      <div
-        aria-hidden="true"
-        className="ui-cover-image__bottom-gradient"
-      />
+      <div aria-hidden="true" className="ui-cover-image__bottom-gradient" />
     )}
   </div>
-)
+);
 
-export type GradientDividerProps = ComponentPropsWithoutRef<'div'>
-export const GradientDivider = ({ className, ...props }: GradientDividerProps) => (
+export type GradientDividerProps = ComponentPropsWithoutRef<"div">;
+export const GradientDivider = ({
+  className,
+  ...props
+}: GradientDividerProps) => (
   <div
     aria-hidden="true"
-    className={composeClassName('ui-gradient-divider pointer-events-none flex justify-center', className)}
+    className={composeClassName(
+      "ui-gradient-divider pointer-events-none flex justify-center",
+      className,
+    )}
     {...props}
   >
     <div
@@ -4373,46 +5724,50 @@ export const GradientDivider = ({ className, ...props }: GradientDividerProps) =
         via-brand/40 h-px w-full max-w-5xl bg-linear-to-r from-transparent
         to-transparent
       "
-    >
-    </div>
+    ></div>
   </div>
-)
+);
 
-export type StepItem = string | { description?: string, title: string }
-export interface StepperProps extends ComponentPropsWithoutRef<'ol'> {
-  currentStep?: number
-  orientation?: Orientation
-  steps?: StepItem[]
+export type StepItem = string | { description?: string; title: string };
+export interface StepperProps extends ComponentPropsWithoutRef<"ol"> {
+  currentStep?: number;
+  orientation?: Orientation;
+  steps?: StepItem[];
 }
 
-const emptySteps: StepItem[] = []
-const normalizeStep = (step: StepItem) => (typeof step === 'string' ? { description: undefined, title: step } : step)
+const emptySteps: StepItem[] = [];
+const normalizeStep = (step: StepItem) =>
+  typeof step === "string" ? { description: undefined, title: step } : step;
 
 export const Stepper = ({
   children,
   className,
   currentStep = 0,
-  orientation = 'horizontal',
+  orientation = "horizontal",
   steps = emptySteps,
   ...props
 }: StepperProps) => (
   <ol
-    className={composeClassName('ui-stepper', orientation === 'vertical' && 'ui-stepper--vertical', className)}
+    className={composeClassName(
+      "ui-stepper",
+      orientation === "vertical" && "ui-stepper--vertical",
+      className,
+    )}
     data-orientation={orientation}
     {...props}
   >
     {steps.map(normalizeStep).map((step, index) => {
-      let state: 'complete' | 'current' | 'upcoming' = 'upcoming'
+      let state: "complete" | "current" | "upcoming" = "upcoming";
 
       if (index < currentStep) {
-        state = 'complete'
+        state = "complete";
       } else if (index === currentStep) {
-        state = 'current'
+        state = "current";
       }
 
       return (
         <li
-          aria-current={state === 'current' ? 'step' : undefined}
+          aria-current={state === "current" ? "step" : undefined}
           className="ui-stepper__step"
           data-state={state}
           key={step.title}
@@ -4420,19 +5775,26 @@ export const Stepper = ({
           <span className="ui-stepper__marker">{index + 1}</span>
           <span className="ui-stepper__content">
             <span className="ui-stepper__title">{step.title}</span>
-            {step.description && <span className="ui-stepper__description">{step.description}</span>}
+            {step.description && (
+              <span className="ui-stepper__description">
+                {step.description}
+              </span>
+            )}
           </span>
         </li>
-      )
+      );
     })}
     {children}
   </ol>
-)
+);
 
-export interface FileUploadProps extends Omit<ComponentPropsWithRef<'input'>, 'type' | 'size'> {
-  hint?: ReactNode
-  inputClassName?: string
-  label?: ReactNode
+export interface FileUploadProps extends Omit<
+  ComponentPropsWithRef<"input">,
+  "type" | "size"
+> {
+  hint?: ReactNode;
+  inputClassName?: string;
+  label?: ReactNode;
 }
 export const FileUpload = ({
   children,
@@ -4440,75 +5802,98 @@ export const FileUpload = ({
   hint,
   id,
   inputClassName,
-  label = 'Choose a file or drag it here',
+  label = "Choose a file or drag it here",
   onChange,
   ref,
   ...props
 }: FileUploadProps) => {
-  const generatedId = useId()
-  const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(':', '')}`
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+  const generatedId = useId();
+  const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(":", "")}`;
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
   const selectedFileText =
-    selectedFiles.length > 1 ? `${selectedFiles.length} files selected` : (selectedFiles[0] ?? '')
+    selectedFiles.length > 1
+      ? `${selectedFiles.length} files selected`
+      : (selectedFiles[0] ?? "");
 
   return (
     <label
-      className={composeClassName('ui-file-upload', className)}
-      data-state={selectedFiles.length > 0 ? 'selected' : 'idle'}
+      className={composeClassName("ui-file-upload", className)}
+      data-state={selectedFiles.length > 0 ? "selected" : "idle"}
       data-ui-file-upload
       htmlFor={inputId}
     >
       <input
-        className={composeClassName('ui-file-upload__input', inputClassName)}
+        className={composeClassName("ui-file-upload__input", inputClassName)}
         data-ui-file-upload-input
         id={inputId}
-        onChange={event => {
-          setSelectedFiles([...(event.currentTarget.files ?? [])].map(file => file.name))
+        onChange={(event) => {
+          setSelectedFiles(
+            [...(event.currentTarget.files ?? [])].map((file) => file.name),
+          );
 
-          onChange?.(event)
+          onChange?.(event);
         }}
         ref={ref}
         type="file"
         {...props}
       />
-      <svg aria-hidden="true" className="ui-file-upload__icon" fill="none" focusable="false" viewBox="0 0 24 24">
+      <svg
+        aria-hidden="true"
+        className="ui-file-upload__icon"
+        fill="none"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
         <path d="M12 16V4m0 0L8 8m4-4 4 4" />
         <path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
       </svg>
       <span className="ui-file-upload__prompt">{children ?? label}</span>
       {hint && <span className="ui-file-upload__hint">{hint}</span>}
-      <span aria-live="polite" className="ui-file-upload__files" data-ui-file-upload-files>
+      <span
+        aria-live="polite"
+        className="ui-file-upload__files"
+        data-ui-file-upload-files
+      >
         {selectedFileText}
       </span>
     </label>
-  )
-}
+  );
+};
 
 export interface TourStep {
-  content: ReactNode
-  target: string
-  title?: ReactNode
+  content: ReactNode;
+  target: string;
+  title?: ReactNode;
 }
-export interface TourProps extends ComponentPropsWithoutRef<'div'> {
-  closeLabel?: string
-  nextLabel?: string
-  steps?: TourStep[]
+export interface TourProps extends ComponentPropsWithoutRef<"div"> {
+  closeLabel?: string;
+  nextLabel?: string;
+  steps?: TourStep[];
 }
 
-const emptyTourSteps: TourStep[] = []
+const emptyTourSteps: TourStep[] = [];
 
 export const Tour = ({
   children,
   className,
-  closeLabel = 'Done',
+  closeLabel = "Done",
   hidden = true,
-  nextLabel = 'Next',
+  nextLabel = "Next",
   steps = emptyTourSteps,
   ...props
 }: TourProps) => (
-  <div className={composeClassName('ui-tour', className)} data-ui-tour hidden={hidden} {...props}>
-    <div aria-hidden="true" className="ui-tour__backdrop" data-ui-tour-backdrop />
+  <div
+    className={composeClassName("ui-tour", className)}
+    data-ui-tour
+    hidden={hidden}
+    {...props}
+  >
+    <div
+      aria-hidden="true"
+      className="ui-tour__backdrop"
+      data-ui-tour-backdrop
+    />
     <div className="ui-tour__popover" data-ui-tour-popover role="dialog">
       {steps.map((step, index) => (
         <div
@@ -4521,11 +5906,19 @@ export const Tour = ({
           {step.title && <p className="ui-tour__title">{step.title}</p>}
           <p className="ui-tour__content">{step.content}</p>
           <div className="ui-tour__actions">
-            <button className="ui-button ui-button--ghost ui-button--sm" data-ui-tour-close type="button">
+            <button
+              className="ui-button ui-button--ghost ui-button--sm"
+              data-ui-tour-close
+              type="button"
+            >
               {closeLabel}
             </button>
             {index < steps.length - 1 && (
-              <button className="ui-button ui-button--default ui-button--sm" data-ui-tour-next type="button">
+              <button
+                className="ui-button ui-button--default ui-button--sm"
+                data-ui-tour-next
+                type="button"
+              >
                 {nextLabel}
               </button>
             )}
@@ -4535,32 +5928,41 @@ export const Tour = ({
       {children}
     </div>
   </div>
-)
+);
 
 export interface AnchorLink {
-  depth?: 1 | 2 | 3 | 4 | 5 | 6
-  href: string
-  label: ReactNode
+  depth?: 1 | 2 | 3 | 4 | 5 | 6;
+  href: string;
+  label: ReactNode;
 }
-export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {
-  items?: AnchorLink[]
+export interface AnchorProps extends ComponentPropsWithoutRef<"nav"> {
+  items?: AnchorLink[];
 }
 
-const emptyAnchorLinks: AnchorLink[] = []
+const emptyAnchorLinks: AnchorLink[] = [];
 
 export const Anchor = ({
-  'aria-label': ariaLabel = 'On this page',
+  "aria-label": ariaLabel = "On this page",
   children,
   className,
   items = emptyAnchorLinks,
   ...props
 }: AnchorProps) => (
-  <nav aria-label={ariaLabel} className={composeClassName('ui-anchor', className)} data-ui-anchor {...props}>
+  <nav
+    aria-label={ariaLabel}
+    className={composeClassName("ui-anchor", className)}
+    data-ui-anchor
+    {...props}
+  >
     {items.length > 0 && (
       <ol>
         {items.map((item, index) => (
           <li key={item.href}>
-            <a data-active={index === 0 ? 'true' : 'false'} data-depth={item.depth} href={item.href}>
+            <a
+              data-active={index === 0 ? "true" : "false"}
+              data-depth={item.depth}
+              href={item.href}
+            >
               {item.label}
             </a>
           </li>
@@ -4569,35 +5971,41 @@ export const Anchor = ({
     )}
     {children}
   </nav>
-)
+);
 
-export interface SegmentedProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
-  defaultValue?: string
-  name?: string
-  onValueChange?: (value: string) => void
-  options?: SelectOption[]
-  size?: 'default' | 'lg' | 'sm'
-  value?: string
+export interface SegmentedProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange"
+> {
+  defaultValue?: string;
+  name?: string;
+  onValueChange?: (value: string) => void;
+  options?: SelectOption[];
+  size?: "default" | "lg" | "sm";
+  value?: string;
 }
 export const Segmented = ({
   children,
   className,
   defaultValue,
-  name = 'segmented',
+  name = "segmented",
   onValueChange,
   options = emptyOptions,
-  size = 'default',
+  size = "default",
   value = defaultValue,
   ...props
 }: SegmentedProps) => (
   <div
     className={composeClassName(
-      'ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className
+      "ui-segmented",
+      size === "sm" && "ui-segmented--sm",
+      size === "lg" && "ui-segmented--lg",
+      className,
     )}
     role="group"
     {...props}
   >
-    {options.map(normalizeOption).map(option => (
+    {options.map(normalizeOption).map((option) => (
       <label className="ui-segmented__option" key={option.value}>
         <input
           defaultChecked={value === option.value}
@@ -4613,38 +6021,42 @@ export const Segmented = ({
     ))}
     {children}
   </div>
-)
+);
 
-export interface ToolbarProps extends ComponentPropsWithoutRef<'div'> {
-  orientation?: Orientation
+export interface ToolbarProps extends ComponentPropsWithoutRef<"div"> {
+  orientation?: Orientation;
 }
 export const Toolbar = ({
-  'aria-label': ariaLabel = 'Toolbar',
+  "aria-label": ariaLabel = "Toolbar",
   className,
-  orientation = 'horizontal',
+  orientation = "horizontal",
   ...props
 }: ToolbarProps) => (
   <div
     aria-label={ariaLabel}
     aria-orientation={orientation}
-    className={composeClassName('ui-toolbar', orientation === 'vertical' && 'ui-toolbar--vertical', className)}
+    className={composeClassName(
+      "ui-toolbar",
+      orientation === "vertical" && "ui-toolbar--vertical",
+      className,
+    )}
     data-orientation={orientation}
     data-ui-toolbar
     role="toolbar"
     {...props}
   />
-)
+);
 
 export interface DescriptionsItem {
-  label: ReactNode
-  value: ReactNode
+  label: ReactNode;
+  value: ReactNode;
 }
-export interface DescriptionsProps extends ComponentPropsWithoutRef<'dl'> {
-  columns?: number
-  items?: DescriptionsItem[]
+export interface DescriptionsProps extends ComponentPropsWithoutRef<"dl"> {
+  columns?: number;
+  items?: DescriptionsItem[];
 }
 
-const emptyDescriptionsItems: DescriptionsItem[] = []
+const emptyDescriptionsItems: DescriptionsItem[] = [];
 
 export const Descriptions = ({
   children,
@@ -4655,9 +6067,9 @@ export const Descriptions = ({
   ...props
 }: DescriptionsProps) => (
   <dl
-    className={composeClassName('ui-descriptions', className)}
+    className={composeClassName("ui-descriptions", className)}
     data-columns={columns}
-    style={{ ['--ui-descriptions-columns' as string]: columns, ...style }}
+    style={{ ["--ui-descriptions-columns" as string]: columns, ...style }}
     {...props}
   >
     {items.map((item, index) => (
@@ -4669,23 +6081,26 @@ export const Descriptions = ({
     ))}
     {children}
   </dl>
-)
+);
 
-export interface PopconfirmProps extends Omit<ComponentPropsWithoutRef<'div'>, 'title'> {
-  cancelLabel?: string
-  confirmLabel?: string
-  title?: ReactNode
+export interface PopconfirmProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "title"
+> {
+  cancelLabel?: string;
+  confirmLabel?: string;
+  title?: ReactNode;
 }
 export const Popconfirm = ({
-  cancelLabel = 'Cancel',
+  cancelLabel = "Cancel",
   children,
   className,
-  confirmLabel = 'Confirm',
-  title = 'Are you sure?',
+  confirmLabel = "Confirm",
+  title = "Are you sure?",
   ...props
 }: PopconfirmProps) => (
   <div
-    className={composeClassName('ui-popover ui-popconfirm', className)}
+    className={composeClassName("ui-popover ui-popconfirm", className)}
     data-surface="default"
     data-ui-popconfirm
     data-ui-popover
@@ -4699,56 +6114,84 @@ export const Popconfirm = ({
     >
       {children}
     </span>
-    <div className="ui-popover__panel ui-popconfirm__panel" data-ui-panel hidden role="dialog">
+    <div
+      className="ui-popover__panel ui-popconfirm__panel"
+      data-ui-panel
+      hidden
+      role="dialog"
+    >
       <p className="ui-popconfirm__message">{title}</p>
       <div className="ui-popconfirm__actions">
-        <button className="ui-button ui-button--ghost ui-button--sm" data-ui-popconfirm-cancel type="button">
+        <button
+          className="ui-button ui-button--ghost ui-button--sm"
+          data-ui-popconfirm-cancel
+          type="button"
+        >
           {cancelLabel}
         </button>
-        <button className="ui-button ui-button--destructive ui-button--sm" data-ui-popconfirm-confirm type="button">
+        <button
+          className="ui-button ui-button--destructive ui-button--sm"
+          data-ui-popconfirm-confirm
+          type="button"
+        >
           {confirmLabel}
         </button>
       </div>
     </div>
   </div>
-)
+);
 
 export interface TransferItem {
-  key: string
-  label: ReactNode
+  key: string;
+  label: ReactNode;
 }
-export interface TransferProps extends ComponentPropsWithoutRef<'div'> {
-  items?: TransferItem[]
-  name?: string
-  sourceTitle?: string
-  targetItems?: TransferItem[]
-  targetTitle?: string
+export interface TransferProps extends ComponentPropsWithoutRef<"div"> {
+  items?: TransferItem[];
+  name?: string;
+  sourceTitle?: string;
+  targetItems?: TransferItem[];
+  targetTitle?: string;
 }
 
-const emptyTransferItems: TransferItem[] = []
+const emptyTransferItems: TransferItem[] = [];
 
-const renderTransferItems = (items: TransferItem[]) => items.map(item => (
-  <li className="ui-transfer__item" key={item.key}>
-    <label className="ui-transfer__option">
-      <input className="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.key} />
-      <span>{item.label}</span>
-    </label>
-  </li>
-))
+const renderTransferItems = (items: TransferItem[]) =>
+  items.map((item) => (
+    <li className="ui-transfer__item" key={item.key}>
+      <label className="ui-transfer__option">
+        <input
+          className="ui-checkbox"
+          data-ui-transfer-item
+          type="checkbox"
+          value={item.key}
+        />
+        <span>{item.label}</span>
+      </label>
+    </li>
+  ));
 
 export const Transfer = ({
   className,
   items = emptyTransferItems,
   name,
-  sourceTitle = 'Available',
+  sourceTitle = "Available",
   targetItems = emptyTransferItems,
-  targetTitle = 'Selected',
+  targetTitle = "Selected",
   ...props
 }: TransferProps) => (
-  <div className={composeClassName('ui-transfer', className)} data-ui-transfer data-ui-transfer-name={name} {...props}>
+  <div
+    className={composeClassName("ui-transfer", className)}
+    data-ui-transfer
+    data-ui-transfer-name={name}
+    {...props}
+  >
     <div className="ui-transfer__panel">
       <p className="ui-transfer__title">{sourceTitle}</p>
-      <ul className="ui-transfer__list" data-side="source" data-ui-transfer-list>
+      <ul
+        className="ui-transfer__list"
+        data-side="source"
+        data-ui-transfer-list
+      >
         {renderTransferItems(items)}
       </ul>
     </div>
@@ -4772,63 +6215,70 @@ export const Transfer = ({
     </div>
     <div className="ui-transfer__panel">
       <p className="ui-transfer__title">{targetTitle}</p>
-      <ul className="ui-transfer__list" data-side="target" data-ui-transfer-list>
+      <ul
+        className="ui-transfer__list"
+        data-side="target"
+        data-ui-transfer-list
+      >
         {renderTransferItems(targetItems)}
       </ul>
     </div>
   </div>
-)
+);
 
 export interface CascaderOption {
-  children?: CascaderOption[]
-  label: ReactNode
-  value: string
+  children?: CascaderOption[];
+  label: ReactNode;
+  value: string;
 }
-export interface CascaderProps extends ComponentPropsWithoutRef<'div'> {
-  name?: string
-  options?: CascaderOption[]
-  placeholder?: string
+export interface CascaderProps extends ComponentPropsWithoutRef<"div"> {
+  name?: string;
+  options?: CascaderOption[];
+  placeholder?: string;
 }
 
 interface CascaderColumn {
-  id: string
-  options: { label: ReactNode, nextId?: string | undefined, value: string }[]
-  root: boolean
+  id: string;
+  options: { label: ReactNode; nextId?: string | undefined; value: string }[];
+  root: boolean;
 }
 
-const buildCascaderColumns = (options: CascaderOption[], idPrefix: string): CascaderColumn[] => {
-  const columns: CascaderColumn[] = []
-  let count = 0
+const buildCascaderColumns = (
+  options: CascaderOption[],
+  idPrefix: string,
+): CascaderColumn[] => {
+  const columns: CascaderColumn[] = [];
+  let count = 0;
 
   const build = (items: CascaderOption[], root: boolean): string => {
-    count += 1
+    count += 1;
 
-    const id = `${idPrefix}-column-${count}`
+    const id = `${idPrefix}-column-${count}`;
 
-    const rendered: CascaderColumn['options'] = items.map(item => ({
+    const rendered: CascaderColumn["options"] = items.map((item) => ({
       label: item.label,
-      value: item.value
-    }))
+      value: item.value,
+    }));
 
-    columns.push({ id, options: rendered, root })
+    columns.push({ id, options: rendered, root });
 
     for (const [index, item] of items.entries()) {
-      const renderedOption = rendered[index]
+      const renderedOption = rendered[index];
 
       if (item.children && item.children.length > 0 && renderedOption) {
-        renderedOption.nextId = build(item.children, false)
+        renderedOption.nextId = build(item.children, false);
       }
     }
 
-    return id
-  }
+    return id;
+  };
 
-  if (options.length > 0) build(options, true)
+  if (options.length > 0) build(options, true);
 
-  return columns
-}
+  return columns;
+};
 
-const emptyCascaderOptions: CascaderOption[] = []
+const emptyCascaderOptions: CascaderOption[] = [];
 
 export const Cascader = ({
   children,
@@ -4836,17 +6286,17 @@ export const Cascader = ({
   id,
   name,
   options = emptyCascaderOptions,
-  placeholder = 'Select…',
+  placeholder = "Select…",
   ...props
 }: CascaderProps) => {
-  const generatedId = useId().replaceAll(':', '')
-  const cascaderId = id ?? `ui-cascader-${generatedId}`
-  const panelId = `${cascaderId}-panel`
-  const columns = buildCascaderColumns(options, cascaderId)
+  const generatedId = useId().replaceAll(":", "");
+  const cascaderId = id ?? `ui-cascader-${generatedId}`;
+  const panelId = `${cascaderId}-panel`;
+  const columns = buildCascaderColumns(options, cascaderId);
 
   return (
     <div
-      className={composeClassName('ui-cascader', className)}
+      className={composeClassName("ui-cascader", className)}
       data-surface="default"
       data-ui-cascader
       data-ui-popover
@@ -4867,21 +6317,23 @@ export const Cascader = ({
         </span>
       </button>
       <div className="ui-cascader__panel" data-ui-panel hidden id={panelId}>
-        {columns.map(column => (
+        {columns.map((column) => (
           <ol
-            aria-label={column.root ? 'Options' : 'Sub-options'}
+            aria-label={column.root ? "Options" : "Sub-options"}
             className="ui-cascader__column"
             hidden={!column.root}
             id={column.id}
             key={column.id}
             role="listbox"
           >
-            {column.options.map(option => (
+            {column.options.map((option) => (
               <li key={option.value} role="presentation">
                 <button
                   aria-selected="false"
                   className="ui-cascader__option"
-                  data-ui-cascader-next={option.nextId ? `#${option.nextId}` : undefined}
+                  data-ui-cascader-next={
+                    option.nextId ? `#${option.nextId}` : undefined
+                  }
                   data-ui-cascader-option
                   data-value={option.value}
                   role="option"
@@ -4898,46 +6350,47 @@ export const Cascader = ({
       </div>
       {name && <input data-ui-cascader-input name={name} type="hidden" />}
     </div>
-  )
-}
+  );
+};
 
 export interface TreeSelectNode {
-  children?: TreeSelectNode[]
-  label: ReactNode
-  value: string
+  children?: TreeSelectNode[];
+  label: ReactNode;
+  value: string;
 }
-export interface TreeSelectProps extends ComponentPropsWithoutRef<'div'> {
-  name?: string
-  placeholder?: string
-  treeData?: TreeSelectNode[]
+export interface TreeSelectProps extends ComponentPropsWithoutRef<"div"> {
+  name?: string;
+  placeholder?: string;
+  treeData?: TreeSelectNode[];
 }
 
 const flattenTreeSelect = (
   nodes: TreeSelectNode[],
   depth = 0,
-  acc: { depth: number, label: ReactNode, value: string }[] = []
+  acc: { depth: number; label: ReactNode; value: string }[] = [],
 ) => {
   for (const node of nodes) {
-    acc.push({ depth, label: node.label, value: node.value })
+    acc.push({ depth, label: node.label, value: node.value });
 
-    if (node.children && node.children.length > 0) flattenTreeSelect(node.children, depth + 1, acc)
+    if (node.children && node.children.length > 0)
+      flattenTreeSelect(node.children, depth + 1, acc);
   }
 
-  return acc
-}
+  return acc;
+};
 
-const emptyTreeSelectNodes: TreeSelectNode[] = []
+const emptyTreeSelectNodes: TreeSelectNode[] = [];
 
 export const TreeSelect = ({
   children,
   className,
   name,
-  placeholder = 'Select…',
+  placeholder = "Select…",
   treeData = emptyTreeSelectNodes,
   ...props
 }: TreeSelectProps) => (
   <div
-    className={composeClassName('ui-tree-select', className)}
+    className={composeClassName("ui-tree-select", className)}
     data-surface="default"
     data-ui-popover
     data-ui-tree-select
@@ -4950,19 +6403,22 @@ export const TreeSelect = ({
       data-ui-trigger
       type="button"
     >
-      <span data-ui-tree-select-placeholder={placeholder} data-ui-tree-select-value>
+      <span
+        data-ui-tree-select-placeholder={placeholder}
+        data-ui-tree-select-value
+      >
         {placeholder}
       </span>
     </button>
     <div className="ui-tree-select__panel" data-ui-panel hidden>
       <div className="ui-tree-select__tree" role="tree">
-        {flattenTreeSelect(treeData).map(row => (
+        {flattenTreeSelect(treeData).map((row) => (
           <button
             className="ui-tree-select__option"
             data-value={row.value}
             key={row.value}
             role="treeitem"
-            style={{ ['--ui-tree-depth' as string]: row.depth }}
+            style={{ ["--ui-tree-depth" as string]: row.depth }}
             type="button"
           >
             {row.label}
@@ -4973,24 +6429,27 @@ export const TreeSelect = ({
     </div>
     {name && <input data-ui-tree-select-input name={name} type="hidden" />}
   </div>
-)
+);
 
-export interface MentionsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
-  name?: string
-  options?: SelectOption[]
-  placeholder?: string
-  trigger?: string
+export interface MentionsProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange"
+> {
+  name?: string;
+  options?: SelectOption[];
+  placeholder?: string;
+  trigger?: string;
 }
 export const Mentions = ({
   className,
   name,
   options = emptyOptions,
   placeholder,
-  trigger = '@',
+  trigger = "@",
   ...props
 }: MentionsProps) => (
   <div
-    className={composeClassName('ui-mentions', className)}
+    className={composeClassName("ui-mentions", className)}
     data-ui-mentions
     data-ui-mentions-trigger={trigger}
     {...props}
@@ -5002,8 +6461,13 @@ export const Mentions = ({
       placeholder={placeholder}
       rows={3}
     />
-    <ul className="ui-mentions__list" data-ui-mentions-list hidden role="listbox">
-      {options.map(normalizeOption).map(option => (
+    <ul
+      className="ui-mentions__list"
+      data-ui-mentions-list
+      hidden
+      role="listbox"
+    >
+      {options.map(normalizeOption).map((option) => (
         <li key={option.value}>
           <button
             className="ui-mentions__option"
@@ -5018,49 +6482,57 @@ export const Mentions = ({
       ))}
     </ul>
   </div>
-)
+);
 
-export interface QRCodeProps extends ComponentPropsWithoutRef<'figure'> {
-  size?: number
-  src?: string
-  value?: string
+export interface QRCodeProps extends ComponentPropsWithoutRef<"figure"> {
+  size?: number;
+  src?: string;
+  value?: string;
 }
-export const QRCode = ({ children, className, size = 160, src, style, value, ...props }: QRCodeProps) => {
-  const qrSvg = !src && value ? renderSVG(value) : null
-  const qrSrc = qrSvg ? `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}` : src
+export const QRCode = ({
+  children,
+  className,
+  size = 160,
+  src,
+  style,
+  value,
+  ...props
+}: QRCodeProps) => {
+  const qrSvg = !src && value ? renderSVG(value) : null;
+  const qrSrc = qrSvg
+    ? `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}`
+    : src;
 
   return (
     <figure
-      className={composeClassName('ui-qr-code', className)}
+      className={composeClassName("ui-qr-code", className)}
       data-ui-qr-code
-      style={{ ['--ui-qr-code-size' as string]: `${size}px`, ...style }}
+      style={{ ["--ui-qr-code-size" as string]: `${size}px`, ...style }}
       {...props}
     >
       <div className="ui-qr-code__frame">
-        {qrSrc ?
-          (
-            <img
-              alt={value ? `QR code for ${value}` : 'QR code'}
-              className="ui-qr-code__image"
-              height={size}
-              src={qrSrc}
-              width={size}
-            />
-          ) :
-          (
-            children
-          )}
+        {qrSrc ? (
+          <img
+            alt={value ? `QR code for ${value}` : "QR code"}
+            className="ui-qr-code__image"
+            height={size}
+            src={qrSrc}
+            width={size}
+          />
+        ) : (
+          children
+        )}
       </div>
       {value && <figcaption className="ui-qr-code__value">{value}</figcaption>}
     </figure>
-  )
-}
+  );
+};
 
-export interface WatermarkProps extends ComponentPropsWithoutRef<'div'> {
-  content?: string
-  gap?: number
-  rotate?: number
-  text?: string
+export interface WatermarkProps extends ComponentPropsWithoutRef<"div"> {
+  content?: string;
+  gap?: number;
+  rotate?: number;
+  text?: string;
 }
 export const Watermark = ({
   children,
@@ -5069,56 +6541,61 @@ export const Watermark = ({
   gap = 120,
   rotate = -22,
   style,
-  text = 'Confidential',
+  text = "Confidential",
   ...props
 }: WatermarkProps) => {
-  const watermarkText = content ?? text
-  const tileSize = Math.max(1, gap)
+  const watermarkText = content ?? text;
+  const tileSize = Math.max(1, gap);
 
   const watermarkXmlEntities: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    '\'': '&apos;'
-  }
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&apos;",
+  };
 
   const escapedWatermarkText = watermarkText.replaceAll(
-    /[&<>"']/g, character => watermarkXmlEntities[character] ?? character
-  )
+    /[&<>"']/g,
+    (character) => watermarkXmlEntities[character] ?? character,
+  );
 
   const watermarkSvg = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${tileSize}" height="${tileSize}" viewBox="0 0 ${tileSize} ${tileSize}">`,
     `<text x="${tileSize / 2}" y="${tileSize / 2}" dominant-baseline="middle" text-anchor="middle"`,
     ` transform="rotate(${rotate} ${tileSize / 2} ${tileSize / 2})"`,
     ' fill="black" font-family="Montserrat, Avenir Next, Segoe UI, sans-serif" font-size="16" font-weight="500" letter-spacing="1.6">',
-    `${escapedWatermarkText}</text></svg>`
-  ].join('')
+    `${escapedWatermarkText}</text></svg>`,
+  ].join("");
 
-  const watermarkImage = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`
+  const watermarkImage = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`;
 
   return (
     <div
-      className={composeClassName('ui-watermark', className)}
+      className={composeClassName("ui-watermark", className)}
       data-ui-watermark
       style={{
-        ['--ui-watermark-gap' as string]: `${tileSize}px`,
-        ['--ui-watermark-image' as string]: watermarkImage,
-        ...style
+        ["--ui-watermark-gap" as string]: `${tileSize}px`,
+        ["--ui-watermark-image" as string]: watermarkImage,
+        ...style,
       }}
       {...props}
     >
       {children}
-      <div aria-hidden="true" className="ui-watermark__overlay" data-text={watermarkText} />
+      <div
+        aria-hidden="true"
+        className="ui-watermark__overlay"
+        data-text={watermarkText}
+      />
     </div>
-  )
-}
+  );
+};
 
-export interface AffixProps extends ComponentPropsWithoutRef<'div'> {
-  offset?: number
-  offsetBottom?: number
-  offsetTop?: number
-  position?: 'bottom' | 'top'
+export interface AffixProps extends ComponentPropsWithoutRef<"div"> {
+  offset?: number;
+  offsetBottom?: number;
+  offsetTop?: number;
+  position?: "bottom" | "top";
 }
 export const Affix = ({
   className,
@@ -5129,87 +6606,114 @@ export const Affix = ({
   style,
   ...props
 }: AffixProps) => {
-  const position = positionProp ?? (offsetBottom === undefined ? 'top' : 'bottom')
-  const resolvedOffset = offsetBottom ?? offsetTop ?? offset
+  const position =
+    positionProp ?? (offsetBottom === undefined ? "top" : "bottom");
+  const resolvedOffset = offsetBottom ?? offsetTop ?? offset;
 
   return (
     <div
-      className={composeClassName('ui-affix', position === 'bottom' && 'ui-affix--bottom', className)}
+      className={composeClassName(
+        "ui-affix",
+        position === "bottom" && "ui-affix--bottom",
+        className,
+      )}
       data-position={position}
-      style={{ ['--ui-affix-offset' as string]: `${resolvedOffset}px`, ...style }}
+      style={{
+        ["--ui-affix-offset" as string]: `${resolvedOffset}px`,
+        ...style,
+      }}
       {...props}
     />
-  )
-}
+  );
+};
 
 export interface SpeedDialAction {
-  icon?: string
-  label: string
-  value?: string
+  icon?: string;
+  label: string;
+  value?: string;
 }
-export interface SpeedDialProps extends ComponentPropsWithoutRef<'div'> {
-  actions?: SpeedDialAction[]
-  defaultOpen?: boolean
-  direction?: 'down' | 'left' | 'right' | 'up'
-  label?: string
+export interface SpeedDialProps extends ComponentPropsWithoutRef<"div"> {
+  actions?: SpeedDialAction[];
+  defaultOpen?: boolean;
+  direction?: "down" | "left" | "right" | "up";
+  label?: string;
 }
 
-const emptySpeedDialActions: SpeedDialAction[] = []
-const speedDialNavigationKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'End', 'Home']
+const emptySpeedDialActions: SpeedDialAction[] = [];
+const speedDialNavigationKeys = [
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "End",
+  "Home",
+];
 
-const getSpeedDialNavigationIndex = (key: string, currentIndex: number, itemCount: number) => {
-  if (key === 'Home') return 0
+const getSpeedDialNavigationIndex = (
+  key: string,
+  currentIndex: number,
+  itemCount: number,
+) => {
+  if (key === "Home") return 0;
 
-  if (key === 'End') return itemCount - 1
+  if (key === "End") return itemCount - 1;
 
-  if (key === 'ArrowDown' || key === 'ArrowRight') return (currentIndex + 1) % itemCount
+  if (key === "ArrowDown" || key === "ArrowRight")
+    return (currentIndex + 1) % itemCount;
 
-  return (currentIndex - 1 + itemCount) % itemCount
-}
+  return (currentIndex - 1 + itemCount) % itemCount;
+};
 
 export const SpeedDial = ({
   actions = emptySpeedDialActions,
   children,
   className,
   defaultOpen = false,
-  direction = 'up',
-  label = 'Actions',
+  direction = "up",
+  label = "Actions",
   onBlur,
   ...props
 }: SpeedDialProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen)
-  const menuRef = useRef<HTMLMenuElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const menuRef = useRef<HTMLMenuElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const close = (restoreFocus = false) => {
-    setIsOpen(false)
+    setIsOpen(false);
 
-    if (restoreFocus) triggerRef.current?.focus()
-  }
+    if (restoreFocus) triggerRef.current?.focus();
+  };
 
-  const focusAction = (position: 'first' | 'last') => {
-    setIsOpen(true)
+  const focusAction = (position: "first" | "last") => {
+    setIsOpen(true);
 
     requestAnimationFrame(() => {
-      const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]')
-      const target = position === 'first' ? items?.[0] : items?.[items.length - 1]
+      const items = menuRef.current?.querySelectorAll<HTMLElement>(
+        '[role="menuitem"], button:not([disabled]), a[href]',
+      );
+      const target =
+        position === "first" ? items?.[0] : items?.[items.length - 1];
 
-      target?.focus()
-    })
-  }
+      target?.focus();
+    });
+  };
 
   return (
     <div
-      className={composeClassName('ui-speed-dial', `ui-speed-dial--${direction}`, className)}
+      className={composeClassName(
+        "ui-speed-dial",
+        `ui-speed-dial--${direction}`,
+        className,
+      )}
       {...props}
       data-direction={direction}
-      data-state={isOpen ? 'open' : 'closed'}
+      data-state={isOpen ? "open" : "closed"}
       data-ui-bound="true"
       data-ui-speed-dial
-      onBlur={event => {
-        onBlur?.(event)
+      onBlur={(event) => {
+        onBlur?.(event);
 
-        if (!event.currentTarget.contains(event.relatedTarget)) close()
+        if (!event.currentTarget.contains(event.relatedTarget)) close();
       }}
     >
       <button
@@ -5219,23 +6723,23 @@ export const SpeedDial = ({
         className="ui-speed-dial__trigger"
         data-ui-speed-dial-trigger
         onClick={() => {
-          setIsOpen(open => !open)
+          setIsOpen((open) => !open);
         }}
-        onKeyDown={event => {
-          if (event.key === 'Escape') close()
+        onKeyDown={(event) => {
+          if (event.key === "Escape") close();
 
-          if (['ArrowDown', 'ArrowRight'].includes(event.key)) {
-            event.preventDefault()
+          if (["ArrowDown", "ArrowRight"].includes(event.key)) {
+            event.preventDefault();
 
-            focusAction('first')
+            focusAction("first");
 
-            return
+            return;
           }
 
-          if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {
-            event.preventDefault()
+          if (["ArrowLeft", "ArrowUp"].includes(event.key)) {
+            event.preventDefault();
 
-            focusAction('last')
+            focusAction("last");
           }
         }}
         ref={triggerRef}
@@ -5247,31 +6751,43 @@ export const SpeedDial = ({
         aria-label={label}
         className="ui-speed-dial__actions"
         data-ui-speed-dial-actions
-        onClick={event => {
-          if ((event.target as HTMLElement).closest('[role="menuitem"], button, a')) close()
+        onClick={(event) => {
+          if (
+            (event.target as HTMLElement).closest(
+              '[role="menuitem"], button, a',
+            )
+          )
+            close();
         }}
-        onKeyDown={event => {
+        onKeyDown={(event) => {
           const items = [
-            ...(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]') ??
-              [])
-          ]
+            ...(menuRef.current?.querySelectorAll<HTMLElement>(
+              '[role="menuitem"], button:not([disabled]), a[href]',
+            ) ?? []),
+          ];
 
-          if (event.key === 'Escape') {
-            event.preventDefault()
+          if (event.key === "Escape") {
+            event.preventDefault();
 
-            close(true)
+            close(true);
 
-            return
+            return;
           }
 
-          if (!speedDialNavigationKeys.includes(event.key)) return
+          if (!speedDialNavigationKeys.includes(event.key)) return;
 
-          const currentIndex = items.indexOf(document.activeElement as HTMLElement)
-          const targetIndex = getSpeedDialNavigationIndex(event.key, currentIndex, items.length)
+          const currentIndex = items.indexOf(
+            document.activeElement as HTMLElement,
+          );
+          const targetIndex = getSpeedDialNavigationIndex(
+            event.key,
+            currentIndex,
+            items.length,
+          );
 
-          event.preventDefault()
+          event.preventDefault();
 
-          items[targetIndex]?.focus()
+          items[targetIndex]?.focus();
         }}
         ref={menuRef}
         role="menu"
@@ -5280,7 +6796,7 @@ export const SpeedDial = ({
           <li
             key={action.value ?? action.label}
             role="presentation"
-            style={{ '--ui-speed-dial-index': index } as CSSProperties}
+            style={{ "--ui-speed-dial-index": index } as CSSProperties}
           >
             <button
               aria-label={action.label}
@@ -5295,15 +6811,20 @@ export const SpeedDial = ({
                   aria-hidden="true"
                   className="ui-speed-dial__action-icon ui-icon"
                 >
-                  {renderLucideIcon(action.icon, `ui-icon__svg lucide-${action.icon}`)}
+                  {renderLucideIcon(
+                    action.icon,
+                    `ui-icon__svg lucide-${action.icon}`,
+                  )}
                 </span>
               )}
-              <span className="ui-speed-dial__action-label">{action.label}</span>
+              <span className="ui-speed-dial__action-label">
+                {action.label}
+              </span>
             </button>
           </li>
         ))}
         {children}
       </menu>
     </div>
-  )
-}
+  );
+};

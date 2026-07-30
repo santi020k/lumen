@@ -71,7 +71,7 @@ const runBuild = async (name, iteration) => {
 
   for await (const chunk of child.stderr) output += chunk
 
-  const exitCode = await new Promise(resolveExit => child.once('close', resolveExit))
+  const exitCode = await new Promise(resolve => child.once('close', resolve))
 
   if (exitCode !== 0) throw new Error(`${name} build failed:\n${output}`)
 

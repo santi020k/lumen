@@ -27,7 +27,7 @@ export interface LumenDiagnosticReport {
 const sourceExtensions = new Set(['.astro', '.css', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
 const ignoredDirectories = new Set(['.git', '.next', '.turbo', 'coverage', 'dist', 'node_modules'])
 
-const publicRootSlots = new Set(
+const publicRootSlots: ReadonlySet<string> = new Set(
   Object.values(lumenStylingContracts).flatMap(contract => [contract.rootSlot, ...contract.parts])
 )
 
@@ -73,6 +73,145 @@ const finding = (
   severity: LumenDiagnosticSeverity = 'error'
 ): LumenDiagnosticFinding => ({ file, message, remediation, rule, severity })
 
+type LumenFramework = 'astro' | 'elements' | 'react'
+
+interface SourceEntry {
+  file: string
+  source: string
+}
+
+const getFrameworks = (joined: string): LumenFramework[] => [
+  joined.includes('@santi020k/lumen-astro') && 'astro',
+  joined.includes('@santi020k/lumen-elements') && 'elements',
+  joined.includes('@santi020k/lumen-react') && 'react'
+].filter((value): value is LumenFramework => Boolean(value))
+
+const collectCompatibilityFindings = (
+  root: string,
+  sources: SourceEntry[]
+): LumenDiagnosticFinding[] => sources.flatMap(item => {
+  const file = relative(root, item.file)
+  const findings: LumenDiagnosticFinding[] = []
+
+  if (/surface\s*=\s*["']glass["']/u.test(item.source)) {
+    findings.push(finding(
+      file, 'deprecated-surface-glass', 'The surface="glass" compatibility alias is deprecated.', 'Replace it with the glass prop or attribute.', 'advisory'
+    ))
+  }
+
+  if (item.source.includes('ui:datatable-selection-change')) {
+    findings.push(finding(
+      file, 'deprecated-datatable-event', 'The ui:datatable-selection-change event alias is deprecated.', 'Rename it to ui:data-table-selection-change.', 'advisory'
+    ))
+  }
+
+  return findings
+})
+
+const getCatalogFingerprint = (sources: SourceEntry[]): string => {
+  const names = [...new Set(sources.flatMap(item => [
+    ...importedNames(item.source, '@santi020k/lumen-astro'),
+    ...importedNames(item.source, '@santi020k/lumen-react')
+  ]))]
+    .filter(name => name in lumenComponentBehavior)
+    .sort()
+
+  const contracts = names.map(name => [name, lumenComponentBehavior[name as LumenComponentName]])
+
+  return createHash('sha256').update(JSON.stringify(contracts)).digest('hex')
+}
+
+const collectRuntimeFindings = (
+  root: string,
+  sources: SourceEntry[],
+  runtimeComponents: string[]
+): LumenDiagnosticFinding[] => {
+  const imports = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro').map(name => ({ file: item.file, name })))
+  const mounts = sources.filter(item => /<UIPrimitives(?:\s|\/|>)/u.test(item.source))
+  const findings: LumenDiagnosticFinding[] = []
+
+  if (runtimeComponents.length > 0 && mounts.length === 0) {
+    findings.push(finding(
+      imports[0] ? relative(root, imports[0].file) : 'package.json', 'astro-runtime-missing', `Interactive Astro imports require UIPrimitives: ${runtimeComponents.join(', ')}.`, 'Mount <UIPrimitives /> once in the root layout.'
+    ))
+  }
+
+  for (const mount of mounts.slice(1)) {
+    findings.push(finding(
+      relative(root, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted more than once.', 'Keep one mount in the application root layout.'
+    ))
+  }
+
+  return findings
+}
+
+const collectCssFindings = (root: string, sources: SourceEntry[]): LumenDiagnosticFinding[] => sources.filter(item => item.file.endsWith('.css')).flatMap(item => {
+  const layerIndex = item.source.indexOf('/layers.css')
+  const tailwindIndex = item.source.indexOf('tailwindcss')
+  const styleIndex = item.source.indexOf('/styles.css')
+  const findings: LumenDiagnosticFinding[] = []
+
+  if (
+    tailwindIndex >= 0 &&
+    (layerIndex < 0 || styleIndex < 0 || !(layerIndex < tailwindIndex && tailwindIndex < styleIndex))
+  ) {
+    findings.push(finding(
+      relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen styles.css.'
+    ))
+  }
+
+  for (const match of item.source.matchAll(/\.ui-([a-z0-9-]+)/g)) {
+    const selector = match[1] ?? ''
+
+    if (!publicRootSlots.has(selector)) {
+      findings.push(finding(
+        relative(root, item.file), 'internal-selector', `Selector .ui-${selector} is not a documented stable root hook.`, 'Prefer component props, semantic tokens, documented custom properties, or [data-slot].', 'advisory'
+      ))
+    }
+  }
+
+  return findings
+})
+
+const styleImportByFramework = {
+  astro: '@santi020k/lumen-astro/styles.css',
+  elements: '@santi020k/lumen-elements/styles.css',
+  react: '@santi020k/lumen-react/styles.css'
+} as const
+
+const collectFrameworkStyleFindings = (
+  root: string,
+  sources: SourceEntry[],
+  frameworks: LumenFramework[]
+): LumenDiagnosticFinding[] => frameworks.flatMap(framework => {
+  const references = sources.filter(item => item.source.includes(styleImportByFramework[framework]))
+
+  if (references.length === 0) {
+    return [finding(
+      'styles', 'framework-style-missing', `No ${styleImportByFramework[framework]} import was found.`, 'Load the matching adapter stylesheet once in the application root.'
+    )]
+  }
+
+  return references.slice(1).map(item => finding(
+    relative(root, item.file), 'framework-style-duplicate', `The ${framework} stylesheet is loaded more than once.`, 'Keep one stylesheet import in the application root.'
+  ))
+})
+
+const collectAdapterMismatchFindings = (
+  joined: string,
+  frameworks: LumenFramework[]
+): LumenDiagnosticFinding[] => {
+  const adapters = [...joined.matchAll(/@santi020k\/lumen-(astro|elements|react)\/styles\.css/g)]
+    .map(match => match[1])
+    .filter((adapter): adapter is LumenFramework => adapter === 'astro' || adapter === 'elements' || adapter === 'react')
+
+  return [...new Set(adapters)]
+    .filter(adapter => !frameworks.includes(adapter))
+    .map(adapter => finding(
+      'styles', 'adapter-style-mismatch', `The ${adapter} stylesheet is loaded without matching ${adapter} imports.`, 'Load the stylesheet from the adapter used by this application boundary.'
+    ))
+}
+
 export const inspectLumenIntegration = async (repository: string): Promise<LumenDiagnosticReport> => {
   const root = resolve(repository)
 
@@ -81,159 +220,22 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
   const files = await findSourceFiles(root)
   const sources = await Promise.all(files.map(async file => ({ file, source: await readFile(file, 'utf8') })))
   const joined = sources.map(item => item.source).join('\n')
+  const frameworks = getFrameworks(joined)
+  const astroNames = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro'))
 
-  const frameworks = [
-    joined.includes('@santi020k/lumen-astro') && 'astro',
-    joined.includes('@santi020k/lumen-elements') && 'elements',
-    joined.includes('@santi020k/lumen-react') && 'react'
-  ].filter(Boolean) as ('astro' | 'elements' | 'react')[]
+  const runtimeComponents = [...new Set(astroNames.filter(name => name in lumenComponentBehavior &&
+    lumenComponentBehavior[name as LumenComponentName].astro === 'ui-primitives'))]
 
-  const findings: LumenDiagnosticFinding[] = []
-
-  for (const item of sources) {
-    if (/surface\s*=\s*["']glass["']/u.test(item.source)) {
-      findings.push(
-        finding(
-          relative(root, item.file), 'deprecated-surface-glass', 'The surface="glass" compatibility alias is deprecated.', 'Replace it with the glass prop or attribute.', 'advisory'
-        )
-      )
-    }
-
-    if (item.source.includes('ui:datatable-selection-change')) {
-      findings.push(
-        finding(
-          relative(root, item.file), 'deprecated-datatable-event', 'The ui:datatable-selection-change event alias is deprecated.', 'Rename it to ui:data-table-selection-change.', 'advisory'
-        )
-      )
-    }
-  }
-
-  const astroImports = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro').map(name => ({ file: item.file, name })))
-
-  const runtimeComponents = [
-    ...new Set(
-      astroImports
-        .filter(
-          item => item.name in lumenComponentBehavior &&
-            lumenComponentBehavior[item.name as LumenComponentName].astro === 'ui-primitives'
-        )
-        .map(item => item.name)
-    )
+  const findings = [
+    ...collectCompatibilityFindings(root, sources),
+    ...collectRuntimeFindings(root, sources, runtimeComponents),
+    ...collectCssFindings(root, sources),
+    ...collectFrameworkStyleFindings(root, sources, frameworks),
+    ...collectAdapterMismatchFindings(joined, frameworks)
   ]
-
-  const usedComponents = [
-    ...new Set(
-      sources.flatMap(item => [
-        ...importedNames(item.source, '@santi020k/lumen-astro'),
-        ...importedNames(item.source, '@santi020k/lumen-react')
-      ])
-    )
-  ]
-    .filter(componentName => componentName in lumenComponentBehavior)
-    .sort()
-
-  const catalogFingerprint = createHash('sha256')
-    .update(
-      JSON.stringify(
-        usedComponents.map(componentName => [
-          componentName,
-          lumenComponentBehavior[componentName as LumenComponentName]
-        ])
-      )
-    )
-    .digest('hex')
-
-  const runtimeMounts = sources.filter(item => /<UIPrimitives(?:\s|\/|>)/u.test(item.source))
-
-  if (runtimeComponents.length > 0 && runtimeMounts.length === 0) {
-    findings.push(
-      finding(
-        astroImports[0] ? relative(root, astroImports[0].file) : 'package.json', 'astro-runtime-missing', `Interactive Astro imports require UIPrimitives: ${runtimeComponents.join(', ')}.`, 'Mount <UIPrimitives /> once in the root layout.'
-      )
-    )
-  }
-
-  if (runtimeMounts.length > 1) {
-    for (const mount of runtimeMounts.slice(1)) {
-      findings.push(
-        finding(
-          relative(root, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted more than once.', 'Keep one mount in the application root layout.'
-        )
-      )
-    }
-  }
-
-  for (const item of sources.filter(candidate => candidate.file.endsWith('.css'))) {
-    const layerIndex = item.source.indexOf('/layers.css')
-    const tailwindIndex = item.source.indexOf('tailwindcss')
-    const styleIndex = item.source.indexOf('/styles.css')
-
-    if (
-      tailwindIndex >= 0 &&
-      (layerIndex < 0 || styleIndex < 0 || !(layerIndex < tailwindIndex && tailwindIndex < styleIndex))
-    ) {
-      findings.push(
-        finding(
-          relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen styles.css.'
-        )
-      )
-    }
-
-    for (const match of item.source.matchAll(/\.ui-([a-z0-9-]+)/g)) {
-      const selector = match[1] ?? ''
-
-      if (!publicRootSlots.has(selector)) {
-        findings.push(
-          finding(
-            relative(root, item.file), 'internal-selector', `Selector .ui-${selector} is not a documented stable root hook.`, 'Prefer component props, semantic tokens, documented custom properties, or [data-slot].', 'advisory'
-          )
-        )
-      }
-    }
-  }
-
-  const styleAdapters = new Set(
-    [...joined.matchAll(/@santi020k\/lumen-(astro|elements|react)\/styles\.css/g)].map(match => match[1])
-  )
-
-  const styleImportByFramework = {
-    astro: '@santi020k/lumen-astro/styles.css',
-    elements: '@santi020k/lumen-elements/styles.css',
-    react: '@santi020k/lumen-react/styles.css'
-  } as const
-
-  for (const framework of frameworks) {
-    const styleReferences = sources.filter(item => item.source.includes(styleImportByFramework[framework]))
-
-    if (styleReferences.length === 0) {
-      findings.push(
-        finding(
-          'styles', 'framework-style-missing', `No ${styleImportByFramework[framework]} import was found.`, 'Load the matching adapter stylesheet once in the application root.'
-        )
-      )
-    } else if (styleReferences.length > 1) {
-      for (const item of styleReferences.slice(1)) {
-        findings.push(
-          finding(
-            relative(root, item.file), 'framework-style-duplicate', `The ${framework} stylesheet is loaded more than once.`, 'Keep one stylesheet import in the application root.'
-          )
-        )
-      }
-    }
-  }
-
-  for (const adapter of styleAdapters) {
-    if (!frameworks.includes(adapter as 'astro' | 'elements' | 'react')) {
-      findings.push(
-        finding(
-          'styles', 'adapter-style-mismatch', `The ${adapter} stylesheet is loaded without matching ${adapter} imports.`, 'Load the stylesheet from the adapter used by this application boundary.'
-        )
-      )
-    }
-  }
 
   return {
-    catalogFingerprint,
+    catalogFingerprint: getCatalogFingerprint(sources),
     findings,
     frameworks,
     generatedAt: new Date().toISOString(),
@@ -288,7 +290,9 @@ export const createLumenSetup = (framework: 'astro' | 'elements' | 'react', tail
   }
 
   if (framework === 'elements') {
-    return `${styles}\n\nimport { defineLumenElements } from '@santi020k/lumen-elements/define'\n\ndefineLumenElements()`
+    return `${styles}\n\n` +
+      'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'\n\n' +
+      'defineLumenElements()'
   }
 
   return styles

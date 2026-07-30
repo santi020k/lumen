@@ -20,11 +20,10 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-aspect-ratio'
 ], classProp, className)
 
-const ratioValue = typeof ratio === 'number' && Number.isFinite(ratio) ?
-  String(ratio) :
-  typeof ratio === 'string' ?
-    ratio.trim() :
-    ''
+let ratioValue = ''
+
+if (typeof ratio === 'number' && Number.isFinite(ratio)) ratioValue = String(ratio)
+else if (typeof ratio === 'string') ratioValue = ratio.trim()
 
 const isValidRatio =
   /^\d+(\.\d+)?(\s*\/\s*\d+(\.\d+)?)?$/.test(ratioValue) &&

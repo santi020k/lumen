@@ -36,7 +36,7 @@ const {
 } = Astro.props
 
 const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
-const selectedValue = value === undefined || value === null ? undefined : value
+const selectedValue = value ?? undefined
 const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
 const selectedOption = normalizedOptions.find(option => option.value === selectedValue)
 const selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`

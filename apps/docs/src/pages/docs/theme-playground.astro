@@ -39,7 +39,7 @@ const tokenStyle = Object.entries(defaultTokens)
 
 const defaultCss = `:root {
   color-scheme: ${defaultScheme};
-${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\n')}
+${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token] ?? ''};`).join('\n')}
 }`
 ---
 
@@ -352,7 +352,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
         const scheme = getPageScheme()
         const buttons = setSchemeButtonState(scheme)
-    const activeButton = [...buttons].find(button => button.getAttribute('data-ui-theme-scheme') === scheme)
+        const activeButton = [...buttons].find(button => button.getAttribute('data-ui-theme-scheme') === scheme)
 
         if (!notify || !(activeButton instanceof HTMLButtonElement)) return
 

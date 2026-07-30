@@ -30,12 +30,12 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   (
     <a class:list={classList} data-variant={variant} href={href} {...passthrough}>
       <slot />
-      {count != null && <span class="ui-pill__count">{count}</span>}
+      {count !== undefined && <span class="ui-pill__count">{count}</span>}
     </a>
   ) :
   (
     <span class:list={classList} data-variant={variant} {...passthrough}>
       <slot />
-      {count != null && <span class="ui-pill__count">{count}</span>}
+      {count !== undefined && <span class="ui-pill__count">{count}</span>}
     </span>
   )}

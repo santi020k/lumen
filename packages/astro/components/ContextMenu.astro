@@ -14,13 +14,17 @@ interface Props extends HTMLAttributes<'menu'> {
   surface?: 'default' | 'glass'
 }
 
+type InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }
+
+const internalProps: InternalProps = Astro.props
+
 const {
   class: classProp = '',
   className = '',
   glass = false,
   surface = 'default',
   ...rest
-} = Astro.props
+} = internalProps
 
 const resolvedGlass = resolveLumenGlass(glass, surface)
 

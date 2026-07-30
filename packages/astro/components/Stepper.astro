@@ -23,7 +23,14 @@ const {
 } = Astro.props
 
 const normalized = steps.map(step => typeof step === 'string' ? { description: undefined, title: step } : step)
-const stepState = (index: number) => index < currentStep ? 'complete' : index === currentStep ? 'current' : 'upcoming'
+
+const stepState = (index: number) => {
+  if (index < currentStep) return 'complete'
+
+  if (index === currentStep) return 'current'
+
+  return 'upcoming'
+}
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-stepper',

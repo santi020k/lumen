@@ -55,7 +55,6 @@ const parseIsoMonth = (date: string | undefined): Date | undefined => {
 const formatIsoDate = (date: Date): string => date.toISOString().slice(0, 10)
 const formatIsoMonth = (date: Date): string => date.toISOString().slice(0, 7)
 const addDays = (date: Date, days: number): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
-const getDaysInMonth = (date: Date): number => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
 const isBefore = (date: Date, limit: Date | undefined): boolean => Boolean(limit && formatIsoDate(date) < formatIsoDate(limit))
 const isAfter = (date: Date, limit: Date | undefined): boolean => Boolean(limit && formatIsoDate(date) > formatIsoDate(limit))
 
@@ -96,13 +95,14 @@ const firstSelectableDate = visibleDates.find(date => date.getUTCMonth() === mon
   !isBefore(date, minDate) &&
   !isAfter(date, maxDate))
 
-const focusIso = selectedDate && formatIsoMonth(selectedDate) === monthIso ?
-  selectedIso :
-  todayUtc.getUTCMonth() === monthDate.getUTCMonth() && todayUtc.getUTCFullYear() === monthDate.getUTCFullYear() ?
-    todayIso :
-    firstSelectableDate ?
-      formatIsoDate(firstSelectableDate) :
-      formatIsoDate(monthDate)
+let focusIso = formatIsoDate(monthDate)
+
+if (selectedDate && formatIsoMonth(selectedDate) === monthIso) focusIso = selectedIso
+else if (
+  todayUtc.getUTCMonth() === monthDate.getUTCMonth() &&
+  todayUtc.getUTCFullYear() === monthDate.getUTCFullYear()
+) focusIso = todayIso
+else if (firstSelectableDate) focusIso = formatIsoDate(firstSelectableDate)
 
 const weekdays = Array.from({ length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index))))
 

@@ -6581,6 +6581,22 @@ a.ui-pill:focus-visible {
     outline-offset: 2px;
   }
 
+  .ui-list-box__section {
+    padding: 0.5rem 0.625rem 0.25rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ui-list-box__empty,
+  .ui-list-box__status {
+    padding: 0.75rem 0.625rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.875rem;
+  }
+
   .ui-list-box__option,
   [data-ui-list-box-option] {
     padding: 0.5rem 0.625rem;

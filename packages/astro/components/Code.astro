@@ -84,17 +84,9 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
           )}
         </figcaption>
       )}
-      {highlighted ?
-        (
-          <slot />
-        ) :
-        hasCode ?
-          (
-            <pre><code set:html={renderedCode}></code></pre>
-          ) :
-          (
-            <pre><code><slot /></code></pre>
-          )}
+      {highlighted && <slot />}
+      {!highlighted && hasCode && <pre><code set:html={renderedCode}></code></pre>}
+      {!highlighted && !hasCode && <pre><code><slot /></code></pre>}
     </figure>
   ) :
   (

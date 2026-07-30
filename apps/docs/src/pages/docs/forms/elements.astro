@@ -143,5 +143,19 @@ const controls = [
         </Card>
       </div>
     </section>
+
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="migration-title">
+      <h2 class="text-2xl font-bold text-ink" id="migration-title">Migration from proxy controls</h2>
+      <ul class="m-0 grid list-disc gap-2 pl-5 text-sm/7 text-ink-soft">
+        <li>Keep a native form element as the container; do not replace it with lumen-form.</li>
+        <li>Read and write the custom control’s public value or checked property.</li>
+        <li>Listen for ordinary bubbling input and change events instead of private proxy events.</li>
+        <li>Do not query or submit an internal input; the host’s form contract is authoritative.</li>
+        <li>
+          Browsers with ElementInternals use form-associated custom elements. Other supported
+          browsers receive one native fallback control with the same value and validation behavior.
+        </li>
+      </ul>
+    </section>
   </div>
 </DocsLayout>
