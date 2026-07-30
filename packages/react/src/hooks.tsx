@@ -19,7 +19,7 @@ import {
   useId,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 
 import {
@@ -35,7 +35,7 @@ import {
   type LumenThemeBuilderMode,
   type LumenThemeBuilderResult,
   type LumenThemeBuilderScheme,
-  type LumenThemeTokens,
+  type LumenThemeTokens
 } from '@santi020k/lumen-core'
 
 type ChangeHandler<T> = (value: T) => void
@@ -47,6 +47,17 @@ type DataAttributes = Record<`data-${string}`, unknown>
 type LumenProps<Tag extends keyof JSX.IntrinsicElements> = ComponentPropsWithRef<Tag> & DataAttributes
 
 type InputMode = NonNullable<ComponentPropsWithRef<'input'>['inputMode']>
+
+const setRefValue = <Value,>(
+  ref: Ref<Value> | undefined,
+  value: Value | null
+): void => {
+  if (typeof ref === 'function') {
+    ref(value)
+  } else if (ref) {
+    ref.current = value
+  }
+}
 
 interface RichTextCommandDocument {
   execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
@@ -258,6 +269,7 @@ export interface InputOTPOptions {
   defaultValue?: string | undefined
   disabled?: boolean | undefined
   inputMode?: InputMode | undefined
+  inputRef?: Ref<HTMLInputElement> | undefined
   invalid?: boolean | undefined
   length?: number | undefined
   onValueChange?: ChangeHandler<string> | undefined
@@ -441,7 +453,7 @@ export interface ThemeBuilderController extends ThemeBuilderChangeDetail {
   exportValue: string
   getExportFormatProps: (
     format: LumenThemeBuilderExportFormat,
-    props?: ComponentPropsWithRef<'button'>,
+    props?: ComponentPropsWithRef<'button'>
   ) => LumenProps<'button'>
   getModeProps: (mode: LumenThemeBuilderMode, props?: ComponentPropsWithRef<'button'>) => LumenProps<'button'>
   getSchemeProps: (scheme: LumenThemeBuilderScheme, props?: ComponentPropsWithRef<'button'>) => LumenProps<'button'>
@@ -471,12 +483,11 @@ const focusableSelector = [
   'input:not([disabled])',
   'select:not([disabled])',
   'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
+  '[tabindex]:not([tabindex="-1"])'
 ].join(',')
 
 const composeHandlers =
-  <Event,>(userHandler: ((event: Event) => void) | undefined, lumenHandler: (event: Event) => void) =>
-  (event: Event) => {
+  <Event,>(userHandler: ((event: Event) => void) | undefined, lumenHandler: (event: Event) => void) => (event: Event) => {
     userHandler?.(event)
 
     lumenHandler(event)
@@ -494,7 +505,7 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
   if (!root) return []
 
   return [...root.querySelectorAll<HTMLElement>(focusableSelector)].filter(
-    (element) => !element.hasAttribute('hidden') && isElementVisible(element),
+    element => !element.hasAttribute('hidden') && isElementVisible(element)
   )
 }
 
@@ -502,7 +513,7 @@ const getLoopedIndex = (
   key: string,
   currentIndex: number,
   itemCount: number,
-  forwardKeys: readonly string[],
+  forwardKeys: readonly string[]
 ): number => {
   const lastIndex = itemCount - 1
 
@@ -526,13 +537,13 @@ const useSafeId = (prefix: string, id?: string): string => {
 const useControllableState = <T,>({
   defaultValue,
   onChange,
-  value,
+  value
 }: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>] => {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const currentValue = value ?? uncontrolledValue
 
   const setValue = useCallback<Dispatch<SetStateAction<T>>>(
-    (next) => {
+    next => {
       const resolvedValue = typeof next === 'function' ? (next as (previous: T) => T)(currentValue) : next
 
       if (value === undefined) {
@@ -540,8 +551,7 @@ const useControllableState = <T,>({
       }
 
       onChange?.(resolvedValue)
-    },
-    [currentValue, onChange, value],
+    }, [currentValue, onChange, value]
   )
 
   return [currentValue, setValue]
@@ -557,10 +567,9 @@ const focusTrigger = (trigger: HTMLElement | null): void => {
   trigger?.focus({ preventScroll: true })
 }
 
-const clampViewportPosition = (value: number, size: number, viewportSize: number): number =>
-  Math.max(8, Math.min(value, viewportSize - size - 8))
+const clampViewportPosition = (value: number, size: number, viewportSize: number): number => Math.max(8, Math.min(value, viewportSize - size - 8))
 
-const getContextMenuPosition = (x: number, y: number, rect: DOMRect | undefined): { left: number; top: number } => {
+const getContextMenuPosition = (x: number, y: number, rect: DOMRect | undefined): { left: number, top: number } => {
   const width = rect?.width ?? 0
   const height = rect?.height ?? 0
   const viewportWidth = typeof window === 'undefined' ? x + width + 16 : window.innerWidth
@@ -568,7 +577,7 @@ const getContextMenuPosition = (x: number, y: number, rect: DOMRect | undefined)
 
   return {
     left: clampViewportPosition(x, width, viewportWidth),
-    top: clampViewportPosition(y, height, viewportHeight),
+    top: clampViewportPosition(y, height, viewportHeight)
   }
 }
 
@@ -581,7 +590,7 @@ const useOutsideClose = (open: boolean, refs: RefObject<HTMLElement | null>[], o
 
       if (!target) return
 
-      const isInside = refs.some((ref) => ref.current?.contains(target))
+      const isInside = refs.some(ref => ref.current?.contains(target))
 
       if (!isInside) onClose()
     }
@@ -603,7 +612,7 @@ const useDisclosureController = (options: DisclosureOptions, hasPopup: 'listbox'
   const [open, setOpen] = useControllableState({
     defaultValue: options.defaultOpen ?? false,
     onChange: options.onOpenChange,
-    value: options.open,
+    value: options.open
   })
 
   const close = useCallback(() => {
@@ -611,7 +620,7 @@ const useDisclosureController = (options: DisclosureOptions, hasPopup: 'listbox'
   }, [setOpen])
 
   const toggle = useCallback(() => {
-    setOpen((current) => !current)
+    setOpen(current => !current)
   }, [setOpen])
 
   useOutsideClose(open, [rootRef, triggerRef, panelRef], close)
@@ -624,7 +633,7 @@ const useDisclosureController = (options: DisclosureOptions, hasPopup: 'listbox'
     onClick: () => {
       toggle()
     },
-    onKeyDown: (event) => {
+    onKeyDown: event => {
       if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return
 
       event.preventDefault()
@@ -634,14 +643,14 @@ const useDisclosureController = (options: DisclosureOptions, hasPopup: 'listbox'
       focusFirstIn(panelRef.current)
     },
     ref: triggerRef as Ref<HTMLButtonElement>,
-    type: 'button',
+    type: 'button'
   }
 
   const panelProps: LumenProps<'div'> = {
     'data-state': open ? 'open' : 'closed',
     hidden: !open,
     id: panelId,
-    onKeyDown: (event) => {
+    onKeyDown: event => {
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -667,7 +676,7 @@ const useDisclosureController = (options: DisclosureOptions, hasPopup: 'listbox'
 
       nextItem?.focus()
     },
-    ref: panelRef as Ref<HTMLDivElement>,
+    ref: panelRef as Ref<HTMLDivElement>
   }
 
   return {
@@ -676,13 +685,13 @@ const useDisclosureController = (options: DisclosureOptions, hasPopup: 'listbox'
     panelProps,
     panelRef,
     rootProps: {
-      ref: rootRef as Ref<HTMLDivElement>,
+      ref: rootRef as Ref<HTMLDivElement>
     },
     rootRef,
     setOpen,
     toggle,
     triggerProps,
-    triggerRef,
+    triggerRef
   }
 }
 
@@ -693,7 +702,7 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
   const [open, setOpen] = useControllableState({
     defaultValue: options.defaultOpen ?? false,
     onChange: options.onOpenChange,
-    value: options.open,
+    value: options.open
   })
 
   const close = useCallback(() => {
@@ -726,7 +735,7 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
     'aria-modal': true,
     'data-ui-alert-dialog': options.alert ? true : undefined,
     'data-ui-dialog': options.alert ? undefined : true,
-    onClick: (event) => {
+    onClick: event => {
       if (event.target === dialogRef.current && !options.alert) {
         close()
       }
@@ -737,7 +746,7 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
       focusTrigger(triggerRef.current)
     },
     ref: dialogRef,
-    role: options.alert ? 'alertdialog' : 'dialog',
+    role: options.alert ? 'alertdialog' : 'dialog'
   }
 
   const triggerProps: LumenProps<'button'> = {
@@ -746,34 +755,33 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
       setOpen(true)
     },
     ref: triggerRef as Ref<HTMLButtonElement>,
-    type: 'button',
+    type: 'button'
   }
 
   return {
     close,
     closeProps: {
       onClick: close,
-      type: 'button',
+      type: 'button'
     },
     dialogProps,
     dialogRef,
     open,
     setOpen,
     triggerProps,
-    triggerRef,
+    triggerRef
   }
 }
 
 export const usePopover = (options: PopoverOptions = {}): PopoverController => useDisclosureController(options, 'menu')
 
-export const useDropdownMenu = (options: DropdownMenuOptions = {}): DropdownMenuController =>
-  useDisclosureController(options, 'menu')
+export const useDropdownMenu = (options: DropdownMenuOptions = {}): DropdownMenuController => useDisclosureController(options, 'menu')
 
 export const useContextMenu = ({
   defaultOpen = false,
   id,
   onOpenChange,
-  open: controlledOpen,
+  open: controlledOpen
 }: ContextMenuOptions = {}): ContextMenuController => {
   const menuRef = useRef<HTMLElement | null>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
@@ -783,7 +791,7 @@ export const useContextMenu = ({
   const [open, setOpen] = useControllableState({
     defaultValue: defaultOpen,
     onChange: onOpenChange,
-    value: controlledOpen,
+    value: controlledOpen
   })
 
   const close = useCallback(() => {
@@ -799,20 +807,19 @@ export const useContextMenu = ({
       setOpen(true)
 
       focusFirstIn(menuRef.current)
-    },
-    [setOpen],
+    }, [setOpen]
   )
 
   const triggerProps: LumenProps<'button'> = {
     'aria-controls': menuId,
     'aria-haspopup': 'menu',
     'data-ui-context-menu-trigger': menuId,
-    onContextMenu: (event) => {
+    onContextMenu: event => {
       event.preventDefault()
 
       openAt(event.clientX, event.clientY)
     },
-    onKeyDown: (event) => {
+    onKeyDown: event => {
       if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return
 
       event.preventDefault()
@@ -822,7 +829,7 @@ export const useContextMenu = ({
       openAt(rect.left + 16, rect.top + 16)
     },
     ref: triggerRef as Ref<HTMLButtonElement>,
-    type: 'button',
+    type: 'button'
   }
 
   const menuProps: LumenProps<'menu'> = {
@@ -830,12 +837,12 @@ export const useContextMenu = ({
     'data-ui-context-menu': true,
     hidden: !open,
     id: menuId,
-    onClick: (event) => {
+    onClick: event => {
       if (event.target instanceof HTMLElement && event.target.closest('[role="menuitem"]')) {
         close()
       }
     },
-    onKeyDown: (event) => {
+    onKeyDown: event => {
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -865,8 +872,8 @@ export const useContextMenu = ({
       left: position.left,
       position: 'fixed',
       top: position.top,
-      zIndex: 60,
-    },
+      zIndex: 60
+    }
   }
 
   return {
@@ -877,7 +884,7 @@ export const useContextMenu = ({
     openAt,
     setOpen,
     triggerProps,
-    triggerRef,
+    triggerRef
   }
 }
 
@@ -886,7 +893,7 @@ export const useTabs = ({
   id,
   onValueChange,
   orientation = 'horizontal',
-  value,
+  value
 }: TabsOptions = {}): TabsController => {
   const rootRef = useRef<HTMLElement | null>(null)
   const tabsId = useSafeId('ui-tabs', id)
@@ -894,14 +901,13 @@ export const useTabs = ({
   const [selectedValue, setSelectedValue] = useControllableState({
     defaultValue,
     onChange: onValueChange,
-    value,
+    value
   })
 
   const activate = useCallback(
     (nextValue: string) => {
       setSelectedValue(nextValue)
-    },
-    [setSelectedValue],
+    }, [setSelectedValue]
   )
 
   const getTriggerProps = useCallback<TabsController['getTriggerProps']>(
@@ -918,7 +924,7 @@ export const useTabs = ({
         onClick: composeHandlers(props.onClick, () => {
           activate(triggerValue)
         }),
-        onKeyDown: composeHandlers(props.onKeyDown, (event) => {
+        onKeyDown: composeHandlers(props.onKeyDown, event => {
           const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
 
           if (!keys.includes(event.key)) return
@@ -942,10 +948,9 @@ export const useTabs = ({
         role: 'tab',
         tabIndex: selected ? 0 : -1,
         type: props.type ?? 'button',
-        'data-value': triggerValue,
+        'data-value': triggerValue
       }
-    },
-    [activate, selectedValue, tabsId],
+    }, [activate, selectedValue, tabsId]
   )
 
   const getPanelProps = useCallback<TabsController['getPanelProps']>(
@@ -958,10 +963,9 @@ export const useTabs = ({
         hidden: !selected,
         id: props.id ?? `${tabsId}-panel-${panelValue}`,
         role: 'tabpanel',
-        tabIndex: props.tabIndex ?? 0,
+        tabIndex: props.tabIndex ?? 0
       }
-    },
-    [selectedValue, tabsId],
+    }, [selectedValue, tabsId]
   )
 
   return {
@@ -969,22 +973,20 @@ export const useTabs = ({
     getTriggerProps,
     listProps: {
       'aria-orientation': orientation,
-      role: 'tablist',
+      role: 'tablist'
     },
     rootProps: {
       'data-ui-tabs': true,
-      ref: rootRef as Ref<HTMLDivElement>,
+      ref: rootRef as Ref<HTMLDivElement>
     },
     rootRef,
     setValue: setSelectedValue,
-    value: selectedValue,
+    value: selectedValue
   }
 }
 
-const normalizeOption = (option: SelectOptionInput): SelectOption =>
-  typeof option === 'string' ? { label: option, value: option } : option
-const isPrintableKey = (event: KeyboardEvent): boolean =>
-  event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
+const normalizeOption = (option: SelectOptionInput): SelectOption => typeof option === 'string' ? { label: option, value: option } : option
+const isPrintableKey = (event: KeyboardEvent): boolean => event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
 
 /* eslint-disable complexity -- Select owns the native select, ARIA listbox props, and keyboard/typeahead behavior as one public hook contract. */
 export const useSelect = ({
@@ -996,7 +998,7 @@ export const useSelect = ({
   options = [],
   placeholder,
   required = false,
-  value,
+  value
 }: SelectOptions = {}): SelectController => {
   const rootRef = useRef<HTMLElement | null>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
@@ -1011,10 +1013,10 @@ export const useSelect = ({
   const [selectedValue, setSelectedValue] = useControllableState({
     defaultValue,
     onChange: onValueChange,
-    value,
+    value
   })
 
-  const selectedOption = normalizedOptions.find((option) => option.value === selectedValue)
+  const selectedOption = normalizedOptions.find(option => option.value === selectedValue)
   const triggerText = selectedOption?.label ?? placeholder ?? 'Select an option'
   const hasSelection = Boolean(selectedOption && selectedValue !== '')
 
@@ -1033,15 +1035,14 @@ export const useSelect = ({
       if (typeaheadTimerRef.current) {
         clearTimeout(typeaheadTimerRef.current)
       }
-    },
-    [],
+    }, []
   )
 
   const getEnabledItems = useCallback((): HTMLElement[] => {
     if (!listRef.current) return []
 
     return [...listRef.current.querySelectorAll<HTMLElement>('[data-ui-select-option]')].filter(
-      (item) => !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true',
+      item => !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
     )
   }, [])
 
@@ -1051,7 +1052,7 @@ export const useSelect = ({
 
       if (!items.length) return
 
-      const selectedItem = items.find((item) => item.getAttribute('aria-selected') === 'true')
+      const selectedItem = items.find(item => item.getAttribute('aria-selected') === 'true')
       const current = currentItem ?? selectedItem ?? items[0]
 
       if (!current) return
@@ -1060,8 +1061,7 @@ export const useSelect = ({
       const nextItem = items[getLoopedIndex(key, Math.max(0, currentIndex), items.length, ['ArrowDown'])]
 
       nextItem?.focus()
-    },
-    [getEnabledItems],
+    }, [getEnabledItems]
   )
 
   const focusTypeaheadOption = useCallback(
@@ -1071,7 +1071,7 @@ export const useSelect = ({
 
       if (!items.length || !typeahead) return
 
-      const selectedItem = items.find((item) => item.getAttribute('aria-selected') === 'true')
+      const selectedItem = items.find(item => item.getAttribute('aria-selected') === 'true')
       const current = currentItem ?? selectedItem ?? items[0]
 
       if (!current) return
@@ -1079,11 +1079,10 @@ export const useSelect = ({
       const currentIndex = items.indexOf(current)
       const startIndex = Math.max(0, currentIndex + 1)
       const orderedItems = [...items.slice(startIndex), ...items.slice(0, startIndex)]
-      const nextItem = orderedItems.find((item) => item.textContent.trim().toLowerCase().startsWith(typeahead))
+      const nextItem = orderedItems.find(item => item.textContent.trim().toLowerCase().startsWith(typeahead))
 
       nextItem?.focus()
-    },
-    [getEnabledItems],
+    }, [getEnabledItems]
   )
 
   const handleTypeahead = useCallback(
@@ -1107,13 +1106,12 @@ export const useSelect = ({
       focusTypeaheadOption(currentItem)
 
       return true
-    },
-    [focusTypeaheadOption, openList],
+    }, [focusTypeaheadOption, openList]
   )
 
   const selectOption = useCallback(
     (nextValue: string): void => {
-      const option = normalizedOptions.find((item) => item.value === nextValue)
+      const option = normalizedOptions.find(item => item.value === nextValue)
 
       if (!option || option.disabled) return
 
@@ -1122,18 +1120,17 @@ export const useSelect = ({
       close()
 
       focusTrigger(triggerRef.current)
-    },
-    [close, normalizedOptions, setSelectedValue],
+    }, [close, normalizedOptions, setSelectedValue]
   )
 
   const rootProps: LumenProps<'div'> = {
     'data-placeholder': hasSelection ? 'false' : 'true',
     'data-ui-select': true,
-    ref: rootRef as Ref<HTMLDivElement>,
+    ref: rootRef as Ref<HTMLDivElement>
   }
 
   const controlProps: LumenProps<'div'> = {
-    'data-ui-select-control': true,
+    'data-ui-select-control': true
   }
 
   const nativeSelectProps: LumenProps<'select'> = {
@@ -1143,12 +1140,12 @@ export const useSelect = ({
     disabled,
     id: selectId,
     name,
-    onChange: (event) => {
+    onChange: event => {
       setSelectedValue(event.currentTarget.value)
     },
     required,
     tabIndex: -1,
-    value: selectedValue,
+    value: selectedValue
   }
 
   const triggerProps: LumenProps<'button'> = {
@@ -1160,9 +1157,9 @@ export const useSelect = ({
     disabled,
     id: `${selectId}-trigger`,
     onClick: () => {
-      setOpen((current) => !current)
+      setOpen(current => !current)
     },
-    onKeyDown: (event) => {
+    onKeyDown: event => {
       if (handleTypeahead(event)) return
 
       if (event.key === 'Escape') {
@@ -1180,7 +1177,7 @@ export const useSelect = ({
       openList()
 
       if (event.key === 'Enter' || event.key === ' ') {
-        const selectedItem = getEnabledItems().find((item) => item.getAttribute('aria-selected') === 'true')
+        const selectedItem = getEnabledItems().find(item => item.getAttribute('aria-selected') === 'true')
 
         const firstItem = getEnabledItems()[0]
 
@@ -1193,7 +1190,7 @@ export const useSelect = ({
     },
     ref: triggerRef as Ref<HTMLButtonElement>,
     role: 'combobox',
-    type: 'button',
+    type: 'button'
   }
 
   const listProps: LumenProps<'div'> = {
@@ -1202,7 +1199,7 @@ export const useSelect = ({
     hidden: !open,
     id: listId,
     ref: listRef as Ref<HTMLDivElement>,
-    role: 'listbox',
+    role: 'listbox'
   }
 
   const getOptionProps = useCallback<SelectController['getOptionProps']>(
@@ -1216,7 +1213,7 @@ export const useSelect = ({
       onClick: composeHandlers(props.onClick, () => {
         selectOption(option.value)
       }),
-      onKeyDown: composeHandlers(props.onKeyDown, (event) => {
+      onKeyDown: composeHandlers(props.onKeyDown, event => {
         if (handleTypeahead(event, event.currentTarget)) return
 
         if (event.key === 'Escape') {
@@ -1245,9 +1242,8 @@ export const useSelect = ({
       }),
       role: 'option',
       tabIndex: -1,
-      type: props.type ?? 'button',
-    }),
-    [close, focusOption, handleTypeahead, selectOption, selectedValue],
+      type: props.type ?? 'button'
+    }), [close, focusOption, handleTypeahead, selectOption, selectedValue]
   )
 
   return {
@@ -1265,7 +1261,7 @@ export const useSelect = ({
     setOpen,
     triggerProps,
     triggerText,
-    value: selectedValue,
+    value: selectedValue
   }
 }
 /* eslint-enable complexity */
@@ -1278,12 +1274,11 @@ const fieldControlSelector = [
   '[role="combobox"]',
   '[role="listbox"]',
   '[role="spinbutton"]',
-  '[role="textbox"]',
+  '[role="textbox"]'
 ].join(',')
 
 const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
 const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
-
 const formControlSelector = ['input:not([type="hidden"])', 'select', 'textarea'].join(',')
 
 const validityMessageAttributes = [
@@ -1296,14 +1291,11 @@ const validityMessageAttributes = [
   ['rangeOverflow', 'data-error-max'],
   ['stepMismatch', 'data-error-step'],
   ['badInput', 'data-error-bad-input'],
-  ['customError', 'data-error-custom'],
+  ['customError', 'data-error-custom']
 ] as const
 
-const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl =>
-  element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement
-
-const getFieldRoot = (control: HTMLElement): HTMLElement | null =>
-  control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl => element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement
+const getFieldRoot = (control: HTMLElement): HTMLElement | null => control.closest<HTMLElement>('.ui-field, [data-ui-field]')
 
 const getValidationMessage = (control: NativeFormControl, field: HTMLElement | null): string => {
   for (const [validityKey, attributeName] of validityMessageAttributes) {
@@ -1326,19 +1318,15 @@ const getFieldDescriptionId = (element: HTMLElement): string => {
 const syncFieldDescription = (field: HTMLElement): void => {
   const controlId = field.dataset.uiFieldControl
 
-  const control = controlId
-    ? document.getElementById(controlId)
-    : field.querySelector<HTMLElement>(fieldControlSelector)
+  const control = controlId ?
+    document.getElementById(controlId) :
+    field.querySelector<HTMLElement>(fieldControlSelector)
 
   if (!(control instanceof HTMLElement)) return
 
   const existingIds = control.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? []
   const configuredIds = field.dataset.uiFieldDescribedby?.trim().split(/\s+/) ?? []
-
-  const descriptionIds = [...field.querySelectorAll<HTMLElement>(fieldDescriptionSelector)].map((element) =>
-    getFieldDescriptionId(element),
-  )
-
+  const descriptionIds = [...field.querySelectorAll<HTMLElement>(fieldDescriptionSelector)].map(element => getFieldDescriptionId(element))
   const describedBy = [...new Set([...existingIds, ...configuredIds, ...descriptionIds].filter(Boolean))]
 
   if (describedBy.length) {
@@ -1349,7 +1337,7 @@ const syncFieldDescription = (field: HTMLElement): void => {
 export const useFormValidation = ({
   onInvalid,
   onValid,
-  onValidate,
+  onValidate
 }: FormValidationOptions = {}): FormValidationController => {
   const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -1378,15 +1366,14 @@ export const useFormValidation = ({
 
         error.textContent = invalid ? message : ''
       }
-    },
-    [],
+    }, []
   )
 
   const getControls = useCallback<FormValidationController['getControls']>((form = formRef.current) => {
     if (!form) return []
 
     return [...form.querySelectorAll<NativeFormControl>(formControlSelector)].filter(
-      (control) => control.form === form && !control.disabled,
+      control => control.form === form && !control.disabled
     )
   }, [])
 
@@ -1399,8 +1386,8 @@ export const useFormValidation = ({
       form.dispatchEvent(
         new CustomEvent('ui:validate', {
           bubbles: true,
-          detail: validateDetail,
-        }),
+          detail: validateDetail
+        })
       )
 
       onValidate?.(validateDetail)
@@ -1411,17 +1398,15 @@ export const useFormValidation = ({
       setFieldValidity(control, invalid, message)
 
       return !invalid
-    },
-    [onValidate, setFieldValidity],
+    }, [onValidate, setFieldValidity]
   )
 
   const validateForm = useCallback<FormValidationController['validateForm']>(
     (form = formRef.current) => {
       if (!form) return []
 
-      return getControls(form).filter((control) => !validateControl(control, form))
-    },
-    [getControls, validateControl],
+      return getControls(form).filter(control => !validateControl(control, form))
+    }, [getControls, validateControl]
   )
 
   const emitState = useCallback(
@@ -1429,8 +1414,8 @@ export const useFormValidation = ({
       detail.form.dispatchEvent(
         new CustomEvent(name, {
           bubbles: true,
-          detail,
-        }),
+          detail
+        })
       )
 
       if (name === 'ui:invalid') {
@@ -1438,8 +1423,7 @@ export const useFormValidation = ({
       } else {
         onValid?.(detail)
       }
-    },
-    [onInvalid, onValid],
+    }, [onInvalid, onValid]
   )
 
   const syncFields = useCallback((form: HTMLFormElement): void => {
@@ -1451,7 +1435,7 @@ export const useFormValidation = ({
   const formProps: LumenProps<'form'> = {
     'data-ui-form': true,
     noValidate: true,
-    onBlur: (event) => {
+    onBlur: event => {
       const form = event.currentTarget
 
       syncFields(form)
@@ -1461,11 +1445,10 @@ export const useFormValidation = ({
       const valid = validateControl(event.target, form)
 
       emitState(
-        valid ? 'ui:valid' : 'ui:invalid',
-        valid ? { control: event.target, form } : { control: event.target, controls: [event.target], form },
+        valid ? 'ui:valid' : 'ui:invalid', valid ? { control: event.target, form } : { control: event.target, controls: [event.target], form }
       )
     },
-    onSubmit: (event) => {
+    onSubmit: event => {
       const form = event.currentTarget
 
       syncFields(form)
@@ -1490,7 +1473,7 @@ export const useFormValidation = ({
 
       emitState('ui:valid', { controls: getControls(form), form })
     },
-    ref: formRef,
+    ref: formRef
   }
 
   return {
@@ -1499,7 +1482,7 @@ export const useFormValidation = ({
     getControls,
     setFieldValidity,
     validateControl,
-    validateForm,
+    validateForm
   }
 }
 
@@ -1528,19 +1511,15 @@ const parseCalendarMonth = (value: string | null | undefined): Date | null => {
 const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
 const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
 const startOfCalendarMonth = (date: Date): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1))
-const addCalendarDays = (date: Date, days: number): Date =>
-  new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
-const getCalendarDaysInMonth = (date: Date): number =>
-  new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
+const addCalendarDays = (date: Date, days: number): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
+const getCalendarDaysInMonth = (date: Date): number => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
 const addCalendarMonths = (date: Date, months: number): Date => {
   const targetMonth = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1))
 
   return new Date(
     Date.UTC(
-      targetMonth.getUTCFullYear(),
-      targetMonth.getUTCMonth(),
-      Math.min(date.getUTCDate(), getCalendarDaysInMonth(targetMonth)),
-    ),
+      targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), Math.min(date.getUTCDate(), getCalendarDaysInMonth(targetMonth))
+    )
   )
 }
 
@@ -1550,11 +1529,9 @@ const getCalendarToday = (): Date => {
   return new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
 }
 
-const compareCalendarDates = (date: Date, other: Date | null): number =>
-  other ? formatCalendarDate(date).localeCompare(formatCalendarDate(other)) : 0
+const compareCalendarDates = (date: Date, other: Date | null): number => other ? formatCalendarDate(date).localeCompare(formatCalendarDate(other)) : 0
 
-const isCalendarDateDisabled = (disabled: boolean, date: Date, min: Date | null, max: Date | null): boolean =>
-  disabled || compareCalendarDates(date, min) < 0 || compareCalendarDates(date, max) > 0
+const isCalendarDateDisabled = (disabled: boolean, date: Date, min: Date | null, max: Date | null): boolean => disabled || compareCalendarDates(date, min) < 0 || compareCalendarDates(date, max) > 0
 
 const clampCalendarDate = (date: Date, min: Date | null, max: Date | null): Date => {
   if (min && compareCalendarDates(date, min) < 0) return min
@@ -1580,8 +1557,7 @@ const getCalendarLocale = (locale: string | undefined): string => {
   return 'en'
 }
 
-const coerceCalendarDate = (value: string | Date): Date | null =>
-  value instanceof Date ? value : parseCalendarDate(value)
+const coerceCalendarDate = (value: string | Date): Date | null => value instanceof Date ? value : parseCalendarDate(value)
 
 const getCalendarFocusDate = (
   disabled: boolean,
@@ -1589,7 +1565,7 @@ const getCalendarFocusDate = (
   min: Date | null,
   max: Date | null,
   selectedDate: Date | null,
-  requestedDate?: Date | null,
+  requestedDate?: Date | null
 ): Date => {
   const today = getCalendarToday()
   const candidates = [requestedDate, selectedDate, today, month]
@@ -1622,14 +1598,14 @@ export const useCalendar = ({
   month,
   name,
   onValueChange,
-  value: controlledValue,
+  value: controlledValue
 }: CalendarOptions = {}): CalendarController => {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const generatedId = useId()
   const calendarId = `ui-calendar-${generatedId}`
   const labelId = `${calendarId}-label`
-  const minDate = useMemo(() => parseCalendarDate(min), [min])
-  const maxDate = useMemo(() => parseCalendarDate(max), [max])
+  const minDate = parseCalendarDate(min)
+  const maxDate = parseCalendarDate(max)
   const defaultDate = parseCalendarDate(defaultValue)
   const controlledDate = parseCalendarDate(controlledValue)
   const [uncontrolledValue, setUncontrolledValue] = useState(() => (defaultDate ? formatCalendarDate(defaultDate) : ''))
@@ -1644,197 +1620,171 @@ export const useCalendar = ({
   const visibleMonth = parseCalendarMonth(month ?? visibleMonthValue) ?? initialMonth
   const [focusValue, setFocusValue] = useState<string | null>(null)
   const focusDate = getCalendarFocusDate(
-    disabled,
-    visibleMonth,
-    minDate,
-    maxDate,
-    selectedDate,
-    parseCalendarDate(focusValue),
+    disabled, visibleMonth, minDate, maxDate, selectedDate, parseCalendarDate(focusValue)
   )
   const focusIso = formatCalendarDate(focusDate)
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
   const currentLocale = getCalendarLocale(locale)
   const monthFormatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat(currentLocale, {
-        month: 'long',
-        timeZone: 'UTC',
-        year: 'numeric',
-      }),
-    [currentLocale],
+    () => new Intl.DateTimeFormat(currentLocale, {
+      month: 'long',
+      timeZone: 'UTC',
+      year: 'numeric'
+    }), [currentLocale]
   )
   const dayFormatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat(currentLocale, {
-        day: 'numeric',
-        month: 'long',
-        timeZone: 'UTC',
-        weekday: 'long',
-        year: 'numeric',
-      }),
-    [currentLocale],
+    () => new Intl.DateTimeFormat(currentLocale, {
+      day: 'numeric',
+      month: 'long',
+      timeZone: 'UTC',
+      weekday: 'long',
+      year: 'numeric'
+    }), [currentLocale]
   )
   const weekdayFormatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat(currentLocale, {
-        timeZone: 'UTC',
-        weekday: 'short',
-      }),
-    [currentLocale],
+    () => new Intl.DateTimeFormat(currentLocale, {
+      timeZone: 'UTC',
+      weekday: 'short'
+    }), [currentLocale]
   )
   const todayIso = formatCalendarDate(getCalendarToday())
   const label = monthFormatter.format(visibleMonth)
   const weekdays = useMemo(
-    () => Array.from({ length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))),
-    [weekdayFormatter],
+    () => Array.from({ length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))), [weekdayFormatter]
   )
   const weeks = useMemo(() => {
     const firstCell = getCalendarGridStart(visibleMonth)
 
-    return Array.from({ length: 6 }, (_, rowIndex) =>
-      Array.from({ length: 7 }, (_, columnIndex): CalendarDay => {
-        const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex)
-        const dateIso = formatCalendarDate(date)
-        const unavailable = isCalendarDateDisabled(disabled, date, minDate, maxDate)
+    return Array.from({ length: 6 }, (_, rowIndex) => Array.from({ length: 7 }, (_, columnIndex): CalendarDay => {
+      const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex)
+      const dateIso = formatCalendarDate(date)
+      const unavailable = isCalendarDateDisabled(disabled, date, minDate, maxDate)
 
-        return {
-          date: dateIso,
-          day: date.getUTCDate(),
-          disabled: unavailable,
-          label: dayFormatter.format(date),
-          outside: formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth),
-          selected: selectedIso === dateIso,
-          tabIndex: !unavailable && focusIso === dateIso ? 0 : -1,
-          today: todayIso === dateIso,
-        }
-      }),
-    )
+      return {
+        date: dateIso,
+        day: date.getUTCDate(),
+        disabled: unavailable,
+        label: dayFormatter.format(date),
+        outside: formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth),
+        selected: selectedIso === dateIso,
+        tabIndex: !unavailable && focusIso === dateIso ? 0 : -1,
+        today: todayIso === dateIso
+      }
+    }))
   }, [dayFormatter, disabled, focusIso, maxDate, minDate, selectedIso, todayIso, visibleMonth])
 
-  const focusCalendarDate = useCallback<CalendarController['focusDate']>(
-    (dateInput) => {
-      const date = coerceCalendarDate(dateInput)
+  const focusCalendarDate: CalendarController['focusDate'] = dateInput => {
+    const date = coerceCalendarDate(dateInput)
 
-      if (!date) return
+    if (!date) return
 
-      const nextDate = clampCalendarDate(date, minDate, maxDate)
+    const nextDate = clampCalendarDate(date, minDate, maxDate)
 
-      setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
-      setFocusValue(formatCalendarDate(nextDate))
-    },
-    [maxDate, minDate],
-  )
+    setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
+    setFocusValue(formatCalendarDate(nextDate))
+  }
 
-  const selectDate = useCallback<CalendarController['selectDate']>(
-    (dateInput) => {
-      if (disabled) return
+  const selectDate: CalendarController['selectDate'] = dateInput => {
+    if (disabled) return
 
-      const date = coerceCalendarDate(dateInput)
+    const date = coerceCalendarDate(dateInput)
 
-      if (!date) return
+    if (!date) return
 
-      const nextDate = clampCalendarDate(date, minDate, maxDate)
+    const nextDate = clampCalendarDate(date, minDate, maxDate)
 
-      if (isCalendarDateDisabled(disabled, nextDate, minDate, maxDate)) return
+    if (isCalendarDateDisabled(disabled, nextDate, minDate, maxDate)) return
 
-      const nextValue = formatCalendarDate(nextDate)
+    const nextValue = formatCalendarDate(nextDate)
 
-      if (controlledValue === undefined) {
-        setUncontrolledValue(nextValue)
-      }
+    if (controlledValue === undefined) {
+      setUncontrolledValue(nextValue)
+    }
 
-      setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
-      setFocusValue(nextValue)
-      onValueChange?.(nextValue)
-    },
-    [controlledValue, disabled, maxDate, minDate, onValueChange],
-  )
+    setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
+    setFocusValue(nextValue)
+    onValueChange?.(nextValue)
+  }
 
-  const moveFocus = useCallback(
-    (currentDate: Date, key: string): void => {
-      const column = (currentDate.getUTCDay() + 6) % 7
-      const keyOffsets: Record<string, number> = {
-        ArrowDown: 7,
-        ArrowLeft: -1,
-        ArrowRight: 1,
-        ArrowUp: -7,
-        End: 6 - column,
-        Home: -column,
-      }
+  const moveFocus = (currentDate: Date, key: string): void => {
+    const column = (currentDate.getUTCDay() + 6) % 7
+    const keyOffsets: Record<string, number> = {
+      ArrowDown: 7,
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      End: 6 - column,
+      Home: -column
+    }
 
-      if (key === 'PageDown' || key === 'PageUp') {
-        focusCalendarDate(addCalendarMonths(currentDate, key === 'PageDown' ? 1 : -1))
+    if (key === 'PageDown' || key === 'PageUp') {
+      focusCalendarDate(addCalendarMonths(currentDate, key === 'PageDown' ? 1 : -1))
 
-        return
-      }
+      return
+    }
 
-      const offset = keyOffsets[key]
+    const offset = keyOffsets[key]
 
-      if (offset !== undefined) {
-        focusCalendarDate(addCalendarDays(currentDate, offset))
-      }
-    },
-    [focusCalendarDate],
-  )
+    if (offset !== undefined) {
+      focusCalendarDate(addCalendarDays(currentDate, offset))
+    }
+  }
 
   const previousMonthLastDay = addCalendarDays(visibleMonth, -1)
   const nextMonthFirstDay = addCalendarMonths(visibleMonth, 1)
   const previousDisabled = disabled || compareCalendarDates(previousMonthLastDay, minDate) < 0
   const nextDisabled = disabled || compareCalendarDates(nextMonthFirstDay, maxDate) > 0
 
-  const getDayProps = useCallback<CalendarController['getDayProps']>(
-    (day, props = {}) => ({
-      ...props,
-      'aria-disabled': day.disabled ? true : undefined,
-      'aria-label': props['aria-label'] ?? day.label,
-      'aria-selected': day.selected ? 'true' : 'false',
-      'data-date': day.date,
-      'data-outside': day.outside ? 'true' : undefined,
-      'data-selected': day.selected ? 'true' : undefined,
-      'data-today': day.today ? 'true' : undefined,
-      'data-ui-calendar-day': true,
-      onClick: composeHandlers(props.onClick, () => {
-        if (!day.disabled) {
-          selectDate(day.date)
-        }
-      }),
-      onKeyDown: composeHandlers(props.onKeyDown, (event) => {
-        if (day.disabled) return
+  const getDayProps: CalendarController['getDayProps'] = (day, props = {}) => ({
+    ...props,
+    'aria-disabled': day.disabled ? true : undefined,
+    'aria-label': props['aria-label'] ?? day.label,
+    'aria-selected': day.selected ? 'true' : 'false',
+    'data-date': day.date,
+    'data-outside': day.outside ? 'true' : undefined,
+    'data-selected': day.selected ? 'true' : undefined,
+    'data-today': day.today ? 'true' : undefined,
+    'data-ui-calendar-day': true,
+    onClick: composeHandlers(props.onClick, () => {
+      if (!day.disabled) {
+        selectDate(day.date)
+      }
+    }),
+    onKeyDown: composeHandlers(props.onKeyDown, event => {
+      if (day.disabled) return
 
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-
-          selectDate(day.date)
-
-          return
-        }
-
-        if (
-          event.key !== 'ArrowDown' &&
-          event.key !== 'ArrowLeft' &&
-          event.key !== 'ArrowRight' &&
-          event.key !== 'ArrowUp' &&
-          event.key !== 'End' &&
-          event.key !== 'Home' &&
-          event.key !== 'PageDown' &&
-          event.key !== 'PageUp'
-        ) {
-          return
-        }
-
-        const date = parseCalendarDate(day.date)
-
-        if (!date) return
-
+      if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
 
-        moveFocus(date, event.key)
-      }),
-      role: 'gridcell',
-      tabIndex: props.tabIndex ?? day.tabIndex,
+        selectDate(day.date)
+
+        return
+      }
+
+      if (
+        event.key !== 'ArrowDown' &&
+        event.key !== 'ArrowLeft' &&
+        event.key !== 'ArrowRight' &&
+        event.key !== 'ArrowUp' &&
+        event.key !== 'End' &&
+        event.key !== 'Home' &&
+        event.key !== 'PageDown' &&
+        event.key !== 'PageUp'
+      ) {
+        return
+      }
+
+      const date = parseCalendarDate(day.date)
+
+      if (!date) return
+
+      event.preventDefault()
+
+      moveFocus(date, event.key)
     }),
-    [moveFocus, selectDate],
-  )
+    role: 'gridcell',
+    tabIndex: props.tabIndex ?? day.tabIndex
+  })
 
   return {
     focusDate: focusCalendarDate,
@@ -1843,20 +1793,20 @@ export const useCalendar = ({
       'aria-labelledby': labelId,
       className: 'ui-calendar__grid',
       'data-ui-calendar-grid': true,
-      role: 'grid',
+      role: 'grid'
     },
     inputProps: {
       'data-ui-calendar-input': true,
       disabled,
       name,
       type: 'hidden',
-      value: selectedValue,
+      value: selectedValue
     },
     label,
     labelProps: {
       className: 'ui-calendar__label',
       'data-ui-calendar-label': true,
-      id: labelId,
+      id: labelId
     },
     month: formatCalendarMonth(visibleMonth),
     nextProps: {
@@ -1870,7 +1820,7 @@ export const useCalendar = ({
         setVisibleMonthValue(formatCalendarMonth(nextMonth))
         setFocusValue(formatCalendarDate(getCalendarFocusDate(disabled, nextMonth, minDate, maxDate, selectedDate)))
       },
-      type: 'button',
+      type: 'button'
     },
     previousProps: {
       'aria-label': 'Previous month',
@@ -1883,7 +1833,7 @@ export const useCalendar = ({
         setVisibleMonthValue(formatCalendarMonth(previousMonth))
         setFocusValue(formatCalendarDate(getCalendarFocusDate(disabled, previousMonth, minDate, maxDate, selectedDate)))
       },
-      type: 'button',
+      type: 'button'
     },
     rootProps: {
       'aria-disabled': disabled ? true : undefined,
@@ -1895,23 +1845,21 @@ export const useCalendar = ({
       'data-ui-calendar-min': minDate ? formatCalendarDate(minDate) : undefined,
       'data-ui-calendar-month': formatCalendarMonth(visibleMonth),
       'data-ui-calendar-value': selectedValue || undefined,
-      ref: rootRef,
+      ref: rootRef
     },
     rootRef,
     selectDate,
     value: selectedValue,
     weekdays,
-    weeks,
+    weeks
   }
 }
 /* eslint-enable @stylistic/padding-line-between-statements, complexity, no-nested-ternary */
 
 const defaultInputOtpLength = 6
 const defaultInputOtpPattern = '[0-9]*'
-const normalizeInputOtpLength = (length: number | undefined): number =>
-  Math.max(1, Math.floor(Number(length) || defaultInputOtpLength))
-const isNumericInputOtp = (inputMode: InputMode, pattern: string): boolean =>
-  inputMode === 'numeric' || pattern === defaultInputOtpPattern
+const normalizeInputOtpLength = (length: number | undefined): number => Math.max(1, Math.floor(Number(length) || defaultInputOtpLength))
+const isNumericInputOtp = (inputMode: InputMode, pattern: string): boolean => inputMode === 'numeric' || pattern === defaultInputOtpPattern
 
 const sanitizeInputOtpValue = (value: string, length: number, inputMode: InputMode, pattern: string): string => {
   const normalized = isNumericInputOtp(inputMode, pattern) ? value.replaceAll(/\D/g, '') : value.replaceAll(/\s/g, '')
@@ -1919,29 +1867,26 @@ const sanitizeInputOtpValue = (value: string, length: number, inputMode: InputMo
   return normalized.slice(0, length)
 }
 
-const getInputOtpActiveIndex = (length: number, value: string, selectionStart: number | null): number =>
-  Math.min(length - 1, Math.max(0, selectionStart ?? value.length))
+const getInputOtpActiveIndex = (length: number, value: string, selectionStart: number | null): number => Math.min(length - 1, Math.max(0, selectionStart ?? value.length))
 
 export const useInputOTP = ({
   defaultValue,
   disabled = false,
   inputMode = 'numeric',
+  inputRef: forwardedInputRef,
   invalid = false,
   length: lengthOption,
   onValueChange,
   pattern = defaultInputOtpPattern,
-  value: controlledValue,
+  value: controlledValue
 }: InputOTPOptions = {}): InputOTPController => {
   const length = normalizeInputOtpLength(lengthOption)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [focused, setFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [uncontrolledValue, setUncontrolledValue] = useState(() =>
-    sanitizeInputOtpValue(defaultValue ?? '', length, inputMode, pattern),
-  )
+  const [uncontrolledValue, setUncontrolledValue] = useState(() => sanitizeInputOtpValue(defaultValue ?? '', length, inputMode, pattern))
   const value = sanitizeInputOtpValue(controlledValue ?? uncontrolledValue, length, inputMode, pattern)
-
   const segmentIndexes = useMemo(() => Array.from({ length }, (_, index) => index), [length])
 
   const syncValue = useCallback<InputOTPController['syncValue']>(
@@ -1961,12 +1906,11 @@ export const useInputOTP = ({
       setActiveIndex(getInputOtpActiveIndex(length, nextValue, input.selectionStart))
 
       return nextValue
-    },
-    [controlledValue, inputMode, length, pattern, value],
+    }, [controlledValue, inputMode, length, pattern, value]
   )
 
   const setSelection = useCallback<InputOTPController['setSelection']>(
-    (index) => {
+    index => {
       const input = inputRef.current
       const position = Math.min(value.length, Math.max(0, index))
 
@@ -1975,12 +1919,11 @@ export const useInputOTP = ({
       input?.focus({ preventScroll: true })
 
       input?.setSelectionRange(position, position)
-    },
-    [length, value],
+    }, [length, value]
   )
 
   const setValue = useCallback<InputOTPController['setValue']>(
-    (nextValue) => {
+    nextValue => {
       const sanitizedValue = sanitizeInputOtpValue(nextValue, length, inputMode, pattern)
       const input = inputRef.current
 
@@ -1999,15 +1942,13 @@ export const useInputOTP = ({
       onValueChange?.(sanitizedValue)
 
       return sanitizedValue
-    },
-    [controlledValue, inputMode, length, onValueChange, pattern],
+    }, [controlledValue, inputMode, length, onValueChange, pattern]
   )
 
   const commitInputValue = useCallback(
     (input: HTMLInputElement): void => {
       onValueChange?.(syncValue(input))
-    },
-    [onValueChange, syncValue],
+    }, [onValueChange, syncValue]
   )
 
   useEffect(() => {
@@ -2044,26 +1985,26 @@ export const useInputOTP = ({
       disabled: props.disabled ?? disabled,
       inputMode: props.inputMode ?? inputMode,
       maxLength: props.maxLength ?? length,
-      onBlur: composeHandlers(props.onBlur, (event) => {
+      onBlur: composeHandlers(props.onBlur, event => {
         setFocused(false)
 
         syncValue(event.currentTarget)
       }),
-      onChange: composeHandlers(props.onChange, (event) => {
+      onChange: composeHandlers(props.onChange, event => {
         commitInputValue(event.currentTarget)
       }),
-      onClick: composeHandlers(props.onClick, (event) => {
+      onClick: composeHandlers(props.onClick, event => {
         syncValue(event.currentTarget)
       }),
-      onFocus: composeHandlers(props.onFocus, (event) => {
+      onFocus: composeHandlers(props.onFocus, event => {
         setFocused(true)
 
         syncValue(event.currentTarget)
       }),
-      onInput: composeHandlers(props.onInput, (event) => {
+      onInput: composeHandlers(props.onInput, event => {
         commitInputValue(event.currentTarget)
       }),
-      onKeyDown: composeHandlers(props.onKeyDown, (event) => {
+      onKeyDown: composeHandlers(props.onKeyDown, event => {
         if (event.key === 'ArrowLeft') {
           event.preventDefault()
 
@@ -2094,10 +2035,10 @@ export const useInputOTP = ({
           setSelection(event.currentTarget.value.length)
         }
       }),
-      onKeyUp: composeHandlers(props.onKeyUp, (event) => {
+      onKeyUp: composeHandlers(props.onKeyUp, event => {
         syncValue(event.currentTarget)
       }),
-      onPaste: composeHandlers(props.onPaste, (event) => {
+      onPaste: composeHandlers(props.onPaste, event => {
         const pasted = event.clipboardData.getData('text')
 
         if (!pasted) return
@@ -2107,14 +2048,29 @@ export const useInputOTP = ({
         setValue(pasted)
       }),
       pattern: props.pattern ?? pattern,
-      ref: inputRef,
+      ref: node => {
+        inputRef.current = node
+
+        setRefValue(forwardedInputRef, node)
+      },
       type: 'text',
-      value,
-    }),
-    [commitInputValue, disabled, inputMode, invalid, length, pattern, setSelection, setValue, syncValue, value],
+      value
+    }), [
+      commitInputValue,
+      disabled,
+      forwardedInputRef,
+      inputMode,
+      invalid,
+      length,
+      pattern,
+      setSelection,
+      setValue,
+      syncValue,
+      value
+    ]
   )
 
-  const getSegmentChar = useCallback<InputOTPController['getSegmentChar']>((index) => value[index] ?? '\u00a0', [value])
+  const getSegmentChar = useCallback<InputOTPController['getSegmentChar']>(index => value[index] ?? '\u00a0', [value])
 
   const getSegmentProps = useCallback<InputOTPController['getSegmentProps']>(
     (index, props = {}) => ({
@@ -2129,9 +2085,8 @@ export const useInputOTP = ({
         setSelection(index)
       }),
       tabIndex: props.tabIndex ?? -1,
-      type: 'button',
-    }),
-    [activeIndex, disabled, focused, setSelection],
+      type: 'button'
+    }), [activeIndex, disabled, focused, setSelection]
   )
 
   return {
@@ -2146,28 +2101,27 @@ export const useInputOTP = ({
       'data-invalid': invalid ? 'true' : 'false',
       'data-ui-input-otp': true,
       'data-ui-input-otp-length': length,
-      ref: rootRef,
+      ref: rootRef
     },
     rootRef,
     segmentIndexes,
     segmentsProps: {
       className: 'ui-input-otp__segments',
-      'data-ui-input-otp-segments': true,
+      'data-ui-input-otp-segments': true
     },
     setSelection,
     setValue,
     syncValue,
-    value,
+    value
   }
 }
 
-const getDateRangeRoot = (control: HTMLInputElement, fallback: HTMLElement | null): HTMLElement | null =>
-  control.closest<HTMLElement>('[data-ui-date-range-picker]') ?? fallback
+const getDateRangeRoot = (control: HTMLInputElement, fallback: HTMLElement | null): HTMLElement | null => control.closest<HTMLElement>('[data-ui-date-range-picker]') ?? fallback
 
 const getDateRangeInputs = (
   root: HTMLElement | null,
   start: HTMLInputElement | null,
-  end: HTMLInputElement | null,
+  end: HTMLInputElement | null
 ): [HTMLInputElement | null, HTMLInputElement | null] => {
   if (start && end && start !== end) return [start, end]
 
@@ -2188,7 +2142,7 @@ const syncDateInputConstraint = (input: HTMLInputElement, property: 'max' | 'min
 
 const syncDateRangeInputs = (
   start: HTMLInputElement | null,
-  end: HTMLInputElement | null,
+  end: HTMLInputElement | null
 ): DateRangePickerChangeDetail => {
   if (!start || !end || start === end) return {}
 
@@ -2202,7 +2156,7 @@ const syncDateRangeInputs = (
 
   return {
     ...(end.value ? { end: end.value } : {}),
-    ...(start.value ? { start: start.value } : {}),
+    ...(start.value ? { start: start.value } : {})
   }
 }
 
@@ -2219,36 +2173,33 @@ export const useDateRangePicker = ({ onRangeChange }: DateRangePickerOptions = {
       onRangeChange?.(detail)
 
       return detail
-    },
-    [onRangeChange],
+    }, [onRangeChange]
   )
 
   const getStartProps = useCallback<DateRangePickerController['getStartProps']>(
     (props = {}) => ({
       ...props,
-      onChange: composeHandlers(props.onChange, (event) => {
+      onChange: composeHandlers(props.onChange, event => {
         startRef.current = event.currentTarget
 
         syncRange(getDateRangeRoot(event.currentTarget, rootRef.current))
       }),
       ref: startRef,
-      type: props.type ?? 'date',
-    }),
-    [syncRange],
+      type: props.type ?? 'date'
+    }), [syncRange]
   )
 
   const getEndProps = useCallback<DateRangePickerController['getEndProps']>(
     (props = {}) => ({
       ...props,
-      onChange: composeHandlers(props.onChange, (event) => {
+      onChange: composeHandlers(props.onChange, event => {
         endRef.current = event.currentTarget
 
         syncRange(getDateRangeRoot(event.currentTarget, rootRef.current))
       }),
       ref: endRef,
-      type: props.type ?? 'date',
-    }),
-    [syncRange],
+      type: props.type ?? 'date'
+    }), [syncRange]
   )
 
   return {
@@ -2257,11 +2208,11 @@ export const useDateRangePicker = ({ onRangeChange }: DateRangePickerOptions = {
     getStartProps,
     rootProps: {
       'data-ui-date-range-picker': true,
-      ref: rootRef,
+      ref: rootRef
     },
     rootRef,
     startRef,
-    syncRange,
+    syncRange
   }
 }
 
@@ -2274,14 +2225,14 @@ const getRichTextChangeDetail = (root: HTMLElement | null): LumenRichTextChangeD
 
   return {
     html: editable.innerHTML,
-    text: editable.textContent,
+    text: editable.textContent
   }
 }
 
 const executeRichTextDocumentCommand = (
   commandDocument: RichTextCommandDocument | undefined,
   command: string,
-  value?: string,
+  value?: string
 ): boolean => {
   if (typeof commandDocument?.execCommand !== 'function') return false
 
@@ -2326,14 +2277,13 @@ export const useRichTextEditor = ({ onChange, onCommand }: RichTextEditorOptions
         root?.dispatchEvent(
           new CustomEvent<LumenRichTextChangeDetail>('ui:editor-change', {
             bubbles: true,
-            detail,
-          }),
+            detail
+          })
         )
       }
 
       onChange?.(detail)
-    },
-    [onChange],
+    }, [onChange]
   )
 
   const executeCommand = useCallback<RichTextEditorController['executeCommand']>(
@@ -2348,15 +2298,15 @@ export const useRichTextEditor = ({ onChange, onCommand }: RichTextEditorOptions
       const detail: RichTextEditorCommandDetail = {
         command,
         executed,
-        ...(value === undefined ? {} : { value }),
+        ...(value === undefined ? {} : { value })
       }
 
       if (root && typeof CustomEvent !== 'undefined') {
         root.dispatchEvent(
           new CustomEvent<RichTextEditorCommandDetail>('ui:editor-command', {
             bubbles: true,
-            detail,
-          }),
+            detail
+          })
         )
       }
 
@@ -2367,22 +2317,20 @@ export const useRichTextEditor = ({ onChange, onCommand }: RichTextEditorOptions
       emitChange(root)
 
       return executed
-    },
-    [emitChange, onCommand],
+    }, [emitChange, onCommand]
   )
 
   const getCommandProps = useCallback<RichTextEditorController['getCommandProps']>(
     (command, props = {}) => ({
       ...props,
       'data-ui-editor-command': command,
-      onClick: composeHandlers(props.onClick, (event) => {
+      onClick: composeHandlers(props.onClick, event => {
         const root = event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current
 
         executeCommand(command, root, event.currentTarget.dataset.uiEditorValue)
       }),
-      type: props.type ?? 'button',
-    }),
-    [executeCommand],
+      type: props.type ?? 'button'
+    }), [executeCommand]
   )
 
   const getEditableProps = useCallback<RichTextEditorController['getEditableProps']>(
@@ -2391,14 +2339,14 @@ export const useRichTextEditor = ({ onChange, onCommand }: RichTextEditorOptions
       'aria-multiline': props['aria-multiline'] ?? true,
       contentEditable: props.contentEditable ?? true,
       'data-ui-rich-text-editable': true,
-      onInput: composeHandlers(props.onInput, (event) => {
+      onInput: composeHandlers(props.onInput, event => {
         const root = event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current
 
         syncRichTextCommandStates(root)
 
         emitChange(root)
       }),
-      onKeyDown: composeHandlers(props.onKeyDown, (event) => {
+      onKeyDown: composeHandlers(props.onKeyDown, event => {
         const command = getLumenRichTextShortcut(event)
 
         if (!command) return
@@ -2409,20 +2357,19 @@ export const useRichTextEditor = ({ onChange, onCommand }: RichTextEditorOptions
 
         executeCommand(command, root)
       }),
-      onKeyUp: composeHandlers(props.onKeyUp, (event) => {
+      onKeyUp: composeHandlers(props.onKeyUp, event => {
         syncRichTextCommandStates(
-          event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current,
+          event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current
         )
       }),
-      onMouseUp: composeHandlers(props.onMouseUp, (event) => {
+      onMouseUp: composeHandlers(props.onMouseUp, event => {
         syncRichTextCommandStates(
-          event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current,
+          event.currentTarget.closest<HTMLElement>('[data-ui-rich-text-editor]') ?? rootRef.current
         )
       }),
       role: props.role ?? 'textbox',
-      suppressContentEditableWarning: props.suppressContentEditableWarning ?? true,
-    }),
-    [emitChange, executeCommand],
+      suppressContentEditableWarning: props.suppressContentEditableWarning ?? true
+    }), [emitChange, executeCommand]
   )
 
   return {
@@ -2431,14 +2378,13 @@ export const useRichTextEditor = ({ onChange, onCommand }: RichTextEditorOptions
     getEditableProps,
     rootProps: {
       'data-ui-rich-text-editor': true,
-      ref: rootRef,
+      ref: rootRef
     },
-    rootRef,
+    rootRef
   }
 }
 
-const getScheduleRoot = (element: HTMLElement, fallback: HTMLElement | null): HTMLElement | null =>
-  element.closest<HTMLElement>('[data-ui-schedule]') ?? fallback
+const getScheduleRoot = (element: HTMLElement, fallback: HTMLElement | null): HTMLElement | null => element.closest<HTMLElement>('[data-ui-schedule]') ?? fallback
 
 export const useSchedule = ({ onChange }: ScheduleOptions = {}): ScheduleController => {
   const rootRef = useRef<HTMLElement | null>(null)
@@ -2449,14 +2395,13 @@ export const useSchedule = ({ onChange }: ScheduleOptions = {}): ScheduleControl
         root.dispatchEvent(
           new CustomEvent('ui:schedule-change', {
             bubbles: true,
-            detail,
-          }),
+            detail
+          })
         )
       }
 
       onChange?.(detail)
-    },
-    [onChange],
+    }, [onChange]
   )
 
   const getEventProps = useCallback<ScheduleController['getEventProps']>(
@@ -2466,14 +2411,14 @@ export const useSchedule = ({ onChange }: ScheduleOptions = {}): ScheduleControl
       'data-ui-draggable': true,
       'data-ui-schedule-event': true,
       draggable: props.draggable ?? true,
-      onDragEnd: composeHandlers(props.onDragEnd, (event) => {
+      onDragEnd: composeHandlers(props.onDragEnd, event => {
         const root = getScheduleRoot(event.currentTarget, rootRef.current)
 
         if (root) {
           delete root.dataset.uiDragging
         }
       }),
-      onDragStart: composeHandlers(props.onDragStart, (event) => {
+      onDragStart: composeHandlers(props.onDragStart, event => {
         const transferValue = eventId || event.currentTarget.id || event.currentTarget.textContent.trim()
         const root = getScheduleRoot(event.currentTarget, rootRef.current)
 
@@ -2482,30 +2427,28 @@ export const useSchedule = ({ onChange }: ScheduleOptions = {}): ScheduleControl
         if (root) {
           root.dataset.uiDragging = 'true'
         }
-      }),
-    }),
-    [],
+      })
+    }), []
   )
 
   const getSlotProps = useCallback<ScheduleController['getSlotProps']>(
     (slot, props = {}) => ({
       ...props,
       'data-ui-schedule-slot': slot,
-      onDragLeave: composeHandlers(props.onDragLeave, (event) => {
+      onDragLeave: composeHandlers(props.onDragLeave, event => {
         delete event.currentTarget.dataset.state
       }),
-      onDragOver: composeHandlers(props.onDragOver, (event) => {
+      onDragOver: composeHandlers(props.onDragOver, event => {
         event.preventDefault()
 
         event.currentTarget.dataset.state = 'drag-over'
       }),
-      onDrop: composeHandlers(props.onDrop, (event) => {
+      onDrop: composeHandlers(props.onDrop, event => {
         event.preventDefault()
 
         delete event.currentTarget.dataset.state
 
         const draggedId = event.dataTransfer.getData('text/plain')
-
         const dragged = typeof document !== 'undefined' && draggedId ? document.getElementById(draggedId) : null
 
         if (typeof HTMLElement !== 'undefined' && dragged instanceof HTMLElement) {
@@ -2515,13 +2458,11 @@ export const useSchedule = ({ onChange }: ScheduleOptions = {}): ScheduleControl
         emitChange(
           {
             ...(draggedId ? { eventId: draggedId } : {}),
-            ...(slot ? { slot } : {}),
-          },
-          getScheduleRoot(event.currentTarget, rootRef.current),
+            ...(slot ? { slot } : {})
+          }, getScheduleRoot(event.currentTarget, rootRef.current)
         )
-      }),
-    }),
-    [emitChange],
+      })
+    }), [emitChange]
   )
 
   return {
@@ -2530,9 +2471,9 @@ export const useSchedule = ({ onChange }: ScheduleOptions = {}): ScheduleControl
     getSlotProps,
     rootProps: {
       'data-ui-schedule': true,
-      ref: rootRef,
+      ref: rootRef
     },
-    rootRef,
+    rootRef
   }
 }
 
@@ -2554,11 +2495,10 @@ const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
 
   if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
 
-  return usableSizes.map((size) => (size / total) * 100)
+  return usableSizes.map(size => (size / total) * 100)
 }
 
-const serializeResizableSize = (value: number | number[] | undefined): string | undefined =>
-  Array.isArray(value) ? value.join(',') : value === undefined ? undefined : String(value)
+const serializeResizableSize = (value: number | number[] | undefined): string | undefined => Array.isArray(value) ? value.join(',') : value === undefined ? undefined : String(value)
 
 export const useResizable = ({
   defaultSizes,
@@ -2567,7 +2507,7 @@ export const useResizable = ({
   minSize,
   onSizesChange,
   panelCount: panelCountOption = 2,
-  resetOnDoubleClick = true,
+  resetOnDoubleClick = true
 }: ResizableOptions = {}): ResizableController => {
   const panelCount = Math.max(0, Math.floor(panelCountOption))
   const rootRef = useRef<HTMLDivElement | null>(null)
@@ -2580,12 +2520,9 @@ export const useResizable = ({
   const minSizes = useMemo(() => parseResizableNumberList(minSize, panelCount, 12), [minSize, panelCount])
   const maxSizes = useMemo(() => parseResizableNumberList(maxSize, panelCount, 88), [maxSize, panelCount])
   const initialSizes = useMemo(
-    () =>
-      normalizeResizableSizes(
-        parseResizableNumberList(defaultSizes, panelCount, 100 / Math.max(1, panelCount)),
-        panelCount,
-      ),
-    [defaultSizes, panelCount],
+    () => normalizeResizableSizes(
+      parseResizableNumberList(defaultSizes, panelCount, 100 / Math.max(1, panelCount)), panelCount
+    ), [defaultSizes, panelCount]
   )
   const [sizes, setSizes] = useState(initialSizes)
   const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
@@ -2593,8 +2530,7 @@ export const useResizable = ({
   const separatorOrientation = direction === 'horizontal' ? 'vertical' : 'horizontal'
   const panelIndexes = useMemo(() => Array.from({ length: panelCount }, (_, index) => index), [panelCount])
   const handleIndexes = useMemo(
-    () => Array.from({ length: Math.max(0, panelCount - 1) }, (_, index) => index),
-    [panelCount],
+    () => Array.from({ length: Math.max(0, panelCount - 1) }, (_, index) => index), [panelCount]
   )
 
   useEffect(() => {
@@ -2603,20 +2539,19 @@ export const useResizable = ({
 
   const updateSizes = useCallback(
     (updater: (currentSizes: number[]) => number[]): void => {
-      setSizes((currentSizes) => {
+      setSizes(currentSizes => {
         const nextSizes = updater(currentSizes)
 
         onSizesChange?.(nextSizes)
 
         return nextSizes
       })
-    },
-    [onSizesChange],
+    }, [onSizesChange]
   )
 
   const resizePair = useCallback<ResizableController['resizePair']>(
     (index, nextSize) => {
-      updateSizes((currentSizes) => {
+      updateSizes(currentSizes => {
         const nextSizes = [...currentSizes]
         const nextIndex = index + 1
         const total = (nextSizes[index] ?? 0) + (nextSizes[nextIndex] ?? 0)
@@ -2629,8 +2564,7 @@ export const useResizable = ({
 
         return nextSizes
       })
-    },
-    [maxSizes, minSizes, updateSizes],
+    }, [maxSizes, minSizes, updateSizes]
   )
 
   const reset = useCallback<ResizableController['reset']>(() => {
@@ -2643,10 +2577,9 @@ export const useResizable = ({
       'data-ui-resizable-panel': true,
       style: {
         ...props.style,
-        '--ui-resizable-size': `${sizes[index] ?? 0}%`,
-      } as CSSProperties,
-    }),
-    [sizes],
+        '--ui-resizable-size': `${sizes[index] ?? 0}%`
+      } as CSSProperties
+    }), [sizes]
   )
 
   const getHandleProps = useCallback<ResizableController['getHandleProps']>(
@@ -2665,7 +2598,7 @@ export const useResizable = ({
           reset()
         }
       }),
-      onKeyDown: composeHandlers(props.onKeyDown, (event) => {
+      onKeyDown: composeHandlers(props.onKeyDown, event => {
         const step = event.shiftKey ? 10 : 2
         const keyDeltas: Record<string, number> =
           direction === 'horizontal' ? { ArrowLeft: -step, ArrowRight: step } : { ArrowDown: step, ArrowUp: -step }
@@ -2694,7 +2627,7 @@ export const useResizable = ({
 
         resizePair(index, (sizes[index] ?? 0) + delta)
       }),
-      onPointerDown: composeHandlers(props.onPointerDown, (event) => {
+      onPointerDown: composeHandlers(props.onPointerDown, event => {
         if (event.button !== 0) return
 
         event.preventDefault()
@@ -2703,7 +2636,7 @@ export const useResizable = ({
           containerSize: Math.max(1, rootRef.current?.getBoundingClientRect()[sizeProperty] ?? 1),
           index,
           startPosition: event[axis],
-          startSize: sizes[index] ?? 0,
+          startSize: sizes[index] ?? 0
         }
 
         if (rootRef.current) {
@@ -2713,7 +2646,7 @@ export const useResizable = ({
         event.currentTarget.dataset.active = 'true'
         event.currentTarget.setPointerCapture(event.pointerId)
       }),
-      onPointerMove: composeHandlers(props.onPointerMove, (event) => {
+      onPointerMove: composeHandlers(props.onPointerMove, event => {
         const drag = dragRef.current
 
         if (!drag || drag.index !== index || event.currentTarget.dataset.active !== 'true') return
@@ -2722,7 +2655,7 @@ export const useResizable = ({
 
         resizePair(index, drag.startSize + delta)
       }),
-      onPointerUp: composeHandlers(props.onPointerUp, (event) => {
+      onPointerUp: composeHandlers(props.onPointerUp, event => {
         if (event.currentTarget.dataset.active !== 'true') return
 
         delete event.currentTarget.dataset.active
@@ -2737,9 +2670,8 @@ export const useResizable = ({
       }),
       role: 'separator',
       tabIndex: props.tabIndex ?? 0,
-      type: props.type ?? 'button',
-    }),
-    [
+      type: props.type ?? 'button'
+    }), [
       axis,
       direction,
       maxSizes,
@@ -2749,8 +2681,8 @@ export const useResizable = ({
       resizePair,
       separatorOrientation,
       sizeProperty,
-      sizes,
-    ],
+      sizes
+    ]
   )
 
   return {
@@ -2770,10 +2702,10 @@ export const useResizable = ({
       'data-ui-resizable-max-size': serializeResizableSize(maxSize),
       'data-ui-resizable-min-size': serializeResizableSize(minSize),
       'data-ui-resizable-reset': resetOnDoubleClick ? 'true' : undefined,
-      ref: rootRef,
+      ref: rootRef
     },
     rootRef,
-    sizes,
+    sizes
   }
 }
 /* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/set-state-in-effect, @typescript-eslint/prefer-optional-chain, complexity, no-nested-ternary */
@@ -2801,72 +2733,67 @@ export const useThemeBuilder = ({
   onThemeExport,
   primaryColor,
   scheme,
-  secondaryColor,
+  secondaryColor
 }: ThemeBuilderOptions = {}): ThemeBuilderController => {
   const [currentHue, setHue] = useControllableState({
     defaultValue: defaultHue,
     onChange: onHueChange,
-    value: hue,
+    value: hue
   })
 
   const [currentAccentHue, setAccentHue] = useControllableState({
     defaultValue: defaultAccentHue,
     onChange: onAccentHueChange,
-    value: accentHue,
+    value: accentHue
   })
 
   const [currentMode, setMode] = useControllableState({
     defaultValue: defaultMode,
     onChange: onModeChange,
-    value: mode,
+    value: mode
   })
 
   const [currentScheme, setScheme] = useControllableState({
     defaultValue: defaultScheme,
     onChange: onSchemeChange,
-    value: scheme,
+    value: scheme
   })
 
   const [currentPrimaryColor, setPrimaryColor] = useControllableState({
     defaultValue: defaultPrimaryColor,
     onChange: onPrimaryColorChange,
-    value: primaryColor,
+    value: primaryColor
   })
 
   const [currentSecondaryColor, setSecondaryColor] = useControllableState({
     defaultValue: defaultSecondaryColor,
     onChange: onSecondaryColorChange,
-    value: secondaryColor,
+    value: secondaryColor
   })
 
   const [currentExportFormat, setExportFormat] = useControllableState({
     defaultValue: defaultExportFormat,
     onChange: onExportFormatChange,
-    value: exportFormat,
+    value: exportFormat
   })
 
   const result = useMemo(
-    () =>
-      createThemeBuilderTokens({
-        accentHue: currentAccentHue,
-        hue: currentHue,
-        mode: currentMode,
-        primaryColor: currentPrimaryColor,
-        scheme: currentScheme,
-        secondaryColor: currentSecondaryColor,
-      }),
-    [currentAccentHue, currentHue, currentMode, currentPrimaryColor, currentScheme, currentSecondaryColor],
+    () => createThemeBuilderTokens({
+      accentHue: currentAccentHue,
+      hue: currentHue,
+      mode: currentMode,
+      primaryColor: currentPrimaryColor,
+      scheme: currentScheme,
+      secondaryColor: currentSecondaryColor
+    }), [currentAccentHue, currentHue, currentMode, currentPrimaryColor, currentScheme, currentSecondaryColor]
   )
 
   const exportValue = useMemo(
-    () => exportThemeBuilderValue(result.tokens, result.scheme, currentExportFormat),
-    [currentExportFormat, result.scheme, result.tokens],
+    () => exportThemeBuilderValue(result.tokens, result.scheme, currentExportFormat), [currentExportFormat, result.scheme, result.tokens]
   )
 
   const previewStyle = useMemo(
-    () =>
-      Object.fromEntries(Object.entries(result.tokens).map(([token, value]) => [`--${token}`, value])) as CSSProperties,
-    [result.tokens],
+    () => Object.fromEntries(Object.entries(result.tokens).map(([token, value]) => [`--${token}`, value])) as CSSProperties, [result.tokens]
   )
 
   useEffect(() => {
@@ -2878,9 +2805,8 @@ export const useThemeBuilder = ({
       ...(currentExportFormat === 'css' ? { css: exportValue } : {}),
       format: currentExportFormat,
       tokens: result.tokens,
-      value: exportValue,
-    }),
-    [currentExportFormat, exportValue, result.tokens],
+      value: exportValue
+    }), [currentExportFormat, exportValue, result.tokens]
   )
 
   const copyExport = useCallback(async (): Promise<string> => {
@@ -2901,9 +2827,8 @@ export const useThemeBuilder = ({
       onClick: composeHandlers(props.onClick, () => {
         setMode(nextMode)
       }),
-      type: props.type ?? 'button',
-    }),
-    [currentMode, setMode],
+      type: props.type ?? 'button'
+    }), [currentMode, setMode]
   )
 
   const getSchemeProps = useCallback<ThemeBuilderController['getSchemeProps']>(
@@ -2914,9 +2839,8 @@ export const useThemeBuilder = ({
       onClick: composeHandlers(props.onClick, () => {
         setScheme(nextScheme)
       }),
-      type: props.type ?? 'button',
-    }),
-    [currentScheme, setScheme],
+      type: props.type ?? 'button'
+    }), [currentScheme, setScheme]
   )
 
   const getExportFormatProps = useCallback<ThemeBuilderController['getExportFormatProps']>(
@@ -2927,9 +2851,8 @@ export const useThemeBuilder = ({
       onClick: composeHandlers(props.onClick, () => {
         setExportFormat(coerceThemeBuilderExportFormat(format))
       }),
-      type: props.type ?? 'button',
-    }),
-    [currentExportFormat, setExportFormat],
+      type: props.type ?? 'button'
+    }), [currentExportFormat, setExportFormat]
   )
 
   return {
@@ -2938,11 +2861,11 @@ export const useThemeBuilder = ({
       'data-ui-theme-accent-hue': true,
       max: 359,
       min: 0,
-      onChange: (event) => {
+      onChange: event => {
         setAccentHue(Number(event.currentTarget.value))
       },
       type: 'range',
-      value: currentAccentHue,
+      value: currentAccentHue
     },
     copyExport,
     exportButtonProps: {
@@ -2950,7 +2873,7 @@ export const useThemeBuilder = ({
       onClick: () => {
         copyExport().catch(() => null)
       },
-      type: 'button',
+      type: 'button'
     },
     exportFormat: currentExportFormat,
     exportValue,
@@ -2961,36 +2884,36 @@ export const useThemeBuilder = ({
       'data-ui-theme-brand-hue': true,
       max: 359,
       min: 0,
-      onChange: (event) => {
+      onChange: event => {
         setHue(Number(event.currentTarget.value))
       },
       type: 'range',
-      value: currentHue,
+      value: currentHue
     },
     outputProps: {
       'data-ui-theme-output': true,
       readOnly: true,
-      value: exportValue,
+      value: exportValue
     },
     previewStyle,
     primaryColorProps: {
       'data-ui-theme-primary-color': true,
-      onChange: (event) => {
+      onChange: event => {
         setPrimaryColor(event.currentTarget.value)
       },
       type: 'color',
-      value: currentPrimaryColor,
+      value: currentPrimaryColor
     },
     rootProps: {
-      'data-ui-theme-builder': true,
+      'data-ui-theme-builder': true
     },
     secondaryColorProps: {
       'data-ui-theme-secondary-color': true,
-      onChange: (event) => {
+      onChange: event => {
         setSecondaryColor(event.currentTarget.value)
       },
       type: 'color',
-      value: currentSecondaryColor,
+      value: currentSecondaryColor
     },
     setAccentHue,
     setExportFormat,
@@ -2998,7 +2921,7 @@ export const useThemeBuilder = ({
     setMode,
     setPrimaryColor,
     setScheme,
-    setSecondaryColor,
+    setSecondaryColor
   }
 }
 
@@ -3007,7 +2930,7 @@ export const useTooltip = ({
   delay = 250,
   id,
   onOpenChange,
-  open,
+  open
 }: TooltipOptions = {}): TooltipController => {
   const tooltipId = useSafeId('ui-tooltip', id)
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -3015,7 +2938,7 @@ export const useTooltip = ({
   const [isOpen, setIsOpen] = useControllableState({
     defaultValue: defaultOpen,
     onChange: onOpenChange,
-    value: open,
+    value: open
   })
 
   const close = useCallback(() => {
@@ -3035,8 +2958,7 @@ export const useTooltip = ({
       timerRef.current = setTimeout(() => {
         setIsOpen(true)
       }, nextDelay)
-    },
-    [setIsOpen],
+    }, [setIsOpen]
   )
 
   useEffect(
@@ -3044,8 +2966,7 @@ export const useTooltip = ({
       if (timerRef.current) {
         clearTimeout(timerRef.current)
       }
-    },
-    [],
+    }, []
   )
 
   return {
@@ -3057,7 +2978,7 @@ export const useTooltip = ({
       onFocus: () => {
         scheduleOpen(0)
       },
-      onKeyDown: (event) => {
+      onKeyDown: event => {
         if (event.key === 'Escape') {
           close()
         }
@@ -3065,14 +2986,14 @@ export const useTooltip = ({
       onMouseEnter: () => {
         scheduleOpen(delay)
       },
-      onMouseLeave: close,
+      onMouseLeave: close
     },
     setOpen: setIsOpen,
     tooltipProps: {
       hidden: !isOpen,
       id: tooltipId,
-      role: 'tooltip',
-    },
+      role: 'tooltip'
+    }
   }
 }
 
@@ -3100,28 +3021,26 @@ const createToastRecord = (detail: ToastDetail, placement: ToastPlacement): Toas
   open: true,
   placement: detail.placement ?? placement,
   title: detail.title ?? 'Notification',
-  variant: detail.variant ?? 'default',
+  variant: detail.variant ?? 'default'
 })
 
 export const ToastProvider = ({
   children,
   maxCount = defaultToastMax,
-  placement = 'bottom-right',
+  placement = 'bottom-right'
 }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<ToastRecord[]>([])
 
   const removeToast = useCallback((id: string) => {
-    setToasts((current) => current.filter((toast) => toast.id !== id))
+    setToasts(current => current.filter(toast => toast.id !== id))
   }, [])
 
   const dismiss = useCallback((id?: string) => {
-    setToasts((current) =>
-      current.map((toast) => {
-        if (id && toast.id !== id) return toast
+    setToasts(current => current.map(toast => {
+      if (id && toast.id !== id) return toast
 
-        return { ...toast, open: false }
-      }),
-    )
+      return { ...toast, open: false }
+    }))
   }, [])
 
   const create = useCallback(
@@ -3129,39 +3048,35 @@ export const ToastProvider = ({
       const record = createToastRecord(detail, placement)
       const stackMax = detail.max ?? maxCount
 
-      setToasts((current) => {
-        const next = current.some((toast) => toast.id === record.id)
-          ? current.map((toast) => (toast.id === record.id ? record : toast))
-          : [...current, record]
+      setToasts(current => {
+        const next = current.some(toast => toast.id === record.id) ?
+          current.map(toast => (toast.id === record.id ? record : toast)) :
+          [...current, record]
 
-        const samePlacement = next.filter((toast) => toast.placement === record.placement)
+        const samePlacement = next.filter(toast => toast.placement === record.placement)
+        const staleIds = samePlacement.slice(0, Math.max(0, samePlacement.length - stackMax)).map(toast => toast.id)
 
-        const staleIds = samePlacement.slice(0, Math.max(0, samePlacement.length - stackMax)).map((toast) => toast.id)
-
-        return next.map((toast) => (staleIds.includes(toast.id) ? { ...toast, open: false } : toast))
+        return next.map(toast => (staleIds.includes(toast.id) ? { ...toast, open: false } : toast))
       })
 
       return record.id
-    },
-    [maxCount, placement],
+    }, [maxCount, placement]
   )
 
   const update = useCallback((id: string, detail: ToastDetail) => {
-    setToasts((current) =>
-      current.map((toast) => {
-        if (toast.id !== id) return toast
+    setToasts(current => current.map(toast => {
+      if (toast.id !== id) return toast
 
-        return {
-          ...toast,
-          ...detail,
-          id,
-          open: true,
-          placement: detail.placement ?? toast.placement,
-          title: detail.title ?? toast.title,
-          variant: detail.variant ?? toast.variant,
-        }
-      }),
-    )
+      return {
+        ...toast,
+        ...detail,
+        id,
+        open: true,
+        placement: detail.placement ?? toast.placement,
+        title: detail.title ?? toast.title,
+        variant: detail.variant ?? toast.variant
+      }
+    }))
   }, [])
 
   const api = useMemo<ToastApi>(
@@ -3169,24 +3084,23 @@ export const ToastProvider = ({
       create,
       dismiss,
       toasts,
-      update,
-    }),
-    [create, dismiss, toasts, update],
+      update
+    }), [create, dismiss, toasts, update]
   )
 
-  const placements = [...new Set([placement, ...toasts.map((toast) => toast.placement)])]
+  const placements = [...new Set([placement, ...toasts.map(toast => toast.placement)])]
 
   return (
     <ToastContext.Provider value={api}>
       {children}
-      {placements.map((item) => (
+      {placements.map(item => (
         // eslint-disable-next-line no-use-before-define -- ToastViewport is kept with the toast rendering helpers below.
         <ToastViewport
           key={item}
           maxCount={maxCount}
           placement={item}
           removeToast={removeToast}
-          toasts={toasts.filter((toast) => toast.placement === item)}
+          toasts={toasts.filter(toast => toast.placement === item)}
         />
       ))}
     </ToastContext.Provider>
@@ -3220,7 +3134,7 @@ const ToastViewport = ({ maxCount, placement, removeToast, toasts }: ToastViewpo
     data-ui-sonner
     data-ui-toast-max={maxCount}
   >
-    {toasts.map((toast) => (
+    {toasts.map(toast => (
       // eslint-disable-next-line no-use-before-define -- ToastItem is declared with the toast rendering helpers below.
       <ToastItem
         key={toast.id}
@@ -3310,7 +3224,7 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
       data-variant={toast.variant}
       id={toast.id}
       onFocus={pauseTimer}
-      onKeyDown={(event) => {
+      onKeyDown={event => {
         if (event.key !== 'Escape') return
 
         event.preventDefault()
@@ -3331,14 +3245,14 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
           className="
             ui-button ui-button--secondary ui-button--sm ui-toast__action
           "
-          onClick={(event) => {
+          onClick={event => {
             action.onClick?.(event, toastRef.current)
 
             toastRef.current?.dispatchEvent(
               new CustomEvent(action.event ?? 'ui:toast-action', {
                 bubbles: true,
-                detail: { id: toast.id, value: action.value },
-              }),
+                detail: { id: toast.id, value: action.value }
+              })
             )
 
             dismiss(toast.id)
@@ -3402,9 +3316,7 @@ export const useThemeToggle = (defaultTheme = 'light') => {
     const rect = event.currentTarget.getBoundingClientRect()
     const x = Math.round(rect.left + rect.width / 2)
     const y = Math.round(rect.top + rect.height / 2)
-
     const maxRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
-
     const oldBg = isDark ? 'hsl(277 20% 10%)' : 'hsl(268 20% 98%)'
     const overlay = document.createElement('div')
 
@@ -3417,7 +3329,7 @@ export const useThemeToggle = (defaultTheme = 'light') => {
       pointerEvents: 'none',
       backgroundColor: oldBg,
       clipPath: `circle(${maxRadius}px at ${x}px ${y}px)`,
-      willChange: 'clip-path',
+      willChange: 'clip-path'
     })
 
     document.body.appendChild(overlay)

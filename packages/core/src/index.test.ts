@@ -37,12 +37,14 @@ import {
   lumenCodeTokenClassNames,
   lumenColors,
   lumenColorTokenNames,
+  lumenComponentBehavior,
   lumenComponentNames,
   lumenDarkTheme,
   lumenFont,
   lumenGlass,
   lumenGlassEffectTokenNames,
   lumenGlassTokenNames,
+  lumenGlobalBehaviors,
   lumenIconNames,
   lumenLightTheme,
   lumenMotion,
@@ -119,6 +121,21 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-elements',
       '@santi020k/lumen-icons-brand'
     ])
+  })
+
+  test('publishes framework behavior for every component and global authored behavior', () => {
+    expect(Object.keys(lumenComponentBehavior).sort()).toEqual([...lumenComponentNames].sort())
+    expect(lumenComponentBehavior.Card).toEqual({
+      astro: 'none',
+      elements: 'registered-element',
+      react: 'component'
+    })
+    expect(lumenComponentBehavior.Dialog).toEqual({
+      astro: 'ui-primitives',
+      elements: 'registered-element',
+      react: 'hook'
+    })
+    expect(lumenGlobalBehaviors.map(behavior => behavior.name)).toEqual(['form-validation', 'toast-events'])
   })
 })
 

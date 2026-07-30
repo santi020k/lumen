@@ -12,7 +12,7 @@ export const lumenCodeTokenClassNames = {
   keyword: 'ui-code__token--keyword',
   string: 'ui-code__token--string',
   symbol: 'ui-code__token--symbol',
-  type: 'ui-code__token--type',
+  type: 'ui-code__token--type'
 } as const satisfies Record<LumenCodeTokenKind, string>
 
 interface LumenCodeTokenizer {
@@ -21,19 +21,12 @@ interface LumenCodeTokenizer {
 }
 
 const bashLikeLanguages = new Set(['bash', 'console', 'shell', 'sh', 'terminal', 'zsh'])
-
 const jsonLikeLanguages = new Set(['json', 'json5', 'jsonc'])
-
 const javascriptLikeLanguages = new Set(['js', 'jsx', 'javascript', 'mjs', 'ts', 'tsx', 'typescript'])
-
 const luaLikeLanguages = new Set(['lua'])
-
 const markdownLikeLanguages = new Set(['md', 'markdown', 'mdx'])
-
 const markupLikeLanguages = new Set(['astro', 'html', 'markup', 'svg', 'vue', 'xml'])
-
 const sqlLikeLanguages = new Set(['sql'])
-
 const yamlLikeLanguages = new Set(['yaml', 'yml'])
 
 const javascriptKeywords = new Set([
@@ -70,7 +63,7 @@ const javascriptKeywords = new Set([
   'type',
   'undefined',
   'var',
-  'while',
+  'while'
 ])
 
 const javascriptTypes = new Set([
@@ -87,7 +80,7 @@ const javascriptTypes = new Set([
   'number',
   'string',
   'unknown',
-  'void',
+  'void'
 ])
 
 const bashKeywords = new Set([
@@ -108,7 +101,7 @@ const bashKeywords = new Set([
   'set',
   'then',
   'unset',
-  'while',
+  'while'
 ])
 
 const jsonKeywords = new Set(['false', 'null', 'true'])
@@ -135,7 +128,7 @@ const luaKeywords = new Set([
   'then',
   'true',
   'until',
-  'while',
+  'while'
 ])
 
 const sqlKeywords = new Set([
@@ -167,27 +160,35 @@ const sqlKeywords = new Set([
   'union',
   'update',
   'values',
-  'where',
+  'where'
 ])
 
 const yamlKeywords = new Set(['false', 'no', 'null', 'off', 'on', 'true', 'yes'])
 
 const bashTokenPattern =
   /#[^\n]*|"(?:\\.|[^"\\])*"|'[^']*'|\$\{?[A-Za-z_][\w]*\}?|--?[A-Za-z][\w-]*|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[|&;<>()[\]{}=]+/g
+
 const javascriptTokenPattern =
   /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b\d[\d._]*\b|\b[A-Za-z_$][\w$]*\b|[=+\-*%<>!?:.,;()[\]{}|&/]+/g
+
 const jsonTokenPattern =
   /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|\b(?:false|null|true)\b|-?\b\d+(?:\.\d+)?(?:e[+-]?\d+)?\b|[{},:]|\[|\]/gi
+
 const luaTokenPattern =
   /--\[\[[\s\S]*?\]\]|--[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>~#.,:;()[\]{}]+/g
+
 const markdownTokenPattern =
   /```[\s\S]*?```|`[^`\n]+`|<!--[\s\S]*?-->|^#{1,6}(?=\s)|^>\s?|^\s*(?:[-+*]|\d+\.)\s+|\*\*|__|\*|_|\[[^\]]+\]\([^)]+\)/gm
+
 const markupTokenPattern =
   /<!--[\s\S]*?-->|---|<\/?|\/?>|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b[A-Za-z_][\w:.-]*\b|[{}=]/g
+
 const sqlTokenPattern =
   /--[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|\b[A-Za-z_][\w$]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>!.,;()[\]]+/g
+
 const yamlTokenPattern =
   /#[^\n]*|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|\b[A-Za-z_][\w.-]*(?=\s*:)|\b(?:false|no|null|off|on|true|yes)\b|\b\d+(?:\.\d+)?\b|[{},:&*!?|>@`~-]+|\[|\]/gi
+
 const leadingWhitespacePattern = /^[\t ]*/
 const normalizeLanguage = (language = '') => language.trim().toLowerCase()
 const startsWithIdentifierPattern = /^[A-Za-z_$]/
@@ -203,12 +204,12 @@ export const normalizeLumenCode = (code: string) => {
   while (lines.at(-1)?.trim() === '') lines.pop()
 
   const indentation = lines
-    .filter((line) => line.trim() !== '')
-    .map((line) => leadingWhitespacePattern.exec(line)?.[0].length ?? 0)
+    .filter(line => line.trim() !== '')
+    .map(line => leadingWhitespacePattern.exec(line)?.[0].length ?? 0)
 
   const trimBy = indentation.length > 0 ? Math.min(...indentation) : 0
 
-  return lines.map((line) => line.slice(trimBy)).join('\n')
+  return lines.map(line => line.slice(trimBy)).join('\n')
 }
 
 const getJavascriptTokenKind = (value: string): LumenCodeTokenKind | undefined => {
@@ -407,8 +408,7 @@ export const tokenizeLumenCode = (code: string, language = ''): LumenCodeToken[]
   return tokens
 }
 
-const escapeLumenCodeHtml = (value: string) =>
-  value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+const escapeLumenCodeHtml = (value: string) => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
 const renderLumenCodeTokenHtml = (token: LumenCodeToken) => {
   const value = escapeLumenCodeHtml(token.value)
@@ -418,5 +418,4 @@ const renderLumenCodeTokenHtml = (token: LumenCodeToken) => {
   return `<span class="${lumenCodeTokenClassNames[token.kind]}">${value}</span>`
 }
 
-export const renderLumenCodeHtml = (code: string, language = '') =>
-  tokenizeLumenCode(code, language).map(renderLumenCodeTokenHtml).join('')
+export const renderLumenCodeHtml = (code: string, language = '') => tokenizeLumenCode(code, language).map(renderLumenCodeTokenHtml).join('')

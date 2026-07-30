@@ -8,7 +8,7 @@ import type {
   LumenRegistryEntry,
   LumenRegistryFile,
   LumenRegistryItem,
-  LumenRegistryLoadOptions,
+  LumenRegistryLoadOptions
 } from './registry-types.js'
 
 export { lumenRegistry }
@@ -19,31 +19,31 @@ export type {
   LumenRegistryEntry,
   LumenRegistryFile,
   LumenRegistryItem,
-  LumenRegistryLoadOptions,
+  LumenRegistryLoadOptions
 }
 
 const defaultRegistryTimeoutMs = 30_000
-const normalizeRegistryEntryName = (name: string) =>
-  name
-    .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replaceAll(/[\s_]+/g, '-')
-    .toLowerCase()
+
+const normalizeRegistryEntryName = (name: string) => name
+  .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
+  .replaceAll(/[\s_]+/g, '-')
+  .toLowerCase()
 
 export const getLumenRegistryEntries = (registry: LumenRegistry = lumenRegistry): LumenRegistryEntry[] => [
   ...(registry.components ?? []),
-  ...registry.items,
+  ...registry.items
 ]
 
 export const getLumenRegistryItem = (
   name: string,
-  registry: LumenRegistry = lumenRegistry,
+  registry: LumenRegistry = lumenRegistry
 ): LumenRegistryEntry | undefined => {
   const normalizedName = normalizeRegistryEntryName(name)
   const entries = getLumenRegistryEntries(registry)
 
   return (
-    entries.find((item) => item.name === name) ??
-    entries.find((item) => normalizeRegistryEntryName(item.name) === normalizedName)
+    entries.find(item => item.name === name) ??
+    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName)
   )
 }
 
@@ -57,10 +57,8 @@ const isRegistryFile = (value: unknown): value is LumenRegistryFile | string => 
   return typeof file.path === 'string' && typeof file.source === 'string'
 }
 
-const isStringArray = (value: unknown): value is string[] =>
-  Array.isArray(value) && value.every((entry) => typeof entry === 'string')
-const isRegistryFileArray = (value: unknown): boolean =>
-  Array.isArray(value) && value.every((entry) => isRegistryFile(entry))
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(entry => typeof entry === 'string')
+const isRegistryFileArray = (value: unknown): boolean => Array.isArray(value) && value.every(entry => isRegistryFile(entry))
 const registryItemTypes = new Set(['component-set', 'documentation', 'recipe'])
 
 const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
@@ -103,9 +101,9 @@ const isLumenRegistry = (value: unknown): value is LumenRegistry => {
     typeof registry.description === 'string' &&
     isStringArray(registry.packages) &&
     Array.isArray(registry.items) &&
-    registry.items.every((item) => isRegistryItem(item)) &&
+    registry.items.every(item => isRegistryItem(item)) &&
     (registry.components === undefined ||
-      (Array.isArray(registry.components) && registry.components.every((component) => isRegistryComponent(component))))
+      (Array.isArray(registry.components) && registry.components.every(component => isRegistryComponent(component))))
   )
 }
 
@@ -117,9 +115,9 @@ const fetchRegistrySource = async (source: string, options: LumenRegistryLoadOpt
   const response = await fetch(source, {
     headers: {
       ...options.headers,
-      ...(options.token ? { authorization: `Bearer ${options.token}` } : {}),
+      ...(options.token ? { authorization: `Bearer ${options.token}` } : {})
     },
-    signal: AbortSignal.timeout(options.timeoutMs ?? defaultRegistryTimeoutMs),
+    signal: AbortSignal.timeout(options.timeoutMs ?? defaultRegistryTimeoutMs)
   })
 
   if (!response.ok) {
@@ -131,14 +129,14 @@ const fetchRegistrySource = async (source: string, options: LumenRegistryLoadOpt
 
 export const loadLumenRegistry = async (
   source: string | URL,
-  options: LumenRegistryLoadOptions = {},
+  options: LumenRegistryLoadOptions = {}
 ): Promise<LumenRegistry> => {
   const sourceValue = String(source)
 
   const raw =
-    sourceValue.startsWith('http://') || sourceValue.startsWith('https://')
-      ? await fetchRegistrySource(sourceValue, options)
-      : await readFile(source, 'utf8')
+    sourceValue.startsWith('http://') || sourceValue.startsWith('https://') ?
+      await fetchRegistrySource(sourceValue, options) :
+      await readFile(source, 'utf8')
 
   const parsed: unknown = JSON.parse(raw)
 
@@ -154,5 +152,5 @@ export {
   type LumenAddOptions,
   type LumenAddResult,
   type LumenAddTarget,
-  type LumenMergeConflict,
+  type LumenMergeConflict
 } from './installer.js'

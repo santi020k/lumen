@@ -41,6 +41,14 @@ export type LumenFormErrorInput =
   null |
   undefined
 
+const isStringArray = (
+  value: readonly string[] | string | null | undefined
+): value is readonly string[] => Array.isArray(value)
+
+const isLumenFieldErrorArray = (
+  value: LumenFormErrorInput
+): value is readonly LumenFieldError[] => Array.isArray(value)
+
 const compactMessages = (
   value: readonly string[] | string | null | undefined
 ): string[] => {
@@ -50,7 +58,7 @@ const compactMessages = (
     return message ? [message] : []
   }
 
-  if (!Array.isArray(value)) return []
+  if (!isStringArray(value)) return []
 
   return value
     .map(message => message.trim())
@@ -85,7 +93,7 @@ export const normalizeLumenFormErrors = (
 ): LumenFormErrors => {
   if (!input) return { fields: [], form: [] }
 
-  if (Array.isArray(input)) {
+  if (isLumenFieldErrorArray(input)) {
     return {
       fields: input
         .map(normalizeFieldError)

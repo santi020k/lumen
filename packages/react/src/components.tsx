@@ -1,6 +1,6 @@
 'use client'
 
-/* eslint-disable @eslint-react/no-children-only, @eslint-react/no-clone-element, @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen uses React 19 ref props and context provider syntax that remains explicit for readability, and intentionally clones one child for polymorphic composition. */
+/* eslint-disable @eslint-react/no-children-only, @eslint-react/no-context-provider, @eslint-react/no-use-context -- Lumen uses React 19 ref props and context provider syntax that remains explicit for readability, and intentionally clones one child for polymorphic composition. */
 import type {
   ComponentPropsWithoutRef,
   ComponentPropsWithRef,
@@ -9,6 +9,7 @@ import type {
   HTMLAttributes,
   ReactNode,
   Ref,
+  RefObject
 } from 'react'
 import {
   Children,
@@ -22,7 +23,7 @@ import {
   useId,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 
 import {
@@ -54,7 +55,7 @@ import {
   normalizeLumenFormErrors,
   resolveLumenChartTone,
   scaleLumenChartValue,
-  tokenizeLumenCode,
+  tokenizeLumenCode
 } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
 
@@ -78,7 +79,7 @@ import {
   useResizable,
   useSelect,
   useTabs,
-  useTooltip,
+  useTooltip
 } from './hooks.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
@@ -100,16 +101,16 @@ type CodeVariant = 'block' | 'inline'
 type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
 export type DataTableCell =
-  | boolean
-  | null
-  | number
-  | string
-  | undefined
-  | {
-      label?: boolean | null | number | string
-      sortValue?: boolean | null | number | string
-      value?: boolean | null | number | string
-    }
+  | boolean |
+  null |
+  number |
+  string |
+  undefined |
+  {
+    label?: boolean | null | number | string
+    sortValue?: boolean | null | number | string
+    value?: boolean | null | number | string
+  }
 
 export interface DataTableColumn {
   header?: string
@@ -168,12 +169,11 @@ const emptyChartSeries: LumenChartSeries[] = []
 const emptyPieSeries: LumenChartSeries = {
   data: [],
   id: 'pie',
-  label: 'Values',
+  label: 'Values'
 }
 
 const emptyChartValues: number[] = []
-const variantClass = (base: string, variant: string, defaultVariant = 'default') =>
-  variant === defaultVariant ? false : `${base}--${variant}`
+const variantClass = (base: string, variant: string, defaultVariant = 'default') => variant === defaultVariant ? false : `${base}--${variant}`
 const iconSizeClass = (size: IconSize) => (size === 'default' ? undefined : `ui-icon--${size}`)
 
 const reactSvgAttributeNames: Record<string, string> = {
@@ -185,21 +185,17 @@ const reactSvgAttributeNames: Record<string, string> = {
   'stroke-linejoin': 'strokeLinejoin',
   'stroke-miterlimit': 'strokeMiterlimit',
   'stroke-width': 'strokeWidth',
-  tabindex: 'tabIndex',
+  tabindex: 'tabIndex'
 }
 
-const toReactSvgAttributes = (attributes: Record<string, string>) =>
-  Object.fromEntries(Object.entries(attributes).map(([name, value]) => [reactSvgAttributeNames[name] ?? name, value]))
+const toReactSvgAttributes = (attributes: Record<string, string>) => Object.fromEntries(Object.entries(attributes).map(([name, value]) => [reactSvgAttributeNames[name] ?? name, value]))
 
-const renderIconNode = ([tagName, attributes, children]: LumenIconNode, index: number): ReactNode =>
-  createElement(
-    tagName,
-    {
-      ...toReactSvgAttributes(attributes),
-      key: attributes.key ?? index,
-    },
-    children?.map(renderIconNode),
-  )
+const renderIconNode = ([tagName, attributes, children]: LumenIconNode, index: number): ReactNode => createElement(
+  tagName, {
+    ...toReactSvgAttributes(attributes),
+    key: attributes.key ?? index
+  }, children?.map(renderIconNode)
+)
 
 interface IconAccessibilityOptions {
   ariaHidden: boolean | 'false' | 'true' | undefined
@@ -217,14 +213,14 @@ const getIconAccessibility = ({ ariaHidden, ariaLabel, decorative, label, role }
     return {
       ariaHidden: ariaHidden ?? true,
       ariaLabel: undefined,
-      role,
+      role
     }
   }
 
   return {
     ariaHidden,
     ariaLabel: accessibleLabel,
-    role: role ?? 'img',
+    role: role ?? 'img'
   }
 }
 
@@ -252,8 +248,7 @@ const renderIconSvg = (icon: LumenIconData, className: string) => {
   )
 }
 
-const renderNamedIcon = (icon: LumenIconData) =>
-  renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`)
+const renderNamedIcon = (icon: LumenIconData) => renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`)
 
 const renderLucideIcon = (name: string, className: string) => {
   const icon = getLumenIcon(name)
@@ -261,21 +256,15 @@ const renderLucideIcon = (name: string, className: string) => {
   return icon ? renderIconSvg(icon, className) : null
 }
 
-const resolveSurface = (surface: SurfaceVariant, glass?: LumenGlassProp): SurfaceVariant =>
-  glass || surface === 'glass' ? 'glass' : surface
-const glassIntensityClass = (glass?: LumenGlassProp) =>
-  glass === 'subtle' ? 'ui-glass-subtle' : glass === 'strong' && 'ui-glass-strong'
-const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: LumenGlassProp) =>
-  resolveSurface(surface, glass) === 'glass' && composeClassName(`${base}--glass`, glassIntensityClass(glass))
-const glassClass = (base: string, glass?: LumenGlassProp) =>
-  Boolean(glass) && composeClassName(`${base}--glass`, glassIntensityClass(glass))
-const normalizeOption = (option: SelectOption): Option =>
-  typeof option === 'string' ? { label: option, value: option } : option
+const resolveSurface = (surface: SurfaceVariant, glass?: LumenGlassProp): SurfaceVariant => glass || surface === 'glass' ? 'glass' : surface
+const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ? 'ui-glass-subtle' : glass === 'strong' && 'ui-glass-strong'
+const glassSurfaceClass = (base: string, surface: SurfaceVariant, glass?: LumenGlassProp) => resolveSurface(surface, glass) === 'glass' && composeClassName(`${base}--glass`, glassIntensityClass(glass))
+const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) && composeClassName(`${base}--glass`, glassIntensityClass(glass))
+const normalizeOption = (option: SelectOption): Option => typeof option === 'string' ? { label: option, value: option } : option
 
 const isDataTableCellObject = (
-  cell: DataTableCell,
-): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> =>
-  typeof cell === 'object' && cell !== null
+  cell: DataTableCell
+): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null
 
 const formatDataTableCell = (cell: DataTableCell): string => {
   const value = isDataTableCellObject(cell) ? (cell.label ?? cell.value) : cell
@@ -289,8 +278,7 @@ const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
   return String(cell.sortValue)
 }
 
-const getDataTableRowValue = (row: DataTableRow, index: number): string =>
-  String(row.rowValue ?? row.value ?? row.id ?? index)
+const getDataTableRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)
 
 const toInputValue = (value: ComponentPropsWithoutRef<'input'>['value']): string | undefined => {
   if (value === undefined) return undefined
@@ -299,8 +287,7 @@ const toInputValue = (value: ComponentPropsWithoutRef<'input'>['value']): string
 }
 
 const composeHandlers =
-  <Event,>(userHandler: EventHandler<Event> | undefined, lumenHandler: EventHandler<Event> | undefined) =>
-  (event: Event) => {
+  <Event,>(userHandler: EventHandler<Event> | undefined, lumenHandler: EventHandler<Event> | undefined) => (event: Event) => {
     userHandler?.(event)
 
     lumenHandler?.(event)
@@ -355,10 +342,7 @@ export interface AlertProps extends ComponentPropsWithoutRef<'aside'> {
 export const Alert = ({ className, glass = false, variant = 'default', ...props }: AlertProps) => (
   <aside
     className={composeClassName(
-      'ui-alert',
-      variantClass('ui-alert', variant),
-      glassClass('ui-alert', glass),
-      className,
+      'ui-alert', variantClass('ui-alert', variant), glassClass('ui-alert', glass), className
     )}
     data-variant={variant}
     {...props}
@@ -387,9 +371,7 @@ export const AlertDialog = ({
       {...dialog.dialogProps}
       {...props}
       className={composeClassName(
-        'ui-dialog ui-alert-dialog',
-        glassSurfaceClass('ui-dialog', surface, glass),
-        className,
+        'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', surface, glass), className
       )}
       data-surface={resolveSurface(surface, glass)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
@@ -435,11 +417,13 @@ export const Autocomplete = ({ className, type = 'search', ...props }: Autocompl
 export const Attachment = ({ className, glass = false, href, ...props }: AttachmentProps) => {
   const nextClassName = composeClassName('ui-attachment', glassClass('ui-attachment', glass), className)
 
-  return href ? (
-    <a className={nextClassName} href={href} {...props} />
-  ) : (
-    <article className={nextClassName} {...props} />
-  )
+  return href ?
+    (
+      <a className={nextClassName} href={href} {...props} />
+    ) :
+    (
+      <article className={nextClassName} {...props} />
+    )
 }
 
 export interface AvatarProps extends ComponentPropsWithoutRef<'span'> {
@@ -455,7 +439,7 @@ export const Avatar = ({ alt = '', children, className, fallback, src, ...props 
   </span>
 )
 
-export interface BadgeProps extends ComponentPropsWithoutRef<'span'> {
+export interface BadgeProps extends ComponentPropsWithRef<'span'> {
   variant?: BadgeVariant
 }
 
@@ -476,10 +460,7 @@ export interface BubbleProps extends ComponentPropsWithoutRef<'article'> {
 export const Bubble = ({ className, from = 'assistant', glass = false, ...props }: BubbleProps) => (
   <article
     className={composeClassName(
-      'ui-bubble',
-      from === 'user' && 'ui-bubble--user',
-      glassClass('ui-bubble', glass),
-      className,
+      'ui-bubble', from === 'user' && 'ui-bubble--user', glassClass('ui-bubble', glass), className
     )}
     data-from={from}
     {...props}
@@ -512,12 +493,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const buttonClassName = composeClassName(
-    'ui-button',
-    `ui-button--${variant}`,
-    size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`,
-    disabled && 'ui-button--disabled',
-    loading && 'ui-button--loading',
-    className,
+    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, disabled && 'ui-button--disabled', loading && 'ui-button--loading', className
   )
 
   if (asChild) {
@@ -527,20 +503,22 @@ export const Button = ({
       throw new TypeError('Button with asChild requires exactly one React element child.')
     }
 
-    return cloneElement(child, {
-      ...props,
-      'aria-busy': loading ? true : undefined,
-      'aria-disabled': disabled ? true : undefined,
-      className: composeClassName(buttonClassName, child.props.className),
-      'data-slot': 'button',
-      ref: ref as Ref<HTMLElement>,
-      children: (
-        <>
-          {loading && <span aria-hidden="true" className="ui-spinner" />}
-          {child.props.children}
-        </>
-      ),
-    })
+    const ChildComponent = child.type
+
+    return (
+      <ChildComponent
+        {...child.props}
+        {...props}
+        aria-busy={loading ? true : undefined}
+        aria-disabled={disabled ? true : undefined}
+        className={composeClassName(buttonClassName, child.props.className)}
+        data-slot="button"
+        ref={ref as Ref<HTMLElement>}
+      >
+        {loading && <span aria-hidden="true" className="ui-spinner" />}
+        {child.props.children}
+      </ChildComponent>
+    )
   }
 
   return (
@@ -600,7 +578,7 @@ export const Calendar = ({
     month,
     name,
     onValueChange,
-    value,
+    value
   })
 
   return (
@@ -623,7 +601,7 @@ export const Calendar = ({
       <table {...calendar.gridProps}>
         <thead>
           <tr role="row">
-            {calendar.weekdays.map((weekday) => (
+            {calendar.weekdays.map(weekday => (
               <th key={weekday} role="columnheader" scope="col">
                 {weekday}
               </th>
@@ -631,9 +609,9 @@ export const Calendar = ({
           </tr>
         </thead>
         <tbody>
-          {calendar.weeks.map((week) => (
+          {calendar.weeks.map(week => (
             <tr key={week[0]?.date ?? 'week'} role="row">
-              {week.map((day) => (
+              {week.map(day => (
                 <td key={day.date} {...calendar.getDayProps(day)}>
                   {day.day}
                 </td>
@@ -662,11 +640,7 @@ export const Card = <T extends ElementType = 'div'>({
   <Primitive
     {...(as ? { as } : {})}
     className={composeClassName(
-      variant === 'muted' && 'ui-card--muted',
-      variant === 'interactive' && 'ui-card--interactive',
-      variant === 'unstyled' && 'ui-card--unstyled',
-      (glass || variant === 'glass') && composeClassName('ui-card--glass', glassIntensityClass(glass)),
-      className,
+      variant === 'muted' && 'ui-card--muted', variant === 'interactive' && 'ui-card--interactive', variant === 'unstyled' && 'ui-card--unstyled', (glass || variant === 'glass') && composeClassName('ui-card--glass', glassIntensityClass(glass)), className
     )}
     data-slot="card"
     data-variant={variant}
@@ -771,7 +745,7 @@ const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
         <thead>
           <tr>
             <th scope="col">Category</th>
-            {series.map((item) => (
+            {series.map(item => (
               <th key={item.id} scope="col">
                 {item.label}
               </th>
@@ -779,11 +753,11 @@ const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
           </tr>
         </thead>
         <tbody>
-          {categories.map((category) => (
+          {categories.map(category => (
             <tr key={`${typeof category}:${String(category)}`}>
               <th scope="row">{String(category)}</th>
-              {series.map((item) => {
-                const datum = item.data.find((candidate) => candidate.x === category)
+              {series.map(item => {
+                const datum = item.data.find(candidate => candidate.x === category)
 
                 return (
                   <td key={item.id}>
@@ -799,11 +773,10 @@ const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
   </details>
 )
 
-const formatChartPercentage = (percentage: number) =>
-  new Intl.NumberFormat(undefined, {
-    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
-    style: 'percent',
-  }).format(percentage)
+const formatChartPercentage = (percentage: number) => new Intl.NumberFormat(undefined, {
+  maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+  style: 'percent'
+}).format(percentage)
 
 export interface SparklineProps extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
   area?: boolean
@@ -823,8 +796,7 @@ export const Sparkline = ({
   ...props
 }: SparklineProps) => {
   const geometry = createLumenLineGeometry(
-    values.map((value, index) => ({ x: index, y: value })),
-    { height: 40, padding: 3, width: 120 },
+    values.map((value, index) => ({ x: index, y: value })), { height: 40, padding: 3, width: 120 }
   )
 
   const resolvedTone = resolveLumenChartTone(tone)
@@ -838,7 +810,13 @@ export const Sparkline = ({
       {...props}
     >
       <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">
-        {area && geometry.areaPaths.map((path) => <path className="ui-sparkline__area" d={path} key={path} />)}
+        {area && geometry.areaPaths.map(path => (
+          <path
+            className="ui-sparkline__area"
+            d={path}
+            key={path}
+          />
+        ))}
         <path className="ui-sparkline__line" d={geometry.path} />
         {showEndpoint && endpoint && (
           <circle className="ui-sparkline__endpoint" cx={endpoint.xCoordinate} cy={endpoint.yCoordinate} r="2.5" />
@@ -870,12 +848,12 @@ export const BarChart = ({
   const geometry = createLumenBarGeometry(series, { layout, orientation })
   const hasData = hasLumenChartData(series)
   const ticks = getLumenChartTicks(geometry.domain)
-  const categories = geometry.categories.map((category) => category.label)
+  const categories = geometry.categories.map(category => category.category)
 
   const margin =
-    orientation === 'horizontal'
-      ? { bottom: 24, left: 112, right: 20, top: 16 }
-      : { bottom: 52, left: 52, right: 16, top: 16 }
+    orientation === 'horizontal' ?
+      { bottom: 24, left: 112, right: 20, top: 16 } :
+      { bottom: 52, left: 52, right: 16, top: 16 }
 
   return (
     <Chart className={composeClassName('ui-bar-chart', className)} {...props}>
@@ -892,21 +870,23 @@ export const BarChart = ({
           viewBox={`0 0 ${geometry.width} ${geometry.height}`}
         >
           <g className="ui-chart__grid">
-            {ticks.map((tick) => {
+            {ticks.map(tick => {
               const coordinate =
-                orientation === 'horizontal'
-                  ? scaleLumenChartValue(tick, geometry.domain, margin.left, geometry.width - margin.right)
-                  : scaleLumenChartValue(tick, geometry.domain, geometry.height - margin.bottom, margin.top)
+                orientation === 'horizontal' ?
+                  scaleLumenChartValue(tick, geometry.domain, margin.left, geometry.width - margin.right) :
+                  scaleLumenChartValue(tick, geometry.domain, geometry.height - margin.bottom, margin.top)
 
-              return orientation === 'horizontal' ? (
-                <line key={tick} x1={coordinate} x2={coordinate} y1={margin.top} y2={geometry.height - margin.bottom} />
-              ) : (
-                <line key={tick} x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />
-              )
+              return orientation === 'horizontal' ?
+                (
+                  <line key={tick} x1={coordinate} x2={coordinate} y1={margin.top} y2={geometry.height - margin.bottom} />
+                ) :
+                (
+                  <line key={tick} x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />
+                )
             })}
           </g>
           <g className="ui-chart__axis-labels">
-            {geometry.categories.map((category) => (
+            {geometry.categories.map(category => (
               <text
                 dominantBaseline={orientation === 'horizontal' ? 'middle' : undefined}
                 key={`${typeof category.label}:${String(category.label)}`}
@@ -919,7 +899,7 @@ export const BarChart = ({
             ))}
           </g>
           <g className="ui-bar-chart__marks">
-            {geometry.marks.map((mark) => (
+            {geometry.marks.map(mark => (
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
                 height={mark.height}
@@ -964,22 +944,19 @@ export const LineChart = ({
   const padding = 44
   const categories = getLumenChartCategories(series)
   const hasData = hasLumenChartData(series)
-  const alignedSeries = series.map((item) => alignLumenChartSeries(item, categories))
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
   const domain = getLumenChartDomain(
-    [...alignedSeries.flatMap((item) => item.data.map((datum) => datum.y)), referenceValue ?? null],
-    false,
+    [...alignedSeries.flatMap(item => item.data.map(datum => datum.y)), referenceValue ?? null], false
   )
 
-  const geometries = alignedSeries.map((item) =>
-    createLumenLineGeometry(item.data, {
-      domain,
-      height,
-      includeZero: false,
-      padding,
-      width,
-    }),
-  )
+  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
+    domain,
+    height,
+    includeZero: false,
+    padding,
+    width
+  }))
 
   const ticks = getLumenChartTicks(domain)
   const labelStep = Math.max(1, Math.ceil(categories.length / 8))
@@ -998,7 +975,7 @@ export const LineChart = ({
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox={`0 0 ${width} ${height}`}>
           <g className="ui-chart__grid">
-            {ticks.map((tick) => {
+            {ticks.map(tick => {
               const y = scaleLumenChartValue(tick, domain, height - padding, padding)
 
               return (
@@ -1037,10 +1014,16 @@ export const LineChart = ({
 
             return (
               <g className={composeClassName('ui-line-chart__series', getLumenChartToneClassName(tone))} key={item.id}>
-                {area && geometry.areaPaths.map((path) => <path className="ui-line-chart__area" d={path} key={path} />)}
+                {area && geometry.areaPaths.map(path => (
+                  <path
+                    className="ui-line-chart__area"
+                    d={path}
+                    key={path}
+                  />
+                ))}
                 <path className="ui-line-chart__line" d={geometry.path} />
                 {markers &&
-                  geometry.points.map((point) => (
+                  geometry.points.map(point => (
                     <circle
                       className="ui-line-chart__point"
                       cx={point.xCoordinate}
@@ -1094,7 +1077,7 @@ export const PieChart = ({
     >
       {showLegend && hasData && (
         <ul aria-label="Chart legend" className="ui-chart__legend">
-          {geometry.slices.map((slice) => (
+          {geometry.slices.map(slice => (
             <li className={getLumenChartToneClassName(slice.tone)} key={`${typeof slice.x}:${String(slice.x)}`}>
               <span aria-hidden="true" />
               {slice.label}
@@ -1110,7 +1093,7 @@ export const PieChart = ({
       <div className="ui-chart__plot ui-pie-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox={`0 0 ${geometry.size} ${geometry.size}`}>
           <g className="ui-pie-chart__slices">
-            {geometry.slices.map((slice) => (
+            {geometry.slices.map(slice => (
               <path
                 className={getLumenChartToneClassName(slice.tone)}
                 d={slice.path}
@@ -1131,7 +1114,9 @@ export const PieChart = ({
               {hasCenterLabel && <span>{centerLabel}</span>}
             </div>
             <div className="ui-sr-only">
-              {centerValue} {centerLabel}
+              {centerValue}
+              {' '}
+              {centerLabel}
             </div>
           </>
         )}
@@ -1149,7 +1134,7 @@ export const PieChart = ({
                 </tr>
               </thead>
               <tbody>
-                {geometry.slices.map((slice) => (
+                {geometry.slices.map(slice => (
                   <tr key={`${typeof slice.x}:${String(slice.x)}`}>
                     <th scope="row">{slice.label}</th>
                     <td>{valueFormatter(slice.value)}</td>
@@ -1224,8 +1209,7 @@ const renderCodeToken = (token: LumenCodeToken) => {
   )
 }
 
-const renderCodeChildren = (code: string | undefined, children: ReactNode, language?: string) =>
-  code === undefined ? children : tokenizeLumenCode(code, language).map(renderCodeToken)
+const renderCodeChildren = (code: string | undefined, children: ReactNode, language?: string) => code === undefined ? children : tokenizeLumenCode(code, language).map(renderCodeToken)
 
 const renderCodeCopyButton = () => (
   <button aria-label="Copy code to clipboard" className="ui-code__copy" data-ui-code-copy type="button">
@@ -1285,13 +1269,15 @@ export const Code = ({
         {...props}
       >
         {renderCodeHeader({ copy, label, language })}
-        {highlighted ? (
-          children
-        ) : (
-          <pre>
-            <code>{codeChildren}</code>
-          </pre>
-        )}
+        {highlighted ?
+          (
+            children
+          ) :
+          (
+            <pre>
+              <code>{codeChildren}</code>
+            </pre>
+          )}
       </figure>
     )
   }
@@ -1356,8 +1342,7 @@ export const Combobox = ({
   const query = String(renderedValue).trim().toLowerCase()
 
   const visibleOptions = useMemo(
-    () => options.filter((option) => !query || option.toLowerCase().includes(query)),
-    [options, query],
+    () => options.filter(option => !query || option.toLowerCase().includes(query)), [options, query]
   )
 
   const selectOption = (option: string) => {
@@ -1372,7 +1357,7 @@ export const Combobox = ({
     <div
       className={composeClassName('ui-combobox', wrapperClassName)}
       data-ui-combobox
-      onBlur={(event) => {
+      onBlur={event => {
         const nextTarget = event.relatedTarget
 
         if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
@@ -1395,7 +1380,7 @@ export const Combobox = ({
         type={type}
         value={renderedValue}
         onBlur={onBlur}
-        onChange={(event) => {
+        onChange={event => {
           if (valueProp === undefined) {
             setValue(event.currentTarget.value)
           }
@@ -1404,12 +1389,12 @@ export const Combobox = ({
 
           onChange?.(event)
         }}
-        onFocus={(event) => {
+        onFocus={event => {
           setOpen(true)
 
           onFocus?.(event)
         }}
-        onKeyDown={(event) => {
+        onKeyDown={event => {
           if (event.key === 'Escape') {
             setOpen(false)
           }
@@ -1425,7 +1410,7 @@ export const Combobox = ({
         {...props}
       />
       <div className="ui-combobox__list" hidden={!open} id={list} role="listbox">
-        {visibleOptions.map((option) => (
+        {visibleOptions.map(option => (
           <button
             data-ui-combobox-option
             data-value={option}
@@ -1435,7 +1420,7 @@ export const Combobox = ({
             onClick={() => {
               selectOption(option)
             }}
-            onMouseDown={(event) => {
+            onMouseDown={event => {
               event.preventDefault()
             }}
           >
@@ -1500,41 +1485,43 @@ export const DataTable = ({
     data-ui-glass-track={glass ? true : undefined}
     {...props}
   >
-    {columns.length > 0 ? (
-      <table>
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th
-                data-ui-datatable-sort-type={column.sort}
-                data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
-                key={column.key}
-                scope="col"
-              >
-                {column.header ?? column.label ?? column.key}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, rowIndex) => (
-            <tr
-              data-ui-datatable-row
-              data-value={getDataTableRowValue(row, rowIndex)}
-              key={getDataTableRowValue(row, rowIndex)}
-            >
-              {columns.map((column) => (
-                <td data-sort-value={getDataTableSortValue(row[column.key])} key={column.key}>
-                  {formatDataTableCell(row[column.key])}
-                </td>
+    {columns.length > 0 ?
+      (
+        <table>
+          <thead>
+            <tr>
+              {columns.map(column => (
+                <th
+                  data-ui-datatable-sort-type={column.sort}
+                  data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
+                  key={column.key}
+                  scope="col"
+                >
+                  {column.header ?? column.label ?? column.key}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    ) : (
-      children
-    )}
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr
+                data-ui-datatable-row
+                data-value={getDataTableRowValue(row, rowIndex)}
+                key={getDataTableRowValue(row, rowIndex)}
+              >
+                {columns.map(column => (
+                  <td data-sort-value={getDataTableSortValue(row[column.key])} key={column.key}>
+                    {formatDataTableCell(row[column.key])}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) :
+      (
+        children
+      )}
   </div>
 )
 
@@ -1558,12 +1545,11 @@ const formatDatePickerDisplayValue = (value: string | undefined, placeholder: st
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
-    year: 'numeric',
+    year: 'numeric'
   }).format(date)
 }
 
-const stringifyDatePickerConstraint = (value: number | string | undefined): string | undefined =>
-  value === undefined ? undefined : String(value)
+const stringifyDatePickerConstraint = (value: number | string | undefined): string | undefined => value === undefined ? undefined : String(value)
 
 /* eslint-disable complexity -- DatePicker coordinates controlled input, disclosure, Calendar, and native form contracts. */
 export const DatePicker = ({
@@ -1647,11 +1633,7 @@ export const DatePicker = ({
   return (
     <div
       className={composeClassName(
-        'ui-date-picker-field',
-        glass && 'ui-date-picker-field--glass',
-        glass === 'subtle' && 'ui-glass-subtle',
-        glass === 'strong' && 'ui-glass-strong',
-        className,
+        'ui-date-picker-field', glass && 'ui-date-picker-field--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong', className
       )}
       data-placeholder={hasSelectedValue ? undefined : 'true'}
       data-ui-date-picker
@@ -1668,12 +1650,12 @@ export const DatePicker = ({
         max={max}
         min={min}
         name={name}
-        onChange={(event) => {
+        onChange={event => {
           if (value === undefined) setInternalValue(event.currentTarget.value)
 
           onChange?.(event)
         }}
-        onInvalid={(event) => {
+        onInvalid={event => {
           event.preventDefault()
 
           triggerRef.current?.setAttribute('aria-invalid', 'true')
@@ -1682,7 +1664,7 @@ export const DatePicker = ({
 
           onInvalid?.(event)
         }}
-        ref={(node) => {
+        ref={node => {
           nativeInputRef.current = node
 
           setRefValue(inputRef, node)
@@ -1705,9 +1687,9 @@ export const DatePicker = ({
           disabled={disabled}
           id={triggerId}
           onClick={() => {
-            setOpen((current) => !current)
+            setOpen(current => !current)
           }}
-          onKeyDown={(event) => {
+          onKeyDown={event => {
             if (event.key !== 'ArrowDown') return
 
             event.preventDefault()
@@ -1740,7 +1722,7 @@ export const DatePicker = ({
 /* eslint-enable complexity */
 
 export type DateRangePickerProps = ComponentPropsWithoutRef<'div'> & {
-  onRangeChange?: (range: { end?: string; start?: string }) => void
+  onRangeChange?: (range: { end?: string, start?: string }) => void
 }
 
 const setDateRangeConstraint = (input: HTMLInputElement, property: 'max' | 'min', value: string): void => {
@@ -1754,7 +1736,7 @@ const getDateRangeState = (start: string, end: string): string => {
   return end ? 'complete' : 'selecting-end'
 }
 
-const syncDateRangePickerElement = (root: HTMLDivElement): { end?: string; start?: string } => {
+const syncDateRangePickerElement = (root: HTMLDivElement): { end?: string, start?: string } => {
   const inputs = [...root.querySelectorAll<HTMLInputElement>('[data-ui-date-picker-native]')]
   const start = inputs[0]
   const end = inputs.at(-1)
@@ -1773,7 +1755,7 @@ const syncDateRangePickerElement = (root: HTMLDivElement): { end?: string; start
 
   root.dataset.rangeState = getDateRangeState(start.value, end.value)
 
-  const range: { end?: string; start?: string } = {}
+  const range: { end?: string, start?: string } = {}
 
   if (end.value) range.end = end.value
 
@@ -1793,7 +1775,7 @@ export const DateRangePicker = ({ className, onInput, onRangeChange, ...props }:
     <div
       className={composeClassName('ui-date-range-picker', className)}
       data-ui-date-range-picker
-      onInput={(event) => {
+      onInput={event => {
         onInput?.(event)
 
         onRangeChange?.(syncDateRangePickerElement(event.currentTarget))
@@ -1829,10 +1811,7 @@ export const Dialog = ({
       {...dialog.dialogProps}
       {...props}
       className={composeClassName(
-        'ui-dialog',
-        layout === 'fullscreen' && 'ui-dialog--fullscreen',
-        glassSurfaceClass('ui-dialog', surface, glass),
-        className,
+        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', surface, glass), className
       )}
       data-layout={layout}
       data-surface={resolveSurface(surface, glass)}
@@ -1852,13 +1831,12 @@ export interface ContainerProps extends ComponentPropsWithRef<'div'> {
   size?: 'full' | 'lg' | 'md' | 'sm'
 }
 
-export const Container = ({ as = 'div', className, size = 'lg', ...props }: ContainerProps) =>
-  createElement(as, {
-    className: composeClassName('ui-container', `ui-container--${size}`, className),
-    'data-size': size,
-    'data-ui-container': true,
-    ...props,
-  })
+export const Container = ({ as = 'div', className, size = 'lg', ...props }: ContainerProps) => createElement(as, {
+  className: composeClassName('ui-container', `ui-container--${size}`, className),
+  'data-size': size,
+  'data-ui-container': true,
+  ...props
+})
 
 export interface GridProps extends ComponentPropsWithRef<'div'> {
   as?: ElementType
@@ -1880,7 +1858,7 @@ export const Grid = ({
 }: GridProps) => {
   const gridStyle: LumenCSSProperties = {
     ...style,
-    '--ui-grid-min': minItemWidth,
+    '--ui-grid-min': minItemWidth
   }
 
   return createElement(as, {
@@ -1888,7 +1866,7 @@ export const Grid = ({
     'data-columns': columns,
     'data-ui-grid': true,
     style: gridStyle,
-    ...props,
+    ...props
   })
 }
 
@@ -1910,21 +1888,14 @@ export const Stack = ({
   justify = 'start',
   wrap = false,
   ...props
-}: StackProps) =>
-  createElement(as, {
-    className: composeClassName(
-      'ui-stack',
-      `ui-stack--${direction}`,
-      `ui-stack--gap-${gap}`,
-      `ui-stack--align-${align}`,
-      `ui-stack--justify-${justify}`,
-      wrap && 'ui-stack--wrap',
-      className,
-    ),
-    'data-direction': direction,
-    'data-ui-stack': true,
-    ...props,
-  })
+}: StackProps) => createElement(as, {
+  className: composeClassName(
+    'ui-stack', `ui-stack--${direction}`, `ui-stack--gap-${gap}`, `ui-stack--align-${align}`, `ui-stack--justify-${justify}`, wrap && 'ui-stack--wrap', className
+  ),
+  'data-direction': direction,
+  'data-ui-stack': true,
+  ...props
+})
 
 export interface VisuallyHiddenProps extends ComponentPropsWithRef<'span'> {
   focusable?: boolean
@@ -2029,9 +2000,9 @@ export const ErrorSummary = ({
 }: ErrorSummaryProps) => {
   const normalizedErrors = normalizeLumenFormErrors(errors)
 
-  const allErrors: { controlId?: string; message: string; name?: string }[] = [
-    ...normalizedErrors.form.map((message) => ({ message })),
-    ...normalizedErrors.fields,
+  const allErrors: { controlId?: string, message: string, name?: string }[] = [
+    ...normalizedErrors.form.map(message => ({ message })),
+    ...normalizedErrors.fields
   ]
 
   const headingId = `${id}-heading`
@@ -2048,8 +2019,8 @@ export const ErrorSummary = ({
     >
       <h2 id={headingId}>{heading}</h2>
       <ul>
-        {allErrors.map((error, index) => (
-          <li key={`${error.name ?? 'form'}:${index}`}>
+        {allErrors.map(error => (
+          <li key={`${error.name ?? 'form'}:${error.controlId ?? ''}:${error.message}`}>
             {error.controlId ? <a href={`#${error.controlId}`}>{error.message}</a> : error.message}
           </li>
         ))}
@@ -2174,15 +2145,17 @@ export interface InputProps extends ComponentPropsWithRef<'input'> {
 export const Input = ({ className, ref, type = 'text', visualSize = 'default', ...props }: InputProps) => (
   <input
     className={composeClassName(
-      'ui-input',
-      visualSize === 'sm' && 'ui-input--sm',
-      visualSize === 'lg' && 'ui-input--lg',
-      className,
+      'ui-input', visualSize === 'sm' && 'ui-input--sm', visualSize === 'lg' && 'ui-input--lg', className
     )}
     ref={ref}
     type={type}
     {...props}
   />
+)
+
+export type LabelProps = ComponentPropsWithRef<'label'>
+export const Label = ({ className, ...props }: LabelProps) => (
+  <label className={composeClassName('ui-label', className)} {...props} />
 )
 
 export interface PasswordFieldProps extends Omit<InputProps, 'type' | 'visualSize'> {
@@ -2192,6 +2165,122 @@ export interface PasswordFieldProps extends Omit<InputProps, 'type' | 'visualSiz
   label?: ReactNode
   showLabel?: string
 }
+
+const getPasswordFieldDescribedBy = (
+  ariaDescribedBy: string | undefined,
+  hintId: string | undefined,
+  errorId: string | undefined
+): string | undefined => (
+  [ariaDescribedBy, hintId, errorId].filter(Boolean).join(' ') || undefined
+)
+
+const usePasswordVisibility = (
+  inputRef: RefObject<HTMLInputElement | null>
+) => {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const form = inputRef.current?.form
+
+    if (!form) return
+
+    const handleReset = () => {
+      setVisible(false)
+    }
+
+    form.addEventListener('reset', handleReset)
+
+    return () => {
+      form.removeEventListener('reset', handleReset)
+    }
+  }, [inputRef])
+
+  const toggleVisibility = () => {
+    setVisible(current => !current)
+
+    inputRef.current?.focus({ preventScroll: true })
+  }
+
+  return { toggleVisibility, visible }
+}
+
+interface PasswordFieldControlProps {
+  controlId: string
+  describedBy: string | undefined
+  error: ReactNode
+  forwardedRef: Ref<HTMLInputElement> | undefined
+  hideLabel: string
+  inputProps: Omit<InputProps, 'aria-describedby' | 'className' | 'id' | 'name' | 'ref' | 'type'>
+  inputRef: RefObject<HTMLInputElement | null>
+  name: string | undefined
+  showLabel: string
+  toggleVisibility: () => void
+  visible: boolean
+}
+
+const PasswordFieldControl = ({
+  controlId,
+  describedBy,
+  error,
+  forwardedRef,
+  hideLabel,
+  inputProps,
+  inputRef,
+  name,
+  showLabel,
+  toggleVisibility,
+  visible
+}: PasswordFieldControlProps) => (
+  <div className="ui-password-field__control" data-ui-password-field>
+    <Input
+      {...inputProps}
+      aria-describedby={describedBy}
+      aria-invalid={error ? true : undefined}
+      id={controlId}
+      name={name}
+      ref={node => {
+        inputRef.current = node
+        setRefValue(forwardedRef, node)
+      }}
+      type={visible ? 'text' : 'password'}
+    />
+    <Button
+      aria-controls={controlId}
+      aria-label={visible ? hideLabel : showLabel}
+      aria-pressed={visible}
+      data-ui-password-toggle
+      onClick={toggleVisibility}
+      size="icon"
+      type="button"
+      variant="ghost"
+    >
+      <span aria-hidden="true">{visible ? 'Hide' : 'Show'}</span>
+    </Button>
+  </div>
+)
+
+interface PasswordFieldMessagesProps {
+  error: ReactNode
+  errorId: string
+  hint: ReactNode
+  hintId: string | undefined
+}
+
+const PasswordFieldMessages = ({
+  error,
+  errorId,
+  hint,
+  hintId
+}: PasswordFieldMessagesProps) => (
+  <>
+    {hint && (
+      <p className="ui-field__hint" data-ui-field-hint id={hintId}>
+        {hint}
+      </p>
+    )}
+    <FieldError id={errorId} message={error} />
+  </>
+)
 
 export const PasswordField = ({
   'aria-describedby': ariaDescribedby,
@@ -2211,27 +2300,12 @@ export const PasswordField = ({
   const hintId = hint ? `${controlId}-hint` : undefined
   const errorId = `${controlId}-error`
 
-  const describedBy = [ariaDescribedby, hintId, error ? errorId : undefined].filter(Boolean).join(' ') || undefined
+  const describedBy = getPasswordFieldDescribedBy(
+    ariaDescribedby, hintId, error ? errorId : undefined
+  )
 
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const input = inputRef.current
-    const form = input?.form
-
-    if (!form) return
-
-    const handleReset = () => {
-      setVisible(false)
-    }
-
-    form.addEventListener('reset', handleReset)
-
-    return () => {
-      form.removeEventListener('reset', handleReset)
-    }
-  }, [])
+  const { toggleVisibility, visible } = usePasswordVisibility(inputRef)
 
   return (
     <Field
@@ -2241,43 +2315,20 @@ export const PasswordField = ({
       {...(describedBy ? { describedBy } : {})}
     >
       <Label htmlFor={controlId}>{label}</Label>
-      <div className="ui-password-field__control" data-ui-password-field>
-        <Input
-          {...props}
-          aria-describedby={describedBy}
-          aria-invalid={error ? true : undefined}
-          id={controlId}
-          name={name}
-          ref={(node) => {
-            inputRef.current = node
-
-            setRefValue(ref, node)
-          }}
-          type={visible ? 'text' : 'password'}
-        />
-        <Button
-          aria-controls={controlId}
-          aria-label={visible ? hideLabel : showLabel}
-          aria-pressed={visible}
-          data-ui-password-toggle
-          onClick={() => {
-            setVisible((current) => !current)
-
-            inputRef.current?.focus({ preventScroll: true })
-          }}
-          size="icon"
-          type="button"
-          variant="ghost"
-        >
-          <span aria-hidden="true">{visible ? 'Hide' : 'Show'}</span>
-        </Button>
-      </div>
-      {hint && (
-        <p className="ui-field__hint" data-ui-field-hint id={hintId}>
-          {hint}
-        </p>
-      )}
-      <FieldError id={errorId} message={error} />
+      <PasswordFieldControl
+        controlId={controlId}
+        describedBy={describedBy}
+        error={error}
+        forwardedRef={ref}
+        hideLabel={hideLabel}
+        inputProps={props}
+        inputRef={inputRef}
+        name={name}
+        showLabel={showLabel}
+        toggleVisibility={toggleVisibility}
+        visible={visible}
+      />
+      <PasswordFieldMessages error={error} errorId={errorId} hint={hint} hintId={hintId} />
     </Field>
   )
 }
@@ -2312,10 +2363,11 @@ export const InputOTP = ({
     defaultValue: toInputValue(defaultValue),
     disabled,
     inputMode,
+    inputRef: ref,
     invalid: ariaInvalid === true || ariaInvalid === 'true',
     length,
     pattern,
-    value: toInputValue(value),
+    value: toInputValue(value)
   })
 
   return (
@@ -2328,16 +2380,11 @@ export const InputOTP = ({
           disabled,
           inputMode,
           maxLength,
-          pattern,
+          pattern
         })}
-        ref={(node) => {
-          otp.inputRef.current = node
-
-          setRefValue(ref, node)
-        }}
       />
       <div {...otp.segmentsProps}>
-        {otp.segmentIndexes.map((index) => (
+        {otp.segmentIndexes.map(index => (
           <button key={index} {...otp.getSegmentProps(index)} type="button">
             <span data-ui-input-otp-char>{otp.getSegmentChar(index)}</span>
           </button>
@@ -2362,11 +2409,6 @@ export const Item = ({ className, glass = false, ...props }: ItemProps) => (
 export type KbdProps = ComponentPropsWithoutRef<'kbd'>
 export const Kbd = ({ className, ...props }: KbdProps) => (
   <kbd className={composeClassName('ui-kbd', className)} {...props} />
-)
-
-export type LabelProps = ComponentPropsWithoutRef<'label'>
-export const Label = ({ className, ...props }: LabelProps) => (
-  <label className={composeClassName('ui-label', className)} {...props} />
 )
 
 export interface MarkerProps extends ComponentPropsWithoutRef<'span'> {
@@ -2413,6 +2455,7 @@ export const MessageScroller = ({ className, glass = false, ...props }: MessageS
 export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {
   options?: SelectOption[]
   placeholder?: string
+  visualSize?: 'default' | 'lg' | 'sm'
 }
 
 export const NativeSelect = ({
@@ -2423,13 +2466,16 @@ export const NativeSelect = ({
   placeholder,
   ref,
   value,
+  visualSize = 'default',
   ...props
 }: NativeSelectProps) => {
   const placeholderDefaultValue = placeholder && value === undefined && defaultValue === undefined ? '' : undefined
 
   return (
     <select
-      className={composeClassName('ui-select', className)}
+      className={composeClassName(
+        'ui-select', visualSize === 'sm' && 'ui-select--sm', visualSize === 'lg' && 'ui-select--lg', className
+      )}
       defaultValue={defaultValue ?? placeholderDefaultValue}
       ref={ref}
       value={value}
@@ -2441,7 +2487,7 @@ export const NativeSelect = ({
         </option>
       )}
       {children}
-      {options.map(normalizeOption).map((option) => (
+      {options.map(normalizeOption).map(option => (
         <option disabled={option.disabled} key={option.value} value={option.value}>
           {option.label}
         </option>
@@ -2495,7 +2541,7 @@ export const PhoneInput = ({
         defaultValue={defaultCountryValue}
         name={countryName}
       >
-        {countries.map(normalizeOption).map((option) => (
+        {countries.map(normalizeOption).map(option => (
           <option disabled={option.disabled} key={option.value} value={option.value}>
             {option.label}
           </option>
@@ -2527,10 +2573,7 @@ export const NavigationMenu = ({
 }: NavigationMenuProps) => (
   <nav
     className={composeClassName(
-      'ui-navigation-menu',
-      variant === 'unstyled' && 'ui-navigation-menu--unstyled',
-      glassSurfaceClass('ui-navigation-menu', surface, glass),
-      className,
+      'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', surface, glass), className
     )}
     data-slot="navigation-menu"
     data-surface={resolveSurface(surface, glass)}
@@ -2648,8 +2691,8 @@ const renderResizablePane = (child: ReactNode, index: number, panelProps: Compon
       className: composeClassName(childProps.className, panelProps.className),
       style: {
         ...childProps.style,
-        ...panelProps.style,
-      },
+        ...panelProps.style
+      }
     })
   }
 
@@ -2673,7 +2716,7 @@ export const Resizable = ({
     maxSize,
     minSize,
     panelCount: panes.length,
-    resetOnDoubleClick,
+    resetOnDoubleClick
   })
 
   return (
@@ -2730,9 +2773,7 @@ export const ScrollProgress = ({
 
       const scrollingElement = document.scrollingElement ?? document.documentElement
       const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
-
       const percentage = maximum > 0 ? Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)) : 0
-
       const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
 
       root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
@@ -2768,9 +2809,7 @@ export const ScrollProgress = ({
       aria-valuemin={0}
       aria-valuenow={0}
       className={composeClassName(
-        'ui-scroll-progress',
-        position === 'bottom' && 'ui-scroll-progress--bottom',
-        className,
+        'ui-scroll-progress', position === 'bottom' && 'ui-scroll-progress--bottom', className
       )}
       data-position={position}
       data-ui-scroll-progress
@@ -2801,20 +2840,20 @@ export const SearchField = ({ className, ref, type = 'search', ...props }: Searc
 
 export interface SelectProps
   extends
-    Omit<
-      NativeSelectProps,
-      | 'defaultValue'
-      | 'disabled'
-      | 'id'
-      | 'name'
-      | 'onChange'
-      | 'options'
-      | 'placeholder'
-      | 'required'
-      | 'size'
-      | 'value'
-    >,
-    SelectOptions {
+  Omit<
+    NativeSelectProps,
+    | 'defaultValue' |
+    'disabled' |
+    'id' |
+    'name' |
+    'onChange' |
+    'options' |
+    'placeholder' |
+    'required' |
+    'size' |
+    'value'
+  >,
+  SelectOptions {
   glass?: LumenGlassProp
   inputRef?: Ref<HTMLSelectElement>
   onChange?: ComponentPropsWithoutRef<'select'>['onChange']
@@ -2856,7 +2895,7 @@ export const Select = ({
     options,
     placeholder,
     required,
-    value,
+    value
   })
 
   const sizeClass = getSelectSizeClass(size)
@@ -2880,7 +2919,7 @@ export const Select = ({
           </option>
         )}
         {children}
-        {select.options.map((option) => (
+        {select.options.map(option => (
           <option disabled={option.disabled} key={option.value} value={option.value}>
             {option.label}
           </option>
@@ -2897,7 +2936,7 @@ export const Select = ({
         </button>
 
         <div {...select.listProps} className="ui-select__list">
-          {select.options.map((option) => {
+          {select.options.map(option => {
             const optionProps = select.getOptionProps(option)
 
             return (
@@ -2923,8 +2962,23 @@ export interface ListBoxProps extends Omit<
   value?: string | string[]
 }
 
-const normalizeListBoxValues = (value: string | string[] | undefined): string[] =>
-  value === undefined ? [] : Array.isArray(value) ? value : [value]
+const normalizeListBoxValues = (
+  value: string | string[] | undefined
+): string[] => {
+  if (value === undefined) return []
+
+  return Array.isArray(value) ? value : [value]
+}
+
+const findLastEnabledOptionIndex = (options: readonly Option[]): number => {
+  let lastEnabledIndex = -1
+
+  for (const [index, option] of options.entries()) {
+    if (!option.disabled) lastEnabledIndex = index
+  }
+
+  return lastEnabledIndex
+}
 
 export const ListBox = ({
   className,
@@ -2945,17 +2999,17 @@ export const ListBox = ({
   const controlId = id ?? `ui-list-box-${generatedId}`
 
   const normalizedOptions = useMemo(
-    () => options.map((option) => (typeof option === 'string' ? { label: option, value: option } : option)),
-    [options],
+    () => options.map(option => (typeof option === 'string' ? { label: option, value: option } : option)), [options]
   )
 
   const [internalValues, setInternalValues] = useState(() => normalizeListBoxValues(defaultValue))
   const selectedValues = value === undefined ? internalValues : normalizeListBoxValues(value)
   const selectedSet = new Set(selectedValues)
+
   const firstEnabledIndex = Math.max(
-    0,
-    normalizedOptions.findIndex((option) => !option.disabled),
+    0, normalizedOptions.findIndex(option => !option.disabled)
   )
+
   const [activeIndex, setActiveIndex] = useState(firstEnabledIndex)
   const selectRef = useRef<HTMLSelectElement | null>(null)
 
@@ -2985,12 +3039,15 @@ export const ListBox = ({
     if (!option || option.disabled || disabled) return
 
     const optionValue = option.value
+    let nextValues: string[]
 
-    const nextValues = multiple
-      ? selectedSet.has(optionValue)
-        ? selectedValues.filter((selectedValue) => selectedValue !== optionValue)
-        : [...selectedValues, optionValue]
-      : [optionValue]
+    if (!multiple) {
+      nextValues = [optionValue]
+    } else if (selectedSet.has(optionValue)) {
+      nextValues = selectedValues.filter(selectedValue => selectedValue !== optionValue)
+    } else {
+      nextValues = [...selectedValues, optionValue]
+    }
 
     commitValues(nextValues)
   }
@@ -3000,7 +3057,7 @@ export const ListBox = ({
 
     let nextIndex = activeIndex
 
-    for (let attempts = 0; attempts < normalizedOptions.length; attempts += 1) {
+    for (const _option of normalizedOptions) {
       nextIndex = (nextIndex + direction + normalizedOptions.length) % normalizedOptions.length
 
       if (!normalizedOptions[nextIndex]?.disabled) {
@@ -3050,7 +3107,7 @@ export const ListBox = ({
         id={controlId}
         multiple={multiple}
         name={name}
-        ref={(node) => {
+        ref={node => {
           selectRef.current = node
 
           setRefValue(ref, node)
@@ -3058,7 +3115,7 @@ export const ListBox = ({
         required={required}
         value={multiple ? selectedValues : (selectedValues[0] ?? '')}
       >
-        {normalizedOptions.map((option) => (
+        {normalizedOptions.map(option => (
           <option disabled={option.disabled} key={option.value} value={option.value}>
             {option.label}
           </option>
@@ -3069,7 +3126,7 @@ export const ListBox = ({
         aria-multiselectable={multiple || undefined}
         className="ui-list-box__list"
         data-ui-list-box-list
-        onKeyDown={(event) => {
+        onKeyDown={event => {
           if (event.key === 'ArrowDown') {
             event.preventDefault()
 
@@ -3085,15 +3142,7 @@ export const ListBox = ({
           } else if (event.key === 'End') {
             event.preventDefault()
 
-            let lastEnabledIndex = -1
-
-            for (let index = normalizedOptions.length - 1; index >= 0; index -= 1) {
-              if (!normalizedOptions[index]?.disabled) {
-                lastEnabledIndex = index
-
-                break
-              }
-            }
+            const lastEnabledIndex = findLastEnabledOptionIndex(normalizedOptions)
 
             if (lastEnabledIndex >= 0) setActiveIndex(lastEnabledIndex)
           } else if (event.key === 'Enter' || event.key === ' ') {
@@ -3107,7 +3156,7 @@ export const ListBox = ({
       >
         {normalizedOptions.map((option, index) => (
           <div
-            aria-disabled={option.disabled || undefined}
+            aria-disabled={option.disabled ? true : undefined}
             aria-selected={selectedSet.has(option.value)}
             className={composeClassName('ui-list-box__option', index === activeIndex && 'ui-list-box__option--active')}
             data-active={index === activeIndex ? 'true' : undefined}
@@ -3166,10 +3215,7 @@ export const Sidebar = ({
 }: SidebarProps) => (
   <aside
     className={composeClassName(
-      'ui-sidebar',
-      variant === 'unstyled' && 'ui-sidebar--unstyled',
-      glassSurfaceClass('ui-sidebar', surface, glass),
-      className,
+      'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', surface, glass), className
     )}
     data-slot="sidebar"
     data-surface={resolveSurface(surface, glass)}
@@ -3178,7 +3224,7 @@ export const Sidebar = ({
   />
 )
 
-export type SkeletonProps = ComponentPropsWithoutRef<'div'>
+export type SkeletonProps = ComponentPropsWithRef<'div'>
 export const Skeleton = ({ className, ...props }: SkeletonProps) => (
   <div className={composeClassName('ui-skeleton', className)} {...props} />
 )
@@ -3319,18 +3365,18 @@ export const CodeTabs = ({
       }
     }
 
-    return storedValue && items.some((item) => item.value === storedValue) ? storedValue : (selectedValue ?? '')
+    return storedValue && items.some(item => item.value === storedValue) ? storedValue : (selectedValue ?? '')
   })
 
   useEffect(() => {
     const synchronize = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey?: string; value?: string }>).detail
+      const detail = (event as CustomEvent<{ storageKey?: string, value?: string }>).detail
 
       if (
         storageKey &&
         detail.storageKey === storageKey &&
         detail.value &&
-        items.some((item) => item.value === detail.value)
+        items.some(item => item.value === detail.value)
       ) {
         setValue(detail.value)
       }
@@ -3356,8 +3402,8 @@ export const CodeTabs = ({
 
     document.dispatchEvent(
       new CustomEvent('ui:tabs-change', {
-        detail: { storageKey, value: nextValue },
-      }),
+        detail: { storageKey, value: nextValue }
+      })
     )
   }
 
@@ -3371,13 +3417,13 @@ export const CodeTabs = ({
       {...props}
     >
       <TabsList aria-label={ariaLabel} className="ui-code-tabs__list">
-        {items.map((item) => (
+        {items.map(item => (
           <TabsTrigger className="ui-code-tabs__tab" key={item.value} value={item.value}>
             {item.label}
           </TabsTrigger>
         ))}
       </TabsList>
-      {items.map((item) => (
+      {items.map(item => (
         <TabsPanel className="ui-code-tabs__panel" key={item.value} value={item.value}>
           <Code
             code={item.code}
@@ -3435,10 +3481,7 @@ export const Toast = ({
   <aside
     aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}
     className={composeClassName(
-      'ui-toast',
-      variantClass('ui-toast', variant),
-      glassSurfaceClass('ui-toast', surface, glass),
-      className,
+      'ui-toast', variantClass('ui-toast', variant), glassSurfaceClass('ui-toast', surface, glass), className
     )}
     data-surface={resolveSurface(surface, glass)}
     data-ui-toast
@@ -3590,7 +3633,7 @@ export const Image = <T extends ElementType = 'img'>({
   return createElement(Component, {
     ...props,
     className: composeClassName('ui-image', invertOnDark && 'ui-image--invert-dark', className),
-    ...(resolvedLoading ? { loading: resolvedLoading } : {}),
+    ...(resolvedLoading ? { loading: resolvedLoading } : {})
   })
 }
 
@@ -3623,24 +3666,26 @@ export const Pill = ({ className, count, children, href, variant = 'neutral', ..
     </>
   )
 
-  return href ? (
-    <a
-      className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
-      data-variant={variant}
-      href={href}
-      {...props}
-    >
-      {content}
-    </a>
-  ) : (
-    <span
-      className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
-      data-variant={variant}
-      {...props}
-    >
-      {content}
-    </span>
-  )
+  return href ?
+    (
+      <a
+        className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
+        data-variant={variant}
+        href={href}
+        {...props}
+      >
+        {content}
+      </a>
+    ) :
+    (
+      <span
+        className={composeClassName('ui-pill', variantClass('ui-pill', variant, 'neutral'), className)}
+        data-variant={variant}
+        {...props}
+      >
+        {content}
+      </span>
+    )
 }
 
 export type ProseProps = ComponentPropsWithoutRef<'div'>
@@ -3677,27 +3722,25 @@ interface ParticleItem {
 }
 
 const particleDensityConfig = { high: 40, low: 15, medium: 25 } as const
-
 const particleTones = ['var(--brand)', 'var(--accent)', 'var(--glow, var(--brand))']
 
-const createParticles = (density: NonNullable<ParticlesProps['density']>): ParticleItem[] =>
-  Array.from({ length: particleDensityConfig[density] }, (_, index) => {
-    const size = Math.random() * 12 + 8
-    const left = Math.random() * 100
-    const top = Math.random() * 100
+const createParticles = (density: NonNullable<ParticlesProps['density']>): ParticleItem[] => Array.from({ length: particleDensityConfig[density] }, (_, index) => {
+  const size = Math.random() * 12 + 8
+  const left = Math.random() * 100
+  const top = Math.random() * 100
 
-    return {
-      id: `${index}-${left}-${top}`,
-      style: {
-        '--ui-particle-delay': `${Math.random() * 8}s`,
-        '--ui-particle-duration': `${20 + Math.random() * 15}s`,
-        '--ui-particle-left': `${left}%`,
-        '--ui-particle-size': `${size}px`,
-        '--ui-particle-tone': particleTones[Math.floor(Math.random() * particleTones.length)],
-        '--ui-particle-top': `${top}%`,
-      } as CSSProperties,
-    }
-  })
+  return {
+    id: `${index}-${left}-${top}`,
+    style: {
+      '--ui-particle-delay': `${Math.random() * 8}s`,
+      '--ui-particle-duration': `${20 + Math.random() * 15}s`,
+      '--ui-particle-left': `${left}%`,
+      '--ui-particle-size': `${size}px`,
+      '--ui-particle-tone': particleTones[Math.floor(Math.random() * particleTones.length)],
+      '--ui-particle-top': `${top}%`
+    } as CSSProperties
+  }
+})
 
 export const Particles = ({ children, className, density = 'medium', ...props }: ParticlesProps) => {
   const [particles, setParticles] = useState<ParticleItem[]>([])
@@ -3718,7 +3761,7 @@ export const Particles = ({ children, className, density = 'medium', ...props }:
       {...props}
     >
       {children}
-      {particles.map((particle) => (
+      {particles.map(particle => (
         <span className="ui-particles__particle" key={particle.id} style={particle.style} />
       ))}
     </div>
@@ -3776,8 +3819,7 @@ export const ScrollReveal = ({
         root.classList.toggle('is-revealed', entry.isIntersecting)
 
         if (entry.isIntersecting && once) observer.disconnect()
-      },
-      { threshold: Math.min(1, Math.max(0, threshold)) },
+      }, { threshold: Math.min(1, Math.max(0, threshold)) }
     )
 
     observer.observe(root)
@@ -3790,10 +3832,7 @@ export const ScrollReveal = ({
   return (
     <div
       className={composeClassName(
-        'ui-scroll-reveal',
-        `ui-scroll-reveal-${animation}`,
-        `ui-motion-duration-${duration}`,
-        className,
+        'ui-scroll-reveal', `ui-scroll-reveal-${animation}`, `ui-motion-duration-${duration}`, className
       )}
       data-ui-reveal-once={String(once)}
       data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
@@ -3852,8 +3891,7 @@ export const RevealGroup = ({
         root.classList.toggle('is-revealed', entry.isIntersecting)
 
         if (entry.isIntersecting && once) observer.disconnect()
-      },
-      { threshold: Math.min(1, Math.max(0, threshold)) },
+      }, { threshold: Math.min(1, Math.max(0, threshold)) }
     )
 
     observer.observe(root)
@@ -3866,10 +3904,7 @@ export const RevealGroup = ({
   return (
     <div
       className={composeClassName(
-        'ui-reveal-group',
-        `ui-reveal-group-${animation}`,
-        `ui-motion-duration-${duration}`,
-        className,
+        'ui-reveal-group', `ui-reveal-group-${animation}`, `ui-motion-duration-${duration}`, className
       )}
       data-ui-reveal-group
       data-ui-reveal-once={String(once)}
@@ -3879,7 +3914,7 @@ export const RevealGroup = ({
         {
           ...style,
           '--ui-reveal-delay': `${Math.max(0, delay)}ms`,
-          '--ui-reveal-stagger': `${Math.max(0, stagger)}ms`,
+          '--ui-reveal-stagger': `${Math.max(0, stagger)}ms`
         } as CSSProperties
       }
       {...props}
@@ -3911,12 +3946,10 @@ export const AnimatedNumber = ({
   const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
 
   const formatter = useMemo(
-    () =>
-      new Intl.NumberFormat(locale, {
-        maximumFractionDigits: safeDecimals,
-        minimumFractionDigits: safeDecimals,
-      }),
-    [locale, safeDecimals],
+    () => new Intl.NumberFormat(locale, {
+      maximumFractionDigits: safeDecimals,
+      minimumFractionDigits: safeDecimals
+    }), [locale, safeDecimals]
   )
 
   const formattedValue = `${prefix}${formatter.format(value)}${suffix}`
@@ -3941,8 +3974,8 @@ export const AnimatedNumber = ({
     if (!root) return
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return
+      entries => {
+        if (!entries.some(entry => entry.isIntersecting)) return
 
         observer.disconnect()
 
@@ -3964,8 +3997,7 @@ export const AnimatedNumber = ({
         }
 
         requestAnimationFrame(update)
-      },
-      { threshold: 0.15 },
+      }, { threshold: 0.15 }
     )
 
     observer.observe(root)
@@ -4092,7 +4124,7 @@ export const Rating = ({ className, value = 0, max = 5, readonly = false, ...pro
       data-readonly={readonly ? 'true' : 'false'}
       {...props}
     >
-      {stars.map((star) => (
+      {stars.map(star => (
         <button
           key={star}
           type="button"
@@ -4152,42 +4184,76 @@ export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>
 export const AnimatedPortrait = ({ className, ...props }: AnimatedPortraitProps) => (
   <div
     className={composeClassName(
-      'ui-animated-portrait relative isolate w-full animate-reveal-lcp motion-reduce:animate-none',
-      className,
+      'ui-animated-portrait relative isolate w-full animate-reveal-lcp motion-reduce:animate-none', className
     )}
     {...props}
   />
 )
 
 export type ButtonLinkProps = ComponentPropsWithRef<'a'> & {
+  asChild?: boolean
   shape?: 'default' | 'icon'
   variant?: 'ghost' | 'inline' | 'primary' | 'secondary' | 'unstyled'
 }
-export const ButtonLink = ({ className, ref, shape = 'default', variant = 'primary', ...props }: ButtonLinkProps) => {
-  let variantClass = `ui-button ui-button--${variant} min-h-11 rounded-full border`
 
-  if (variant === 'unstyled') {
-    variantClass = 'ui-button-link--unstyled'
-  } else if (variant === 'inline') {
-    variantClass = 'ui-button ui-button--inline'
-  }
+const getButtonLinkVariantClass = (
+  variant: NonNullable<ButtonLinkProps['variant']>
+): string => {
+  if (variant === 'unstyled') return 'ui-button-link--unstyled'
 
+  if (variant === 'inline') return 'ui-button ui-button--inline'
+
+  return `ui-button ui-button--${variant} min-h-11 rounded-full border`
+}
+
+export const ButtonLink = ({
+  asChild = false,
+  children,
+  className,
+  ref,
+  shape = 'default',
+  variant = 'primary',
+  ...props
+}: ButtonLinkProps) => {
+  const variantClass = getButtonLinkVariantClass(variant)
   const shapeClass = shape === 'icon' && variant !== 'inline' ? 'ui-button-link--icon' : undefined
+
+  const buttonLinkClassName = composeClassName(
+    'ui-button-link', variant !== 'unstyled' &&
+    'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]', variantClass, shapeClass, className
+  )
+
+  if (asChild) {
+    const child = Children.only(children)
+
+    if (!isValidElement<ButtonChildProps>(child)) {
+      throw new Error('ButtonLink with asChild requires exactly one valid React element child.')
+    }
+
+    const ChildComponent = child.type
+
+    return (
+      <ChildComponent
+        {...child.props}
+        {...props}
+        className={composeClassName(buttonLinkClassName, child.props.className)}
+        data-slot="button-link"
+        ref={ref as Ref<HTMLElement>}
+      >
+        {child.props.children}
+      </ChildComponent>
+    )
+  }
 
   return (
     <a
-      className={composeClassName(
-        'ui-button-link',
-        variant !== 'unstyled' &&
-          'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]',
-        variantClass,
-        shapeClass,
-        className,
-      )}
+      className={buttonLinkClassName}
       data-slot="button-link"
       ref={ref}
       {...props}
-    />
+    >
+      {children}
+    </a>
   )
 }
 
@@ -4204,14 +4270,17 @@ export const CoverImage = ({
 }: CoverImageProps) => (
   <div
     className={composeClassName(
-      'ui-cover-image relative overflow-hidden bg-surface-muted',
-      hover && 'ui-cover-image--hover',
-      className,
+      'ui-cover-image relative overflow-hidden bg-surface-muted', hover && 'ui-cover-image--hover', className
     )}
     {...props}
   >
     {children}
-    {showBottomGradient && <div aria-hidden="true" className="ui-cover-image__bottom-gradient" />}
+    {showBottomGradient && (
+      <div
+        aria-hidden="true"
+        className="ui-cover-image__bottom-gradient"
+      />
+    )}
   </div>
 )
 
@@ -4224,14 +4293,15 @@ export const GradientDivider = ({ className, ...props }: GradientDividerProps) =
   >
     <div
       className="
-      h-px w-full max-w-5xl bg-linear-to-r from-transparent via-brand/40
-      to-transparent
-    "
-    ></div>
+        h-px w-full max-w-5xl bg-linear-to-r from-transparent via-brand/40
+        to-transparent
+      "
+    >
+    </div>
   </div>
 )
 
-export type StepItem = string | { description?: string; title: string }
+export type StepItem = string | { description?: string, title: string }
 export interface StepperProps extends ComponentPropsWithoutRef<'ol'> {
   currentStep?: number
   orientation?: Orientation
@@ -4316,8 +4386,8 @@ export const FileUpload = ({
         className={composeClassName('ui-file-upload__input', inputClassName)}
         data-ui-file-upload-input
         id={inputId}
-        onChange={(event) => {
-          setSelectedFiles([...(event.currentTarget.files ?? [])].map((file) => file.name))
+        onChange={event => {
+          setSelectedFiles([...(event.currentTarget.files ?? [])].map(file => file.name))
 
           onChange?.(event)
         }}
@@ -4445,15 +4515,12 @@ export const Segmented = ({
 }: SegmentedProps) => (
   <div
     className={composeClassName(
-      'ui-segmented',
-      size === 'sm' && 'ui-segmented--sm',
-      size === 'lg' && 'ui-segmented--lg',
-      className,
+      'ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className
     )}
     role="group"
     {...props}
   >
-    {options.map(normalizeOption).map((option) => (
+    {options.map(normalizeOption).map(option => (
       <label className="ui-segmented__option" key={option.value}>
         <input
           defaultChecked={value === option.value}
@@ -4547,7 +4614,12 @@ export const Popconfirm = ({
     data-ui-popover
     {...props}
   >
-    <span aria-expanded="false" aria-haspopup="dialog" className="ui-popconfirm__trigger" data-ui-trigger>
+    <span
+      aria-expanded="false"
+      aria-haspopup="dialog"
+      className="ui-popconfirm__trigger"
+      data-ui-trigger
+    >
       {children}
     </span>
     <div className="ui-popover__panel ui-popconfirm__panel" data-ui-panel hidden role="dialog">
@@ -4578,15 +4650,14 @@ export interface TransferProps extends ComponentPropsWithoutRef<'div'> {
 
 const emptyTransferItems: TransferItem[] = []
 
-const renderTransferItems = (items: TransferItem[]) =>
-  items.map((item) => (
-    <li className="ui-transfer__item" key={item.key}>
-      <label className="ui-transfer__option">
-        <input className="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.key} />
-        <span>{item.label}</span>
-      </label>
-    </li>
-  ))
+const renderTransferItems = (items: TransferItem[]) => items.map(item => (
+  <li className="ui-transfer__item" key={item.key}>
+    <label className="ui-transfer__option">
+      <input className="ui-checkbox" data-ui-transfer-item type="checkbox" value={item.key} />
+      <span>{item.label}</span>
+    </label>
+  </li>
+))
 
 export const Transfer = ({
   className,
@@ -4644,7 +4715,7 @@ export interface CascaderProps extends ComponentPropsWithoutRef<'div'> {
 
 interface CascaderColumn {
   id: string
-  options: { label: ReactNode; nextId?: string | undefined; value: string }[]
+  options: { label: ReactNode, nextId?: string | undefined, value: string }[]
   root: boolean
 }
 
@@ -4657,9 +4728,9 @@ const buildCascaderColumns = (options: CascaderOption[], idPrefix: string): Casc
 
     const id = `${idPrefix}-column-${count}`
 
-    const rendered: CascaderColumn['options'] = items.map((item) => ({
+    const rendered: CascaderColumn['options'] = items.map(item => ({
       label: item.label,
-      value: item.value,
+      value: item.value
     }))
 
     columns.push({ id, options: rendered, root })
@@ -4719,7 +4790,7 @@ export const Cascader = ({
         </span>
       </button>
       <div className="ui-cascader__panel" data-ui-panel hidden id={panelId}>
-        {columns.map((column) => (
+        {columns.map(column => (
           <ol
             aria-label={column.root ? 'Options' : 'Sub-options'}
             className="ui-cascader__column"
@@ -4728,7 +4799,7 @@ export const Cascader = ({
             key={column.id}
             role="listbox"
           >
-            {column.options.map((option) => (
+            {column.options.map(option => (
               <li key={option.value} role="presentation">
                 <button
                   aria-selected="false"
@@ -4767,7 +4838,7 @@ export interface TreeSelectProps extends ComponentPropsWithoutRef<'div'> {
 const flattenTreeSelect = (
   nodes: TreeSelectNode[],
   depth = 0,
-  acc: { depth: number; label: ReactNode; value: string }[] = [],
+  acc: { depth: number, label: ReactNode, value: string }[] = []
 ) => {
   for (const node of nodes) {
     acc.push({ depth, label: node.label, value: node.value })
@@ -4808,7 +4879,7 @@ export const TreeSelect = ({
     </button>
     <div className="ui-tree-select__panel" data-ui-panel hidden>
       <div className="ui-tree-select__tree" role="tree">
-        {flattenTreeSelect(treeData).map((row) => (
+        {flattenTreeSelect(treeData).map(row => (
           <button
             className="ui-tree-select__option"
             data-value={row.value}
@@ -4855,7 +4926,7 @@ export const Mentions = ({
       rows={3}
     />
     <ul className="ui-mentions__list" data-ui-mentions-list hidden role="listbox">
-      {options.map(normalizeOption).map((option) => (
+      {options.map(normalizeOption).map(option => (
         <li key={option.value}>
           <button
             className="ui-mentions__option"
@@ -4889,17 +4960,19 @@ export const QRCode = ({ children, className, size = 160, src, style, value, ...
       {...props}
     >
       <div className="ui-qr-code__frame">
-        {qrSrc ? (
-          <img
-            alt={value ? `QR code for ${value}` : 'QR code'}
-            className="ui-qr-code__image"
-            height={size}
-            src={qrSrc}
-            width={size}
-          />
-        ) : (
-          children
-        )}
+        {qrSrc ?
+          (
+            <img
+              alt={value ? `QR code for ${value}` : 'QR code'}
+              className="ui-qr-code__image"
+              height={size}
+              src={qrSrc}
+              width={size}
+            />
+          ) :
+          (
+            children
+          )}
       </div>
       {value && <figcaption className="ui-qr-code__value">{value}</figcaption>}
     </figure>
@@ -4930,12 +5003,11 @@ export const Watermark = ({
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&apos;',
+    '\'': '&apos;'
   }
 
   const escapedWatermarkText = watermarkText.replaceAll(
-    /[&<>"']/g,
-    (character) => watermarkXmlEntities[character] ?? character,
+    /[&<>"']/g, character => watermarkXmlEntities[character] ?? character
   )
 
   const watermarkSvg = [
@@ -4943,7 +5015,7 @@ export const Watermark = ({
     `<text x="${tileSize / 2}" y="${tileSize / 2}" dominant-baseline="middle" text-anchor="middle"`,
     ` transform="rotate(${rotate} ${tileSize / 2} ${tileSize / 2})"`,
     ' fill="black" font-family="Montserrat, Avenir Next, Segoe UI, sans-serif" font-size="16" font-weight="500" letter-spacing="1.6">',
-    `${escapedWatermarkText}</text></svg>`,
+    `${escapedWatermarkText}</text></svg>`
   ].join('')
 
   const watermarkImage = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`
@@ -4955,7 +5027,7 @@ export const Watermark = ({
       style={{
         ['--ui-watermark-gap' as string]: `${tileSize}px`,
         ['--ui-watermark-image' as string]: watermarkImage,
-        ...style,
+        ...style
       }}
       {...props}
     >
@@ -5057,7 +5129,7 @@ export const SpeedDial = ({
       data-state={isOpen ? 'open' : 'closed'}
       data-ui-bound="true"
       data-ui-speed-dial
-      onBlur={(event) => {
+      onBlur={event => {
         onBlur?.(event)
 
         if (!event.currentTarget.contains(event.relatedTarget)) close()
@@ -5070,9 +5142,9 @@ export const SpeedDial = ({
         className="ui-speed-dial__trigger"
         data-ui-speed-dial-trigger
         onClick={() => {
-          setIsOpen((open) => !open)
+          setIsOpen(open => !open)
         }}
-        onKeyDown={(event) => {
+        onKeyDown={event => {
           if (event.key === 'Escape') close()
 
           if (['ArrowDown', 'ArrowRight'].includes(event.key)) {
@@ -5098,13 +5170,13 @@ export const SpeedDial = ({
         aria-label={label}
         className="ui-speed-dial__actions"
         data-ui-speed-dial-actions
-        onClick={(event) => {
+        onClick={event => {
           if ((event.target as HTMLElement).closest('[role="menuitem"], button, a')) close()
         }}
-        onKeyDown={(event) => {
+        onKeyDown={event => {
           const items = [
             ...(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"], button:not([disabled]), a[href]') ??
-              []),
+              [])
           ]
 
           if (event.key === 'Escape') {
@@ -5142,7 +5214,10 @@ export const SpeedDial = ({
               type="button"
             >
               {action.icon && (
-                <span aria-hidden="true" className="ui-speed-dial__action-icon ui-icon">
+                <span
+                  aria-hidden="true"
+                  className="ui-speed-dial__action-icon ui-icon"
+                >
                   {renderLucideIcon(action.icon, `ui-icon__svg lucide-${action.icon}`)}
                 </span>
               )}

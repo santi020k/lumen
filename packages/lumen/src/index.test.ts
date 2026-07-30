@@ -233,7 +233,12 @@ describe('@santi020k/lumen umbrella package', () => {
 
         try {
           const result = await addLumenRegistryItem(templateName, { cwd, target })
-          const extension = target === 'astro' ? 'astro' : target === 'react' ? 'tsx' : 'html'
+          const extensions = {
+            astro: 'astro',
+            elements: 'html',
+            react: 'tsx'
+          }
+          const extension = extensions[target]
           const templatePath = join(cwd, `src/lumen/${templateName}.${extension}`)
           const stylesheetPath = join(cwd, 'src/lumen/lumen-template.css')
           const source = await readFile(templatePath, 'utf8')

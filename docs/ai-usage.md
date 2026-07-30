@@ -234,6 +234,11 @@ The shared catalog includes:
 
 ## Product Recipes
 
+- Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,
+  `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with
+  `lumen add <recipe>` for Astro, or add `--target react` / `--target elements`. Keep the generated
+  shared template stylesheet, then replace sample data and routes while preserving public Lumen
+  components, semantic tokens, accessible names, focus paths, and responsive navigation.
 - Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical
   comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small
   part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,

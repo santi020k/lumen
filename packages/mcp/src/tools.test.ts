@@ -15,7 +15,7 @@ import {
   listComponents,
   resolveComponent,
   resolveRecipe,
-  search,
+  search
 } from './tools.js'
 
 describe('lumen-mcp data snapshot', () => {
@@ -38,7 +38,7 @@ describe('lumen-mcp data snapshot', () => {
 
     expect(dateRangePicker).toMatchObject({
       category: 'Forms',
-      collections: ['Dates and time'],
+      collections: ['Dates and time']
     })
     expect(dateRangePicker?.dependencies).toEqual(expect.arrayContaining(['DatePicker']))
     expect(dateRangePicker?.description).toMatch(/date range|start and end date/i)
@@ -48,12 +48,10 @@ describe('lumen-mcp data snapshot', () => {
     expect(dateRangePicker?.frameworkDetails.elements).toMatchObject({
       available: true,
       registration: 'defineLumenElements()',
-      tagName: 'lumen-date-range-picker',
+      tagName: 'lumen-date-range-picker'
     })
     expect(
-      data.components.every((component) =>
-        Object.values(component.frameworkDetails).every((framework) => framework.available),
-      ),
+      data.components.every(component => Object.values(component.frameworkDetails).every(framework => framework.available))
     ).toBe(true)
   })
 
@@ -65,27 +63,27 @@ describe('lumen-mcp data snapshot', () => {
     expect(accordion?.apiReference).toContainEqual(
       expect.objectContaining({
         attribute: 'variant',
-        values: '"default" | "flush"',
-      }),
+        values: '"default" | "flush"'
+      })
     )
     expect(accordion?.frameworkDetails.astro.props).toContainEqual(
       expect.objectContaining({
         name: 'variant',
-        type: 'AccordionVariant',
-      }),
+        type: 'AccordionVariant'
+      })
     )
 
     expect(code?.apiReference).toContainEqual(
       expect.objectContaining({
         attribute: 'wrap',
-        defaultValue: 'false',
-      }),
+        defaultValue: 'false'
+      })
     )
     expect(code?.frameworkDetails.astro.props).toContainEqual(
       expect.objectContaining({
         name: 'wrap',
-        type: 'boolean',
-      }),
+        type: 'boolean'
+      })
     )
 
     for (const name of ['AnimatedNumber', 'RevealGroup', 'ScrollReveal']) {
@@ -115,7 +113,7 @@ describe('lumen-mcp data snapshot', () => {
     expect(dialog?.frameworkDetails.react.example).not.toContain('data-ui-dialog-trigger')
     expect(dialog?.frameworkDetails.react.behavior).toMatchObject({
       hook: 'useDialog',
-      mode: 'hook',
+      mode: 'hook'
     })
     expect(dialog?.frameworkDetails.elements.example).toContain('<lumen-dialog')
     expect(dialog?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
@@ -136,10 +134,10 @@ describe('lumen-mcp data snapshot', () => {
 
   test('associates runtime events with their components', () => {
     expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
-      expect.objectContaining({ name: 'ui:data-table-selection-change' }),
+      expect.objectContaining({ name: 'ui:data-table-selection-change' })
     )
     expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
-      expect.objectContaining({ name: 'ui:datatable-selection-change' }),
+      expect.objectContaining({ name: 'ui:datatable-selection-change' })
     )
   })
 
@@ -194,13 +192,13 @@ describe('listComponents', () => {
 
   test('normalizes friendly recipe filters', () => {
     expect(listComponents({ recipe: 'Advanced Fields' }).data.count).toBe(
-      listComponents({ recipe: 'advanced-fields' }).data.count,
+      listComponents({ recipe: 'advanced-fields' }).data.count
     )
   })
 
   test('returns a clear empty result', () => {
     expect(listComponents({ query: 'definitely-not-a-component' }).text).toBe(
-      'No components matched the given filters.',
+      'No components matched the given filters.'
     )
   })
 })
@@ -242,8 +240,8 @@ describe('getComponent', () => {
     expect(result.data.component).toMatchObject({
       framework: {
         registration: 'defineLumenElements()',
-        tagName: 'lumen-date-range-picker',
-      },
+        tagName: 'lumen-date-range-picker'
+      }
     })
   })
 
@@ -290,13 +288,13 @@ describe('search', () => {
 
   test('ranks an exact component name first', () => {
     const result = search({ query: 'button' })
-    const firstResult = result.text.split('\n').find((line) => line.startsWith('component:'))
+    const firstResult = result.text.split('\n').find(line => line.startsWith('component:'))
 
     expect(firstResult).toContain('component: Button')
     expect(result.data.results[0]).toMatchObject({
       kind: 'component',
       matchedTerms: ['button'],
-      name: 'Button',
+      name: 'Button'
     })
   })
 
@@ -305,16 +303,16 @@ describe('search', () => {
 
     expect(result.text).toContain('DatePicker')
     expect(result.text).toContain('DateRangePicker')
-    expect(result.data.results.find((item) => item.name === 'DateRangePicker')?.matchedTerms).toEqual(['date', 'input'])
+    expect(result.data.results.find(item => item.name === 'DateRangePicker')?.matchedTerms).toEqual(['date', 'input'])
   })
 
   test.each([
     ['admin dashboard', ['DataTable', 'Sidebar']],
     ['booking calendar', ['Calendar', 'Schedule']],
     ['sortable table pagination', ['DataTable', 'Pagination']],
-    ['dark mode theme', ['ThemeBuilder', 'ThemeToggle']],
+    ['dark mode theme', ['ThemeBuilder', 'ThemeToggle']]
   ])('returns useful partial matches for %s', (query, expectedNames) => {
-    const names = search({ query }).data.results.map((result) => result.name)
+    const names = search({ query }).data.results.map(result => result.name)
 
     expect(names).toEqual(expect.arrayContaining(expectedNames))
   })
@@ -323,14 +321,14 @@ describe('search', () => {
     const result = search({ framework: 'react', query: 'dialog hook' })
 
     expect(result.data.results[0]).toMatchObject({
-      name: 'Dialog',
+      name: 'Dialog'
     })
     expect(result.data.results[0]?.frameworks).toContain('react')
   })
 
   test('honors the result limit', () => {
     const result = search({ limit: 1, query: 'input' })
-    const resultLines = result.text.split('\n').filter((line) => line.startsWith('component:'))
+    const resultLines = result.text.split('\n').filter(line => line.startsWith('component:'))
 
     expect(result.text).toContain('(showing 1)')
     expect(resultLines).toHaveLength(1)
@@ -381,7 +379,7 @@ describe('catalog freshness and diagnostics', () => {
 
     expect(Object.keys(result.data.manifest.components)).toHaveLength(data.components.length)
     expect(Object.values(result.data.manifest.components)).toEqual(
-      expect.arrayContaining([expect.stringMatching(/^[a-f0-9]{64}$/)]),
+      expect.arrayContaining([expect.stringMatching(/^[a-f0-9]{64}$/)])
     )
     expect(Object.keys(result.data.manifest.recipes)).toHaveLength(data.recipes.length)
   })
@@ -390,17 +388,17 @@ describe('catalog freshness and diagnostics', () => {
     const current = getCatalogManifest().data
     const unchanged = diffCatalog({
       baseline: current.manifest,
-      baselineCatalogHash: current.catalogHash,
+      baselineCatalogHash: current.catalogHash
     })
     const changed = diffCatalog({
       baseline: {
         components: {
           ...current.manifest.components,
           Button: '0'.repeat(64),
-          RemovedComponent: '1'.repeat(64),
+          RemovedComponent: '1'.repeat(64)
         },
-        recipes: current.manifest.recipes,
-      },
+        recipes: current.manifest.recipes
+      }
     })
 
     expect(unchanged.data.unchanged).toBe(true)
@@ -415,8 +413,8 @@ describe('catalog freshness and diagnostics', () => {
     expect(
       diagnose({
         ...data,
-        meta: { ...data.meta, componentCount: 0 },
-      }).data.status,
+        meta: { ...data.meta, componentCount: 0 }
+      }).data.status
     ).toBe('issues')
   })
 })

@@ -9,12 +9,11 @@ export type LumenIconData = LucideIconData & {
 export type LumenIconName = string
 export type LumenIconPack = Readonly<Record<string, LumenIconData>>
 
-const toKebabCase = (value: string) =>
-  value
-    .trim()
-    .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replaceAll(/[\s_]+/g, '-')
-    .toLowerCase()
+const toKebabCase = (value: string) => value
+  .trim()
+  .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
+  .replaceAll(/[\s_]+/g, '-')
+  .toLowerCase()
 
 const lucideIconEntries = Object.entries(lucideIcons)
 const registeredIconPacks = new Map<string, LumenIconPack>()
@@ -48,7 +47,7 @@ const parseIconName = (name: string) => {
 
   return {
     iconName: toKebabCase(name.slice(separatorIndex + 1)),
-    prefix: toKebabCase(name.slice(0, separatorIndex)),
+    prefix: toKebabCase(name.slice(0, separatorIndex))
   }
 }
 
@@ -60,27 +59,23 @@ export const registerLumenIconPack = (prefix: string, icons: LumenIconPack) => {
   }
 
   const normalizedIcons = Object.fromEntries(
-    Object.entries(icons).map(([name, icon]) => [toKebabCase(name), icon]),
+    Object.entries(icons).map(([name, icon]) => [toKebabCase(name), icon])
   ) as LumenIconPack
 
   registeredIconPacks.set(normalizedPrefix, Object.freeze(normalizedIcons))
 }
 
-export const getLumenIconPack = (prefix: string): LumenIconPack | undefined =>
-  registeredIconPacks.get(toKebabCase(prefix))
+export const getLumenIconPack = (prefix: string): LumenIconPack | undefined => registeredIconPacks.get(toKebabCase(prefix))
 
-export const getRegisteredLumenIconNames = () =>
-  [...registeredIconPacks.entries()]
-    .flatMap(([prefix, icons]) => Object.keys(icons).map((name) => `${prefix}:${name}`))
-    .sort()
+export const getRegisteredLumenIconNames = () => [...registeredIconPacks.entries()]
+  .flatMap(([prefix, icons]) => Object.keys(icons).map(name => `${prefix}:${name}`))
+  .sort()
 
-const escapeHtmlAttribute = (value: string) =>
-  value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+const escapeHtmlAttribute = (value: string) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
-const renderAttributes = (attributes: Record<string, string>) =>
-  Object.entries(attributes)
-    .map(([name, value]) => `${name}="${escapeHtmlAttribute(value)}"`)
-    .join(' ')
+const renderAttributes = (attributes: Record<string, string>) => Object.entries(attributes)
+  .map(([name, value]) => `${name}="${escapeHtmlAttribute(value)}"`)
+  .join(' ')
 
 const renderIconNode = ([tagName, attributes, children]: LumenIconNode): string => {
   const renderedAttributes = renderAttributes(attributes)
@@ -140,6 +135,6 @@ export const renderLumenIconSvg = (name: string, options: LumenIconSvgOptions = 
     'stroke-width': iconStyle === 'stroke' ? '2' : '0',
     viewBox: `0 0 ${width} ${height}`,
     width: '1em',
-    xmlns: 'http://www.w3.org/2000/svg',
+    xmlns: 'http://www.w3.org/2000/svg'
   })}>${icon.node.map(renderIconNode).join('')}</svg>`
 }

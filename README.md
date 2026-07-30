@@ -7,7 +7,7 @@
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  A multi-framework UI system with 123 accessible primitives for Astro, React, and Web Components.
+  A multi-framework UI system with 149 accessible primitives for Astro, React, and Web Components.
 </p>
 
 <p align="center">
@@ -39,6 +39,21 @@ framework's native authoring experience.
   application framework.
 - **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP
   server, `llms.txt`, and a machine-readable registry ship alongside the component system.
+- **Product-ready templates:** five responsive dashboard and application families are available as
+  live previews and installable Astro, React, and Elements recipes.
+
+## Dashboards and templates
+
+Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,
+SaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family
+uses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,
+and ships through the CLI for all three framework targets:
+
+```bash
+lumen add analytics-dashboard
+lumen add commerce-dashboard --target react
+lumen add auth-onboarding --target elements
+```
 
 ## Quick start
 

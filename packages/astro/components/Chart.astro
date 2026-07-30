@@ -10,6 +10,7 @@ interface Props extends HTMLAttributes<'figure'> {
   description?: string
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
+  presentation?: 'bare' | 'default'
   value?: string
 }
 
@@ -20,12 +21,14 @@ const {
   description,
   glass = false,
   heading,
+  presentation = 'default',
   value,
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-chart',
+  presentation === 'bare' && 'ui-chart--bare',
   glass && 'ui-chart--glass',
   glass === 'subtle' && 'ui-glass-subtle',
   glass === 'strong' && 'ui-glass-strong'

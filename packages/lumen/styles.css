@@ -3457,6 +3457,15 @@
   padding: 1rem;
 }
 
+.ui-chart--bare {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
 .ui-chart > header {
   display: flex;
   flex-wrap: wrap;

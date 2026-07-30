@@ -5,7 +5,11 @@ const componentSource = await readFile(
   'utf8'
 )
 
-const componentNames = [...componentSource.matchAll(/^ {2}'([^']+)',?$/gm)]
+const componentCatalogSource = componentSource.match(
+  /export const lumenComponentNames = \[([\s\S]*?)\] as const/
+)?.[1] ?? ''
+
+const componentNames = [...componentCatalogSource.matchAll(/^ {2}'([^']+)',?$/gm)]
   .map(match => match[1])
 
 const [elementsSource, reactComponentsSource, reactHooksSource] = await Promise.all([
@@ -17,6 +21,11 @@ const [elementsSource, reactComponentsSource, reactHooksSource] = await Promise.
 const reactSource = `${reactComponentsSource}\n${reactHooksSource}`
 
 const exceptions = {
+  CardContent: 'ui-card__content',
+  CardDescription: 'ui-card__description',
+  CardFooter: 'ui-card__footer',
+  CardHeader: 'ui-card__header',
+  CardTitle: 'ui-card__title',
   NativeSelect: 'ui-select'
 }
 

@@ -31,11 +31,9 @@ export const coerceThemeBuilderExportFormat = (value?: string | null): LumenThem
   return 'css'
 }
 
-export const coerceThemeBuilderMode = (value?: string | null): LumenThemeBuilderMode =>
-  value === 'manual' ? 'manual' : 'generated'
+export const coerceThemeBuilderMode = (value?: string | null): LumenThemeBuilderMode => value === 'manual' ? 'manual' : 'generated'
 
-export const coerceThemeBuilderScheme = (value?: string | null): LumenThemeBuilderScheme =>
-  value === 'dark' ? 'dark' : 'light'
+export const coerceThemeBuilderScheme = (value?: string | null): LumenThemeBuilderScheme => value === 'dark' ? 'dark' : 'light'
 
 export const normalizeThemeBuilderHue = (value: number | string | null | undefined, fallback = 0): number => {
   const parsed = Number(value)
@@ -55,7 +53,7 @@ export const normalizeThemeBuilderHex = (value: string): string | null => {
   return /^[\da-f]{6}$/i.test(hex) ? `#${hex.toLowerCase()}` : null
 }
 
-export const themeBuilderHexToHsl = (value: string): { hue: number; value: string } | null => {
+export const themeBuilderHexToHsl = (value: string): { hue: number, value: string } | null => {
   const normalized = normalizeThemeBuilderHex(value)
 
   if (!normalized) return null
@@ -86,15 +84,13 @@ export const themeBuilderHexToHsl = (value: string): { hue: number; value: strin
 
   return {
     hue: normalizedHue,
-    value: `${normalizedHue} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%`,
+    value: `${normalizedHue} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%`
   }
 }
 
 export const createThemeBuilderTokens = (options: LumenThemeBuilderOptions = {}): LumenThemeBuilderResult => {
   const hue = normalizeThemeBuilderHue(options.hue)
-
   const accentHue = normalizeThemeBuilderHue(options.accentHue, normalizeThemeBuilderHue(hue + 150))
-
   const mode = coerceThemeBuilderMode(options.mode)
   const scheme = coerceThemeBuilderScheme(options.scheme)
   const primary = options.primaryColor ? themeBuilderHexToHsl(options.primaryColor) : null
@@ -104,7 +100,7 @@ export const createThemeBuilderTokens = (options: LumenThemeBuilderOptions = {})
 
   const tokens = createThemeFromHue(baseHue, {
     accentHue: baseAccentHue,
-    scheme,
+    scheme
   })
 
   if (mode === 'manual') {
@@ -124,26 +120,23 @@ export const createThemeBuilderTokens = (options: LumenThemeBuilderOptions = {})
     hue: baseHue,
     mode,
     scheme,
-    tokens,
+    tokens
   }
 }
 
-export const exportThemeBuilderCss = (tokens: LumenThemeTokens, scheme: LumenThemeBuilderScheme): string =>
-  exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
+export const exportThemeBuilderCss = (tokens: LumenThemeTokens, scheme: LumenThemeBuilderScheme): string => exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
 
 export const exportThemeBuilderValue = (
   tokens: LumenThemeTokens,
   scheme: LumenThemeBuilderScheme,
-  format: LumenThemeBuilderExportFormat,
+  format: LumenThemeBuilderExportFormat
 ): string => {
   if (format === 'figma') {
     return JSON.stringify(
       exportThemeFigmaVariables(tokens, {
         collectionName: 'Lumen',
-        modeName: scheme === 'dark' ? 'Dark' : 'Light',
-      }),
-      null,
-      2,
+        modeName: scheme === 'dark' ? 'Dark' : 'Light'
+      }), null, 2
     )
   }
 

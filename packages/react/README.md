@@ -95,23 +95,29 @@ Other React applications continue to consume the same package and exports normal
 ## Compatibility wrappers
 
 The common wrapper primitives preserve their underlying DOM handles with React 19's ref-as-prop
-contract. `Button`, `Link`, `ButtonLink`, and `Input` accept `ref` directly. Use `Button asChild`
-to apply the button contract to one existing React element without adding another DOM node:
+contract. `Button`, `ButtonLink`, `Link`, `Input`, `Textarea`, `Label`, `Badge`, `Card`, and
+`Skeleton` accept `ref` directly. Use `Button asChild` or `ButtonLink asChild` to apply the
+corresponding contract to one existing React element without adding another DOM node:
 
 ```tsx
-import { Button } from '@santi020k/lumen-react'
+import { Button, ButtonLink, NativeSelect } from '@santi020k/lumen-react'
 import NextLink from 'next/link'
 
 <Button asChild variant="secondary">
   <NextLink href="/projects">Projects</NextLink>
 </Button>
+
+<ButtonLink asChild variant="ghost">
+  <NextLink href="/docs">Docs</NextLink>
+</ButtonLink>
 ```
 
-`Input` keeps the native numeric `size` attribute. Use `visualSize="sm"` or `visualSize="lg"` for
-Lumen's visual size modifiers:
+`Input` and `NativeSelect` keep the native numeric `size` attribute. Use `visualSize="sm"` or
+`visualSize="lg"` for Lumen's visual size modifiers:
 
 ```tsx
 <Input size={32} visualSize="sm" />
+<NativeSelect size={8} visualSize="lg" />
 ```
 
 Use `Icon` for Lucide icons by name across framework adapters.

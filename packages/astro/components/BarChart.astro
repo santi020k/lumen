@@ -16,9 +16,13 @@ import Chart from './Chart.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
   caption?: string
+  categoryWidth?: number
   class?: string | null
   className?: string
   description?: string
+  emptyLabel?: string
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
   layout?: LumenBarChartLayout
@@ -30,9 +34,13 @@ interface Props extends HTMLAttributes<'figure'> {
 
 const {
   caption,
+  categoryWidth,
   class: classProp = '',
   className = '',
   description,
+  emptyLabel = 'No chart data available.',
+  formatCategory = String,
+  formatValue = String,
   glass = false,
   heading,
   layout = 'grouped',
@@ -43,15 +51,20 @@ const {
   ...rest
 } = Astro.props
 
-const geometry = createLumenBarGeometry(series, { layout, orientation })
+const geometry = createLumenBarGeometry(series, { categoryWidth, layout, orientation })
 const hasData = hasLumenChartData(series)
 const ticks = getLumenChartTicks(geometry.domain)
-const categories = geometry.categories.map(category => category.label)
+const categories = geometry.categories.map(category => category.category)
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.y ?? null
 const labelFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.label
+const categoryLabelFor = (category: number | string) => {
+  const label = series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel
+
+  return label ?? formatCategory(category)
+}
 
 const margin = orientation === 'horizontal' ?
-  { bottom: 24, left: 112, right: 20, top: 16 } :
+  { bottom: 24, left: Math.max(64, Math.min(240, categoryWidth ?? 112)), right: 20, top: 16 } :
   { bottom: 52, left: 52, right: 16, top: 16 }
 ---
 
@@ -75,7 +88,7 @@ const margin = orientation === 'horizontal' ?
       </ul>
     )
   }
-  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel}</p>}
   <div class="ui-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
@@ -140,7 +153,7 @@ const margin = orientation === 'horizontal' ?
               y={mark.y}
             >
               <title>
-                {`${String(mark.category)} · ${mark.seriesLabel}: ${mark.value}`}
+                {`${categoryLabelFor(mark.category)} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
               </title>
             </rect>
           ))
@@ -163,11 +176,13 @@ const margin = orientation === 'horizontal' ?
             <tbody>
               {categories.map(category => (
                 <tr>
-                  <th scope="row">{String(category)}</th>
+                  <th scope="row">{categoryLabelFor(category)}</th>
                   {series.map(item => (
                     <td>
                       {labelFor(item, category) ??
-                        String(valueFor(item, category) ?? 'Not available')}
+                        (valueFor(item, category) === null ?
+                          'Not available' :
+                          formatValue(valueFor(item, category) as number))}
                     </td>
                   ))}
                 </tr>

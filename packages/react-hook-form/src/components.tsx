@@ -1,6 +1,13 @@
 'use client'
 
 import type {
+  FieldPath,
+  FieldValues,
+  UseControllerProps
+} from 'react-hook-form'
+import { useController } from 'react-hook-form'
+
+import type {
   DatePickerProps,
   InputOTPProps,
   ListBoxProps,
@@ -12,52 +19,6 @@ import {
   ListBox,
   Select
 } from '@santi020k/lumen-react'
-import type {
-  FieldPath,
-  FieldValues,
-  UseControllerProps
-} from 'react-hook-form'
-import { useController } from 'react-hook-form'
-
-export interface LumenManagedFieldState {
-  'aria-describedby'?: string | undefined
-  'aria-invalid': boolean
-  controlId: string
-  errorId: string
-  errorMessage?: string | undefined
-  invalid: boolean
-}
-
-export interface LumenFieldStateInput {
-  error?: {
-    message?: unknown
-  } | undefined
-  invalid: boolean
-}
-
-export const getLumenManagedFieldState = (
-  fieldState: LumenFieldStateInput,
-  controlId: string,
-  describedBy?: string
-): LumenManagedFieldState => {
-  const errorId = `${controlId}-error`
-  const errorMessage = typeof fieldState.error?.message === 'string' ?
-    fieldState.error.message :
-    undefined
-  const descriptionIds = [
-    describedBy,
-    fieldState.invalid ? errorId : undefined
-  ].filter((value): value is string => Boolean(value))
-
-  return {
-    'aria-describedby': descriptionIds.length ? descriptionIds.join(' ') : undefined,
-    'aria-invalid': fieldState.invalid,
-    controlId,
-    errorId,
-    errorMessage,
-    invalid: fieldState.invalid
-  }
-}
 
 type ControllerOptions<
   Values extends FieldValues,
@@ -93,15 +54,24 @@ export const LumenSelectController = <
     ...(shouldUnregister === undefined ? {} : { shouldUnregister })
   })
 
+  const {
+    disabled: fieldDisabled,
+    name: fieldName,
+    onBlur: fieldOnBlur,
+    onChange: fieldOnChange,
+    ref: fieldRef,
+    value: fieldValue
+  } = field
+
   return (
     <Select
       {...props}
-      disabled={field.disabled}
-      inputRef={field.ref}
-      name={field.name}
-      onBlur={field.onBlur}
-      onValueChange={field.onChange}
-      value={typeof field.value === 'string' ? field.value : ''}
+      disabled={fieldDisabled}
+      inputRef={fieldRef}
+      name={fieldName}
+      onBlur={fieldOnBlur}
+      onValueChange={fieldOnChange}
+      value={typeof fieldValue === 'string' ? fieldValue : ''}
     />
   )
 }
@@ -135,15 +105,24 @@ export const LumenDatePickerController = <
     ...(shouldUnregister === undefined ? {} : { shouldUnregister })
   })
 
+  const {
+    disabled: fieldDisabled,
+    name: fieldName,
+    onBlur: fieldOnBlur,
+    onChange: fieldOnChange,
+    ref: fieldRef,
+    value: fieldValue
+  } = field
+
   return (
     <DatePicker
       {...props}
-      disabled={field.disabled}
-      inputRef={field.ref}
-      name={field.name}
-      onBlur={field.onBlur}
-      onValueChange={field.onChange}
-      value={typeof field.value === 'string' ? field.value : ''}
+      disabled={fieldDisabled}
+      inputRef={fieldRef}
+      name={fieldName}
+      onBlur={fieldOnBlur}
+      onValueChange={fieldOnChange}
+      value={typeof fieldValue === 'string' ? fieldValue : ''}
     />
   )
 }
@@ -177,15 +156,24 @@ export const LumenInputOTPController = <
     ...(shouldUnregister === undefined ? {} : { shouldUnregister })
   })
 
+  const {
+    disabled: fieldDisabled,
+    name: fieldName,
+    onBlur: fieldOnBlur,
+    onChange: fieldOnChange,
+    ref: fieldRef,
+    value: fieldValue
+  } = field
+
   return (
     <InputOTP
       {...props}
-      disabled={field.disabled}
-      name={field.name}
-      onBlur={field.onBlur}
-      onChange={field.onChange}
-      ref={field.ref}
-      value={typeof field.value === 'string' ? field.value : ''}
+      disabled={fieldDisabled}
+      name={fieldName}
+      onBlur={fieldOnBlur}
+      onChange={fieldOnChange}
+      ref={fieldRef}
+      value={typeof fieldValue === 'string' ? fieldValue : ''}
     />
   )
 }
@@ -234,18 +222,27 @@ export const LumenListBoxController = <
     ...(shouldUnregister === undefined ? {} : { shouldUnregister })
   })
 
+  const {
+    disabled: fieldDisabled,
+    name: fieldName,
+    onBlur: fieldOnBlur,
+    onChange: fieldOnChange,
+    ref: fieldRef,
+    value: fieldValue
+  } = field
+
   return (
     <ListBox
       {...props}
-      disabled={field.disabled}
+      disabled={fieldDisabled}
       multiple={multiple}
-      name={field.name}
-      onBlur={field.onBlur}
+      name={fieldName}
+      onBlur={fieldOnBlur}
       onValueChange={values => {
-        field.onChange(multiple ? values : values[0] ?? '')
+        fieldOnChange(multiple ? values : values[0] ?? '')
       }}
-      ref={field.ref}
-      value={normalizeListBoxValue(field.value, multiple)}
+      ref={fieldRef}
+      value={normalizeListBoxValue(fieldValue, multiple)}
     />
   )
 }

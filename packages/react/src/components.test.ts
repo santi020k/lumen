@@ -21,7 +21,9 @@ import {
   BarChart,
   Breadcrumb,
   Bubble,
+  Button,
   ButtonGroup,
+  ButtonLink,
   Card,
   CardContent,
   CardDescription,
@@ -99,6 +101,50 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Skeleton({}) as ReactElement).className).toBe('ui-skeleton')
     expect(propsOf(Kbd({}) as ReactElement).className).toBe('ui-kbd')
     expect(propsOf(Label({}) as ReactElement).className).toBe('ui-label')
+  })
+
+  test('preserves native props and refs across compatibility wrappers', () => {
+    const buttonRef = { current: null }
+    const inputRef = { current: null }
+    const wrapperRef = { current: null }
+    const button = Button({ 'aria-label': 'Save', ref: buttonRef, type: 'submit' }) as ReactElement
+    const input = Input({ inputMode: 'numeric', ref: inputRef, size: 24, visualSize: 'sm' }) as ReactElement
+
+    expect(propsOf(button).ref).toBe(buttonRef)
+    expect(propsOf(button).type).toBe('submit')
+    expect(propsOf(button)['aria-label']).toBe('Save')
+    expect(propsOf(input).ref).toBe(inputRef)
+    expect(propsOf(input).size).toBe(24)
+    expect(propsOf(input).inputMode).toBe('numeric')
+    expect(propsOf(input).className).toContain('ui-input--sm')
+    expect(propsOf(Textarea({ cols: 40, ref: wrapperRef }) as ReactElement).cols).toBe(40)
+    expect(propsOf(Label({ htmlFor: 'email', ref: wrapperRef }) as ReactElement).htmlFor).toBe('email')
+    expect(propsOf(Badge({ ref: wrapperRef, title: 'Status' }) as ReactElement).title).toBe('Status')
+    expect(propsOf(Card({ ref: wrapperRef, role: 'region' }) as ReactElement).role).toBe('region')
+    expect(propsOf(Skeleton({ ref: wrapperRef, role: 'status' }) as ReactElement).role).toBe('status')
+  })
+
+  test('supports router links through Button and ButtonLink asChild', () => {
+    const button = Button({
+      asChild: true,
+      children: Link({ children: 'Projects', className: 'router-link', href: '/projects' }),
+      variant: 'secondary'
+    }) as ReactElement
+    const buttonLink = ButtonLink({
+      asChild: true,
+      children: Link({ children: 'Docs', className: 'router-link', href: '/old' }),
+      href: '/docs',
+      variant: 'ghost'
+    }) as ReactElement
+
+    expect(button.type).toBe('a')
+    expect(propsOf(button).className).toContain('ui-button--secondary')
+    expect(propsOf(button)['data-slot']).toBe('button')
+    expect(buttonLink.type).toBe('a')
+    expect(propsOf(buttonLink).href).toBe('/docs')
+    expect(propsOf(buttonLink).className).toContain('ui-button--ghost')
+    expect(propsOf(buttonLink).className).toContain('router-link')
+    expect(propsOf(buttonLink)['data-slot']).toBe('button-link')
   })
 
   test('composes Card through stable public parts', () => {
@@ -303,12 +349,18 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('builds native select with placeholder and normalized options', () => {
-    const select = NativeSelect({ options: ['Alpha', { label: 'Beta', value: 'b' }], placeholder: 'Pick' }) as ReactElement
+    const select = NativeSelect({
+      options: ['Alpha', { label: 'Beta', value: 'b' }],
+      placeholder: 'Pick',
+      size: 8,
+      visualSize: 'lg'
+    }) as ReactElement
     const props = propsOf(select)
     const children = props.children as [ReactElement, unknown, ReactElement[]]
 
     expect(select.type).toBe('select')
-    expect(props.className).toBe('ui-select')
+    expect(props.className).toBe('ui-select ui-select--lg')
+    expect(props.size).toBe(8)
     expect(props.defaultValue).toBe('')
     expect(propsOf(children[0]).value).toBe('')
     expect(propsOf(children[0]).disabled).toBe(true)

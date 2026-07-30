@@ -38,12 +38,19 @@ lumen add Button --target elements
 lumen add scheduler
 lumen add scheduler --target react
 lumen add scheduler --target elements
+lumen add analytics-dashboard
+lumen add saas-admin --target react
+lumen add commerce-dashboard --target elements
 lumen audit-tokens ./src
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
 `--target elements` for a custom-elements starter. Bundled recipes support the same Astro, React,
 and Elements targets.
+
+Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin`,
+`commerce-dashboard`, `project-workspace`, and `auth-onboarding`. They include a shared,
+token-based template stylesheet and a framework-native starter file.
 
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that

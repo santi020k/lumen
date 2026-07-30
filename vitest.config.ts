@@ -11,7 +11,7 @@ const alias = {
   '@santi020k/lumen-elements': fileURLToPath(new URL('./packages/elements/src/index.ts', import.meta.url)),
   '@santi020k/lumen-icons-brand': fileURLToPath(new URL('./packages/icons-brand/src/index.ts', import.meta.url)),
   '@santi020k/lumen-react': fileURLToPath(new URL('./packages/react/src/index.ts', import.meta.url)),
-  '@santi020k/lumen-react-hook-form': fileURLToPath(new URL('./packages/react-hook-form/src/index.tsx', import.meta.url))
+  '@santi020k/lumen-react-hook-form': fileURLToPath(new URL('./packages/react-hook-form/src/index.ts', import.meta.url))
 }
 
 const coverageReporters = process.env.CI ? ['text', 'lcov'] : ['text', 'html']

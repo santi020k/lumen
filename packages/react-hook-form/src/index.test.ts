@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 import { getLumenManagedFieldState } from './index.js'
 
 describe('getLumenManagedFieldState', () => {
-  it('connects invalid controls to their error and existing help text', () => {
+  test('connects invalid controls to their error and existing help text', () => {
     expect(getLumenManagedFieldState({
       error: { message: 'Choose a team' },
       invalid: true
@@ -17,7 +17,7 @@ describe('getLumenManagedFieldState', () => {
     })
   })
 
-  it('does not announce an inactive error', () => {
+  test('does not announce an inactive error', () => {
     expect(getLumenManagedFieldState({
       invalid: false
     }, 'email')).toEqual({

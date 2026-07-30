@@ -23,6 +23,9 @@ surface; React and Web Components expose the same class and data contracts.
 - Bundled recipe parity: scheduler, data collections, advanced fields, theme builder, and rich text
   starter recipes now generate Astro, React, or Elements files with `lumen add <recipe> --target
 <framework>`.
+- Product template gallery: analytics, SaaS admin, commerce, project workspace, and
+  authentication/onboarding families have live responsive previews plus installable Astro, React,
+  and Elements recipes with shared token-based styling.
 - Scheduling surfaces: `Schedule` and `Agenda`.
 - Advanced data surfaces: `DataTable`, `Tree`, `TreeGrid`, and `VirtualList`.
 - Data visualization: shared chart types, scales, ticks, line/area, grouped/stacked bar, and

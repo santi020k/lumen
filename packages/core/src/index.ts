@@ -41,8 +41,12 @@ export {
   tokenizeLumenCode
 } from './code.js'
 export {
+  type LumenComponentBehavior,
   type LumenComponentName,
+  type LumenGlobalBehavior,
+  lumenComponentBehavior,
   lumenComponentNames,
+  lumenGlobalBehaviors,
   lumenPackages,
   type LumenPackageTarget } from './components.js'
 export {

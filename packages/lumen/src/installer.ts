@@ -6,7 +6,7 @@ import {
   getLumenRegistryItem,
   type LumenRegistry,
   type LumenRegistryEntry,
-  type LumenRegistryFile,
+  type LumenRegistryFile
 } from './registry.js'
 
 interface LumenRecipeFile {
@@ -48,7 +48,7 @@ const productTemplateRecipes = new Set([
   'auth-onboarding',
   'commerce-dashboard',
   'project-workspace',
-  'saas-admin',
+  'saas-admin'
 ])
 
 const loadTemplateDirectory = async (templateDir: string): Promise<LumenRecipeFile[]> => {
@@ -62,30 +62,29 @@ const loadTemplateDirectory = async (templateDir: string): Promise<LumenRecipeFi
 
   return Promise.all(
     entries
-      .filter((entry) => entry.isFile())
-      .map(async (entry) => {
+      .filter(entry => entry.isFile())
+      .map(async entry => {
         const absolutePath = join(entry.parentPath, entry.name)
 
         return {
           path: relative(templateDir, absolutePath).split(sep).join('/'),
-          source: await readFile(absolutePath, 'utf8'),
+          source: await readFile(absolutePath, 'utf8')
         }
-      }),
+      })
   )
 }
 
 const loadRecipeTemplateFiles = async (
   itemName: string,
-  target: LumenAddTarget,
+  target: LumenAddTarget
 ): Promise<LumenRecipeFile[] | undefined> => {
   const templateDirectories = [
     ...(productTemplateRecipes.has(itemName) ? [join(templatesRoot, 'shared', 'common')] : []),
     join(templatesRoot, 'shared', itemName),
-    join(templatesRoot, target, itemName),
+    join(templatesRoot, target, itemName)
   ]
 
   const templateFiles = await Promise.all(templateDirectories.map(loadTemplateDirectory))
-
   const filesByPath = new Map<string, LumenRecipeFile>()
 
   for (const file of templateFiles.flat()) {
@@ -98,8 +97,7 @@ const loadRecipeTemplateFiles = async (
 }
 
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-const toCamelCase = (value: string): string =>
-  value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
+const toCamelCase = (value: string): string => value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
 
 const createAstroComponentFile = (name: string): LumenRecipeFile => ({
   path: `src/lumen/${toKebabCase(name)}.astro`,
@@ -112,7 +110,7 @@ const props = Astro.props
 <Lumen${name} {...props}>
   <slot />
 </Lumen${name}>
-`,
+`
 })
 
 const createReactComponentFile = (name: string): LumenRecipeFile => ({
@@ -124,7 +122,7 @@ import { ${name} as Lumen${name} } from '@santi020k/lumen-react'
 export type ${name}Props = ComponentPropsWithoutRef<typeof Lumen${name}>
 
 export const ${name} = (props: ${name}Props) => <Lumen${name} {...props} />
-`,
+`
 })
 
 const createElementsComponentFile = (name: string): LumenRecipeFile => {
@@ -149,7 +147,7 @@ declare global {
     '${tagName}': InstanceType<typeof Lumen${name}Element>
   }
 }
-`,
+`
   }
 }
 
@@ -173,9 +171,9 @@ const getFilesForItem = async (item: LumenRegistryEntry, target: LumenAddTarget)
   const inlineFiles =
     item.files
       ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
-      .map((file) => ({
+      .map(file => ({
         path: file.path,
-        source: file.source,
+        source: file.source
       })) ?? []
 
   if (inlineFiles.length > 0) return inlineFiles
@@ -210,14 +208,14 @@ const getInstallSource = async (
   target: string,
   exists: boolean,
   options: LumenAddOptions,
-  conflict: NonNullable<LumenAddOptions['conflict']>,
+  conflict: NonNullable<LumenAddOptions['conflict']>
 ) => {
   if (!exists || conflict !== 'merge') return file.source
 
   return (options.merge ?? mergeFileSource)({
     existing: await readFile(target, 'utf8'),
     incoming: file.source,
-    path: file.path,
+    path: file.path
   })
 }
 
@@ -235,7 +233,7 @@ const installRegistryFile = async (
   file: LumenRecipeFile,
   cwd: string,
   options: LumenAddOptions,
-  conflict: NonNullable<LumenAddOptions['conflict']>,
+  conflict: NonNullable<LumenAddOptions['conflict']>
 ): Promise<InstallFileOutcome> => {
   const target = join(cwd, file.path)
   const exists = await fileExists(target)
@@ -291,9 +289,9 @@ export const addLumenRegistryItem = async (name: string, options: LumenAddOption
   return {
     added,
     dryRun: Boolean(options.dryRun),
-    files: files.map((file) => file.path),
+    files: files.map(file => file.path),
     item,
     merged,
-    skipped,
+    skipped
   }
 }

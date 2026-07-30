@@ -19,9 +19,10 @@ import {
   enhanceLumenSchedules,
   LumenButtonElement,
   LumenCardElement,
+  type LumenElement,
   lumenElementDefinitions,
   LumenIconElement,
-  LumenToast,
+  LumenToast
 } from './index.js'
 
 const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
@@ -30,8 +31,8 @@ const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
       bubbles: true,
       cancelable: true,
       key,
-      ...init,
-    }),
+      ...init
+    })
   )
 }
 
@@ -40,7 +41,7 @@ const createDragEvent = (type: string, dataTransfer: Pick<DataTransfer, 'getData
 
   Object.defineProperty(event, 'dataTransfer', {
     configurable: true,
-    value: dataTransfer,
+    value: dataTransfer
   })
 
   return event
@@ -49,7 +50,7 @@ const createDragEvent = (type: string, dataTransfer: Pick<DataTransfer, 'getData
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'checkVisibility', {
     configurable: true,
-    value: () => true,
+    value: () => true
   })
 
   defineLumenElements(customElements)
@@ -85,14 +86,13 @@ describe('@santi020k/lumen-elements', () => {
 
   test('keeps motion elements readable when motion is reduced', () => {
     vi.stubGlobal(
-      'matchMedia',
-      vi.fn(() => ({
+      'matchMedia', vi.fn(() => ({
         addEventListener: vi.fn(),
         matches: true,
         media: '(prefers-reduced-motion: reduce)',
         onchange: null,
-        removeEventListener: vi.fn(),
-      })),
+        removeEventListener: vi.fn()
+      }))
     )
 
     const number = document.createElement('lumen-animated-number')
@@ -116,14 +116,13 @@ describe('@santi020k/lumen-elements', () => {
 
   test('creates density-controlled drifting particles when motion is allowed', () => {
     vi.stubGlobal(
-      'matchMedia',
-      vi.fn(() => ({
+      'matchMedia', vi.fn(() => ({
         addEventListener: vi.fn(),
         matches: false,
         media: '(prefers-reduced-motion: reduce)',
         onchange: null,
-        removeEventListener: vi.fn(),
-      })),
+        removeEventListener: vi.fn()
+      }))
     )
 
     const particles = document.createElement('lumen-particles')
@@ -191,8 +190,8 @@ describe('@santi020k/lumen-elements', () => {
         node: [['path', { d: 'M2 2h20v20H2z' }]],
         source: 'brand-test',
         style: 'fill',
-        width: 24,
-      },
+        width: 24
+      }
     })
 
     const icon = document.createElement('lumen-icon')
@@ -438,7 +437,7 @@ describe('@santi020k/lumen-elements', () => {
     const select = document.querySelector<HTMLSelectElement>('lumen-select select')
     const trigger = document.querySelector<HTMLButtonElement>('[data-ui-select-trigger]')
     const business = [...document.querySelectorAll<HTMLElement>('[data-ui-select-option]')].find(
-      (item) => item.dataset.value === 'business',
+      item => item.dataset.value === 'business'
     )
 
     business?.click()
@@ -448,6 +447,61 @@ describe('@santi020k/lumen-elements', () => {
     expect(select?.value).toBe('business')
     expect(new FormData(document.querySelector<HTMLFormElement>('#billing')!).get('plan')).toBe('business')
     expect(trigger?.textContent).toBe('Business')
+  })
+
+  test('scalar custom controls participate in FormData and reset', () => {
+    document.body.innerHTML = `
+      <form id="profile">
+        <lumen-input name="email" type="email" value="first@example.com"></lumen-input>
+        <lumen-textarea name="bio" value="Initial bio"></lumen-textarea>
+        <lumen-checkbox checked name="updates" value="yes"></lumen-checkbox>
+      </form>
+    `
+
+    const form = document.querySelector<HTMLFormElement>('#profile')
+    const email = document.querySelector<LumenElement & { value: string }>('lumen-input')
+    const bio = document.querySelector<LumenElement & { value: string }>('lumen-textarea')
+    const updates = document.querySelector<LumenElement & { checked: boolean }>('lumen-checkbox')
+
+    expect(new FormData(form!).get('email')).toBe('first@example.com')
+    expect(new FormData(form!).get('bio')).toBe('Initial bio')
+    expect(new FormData(form!).get('updates')).toBe('yes')
+
+    email!.value = 'next@example.com'
+    bio!.value = 'Updated bio'
+    updates!.checked = false
+
+    expect(new FormData(form!).get('email')).toBe('next@example.com')
+    expect(new FormData(form!).get('bio')).toBe('Updated bio')
+    expect(new FormData(form!).has('updates')).toBe(false)
+
+    form?.reset()
+
+    expect(email?.value).toBe('first@example.com')
+    expect(bio?.value).toBe('Initial bio')
+    expect(updates?.checked).toBe(true)
+  })
+
+  test('scalar custom controls expose native validity and focus', () => {
+    document.body.innerHTML = `
+      <form>
+        <lumen-input id="email" name="email" required type="email"></lumen-input>
+      </form>
+    `
+
+    const email = document.querySelector<LumenElement & {
+      checkValidity: () => boolean
+      validationMessage: string
+    }>('#email')
+    const nativeInput = email?.querySelector<HTMLInputElement>('[data-ui-element-control]')
+
+    expect(email?.checkValidity()).toBe(false)
+    expect(email?.validationMessage).not.toBe('')
+    expect(email?.getAttribute('aria-invalid')).toBe('true')
+
+    email?.focus()
+
+    expect(document.activeElement).toBe(nativeInput)
   })
 
   test('forms reflect native validation into field errors and events', () => {
@@ -470,13 +524,13 @@ describe('@santi020k/lumen-elements', () => {
     const input = document.querySelector<HTMLInputElement>('#email')
     const error = document.querySelector<HTMLElement>('[data-ui-field-error]')
 
-    form?.addEventListener('ui:validate', (event) => {
+    form?.addEventListener('ui:validate', event => {
       const detail = (event as CustomEvent<{ control: HTMLInputElement }>).detail
 
       events.push(`validate:${detail.control.id}`)
     })
 
-    form?.addEventListener('ui:invalid', (event) => {
+    form?.addEventListener('ui:invalid', event => {
       const detail = (event as CustomEvent<{ controls: HTMLInputElement[] }>).detail
 
       events.push(`invalid:${detail.controls.length}`)
@@ -593,7 +647,7 @@ describe('@santi020k/lumen-elements', () => {
 
     Object.defineProperty(paste, 'clipboardData', {
       configurable: true,
-      value: { getData: () => '98x7' },
+      value: { getData: () => '98x7' }
     })
 
     input?.dispatchEvent(paste)
@@ -686,7 +740,7 @@ describe('@santi020k/lumen-elements', () => {
     const selectAll = document.querySelector<HTMLInputElement>('[data-ui-datatable-select-all]')
     const sortButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-ui-datatable-sort]')]
 
-    root?.addEventListener('ui:data-table-selection-change', (event) => {
+    root?.addEventListener('ui:data-table-selection-change', event => {
       selectionEvents.push((event as CustomEvent<{ values: string[] }>).detail.values)
     })
 
@@ -724,7 +778,7 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('virtual list emits visible ranges and hides offscreen items', () => {
-    const ranges: { endIndex: number; startIndex: number }[] = []
+    const ranges: { endIndex: number, startIndex: number }[] = []
     const root = document.createElement('lumen-virtual-list')
 
     root.setAttribute('data-ui-item-size', '44')
@@ -732,7 +786,7 @@ describe('@santi020k/lumen-elements', () => {
 
     Object.defineProperty(root, 'clientHeight', {
       configurable: true,
-      value: 88,
+      value: 88
     })
 
     for (const label of ['One', 'Two', 'Three', 'Four', 'Five', 'Six']) {
@@ -743,8 +797,8 @@ describe('@santi020k/lumen-elements', () => {
       root.append(item)
     }
 
-    root.addEventListener('ui:virtual-list-range', (event) => {
-      ranges.push((event as CustomEvent<{ endIndex: number; startIndex: number }>).detail)
+    root.addEventListener('ui:virtual-list-range', event => {
+      ranges.push((event as CustomEvent<{ endIndex: number, startIndex: number }>).detail)
     })
 
     document.body.append(root)
@@ -762,11 +816,11 @@ describe('@santi020k/lumen-elements', () => {
 
   test('theme builder applies tokens and emits export events', () => {
     const writeText = vi.fn(() => Promise.resolve())
-    const exports: { format: string; value: string }[] = []
+    const exports: { format: string, value: string }[] = []
 
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
-      value: { writeText },
+      value: { writeText }
     })
 
     document.body.innerHTML = `
@@ -787,8 +841,8 @@ describe('@santi020k/lumen-elements', () => {
     const exportButton = document.querySelector<HTMLButtonElement>('[data-ui-theme-export]')
     const output = document.querySelector<HTMLTextAreaElement>('[data-ui-theme-output]')
 
-    root?.addEventListener('ui:theme-export', (event) => {
-      exports.push((event as CustomEvent<{ format: string; value: string }>).detail)
+    root?.addEventListener('ui:theme-export', event => {
+      exports.push((event as CustomEvent<{ format: string, value: string }>).detail)
     })
 
     expect(preview?.style.getPropertyValue('--brand')).toBe('264 85% 53%')
@@ -818,7 +872,7 @@ describe('@santi020k/lumen-elements', () => {
 
     Object.defineProperty(document, 'execCommand', {
       configurable: true,
-      value: execCommand,
+      value: execCommand
     })
 
     document.body.innerHTML = `
@@ -834,10 +888,10 @@ describe('@santi020k/lumen-elements', () => {
     const root = document.querySelector<HTMLElement>('lumen-rich-text-editor')
     const button = document.querySelector<HTMLButtonElement>('[data-ui-editor-command]')
 
-    root?.addEventListener('ui:editor-command', (event) => {
+    root?.addEventListener('ui:editor-command', event => {
       commands.push((event as CustomEvent<{ command: string }>).detail.command)
     })
-    root?.addEventListener('ui:editor-change', (event) => {
+    root?.addEventListener('ui:editor-change', event => {
       changes.push((event as CustomEvent<{ html: string }>).detail.html)
     })
 
@@ -847,8 +901,8 @@ describe('@santi020k/lumen-elements', () => {
       new KeyboardEvent('keydown', {
         bubbles: true,
         ctrlKey: true,
-        key: 'i',
-      }),
+        key: 'i'
+      })
     )
 
     expect(execCommand).toHaveBeenCalledWith('bold')
@@ -867,7 +921,7 @@ describe('@santi020k/lumen-elements', () => {
       getData: vi.fn((type: string) => transferData[type] ?? ''),
       setData: vi.fn((type: string, value: string) => {
         transferData[type] = value
-      }),
+      })
     }
 
     document.body.innerHTML = `
@@ -886,8 +940,8 @@ describe('@santi020k/lumen-elements', () => {
     const monday = document.querySelector<HTMLElement>('[data-ui-schedule-slot="monday"]')
     const friday = document.querySelector<HTMLElement>('[data-ui-schedule-slot="friday"]')
 
-    root?.addEventListener('ui:schedule-change', (event) => {
-      changes.push((event as CustomEvent<{ eventId: string; slot: string }>).detail)
+    root?.addEventListener('ui:schedule-change', event => {
+      changes.push((event as CustomEvent<{ eventId: string, slot: string }>).detail)
     })
 
     planning?.dispatchEvent(createDragEvent('dragstart', dataTransfer))
@@ -936,8 +990,8 @@ describe('@santi020k/lumen-elements', () => {
         bubbles: true,
         cancelable: true,
         clientX: 24,
-        clientY: 32,
-      }),
+        clientY: 32
+      })
     )
 
     expect(contextMenuPrevented).toBe(true)
@@ -1000,9 +1054,9 @@ describe('@santi020k/lumen-elements', () => {
     Object.defineProperty(input, 'files', {
       configurable: true,
       get: () => selectedFiles,
-      set: (value) => {
+      set: value => {
         selectedFiles = [...(value as FileList)]
-      },
+      }
     })
 
     const dragOver = new Event('dragover', { bubbles: true, cancelable: true })
@@ -1060,15 +1114,14 @@ describe('@santi020k/lumen-elements', () => {
     const disconnect = vi.fn()
 
     vi.stubGlobal(
-      'IntersectionObserver',
-      class {
+      'IntersectionObserver', class {
         constructor(callback: IntersectionObserverCallback) {
           observerCallback = callback
         }
 
         disconnect = disconnect
         observe = observe
-      },
+      }
     )
 
     document.body.innerHTML = `
@@ -1088,8 +1141,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(observe).toHaveBeenCalledWith(api)
 
     observerCallback?.(
-      [{ isIntersecting: true, target: api } as unknown as IntersectionObserverEntry],
-      {} as IntersectionObserver,
+      [{ isIntersecting: true, target: api } as unknown as IntersectionObserverEntry], {} as IntersectionObserver
     )
 
     expect(links[0]?.dataset.active).toBe('false')
@@ -1110,7 +1162,7 @@ describe('@santi020k/lumen-elements', () => {
     const root = document.querySelector<HTMLElement>('lumen-transfer')!
     const events: CustomEvent[] = []
 
-    root.addEventListener('ui:transfer-change', (event) => {
+    root.addEventListener('ui:transfer-change', event => {
       events.push(event as CustomEvent)
     })
     root.querySelector<HTMLButtonElement>('[data-ui-transfer-move]')?.click()
@@ -1171,7 +1223,7 @@ describe('@santi020k/lumen-elements', () => {
     const options = root.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')
     const events: CustomEvent[] = []
 
-    root.addEventListener('ui:cascader-change', (event) => {
+    root.addEventListener('ui:cascader-change', event => {
       events.push(event as CustomEvent)
     })
 
@@ -1206,7 +1258,7 @@ describe('@santi020k/lumen-elements', () => {
     const trigger = root.querySelector<HTMLButtonElement>('[data-ui-trigger]')!
     const events: CustomEvent[] = []
 
-    root.addEventListener('ui:tree-select-change', (event) => {
+    root.addEventListener('ui:tree-select-change', event => {
       events.push(event as CustomEvent)
     })
 
@@ -1227,9 +1279,9 @@ describe('@santi020k/lumen-elements', () => {
 
     document.body.innerHTML = '<lumen-sonner data-placement="top-right" data-ui-toast-max="2"></lumen-sonner>'
 
-    const actionEvents: CustomEvent<{ id: string; value?: unknown }>[] = []
-    document.body.addEventListener('ui:toast-action', (event) => {
-      actionEvents.push(event as CustomEvent<{ id: string; value?: unknown }>)
+    const actionEvents: CustomEvent<{ id: string, value?: unknown }>[] = []
+    document.body.addEventListener('ui:toast-action', event => {
+      actionEvents.push(event as CustomEvent<{ id: string, value?: unknown }>)
     })
 
     const firstId = LumenToast.create({ duration: 1000, id: 'first', title: 'First' })
@@ -1238,7 +1290,7 @@ describe('@santi020k/lumen-elements', () => {
       action: { label: 'Undo', value: 'third-action' },
       id: 'third',
       title: 'Third',
-      variant: 'success',
+      variant: 'success'
     })
 
     expect(firstId).toBe('first')

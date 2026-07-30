@@ -1,0 +1,7 @@
+---
+import { ErrorSummary, Input, Label } from '@santi020k/lumen-astro'
+---
+
+<ErrorSummary errors={{ fields: [{ controlId: 'example-email', name: 'email', message: 'Enter an email address.' }], form: [] }} />
+<Label for="example-email">Email</Label>
+<Input id="example-email" type="email" aria-invalid="true" />

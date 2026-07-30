@@ -152,6 +152,124 @@ export const lumenComponentNames = [
 
 export type LumenComponentName = typeof lumenComponentNames[number]
 
+export interface LumenComponentBehavior {
+  astro: 'none' | 'ui-primitives'
+  elements: 'none' | 'registered-element'
+  react: 'component' | 'hook' | 'none'
+}
+
+const astroEnhancedComponents = new Set<LumenComponentName>([
+  'AlertDialog',
+  'AnimatedNumber',
+  'Calendar',
+  'Carousel',
+  'Code',
+  'CodeTabs',
+  'Combobox',
+  'Command',
+  'ContextMenu',
+  'DataTable',
+  'Dialog',
+  'Drawer',
+  'DropdownMenu',
+  'Form',
+  'HoverCard',
+  'InputOTP',
+  'ListBox',
+  'Menubar',
+  'NavigationMenu',
+  'PasswordField',
+  'RadioGroup',
+  'Resizable',
+  'RevealGroup',
+  'RichTextEditor',
+  'Schedule',
+  'ScrollProgress',
+  'ScrollReveal',
+  'Select',
+  'Sheet',
+  'Sonner',
+  'Tabs',
+  'TagGroup',
+  'ThemeBuilder',
+  'Toast',
+  'Toggle',
+  'ToggleGroup',
+  'VirtualList'
+])
+
+const reactHookComponents = new Set<LumenComponentName>([
+  'AlertDialog',
+  'Calendar',
+  'Carousel',
+  'Combobox',
+  'Command',
+  'ContextMenu',
+  'DataTable',
+  'DateRangePicker',
+  'Dialog',
+  'Drawer',
+  'DropdownMenu',
+  'Form',
+  'HoverCard',
+  'InputOTP',
+  'ListBox',
+  'Menubar',
+  'NavigationMenu',
+  'PasswordField',
+  'Popover',
+  'Resizable',
+  'RichTextEditor',
+  'Schedule',
+  'Select',
+  'Sheet',
+  'Tabs',
+  'TagGroup',
+  'ThemeBuilder',
+  'Toast',
+  'Tooltip',
+  'VirtualList'
+])
+
+export const lumenComponentBehavior = Object.fromEntries(
+  lumenComponentNames.map(name => [
+    name,
+    {
+      astro: astroEnhancedComponents.has(name) ? 'ui-primitives' : 'none',
+      elements: 'registered-element',
+      react: reactHookComponents.has(name) ? 'hook' : 'component'
+    }
+  ])
+) as Readonly<Record<LumenComponentName, LumenComponentBehavior>>
+
+export interface LumenGlobalBehavior {
+  astro: 'none' | 'ui-primitives'
+  authoredBy: string
+  description: string
+  elements: 'none' | 'registered-element'
+  name: 'form-validation' | 'toast-events'
+  react: 'hook' | 'none'
+}
+
+export const lumenGlobalBehaviors = [
+  {
+    astro: 'ui-primitives',
+    authoredBy: '[data-ui-form]',
+    description: 'Constraint validation state, custom validation events, and field error synchronization.',
+    elements: 'registered-element',
+    name: 'form-validation',
+    react: 'hook'
+  },
+  {
+    astro: 'ui-primitives',
+    authoredBy: 'ui:toast, ui:toast-update, ui:toast-dismiss',
+    description: 'Document-level toast creation, update, action, and dismissal events.',
+    elements: 'registered-element',
+    name: 'toast-events',
+    react: 'hook'
+  }
+] as const satisfies readonly LumenGlobalBehavior[]
+
 export interface LumenPackageTarget {
   name: string
   packageName: string
