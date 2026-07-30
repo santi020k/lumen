@@ -27,6 +27,7 @@ interface Props extends HTMLAttributes<'figure'> {
   heading?: string
   layout?: LumenBarChartLayout
   orientation?: LumenChartOrientation
+  presentation?: 'bare' | 'default'
   series: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
@@ -57,6 +58,11 @@ const ticks = getLumenChartTicks(geometry.domain)
 const categories = geometry.categories.map(category => category.category)
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.y ?? null
 const labelFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.label
+const formattedValueFor = (item: LumenChartSeries, category: number | string) => {
+  const value = valueFor(item, category)
+
+  return value === null ? 'Not available' : formatValue(value)
+}
 const categoryLabelFor = (category: number | string) => {
   const label = series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel
 
@@ -179,10 +185,7 @@ const margin = orientation === 'horizontal' ?
                   <th scope="row">{categoryLabelFor(category)}</th>
                   {series.map(item => (
                     <td>
-                      {labelFor(item, category) ??
-                        (valueFor(item, category) === null ?
-                          'Not available' :
-                          formatValue(valueFor(item, category) as number))}
+                      {labelFor(item, category) ?? formattedValueFor(item, category)}
                     </td>
                   ))}
                 </tr>

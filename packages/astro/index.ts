@@ -148,4 +148,9 @@ export { default as Typography } from './components/Typography.astro'
 export { default as VirtualList } from './components/VirtualList.astro'
 export { default as VisuallyHidden } from './components/VisuallyHidden.astro'
 export { default as Watermark } from './components/Watermark.astro'
+export {
+  type AstroActionErrorLike,
+  type LumenControlIdMap,
+  normalizeAstroActionErrors
+} from './forms.ts'
 export { default as UIPrimitives } from './runtime/UIPrimitives.astro'

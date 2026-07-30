@@ -7435,8 +7435,8 @@ const createLumenBehaviorElementClass = (
   BaseElement: typeof LumenElement,
   config: LumenElementConfig
 ) => class extends BaseElement {
-    static override config = config
-  }
+  static override config = config
+}
 
 const behaviorElementClasses: Partial<Record<LumenComponentName, typeof LumenElement>> = {
   AlertDialog: LumenDialogBehaviorElement,

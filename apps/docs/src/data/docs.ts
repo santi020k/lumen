@@ -5815,7 +5815,7 @@ export function WeekView() {
   return (
     <Schedule {...schedule.rootProps}>
       <section {...schedule.getSlotProps('2025-01-06T09:00')}>
-        <Card {...schedule.getEventProps('meeting-1')}>
+        <Card as="article" {...schedule.getEventProps('meeting-1')}>
           <strong>Team standup</strong>
           <p>9:00 – 9:30</p>
         </Card>

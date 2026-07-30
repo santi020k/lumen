@@ -80,6 +80,7 @@ const searchTermAliases: Record<string, string[]> = {
   dark: ['dark', 'theme'],
   dashboard: ['dashboard', 'data-table', 'sidebar', 'chart', 'stat', 'metric'],
   mode: ['mode', 'theme'],
+  paginated: ['paginated', 'pagination'],
   pagination: ['pagination', 'paginated'],
   sortable: ['sortable', 'sort']
 }
@@ -181,7 +182,12 @@ const scoreCandidate = (query: string, terms: string[], searchableText: string, 
 
   score -= (terms.length - matchedTerms.length) * 3
 
-  if (terms.includes(normalizedName)) score += 50
+  if (
+    terms.some(term =>
+      ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term])
+        .includes(normalizedName)
+    )
+  ) score += 50
 
   if (normalizedText.includes(normalizedQuery)) score += 100
 

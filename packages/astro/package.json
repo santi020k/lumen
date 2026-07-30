@@ -16,6 +16,10 @@
       "types": "./index.ts",
       "import": "./index.ts"
     },
+    "./forms": {
+      "types": "./forms.ts",
+      "import": "./forms.ts"
+    },
     "./components/*": "./components/*.astro",
     "./runtime": "./runtime/UIPrimitives.astro",
     "./layers.css": "./styles/layers.css",
@@ -27,6 +31,7 @@
     "runtime",
     "styles",
     "index.ts",
+    "forms.ts",
     "README.md",
     "LICENSE"
   ],

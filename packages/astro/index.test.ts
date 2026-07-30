@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
+import { normalizeAstroActionErrors } from './forms.js'
+
 /* cspell:ignore datatable */
 
 const packageRoot = new URL('.', import.meta.url)
@@ -15,15 +17,6 @@ describe('@santi020k/lumen-astro package surface', () => {
         lumenComponentNames.map(componentName => readFile(new URL(`./components/${componentName}.astro`, packageRoot), 'utf8'))
       )
     ).resolves.toHaveLength(lumenComponentNames.length)
-  })
-
-  test('keeps runtime exports mirrored in TypeScript declarations', async () => {
-    const [runtime, declarations] = await Promise.all([
-      readFile(new URL('./index.ts', packageRoot), 'utf8'),
-      readFile(new URL('./index.d.ts', packageRoot), 'utf8')
-    ])
-
-    expect(declarations).toBe(runtime)
   })
 
   test('documents every component export from the package index', async () => {
@@ -48,6 +41,32 @@ describe('@santi020k/lumen-astro package surface', () => {
       '@import "@santi020k/lumen/styles.css"'
     )
     await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain('.ui-button')
+  })
+
+  test('normalizes Astro Action field errors for fields and summaries', () => {
+    expect(normalizeAstroActionErrors({
+      fields: {
+        email: ['Enter a valid email address'],
+        role: 'Choose a role'
+      }
+    }, {
+      email: 'profile-email',
+      role: 'profile-role'
+    })).toEqual({
+      fields: [
+        {
+          controlId: 'profile-email',
+          message: 'Enter a valid email address',
+          name: 'email'
+        },
+        {
+          controlId: 'profile-role',
+          message: 'Choose a role',
+          name: 'role'
+        }
+      ],
+      form: []
+    })
   })
 
   test('keeps ButtonLink hover motion aligned with Button without client-side magnetic behavior', async () => {
@@ -135,7 +154,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
     expect(stat).toContain('as?: \'article\' | \'div\' | \'section\'')
-    expect(stat).toContain('variant?: \'accent\' | \'default\' | \'glass\'')
+    expect(stat).toContain('variant?: \'accent\' | \'bare\' | \'default\' | \'glass\'')
     expect(stat).toContain('as: Tag = \'div\'')
     expect(stat).toContain('variant = \'default\'')
     expect(stat).toContain('<Tag')

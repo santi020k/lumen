@@ -21,9 +21,16 @@ export const normalizeAstroActionErrors = (
 ): LumenFormErrors => {
   if (!isActionErrorLike(error)) return { fields: [], form: [] }
 
-  const normalized = error.fields ?
-    normalizeLumenFormErrors(error.fields) :
-    { fields: [], form: error.message?.trim() ? [error.message.trim()] : [] }
+  let normalized: LumenFormErrors
+
+  if (error.fields) {
+    normalized = normalizeLumenFormErrors(error.fields)
+  } else {
+    normalized = {
+      fields: [],
+      form: error.message?.trim() ? [error.message.trim()] : []
+    }
+  }
 
   return {
     fields: normalized.fields.map(fieldError => ({

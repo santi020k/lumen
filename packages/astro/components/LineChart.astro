@@ -22,9 +22,13 @@ interface Props extends HTMLAttributes<'figure'> {
   class?: string | null
   className?: string
   description?: string
+  emptyLabel?: string
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
-  markers?: boolean
+  markers?: 'all' | 'auto' | 'none' | boolean | number
+  presentation?: 'bare' | 'default'
   referenceValue?: number
   series: readonly LumenChartSeries[]
   showLegend?: boolean
@@ -37,9 +41,12 @@ const {
   class: classProp = '',
   className = '',
   description,
+  emptyLabel = 'No chart data available.',
+  formatCategory = String,
+  formatValue = String,
   glass = false,
   heading,
-  markers = true,
+  markers = 'auto',
   referenceValue,
   series,
   showLegend = series.length > 1,
@@ -69,7 +76,17 @@ const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, 
 
 const ticks = getLumenChartTicks(domain)
 const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+const markerStep =
+  markers === false || markers === 'none' ?
+    Number.POSITIVE_INFINITY :
+    typeof markers === 'number' ?
+      Math.max(1, Math.round(markers)) :
+      markers === 'auto' ?
+        Math.max(1, Math.ceil(categories.length / 24)) :
+        1
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
+const categoryLabelFor = (category: number | string) =>
+  series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
 
 const referenceY =
   referenceValue === undefined ?
@@ -97,7 +114,7 @@ const referenceY =
       </ul>
     )
   }
-  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel}</p>}
   <div class="ui-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
@@ -115,7 +132,7 @@ const referenceY =
               <>
                 <line x1={padding} x2={width - padding} y1={y} y2={y} />
                 <text x={padding - 8} y={y}>
-                  {Number(tick.toPrecision(4))}
+                  {formatValue(tick)}
                 </text>
               </>
             )
@@ -138,7 +155,7 @@ const referenceY =
 
             return (
               <text text-anchor="middle" x={x} y={height - 14}>
-                {String(category)}
+                {categoryLabelFor(category)}
               </text>
             )
           })
@@ -170,8 +187,8 @@ const referenceY =
                   <path class="ui-line-chart__area" d={path} />
                 ))}
               <path class="ui-line-chart__line" d={geometry.path} />
-              {markers &&
-                geometry.points.map(point => (
+              {Number.isFinite(markerStep) &&
+                geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
                   <circle
                     class="ui-line-chart__point"
                     cx={point.xCoordinate}
@@ -179,7 +196,7 @@ const referenceY =
                     r="3"
                   >
                     <title>
-                      {`${point.label ?? String(point.x)} · ${item.label}: ${point.y}`}
+                      {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
                     </title>
                   </circle>
                 ))}
@@ -204,7 +221,7 @@ const referenceY =
             <tbody>
               {categories.map(category => (
                 <tr>
-                  <th scope="row">{String(category)}</th>
+                  <th scope="row">{categoryLabelFor(category)}</th>
                   {series.map(item => {
                     const datum = valueFor(item, category)
 
@@ -213,7 +230,7 @@ const referenceY =
                         {datum?.label ??
                           (datum?.y === null || datum === undefined ?
                             'Not available' :
-                            String(datum.y))}
+                            formatValue(datum.y))}
                       </td>
                     )
                   })}

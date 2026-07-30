@@ -690,8 +690,28 @@ export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
   description?: ReactNode
   glass?: LumenGlassProp
   heading?: ReactNode
+  presentation?: 'bare' | 'default'
   value?: ReactNode
 }
+
+const ChartHeader = ({
+  description,
+  heading,
+  value
+}: Pick<ChartProps, 'description' | 'heading' | 'value'>) => {
+  if (!heading && !description && !value) return null
+
+  return (
+    <header>
+      <div className="ui-chart__heading">
+        {heading && <h3>{heading}</h3>}
+        {description && <p>{description}</p>}
+      </div>
+      {value && <strong data-ui-chart-value>{value}</strong>}
+    </header>
+  )
+}
+
 export const Chart = ({
   caption,
   children,
@@ -699,19 +719,17 @@ export const Chart = ({
   description,
   glass = false,
   heading,
+  presentation = 'default',
   value,
   ...props
 }: ChartProps) => (
-  <figure className={composeClassName('ui-chart', glassClass('ui-chart', glass), className)} {...props}>
-    {(heading || description || value) && (
-      <header>
-        <div className="ui-chart__heading">
-          {heading && <h3>{heading}</h3>}
-          {description && <p>{description}</p>}
-        </div>
-        {value && <strong data-ui-chart-value>{value}</strong>}
-      </header>
+  <figure
+    className={composeClassName(
+      'ui-chart', presentation === 'bare' && 'ui-chart--bare', glassClass('ui-chart', glass), className
     )}
+    {...props}
+  >
+    <ChartHeader description={description} heading={heading} value={value} />
     {children}
     {caption && <figcaption>{caption}</figcaption>}
   </figure>
@@ -734,10 +752,17 @@ const ChartLegend = ({ series }: ChartLegendProps) => (
 
 interface ChartDataTableProps {
   categories: readonly (number | string)[]
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
   series: readonly LumenChartSeries[]
 }
 
-const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
+const ChartDataTable = ({
+  categories,
+  formatCategory = String,
+  formatValue = String,
+  series
+}: ChartDataTableProps) => (
   <details className="ui-chart__data">
     <summary>View chart data</summary>
     <div>
@@ -755,13 +780,17 @@ const ChartDataTable = ({ categories, series }: ChartDataTableProps) => (
         <tbody>
           {categories.map(category => (
             <tr key={`${typeof category}:${String(category)}`}>
-              <th scope="row">{String(category)}</th>
+              <th scope="row">
+                {series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ??
+                  formatCategory(category)}
+              </th>
               {series.map(item => {
                 const datum = item.data.find(candidate => candidate.x === category)
 
                 return (
                   <td key={item.id}>
-                    {datum?.label ?? (datum?.y === null || datum === undefined ? 'Not available' : String(datum.y))}
+                    {datum?.label ??
+                      (datum?.y === null || datum === undefined ? 'Not available' : formatValue(datum.y))}
                   </td>
                 )
               })}
@@ -828,6 +857,10 @@ export const Sparkline = ({
 }
 
 export interface BarChartProps extends Omit<ChartProps, 'children'> {
+  categoryWidth?: number
+  emptyLabel?: ReactNode
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
   layout?: LumenBarChartLayout
   orientation?: LumenChartOrientation
   series?: readonly LumenChartSeries[]
@@ -837,7 +870,11 @@ export interface BarChartProps extends Omit<ChartProps, 'children'> {
 
 /* eslint-disable complexity -- Chart renderers keep optional semantic and SVG layers colocated. */
 export const BarChart = ({
+  categoryWidth,
   className,
+  emptyLabel = 'No chart data available.',
+  formatCategory = String,
+  formatValue = String,
   layout = 'grouped',
   orientation = 'vertical',
   series = emptyChartSeries,
@@ -845,14 +882,19 @@ export const BarChart = ({
   showTable = true,
   ...props
 }: BarChartProps) => {
-  const geometry = createLumenBarGeometry(series, { layout, orientation })
+  const geometry = createLumenBarGeometry(series, {
+    ...(categoryWidth === undefined ? {} : { categoryWidth }),
+    layout,
+    orientation
+  })
+
   const hasData = hasLumenChartData(series)
   const ticks = getLumenChartTicks(geometry.domain)
   const categories = geometry.categories.map(category => category.category)
 
   const margin =
     orientation === 'horizontal' ?
-      { bottom: 24, left: 112, right: 20, top: 16 } :
+      { bottom: 24, left: Math.max(64, Math.min(240, categoryWidth ?? 112)), right: 20, top: 16 } :
       { bottom: 52, left: 52, right: 16, top: 16 }
 
   return (
@@ -860,7 +902,7 @@ export const BarChart = ({
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
-          No chart data available.
+          {emptyLabel}
         </p>
       )}
       <div className="ui-chart__plot" hidden={!hasData}>
@@ -909,30 +951,59 @@ export const BarChart = ({
                 x={mark.x}
                 y={mark.y}
               >
-                <title>{`${String(mark.category)} · ${mark.seriesLabel}: ${mark.value}`}</title>
+                <title>
+                  {`${series.flatMap(item => item.data).find(datum => datum.x === mark.category)?.xLabel ??
+                  formatCategory(mark.category)} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
+                </title>
               </rect>
             ))}
           </g>
         </svg>
       </div>
-      {showTable && hasData && <ChartDataTable categories={categories} series={series} />}
+      {showTable && hasData && (
+        <ChartDataTable
+          categories={categories}
+          formatCategory={formatCategory}
+          formatValue={formatValue}
+          series={series}
+        />
+      )}
     </Chart>
   )
 }
 
 export interface LineChartProps extends Omit<ChartProps, 'children'> {
   area?: boolean
-  markers?: boolean
+  emptyLabel?: ReactNode
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
+  markers?: 'all' | 'auto' | 'none' | boolean | number
   referenceValue?: number
   series?: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
 }
 
+const getLineChartMarkerStep = (
+  markers: LineChartProps['markers'],
+  categoryCount: number
+): number => {
+  if (markers === false || markers === 'none') return Number.POSITIVE_INFINITY
+
+  if (typeof markers === 'number') return Math.max(1, Math.round(markers))
+
+  if (markers === 'auto') return Math.max(1, Math.ceil(categoryCount / 24))
+
+  return 1
+}
+
 export const LineChart = ({
   area = false,
   className,
-  markers = true,
+  emptyLabel = 'No chart data available.',
+  formatCategory = String,
+  formatValue = String,
+  markers = 'auto',
   referenceValue,
   series = emptyChartSeries,
   showLegend = series.length > 1,
@@ -960,6 +1031,7 @@ export const LineChart = ({
 
   const ticks = getLumenChartTicks(domain)
   const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+  const markerStep = getLineChartMarkerStep(markers, categories.length)
 
   const referenceY =
     referenceValue === undefined ? undefined : scaleLumenChartValue(referenceValue, domain, height - padding, padding)
@@ -969,7 +1041,7 @@ export const LineChart = ({
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
-          No chart data available.
+          {emptyLabel}
         </p>
       )}
       <div className="ui-chart__plot" hidden={!hasData}>
@@ -982,7 +1054,7 @@ export const LineChart = ({
                 <Fragment key={tick}>
                   <line x1={padding} x2={width - padding} y1={y} y2={y} />
                   <text x={padding - 8} y={y}>
-                    {Number(tick.toPrecision(4))}
+                    {formatValue(tick)}
                   </text>
                 </Fragment>
               )
@@ -997,7 +1069,8 @@ export const LineChart = ({
 
               return (
                 <text key={`${typeof category}:${String(category)}`} textAnchor="middle" x={x} y={height - 14}>
-                  {String(category)}
+                  {series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ??
+                    formatCategory(category)}
                 </text>
               )
             })}
@@ -1022,8 +1095,8 @@ export const LineChart = ({
                   />
                 ))}
                 <path className="ui-line-chart__line" d={geometry.path} />
-                {markers &&
-                  geometry.points.map(point => (
+                {Number.isFinite(markerStep) &&
+                  geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
                     <circle
                       className="ui-line-chart__point"
                       cx={point.xCoordinate}
@@ -1031,7 +1104,9 @@ export const LineChart = ({
                       key={`${typeof point.x}:${String(point.x)}`}
                       r="3"
                     >
-                      <title>{`${point.label ?? String(point.x)} · ${item.label}: ${String(point.y)}`}</title>
+                      <title>
+                        {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                      </title>
                     </circle>
                   ))}
               </g>
@@ -1039,7 +1114,14 @@ export const LineChart = ({
           })}
         </svg>
       </div>
-      {showTable && hasData && <ChartDataTable categories={categories} series={series} />}
+      {showTable && hasData && (
+        <ChartDataTable
+          categories={categories}
+          formatCategory={formatCategory}
+          formatValue={formatValue}
+          series={series}
+        />
+      )}
     </Chart>
   )
 }
@@ -2240,6 +2322,7 @@ const PasswordFieldControl = ({
       name={name}
       ref={node => {
         inputRef.current = node
+
         setRefValue(forwardedRef, node)
       }}
       type={visible ? 'text' : 'password'}
@@ -2980,6 +3063,34 @@ const findLastEnabledOptionIndex = (options: readonly Option[]): number => {
   return lastEnabledIndex
 }
 
+const getListBoxSelectedValues = (
+  controlledValue: string | string[] | undefined,
+  internalValues: string[]
+): string[] => (
+  controlledValue === undefined ? internalValues : normalizeListBoxValues(controlledValue)
+)
+
+const getListBoxSelectValue = (
+  multiple: boolean,
+  selectedValues: string[]
+): string | string[] => (
+  multiple ? selectedValues : (selectedValues[0] ?? '')
+)
+
+const optionalTrue = (value: boolean | undefined): true | undefined => (
+  value ? true : undefined
+)
+
+const ListBoxLabel = ({
+  controlId,
+  label
+}: {
+  controlId: string
+  label: ReactNode
+}) => (
+  label ? <label className="ui-label" htmlFor={controlId}>{label}</label> : null
+)
+
 export const ListBox = ({
   className,
   defaultValue,
@@ -3003,7 +3114,7 @@ export const ListBox = ({
   )
 
   const [internalValues, setInternalValues] = useState(() => normalizeListBoxValues(defaultValue))
-  const selectedValues = value === undefined ? internalValues : normalizeListBoxValues(value)
+  const selectedValues = getListBoxSelectedValues(value, internalValues)
   const selectedSet = new Set(selectedValues)
 
   const firstEnabledIndex = Math.max(
@@ -3093,11 +3204,7 @@ export const ListBox = ({
       data-multiple={multiple ? 'true' : undefined}
       data-ui-list-box
     >
-      {label && (
-        <label className="ui-label" htmlFor={controlId}>
-          {label}
-        </label>
-      )}
+      <ListBoxLabel controlId={controlId} label={label} />
       <select
         {...props}
         className="ui-list-box__native"
@@ -3113,7 +3220,7 @@ export const ListBox = ({
           setRefValue(ref, node)
         }}
         required={required}
-        value={multiple ? selectedValues : (selectedValues[0] ?? '')}
+        value={getListBoxSelectValue(multiple, selectedValues)}
       >
         {normalizedOptions.map(option => (
           <option disabled={option.disabled} key={option.value} value={option.value}>
@@ -3122,8 +3229,8 @@ export const ListBox = ({
         ))}
       </select>
       <div
-        aria-disabled={disabled || undefined}
-        aria-multiselectable={multiple || undefined}
+        aria-disabled={optionalTrue(disabled)}
+        aria-multiselectable={optionalTrue(multiple)}
         className="ui-list-box__list"
         data-ui-list-box-list
         onKeyDown={event => {
@@ -3156,7 +3263,7 @@ export const ListBox = ({
       >
         {normalizedOptions.map((option, index) => (
           <div
-            aria-disabled={option.disabled ? true : undefined}
+            aria-disabled={optionalTrue(option.disabled)}
             aria-selected={selectedSet.has(option.value)}
             className={composeClassName('ui-list-box__option', index === activeIndex && 'ui-list-box__option--active')}
             data-active={index === activeIndex ? 'true' : undefined}
