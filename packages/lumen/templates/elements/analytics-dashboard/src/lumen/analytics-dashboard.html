@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="./lumen-template.css" />
+
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+
+  const revenue = document.querySelector('#analytics-revenue')
+  const channels = document.querySelector('#analytics-channels')
+
+  if (revenue) revenue.series = [{ data: [{ x: 'Jan', y: 118 }, { x: 'Feb', y: 126 }, { x: 'Mar', y: 132 }, { x: 'Apr', y: 148 }, { x: 'May', y: 162 }, { x: 'Jun', y: 184 }], id: 'revenue', label: 'Revenue', tone: 'brand' }]
+  if (channels) channels.series = [{ data: [{ x: 'Organic', y: 4820 }, { x: 'Referral', y: 3180 }, { x: 'Paid', y: 2640 }], id: 'visitors', label: 'Visitors', tone: 'brand' }]
+</script>
+
+<div class="lumen-template lumen-template__shell">
+  <lumen-sidebar class="lumen-template__sidebar"><strong>Pulse Analytics</strong><nav aria-label="Analytics"><a aria-current="page" href="#overview">Overview</a><a href="#acquisition">Acquisition</a><a href="#accounts">Accounts</a></nav></lumen-sidebar>
+  <main class="lumen-template__main" id="overview">
+    <header class="lumen-template__header"><div><lumen-badge variant="outline">Jun 1–30</lumen-badge><h1>Growth overview</h1><p>Revenue, retention, and account health.</p></div><lumen-button>Export report</lumen-button></header>
+    <section class="lumen-template__metrics" aria-label="Key metrics">
+      <lumen-card class="lumen-template__metric"><lumen-stat label="Monthly revenue" value="$184,320"></lumen-stat><lumen-badge variant="success">+12.4%</lumen-badge></lumen-card>
+      <lumen-card class="lumen-template__metric"><lumen-stat label="Active accounts" value="12,480"></lumen-stat><lumen-badge variant="success">+8.2%</lumen-badge></lumen-card>
+      <lumen-card class="lumen-template__metric"><lumen-stat label="Customer churn" value="2.8%"></lumen-stat><lumen-badge variant="success">-1.6%</lumen-badge></lumen-card>
+      <lumen-card class="lumen-template__metric"><lumen-stat label="Net retention" value="116%"></lumen-stat><lumen-badge variant="success">+3.1%</lumen-badge></lumen-card>
+    </section>
+    <section class="lumen-template__grid" id="acquisition"><lumen-line-chart area heading="Revenue trajectory" id="analytics-revenue"></lumen-line-chart><lumen-bar-chart heading="Channel performance" id="analytics-channels"></lumen-bar-chart></section>
+    <lumen-card class="lumen-template__panel" id="accounts"><div class="lumen-template__section-header"><h2>Accounts to watch</h2><lumen-button variant="ghost">View all</lumen-button></div><lumen-table class="lumen-template__table"><table><thead><tr><th>Account</th><th>Plan</th><th>Status</th><th>Value</th></tr></thead><tbody><tr><td>Northstar Labs</td><td>Enterprise</td><td><lumen-badge variant="success">Active</lumen-badge></td><td>$18,400</td></tr><tr><td>Arc & Field</td><td>Enterprise</td><td><lumen-badge variant="destructive">At risk</lumen-badge></td><td>$14,780</td></tr></tbody></table></lumen-table></lumen-card>
+  </main>
+</div>

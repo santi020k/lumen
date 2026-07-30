@@ -18,7 +18,7 @@ describe('Lumen MCP Streamable HTTP transport', () => {
         fetch(new URL('/health', running.url))
       ])
 
-      expect(tools.tools.map((tool) => tool.name)).toContain('lumen_diagnose')
+      expect(tools.tools.map(tool => tool.name)).toContain('lumen_diagnose')
       expect(await health.json()).toEqual({ status: 'ok' })
     } finally {
       await client.close()

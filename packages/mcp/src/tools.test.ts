@@ -50,9 +50,7 @@ describe('lumen-mcp data snapshot', () => {
       registration: 'defineLumenElements()',
       tagName: 'lumen-date-range-picker'
     })
-    expect(data.components.every((component) =>
-      Object.values(component.frameworkDetails).every((framework) => framework.available)
-    )).toBe(true)
+    expect(data.components.every(component => Object.values(component.frameworkDetails).every(framework => framework.available))).toBe(true)
   })
 
   test('documents wrapped code and Astro motion runtime requirements', () => {
@@ -201,7 +199,7 @@ describe('getComponent', () => {
 
     expect(result.isError).toBeFalsy()
     expect(result.text).toContain('# Button')
-    expect(result.text).toContain("@santi020k/lumen-astro")
+    expect(result.text).toContain('@santi020k/lumen-astro')
     expect(result.text).not.toContain('reference source')
     expect(result.data.found).toBe(true)
   })
@@ -209,7 +207,7 @@ describe('getComponent', () => {
   test('returns React props, imports, examples, and source', () => {
     const result = getComponent({ detail: 'source', framework: 'react', name: 'Button' })
 
-    expect(result.text).toContain("@santi020k/lumen-react")
+    expect(result.text).toContain('@santi020k/lumen-react')
     expect(result.text).toContain('ButtonProps')
     expect(result.text).toContain('react reference source')
     expect(result.data.component).toHaveProperty('framework.source')
@@ -280,7 +278,7 @@ describe('search', () => {
 
   test('ranks an exact component name first', () => {
     const result = search({ query: 'button' })
-    const firstResult = result.text.split('\n').find((line) => line.startsWith('component:'))
+    const firstResult = result.text.split('\n').find(line => line.startsWith('component:'))
 
     expect(firstResult).toContain('component: Button')
     expect(result.data.results[0]).toMatchObject({
@@ -295,7 +293,7 @@ describe('search', () => {
 
     expect(result.text).toContain('DatePicker')
     expect(result.text).toContain('DateRangePicker')
-    expect(result.data.results.find((item) => item.name === 'DateRangePicker')?.matchedTerms)
+    expect(result.data.results.find(item => item.name === 'DateRangePicker')?.matchedTerms)
       .toEqual(['date', 'input'])
   })
 
@@ -305,7 +303,7 @@ describe('search', () => {
     ['sortable table pagination', ['DataTable', 'Pagination']],
     ['dark mode theme', ['ThemeBuilder', 'ThemeToggle']]
   ])('returns useful partial matches for %s', (query, expectedNames) => {
-    const names = search({ query }).data.results.map((result) => result.name)
+    const names = search({ query }).data.results.map(result => result.name)
 
     expect(names).toEqual(expect.arrayContaining(expectedNames))
   })
@@ -321,7 +319,7 @@ describe('search', () => {
 
   test('honors the result limit', () => {
     const result = search({ limit: 1, query: 'input' })
-    const resultLines = result.text.split('\n').filter((line) => line.startsWith('component:'))
+    const resultLines = result.text.split('\n').filter(line => line.startsWith('component:'))
 
     expect(result.text).toContain('(showing 1)')
     expect(resultLines).toHaveLength(1)

@@ -158,8 +158,12 @@ describe('lumen icon helpers', () => {
   })
 
   test('rejects invalid icon-pack prefixes', () => {
-    expect(() => { registerLumenIconPack('', {}); }).toThrow('must be non-empty')
-    expect(() => { registerLumenIconPack('brand:social', {}); }).toThrow('cannot contain colons')
+    expect(() => {
+      registerLumenIconPack('', {})
+    }).toThrow('must be non-empty')
+    expect(() => {
+      registerLumenIconPack('brand:social', {})
+    }).toThrow('cannot contain colons')
   })
 })
 
@@ -211,7 +215,7 @@ paths: ['**/*.astro']
     expect(tokens.find(token => token.value === 'name')?.kind).toBe('keyword')
     expect(tokens.find(token => token.value === 'true')?.kind).toBe('type')
     expect(tokens.find(token => token.value === '3')?.kind).toBe('accent')
-    expect(tokens.find(token => token.value === "'**/*.astro'")?.kind).toBe('string')
+    expect(tokens.find(token => token.value === '\'**/*.astro\'')?.kind).toBe('string')
     expect(tokens.find(token => token.value === '# Run on pull requests')?.kind).toBe('comment')
   })
 
@@ -560,19 +564,19 @@ describe('lumen product helpers', () => {
   })
 })
 
-  test('derives a full palette from a single hue', () => {
-    const light = createThemeFromHue(280)
-    const dark = createThemeFromHue(280, { scheme: 'dark' })
-    const wrapped = createThemeFromHue(-80)
+test('derives a full palette from a single hue', () => {
+  const light = createThemeFromHue(280)
+  const dark = createThemeFromHue(280, { scheme: 'dark' })
+  const wrapped = createThemeFromHue(-80)
 
-    expect(light.brand).toBe('280 85% 53%')
-    expect(light.accent).toBe('70 70% 40%')
-    expect(light['surface-muted']).toBe('280 16% 96%')
-    expect(dark.canvas).toBe('280 24% 8%')
-    expect(dark.brand).toBe('280 88% 60%')
-    expect(wrapped.brand).toBe('280 85% 53%')
-    expect(scoreThemeContrast(light).wcagAA).toBe(true)
-  })
+  expect(light.brand).toBe('280 85% 53%')
+  expect(light.accent).toBe('70 70% 40%')
+  expect(light['surface-muted']).toBe('280 16% 96%')
+  expect(dark.canvas).toBe('280 24% 8%')
+  expect(dark.brand).toBe('280 88% 60%')
+  expect(wrapped.brand).toBe('280 85% 53%')
+  expect(scoreThemeContrast(light).wcagAA).toBe(true)
+})
 
 describe('lumen theme tokens', () => {
   test('keeps the public theme constants explicit', () => {

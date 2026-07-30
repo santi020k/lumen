@@ -1,8 +1,8 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
+
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
-
-import type { HTMLAttributes } from 'astro/types'
 
 interface Props extends HTMLAttributes<'figure'> {
   class?: string | null
@@ -36,9 +36,17 @@ const qrSrc = qrSvg ? `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}` : s
   {...passthrough}
 >
   <div class="ui-qr-code__frame">
-    {qrSrc
-      ? <img alt={value ? `QR code for ${value}` : 'QR code'} class="ui-qr-code__image" height={size} src={qrSrc} width={size} />
-      : <slot />}
+    {qrSrc ?
+      (
+        <img
+          alt={value ? `QR code for ${value}` : 'QR code'}
+          class="ui-qr-code__image"
+          height={size}
+          src={qrSrc}
+          width={size}
+        />
+      ) :
+      <slot />}
   </div>
   {value && <figcaption class="ui-qr-code__value">{value}</figcaption>}
 </figure>

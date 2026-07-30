@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface CascaderOption {
   children?: CascaderOption[]
@@ -28,7 +28,7 @@ const {
 
 interface RenderedColumn {
   id: string
-  options: { label: string; nextId?: string | undefined; value: string }[]
+  options: { label: string, nextId?: string | undefined, value: string }[]
   root: boolean
 }
 
@@ -83,7 +83,13 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   </button>
   <div class="ui-cascader__panel" data-ui-panel hidden id={panelId}>
     {columns.map(column => (
-      <ol aria-label={column.root ? 'Options' : 'Sub-options'} class="ui-cascader__column" hidden={!column.root} id={column.id} role="listbox">
+      <ol
+        aria-label={column.root ? 'Options' : 'Sub-options'}
+        class="ui-cascader__column"
+        hidden={!column.root}
+        id={column.id}
+        role="listbox"
+      >
         {column.options.map(option => (
           <li role="presentation">
             <button

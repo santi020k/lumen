@@ -11,7 +11,6 @@ import {
 import { fileURLToPath } from 'node:url'
 
 import { lumenComponentNames } from '@santi020k/lumen-core'
-
 import { describe, expect, test } from 'vitest'
 
 import { buildSnippets } from '../lib/snippets'
@@ -171,7 +170,7 @@ describe('component docs snippets', () => {
     expect(componentDocs.some(component => component.name === 'Sonner')).toBe(false)
     expect(toastExample).toContain('LumenToast?.create(detail)')
     expect(toastExample).not.toContain('Sonner')
-    expect(toastExample).not.toContain("new CustomEvent('ui:toast'")
+    expect(toastExample).not.toContain('new CustomEvent(\'ui:toast\'')
   })
 
   test('use the public data-ui runtime attribute contract', () => {
@@ -262,7 +261,7 @@ import { Button, Dialog } from '@santi020k/lumen-astro'
 
     const astroSnippet = snippets.find(snippet => snippet.label === 'Astro')?.code ?? ''
 
-    expect(astroSnippet).toContain("import { Button, Dialog } from '@santi020k/lumen-astro'")
+    expect(astroSnippet).toContain('import { Button, Dialog } from \'@santi020k/lumen-astro\'')
     expect(astroSnippet).not.toContain('UIPrimitives')
   })
 

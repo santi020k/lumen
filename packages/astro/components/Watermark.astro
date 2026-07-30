@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -24,17 +24,19 @@ const {
 
 const watermarkText = content ?? text
 const tileSize = Math.max(1, gap)
+
 const watermarkXmlEntities: Record<string, string> = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  "'": '&apos;'
+  '\'': '&apos;'
 }
+
 const escapedWatermarkText = watermarkText.replaceAll(
-  /[&<>"']/g,
-  character => watermarkXmlEntities[character] ?? character
+  /[&<>"']/g, character => watermarkXmlEntities[character] ?? character
 )
+
 const watermarkSvg = [
   `<svg xmlns="http://www.w3.org/2000/svg" width="${tileSize}" height="${tileSize}" viewBox="0 0 ${tileSize} ${tileSize}">`,
   `<text x="${tileSize / 2}" y="${tileSize / 2}" dominant-baseline="middle" text-anchor="middle"`,
@@ -42,6 +44,7 @@ const watermarkSvg = [
   ' fill="black" font-family="Montserrat, Avenir Next, Segoe UI, sans-serif" font-size="16" font-weight="500" letter-spacing="1.6">',
   `${escapedWatermarkText}</text></svg>`
 ].join('')
+
 const watermarkImage = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [

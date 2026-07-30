@@ -48,95 +48,166 @@ if (!guide || !setup) {
     </DocsPageHero>
 
     <section class="docs-section space-y-4" aria-labelledby="install-title">
-    <div class="docs-section-heading">
-      <h2 id="install-title" class="text-xl font-bold text-ink">Installation</h2>
-      <p class="text-sm/6 text-ink-soft">{setup.note}</p>
-    </div>
-    <div class="
-      grid gap-4
-      md:grid-cols-2
-    ">
-      {setup.installCommands.map(install => (
-        <Card variant="muted" class="space-y-2">
-          <p class="
-            text-xs font-black tracking-[0.14em] text-ink-muted uppercase
-          ">{install.label}</p>
-          <CodeBlock code={install.command} lang="bash" />
-        </Card>
-      ))}
-    </div>
-    <div class="mt-4">
-      <h3 class="mb-2 text-sm font-bold text-ink">Usage Example</h3>
-      <CodeBlock code={setup.usage} lang={setup.lang} />
-    </div>
+      <div class="docs-section-heading">
+        <h2 id="install-title" class="text-xl font-bold text-ink">Installation</h2>
+        <p class="text-sm/6 text-ink-soft">{setup.note}</p>
+      </div>
+      <div class="
+        grid gap-4
+        md:grid-cols-2
+      "
+      >
+        {setup.installCommands.map(install => (
+          <Card variant="muted" class="space-y-2">
+            <p class="
+              text-xs font-black tracking-[0.14em] text-ink-muted uppercase
+            "
+            >{install.label}
+            </p>
+            <CodeBlock code={install.command} lang="bash" />
+          </Card>
+        ))}
+      </div>
+      <div class="mt-4">
+        <h3 class="mb-2 text-sm font-bold text-ink">Usage Example</h3>
+        <CodeBlock code={setup.usage} lang={setup.lang} />
+      </div>
     </section>
 
     <section class="docs-section mt-10 space-y-4" aria-labelledby="overview-title">
-    <div class="docs-section-heading">
-      <h2 id="overview-title" class="text-xl font-bold text-ink">Overview</h2>
-    </div>
-    <ul class="m-0 grid list-disc gap-2 pl-4 text-sm/6 text-ink-soft">
-      {guide.body.map(item => (
-        <li>{item}</li>
-      ))}
-    </ul>
+      <div class="docs-section-heading">
+        <h2 id="overview-title" class="text-xl font-bold text-ink">Overview</h2>
+      </div>
+      <ul class="m-0 grid list-disc gap-2 pl-4 text-sm/6 text-ink-soft">
+        {guide.body.map(item => (
+          <li>{item}</li>
+        ))}
+      </ul>
     </section>
 
     <Separator class="my-10" />
 
     <section class="docs-section space-y-8" aria-labelledby="hooks-title">
-    <div class="docs-section-heading">
-      <h2 id="hooks-title" class="text-2xl font-bold text-ink">Hooks Reference</h2>
-      <p class="max-w-2xl text-sm/7 text-ink-soft">
-        React hooks provide the behavior and state management for complex primitives.
-      </p>
-    </div>
+      <div class="docs-section-heading">
+        <h2 id="hooks-title" class="text-2xl font-bold text-ink">Hooks Reference</h2>
+        <p class="max-w-2xl text-sm/7 text-ink-soft">
+          React hooks provide the behavior and state management for complex primitives.
+        </p>
+      </div>
 
-    <div class="space-y-16">
-      {reactHooksReference.map(hook => (
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <h3 class="text-xl font-bold text-ink" id={hook.name}>{hook.name}</h3>
-            <p class="max-w-3xl text-sm/6 text-ink-soft">{hook.description}</p>
-          </div>
+      <div class="space-y-16">
+        {reactHooksReference.map(hook => (
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <h3 class="text-xl font-bold text-ink" id={hook.name}>{hook.name}</h3>
+              <p class="max-w-3xl text-sm/6 text-ink-soft">{hook.description}</p>
+            </div>
 
-          {hook.options.length > 0 && (
+            {hook.options.length > 0 && (
+              <div class="space-y-2">
+                <h4 class="
+                  text-sm font-black tracking-[0.14em] text-ink-muted uppercase
+                "
+                >Options
+                </h4>
+                <Table class="
+                  overflow-x-auto rounded-xl border border-line bg-surface
+                "
+                >
+                  <table class="
+                    w-full min-w-176 border-collapse text-left text-sm
+                  "
+                  >
+                    <thead class="
+                      bg-surface-muted text-xs font-black tracking-[0.12em]
+                      text-ink-muted uppercase
+                    "
+                    >
+                      <tr>
+                        <th class="border-b border-line px-4 py-3">Property</th>
+                        <th class="border-b border-line px-4 py-3">Type</th>
+                        <th class="border-b border-line px-4 py-3">Default</th>
+                        <th class="border-b border-line px-4 py-3">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-line">
+                      {hook.options.map(row => (
+                        <tr>
+                          <th
+                            class="
+                              w-48 px-4 py-3 align-top font-mono text-xs
+                              font-bold text-ink
+                            "
+                            scope="row"
+                          >{row.name}
+                          </th>
+                          <td class="
+                            w-64 px-4 py-3 align-top font-mono text-xs
+                            text-ink-soft
+                          "
+                          >{row.type}
+                          </td>
+                          <td class="
+                            w-28 px-4 py-3 align-top font-mono text-xs
+                            text-ink-soft
+                          "
+                          >{row.defaultValue}
+                          </td>
+                          <td class="
+                            px-4 py-3 align-top text-sm/6 text-ink-soft
+                          "
+                          >{row.description}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </Table>
+              </div>
+            )}
+
             <div class="space-y-2">
               <h4 class="
                 text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-              ">Options</h4>
+              "
+              >Controller (Returns)
+              </h4>
               <Table class="
                 overflow-x-auto rounded-xl border border-line bg-surface
-              ">
+              "
+              >
                 <table class="
                   w-full min-w-176 border-collapse text-left text-sm
-                ">
+                "
+                >
                   <thead class="
                     bg-surface-muted text-xs font-black tracking-[0.12em]
                     text-ink-muted uppercase
-                  ">
+                  "
+                  >
                     <tr>
                       <th class="border-b border-line px-4 py-3">Property</th>
                       <th class="border-b border-line px-4 py-3">Type</th>
-                      <th class="border-b border-line px-4 py-3">Default</th>
                       <th class="border-b border-line px-4 py-3">Description</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-line">
-                    {hook.options.map(row => (
+                    {hook.controller.map(row => (
                       <tr>
-                        <th class="
-                          w-48 px-4 py-3 align-top font-mono text-xs font-bold
-                          text-ink
-                        " scope="row">{row.name}</th>
+                        <th
+                          class="
+                            w-48 px-4 py-3 align-top font-mono text-xs font-bold
+                            text-ink
+                          "
+                          scope="row"
+                        >{row.name}
+                        </th>
                         <td class="
                           w-64 px-4 py-3 align-top font-mono text-xs
                           text-ink-soft
-                        ">{row.type}</td>
-                        <td class="
-                          w-28 px-4 py-3 align-top font-mono text-xs
-                          text-ink-soft
-                        ">{row.defaultValue}</td>
+                        "
+                        >{row.type}
+                        </td>
                         <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
                       </tr>
                     ))}
@@ -144,55 +215,20 @@ if (!guide || !setup) {
                 </table>
               </Table>
             </div>
-          )}
 
-          <div class="space-y-2">
-            <h4 class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            ">Controller (Returns)</h4>
-            <Table class="
-              overflow-x-auto rounded-xl border border-line bg-surface
-            ">
-              <table class="w-full min-w-176 border-collapse text-left text-sm">
-                <thead class="
-                  bg-surface-muted text-xs font-black tracking-[0.12em]
-                  text-ink-muted uppercase
-                ">
-                  <tr>
-                    <th class="border-b border-line px-4 py-3">Property</th>
-                    <th class="border-b border-line px-4 py-3">Type</th>
-                    <th class="border-b border-line px-4 py-3">Description</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-line">
-                  {hook.controller.map(row => (
-                    <tr>
-                      <th class="
-                        w-48 px-4 py-3 align-top font-mono text-xs font-bold
-                        text-ink
-                      " scope="row">{row.name}</th>
-                      <td class="
-                        w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                      ">{row.type}</td>
-                      <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Table>
-          </div>
-
-          <div class="space-y-2">
-            <h4 class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            ">Example</h4>
-            <div class="docs-code-compact">
-              <CodeBlock code={hook.code} lang="tsx" />
+            <div class="space-y-2">
+              <h4 class="
+                text-sm font-black tracking-[0.14em] text-ink-muted uppercase
+              "
+              >Example
+              </h4>
+              <div class="docs-code-compact">
+                <CodeBlock code={hook.code} lang="tsx" />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
     </section>
   </div>
 

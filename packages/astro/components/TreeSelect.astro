@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface TreeNode {
   children?: TreeNode[]
@@ -26,7 +26,7 @@ const {
   ...rest
 } = Astro.props
 
-const flatten = (nodes: TreeNode[], depth = 0, acc: { depth: number; label: string; value: string }[] = []) => {
+const flatten = (nodes: TreeNode[], depth = 0, acc: { depth: number, label: string, value: string }[] = []) => {
   for (const node of nodes) {
     acc.push({ depth, label: node.label, value: node.value })
 
@@ -46,7 +46,13 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div class:list={classList} data-surface="default" data-ui-popover data-ui-tree-select {...passthrough}>
-  <button aria-expanded="false" aria-haspopup="tree" class="ui-select ui-select__trigger ui-tree-select__trigger" data-ui-trigger type="button">
+  <button
+    aria-expanded="false"
+    aria-haspopup="tree"
+    class="ui-select ui-select__trigger ui-tree-select__trigger"
+    data-ui-trigger
+    type="button"
+  >
     <span data-ui-tree-select-placeholder={placeholder} data-ui-tree-select-value>{placeholder}</span>
   </button>
   <div class="ui-tree-select__panel" data-ui-panel hidden>

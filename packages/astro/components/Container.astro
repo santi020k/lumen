@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'article' | 'div' | 'main' | 'section'
+  class?: string | null
+  className?: string
+  size?: 'full' | 'lg' | 'md' | 'sm'
+}
+
+const {
+  as: Tag = 'div',
+  class: classProp = '',
+  className = '',
+  size = 'lg',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-container',
+  `ui-container--${size}`
+], classProp, className)
+---
+
+<Tag class:list={classList} data-size={size} data-ui-container {...passthrough}>
+  <slot />
+</Tag>

@@ -1,0 +1,122 @@
+---
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Icon,
+  Progress,
+  Timeline,
+  TimelineItem
+} from '@santi020k/lumen-astro'
+
+import MetricGrid from '../components/MetricGrid.astro'
+import StatusTable from '../components/StatusTable.astro'
+import TemplateHeader from '../components/TemplateHeader.astro'
+import TemplateShell from '../components/TemplateShell.astro'
+
+const navigation = [
+  { icon: 'layout-dashboard', label: 'Overview' },
+  { icon: 'folder-kanban', label: 'Projects' },
+  { icon: 'list-checks', label: 'My tasks' },
+  { icon: 'calendar-days', label: 'Schedule' },
+  { icon: 'users-round', label: 'Team' }
+] as const
+
+const metrics = [
+  { change: '6 due soon', direction: 'neutral', label: 'Open tasks', points: [64, 59, 56, 51, 49, 46, 42], value: '42' },
+  { change: '+4 this month', direction: 'up', label: 'Milestones reached', points: [20, 24, 28, 31, 35, 39, 44], value: '18' },
+  { change: '2 need help', direction: 'down', label: 'At-risk projects', points: [1, 1, 2, 2, 3, 3, 2], value: '2' },
+  { change: '+6.4%', direction: 'up', label: 'Delivery velocity', points: [32, 34, 33, 38, 41, 42, 46], value: '46 pts' }
+] as const
+
+const rows = [
+  { detail: 'Due Jul 08', id: 'PRJ-028', label: 'Mobile checkout', owner: 'Amina Bello', status: 'Active', value: '72%' },
+  { detail: 'Due Jul 12', id: 'PRJ-024', label: 'Billing migration', owner: 'Jon Bell', status: 'At risk', value: '54%' },
+  { detail: 'Due Jul 22', id: 'PRJ-019', label: 'Research repository', owner: 'Maya Chen', status: 'Active', value: '81%' },
+  { detail: 'Shipped Jun 28', id: 'PRJ-017', label: 'Design tokens v2', owner: 'Nora Singh', status: 'Completed', value: '100%' }
+] as const
+
+const workstreams = [
+  { label: 'Mobile checkout', owner: 'AB', value: 72 },
+  { label: 'Billing migration', owner: 'JB', value: 54 },
+  { label: 'Research repository', owner: 'MC', value: 81 }
+] as const
+---
+
+<TemplateShell activeItem="Overview" {navigation} product="Relay" workspace="Product delivery">
+  <TemplateHeader
+    actionLabel="New project"
+    description="Priorities, delivery health, and the next decisions for your team."
+    eyebrow="Monday, June 30"
+    title="Team workspace"
+  />
+
+  <MetricGrid {metrics} />
+
+  <section class="template-project-grid">
+    <Card as="section" class="template-section">
+      <div class="template-section__header">
+        <div>
+          <h2>Active workstreams</h2>
+          <p>Delivery progress across priority projects.</p>
+        </div>
+        <Button variant="ghost">View roadmap</Button>
+      </div>
+      <div class="template-workstreams">
+        {workstreams.map(workstream => (
+          <article>
+            <div>
+              <Avatar fallback={workstream.owner} />
+              <strong>{workstream.label}</strong>
+              <Badge variant={workstream.value < 60 ? 'warning' : 'secondary'}>
+                {workstream.value}%
+              </Badge>
+            </div>
+            <Progress
+              aria-label={`${workstream.label} is ${workstream.value}% complete`}
+              value={workstream.value}
+            />
+          </article>
+        ))}
+      </div>
+    </Card>
+
+    <Card as="section" class="template-section">
+      <div class="template-section__header">
+        <div>
+          <h2>Recent activity</h2>
+          <p>Changes from your closest collaborators.</p>
+        </div>
+      </div>
+      <Timeline>
+        <TimelineItem>
+          <Icon name="circle-check" slot="dot" />
+          <strong>Amina completed checkout validation</strong>
+          <small>18 minutes ago</small>
+        </TimelineItem>
+        <TimelineItem>
+          <Icon name="message-square" slot="dot" />
+          <strong>Jon left feedback on billing retries</strong>
+          <small>1 hour ago</small>
+        </TimelineItem>
+        <TimelineItem>
+          <Icon name="git-pull-request" slot="dot" />
+          <strong>Nora moved design tokens to review</strong>
+          <small>Yesterday</small>
+        </TimelineItem>
+      </Timeline>
+    </Card>
+  </section>
+
+  <Card as="section" class="template-section">
+    <div class="template-section__header">
+      <div>
+        <h2>Priority projects</h2>
+        <p>The work most likely to affect this quarter’s commitments.</p>
+      </div>
+      <Button variant="ghost">View all projects</Button>
+    </div>
+    <StatusTable caption="Priority delivery projects" {rows} />
+  </Card>
+</TemplateShell>

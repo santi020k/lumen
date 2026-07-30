@@ -17,52 +17,41 @@ import {
 
 const canonicalComponentNames = new Set<string>(lumenComponentNames)
 
-const normalizeKeywords = (...values: string[]): string =>
-  values
-    .join(' ')
-    .replaceAll(/["'{}[\]|,]/g, ' ')
-    .replaceAll(/\s+/g, ' ')
-    .trim()
-    .toLowerCase()
+const normalizeKeywords = (...values: string[]): string => values
+  .join(' ')
+  .replaceAll(/["'{}[\]|,]/g, ' ')
+  .replaceAll(/\s+/g, ' ')
+  .trim()
+  .toLowerCase()
 
 const componentItems: DocsSearchItem[] = componentDocs.map(component => ({
   category: component.category,
   description: component.summary,
   href: `/docs/components/${toSlug(component.name)}`,
   keywords: normalizeKeywords(
-    component.name,
-    component.category,
-    component.summary,
-    component.guidance?.when ?? '',
-    component.guidance?.distinction ?? '',
-    component.glass ? 'glass surface' : '',
-    canonicalComponentNames.has(component.name) ? 'canonical component primitive' : ''
+    component.name, component.category, component.summary, component.guidance?.when ?? '', component.guidance?.distinction ?? '', component.glass ? 'glass surface' : '', canonicalComponentNames.has(component.name) ? 'canonical component primitive' : ''
   ),
   title: component.name,
   type: 'Component'
 }))
 
-const propItems: DocsSearchItem[] = componentDocs.flatMap(component =>
-  component.apiReference.map(row => ({
-    category: component.name,
-    description: row.description,
-    href: `/docs/components/${toSlug(component.name)}#api-title`,
-    keywords: normalizeKeywords(component.name, row.attribute, row.values, row.defaultValue, row.description),
-    title: `${component.name}: ${row.attribute}`,
-    type: 'Prop' as const
-  }))
-)
+const propItems: DocsSearchItem[] = componentDocs.flatMap(component => component.apiReference.map(row => ({
+  category: component.name,
+  description: row.description,
+  href: `/docs/components/${toSlug(component.name)}#api-title`,
+  keywords: normalizeKeywords(component.name, row.attribute, row.values, row.defaultValue, row.description),
+  title: `${component.name}: ${row.attribute}`,
+  type: 'Prop' as const
+})))
 
-const keyboardItems: DocsSearchItem[] = componentDocs.flatMap(component =>
-  (component.keyboardInteractions ?? []).map(row => ({
-    category: component.name,
-    description: row.action,
-    href: `/docs/components/${toSlug(component.name)}#keyboard-title`,
-    keywords: normalizeKeywords(component.name, row.key, row.action, 'keyboard interaction shortcut'),
-    title: `${component.name}: ${row.key}`,
-    type: 'Recipe' as const
-  }))
-)
+const keyboardItems: DocsSearchItem[] = componentDocs.flatMap(component => (component.keyboardInteractions ?? []).map(row => ({
+  category: component.name,
+  description: row.action,
+  href: `/docs/components/${toSlug(component.name)}#keyboard-title`,
+  keywords: normalizeKeywords(component.name, row.key, row.action, 'keyboard interaction shortcut'),
+  title: `${component.name}: ${row.key}`,
+  type: 'Recipe' as const
+})))
 
 const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
   const owner = componentDocs.find(component => component.runtimeEvents?.some(item => item.name === event.name))

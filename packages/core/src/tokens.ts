@@ -78,5 +78,4 @@ export const lumenMotion = {
   easeEmphasized: 'cubic-bezier(0.22, 1, 0.36, 1)'
 } as const
 
-export const composeClassName = (...classes: (boolean | null | string | undefined)[]) =>
-  classes.filter(Boolean).join(' ')
+export const composeClassName = (...classes: (boolean | null | string | undefined)[]) => classes.filter(Boolean).join(' ')

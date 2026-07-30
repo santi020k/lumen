@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Option {
   disabled?: boolean
@@ -35,9 +35,7 @@ const {
   ...rest
 } = Astro.props
 
-const normalizedOptions = options.map(option =>
-  typeof option === 'string' ? { label: option, value: option } : option
-)
+const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
 const selectedValue = value === undefined || value === null ? undefined : String(value)
 const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
 const selectedOption = normalizedOptions.find(option => String(option.value) === selectedValue)
@@ -46,11 +44,12 @@ const triggerId = `${selectId}-trigger`
 const listId = `${selectId}-listbox`
 const placeholderText = placeholder ?? 'Select an option'
 const triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-select-field',
-    glass && 'ui-select-field--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-select-field',
+  glass && 'ui-select-field--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 

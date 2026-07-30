@@ -131,10 +131,9 @@ const diagnosticsOutputSchema = z.strictObject({
   status: z.enum(['healthy', 'issues'])
 })
 
-const structuredData = (data: unknown): Record<string, unknown> =>
-  typeof data === 'object' && data !== null
-    ? data as Record<string, unknown>
-    : { value: data }
+const structuredData = (data: unknown): Record<string, unknown> => typeof data === 'object' && data !== null ?
+  data as Record<string, unknown> :
+  { value: data }
 
 const toMcpResult = (result: LumenToolResult) => ({
   content: [{ text: result.text, type: 'text' as const }],
@@ -158,8 +157,7 @@ export const createLumenServer = (): McpServer => {
   const data = loadLumenData()
 
   const server = new McpServer(
-    { name: '@santi020k/lumen-mcp', version: data.meta.serverVersion },
-    {
+    { name: '@santi020k/lumen-mcp', version: data.meta.serverVersion }, {
       instructions:
         'Read lumen://meta, lumen://diagnostics, and lumen://rules before generating Lumen code. Search or list the catalog, ' +
         'then inspect the selected component for the target framework at usage detail before requesting source.'
@@ -167,8 +165,7 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerTool(
-    'lumen_list_components',
-    {
+    'lumen_list_components', {
       annotations: readOnlyAnnotations,
       description:
         'List Lumen components with descriptions, categories, framework availability, collections, ' +
@@ -185,13 +182,11 @@ export const createLumenServer = (): McpServer => {
           .meta({ description: 'Only list components that belong to this recipe.' })
       }),
       outputSchema: listComponentsOutputSchema
-    },
-    (args) => toMcpResult(listComponents(args))
+    }, args => toMcpResult(listComponents(args))
   )
 
   server.registerTool(
-    'lumen_get_component',
-    {
+    'lumen_get_component', {
       annotations: readOnlyAnnotations,
       description:
         'Get framework-specific Lumen component usage: description, imports, styles, typed props or ' +
@@ -209,13 +204,11 @@ export const createLumenServer = (): McpServer => {
           .meta({ description: 'Component name, for example "Button" or "data-table".' })
       }),
       outputSchema: componentOutputSchema
-    },
-    (args) => toMcpResult(getComponent(args))
+    }, args => toMcpResult(getComponent(args))
   )
 
   server.registerTool(
-    'lumen_get_recipe',
-    {
+    'lumen_get_recipe', {
       annotations: readOnlyAnnotations,
       description:
         'Get a Lumen recipe or component set with its purpose, categories, components, files, and ' +
@@ -228,13 +221,11 @@ export const createLumenServer = (): McpServer => {
           .meta({ description: 'Recipe name, for example "scheduler" or "advanced-fields".' })
       }),
       outputSchema: recipeOutputSchema
-    },
-    (args) => toMcpResult(getRecipe(args))
+    }, args => toMcpResult(getRecipe(args))
   )
 
   server.registerTool(
-    'lumen_search',
-    {
+    'lumen_search', {
       annotations: readOnlyAnnotations,
       description:
         'Rank natural-language matches across descriptions, categories, curated collections, ' +
@@ -250,38 +241,32 @@ export const createLumenServer = (): McpServer => {
           .meta({ description: 'Keyword or natural-language use-case to search for.' })
       }),
       outputSchema: searchOutputSchema
-    },
-    (args) => toMcpResult(search(args))
+    }, args => toMcpResult(search(args))
   )
 
   server.registerTool(
-    'lumen_get_meta',
-    {
+    'lumen_get_meta', {
       annotations: readOnlyAnnotations,
       description:
         'Return snapshot provenance: server and package versions, schema version, component count, ' +
         'and a deterministic catalog hash for freshness checks.',
       inputSchema: z.strictObject({}),
       outputSchema: metaOutputSchema
-    },
-    () => toMcpResult(getMeta())
+    }, () => toMcpResult(getMeta())
   )
 
   server.registerTool(
-    'lumen_get_catalog_manifest',
-    {
+    'lumen_get_catalog_manifest', {
       annotations: readOnlyAnnotations,
       description:
         'Return stable per-component and per-recipe fingerprints that a client can retain for later change detection.',
       inputSchema: z.strictObject({}),
       outputSchema: catalogManifestOutputSchema
-    },
-    () => toMcpResult(getCatalogManifest())
+    }, () => toMcpResult(getCatalogManifest())
   )
 
   server.registerTool(
-    'lumen_diff_catalog',
-    {
+    'lumen_diff_catalog', {
       annotations: readOnlyAnnotations,
       description:
         'Compare a previously retained Lumen catalog manifest with the current snapshot and report added, changed, removed, and unchanged entries.',
@@ -293,84 +278,65 @@ export const createLumenServer = (): McpServer => {
           .meta({ description: 'Optional previous catalog hash for a fast unchanged check.' })
       }),
       outputSchema: catalogDiffOutputSchema
-    },
-    (args) => toMcpResult(diffCatalog(args))
+    }, args => toMcpResult(diffCatalog(args))
   )
 
   server.registerTool(
-    'lumen_diagnose',
-    {
+    'lumen_diagnose', {
       annotations: readOnlyAnnotations,
       description:
         'Run deterministic snapshot integrity checks and report framework coverage. Useful when testing a new MCP connection.',
       inputSchema: z.strictObject({}),
       outputSchema: diagnosticsOutputSchema
-    },
-    () => toMcpResult(diagnose())
+    }, () => toMcpResult(diagnose())
   )
 
   server.registerTool(
-    'lumen_get_tokens',
-    {
+    'lumen_get_tokens', {
       annotations: readOnlyAnnotations,
       description:
         'Return structured Lumen semantic tokens, base color values, glass tokens, and theme attribute.',
       inputSchema: z.strictObject({}),
       outputSchema: tokensOutputSchema
-    },
-    () => toMcpResult(getTokens())
+    }, () => toMcpResult(getTokens())
   )
 
   server.registerTool(
-    'lumen_get_rules',
-    {
+    'lumen_get_rules', {
       annotations: readOnlyAnnotations,
       description:
         'Return the Lumen agent rules for generating, reviewing, or migrating apps that use Lumen.',
       inputSchema: z.strictObject({}),
       outputSchema: rulesOutputSchema
-    },
-    () => toMcpResult(getRules())
+    }, () => toMcpResult(getRules())
   )
 
   server.registerResource(
-    'lumen-meta',
-    'lumen://meta',
-    {
+    'lumen-meta', 'lumen://meta', {
       description: 'Lumen MCP snapshot provenance and package versions.',
       mimeType: 'application/json'
-    },
-    (uri) => jsonResource(uri, getMeta().data)
+    }, uri => jsonResource(uri, getMeta().data)
   )
 
   server.registerResource(
-    'lumen-catalog-manifest',
-    'lumen://catalog-manifest',
-    {
+    'lumen-catalog-manifest', 'lumen://catalog-manifest', {
       description: 'Stable component and recipe fingerprints for catalog change detection.',
       mimeType: 'application/json'
-    },
-    (uri) => jsonResource(uri, getCatalogManifest().data)
+    }, uri => jsonResource(uri, getCatalogManifest().data)
   )
 
   server.registerResource(
-    'lumen-diagnostics',
-    'lumen://diagnostics',
-    {
+    'lumen-diagnostics', 'lumen://diagnostics', {
       description: 'Lumen MCP snapshot integrity checks and framework coverage.',
       mimeType: 'application/json'
-    },
-    (uri) => jsonResource(uri, diagnose().data)
+    }, uri => jsonResource(uri, diagnose().data)
   )
 
   server.registerResource(
-    'lumen-rules',
-    'lumen://rules',
-    {
+    'lumen-rules', 'lumen://rules', {
       description: 'Lumen agent rules (llms.txt).',
       mimeType: 'text/markdown'
-    },
-    (uri) => ({
+    }, uri => ({
       contents: [{
         mimeType: 'text/markdown',
         text: getRules().text,
@@ -380,48 +346,39 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerResource(
-    'lumen-tokens',
-    'lumen://tokens',
-    {
+    'lumen-tokens', 'lumen://tokens', {
       description: 'Structured Lumen design tokens.',
       mimeType: 'application/json'
-    },
-    (uri) => jsonResource(uri, getTokens().data)
+    }, uri => jsonResource(uri, getTokens().data)
   )
 
   server.registerResource(
-    'lumen-components',
-    'lumen://components',
-    {
+    'lumen-components', 'lumen://components', {
       description: 'Compact structured component catalog.',
       mimeType: 'application/json'
-    },
-    (uri) => jsonResource(uri, listComponents().data)
+    }, uri => jsonResource(uri, listComponents().data)
   )
 
   server.registerResource(
-    'lumen-component',
-    new ResourceTemplate('lumen://components/{name}', {
+    'lumen-component', new ResourceTemplate('lumen://components/{name}', {
       complete: {
-        name: (value) => data.components
-          .map((component) => component.name)
-          .filter((name) => name.toLowerCase().includes(value.toLowerCase()))
+        name: value => data.components
+          .map(component => component.name)
+          .filter(name => name.toLowerCase().includes(value.toLowerCase()))
           .slice(0, 30)
       },
       list: () => ({
-        resources: data.components.map((component) => ({
+        resources: data.components.map(component => ({
           description: component.description,
           mimeType: 'application/json',
           name: component.name,
           uri: `lumen://components/${component.kebab}`
         }))
       })
-    }),
-    {
+    }), {
       description: 'Framework-neutral component metadata and default Astro usage.',
       mimeType: 'application/json'
-    },
-    (uri, variables) => {
+    }, (uri, variables) => {
       const name = String(variables.name)
       const result = getComponent({ detail: 'usage', framework: 'astro', name })
 
@@ -430,27 +387,24 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerResource(
-    'lumen-recipe',
-    new ResourceTemplate('lumen://recipes/{name}', {
+    'lumen-recipe', new ResourceTemplate('lumen://recipes/{name}', {
       complete: {
-        name: (value) => data.recipes
-          .map((recipe) => recipe.name)
-          .filter((name) => name.includes(value.toLowerCase()))
+        name: value => data.recipes
+          .map(recipe => recipe.name)
+          .filter(name => name.includes(value.toLowerCase()))
       },
       list: () => ({
-        resources: data.recipes.map((recipe) => ({
+        resources: data.recipes.map(recipe => ({
           description: recipe.description,
           mimeType: 'application/json',
           name: recipe.name,
           uri: `lumen://recipes/${recipe.name}`
         }))
       })
-    }),
-    {
+    }), {
       description: 'Lumen recipe metadata and install commands.',
       mimeType: 'application/json'
-    },
-    (uri, variables) => {
+    }, (uri, variables) => {
       const result = getRecipe({ name: String(variables.name) })
 
       return jsonResource(uri, result.data)

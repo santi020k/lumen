@@ -40,13 +40,12 @@ try {
   run('pnpm', ['pack', '--pack-destination', archiveDirectory], packageRoot)
 
   const archiveName = (await readdir(archiveDirectory))
-    .find((name) => name.endsWith('.tgz'))
+    .find(name => name.endsWith('.tgz'))
 
   assert.ok(archiveName, 'pnpm pack did not create a package archive')
 
   run(
-    'npm',
-    [
+    'npm', [
       'install',
       '--ignore-scripts',
       '--no-audit',
@@ -54,26 +53,15 @@ try {
       '--prefix',
       consumerDirectory,
       join(archiveDirectory, archiveName)
-    ],
-    consumerDirectory
+    ], consumerDirectory
   )
 
   const executable = join(
-    consumerDirectory,
-    'node_modules',
-    '@santi020k',
-    'lumen-mcp',
-    'bin',
-    'lumen-mcp.mjs'
+    consumerDirectory, 'node_modules', '@santi020k', 'lumen-mcp', 'bin', 'lumen-mcp.mjs'
   )
 
   const httpExecutable = join(
-    consumerDirectory,
-    'node_modules',
-    '@santi020k',
-    'lumen-mcp',
-    'bin',
-    'lumen-mcp-http.mjs'
+    consumerDirectory, 'node_modules', '@santi020k', 'lumen-mcp', 'bin', 'lumen-mcp-http.mjs'
   )
 
   await access(httpExecutable)
@@ -89,7 +77,7 @@ try {
 
   let stderr = ''
 
-  transport.stderr?.on('data', (chunk) => {
+  transport.stderr?.on('data', chunk => {
     stderr += String(chunk)
   })
 
@@ -111,9 +99,9 @@ try {
 
     assert.equal(stderr, '')
 
-    assert.ok(tools.tools.some((tool) => tool.name === 'lumen_get_meta'))
+    assert.ok(tools.tools.some(tool => tool.name === 'lumen_get_meta'))
 
-    assert.ok(tools.tools.some((tool) => tool.name === 'lumen_diagnose'))
+    assert.ok(tools.tools.some(tool => tool.name === 'lumen_diagnose'))
 
     assert.match(String(meta.structuredContent?.meta?.catalogHash), /^[a-f0-9]{64}$/)
 
@@ -142,7 +130,7 @@ try {
       reject(new Error(`Timed out waiting for packed HTTP server.\n${output}`))
     }, 5000)
 
-    httpChild.stderr.on('data', (chunk) => {
+    httpChild.stderr.on('data', chunk => {
       output += String(chunk)
 
       const match = output.match(/listening at (http:\/\/\S+)/)
@@ -154,7 +142,7 @@ try {
       resolve(new URL(match[1]))
     })
 
-    httpChild.once('exit', (code) => {
+    httpChild.once('exit', code => {
       clearTimeout(timeout)
 
       reject(new Error(`Packed HTTP server exited with status ${code}.\n${output}`))
@@ -172,7 +160,7 @@ try {
       fetch(new URL('/health', httpUrl))
     ])
 
-    assert.ok(httpTools.tools.some((tool) => tool.name === 'lumen_diagnose'))
+    assert.ok(httpTools.tools.some(tool => tool.name === 'lumen_diagnose'))
 
     assert.deepEqual(await health.json(), { status: 'ok' })
   } finally {

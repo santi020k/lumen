@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   animation?: 'fade' | 'slide-up' | 'scale'
@@ -30,11 +30,13 @@ const {
 const safeDelay = Math.max(0, delay)
 const safeStagger = Math.max(0, stagger)
 const safeThreshold = Math.min(1, Math.max(0, threshold))
+
 const motionStyle = [
   typeof style === 'string' ? style : '',
   `--ui-reveal-delay:${safeDelay}ms`,
   `--ui-reveal-stagger:${safeStagger}ms`
 ].filter(Boolean).join(';')
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-reveal-group',
   `ui-reveal-group-${animation}`,

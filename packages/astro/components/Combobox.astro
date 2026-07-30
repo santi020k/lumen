@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'input'> {
   class?: string | null
@@ -31,9 +31,8 @@ const {
 } = Astro.props
 
 const inputId = id ?? `${list}-input`
-const normalizedOptions = options.map(option =>
-  typeof option === 'string' ? { label: option, value: option } : option
-)
+const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-combobox'
 ], classProp, className)
 ---

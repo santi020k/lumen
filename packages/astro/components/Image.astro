@@ -1,10 +1,11 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 import {
   Image as AstroImage,
   type LocalImageProps,
   type RemoteImageProps
 } from 'astro:assets'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type Props = (LocalImageProps | RemoteImageProps) & {
   class?: string | null

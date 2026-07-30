@@ -1,0 +1,95 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface ListBoxOption {
+  disabled?: boolean
+  label: string
+  value: string
+}
+
+interface Props extends Omit<HTMLAttributes<'select'>, 'size' | 'value'> {
+  class?: string | null
+  className?: string
+  label?: string
+  multiple?: boolean
+  options?: (ListBoxOption | string)[]
+  value?: string | string[]
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  disabled = false,
+  id,
+  label,
+  multiple = false,
+  name,
+  options = [],
+  required = false,
+  value,
+  ...rest
+} = Astro.props
+
+const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+
+const selectedValues = new Set(
+  Array.isArray(value) ? value.map(String) : value === undefined ? [] : [String(value)]
+)
+
+const controlId = id ?? `ui-list-box-${name ?? 'field'}`
+const listId = `${controlId}-list`
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-list-box'], classProp, className)
+---
+
+<div
+  class:list={classList}
+  data-multiple={multiple ? 'true' : undefined}
+  data-ui-list-box
+>
+  {label && <label class="ui-label" for={controlId}>{label}</label>}
+  <select
+    class="ui-list-box__native"
+    data-ui-list-box-native
+    disabled={disabled}
+    id={controlId}
+    multiple={multiple}
+    name={name}
+    required={required}
+    size={Math.min(Math.max(normalizedOptions.length, 2), 8)}
+    {...passthrough}
+  >
+    {normalizedOptions.map(option => (
+      <option
+        disabled={option.disabled}
+        selected={selectedValues.has(String(option.value))}
+        value={option.value}
+      >
+        {option.label}
+      </option>
+    ))}
+  </select>
+  <div
+    aria-disabled={disabled ? 'true' : undefined}
+    aria-multiselectable={multiple ? 'true' : undefined}
+    class="ui-list-box__list"
+    data-ui-list-box-list
+    hidden
+    id={listId}
+    role="listbox"
+    tabindex={disabled ? undefined : '0'}
+  >
+    {normalizedOptions.map(option => (
+      <div
+        aria-disabled={option.disabled ? 'true' : undefined}
+        aria-selected={selectedValues.has(String(option.value)) ? 'true' : 'false'}
+        data-ui-list-box-option
+        data-value={option.value}
+        role="option"
+      >
+        {option.label}
+      </div>
+    ))}
+  </div>
+</div>

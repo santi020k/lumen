@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
   class?: string | null
@@ -10,10 +10,11 @@ interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
 }
 
 const { class: classProp = '', className = '', size = 'default', type = 'text', ...rest } = Astro.props
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-input',
-    size === 'sm' && 'ui-input--sm',
-    size === 'lg' && 'ui-input--lg'
+  'ui-input',
+  size === 'sm' && 'ui-input--sm',
+  size === 'lg' && 'ui-input--lg'
 ], classProp, className)
 ---
 

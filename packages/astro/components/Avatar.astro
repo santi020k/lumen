@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'span'> {
   class?: string | null
@@ -22,8 +22,9 @@ const {
 
 const hasDefaultSlot = Astro.slots.has('default')
 const fallbackText = fallback ?? (!src && !hasDefaultSlot ? '?' : undefined)
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-avatar'
+  'ui-avatar'
 ], classProp, className)
 ---
 

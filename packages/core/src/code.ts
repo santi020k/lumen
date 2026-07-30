@@ -445,11 +445,10 @@ export const tokenizeLumenCode = (code: string, language = ''): LumenCodeToken[]
   return tokens
 }
 
-const escapeLumenCodeHtml = (value: string) =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
+const escapeLumenCodeHtml = (value: string) => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
 
 const renderLumenCodeTokenHtml = (token: LumenCodeToken) => {
   const value = escapeLumenCodeHtml(token.value)
@@ -459,5 +458,4 @@ const renderLumenCodeTokenHtml = (token: LumenCodeToken) => {
   return `<span class="${lumenCodeTokenClassNames[token.kind]}">${value}</span>`
 }
 
-export const renderLumenCodeHtml = (code: string, language = '') =>
-  tokenizeLumenCode(code, language).map(renderLumenCodeTokenHtml).join('')
+export const renderLumenCodeHtml = (code: string, language = '') => tokenizeLumenCode(code, language).map(renderLumenCodeTokenHtml).join('')

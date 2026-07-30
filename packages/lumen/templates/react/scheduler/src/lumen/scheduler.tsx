@@ -14,10 +14,14 @@ export const SchedulerRecipe = () => {
       <Calendar aria-label="Choose schedule date" />
       <DatePicker aria-label="Jump to date" />
       <Schedule>
-        <header><h2>Launch week</h2></header>
+        <header>
+          <h2>Launch week</h2>
+        </header>
         <div data-ui-schedule-grid>
           <section {...schedule.getSlotProps('monday')}>
-            <article {...schedule.getEventProps('schedule-planning')}>Planning</article>
+            <article {...schedule.getEventProps('schedule-planning')}>
+              Planning
+            </article>
           </section>
           <section {...schedule.getSlotProps('friday')}>
             <article {...schedule.getEventProps('schedule-ship')}>Ship</article>
@@ -26,8 +30,14 @@ export const SchedulerRecipe = () => {
       </Schedule>
       <Agenda>
         <ol>
-          <li><strong>Design review</strong><span>10:00</span></li>
-          <li><strong>Release notes</strong><span>14:30</span></li>
+          <li>
+            <strong>Design review</strong>
+            <span>10:00</span>
+          </li>
+          <li>
+            <strong>Release notes</strong>
+            <span>14:30</span>
+          </li>
         </ol>
       </Agenda>
     </section>

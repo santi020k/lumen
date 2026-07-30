@@ -1,6 +1,7 @@
 /* eslint-disable @eslint-react/no-unnecessary-use-prefix -- The mock dispatcher mirrors React's internal hook method names. */
 import type { ReactElement } from 'react'
 import * as React from 'react'
+
 import { describe, expect, test, vi } from 'vitest'
 
 import * as LumenReact from './index.js'
@@ -74,7 +75,7 @@ const renderComponent = (
   ...(ref ? { ref } : {})
 })
 
-const withHookDispatcher = <Value,>(callback: () => Value): Value => {
+const withHookDispatcher = <Value>(callback: () => Value): Value => {
   const internals = (React as unknown as ReactInternals).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
   const previousDispatcher = internals.H
   const states: unknown[] = []
@@ -98,16 +99,16 @@ const withHookDispatcher = <Value,>(callback: () => Value): Value => {
     useState: (initialValue: unknown) => {
       const index = stateIndex++
 
-      states[index] ??= typeof initialValue === 'function'
-        ? (initialValue as () => unknown)()
-        : initialValue
+      states[index] ??= typeof initialValue === 'function' ?
+        (initialValue as () => unknown)() :
+        initialValue
 
       return [
         states[index],
         (nextValue: unknown) => {
-          states[index] = typeof nextValue === 'function'
-            ? (nextValue as (previous: unknown) => unknown)(states[index])
-            : nextValue
+          states[index] = typeof nextValue === 'function' ?
+            (nextValue as (previous: unknown) => unknown)(states[index]) :
+            nextValue
         }
       ]
     }
@@ -167,16 +168,16 @@ describe('@santi020k/lumen-react', () => {
       duration: 'slow',
       once: false,
       threshold: 0.25
-    })) as ReactElement<{ className?: string; style?: React.CSSProperties; 'data-ui-reveal-once'?: string; 'data-ui-reveal-threshold'?: number }>
+    })) as ReactElement<{ className?: string, style?: React.CSSProperties, 'data-ui-reveal-once'?: string, 'data-ui-reveal-threshold'?: number }>
     const revealGroup = withHookDispatcher(() => RevealGroup({
       children: 'Steps',
       stagger: 90
-    })) as ReactElement<{ className?: string; style?: React.CSSProperties }>
+    })) as ReactElement<{ className?: string, style?: React.CSSProperties }>
     const animatedNumber = withHookDispatcher(() => AnimatedNumber({
       decimals: 1,
       suffix: '%',
       value: 99.8
-    })) as ReactElement<{ className?: string; children: ReactElement<{ children: string }>[] }>
+    })) as ReactElement<{ className?: string, children: ReactElement<{ children: string }>[] }>
 
     expect(scrollReveal.props.className).toContain('ui-motion-duration-slow')
     expect(scrollReveal.props['data-ui-reveal-once']).toBe('false')
@@ -261,7 +262,7 @@ describe('@santi020k/lumen-react', () => {
       label: 'Revenue',
       value: '$42k',
       variant: 'accent'
-    }) as ReactElement<StatProps<'article'> & { 'data-variant': string; uiClassName: string }>
+    }) as ReactElement<StatProps<'article'> & { 'data-variant': string, uiClassName: string }>
 
     expect(stat.props.as).toBe('article')
     expect(stat.props.className).toBe('ui-stat--accent custom-stat')
@@ -442,7 +443,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: string[] = []
     const calendar = withHookDispatcher(() => useCalendar({
       month: '2026-07',
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
 
     calendar.selectDate('2026-07-15')
@@ -485,7 +488,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: string[] = []
     const otp = withHookDispatcher(() => useInputOTP({
       length: 4,
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
     const input = {
       selectionStart: 6,
@@ -509,7 +514,9 @@ describe('@santi020k/lumen-react', () => {
     const otp = withHookDispatcher(() => useInputOTP({
       invalid: true,
       length: 4,
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
     const inputProps = otp.getInputProps()
 
@@ -554,7 +561,9 @@ describe('@santi020k/lumen-react', () => {
   test('exposes date range picker syncing props', () => {
     const changes: unknown[] = []
     const picker = withHookDispatcher(() => useDateRangePicker({
-      onRangeChange: detail => { changes.push(detail); }
+      onRangeChange: detail => {
+        changes.push(detail)
+      }
     }))
     const start = makeDateRangeInput('2026-07-10')
     const end = makeDateRangeInput('2026-07-08')
@@ -589,7 +598,9 @@ describe('@santi020k/lumen-react', () => {
 
     try {
       const editor = withHookDispatcher(() => useRichTextEditor({
-        onCommand: detail => { commands.push(detail.command); }
+        onCommand: detail => {
+          commands.push(detail.command)
+        }
       }))
       const commandProps = editor.getCommandProps('bold', {
         'data-ui-editor-value': 'strong'
@@ -623,7 +634,9 @@ describe('@santi020k/lumen-react', () => {
   test('exposes schedule drag and drop props', () => {
     const changes: unknown[] = []
     const schedule = withHookDispatcher(() => useSchedule({
-      onChange: detail => { changes.push(detail); }
+      onChange: detail => {
+        changes.push(detail)
+      }
     }))
     const root = {
       dataset: {},
@@ -753,7 +766,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: number[][] = []
     const resizable = withHookDispatcher(() => useResizable({
       defaultSizes: [30, 70],
-      onSizesChange: sizes => { changes.push(sizes); },
+      onSizesChange: sizes => {
+        changes.push(sizes)
+      },
       panelCount: 2
     }))
     const handleProps = resizable.getHandleProps(0)
@@ -773,7 +788,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: number[][] = []
     const resizable = withHookDispatcher(() => useResizable({
       defaultSizes: [30, 70],
-      onSizesChange: sizes => { changes.push(sizes); },
+      onSizesChange: sizes => {
+        changes.push(sizes)
+      },
       panelCount: 2
     }))
     const handle = resizable.getHandleProps(0)
@@ -825,7 +842,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: boolean[] = []
     const contextMenu = withHookDispatcher(() => useContextMenu({
       id: 'actions-menu',
-      onOpenChange: open => { changes.push(open); }
+      onOpenChange: open => {
+        changes.push(open)
+      }
     }))
 
     expect(contextMenu.triggerProps['data-ui-context-menu-trigger']).toBe('actions-menu')
@@ -915,8 +934,12 @@ describe('@santi020k/lumen-react', () => {
     const theme = withHookDispatcher(() => useThemeBuilder({
       defaultHue: 260,
       defaultScheme: 'dark',
-      onHueChange: value => { hues.push(value); },
-      onSchemeChange: value => { schemes.push(value); }
+      onHueChange: value => {
+        hues.push(value)
+      },
+      onSchemeChange: value => {
+        schemes.push(value)
+      }
     }))
 
     expect(theme.getSchemeProps('dark')['aria-pressed']).toBe(true)
@@ -967,7 +990,9 @@ describe('@santi020k/lumen-react', () => {
   test('exposes modal dialog aria contracts and open toggles', () => {
     const changes: boolean[] = []
     const dialog = withHookDispatcher(() => useDialog({
-      onOpenChange: open => { changes.push(open); }
+      onOpenChange: open => {
+        changes.push(open)
+      }
     }))
 
     expect(dialog.dialogProps.role).toBe('dialog')
@@ -988,7 +1013,9 @@ describe('@santi020k/lumen-react', () => {
     const alertChanges: boolean[] = []
     const alert = withHookDispatcher(() => useDialog({
       alert: true,
-      onOpenChange: open => { alertChanges.push(open); }
+      onOpenChange: open => {
+        alertChanges.push(open)
+      }
     }))
 
     expect(alert.dialogProps.role).toBe('alertdialog')
@@ -1003,7 +1030,9 @@ describe('@santi020k/lumen-react', () => {
 
     const dialogChanges: boolean[] = []
     const dialog = withHookDispatcher(() => useDialog({
-      onOpenChange: open => { dialogChanges.push(open); }
+      onOpenChange: open => {
+        dialogChanges.push(open)
+      }
     }))
 
     dialog.dialogProps.onClick?.({
@@ -1021,7 +1050,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: string[] = []
     const tabs = withHookDispatcher(() => useTabs({
       defaultValue: 'overview',
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
     const settings = tabs.getTriggerProps('settings')
 
@@ -1033,7 +1064,9 @@ describe('@santi020k/lumen-react', () => {
   test('selects enabled options and ignores disabled ones', () => {
     const changes: string[] = []
     const select = withHookDispatcher(() => useSelect({
-      onValueChange: value => { changes.push(value); },
+      onValueChange: value => {
+        changes.push(value)
+      },
       options: ['Alpha', { label: 'Beta', value: 'beta' }, { disabled: true, label: 'Gamma', value: 'gamma' }]
     }))
     const beta = select.getOptionProps({ label: 'Beta', value: 'beta' })
@@ -1061,7 +1094,9 @@ describe('@santi020k/lumen-react', () => {
   test('syncs the native select change back to state', () => {
     const changes: string[] = []
     const select = withHookDispatcher(() => useSelect({
-      onValueChange: value => { changes.push(value); },
+      onValueChange: value => {
+        changes.push(value)
+      },
       options: ['Alpha', 'Beta']
     }))
 
@@ -1075,7 +1110,9 @@ describe('@santi020k/lumen-react', () => {
   test('toggles disclosure open state through the trigger', () => {
     const changes: boolean[] = []
     const popover = withHookDispatcher(() => usePopover({
-      onOpenChange: open => { changes.push(open); }
+      onOpenChange: open => {
+        changes.push(open)
+      }
     }))
 
     popover.triggerProps.onClick?.({} as Parameters<NonNullable<typeof popover.triggerProps.onClick>>[0])
@@ -1087,7 +1124,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: boolean[] = []
     const dropdown = withHookDispatcher(() => useDropdownMenu({
       defaultOpen: true,
-      onOpenChange: open => { changes.push(open); }
+      onOpenChange: open => {
+        changes.push(open)
+      }
     }))
 
     dropdown.panelProps.onKeyDown?.({
@@ -1102,7 +1141,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: boolean[] = []
     const tooltip = withHookDispatcher(() => useTooltip({
       defaultOpen: true,
-      onOpenChange: open => { changes.push(open); }
+      onOpenChange: open => {
+        changes.push(open)
+      }
     }))
 
     tooltip.rootProps.onMouseLeave?.({} as Parameters<NonNullable<typeof tooltip.rootProps.onMouseLeave>>[0])
@@ -1120,7 +1161,9 @@ describe('@santi020k/lumen-react', () => {
       const changes: boolean[] = []
       const tooltip = withHookDispatcher(() => useTooltip({
         delay: 0,
-        onOpenChange: open => { changes.push(open); }
+        onOpenChange: open => {
+          changes.push(open)
+        }
       }))
 
       tooltip.rootProps.onFocus?.({} as Parameters<NonNullable<typeof tooltip.rootProps.onFocus>>[0])
@@ -1190,7 +1233,9 @@ describe('@santi020k/lumen-react', () => {
     const calendar = withHookDispatcher(() => useCalendar({
       max: '2026-07-15',
       month: '2026-07',
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
 
     calendar.selectDate('2026-07-20')
@@ -1204,7 +1249,9 @@ describe('@santi020k/lumen-react', () => {
     const calendar = withHookDispatcher(() => useCalendar({
       disabled: true,
       month: '2026-07',
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
 
     calendar.selectDate('2026-07-10')
@@ -1217,7 +1264,9 @@ describe('@santi020k/lumen-react', () => {
     const changes: string[] = []
     const calendar = withHookDispatcher(() => useCalendar({
       month: '2026-07',
-      onValueChange: value => { changes.push(value); }
+      onValueChange: value => {
+        changes.push(value)
+      }
     }))
     const firstOfMonth = calendar.weeks.flat().find(day => day.date === '2026-07-01')
 

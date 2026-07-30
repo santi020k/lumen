@@ -1,0 +1,16 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'div' | 'span'
+  class?: string | null
+  className?: string
+}
+
+const { as: Tag = 'div', class: classProp = '', className = '', ...rest } = Astro.props
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-stat-label'], classProp, className)
+---
+
+<Tag class:list={classList} data-slot="stat-label" {...passthrough}><slot /></Tag>

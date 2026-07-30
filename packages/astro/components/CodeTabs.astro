@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import Code from './Code.astro'
 import Tabs from './Tabs.astro'
@@ -41,15 +41,14 @@ const {
 } = Astro.props
 
 const selectedValue = initialValue ?? items[0]?.value
+
 const tabsStateProps = {
   ...(selectedValue === undefined ? {} : { initialValue: selectedValue }),
   ...(storageKey === undefined ? {} : { storageKey })
 }
+
 const { classList, passthrough } = resolveLumenAstroProps(
-  rest,
-  ['ui-code-tabs'],
-  classProp ?? '',
-  className
+  rest, ['ui-code-tabs'], classProp ?? '', className
 )
 ---
 

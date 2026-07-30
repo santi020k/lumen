@@ -1,9 +1,10 @@
 ---
-import { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
+import { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
+
 type CodeVariant = 'block' | 'inline'
 
 interface Props extends HTMLAttributes<'code'> {
@@ -38,62 +39,70 @@ const { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, 
   'ui-code--block',
   wrap && 'ui-code--wrap'
 ], classProp, className)
+
 const { classList: inlineClassList } = resolveLumenAstroProps(rest, [
   'ui-code',
   'ui-code--inline'
 ], classProp, className)
+
 const shouldShowHeader = variant === 'block' && Boolean(copy || label || language)
 const hasCode = code !== undefined
 const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
 ---
 
-{variant === 'block' ? (
-  <figure
-    class:list={blockClassList}
-    data-code-theme={theme}
-    data-language={language}
-    data-ui-code
-    {...passthrough}
-  >
-    {shouldShowHeader && (
-      <figcaption class="ui-code__header">
-        <span class="ui-code__dots" aria-hidden="true">
-          <span class="ui-code__dot ui-code__dot--red"></span>
-          <span class="ui-code__dot ui-code__dot--yellow"></span>
-          <span class="ui-code__dot ui-code__dot--green"></span>
-        </span>
-        <span class="ui-code__meta">
-          {language && <span class="ui-code__language">{language}</span>}
-          {label && <span class="ui-code__label">{label}</span>}
-        </span>
-        {copy && (
-          <button
-            aria-label="Copy code to clipboard"
-            class="ui-code__copy"
-            data-ui-code-copy
-            type="button"
-          >
-            <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />
-            <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />
-          </button>
-        )}
-      </figcaption>
-    )}
-    {highlighted ? (
-      <slot />
-    ) : hasCode ? (
-      <pre><code set:html={renderedCode}></code></pre>
-    ) : (
-      <pre><code><slot /></code></pre>
-    )}
-  </figure>
-) : (
-  <code
-    class:list={inlineClassList}
-    data-code-theme={theme}
-    data-language={language}
-    {...passthrough}
-  >
-    {hasCode ? code : <slot />}
-  </code>
-)}
+{variant === 'block' ?
+  (
+    <figure
+      class:list={blockClassList}
+      data-code-theme={theme}
+      data-language={language}
+      data-ui-code
+      {...passthrough}
+    >
+      {shouldShowHeader && (
+        <figcaption class="ui-code__header">
+          <span class="ui-code__dots" aria-hidden="true">
+            <span class="ui-code__dot ui-code__dot--red"></span>
+            <span class="ui-code__dot ui-code__dot--yellow"></span>
+            <span class="ui-code__dot ui-code__dot--green"></span>
+          </span>
+          <span class="ui-code__meta">
+            {language && <span class="ui-code__language">{language}</span>}
+            {label && <span class="ui-code__label">{label}</span>}
+          </span>
+          {copy && (
+            <button
+              aria-label="Copy code to clipboard"
+              class="ui-code__copy"
+              data-ui-code-copy
+              type="button"
+            >
+              <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />
+              <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />
+            </button>
+          )}
+        </figcaption>
+      )}
+      {highlighted ?
+        (
+          <slot />
+        ) :
+        hasCode ?
+          (
+            <pre><code set:html={renderedCode}></code></pre>
+          ) :
+          (
+            <pre><code><slot /></code></pre>
+          )}
+    </figure>
+  ) :
+  (
+    <code
+      class:list={inlineClassList}
+      data-code-theme={theme}
+      data-language={language}
+      {...passthrough}
+    >
+      {hasCode ? code : <slot />}
+    </code>
+  )}

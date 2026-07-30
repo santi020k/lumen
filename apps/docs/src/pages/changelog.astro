@@ -1,5 +1,5 @@
 ---
-/* eslint-disable better-tailwindcss/no-unknown-classes -- This page's product-specific classes are defined in its scoped stylesheet. */
+
 import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
 
 import changelogSource from '../../../../packages/lumen/CHANGELOG.md?raw'
@@ -13,10 +13,8 @@ const latestRelease = releases[0]
 
 const entryCount = releases.reduce(
   (total, release) => total + release.sections.reduce(
-    (sectionTotal, section) => sectionTotal + section.entries.length,
-    0
-  ),
-  0
+    (sectionTotal, section) => sectionTotal + section.entries.length, 0
+  ), 0
 )
 
 const changelogUrl = 'https://github.com/santi020k/lumen/blob/main/packages/lumen/CHANGELOG.md'

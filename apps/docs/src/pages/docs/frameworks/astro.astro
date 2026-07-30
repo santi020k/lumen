@@ -48,50 +48,53 @@ if (!guide || !setup) {
     </DocsPageHero>
 
     <section class="docs-section space-y-4" aria-labelledby="install-title">
-    <div class="docs-section-heading">
-      <h2 id="install-title" class="text-xl font-bold text-ink">Installation</h2>
-      <p class="text-sm/6 text-ink-soft">{setup.note}</p>
-    </div>
-    <div class="
-      grid gap-4
-      md:grid-cols-2
-    ">
-      {setup.installCommands.map(install => (
-        <Card variant="muted" class="space-y-2">
-          <p class="
-            text-xs font-black tracking-[0.14em] text-ink-muted uppercase
-          ">{install.label}</p>
-          <CodeBlock code={install.command} lang="bash" />
-        </Card>
-      ))}
-    </div>
-    <div class="mt-4">
-      <h3 class="mb-2 text-sm font-bold text-ink">Usage Example</h3>
-      <CodeBlock code={setup.usage} lang={setup.lang} />
-    </div>
+      <div class="docs-section-heading">
+        <h2 id="install-title" class="text-xl font-bold text-ink">Installation</h2>
+        <p class="text-sm/6 text-ink-soft">{setup.note}</p>
+      </div>
+      <div class="
+        grid gap-4
+        md:grid-cols-2
+      "
+      >
+        {setup.installCommands.map(install => (
+          <Card variant="muted" class="space-y-2">
+            <p class="
+              text-xs font-black tracking-[0.14em] text-ink-muted uppercase
+            "
+            >{install.label}
+            </p>
+            <CodeBlock code={install.command} lang="bash" />
+          </Card>
+        ))}
+      </div>
+      <div class="mt-4">
+        <h3 class="mb-2 text-sm font-bold text-ink">Usage Example</h3>
+        <CodeBlock code={setup.usage} lang={setup.lang} />
+      </div>
     </section>
 
     <section class="docs-section mt-10 space-y-4" aria-labelledby="overview-title">
-    <div class="docs-section-heading">
-      <h2 id="overview-title" class="text-xl font-bold text-ink">Overview</h2>
-    </div>
-    <ul class="m-0 grid list-disc gap-2 pl-4 text-sm/6 text-ink-soft">
-      {guide.body.map(item => (
-        <li>{item}</li>
-      ))}
-    </ul>
+      <div class="docs-section-heading">
+        <h2 id="overview-title" class="text-xl font-bold text-ink">Overview</h2>
+      </div>
+      <ul class="m-0 grid list-disc gap-2 pl-4 text-sm/6 text-ink-soft">
+        {guide.body.map(item => (
+          <li>{item}</li>
+        ))}
+      </ul>
     </section>
 
     <section class="docs-section mt-10 space-y-4" aria-labelledby="runtime-title">
-    <div class="docs-section-heading">
-      <h2 id="runtime-title" class="text-xl font-bold text-ink">Progressive Enhancement Runtime</h2>
-      <p class="text-sm/6 text-ink-soft">
-        Interactive components like Dialogs, Popovers, Tabs, and Selects rely on a lightweight,
-        vanilla JavaScript runtime. Mount <code>&lt;UIPrimitives /&gt;</code> once in your Astro root layout to wire up
-        keyboard navigation, focus trapping, and disclosure state globally.
-      </p>
-    </div>
-    <CodeBlock code={guide.code} lang={guide.lang} />
+      <div class="docs-section-heading">
+        <h2 id="runtime-title" class="text-xl font-bold text-ink">Progressive Enhancement Runtime</h2>
+        <p class="text-sm/6 text-ink-soft">
+          Interactive components like Dialogs, Popovers, Tabs, and Selects rely on a lightweight,
+          vanilla JavaScript runtime. Mount <code>&lt;UIPrimitives /&gt;</code> once in your Astro root layout to wire up
+          keyboard navigation, focus trapping, and disclosure state globally.
+        </p>
+      </div>
+      <CodeBlock code={guide.code} lang={guide.lang} />
     </section>
   </div>
 

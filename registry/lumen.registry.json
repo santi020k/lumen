@@ -90,6 +90,77 @@
       ]
     },
     {
+      "name": "analytics-dashboard",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "LineChart",
+        "BarChart",
+        "DateRangePicker",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "saas-admin",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "Alert",
+        "Progress",
+        "SearchField",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "commerce-dashboard",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "BarChart",
+        "PieChart",
+        "Progress",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "project-workspace",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "Progress",
+        "Timeline",
+        "Avatar",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "auth-onboarding",
+      "type": "recipe",
+      "components": [
+        "Card",
+        "Stepper",
+        "Field",
+        "Label",
+        "Input",
+        "Alert",
+        "Checkbox",
+        "Progress",
+        "Button"
+      ]
+    },
+    {
       "name": "ai-docs",
       "type": "documentation",
       "files": [

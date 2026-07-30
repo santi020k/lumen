@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface CountryOption {
   disabled?: boolean
@@ -38,10 +38,7 @@ const {
   ...rest
 } = Astro.props
 
-const normalizedCountries = countries.map(country =>
-  typeof country === 'string' ? { label: country, value: country } : country
-)
-
+const normalizedCountries = countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)
 const hasCountryValue = countryValue !== undefined
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
@@ -66,7 +63,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
         disabled={country.disabled}
         selected={hasCountryValue && country.value === countryValue}
         value={country.value}
-      >{country.label}</option>
+      >{country.label}
+      </option>
     ))}
   </select>
   <input

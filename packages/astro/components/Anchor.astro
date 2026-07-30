@@ -1,11 +1,11 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6
 
-type AnchorLink = {
+interface AnchorLink {
   depth?: AnchorDepth
   href: string
   label: string

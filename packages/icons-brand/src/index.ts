@@ -1,14 +1,13 @@
 import {
+  fab,
+  type IconDefinition
+} from '@fortawesome/free-brands-svg-icons'
+import {
   getLumenIconPack,
   type LumenIconData,
   type LumenIconNode,
   registerLumenIconPack
 } from '@santi020k/lumen-core'
-
-import {
-  fab,
-  type IconDefinition
-} from '@fortawesome/free-brands-svg-icons'
 
 export const lumenBrandIconPrefix = 'brand'
 

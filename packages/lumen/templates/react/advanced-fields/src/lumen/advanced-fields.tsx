@@ -26,7 +26,12 @@ export const AdvancedFieldsRecipe = () => (
     </DateRangePicker>
     <ColorPicker aria-label="Brand color" defaultValue="#2563eb" />
     <TagGroup aria-label="Selected filters">
-      <span data-ui-tag role="listitem">Active <button data-ui-tag-remove type="button">Remove</button></span>
+      <span data-ui-tag role="listitem">
+        Active
+        <button data-ui-tag-remove type="button">
+          Remove
+        </button>
+      </span>
     </TagGroup>
   </form>
 )

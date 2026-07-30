@@ -1,0 +1,25 @@
+---
+import {
+  getLumenTemplate,
+  type TemplateSlug,
+  templateSlugs } from '@santi020k/lumen-templates'
+import TemplateRenderer from '@santi020k/lumen-templates/TemplateRenderer.astro'
+
+import ShowcaseLayout from '../layouts/ShowcaseLayout.astro'
+
+export const getStaticPaths = () => templateSlugs.map(slug => ({ params: { slug } }))
+
+const slug = Astro.params.slug as TemplateSlug
+const template = getLumenTemplate(slug)
+
+if (!template) {
+  throw new Error(`Unknown template slug: ${slug}`)
+}
+---
+
+<ShowcaseLayout
+  description={template.description}
+  title={`${template.name} — Lumen templates`}
+>
+  <TemplateRenderer {slug} />
+</ShowcaseLayout>

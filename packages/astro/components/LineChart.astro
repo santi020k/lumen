@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
+
 import {
   alignLumenChartSeries,
   createLumenLineGeometry,
@@ -10,8 +12,6 @@ import {
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
-
-import type { HTMLAttributes } from 'astro/types'
 
 import Chart from './Chart.astro'
 
@@ -45,33 +45,35 @@ const {
   showTable = true,
   ...rest
 } = Astro.props
+
 const width = 640
 const height = 320
 const padding = 44
 const categories = getLumenChartCategories(series)
 const hasData = hasLumenChartData(series)
 const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
 const domain = getLumenChartDomain([
   ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
   referenceValue ?? null
 ], false)
-const geometries = alignedSeries.map(item =>
-  createLumenLineGeometry(item.data, {
-    domain,
-    height,
-    includeZero: false,
-    padding,
-    width
-  })
-)
+
+const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
+  domain,
+  height,
+  includeZero: false,
+  padding,
+  width
+}))
+
 const ticks = getLumenChartTicks(domain)
 const labelStep = Math.max(1, Math.ceil(categories.length / 8))
-const valueFor = (item: LumenChartSeries, category: number | string) =>
-  item.data.find(datum => datum.x === category)
+const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
+
 const referenceY =
-  referenceValue === undefined
-    ? undefined
-    : scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+  referenceValue === undefined ?
+    undefined :
+    scaleLumenChartValue(referenceValue, domain, height - padding, padding)
 ---
 
 <Chart
@@ -86,7 +88,10 @@ const referenceY =
     showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {series.map((item, index) => (
-          <li class={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`}>
+          <li class={`
+            ui-chart-tone--${resolveLumenChartTone(item.tone, index)}
+          `}
+          >
             <span aria-hidden="true" />
             {item.label}
           </li>
@@ -103,12 +108,9 @@ const referenceY =
     >
       <g class="ui-chart__grid">
         {
-          ticks.map((tick) => {
+          ticks.map(tick => {
             const y = scaleLumenChartValue(
-              tick,
-              domain,
-              height - padding,
-              padding
+              tick, domain, height - padding, padding
             )
 
             return (
@@ -132,6 +134,7 @@ const referenceY =
               return null
 
             const denominator = Math.max(1, categories.length - 1)
+
             const x =
               padding + (index / denominator) * (width - padding * 2)
 
@@ -163,7 +166,11 @@ const referenceY =
           const tone = resolveLumenChartTone(item.tone, index)
 
           return (
-            <g class={`ui-line-chart__series ui-chart-tone--${tone}`}>
+            <g class={`
+              ui-line-chart__series
+              ui-chart-tone--${tone}
+            `}
+            >
               {area &&
                 geometry.areaPaths.map(path => (
                   <path class="ui-line-chart__area" d={path} />
@@ -210,9 +217,9 @@ const referenceY =
                     return (
                       <td>
                         {datum?.label ??
-                          (datum?.y === null || datum === undefined
-                            ? 'Not available'
-                            : String(datum.y))}
+                          (datum?.y === null || datum === undefined ?
+                            'Not available' :
+                            String(datum.y))}
                       </td>
                     )
                   })}

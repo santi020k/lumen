@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   as?: 'article' | 'div' | 'section'
@@ -30,10 +30,11 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <Tag
   class:list={classList}
+  data-slot="stat"
   data-variant={variant}
   {...passthrough}
 >
-  {label && <div class="ui-stat-label">{label}</div>}
-  {value && <div class="ui-stat-value">{value}</div>}
+  {label && <div class="ui-stat-label" data-slot="stat-label">{label}</div>}
+  {value && <div class="ui-stat-value" data-slot="stat-value">{value}</div>}
   <slot />
 </Tag>

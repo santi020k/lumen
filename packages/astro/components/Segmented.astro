@@ -1,9 +1,9 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
-type SegmentedOption = string | { disabled?: boolean; label: string; value: string }
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+type SegmentedOption = string | { disabled?: boolean, label: string, value: string }
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -27,9 +27,7 @@ const {
   ...rest
 } = Astro.props
 
-const normalized = options.map(option =>
-  typeof option === 'string' ? { disabled: false, label: option, value: option } : option
-)
+const normalized = options.map(option => typeof option === 'string' ? { disabled: false, label: option, value: option } : option)
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-segmented',

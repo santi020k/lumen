@@ -48,16 +48,12 @@ export const createScheduleSlots = (
 ): LumenScheduleSlot[] => {
   const resourceList = resources.length ? resources : [undefined]
 
-  return dates.flatMap(date =>
-    resourceList.map(resource => ({
-      date,
-      events: events.filter(event =>
-        event.start.startsWith(date) &&
-        (!resource || event.resourceId === resource.id)
-      ),
-      ...(resource ? { resource } : {})
-    }))
-  )
+  return dates.flatMap(date => resourceList.map(resource => ({
+    date,
+    events: events.filter(event => event.start.startsWith(date) &&
+      (!resource || event.resourceId === resource.id)),
+    ...(resource ? { resource } : {})
+  })))
 }
 
 export const moveScheduleEvent = (
@@ -66,47 +62,42 @@ export const moveScheduleEvent = (
   nextStart: string,
   nextEnd: string,
   resourceId?: string
-): LumenScheduleEvent[] =>
-  events.map(event =>
-    event.id === eventId
-      ? {
-        ...event,
-        end: nextEnd,
-        ...(resourceId ? { resourceId } : {}),
-        start: nextStart
-      }
-      : event
-  )
+): LumenScheduleEvent[] => events.map(event => event.id === eventId ?
+  {
+    ...event,
+    end: nextEnd,
+    ...(resourceId ? { resourceId } : {}),
+    start: nextStart
+  } :
+  event)
 
 export const expandRecurringScheduleEvent = (
   event: LumenScheduleEvent,
   count: number,
   intervalDays = 7
-): LumenScheduleEvent[] =>
-  Array.from({ length: count }, (_, index) => {
-    const start = new Date(event.start)
-    const end = new Date(event.end)
+): LumenScheduleEvent[] => Array.from({ length: count }, (_, index) => {
+  const start = new Date(event.start)
+  const end = new Date(event.end)
 
-    start.setDate(start.getDate() + index * intervalDays)
+  start.setDate(start.getDate() + index * intervalDays)
 
-    end.setDate(end.getDate() + index * intervalDays)
+  end.setDate(end.getDate() + index * intervalDays)
 
-    return {
-      ...event,
-      end: end.toISOString(),
-      id: index === 0 ? event.id : `${event.id}-${index + 1}`,
-      start: start.toISOString()
-    }
-  })
+  return {
+    ...event,
+    end: end.toISOString(),
+    id: index === 0 ? event.id : `${event.id}-${index + 1}`,
+    start: start.toISOString()
+  }
+})
 
 export const scheduleEventsOverlap = (
   a: LumenScheduleEvent,
   b: LumenScheduleEvent
-): boolean =>
-  a.id !== b.id &&
+): boolean => a.id !== b.id &&
   (!a.resourceId || !b.resourceId || a.resourceId === b.resourceId) &&
   new Date(a.start).getTime() < new Date(b.end).getTime() &&
-  new Date(b.start).getTime() < new Date(a.end).getTime()
+    new Date(b.start).getTime() < new Date(a.end).getTime()
 
 export const getScheduleConflicts = (
   events: readonly LumenScheduleEvent[]
@@ -127,8 +118,7 @@ export const getScheduleConflicts = (
 export const canPlaceScheduleEvent = (
   events: readonly LumenScheduleEvent[],
   event: LumenScheduleEvent
-): boolean =>
-  !events.some(nextEvent => scheduleEventsOverlap(event, nextEvent))
+): boolean => !events.some(nextEvent => scheduleEventsOverlap(event, nextEvent))
 
 const clampTime = (
   value: number,
@@ -160,9 +150,7 @@ export const resizeScheduleEvent = (
   const end = new Date(event.end).getTime()
 
   const next = clampTime(
-    snapTime(new Date(nextDateTime).getTime(), options.snapMinutes),
-    options.min,
-    options.max
+    snapTime(new Date(nextDateTime).getTime(), options.snapMinutes), options.min, options.max
   )
 
   const nextStart = edge === 'start' ? Math.min(next, end - 60_000) : start
@@ -180,12 +168,9 @@ export const resizeScheduleEvents = (
   eventId: string,
   nextDateTime: string,
   options: LumenScheduleResizeOptions = {}
-): LumenScheduleEvent[] =>
-  events.map(event =>
-    event.id === eventId
-      ? resizeScheduleEvent(event, nextDateTime, options)
-      : event
-  )
+): LumenScheduleEvent[] => events.map(event => event.id === eventId ?
+  resizeScheduleEvent(event, nextDateTime, options) :
+  event)
 
 const isScheduleEvent = (value: unknown): value is LumenScheduleEvent => {
   if (!value || typeof value !== 'object') return false
@@ -201,8 +186,7 @@ const isScheduleEvent = (value: unknown): value is LumenScheduleEvent => {
 
 export const serializeScheduleEvents = (
   events: readonly LumenScheduleEvent[]
-): string =>
-  JSON.stringify(events)
+): string => JSON.stringify(events)
 
 export const parseScheduleEvents = (value: string): LumenScheduleEvent[] => {
   try {
@@ -214,8 +198,7 @@ export const parseScheduleEvents = (value: string): LumenScheduleEvent[] => {
   }
 }
 
-export const createScheduleStorageKey = (name: string): string =>
-  `lumen:schedule:${name.trim().toLowerCase().replaceAll(/\s+/g, '-')}`
+export const createScheduleStorageKey = (name: string): string => `lumen:schedule:${name.trim().toLowerCase().replaceAll(/\s+/g, '-')}`
 
 export const saveScheduleEvents = (
   storage: LumenScheduleKeyValueWriter,

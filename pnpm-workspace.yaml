@@ -22,6 +22,7 @@ catalog:
   "@lucide/icons": ^1.26.0
   "@modelcontextprotocol/sdk": ^1.29.0
   "@playwright/test": ^1.61.1
+  "@santi020k/commitprompt": ^1.0.0
   "@santi020k/eslint-config-astro": ^3.1.0
   "@santi020k/eslint-config-basic": ^3.2.0
   "@santi020k/eslint-config-extensions": ^3.1.0
@@ -68,8 +69,8 @@ ignoredBuiltDependencies:
   - workerd
 
 minimumReleaseAgeExclude:
-  - '@santi020k/eslint-config-basic@3.2.0'
-  - '@santi020k/eslint-config-typescript'
+  - "@santi020k/eslint-config-basic@3.2.0"
+  - "@santi020k/eslint-config-typescript"
 
 peerDependencyRules:
   allowedVersions:

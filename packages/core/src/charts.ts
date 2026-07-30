@@ -120,21 +120,15 @@ export interface LumenPieGeometryOptions {
 
 const defaultChartSize = 100
 const defaultChartPadding = 4
-
-const finiteValues = (values: readonly (number | null)[]): number[] =>
-  values.filter((value): value is number => value !== null && Number.isFinite(value))
+const finiteValues = (values: readonly (number | null)[]): number[] => values.filter((value): value is number => value !== null && Number.isFinite(value))
 
 export const hasLumenChartData = (
   series: readonly LumenChartSeries[]
-): boolean => series.some(item =>
-  item.data.some(datum => datum.y !== null && Number.isFinite(datum.y))
-)
+): boolean => series.some(item => item.data.some(datum => datum.y !== null && Number.isFinite(datum.y)))
 
 export const hasLumenPieData = (
   data: readonly LumenChartDatum[]
-): boolean => data.some(datum =>
-  datum.y !== null && Number.isFinite(datum.y) && datum.y > 0
-)
+): boolean => data.some(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
 
 export const getLumenChartDomain = (
   values: readonly (number | null)[],
@@ -219,8 +213,7 @@ const pieArc = (
   largeArc: boolean,
   sweep: 0 | 1,
   point: LumenPolarPoint
-): string =>
-  `A ${formatPieCoordinate(radius)} ${formatPieCoordinate(radius)} 0 ${largeArc ? 1 : 0} ${sweep} ${formatPieCoordinate(point.x)} ${formatPieCoordinate(point.y)}`
+): string => `A ${formatPieCoordinate(radius)} ${formatPieCoordinate(radius)} 0 ${largeArc ? 1 : 0} ${sweep} ${formatPieCoordinate(point.x)} ${formatPieCoordinate(point.y)}`
 
 const fullPiePath = (
   center: number,
@@ -296,11 +289,7 @@ export const createLumenPieGeometry = (
   const center = size / 2
   const outerRadius = Math.max(0, center - padding)
   const innerRadius = options.variant === 'pie' ? 0 : outerRadius * 0.58
-
-  const available = data.filter((datum): datum is LumenChartDatum & { y: number } =>
-    datum.y !== null && Number.isFinite(datum.y) && datum.y > 0
-  )
-
+  const available = data.filter((datum): datum is LumenChartDatum & { y: number } => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
   const total = available.reduce((sum, datum) => sum + datum.y, 0)
   let angle = -90
 
@@ -308,20 +297,16 @@ export const createLumenPieGeometry = (
     const percentage = total === 0 ? 0 : datum.y / total
     const startAngle = angle
 
-    const endAngle = index === available.length - 1
-      ? 270
-      : startAngle + percentage * 360
+    const endAngle = index === available.length - 1 ?
+      270 :
+      startAngle + percentage * 360
 
     angle = endAngle
 
     return {
       label: datum.label ?? String(datum.x),
       path: pieSlicePath(
-        center,
-        outerRadius,
-        innerRadius,
-        startAngle,
-        endAngle
+        center, outerRadius, innerRadius, startAngle, endAngle
       ),
       percentage,
       tone: resolveLumenChartTone(datum.tone, index),
@@ -368,10 +353,7 @@ const splitGeometrySegments = (
         data.length === 1 ? 0.5 : index / denominator
       ) * drawableWidth,
       yCoordinate: scaleLumenChartValue(
-        datum.y,
-        domain,
-        padding + drawableHeight,
-        padding
+        datum.y, domain, padding + drawableHeight, padding
       )
     })
   }
@@ -381,12 +363,9 @@ const splitGeometrySegments = (
   return segments
 }
 
-const segmentPath = (points: readonly LumenChartGeometryPoint[]): string =>
-  points
-    .map((point, index) =>
-      `${index === 0 ? 'M' : 'L'} ${point.xCoordinate.toFixed(3)} ${point.yCoordinate.toFixed(3)}`
-    )
-    .join(' ')
+const segmentPath = (points: readonly LumenChartGeometryPoint[]): string => points
+  .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.xCoordinate.toFixed(3)} ${point.yCoordinate.toFixed(3)}`)
+  .join(' ')
 
 export const createLumenLineGeometry = (
   data: readonly LumenChartDatum[],
@@ -397,8 +376,7 @@ export const createLumenLineGeometry = (
   const padding = options.padding ?? defaultChartPadding
 
   const calculatedDomain = getLumenChartDomain(
-    data.map(datum => datum.y),
-    options.includeZero ?? false
+    data.map(datum => datum.y), options.includeZero ?? false
   )
 
   const domain = {
@@ -409,10 +387,7 @@ export const createLumenLineGeometry = (
   const segments = splitGeometrySegments(data, domain, width, height, padding)
 
   const baseline = scaleLumenChartValue(
-    Math.max(domain.min, Math.min(domain.max, 0)),
-    domain,
-    height - padding,
-    padding
+    Math.max(domain.min, Math.min(domain.max, 0)), domain, height - padding, padding
   )
 
   return {
@@ -460,16 +435,13 @@ export const alignLumenChartSeries = (
   categories: readonly (number | string)[]
 ): LumenChartSeries => ({
   ...series,
-  data: categories.map(category =>
-    series.data.find(datum => datum.x === category) ?? { x: category, y: null }
-  )
+  data: categories.map(category => series.data.find(datum => datum.x === category) ?? { x: category, y: null })
 })
 
 const getDatumValue = (
   series: LumenChartSeries,
   category: number | string
-): number =>
-  series.data.find(datum => datum.x === category)?.y ?? 0
+): number => series.data.find(datum => datum.x === category)?.y ?? 0
 
 const getStackedDomain = (
   series: readonly LumenChartSeries[],
@@ -515,13 +487,13 @@ export const createLumenBarGeometry = (
   const categories = getLumenChartCategories(series)
   const values = series.flatMap(item => item.data.map(datum => datum.y))
 
-  const domain = layout === 'stacked'
-    ? getStackedDomain(series, categories)
-    : getLumenChartDomain(values)
+  const domain = layout === 'stacked' ?
+    getStackedDomain(series, categories) :
+    getLumenChartDomain(values)
 
-  const margin = orientation === 'horizontal'
-    ? { bottom: 24, left: 112, right: 20, top: 16 }
-    : { bottom: 52, left: 52, right: 16, top: 16 }
+  const margin = orientation === 'horizontal' ?
+    { bottom: 24, left: 112, right: 20, top: 16 } :
+    { bottom: 52, left: 52, right: 16, top: 16 }
 
   const plotWidth = Math.max(1, width - margin.left - margin.right)
   const plotHeight = Math.max(1, height - margin.top - margin.bottom)
@@ -546,12 +518,12 @@ export const createLumenBarGeometry = (
 
     categoryPositions.push({
       label: category,
-      x: orientation === 'horizontal'
-        ? margin.left - 8
-        : categoryStart + usableCategorySize / 2,
-      y: orientation === 'horizontal'
-        ? categoryStart + usableCategorySize / 2
-        : height - 20
+      x: orientation === 'horizontal' ?
+        margin.left - 8 :
+        categoryStart + usableCategorySize / 2,
+      y: orientation === 'horizontal' ?
+        categoryStart + usableCategorySize / 2 :
+        height - 20
     })
 
     for (const [seriesIndex, item] of series.entries()) {
@@ -560,10 +532,7 @@ export const createLumenBarGeometry = (
 
       if (orientation === 'horizontal') {
         const startValue = getBarStartValue(
-          layout,
-          value,
-          positiveOffset,
-          negativeOffset
+          layout, value, positiveOffset, negativeOffset
         )
 
         const endValue = startValue + value
@@ -583,10 +552,7 @@ export const createLumenBarGeometry = (
         })
       } else {
         const startValue = getBarStartValue(
-          layout,
-          value,
-          positiveOffset,
-          negativeOffset
+          layout, value, positiveOffset, negativeOffset
         )
 
         const endValue = startValue + value

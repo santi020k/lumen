@@ -1,4 +1,6 @@
 ---
+import type { InferGetStaticPropsType } from 'astro'
+
 import {
   Badge,
   Breadcrumb,
@@ -9,8 +11,6 @@ import {
   Table,
   Tabs
 } from '@santi020k/lumen-astro'
-
-import type { InferGetStaticPropsType } from 'astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
@@ -26,11 +26,10 @@ import { getExample, getGlassExample } from '../../../lib/examples'
 import { toSlug } from '../../../lib/routes'
 import { buildSnippets } from '../../../lib/snippets'
 
-export const getStaticPaths = () =>
-  componentDocs.map(component => ({
-    params: { slug: toSlug(component.name) },
-    props: { component }
-  }))
+export const getStaticPaths = () => componentDocs.map(component => ({
+  params: { slug: toSlug(component.name) },
+  props: { component }
+}))
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>
 
@@ -41,9 +40,9 @@ const snippets = buildSnippets(component.name, source)
 const registryCommand = `lumen add ${component.name}`
 
 const packageInstallSetups = frameworkSetups.map(setup => ({
-  addCommand: setup.id === 'astro'
-    ? registryCommand
-    : `${registryCommand} --target ${setup.id}`,
+  addCommand: setup.id === 'astro' ?
+    registryCommand :
+    `${registryCommand} --target ${setup.id}`,
   command: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? setup.installCommands[0]?.command ?? '',
   id: setup.id,
   label: setup.label,
@@ -56,9 +55,9 @@ const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.
 const index = componentDocs.findIndex(entry => entry.name === component.name)
 const previous = index > 0 ? componentDocs[index - 1] : undefined
 
-const next = index >= 0 && index < componentDocs.length - 1
-  ? componentDocs[index + 1]
-  : undefined
+const next = index >= 0 && index < componentDocs.length - 1 ?
+  componentDocs[index + 1] :
+  undefined
 
 const requiresAstroRuntime = Boolean(
   component.keyboardInteractions ||
@@ -66,15 +65,13 @@ const requiresAstroRuntime = Boolean(
   component.apiReference.some(row => /UIPrimitives|runtime/i.test(row.description))
 )
 
-const relatedCollection = componentCollections.find(collection =>
-  collection.names.includes(component.name)
-)
+const relatedCollection = componentCollections.find(collection => collection.names.includes(component.name))
 
 const relatedComponents = relatedCollection?.names
   .filter(name => name !== component.name)
   .map(name => componentDocs.find(entry => entry.name === name))
-  .filter(entry => entry !== undefined)
-  ?? []
+  .filter(entry => entry !== undefined) ??
+  []
 
 const figmaUrl = getFigmaComponentUrl(component.figmaNodeId)
 const componentNameParts = component.name.split(/(?<=[a-z])(?=[A-Z])/)
@@ -249,10 +246,12 @@ export function HeroImage() {
         <div class="
           grid gap-6
           xl:grid-cols-2
-        ">
+        "
+        >
           <article class="
             space-y-4 rounded-2xl border border-line bg-surface p-5
-          ">
+          "
+          >
             <div class="space-y-2">
               <h3 class="font-black text-ink">Astro: import local assets</h3>
               <p class="text-sm/7 text-ink-soft">
@@ -284,12 +283,14 @@ export function HeroImage() {
               href="https://docs.astro.build/en/reference/modules/astro-assets/"
               rel="noreferrer"
               target="_blank"
-            >Astro Image reference</Link>
+            >Astro Image reference
+            </Link>
           </article>
 
           <article class="
             space-y-4 rounded-2xl border border-line bg-surface p-5
-          ">
+          "
+          >
             <div class="space-y-2">
               <h3 class="font-black text-ink">Next.js: pass next/image through as</h3>
               <p class="text-sm/7 text-ink-soft">
@@ -325,14 +326,16 @@ export function HeroImage() {
               href="https://nextjs.org/docs/app/api-reference/components/image"
               rel="noreferrer"
               target="_blank"
-            >Next.js Image reference</Link>
+            >Next.js Image reference
+            </Link>
           </article>
         </div>
 
         <aside class="
           rounded-2xl border border-line bg-surface-muted p-5 text-sm/7
           text-ink-soft
-        ">
+        "
+        >
           <strong class="text-ink">For both frameworks:</strong> write useful alt text (or
           <code>alt=""</code> for decoration), preserve intrinsic aspect ratio, keep
           <code>sizes</code> aligned with the rendered layout, and reserve eager or priority
@@ -362,7 +365,8 @@ export function HeroImage() {
               aria-selected={index === 0 ? 'true' : 'false'}
               id={`install-${componentSlug}-tab-${setup.id}`}
               role="tab"
-            >{setup.label}</button>
+            >{setup.label}
+            </button>
           ))}
         </div>
         {packageInstallSetups.map((setup, index) => (
@@ -376,7 +380,8 @@ export function HeroImage() {
             <div class="
               grid gap-4
               lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)]
-            ">
+            "
+            >
               <CodeBlock code={setup.command} lang="bash" title={setup.packageName} />
               <CodeBlock code={setup.addCommand} lang="bash" title={`${setup.label} wrapper`} />
             </div>
@@ -385,116 +390,41 @@ export function HeroImage() {
       </Tabs>
     </section>
 
-  {GlassExample && glassSnippets && (
-    <section class="mt-10 space-y-3" aria-labelledby="glass-title">
-      <div class="space-y-2">
-        <h2 class="
-          text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-        " id="glass-title">Glass</h2>
-        <p class="max-w-2xl text-sm/7 text-ink-soft">
-          Add the glass prop to apply the shared blur, saturation, border, and highlight tokens.
-          Glass reads best over vivid content, so place the surface above imagery or color.
-        </p>
-      </div>
-      <FrameworkExample
-        groupId={`code-${componentSlug}-glass`}
-        previewClass=""
-        snippets={glassSnippets}
-      >
-        <GlassExample />
-      </FrameworkExample>
-    </section>
-  )}
+    {GlassExample && glassSnippets && (
+      <section class="mt-10 space-y-3" aria-labelledby="glass-title">
+        <div class="space-y-2">
+          <h2
+            class="
+              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
+            "
+            id="glass-title"
+          >Glass
+          </h2>
+          <p class="max-w-2xl text-sm/7 text-ink-soft">
+            Add the glass prop to apply the shared blur, saturation, border, and highlight tokens.
+            Glass reads best over vivid content, so place the surface above imagery or color.
+          </p>
+        </div>
+        <FrameworkExample
+          groupId={`code-${componentSlug}-glass`}
+          previewClass=""
+          snippets={glassSnippets}
+        >
+          <GlassExample />
+        </FrameworkExample>
+      </section>
+    )}
 
-  <section class="mt-10 space-y-3" aria-labelledby="api-title">
-    <div class="space-y-2">
-      <h2 class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase" id="api-title">API reference</h2>
-      <p class="max-w-2xl text-sm/7 text-ink-soft">
-        Lumen-specific props and runtime attributes for the Astro primitive. React props follow the
-        same names; Elements use equivalent kebab-case attributes where custom elements expose them.
-      </p>
-    </div>
-    <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-      <table class="w-full min-w-176 border-collapse text-left text-sm">
-        <thead class="
-          bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
-          uppercase
-        ">
-          <tr>
-            <th class="border-b border-line px-4 py-3">Attribute</th>
-            <th class="border-b border-line px-4 py-3">Values</th>
-            <th class="border-b border-line px-4 py-3">Default</th>
-            <th class="border-b border-line px-4 py-3">Description</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-line">
-          {component.apiReference.map(row => (
-            <tr>
-              <th class="
-                w-48 px-4 py-3 align-top font-mono text-xs font-bold text-ink
-              " scope="row">
-                {row.attribute}
-              </th>
-              <td class="
-                w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-              ">{row.values}</td>
-              <td class="
-                w-28 px-4 py-3 align-top font-mono text-xs text-ink-soft
-              ">{row.defaultValue}</td>
-              <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Table>
-  </section>
-
-  {component.keyboardInteractions && (
-    <section class="mt-10 space-y-3" aria-labelledby="keyboard-title">
+    <section class="mt-10 space-y-3" aria-labelledby="api-title">
       <div class="space-y-2">
-        <h2 class="
-          text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-        " id="keyboard-title">Keyboard interactions</h2>
+        <h2
+          class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase"
+          id="api-title"
+        >API reference
+        </h2>
         <p class="max-w-2xl text-sm/7 text-ink-soft">
-          Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
-        </p>
-      </div>
-      <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-        <table class="w-full min-w-xl border-collapse text-left text-sm">
-          <thead class="
-            bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
-            uppercase
-          ">
-            <tr>
-              <th class="border-b border-line px-4 py-3">Key</th>
-              <th class="border-b border-line px-4 py-3">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-line">
-            {component.keyboardInteractions.map(row => (
-              <tr>
-                <th class="
-                  w-72 px-4 py-3 align-top font-mono text-xs font-bold text-ink
-                " scope="row">
-                  {row.key}
-                </th>
-                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.action}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Table>
-    </section>
-  )}
-
-  {component.runtimeEvents && (
-    <section class="mt-10 space-y-3" aria-labelledby="runtime-events-title">
-      <div class="space-y-2">
-        <h2 class="
-          text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-        " id="runtime-events-title">Runtime events</h2>
-        <p class="max-w-2xl text-sm/7 text-ink-soft">
-          CustomEvents dispatched by the Astro UIPrimitives runtime for this component.
+          Lumen-specific props and runtime attributes for the Astro primitive. React props follow the
+          same names; Elements use equivalent kebab-case attributes where custom elements expose them.
         </p>
       </div>
       <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
@@ -502,40 +432,152 @@ export function HeroImage() {
           <thead class="
             bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
             uppercase
-          ">
+          "
+          >
             <tr>
-              <th class="border-b border-line px-4 py-3">Event</th>
-              <th class="border-b border-line px-4 py-3">Target</th>
-              <th class="border-b border-line px-4 py-3">Detail</th>
-              <th class="border-b border-line px-4 py-3">When</th>
+              <th class="border-b border-line px-4 py-3">Attribute</th>
+              <th class="border-b border-line px-4 py-3">Values</th>
+              <th class="border-b border-line px-4 py-3">Default</th>
+              <th class="border-b border-line px-4 py-3">Description</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-line">
-            {component.runtimeEvents.map(row => (
+            {component.apiReference.map(row => (
               <tr>
-                <th class="
-                  w-56 px-4 py-3 align-top font-mono text-xs font-bold text-ink
-                " scope="row">
-                  {row.name}
+                <th
+                  class="
+                    w-48 px-4 py-3 align-top font-mono text-xs font-bold
+                    text-ink
+                  "
+                  scope="row"
+                >
+                  {row.attribute}
                 </th>
-                <td class="w-64 px-4 py-3 align-top text-sm/6 text-ink-soft">{row.target}</td>
                 <td class="
                   w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                ">{row.detail}</td>
-                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.when}</td>
+                "
+                >{row.values}
+                </td>
+                <td class="
+                  w-28 px-4 py-3 align-top font-mono text-xs text-ink-soft
+                "
+                >{row.defaultValue}
+                </td>
+                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </Table>
     </section>
-  )}
 
-  <Separator class="my-10" />
+    {component.keyboardInteractions && (
+      <section class="mt-10 space-y-3" aria-labelledby="keyboard-title">
+        <div class="space-y-2">
+          <h2
+            class="
+              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
+            "
+            id="keyboard-title"
+          >Keyboard interactions
+          </h2>
+          <p class="max-w-2xl text-sm/7 text-ink-soft">
+            Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
+          </p>
+        </div>
+        <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
+          <table class="w-full min-w-xl border-collapse text-left text-sm">
+            <thead class="
+              bg-surface-muted text-xs font-black tracking-[0.12em]
+              text-ink-muted uppercase
+            "
+            >
+              <tr>
+                <th class="border-b border-line px-4 py-3">Key</th>
+                <th class="border-b border-line px-4 py-3">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              {component.keyboardInteractions.map(row => (
+                <tr>
+                  <th
+                    class="
+                      w-72 px-4 py-3 align-top font-mono text-xs font-bold
+                      text-ink
+                    "
+                    scope="row"
+                  >
+                    {row.key}
+                  </th>
+                  <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Table>
+      </section>
+    )}
 
-  <Pagination class="component-doc-pagination" aria-label="Component pagination">
-    {previous
-      ? (
+    {component.runtimeEvents && (
+      <section class="mt-10 space-y-3" aria-labelledby="runtime-events-title">
+        <div class="space-y-2">
+          <h2
+            class="
+              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
+            "
+            id="runtime-events-title"
+          >Runtime events
+          </h2>
+          <p class="max-w-2xl text-sm/7 text-ink-soft">
+            CustomEvents dispatched by the Astro UIPrimitives runtime for this component.
+          </p>
+        </div>
+        <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
+          <table class="w-full min-w-176 border-collapse text-left text-sm">
+            <thead class="
+              bg-surface-muted text-xs font-black tracking-[0.12em]
+              text-ink-muted uppercase
+            "
+            >
+              <tr>
+                <th class="border-b border-line px-4 py-3">Event</th>
+                <th class="border-b border-line px-4 py-3">Target</th>
+                <th class="border-b border-line px-4 py-3">Detail</th>
+                <th class="border-b border-line px-4 py-3">When</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              {component.runtimeEvents.map(row => (
+                <tr>
+                  <th
+                    class="
+                      w-56 px-4 py-3 align-top font-mono text-xs font-bold
+                      text-ink
+                    "
+                    scope="row"
+                  >
+                    {row.name}
+                  </th>
+                  <td class="w-64 px-4 py-3 align-top text-sm/6 text-ink-soft">{row.target}</td>
+                  <td class="
+                    w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
+                  "
+                  >{row.detail}
+                  </td>
+                  <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.when}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Table>
+      </section>
+    )}
+
+    <Separator class="my-10" />
+
+    <Pagination class="component-doc-pagination" aria-label="Component pagination">
+      {previous ?
+        (
           <DocsActionLink
             aria-label={`Previous component: ${previous.name}`}
             class="
@@ -553,26 +595,26 @@ export function HeroImage() {
               <strong>{previous.name}</strong>
             </span>
           </DocsActionLink>
-        )
-      : <span />}
-    {next && (
-      <DocsActionLink
-        aria-label={`Next component: ${next.name}`}
-        class="
-          component-doc-pagination__link component-doc-pagination__link--next
-        "
-        href={`/docs/components/${toSlug(next.name)}`}
-        variant="outline"
-      >
-        <span class="component-doc-pagination__copy">
-          <small>Next component</small>
-          <strong>{next.name}</strong>
-        </span>
-        <span class="component-doc-pagination__icon" aria-hidden="true">
-          <Icon name="arrow-right" size="sm" />
-        </span>
-      </DocsActionLink>
-    )}
-  </Pagination>
+        ) :
+        <span />}
+      {next && (
+        <DocsActionLink
+          aria-label={`Next component: ${next.name}`}
+          class="
+            component-doc-pagination__link component-doc-pagination__link--next
+          "
+          href={`/docs/components/${toSlug(next.name)}`}
+          variant="outline"
+        >
+          <span class="component-doc-pagination__copy">
+            <small>Next component</small>
+            <strong>{next.name}</strong>
+          </span>
+          <span class="component-doc-pagination__icon" aria-hidden="true">
+            <Icon name="arrow-right" size="sm" />
+          </span>
+        </DocsActionLink>
+      )}
+    </Pagination>
   </div>
 </DocsLayout>

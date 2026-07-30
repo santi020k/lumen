@@ -63,7 +63,9 @@ export default defineConfig({
       project('elements', 'packages/elements', { environment: 'jsdom' }),
       project('icons-brand', 'packages/icons-brand'),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),
+      project('templates', 'packages/templates'),
       project('next-smoke', 'apps/next-smoke', { passWithNoTests: true }),
+      project('template-showcase', 'apps/templates', { passWithNoTests: true }),
       project('docs', 'apps/docs', { passWithNoTests: true })
     ],
     restoreMocks: true

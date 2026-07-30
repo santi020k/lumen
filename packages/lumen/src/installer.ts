@@ -17,7 +17,7 @@ import {
   getLumenRegistryItem,
   type LumenRegistry,
   type LumenRegistryEntry,
-  type LumenRegistryFile,
+  type LumenRegistryFile
 } from './registry.js'
 
 interface LumenRecipeFile {
@@ -54,20 +54,26 @@ export interface LumenAddResult {
 
 const templatesRoot = fileURLToPath(new URL('../templates/', import.meta.url))
 
-const loadRecipeTemplateFiles = async (
-  itemName: string,
-  target: LumenAddTarget
-): Promise<LumenRecipeFile[] | undefined> => {
-  const templateDir = join(templatesRoot, target, itemName)
+const productTemplateRecipes = new Set([
+  'analytics-dashboard',
+  'auth-onboarding',
+  'commerce-dashboard',
+  'project-workspace',
+  'saas-admin'
+])
+
+const loadTemplateDirectory = async (
+  templateDir: string
+): Promise<LumenRecipeFile[]> => {
   let entries
 
   try {
     entries = await readdir(templateDir, { recursive: true, withFileTypes: true })
   } catch {
-    return undefined
+    return []
   }
 
-  const files = await Promise.all(entries
+  return Promise.all(entries
     .filter(entry => entry.isFile())
     .map(async entry => {
       const absolutePath = join(entry.parentPath, entry.name)
@@ -77,16 +83,38 @@ const loadRecipeTemplateFiles = async (
         source: await readFile(absolutePath, 'utf8')
       }
     }))
+}
 
-  files.sort((first, second) => first.path.localeCompare(second.path))
+const loadRecipeTemplateFiles = async (
+  itemName: string,
+  target: LumenAddTarget
+): Promise<LumenRecipeFile[] | undefined> => {
+  const templateDirectories = [
+    ...(productTemplateRecipes.has(itemName) ?
+      [join(templatesRoot, 'shared', 'common')] :
+      []),
+    join(templatesRoot, 'shared', itemName),
+    join(templatesRoot, target, itemName)
+  ]
+
+  const templateFiles = await Promise.all(
+    templateDirectories.map(loadTemplateDirectory)
+  )
+
+  const filesByPath = new Map<string, LumenRecipeFile>()
+
+  for (const file of templateFiles.flat()) {
+    filesByPath.set(file.path, file)
+  }
+
+  const files = [...filesByPath.values()]
+    .sort((first, second) => first.path.localeCompare(second.path))
 
   return files.length > 0 ? files : undefined
 }
 
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-
-const toCamelCase = (value: string): string =>
-  value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
+const toCamelCase = (value: string): string => value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
 
 const createAstroComponentFile = (name: string): LumenRecipeFile => ({
   path: `src/lumen/${toKebabCase(name)}.astro`,
@@ -199,8 +227,7 @@ const mergeFileSource = ({
   return `${existing.trimEnd()}\n\n/* Lumen merge: ${path} */\n${incoming}`
 }
 
-const getConflictMode = (options: LumenAddOptions) =>
-  options.force ? 'overwrite' : options.conflict ?? 'skip'
+const getConflictMode = (options: LumenAddOptions) => options.force ? 'overwrite' : options.conflict ?? 'skip'
 
 const getInstallSource = async (
   file: LumenRecipeFile,

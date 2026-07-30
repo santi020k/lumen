@@ -86,11 +86,10 @@ const packageManagerCommands = [
   ['yarn', 'yarn add']
 ] as const
 
-const buildInstallCommands = (...packages: string[]): InstallCommand[] =>
-  packageManagerCommands.map(([label, command]) => ({
-    command: `${command} ${packages.join(' ')}`,
-    label
-  }))
+const buildInstallCommands = (...packages: string[]): InstallCommand[] => packageManagerCommands.map(([label, command]) => ({
+  command: `${command} ${packages.join(' ')}`,
+  label
+}))
 
 const installCommands = buildInstallCommands('@santi020k/lumen-astro')
 
@@ -407,9 +406,9 @@ const figmaNodeIdByComponent: Record<string, string> = {
 }
 
 export const getFigmaComponentUrl = (nodeId?: string) => (
-  nodeId
-    ? `${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}`
-    : figmaLibraryUrl
+  nodeId ?
+    `${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}` :
+    figmaLibraryUrl
 )
 
 export interface ComponentCollection {
@@ -593,24 +592,15 @@ const commonApiRows = [
 ] as const
 
 const surfaceApiRow = apiRow(
-  'surface',
-  '"default" | "glass"',
-  '"default"',
-  'Deprecated alias for glass; surface="glass" maps to glass={true}.'
+  'surface', '"default" | "glass"', '"default"', 'Deprecated alias for glass; surface="glass" maps to glass={true}.'
 )
 
 const glassApiRow = apiRow(
-  'glass',
-  'boolean | "subtle" | "strong"',
-  'false',
-  'Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; "subtle" and "strong" adjust the fill intensity.'
+  'glass', 'boolean | "subtle" | "strong"', 'false', 'Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; "subtle" and "strong" adjust the fill intensity.'
 )
 
 const disclosureTriggerApiRow = apiRow(
-  'data-ui-trigger',
-  'boolean attribute',
-  '-',
-  'Marks the child trigger that opens and closes the adjacent disclosure panel.'
+  'data-ui-trigger', 'boolean attribute', '-', 'Marks the child trigger that opens and closes the adjacent disclosure panel.'
 )
 
 const dialogTriggerApiRows = (name: string) => [
@@ -619,91 +609,50 @@ const dialogTriggerApiRows = (name: string) => [
   apiRow(`data-ui-${name}-close`, 'boolean attribute', '-', 'Marks a child control that closes the nearest dialog.')
 ] as const
 
-const keyboardRows = (...rows: [key: string, action: string][]): KeyboardInteractionRow[] =>
-  rows.map(([key, action]) => ({ action, key }))
+const keyboardRows = (...rows: [key: string, action: string][]): KeyboardInteractionRow[] => rows.map(([key, action]) => ({ action, key }))
 
 const disclosureKeyboardInteractions = keyboardRows(
-  ['ArrowDown, Enter, Space on trigger', 'Open the panel and move focus to the first focusable item.'],
-  ['Escape in panel', 'Close the panel and return focus to the trigger.'],
-  ['ArrowDown, ArrowUp in panel', 'Move focus through focusable panel items, wrapping at the ends.'],
-  ['Home, End in panel', 'Move focus to the first or last focusable panel item.']
+  ['ArrowDown, Enter, Space on trigger', 'Open the panel and move focus to the first focusable item.'], ['Escape in panel', 'Close the panel and return focus to the trigger.'], ['ArrowDown, ArrowUp in panel', 'Move focus through focusable panel items, wrapping at the ends.'], ['Home, End in panel', 'Move focus to the first or last focusable panel item.']
 )
 
 const rovingGroupKeyboardInteractions = keyboardRows(
-  ['ArrowRight, ArrowDown', 'Move roving focus to the next item, wrapping at the end.'],
-  ['ArrowLeft, ArrowUp', 'Move roving focus to the previous item, wrapping at the start.'],
-  ['Home, End', 'Move roving focus to the first or last item.']
+  ['ArrowRight, ArrowDown', 'Move roving focus to the next item, wrapping at the end.'], ['ArrowLeft, ArrowUp', 'Move roving focus to the previous item, wrapping at the start.'], ['Home, End', 'Move roving focus to the first or last item.']
 )
 
 const keyboardInteractionsByComponent: Partial<Record<string, readonly KeyboardInteractionRow[]>> = {
   Calendar: keyboardRows(
-    ['Enter, Space on a day', 'Select the focused day, update the hidden input, and dispatch native input and change events from that input.'],
-    ['ArrowRight, ArrowLeft', 'Move day focus by one day.'],
-    ['ArrowDown, ArrowUp', 'Move day focus by one week.'],
-    ['Home, End', 'Move focus to the first or last day in the current week row.'],
-    ['PageDown, PageUp', 'Move focus to the same date in the next or previous month.']
+    ['Enter, Space on a day', 'Select the focused day, update the hidden input, and dispatch native input and change events from that input.'], ['ArrowRight, ArrowLeft', 'Move day focus by one day.'], ['ArrowDown, ArrowUp', 'Move day focus by one week.'], ['Home, End', 'Move focus to the first or last day in the current week row.'], ['PageDown, PageUp', 'Move focus to the same date in the next or previous month.']
   ),
   CodeTabs: keyboardRows(
-    ['ArrowRight', 'Activate and focus the next code example, wrapping at the end.'],
-    ['ArrowLeft', 'Activate and focus the previous code example, wrapping at the start.'],
-    ['Home, End', 'Activate and focus the first or last code example.']
+    ['ArrowRight', 'Activate and focus the next code example, wrapping at the end.'], ['ArrowLeft', 'Activate and focus the previous code example, wrapping at the start.'], ['Home, End', 'Activate and focus the first or last code example.']
   ),
   Combobox: keyboardRows(
-    ['Escape in input or option', 'Close the listbox. Escape on an option also returns focus to the input.'],
-    ['ArrowDown, ArrowUp in input', 'Open the listbox and move focus to the first or last visible option.'],
-    ['Enter in input', 'Select the first visible option.'],
-    ['Enter, Space on an option', 'Select the focused option.'],
-    ['ArrowDown, ArrowUp on an option', 'Move focus through visible options, wrapping at the ends.'],
-    ['Home, End on an option', 'Move focus to the first or last visible option.']
+    ['Escape in input or option', 'Close the listbox. Escape on an option also returns focus to the input.'], ['ArrowDown, ArrowUp in input', 'Open the listbox and move focus to the first or last visible option.'], ['Enter in input', 'Select the first visible option.'], ['Enter, Space on an option', 'Select the focused option.'], ['ArrowDown, ArrowUp on an option', 'Move focus through visible options, wrapping at the ends.'], ['Home, End on an option', 'Move focus to the first or last visible option.']
   ),
   ContextMenu: keyboardRows(
-    ['ContextMenu, Shift+F10 on trigger', 'Open the linked menu near the trigger and focus the first focusable menu item.'],
-    ['Escape in menu', 'Close the menu and return focus to the trigger.'],
-    ['ArrowDown, ArrowUp in menu', 'Move focus through focusable menu items, wrapping at the ends.'],
-    ['Home, End in menu', 'Move focus to the first or last focusable menu item.']
+    ['ContextMenu, Shift+F10 on trigger', 'Open the linked menu near the trigger and focus the first focusable menu item.'], ['Escape in menu', 'Close the menu and return focus to the trigger.'], ['ArrowDown, ArrowUp in menu', 'Move focus through focusable menu items, wrapping at the ends.'], ['Home, End in menu', 'Move focus to the first or last focusable menu item.']
   ),
   DatePicker: keyboardRows(
-    ['Enter, Space on trigger', 'Open the calendar popover.'],
-    ['ArrowDown on trigger', 'Open the calendar and move focus to the selected day, today, or first available day.'],
-    ['Arrow keys in calendar', 'Move focus by day or week without opening a browser-native date picker.'],
-    ['PageDown, PageUp in calendar', 'Move to the same date in the next or previous month.'],
-    ['Enter, Space on a day', 'Select the focused date, close the popover, and return focus to the trigger.'],
-    ['Escape', 'Close the calendar without changing the value and return focus to the trigger.']
+    ['Enter, Space on trigger', 'Open the calendar popover.'], ['ArrowDown on trigger', 'Open the calendar and move focus to the selected day, today, or first available day.'], ['Arrow keys in calendar', 'Move focus by day or week without opening a browser-native date picker.'], ['PageDown, PageUp in calendar', 'Move to the same date in the next or previous month.'], ['Enter, Space on a day', 'Select the focused date, close the popover, and return focus to the trigger.'], ['Escape', 'Close the calendar without changing the value and return focus to the trigger.']
   ),
   DropdownMenu: disclosureKeyboardInteractions,
   InputOTP: keyboardRows(
-    ['ArrowLeft, ArrowRight', 'Move the native input selection one position left or right and sync the visible segments.'],
-    ['Home, End', 'Move the native input selection to the start or end of the current value and sync the visible segments.']
+    ['ArrowLeft, ArrowRight', 'Move the native input selection one position left or right and sync the visible segments.'], ['Home, End', 'Move the native input selection to the start or end of the current value and sync the visible segments.']
   ),
   Menubar: rovingGroupKeyboardInteractions,
   NavigationMenu: rovingGroupKeyboardInteractions,
   RadioGroup: rovingGroupKeyboardInteractions,
   Resizable: keyboardRows(
-    ['ArrowLeft, ArrowRight on a horizontal handle', 'Resize the leading panel by 2 percentage points, or 10 with Shift held.'],
-    ['ArrowUp, ArrowDown on a vertical handle', 'Resize the leading panel by 2 percentage points, or 10 with Shift held.'],
-    ['Home, End on a handle', 'Resize the leading panel to its configured minimum or maximum size.']
+    ['ArrowLeft, ArrowRight on a horizontal handle', 'Resize the leading panel by 2 percentage points, or 10 with Shift held.'], ['ArrowUp, ArrowDown on a vertical handle', 'Resize the leading panel by 2 percentage points, or 10 with Shift held.'], ['Home, End on a handle', 'Resize the leading panel to its configured minimum or maximum size.']
   ),
   Select: keyboardRows(
-    ['Printable key on trigger or option', 'Open the listbox and focus the next enabled option whose text starts with the typed buffer.'],
-    ['Escape on trigger or option', 'Close the listbox. Escape on an option also returns focus to the trigger.'],
-    ['ArrowDown, ArrowUp on trigger', 'Open the listbox and focus the next or previous enabled option.'],
-    ['Home, End on trigger', 'Open the listbox and focus the first or last enabled option.'],
-    ['Enter, Space on trigger', 'Open the listbox and focus the selected option, or the first enabled option.'],
-    ['Enter, Space on an option', 'Select the focused option, sync the native select, and dispatch native input and change events from the select.'],
-    ['ArrowDown, ArrowUp on an option', 'Move focus through enabled options, wrapping at the ends.'],
-    ['Home, End on an option', 'Move focus to the first or last enabled option.']
+    ['Printable key on trigger or option', 'Open the listbox and focus the next enabled option whose text starts with the typed buffer.'], ['Escape on trigger or option', 'Close the listbox. Escape on an option also returns focus to the trigger.'], ['ArrowDown, ArrowUp on trigger', 'Open the listbox and focus the next or previous enabled option.'], ['Home, End on trigger', 'Open the listbox and focus the first or last enabled option.'], ['Enter, Space on trigger', 'Open the listbox and focus the selected option, or the first enabled option.'], ['Enter, Space on an option', 'Select the focused option, sync the native select, and dispatch native input and change events from the select.'], ['ArrowDown, ArrowUp on an option', 'Move focus through enabled options, wrapping at the ends.'], ['Home, End on an option', 'Move focus to the first or last enabled option.']
   ),
   SpeedDial: keyboardRows(
-    ['Enter, Space on trigger', 'Open or close the action menu.'],
-    ['Arrow keys on trigger', 'Open the menu and move focus to its first or last action.'],
-    ['Arrow keys in menu', 'Move focus through actions, wrapping at either end.'],
-    ['Home, End in menu', 'Move focus to the first or last action.'],
-    ['Escape', 'Close the action menu and return focus to the trigger.']
+    ['Enter, Space on trigger', 'Open or close the action menu.'], ['Arrow keys on trigger', 'Open the menu and move focus to its first or last action.'], ['Arrow keys in menu', 'Move focus through actions, wrapping at either end.'], ['Home, End in menu', 'Move focus to the first or last action.'], ['Escape', 'Close the action menu and return focus to the trigger.']
   ),
   Tabs: keyboardRows(
-    ['ArrowRight', 'Activate and focus the next tab, wrapping at the end.'],
-    ['ArrowLeft', 'Activate and focus the previous tab, wrapping at the start.'],
-    ['Home, End', 'Activate and focus the first or last tab.']
+    ['ArrowRight', 'Activate and focus the next tab, wrapping at the end.'], ['ArrowLeft', 'Activate and focus the previous tab, wrapping at the start.'], ['Home, End', 'Activate and focus the first or last tab.']
   ),
   Toast: keyboardRows(
     ['Escape in a toast', 'Dismiss the focused toast.']
@@ -785,13 +734,13 @@ export const runtimeEvents: RuntimeEventRow[] = [
     when: 'Fires after ThemeToggle applies and persists a new document theme.'
   },
   {
-    detail: "{ hue: number, accentHue: number, mode: 'generated' | 'manual', scheme: 'dark' | 'light', tokens: Record<string, string> }",
+    detail: '{ hue: number, accentHue: number, mode: \'generated\' | \'manual\', scheme: \'dark\' | \'light\', tokens: Record<string, string> }',
     name: 'ui:theme-change',
     target: 'ThemeBuilder root ([data-ui-theme-builder])',
     when: 'Fires after ThemeBuilder hue, manual color, mode, or scheme controls update theme tokens on the target element.'
   },
   {
-    detail: "{ css?: string, format: 'css' | 'figma' | 'tokens', tokens: Record<string, string> | null, value: string }",
+    detail: '{ css?: string, format: \'css\' | \'figma\' | \'tokens\', tokens: Record<string, string> | null, value: string }',
     name: 'ui:theme-export',
     target: 'ThemeBuilder root ([data-ui-theme-builder])',
     when: 'Fires after a [data-ui-theme-export] control writes the selected CSS, Figma, or design-token export to the output and clipboard when available.'

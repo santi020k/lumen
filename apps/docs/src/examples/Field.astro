@@ -62,9 +62,9 @@ import {
 
     if (!(control instanceof HTMLInputElement) || control.name !== 'inviteCode') return
 
-    control.setCustomValidity(!control.value || control.value === 'LUMEN-2026'
-      ? ''
-      : 'Use LUMEN-2026 for the preview.')
+    control.setCustomValidity(!control.value || control.value === 'LUMEN-2026' ?
+      '' :
+      'Use LUMEN-2026 for the preview.')
   })
 
   form?.addEventListener('submit', event => {

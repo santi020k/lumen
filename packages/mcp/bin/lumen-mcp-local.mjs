@@ -6,11 +6,11 @@ const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(packageRoot, '../..')
 const distEntry = join(packageRoot, 'dist/index.js')
 
-const filesIn = async (directory) => {
+const filesIn = async directory => {
   const fs = await import('node:fs/promises')
   const entries = await fs.readdir(directory, { withFileTypes: true })
 
-  const nested = await Promise.all(entries.map((entry) => {
+  const nested = await Promise.all(entries.map(entry => {
     const path = join(directory, entry.name)
 
     return entry.isDirectory() ? filesIn(path) : [path]
@@ -30,16 +30,14 @@ const needsBuild = async () => {
 
   const outputTime = (await fs.stat(distEntry)).mtimeMs
   const sourceFiles = await filesIn(join(packageRoot, 'src'))
-  const sourceTimes = await Promise.all(sourceFiles.map(async (path) => (await fs.stat(path)).mtimeMs))
+  const sourceTimes = await Promise.all(sourceFiles.map(async path => (await fs.stat(path)).mtimeMs))
 
-  return sourceTimes.some((modifiedTime) => modifiedTime > outputTime)
+  return sourceTimes.some(modifiedTime => modifiedTime > outputTime)
 }
 
 if (await needsBuild()) {
   const build = spawnSync(
-    'pnpm',
-    ['--filter', '@santi020k/lumen-mcp', 'build'],
-    {
+    'pnpm', ['--filter', '@santi020k/lumen-mcp', 'build'], {
       cwd: repoRoot,
       stdio: ['ignore', process.stderr, process.stderr]
     }

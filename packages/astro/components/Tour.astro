@@ -1,9 +1,9 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
-type TourStep = { content: string; target: string; title?: string }
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface TourStep { content: string, target: string, title?: string }
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null

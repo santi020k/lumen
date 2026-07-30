@@ -1,4 +1,5 @@
 ---
+
 /* cspell:ignore Consolas Menlo */
 import {
   Button,
@@ -89,221 +90,231 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
       glass="subtle"
       id="theme-workbench"
     >
-    <Card class="theme-playground__controls" variant="muted">
-      <div class="theme-playground__section-heading">
-        <p>Inputs</p>
-        <h2>Build tokens</h2>
-      </div>
-
-      <Tabs class="theme-playground__tabs">
-        <div role="tablist" aria-label="Theme input mode">
-          <button
-            aria-controls="theme-generate-panel"
-            aria-selected="true"
-            data-ui-theme-mode="generated"
-            id="theme-generate-tab"
-            role="tab"
-            type="button"
-          >Generate</button>
-          <button
-            aria-controls="theme-manual-panel"
-            aria-selected="false"
-            data-ui-theme-mode="manual"
-            id="theme-manual-tab"
-            role="tab"
-            type="button"
-          >Manual</button>
+      <Card class="theme-playground__controls" variant="muted">
+        <div class="theme-playground__section-heading">
+          <p>Inputs</p>
+          <h2>Build tokens</h2>
         </div>
 
-        <section
-          class="theme-playground__tab-panel"
-          id="theme-generate-panel"
-          role="tabpanel"
-          aria-labelledby="theme-generate-tab"
-        >
-          <Field class="theme-playground__field">
-            <Label for="theme-brand-hue">Brand hue</Label>
-            <div class="theme-playground__control-row">
-              <Slider
-                aria-describedby="theme-brand-hue-value"
-                data-ui-theme-brand-hue
-                id="theme-brand-hue"
-                max="359"
-                min="0"
-                name="brandHue"
-                value={String(defaultHue)}
-              />
-              <NumberField
-                aria-label="Brand hue value"
-                data-ui-theme-brand-hue-number
-                id="theme-brand-hue-value"
-                max="359"
-                min="0"
-                value={String(defaultHue)}
-              />
-            </div>
-          </Field>
+        <Tabs class="theme-playground__tabs">
+          <div role="tablist" aria-label="Theme input mode">
+            <button
+              aria-controls="theme-generate-panel"
+              aria-selected="true"
+              data-ui-theme-mode="generated"
+              id="theme-generate-tab"
+              role="tab"
+              type="button"
+            >Generate
+            </button>
+            <button
+              aria-controls="theme-manual-panel"
+              aria-selected="false"
+              data-ui-theme-mode="manual"
+              id="theme-manual-tab"
+              role="tab"
+              type="button"
+            >Manual
+            </button>
+          </div>
 
-          <Field class="theme-playground__field">
-            <Label for="theme-accent-hue">Accent hue</Label>
-            <div class="theme-playground__control-row">
-              <Slider
-                aria-describedby="theme-accent-hue-value"
-                data-ui-theme-accent-hue
-                id="theme-accent-hue"
-                max="359"
-                min="0"
-                name="accentHue"
-                value={String(defaultAccentHue)}
-              />
-              <NumberField
-                aria-label="Accent hue value"
-                data-ui-theme-accent-hue-number
-                id="theme-accent-hue-value"
-                max="359"
-                min="0"
-                value={String(defaultAccentHue)}
-              />
-            </div>
-          </Field>
-        </section>
+          <section
+            class="theme-playground__tab-panel"
+            id="theme-generate-panel"
+            role="tabpanel"
+            aria-labelledby="theme-generate-tab"
+          >
+            <Field class="theme-playground__field">
+              <Label for="theme-brand-hue">Brand hue</Label>
+              <div class="theme-playground__control-row">
+                <Slider
+                  aria-describedby="theme-brand-hue-value"
+                  data-ui-theme-brand-hue
+                  id="theme-brand-hue"
+                  max="359"
+                  min="0"
+                  name="brandHue"
+                  value={String(defaultHue)}
+                />
+                <NumberField
+                  aria-label="Brand hue value"
+                  data-ui-theme-brand-hue-number
+                  id="theme-brand-hue-value"
+                  max="359"
+                  min="0"
+                  value={String(defaultHue)}
+                />
+              </div>
+            </Field>
 
-        <section
-          class="theme-playground__tab-panel"
-          hidden
-          id="theme-manual-panel"
-          role="tabpanel"
-          aria-labelledby="theme-manual-tab"
-        >
-          <Field class="theme-playground__field">
-            <Label for="theme-primary-hex">Primary</Label>
-            <div class="theme-playground__hex-row">
-              <ColorPicker
-                aria-label="Primary color"
-                class="theme-playground__color"
-                data-ui-theme-primary-color
-                type="color"
-                value={defaultPrimaryHex}
-              />
-              <Input
-                autocomplete="off"
-                data-ui-theme-primary-hex
-                id="theme-primary-hex"
-                inputmode="text"
-                pattern="^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
-                spellcheck="false"
-                value={defaultPrimaryHex}
-              />
-            </div>
-          </Field>
+            <Field class="theme-playground__field">
+              <Label for="theme-accent-hue">Accent hue</Label>
+              <div class="theme-playground__control-row">
+                <Slider
+                  aria-describedby="theme-accent-hue-value"
+                  data-ui-theme-accent-hue
+                  id="theme-accent-hue"
+                  max="359"
+                  min="0"
+                  name="accentHue"
+                  value={String(defaultAccentHue)}
+                />
+                <NumberField
+                  aria-label="Accent hue value"
+                  data-ui-theme-accent-hue-number
+                  id="theme-accent-hue-value"
+                  max="359"
+                  min="0"
+                  value={String(defaultAccentHue)}
+                />
+              </div>
+            </Field>
+          </section>
 
-          <Field class="theme-playground__field">
-            <Label for="theme-secondary-hex">Secondary</Label>
-            <div class="theme-playground__hex-row">
-              <ColorPicker
-                aria-label="Secondary color"
-                class="theme-playground__color"
-                data-ui-theme-secondary-color
-                type="color"
-                value={defaultSecondaryHex}
-              />
-              <Input
-                autocomplete="off"
-                data-ui-theme-secondary-hex
-                id="theme-secondary-hex"
-                inputmode="text"
-                pattern="^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
-                spellcheck="false"
-                value={defaultSecondaryHex}
-              />
-            </div>
-          </Field>
-        </section>
-      </Tabs>
+          <section
+            class="theme-playground__tab-panel"
+            hidden
+            id="theme-manual-panel"
+            role="tabpanel"
+            aria-labelledby="theme-manual-tab"
+          >
+            <Field class="theme-playground__field">
+              <Label for="theme-primary-hex">Primary</Label>
+              <div class="theme-playground__hex-row">
+                <ColorPicker
+                  aria-label="Primary color"
+                  class="theme-playground__color"
+                  data-ui-theme-primary-color
+                  type="color"
+                  value={defaultPrimaryHex}
+                />
+                <Input
+                  autocomplete="off"
+                  data-ui-theme-primary-hex
+                  id="theme-primary-hex"
+                  inputmode="text"
+                  pattern="^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+                  spellcheck="false"
+                  value={defaultPrimaryHex}
+                />
+              </div>
+            </Field>
 
-      <Field class="theme-playground__field">
-        <Label id="theme-scheme-label">Preview scheme</Label>
-        <ButtonGroup aria-labelledby="theme-scheme-label" class="
-          theme-playground__scheme-toggle
-        ">
-          <Button
-            aria-pressed="true"
-            data-ui-theme-scheme="light"
-            type="button"
-            variant="secondary"
-          >Light</Button>
-          <Button
-            aria-pressed="false"
-            data-ui-theme-scheme="dark"
-            type="button"
-            variant="outline"
-          >Dark</Button>
-        </ButtonGroup>
-      </Field>
-    </Card>
+            <Field class="theme-playground__field">
+              <Label for="theme-secondary-hex">Secondary</Label>
+              <div class="theme-playground__hex-row">
+                <ColorPicker
+                  aria-label="Secondary color"
+                  class="theme-playground__color"
+                  data-ui-theme-secondary-color
+                  type="color"
+                  value={defaultSecondaryHex}
+                />
+                <Input
+                  autocomplete="off"
+                  data-ui-theme-secondary-hex
+                  id="theme-secondary-hex"
+                  inputmode="text"
+                  pattern="^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+                  spellcheck="false"
+                  value={defaultSecondaryHex}
+                />
+              </div>
+            </Field>
+          </section>
+        </Tabs>
 
-    <section class="theme-playground__preview-shell" aria-labelledby="theme-preview-title">
-      <div class="theme-playground__section-heading">
-        <p>Live preview</p>
-        <h2 id="theme-preview-title">Representative primitives</h2>
-      </div>
+        <Field class="theme-playground__field">
+          <Label id="theme-scheme-label">Preview scheme</Label>
+          <ButtonGroup
+            aria-labelledby="theme-scheme-label"
+            class="theme-playground__scheme-toggle"
+          >
+            <Button
+              aria-pressed="true"
+              data-ui-theme-scheme="light"
+              type="button"
+              variant="secondary"
+            >Light
+            </Button>
+            <Button
+              aria-pressed="false"
+              data-ui-theme-scheme="dark"
+              type="button"
+              variant="outline"
+            >Dark
+            </Button>
+          </ButtonGroup>
+        </Field>
+      </Card>
 
-      <PrimitiveShowcase
-        class="theme-playground__preview"
-        data-ui-theme-preview
-        description="The preview reads generated tokens from this scoped container."
-        eyebrow="Generated"
-        headingLevel="h3"
-        id="theme-playground-preview"
-        status="Ready"
-        style={`color-scheme: ${defaultScheme}; ${tokenStyle}`}
-        swatchMode="all"
-        title="Workspace launch"
-      />
-    </section>
+      <section class="theme-playground__preview-shell" aria-labelledby="theme-preview-title">
+        <div class="theme-playground__section-heading">
+          <p>Live preview</p>
+          <h2 id="theme-preview-title">Representative primitives</h2>
+        </div>
 
-    <Card class="theme-playground__export" variant="muted">
-      <div class="theme-playground__section-heading">
-        <p>Export</p>
-        <h2>Copy tokens</h2>
-      </div>
-      <Field class="theme-playground__field">
-        <Label id="theme-export-format-label">Format</Label>
-        <ButtonGroup aria-labelledby="theme-export-format-label" class="
-          theme-playground__export-formats
-        ">
-          <Button
-            aria-pressed="true"
-            data-ui-theme-export-format="css"
-            type="button"
-            variant="secondary"
-          >CSS</Button>
-          <Button
-            aria-pressed="false"
-            data-ui-theme-export-format="figma"
-            type="button"
-            variant="outline"
-          >Figma</Button>
-          <Button
-            aria-pressed="false"
-            data-ui-theme-export-format="tokens"
-            type="button"
-            variant="outline"
-          >JSON</Button>
-        </ButtonGroup>
-      </Field>
-      <Textarea
-        aria-label="Generated theme export"
-        class="theme-playground__css"
-        data-ui-theme-output
-        rows={18}
-      >{defaultCss}</Textarea>
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <Button data-ui-theme-export type="button">Copy CSS</Button>
-        <Button data-ui-theme-import type="button" variant="outline">Import CSS</Button>
-        <Button data-ui-theme-check-contrast type="button" variant="secondary">Fix Contrast</Button>
-      </div>
-    </Card>
+        <PrimitiveShowcase
+          class="theme-playground__preview"
+          data-ui-theme-preview
+          description="The preview reads generated tokens from this scoped container."
+          eyebrow="Generated"
+          headingLevel="h3"
+          id="theme-playground-preview"
+          status="Ready"
+          style={`color-scheme: ${defaultScheme}; ${tokenStyle}`}
+          swatchMode="all"
+          title="Workspace launch"
+        />
+      </section>
+
+      <Card class="theme-playground__export" variant="muted">
+        <div class="theme-playground__section-heading">
+          <p>Export</p>
+          <h2>Copy tokens</h2>
+        </div>
+        <Field class="theme-playground__field">
+          <Label id="theme-export-format-label">Format</Label>
+          <ButtonGroup
+            aria-labelledby="theme-export-format-label"
+            class="theme-playground__export-formats"
+          >
+            <Button
+              aria-pressed="true"
+              data-ui-theme-export-format="css"
+              type="button"
+              variant="secondary"
+            >CSS
+            </Button>
+            <Button
+              aria-pressed="false"
+              data-ui-theme-export-format="figma"
+              type="button"
+              variant="outline"
+            >Figma
+            </Button>
+            <Button
+              aria-pressed="false"
+              data-ui-theme-export-format="tokens"
+              type="button"
+              variant="outline"
+            >JSON
+            </Button>
+          </ButtonGroup>
+        </Field>
+        <Textarea
+          aria-label="Generated theme export"
+          class="theme-playground__css"
+          data-ui-theme-output
+          rows={18}
+        >{defaultCss}
+        </Textarea>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <Button data-ui-theme-export type="button">Copy CSS</Button>
+          <Button data-ui-theme-import type="button" variant="outline">Import CSS</Button>
+          <Button data-ui-theme-check-contrast type="button" variant="secondary">Fix Contrast</Button>
+        </div>
+      </Card>
     </ThemeBuilder>
   </div>
 
@@ -320,7 +331,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
         document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
       )
 
-      const setSchemeButtonState = (scheme) => {
+      const setSchemeButtonState = scheme => {
         const buttons = root.querySelectorAll('[data-ui-theme-scheme]')
 
         for (const button of buttons) {
@@ -341,10 +352,7 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
 
         const scheme = getPageScheme()
         const buttons = setSchemeButtonState(scheme)
-
-        const activeButton = [...buttons].find(button =>
-          button.getAttribute('data-ui-theme-scheme') === scheme
-        )
+    const activeButton = [...buttons].find(button => button.getAttribute('data-ui-theme-scheme') === scheme)
 
         if (!notify || !(activeButton instanceof HTMLButtonElement)) return
 
@@ -360,17 +368,17 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
       root.addEventListener('click', event => {
         if (isSyncingScheme) return
 
-        const target = event.target instanceof Element
-          ? event.target.closest('[data-ui-theme-scheme]')
-          : null
+        const target = event.target instanceof Element ?
+          event.target.closest('[data-ui-theme-scheme]') :
+          null
 
         userSelectedScheme = Boolean(target) || userSelectedScheme
       })
 
       const syncSchemeAfterPageThemeChange = event => {
-        const target = event.target instanceof Element
-          ? event.target.closest('[data-theme-toggle], [data-theme-select]')
-          : null
+        const target = event.target instanceof Element ?
+          event.target.closest('[data-theme-toggle], [data-theme-select]') :
+          null
 
         if (!target) return
 
@@ -385,7 +393,6 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token]};`).join('\
     })()
   </script>
 </DocsLayout>
-
 
 <style>
   .theme-page {

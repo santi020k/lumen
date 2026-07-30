@@ -44,15 +44,29 @@ export interface SearchResult {
   score: number
 }
 
-const normalize = (value: string) =>
-  value.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').replaceAll(/[\s_]+/g, '-').toLowerCase()
-
-const tokenize = (value: string): string[] =>
-  normalize(value).split(/[^a-z0-9]+/).filter(Boolean)
+const normalize = (value: string) => value.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').replaceAll(/[\s_]+/g, '-').toLowerCase()
+const tokenize = (value: string): string[] => normalize(value).split(/[^a-z0-9]+/).filter(Boolean)
 
 const searchStopWords = new Set([
-  'a', 'accessibility', 'accessible', 'admin', 'an', 'and', 'app', 'application', 'component', 'for',
-  'in', 'lumen', 'not', 'of', 'or', 'the', 'to', 'ui', 'with'
+  'a',
+  'accessibility',
+  'accessible',
+  'admin',
+  'an',
+  'and',
+  'app',
+  'application',
+  'component',
+  'for',
+  'in',
+  'lumen',
+  'not',
+  'of',
+  'or',
+  'the',
+  'to',
+  'ui',
+  'with'
 ])
 
 const searchTermAliases: Record<string, string[]> = {
@@ -66,15 +80,14 @@ const searchTermAliases: Record<string, string[]> = {
 
 const meaningfulSearchTerms = (value: string): string[] => {
   const terms = tokenize(value)
-  const meaningful = terms.filter((term) => !searchStopWords.has(term))
+  const meaningful = terms.filter(term => !searchStopWords.has(term))
 
   return meaningful.length > 0 ? meaningful : terms
 }
 
-const availableFrameworks = (component: LumenComponentSnapshot): LumenFramework[] =>
-  (Object.entries(component.frameworks) as [LumenFramework, boolean][])
-    .filter(([, available]) => available)
-    .map(([framework]) => framework)
+const availableFrameworks = (component: LumenComponentSnapshot): LumenFramework[] => (Object.entries(component.frameworks) as [LumenFramework, boolean][])
+  .filter(([, available]) => available)
+  .map(([framework]) => framework)
 
 const componentSummary = (component: LumenComponentSnapshot): ComponentSummary => ({
   category: component.category,
@@ -83,7 +96,7 @@ const componentSummary = (component: LumenComponentSnapshot): ComponentSummary =
   frameworks: availableFrameworks(component),
   kebab: component.kebab,
   name: component.name,
-  recipes: component.recipes.map((recipe) => recipe.name)
+  recipes: component.recipes.map(recipe => recipe.name)
 })
 
 export const resolveComponent = (
@@ -92,9 +105,9 @@ export const resolveComponent = (
 ): LumenComponentSnapshot | undefined => {
   const target = normalize(name)
 
-  return data.components.find((component) => component.name === name) ??
-    data.components.find((component) => component.kebab === target) ??
-    data.components.find((component) => normalize(component.name) === target)
+  return data.components.find(component => component.name === name) ??
+    data.components.find(component => component.kebab === target) ??
+    data.components.find(component => normalize(component.name) === target)
 }
 
 export const resolveRecipe = (
@@ -103,7 +116,7 @@ export const resolveRecipe = (
 ): LumenRecipeSnapshot | undefined => {
   const target = normalize(name)
 
-  return data.recipes.find((recipe) => normalize(recipe.name) === target)
+  return data.recipes.find(recipe => normalize(recipe.name) === target)
 }
 
 const frameworkBehaviorSearchText = (behavior: LumenFrameworkSnapshot['behavior']) => [
@@ -118,7 +131,7 @@ const frameworkDetailsSearchText = (framework: LumenFrameworkSnapshot) => [
   ...frameworkBehaviorSearchText(framework.behavior),
   framework.example,
   framework.propsExtends ?? '',
-  framework.props.map((prop) => `${prop.name} ${prop.type}`).join(' '),
+  framework.props.map(prop => `${prop.name} ${prop.type}`).join(' '),
   framework.attributes?.join(' ') ?? '',
   framework.tagName ?? ''
 ]
@@ -126,12 +139,11 @@ const frameworkDetailsSearchText = (framework: LumenFrameworkSnapshot) => [
 const frameworkSearchText = (
   component: LumenComponentSnapshot,
   framework?: LumenFramework
-) =>
-  (framework
-    ? [Reflect.get(component.frameworkDetails, framework)]
-    : Object.values(component.frameworkDetails))
-    .flatMap(frameworkDetailsSearchText)
-    .join(' ')
+) => (framework ?
+  [Reflect.get(component.frameworkDetails, framework)] :
+  Object.values(component.frameworkDetails))
+  .flatMap(frameworkDetailsSearchText)
+  .join(' ')
 
 const componentSearchText = (
   component: LumenComponentSnapshot,
@@ -142,13 +154,13 @@ const componentSearchText = (
   component.description,
   component.category,
   component.collections.join(' '),
-  component.recipes.map((recipe) => recipe.name).join(' '),
+  component.recipes.map(recipe => recipe.name).join(' '),
   component.keywords.join(' '),
   component.dependencies.join(' '),
   component.guidance?.when ?? '',
   component.guidance?.distinction ?? '',
   component.apiReference
-    .map((row) => `${row.attribute} ${row.values} ${row.description}`)
+    .map(row => `${row.attribute} ${row.values} ${row.description}`)
     .join(' '),
   frameworkSearchText(component, framework)
 ].join(' ')
@@ -160,10 +172,7 @@ const scoreCandidate = (
   primaryName = ''
 ) => {
   const normalizedText = normalize(searchableText)
-
-  const matchedTerms = terms.filter((term) =>
-    ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).some((candidate) => normalizedText.includes(candidate))
-  )
+  const matchedTerms = terms.filter(term => ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).some(candidate => normalizedText.includes(candidate)))
 
   if (matchedTerms.length === 0) return { matchedTerms, score: 0 }
 
@@ -173,11 +182,10 @@ const scoreCandidate = (
 
   let score = matchedTerms.reduce(
     (total, term) => total + (
-      ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).some((candidate) => normalizedName.includes(candidate))
-        ? 20
-        : 5
-    ),
-    0
+      ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).some(candidate => normalizedName.includes(candidate)) ?
+        20 :
+        5
+    ), 0
   )
 
   score += Math.round(coverage * 80)
@@ -201,10 +209,7 @@ const appendSearchResult = (
   searchableText: string
 ) => {
   const match = scoreCandidate(
-    query,
-    terms,
-    searchableText,
-    candidate.kind === 'rule' ? '' : candidate.name
+    query, terms, searchableText, candidate.kind === 'rule' ? '' : candidate.name
   )
 
   if (match.score > 0) results.push({ ...candidate, ...match })
@@ -222,60 +227,44 @@ const collectSearchResults = (
     if (framework && !Reflect.get(component.frameworks, framework)) continue
 
     appendSearchResult(
-      results,
-      {
+      results, {
         category: component.category,
         description: component.description,
         frameworks: availableFrameworks(component),
         kind: 'component',
         name: component.name
-      },
-      query,
-      terms,
-      componentSearchText(component, framework)
+      }, query, terms, componentSearchText(component, framework)
     )
   }
 
   for (const recipe of data.recipes) {
     appendSearchResult(
-      results,
-      {
+      results, {
         category: recipe.categories.join(', '),
         description: recipe.description,
         kind: 'recipe',
         name: recipe.name
-      },
-      query,
-      terms,
-      `${recipe.name} ${recipe.description} ${recipe.categories.join(' ')} ${(recipe.components ?? []).join(' ')}`
+      }, query, terms, `${recipe.name} ${recipe.description} ${recipe.categories.join(' ')} ${(recipe.components ?? []).join(' ')}`
     )
   }
 
   for (const token of data.tokens.semantic) {
     appendSearchResult(
-      results,
-      {
+      results, {
         description: 'Lumen semantic design token.',
         kind: 'token',
         name: token
-      },
-      query,
-      terms,
-      token
+      }, query, terms, token
     )
   }
 
-  for (const line of data.rules.split('\n').filter((rule) => rule.trim())) {
+  for (const line of data.rules.split('\n').filter(rule => rule.trim())) {
     appendSearchResult(
-      results,
-      {
+      results, {
         description: line.trim(),
         kind: 'rule',
         name: line.trim()
-      },
-      query,
-      terms,
-      line
+      }, query, terms, line
     )
   }
 
@@ -289,27 +278,24 @@ export const listComponents = (
     recipe?: string | undefined
   } = {},
   data: LumenData = loadLumenData()
-): LumenToolResult<{ components: ComponentSummary[]; count: number }> => {
+): LumenToolResult<{ components: ComponentSummary[], count: number }> => {
   const query = args.query?.trim()
   const queryTerms = query ? meaningfulSearchTerms(query) : []
   const recipe = args.recipe ? resolveRecipe(args.recipe, data) : undefined
   const recipeName = recipe?.name ?? (args.recipe ? normalize(args.recipe) : undefined)
 
-  const matches = data.components.filter((component) => {
+  const matches = data.components.filter(component => {
     if (args.framework && !component.frameworks[args.framework]) return false
 
     if (
       recipeName &&
-      !component.recipes.some((componentRecipe) => normalize(componentRecipe.name) === recipeName)
+      !component.recipes.some(componentRecipe => normalize(componentRecipe.name) === recipeName)
     ) return false
 
     if (
       query &&
       scoreCandidate(
-        query,
-        queryTerms,
-        componentSearchText(component, args.framework),
-        component.name
+        query, queryTerms, componentSearchText(component, args.framework), component.name
       ).score === 0
     ) return false
 
@@ -325,10 +311,10 @@ export const listComponents = (
     }
   }
 
-  const lines = summaries.map((component) => {
-    const recipeNote = component.recipes.length > 0
-      ? ` [recipes: ${component.recipes.join(', ')}]`
-      : ''
+  const lines = summaries.map(component => {
+    const recipeNote = component.recipes.length > 0 ?
+      ` [recipes: ${component.recipes.join(', ')}]` :
+      ''
 
     return `${component.name} (${component.kebab}) — ${component.description} — ${component.frameworks.join(', ')}${recipeNote}`
   })
@@ -347,17 +333,17 @@ const frameworkWithoutSource = (framework: LumenFrameworkSnapshot) => {
 
 const getFrameworkDetail = (details: Record<LumenFramework, LumenFrameworkSnapshot>, framework: LumenFramework): LumenFrameworkSnapshot => {
   if (framework === 'astro') return details.astro
-  
+
   if (framework === 'elements') return details.elements
-  
+
   return details.react
 }
 
 const getRecipeInstall = (install: Record<LumenFramework, string>, framework: LumenFramework): string => {
   if (framework === 'astro') return install.astro
-  
+
   if (framework === 'elements') return install.elements
-  
+
   return install.react
 }
 
@@ -393,29 +379,29 @@ const componentDetail = (
     runtimeEvents: component.runtimeEvents
   }
 
-  return detail === 'source'
-    ? { ...usage, framework: selectedFramework }
-    : usage
+  return detail === 'source' ?
+    { ...usage, framework: selectedFramework } :
+    usage
 }
 
 const formatProps = (framework: LumenFrameworkSnapshot): string => {
   if (framework.attributes && framework.attributes.length > 0) {
-    return `Attributes:\n${framework.attributes.map((attribute) => `- ${attribute}`).join('\n')}`
+    return `Attributes:\n${framework.attributes.map(attribute => `- ${attribute}`).join('\n')}`
   }
 
   if (framework.props.length === 0) {
-    return framework.propsExtends
-      ? `Props extend ${framework.propsExtends}; no additional local props were detected.`
-      : 'No typed props detected.'
+    return framework.propsExtends ?
+      `Props extend ${framework.propsExtends}; no additional local props were detected.` :
+      'No typed props detected.'
   }
 
   const lines = framework.props.map(
-    (prop) => `- ${prop.name}${prop.optional ? '?' : ''}: ${prop.type}`
+    prop => `- ${prop.name}${prop.optional ? '?' : ''}: ${prop.type}`
   )
 
-  const header = framework.propsExtends
-    ? `Props (extends ${framework.propsExtends}):`
-    : 'Props:'
+  const header = framework.propsExtends ?
+    `Props (extends ${framework.propsExtends}):` :
+    'Props:'
 
   return `${header}\n${lines.join('\n')}`
 }
@@ -433,9 +419,9 @@ const buildSummarySections = (
   `Import: ${framework.importStatement}`,
   `Styles: ${framework.styleImport}`,
   framework.tagName ? `Custom element: <${framework.tagName}>` : '',
-  component.recipes.length > 0
-    ? `Recipes: ${component.recipes.map((recipe) => recipe.name).join(', ')}`
-    : 'Recipes: none'
+  component.recipes.length > 0 ?
+    `Recipes: ${component.recipes.map(recipe => recipe.name).join(', ')}` :
+    'Recipes: none'
 ].filter(Boolean)
 
 const appendBehaviorSections = (sections: string[], behavior: LumenFrameworkSnapshot['behavior']) => {
@@ -449,21 +435,13 @@ const appendBehaviorSections = (sections: string[], behavior: LumenFrameworkSnap
 
   if (behavior.options && behavior.options.length > 0) {
     sections.push(
-      '',
-      'Hook options:',
-      ...behavior.options.map((option) =>
-        `- ${option.name}: ${option.type} — ${option.description}`
-      )
+      '', 'Hook options:', ...behavior.options.map(option => `- ${option.name}: ${option.type} — ${option.description}`)
     )
   }
 
   if (behavior.controller && behavior.controller.length > 0) {
     sections.push(
-      '',
-      'Controller values:',
-      ...behavior.controller.map((value) =>
-        `- ${value.name}: ${value.type} — ${value.description}`
-      )
+      '', 'Controller values:', ...behavior.controller.map(value => `- ${value.name}: ${value.type} — ${value.description}`)
     )
   }
 }
@@ -480,7 +458,7 @@ const appendGuidanceSections = (sections: string[], component: LumenComponentSna
 
     sections.push(
       ...component.keyboardInteractions.map(
-        (interaction) => `- ${interaction.key}: ${interaction.action}`
+        interaction => `- ${interaction.key}: ${interaction.action}`
       )
     )
   }
@@ -490,7 +468,7 @@ const appendGuidanceSections = (sections: string[], component: LumenComponentSna
 
     sections.push(
       ...component.apiReference.map(
-        (row) => `- \`${row.attribute}\` ${row.values} — ${row.description}`
+        row => `- \`${row.attribute}\` ${row.values} — ${row.description}`
       )
     )
   }
@@ -498,7 +476,7 @@ const appendGuidanceSections = (sections: string[], component: LumenComponentSna
   if (component.runtimeEvents.length > 0) {
     sections.push('', '## Runtime events')
 
-    sections.push(...component.runtimeEvents.map((event) => `- ${event.name}: ${event.when}`))
+    sections.push(...component.runtimeEvents.map(event => `- ${event.name}: ${event.when}`))
   }
 }
 
@@ -534,10 +512,10 @@ export const getComponent = (
   },
   data: LumenData = loadLumenData()
 ): LumenToolResult<{
-    component?: ReturnType<typeof componentDetail>
-    found: boolean
-    message?: string
-  }> => {
+  component?: ReturnType<typeof componentDetail>
+  found: boolean
+  message?: string
+}> => {
   const component = resolveComponent(args.name, data)
 
   if (!component) {
@@ -574,9 +552,9 @@ export const getComponent = (
 }
 
 export const getRecipe = (
-  args: { framework?: FrameworkFilter | undefined; name: string },
+  args: { framework?: FrameworkFilter | undefined, name: string },
   data: LumenData = loadLumenData()
-): LumenToolResult<{ found: boolean; message?: string; recipe?: LumenRecipeSnapshot }> => {
+): LumenToolResult<{ found: boolean, message?: string, recipe?: LumenRecipeSnapshot }> => {
   const recipe = resolveRecipe(args.name, data)
 
   if (!recipe) {
@@ -591,7 +569,7 @@ export const getRecipe = (
 
   const framework = args.framework ?? 'astro'
 
-  const componentLines = (recipe.components ?? []).map((name) => {
+  const componentLines = (recipe.components ?? []).map(name => {
     const component = resolveComponent(name, data)
 
     return component ? `- ${component.name}: ${component.description}` : `- ${name}`
@@ -619,7 +597,7 @@ export const search = (
     query: string
   },
   data: LumenData = loadLumenData()
-): LumenToolResult<{ query: string; results: SearchResult[]; total: number }> => {
+): LumenToolResult<{ query: string, results: SearchResult[], total: number }> => {
   const query = args.query.trim()
 
   if (!query) {
@@ -633,10 +611,7 @@ export const search = (
   const limit = Math.max(1, Math.min(args.limit ?? 20, 100))
 
   const results = collectSearchResults(
-    query,
-    meaningfulSearchTerms(query),
-    data,
-    args.framework
+    query, meaningfulSearchTerms(query), data, args.framework
   )
 
   const kindPriority: Record<SearchResult['kind'], number> = {
@@ -646,11 +621,9 @@ export const search = (
     token: 2
   }
 
-  results.sort((left, right) =>
-    right.score - left.score ||
+  results.sort((left, right) => right.score - left.score ||
     kindPriority[left.kind] - kindPriority[right.kind] ||
-    left.name.localeCompare(right.name)
-  )
+    left.name.localeCompare(right.name))
 
   const shown = results.slice(0, limit)
 
@@ -665,9 +638,7 @@ export const search = (
     data: { query, results: shown, total: results.length },
     text: `${results.length} match(es) for "${args.query}"${
       results.length > shown.length ? ` (showing ${shown.length})` : ''
-    }:\n\n${shown.map((result) =>
-      `${result.kind}: ${result.name} — ${result.description} [matched: ${result.matchedTerms.join(', ')}]`
-    ).join('\n')}`
+    }:\n\n${shown.map(result => `${result.kind}: ${result.name} — ${result.description} [matched: ${result.matchedTerms.join(', ')}]`).join('\n')}`
   }
 }
 
@@ -695,22 +666,22 @@ const diffManifestSection = (
   const baselineNames = Object.keys(baseline)
 
   return {
-    added: currentNames.filter((name) => (Reflect.get(baseline, name) as string | undefined) === undefined).sort(),
+    added: currentNames.filter(name => (Reflect.get(baseline, name) as string | undefined) === undefined).sort(),
     changed: currentNames
-      .filter((name) => (Reflect.get(baseline, name) as string | undefined) !== undefined && Reflect.get(baseline, name) !== Reflect.get(current, name))
+      .filter(name => (Reflect.get(baseline, name) as string | undefined) !== undefined && Reflect.get(baseline, name) !== Reflect.get(current, name))
       .sort(),
-    removed: baselineNames.filter((name) => (Reflect.get(current, name) as string | undefined) === undefined).sort(),
-    unchanged: currentNames.filter((name) => Reflect.get(baseline, name) === Reflect.get(current, name)).sort()
+    removed: baselineNames.filter(name => (Reflect.get(current, name) as string | undefined) === undefined).sort(),
+    unchanged: currentNames.filter(name => Reflect.get(baseline, name) === Reflect.get(current, name)).sort()
   }
 }
 
 export const getCatalogManifest = (
   data: LumenData = loadLumenData()
 ): LumenToolResult<{
-    catalogHash: string
-    manifest: LumenCatalogManifest
-    schemaVersion: number
-  }> => ({
+  catalogHash: string
+  manifest: LumenCatalogManifest
+  schemaVersion: number
+}> => ({
   data: {
     catalogHash: data.meta.catalogHash,
     manifest: data.catalogManifest,
@@ -733,9 +704,9 @@ export const diffCatalog = (
   },
   data: LumenData = loadLumenData()
 ): LumenToolResult<{
-    components: CatalogChanges
-    currentCatalogHash: string
-    recipes: CatalogChanges
+  components: CatalogChanges
+  currentCatalogHash: string
+  recipes: CatalogChanges
   unchanged: boolean
 }> => {
   const components = diffManifestSection(data.catalogManifest.components, args.baseline.components)
@@ -764,9 +735,9 @@ export const diffCatalog = (
       recipes,
       unchanged
     },
-    text: unchanged
-      ? `The Lumen catalog is unchanged (${data.meta.catalogHash}).`
-      : [
+    text: unchanged ?
+      `The Lumen catalog is unchanged (${data.meta.catalogHash}).` :
+      [
         '# Lumen catalog changes',
         `Current catalog hash: ${data.meta.catalogHash}`,
         `Changed entries: ${changedCount}`,
@@ -779,16 +750,16 @@ export const diffCatalog = (
 export const diagnose = (
   data: LumenData = loadLumenData()
 ): LumenToolResult<{
-    checks: { message: string; name: string; status: 'fail' | 'pass' }[]
-    frameworkCoverage: Record<LumenFramework, number>
-    status: 'healthy' | 'issues'
-  }> => {
-  const componentNames = data.components.map((component) => component.name)
+  checks: { message: string, name: string, status: 'fail' | 'pass' }[]
+  frameworkCoverage: Record<LumenFramework, number>
+  status: 'healthy' | 'issues'
+}> => {
+  const componentNames = data.components.map(component => component.name)
 
   const frameworkCoverage = {
-    astro: data.components.filter((component) => component.frameworks.astro).length,
-    elements: data.components.filter((component) => component.frameworks.elements).length,
-    react: data.components.filter((component) => component.frameworks.react).length
+    astro: data.components.filter(component => component.frameworks.astro).length,
+    elements: data.components.filter(component => component.frameworks.elements).length,
+    react: data.components.filter(component => component.frameworks.react).length
   }
 
   const checks = [
@@ -805,26 +776,26 @@ export const diagnose = (
     {
       message: 'Every component has a manifest fingerprint.',
       name: 'component-manifest',
-      status: componentNames.every((name) => Reflect.get(data.catalogManifest.components, name)) ? 'pass' : 'fail'
+      status: componentNames.every(name => Reflect.get(data.catalogManifest.components, name)) ? 'pass' : 'fail'
     },
     {
       message: 'Every available framework contract has an example and import statement.',
       name: 'framework-contracts',
-      status: data.components.every((component) =>
-        (Object.entries(component.frameworks) as [LumenFramework, boolean][]).every(
-          ([framework, available]) => {
-            if (!available) return true
+      status: data.components.every(component => (Object.entries(component.frameworks) as [LumenFramework, boolean][]).every(
+        ([framework, available]) => {
+          if (!available) return true
 
-            const details = Reflect.get(component.frameworkDetails, framework) as LumenFrameworkSnapshot | undefined
+          const details = Reflect.get(component.frameworkDetails, framework) as LumenFrameworkSnapshot | undefined
 
-            return Boolean(details?.example.trim()) && Boolean(details?.importStatement.trim())
-          }
-        )
-      ) ? 'pass' : 'fail'
+          return Boolean(details?.example.trim()) && Boolean(details?.importStatement.trim())
+        }
+      )) ?
+        'pass' :
+        'fail'
     }
-  ] satisfies { message: string; name: string; status: 'fail' | 'pass' }[]
+  ] satisfies { message: string, name: string, status: 'fail' | 'pass' }[]
 
-  const status = checks.every((check) => check.status === 'pass') ? 'healthy' : 'issues'
+  const status = checks.every(check => check.status === 'pass') ? 'healthy' : 'issues'
 
   return {
     data: { checks, frameworkCoverage, status },
@@ -834,7 +805,7 @@ export const diagnose = (
       `Catalog hash: ${data.meta.catalogHash}`,
       `Framework coverage — Astro: ${frameworkCoverage.astro}, React: ${frameworkCoverage.react}, Elements: ${frameworkCoverage.elements}`,
       '',
-      ...checks.map((check) => `- ${check.status.toUpperCase()} ${check.name}: ${check.message}`)
+      ...checks.map(check => `- ${check.status.toUpperCase()} ${check.name}: ${check.message}`)
     ].join('\n')
   }
 }
@@ -856,7 +827,7 @@ export const getTokens = (
     `Theme attribute: ${tokens.themeAttribute} (values: light, dark)`,
     '',
     '## Semantic token names (use as `text-ink`, `bg-surface`, `border-line`, etc.)',
-    tokens.semantic.map((token) => `- ${token}`).join('\n'),
+    tokens.semantic.map(token => `- ${token}`).join('\n'),
     '',
     '## Base color values',
     colorLines.join('\n'),

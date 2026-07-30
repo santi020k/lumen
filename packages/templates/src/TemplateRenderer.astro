@@ -1,0 +1,20 @@
+---
+import AnalyticsDashboard from './templates/AnalyticsDashboard.astro'
+import AuthOnboarding from './templates/AuthOnboarding.astro'
+import CommerceDashboard from './templates/CommerceDashboard.astro'
+import ProjectWorkspace from './templates/ProjectWorkspace.astro'
+import SaasAdmin from './templates/SaasAdmin.astro'
+import type { TemplateSlug } from './templates'
+
+interface Props {
+  slug: TemplateSlug
+}
+
+const { slug } = Astro.props
+---
+
+{slug === 'analytics-dashboard' && <AnalyticsDashboard />}
+{slug === 'saas-admin' && <SaasAdmin />}
+{slug === 'commerce-dashboard' && <CommerceDashboard />}
+{slug === 'project-workspace' && <ProjectWorkspace />}
+{slug === 'auth-onboarding' && <AuthOnboarding />}

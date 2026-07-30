@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="./lumen-template.css" />
+
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<div class="lumen-template lumen-template__shell">
+  <lumen-sidebar class="lumen-template__sidebar"><strong>Orbit Admin</strong><nav aria-label="Administration"><a aria-current="page" href="#overview">Overview</a><a href="#members">Members</a><a href="#billing">Billing</a></nav></lumen-sidebar>
+  <main class="lumen-template__main" id="overview">
+    <header class="lumen-template__header"><div><lumen-badge variant="outline">Workspace administration</lumen-badge><h1>Good morning, Maya</h1><p>Access, billing, and operational health.</p></div><lumen-button>Invite members</lumen-button></header>
+    <lumen-alert><strong>Quarterly access review is ready.</strong> Confirm eight elevated roles before July 12.</lumen-alert>
+    <section class="lumen-template__metrics" aria-label="Workspace metrics"><lumen-card class="lumen-template__metric"><lumen-stat label="Workspace members" value="248"></lumen-stat><lumen-badge variant="success">+24</lumen-badge></lumen-card><lumen-card class="lumen-template__metric"><lumen-stat label="Seat activation" value="91%"></lumen-stat><lumen-badge variant="success">Healthy</lumen-badge></lumen-card><lumen-card class="lumen-template__metric"><lumen-stat label="Access reviews" value="8"></lumen-stat><lumen-badge variant="warning">3 pending</lumen-badge></lumen-card><lumen-card class="lumen-template__metric"><lumen-stat label="Availability" value="99.99%"></lumen-stat><lumen-badge variant="success">Normal</lumen-badge></lumen-card></section>
+    <section class="lumen-template__grid" id="billing"><lumen-card class="lumen-template__panel"><h2>Plan utilization</h2><lumen-stat label="Seats used" value="248 / 300"></lumen-stat><lumen-progress aria-label="248 of 300 seats used" max="300" value="248"></lumen-progress></lumen-card><lumen-card class="lumen-template__panel"><h2>Security posture</h2><ul class="lumen-template__list"><li>Single sign-on enforced</li><li>Domain verification complete</li><li>3 recovery codes need rotation</li></ul></lumen-card></section>
+    <lumen-card class="lumen-template__panel" id="members"><div class="lumen-template__section-header"><h2>Recently active members</h2><lumen-search-field aria-label="Search members" placeholder="Search members"></lumen-search-field></div><lumen-table class="lumen-template__table"><table><thead><tr><th>Member</th><th>Team</th><th>Status</th><th>Role</th></tr></thead><tbody><tr><td>Amina Bello</td><td>Design</td><td><lumen-badge variant="success">Active</lumen-badge></td><td>Admin</td></tr><tr><td>Theo Martin</td><td>Success</td><td><lumen-badge variant="warning">Pending</lumen-badge></td><td>Member</td></tr></tbody></table></lumen-table></lumen-card>
+  </main>
+</div>

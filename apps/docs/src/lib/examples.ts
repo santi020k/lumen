@@ -5,9 +5,7 @@ const rawModules = import.meta.glob<string>('../examples/*.astro', { eager: true
 const glassLiveModules = import.meta.glob<{ default: AstroComponentFactory }>('../examples/glass/*.astro', { eager: true })
 const glassRawModules = import.meta.glob<string>('../examples/glass/*.astro', { eager: true, import: 'default', query: '?raw' })
 const nameFromPath = (path: string) => path.split('/').pop()?.replace('.astro', '') ?? path
-
-const toEntries = <Value>(modules: Record<string, Value>) =>
-  Object.fromEntries(Object.entries(modules).map(([path, module]) => [nameFromPath(path), module]))
+const toEntries = <Value>(modules: Record<string, Value>) => Object.fromEntries(Object.entries(modules).map(([path, module]) => [nameFromPath(path), module]))
 
 const exampleComponents = toEntries(
   Object.fromEntries(Object.entries(liveModules).map(([path, module]) => [path, module.default]))

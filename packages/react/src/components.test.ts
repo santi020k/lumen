@@ -1,10 +1,10 @@
-import { registerLumenIconPack } from '@santi020k/lumen-core'
-
 import type {
   ComponentPropsWithoutRef,
   ReactElement
 } from 'react'
 import { isValidElement } from 'react'
+
+import { registerLumenIconPack } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
 import {
@@ -475,17 +475,11 @@ describe('@santi020k/lumen-react components', () => {
       const children = propsOf(chart as ReactElement).children
       const elements = (Array.isArray(children) ? children : [children])
         .filter(isValidElement)
-      const plot = elements.find(child =>
-        String(propsOf(child).className).includes('ui-chart__plot')
-      )
+      const plot = elements.find(child => String(propsOf(child).className).includes('ui-chart__plot'))
 
-      expect(elements.some(child =>
-        propsOf(child).className === 'ui-chart__empty'
-      )).toBe(true)
+      expect(elements.some(child => propsOf(child).className === 'ui-chart__empty')).toBe(true)
       expect(propsOf(plot).hidden).toBe(true)
-      expect(elements.some(child =>
-        propsOf(child).className === 'ui-chart__data'
-      )).toBe(false)
+      expect(elements.some(child => propsOf(child).className === 'ui-chart__data')).toBe(false)
     }
   })
 

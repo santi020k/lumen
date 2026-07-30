@@ -1,0 +1,120 @@
+---
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Field,
+  Icon,
+  Input,
+  Label,
+  Link,
+  Progress,
+  Stepper
+} from '@santi020k/lumen-astro'
+---
+
+<main class="template-onboarding">
+  <section class="template-onboarding__story" aria-labelledby="onboarding-story-title">
+    <Link class="template-onboarding__brand" href="/templates">
+      <span><Icon name="sparkles" /></span>
+      Lumen Orbit
+    </Link>
+    <div>
+      <Badge variant="outline">A calmer first run</Badge>
+      <h1 id="onboarding-story-title">Bring your team’s work into focus.</h1>
+      <p>
+        A complete authentication and onboarding flow with visible labels,
+        recoverable validation, progress, and useful setup choices.
+      </p>
+      <ul>
+        <li><Icon name="circle-check" /> Invite collaborators when you are ready.</li>
+        <li><Icon name="circle-check" /> Import data or begin with a clean workspace.</li>
+        <li><Icon name="circle-check" /> Change every preference later.</li>
+      </ul>
+    </div>
+    <blockquote>
+      “Our team was organized before the kickoff call.”
+      <cite>— Amina, Northstar Labs</cite>
+    </blockquote>
+  </section>
+
+  <section class="template-onboarding__form-area" aria-labelledby="onboarding-form-title">
+    <Card class="template-onboarding__card">
+      <Stepper
+        aria-label="Account setup progress"
+        currentStep={1}
+        steps={['Account', 'Workspace', 'Preferences', 'Invite']}
+      />
+      <div class="template-onboarding__heading">
+        <span>Step 2 of 4</span>
+        <h2 id="onboarding-form-title">Create your workspace</h2>
+        <p>We’ll use these details to prepare the right starting point.</p>
+      </div>
+
+      <form class="template-onboarding__form">
+        <Field controlId="workspace-name">
+          <Label for="workspace-name">Workspace name</Label>
+          <Input
+            autocomplete="organization"
+            id="workspace-name"
+            name="workspace"
+            placeholder="Northstar Labs"
+            required
+          />
+        </Field>
+
+        <Field controlId="work-email">
+          <Label for="work-email">Work email</Label>
+          <Input
+            aria-invalid="true"
+            autocomplete="email"
+            id="work-email"
+            name="email"
+            type="email"
+            value="maya@example"
+            required
+          />
+          <Alert role="alert" variant="destructive">
+            Enter a complete email address, such as maya@example.com.
+          </Alert>
+        </Field>
+
+        <fieldset class="template-onboarding__choices">
+          <legend>What are you setting up?</legend>
+          <label>
+            <input checked name="intent" type="radio" value="team" />
+            <span><Icon name="users-round" /><strong>A team workspace</strong><small>Coordinate projects and collaborators.</small></span>
+          </label>
+          <label>
+            <input name="intent" type="radio" value="personal" />
+            <span><Icon name="user-round" /><strong>A personal workspace</strong><small>Organize individual projects and ideas.</small></span>
+          </label>
+        </fieldset>
+
+        <label class="template-onboarding__checkbox">
+          <Checkbox checked name="updates" value="product-updates" />
+          <span>Send occasional product and onboarding tips</span>
+        </label>
+
+        <div class="template-onboarding__progress">
+          <div><span>Setup progress</span><strong>50%</strong></div>
+          <Progress aria-label="Account setup is 50% complete" value={50} />
+        </div>
+
+        <div class="template-onboarding__actions">
+          <Button variant="ghost">Back</Button>
+          <Button type="submit">
+            Continue
+            <Icon name="arrow-right" size="sm" />
+          </Button>
+        </div>
+      </form>
+
+      <p class="template-onboarding__signin">
+        Already have an account? <Link href="#sign-in">Sign in</Link>
+      </p>
+    </Card>
+  </section>
+</main>

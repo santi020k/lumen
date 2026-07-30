@@ -64,13 +64,21 @@ export const lumenTemplates = [
   }
 ] as const satisfies readonly LumenTemplate[]
 
-export const isTemplateSlug = (value: string): value is TemplateSlug =>
-  templateSlugs.some(slug => slug === value)
+export const isTemplateSlug = (value: string): value is TemplateSlug => {
+  const matches = templateSlugs.some(slug => slug === value)
 
-export const getLumenTemplate = (slug: string): LumenTemplate | undefined =>
-  lumenTemplates.find(template => template.slug === slug)
+  return matches
+}
+
+export const getLumenTemplate = (slug: string): LumenTemplate | undefined => {
+  const template = lumenTemplates.find(item => item.slug === slug)
+
+  return template
+}
 
 export const getTemplateInstallCommand = (
   slug: TemplateSlug,
   framework: TemplateFramework
-): string => `pnpm exec lumen add ${slug} --target ${framework}`
+): string => (
+  `pnpm exec lumen add ${slug} --target ${framework}`
+)

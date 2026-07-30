@@ -1,9 +1,9 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
-type DescriptionItem = { label: string; value: string }
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface DescriptionItem { label: string, value: string }
 
 interface Props extends HTMLAttributes<'dl'> {
   class?: string | null

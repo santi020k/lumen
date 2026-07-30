@@ -23,7 +23,7 @@ describe('framework snippets', () => {
   test('translates native and framework-specific attributes for React', () => {
     const react = buildSnippets('Field', example)[1]?.code
 
-    expect(react).toContain("from '@santi020k/lumen-react'")
+    expect(react).toContain('from \'@santi020k/lumen-react\'')
     expect(react).toContain('className="signup-field"')
     expect(react).toContain('htmlFor="email"')
     expect(react).toContain('defaultValue="hello@example.com"')

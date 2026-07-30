@@ -1,9 +1,9 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
-type MentionOption = string | { label: string; value: string }
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+type MentionOption = string | { label: string, value: string }
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -24,9 +24,7 @@ const {
   ...rest
 } = Astro.props
 
-const normalized = options.map(option =>
-  typeof option === 'string' ? { label: option, value: option } : option
-)
+const normalized = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-mentions'

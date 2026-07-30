@@ -1,4 +1,7 @@
 ---
+
+/* cspell:ignore aaronmgz Aarón commitprompt coolstead difftale */
+
 import {
   Alert,
   AnimatedNumber,
@@ -13,6 +16,7 @@ import {
   Eyebrow,
   Field,
   Icon,
+  Image,
   Input,
   Label,
   Marker,
@@ -78,6 +82,117 @@ const categories = [
   'Layout',
   'Brand'
 ] as const
+
+interface UseCase {
+  category: string
+  description: string
+  featured?: boolean
+  href: string
+  image: {
+    height: number
+    src: string
+    width: number
+  }
+  linkLabel?: string
+  name: string
+}
+
+const useCases: readonly UseCase[] = [
+  {
+    category: 'AI marketplace',
+    description: 'A bilingual real-estate discovery experience that turns dense property signals into a calm, guided search.',
+    href: 'https://memudo.ai',
+    image: { height: 720, src: '/use-cases/memudo.jpg', width: 1280 },
+    name: 'MeMudo.ai',
+    featured: true
+  },
+  {
+    category: 'Developer tooling',
+    description: 'A bold documentation and product surface for catching quality, security, and accessibility problems in Astro code.',
+    href: 'https://doctor.santi020k.com',
+    image: { height: 716, src: '/use-cases/astro-doctor.png', width: 1272 },
+    name: 'Astro Doctor',
+    featured: true
+  },
+  {
+    category: 'Family platform',
+    description: 'A warm, bilingual family experience built around milestones, memories, and the arrival of baby Aarón.',
+    href: 'https://aaronmgz.com',
+    image: { height: 716, src: '/use-cases/aaronmgz.png', width: 1272 },
+    name: 'Aarón MGZ'
+  },
+  {
+    category: 'CLI documentation',
+    description: 'A focused product story for writing intentional Conventional Commits without memorizing the syntax.',
+    href: 'https://commitprompt.santi020k.com',
+    image: { height: 720, src: '/use-cases/commitprompt.png', width: 1280 },
+    name: 'Commitprompt'
+  },
+  {
+    category: 'macOS utility',
+    description: 'A safety-minded landing page for steady Mac cooling, live thermal insight, and quieter fan control.',
+    href: 'https://coolstead.santi020k.com',
+    image: { height: 630, src: '/use-cases/coolstead.jpg', width: 1200 },
+    name: 'Coolstead'
+  },
+  {
+    category: 'Editor intelligence',
+    description: 'Documentation for dependency health, safe update targets, and vulnerability signals inside VS Code and Zed.',
+    href: 'https://beacon.santi020k.com',
+    image: { height: 900, src: '/use-cases/dep-beacon.jpg', width: 1600 },
+    name: 'Dep Beacon'
+  },
+  {
+    category: 'VS Code extension',
+    description: 'A crisp product site for AI-assisted commits, pull-request drafts, and file history without leaving the editor.',
+    href: 'https://difftale.santi020k.com',
+    image: { height: 630, src: '/use-cases/difftale.jpg', width: 1200 },
+    name: 'Difftale'
+  },
+  {
+    category: 'Documentation system',
+    description: 'A deep technical reference that makes a large, multi-package ESLint platform approachable and navigable.',
+    href: 'https://eslint.santi020k.com',
+    image: { height: 630, src: '/use-cases/eslint-config.webp', width: 1200 },
+    name: 'ESLint Config'
+  },
+  {
+    category: 'Private dashboard',
+    description: 'An owner-only project intelligence workspace for repository, package, deployment, and attention signals.',
+    href: 'https://github.com/santi020k/observatory',
+    image: { height: 720, src: '/use-cases/observatory.jpg', width: 1280 },
+    linkLabel: 'View source',
+    name: 'Observatory'
+  },
+  {
+    category: 'iPhone app',
+    description: 'A bilingual launch and support hub for a private, on-device visual studio for photos and social layouts.',
+    href: 'https://postlens.santi020k.com',
+    image: { height: 630, src: '/use-cases/postlens.png', width: 1200 },
+    name: 'PostLens'
+  },
+  {
+    category: 'Theme ecosystem',
+    description: 'One calm violet design language presented across VS Code, Zed, Chrome, and terminal experiences.',
+    href: 'https://theme.santi020k.com',
+    image: { height: 630, src: '/use-cases/theme.png', width: 1200 },
+    name: 'Santi020k Theme'
+  },
+  {
+    category: 'Personal platform',
+    description: 'A content-rich home for engineering work, open-source projects, writing, talks, and professional history.',
+    href: 'https://santi020k.com',
+    image: { height: 630, src: '/use-cases/portfolio.webp', width: 1200 },
+    name: 'Santiago Molina'
+  },
+  {
+    category: 'macOS productivity',
+    description: 'A product and commerce site for organizing application windows into focused, restorable workspaces.',
+    href: 'https://workspace.santi020k.com',
+    image: { height: 630, src: '/use-cases/workspace-organizer.png', width: 1200 },
+    name: 'Workspace Organizer'
+  }
+]
 ---
 
 <BaseLayout
@@ -301,6 +416,61 @@ const categories = [
           </div>
           <p>Theme the meaning once. Every primitive follows.</p>
         </Card>
+      </RevealGroup>
+    </section>
+
+    <section class="home-section home-container home-use-cases" aria-labelledby="use-cases-title">
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-section__head--split">
+          <div>
+            <Eyebrow>Lumen in production</Eyebrow>
+            <h2 id="use-cases-title">One system.<br />Very different products.</h2>
+          </div>
+          <div class="home-section__aside">
+            <p>
+              From consumer products and native-app launches to private dashboards and deep
+              technical documentation, these real projects use Lumen without losing their voice.
+            </p>
+          </div>
+        </div>
+      </ScrollReveal>
+
+      <RevealGroup class="home-use-cases__grid" stagger={45}>
+        {useCases.map(useCase => (
+          <Card
+            as="article"
+            class:list={[
+              'home-use-case',
+              { 'home-use-case--featured': useCase.featured }
+            ]}
+          >
+            <div class="home-use-case__preview">
+              <Image
+                alt={`${useCase.name} website preview`}
+                height={useCase.image.height}
+                src={useCase.image.src}
+                width={useCase.image.width}
+              />
+            </div>
+            <div class="home-use-case__body">
+              <div class="home-use-case__meta">
+                <Badge variant="outline">{useCase.category}</Badge>
+                <span>{new URL(useCase.href).hostname.replace('www.', '')}</span>
+              </div>
+              <h3>{useCase.name}</h3>
+              <p>{useCase.description}</p>
+              <ButtonLink
+                ariaLabel={`Open ${useCase.name} in a new tab`}
+                href={useCase.href}
+                newTab
+                showArrow
+                variant="inline"
+              >
+                {'linkLabel' in useCase ? useCase.linkLabel : 'Visit project'}
+              </ButtonLink>
+            </div>
+          </Card>
+        ))}
       </RevealGroup>
     </section>
 
@@ -938,6 +1108,106 @@ const categories = [
     content: "";
   }
 
+  .home-use-cases__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .home-use-case {
+    grid-column: span 4;
+    overflow: hidden;
+    border-color: hsl(var(--line) / .78);
+    background: hsl(var(--surface) / .88);
+    box-shadow: 0 18px 52px -44px hsl(var(--ink) / .65);
+    padding: 0;
+  }
+
+  .home-use-case--featured {
+    grid-column: span 6;
+  }
+
+  .home-use-case__preview {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-bottom: 1px solid hsl(var(--line) / .72);
+    background: hsl(var(--surface-muted));
+  }
+
+  .home-use-case__preview::after {
+    position: absolute;
+    inset: auto 0 0;
+    height: 22%;
+    background: linear-gradient(transparent, hsl(var(--ink) / .12));
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-use-case__preview :global(.ui-image) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .home-use-case__body {
+    display: flex;
+    min-height: 15rem;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+  }
+
+  .home-use-case__meta {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+  }
+
+  .home-use-case__meta > span {
+    overflow: hidden;
+    color: hsl(var(--ink-muted));
+    font-family: var(--santi020k-font-mono, monospace);
+    font-size: .62rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-use-case h3 {
+    margin: 1.3rem 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: clamp(1.3rem, 2.1vw, 1.7rem);
+    font-weight: 750;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+  }
+
+  .home-use-case__body > p {
+    margin: .7rem 0 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: .82rem;
+    line-height: 1.65;
+  }
+
+  .home-use-case__body > :global(.ui-button-link) {
+    margin-top: auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .home-use-case__preview :global(.ui-image) {
+      transition: transform 420ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .home-use-case:hover .home-use-case__preview :global(.ui-image) {
+      transform: scale(1.025);
+    }
+  }
+
   .home-principles {
     margin-top: clamp(6rem, 11vw, 10rem);
     border-top: 1px solid hsl(var(--line) / .7);
@@ -1196,6 +1466,11 @@ const categories = [
       max-width: 34rem;
     }
 
+    .home-use-case,
+    .home-use-case--featured {
+      grid-column: span 6;
+    }
+
     .home-ai {
       grid-template-columns: 1fr;
     }
@@ -1270,14 +1545,24 @@ const categories = [
     }
 
     .home-specimens,
-    .home-principles__grid {
+    .home-principles__grid,
+    .home-use-cases__grid {
       display: grid;
       grid-template-columns: 1fr;
     }
 
-    .home-specimen {
+    .home-specimen,
+    .home-use-case,
+    .home-use-case--featured {
       grid-column: auto;
+    }
+
+    .home-specimen {
       min-height: 17rem;
+    }
+
+    .home-use-case__body {
+      min-height: 0;
     }
 
     .home-principle {

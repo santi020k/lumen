@@ -56,15 +56,12 @@ export interface ConsumerRolloutReport {
   generatedAt: string
   mode: 'apply' | 'inventory'
   repositories: (ConsumerInventory & {
-    commands: { command: string; ok: boolean; output: string }[]
+    commands: { command: string, ok: boolean, output: string }[]
   })[]
   targetVersion?: string
 }
 
-export const consumerRolloutSucceeded = (report: ConsumerRolloutReport): boolean =>
-  report.repositories.every(repository =>
-    repository.valid && repository.commands.every(command => command.ok)
-  )
+export const consumerRolloutSucceeded = (report: ConsumerRolloutReport): boolean => report.repositories.every(repository => repository.valid && repository.commands.every(command => command.ok))
 
 interface PackageManifest {
   dependencies?: Record<string, string>
@@ -113,8 +110,7 @@ const findPackageManifests = async (root: string): Promise<string[]> => {
   return results
 }
 
-const readManifest = async (path: string): Promise<PackageManifest> =>
-  JSON.parse(await readFile(path, 'utf8')) as PackageManifest
+const readManifest = async (path: string): Promise<PackageManifest> => JSON.parse(await readFile(path, 'utf8')) as PackageManifest
 
 const readGitValue = async (root: string, args: string[]): Promise<string | undefined> => {
   try {
@@ -139,16 +135,14 @@ const collectManifestReferences = (
   manifest: PackageManifest,
   file: string,
   root: string
-): ConsumerReference[] => dependencyFields.flatMap(field =>
-  Object.entries(manifest[field] ?? {})
-    .filter(([packageName]) => isLumenPackage(packageName))
-    .map(([packageName, version]) => ({
-      file: relative(root, file),
-      packageName,
-      source: 'manifest' as const,
-      version
-    }))
-)
+): ConsumerReference[] => dependencyFields.flatMap(field => Object.entries(manifest[field] ?? {})
+  .filter(([packageName]) => isLumenPackage(packageName))
+  .map(([packageName, version]) => ({
+    file: relative(root, file),
+    packageName,
+    source: 'manifest' as const,
+    version
+  })))
 
 const collectYamlReferences = (source: string, file: string): ConsumerReference[] => {
   const references: ConsumerReference[] = []
@@ -215,18 +209,13 @@ export const inspectLumenConsumer = async (
   })))
 
   const rootManifest = await readManifest(rootManifestPath)
-
-  const references = manifests.flatMap(({ file, manifest }) =>
-    collectManifestReferences(manifest, file, root)
-  )
-
+  const references = manifests.flatMap(({ file, manifest }) => collectManifestReferences(manifest, file, root))
   const workspacePath = join(root, 'pnpm-workspace.yaml')
   const lockPath = join(root, 'pnpm-lock.yaml')
 
   if (await pathExists(workspacePath)) {
     references.push(...collectYamlReferences(
-      await readFile(workspacePath, 'utf8'),
-      'pnpm-workspace.yaml'
+      await readFile(workspacePath, 'utf8'), 'pnpm-workspace.yaml'
     ))
   }
 
@@ -327,9 +316,7 @@ export const updateLumenWorkspaceSource = (
   source: string,
   targetVersion: string
 ): string => source.replaceAll(
-  /^(\s*['"]?@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?['"]?\s*:\s*['"]?)([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$/gm,
-  (_match, before: string, prefix: string, _version: string, after: string) =>
-    `${before}${prefix}${targetVersion}${after}`
+  /^(\s*['"]?@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?['"]?\s*:\s*['"]?)([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$/gm, (_match, before: string, prefix: string, _version: string, after: string) => `${before}${prefix}${targetVersion}${after}`
 )
 
 const getVerificationScripts = (
@@ -353,7 +340,7 @@ const runCommand = async (
   root: string,
   executable: string,
   args: string[]
-): Promise<{ command: string; ok: boolean; output: string }> => {
+): Promise<{ command: string, ok: boolean, output: string }> => {
   const command = [executable, ...args].join(' ')
 
   try {
@@ -364,7 +351,7 @@ const runCommand = async (
 
     return { command, ok: true, output: `${stdout}${stderr}`.trim() }
   } catch (error) {
-    const detail = error as { stderr?: string; stdout?: string; message?: string }
+    const detail = error as { stderr?: string, stdout?: string, message?: string }
 
     return {
       command,
@@ -381,14 +368,14 @@ const parseFlowSequence = (source: string): string[] | undefined => {
 
   const values: string[] = []
   let current = ''
-  let quote: '"' | "'" | undefined
+  let quote: '"' | '\'' | undefined
 
   for (const character of match[1] ?? '') {
     if (quote) {
       current += character
 
       if (character === quote) quote = undefined
-    } else if (character === '"' || character === "'") {
+    } else if (character === '"' || character === '\'') {
       current += character
 
       quote = character
@@ -408,7 +395,7 @@ const parseFlowSequence = (source: string): string[] | undefined => {
 
     if (
       (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
-      (trimmed.startsWith("'") && trimmed.endsWith("'"))
+      (trimmed.startsWith('\'') && trimmed.endsWith('\''))
     ) {
       return trimmed.slice(1, -1)
     }
@@ -455,21 +442,20 @@ export const addReleaseAgeTarget = (source: string, packages: string[], version:
   return lines.join('\n')
 }
 
-const removeObsoleteReleaseAgeEntries = (source: string, targetVersion: string): string =>
-  source.split(/\r?\n/)
-    .filter(line => {
-      const match = /^\s*-\s*['"]?(@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?)@([^'"]+)['"]?\s*$/.exec(line)
+const removeObsoleteReleaseAgeEntries = (source: string, targetVersion: string): string => source.split(/\r?\n/)
+  .filter(line => {
+    const match = /^\s*-\s*['"]?(@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?)@([^'"]+)['"]?\s*$/.exec(line)
 
-      return !match || match[2] === targetVersion
-    })
-    .join('\n')
+    return !match || match[2] === targetVersion
+  })
+  .join('\n')
 
 const upgradeConsumer = async (
   inventory: ConsumerInventory,
   targetVersion: string,
   allowDirty: boolean,
   verify: boolean
-): Promise<{ command: string; ok: boolean; output: string }[]> => {
+): Promise<{ command: string, ok: boolean, output: string }[]> => {
   if (inventory.dirty && !allowDirty) {
     throw new Error(`${inventory.repository} is dirty. Commit a baseline or pass --allow-dirty.`)
   }
@@ -501,9 +487,7 @@ const upgradeConsumer = async (
     const packages = [...new Set(inventory.references.map(item => item.packageName))]
 
     const updated = addReleaseAgeTarget(
-      updateLumenWorkspaceSource(source, targetVersion),
-      packages,
-      targetVersion
+      updateLumenWorkspaceSource(source, targetVersion), packages, targetVersion
     )
 
     if (updated !== source) await writeFile(workspacePath, updated)
@@ -576,23 +560,18 @@ export const runConsumerRollout = async (
   for (const repository of repositories) {
     const before = await inspectLumenConsumer(repository, options.targetVersion)
 
-    const commands = options.apply
-      ? await upgradeConsumer(
-        before,
-        options.targetVersion ?? '',
-        options.allowDirty ?? false,
-        options.verify ?? true
-      )
-      : []
+    const commands = options.apply ?
+      await upgradeConsumer(
+        before, options.targetVersion ?? '', options.allowDirty ?? false, options.verify ?? true
+      ) :
+      []
 
-    const after = options.apply
-      ? await inspectLumenConsumer(repository, options.targetVersion)
-      : before
+    const after = options.apply ?
+      await inspectLumenConsumer(repository, options.targetVersion) :
+      before
 
     if (options.apply) {
-      after.warnings = after.warnings.filter(warning =>
-        !warning.startsWith('Repository has uncommitted changes')
-      )
+      after.warnings = after.warnings.filter(warning => !warning.startsWith('Repository has uncommitted changes'))
 
       after.valid = after.warnings.length === 0
     }
@@ -617,20 +596,12 @@ export const formatConsumerRollout = (report: ConsumerRolloutReport): string => 
 
   for (const repository of report.repositories) {
     lines.push(
-      '',
-      repository.repository,
-      `  package manager: ${repository.packageManager ?? 'missing'}`,
-      `  node engine: ${repository.nodeEngine ?? 'unspecified'}`,
-      `  frameworks: ${repository.frameworks.join(', ') || 'none'}`,
-      `  resolved graph: ${JSON.stringify(repository.resolvedVersions)}`,
-      `  status: ${repository.valid && repository.commands.every(command => command.ok) ? 'ok' : 'attention required'}`
+      '', repository.repository, `  package manager: ${repository.packageManager ?? 'missing'}`, `  node engine: ${repository.nodeEngine ?? 'unspecified'}`, `  frameworks: ${repository.frameworks.join(', ') || 'none'}`, `  resolved graph: ${JSON.stringify(repository.resolvedVersions)}`, `  status: ${repository.valid && repository.commands.every(command => command.ok) ? 'ok' : 'attention required'}`
     )
 
     lines.push(...repository.warnings.map(warning => `  warning: ${warning}`))
 
-    lines.push(...repository.commands.map(command =>
-      `  ${command.ok ? 'pass' : 'fail'}: ${command.command}`
-    ))
+    lines.push(...repository.commands.map(command => `  ${command.ok ? 'pass' : 'fail'}: ${command.command}`))
   }
 
   return lines.join('\n')

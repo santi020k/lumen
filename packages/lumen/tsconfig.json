@@ -1,9 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "outDir": "dist",
-    "rootDir": "src",
+    "paths": {
+      "@santi020k/lumen-astro": ["../astro/index.ts"],
+      "@santi020k/lumen-react": ["../react/src/index.ts"]
+    },
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "templates/**/*.astro",
+    "templates/**/*.ts",
+    "templates/**/*.tsx"
+  ]
 }

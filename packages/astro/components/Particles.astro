@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -61,17 +61,25 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
         const size = Math.random() * 12 + 8
 
         particle.className = 'ui-particles__particle'
+
         particle.style.setProperty('--ui-particle-delay', `${Math.random() * 8}s`)
+
         particle.style.setProperty('--ui-particle-duration', `${20 + Math.random() * 15}s`)
+
         particle.style.setProperty('--ui-particle-left', `${Math.random() * 100}%`)
+
         particle.style.setProperty('--ui-particle-size', `${size}px`)
+
         particle.style.setProperty('--ui-particle-tone', particleTones[Math.floor(Math.random() * particleTones.length)])
+
         particle.style.setProperty('--ui-particle-top', `${Math.random() * 100}%`)
+
         container.appendChild(particle)
       }
     }
   }
 
   initParticles()
+
   document.addEventListener('astro:after-swap', () => initParticles())
 </script>

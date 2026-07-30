@@ -1,12 +1,13 @@
 ---
-import { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+
   /**
    * @deprecated Use `glass` instead. `surface="glass"` maps to `glass={true}`.
    */
@@ -22,11 +23,12 @@ const {
 } = Astro.props
 
 const resolvedGlass = resolveLumenGlass(glass, surface)
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-popover',
-    resolvedGlass && 'ui-popover--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-popover',
+  resolvedGlass && 'ui-popover--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 

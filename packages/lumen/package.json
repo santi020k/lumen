@@ -53,8 +53,11 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
     "@types/semver": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "astro": "catalog:",
+    "react": "catalog:",
     "typescript": "catalog:",
     "tailwindcss": "catalog:",
     "vitest": "catalog:"

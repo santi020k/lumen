@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'p'> {
+  class?: string | null
+  className?: string
+  message?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  message,
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-field-error'], classProp, className)
+---
+
+<p
+  class:list={classList}
+  data-ui-field-error
+  hidden={!message}
+  {...passthrough}
+>
+  <slot>{message}</slot>
+</p>

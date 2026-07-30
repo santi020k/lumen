@@ -28,6 +28,9 @@ These are the component gaps that should block v1.
 `Form` should provide a consistent validation and submission boundary around the existing `Field`,
 `Label`, and input components.
 
+The detailed architecture, framework integrations, delivery phases, and conformance requirements
+live in the [Form System Roadmap](form-system-roadmap.md).
+
 Required behavior:
 
 - Native form submission, reset, disabled controls, and browser autofill continue to work.
@@ -310,4 +313,3 @@ their catalogs:
 - [Material UI components](https://mui.com/material-ui/all-components/)
 - [React Aria component examples](https://react-spectrum.adobe.com/react-aria-starter/)
 - [React Spectrum testing guidance](https://react-spectrum.adobe.com/testing)
-

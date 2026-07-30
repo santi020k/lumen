@@ -2,10 +2,9 @@ export {
   getLumenTemplate,
   getTemplateInstallCommand,
   isTemplateSlug,
-  lumenTemplates,
-  templateFrameworks,
-  templateSlugs,
   type LumenTemplate,
+  lumenTemplates,
   type TemplateFramework,
-  type TemplateSlug
-} from './templates.js'
+  templateFrameworks,
+  type TemplateSlug,
+  templateSlugs } from './templates.js'

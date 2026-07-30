@@ -1,4 +1,4 @@
-/* eslint-disable complexity, unicorn/consistent-function-scoping -- Optional motion controllers keep their state and formatting behavior local to the matching primitives. */
+/* eslint-disable complexity -- Optional motion controllers keep their state and formatting behavior local to the matching primitives. */
 
 const initBackToTopButtons = (scope: ParentNode): void => {
   for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-back-to-top]')) {
@@ -32,8 +32,8 @@ const initScrollReveals = (scope: ParentNode): void => {
     }
 
     if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      || typeof IntersectionObserver === 'undefined'
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      typeof IntersectionObserver === 'undefined'
     ) {
       root.classList.add('is-revealed')
 
@@ -43,11 +43,10 @@ const initScrollReveals = (scope: ParentNode): void => {
     const once = root.dataset.uiRevealOnce !== 'false'
 
     const threshold = Math.min(
-      1,
-      Math.max(0, Number(root.dataset.uiRevealThreshold) || 0)
+      1, Math.max(0, Number(root.dataset.uiRevealThreshold) || 0)
     )
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(entries => {
       const entry = entries[0]
 
       if (!entry) return
@@ -74,8 +73,7 @@ const initAnimatedNumbers = (scope: ParentNode): void => {
     root.dataset.uiBound = 'true'
 
     const decimals = Math.max(
-      0,
-      Math.min(20, Number(root.dataset.uiAnimatedNumberDecimals) || 0)
+      0, Math.min(20, Number(root.dataset.uiAnimatedNumberDecimals) || 0)
     )
 
     const prefix = root.dataset.uiAnimatedNumberPrefix ?? ''
@@ -86,12 +84,11 @@ const initAnimatedNumbers = (scope: ParentNode): void => {
       minimumFractionDigits: decimals
     })
 
-    const format = (current: number): string =>
-      `${prefix}${formatter.format(current)}${suffix}`
+    const format = (current: number): string => `${prefix}${formatter.format(current)}${suffix}`
 
     if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      || typeof IntersectionObserver === 'undefined'
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      typeof IntersectionObserver === 'undefined'
     ) {
       output.textContent = format(value)
 
@@ -100,7 +97,7 @@ const initAnimatedNumbers = (scope: ParentNode): void => {
 
     output.textContent = format(from)
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(entries => {
       if (!entries.some(entry => entry.isIntersecting)) return
 
       observer.disconnect()
@@ -113,9 +110,9 @@ const initAnimatedNumbers = (scope: ParentNode): void => {
       let durationMs = 300
 
       if (Number.isFinite(parsedDuration)) {
-        durationMs = durationValue.endsWith('ms')
-          ? parsedDuration
-          : parsedDuration * 1000
+        durationMs = durationValue.endsWith('ms') ?
+          parsedDuration :
+          parsedDuration * 1000
       }
 
       const startedAt = performance.now()

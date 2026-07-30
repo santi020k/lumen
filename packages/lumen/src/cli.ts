@@ -47,7 +47,7 @@ const excludeValues = args.flatMap((value, index) => {
 
 let conflict: 'error' | 'merge' | 'skip' = 'skip'
 
-const getRolloutArguments = (): { repositories: string[]; targetVersion?: string } => {
+const getRolloutArguments = (): { repositories: string[], targetVersion?: string } => {
   const values: string[] = []
   const optionsWithValues = new Set(['--exclude', '--report'])
 
@@ -95,8 +95,7 @@ const formatList = (registry: LumenRegistry = lumenRegistry) => getLumenRegistry
   .map(item => `${item.name} (${item.type})`)
   .join('\n')
 
-const getRegistryFilePath = (file: NonNullable<LumenRegistryEntry['files']>[number]): string =>
-  typeof file === 'string' ? file : file.path
+const getRegistryFilePath = (file: NonNullable<LumenRegistryEntry['files']>[number]): string => typeof file === 'string' ? file : file.path
 
 const getRegistryItemFiles = (item: LumenRegistryEntry): string | undefined => {
   if (!item.files?.length) return undefined
@@ -104,21 +103,16 @@ const getRegistryItemFiles = (item: LumenRegistryEntry): string | undefined => {
   return item.files.map(getRegistryFilePath).join(', ')
 }
 
-const getRegistryItemDescription = (item: LumenRegistryEntry): string | undefined =>
-  'description' in item ? item.description : undefined
+const getRegistryItemDescription = (item: LumenRegistryEntry): string | undefined => 'description' in item ? item.description : undefined
+const getRegistryItemCategory = (item: LumenRegistryEntry): string | undefined => 'category' in item ? `category: ${item.category}` : undefined
 
-const getRegistryItemCategory = (item: LumenRegistryEntry): string | undefined =>
-  'category' in item ? `category: ${item.category}` : undefined
+const getRegistryItemComponents = (item: LumenRegistryEntry): string | undefined => 'components' in item && Array.isArray(item.components) && item.components.length > 0 ?
+  `components: ${item.components.join(', ')}` :
+  undefined
 
-const getRegistryItemComponents = (item: LumenRegistryEntry): string | undefined =>
-  'components' in item && Array.isArray(item.components) && item.components.length > 0
-    ? `components: ${item.components.join(', ')}`
-    : undefined
-
-const getRegistryItemDependencies = (item: LumenRegistryEntry): string | undefined =>
-  'dependencies' in item && item.dependencies.length > 0
-    ? `dependencies: ${item.dependencies.join(', ')}`
-    : undefined
+const getRegistryItemDependencies = (item: LumenRegistryEntry): string | undefined => 'dependencies' in item && item.dependencies.length > 0 ?
+  `dependencies: ${item.dependencies.join(', ')}` :
+  undefined
 
 const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) => {
   const item: LumenRegistryEntry | undefined =
@@ -235,9 +229,9 @@ const help = [
 const run = async () => {
   let output = help
 
-  const registry = registrySource
-    ? await loadLumenRegistry(registrySource, registryToken ? { token: registryToken } : {})
-    : lumenRegistry
+  const registry = registrySource ?
+    await loadLumenRegistry(registrySource, registryToken ? { token: registryToken } : {}) :
+    lumenRegistry
 
   switch (command) {
     case 'audit-tokens': {

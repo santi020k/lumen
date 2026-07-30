@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'div' | 'ol' | 'section' | 'ul'
+  class?: string | null
+  className?: string
+  columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
+  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  minItemWidth?: string
+}
+
+const {
+  as: Tag = 'div',
+  class: classProp = '',
+  className = '',
+  columns = 'auto',
+  gap = 'md',
+  minItemWidth,
+  style,
+  ...rest
+} = Astro.props
+
+const gridStyle = [
+  typeof style === 'string' ? style : '',
+  minItemWidth ? `--ui-grid-min:${minItemWidth}` : ''
+].filter(Boolean).join(';')
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-grid',
+  `ui-grid--columns-${columns}`,
+  `ui-grid--gap-${gap}`
+], classProp, className)
+---
+
+<Tag
+  class:list={classList}
+  data-columns={columns}
+  data-ui-grid
+  style={gridStyle || undefined}
+  {...passthrough}
+>
+  <slot />
+</Tag>

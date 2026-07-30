@@ -1,9 +1,14 @@
-# Sibling Project Usage Audit and Improvement Plan
+# Lumen Improvements Informed by Sibling Project Usage
 
 <!-- cspell:words commitprompt coolstead difftale -->
 
-This document turns the way Lumen is used across the sibling repositories in
-`/Users/santi020k/Projects/santi020k` into a concrete improvement plan for this project.
+This is a product roadmap for **Lumen itself**. The sibling repositories in
+`/Users/santi020k/Projects/santi020k` are evidence: their repeated compositions, wrappers, and
+customization patterns show which additions to make in `packages/core`, `packages/astro`,
+`packages/react`, `packages/elements`, the registry, tooling, and documentation.
+
+It does not propose redesigning or migrating the sibling applications. Product-specific wrappers,
+domain components, and visual identities should remain in those projects.
 
 The audit is a point-in-time source review from July 30, 2026. It inspected package manifests,
 workspace catalogs, source imports, global style entries, `UIPrimitives` mounts, local Lumen
@@ -23,10 +28,12 @@ instances.
   leverage than adding another isolated primitive.
 - Astro is the proven reference surface. React is used successfully through application-owned
   wrapper packages. No sibling project currently exercises the Elements adapter in production.
-- Setup is easy to get almost right. Tailwind layer ordering, Astro runtime mounting, package
-  version alignment, and framework-specific style entry selection are still inferred manually.
 - Consumers frequently style Lumen through internal-looking `.ui-*` selectors or maintain wrapper
   components. The library needs a clearer, stable customization and composition contract.
+- The clearest component gaps are compound Card structure, richer Stat composition, stable styling
+  parts, and wrapper-friendly React props.
+- Repeated documentation, marketing, and dashboard compositions should become optional registry
+  recipes, not monolithic application components.
 - The existing Observatory chart learnings remain valid and should be implemented as the
   data-visualization effort rather than duplicated here.
 
@@ -38,17 +45,17 @@ instances.
 | `astro-doctor` | Astro documentation site with Tailwind | Docs shell, navigation, sidebar, code, callouts, pagination, theme | Keep the Tailwind and documentation-site integration as a regression fixture |
 | `commitprompt` | Astro documentation site | Broad composition in a small site: code tabs, stepper, stats, prose, navigation | Provide a reusable documentation/landing recipe |
 | `coolstead` | Astro marketing site | Card, badge, accordion, scroll reveal, skip link | Preserve a lightweight static/marketing path |
-| `dep-beacon` | Astro documentation site with Tailwind | Docs navigation, sheet, theme toggle, callouts, stats | Detect missing Tailwind layer prelude and verify runtime setup |
+| `dep-beacon` | Astro documentation site with Tailwind | Docs navigation, sheet, theme toggle, callouts, stats | Improve the Lumen docs-shell recipe and make Tailwind setup self-verifying |
 | `difftale` | Astro marketing site | Accordion, reveal primitives, code, card, badge | Preserve zero-framework progressive enhancement |
 | `eslint-config-basic` | Starlight/Astro documentation site | Dense forms, code tabs, reports, callouts, badges; several `.ui-*` overrides | Improve form/report recipes and stable styling hooks |
 | `extensions` | No Lumen dependency | Editor-extension workspace | No action until it gains a web surface |
 | `memudo.ai` | Shared React UI package used by Next.js apps | Lumen-backed button, button link, input, and label wrappers | Improve React wrapper types, intrinsic prop handling, and Tailwind setup |
 | `observatory` | Astro SSR analytics application | App shell, forms, tables, charts, OTP, tabs, settings; per-component imports | Treat as the dashboard, charts, and deep-import regression consumer |
-| `postlens` | Astro marketing/support site | Navigation menu, toggle, skip links, cards, links | Detect interactive components without a root `UIPrimitives` mount |
+| `postlens` | Astro marketing/support site | Navigation menu, toggle, skip links, cards, links | Make runtime requirements discoverable from component metadata |
 | `santi020k-theme` | Five Astro sites | Repeated site shells, forms, dialog, theme toggle, cards, links | Provide multi-entry setup guidance and a shared site-shell recipe |
 | `santi020k-way` | No Lumen dependency | Non-UI project | No action |
 | `website` | Large Astro content site with Tailwind | Widest adoption: 61+ source imports, local wrappers, search, timelines, media, prose | Use as the content-site and migration-compatibility regression consumer |
-| `workspace-organizer` | Astro marketing site | Links, cards, skip link, toggle | Detect interactive components without a root `UIPrimitives` mount |
+| `workspace-organizer` | Astro marketing site | Links, cards, skip link, toggle | Make small-site setup and runtime requirements more self-contained |
 
 ## Adoption profile
 
@@ -103,43 +110,23 @@ The sibling theme package supplies Lumen-compatible semantic channels across fiv
 other consumers layer their own product tokens. The public semantic vocabulary is holding up
 across materially different visual identities.
 
-## Friction observed
+## What Lumen should improve
 
-### 1. Setup correctness is not machine-checked
-
-Five consumer surfaces combine Lumen with Tailwind. Only Astro Doctor and the personal website
-currently import `layers.css` before Tailwind and `styles.css` after it. `dep-beacon`, the
-`aaronmgz` shared UI package, and the `memudo.ai` shared UI package import Lumen and Tailwind without
-the layer prelude or in the opposite order.
-
-`postlens` and `workspace-organizer` import interactive primitives such as `NavigationMenu` or
-`Toggle` but do not mount `UIPrimitives`. Those components still render, so typecheck and build
-cannot reveal the missing behavior.
-
-The correct response is not another paragraph of setup documentation. Lumen should be able to
-inspect a consumer and report whether its installed components, styles, runtime, and framework
-adapter agree.
-
-### 2. Runtime requirements are not represented as shared metadata
-
-The catalog knows what components exist, while runtime requirements are currently taught through
-documentation and framework guidance. Tooling cannot reliably distinguish a static `Card` from a
-`Dialog`, `Toggle`, `NavigationMenu`, or validated form that needs Astro enhancement.
-
-Runtime metadata should be authoritative and reused by docs, MCP responses, registry output,
-consumer diagnostics, and tests.
-
-### 3. Composition stops too early at `Card`
+### 1. Foundational composition stops too early
 
 `Card` is used in 12 repositories, but its public contract is only the surface root. The React UI
 package in `aaronmgz` independently supplies `CardHeader`, `CardTitle`, `CardDescription`,
 `CardContent`, and `CardFooter`. Other consumers repeat similar internal layout in application CSS.
 
-Lumen should add optional compound card primitives across Astro, React, and Elements while keeping
-the current free-form `Card` children contract. This removes repeated spacing and typography
-without forcing every card into one content model.
+`Stat` also attracts application wrappers. Observatory combines `Card`, `Icon`, and `Stat` for
+metric cards, while the personal website maintains a `StatCard` compatibility layer for
+description, spacing, and variants. Lumen should support richer metric composition without owning
+analytics data.
 
-### 4. Stable customization hooks are not specified clearly
+Add optional compound Card primitives and explicit Stat parts across Astro, React, and Elements.
+Keep the current free-form child/slot contracts so existing compositions remain valid.
+
+### 2. Stable customization hooks are not specified clearly
 
 Several mature consumers target `.ui-link`, `.ui-card`, `.ui-button`, `.ui-code-tabs`,
 `.ui-theme-toggle`, `.ui-table-wrap`, and modifier classes directly. Some of these selectors are
@@ -154,20 +141,40 @@ Lumen needs an explicit customization hierarchy:
 4. root `class` / `className`;
 5. undocumented implementation selectors, which tooling may warn about.
 
-### 5. React wrapper authoring exposes prop and variant friction
+### 3. React wrapper authoring exposes prop and variant friction
 
 Both React consumers maintain aliases around Lumen. Their code shows recurring needs:
 
 - preserve native refs and intrinsic attributes;
 - avoid collisions such as native input `size` versus visual size;
 - map a local variant vocabulary onto Lumen variants;
-- compose buttons through `asChild`;
+- compose buttons and links through `asChild`;
 - add stable `data-slot` values;
 - export wrapper prop types without recreating them.
 
 The current `visualSize` direction for React `Input` should be completed across every component
 where a visual prop shadows a native attribute. Public prop types and wrapper examples should be
 exported and tested as supported API.
+
+### 4. Setup requirements need to be derivable from Lumen
+
+Sibling projects use Lumen with Tailwind, plain CSS, Astro layouts, page-local shells, React wrapper
+packages, root imports, and per-component imports. Today, a developer must already know when to add
+the layer prelude, which stylesheet matches the adapter, and which Astro components require
+`UIPrimitives`.
+
+The correct response is not another paragraph of setup documentation. Lumen should be able to
+inspect a consumer and report whether its installed components, styles, runtime, and framework
+adapter agree.
+
+### 5. Runtime requirements are not represented as shared metadata
+
+The catalog knows what components exist, while runtime requirements are currently taught through
+documentation and framework guidance. Tooling cannot reliably distinguish a static `Card` from a
+`Dialog`, `Toggle`, `NavigationMenu`, or validated form that needs Astro enhancement.
+
+Runtime metadata should be authoritative and reused by docs, MCP responses, registry output,
+consumer diagnostics, and tests.
 
 ### 6. Import style and package boundaries need one clear contract
 
@@ -206,34 +213,68 @@ the sibling repositories.
 
 ## Improvement backlog
 
-### P0 — Consumer diagnostics and setup generation
+### P0 — Compound Card primitives
 
-Add `lumen doctor` or extend the non-mutating side of `lumen rollout` to scan a consumer workspace.
-It should:
-
-- resolve every Lumen manifest, catalog, and lockfile version;
-- identify Astro, React, and Elements entry points;
-- verify that the framework stylesheet is loaded once per application boundary;
-- detect Tailwind and validate the layer prelude/import order;
-- infer Astro runtime requirements from imported components and authored `data-ui-*` behavior;
-- report missing, duplicate, or page-local `UIPrimitives` mounts;
-- detect imports from one adapter paired with styles from another adapter;
-- report deprecated props, events, and internal selector dependencies;
-- emit readable text plus JSON for rollout automation and CI.
-
-Add a non-destructive `lumen init --framework <astro|react|elements> [--tailwind]` mode that writes
-or prints the canonical style and runtime setup. Keep `lumen install` as the package-manager command
-helper.
+Add `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and `CardFooter` to all three
+framework adapters. Preserve arbitrary `Card` children and the existing variants. Use semantic
+elements only when requested; the structural helpers should not create an incorrect heading
+hierarchy automatically.
 
 Acceptance criteria:
 
-- fixture tests reproduce the Tailwind and runtime omissions found in the sibling fleet;
-- diagnostics name the file and remediation;
-- static-only Astro consumers do not receive a false runtime warning;
-- the command exits non-zero only for behavior or cascade failures, with advisory findings kept
-  distinct.
+- the `aaronmgz` card wrapper can delegate its structure to public Lumen primitives;
+- spacing can be customized through documented variables or root classes;
+- Astro, React, and Elements emit equivalent slot/data contracts;
+- visual tests cover default, muted, interactive, glass, and unstyled cards.
 
-### P0 — Authoritative behavior metadata
+### P0 — Richer Stat composition
+
+Extend `Stat` without turning it into a dashboard-specific component:
+
+- add stable `StatLabel`, `StatValue`, `StatDescription`, and `StatIcon` parts;
+- preserve the current `label` and `value` convenience props;
+- add an optional trend/delta part with neutral, positive, warning, and negative tones;
+- keep context, comparison periods, formatting, and analytics calculations in the application;
+- allow `Stat` to work alone or inside `Card` without double framing.
+
+Acceptance criteria:
+
+- Observatory's metric-card structure can use only public Lumen parts plus its domain props;
+- the personal website no longer needs modifier-class compatibility CSS for basic Stat layout;
+- all frameworks expose matching parts and semantic output;
+- screen-reader output does not infer that positive or negative color alone communicates meaning.
+
+### P0 — Public styling parts and variables
+
+Audit the `.ui-*` selectors used by Astro Doctor, Commitprompt, ESLint Config Basic, Observatory,
+and the personal website. For each repeated override, either expose a prop, expose a documented
+custom property, or mark a stable part hook.
+
+Start with `Card`, `Button`, `ButtonLink`, `Link`, `NavigationMenu`, `Sidebar`, `Code`, `CodeTabs`,
+`ThemeToggle`, `Table`, and `Stat`. Add stable `data-slot` values to compound internals and publish
+their stability level in component API metadata.
+
+Acceptance criteria:
+
+- consumers can customize common spacing, typography, and layout without modifier-class selectors;
+- public part hooks are identical across frameworks;
+- the visual suite verifies that host overrides still win in the documented cascade layer;
+- `lumen doctor` can distinguish public hooks from fragile internal selectors.
+
+### P0 — React wrapper contract
+
+Create a documented "wrap Lumen in a local design system" recipe based on `aaronmgz` and
+`memudo.ai`. Export component prop types consistently, preserve React 19 refs, support `asChild`
+where semantic composition requires it, and finish auditing native-attribute collisions.
+
+Acceptance criteria:
+
+- Button, ButtonLink, Input, Textarea, Label, Badge, Card, and Skeleton have wrapper compile tests;
+- native attributes remain available without falling back to a hand-authored native element;
+- local variants and `data-slot` attributes pass through without unsafe casts;
+- a Next.js fixture imports the wrappers from both server and client component boundaries.
+
+### P1 — Authoritative behavior metadata
 
 Extend the shared component catalog with framework-aware enhancement metadata, for example:
 
@@ -254,50 +295,6 @@ Acceptance criteria:
 - every interactive component has explicit behavior metadata;
 - adding a component without metadata fails typecheck or catalog validation;
 - MCP usage output and `lumen doctor` agree about required setup.
-
-### P1 — Compound Card primitives
-
-Add `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and `CardFooter` to all three
-framework adapters. Preserve arbitrary `Card` children and the existing variants. Use semantic
-elements only when requested; the structural helpers should not create an incorrect heading
-hierarchy automatically.
-
-Acceptance criteria:
-
-- the `aaronmgz` card wrapper can delegate its structure to public Lumen primitives;
-- spacing can be customized through documented variables or root classes;
-- Astro, React, and Elements emit equivalent slot/data contracts;
-- visual tests cover default, muted, interactive, glass, and unstyled cards.
-
-### P1 — Public styling parts and variables
-
-Audit the `.ui-*` selectors used by Astro Doctor, Commitprompt, ESLint Config Basic, Observatory,
-and the personal website. For each repeated override, either expose a prop, expose a documented
-custom property, or mark a stable part hook.
-
-Start with `Card`, `Button`, `ButtonLink`, `Link`, `NavigationMenu`, `Sidebar`, `Code`, `CodeTabs`,
-`ThemeToggle`, `Table`, and `Stat`. Add stable `data-slot` values to compound internals and publish
-their stability level in component API metadata.
-
-Acceptance criteria:
-
-- consumers can customize common spacing, typography, and layout without modifier-class selectors;
-- public part hooks are identical across frameworks;
-- the visual suite verifies that host overrides still win in the documented cascade layer;
-- `lumen doctor` can distinguish public hooks from fragile internal selectors.
-
-### P1 — React wrapper contract
-
-Create a documented "wrap Lumen in a local design system" recipe based on `aaronmgz` and
-`memudo.ai`. Export component prop types consistently, preserve React 19 refs, support `asChild`
-where semantic composition requires it, and finish auditing native-attribute collisions.
-
-Acceptance criteria:
-
-- Button, ButtonLink, Input, Textarea, Label, Badge, Card, and Skeleton have wrapper compile tests;
-- native attributes remain available without falling back to a hand-authored native element;
-- local variants and `data-slot` attributes pass through without unsafe casts;
-- a Next.js fixture imports the wrappers from both server and client component boundaries.
 
 ### P1 — Reusable product recipes
 
@@ -328,6 +325,33 @@ as the authoritative chart backlog:
 
 Do not move aggregation, resampling, or product analytics logic into Lumen.
 
+### P2 — Lumen integration diagnostics and setup generation
+
+Add `lumen doctor` or extend the non-mutating side of `lumen rollout` to scan a consumer workspace.
+It should:
+
+- resolve every Lumen manifest, catalog, and lockfile version;
+- identify Astro, React, and Elements entry points;
+- verify that the framework stylesheet is loaded once per application boundary;
+- detect Tailwind and validate the layer prelude/import order;
+- infer Astro runtime requirements from imported components and authored `data-ui-*` behavior;
+- report missing, duplicate, or page-local `UIPrimitives` mounts;
+- detect imports from one adapter paired with styles from another adapter;
+- report deprecated props, events, and internal selector dependencies;
+- emit readable text plus JSON for rollout automation and CI.
+
+Add a non-destructive `lumen init --framework <astro|react|elements> [--tailwind]` mode that writes
+or prints the canonical style and runtime setup. Keep `lumen install` as the package-manager command
+helper.
+
+Acceptance criteria:
+
+- fixtures cover the Tailwind and runtime arrangements observed in the sibling fleet;
+- diagnostics name the file and remediation;
+- static-only Astro consumers do not receive a false runtime warning;
+- the command exits non-zero only for behavior or cascade failures, with advisory findings kept
+  distinct.
+
 ### P2 — Consumer-shaped regression fixtures
 
 Add four compact fixtures under `apps` or `tests/fixtures`, matching the architectures listed
@@ -351,8 +375,8 @@ Extend `lumen rollout` with the catalog manifest and source audit:
 - run the narrowest available lint, typecheck, test, build, and browser scripts;
 - write a machine-readable report suitable for a multi-repository release checklist.
 
-Before 1.0, provide automated migrations or exact fixes for the known compatibility aliases, including
-`surface="glass"` and `ui:datatable-selection-change`.
+Before 1.0, provide automated migrations or exact fixes for the known compatibility aliases,
+including `surface="glass"` and `ui:datatable-selection-change`.
 
 ### P2 — Import and icon performance evidence
 
@@ -367,13 +391,13 @@ repeatable measurements rather than making assumptions:
 
 ## Execution order
 
-1. Build the authoritative behavior metadata.
-2. Build `lumen doctor` on that metadata and add the observed setup fixtures.
-3. Add compound Card primitives and the stable styling-part contract.
-4. Harden the React wrapper contract and its Next.js fixture.
+1. Add compound Card and Stat primitives.
+2. Define the stable styling-part and component-variable contract.
+3. Harden the React wrapper contract and its Next.js fixture.
+4. Add authoritative behavior metadata.
 5. Add the docs, marketing, dashboard, and validated-form recipes.
 6. Implement the existing Observatory chart follow-up.
-7. Extend rollout/upgrade intelligence.
+7. Build `lumen doctor` and extend rollout/upgrade intelligence.
 8. Benchmark import and icon behavior, then act only on measured regressions.
 
 ## Success measures

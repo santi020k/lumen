@@ -23,9 +23,7 @@ export type {
 }
 
 const defaultRegistryTimeoutMs = 30_000
-
-const normalizeRegistryEntryName = (name: string) =>
-  name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').replaceAll(/[\s_]+/g, '-').toLowerCase()
+const normalizeRegistryEntryName = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').replaceAll(/[\s_]+/g, '-').toLowerCase()
 
 export const getLumenRegistryEntries = (registry: LumenRegistry = lumenRegistry): LumenRegistryEntry[] => [
   ...(registry.components ?? []),
@@ -53,12 +51,8 @@ const isRegistryFile = (value: unknown): value is LumenRegistryFile | string => 
   return typeof file.path === 'string' && typeof file.source === 'string'
 }
 
-const isStringArray = (value: unknown): value is string[] =>
-  Array.isArray(value) && value.every(entry => typeof entry === 'string')
-
-const isRegistryFileArray = (value: unknown): boolean =>
-  Array.isArray(value) && value.every(entry => isRegistryFile(entry))
-
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(entry => typeof entry === 'string')
+const isRegistryFileArray = (value: unknown): boolean => Array.isArray(value) && value.every(entry => isRegistryFile(entry))
 const registryItemTypes = new Set(['component-set', 'documentation', 'recipe'])
 
 const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
@@ -127,9 +121,9 @@ export const loadLumenRegistry = async (
 ): Promise<LumenRegistry> => {
   const sourceValue = String(source)
 
-  const raw = sourceValue.startsWith('http://') || sourceValue.startsWith('https://')
-    ? await fetchRegistrySource(sourceValue, options)
-    : await readFile(source, 'utf8')
+  const raw = sourceValue.startsWith('http://') || sourceValue.startsWith('https://') ?
+    await fetchRegistrySource(sourceValue, options) :
+    await readFile(source, 'utf8')
 
   const parsed: unknown = JSON.parse(raw)
 

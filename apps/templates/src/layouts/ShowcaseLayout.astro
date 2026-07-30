@@ -1,0 +1,90 @@
+---
+import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen-templates/styles.css'
+
+import { UIPrimitives } from '@santi020k/lumen-astro'
+
+interface Props {
+  description: string
+  title: string
+}
+
+const { description, title } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8fafc" />
+    <title>{title}</title>
+    <script is:inline>
+      const storedTheme = localStorage.getItem('lumen-template-theme')
+      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+      document.documentElement.dataset.theme = storedTheme ?? (dark ? 'dark' : 'light')
+    </script>
+  </head>
+  <body>
+    <UIPrimitives />
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light;
+    --canvas: 220 24% 98%;
+    --surface: 0 0% 100%;
+    --surface-muted: 220 20% 95%;
+    --surface-strong: 220 16% 88%;
+    --line: 220 16% 84%;
+    --ink: 222 28% 12%;
+    --ink-soft: 220 14% 35%;
+    --ink-muted: 220 10% 50%;
+    --brand: 264 86% 52%;
+    --brand-solid: 264 86% 44%;
+    --brand-soft: 264 70% 94%;
+    --accent: 186 78% 34%;
+    --success: 142 70% 36%;
+    --warning: 38 92% 48%;
+    --danger: 0 78% 56%;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --canvas: 260 32% 8%;
+    --surface: 260 24% 12%;
+    --surface-muted: 260 20% 16%;
+    --surface-strong: 260 16% 22%;
+    --line: 260 14% 28%;
+    --ink: 260 16% 94%;
+    --ink-soft: 260 12% 76%;
+    --ink-muted: 260 8% 61%;
+    --brand: 264 90% 72%;
+    --brand-solid: 264 78% 54%;
+    --brand-soft: 264 46% 20%;
+    --accent: 186 70% 50%;
+    --success: 142 64% 48%;
+    --warning: 38 92% 56%;
+    --danger: 0 82% 66%;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: hsl(var(--canvas));
+  }
+
+  body {
+    min-width: 20rem;
+    min-height: 100vh;
+    margin: 0;
+    background: hsl(var(--canvas));
+  }
+</style>

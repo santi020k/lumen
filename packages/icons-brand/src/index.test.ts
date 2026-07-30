@@ -4,7 +4,6 @@ import {
   renderLumenIconSvg,
   resolveLumenIconName
 } from '@santi020k/lumen-core'
-
 import { describe, expect, test } from 'vitest'
 
 import {

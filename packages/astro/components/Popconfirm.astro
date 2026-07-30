@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   cancelLabel?: string
@@ -27,7 +27,12 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div class:list={classList} data-surface="default" data-ui-popconfirm data-ui-popover {...passthrough}>
-  <span aria-expanded="false" aria-haspopup="dialog" class="ui-popconfirm__trigger" data-ui-trigger>
+  <span
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    class="ui-popconfirm__trigger"
+    data-ui-trigger
+  >
     <slot />
   </span>
   <div class="ui-popover__panel ui-popconfirm__panel" data-ui-panel hidden role="dialog">

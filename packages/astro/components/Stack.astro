@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  align?: 'center' | 'end' | 'start' | 'stretch'
+  as?: 'article' | 'div' | 'fieldset' | 'nav' | 'section'
+  class?: string | null
+  className?: string
+  direction?: 'horizontal' | 'vertical'
+  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  justify?: 'between' | 'center' | 'end' | 'start'
+  wrap?: boolean
+}
+
+const {
+  align = 'stretch',
+  as: Tag = 'div',
+  class: classProp = '',
+  className = '',
+  direction = 'vertical',
+  gap = 'md',
+  justify = 'start',
+  wrap = false,
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-stack',
+  `ui-stack--${direction}`,
+  `ui-stack--gap-${gap}`,
+  `ui-stack--align-${align}`,
+  `ui-stack--justify-${justify}`,
+  wrap && 'ui-stack--wrap'
+], classProp, className)
+---
+
+<Tag
+  class:list={classList}
+  data-direction={direction}
+  data-ui-stack
+  {...passthrough}
+>
+  <slot />
+</Tag>

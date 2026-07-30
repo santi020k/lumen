@@ -10,8 +10,8 @@ import type {
 
 import { createLumenServer } from './server.js'
 
-export { loadLumenData } from './data.js'
 export type { LumenData } from './data.js'
+export { loadLumenData } from './data.js'
 export { createLumenServer } from './server.js'
 export * from './tools.js'
 
@@ -49,8 +49,7 @@ const toWebRequest = (request: ExpressRequest, host: string, options: LumenMcpHt
   const method = request.method
 
   return new Request(
-    `http://${hostHeader}${request.url}`,
-    {
+    `http://${hostHeader}${request.url}`, {
       headers,
       method,
       ...(['GET', 'HEAD'].includes(method) ? {} : { body: JSON.stringify(request.body) })
@@ -169,13 +168,13 @@ export const startLumenMcpHttp = async (
   return {
     close: async () => {
       await Promise.all(
-        [...activeServers].map(async (server) => {
+        [...activeServers].map(async server => {
           if (server.isConnected()) await server.close()
         })
       )
 
       await new Promise<void>((resolve, reject) => {
-        httpServer.close((error) => {
+        httpServer.close(error => {
           if (error) reject(error)
           else resolve()
         })

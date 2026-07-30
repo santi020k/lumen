@@ -10,10 +10,10 @@
     "./styles/lumen.css",
     "./styles.css"
   ],
-  "types": "./index.d.ts",
+  "types": "./index.ts",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
+      "types": "./index.ts",
       "import": "./index.ts"
     },
     "./components/*": "./components/*.astro",
@@ -26,7 +26,6 @@
     "components",
     "runtime",
     "styles",
-    "index.d.ts",
     "index.ts",
     "README.md",
     "LICENSE"

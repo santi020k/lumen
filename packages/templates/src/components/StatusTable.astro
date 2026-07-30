@@ -16,14 +16,13 @@ interface Props {
 }
 
 const { caption, rows } = Astro.props
+
 const statusVariant = (status: StatusRow['status']) => {
   if (status === 'Active' || status === 'Completed') return 'success'
 
   if (status === 'At risk') return 'destructive'
 
-  if (status === 'Pending' || status === 'Trial') return 'warning'
-
-  return 'secondary'
+  return 'warning'
 }
 ---
 

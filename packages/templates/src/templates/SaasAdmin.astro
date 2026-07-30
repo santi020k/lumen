@@ -1,0 +1,102 @@
+---
+import {
+  Alert,
+  Button,
+  Card,
+  Icon,
+  Progress,
+  SearchField,
+  Stat
+} from '@santi020k/lumen-astro'
+
+import MetricGrid from '../components/MetricGrid.astro'
+import StatusTable from '../components/StatusTable.astro'
+import TemplateHeader from '../components/TemplateHeader.astro'
+import TemplateShell from '../components/TemplateShell.astro'
+
+const navigation = [
+  { icon: 'layout-dashboard', label: 'Overview' },
+  { icon: 'users-round', label: 'Members' },
+  { icon: 'shield-check', label: 'Roles' },
+  { icon: 'credit-card', label: 'Billing' },
+  { icon: 'settings', label: 'Settings' }
+] as const
+
+const metrics = [
+  { change: '+24 this month', direction: 'up', label: 'Workspace members', points: [42, 44, 46, 47, 51, 54, 58], value: '248' },
+  { change: '91% invited', direction: 'up', label: 'Seat activation', points: [70, 72, 78, 81, 84, 88, 91], value: '91%' },
+  { change: '3 pending', direction: 'neutral', label: 'Access reviews', points: [6, 5, 5, 4, 4, 3, 3], value: '8' },
+  { change: 'Healthy', direction: 'up', label: 'Service availability', points: [99, 100, 99, 100, 100, 100, 100], value: '99.99%' }
+] as const
+
+const rows = [
+  { detail: 'Product design', id: 'USR-482', label: 'Amina Bello', owner: 'Nora Singh', status: 'Active', value: 'Admin' },
+  { detail: 'Engineering', id: 'USR-417', label: 'Jon Bell', owner: 'Maya Chen', status: 'Active', value: 'Member' },
+  { detail: 'Customer success', id: 'USR-394', label: 'Theo Martin', owner: 'Amina Bello', status: 'Pending', value: 'Member' },
+  { detail: 'Finance', id: 'USR-365', label: 'Nora Singh', owner: 'Maya Chen', status: 'Active', value: 'Billing' }
+] as const
+---
+
+<TemplateShell activeItem="Overview" {navigation} product="Orbit" workspace="Acme workspace">
+  <TemplateHeader
+    actionLabel="Invite members"
+    description="Manage access, workspace capacity, billing, and operational health."
+    eyebrow="Workspace administration"
+    title="Good morning, Maya"
+  />
+
+  <Alert>
+    <Icon name="info" />
+    <div>
+      <strong>Quarterly access review is ready.</strong>
+      Confirm eight elevated roles before July 12.
+    </div>
+    <Button size="sm" variant="outline">Start review</Button>
+  </Alert>
+
+  <MetricGrid {metrics} />
+
+  <section class="template-admin-grid" aria-label="Workspace health">
+    <Card as="section" class="template-section">
+      <div class="template-section__header">
+        <div>
+          <h2>Plan utilization</h2>
+          <p>Enterprise plan · renews September 1</p>
+        </div>
+        <Button variant="ghost">Manage plan</Button>
+      </div>
+      <div class="template-utilization">
+        <Stat label="Seats used" value="248 / 300" />
+        <Progress aria-label="248 of 300 seats used" max={300} value={248} />
+        <div class="template-utilization__details">
+          <span>52 seats available</span>
+          <span>83% utilized</span>
+        </div>
+      </div>
+    </Card>
+    <Card as="section" class="template-section">
+      <div class="template-section__header">
+        <div>
+          <h2>Security posture</h2>
+          <p>Recommended controls for this workspace.</p>
+        </div>
+      </div>
+      <ul class="template-checklist">
+        <li><Icon name="circle-check" /> Single sign-on enforced</li>
+        <li><Icon name="circle-check" /> Domain verification complete</li>
+        <li><Icon name="circle-alert" /> 3 recovery codes need rotation</li>
+      </ul>
+    </Card>
+  </section>
+
+  <Card as="section" class="template-section">
+    <div class="template-section__header template-section__header--wrap">
+      <div>
+        <h2>Recently active members</h2>
+        <p>Access and role changes from the last 30 days.</p>
+      </div>
+      <SearchField aria-label="Search workspace members" placeholder="Search members" />
+    </div>
+    <StatusTable caption="Recently active workspace members" {rows} />
+  </Card>
+</TemplateShell>

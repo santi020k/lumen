@@ -368,9 +368,9 @@ const getRelativeLuminance = ([r, g, b]: [number, number, number]): number => {
   const [red, green, blue] = [r, g, b].map(channel => {
     const value = channel / 255
 
-    return value <= 0.03928
-      ? value / 12.92
-      : ((value + 0.055) / 1.055) ** 2.4
+    return value <= 0.03928 ?
+      value / 12.92 :
+      ((value + 0.055) / 1.055) ** 2.4
   })
 
   return 0.2126 * (red ?? 0) + 0.7152 * (green ?? 0) + 0.0722 * (blue ?? 0)
@@ -420,9 +420,9 @@ export const suggestReadableInk = (
   const darkRatio = getContrastRatio(darkForeground, background)
   const lightRatio = getContrastRatio(lightForeground, background)
 
-  return darkRatio >= lightRatio
-    ? { background, foreground: darkForeground, ratio: darkRatio }
-    : { background, foreground: lightForeground, ratio: lightRatio }
+  return darkRatio >= lightRatio ?
+    { background, foreground: darkForeground, ratio: darkRatio } :
+    { background, foreground: lightForeground, ratio: lightRatio }
 }
 
 export const tuneThemeContrast = (

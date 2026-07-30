@@ -743,7 +743,7 @@ behaviorTest(['TreeSelect'], 'TreeSelect commits a node and closes its disclosur
 behaviorTest(['BackToTop'], 'BackToTop scrolls the document to the beginning', async ({ page }) => {
   await openPreview(page, 'back-to-top')
 
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+  await page.evaluate(() => { window.scrollTo(0, document.body.scrollHeight); })
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
 
   await page.getByRole('button', { name: 'Back to top' }).click()

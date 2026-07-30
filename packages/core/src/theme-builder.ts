@@ -42,13 +42,11 @@ export const coerceThemeBuilderExportFormat = (
 
 export const coerceThemeBuilderMode = (
   value?: string | null
-): LumenThemeBuilderMode =>
-  value === 'manual' ? 'manual' : 'generated'
+): LumenThemeBuilderMode => value === 'manual' ? 'manual' : 'generated'
 
 export const coerceThemeBuilderScheme = (
   value?: string | null
-): LumenThemeBuilderScheme =>
-  value === 'dark' ? 'dark' : 'light'
+): LumenThemeBuilderScheme => value === 'dark' ? 'dark' : 'light'
 
 export const normalizeThemeBuilderHue = (
   value: number | string | null | undefined,
@@ -114,8 +112,7 @@ export const createThemeBuilderTokens = (
   const hue = normalizeThemeBuilderHue(options.hue)
 
   const accentHue = normalizeThemeBuilderHue(
-    options.accentHue,
-    normalizeThemeBuilderHue(hue + 150)
+    options.accentHue, normalizeThemeBuilderHue(hue + 150)
   )
 
   const mode = coerceThemeBuilderMode(options.mode)

@@ -7,7 +7,6 @@ import {
   lumenComponentNames,
   registerLumenIconPack
 } from '@santi020k/lumen-core'
-
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import {

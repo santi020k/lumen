@@ -19,7 +19,10 @@ const { template } = Astro.props
     href={`/templates/${template.slug}`}
     aria-label={`Preview ${template.name}`}
   >
-    <span class={`template-gallery-card__mock template-gallery-card__mock--${template.slug}`}>
+    <span
+      class="template-gallery-card__mock"
+      data-template={template.slug}
+    >
       <span class="template-gallery-card__mock-sidebar"></span>
       <span class="template-gallery-card__mock-content">
         <span></span><span></span><span></span>

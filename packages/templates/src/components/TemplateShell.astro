@@ -42,7 +42,9 @@ const { activeItem, navigation, product, workspace } = Astro.props
           aria-current={item.label === activeItem ? 'page' : undefined}
           class:list={[
             'template-shell__navigation-item',
-            item.label === activeItem && 'template-shell__navigation-item--active'
+            item.label === activeItem && `
+              template-shell__navigation-item--active
+            `
           ]}
           href={`#${item.label.toLowerCase().replaceAll(' ', '-')}`}
         >
