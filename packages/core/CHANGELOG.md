@@ -1,5 +1,26 @@
 # @santi020k/lumen-core
 
+## 0.4.0
+
+### Minor Changes
+
+- [#9](https://github.com/santi020k/lumen/pull/9) [`43197cc`](https://github.com/santi020k/lumen/commit/43197cc6d3c8fd831cb28f247b1212329ab67d79) Thanks [@santi020k](https://github.com/santi020k)! - Add a document-aware `ScrollProgress` primitive across Astro, React, and Web Components. Extend
+  `Anchor` with heading depth metadata and add `neutral`, `brand`, and `outline` variants to `Pill`.
+
+- [#9](https://github.com/santi020k/lumen/pull/9) [`43197cc`](https://github.com/santi020k/lumen/commit/43197cc6d3c8fd831cb28f247b1212329ab67d79) Thanks [@santi020k](https://github.com/santi020k)! - Add shared chart contracts, geometry helpers, visualization tokens, and accessible `Sparkline`,
+  `BarChart`, `LineChart`, and `PieChart` components across Astro, React, and Web Components. The new
+  pie renderer defaults to a donut, supports part-to-whole legends and center content, and includes
+  a revealable semantic data table. Expand `Chart` with standard heading, description, value, and
+  caption composition while preserving custom plot children.
+
+- [#9](https://github.com/santi020k/lumen/pull/9) [`0b68131`](https://github.com/santi020k/lumen/commit/0b681319874b1ad2f6fe68f68df15dc14c6c0922) Thanks [@santi020k](https://github.com/santi020k)! - Add opt-in, namespaced icon-pack registration and the optional Lumen brand icon package with the
+  complete Font Awesome Free brand catalog plus a convenient `brand:x` alias.
+
+### Patch Changes
+
+- [#9](https://github.com/santi020k/lumen/pull/9) [`43197cc`](https://github.com/santi020k/lumen/commit/43197cc6d3c8fd831cb28f247b1212329ab67d79) Thanks [@santi020k](https://github.com/santi020k)! - Use the canonical Santi020k Montserrat family stack across Lumen interface text, including generated
+  Watermark tiles, while keeping font loading and the `--ui-font` override under application control.
+
 ## 0.3.0
 
 ### Minor Changes
