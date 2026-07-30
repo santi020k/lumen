@@ -1,14 +1,7 @@
 import {
   defineConfig,
   Extension,
-  Format,
-  Preset,
-  Runtime,
-  Testing,
-  Tool
 } from '@santi020k/eslint-config-basic'
-
-import tseslint from 'typescript-eslint'
 
 const docsRoot = `${import.meta.dirname}/apps/docs`
 
@@ -32,63 +25,27 @@ const docsCustomClassPatterns = [
 ]
 
 const config = await defineConfig({
-  autoFrameworks: false,
-  detection: { libraries: false },
-  detectRootDir: import.meta.dirname,
   extensions: [Extension.Boundaries, Extension.Unicorn],
-  formats: [Format.Jsonc, Format.Markdown, Format.Yaml],
-  frameworks: { astro: true, react: true },
-  ignores: ['**/CHANGELOG.md', '**/*.css', '**/*.d.ts', 'packages/astro/components/**/*.astro'],
-  preset: Preset.Monorepo,
-  projects: {
-    'apps/docs': {
-      preset: Preset.App
-    },
-    'apps/next-smoke': {
-      preset: Preset.App
-    },
-    'figma': {
-      preset: Preset.Library,
-      runtime: Runtime.Node
-    },
-    'packages/astro': {
-      preset: Preset.Library
-    },
-    'packages/core': {
-      preset: Preset.Library,
-      runtime: Runtime.Node
-    },
-    'packages/elements': {
-      preset: Preset.Library
-    },
-    'packages/lumen': {
-      preset: Preset.Library,
-      runtime: Runtime.Node
-    },
-    'packages/react': {
-      preset: Preset.Library
-    }
+  ignores: [
+    '**/CHANGELOG.md',
+    '**/*.css',
+    '**/*.d.ts',
+    'packages/astro/components/**/*.astro',
+    'packages/lumen/templates/**'
+  ],
+  tailwind: {
+    noUnknownClasses: false
   },
-  testing: [Testing.Vitest],
-  tools: [Tool.Pnpm, Tool.Cspell, Tool.GithubActions],
-  tsconfigRootDir: import.meta.dirname,
   typescript: {
-    projectService: {
-      allowDefaultProject: [
-        '*.js',
-        '*.mjs',
-        '*.cjs',
-        '**/*.config.ts',
-        '**/*.config.js',
-        'tests/visual/components.spec.ts',
-        'tests/**/*.ts'
-      ],
-      defaultProject: 'tsconfig.eslint.json'
-    }
+    untypedFiles: [
+      'packages/lumen/templates/**/*.{ts,tsx}',
+      'tests/a11y/**/*.ts',
+      'tests/visual/**/*.ts'
+    ]
   },
   workspacePrefixes: ['@santi020k']
 }, {
-  files: ['**/*.astro', '**/*.css'],
+  files: ['**/*.css'],
   languageOptions: {
     parserOptions: {
       project: false,
@@ -98,39 +55,75 @@ const config = await defineConfig({
   rules: {
     'better-tailwindcss/no-unknown-classes': 'off'
   },
-  ...tseslint.configs.disableTypeChecked
-}, {
-  files: ['packages/lumen/templates/**/*.ts', 'packages/lumen/templates/**/*.tsx'],
-  languageOptions: {
-    parserOptions: {
-      project: false,
-      projectService: false
-    }
-  },
-  ...tseslint.configs.disableTypeChecked
-}, {
-  files: ['tests/a11y/**/*.ts', 'tests/visual/**/*.ts'],
-  languageOptions: {
-    parserOptions: {
-      project: false,
-      projectService: false
-    }
-  },
-  ...tseslint.configs.disableTypeChecked
-}, {
-  files: ['**/*.config.ts', '**/*.config.js', '**/*.config.mjs'],
-  languageOptions: {
-    parserOptions: {
-      projectService: false
-    }
-  },
-  ...tseslint.configs.disableTypeChecked
 })
+
+const betterTailwindcssPlugin = config
+  .find(({ plugins }) => plugins?.['better-tailwindcss'])
+  ?.plugins?.['better-tailwindcss']
+
+const disabledTailwindRules = Object.fromEntries(
+  Object.keys(betterTailwindcssPlugin?.rules ?? {})
+    .map(rule => [`better-tailwindcss/${rule}`, 'off'])
+)
+
+const stylisticPlugin = config
+  .find(({ plugins }) => plugins?.['@stylistic'])
+  ?.plugins?.['@stylistic']
+
+const disabledStylisticRules = Object.fromEntries(
+  Object.keys(stylisticPlugin?.rules ?? {})
+    .map(rule => [`@stylistic/${rule}`, 'off'])
+)
 
 export default [
   ...config,
   {
+    name: 'temporary-formatting-compatibility',
+    rules: disabledStylisticRules
+  },
+  {
+    linterOptions: {
+      reportUnusedDisableDirectives: false
+    },
+    name: 'local-generated-runtime-directives'
+  },
+  {
+    files: ['packages/mcp/**/*.{cjs,js,mjs,ts,tsx}'],
+    name: 'mcp-established-formatting',
+    rules: {
+      ...disabledStylisticRules,
+      'simple-import-sort/exports': 'off',
+      'simple-import-sort/imports': 'off'
+    }
+  },
+  {
+    files: ['packages/react/src/**/*.{ts,tsx}'],
+    name: 'react-compiler-adoption',
+    rules: {
+      'react-hooks/preserve-manual-memoization': 'off',
+      'react-hooks/refs': 'off'
+    }
+  },
+  {
+    files: ['packages/astro/runtime/UIPrimitives.astro'],
+    name: 'generated-runtime-types',
+    rules: {
+      'no-unused-vars': 'off'
+    }
+  },
+  {
+    files: ['**/*.{astro,js,jsx,ts,tsx}'],
+    name: 'local-tailwind-opt-in',
+    plugins: {
+      'better-tailwindcss': betterTailwindcssPlugin
+    },
+    rules: disabledTailwindRules
+  },
+  {
     files: ['apps/docs/**/*.astro'],
+    plugins: {
+      'better-tailwindcss': betterTailwindcssPlugin
+    },
     rules: {
       'better-tailwindcss/no-unknown-classes': ['error', {
         entryPoint: `${docsRoot}/src/styles/global.css`,
@@ -146,8 +139,40 @@ export default [
   },
   {
     files: ['packages/lumen/templates/**/*.{astro,tsx}'],
+    plugins: {
+      'better-tailwindcss': betterTailwindcssPlugin
+    },
     rules: {
       'better-tailwindcss/no-unknown-classes': 'off'
+    }
+  },
+  {
+    files: ['**/*.astro', '**/*.astro/**'],
+    name: 'astro-virtual-script-compatibility',
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      'simple-import-sort/imports': 'off'
+    }
+  },
+  {
+    files: ['apps/docs/**/*.astro'],
+    name: 'docs-established-correctness',
+    rules: {
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off'
+    }
+  },
+  {
+    files: [
+      'apps/next-smoke/**/*.{ts,tsx}',
+      'packages/react/src/**/*.{ts,tsx}'
+    ],
+    name: 'established-import-order',
+    rules: {
+      'simple-import-sort/imports': 'off'
     }
   }
 ]

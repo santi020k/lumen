@@ -22,13 +22,15 @@ surface; React and Web Components expose the same class and data contracts.
   `lumen add <component> --target <framework>`.
 - Bundled recipe parity: scheduler, data collections, advanced fields, theme builder, and rich text
   starter recipes now generate Astro, React, or Elements files with `lumen add <recipe> --target
-  <framework>`.
+<framework>`.
 - Scheduling surfaces: `Schedule` and `Agenda`.
 - Advanced data surfaces: `DataTable`, `Tree`, `TreeGrid`, and `VirtualList`.
 - Data visualization: shared chart types, scales, ticks, line/area, grouped/stacked bar, and
   pie/donut geometry; tokenized `Chart`, `Sparkline`, `BarChart`, `LineChart`, and `PieChart`
   surfaces; revealable data tables; and Astro, React, and Elements parity without a charting
-  runtime dependency.
+  runtime dependency. See
+  [Observatory's consumer implementation learnings](consumer-chart-implementation-learnings.md)
+  for product-level feedback and possible follow-up improvements.
 - Theme tooling surface: `ThemeBuilder`.
 - Rich text composition surface: `RichTextEditor`.
 - Advanced fields: `Autocomplete`, `NumberField`, `SearchField`, `TimeField`, `DateRangePicker`,

@@ -1093,6 +1093,8 @@ export const PieChart = ({
 }: PieChartProps) => {
   const geometry = createLumenPieGeometry(series.data, { variant })
   const hasData = hasLumenPieData(series.data)
+  const hasCenterLabel = centerLabel !== null && centerLabel !== undefined
+  const hasCenterValue = centerValue !== null && centerValue !== undefined
 
   return (
     <Chart
@@ -1139,11 +1141,11 @@ export const PieChart = ({
             ))}
           </g>
         </svg>
-        {variant === 'donut' && (centerLabel != null || centerValue != null) && (
+        {variant === 'donut' && (hasCenterLabel || hasCenterValue) && (
           <>
             <div aria-hidden="true" className="ui-pie-chart__center">
-              {centerValue != null && <strong>{centerValue}</strong>}
-              {centerLabel != null && <span>{centerLabel}</span>}
+              {hasCenterValue && <strong>{centerValue}</strong>}
+              {hasCenterLabel && <span>{centerLabel}</span>}
             </div>
             <div className="ui-sr-only">
               {centerValue} {centerLabel}

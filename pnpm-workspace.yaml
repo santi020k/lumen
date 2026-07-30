@@ -22,7 +22,15 @@ catalog:
   "@lucide/icons": ^1.26.0
   "@modelcontextprotocol/sdk": ^1.29.0
   "@playwright/test": ^1.61.1
-  "@santi020k/eslint-config-basic": ^2.1.1
+  "@santi020k/eslint-config-astro": ^3.1.0
+  "@santi020k/eslint-config-basic": ^3.2.0
+  "@santi020k/eslint-config-extensions": ^3.1.0
+  "@santi020k/eslint-config-formats": ^3.1.0
+  "@santi020k/eslint-config-libraries": ^3.1.0
+  "@santi020k/eslint-config-next": ^3.1.0
+  "@santi020k/eslint-config-react": ^3.1.0
+  "@santi020k/eslint-config-testing": ^3.1.0
+  "@santi020k/eslint-config-tools": ^3.1.0
   "@santi020k/theme": ^1.2.0
   "@tailwindcss/vite": ^4.3.3
   "@types/node": ^26.1.1
@@ -34,9 +42,7 @@ catalog:
   ajv: ^8.20.0
   astro: ^7.1.3
   axe-core: ^4.12.1
-  commitizen: ^4.3.2
   cspell: ^10.0.1
-  cz-conventional-changelog: ^3.3.0
   eslint: ^10.7.0
   husky: ^9.1.7
   jsdom: ^29.1.1
@@ -50,7 +56,6 @@ catalog:
   tailwindcss: ^4.3.3
   turbo: ^2.10.6
   typescript: ^6.0.3
-  typescript-eslint: ^8.65.0
   uqr: ^0.1.3
   vitest: ^4.1.10
   wrangler: ^4.114.0
@@ -61,6 +66,10 @@ ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
   - workerd
+
+minimumReleaseAgeExclude:
+  - '@santi020k/eslint-config-basic@3.2.0'
+  - '@santi020k/eslint-config-typescript'
 
 peerDependencyRules:
   allowedVersions:

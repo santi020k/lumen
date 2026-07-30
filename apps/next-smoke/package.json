@@ -6,8 +6,8 @@
   "scripts": {
     "build": "next build",
     "clean": "rm -rf .next",
-    "lint": "eslint . --no-warn-ignored",
-    "lint:fix": "eslint . --fix --no-warn-ignored",
+    "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
     "test": "vitest run --config ../../vitest.config.ts --project next-smoke --passWithNoTests",
     "typecheck": "next typegen && tsc --noEmit"
   },
