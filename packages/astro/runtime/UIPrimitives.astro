@@ -561,6 +561,31 @@ const initForms = (scope: ParentNode): void => {
 
     form.noValidate = true
 
+    const setStatus = (status: 'error' | 'idle' | 'submitting'): void => {
+      form.dataset.status = status
+
+      if (status === 'submitting') form.setAttribute('aria-busy', 'true')
+      else form.removeAttribute('aria-busy')
+    }
+
+    form.addEventListener('click', event => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const link = target.closest<HTMLAnchorElement>('[data-ui-error-summary] a[href^="#"]')
+      const controlId = link?.hash.slice(1)
+      const control = controlId ? document.getElementById(controlId) : null
+
+      if (!link || !(control instanceof HTMLElement) || !form.contains(control)) return
+
+      event.preventDefault()
+
+      control.focus({ preventScroll: true })
+
+      control.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
+
     form.addEventListener('focusout', event => {
       if (!isNativeFormControl(event.target) || event.target.form !== form) return
 
@@ -575,21 +600,34 @@ const initForms = (scope: ParentNode): void => {
     })
 
     form.addEventListener('submit', event => {
+      if (form.dataset.status === 'submitting') {
+        event.preventDefault()
+
+        return
+      }
+
       const invalidControls = validateForm(form)
 
       if (invalidControls.length) {
         event.preventDefault()
 
+        setStatus('error')
+
         const firstInvalid = invalidControls[0]
+        const errorSummary = form.querySelector<HTMLElement>('[data-ui-error-summary]:not([hidden])')
 
         form.dispatchEvent(new CustomEvent('ui:invalid', {
           bubbles: true,
           detail: { control: firstInvalid, controls: invalidControls, form }
         }))
 
-        firstInvalid?.focus({ preventScroll: true })
+        if (errorSummary) {
+          errorSummary.focus({ preventScroll: true })
+        } else {
+          firstInvalid?.focus({ preventScroll: true })
 
-        firstInvalid?.reportValidity()
+          firstInvalid?.reportValidity()
+        }
 
         return
       }
@@ -598,7 +636,245 @@ const initForms = (scope: ParentNode): void => {
         bubbles: true,
         detail: { controls: getFormControls(form), form }
       }))
+
+      setStatus('submitting')
+
+      queueMicrotask(() => {
+        if (event.defaultPrevented) setStatus('idle')
+      })
     })
+
+    form.addEventListener('reset', () => {
+      setStatus('idle')
+    })
+  }
+}
+
+const initPasswordFields = (scope: ParentNode): void => {
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-password-field]')) {
+    if (root.dataset.uiPasswordBound === 'true') continue
+
+    const input = root.querySelector<HTMLInputElement>('input')
+    const toggle = root.querySelector<HTMLButtonElement>('[data-ui-password-toggle]')
+
+    if (!input || !toggle) continue
+
+    root.dataset.uiPasswordBound = 'true'
+
+    const showLabel = toggle.dataset.showLabel ?? 'Show password'
+    const hideLabel = toggle.dataset.hideLabel ?? 'Hide password'
+    const visibleLabel = toggle.querySelector<HTMLElement>('[data-ui-password-toggle-label]')
+
+    const setVisible = (visible: boolean): void => {
+      input.type = visible ? 'text' : 'password'
+
+      toggle.setAttribute('aria-label', visible ? hideLabel : showLabel)
+
+      toggle.setAttribute('aria-pressed', String(visible))
+
+      if (visibleLabel) visibleLabel.textContent = visible ? 'Hide' : 'Show'
+    }
+
+    toggle.addEventListener('click', () => {
+      setVisible(input.type === 'password')
+
+      input.focus({ preventScroll: true })
+    })
+
+    const form = input.form
+
+    form?.addEventListener('reset', () => {
+      setVisible(false)
+    })
+
+    if (form) {
+      const hideAfterSuccess = (): void => {
+        if (form.dataset.status === 'success') setVisible(false)
+      }
+
+      const observer = new MutationObserver(hideAfterSuccess)
+
+      observer.observe(form, { attributeFilter: ['data-status'], attributes: true })
+
+      hideAfterSuccess()
+    }
+
+    setVisible(false)
+  }
+}
+
+const getListBoxSelectedValues = (select: HTMLSelectElement): string[] =>
+  [...select.selectedOptions].map(option => option.value)
+
+const initListBoxes = (scope: ParentNode): void => {
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-list-box]')) {
+    if (root.dataset.uiListBoxBound === 'true') continue
+
+    const select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native]')
+    const list = root.querySelector<HTMLElement>('[data-ui-list-box-list]')
+    const options = [...(list?.querySelectorAll<HTMLElement>('[data-ui-list-box-option]') ?? [])]
+
+    if (!select || !list || !options.length) continue
+
+    root.dataset.uiListBoxBound = 'true'
+
+    select.dataset.uiListBoxEnhanced = 'true'
+
+    list.hidden = false
+
+    let activeIndex = Math.max(
+      0,
+      options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
+    )
+
+    let typeahead = ''
+    let typeaheadTimer = 0
+
+    const syncActive = (): void => {
+      options.forEach((option, index) => {
+        option.id ||= `${select.id || 'ui-list-box'}-option-${index}`
+
+        option.dataset.active = index === activeIndex ? 'true' : 'false'
+      })
+
+      const activeOption = options[activeIndex]
+
+      if (activeOption) list.setAttribute('aria-activedescendant', activeOption.id)
+    }
+
+    const syncSelected = (): void => {
+      const selectedValues = new Set(getListBoxSelectedValues(select))
+
+      for (const option of options) {
+        option.setAttribute('aria-selected', String(selectedValues.has(option.dataset.value ?? '')))
+      }
+    }
+
+    const commitOption = (index: number): void => {
+      const option = options[index]
+
+      if (!option || option.getAttribute('aria-disabled') === 'true' || select.disabled) return
+
+      const nativeOption = [...select.options].find(item => item.value === option.dataset.value)
+
+      if (!nativeOption) return
+
+      if (select.multiple) nativeOption.selected = !nativeOption.selected
+      else select.value = nativeOption.value
+
+      syncSelected()
+
+      select.dispatchEvent(new Event('input', { bubbles: true }))
+
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+
+      root.dispatchEvent(new CustomEvent('ui:list-box-change', {
+        bubbles: true,
+        detail: { values: getListBoxSelectedValues(select) }
+      }))
+    }
+
+    const moveActive = (direction: 1 | -1): void => {
+      let nextIndex = activeIndex
+
+      for (const _option of options) {
+        nextIndex = (nextIndex + direction + options.length) % options.length
+
+        if (options[nextIndex]?.getAttribute('aria-disabled') !== 'true') {
+          activeIndex = nextIndex
+
+          syncActive()
+
+          return
+        }
+      }
+    }
+
+    list.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault()
+
+        moveActive(1)
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault()
+
+        moveActive(-1)
+      } else if (event.key === 'Home') {
+        event.preventDefault()
+
+        activeIndex = Math.max(
+          0,
+          options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
+        )
+
+        syncActive()
+      } else if (event.key === 'End') {
+        event.preventDefault()
+
+        for (let index = options.length - 1; index >= 0; index -= 1) {
+          if (options[index]?.getAttribute('aria-disabled') !== 'true') {
+            activeIndex = index
+
+            break
+          }
+        }
+
+        syncActive()
+      } else if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+
+        commitOption(activeIndex)
+      } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        typeahead += event.key.toLowerCase()
+
+        window.clearTimeout(typeaheadTimer)
+
+        typeaheadTimer = window.setTimeout(() => {
+          typeahead = ''
+        }, 700)
+
+        const nextIndex = options.findIndex(
+          option =>
+            option.getAttribute('aria-disabled') !== 'true' &&
+            option.textContent?.trim().toLowerCase().startsWith(typeahead)
+        )
+
+        if (nextIndex >= 0) {
+          activeIndex = nextIndex
+
+          syncActive()
+        }
+      }
+    })
+
+    options.forEach((option, index) => {
+      option.addEventListener('click', () => {
+        activeIndex = index
+
+        syncActive()
+
+        commitOption(index)
+      })
+    })
+
+    select.addEventListener('change', syncSelected)
+
+    select.form?.addEventListener('reset', () => {
+      window.setTimeout(() => {
+        syncSelected()
+
+        activeIndex = Math.max(
+          0,
+          options.findIndex(option => option.getAttribute('aria-selected') === 'true')
+        )
+
+        syncActive()
+      })
+    })
+
+    syncSelected()
+
+    syncActive()
   }
 }
 
@@ -4596,6 +4872,10 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initFields(scope)
 
   initForms(scope)
+
+  initPasswordFields(scope)
+
+  initListBoxes(scope)
 
   initDisclosures(scope)
 

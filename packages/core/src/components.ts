@@ -169,6 +169,7 @@ const astroEnhancedComponents = new Set<LumenComponentName>([
   'Command',
   'ContextMenu',
   'DataTable',
+  'DateRangePicker',
   'Dialog',
   'Drawer',
   'DropdownMenu',
@@ -236,7 +237,7 @@ export const lumenComponentBehavior = Object.fromEntries(
     name,
     {
       astro: astroEnhancedComponents.has(name) ? 'ui-primitives' : 'none',
-      elements: 'registered-element',
+      elements: name === 'Form' ? 'none' : 'registered-element',
       react: reactHookComponents.has(name) ? 'hook' : 'component'
     }
   ])
@@ -270,6 +271,90 @@ export const lumenGlobalBehaviors = [
   }
 ] as const satisfies readonly LumenGlobalBehavior[]
 
+export interface LumenStylingContract {
+  customProperties: readonly `--ui-${string}`[]
+  parts: readonly string[]
+  rootSlot: string
+  stability: 'stable'
+}
+
+export const lumenStylingContracts = {
+  Button: {
+    customProperties: [
+      '--ui-button-font-size',
+      '--ui-button-font-weight',
+      '--ui-button-gap',
+      '--ui-button-min-height',
+      '--ui-button-padding',
+      '--ui-button-radius'
+    ],
+    parts: [],
+    rootSlot: 'button',
+    stability: 'stable'
+  },
+  ButtonLink: { customProperties: [], parts: [], rootSlot: 'button-link', stability: 'stable' },
+  Card: {
+    customProperties: ['--ui-card-gap', '--ui-card-padding', '--ui-card-section-gap'],
+    parts: ['card-header', 'card-title', 'card-description', 'card-content', 'card-footer'],
+    rootSlot: 'card',
+    stability: 'stable'
+  },
+  Code: {
+    customProperties: [
+      '--ui-code-bg',
+      '--ui-code-border',
+      '--ui-code-fg',
+      '--ui-code-header-bg',
+      '--ui-code-muted'
+    ],
+    parts: [],
+    rootSlot: 'code',
+    stability: 'stable'
+  },
+  CodeTabs: {
+    customProperties: ['--ui-code-tabs-list-padding', '--ui-code-tabs-tab-padding'],
+    parts: [],
+    rootSlot: 'code-tabs',
+    stability: 'stable'
+  },
+  Link: {
+    customProperties: ['--ui-link-font-weight', '--ui-link-underline-offset'],
+    parts: [],
+    rootSlot: 'link',
+    stability: 'stable'
+  },
+  NavigationMenu: {
+    customProperties: ['--ui-navigation-menu-gap', '--ui-navigation-menu-item-padding'],
+    parts: [],
+    rootSlot: 'navigation-menu',
+    stability: 'stable'
+  },
+  Sidebar: {
+    customProperties: ['--ui-sidebar-gap', '--ui-sidebar-padding', '--ui-sidebar-width'],
+    parts: [],
+    rootSlot: 'sidebar',
+    stability: 'stable'
+  },
+  Stat: {
+    customProperties: ['--ui-stat-gap', '--ui-stat-padding'],
+    parts: ['stat-label', 'stat-value', 'stat-description', 'stat-icon', 'stat-trend'],
+    rootSlot: 'stat',
+    stability: 'stable'
+  },
+  Table: {
+    customProperties: ['--ui-table-cell-padding'],
+    parts: [],
+    rootSlot: 'table',
+    stability: 'stable'
+  },
+  ThemeToggle: {
+    customProperties: ['--ui-theme-toggle-size'],
+    parts: [],
+    rootSlot: 'theme-toggle',
+    stability: 'stable'
+  }
+} as const satisfies Partial<Record<LumenComponentName, LumenStylingContract>>
+
 export interface LumenPackageTarget {
   name: string
   packageName: string
@@ -281,6 +366,11 @@ export const lumenPackages = [
   { name: 'Lumen Core', packageName: '@santi020k/lumen-core', runtime: 'core' },
   { name: 'Lumen Astro', packageName: '@santi020k/lumen-astro', runtime: 'astro' },
   { name: 'Lumen React', packageName: '@santi020k/lumen-react', runtime: 'react' },
+  {
+    name: 'Lumen React Hook Form',
+    packageName: '@santi020k/lumen-react-hook-form',
+    runtime: 'react'
+  },
   { name: 'Lumen Elements', packageName: '@santi020k/lumen-elements', runtime: 'elements' },
   {
     name: 'Lumen Brand Icons',

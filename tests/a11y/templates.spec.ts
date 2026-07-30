@@ -40,26 +40,25 @@ for (const slug of templateSlugs) {
       const controls = [...main.querySelectorAll<HTMLElement>(
         'button, input, select, textarea, [role="button"], [role="radio"]'
       )]
-      const nameFor = (control: HTMLElement) => {
-        const labelledBy = control.getAttribute('aria-labelledby')
+      const labelledByFor = (control: HTMLElement) =>
+        control.getAttribute('aria-labelledby')
           ?.split(/\s+/)
           .map(id => document.getElementById(id)?.textContent.trim())
           .filter(Boolean)
           .join(' ')
-        const explicitLabel = control.id
-          ? main.querySelector<HTMLLabelElement>(
-              `label[for="${CSS.escape(control.id)}"]`
-            )?.textContent.trim()
-          : undefined
 
-        return control.getAttribute('aria-label')?.trim()
-          || labelledBy
-          || explicitLabel
-          || control.closest('label')?.textContent.trim()
-          || control.textContent.trim()
-          || control.getAttribute('placeholder')?.trim()
-          || ''
-      }
+      const explicitLabelFor = (control: HTMLElement) => main
+        .querySelector<HTMLLabelElement>(`label[for="${CSS.escape(control.id)}"]`)
+        ?.textContent.trim()
+
+      const nameFor = (control: HTMLElement) => [
+        control.getAttribute('aria-label')?.trim(),
+        labelledByFor(control),
+        control.id ? explicitLabelFor(control) : undefined,
+        control.closest('label')?.textContent.trim(),
+        control.textContent.trim(),
+        control.getAttribute('placeholder')?.trim()
+      ].find(Boolean) ?? ''
       const ids = [...main.querySelectorAll<HTMLElement>('[id]')]
         .map(element => element.id)
 

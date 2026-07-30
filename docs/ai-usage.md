@@ -28,6 +28,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | --- | --- | --- | --- |
 | Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |
 | React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |
+| React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |
 | Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |
 | Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
 | Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |
@@ -193,6 +194,11 @@ export function SubscribeForm() {
 }
 ```
 
+For React Hook Form, spread `register()` directly onto native-backed controls. Install
+`@santi020k/lumen-react-hook-form` only for controlled composites such as `Select`, `DatePicker`,
+`InputOTP`, and `ListBox`. Do not combine React Hook Form and `useFormValidation` unless the
+application intentionally coordinates two validation sources.
+
 ## Web Components
 
 Register custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes
@@ -216,21 +222,28 @@ select form participation, and the same toast controller events as the Astro run
 </lumen-card>
 ```
 
+Put input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in
+`FormData`, validity, disabled state, focus, and reset through form-associated custom-element
+behavior with a native-control fallback. Do not generate `<lumen-form>` as the submission
+container.
+
 ## Component Selection
 
 The shared catalog includes:
 
 `Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,
 `Avatar`, `Badge`, `BarChart`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,
-`Carousel`, `Chart`, `Checkbox`, `Collapsible`, `Code`, `Combobox`, `Command`, `ColorPicker`,
+`Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,
+`Container`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
-`DropdownMenu`, `Empty`, `Field`, `HoverCard`, `Icon`, `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`,
-`Label`, `LineChart`, `Marker`, `Menubar`, `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`,
-`NumberField`, `Pagination`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
+`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
+`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
+`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,
+`PasswordField`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
-`Slider`, `Sparkline`, `Spinner`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
+`Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
 `TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and
-`VirtualList`.
+`VirtualList`, and `VisuallyHidden`.
 
 ## Product Recipes
 
@@ -246,6 +259,11 @@ The shared catalog includes:
   enabled unless the same values are already available in a nearby semantic table. Prefer a bar
   chart when precise slice comparison matters or the pie would exceed roughly seven categories.
   Use `Chart` as the custom SVG/canvas escape hatch.
+  Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`
+  and `formatValue` for localized axes, SVG titles, and data tables. Choose
+  `presentation="bare"` inside an existing Card, `categoryWidth` for long horizontal labels,
+  `markers="auto"` or a numeric marker step for dense lines, and `emptyLabel` for actionable
+  source-specific guidance.
 - Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
   names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
   when the icon carries meaning on its own. Install and register
@@ -377,6 +395,8 @@ lumen list --registry ./registry/lumen.registry.json
 lumen add custom-recipe --registry ./registry/custom.registry.json
 lumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token "$TOKEN"
 lumen install
+lumen doctor --json
+lumen init --framework astro --tailwind
 ```
 
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper

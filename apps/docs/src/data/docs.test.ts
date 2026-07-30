@@ -121,6 +121,12 @@ describe('component docs snippets', () => {
       expect(getFigmaComponentUrl(component.figmaNodeId))
         .toBe(`${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}`)
     }
+
+    for (const component of componentDocs) {
+      expect(
+        component.figmaNodeId ? component.figmaStatus : 'behavior-only', `${component.name} needs a linked Figma node or an explicit behavior-only status`
+      ).toBe(component.figmaStatus)
+    }
   })
 
   test('only link to existing public assets from examples', () => {

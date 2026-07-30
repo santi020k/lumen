@@ -489,10 +489,12 @@ describe('@santi020k/lumen-elements', () => {
       </form>
     `
 
-    const email = document.querySelector<LumenElement & {
-      checkValidity: () => boolean
-      validationMessage: string
-    }>('#email')
+    const email = document.querySelector<
+      LumenElement & {
+        checkValidity: () => boolean
+        validationMessage: string
+      }
+    >('#email')
     const nativeInput = email?.querySelector<HTMLInputElement>('[data-ui-element-control]')
 
     expect(email?.checkValidity()).toBe(false)
@@ -504,7 +506,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(document.activeElement).toBe(nativeInput)
   })
 
-  test('forms reflect native validation into field errors and events', () => {
+  test('forms reflect validation, prevent duplicate submits, and reset status', async () => {
     const events: string[] = []
 
     document.body.innerHTML = `
@@ -547,6 +549,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(input?.getAttribute('aria-describedby')).toContain(error?.id)
     expect(error?.hidden).toBe(false)
     expect(error?.textContent).toBe('Email required')
+    expect(form?.dataset.status).toBe('error')
     expect(events).toEqual(['validate:email', 'invalid:1'])
 
     if (input) {
@@ -557,6 +560,33 @@ describe('@santi020k/lumen-elements', () => {
     expect(input?.hasAttribute('aria-invalid')).toBe(false)
     expect(error?.hidden).toBe(true)
     expect(events).toEqual(['validate:email', 'invalid:1', 'validate:email', 'valid'])
+
+    form?.addEventListener('submit', event => {
+      event.preventDefault()
+    })
+
+    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+
+    expect(form?.dataset.status).toBe('submitting')
+    expect(form?.getAttribute('aria-busy')).toBe('true')
+
+    const duplicatePrevented = !form?.dispatchEvent(
+      new Event('submit', {
+        bubbles: true,
+        cancelable: true
+      })
+    )
+
+    expect(duplicatePrevented).toBe(true)
+
+    await Promise.resolve()
+
+    expect(form?.dataset.status).toBe('idle')
+    expect(form?.hasAttribute('aria-busy')).toBe(false)
+
+    form?.reset()
+
+    expect(form?.dataset.status).toBe('idle')
   })
 
   test('date range pickers keep native date inputs in range', () => {

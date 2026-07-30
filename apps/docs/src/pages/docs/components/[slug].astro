@@ -73,7 +73,10 @@ const relatedComponents = relatedCollection?.names
   .filter(entry => entry !== undefined) ??
   []
 
-const figmaUrl = getFigmaComponentUrl(component.figmaNodeId)
+const figmaUrl = component.figmaNodeId ?
+  getFigmaComponentUrl(component.figmaNodeId) :
+  '/docs/figma'
+
 const componentNameParts = component.name.split(/(?<=[a-z])(?=[A-Z])/)
 const isImage = component.name === 'Image'
 
@@ -148,7 +151,7 @@ export function HeroImage() {
             variant="outline"
           >
             <Icon decorative name="swatch-book" size="sm" />
-            {component.figmaNodeId ? 'View in Figma' : 'Open Figma library'}
+            {component.figmaNodeId ? 'View in Figma' : 'Figma behavior note'}
           </DocsActionLink>
         </div>
       </div>
@@ -169,9 +172,9 @@ export function HeroImage() {
           <span><Icon decorative name="swatch-book" size="sm" /></span>
           <p>
             <small>Design source</small>
-            <a href={figmaUrl} rel="noreferrer" target="_blank">
-              {component.figmaNodeId ? 'Linked component node' : 'Library file'}
-            </a>
+            {component.figmaNodeId ?
+              <a href={figmaUrl} rel="noreferrer" target="_blank">Linked component node</a> :
+              <a href={figmaUrl}>Behavior-only contract</a>}
           </p>
         </div>
       </div>

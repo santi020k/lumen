@@ -77,6 +77,15 @@ minimumReleaseAgeExclude: [webpack, "esbuild"]
       currentCommit: 'abc123',
       dirty: true,
       frameworks: ['astro'],
+      integration: {
+        catalogFingerprint: 'fixture',
+        findings: [],
+        frameworks: ['astro'],
+        generatedAt: '2026-07-25T00:00:00.000Z',
+        healthy: true,
+        repository: '/consumer',
+        runtimeComponents: []
+      },
       nodeEngine: '>=22',
       nodeEngineSatisfied: true,
       packageManager: 'pnpm@10.32.1',

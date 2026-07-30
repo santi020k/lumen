@@ -1,6 +1,8 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
+import { ESLint } from 'eslint'
+
 const manifestUrl = new URL('../registry/lumen.registry.json', import.meta.url)
 const outputUrl = new URL('../packages/lumen/src/registry-data.ts', import.meta.url)
 const checkOnly = process.argv.includes('--check')
@@ -8,7 +10,7 @@ const manifest = JSON.parse(await readFile(manifestUrl, 'utf8'))
 
 delete manifest.$schema
 
-const generated = [
+const unformatted = [
   '// Generated from registry/lumen.registry.json by `pnpm run sync:registry`. Do not edit directly.',
   "import type { LumenRegistry } from './registry-types.js'",
   '',
@@ -16,6 +18,13 @@ const generated = [
   ''
 ].join('\n')
 
+const eslint = new ESLint({ fix: true })
+
+const [{ output: fixed }] = await eslint.lintText(unformatted, {
+  filePath: fileURLToPath(outputUrl)
+})
+
+const generated = fixed ?? unformatted
 const current = await readFile(outputUrl, 'utf8').catch(() => {})
 
 if (checkOnly) {

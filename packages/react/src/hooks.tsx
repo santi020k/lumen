@@ -48,10 +48,7 @@ type LumenProps<Tag extends keyof JSX.IntrinsicElements> = ComponentPropsWithRef
 
 type InputMode = NonNullable<ComponentPropsWithRef<'input'>['inputMode']>
 
-const setRefValue = <Value,>(
-  ref: Ref<Value> | undefined,
-  value: Value | null
-): void => {
+const setRefValue = <Value,>(ref: Ref<Value> | undefined, value: Value | null): void => {
   if (typeof ref === 'function') {
     ref(value)
   } else if (ref) {

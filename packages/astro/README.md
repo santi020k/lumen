@@ -51,6 +51,35 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 </Card>
 ```
 
+## Forms and Astro Actions
+
+`Form` renders a semantic form and preserves native `method`, `action`, `enctype`, autocomplete,
+reset, and no-JavaScript submission. Compose it with `Field`, `Label`, `FieldError`, and
+`ErrorSummary`.
+
+Astro Actions remain application-owned. Use `accept: 'form'`, read the result with
+`Astro.getActionResult()`, and pass `ActionInputError` to `normalizeAstroActionErrors()` so field
+errors receive stable control IDs.
+
+```astro
+---
+import { actions, isInputError } from 'astro:actions'
+import { ErrorSummary, Form, normalizeAstroActionErrors } from '@santi020k/lumen-astro'
+
+const result = Astro.getActionResult(actions.updateProfile)
+const errors = result?.error && isInputError(result.error)
+  ? normalizeAstroActionErrors(result.error)
+  : normalizeAstroActionErrors(result?.error)
+---
+
+<Form action={actions.updateProfile} method="POST">
+  <ErrorSummary {errors} />
+  <!-- fields -->
+</Form>
+```
+
+See the [Astro Actions form guide](https://lumen.santi020k.com/docs/forms/astro-actions).
+
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```astro

@@ -19,10 +19,7 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(
-  rest,
-  ['ui-stat-trend', `ui-stat-trend--${tone}`],
-  classProp,
-  className
+  rest, ['ui-stat-trend', `ui-stat-trend--${tone}`], classProp, className
 )
 ---
 

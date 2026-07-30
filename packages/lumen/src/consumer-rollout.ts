@@ -5,6 +5,8 @@ import { promisify } from 'node:util'
 
 import { satisfies } from 'semver'
 
+import { inspectLumenIntegration, type LumenDiagnosticReport } from './integration-diagnostics.js'
+
 /* eslint-disable complexity -- Consumer inventory, semver checks, mutation, and verification intentionally evaluate full repository contracts. */
 
 const execFileAsync = promisify(execFile)
@@ -25,6 +27,7 @@ export interface ConsumerInventory {
   currentCommit: string | undefined
   dirty: boolean
   frameworks: LumenFramework[]
+  integration: LumenDiagnosticReport
   nodeEngine: string | undefined
   nodeEngineSatisfied: boolean | undefined
   packageManager: string | undefined
@@ -218,6 +221,7 @@ export const inspectLumenConsumer = async (repository: string, targetVersion?: s
   ].filter(Boolean) as LumenFramework[]
 
   const warnings: string[] = []
+  const integration = await inspectLumenIntegration(root)
   const nodeEngineSatisfied = satisfiesNodeEngine(rootManifest.engines?.node)
   const status = await readGitValue(root, ['status', '--porcelain'])
   const dirty = Boolean(status)
@@ -263,6 +267,7 @@ export const inspectLumenConsumer = async (repository: string, targetVersion?: s
     currentCommit: await readGitValue(root, ['rev-parse', 'HEAD']),
     dirty,
     frameworks,
+    integration,
     nodeEngine: rootManifest.engines?.node,
     nodeEngineSatisfied,
     packageManager: rootManifest.packageManager,
@@ -270,7 +275,7 @@ export const inspectLumenConsumer = async (repository: string, targetVersion?: s
     repository: root,
     resolvedVersions,
     ...(targetVersion ? { targetVersion } : {}),
-    valid: warnings.length === 0,
+    valid: warnings.length === 0 && integration.healthy,
     warnings
   }
 }
@@ -547,7 +552,7 @@ export const runConsumerRollout = async (options: ConsumerRolloutOptions): Promi
     if (options.apply) {
       after.warnings = after.warnings.filter(warning => !warning.startsWith('Repository has uncommitted changes'))
 
-      after.valid = after.warnings.length === 0
+      after.valid = after.warnings.length === 0 && after.integration.healthy
     }
 
     report.repositories.push({ ...after, commands })
@@ -574,6 +579,10 @@ export const formatConsumerRollout = (report: ConsumerRolloutReport): string => 
     )
 
     lines.push(...repository.warnings.map(warning => `  warning: ${warning}`))
+
+    lines.push(
+      ...repository.integration.findings.map(item => `  ${item.severity}: ${item.file} ${item.rule}: ${item.message}`)
+    )
 
     lines.push(...repository.commands.map(command => `  ${command.ok ? 'pass' : 'fail'}: ${command.command}`))
   }

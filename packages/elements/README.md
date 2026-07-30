@@ -38,6 +38,24 @@ Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
 </lumen-card>
 ```
 
+## Forms
+
+Use a native `<form data-ui-form>` as the container. Scalar Lumen controls are form-associated
+custom elements: they expose `value`, `form`, `validity`, `validationMessage`, `willValidate`,
+`checkValidity()`, `reportValidity()`, and `setCustomValidity()`, plus `checked` where relevant.
+They participate in `FormData`, disabled state, reset, focus, and state restoration. A single
+internal native control provides the same contract when `ElementInternals` is unavailable.
+
+```html
+<form data-ui-form method="POST">
+  <lumen-input name="email" required type="email"></lumen-input>
+  <lumen-password-field name="password" required></lumen-password-field>
+  <lumen-button type="submit">Sign in</lumen-button>
+</form>
+```
+
+See the [Elements form guide](https://lumen.santi020k.com/docs/forms/elements).
+
 Use `lumen-icon` for Lucide icons by name across framework adapters.
 
 ```html

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "outDir": "dist",
+    "rootDir": "../../",
     "paths": {
       "@santi020k/lumen-astro": ["../astro/index.ts"],
       "@santi020k/lumen-react": ["../react/src/index.ts"]

@@ -488,8 +488,12 @@ const reactExampleForComponent = (name, hook, fallback) => {
 
 const toElementsExample = (example, elementComponents) => {
   let converted = example
+    .replaceAll(/<Form(?=[\s/>])/g, '<form data-ui-form')
+    .replaceAll('</Form>', '</form>')
 
   for (const [name, element] of elementComponents) {
+    if (name === 'Form') continue
+
     converted = converted
       .replaceAll(/<([A-Z][A-Za-z0-9]*)(?=[\s/>])/g, (match, p1) => (p1 === name ? `<${element.tagName}` : match))
       .replaceAll(`</${name}>`, `</${element.tagName}>`)
@@ -623,7 +627,7 @@ const buildFrameworkDetails = ({
       registration: 'defineLumenElements()',
       source: element.source,
       styleImport: 'import \'@santi020k/lumen-elements/styles.css\'',
-      tagName: element.tagName
+      tagName: name === 'Form' ? 'form' : element.tagName
     },
     react: {
       available: react.available,
@@ -796,7 +800,7 @@ const main = async () => {
       description: doc.summary,
       behavior: {
         astro: ctx.astroEnhancedComponents.has(name) ? 'ui-primitives' : 'none',
-        elements: 'registered-element',
+        elements: name === 'Form' ? 'none' : 'registered-element',
         react: ctx.reactHookComponents.has(name) ? 'hook' : 'component'
       },
       files: registryComponent.files ?? [],

@@ -694,11 +694,7 @@ export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
   value?: ReactNode
 }
 
-const ChartHeader = ({
-  description,
-  heading,
-  value
-}: Pick<ChartProps, 'description' | 'heading' | 'value'>) => {
+const ChartHeader = ({ description, heading, value }: Pick<ChartProps, 'description' | 'heading' | 'value'>) => {
   if (!heading && !description && !value) return null
 
   return (
@@ -757,12 +753,7 @@ interface ChartDataTableProps {
   series: readonly LumenChartSeries[]
 }
 
-const ChartDataTable = ({
-  categories,
-  formatCategory = String,
-  formatValue = String,
-  series
-}: ChartDataTableProps) => (
+const ChartDataTable = ({ categories, formatCategory = String, formatValue = String, series }: ChartDataTableProps) => (
   <details className="ui-chart__data">
     <summary>View chart data</summary>
     <div>
@@ -952,8 +943,10 @@ export const BarChart = ({
                 y={mark.y}
               >
                 <title>
-                  {`${series.flatMap(item => item.data).find(datum => datum.x === mark.category)?.xLabel ??
-                  formatCategory(mark.category)} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
+                  {`${
+                    series.flatMap(item => item.data).find(datum => datum.x === mark.category)?.xLabel ??
+                    formatCategory(mark.category)
+                  } · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
                 </title>
               </rect>
             ))}
@@ -984,10 +977,7 @@ export interface LineChartProps extends Omit<ChartProps, 'children'> {
   showTable?: boolean
 }
 
-const getLineChartMarkerStep = (
-  markers: LineChartProps['markers'],
-  categoryCount: number
-): number => {
+const getLineChartMarkerStep = (markers: LineChartProps['markers'], categoryCount: number): number => {
   if (markers === false || markers === 'none') return Number.POSITIVE_INFINITY
 
   if (typeof markers === 'number') return Math.max(1, Math.round(markers))
@@ -1096,19 +1086,21 @@ export const LineChart = ({
                 ))}
                 <path className="ui-line-chart__line" d={geometry.path} />
                 {Number.isFinite(markerStep) &&
-                  geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
-                    <circle
-                      className="ui-line-chart__point"
-                      cx={point.xCoordinate}
-                      cy={point.yCoordinate}
-                      key={`${typeof point.x}:${String(point.x)}`}
-                      r="3"
-                    >
-                      <title>
-                        {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
-                      </title>
-                    </circle>
-                  ))}
+                  geometry.points.map(
+                    (point, pointIndex) => pointIndex % markerStep === 0 && (
+                      <circle
+                        className="ui-line-chart__point"
+                        cx={point.xCoordinate}
+                        cy={point.yCoordinate}
+                        key={`${typeof point.x}:${String(point.x)}`}
+                        r="3"
+                      >
+                        <title>
+                          {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                        </title>
+                      </circle>
+                    )
+                  )}
               </g>
             )
           })}
@@ -2252,13 +2244,9 @@ const getPasswordFieldDescribedBy = (
   ariaDescribedBy: string | undefined,
   hintId: string | undefined,
   errorId: string | undefined
-): string | undefined => (
-  [ariaDescribedBy, hintId, errorId].filter(Boolean).join(' ') || undefined
-)
+): string | undefined => [ariaDescribedBy, hintId, errorId].filter(Boolean).join(' ') || undefined
 
-const usePasswordVisibility = (
-  inputRef: RefObject<HTMLInputElement | null>
-) => {
+const usePasswordVisibility = (inputRef: RefObject<HTMLInputElement | null>) => {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -2270,10 +2258,22 @@ const usePasswordVisibility = (
       setVisible(false)
     }
 
+    const hideAfterSuccess = () => {
+      if (form.dataset.status === 'success') setVisible(false)
+    }
+
     form.addEventListener('reset', handleReset)
+
+    const observer = new MutationObserver(hideAfterSuccess)
+
+    observer.observe(form, { attributeFilter: ['data-status'], attributes: true })
+
+    hideAfterSuccess()
 
     return () => {
       form.removeEventListener('reset', handleReset)
+
+      observer.disconnect()
     }
   }, [inputRef])
 
@@ -2349,12 +2349,7 @@ interface PasswordFieldMessagesProps {
   hintId: string | undefined
 }
 
-const PasswordFieldMessages = ({
-  error,
-  errorId,
-  hint,
-  hintId
-}: PasswordFieldMessagesProps) => (
+const PasswordFieldMessages = ({ error, errorId, hint, hintId }: PasswordFieldMessagesProps) => (
   <>
     {hint && (
       <p className="ui-field__hint" data-ui-field-hint id={hintId}>
@@ -2382,11 +2377,7 @@ export const PasswordField = ({
   const controlId = id ?? `ui-password-${generatedId}`
   const hintId = hint ? `${controlId}-hint` : undefined
   const errorId = `${controlId}-error`
-
-  const describedBy = getPasswordFieldDescribedBy(
-    ariaDescribedby, hintId, error ? errorId : undefined
-  )
-
+  const describedBy = getPasswordFieldDescribedBy(ariaDescribedby, hintId, error ? errorId : undefined)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const { toggleVisibility, visible } = usePasswordVisibility(inputRef)
 
@@ -3045,9 +3036,7 @@ export interface ListBoxProps extends Omit<
   value?: string | string[]
 }
 
-const normalizeListBoxValues = (
-  value: string | string[] | undefined
-): string[] => {
+const normalizeListBoxValues = (value: string | string[] | undefined): string[] => {
   if (value === undefined) return []
 
   return Array.isArray(value) ? value : [value]
@@ -3066,30 +3055,18 @@ const findLastEnabledOptionIndex = (options: readonly Option[]): number => {
 const getListBoxSelectedValues = (
   controlledValue: string | string[] | undefined,
   internalValues: string[]
-): string[] => (
-  controlledValue === undefined ? internalValues : normalizeListBoxValues(controlledValue)
-)
+): string[] => (controlledValue === undefined ? internalValues : normalizeListBoxValues(controlledValue))
 
-const getListBoxSelectValue = (
-  multiple: boolean,
-  selectedValues: string[]
-): string | string[] => (
-  multiple ? selectedValues : (selectedValues[0] ?? '')
-)
+const getListBoxSelectValue = (multiple: boolean, selectedValues: string[]): string | string[] => multiple ? selectedValues : (selectedValues[0] ?? '')
+const optionalTrue = (value: boolean | undefined): true | undefined => (value ? true : undefined)
 
-const optionalTrue = (value: boolean | undefined): true | undefined => (
-  value ? true : undefined
-)
-
-const ListBoxLabel = ({
-  controlId,
-  label
-}: {
-  controlId: string
-  label: ReactNode
-}) => (
-  label ? <label className="ui-label" htmlFor={controlId}>{label}</label> : null
-)
+const ListBoxLabel = ({ controlId, label }: { controlId: string, label: ReactNode }) => label ?
+  (
+    <label className="ui-label" htmlFor={controlId}>
+      {label}
+    </label>
+  ) :
+  null
 
 export const ListBox = ({
   className,
@@ -4303,9 +4280,7 @@ export type ButtonLinkProps = ComponentPropsWithRef<'a'> & {
   variant?: 'ghost' | 'inline' | 'primary' | 'secondary' | 'unstyled'
 }
 
-const getButtonLinkVariantClass = (
-  variant: NonNullable<ButtonLinkProps['variant']>
-): string => {
+const getButtonLinkVariantClass = (variant: NonNullable<ButtonLinkProps['variant']>): string => {
   if (variant === 'unstyled') return 'ui-button-link--unstyled'
 
   if (variant === 'inline') return 'ui-button ui-button--inline'
@@ -4353,12 +4328,7 @@ export const ButtonLink = ({
   }
 
   return (
-    <a
-      className={buttonLinkClassName}
-      data-slot="button-link"
-      ref={ref}
-      {...props}
-    >
+    <a className={buttonLinkClassName} data-slot="button-link" ref={ref} {...props}>
       {children}
     </a>
   )
@@ -4400,7 +4370,7 @@ export const GradientDivider = ({ className, ...props }: GradientDividerProps) =
   >
     <div
       className="
-        h-px w-full max-w-5xl bg-linear-to-r from-transparent via-brand/40
+        via-brand/40 h-px w-full max-w-5xl bg-linear-to-r from-transparent
         to-transparent
       "
     >

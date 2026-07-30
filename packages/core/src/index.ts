@@ -42,13 +42,16 @@ export {
 } from './code.js'
 export {
   type LumenComponentBehavior,
-  type LumenComponentName,
-  type LumenGlobalBehavior,
   lumenComponentBehavior,
+  type LumenComponentName,
   lumenComponentNames,
+  type LumenGlobalBehavior,
   lumenGlobalBehaviors,
   lumenPackages,
-  type LumenPackageTarget } from './components.js'
+  type LumenPackageTarget,
+  type LumenStylingContract,
+  lumenStylingContracts
+} from './components.js'
 export {
   applyDataViewState,
   createDataViewRequestUrl,

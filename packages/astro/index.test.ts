@@ -44,15 +44,19 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('normalizes Astro Action field errors for fields and summaries', () => {
-    expect(normalizeAstroActionErrors({
-      fields: {
-        email: ['Enter a valid email address'],
-        role: 'Choose a role'
-      }
-    }, {
-      email: 'profile-email',
-      role: 'profile-role'
-    })).toEqual({
+    expect(
+      normalizeAstroActionErrors(
+        {
+          fields: {
+            email: ['Enter a valid email address'],
+            role: 'Choose a role'
+          }
+        }, {
+          email: 'profile-email',
+          role: 'profile-role'
+        }
+      )
+    ).toEqual({
       fields: [
         {
           controlId: 'profile-email',

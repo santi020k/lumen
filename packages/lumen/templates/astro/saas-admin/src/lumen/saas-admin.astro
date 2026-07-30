@@ -33,17 +33,19 @@ import {
       <Card class="lumen-template__metric"><Stat label="Availability" value="99.99%" /><Badge variant="success">Normal</Badge></Card>
     </section>
     <section class="lumen-template__grid" id="billing">
-      <Card class="lumen-template__panel"><h2>Plan utilization</h2><Stat label="Seats used" value="248 / 300" /><Progress aria-label="248 of 300 seats used" max={300} value={248} /><p class="
-        lumen-template__muted
-      "
-                                                                                                                                                                                     >52 seats available
-                                                                                                                                                                                     </p>
+      <Card class="lumen-template__panel">
+        <h2>Plan utilization</h2>
+        <Stat label="Seats used" value="248 / 300" />
+        <Progress aria-label="248 of 300 seats used" max={300} value={248} />
+        <p class="lumen-template__muted">52 seats available</p>
       </Card>
-      <Card class="lumen-template__panel"><h2>Security posture</h2><ul class="
-        lumen-template__list
-      "
-                                                                   ><li>Single sign-on enforced</li><li>Domain verification complete</li><li>3 recovery codes need rotation</li>
-                                                                   </ul>
+      <Card class="lumen-template__panel">
+        <h2>Security posture</h2>
+        <ul class="lumen-template__list">
+          <li>Single sign-on enforced</li>
+          <li>Domain verification complete</li>
+          <li>3 recovery codes need rotation</li>
+        </ul>
       </Card>
     </section>
     <Card class="lumen-template__panel" id="members">

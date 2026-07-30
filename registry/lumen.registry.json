@@ -468,7 +468,7 @@
     {
       "name": "CardTitle",
       "type": "component",
-      "description": "Provides a semantic, styleable card title.",
+      "description": "Provides a semantic card title with a stable styling hook.",
       "category": "Layout",
       "files": [
         "packages/astro/components/CardTitle.astro",

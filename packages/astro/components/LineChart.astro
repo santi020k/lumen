@@ -76,6 +76,7 @@ const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, 
 
 const ticks = getLumenChartTicks(domain)
 const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+
 const markerStep =
   markers === false || markers === 'none' ?
     Number.POSITIVE_INFINITY :
@@ -84,9 +85,9 @@ const markerStep =
       markers === 'auto' ?
         Math.max(1, Math.ceil(categories.length / 24)) :
         1
+
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
-const categoryLabelFor = (category: number | string) =>
-  series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+const categoryLabelFor = (category: number | string) => series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
 
 const referenceY =
   referenceValue === undefined ?

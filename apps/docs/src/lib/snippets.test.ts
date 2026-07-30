@@ -39,4 +39,17 @@ describe('framework snippets', () => {
     expect(elements).toContain('<lumen-input id="email" value="hello@example.com"></lumen-input>')
     expect(elements).toContain('<lumen-button disabled>Save</lumen-button>')
   })
+
+  test('keeps Form as a native Elements submission boundary', () => {
+    const formExample = `---
+import { Button, Form } from '@santi020k/lumen-astro'
+---
+
+<Form><Button type="submit">Save changes</Button></Form>`
+    const elements = buildSnippets('Form', formExample)[2]?.code
+
+    expect(elements).toContain('<form data-ui-form>')
+    expect(elements).toContain('<lumen-button type="submit">Save changes</lumen-button>')
+    expect(elements).not.toContain('<lumen-form')
+  })
 })

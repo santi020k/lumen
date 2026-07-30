@@ -195,6 +195,12 @@ const accent = "hsl(var(--accent))";</code></pre>
     <button data-ui-combobox-option data-value="Web Components" role="option" type="button">Web Components</button>
   </div>
 </lumen-combobox>
+`,
+  Form: `${elementsHeader}
+
+<form data-ui-form>
+  <lumen-button type="submit">Save changes</lumen-button>
+</form>
 `
 }
 

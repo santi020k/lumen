@@ -76,6 +76,41 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Forms',
+    description: 'Build accessible native-first forms with shared fields, errors, summaries, and submission states.',
+    href: '/docs/forms',
+    keywords: normalizeKeywords('forms field label error summary validation submission native FormData accessibility'),
+    title: 'Lumen form system',
+    type: 'Recipe'
+  },
+  {
+    category: 'Forms',
+    description:
+      'Register native Lumen controls and connect composite controls through optional React Hook Form adapters.',
+    href: '/docs/forms/react-hook-form',
+    keywords: normalizeKeywords('react hook form RHF register controller useController adapter validation errors'),
+    title: 'React Hook Form integration',
+    type: 'Recipe'
+  },
+  {
+    category: 'Forms',
+    description: 'Submit Lumen forms to Astro Actions and render normalized server validation errors.',
+    href: '/docs/forms/astro-actions',
+    keywords: normalizeKeywords('Astro Actions form POST server validation ActionInputError getActionResult multipart'),
+    title: 'Astro Actions forms',
+    type: 'Recipe'
+  },
+  {
+    category: 'Forms',
+    description: 'Use form-associated Lumen custom elements with FormData, reset, validity, and native fallbacks.',
+    href: '/docs/forms/elements',
+    keywords: normalizeKeywords(
+      'web components elements ElementInternals form associated FormData reset validity custom elements'
+    ),
+    title: 'Elements forms',
+    type: 'Recipe'
+  },
+  {
     category: 'Themes',
     description: 'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',
     href: '/docs/theme-playground',

@@ -58,11 +58,13 @@ const ticks = getLumenChartTicks(geometry.domain)
 const categories = geometry.categories.map(category => category.category)
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.y ?? null
 const labelFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.label
+
 const formattedValueFor = (item: LumenChartSeries, category: number | string) => {
   const value = valueFor(item, category)
 
   return value === null ? 'Not available' : formatValue(value)
 }
+
 const categoryLabelFor = (category: number | string) => {
   const label = series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel
 

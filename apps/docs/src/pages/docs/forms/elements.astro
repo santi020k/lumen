@@ -1,0 +1,147 @@
+---
+import { Breadcrumb, Card, Link, Table } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const formExample = `<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  import '@santi020k/lumen-elements/styles.css'
+
+  defineLumenElements()
+</script>
+
+<form data-ui-form id="profile" method="POST">
+  <lumen-field>
+    <lumen-label for="profile-email">Email</lumen-label>
+    <lumen-input
+      id="profile-email"
+      name="email"
+      required
+      type="email"
+    ></lumen-input>
+    <lumen-field-error id="profile-email-error"></lumen-field-error>
+  </lumen-field>
+  <lumen-password-field
+    autocomplete="current-password"
+    name="password"
+    required
+  ></lumen-password-field>
+  <lumen-button type="submit">Sign in</lumen-button>
+</form>`
+
+const formDataExample = `const form = document.querySelector('#profile')
+const data = new FormData(form)
+
+data.get('email')
+
+form.reset()
+
+const email = document.querySelector('lumen-input')
+email.value = 'maya@example.com'
+email.setCustomValidity('')
+email.reportValidity()`
+
+const controls = [
+  ['lumen-input', 'Scalar text, email, URL, telephone, and password values'],
+  ['lumen-number-field', 'Numeric value with min, max, and step'],
+  ['lumen-search-field', 'Search string'],
+  ['lumen-time-field', 'Native time string'],
+  ['lumen-slider', 'Range value'],
+  ['lumen-color-picker', 'Color value'],
+  ['lumen-checkbox', 'Checked value or no submitted value'],
+  ['lumen-switch', 'Checked value or no submitted value'],
+  ['lumen-textarea', 'Multi-line string'],
+  ['lumen-select / lumen-list-box', 'Native select-backed scalar or repeated values'],
+  ['lumen-password-field', 'Native password input with visibility enhancement'],
+  ['lumen-input-otp', 'Native one-time-code string']
+] as const
+---
+
+<DocsLayout
+  description="Use Lumen form-associated custom elements with FormData, reset, validation, and native form fallbacks."
+  title="Elements forms - Lumen UI"
+>
+  <div class="framework-page">
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><Link href="/docs">Docs</Link></li>
+        <li><Link href="/docs/forms">Forms</Link></li>
+        <li><span aria-current="page">Web Components</span></li>
+      </ol>
+    </Breadcrumb>
+
+    <DocsPageHero
+      description="Use a native form container. Lumen’s input elements participate in values, validity, disabled state, reset, and focus."
+      eyebrow="Elements integration"
+      stats={[
+        { label: 'Container', value: '<form>' },
+        { label: 'Values', value: 'FormData' },
+        { label: 'Fallback', value: 'Native control' }
+      ]}
+      title="Forms with Lumen Elements"
+    />
+
+    <section class="docs-section space-y-5" aria-labelledby="native-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="native-title">Keep the form native</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Use form data-ui-form, not lumen-form, as the submission boundary. The custom controls use
+          ElementInternals where the platform supports it and a single native control fallback
+          otherwise. Both paths submit the same value and avoid duplicate proxy fields.
+        </p>
+      </div>
+      <CodeBlock code={formExample} lang="html" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="api-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="api-title">Native form API</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Scalar controls expose value, name, form, validity, validationMessage, willValidate,
+          checkValidity(), reportValidity(), setCustomValidity(), focus(), and checked properties
+          where relevant.
+        </p>
+      </div>
+      <CodeBlock code={formDataExample} lang="ts" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="controls-title">
+      <h2 class="text-2xl font-bold text-ink" id="controls-title">Submission contracts</h2>
+      <Table>
+        <table>
+          <thead><tr><th>Element</th><th>Submitted value</th></tr></thead>
+          <tbody>
+            {controls.map(([element, value]) => (
+              <tr><th scope="row">{element}</th><td>{value}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </Table>
+    </section>
+
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="events-title">
+      <h2 class="text-2xl font-bold text-ink" id="events-title">Events and validation</h2>
+      <div class="
+        grid gap-4
+        md:grid-cols-2
+      "
+      >
+        <Card variant="muted">
+          <h3 class="font-bold text-ink">Control events</h3>
+          <p class="mt-2 text-sm/6 text-ink-soft">
+            Listen for bubbling, composed input and change events on the custom control or form.
+          </p>
+        </Card>
+        <Card variant="muted">
+          <h3 class="font-bold text-ink">Form events</h3>
+          <p class="mt-2 text-sm/6 text-ink-soft">
+            The data-ui-form enhancement emits ui:validate, ui:invalid, and ui:valid while retaining
+            the browser Constraint Validation API.
+          </p>
+        </Card>
+      </div>
+    </section>
+  </div>
+</DocsLayout>

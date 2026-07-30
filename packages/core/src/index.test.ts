@@ -51,6 +51,7 @@ import {
   lumenPackages,
   lumenRadius,
   lumenStructureTokenNames,
+  lumenStylingContracts,
   lumenThemeAttribute,
   lumenTokenNames,
   moveScheduleEvent,
@@ -100,6 +101,12 @@ describe('lumen core metadata', () => {
     expect(
       createLumenLineGeometry([{ x: 0, y: 1 }]).points
     ).toHaveLength(1)
+    const barGeometry = createLumenBarGeometry([{
+      data: [{ x: 'stable-id', xLabel: 'Visible label', y: 1 }],
+      id: 'a',
+      label: 'A'
+    }], { categoryWidth: 180 })
+
     expect(
       createLumenBarGeometry([{
         data: [{ x: 'A', y: 1 }],
@@ -107,6 +114,10 @@ describe('lumen core metadata', () => {
         label: 'A'
       }]).marks
     ).toHaveLength(1)
+    expect(barGeometry.categories[0]).toMatchObject({
+      category: 'stable-id',
+      label: 'Visible label'
+    })
     expect(
       createLumenPieGeometry([{ x: 'A', y: 1 }]).slices
     ).toHaveLength(1)
@@ -118,6 +129,7 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-core',
       '@santi020k/lumen-astro',
       '@santi020k/lumen-react',
+      '@santi020k/lumen-react-hook-form',
       '@santi020k/lumen-elements',
       '@santi020k/lumen-icons-brand'
     ])
@@ -136,6 +148,11 @@ describe('lumen core metadata', () => {
       react: 'hook'
     })
     expect(lumenGlobalBehaviors.map(behavior => behavior.name)).toEqual(['form-validation', 'toast-events'])
+    expect(lumenStylingContracts.Card).toMatchObject({
+      rootSlot: 'card',
+      stability: 'stable'
+    })
+    expect(lumenStylingContracts.Card.parts).toContain('card-content')
   })
 })
 

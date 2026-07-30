@@ -37,6 +37,24 @@ export function SubscribeForm() {
 }
 ```
 
+## Forms
+
+`Form`, `Field`, `Label`, `FieldError`, and `ErrorSummary` provide the presentation and
+accessibility contract without replacing form state. Native-backed controls forward refs to their
+submitted DOM controls and work directly with React Hook Form's `register()`.
+
+For controlled composites, install the optional adapter:
+
+```bash
+pnpm add @santi020k/lumen-react-hook-form react-hook-form
+```
+
+It exports adapters for `Select`, `DatePicker`, `InputOTP`, and `ListBox`. React Hook Form owns
+validation, dirty/touched state, and submission state in this mode; do not also mount
+`useFormValidation` unless two validation sources are intentional.
+
+See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
+
 For long articles, `Anchor` accepts an optional heading `depth` and `ScrollProgress` tracks the
 document without requiring a separate hook.
 

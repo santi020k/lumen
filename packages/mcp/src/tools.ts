@@ -183,11 +183,9 @@ const scoreCandidate = (query: string, terms: string[], searchableText: string, 
   score -= (terms.length - matchedTerms.length) * 3
 
   if (
-    terms.some(term =>
-      ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term])
-        .includes(normalizedName)
-    )
-  ) score += 50
+    terms.some(term => ((Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]).includes(normalizedName))
+  )
+    score += 150
 
   if (normalizedText.includes(normalizedQuery)) score += 100
 

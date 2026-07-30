@@ -71,6 +71,10 @@ describe('@santi020k/lumen umbrella package', () => {
       'commerce-dashboard',
       'project-workspace',
       'auth-onboarding',
+      'docs-shell',
+      'marketing-shell',
+      'dashboard-shell',
+      'validated-form',
       'ai-docs',
       'figma-design-to-code'
     ])

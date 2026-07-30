@@ -97,7 +97,10 @@ const loadRecipeTemplateFiles = async (
 }
 
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-const toCamelCase = (value: string): string => value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
+
+const toCamelCase = (value: string): string => (
+  value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
+)
 
 const createAstroComponentFile = (name: string): LumenRecipeFile => ({
   path: `src/lumen/${toKebabCase(name)}.astro`,

@@ -35,9 +35,11 @@ export const normalizeAstroActionErrors = (
   return {
     fields: normalized.fields.map(fieldError => ({
       ...fieldError,
-      ...(controlIds[fieldError.name] ? {
-        controlId: controlIds[fieldError.name]
-      } : {})
+      ...(controlIds[fieldError.name] ?
+        {
+          controlId: controlIds[fieldError.name]
+        } :
+        {})
     })),
     form: normalized.form
   }

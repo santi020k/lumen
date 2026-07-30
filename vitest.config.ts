@@ -61,7 +61,9 @@ export default defineConfig({
       project('lumen', 'packages/lumen'),
       project('mcp', 'packages/mcp'),
       project('react', 'packages/react'),
-      project('react-hook-form', 'packages/react-hook-form'),
+      project('react-hook-form', 'packages/react-hook-form', {
+        include: ['src/**/*.test.ts', 'src/**/*.test.tsx']
+      }),
       project('elements', 'packages/elements', { environment: 'jsdom' }),
       project('icons-brand', 'packages/icons-brand'),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),

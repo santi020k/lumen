@@ -43,6 +43,10 @@
       ]
     },
     "packages/lumen": {
+      "ignoreDependencies": [
+        "@types/react",
+        "react"
+      ],
       "project": [
         "bin/*.mjs",
         "src/**/*.ts"

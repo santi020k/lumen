@@ -165,6 +165,7 @@ component defaults.
 | --- | --- |
 | [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |
 | [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |
+| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |
 | [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
 | [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
 | [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |
@@ -188,6 +189,9 @@ Additional machine-readable surfaces include:
 
 - [`llms.txt`](./llms.txt) for a concise project map.
 - [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.
+- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.
+- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.
+- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.

@@ -42,6 +42,8 @@ lumen add analytics-dashboard
 lumen add saas-admin --target react
 lumen add commerce-dashboard --target elements
 lumen audit-tokens ./src
+lumen doctor --json
+lumen init --framework astro --tailwind
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
@@ -49,8 +51,12 @@ Use `lumen add <component>` for a local Astro wrapper, `--target react` for a Re
 and Elements targets.
 
 Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin`,
-`commerce-dashboard`, `project-workspace`, and `auth-onboarding`. They include a shared,
-token-based template stylesheet and a framework-native starter file.
+`commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,
+`dashboard-shell`, and `validated-form`.
+
+Run `lumen doctor` to check adapter/style agreement, Tailwind layer order, Astro runtime mounts,
+and fragile internal selector dependencies. Use `--json` for CI and rollout automation. `lumen
+init --framework <astro|react|elements> [--tailwind]` prints the canonical non-destructive setup.
 
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
@@ -65,8 +71,9 @@ lumen rollout 0.2.0 ../site ../dashboard --exclude ../legacy
 ```
 
 The report separates manifest, workspace-catalog, and lockfile references; identifies each
-framework; checks the declared pnpm and Node contracts; and reports the complete resolved Lumen
-package graph. Add `--report ./lumen-rollout.json` for a durable JSON record.
+framework; checks the declared pnpm and Node contracts; includes the same integration diagnostics
+as `lumen doctor`; and reports the complete resolved Lumen package graph. Add
+`--report ./lumen-rollout.json` for a durable JSON record.
 
 After committing an intentional baseline in each consumer, apply the upgrade serially:
 

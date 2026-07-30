@@ -177,6 +177,14 @@ export const lumen = {
 } as const
 
 export {
+  createLumenSetup,
+  formatLumenDiagnostics,
+  inspectLumenIntegration,
+  type LumenDiagnosticFinding,
+  type LumenDiagnosticReport,
+  type LumenDiagnosticSeverity
+} from './integration-diagnostics.js'
+export {
   auditLumenTokenCss,
   type LumenTokenAuditFinding
 } from './token-audit.js'

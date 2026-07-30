@@ -1,0 +1,185 @@
+---
+import { Breadcrumb, Card, Link, Table } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const install = 'pnpm add @santi020k/lumen-react @santi020k/lumen-react-hook-form react-hook-form'
+
+const registerExample = `import {
+  Button,
+  Field,
+  FieldError,
+  Form,
+  Input,
+  Label
+} from '@santi020k/lumen-react'
+import { useForm } from 'react-hook-form'
+
+type ProfileValues = { email: string }
+
+export function ProfileForm() {
+  const {
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    register
+  } = useForm<ProfileValues>()
+
+  return (
+    <Form
+      onSubmit={handleSubmit(saveProfile)}
+      status={isSubmitting ? 'submitting' : errors.email ? 'error' : 'idle'}
+    >
+      <Field invalid={Boolean(errors.email)}>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          aria-describedby={errors.email ? 'email-error' : undefined}
+          aria-invalid={Boolean(errors.email)}
+          id="email"
+          type="email"
+          {...register('email', { required: 'Email is required' })}
+        />
+        <FieldError id="email-error" message={errors.email?.message} />
+      </Field>
+      <Button disabled={isSubmitting} type="submit">Save</Button>
+    </Form>
+  )
+}`
+
+const controllerExample = `import { Field, FieldError, Label } from '@santi020k/lumen-react'
+import {
+  getLumenManagedFieldState,
+  LumenSelectController
+} from '@santi020k/lumen-react-hook-form'
+import { useForm } from 'react-hook-form'
+
+type Values = { role: string }
+
+const { control, formState: { errors } } = useForm<Values>({
+  defaultValues: { role: '' }
+})
+const state = getLumenManagedFieldState({
+  error: errors.role,
+  invalid: Boolean(errors.role)
+}, 'role')
+
+<Field invalid={state.invalid}>
+  <Label htmlFor={state.controlId}>Role</Label>
+  <LumenSelectController
+    aria-describedby={state['aria-describedby']}
+    aria-invalid={state['aria-invalid']}
+    control={control}
+    id={state.controlId}
+    name="role"
+    options={[
+      { label: 'Designer', value: 'designer' },
+      { label: 'Engineer', value: 'engineer' }
+    ]}
+    placeholder="Choose a role"
+    rules={{ required: 'Choose a role' }}
+  />
+  <FieldError id={state.errorId} message={state.errorMessage} />
+</Field>`
+
+const directControls = [
+  'Input',
+  'Textarea',
+  'Checkbox',
+  'Switch',
+  'Slider',
+  'NativeSelect',
+  'NumberField',
+  'SearchField',
+  'TimeField',
+  'FileUpload'
+] as const
+
+const adapters = [
+  ['LumenSelectController', 'string', 'Select'],
+  ['LumenDatePickerController', 'YYYY-MM-DD string', 'DatePicker'],
+  ['LumenInputOTPController', 'string', 'InputOTP'],
+  ['LumenListBoxController', 'string or string[]', 'ListBox']
+] as const
+---
+
+<DocsLayout
+  description="Use Lumen controls with React Hook Form through direct registration and optional composite adapters."
+  title="React Hook Form - Lumen UI"
+>
+  <div class="framework-page">
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><Link href="/docs">Docs</Link></li>
+        <li><Link href="/docs/forms">Forms</Link></li>
+        <li><span aria-current="page">React Hook Form</span></li>
+      </ol>
+    </Breadcrumb>
+
+    <DocsPageHero
+      description="Register native-backed controls directly. Add the optional adapter package only for composite value contracts."
+      eyebrow="React integration"
+      stats={[
+        { label: 'Native controls', value: String(directControls.length) },
+        { label: 'Adapters', value: String(adapters.length) },
+        { label: 'RHF', value: 'Optional' }
+      ]}
+      title="Lumen with React Hook Form"
+    />
+
+    <section class="docs-section space-y-4" aria-labelledby="install-title">
+      <h2 class="text-2xl font-bold text-ink" id="install-title">Install</h2>
+      <CodeBlock code={install} lang="bash" />
+      <p class="max-w-3xl text-sm/7 text-ink-soft">
+        React Hook Form remains a peer dependency of the adapter package and is not pulled into
+        applications that use Lumen’s native form mode.
+      </p>
+    </section>
+
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="register-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="register-title">Register native controls</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          The ref reaches the submitted native element, and name, blur, change, required, disabled,
+          and focus management pass through unchanged.
+        </p>
+      </div>
+      <Card variant="muted">
+        <p class="text-sm/7 text-ink-soft">{directControls.join(', ')}</p>
+      </Card>
+      <CodeBlock code={registerExample} lang="tsx" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="controller-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="controller-title">Use adapters for composites</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          These components use useController internally and translate value, blur, disabled state,
+          and the focus ref without hiding React Hook Form’s rules or form state.
+        </p>
+      </div>
+      <Table>
+        <table>
+          <thead><tr><th>Adapter</th><th>Value</th><th>Lumen control</th></tr></thead>
+          <tbody>
+            {adapters.map(([adapter, value, control]) => (
+              <tr><th scope="row">{adapter}</th><td>{value}</td><td>{control}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </Table>
+      <CodeBlock code={controllerExample} lang="tsx" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="rules-title">
+      <h2 class="text-2xl font-bold text-ink" id="rules-title">Integration rules</h2>
+      <ul class="m-0 grid list-disc gap-2 pl-5 text-sm/7 text-ink-soft">
+        <li>Put initial values in useForm defaultValues so controlled fields never switch modes.</li>
+        <li>Let React Hook Form own validation; do not add useFormValidation to the same form.</li>
+        <li>Use a resolver directly when the application needs schema validation.</li>
+        <li>Keep authorization, server errors, and persistence in the application.</li>
+        <li>Map server field errors with setError, then focus the ErrorSummary or first invalid field.</li>
+      </ul>
+    </section>
+  </div>
+</DocsLayout>

@@ -256,7 +256,10 @@ const elementConfigs = {
     tagName: 'lumen-badge'
   },
   BarChart: {
-    attributeClasses: glassAttributeClasses('ui-chart--glass'),
+    attributeClasses: {
+      ...glassAttributeClasses('ui-chart--glass'),
+      presentation: { bare: 'ui-chart--bare' }
+    },
     baseClassName: 'ui-chart ui-bar-chart',
     defaults: { layout: 'grouped', orientation: 'vertical' },
     role: 'figure',
@@ -351,7 +354,10 @@ const elementConfigs = {
     tagName: 'lumen-carousel'
   },
   Chart: {
-    attributeClasses: glassAttributeClasses('ui-chart--glass'),
+    attributeClasses: {
+      ...glassAttributeClasses('ui-chart--glass'),
+      presentation: { bare: 'ui-chart--bare' }
+    },
     baseClassName: 'ui-chart',
     tagName: 'lumen-chart'
   },
@@ -590,7 +596,10 @@ const elementConfigs = {
     tagName: 'lumen-link'
   },
   LineChart: {
-    attributeClasses: glassAttributeClasses('ui-chart--glass'),
+    attributeClasses: {
+      ...glassAttributeClasses('ui-chart--glass'),
+      presentation: { bare: 'ui-chart--bare' }
+    },
     baseClassName: 'ui-chart ui-line-chart',
     role: 'figure',
     tagName: 'lumen-line-chart'
@@ -1311,6 +1320,31 @@ const initLumenForms = (scope: ParentNode): void => {
 
     form.noValidate = true
 
+    const setStatus = (status: 'error' | 'idle' | 'submitting'): void => {
+      form.dataset.status = status
+
+      if (status === 'submitting') form.setAttribute('aria-busy', 'true')
+      else form.removeAttribute('aria-busy')
+    }
+
+    form.addEventListener('click', event => {
+      const target = event.target
+
+      if (!(target instanceof Element)) return
+
+      const link = target.closest<HTMLAnchorElement>('[data-ui-error-summary] a[href^="#"]')
+      const controlId = link?.hash.slice(1)
+      const control = controlId ? document.getElementById(controlId) : null
+
+      if (!link || !(control instanceof HTMLElement) || !form.contains(control)) return
+
+      event.preventDefault()
+
+      control.focus({ preventScroll: true })
+
+      control.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
+
     form.addEventListener('focusout', event => {
       if (!isNativeFormControl(event.target) || event.target.form !== form) return
 
@@ -1325,12 +1359,21 @@ const initLumenForms = (scope: ParentNode): void => {
     })
 
     form.addEventListener('submit', event => {
+      if (form.dataset.status === 'submitting') {
+        event.preventDefault()
+
+        return
+      }
+
       const invalidControls = validateForm(form)
 
       if (invalidControls.length) {
         event.preventDefault()
 
+        setStatus('error')
+
         const firstInvalid = invalidControls[0]
+        const errorSummary = form.querySelector<HTMLElement>('[data-ui-error-summary]:not([hidden])')
 
         if (!firstInvalid) return
 
@@ -1341,9 +1384,13 @@ const initLumenForms = (scope: ParentNode): void => {
           })
         )
 
-        firstInvalid.focus({ preventScroll: true })
+        if (errorSummary) {
+          errorSummary.focus({ preventScroll: true })
+        } else {
+          firstInvalid.focus({ preventScroll: true })
 
-        firstInvalid.reportValidity()
+          firstInvalid.reportValidity()
+        }
 
         return
       }
@@ -1354,6 +1401,16 @@ const initLumenForms = (scope: ParentNode): void => {
           detail: { controls: getFormControls(form), form }
         })
       )
+
+      setStatus('submitting')
+
+      queueMicrotask(() => {
+        if (event.defaultPrevented) setStatus('idle')
+      })
+    })
+
+    form.addEventListener('reset', () => {
+      setStatus('idle')
     })
   }
 }
@@ -1440,6 +1497,20 @@ export const enhanceLumenPasswordFields = (scope: ParentNode = document): void =
     input.form?.addEventListener('reset', () => {
       setVisible(false)
     })
+
+    const form = input.form
+
+    if (form && typeof MutationObserver !== 'undefined') {
+      const hideAfterSuccess = (): void => {
+        if (form.dataset.status === 'success') setVisible(false)
+      }
+
+      const observer = new MutationObserver(hideAfterSuccess)
+
+      observer.observe(form, { attributeFilter: ['data-status'], attributes: true })
+
+      hideAfterSuccess()
+    }
 
     setVisible(false)
   }
@@ -3757,11 +3828,7 @@ export class LumenElement extends HTMLElement {
     /* Subclasses clean up behavior listeners when needed. */
   }
 
-  attributeChangedCallback(
-    _name?: string,
-    _previousValue?: string | null,
-    _value?: string | null
-  ) {
+  attributeChangedCallback(_name?: string, _previousValue?: string | null, _value?: string | null) {
     this.applyClassNames()
   }
 
@@ -3861,10 +3928,7 @@ class LumenScalarFormControlElement extends LumenElement {
     if (typeof this.attachInternals === 'function') {
       const internals = this.attachInternals()
 
-      if (
-        typeof internals.setFormValue === 'function' &&
-        typeof internals.setValidity === 'function'
-      ) {
+      if (typeof internals.setFormValue === 'function' && typeof internals.setValidity === 'function') {
         this.internals = internals
       }
     }
@@ -3939,7 +4003,7 @@ class LumenScalarFormControlElement extends LumenElement {
   }
 
   get validity(): ValidityState {
-    return this.internals?.validity ?? this.control?.validity ?? {} as ValidityState
+    return this.internals?.validity ?? this.control?.validity ?? ({} as ValidityState)
   }
 
   get value(): string {
@@ -4089,13 +4153,15 @@ class LumenScalarFormControlElement extends LumenElement {
     this.eventController = new AbortController()
 
     for (const eventName of ['change', 'input'] as const) {
-      control.addEventListener(eventName, event => {
-        event.stopPropagation()
+      control.addEventListener(
+        eventName, event => {
+          event.stopPropagation()
 
-        this.syncFormState()
+          this.syncFormState()
 
-        this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }))
-      }, { signal: this.eventController.signal })
+          this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }))
+        }, { signal: this.eventController.signal }
+      )
     }
   }
 
@@ -4136,12 +4202,8 @@ class LumenScalarFormControlElement extends LumenElement {
 
     if (!control) return
 
-    const checkedControl = control instanceof HTMLInputElement &&
-      ['checkbox', 'radio'].includes(control.type)
-
-    const submittedValue = checkedControl && !control.checked ?
-      null :
-      control.value
+    const checkedControl = control instanceof HTMLInputElement && ['checkbox', 'radio'].includes(control.type)
+    const submittedValue = checkedControl && !control.checked ? null : control.value
 
     if (this.internals) {
       this.internals.setFormValue(submittedValue, control.value)
@@ -4271,7 +4333,12 @@ const chartCaptionHtml = (element: HTMLElement): string => {
 
 const chartLegendHtml = (series: readonly LumenChartSeries[]): string => `<ul class="ui-chart__legend" aria-label="Chart legend">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
 
-const chartDataTableHtml = (categories: readonly (number | string)[], series: readonly LumenChartSeries[]): string => {
+const chartDataTableHtml = (
+  categories: readonly (number | string)[],
+  series: readonly LumenChartSeries[],
+  formatCategory: (category: number | string) => string = String,
+  formatValue: (value: number) => string = String
+): string => {
   const headers = series.map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`).join('')
 
   const rows = categories
@@ -4279,13 +4346,18 @@ const chartDataTableHtml = (categories: readonly (number | string)[], series: re
       const cells = series
         .map(item => {
           const datum = item.data.find(candidate => candidate.x === category)
-          const value = datum?.label ?? (datum?.y === null || datum === undefined ? 'Not available' : String(datum.y))
+
+          const value =
+            datum?.label ?? (datum?.y === null || datum === undefined ? 'Not available' : formatValue(datum.y))
 
           return `<td>${escapeChartHtml(value)}</td>`
         })
         .join('')
 
-      return `<tr><th scope="row">${escapeChartHtml(category)}</th>${cells}</tr>`
+      const label =
+        series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+
+      return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`
     })
     .join('')
 
@@ -4298,7 +4370,19 @@ const chartPercentage = (percentage: number): string => new Intl.NumberFormat(un
 }).format(percentage)
 
 abstract class LumenDataChartBehaviorElement extends LumenElement {
+  #categoryFormatter: ((category: number | string) => string) | undefined
   #series: readonly LumenChartSeries[] | undefined
+  #valueFormatter: ((value: number) => string) | undefined
+
+  get categoryFormatter(): (category: number | string) => string {
+    return this.#categoryFormatter ?? String
+  }
+
+  set categoryFormatter(value: (category: number | string) => string) {
+    this.#categoryFormatter = value
+
+    this.renderChart()
+  }
 
   get series(): readonly LumenChartSeries[] {
     return this.#series ?? parseChartSeries(this.getAttribute('series'))
@@ -4306,6 +4390,16 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
 
   set series(value: readonly LumenChartSeries[]) {
     this.#series = value
+
+    this.renderChart()
+  }
+
+  get valueFormatter(): (value: number) => string {
+    return this.#valueFormatter ?? String
+  }
+
+  set valueFormatter(value: (value: number) => string) {
+    this.#valueFormatter = value
 
     this.renderChart()
   }
@@ -4420,19 +4514,29 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
     const series = this.series
 
     if (!hasLumenChartData(series)) {
-      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
+      const emptyLabel = this.getAttribute('empty-label') ?? 'No chart data available.'
+
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">${escapeChartHtml(emptyLabel)}</p>${chartCaptionHtml(this)}`
 
       return
     }
 
     const orientation = this.getAttribute('orientation') === 'horizontal' ? 'horizontal' : 'vertical'
     const layout = this.getAttribute('layout') === 'stacked' ? 'stacked' : 'grouped'
-    const geometry = createLumenBarGeometry(series, { layout, orientation })
+    const categoryWidthValue = Number(this.getAttribute('category-width'))
+    const categoryWidth = Number.isFinite(categoryWidthValue) && categoryWidthValue > 0 ? categoryWidthValue : undefined
+
+    const geometry = createLumenBarGeometry(series, {
+      ...(categoryWidth === undefined ? {} : { categoryWidth }),
+      layout,
+      orientation
+    })
+
     const ticks = getLumenChartTicks(geometry.domain)
 
     const margin =
       orientation === 'horizontal' ?
-        { bottom: 24, left: 112, right: 20, top: 16 } :
+        { bottom: 24, left: Math.max(64, Math.min(240, categoryWidth ?? 112)), right: 20, top: 16 } :
         { bottom: 52, left: 52, right: 16, top: 16 }
 
     const grid = ticks
@@ -4456,7 +4560,7 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const marks = geometry.marks
       .map(
-        mark => `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}" rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}"><title>${escapeChartHtml(`${String(mark.category)} · ${mark.seriesLabel}: ${mark.value}`)}</title></rect>`
+        mark => `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}" rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}"><title>${escapeChartHtml(`${series.flatMap(item => item.data).find(datum => datum.x === mark.category)?.xLabel ?? this.categoryFormatter(mark.category)} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`)}</title></rect>`
       )
       .join('')
 
@@ -4464,7 +4568,7 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
     const showTable = chartBooleanAttribute(this, 'show-table', true)
     const categories = geometry.categories.map(category => category.category)
 
-    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
   }
 }
 
@@ -4473,7 +4577,9 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     const series = this.series
 
     if (!hasLumenChartData(series)) {
-      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">No chart data available.</p>${chartCaptionHtml(this)}`
+      const emptyLabel = this.getAttribute('empty-label') ?? 'No chart data available.'
+
+      this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-chart__empty" role="status">${escapeChartHtml(emptyLabel)}</p>${chartCaptionHtml(this)}`
 
       return
     }
@@ -4508,7 +4614,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
       .map(tick => {
         const y = scaleLumenChartValue(tick, domain, height - padding, padding)
 
-        return `<line x1="${padding}" x2="${width - padding}" y1="${y}" y2="${y}"></line><text x="${padding - 8}" y="${y}">${Number(tick.toPrecision(4))}</text>`
+        return `<line x1="${padding}" x2="${width - padding}" y1="${y}" y2="${y}"></line><text x="${padding - 8}" y="${y}">${escapeChartHtml(this.valueFormatter(tick))}</text>`
       })
       .join('')
 
@@ -4519,12 +4625,26 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
         const denominator = Math.max(1, categories.length - 1)
         const x = padding + (index / denominator) * (width - padding * 2)
 
-        return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(category)}</text>`
+        const label =
+          series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ??
+          this.categoryFormatter(category)
+
+        return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(label)}</text>`
       })
       .join('')
 
     const area = chartBooleanAttribute(this, 'area', false)
-    const markers = chartBooleanAttribute(this, 'markers', true)
+    const markersAttribute = this.getAttribute('markers') ?? 'auto'
+    const numericMarkerStep = Number(markersAttribute)
+
+    const markerStep =
+      markersAttribute === 'false' || markersAttribute === 'none' ?
+        Number.POSITIVE_INFINITY :
+        Number.isFinite(numericMarkerStep) && numericMarkerStep > 0 ?
+          Math.max(1, Math.round(numericMarkerStep)) :
+          markersAttribute === 'auto' ?
+            Math.max(1, Math.ceil(categories.length / 24)) :
+            1
 
     const paths = geometries
       .map((geometry, index) => {
@@ -4538,11 +4658,11 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
           geometry.areaPaths.map(path => `<path class="ui-line-chart__area" d="${path}"></path>`).join('') :
           ''
 
-        const points = markers ?
+        const points = Number.isFinite(markerStep) ?
           geometry.points
-            .map(
-              point => `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3"><title>${escapeChartHtml(`${point.label ?? String(point.x)} · ${item.label}: ${String(point.y)}`)}</title></circle>`
-            )
+            .map((point, pointIndex) => pointIndex % markerStep === 0 ?
+              `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3"><title>${escapeChartHtml(`${point.xLabel ?? this.categoryFormatter(point.x)} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`)}</title></circle>` :
+              '')
             .join('') :
           ''
 
@@ -4558,23 +4678,11 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     const showLegend = chartBooleanAttribute(this, 'show-legend', series.length > 1)
     const showTable = chartBooleanAttribute(this, 'show-table', true)
 
-    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g>${reference}${paths}</svg></div>${showTable ? chartDataTableHtml(categories, series) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g>${reference}${paths}</svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
   }
 }
 
 class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
-  #valueFormatter: ((value: number) => string) | undefined
-
-  get valueFormatter(): (value: number) => string {
-    return this.#valueFormatter ?? String
-  }
-
-  set valueFormatter(value: (value: number) => string) {
-    this.#valueFormatter = value
-
-    this.renderChart()
-  }
-
   protected renderChart() {
     const series = this.series[0]
 
@@ -7431,10 +7539,7 @@ const createLumenElementClass = (config: LumenElementConfig) => class extends Lu
   static override config = config
 }
 
-const createLumenBehaviorElementClass = (
-  BaseElement: typeof LumenElement,
-  config: LumenElementConfig
-) => class extends BaseElement {
+const createLumenBehaviorElementClass = (BaseElement: typeof LumenElement, config: LumenElementConfig) => class extends BaseElement {
   static override config = config
 }
 
