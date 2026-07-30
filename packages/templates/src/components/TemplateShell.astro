@@ -1,0 +1,88 @@
+---
+import {
+  Avatar,
+  Badge,
+  Button,
+  Icon,
+  Link,
+  Sidebar,
+  ThemeToggle
+} from '@santi020k/lumen-astro'
+
+interface NavigationItem {
+  icon: string
+  label: string
+}
+
+interface Props {
+  activeItem: string
+  navigation: readonly NavigationItem[]
+  product: string
+  workspace: string
+}
+
+const { activeItem, navigation, product, workspace } = Astro.props
+---
+
+<div class="template-shell">
+  <Sidebar class="template-shell__sidebar" aria-label={`${product} navigation`}>
+    <Link class="template-shell__brand" href="/templates">
+      <span class="template-shell__brand-mark" aria-hidden="true">
+        <Icon name="sparkles" />
+      </span>
+      <span>
+        <strong>{product}</strong>
+        <small>{workspace}</small>
+      </span>
+    </Link>
+
+    <nav class="template-shell__navigation" aria-label="Workspace">
+      {navigation.map(item => (
+        <a
+          aria-current={item.label === activeItem ? 'page' : undefined}
+          class:list={[
+            'template-shell__navigation-item',
+            item.label === activeItem && 'template-shell__navigation-item--active'
+          ]}
+          href={`#${item.label.toLowerCase().replaceAll(' ', '-')}`}
+        >
+          <Icon name={item.icon} size="sm" />
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+
+    <div class="template-shell__sidebar-footer">
+      <Badge variant="success">All systems normal</Badge>
+      <Button class="template-shell__support" variant="ghost">
+        <Icon name="circle-help" size="sm" />
+        Help and support
+      </Button>
+    </div>
+  </Sidebar>
+
+  <div class="template-shell__body">
+    <header class="template-shell__topbar">
+      <nav class="template-shell__mobile-navigation" aria-label="Mobile workspace">
+        {navigation.map(item => (
+          <a
+            aria-current={item.label === activeItem ? 'page' : undefined}
+            href={`#${item.label.toLowerCase().replaceAll(' ', '-')}`}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+      <div class="template-shell__topbar-actions">
+        <ThemeToggle aria-label="Switch color mode" />
+        <Button aria-label="View notifications" size="icon" variant="ghost">
+          <Icon name="bell" />
+        </Button>
+        <Avatar aria-label="Account for Maya Chen" fallback="MC" />
+      </div>
+    </header>
+    <main class="template-shell__content" id={activeItem.toLowerCase().replaceAll(' ', '-')}>
+      <slot />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+---
+import { Badge, Button, Icon } from '@santi020k/lumen-astro'
+
+interface Props {
+  actionIcon?: string
+  actionLabel: string
+  description: string
+  eyebrow: string
+  title: string
+}
+
+const {
+  actionIcon = 'plus',
+  actionLabel,
+  description,
+  eyebrow,
+  title
+} = Astro.props
+---
+
+<header class="template-header">
+  <div>
+    <Badge variant="outline">{eyebrow}</Badge>
+    <h1>{title}</h1>
+    <p>{description}</p>
+  </div>
+  <Button>
+    <Icon name={actionIcon} size="sm" />
+    {actionLabel}
+  </Button>
+</header>

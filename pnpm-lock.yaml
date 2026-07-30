@@ -6,6 +6,21 @@ settings:
 
 catalogs:
   default:
+    '@astrojs/check':
+      specifier: ^0.9.9
+      version: 0.9.9
+    '@astrojs/compiler':
+      specifier: ^3.0.1
+      version: 3.0.1
+    '@astrojs/mdx':
+      specifier: ^7.0.3
+      version: 7.0.3
+    '@astrojs/sitemap':
+      specifier: ^3.7.3
+      version: 3.7.3
+    '@astrojs/ts-plugin':
+      specifier: ^1.10.10
+      version: 1.10.10
     '@changesets/changelog-github':
       specifier: ^0.7.0
       version: 0.7.0
@@ -18,6 +33,15 @@ catalogs:
     '@commitlint/config-conventional':
       specifier: ^21.2.0
       version: 21.2.0
+    '@fortawesome/free-brands-svg-icons':
+      specifier: ^7.3.1
+      version: 7.3.1
+    '@lucide/icons':
+      specifier: ^1.26.0
+      version: 1.26.0
+    '@modelcontextprotocol/sdk':
+      specifier: ^1.29.0
+      version: 1.29.0
     '@playwright/test':
       specifier: ^1.61.1
       version: 1.61.1
@@ -48,15 +72,39 @@ catalogs:
     '@santi020k/eslint-config-tools':
       specifier: ^3.1.0
       version: 3.1.0
+    '@santi020k/theme':
+      specifier: ^1.2.0
+      version: 1.2.0
+    '@tailwindcss/vite':
+      specifier: ^4.3.3
+      version: 4.3.3
+    '@types/express':
+      specifier: ^5.0.6
+      version: 5.0.6
     '@types/node':
       specifier: ^26.1.1
       version: 26.1.1
+    '@types/react':
+      specifier: ^19.2.17
+      version: 19.2.17
+    '@types/react-dom':
+      specifier: ^19.2.3
+      version: 19.2.3
+    '@types/semver':
+      specifier: ^7.7.1
+      version: 7.7.1
     '@vitest/coverage-v8':
       specifier: ^4.1.10
       version: 4.1.10
     ajv:
       specifier: ^8.20.0
       version: 8.20.0
+    astro:
+      specifier: ^7.1.3
+      version: 7.1.3
+    axe-core:
+      specifier: ^4.12.1
+      version: 4.12.1
     cspell:
       specifier: ^10.0.1
       version: 10.0.1
@@ -66,12 +114,30 @@ catalogs:
     husky:
       specifier: ^9.1.7
       version: 9.1.7
+    jsdom:
+      specifier: ^29.1.1
+      version: 29.1.1
     knip:
       specifier: ^6.29.0
       version: 6.29.0
     lint-staged:
       specifier: ^17.2.0
       version: 17.2.0
+    next:
+      specifier: ^16.2.10
+      version: 16.2.11
+    react:
+      specifier: ^19.2.8
+      version: 19.2.8
+    react-dom:
+      specifier: ^19.2.8
+      version: 19.2.8
+    semver:
+      specifier: ^7.8.0
+      version: 7.8.5
+    sharp:
+      specifier: ^0.35.3
+      version: 0.35.3
     tailwindcss:
       specifier: ^4.3.3
       version: 4.3.3
@@ -81,12 +147,18 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
+    uqr:
+      specifier: ^0.1.3
+      version: 0.1.3
     vitest:
       specifier: ^4.1.10
       version: 4.1.10
     wrangler:
       specifier: ^4.114.0
       version: 4.114.0
+    zod:
+      specifier: ^4.4.3
+      version: 4.4.3
 
 importers:
 
@@ -416,6 +488,25 @@ importers:
       react:
         specifier: 'catalog:'
         version: 19.2.8
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@26.1.1)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
+
+  packages/templates:
+    dependencies:
+      '@santi020k/lumen-astro':
+        specifier: workspace:^
+        version: link:../astro
+    devDependencies:
+      '@astrojs/ts-plugin':
+        specifier: 'catalog:'
+        version: 1.10.10
+      astro:
+        specifier: 'catalog:'
+        version: 7.1.3(@astrojs/markdown-remark@7.2.1)(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(@types/node@26.1.1)(jiti@2.7.0)(yaml@2.9.0)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -3612,9 +3703,6 @@ packages:
 
   '@types/node@24.13.2':
     resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
-
-  '@types/node@26.1.0':
-    resolution: {integrity: sha512-O0A1G3xPGy4w7AgQdAQYUlQ+BKk2Oovw8eRpofyp5KdBZULnbe+WqaOVNrm705SHphCiG4XHsACrSmPu1f+Kgw==}
 
   '@types/node@26.1.1':
     resolution: {integrity: sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw==}
@@ -11691,10 +11779,6 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
-  '@types/node@26.1.0':
-    dependencies:
-      undici-types: 8.3.0
-
   '@types/node@26.1.1':
     dependencies:
       undici-types: 8.3.0
@@ -11713,7 +11797,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 26.1.0
+      '@types/node': 26.1.1
 
   '@types/semver@7.7.1': {}
 

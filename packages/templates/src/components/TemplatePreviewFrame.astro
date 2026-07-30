@@ -1,0 +1,58 @@
+---
+import { Badge, ButtonLink, Card, Icon } from '@santi020k/lumen-astro'
+
+import {
+  getTemplateInstallCommand,
+  type LumenTemplate
+} from '../templates'
+
+interface Props {
+  template: LumenTemplate
+}
+
+const { template } = Astro.props
+---
+
+<Card as="article" class="template-gallery-card" variant="interactive">
+  <a
+    class="template-gallery-card__preview"
+    href={`/templates/${template.slug}`}
+    aria-label={`Preview ${template.name}`}
+  >
+    <span class={`template-gallery-card__mock template-gallery-card__mock--${template.slug}`}>
+      <span class="template-gallery-card__mock-sidebar"></span>
+      <span class="template-gallery-card__mock-content">
+        <span></span><span></span><span></span>
+        <strong></strong>
+      </span>
+    </span>
+  </a>
+  <div class="template-gallery-card__body">
+    <div class="template-gallery-card__icon">
+      <Icon name={template.icon} />
+    </div>
+    <div>
+      <span class="template-gallery-card__eyebrow">{template.eyebrow}</span>
+      <h2>{template.name}</h2>
+      <p>{template.description}</p>
+    </div>
+    <div class="template-gallery-card__frameworks">
+      {template.frameworks.map(framework => (
+        <Badge variant="outline">{framework}</Badge>
+      ))}
+    </div>
+    <code>{getTemplateInstallCommand(template.slug, 'astro')}</code>
+    <div class="template-gallery-card__actions">
+      <ButtonLink href={`/templates/${template.slug}`} showArrow>
+        Live preview
+      </ButtonLink>
+      <ButtonLink
+        href={`https://github.com/santi020k/lumen/tree/main/packages/lumen/templates/astro/${template.slug}`}
+        newTab
+        variant="secondary"
+      >
+        View source
+      </ButtonLink>
+    </div>
+  </div>
+</Card>
