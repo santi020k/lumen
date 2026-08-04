@@ -657,10 +657,10 @@ describe('lumen theme tokens', () => {
     expect(resolved.passthrough).toBe(rest)
   })
 
-  test('resolves deprecated surface aliases to the glass prop shape', () => {
+  test('resolves the glass prop shape', () => {
     expect(resolveLumenGlass()).toBe(false)
-    expect(resolveLumenGlass(false, 'glass')).toBe(true)
-    expect(resolveLumenGlass('subtle', 'default')).toBe('subtle')
-    expect(resolveLumenGlass('strong', 'glass')).toBe('strong')
+    expect(resolveLumenGlass(true)).toBe(true)
+    expect(resolveLumenGlass('subtle')).toBe('subtle')
+    expect(resolveLumenGlass('strong')).toBe('strong')
   })
 })

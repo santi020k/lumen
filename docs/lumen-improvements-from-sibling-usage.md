@@ -396,8 +396,8 @@ Extend `lumen rollout` with the catalog manifest and source audit:
 - run the narrowest available lint, typecheck, test, build, and browser scripts;
 - write a machine-readable report suitable for a multi-repository release checklist.
 
-Before 1.0, provide automated migrations or exact fixes for the known compatibility aliases,
-including `surface="glass"` and `ui:datatable-selection-change`.
+For 1.0, `lumen doctor` provides exact replacements for the removed `surface="glass"` and
+`ui:datatable-selection-change` compatibility aliases.
 
 ### P2 — Import and icon performance evidence
 

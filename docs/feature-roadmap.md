@@ -41,7 +41,7 @@ surface; React and Web Components expose the same class and data contracts.
 - Runtime hooks: `Schedule` emits `ui:schedule-change`, `VirtualList` emits
   `ui:virtual-list-range`, `ThemeBuilder` emits `ui:theme-export`, `RichTextEditor` emits
   `ui:editor-command`, `TagGroup` emits `ui:tag-remove`, forms emit `ui:validate`,
-  `ui:invalid`, and `ui:valid`, DataTable emits `ui:datatable-selection-change`, and Toast
+  `ui:invalid`, and `ui:valid`, DataTable emits `ui:data-table-selection-change`, and Toast
   expose `ui:toast`, `ui:toast-update`, `ui:toast-dismiss`, and `ui:toast-action`.
 - Shared behavior helpers: `@santi020k/lumen-core` exports schedule slot/recurrence/persistence
   and resize helpers, saved data-view serialization/filter/sort/pagination/persistence helpers,
@@ -50,9 +50,9 @@ surface; React and Web Components expose the same class and data contracts.
 - Astro behavior hardening: `Select`, `Resizable`, `InputOTP`, `Calendar`, `DataTable`,
   `DateRangePicker`, `ContextMenu`, form validation, and Toast now has runtime-backed
   behavior, with idempotent binding for global listeners.
-- Astro component consistency: the catalog uses `resolveLumenAstroProps`, `surface="glass"` is a
-  deprecated alias for `glass`, and the C1-C7 audit fixes are resolved except for the documented
-  follow-up polish items.
+- Astro component consistency: the catalog uses `resolveLumenAstroProps`, the v1 glass API is
+  consistent across framework adapters, and the C1-C7 audit fixes are resolved except for the
+  documented follow-up polish items.
 - Documentation surface: component pages include docs search, keyboard interaction notes, runtime
   event tables, and an exhaustive typed per-component API reference. Adding a component without an
   API entry now fails type-checking.
@@ -68,15 +68,13 @@ surface; React and Web Components expose the same class and data contracts.
   contracts across Astro, React, and Elements.
 - Runtime budgets: CI tracks raw and gzip budgets for the Astro controller chunks, shared CSS,
   React components and hooks, and Elements controller.
-- DataTable event migration: `ui:data-table-selection-change` is canonical.
-  `ui:datatable-selection-change` remains a compatibility alias until Lumen 1.0.
+- Version 1 compatibility cleanup: `ui:data-table-selection-change` is the only DataTable selection
+  event, and glass-aware surfaces use the `glass` prop or attribute across all adapters.
 
 ## Next
 
 - Continue moving independent Astro behaviors behind selector-gated controller chunks while
   preserving the single `UIPrimitives` mounting API.
 - Ratchet coverage thresholds upward as focused React hook and interaction tests land.
-- Remove `surface="glass"` and `ui:datatable-selection-change` in Lumen 1.0 after the documented
-  compatibility window.
 - Keep full-browser interaction checks focused on behavior contracts; keep pixel regression on one
   deterministic browser and operating system.

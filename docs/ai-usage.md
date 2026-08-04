@@ -416,7 +416,6 @@ attributes, and accessible markup.
   `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,
   `accent`, `success`, `warning`, and `danger`.
 - Use `glass` as a boolean prop or attribute for glass surfaces when supported.
-- Do not generate `surface="glass"` for overlays; it is a deprecated alias that maps to `glass`.
 - Preserve semantic labels, keyboard paths, focus states, and native form attributes.
 
 ## Figma Handoff

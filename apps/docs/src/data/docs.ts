@@ -753,10 +753,6 @@ const commonApiRows = [
   )
 ] as const
 
-const surfaceApiRow = apiRow(
-  'surface', '"default" | "glass"', '"default"', 'Deprecated alias for glass; surface="glass" maps to glass={true}.'
-)
-
 const glassApiRow = apiRow(
   'glass', 'boolean | "subtle" | "strong"', 'false', 'Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; "subtle" and "strong" adjust the fill intensity.'
 )
@@ -979,12 +975,6 @@ export const runtimeEvents: RuntimeEventRow[] = [
     when: 'Fires after a selectable DataTable row checkbox, select-all checkbox, or form reset changes the selected row values.'
   },
   {
-    detail: '{ values: string[] }',
-    name: 'ui:datatable-selection-change',
-    target: 'DataTable root ([data-ui-datatable])',
-    when: 'Deprecated compatibility alias for ui:data-table-selection-change; planned for removal in Lumen 1.0.'
-  },
-  {
     detail: '{ eventId: string | undefined, slot: string | undefined }',
     name: 'ui:schedule-change',
     target: 'Schedule root ([data-ui-schedule])',
@@ -1093,8 +1083,7 @@ const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
   DataTable: runtimeEvents.filter(
-    event => event.name === 'ui:data-table-selection-change' ||
-      event.name === 'ui:datatable-selection-change'
+    event => event.name === 'ui:data-table-selection-change'
   ),
   Field: runtimeEvents.filter(
     event => event.name === 'ui:validate' ||
@@ -1136,7 +1125,7 @@ const apiReferenceByComponent = {
       'variant', '"default" | "destructive" | "success" | "warning"', '"default"', 'Controls the alert tone.'
     )
   ],
-  AlertDialog: [surfaceApiRow, ...dialogTriggerApiRows('alert-dialog')],
+  AlertDialog: [...dialogTriggerApiRows('alert-dialog')],
   AspectRatio: [
     apiRow(
       'ratio', 'number | string', '"16 / 9"', 'Sets the preferred CSS aspect-ratio value; invalid values fall back to 16 / 9.'
@@ -1472,7 +1461,7 @@ const apiReferenceByComponent = {
       'data-ui-command-item', 'boolean attribute', '-', 'Marks filterable command items for the runtime.'
     )
   ],
-  ContextMenu: [surfaceApiRow],
+  ContextMenu: [],
   ColorPicker: [
     apiRow('type', 'HTML input type', '"color"', 'Sets the native input type.')
   ],
@@ -1519,7 +1508,6 @@ const apiReferenceByComponent = {
     )
   ],
   Dialog: [
-    surfaceApiRow,
     apiRow(
       'layout', '"centered" | "fullscreen"', '"centered"', 'Uses the standard centered panel or a viewport-filling native dialog shell.'
     ),
@@ -1530,9 +1518,8 @@ const apiReferenceByComponent = {
       'dir', '"ltr" | "rtl" | "auto"', '"ltr"', 'Sets text and layout direction for the subtree.'
     )
   ],
-  Drawer: [surfaceApiRow, ...dialogTriggerApiRows('drawer')],
+  Drawer: [...dialogTriggerApiRows('drawer')],
   DropdownMenu: [
-    surfaceApiRow,
     disclosureTriggerApiRow,
     apiRow(
       '[role="menu"]', 'child panel', '-', 'Marks the dropdown panel that contains role="menuitem" actions.'
@@ -1561,7 +1548,7 @@ const apiReferenceByComponent = {
       'children', 'human-readable date text', 'required', 'Provides the localized text shown to people.'
     )
   ],
-  HoverCard: [surfaceApiRow, disclosureTriggerApiRow],
+  HoverCard: [disclosureTriggerApiRow],
   Icon: [
     apiRow(
       'name', 'string', '-', 'Renders any Lucide icon by name, including kebab-case names and Lucide aliases.'
@@ -1722,7 +1709,7 @@ const apiReferenceByComponent = {
       'showTable', 'boolean', 'true', 'Provides a revealable semantic table containing every plotted value.'
     )
   ],
-  Menubar: [surfaceApiRow],
+  Menubar: [],
   Message: [
     apiRow(
       'from', '"assistant" | "user"', '"assistant"', 'Aligns and styles the message for the author.'
@@ -1751,7 +1738,6 @@ const apiReferenceByComponent = {
     )
   ],
   NavigationMenu: [
-    surfaceApiRow,
     apiRow(
       'variant', '"default" | "unstyled"', '"default"', 'Keeps navigation semantics and roving focus while removing Lumen container and child presentation.'
     )
@@ -1823,7 +1809,7 @@ const apiReferenceByComponent = {
       'variant', '"neutral" | "brand" | "outline"', '"neutral"', 'Controls the pill emphasis without changing its metadata semantics.'
     )
   ],
-  Popover: [surfaceApiRow, disclosureTriggerApiRow],
+  Popover: [disclosureTriggerApiRow],
   Progress: [
     apiRow(
       'value', 'number', '0', 'Sets the current progress value, clamped between 0 and max.'
@@ -1922,9 +1908,8 @@ const apiReferenceByComponent = {
       'data-ui-rich-text-editable', 'data attribute', '-', 'Marks the editable content surface for shortcuts, state syncing, and ui:editor-change events.'
     )
   ],
-  Sheet: [surfaceApiRow, ...dialogTriggerApiRows('sheet')],
+  Sheet: [...dialogTriggerApiRows('sheet')],
   Sidebar: [
-    surfaceApiRow,
     apiRow(
       'variant', '"default" | "unstyled"', '"default"', 'Keeps aside semantics while removing Lumen layout and presentation.'
     )
@@ -2081,8 +2066,7 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'window.LumenToast.dismiss(id?)', 'function', '-', 'Dismisses one runtime toast, or all runtime toasts when id is omitted.'
-    ),
-    surfaceApiRow
+    )
   ],
   Tooltip: [
     disclosureTriggerApiRow,

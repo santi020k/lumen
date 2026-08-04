@@ -68,18 +68,18 @@ Lumen components communicate using standard DOM CustomEvents, primarily prefixed
 
 Listen to these events on the document, or on the component root `[data-ui-*]` elements.
 
-### Deprecated compatibility contracts
+### Version 1 compatibility removals
 
-Lumen keeps the following aliases during the pre-1.0 migration window:
+Lumen 1.0 removes the compatibility aliases that were deprecated during the pre-1.0 releases:
 
-| Deprecated contract | Replacement | Removal |
-| --- | --- | --- |
-| `ui:datatable-selection-change` | `ui:data-table-selection-change` | Lumen 1.0 |
-| Overlay `surface="glass"` | `glass` or `glass="subtle"` / `glass="strong"` | Lumen 1.0 |
+| Removed contract | Replacement |
+| --- | --- |
+| `ui:datatable-selection-change` | `ui:data-table-selection-change` |
+| Overlay `surface="glass"` | `glass` or `glass="subtle"` / `glass="strong"` |
 
-DataTable currently emits both event names with the same `{ values: string[] }` detail. Subscribe
-only to the replacement event in new code. The `surface="glass"` alias continues to map to
-`glass={true}` until its removal.
+DataTable emits only the canonical event name with `{ values: string[] }` detail. Run
+`lumen doctor <path>` before upgrading to find either removed contract and receive its exact
+replacement.
 
 ## 4. Migrating from `private-website`
 

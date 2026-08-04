@@ -1479,7 +1479,7 @@ describe('@santi020k/lumen-react', () => {
       () => Popover({ glass: true }) as ReactElement<{ children: ReactElement }>
     )
     const dropdown = withHookDispatcher(
-      () => DropdownMenu({ surface: 'glass' }) as ReactElement<{
+      () => DropdownMenu({ glass: true }) as ReactElement<{
         children: ReactElement
       }>
     )

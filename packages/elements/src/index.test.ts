@@ -250,7 +250,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(dialog.classList.contains('ui-dialog--fullscreen')).toBe(true)
     expect(dialog.getAttribute('layout')).toBe('fullscreen')
     expect(table.classList.contains('ui-table-wrap--glass')).toBe(true)
-    expect(dialog.getAttribute('surface')).toBe('default')
+    expect(dialog.hasAttribute('surface')).toBe(false)
   })
 
   test('applies code defaults and variant classes', () => {
@@ -942,12 +942,6 @@ describe('@santi020k/lumen-elements', () => {
       )
     })
 
-    let legacyEventCount = 0
-
-    root?.addEventListener('ui:datatable-selection-change', () => {
-      legacyEventCount += 1
-    })
-
     expect(rowChecks).toHaveLength(2)
     expect(selectAll?.checked).toBe(false)
     expect(root?.getAttribute('data-ui-datatable')).toBe('')
@@ -955,7 +949,6 @@ describe('@santi020k/lumen-elements', () => {
     rowChecks[1]?.click()
 
     expect(selectionEvents).toEqual([['alpha']])
-    expect(legacyEventCount).toBe(1)
     expect(rowChecks[1]?.closest('tr')?.dataset.state).toBe('selected')
     expect(new FormData(form!).getAll('orders')).toEqual(['alpha'])
 

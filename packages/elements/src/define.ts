@@ -199,8 +199,7 @@ const glassAttributeClasses = (className: string) => ({
     strong: `${className} ui-glass-strong`,
     subtle: `${className} ui-glass-subtle`,
     true: className
-  },
-  surface: { glass: className }
+  }
 })
 
 const elementConfigs = {
@@ -235,11 +234,10 @@ const elementConfigs = {
         strong: 'ui-dialog--glass ui-glass-strong',
         subtle: 'ui-dialog--glass ui-glass-subtle',
         true: 'ui-dialog--glass'
-      },
-      surface: { glass: 'ui-dialog--glass' }
+      }
     },
     baseClassName: 'ui-dialog ui-alert-dialog',
-    defaults: { 'data-ui-alert-dialog': '', surface: 'default' },
+    defaults: { 'data-ui-alert-dialog': '' },
     tagName: 'lumen-alert-dialog'
   },
   Agenda: {
@@ -483,11 +481,10 @@ const elementConfigs = {
         strong: 'ui-menu--glass ui-glass-strong',
         subtle: 'ui-menu--glass ui-glass-subtle',
         true: 'ui-menu--glass'
-      },
-      surface: { glass: 'ui-menu--glass' }
+      }
     },
     baseClassName: 'ui-menu',
-    defaults: { 'data-ui-context-menu': '', role: 'menu', surface: 'default' },
+    defaults: { 'data-ui-context-menu': '', role: 'menu' },
     tagName: 'lumen-context-menu'
   },
   DataTable: {
@@ -514,11 +511,10 @@ const elementConfigs = {
         subtle: 'ui-dialog--glass ui-glass-subtle',
         true: 'ui-dialog--glass'
       },
-      layout: { fullscreen: 'ui-dialog--fullscreen' },
-      surface: { glass: 'ui-dialog--glass' }
+      layout: { fullscreen: 'ui-dialog--fullscreen' }
     },
     baseClassName: 'ui-dialog',
-    defaults: { 'data-ui-dialog': '', layout: 'centered', surface: 'default' },
+    defaults: { 'data-ui-dialog': '', layout: 'centered' },
     tagName: 'lumen-dialog'
   },
   Direction: {
@@ -532,11 +528,10 @@ const elementConfigs = {
         strong: 'ui-drawer--glass ui-glass-strong',
         subtle: 'ui-drawer--glass ui-glass-subtle',
         true: 'ui-drawer--glass'
-      },
-      surface: { glass: 'ui-drawer--glass' }
+      }
     },
     baseClassName: 'ui-drawer',
-    defaults: { 'data-ui-drawer': '', surface: 'default' },
+    defaults: { 'data-ui-drawer': '' },
     tagName: 'lumen-drawer'
   },
   DropdownMenu: {
@@ -545,11 +540,10 @@ const elementConfigs = {
         strong: 'ui-menu--glass ui-glass-strong',
         subtle: 'ui-menu--glass ui-glass-subtle',
         true: 'ui-menu--glass'
-      },
-      surface: { glass: 'ui-menu--glass' }
+      }
     },
     baseClassName: 'ui-menu',
-    defaults: { 'data-ui-dropdown-menu': '', surface: 'default' },
+    defaults: { 'data-ui-dropdown-menu': '' },
     tagName: 'lumen-dropdown-menu'
   },
   Empty: {
@@ -616,11 +610,10 @@ const elementConfigs = {
         strong: 'ui-hover-card--glass ui-glass-strong',
         subtle: 'ui-hover-card--glass ui-glass-subtle',
         true: 'ui-hover-card--glass'
-      },
-      surface: { glass: 'ui-hover-card--glass' }
+      }
     },
     baseClassName: 'ui-hover-card',
-    defaults: { 'data-ui-hover-card': '', surface: 'default' },
+    defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
   Icon: {
@@ -704,11 +697,10 @@ const elementConfigs = {
         strong: 'ui-menubar--glass ui-glass-strong',
         subtle: 'ui-menubar--glass ui-glass-subtle',
         true: 'ui-menubar--glass'
-      },
-      surface: { glass: 'ui-menubar--glass' }
+      }
     },
     baseClassName: 'ui-menubar',
-    defaults: { 'data-ui-menubar': '', surface: 'default' },
+    defaults: { 'data-ui-menubar': '' },
     tagName: 'lumen-menubar'
   },
   PieChart: {
@@ -752,14 +744,12 @@ const elementConfigs = {
         subtle: 'ui-navigation-menu--glass ui-glass-subtle',
         true: 'ui-navigation-menu--glass'
       },
-      surface: { glass: 'ui-navigation-menu--glass' },
       variant: { unstyled: 'ui-navigation-menu--unstyled' }
     },
     baseClassName: 'ui-navigation-menu',
     defaults: {
       'data-slot': 'navigation-menu',
-      'data-ui-navigation-menu': '',
-      surface: 'default'
+      'data-ui-navigation-menu': ''
     },
     tagName: 'lumen-navigation-menu'
   },
@@ -794,11 +784,10 @@ const elementConfigs = {
         strong: 'ui-popover--glass ui-glass-strong',
         subtle: 'ui-popover--glass ui-glass-subtle',
         true: 'ui-popover--glass'
-      },
-      surface: { glass: 'ui-popover--glass' }
+      }
     },
     baseClassName: 'ui-popover',
-    defaults: { 'data-ui-popover': '', surface: 'default' },
+    defaults: { 'data-ui-popover': '' },
     tagName: 'lumen-popover'
   },
   Progress: {
@@ -887,11 +876,10 @@ const elementConfigs = {
         strong: 'ui-sheet--glass ui-glass-strong',
         subtle: 'ui-sheet--glass ui-glass-subtle',
         true: 'ui-sheet--glass'
-      },
-      surface: { glass: 'ui-sheet--glass' }
+      }
     },
     baseClassName: 'ui-sheet',
-    defaults: { 'data-ui-sheet': '', surface: 'default' },
+    defaults: { 'data-ui-sheet': '' },
     tagName: 'lumen-sheet'
   },
   Sidebar: {
@@ -901,11 +889,10 @@ const elementConfigs = {
         subtle: 'ui-sidebar--glass ui-glass-subtle',
         true: 'ui-sidebar--glass'
       },
-      surface: { glass: 'ui-sidebar--glass' },
       variant: { unstyled: 'ui-sidebar--unstyled' }
     },
     baseClassName: 'ui-sidebar',
-    defaults: { 'data-slot': 'sidebar', surface: 'default' },
+    defaults: { 'data-slot': 'sidebar' },
     tagName: 'lumen-sidebar'
   },
   Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
@@ -970,9 +957,6 @@ const elementConfigs = {
       glass: {
         true: 'ui-toast--glass'
       },
-      surface: {
-        glass: 'ui-toast--glass'
-      },
       variant: {
         destructive: 'ui-toast--destructive',
         success: 'ui-toast--success',
@@ -980,7 +964,7 @@ const elementConfigs = {
       }
     },
     baseClassName: 'ui-toast',
-    defaults: { surface: 'default', variant: 'default' },
+    defaults: { variant: 'default' },
     tagName: 'lumen-toast'
   },
   Toggle: {
@@ -7022,14 +7006,6 @@ class LumenDataTableBehaviorElement extends LumenElement {
 
       this.dispatchEvent(
         new CustomEvent('ui:data-table-selection-change', {
-          bubbles: true,
-          detail
-        })
-      )
-
-      // Deprecated compatibility event. Remove in Lumen 1.0.
-      this.dispatchEvent(
-        new CustomEvent('ui:datatable-selection-change', {
           bubbles: true,
           detail
         })

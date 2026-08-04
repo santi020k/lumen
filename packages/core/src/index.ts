@@ -127,7 +127,6 @@ export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,
-  type LumenSurfaceAlias,
   resolveLumenAstroProps,
   resolveLumenGlass
 } from './props.js'

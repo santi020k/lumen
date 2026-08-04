@@ -232,8 +232,8 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     sourceElement instanceof Element && Boolean(sourceElement.closest('[data-docs-nav]'))
   )
 
-  const getDocsSidebar = (targetDocument = document): HTMLElement | null => (
-    targetDocument.querySelector('[data-docs-sidebar]')
+  const getDocsSidebarScroller = (targetDocument = document): HTMLElement | null => (
+    targetDocument.querySelector('[data-docs-sidebar] [data-docs-nav]')
   )
 
   const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
@@ -359,7 +359,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 
     shouldScrollDocsContentToTop = true
 
-    docsSidebarScrollTop = getDocsSidebar()?.scrollTop ?? 0
+    docsSidebarScrollTop = getDocsSidebarScroller()?.scrollTop ?? 0
   })
 
   document.addEventListener('astro:before-swap', event => {
@@ -379,10 +379,10 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
       top: 0
     })
 
-    const docsSidebar = getDocsSidebar()
+    const docsSidebarScroller = getDocsSidebarScroller()
 
-    if (docsSidebar) {
-      docsSidebar.scrollTop = docsSidebarScrollTop
+    if (docsSidebarScroller) {
+      docsSidebarScroller.scrollTop = docsSidebarScrollTop
     }
 
     shouldScrollDocsContentToTop = false

@@ -3,7 +3,7 @@
     "components": {
       "Accordion": "1740e06fab3f37de6d2c42063c6f76d032303d5dea665eeca377e0971ad5ed20",
       "Alert": "123d6cff356b14c330d10f037eaf733a057c21153cb0ffd3cccc856b0862f30a",
-      "AlertDialog": "441141f3d5b76608b15c71a5badc6c4abcae40b989560c2ddf50c460406fdacb",
+      "AlertDialog": "bd137a2a3a1bef63f1dd32eac744b345882aababcc9360b378d4beb2920d13a4",
       "Agenda": "9414ee214692e3fd69025d9e8e2c348f3819d43a2a3d3ada15c6591498d21985",
       "AspectRatio": "7117b3ceef20dfb0cdaa871a02d277f0b7658f47cd62ce0a73db378d805a0f3a",
       "Attachment": "8b6f84195c49932d047bee9a6ed76fc5bd708d99eea2609ca7a6cd702dbcf9d4",
@@ -34,15 +34,15 @@
       "Combobox": "9b439a14dd342fc999136125c9e58bed49a94b3299f6b14c22249ed9fae68ef2",
       "Container": "cc6e98bd08fda79775f0ecfd2e394c36859971519493f214dad7c0a9a4f88a8c",
       "Command": "4a927afdf69e957e75b00615c32ce44a4b629192a43cf7f6705c87089441c8c3",
-      "ContextMenu": "eb7a8d836c8d41f61072b27fc77a1bdd995bff3376b7f8ad81f1fbf3a950ce3a",
+      "ContextMenu": "59d3b87a5aae3a201d5d532646bc8d6813b64f4be8c34c40d797e7483a268dbf",
       "ColorPicker": "a4e6deb7d7f9cdd32f7b753a941dcb028cf57cb72282ca5a86920a03388c39a0",
-      "DataTable": "c74f9dd00a96697f1b9fc8edbe6ec6146b53fa5b49e378d30fdbe5c8e8573c9b",
+      "DataTable": "ebddd6997527620fec8b9b93539304d488d3dccedc0d142f6dbe9e88296263c9",
       "DatePicker": "239cbea85fc98e7b3927959c4facb188a1579434d8e2253dd907b19b649c2483",
       "DateRangePicker": "f7aa07494c82dd3d8607b100c9534e7276d7771301d3cfc3126b1ce925bb73dc",
-      "Dialog": "79ab580d1b6f218a9012748071d61530108da2e67b29bc227c9a789bfe7abb63",
+      "Dialog": "fc28ce350e649ebac705ed2e4813082b5782386a4f8fce76556f21414a164839",
       "Direction": "47d34c6c9fa03fb4f4e80e5e9be17c9fe283ca1c059c73b482ab6195dfc68752",
-      "Drawer": "5582f33b76861edeee9379f6076225f25a8b189d21d761209ac06bf7abdc91d1",
-      "DropdownMenu": "da63e51d42524ced29be3143c886b2151d93786747193117f29553b61561b6eb",
+      "Drawer": "d1710054d3df8035d344006497d1783d6185023ca1f360afc857dcade44bd494",
+      "DropdownMenu": "a6627d45ce1fc345df154a18e6421a9cc0d75aacdf827d9c24dfe7c5328b8157",
       "Empty": "77c8931b9f21c0f3b57245a2dffd305e21dd95c6f7e9991bd367e3d942256b94",
       "ErrorSummary": "63137ef56d5026581f2ecdfeca56028c336664ab080a1a1fb58359d583a36efe",
       "Eyebrow": "236fb44e3a969d3b503aa0090b46f2441246165d8c58eb091d8f30ce67740cc7",
@@ -51,7 +51,7 @@
       "FloatingBadge": "04f46638085a6ab1f6aead011a9a71c1dc53a0e771437b0e69a06dd4b6c17403",
       "Form": "00180eb0c646100cff0a1ba1ca1ec9f4fc80cb064d02e5bb285888a158de37c1",
       "FormattedDate": "53db4de0b1c4503e458638824bdf000c3254463c76d3d701791062e30255e2c8",
-      "HoverCard": "2487551aade82bde9c1f0b3ab8553f50f5039f4bfdd1bfb190f522c49f10ba15",
+      "HoverCard": "fc6d0d3f45211f1f1bc7628a601a95ddc76839d980bd1e01478a6b6318f103b4",
       "Icon": "f55d57961c7d46f2d865777ab59150893ac1bf16d8a1f873b45eede1376cf261",
       "Image": "0da04cc0862b901c4091c42b471026352017618692e6b528d597a06e07d41a38",
       "Input": "d07d8adf4f7cecea7848771fe57289b7a7f3f0c1f58ed7f834ae7b44b074fb28",
@@ -64,18 +64,18 @@
       "LineChart": "f64a04fb69dbb5b4796eb588dacdfc2182dd98fd3437ecd5ef911d760bf4f679",
       "ListBox": "22b46ec02c40df331659e146f2cf7302b0fc9432fdca1121fea51628e4767b4f",
       "Marker": "264468b9a9b43e8965c9dbed4d98d8474ab93a52389956369583126d7fe79e0a",
-      "Menubar": "00df479f58faeaf9d98416e030a5bdd9f0ee93cd279c2cf62fcdb4166ab194a9",
+      "Menubar": "9c109f0a8177f658364fafb1b4f267334cd18e4c3e945147e20bfc70790a452f",
       "Message": "df4099cef24e068e902c5f3424e4ca5bd6bb23d1e9add9decba0105bed7e6e58",
       "MessageScroller": "a5274f625f4819d28934f02c6e6c5d812077799308695ff73041027b43f0fe4c",
       "NativeSelect": "9f2821678fc540c4774f979737f8018251afdd5f981c9fc75bb3f0c5c98752dc",
-      "NavigationMenu": "0a01dd005c791afbbb56f069a4ad31ba11ae1b00558a27aea6ebfe19680b4e64",
+      "NavigationMenu": "02ee150eb704e805ef189884ddc735d4c3ba28c25de8f8ef2c23e88963665c88",
       "NumberField": "10af126e0dd4a46f9d74dcb8b1763ab565339e5e64f228e782915b9025997d4f",
       "Pagination": "851a9f52bfd80ae2230e86a7f51e0290fceb3f2801669f932a7595724a018dad",
       "PasswordField": "0a3531938092efe54f05438d2678937b24513e6a4e41cf2e35cff3fa87f82408",
       "PhoneInput": "a44f900454fb38b7d13a51d41d7415902eb1bcf3126f92a504d64232d32631af",
       "PieChart": "887da71a440e8b142816dd6880012272aecbbab21d68c04c002e96cc5aef4265",
       "Pill": "f4a545d5076bc0c036ced62581cede27c8b198844300184f7970faf369be328c",
-      "Popover": "b7ec3d8ad77e47490e1ee539445e6c3d1a2d37f30921b54832a57318c0607a0b",
+      "Popover": "0b82934bcf6ba7ad1d9661f23d83a051df11e7e32824250c99b109f851e25522",
       "Progress": "08c76ed83fcb36bfd846569b3b58a29066ebc5c2e6ad29f87971671d10271c31",
       "Prose": "733e20cc9160ef85d89fba58050a463508ba19d8233866b7af0da50c6abc30f4",
       "RadioGroup": "b2ab01eebce50ecea99ba13aa0592ba113fd58da823fe8cb16679cb0f909bb3f",
@@ -87,8 +87,8 @@
       "SearchField": "6db18395cfa7c0ee7ac48450b536c70cc562995bf9e3765009959612bf583c29",
       "Select": "0c623152874039d51dcd4637d8b2e3aeb587a115b362746178813a45a54c9a95",
       "Separator": "2028d405a87641a8ceffb6565320ec101145d6ae7efa3198e596350d481ab79d",
-      "Sheet": "cf234e45b4506bee7a300f0a9fa472545ab4095ebee6eec3b8fa8434f77ad6a9",
-      "Sidebar": "f123bf6ebf4f148c173dedd312fbaa6714ea6f41e870a39cca131441c5bd5f5f",
+      "Sheet": "e7d7dd7887de6ffb0bff36c0c14bbc9fc6a9163621f75123ab878b69943d8c23",
+      "Sidebar": "e8e70c6358078feb59d657965fc1e7955427ff8da4581091fad51370570771fc",
       "Skeleton": "bd324cd89e6946d175d6e6b862ed3dbd244c2a1306b1b8f219350e7b7bdb8338",
       "SkipLink": "750656d015a1348b0d1959114419be6cbb3bd751c89ae15b278d7a533fbde6cc",
       "Slider": "44850fd677da8a54c88f41ba0ed658bfa7625066ea5c2fdaad2f5f66fbe26455",
@@ -103,7 +103,7 @@
       "ThemeBuilder": "896a4fa8099b8b5096089dc5628746a974e204e0c91501a858e84617631e9bcc",
       "ThemeToggle": "090180e9e1c89c3e3172f68b4559c6b703b593be61567b432e8c5b87e90de183",
       "TimeField": "8dbc8c9510dd5a3343d33cc9bb0e6a58c8720223bcbc0bcaee9b05a53de966a0",
-      "Toast": "8fb9e5a4b9531e289a56f255cef9f22f83fe9543a1a06e0a9478a4a79fee510a",
+      "Toast": "874d42b33f777fbd96a5ae62e94823e07f1334b0a5acb2a1730d1235e51ead6a",
       "Toggle": "120414cc979f007f362a0f83f6fca392c61be7b74a752543f78f25db3e9f85e4",
       "ToggleGroup": "89ad0037074885ca27497fdcd42b18be4b17576233bd421dfb89a2e768118ef2",
       "Tooltip": "ebce8f7aa122dd4617d63b8c62b64bbafbee36c6ed46ae85fd992b4c5c75f58e",
@@ -575,12 +575,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "id",
           "defaultValue": "-",
           "description": "Connects the dialog surface to a matching trigger attribute value.",
@@ -611,7 +605,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog ui-alert-dialog',\n  resolvedGlass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-alert-dialog\n  role=\"alertdialog\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog ui-alert-dialog',\n  glass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-alert-dialog\n  role=\"alertdialog\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
       "category": "Overlays",
       "collections": [
         "Dialogs and contextual layers"
@@ -659,22 +653,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'dialog'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog ui-alert-dialog',\n  resolvedGlass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-alert-dialog\n  role=\"alertdialog\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog ui-alert-dialog',\n  glass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-alert-dialog\n  role=\"alertdialog\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-alert-dialog",
             "glass",
-            "surface",
             "id",
             "data-ui-alert-dialog-trigger",
             "data-ui-alert-dialog-close",
@@ -693,7 +681,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "AlertDialog: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-dialog--glass ui-glass-strong',\n        subtle: 'ui-dialog--glass ui-glass-subtle',\n        true: 'ui-dialog--glass'\n      },\n      surface: { glass: 'ui-dialog--glass' }\n    },\n    baseClassName: 'ui-dialog ui-alert-dialog',\n    defaults: { 'data-ui-alert-dialog': '', surface: 'default' },\n    tagName: 'lumen-alert-dialog'\n  }",
+          "source": "AlertDialog: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-dialog--glass ui-glass-strong',\n        subtle: 'ui-dialog--glass ui-glass-subtle',\n        true: 'ui-dialog--glass'\n      }\n    },\n    baseClassName: 'ui-dialog ui-alert-dialog',\n    defaults: { 'data-ui-alert-dialog': '' },\n    tagName: 'lumen-alert-dialog'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-alert-dialog"
         },
@@ -793,7 +781,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "Omit<\n  ComponentPropsWithoutRef<'dialog'>,\n  'open'\n> & SurfaceProps & Omit<DialogOptions, 'id'>",
-          "source": "export type AlertDialogProps = Omit<\n  ComponentPropsWithoutRef<'dialog'>,\n  'open'\n> &\nSurfaceProps &\nOmit<DialogOptions, 'id'>\n\nexport const AlertDialog = ({\n  className,\n  defaultOpen,\n  glass = false,\n  onClick,\n  onClose,\n  onOpenChange,\n  open,\n  surface = 'default',\n  ...props\n}: AlertDialogProps) => {\n  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })\n\n  return (\n    <dialog\n      {...dialog.dialogProps}\n      {...props}\n      className={composeClassName(\n        'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', surface, glass), className\n      )}\n      data-surface={resolveSurface(surface, glass)}\n      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}\n      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}\n    />\n  )\n}",
+          "source": "export type AlertDialogProps = Omit<\n  ComponentPropsWithoutRef<'dialog'>,\n  'open'\n> &\nSurfaceProps &\nOmit<DialogOptions, 'id'>\n\nexport const AlertDialog = ({\n  className,\n  defaultOpen,\n  glass = false,\n  onClick,\n  onClose,\n  onOpenChange,\n  open,\n  ...props\n}: AlertDialogProps) => {\n  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })\n\n  return (\n    <dialog\n      {...dialog.dialogProps}\n      {...props}\n      className={composeClassName(\n        'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', glass), className\n      )}\n      data-surface={resolveSurface(glass)}\n      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}\n      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -866,11 +854,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'dialog'>",
@@ -6920,12 +6903,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -6938,7 +6915,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'menu'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  resolvedGlass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{/* Point an element at this menu with data-ui-context-menu-trigger=\"<menu id>\"\n    to get right-click / Shift+F10 open behavior from the runtime. Without a\n    trigger the menu renders statically. */}\n<menu\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-context-menu\n  role=\"menu\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</menu>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'menu'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  glass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{/* Point an element at this menu with data-ui-context-menu-trigger=\"<menu id>\"\n    to get right-click / Shift+F10 open behavior from the runtime. Without a\n    trigger the menu renders statically. */}\n<menu\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-context-menu\n  role=\"menu\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</menu>\n",
       "category": "Overlays",
       "collections": [
         "Menus and commands"
@@ -6984,15 +6961,10 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'menu'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'menu'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  resolvedGlass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{/* Point an element at this menu with data-ui-context-menu-trigger=\"<menu id>\"\n    to get right-click / Shift+F10 open behavior from the runtime. Without a\n    trigger the menu renders statically. */}\n<menu\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-context-menu\n  role=\"menu\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</menu>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'menu'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  glass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{/* Point an element at this menu with data-ui-context-menu-trigger=\"<menu id>\"\n    to get right-click / Shift+F10 open behavior from the runtime. Without a\n    trigger the menu renders statically. */}\n<menu\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-context-menu\n  role=\"menu\"\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</menu>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -7000,7 +6972,6 @@
             "data-ui-context-menu",
             "glass",
             "role",
-            "surface",
             "class, className",
             "...native attributes"
           ],
@@ -7016,7 +6987,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "ContextMenu: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-menu--glass ui-glass-strong',\n        subtle: 'ui-menu--glass ui-glass-subtle',\n        true: 'ui-menu--glass'\n      },\n      surface: { glass: 'ui-menu--glass' }\n    },\n    baseClassName: 'ui-menu',\n    defaults: { 'data-ui-context-menu': '', role: 'menu', surface: 'default' },\n    tagName: 'lumen-context-menu'\n  }",
+          "source": "ContextMenu: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-menu--glass ui-glass-strong',\n        subtle: 'ui-menu--glass ui-glass-subtle',\n        true: 'ui-menu--glass'\n      }\n    },\n    baseClassName: 'ui-menu',\n    defaults: { 'data-ui-context-menu': '', role: 'menu' },\n    tagName: 'lumen-context-menu'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-context-menu"
         },
@@ -7104,7 +7075,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'menu'>, SurfaceProps",
-          "source": "export interface ContextMenuProps\n  extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}\n\nexport const ContextMenu = ({\n  className,\n  glass = false,\n  surface = 'default',\n  ...props\n}: ContextMenuProps) => (\n  <menu\n    className={composeClassName(\n      'ui-menu', glassSurfaceClass('ui-menu', surface, glass), className\n    )}\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-context-menu\n    role={props.role ?? 'menu'}\n    {...props}\n  />\n)",
+          "source": "export interface ContextMenuProps\n  extends ComponentPropsWithoutRef<'menu'>, SurfaceProps {}\n\nexport const ContextMenu = ({\n  className,\n  glass = false,\n  ...props\n}: ContextMenuProps) => (\n  <menu\n    className={composeClassName(\n      'ui-menu', glassSurfaceClass('ui-menu', glass), className\n    )}\n    data-surface={resolveSurface(glass)}\n    data-ui-context-menu\n    role={props.role ?? 'menu'}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -7166,11 +7137,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'menu'>",
@@ -7600,12 +7566,6 @@
           "name": "ui:data-table-selection-change",
           "target": "DataTable root ([data-ui-datatable])",
           "when": "Fires after a selectable DataTable row checkbox, select-all checkbox, or form reset changes the selected row values."
-        },
-        {
-          "detail": "{ values: string[] }",
-          "name": "ui:datatable-selection-change",
-          "target": "DataTable root ([data-ui-datatable])",
-          "when": "Deprecated compatibility alias for ui:data-table-selection-change; planned for removal in Lumen 1.0."
         }
       ]
     },
@@ -8102,12 +8062,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "layout",
           "defaultValue": "\"centered\"",
           "description": "Uses the standard centered panel or a viewport-filling native dialog shell.",
@@ -8144,7 +8098,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'centered' | 'fullscreen'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'centered',\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog',\n  layout === 'fullscreen' && 'ui-dialog--fullscreen',\n  resolvedGlass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-layout={layout}\n  data-ui-dialog\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'centered' | 'fullscreen'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'centered',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog',\n  layout === 'fullscreen' && 'ui-dialog--fullscreen',\n  glass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-layout={layout}\n  data-ui-dialog\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
       "category": "Overlays",
       "collections": [
         "Dialogs and contextual layers"
@@ -8197,15 +8151,10 @@
               "name": "layout",
               "optional": true,
               "type": "'centered' | 'fullscreen'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'dialog'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'centered' | 'fullscreen'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'centered',\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog',\n  layout === 'fullscreen' && 'ui-dialog--fullscreen',\n  resolvedGlass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-layout={layout}\n  data-ui-dialog\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'centered' | 'fullscreen'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'centered',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-dialog',\n  layout === 'fullscreen' && 'ui-dialog--fullscreen',\n  glass && 'ui-dialog--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-layout={layout}\n  data-ui-dialog\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -8213,7 +8162,6 @@
             "data-ui-dialog",
             "glass",
             "layout",
-            "surface",
             "id",
             "data-ui-dialog-trigger",
             "data-ui-dialog-close",
@@ -8232,7 +8180,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Dialog: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-dialog--glass ui-glass-strong',\n        subtle: 'ui-dialog--glass ui-glass-subtle',\n        true: 'ui-dialog--glass'\n      },\n      layout: { fullscreen: 'ui-dialog--fullscreen' },\n      surface: { glass: 'ui-dialog--glass' }\n    },\n    baseClassName: 'ui-dialog',\n    defaults: { 'data-ui-dialog': '', layout: 'centered', surface: 'default' },\n    tagName: 'lumen-dialog'\n  }",
+          "source": "Dialog: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-dialog--glass ui-glass-strong',\n        subtle: 'ui-dialog--glass ui-glass-subtle',\n        true: 'ui-dialog--glass'\n      },\n      layout: { fullscreen: 'ui-dialog--fullscreen' }\n    },\n    baseClassName: 'ui-dialog',\n    defaults: { 'data-ui-dialog': '', layout: 'centered' },\n    tagName: 'lumen-dialog'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog"
         },
@@ -8338,7 +8286,7 @@
             }
           ],
           "propsExtends": "Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>",
-          "source": "export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &\n  SurfaceProps &\n  Omit<DialogOptions, 'id'> & {\n    layout?: 'centered' | 'fullscreen'\n  }\n\nexport const Dialog = ({\n  className,\n  defaultOpen,\n  glass = false,\n  layout = 'centered',\n  onClick,\n  onClose,\n  onOpenChange,\n  open,\n  surface = 'default',\n  ...props\n}: DialogProps) => {\n  const dialog = useDialog({ defaultOpen, onOpenChange, open })\n\n  return (\n    <dialog\n      {...dialog.dialogProps}\n      {...props}\n      className={composeClassName(\n        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', surface, glass), className\n      )}\n      data-layout={layout}\n      data-surface={resolveSurface(surface, glass)}\n      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}\n      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}\n    />\n  )\n}",
+          "source": "export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &\n  SurfaceProps &\n  Omit<DialogOptions, 'id'> & {\n    layout?: 'centered' | 'fullscreen'\n  }\n\nexport const Dialog = ({\n  className,\n  defaultOpen,\n  glass = false,\n  layout = 'centered',\n  onClick,\n  onClose,\n  onOpenChange,\n  open,\n  ...props\n}: DialogProps) => {\n  const dialog = useDialog({ defaultOpen, onOpenChange, open })\n\n  return (\n    <dialog\n      {...dialog.dialogProps}\n      {...props}\n      className={composeClassName(\n        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', glass), className\n      )}\n      data-layout={layout}\n      data-surface={resolveSurface(glass)}\n      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}\n      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -8413,11 +8361,6 @@
           "name": "layout",
           "optional": true,
           "type": "'centered' | 'fullscreen'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'dialog'>",
@@ -8571,12 +8514,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "id",
           "defaultValue": "-",
           "description": "Connects the dialog surface to a matching trigger attribute value.",
@@ -8607,7 +8544,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-drawer',\n  resolvedGlass && 'ui-drawer--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-drawer\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-drawer',\n  glass && 'ui-drawer--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-drawer\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
       "category": "Overlays",
       "collections": [
         "Dialogs and contextual layers"
@@ -8655,22 +8592,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'dialog'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-drawer',\n  resolvedGlass && 'ui-drawer--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-drawer\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-drawer',\n  glass && 'ui-drawer--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-drawer\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-drawer",
             "glass",
-            "surface",
             "id",
             "data-ui-drawer-trigger",
             "data-ui-drawer-close",
@@ -8689,7 +8620,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Drawer: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-drawer--glass ui-glass-strong',\n        subtle: 'ui-drawer--glass ui-glass-subtle',\n        true: 'ui-drawer--glass'\n      },\n      surface: { glass: 'ui-drawer--glass' }\n    },\n    baseClassName: 'ui-drawer',\n    defaults: { 'data-ui-drawer': '', surface: 'default' },\n    tagName: 'lumen-drawer'\n  }",
+          "source": "Drawer: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-drawer--glass ui-glass-strong',\n        subtle: 'ui-drawer--glass ui-glass-subtle',\n        true: 'ui-drawer--glass'\n      }\n    },\n    baseClassName: 'ui-drawer',\n    defaults: { 'data-ui-drawer': '' },\n    tagName: 'lumen-drawer'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-drawer"
         },
@@ -8789,7 +8720,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'dialog'>, SurfaceProps",
-          "source": "export interface DrawerProps\n  extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}\n\nexport const Drawer = ({\n  className,\n  glass = false,\n  surface = 'default',\n  ...props\n}: DrawerProps) => (\n  <dialog\n    className={composeClassName(\n      'ui-drawer', glassSurfaceClass('ui-drawer', surface, glass), className\n    )}\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-drawer\n    {...props}\n  />\n)",
+          "source": "export interface DrawerProps\n  extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}\n\nexport const Drawer = ({\n  className,\n  glass = false,\n  ...props\n}: DrawerProps) => (\n  <dialog\n    className={composeClassName(\n      'ui-drawer', glassSurfaceClass('ui-drawer', glass), className\n    )}\n    data-surface={resolveSurface(glass)}\n    data-ui-drawer\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -8858,11 +8789,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'dialog'>",
@@ -8876,12 +8802,6 @@
           "defaultValue": "false",
           "description": "Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; \"subtle\" and \"strong\" adjust the fill intensity.",
           "values": "boolean | \"subtle\" | \"strong\""
-        },
-        {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
         },
         {
           "attribute": "data-ui-trigger",
@@ -8908,7 +8828,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  resolvedGlass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-dropdown-menu\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  glass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-dropdown-menu\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Overlays",
       "collections": [
         "Menus and commands"
@@ -8956,22 +8876,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  resolvedGlass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-dropdown-menu\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menu',\n  glass && 'ui-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-dropdown-menu\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-dropdown-menu",
             "glass",
-            "surface",
             "data-ui-trigger",
             "[role=\"menu\"]",
             "class, className",
@@ -8989,7 +8903,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DropdownMenu: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-menu--glass ui-glass-strong',\n        subtle: 'ui-menu--glass ui-glass-subtle',\n        true: 'ui-menu--glass'\n      },\n      surface: { glass: 'ui-menu--glass' }\n    },\n    baseClassName: 'ui-menu',\n    defaults: { 'data-ui-dropdown-menu': '', surface: 'default' },\n    tagName: 'lumen-dropdown-menu'\n  }",
+          "source": "DropdownMenu: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-menu--glass ui-glass-strong',\n        subtle: 'ui-menu--glass ui-glass-subtle',\n        true: 'ui-menu--glass'\n      }\n    },\n    baseClassName: 'ui-menu',\n    defaults: { 'data-ui-dropdown-menu': '' },\n    tagName: 'lumen-dropdown-menu'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dropdown-menu"
         },
@@ -9071,7 +8985,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'menu'> & SurfaceProps & Omit<DropdownMenuOptions, 'id'>",
-          "source": "export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> &\n  SurfaceProps &\n  Omit<DropdownMenuOptions, 'id'>\n\nexport const DropdownMenu = ({\n  children,\n  className,\n  defaultOpen,\n  glass = false,\n  onOpenChange,\n  open,\n  surface = 'default',\n  ...props\n}: DropdownMenuProps) => {\n  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })\n\n  return (\n    <DropdownMenuContext.Provider value={menu}>\n      <menu\n        {...menu.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-menu', glassSurfaceClass('ui-menu', surface, glass), className\n        )}\n        data-surface={resolveSurface(surface, glass)}\n        data-ui-dropdown-menu\n      >\n        {children}\n      </menu>\n    </DropdownMenuContext.Provider>\n  )\n}",
+          "source": "export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> &\n  SurfaceProps &\n  Omit<DropdownMenuOptions, 'id'>\n\nexport const DropdownMenu = ({\n  children,\n  className,\n  defaultOpen,\n  glass = false,\n  onOpenChange,\n  open,\n  ...props\n}: DropdownMenuProps) => {\n  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })\n\n  return (\n    <DropdownMenuContext.Provider value={menu}>\n      <menu\n        {...menu.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-menu', glassSurfaceClass('ui-menu', glass), className\n        )}\n        data-surface={resolveSurface(glass)}\n        data-ui-dropdown-menu\n      >\n        {children}\n      </menu>\n    </DropdownMenuContext.Provider>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -9133,11 +9047,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'div'>",
@@ -10608,12 +10517,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "data-ui-trigger",
           "defaultValue": "-",
           "description": "Marks the child trigger that opens and closes the adjacent disclosure panel.",
@@ -10632,7 +10535,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-hover-card',\n  resolvedGlass && 'ui-hover-card--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-hover-card\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-hover-card',\n  glass && 'ui-hover-card--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-hover-card\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
       "category": "Overlays",
       "collections": [
         "Dialogs and contextual layers"
@@ -10678,22 +10581,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'aside'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-hover-card',\n  resolvedGlass && 'ui-hover-card--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-hover-card\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-hover-card',\n  glass && 'ui-hover-card--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-hover-card\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-hover-card",
             "glass",
-            "surface",
             "data-ui-trigger",
             "class, className",
             "...native attributes"
@@ -10710,7 +10607,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "HoverCard: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-hover-card--glass ui-glass-strong',\n        subtle: 'ui-hover-card--glass ui-glass-subtle',\n        true: 'ui-hover-card--glass'\n      },\n      surface: { glass: 'ui-hover-card--glass' }\n    },\n    baseClassName: 'ui-hover-card',\n    defaults: { 'data-ui-hover-card': '', surface: 'default' },\n    tagName: 'lumen-hover-card'\n  }",
+          "source": "HoverCard: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-hover-card--glass ui-glass-strong',\n        subtle: 'ui-hover-card--glass ui-glass-subtle',\n        true: 'ui-hover-card--glass'\n      }\n    },\n    baseClassName: 'ui-hover-card',\n    defaults: { 'data-ui-hover-card': '' },\n    tagName: 'lumen-hover-card'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-hover-card"
         },
@@ -10726,7 +10623,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'aside'>, SurfaceProps",
-          "source": "export interface HoverCardProps\n  extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}\n\nexport const HoverCard = ({\n  className,\n  glass = false,\n  surface = 'default',\n  ...props\n}: HoverCardProps) => (\n  <aside\n    className={composeClassName(\n      'ui-hover-card', glassSurfaceClass('ui-hover-card', surface, glass), className\n    )}\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-hover-card\n    {...props}\n  />\n)",
+          "source": "export interface HoverCardProps\n  extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {}\n\nexport const HoverCard = ({\n  className,\n  glass = false,\n  ...props\n}: HoverCardProps) => (\n  <aside\n    className={composeClassName(\n      'ui-hover-card', glassSurfaceClass('ui-hover-card', glass), className\n    )}\n    data-surface={resolveSurface(glass)}\n    data-ui-hover-card\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -10800,11 +10697,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'aside'>",
@@ -13465,12 +13357,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -13483,7 +13369,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menubar',\n  resolvedGlass && 'ui-menubar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-menubar\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menubar',\n  glass && 'ui-menubar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-menubar\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
       "category": "Navigation",
       "collections": [
         "Menus and commands"
@@ -13529,22 +13415,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'nav'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menubar',\n  resolvedGlass && 'ui-menubar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-menubar\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-menubar',\n  glass && 'ui-menubar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-menubar\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-menubar",
             "glass",
-            "surface",
             "class, className",
             "...native attributes"
           ],
@@ -13560,7 +13440,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Menubar: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-menubar--glass ui-glass-strong',\n        subtle: 'ui-menubar--glass ui-glass-subtle',\n        true: 'ui-menubar--glass'\n      },\n      surface: { glass: 'ui-menubar--glass' }\n    },\n    baseClassName: 'ui-menubar',\n    defaults: { 'data-ui-menubar': '', surface: 'default' },\n    tagName: 'lumen-menubar'\n  }",
+          "source": "Menubar: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-menubar--glass ui-glass-strong',\n        subtle: 'ui-menubar--glass ui-glass-subtle',\n        true: 'ui-menubar--glass'\n      }\n    },\n    baseClassName: 'ui-menubar',\n    defaults: { 'data-ui-menubar': '' },\n    tagName: 'lumen-menubar'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-menubar"
         },
@@ -13576,7 +13456,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'nav'>, SurfaceProps",
-          "source": "export interface MenubarProps\n  extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}\n\nexport const Menubar = ({\n  className,\n  glass = false,\n  surface = 'default',\n  ...props\n}: MenubarProps) => (\n  <nav\n    className={composeClassName(\n      'ui-menubar', glassSurfaceClass('ui-menubar', surface, glass), className\n    )}\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-menubar\n    {...props}\n  />\n)",
+          "source": "export interface MenubarProps\n  extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {}\n\nexport const Menubar = ({\n  className,\n  glass = false,\n  ...props\n}: MenubarProps) => (\n  <nav\n    className={composeClassName(\n      'ui-menubar', glassSurfaceClass('ui-menubar', glass), className\n    )}\n    data-surface={resolveSurface(glass)}\n    data-ui-menubar\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -13631,11 +13511,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'nav'>",
@@ -14191,12 +14066,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "variant",
           "defaultValue": "\"default\"",
           "description": "Keeps navigation semantics and roving focus while removing Lumen container and child presentation.",
@@ -14215,7 +14084,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  variant = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-navigation-menu',\n  variant === 'unstyled' && 'ui-navigation-menu--unstyled',\n  resolvedGlass && 'ui-navigation-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-slot=\"navigation-menu\"\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-navigation-menu\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-navigation-menu',\n  variant === 'unstyled' && 'ui-navigation-menu--unstyled',\n  glass && 'ui-navigation-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-slot=\"navigation-menu\"\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-navigation-menu\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
       "category": "Navigation",
       "collections": [
         "Menus and commands"
@@ -14266,15 +14135,10 @@
               "name": "variant",
               "optional": true,
               "type": "'default' | 'unstyled'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'nav'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  variant = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-navigation-menu',\n  variant === 'unstyled' && 'ui-navigation-menu--unstyled',\n  resolvedGlass && 'ui-navigation-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-slot=\"navigation-menu\"\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-navigation-menu\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-navigation-menu',\n  variant === 'unstyled' && 'ui-navigation-menu--unstyled',\n  glass && 'ui-navigation-menu--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<nav\n  data-slot=\"navigation-menu\"\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-navigation-menu\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</nav>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -14282,7 +14146,6 @@
             "data-slot",
             "data-ui-navigation-menu",
             "glass",
-            "surface",
             "variant",
             "class, className",
             "...native attributes"
@@ -14299,7 +14162,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "NavigationMenu: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-navigation-menu--glass ui-glass-strong',\n        subtle: 'ui-navigation-menu--glass ui-glass-subtle',\n        true: 'ui-navigation-menu--glass'\n      },\n      surface: { glass: 'ui-navigation-menu--glass' },\n      variant: { unstyled: 'ui-navigation-menu--unstyled' }\n    },\n    baseClassName: 'ui-navigation-menu',\n    defaults: {\n      'data-slot': 'navigation-menu',\n      'data-ui-navigation-menu': '',\n      surface: 'default'\n    },\n    tagName: 'lumen-navigation-menu'\n  }",
+          "source": "NavigationMenu: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-navigation-menu--glass ui-glass-strong',\n        subtle: 'ui-navigation-menu--glass ui-glass-subtle',\n        true: 'ui-navigation-menu--glass'\n      },\n      variant: { unstyled: 'ui-navigation-menu--unstyled' }\n    },\n    baseClassName: 'ui-navigation-menu',\n    defaults: {\n      'data-slot': 'navigation-menu',\n      'data-ui-navigation-menu': ''\n    },\n    tagName: 'lumen-navigation-menu'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-navigation-menu"
         },
@@ -14321,7 +14184,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'nav'>, SurfaceProps",
-          "source": "export interface NavigationMenuProps\n  extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {\n  variant?: 'default' | 'unstyled'\n}\n\nexport const NavigationMenu = ({\n  className,\n  glass = false,\n  surface = 'default',\n  variant = 'default',\n  ...props\n}: NavigationMenuProps) => (\n  <nav\n    className={composeClassName(\n      'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', surface, glass), className\n    )}\n    data-slot=\"navigation-menu\"\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-navigation-menu\n    data-variant={variant}\n    {...props}\n  />\n)",
+          "source": "export interface NavigationMenuProps\n  extends ComponentPropsWithoutRef<'nav'>, SurfaceProps {\n  variant?: 'default' | 'unstyled'\n}\n\nexport const NavigationMenu = ({\n  className,\n  glass = false,\n  variant = 'default',\n  ...props\n}: NavigationMenuProps) => (\n  <nav\n    className={composeClassName(\n      'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', glass), className\n    )}\n    data-slot=\"navigation-menu\"\n    data-surface={resolveSurface(glass)}\n    data-ui-navigation-menu\n    data-variant={variant}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -14383,11 +14246,6 @@
           "name": "variant",
           "optional": true,
           "type": "'default' | 'unstyled'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'nav'>",
@@ -15861,12 +15719,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "data-ui-trigger",
           "defaultValue": "-",
           "description": "Marks the child trigger that opens and closes the adjacent disclosure panel.",
@@ -15885,7 +15737,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-popover',\n  resolvedGlass && 'ui-popover--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-popover\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-popover',\n  glass && 'ui-popover--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-popover\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
       "category": "Overlays",
       "collections": [
         "Dialogs and contextual layers"
@@ -15927,22 +15779,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-popover',\n  resolvedGlass && 'ui-popover--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-popover\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-popover',\n  glass && 'ui-popover--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-popover\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-popover",
             "glass",
-            "surface",
             "data-ui-trigger",
             "class, className",
             "...native attributes"
@@ -15959,7 +15805,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Popover: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-popover--glass ui-glass-strong',\n        subtle: 'ui-popover--glass ui-glass-subtle',\n        true: 'ui-popover--glass'\n      },\n      surface: { glass: 'ui-popover--glass' }\n    },\n    baseClassName: 'ui-popover',\n    defaults: { 'data-ui-popover': '', surface: 'default' },\n    tagName: 'lumen-popover'\n  }",
+          "source": "Popover: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-popover--glass ui-glass-strong',\n        subtle: 'ui-popover--glass ui-glass-subtle',\n        true: 'ui-popover--glass'\n      }\n    },\n    baseClassName: 'ui-popover',\n    defaults: { 'data-ui-popover': '' },\n    tagName: 'lumen-popover'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-popover"
         },
@@ -16065,7 +15911,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'div'> & SurfaceProps & Omit<PopoverOptions, 'id'>",
-          "source": "export type PopoverProps = ComponentPropsWithoutRef<'div'> &\n  SurfaceProps &\n  Omit<PopoverOptions, 'id'>\n\nexport const Popover = ({\n  children,\n  className,\n  defaultOpen,\n  glass = false,\n  onOpenChange,\n  open,\n  surface = 'default',\n  ...props\n}: PopoverProps) => {\n  const popover = usePopover({ defaultOpen, onOpenChange, open })\n\n  return (\n    <PopoverContext.Provider value={popover}>\n      <div\n        {...popover.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-popover', glassSurfaceClass('ui-popover', surface, glass), className\n        )}\n        data-surface={resolveSurface(surface, glass)}\n        data-ui-popover\n      >\n        {children}\n      </div>\n    </PopoverContext.Provider>\n  )\n}",
+          "source": "export type PopoverProps = ComponentPropsWithoutRef<'div'> &\n  SurfaceProps &\n  Omit<PopoverOptions, 'id'>\n\nexport const Popover = ({\n  children,\n  className,\n  defaultOpen,\n  glass = false,\n  onOpenChange,\n  open,\n  ...props\n}: PopoverProps) => {\n  const popover = usePopover({ defaultOpen, onOpenChange, open })\n\n  return (\n    <PopoverContext.Provider value={popover}>\n      <div\n        {...popover.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-popover', glassSurfaceClass('ui-popover', glass), className\n        )}\n        data-surface={resolveSurface(glass)}\n        data-ui-popover\n      >\n        {children}\n      </div>\n    </PopoverContext.Provider>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -16136,11 +15982,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'div'>",
@@ -18658,12 +18499,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "id",
           "defaultValue": "-",
           "description": "Connects the dialog surface to a matching trigger attribute value.",
@@ -18694,7 +18529,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sheet',\n  resolvedGlass && 'ui-sheet--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-sheet\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sheet',\n  glass && 'ui-sheet--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-sheet\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
       "category": "Overlays",
       "collections": [
         "Dialogs and contextual layers"
@@ -18742,22 +18577,16 @@
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'dialog'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sheet',\n  resolvedGlass && 'ui-sheet--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-sheet\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dialog'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sheet',\n  glass && 'ui-sheet--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<dialog\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-sheet\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</dialog>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-sheet",
             "glass",
-            "surface",
             "id",
             "data-ui-sheet-trigger",
             "data-ui-sheet-close",
@@ -18776,7 +18605,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Sheet: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-sheet--glass ui-glass-strong',\n        subtle: 'ui-sheet--glass ui-glass-subtle',\n        true: 'ui-sheet--glass'\n      },\n      surface: { glass: 'ui-sheet--glass' }\n    },\n    baseClassName: 'ui-sheet',\n    defaults: { 'data-ui-sheet': '', surface: 'default' },\n    tagName: 'lumen-sheet'\n  }",
+          "source": "Sheet: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-sheet--glass ui-glass-strong',\n        subtle: 'ui-sheet--glass ui-glass-subtle',\n        true: 'ui-sheet--glass'\n      }\n    },\n    baseClassName: 'ui-sheet',\n    defaults: { 'data-ui-sheet': '' },\n    tagName: 'lumen-sheet'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-sheet"
         },
@@ -18876,7 +18705,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'dialog'>, SurfaceProps",
-          "source": "export interface SheetProps\n  extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}\n\nexport const Sheet = ({\n  className,\n  glass = false,\n  surface = 'default',\n  ...props\n}: SheetProps) => (\n  <dialog\n    className={composeClassName(\n      'ui-sheet', glassSurfaceClass('ui-sheet', surface, glass), className\n    )}\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-sheet\n    {...props}\n  />\n)",
+          "source": "export interface SheetProps\n  extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}\n\nexport const Sheet = ({\n  className,\n  glass = false,\n  ...props\n}: SheetProps) => (\n  <dialog\n    className={composeClassName(\n      'ui-sheet', glassSurfaceClass('ui-sheet', glass), className\n    )}\n    data-surface={resolveSurface(glass)}\n    data-ui-sheet\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -18946,11 +18775,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'dialog'>",
@@ -18971,12 +18795,6 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "variant",
           "defaultValue": "\"default\"",
           "description": "Keeps aside semantics while removing Lumen layout and presentation.",
@@ -18995,7 +18813,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  variant = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sidebar',\n  variant === 'unstyled' && 'ui-sidebar--unstyled',\n  resolvedGlass && 'ui-sidebar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-slot=\"sidebar\"\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sidebar',\n  variant === 'unstyled' && 'ui-sidebar--unstyled',\n  glass && 'ui-sidebar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-slot=\"sidebar\"\n  data-surface={glass ? 'glass' : 'default'}\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
       "category": "Navigation",
       "collections": [],
       "dependencies": [
@@ -19038,22 +18856,16 @@
               "name": "variant",
               "optional": true,
               "type": "'default' | 'unstyled'"
-            },
-            {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
             }
           ],
           "propsExtends": "HTMLAttributes<'aside'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  surface = 'default',\n  variant = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sidebar',\n  variant === 'unstyled' && 'ui-sidebar--unstyled',\n  resolvedGlass && 'ui-sidebar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-slot=\"sidebar\"\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'unstyled'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-sidebar',\n  variant === 'unstyled' && 'ui-sidebar--unstyled',\n  glass && 'ui-sidebar--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-slot=\"sidebar\"\n  data-surface={glass ? 'glass' : 'default'}\n  data-variant={variant}\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-slot",
             "glass",
-            "surface",
             "variant",
             "class, className",
             "...native attributes"
@@ -19070,7 +18882,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Sidebar: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-sidebar--glass ui-glass-strong',\n        subtle: 'ui-sidebar--glass ui-glass-subtle',\n        true: 'ui-sidebar--glass'\n      },\n      surface: { glass: 'ui-sidebar--glass' },\n      variant: { unstyled: 'ui-sidebar--unstyled' }\n    },\n    baseClassName: 'ui-sidebar',\n    defaults: { 'data-slot': 'sidebar', surface: 'default' },\n    tagName: 'lumen-sidebar'\n  }",
+          "source": "Sidebar: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-sidebar--glass ui-glass-strong',\n        subtle: 'ui-sidebar--glass ui-glass-subtle',\n        true: 'ui-sidebar--glass'\n      },\n      variant: { unstyled: 'ui-sidebar--unstyled' }\n    },\n    baseClassName: 'ui-sidebar',\n    defaults: { 'data-slot': 'sidebar' },\n    tagName: 'lumen-sidebar'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-sidebar"
         },
@@ -19088,7 +18900,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'aside'>, SurfaceProps",
-          "source": "export interface SidebarProps\n  extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {\n  variant?: 'default' | 'unstyled'\n}\n\nexport const Sidebar = ({\n  className,\n  glass = false,\n  surface = 'default',\n  variant = 'default',\n  ...props\n}: SidebarProps) => (\n  <aside\n    className={composeClassName(\n      'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', surface, glass), className\n    )}\n    data-slot=\"sidebar\"\n    data-surface={resolveSurface(surface, glass)}\n    data-variant={variant}\n    {...props}\n  />\n)",
+          "source": "export interface SidebarProps\n  extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {\n  variant?: 'default' | 'unstyled'\n}\n\nexport const Sidebar = ({\n  className,\n  glass = false,\n  variant = 'default',\n  ...props\n}: SidebarProps) => (\n  <aside\n    className={composeClassName(\n      'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', glass), className\n    )}\n    data-slot=\"sidebar\"\n    data-surface={resolveSurface(glass)}\n    data-variant={variant}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -19128,11 +18940,6 @@
           "name": "variant",
           "optional": true,
           "type": "'default' | 'unstyled'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         }
       ],
       "propsExtends": "HTMLAttributes<'aside'>",
@@ -21880,12 +21687,6 @@
           "values": "function"
         },
         {
-          "attribute": "surface",
-          "defaultValue": "\"default\"",
-          "description": "Deprecated alias for glass; surface=\"glass\" maps to glass={true}.",
-          "values": "\"default\" | \"glass\""
-        },
-        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -21898,7 +21699,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n  variant?: 'default' | 'destructive' | 'success' | 'warning'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  'aria-live': ariaLive,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  role,\n  surface = 'default',\n  variant = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-toast',\n  variant === 'destructive' && 'ui-toast--destructive',\n  variant === 'success' && 'ui-toast--success',\n  variant === 'warning' && 'ui-toast--warning',\n  resolvedGlass && 'ui-toast--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-toast\n  data-variant={variant}\n  aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}\n  class:list={classList}\n  role={role ?? (variant === 'destructive' ? 'alert' : 'status')}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'destructive' | 'success' | 'warning'\n}\n\nconst {\n  'aria-live': ariaLive,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  role,\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-toast',\n  variant === 'destructive' && 'ui-toast--destructive',\n  variant === 'success' && 'ui-toast--success',\n  variant === 'warning' && 'ui-toast--warning',\n  glass && 'ui-toast--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-toast\n  data-variant={variant}\n  aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}\n  class:list={classList}\n  role={role ?? (variant === 'destructive' ? 'alert' : 'status')}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
       "category": "Feedback",
       "collections": [
         "Status and messaging"
@@ -21946,24 +21747,18 @@
               "type": "boolean | 'subtle' | 'strong'"
             },
             {
-              "name": "surface",
-              "optional": true,
-              "type": "'default' | 'glass'"
-            },
-            {
               "name": "variant",
               "optional": true,
               "type": "'default' | 'destructive' | 'success' | 'warning'"
             }
           ],
           "propsExtends": "HTMLAttributes<'aside'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n\n  /**\n   * @deprecated Use `glass` instead. `surface=\"glass\"` maps to `glass={true}`.\n   */\n  surface?: 'default' | 'glass'\n  variant?: 'default' | 'destructive' | 'success' | 'warning'\n}\n\ntype InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }\n\nconst internalProps: InternalProps = Astro.props\n\nconst {\n  'aria-live': ariaLive,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  role,\n  surface = 'default',\n  variant = 'default',\n  ...rest\n} = internalProps\n\nconst resolvedGlass = resolveLumenGlass(glass, surface)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-toast',\n  variant === 'destructive' && 'ui-toast--destructive',\n  variant === 'success' && 'ui-toast--success',\n  variant === 'warning' && 'ui-toast--warning',\n  resolvedGlass && 'ui-toast--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={resolvedGlass ? 'glass' : 'default'}\n  data-ui-toast\n  data-variant={variant}\n  aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}\n  class:list={classList}\n  role={role ?? (variant === 'destructive' ? 'alert' : 'status')}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'aside'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  variant?: 'default' | 'destructive' | 'success' | 'warning'\n}\n\nconst {\n  'aria-live': ariaLive,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  role,\n  variant = 'default',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-toast',\n  variant === 'destructive' && 'ui-toast--destructive',\n  variant === 'success' && 'ui-toast--success',\n  variant === 'warning' && 'ui-toast--warning',\n  glass && 'ui-toast--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<aside\n  data-surface={glass ? 'glass' : 'default'}\n  data-ui-toast\n  data-variant={variant}\n  aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}\n  class:list={classList}\n  role={role ?? (variant === 'destructive' ? 'alert' : 'status')}\n  {...passthrough}\n>\n  <slot />\n</aside>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "glass",
-            "surface",
             "variant",
             "placement",
             "max",
@@ -21985,7 +21780,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Toast: {\n    attributeClasses: {\n      glass: {\n        true: 'ui-toast--glass'\n      },\n      surface: {\n        glass: 'ui-toast--glass'\n      },\n      variant: {\n        destructive: 'ui-toast--destructive',\n        success: 'ui-toast--success',\n        warning: 'ui-toast--warning'\n      }\n    },\n    baseClassName: 'ui-toast',\n    defaults: { surface: 'default', variant: 'default' },\n    tagName: 'lumen-toast'\n  }",
+          "source": "Toast: {\n    attributeClasses: {\n      glass: {\n        true: 'ui-toast--glass'\n      },\n      variant: {\n        destructive: 'ui-toast--destructive',\n        success: 'ui-toast--success',\n        warning: 'ui-toast--warning'\n      }\n    },\n    baseClassName: 'ui-toast',\n    defaults: { variant: 'default' },\n    tagName: 'lumen-toast'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-toast"
         },
@@ -22036,7 +21831,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'aside'>, SurfaceProps",
-          "source": "export interface ToastProps\n  extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {\n  variant?: AlertVariant\n}\n\nexport const Toast = ({\n  'aria-live': ariaLive,\n  className,\n  glass = false,\n  role,\n  surface = 'default',\n  variant = 'default',\n  ...props\n}: ToastProps) => (\n  <aside\n    aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}\n    className={composeClassName(\n      'ui-toast', variantClass('ui-toast', variant), glassSurfaceClass('ui-toast', surface, glass), className\n    )}\n    data-surface={resolveSurface(surface, glass)}\n    data-ui-toast\n    data-variant={variant}\n    role={role ?? (variant === 'destructive' ? 'alert' : 'status')}\n    {...props}\n  />\n)",
+          "source": "export interface ToastProps\n  extends ComponentPropsWithoutRef<'aside'>, SurfaceProps {\n  variant?: AlertVariant\n}\n\nexport const Toast = ({\n  'aria-live': ariaLive,\n  className,\n  glass = false,\n  role,\n  variant = 'default',\n  ...props\n}: ToastProps) => (\n  <aside\n    aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}\n    className={composeClassName(\n      'ui-toast', variantClass('ui-toast', variant), glassSurfaceClass('ui-toast', glass), className\n    )}\n    data-surface={resolveSurface(glass)}\n    data-ui-toast\n    data-variant={variant}\n    role={role ?? (variant === 'destructive' ? 'alert' : 'status')}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -22113,11 +21908,6 @@
           "name": "glass",
           "optional": true,
           "type": "boolean | 'subtle' | 'strong'"
-        },
-        {
-          "name": "surface",
-          "optional": true,
-          "type": "'default' | 'glass'"
         },
         {
           "name": "variant",
@@ -31351,11 +31141,11 @@
     }
   ],
   "docs": {
-    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\nBrand marks are intentionally excluded from the default Lucide catalog. When a product needs them,\ninstall and register the optional pack once before rendering a namespaced icon:\n\n```ts\nimport { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'\n\nregisterLumenBrandIcons()\n```\n\nThen use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,\n`brand:figma`, `brand:linkedin`, `brand:whatsapp`, or `brand:youtube`, through the existing Astro,\nReact, or Web Component `Icon` API. The package also provides `brand:x` as an alias for\n`brand:x-twitter`.\n\nBrand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.\nThey still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as\nthe default icon catalog.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://meta` and `lumen://diagnostics` to identify and verify the snapshot.\n2. Read `lumen://rules`.\n3. Search for the use case with `lumen_search`, passing the target `framework` when known.\n4. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n5. Follow its framework behavior setup and hook/controller contract.\n6. Read related multi-component guidance with `lumen_get_recipe`.\n7. Request `detail: \"source\"` only when the usage contract is insufficient.\n8. Read `lumen://tokens` before introducing custom styling.\n9. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades to identify contracts that need refreshing.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://meta`, `lumen://catalog-manifest`, `lumen://diagnostics`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"@santi020k/lumen-react/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nKeep the layer prelude first. It places Tailwind base styles below Lumen components and Tailwind\nutilities above them, so consumer spacing, display, radius, width, and responsive visibility\nclasses override Lumen defaults predictably.\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n`Stat` defaults to a `div`. Choose `as=\"article\"` for a self-contained metric with supporting\ncontent, or `as=\"section\"` for a labeled region. Do not use a semantic root solely for styling.\nIts visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and\nkeep glass selective.\n\nFor long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional\nheading `depth` when hierarchy matters. Use `ScrollProgress` for document position; keep `Progress`\nfor application-controlled task completion. `Pill` accepts `neutral`, `brand`, and `outline`\nvariants, plus native link and count composition.\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\nThe React package entry is a client boundary. In Next.js, it can be imported by a Server Component\nwithout evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen\nsubtree becomes a Client Component boundary. Vite and other client-rendered React applications use\nthe same entry without additional setup.\n`Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.\n`Button asChild` composes the button contract onto one child element, while `Input visualSize` controls\npresentation without shadowing the native numeric `size` attribute.\n`Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\nFor React Hook Form, spread `register()` directly onto native-backed controls. Install\n`@santi020k/lumen-react-hook-form` only for controlled composites such as `Select`, `DatePicker`,\n`InputOTP`, and `ListBox`. Do not combine React Hook Form and `useFormValidation` unless the\napplication intentionally coordinates two validation sources.\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\nPut input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in\n`FormData`, validity, disabled state, focus, and reset through form-associated custom-element\nbehavior with a native-control fallback. Do not generate `<lumen-form>` as the submission\ncontainer.\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `BarChart`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,\n`Container`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,\n`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,\n`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,\n`PasswordField`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`, and `VisuallyHidden`.\n\n## Product Recipes\n\n- Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,\n  `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with\n  `lumen add <recipe>` for Astro, or add `--target react` / `--target elements`. Keep the generated\n  shared template stylesheet, then replace sample data and routes while preserving public Lumen\n  components, semantic tokens, accessible names, focus paths, and responsive navigation.\n- Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical\n  comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small\n  part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,\n  resampling, model evaluation, and domain calculations in application code. Keep `showTable`\n  enabled unless the same values are already available in a nearby semantic table. Prefer a bar\n  chart when precise slice comparison matters or the pie would exceed roughly seven categories.\n  Use `Chart` as the custom SVG/canvas escape hatch.\n  Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`\n  and `formatValue` for localized axes, SVG titles, and data tables. Choose\n  `presentation=\"bare\"` inside an existing Card, `categoryWidth` for long horizontal labels,\n  `markers=\"auto\"` or a numeric marker step for dense lines, and `emptyLabel` for actionable\n  source-specific guidance.\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own. Install and register\n  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as\n  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`\n  slot. Astro reports unknown named icons during development instead of failing silently.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\nlumen doctor --json\nlumen init --framework astro --tailwind\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Do not generate `surface=\"glass\"` for overlays; it is a deprecated alias that maps to `glass`.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
+    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\nBrand marks are intentionally excluded from the default Lucide catalog. When a product needs them,\ninstall and register the optional pack once before rendering a namespaced icon:\n\n```ts\nimport { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'\n\nregisterLumenBrandIcons()\n```\n\nThen use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,\n`brand:figma`, `brand:linkedin`, `brand:whatsapp`, or `brand:youtube`, through the existing Astro,\nReact, or Web Component `Icon` API. The package also provides `brand:x` as an alias for\n`brand:x-twitter`.\n\nBrand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.\nThey still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as\nthe default icon catalog.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://meta` and `lumen://diagnostics` to identify and verify the snapshot.\n2. Read `lumen://rules`.\n3. Search for the use case with `lumen_search`, passing the target `framework` when known.\n4. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n5. Follow its framework behavior setup and hook/controller contract.\n6. Read related multi-component guidance with `lumen_get_recipe`.\n7. Request `detail: \"source\"` only when the usage contract is insufficient.\n8. Read `lumen://tokens` before introducing custom styling.\n9. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades to identify contracts that need refreshing.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://meta`, `lumen://catalog-manifest`, `lumen://diagnostics`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"@santi020k/lumen-react/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nKeep the layer prelude first. It places Tailwind base styles below Lumen components and Tailwind\nutilities above them, so consumer spacing, display, radius, width, and responsive visibility\nclasses override Lumen defaults predictably.\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n`Stat` defaults to a `div`. Choose `as=\"article\"` for a self-contained metric with supporting\ncontent, or `as=\"section\"` for a labeled region. Do not use a semantic root solely for styling.\nIts visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and\nkeep glass selective.\n\nFor long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional\nheading `depth` when hierarchy matters. Use `ScrollProgress` for document position; keep `Progress`\nfor application-controlled task completion. `Pill` accepts `neutral`, `brand`, and `outline`\nvariants, plus native link and count composition.\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\nThe React package entry is a client boundary. In Next.js, it can be imported by a Server Component\nwithout evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen\nsubtree becomes a Client Component boundary. Vite and other client-rendered React applications use\nthe same entry without additional setup.\n`Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.\n`Button asChild` composes the button contract onto one child element, while `Input visualSize` controls\npresentation without shadowing the native numeric `size` attribute.\n`Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\nFor React Hook Form, spread `register()` directly onto native-backed controls. Install\n`@santi020k/lumen-react-hook-form` only for controlled composites such as `Select`, `DatePicker`,\n`InputOTP`, and `ListBox`. Do not combine React Hook Form and `useFormValidation` unless the\napplication intentionally coordinates two validation sources.\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\nPut input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in\n`FormData`, validity, disabled state, focus, and reset through form-associated custom-element\nbehavior with a native-control fallback. Do not generate `<lumen-form>` as the submission\ncontainer.\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `BarChart`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,\n`Container`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,\n`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,\n`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,\n`PasswordField`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`, and `VisuallyHidden`.\n\n## Product Recipes\n\n- Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,\n  `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with\n  `lumen add <recipe>` for Astro, or add `--target react` / `--target elements`. Keep the generated\n  shared template stylesheet, then replace sample data and routes while preserving public Lumen\n  components, semantic tokens, accessible names, focus paths, and responsive navigation.\n- Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical\n  comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small\n  part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,\n  resampling, model evaluation, and domain calculations in application code. Keep `showTable`\n  enabled unless the same values are already available in a nearby semantic table. Prefer a bar\n  chart when precise slice comparison matters or the pie would exceed roughly seven categories.\n  Use `Chart` as the custom SVG/canvas escape hatch.\n  Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`\n  and `formatValue` for localized axes, SVG titles, and data tables. Choose\n  `presentation=\"bare\"` inside an existing Card, `categoryWidth` for long horizontal labels,\n  `markers=\"auto\"` or a numeric marker step for dense lines, and `emptyLabel` for actionable\n  source-specific guidance.\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own. Install and register\n  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as\n  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`\n  slot. Astro reports unknown named icons during development instead of failing silently.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\nlumen doctor --json\nlumen init --framework astro --tailwind\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"239\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A multi-framework UI system with 149 accessible primitives for Astro, React, and Web Components.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, and a machine-readable registry ship alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component\nexamples, and API details.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## License\n\nLumen is available under the [MIT License](./LICENSE).\n"
   },
   "meta": {
-    "catalogHash": "3a969afeba6c4c5c4e8d210343844f199898ed893caaebb6244162719ef11f71",
+    "catalogHash": "5fb2121d483664e76bb4b0cb038ee0f9e23db63c80ef716ff3b506cffb4dd424",
     "componentCount": 149,
     "packages": [
       "@santi020k/lumen-astro",

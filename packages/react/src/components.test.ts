@@ -332,8 +332,8 @@ describe('@santi020k/lumen-react components', () => {
   test('resolves surface data attributes on glass-aware surfaces', () => {
     expect(propsOf(HoverCard({}) as ReactElement)['data-surface']).toBe('default')
     expect(propsOf(HoverCard({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
-    expect(propsOf(NavigationMenu({ surface: 'glass' }) as ReactElement)['data-surface']).toBe('glass')
-    expect(propsOf(NavigationMenu({ surface: 'glass' }) as ReactElement).className)
+    expect(propsOf(NavigationMenu({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
+    expect(propsOf(NavigationMenu({ glass: true }) as ReactElement).className)
       .toBe('ui-navigation-menu ui-navigation-menu--glass')
     expect(propsOf(Sheet({}) as ReactElement)['data-ui-sheet']).toBe(true)
     expect(propsOf(Sidebar({ glass: 'subtle' }) as ReactElement).className)
@@ -593,8 +593,8 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Command({ glass: true }) as ReactElement)['data-ui-command']).toBe(true)
     expect(propsOf(Command({ glass: true }) as ReactElement).className).toBe('ui-command ui-command--glass')
     expect(propsOf(Drawer({}) as ReactElement)['data-ui-drawer']).toBe(true)
-    expect(propsOf(Drawer({ surface: 'glass' }) as ReactElement)['data-surface']).toBe('glass')
-    expect(propsOf(Drawer({ surface: 'glass' }) as ReactElement).className).toBe('ui-drawer ui-drawer--glass')
+    expect(propsOf(Drawer({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
+    expect(propsOf(Drawer({ glass: true }) as ReactElement).className).toBe('ui-drawer ui-drawer--glass')
   })
 
   test('renders context menu with menu role and surface data', () => {

@@ -167,7 +167,7 @@ describe('lumen-mcp data snapshot', () => {
     expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
       expect.objectContaining({ name: 'ui:data-table-selection-change' })
     )
-    expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
+    expect(resolveComponent('DataTable')?.runtimeEvents).not.toContainEqual(
       expect.objectContaining({ name: 'ui:datatable-selection-change' })
     )
   })

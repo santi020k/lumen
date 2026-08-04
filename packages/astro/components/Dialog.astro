@@ -1,46 +1,34 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'dialog'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
   layout?: 'centered' | 'fullscreen'
-
-  /**
-   * @deprecated Use `glass` instead. `surface="glass"` maps to `glass={true}`.
-   */
-  surface?: 'default' | 'glass'
 }
-
-type InternalProps = Omit<Props, 'surface'> & { surface?: 'default' | 'glass' }
-
-const internalProps: InternalProps = Astro.props
 
 const {
   class: classProp = '',
   className = '',
   glass = false,
   layout = 'centered',
-  surface = 'default',
   ...rest
-} = internalProps
-
-const resolvedGlass = resolveLumenGlass(glass, surface)
+} = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-dialog',
   layout === 'fullscreen' && 'ui-dialog--fullscreen',
-  resolvedGlass && 'ui-dialog--glass',
+  glass && 'ui-dialog--glass',
   glass === 'subtle' && 'ui-glass-subtle',
   glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 
 <dialog
-  data-surface={resolvedGlass ? 'glass' : 'default'}
+  data-surface={glass ? 'glass' : 'default'}
   data-layout={layout}
   data-ui-dialog
   class:list={classList}

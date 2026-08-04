@@ -233,8 +233,7 @@ content readable without JavaScript and honor reduced-motion preferences.
 
 Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a
 boolean prop, and overlays or navigation primitives use the same prop while preserving semantic
-variants. The older `variant="glass"` form remains supported for cards. Overlay
-`surface="glass"` props are deprecated compatibility aliases that map to `glass`.
+variants. The older `variant="glass"` form remains supported for cards.
 
 ```astro
 <Card glass>Glass card</Card>

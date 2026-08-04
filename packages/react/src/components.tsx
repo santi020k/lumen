@@ -155,7 +155,6 @@ export type LumenGlassProp = boolean | 'subtle' | 'strong'
 interface SurfaceProps {
   'data-surface'?: SurfaceVariant
   glass?: LumenGlassProp
-  surface?: SurfaceVariant
 }
 
 export interface Option {
@@ -283,10 +282,7 @@ const renderLucideIcon = (name: string, className: string) => {
   return icon ? renderIconSvg(icon, className) : null
 }
 
-const resolveSurface = (
-  surface: SurfaceVariant,
-  glass?: LumenGlassProp
-): SurfaceVariant => (glass || surface === 'glass' ? 'glass' : surface)
+const resolveSurface = (glass?: LumenGlassProp): SurfaceVariant => glass ? 'glass' : 'default'
 
 const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ?
   'ui-glass-subtle' :
@@ -294,9 +290,8 @@ const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ?
 
 const glassSurfaceClass = (
   base: string,
-  surface: SurfaceVariant,
   glass?: LumenGlassProp
-) => resolveSurface(surface, glass) === 'glass' &&
+) => resolveSurface(glass) === 'glass' &&
   composeClassName(`${base}--glass`, glassIntensityClass(glass))
 
 const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) &&
@@ -445,7 +440,6 @@ export const AlertDialog = ({
   onClose,
   onOpenChange,
   open,
-  surface = 'default',
   ...props
 }: AlertDialogProps) => {
   const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })
@@ -455,9 +449,9 @@ export const AlertDialog = ({
       {...dialog.dialogProps}
       {...props}
       className={composeClassName(
-        'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', surface, glass), className
+        'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', glass), className
       )}
-      data-surface={resolveSurface(surface, glass)}
+      data-surface={resolveSurface(glass)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
@@ -1849,14 +1843,13 @@ export interface ContextMenuProps
 export const ContextMenu = ({
   className,
   glass = false,
-  surface = 'default',
   ...props
 }: ContextMenuProps) => (
   <menu
     className={composeClassName(
-      'ui-menu', glassSurfaceClass('ui-menu', surface, glass), className
+      'ui-menu', glassSurfaceClass('ui-menu', glass), className
     )}
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-context-menu
     role={props.role ?? 'menu'}
     {...props}
@@ -2269,7 +2262,6 @@ export const Dialog = ({
   onClose,
   onOpenChange,
   open,
-  surface = 'default',
   ...props
 }: DialogProps) => {
   const dialog = useDialog({ defaultOpen, onOpenChange, open })
@@ -2279,10 +2271,10 @@ export const Dialog = ({
       {...dialog.dialogProps}
       {...props}
       className={composeClassName(
-        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', surface, glass), className
+        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', glass), className
       )}
       data-layout={layout}
-      data-surface={resolveSurface(surface, glass)}
+      data-surface={resolveSurface(glass)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
@@ -2407,14 +2399,13 @@ export interface DrawerProps
 export const Drawer = ({
   className,
   glass = false,
-  surface = 'default',
   ...props
 }: DrawerProps) => (
   <dialog
     className={composeClassName(
-      'ui-drawer', glassSurfaceClass('ui-drawer', surface, glass), className
+      'ui-drawer', glassSurfaceClass('ui-drawer', glass), className
     )}
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-drawer
     {...props}
   />
@@ -2431,7 +2422,6 @@ export const DropdownMenu = ({
   glass = false,
   onOpenChange,
   open,
-  surface = 'default',
   ...props
 }: DropdownMenuProps) => {
   const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })
@@ -2442,9 +2432,9 @@ export const DropdownMenu = ({
         {...menu.rootProps}
         {...props}
         className={composeClassName(
-          'ui-menu', glassSurfaceClass('ui-menu', surface, glass), className
+          'ui-menu', glassSurfaceClass('ui-menu', glass), className
         )}
-        data-surface={resolveSurface(surface, glass)}
+        data-surface={resolveSurface(glass)}
         data-ui-dropdown-menu
       >
         {children}
@@ -2643,14 +2633,13 @@ export interface HoverCardProps
 export const HoverCard = ({
   className,
   glass = false,
-  surface = 'default',
   ...props
 }: HoverCardProps) => (
   <aside
     className={composeClassName(
-      'ui-hover-card', glassSurfaceClass('ui-hover-card', surface, glass), className
+      'ui-hover-card', glassSurfaceClass('ui-hover-card', glass), className
     )}
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-hover-card
     {...props}
   />
@@ -3044,14 +3033,13 @@ export interface MenubarProps
 export const Menubar = ({
   className,
   glass = false,
-  surface = 'default',
   ...props
 }: MenubarProps) => (
   <nav
     className={composeClassName(
-      'ui-menubar', glassSurfaceClass('ui-menubar', surface, glass), className
+      'ui-menubar', glassSurfaceClass('ui-menubar', glass), className
     )}
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-menubar
     {...props}
   />
@@ -3226,16 +3214,15 @@ export interface NavigationMenuProps
 export const NavigationMenu = ({
   className,
   glass = false,
-  surface = 'default',
   variant = 'default',
   ...props
 }: NavigationMenuProps) => (
   <nav
     className={composeClassName(
-      'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', surface, glass), className
+      'ui-navigation-menu', variant === 'unstyled' && 'ui-navigation-menu--unstyled', glassSurfaceClass('ui-navigation-menu', glass), className
     )}
     data-slot="navigation-menu"
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-navigation-menu
     data-variant={variant}
     {...props}
@@ -3266,7 +3253,6 @@ export const Popover = ({
   glass = false,
   onOpenChange,
   open,
-  surface = 'default',
   ...props
 }: PopoverProps) => {
   const popover = usePopover({ defaultOpen, onOpenChange, open })
@@ -3277,9 +3263,9 @@ export const Popover = ({
         {...popover.rootProps}
         {...props}
         className={composeClassName(
-          'ui-popover', glassSurfaceClass('ui-popover', surface, glass), className
+          'ui-popover', glassSurfaceClass('ui-popover', glass), className
         )}
-        data-surface={resolveSurface(surface, glass)}
+        data-surface={resolveSurface(glass)}
         data-ui-popover
       >
         {children}
@@ -4182,14 +4168,13 @@ export interface SheetProps
 export const Sheet = ({
   className,
   glass = false,
-  surface = 'default',
   ...props
 }: SheetProps) => (
   <dialog
     className={composeClassName(
-      'ui-sheet', glassSurfaceClass('ui-sheet', surface, glass), className
+      'ui-sheet', glassSurfaceClass('ui-sheet', glass), className
     )}
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-sheet
     {...props}
   />
@@ -4203,16 +4188,15 @@ export interface SidebarProps
 export const Sidebar = ({
   className,
   glass = false,
-  surface = 'default',
   variant = 'default',
   ...props
 }: SidebarProps) => (
   <aside
     className={composeClassName(
-      'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', surface, glass), className
+      'ui-sidebar', variant === 'unstyled' && 'ui-sidebar--unstyled', glassSurfaceClass('ui-sidebar', glass), className
     )}
     data-slot="sidebar"
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-variant={variant}
     {...props}
   />
@@ -4555,16 +4539,15 @@ export const Toast = ({
   className,
   glass = false,
   role,
-  surface = 'default',
   variant = 'default',
   ...props
 }: ToastProps) => (
   <aside
     aria-live={ariaLive ?? (variant === 'destructive' ? 'assertive' : 'polite')}
     className={composeClassName(
-      'ui-toast', variantClass('ui-toast', variant), glassSurfaceClass('ui-toast', surface, glass), className
+      'ui-toast', variantClass('ui-toast', variant), glassSurfaceClass('ui-toast', glass), className
     )}
-    data-surface={resolveSurface(surface, glass)}
+    data-surface={resolveSurface(glass)}
     data-ui-toast
     data-variant={variant}
     role={role ?? (variant === 'destructive' ? 'alert' : 'status')}

@@ -747,9 +747,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       'root.dispatchEvent(new CustomEvent(\'ui:data-table-selection-change\''
     )
-    expect(runtime).toContain(
-      'root.dispatchEvent(new CustomEvent(\'ui:datatable-selection-change\''
-    )
+    expect(runtime).not.toContain('ui:datatable-selection-change')
     expect(runtime).toContain('input.type = \'hidden\'')
     expect(styles).toContain('.ui-data-table__sort')
     expect(styles).toContain('.ui-data-table tbody tr[data-state="selected"]')
