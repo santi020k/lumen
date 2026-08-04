@@ -51,7 +51,11 @@ const channels = [{
   </Sidebar>
   <main class="lumen-template__main" id="overview">
     <header class="lumen-template__header">
-      <div><Badge variant="outline">Jun 1–30</Badge><h1>Growth overview</h1><p>Revenue, retention, and account health.</p></div>
+      <div>
+        <Badge variant="outline">Jun 1–30</Badge>
+        <h1>Growth overview</h1>
+        <p>Revenue, retention, and account health.</p>
+      </div>
       <Button>Export report</Button>
     </header>
     <section class="lumen-template__metrics" aria-label="Key metrics">
@@ -68,10 +72,37 @@ const channels = [{
       <BarChart heading="Channel performance" series={channels} />
     </section>
     <Card class="lumen-template__panel" id="accounts">
-      <div class="lumen-template__section-header"><div><h2>Accounts to watch</h2><p>Recent health changes.</p></div><Button variant="ghost">View all</Button></div>
+      <div class="lumen-template__section-header">
+        <div>
+          <h2>Accounts to watch</h2>
+          <p>Recent health changes.</p>
+        </div>
+        <Button variant="ghost">View all</Button>
+      </div>
       <Table class="lumen-template__table">
-        <table><thead><tr><th>Account</th><th>Plan</th><th>Status</th><th>Value</th></tr></thead>
-          <tbody><tr><td>Northstar Labs</td><td>Enterprise</td><td><Badge variant="success">Active</Badge></td><td>$18,400</td></tr><tr><td>Arc & Field</td><td>Enterprise</td><td><Badge variant="destructive">At risk</Badge></td><td>$14,780</td></tr></tbody>
+        <table>
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Northstar Labs</td>
+              <td>Enterprise</td>
+              <td><Badge variant="success">Active</Badge></td>
+              <td>$18,400</td>
+            </tr>
+            <tr>
+              <td>Arc & Field</td>
+              <td>Enterprise</td>
+              <td><Badge variant="destructive">At risk</Badge></td>
+              <td>$14,780</td>
+            </tr>
+          </tbody>
         </table>
       </Table>
     </Card>

@@ -24,13 +24,36 @@ import {
     </nav>
   </Sidebar>
   <main class="lumen-template__main" id="overview">
-    <header class="lumen-template__header"><div><Badge variant="outline">Workspace administration</Badge><h1>Good morning, Maya</h1><p>Access, billing, and operational health.</p></div><Button>Invite members</Button></header>
-    <Alert><strong>Quarterly access review is ready.</strong> Confirm eight elevated roles before July 12.</Alert>
+    <header class="lumen-template__header">
+      <div>
+        <Badge variant="outline">Workspace administration</Badge>
+        <h1>Good morning, Maya</h1>
+        <p>Access, billing, and operational health.</p>
+      </div>
+      <Button>Invite members</Button>
+    </header>
+    <Alert>
+      <strong>Quarterly access review is ready.</strong>
+      {' '}
+      Confirm eight elevated roles before July 12.
+    </Alert>
     <section class="lumen-template__metrics" aria-label="Workspace metrics">
-      <Card class="lumen-template__metric"><Stat label="Workspace members" value="248" /><Badge variant="success">+24</Badge></Card>
-      <Card class="lumen-template__metric"><Stat label="Seat activation" value="91%" /><Badge variant="success">Healthy</Badge></Card>
-      <Card class="lumen-template__metric"><Stat label="Access reviews" value="8" /><Badge variant="warning">3 pending</Badge></Card>
-      <Card class="lumen-template__metric"><Stat label="Availability" value="99.99%" /><Badge variant="success">Normal</Badge></Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Workspace members" value="248" />
+        <Badge variant="success">+24</Badge>
+      </Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Seat activation" value="91%" />
+        <Badge variant="success">Healthy</Badge>
+      </Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Access reviews" value="8" />
+        <Badge variant="warning">3 pending</Badge>
+      </Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Availability" value="99.99%" />
+        <Badge variant="success">Normal</Badge>
+      </Card>
     </section>
     <section class="lumen-template__grid" id="billing">
       <Card class="lumen-template__panel">
@@ -49,8 +72,39 @@ import {
       </Card>
     </section>
     <Card class="lumen-template__panel" id="members">
-      <div class="lumen-template__section-header"><div><h2>Recently active members</h2><p>Access changes from the last 30 days.</p></div><SearchField aria-label="Search members" placeholder="Search members" /></div>
-      <Table class="lumen-template__table"><table><thead><tr><th>Member</th><th>Team</th><th>Status</th><th>Role</th></tr></thead><tbody><tr><td>Amina Bello</td><td>Design</td><td><Badge variant="success">Active</Badge></td><td>Admin</td></tr><tr><td>Theo Martin</td><td>Success</td><td><Badge variant="warning">Pending</Badge></td><td>Member</td></tr></tbody></table></Table>
+      <div class="lumen-template__section-header">
+        <div>
+          <h2>Recently active members</h2>
+          <p>Access changes from the last 30 days.</p>
+        </div>
+        <SearchField aria-label="Search members" placeholder="Search members" />
+      </div>
+      <Table class="lumen-template__table">
+        <table>
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Team</th>
+              <th>Status</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Amina Bello</td>
+              <td>Design</td>
+              <td><Badge variant="success">Active</Badge></td>
+              <td>Admin</td>
+            </tr>
+            <tr>
+              <td>Theo Martin</td>
+              <td>Success</td>
+              <td><Badge variant="warning">Pending</Badge></td>
+              <td>Member</td>
+            </tr>
+          </tbody>
+        </table>
+      </Table>
     </Card>
   </main>
 </div>

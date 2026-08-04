@@ -171,7 +171,10 @@ const searchIndexHref = '/docs-search.json'
   }
 
   const isSearchNavigationKey = (key: string): boolean => key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter'
-  const getSearchOptions = (results: HTMLElement): HTMLAnchorElement[] => [...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')]
+
+  const getSearchOptions = (results: HTMLElement): HTMLAnchorElement[] => [
+    ...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')
+  ]
 
   const openSearchResults = (state: DocsSearchState): void => {
     state.results.hidden = false
@@ -308,7 +311,8 @@ const searchIndexHref = '/docs-search.json'
     const normalizedQuery = normalizeSearchText(query.trim())
 
     const commands = normalizedQuery ?
-      docsSearchCommands.filter(item => normalizeSearchText(`${item.command} ${item.title} ${item.keywords}`).includes(normalizedQuery)) :
+      docsSearchCommands.filter(item => normalizeSearchText(`${item.command} ${item.title} ${item.keywords}`)
+        .includes(normalizedQuery)) :
       docsSearchCommands
 
     state.results.replaceChildren()
@@ -398,7 +402,9 @@ const searchIndexHref = '/docs-search.json'
       state.results.append(createSearchOption(item, resultIndex, state.optionIdPrefix))
     }
 
-    state.status.textContent = `${matchedResults.length} search ${matchedResults.length === 1 ? 'result' : 'results'} available.`
+    const resultNoun = matchedResults.length === 1 ? 'result' : 'results'
+
+    state.status.textContent = `${matchedResults.length} search ${resultNoun} available.`
 
     openSearchResults(state)
 

@@ -10,8 +10,12 @@ export interface LumenTokenAuditFinding {
 
 const declarationPattern = /--([a-z][\w-]*)\s*:\s*([^;}\n]+)/giu
 
-const channelPattern =
-  /^(?:var\(.+\)|-?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|grad|rad|turn)?\s+-?(?:\d+(?:\.\d+)?|\.\d+)%\s+-?(?:\d+(?:\.\d+)?|\.\d+)%(?:\s*\/\s*(?:\d+(?:\.\d+)?|\.\d+)%?)?)$/iu
+const channelPattern = new RegExp([
+  String.raw`^(?:var\(.+\)|-?(?:\d+(?:\.\d+)?|\.\d+)`,
+  String.raw`(?:deg|grad|rad|turn)?\s+-?(?:\d+(?:\.\d+)?|\.\d+)%`,
+  String.raw`\s+-?(?:\d+(?:\.\d+)?|\.\d+)%`,
+  String.raw`(?:\s*\/\s*(?:\d+(?:\.\d+)?|\.\d+)%?)?)$`
+].join(''), 'iu')
 
 const semanticTokens = new Set<string>(lumenSemanticColorTokenNames)
 

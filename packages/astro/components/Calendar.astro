@@ -54,9 +54,20 @@ const parseIsoMonth = (date: string | undefined): Date | undefined => {
 
 const formatIsoDate = (date: Date): string => date.toISOString().slice(0, 10)
 const formatIsoMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const addDays = (date: Date, days: number): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
-const isBefore = (date: Date, limit: Date | undefined): boolean => Boolean(limit && formatIsoDate(date) < formatIsoDate(limit))
-const isAfter = (date: Date, limit: Date | undefined): boolean => Boolean(limit && formatIsoDate(date) > formatIsoDate(limit))
+
+const addDays = (date: Date, days: number): Date => {
+  const utc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days)
+
+  return new Date(utc)
+}
+
+const isBefore = (date: Date, limit: Date | undefined): boolean => (
+  Boolean(limit && formatIsoDate(date) < formatIsoDate(limit))
+)
+
+const isAfter = (date: Date, limit: Date | undefined): boolean => (
+  Boolean(limit && formatIsoDate(date) > formatIsoDate(limit))
+)
 
 const {
   class: classProp = '',
@@ -104,7 +115,9 @@ else if (
 ) focusIso = todayIso
 else if (firstSelectableDate) focusIso = formatIsoDate(firstSelectableDate)
 
-const weekdays = Array.from({ length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index))))
+const weekdays = Array.from(
+  { length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))
+)
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-calendar',

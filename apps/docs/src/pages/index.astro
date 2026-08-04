@@ -193,10 +193,14 @@ const useCases: readonly UseCase[] = [
     name: 'Workspace Organizer'
   }
 ]
+
+const pageDescription =
+  `Lumen is a crafted multi-framework UI system with ${componentCount} accessible primitives ` +
+  'for Astro, React, and Web Components.'
 ---
 
 <BaseLayout
-  description={`Lumen is a crafted multi-framework UI system with ${componentCount} accessible primitives for Astro, React, and Web Components.`}
+  description={pageDescription}
   title="Lumen UI — Crafted primitives for every framework"
 >
   <main class="home">

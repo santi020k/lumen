@@ -56,8 +56,18 @@ const geometry = createLumenBarGeometry(series, { categoryWidth, layout, orienta
 const hasData = hasLumenChartData(series)
 const ticks = getLumenChartTicks(geometry.domain)
 const categories = geometry.categories.map(category => category.category)
-const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.y ?? null
-const labelFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)?.label
+
+const datumFor = (item: LumenChartSeries, category: number | string) => (
+  item.data.find(datum => datum.x === category)
+)
+
+const valueFor = (item: LumenChartSeries, category: number | string) => (
+  datumFor(item, category)?.y ?? null
+)
+
+const labelFor = (item: LumenChartSeries, category: number | string) => (
+  datumFor(item, category)?.label
+)
 
 const formattedValueFor = (item: LumenChartSeries, category: number | string) => {
   const value = valueFor(item, category)

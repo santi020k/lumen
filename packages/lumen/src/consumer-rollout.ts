@@ -58,7 +58,9 @@ export interface ConsumerRolloutReport {
   targetVersion?: string
 }
 
-export const consumerRolloutSucceeded = (report: ConsumerRolloutReport): boolean => report.repositories.every(repository => repository.valid && repository.commands.every(command => command.ok))
+export const consumerRolloutSucceeded = (report: ConsumerRolloutReport): boolean => report.repositories.every(
+  repository => repository.valid && repository.commands.every(command => command.ok)
+)
 
 interface PackageManifest {
   dependencies?: Record<string, string>
@@ -128,7 +130,11 @@ export const satisfiesNodeEngine = (
   return satisfies(currentVersion, engine)
 }
 
-const collectManifestReferences = (manifest: PackageManifest, file: string, root: string): ConsumerReference[] => dependencyFields.flatMap(field => Object.entries(manifest[field] ?? {})
+const collectManifestReferences = (
+  manifest: PackageManifest,
+  file: string,
+  root: string
+): ConsumerReference[] => dependencyFields.flatMap(field => Object.entries(manifest[field] ?? {})
   .filter(([packageName]) => isLumenPackage(packageName))
   .map(([packageName, version]) => ({
     file: relative(root, file),
@@ -302,8 +308,20 @@ export const updateLumenManifestSource = (source: string, targetVersion: string)
   return `${JSON.stringify(manifest, undefined, 2)}\n`
 }
 
+const lumenWorkspaceVersionPattern = new RegExp([
+  String.raw`^(\s*['"]?@santi020k\/lumen`,
+  String.raw`(?:-(?:astro|core|elements|mcp|react))?['"]?\s*:\s*['"]?)`,
+  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
+].join(''), 'gm')
+
 export const updateLumenWorkspaceSource = (source: string, targetVersion: string): string => source.replaceAll(
-  /^(\s*['"]?@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?['"]?\s*:\s*['"]?)([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$/gm, (_match, before: string, prefix: string, _version: string, after: string) => `${before}${prefix}${targetVersion}${after}`
+  lumenWorkspaceVersionPattern, (
+    _match,
+    before: string,
+    prefix: string,
+    _version: string,
+    after: string
+  ) => `${before}${prefix}${targetVersion}${after}`
 )
 
 const getVerificationScripts = (manifest: PackageManifest, frameworks: LumenFramework[]): string[] => {

@@ -57,8 +57,9 @@ const isRegistryFile = (value: unknown): value is LumenRegistryFile | string => 
   return typeof file.path === 'string' && typeof file.source === 'string'
 }
 
-const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(entry => typeof entry === 'string')
-const isRegistryFileArray = (value: unknown): boolean => Array.isArray(value) && value.every(entry => isRegistryFile(entry))
+const isString = (entry: unknown): entry is string => typeof entry === 'string'
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(isString)
+const isRegistryFileArray = (value: unknown): boolean => Array.isArray(value) && value.every(isRegistryFile)
 const registryItemTypes = new Set(['component-set', 'documentation', 'recipe'])
 
 const isRegistryItem = (value: unknown): value is LumenRegistryItem => {

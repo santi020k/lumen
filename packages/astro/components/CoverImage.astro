@@ -67,7 +67,11 @@ let cardWrapperClass = `${cardAspectClass} rounded-t-[1.75rem] border-b border-l
 if (featured && orientation === 'landscape') {
   cardWrapperClass = 'aspect-16/10 rounded-t-[1.75rem] border-b border-line/45'
 } else if (useContainedFrame) {
-  cardWrapperClass = `${cardAspectClass} rounded-t-[1.75rem] flex items-center justify-center border-b border-line/45 bg-linear-to-br from-surface-muted via-surface to-brand-soft/30 p-4 sm:p-5`
+  cardWrapperClass = [
+    `${cardAspectClass} rounded-t-[1.75rem] flex items-center justify-center`,
+    'border-b border-line/45 bg-linear-to-br from-surface-muted',
+    'via-surface to-brand-soft/30 p-4 sm:p-5'
+  ].join(' ')
 }
 
 let detailWrapperClass = 'w-full'

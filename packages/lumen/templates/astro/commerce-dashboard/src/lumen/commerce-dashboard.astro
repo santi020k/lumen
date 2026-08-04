@@ -18,16 +18,45 @@ const sources = { data: [{ x: 'Online', y: 812 }, { x: 'Marketplace', y: 286 }, 
 ---
 
 <div class="lumen-template lumen-template__shell">
-  <Sidebar class="lumen-template__sidebar"><strong>Mercury Commerce</strong><nav aria-label="Commerce"><a aria-current="page" href="#overview">Overview</a><a href="#orders">Orders</a><a href="#inventory">Inventory</a></nav></Sidebar>
+  <Sidebar class="lumen-template__sidebar">
+    <strong>Mercury Commerce</strong>
+    <nav aria-label="Commerce">
+      <a aria-current="page" href="#overview">Overview</a>
+      <a href="#orders">Orders</a>
+      <a href="#inventory">Inventory</a>
+    </nav>
+  </Sidebar>
   <main class="lumen-template__main" id="overview">
-    <header class="lumen-template__header"><div><Badge variant="outline">Store overview</Badge><h1>Commerce command center</h1><p>Sales, fulfillment, and inventory risk.</p></div><Button>Add product</Button></header>
+    <header class="lumen-template__header">
+      <div>
+        <Badge variant="outline">Store overview</Badge>
+        <h1>Commerce command center</h1>
+        <p>Sales, fulfillment, and inventory risk.</p>
+      </div>
+      <Button>Add product</Button>
+    </header>
     <section class="lumen-template__metrics" aria-label="Commerce metrics">
-      <Card class="lumen-template__metric"><Stat label="Gross sales" value="$92,840" /><Badge variant="success">+18.6%</Badge></Card>
-      <Card class="lumen-template__metric"><Stat label="Orders" value="1,284" /><Badge variant="success">+7.4%</Badge></Card>
-      <Card class="lumen-template__metric"><Stat label="Average order" value="$72.31" /><Badge variant="success">+$6.20</Badge></Card>
-      <Card class="lumen-template__metric"><Stat label="Return rate" value="2.1%" /><Badge variant="success">-0.4%</Badge></Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Gross sales" value="$92,840" />
+        <Badge variant="success">+18.6%</Badge>
+      </Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Orders" value="1,284" />
+        <Badge variant="success">+7.4%</Badge>
+      </Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Average order" value="$72.31" />
+        <Badge variant="success">+$6.20</Badge>
+      </Card>
+      <Card class="lumen-template__metric">
+        <Stat label="Return rate" value="2.1%" />
+        <Badge variant="success">-0.4%</Badge>
+      </Card>
     </section>
-    <section class="lumen-template__grid"><BarChart heading="Sales this week" series={sales} /><PieChart centerLabel="orders" centerValue="1,284" heading="Order sources" series={sources} /></section>
+    <section class="lumen-template__grid">
+      <BarChart heading="Sales this week" series={sales} />
+      <PieChart centerLabel="orders" centerValue="1,284" heading="Order sources" series={sources} />
+    </section>
     <section class="lumen-template__grid" id="inventory">
       <Card class="lumen-template__panel">
         <h2>Fulfillment</h2>
@@ -49,7 +78,30 @@ const sources = { data: [{ x: 'Online', y: 812 }, { x: 'Marketplace', y: 286 }, 
         <Button variant="ghost">View all</Button>
       </div>
       <Table class="lumen-template__table">
-        <table><thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th></tr></thead><tbody><tr><td>#10482</td><td>Nora Singh</td><td><Badge variant="success">Completed</Badge></td><td>$148.00</td></tr><tr><td>#10481</td><td>Theo Martin</td><td><Badge variant="warning">Pending</Badge></td><td>$84.50</td></tr></tbody></table>
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#10482</td>
+              <td>Nora Singh</td>
+              <td><Badge variant="success">Completed</Badge></td>
+              <td>$148.00</td>
+            </tr>
+            <tr>
+              <td>#10481</td>
+              <td>Theo Martin</td>
+              <td><Badge variant="warning">Pending</Badge></td>
+              <td>$84.50</td>
+            </tr>
+          </tbody>
+        </table>
       </Table>
     </Card>
   </main>

@@ -111,6 +111,9 @@ catalogs:
     cspell:
       specifier: ^10.0.1
       version: 10.0.1
+    esbuild:
+      specifier: ^0.28.1
+      version: 0.28.1
     eslint:
       specifier: ^10.7.0
       version: 10.7.0
@@ -416,6 +419,9 @@ importers:
       axe-core:
         specifier: 'catalog:'
         version: 4.12.1
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.28.1
       jsdom:
         specifier: 'catalog:'
         version: 29.1.1

@@ -83,7 +83,9 @@ else if (typeof markers === 'number') markerStep = Math.max(1, Math.round(marker
 else if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))
 
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
-const categoryLabelFor = (category: number | string) => series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+
+const categoryLabelFor = (category: number | string) => series.flatMap(item => item.data)
+  .find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
 
 const referenceY =
   referenceValue === undefined ?

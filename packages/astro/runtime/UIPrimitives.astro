@@ -22,7 +22,8 @@ import {
   lumenTokenNames
 } from '@santi020k/lumen-core'
 
-/* eslint-disable complexity -- The runtime keeps stateful DOM handlers close to each primitive so Astro consumers do not need a framework runtime. */
+/* eslint-disable complexity */
+/* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
 type ThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
 
 type ThemeBuilderMode = 'generated' | 'manual'
@@ -248,7 +249,19 @@ const initTooltips = (scope: ParentNode): void => {
     if (root.dataset.uiTooltipBound === 'true') continue
 
     const tip = root.querySelector<HTMLElement>('[role="tooltip"]')
-    const trigger = root.querySelector<HTMLElement>('[data-ui-tooltip-trigger], [data-ui-trigger], button, a[href], input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])')
+
+    const triggerSelector = [
+      '[data-ui-tooltip-trigger]',
+      '[data-ui-trigger]',
+      'button',
+      'a[href]',
+      'input:not([type="hidden"])',
+      'select',
+      'textarea',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(', ')
+
+    const trigger = root.querySelector<HTMLElement>(triggerSelector)
 
     if (!tip) continue
 
@@ -356,7 +369,10 @@ const initGlassTracking = (scope: ParentNode): void => {
 }
 
 const initDialogs = (scope: ParentNode): void => {
-  for (const dialog of scope.querySelectorAll<HTMLDialogElement>('[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet]')) {
+  const dialogSelector =
+    '[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet]'
+
+  for (const dialog of scope.querySelectorAll<HTMLDialogElement>(dialogSelector)) {
     if (dialog.dataset.uiBound === 'true') continue
 
     dialog.dataset.uiBound = 'true'
@@ -381,7 +397,14 @@ const initDialogs = (scope: ParentNode): void => {
     })
   }
 
-  for (const trigger of scope.querySelectorAll<HTMLElement>('[data-ui-dialog-trigger], [data-ui-alert-dialog-trigger], [data-ui-drawer-trigger], [data-ui-sheet-trigger]')) {
+  const triggerSelector = [
+    '[data-ui-dialog-trigger]',
+    '[data-ui-alert-dialog-trigger]',
+    '[data-ui-drawer-trigger]',
+    '[data-ui-sheet-trigger]'
+  ].join(', ')
+
+  for (const trigger of scope.querySelectorAll<HTMLElement>(triggerSelector)) {
     if (trigger.dataset.uiBound === 'true') continue
 
     trigger.dataset.uiBound = 'true'
@@ -413,7 +436,14 @@ const initDialogs = (scope: ParentNode): void => {
     })
   }
 
-  for (const closeButton of scope.querySelectorAll<HTMLElement>('[data-ui-dialog-close], [data-ui-alert-dialog-close], [data-ui-drawer-close], [data-ui-sheet-close]')) {
+  const closeSelector = [
+    '[data-ui-dialog-close]',
+    '[data-ui-alert-dialog-close]',
+    '[data-ui-drawer-close]',
+    '[data-ui-sheet-close]'
+  ].join(', ')
+
+  for (const closeButton of scope.querySelectorAll<HTMLElement>(closeSelector)) {
     if (closeButton.dataset.uiBound === 'true') continue
 
     closeButton.dataset.uiBound = 'true'
@@ -444,11 +474,17 @@ const getFieldDescriptionId = (element: HTMLElement): string => {
   return element.id
 }
 
-const getFieldRoot = (control: HTMLElement): HTMLElement | null => control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+const getFieldRoot = (control: HTMLElement): HTMLElement | null => (
+  control.closest<HTMLElement>('.ui-field, [data-ui-field]')
+)
 
-const isNativeFormControl = (element: EventTarget | null): element is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement => element instanceof HTMLInputElement ||
+type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+
+const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl => (
+  element instanceof HTMLInputElement ||
   element instanceof HTMLSelectElement ||
   element instanceof HTMLTextAreaElement
+)
 
 const getValidationMessage = (
   control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
@@ -514,8 +550,9 @@ const validateControl = (
   return !invalid
 }
 
-const getFormControls = (form: HTMLFormElement): Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> => [...form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(formControlSelector)]
-  .filter(control => control.form === form && !control.disabled)
+const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [
+  ...form.querySelectorAll<NativeFormControl>(formControlSelector)
+].filter(control => control.form === form && !control.disabled)
 
 const validateForm = (form: HTMLFormElement): Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> => {
   const invalidControls: Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = []
@@ -703,8 +740,9 @@ const initPasswordFields = (scope: ParentNode): void => {
   }
 }
 
-const getListBoxSelectedValues = (select: HTMLSelectElement): string[] =>
-  [...select.selectedOptions].map(option => option.value)
+const getListBoxSelectedValues = (select: HTMLSelectElement): string[] => [
+  ...select.selectedOptions
+].map(option => option.value)
 
 const initListBoxes = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-list-box]')) {
@@ -723,8 +761,7 @@ const initListBoxes = (scope: ParentNode): void => {
     list.hidden = false
 
     let activeIndex = Math.max(
-      0,
-      options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
+      0, options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
     )
 
     let typeahead = ''
@@ -805,8 +842,7 @@ const initListBoxes = (scope: ParentNode): void => {
         event.preventDefault()
 
         activeIndex = Math.max(
-          0,
-          options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
+          0, options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
         )
 
         syncActive()
@@ -840,8 +876,7 @@ const initListBoxes = (scope: ParentNode): void => {
         }, 700)
 
         const nextIndex = options.findIndex(
-          option =>
-            option.getAttribute('aria-disabled') !== 'true' &&
+          option => option.getAttribute('aria-disabled') !== 'true' &&
             option.textContent?.trim().toLowerCase().startsWith(typeahead)
         )
 
@@ -872,8 +907,7 @@ const initListBoxes = (scope: ParentNode): void => {
         syncSelected()
 
         activeIndex = Math.max(
-          0,
-          options.findIndex(option => option.getAttribute('aria-selected') === 'true')
+          0, options.findIndex(option => option.getAttribute('aria-selected') === 'true')
         )
 
         syncActive()
@@ -1018,12 +1052,23 @@ const initTabs = (scope: ParentNode): void => {
 }
 
 const initRovingGroups = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-menubar], [data-ui-navigation-menu], [data-ui-radio-group], [data-ui-toggle-group], [data-ui-toolbar]')) {
+  const groupSelector = [
+    '[data-ui-menubar]',
+    '[data-ui-navigation-menu]',
+    '[data-ui-radio-group]',
+    '[data-ui-toggle-group]',
+    '[data-ui-toolbar]'
+  ].join(', ')
+
+  for (const root of scope.querySelectorAll<HTMLElement>(groupSelector)) {
     if (root.dataset.uiBound === 'true') continue
 
     root.dataset.uiBound = 'true'
 
-    const items = [...root.querySelectorAll<HTMLElement>('button, a[href], input[type="radio"], [role="menuitem"], [role="radio"]')]
+    const itemSelector =
+      'button, a[href], input[type="radio"], [role="menuitem"], [role="radio"]'
+
+    const items = [...root.querySelectorAll<HTMLElement>(itemSelector)]
 
     if (!items.length) continue
 
@@ -1236,7 +1281,10 @@ const initThemeToggles = (scope: ParentNode): void => {
   }
 }
 
-const getVisibleItems = (items: HTMLElement[]): HTMLElement[] => items.filter(item => !item.hidden && item.offsetParent !== null && !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true')
+const getVisibleItems = (items: HTMLElement[]): HTMLElement[] => items.filter(item => !item.hidden &&
+  item.offsetParent !== null &&
+  !item.hasAttribute('disabled') &&
+  item.getAttribute('aria-disabled') !== 'true')
 
 const closeCombobox = (root: HTMLElement): void => {
   const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
@@ -1380,10 +1428,23 @@ const openSelect = (root: HTMLElement): void => {
   listbox.dataset.state = 'open'
 }
 
-const getSelectItems = (root: HTMLElement): HTMLElement[] => [...root.querySelectorAll<HTMLElement>('[data-ui-select-option]')]
-const getEnabledSelectItems = (root: HTMLElement): HTMLElement[] => getSelectItems(root).filter(item => !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true')
-const getSelectedSelectItem = (root: HTMLElement): HTMLElement | undefined => getEnabledSelectItems(root).find(item => item.getAttribute('aria-selected') === 'true')
-const isPrintableKey = (event: KeyboardEvent): boolean => event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
+const getSelectItems = (root: HTMLElement): HTMLElement[] => [
+  ...root.querySelectorAll<HTMLElement>('[data-ui-select-option]')
+]
+
+const getEnabledSelectItems = (root: HTMLElement): HTMLElement[] => (
+  getSelectItems(root).filter(
+    item => !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
+  )
+)
+
+const getSelectedSelectItem = (root: HTMLElement): HTMLElement | undefined => (
+  getEnabledSelectItems(root).find(item => item.getAttribute('aria-selected') === 'true')
+)
+
+const isPrintableKey = (event: KeyboardEvent): boolean => (
+  event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey
+)
 
 const renderSelectOptions = (select: HTMLSelectElement, listbox: HTMLElement): void => {
   const items = [...select.options]
@@ -1649,8 +1710,10 @@ const initSelects = (scope: ParentNode): void => {
 
       if (!items.length || !typeahead) return
 
-      const currentIndex = currentItem ? items.indexOf(currentItem) : items.indexOf(getSelectedSelectItem(root) ?? items[0])
-      const orderedItems = [...items.slice(Math.max(0, currentIndex + 1)), ...items.slice(0, Math.max(0, currentIndex + 1))]
+      const selectedItem = getSelectedSelectItem(root) ?? items[0]
+      const currentIndex = currentItem ? items.indexOf(currentItem) : items.indexOf(selectedItem)
+      const startIndex = Math.max(0, currentIndex + 1)
+      const orderedItems = [...items.slice(startIndex), ...items.slice(0, startIndex)]
       const nextItem = orderedItems.find(item => item.textContent?.trim().toLowerCase().startsWith(typeahead))
 
       nextItem?.focus()
@@ -1699,7 +1762,9 @@ const initSelects = (scope: ParentNode): void => {
         return
       }
 
-      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End' && event.key !== 'Enter' && event.key !== ' ') return
+      const navigationKeys = ['ArrowDown', 'ArrowUp', 'Home', 'End', 'Enter', ' ']
+
+      if (!navigationKeys.includes(event.key)) return
 
       event.preventDefault()
 
@@ -2101,7 +2166,9 @@ const initInputOtpFields = (scope: ParentNode): void => {
 
 /* cspell:ignore Datatable datatable */
 /* eslint-disable @stylistic/padding-line-between-statements, no-nested-ternary */
-const getDataTableSortValue = (cell: HTMLTableCellElement | undefined): string => cell?.dataset.sortValue ?? cell?.textContent?.trim() ?? ''
+const getDataTableSortValue = (
+  cell: HTMLTableCellElement | undefined
+): string => cell?.dataset.sortValue ?? cell?.textContent?.trim() ?? ''
 
 const compareDataTableValues = (value: string, other: string, sortType: string | undefined): number => {
   const numericValue = Number(value.replace(/,/g, ''))
@@ -2171,9 +2238,11 @@ const updateDataTableSort = (
 }
 
 const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void => {
-  const headers = [...table.querySelectorAll<HTMLTableCellElement>('thead th')].filter(header => header.dataset.uiDatatableSortable === 'true' ||
-    header.dataset.sortable === 'true' ||
-    header.hasAttribute('data-sortable'))
+  const headers = [...table.querySelectorAll<HTMLTableCellElement>('thead th')].filter(
+    header => header.dataset.uiDatatableSortable === 'true' ||
+      header.dataset.sortable === 'true' ||
+      header.hasAttribute('data-sortable')
+  )
 
   for (const header of headers) {
     if (header.dataset.uiDatatableSortBound === 'true') continue
@@ -2222,9 +2291,14 @@ const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void 
   })
 }
 
-const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] => [...(table.tBodies[0]?.rows ?? [])]
+const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] => [
+  ...(table.tBodies[0]?.rows ?? [])
+]
 
-const getDataTableRowValue = (row: HTMLTableRowElement, index: number): string => row.dataset.value ?? row.id ?? String(index)
+const getDataTableRowValue = (
+  row: HTMLTableRowElement,
+  index: number
+): string => row.dataset.value ?? row.id ?? String(index)
 
 const syncDataTableSelection = (
   root: HTMLElement,
@@ -2387,8 +2461,14 @@ const parseCalendarMonth = (value: string | null | undefined): Date | null => {
 
 const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
 const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const addCalendarDays = (date: Date, days: number): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
-const getCalendarDaysInMonth = (date: Date): number => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
+
+const addCalendarDays = (date: Date, days: number): Date => new Date(
+  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days)
+)
+
+const getCalendarDaysInMonth = (date: Date): number => new Date(
+  Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)
+).getUTCDate()
 
 const addCalendarMonths = (date: Date, months: number): Date => {
   const year = date.getUTCFullYear()
@@ -3034,7 +3114,9 @@ const initTreeCollections = (scope: ParentNode): void => {
 
         if (!keys.includes(event.key)) return
 
-        if ((event.key === 'ArrowRight' || event.key === 'Enter' || event.key === ' ') && item.hasAttribute('aria-expanded')) {
+        const opensBranch = ['ArrowRight', 'Enter', ' '].includes(event.key)
+
+        if (opensBranch && item.hasAttribute('aria-expanded')) {
           event.preventDefault()
 
           item.setAttribute('aria-expanded', 'true')
@@ -3281,9 +3363,17 @@ const coerceThemeBuilderExportFormat = (value?: string | null): ThemeBuilderExpo
   return 'css'
 }
 
-const coerceThemeBuilderMode = (value?: string | null): ThemeBuilderMode => value === 'manual' ? 'manual' : 'generated'
-const coerceThemeBuilderScheme = (value?: string | null): ThemeBuilderScheme => value === 'dark' ? 'dark' : 'light'
-const getDefaultThemeBuilderScheme = (): ThemeBuilderScheme => document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
+const coerceThemeBuilderMode = (value?: string | null): ThemeBuilderMode => (
+  value === 'manual' ? 'manual' : 'generated'
+)
+
+const coerceThemeBuilderScheme = (value?: string | null): ThemeBuilderScheme => (
+  value === 'dark' ? 'dark' : 'light'
+)
+
+const getDefaultThemeBuilderScheme = (): ThemeBuilderScheme => (
+  document.documentElement.dataset.theme?.includes('dark') ? 'dark' : 'light'
+)
 
 const normalizeThemeBuilderHue = (
   value: number | string | null | undefined,
@@ -3547,8 +3637,19 @@ const initThemeBuilders = (scope: ParentNode): void => {
     )
 
     let currentExportValue = ''
-    let currentFormat = coerceThemeBuilderExportFormat(getThemeBuilderButtonValue(root, exportFormatButtons, 'data-ui-theme-export-format', 'css'))
-    let currentScheme = coerceThemeBuilderScheme(getThemeBuilderButtonValue(root, schemeButtons, 'data-ui-theme-scheme', getDefaultThemeBuilderScheme()))
+
+    let currentFormat = coerceThemeBuilderExportFormat(
+      getThemeBuilderButtonValue(
+        root, exportFormatButtons, 'data-ui-theme-export-format', 'css'
+      )
+    )
+
+    let currentScheme = coerceThemeBuilderScheme(
+      getThemeBuilderButtonValue(
+        root, schemeButtons, 'data-ui-theme-scheme', getDefaultThemeBuilderScheme()
+      )
+    )
+
     let currentTokens: LumenThemeTokens | null = null
 
     const updateExportButtonLabel = (): void => {
@@ -3586,10 +3687,17 @@ const initThemeBuilders = (scope: ParentNode): void => {
       )
 
       const nextAccentHue = normalizeThemeBuilderHue(
-        accentHue?.value ?? accentHueNumber?.value ?? root.getAttribute('data-ui-theme-accent-hue'), normalizeThemeBuilderHue(hue + 150)
+        accentHue?.value ??
+        accentHueNumber?.value ??
+        root.getAttribute('data-ui-theme-accent-hue'), normalizeThemeBuilderHue(hue + 150)
       )
 
-      const mode = coerceThemeBuilderMode(getThemeBuilderButtonValue(root, modeButtons, 'data-ui-theme-mode', 'generated'))
+      const mode = coerceThemeBuilderMode(
+        getThemeBuilderButtonValue(
+          root, modeButtons, 'data-ui-theme-mode', 'generated'
+        )
+      )
+
       const primaryValue = primaryHex?.value ?? primaryColor?.value
       const secondaryValue = secondaryHex?.value ?? secondaryColor?.value
       const primary = primaryValue ? hexToThemeBuilderHsl(primaryValue) : null
@@ -3940,7 +4048,9 @@ const isToastPlacement = (placement: string | undefined): placement is ToastPlac
   placement === 'bottom-center' ||
   placement === 'bottom-right'
 
-const getToastPlacement = (placement: string | undefined): ToastPlacement => isToastPlacement(placement) ? placement : 'bottom-right'
+const getToastPlacement = (placement: string | undefined): ToastPlacement => (
+  isToastPlacement(placement) ? placement : 'bottom-right'
+)
 
 const getToastViewport = (placement: string | undefined): HTMLElement => {
   const resolvedPlacement = getToastPlacement(placement)

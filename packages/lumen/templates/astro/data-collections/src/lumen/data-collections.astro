@@ -16,8 +16,18 @@ import {
   </Command>
   <DataTable>
     <table>
-      <thead><tr><th>Name</th><th>Status</th></tr></thead>
-      <tbody><tr><td>Docs</td><td>Ready</td></tr></tbody>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Docs</td>
+          <td>Ready</td>
+        </tr>
+      </tbody>
     </table>
   </DataTable>
   <Tree aria-label="Files">
@@ -25,12 +35,18 @@ import {
     <div role="treeitem">index.ts</div>
   </Tree>
   <TreeGrid aria-label="Project status">
-    <div role="row"><span role="gridcell">Docs</span><span role="gridcell">Ready</span></div>
+    <div role="row">
+      <span role="gridcell">Docs</span>
+      <span role="gridcell">Ready</span>
+    </div>
   </TreeGrid>
   <VirtualList data-ui-item-size="44" style="--ui-list-height: 12rem">
     <div>Row 1</div>
     <div>Row 2</div>
     <div>Row 3</div>
   </VirtualList>
-  <Pagination><a href="?page=1">Previous</a><a href="?page=2">Next</a></Pagination>
+  <Pagination>
+    <a href="?page=1">Previous</a>
+    <a href="?page=2">Next</a>
+  </Pagination>
 </section>

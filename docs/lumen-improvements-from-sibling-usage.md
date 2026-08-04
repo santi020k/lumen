@@ -37,6 +37,27 @@ instances.
 - The existing Observatory chart learnings remain valid and should be implemented as the
   data-visualization effort rather than duplicated here.
 
+## Implementation status
+
+The first implementation pass is complete as of July 30, 2026:
+
+- compound Card and Stat parts now have matching Astro, React, and Elements contracts;
+- the public styling contract defines stable slots, parts, and component variables;
+- React wrapper composition, native props, refs, and Next.js boundaries have regression coverage;
+- framework behavior metadata is compile-time exhaustive and drives MCP guidance and diagnostics;
+- docs, marketing, dashboard, and validated-form registry recipes are available;
+- chart formatters, identity labels, bare presentation, marker density, and empty states are
+  implemented;
+- `lumen doctor`, non-destructive `lumen init`, rollout diagnostics, and catalog fingerprints are
+  available;
+- local consumer-fixture coverage and repeatable Astro/React import and icon measurements are
+  documented.
+
+Two deeper release-engineering items remain follow-ups rather than blockers for these public
+contracts: semantic contract diffs against a requested target package version, and promoting each
+consumer architecture into its own independently built CI application if the current local fixture
+matrix proves insufficient.
+
 ## Repository inventory
 
 | Repository | Surface | Observed use | Signal for Lumen |

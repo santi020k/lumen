@@ -70,7 +70,9 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
         particle.style.setProperty('--ui-particle-size', `${size}px`)
 
-        particle.style.setProperty('--ui-particle-tone', particleTones[Math.floor(Math.random() * particleTones.length)])
+        const toneIndex = Math.floor(Math.random() * particleTones.length)
+
+        particle.style.setProperty('--ui-particle-tone', particleTones[toneIndex])
 
         particle.style.setProperty('--ui-particle-top', `${Math.random() * 100}%`)
 

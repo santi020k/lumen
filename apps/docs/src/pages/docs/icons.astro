@@ -75,10 +75,14 @@ export const Toolbar = () => (
 const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
 <lumen-icon name="wand-sparkles" decorative></lumen-icon>
 <lumen-icon name="circle-check" label="Synced" size="lg"></lumen-icon>`
+
+const pageDescription =
+  `Browse the ${iconCount} Lucide icons available through the Lumen Icon component ` +
+  'across Astro, React, and Elements.'
 ---
 
 <DocsLayout
-  description={`Browse the ${iconCount} Lucide icons available through the Lumen Icon component across Astro, React, and Elements.`}
+  description={pageDescription}
   title="Icons - Lumen UI"
 >
   <div class="icons-page">

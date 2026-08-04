@@ -73,10 +73,20 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     required={required}
     {...passthrough}
   >
-    {placeholder && <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value="">{placeholder}</option>}
+    {placeholder && (
+      <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value="">
+        {placeholder}
+      </option>
+    )}
     <slot />
     {normalizedOptions.map(option => (
-      <option disabled={option.disabled} selected={selectedValue === option.value} value={option.value}>{option.label}</option>
+      <option
+        disabled={option.disabled}
+        selected={selectedValue === option.value}
+        value={option.value}
+      >
+        {option.label}
+      </option>
     ))}
   </select>
 
