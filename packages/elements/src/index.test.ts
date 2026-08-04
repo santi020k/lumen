@@ -1441,14 +1441,17 @@ describe('@santi020k/lumen-elements', () => {
     input.dispatchEvent(new Event('input', { bubbles: true }))
 
     expect(list.hidden).toBe(false)
+    expect(input.getAttribute('aria-expanded')).toBe('true')
+    expect(input.getAttribute('aria-controls')).toBe(list.id)
+    expect(input.getAttribute('aria-label')).toBe('Mentions')
     expect(options[0]?.hidden).toBe(false)
     expect(options[1]?.hidden).toBe(true)
 
-    options[0]?.dispatchEvent(
-      new MouseEvent('mousedown', { bubbles: true, cancelable: true })
-    )
+    input.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' }))
+
     expect(input.value).toBe('Hello @alice ')
     expect(list.hidden).toBe(true)
+    expect(input.getAttribute('aria-expanded')).toBe('false')
   })
 
   test('cascader reveals child columns and commits a leaf selection', () => {

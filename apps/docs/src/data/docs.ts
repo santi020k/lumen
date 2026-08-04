@@ -2357,7 +2357,8 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'name, placeholder', 'string', '-', 'Sets the native textarea field name and hint.'
-    )
+    ),
+    apiRow('label', 'string', '"Mentions"', 'Provides the textarea accessible name.')
   ],
   QRCode: [
     apiRow(

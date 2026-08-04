@@ -8169,6 +8169,18 @@ class LumenMentionsBehaviorElement extends LumenElement {
 
     if (!input || !list) return
 
+    if (!list.id) list.id = `ui-mentions-${createId('list')}`
+
+    input.setAttribute('aria-autocomplete', 'list')
+
+    input.setAttribute('aria-controls', list.id)
+
+    input.setAttribute('aria-expanded', 'false')
+
+    input.setAttribute('aria-label', input.getAttribute('aria-label') ?? this.getAttribute('label') ?? 'Mentions')
+
+    input.setAttribute('role', 'combobox')
+
     const trigger = this.dataset.uiMentionsTrigger ?? '@'
     const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -8176,8 +8188,37 @@ class LumenMentionsBehaviorElement extends LumenElement {
       ...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')
     ]
 
+    let activeIndex = -1
+
+    for (const [index, option] of options.entries()) {
+      option.id ||= `${list.id}-option-${index}`
+
+      option.setAttribute('aria-selected', 'false')
+    }
+
+    const setActive = (index: number): void => {
+      const visibleOptions = options.filter(option => !option.hidden)
+
+      activeIndex = visibleOptions.length && index >= 0 ?
+        Math.min(index, visibleOptions.length - 1) :
+        -1
+
+      for (const option of options) {
+        option.setAttribute('aria-selected', option === visibleOptions[activeIndex] ? 'true' : 'false')
+      }
+
+      const active = visibleOptions[activeIndex]
+
+      if (active?.id) input.setAttribute('aria-activedescendant', active.id)
+      else input.removeAttribute('aria-activedescendant')
+    }
+
     const close = (): void => {
       list.hidden = true
+
+      input.setAttribute('aria-expanded', 'false')
+
+      setActive(-1)
     }
 
     const filter = (): void => {
@@ -8207,6 +8248,10 @@ class LumenMentionsBehaviorElement extends LumenElement {
       }
 
       list.hidden = visibleCount === 0
+
+      input.setAttribute('aria-expanded', visibleCount > 0 ? 'true' : 'false')
+
+      setActive(0)
     }
 
     const insert = (value: string): void => {
@@ -8231,9 +8276,29 @@ class LumenMentionsBehaviorElement extends LumenElement {
       signal: this.abortController.signal
     })
 
-    input.addEventListener('keyup', filter, {
-      signal: this.abortController.signal
-    })
+    input.addEventListener(
+      'keydown', event => {
+        const visibleOptions = options.filter(option => !option.hidden)
+
+        if (event.key === 'Escape' && !list.hidden) {
+          event.preventDefault()
+
+          close()
+        } else if (['ArrowDown', 'ArrowUp', 'End', 'Home'].includes(event.key) && visibleOptions.length) {
+          event.preventDefault()
+
+          const nextIndex = getLoopedIndex(
+            event.key, activeIndex, visibleOptions.length, ['ArrowDown']
+          )
+
+          setActive(nextIndex)
+        } else if (event.key === 'Enter' && activeIndex >= 0 && !list.hidden) {
+          event.preventDefault()
+
+          insert(visibleOptions[activeIndex]?.dataset.value ?? '')
+        }
+      }, { signal: this.abortController.signal }
+    )
 
     input.addEventListener(
       'blur', () => {
@@ -8245,7 +8310,11 @@ class LumenMentionsBehaviorElement extends LumenElement {
       option.addEventListener(
         'mousedown', event => {
           event.preventDefault()
+        }, { signal: this.abortController.signal }
+      )
 
+      option.addEventListener(
+        'click', () => {
           insert(option.dataset.value ?? '')
         }, { signal: this.abortController.signal }
       )

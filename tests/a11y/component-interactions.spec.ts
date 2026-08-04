@@ -719,11 +719,13 @@ behaviorTest(['Mentions'], 'Mentions filters suggestions and inserts the selecte
 
   await input.fill('Hello @al')
   await expect(list).toBeVisible()
+  await expect(input).toHaveAttribute('aria-expanded', 'true')
   await expect(root.getByRole('option', { name: 'alice' })).toBeVisible()
   await expect(root.getByRole('option', { name: 'bob' })).toBeHidden()
-  await root.getByRole('option', { name: 'alice' }).dispatchEvent('mousedown')
+  await input.press('Enter')
   await expect(input).toHaveValue('Hello @alice ')
   await expect(list).toBeHidden()
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
 })
 
 behaviorTest(['TreeSelect'], 'TreeSelect commits a node and closes its disclosure', async ({ page }) => {

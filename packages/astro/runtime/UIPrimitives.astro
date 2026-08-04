@@ -4658,15 +4658,38 @@ const initMentions = (scope: ParentNode): void => {
     root.dataset.uiBound = 'true'
 
     const trigger = root.dataset.uiMentionsTrigger ?? '@'
+    const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const options = [...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')]
+    let activeIndex = -1
+
+    const setActive = (index: number): void => {
+      const visibleOptions = options.filter(option => !option.hidden)
+
+      activeIndex = visibleOptions.length && index >= 0 ?
+        Math.min(index, visibleOptions.length - 1) :
+        -1
+
+      for (const option of options) {
+        option.setAttribute('aria-selected', option === visibleOptions[activeIndex] ? 'true' : 'false')
+      }
+
+      const active = visibleOptions[activeIndex]
+
+      if (active?.id) input.setAttribute('aria-activedescendant', active.id)
+      else input.removeAttribute('aria-activedescendant')
+    }
 
     const close = (): void => {
       list.hidden = true
+
+      input.setAttribute('aria-expanded', 'false')
+
+      setActive(-1)
     }
 
     const filter = (): void => {
       const caret = input.selectionStart ?? input.value.length
-      const match = new RegExp(`\\${trigger}(\\w*)$`).exec(input.value.slice(0, caret))
+      const match = new RegExp(`${escapedTrigger}(\\w*)$`).exec(input.value.slice(0, caret))
 
       if (!match) {
         close()
@@ -4686,11 +4709,15 @@ const initMentions = (scope: ParentNode): void => {
       }
 
       list.hidden = visibleCount === 0
+
+      input.setAttribute('aria-expanded', visibleCount > 0 ? 'true' : 'false')
+
+      setActive(0)
     }
 
     const insert = (value: string): void => {
       const caret = input.selectionStart ?? input.value.length
-      const before = input.value.slice(0, caret).replace(new RegExp(`\\${trigger}\\w*$`), `${trigger}${value} `)
+      const before = input.value.slice(0, caret).replace(new RegExp(`${escapedTrigger}\\w*$`), `${trigger}${value} `)
 
       input.value = before + input.value.slice(caret)
 
@@ -4705,14 +4732,36 @@ const initMentions = (scope: ParentNode): void => {
 
     input.addEventListener('input', filter)
 
-    input.addEventListener('keyup', filter)
+    input.addEventListener('keydown', event => {
+      const visibleOptions = options.filter(option => !option.hidden)
+
+      if (event.key === 'Escape' && !list.hidden) {
+        event.preventDefault()
+
+        close()
+      } else if (['ArrowDown', 'ArrowUp', 'End', 'Home'].includes(event.key) && visibleOptions.length) {
+        event.preventDefault()
+
+        const nextIndex = getLoopedIndex(
+          event.key, activeIndex, visibleOptions.length, ['ArrowDown']
+        )
+
+        setActive(nextIndex)
+      } else if (event.key === 'Enter' && activeIndex >= 0 && !list.hidden) {
+        event.preventDefault()
+
+        insert(visibleOptions[activeIndex]?.dataset.value ?? '')
+      }
+    })
 
     input.addEventListener('blur', () => window.setTimeout(close, 120))
 
     for (const option of options) {
       option.addEventListener('mousedown', event => {
         event.preventDefault()
+      })
 
+      option.addEventListener('click', () => {
         insert(option.dataset.value ?? '')
       })
     }

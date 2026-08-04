@@ -8,6 +8,7 @@ type MentionOption = string | { label: string, value: string }
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
+  label?: string
   name?: string
   options?: MentionOption[]
   placeholder?: string
@@ -17,6 +18,7 @@ interface Props extends HTMLAttributes<'div'> {
 const {
   class: classProp = '',
   className = '',
+  label = 'Mentions',
   name,
   options = [],
   placeholder,
@@ -25,6 +27,7 @@ const {
 } = Astro.props
 
 const normalized = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+const listId = `ui-mentions-${Math.random().toString(36).slice(2)}-list`
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-mentions'
@@ -32,11 +35,30 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div class:list={classList} data-ui-mentions data-ui-mentions-trigger={trigger} {...passthrough}>
-  <textarea class="ui-textarea ui-mentions__input" data-ui-mentions-input name={name} placeholder={placeholder} rows={3}></textarea>
-  <ul class="ui-mentions__list" data-ui-mentions-list hidden role="listbox">
-    {normalized.map(option => (
+  <textarea
+    aria-autocomplete="list"
+    aria-controls={listId}
+    aria-expanded="false"
+    aria-label={label}
+    class="ui-textarea ui-mentions__input"
+    data-ui-mentions-input
+    name={name}
+    placeholder={placeholder}
+    role="combobox"
+    rows={3}
+  />
+  <ul class="ui-mentions__list" data-ui-mentions-list hidden id={listId} role="listbox">
+    {normalized.map((option, index) => (
       <li>
-        <button class="ui-mentions__option" data-ui-mentions-option data-value={option.value} role="option" type="button">
+        <button
+          aria-selected="false"
+          class="ui-mentions__option"
+          data-ui-mentions-option
+          data-value={option.value}
+          id={`${listId}-option-${index}`}
+          role="option"
+          type="button"
+        >
           {option.label}
         </button>
       </li>

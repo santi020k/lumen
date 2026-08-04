@@ -6283,56 +6283,188 @@ export const TreeSelect = ({
 
 export interface MentionsProps extends Omit<
   ComponentPropsWithoutRef<'div'>,
-  'onChange'
+  'defaultValue' | 'onChange'
 > {
+  defaultValue?: string
+  label?: string
   name?: string
+  onValueChange?: (value: string) => void
   options?: SelectOption[]
   placeholder?: string
   trigger?: string
+  value?: string
 }
 export const Mentions = ({
   className,
+  defaultValue = '',
+  label = 'Mentions',
   name,
+  onValueChange,
   options = emptyOptions,
   placeholder,
   trigger = '@',
+  value,
   ...props
-}: MentionsProps) => (
-  <div
-    className={composeClassName('ui-mentions', className)}
-    data-ui-mentions
-    data-ui-mentions-trigger={trigger}
-    {...props}
-  >
-    <textarea
-      className="ui-textarea ui-mentions__input"
-      data-ui-mentions-input
-      name={name}
-      placeholder={placeholder}
-      rows={3}
-    />
-    <ul
-      className="ui-mentions__list"
-      data-ui-mentions-list
-      hidden
-      role="listbox"
+}: MentionsProps) => {
+  const generatedId = useId()
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const [activeIndex, setActiveIndex] = useState(-1)
+  const [internalValue, setInternalValue] = useState(defaultValue)
+  const [query, setQuery] = useState<string | null>(null)
+  const currentValue = value ?? internalValue
+  const listId = `ui-mentions-${generatedId}-list`
+  const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const normalizedOptions = options.map(normalizeOption)
+
+  const visibleOptions = query === null ?
+    [] :
+    normalizedOptions.filter(option => option.value.toLowerCase().startsWith(query))
+
+  const expanded = visibleOptions.length > 0
+
+  const resolvedActiveIndex = expanded ?
+    Math.min(Math.max(activeIndex, 0), visibleOptions.length - 1) :
+    -1
+
+  const activeOption = visibleOptions[resolvedActiveIndex]
+
+  const setNextValue = (nextValue: string): void => {
+    if (value === undefined) setInternalValue(nextValue)
+
+    onValueChange?.(nextValue)
+  }
+
+  const closeList = (): void => {
+    setQuery(null)
+
+    setActiveIndex(-1)
+  }
+
+  const insertMention = (mention: string): void => {
+    const caret = inputRef.current?.selectionStart ?? currentValue.length
+
+    const before = currentValue
+      .slice(0, caret)
+      .replace(new RegExp(`${escapedTrigger}\\w*$`), `${trigger}${mention} `)
+
+    const nextValue = before + currentValue.slice(caret)
+
+    setNextValue(nextValue)
+
+    closeList()
+
+    requestAnimationFrame(() => {
+      inputRef.current?.focus()
+
+      inputRef.current?.setSelectionRange(before.length, before.length)
+    })
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>): void => {
+    if (event.key === 'Escape' && expanded) {
+      event.preventDefault()
+
+      closeList()
+
+      return
+    }
+
+    if (expanded && (
+      event.key === 'ArrowDown' || event.key === 'ArrowUp' ||
+      event.key === 'End' || event.key === 'Home'
+    )) {
+      event.preventDefault()
+
+      setActiveIndex(current => {
+        if (event.key === 'Home') return 0
+
+        if (event.key === 'End') return visibleOptions.length - 1
+
+        if (event.key === 'ArrowDown') return (current + 1) % visibleOptions.length
+
+        return (current - 1 + visibleOptions.length) % visibleOptions.length
+      })
+
+      return
+    }
+
+    if (event.key === 'Enter' && activeOption) {
+      event.preventDefault()
+
+      insertMention(activeOption.value)
+    }
+  }
+
+  return (
+    <div
+      className={composeClassName('ui-mentions', className)}
+      data-ui-mentions
+      data-ui-mentions-trigger={trigger}
+      {...props}
     >
-      {options.map(normalizeOption).map(option => (
-        <li key={option.value}>
-          <button
-            className="ui-mentions__option"
-            data-ui-mentions-option
-            data-value={option.value}
-            role="option"
-            type="button"
-          >
-            {option.label}
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
-)
+      <textarea
+        aria-activedescendant={activeOption ? `${listId}-option-${resolvedActiveIndex}` : undefined}
+        aria-autocomplete="list"
+        aria-controls={listId}
+        aria-expanded={expanded}
+        aria-label={label}
+        className="ui-textarea ui-mentions__input"
+        data-ui-mentions-input
+        name={name}
+        onBlur={closeList}
+        onChange={event => {
+          const nextValue = event.currentTarget.value
+
+          const match = new RegExp(`${escapedTrigger}(\\w*)$`)
+            .exec(nextValue.slice(0, event.currentTarget.selectionStart))
+
+          const nextQuery = match ? (match[1] ?? '').toLowerCase() : null
+
+          setNextValue(nextValue)
+
+          setQuery(nextQuery)
+
+          setActiveIndex(nextQuery === null ? -1 : 0)
+        }}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        ref={inputRef}
+        role="combobox"
+        rows={3}
+        value={currentValue}
+      />
+      <ul
+        className="ui-mentions__list"
+        data-ui-mentions-list
+        hidden={!expanded}
+        id={listId}
+        role="listbox"
+      >
+        {visibleOptions.map((option, index) => (
+          <li key={option.value}>
+            <button
+              aria-selected={index === resolvedActiveIndex}
+              className="ui-mentions__option"
+              data-ui-mentions-option
+              data-value={option.value}
+              id={`${listId}-option-${index}`}
+              onClick={() => {
+                insertMention(option.value)
+              }}
+              onMouseDown={event => {
+                event.preventDefault()
+              }}
+              role="option"
+              type="button"
+            >
+              {option.label}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 export interface QRCodeProps extends ComponentPropsWithoutRef<'figure'> {
   size?: number

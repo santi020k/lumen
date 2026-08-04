@@ -143,7 +143,7 @@
       "Transfer": "95180b288acd19009d5cb7a88324d657b03732ffd162d5576c772473a0ebb451",
       "Cascader": "41d75ad08d38b05e2da3ee6c86aa416b45ca29f01772a9c8e2987220b39b12c8",
       "TreeSelect": "72862d080cbc337e5ba7006ced0e091f622bce875034d7d50a271e3b428da02f",
-      "Mentions": "8ac92af4148b9352b75593f74a53839d0b4265c33bfc0de1c8319fc4d968e8b0",
+      "Mentions": "5b30494f717fc27aa359908325d394ab70ce97bef3a9eb7d4ecc08d2adef525e",
       "QRCode": "eee68b3fd866c4b0c074173656c26883c6f88d9084a7d14bd0c0646e285f1e38",
       "Watermark": "9adf30ffc237b7668bbabdefe5005a3c93b85e4d87e8d23695208a4887a8bbc6",
       "Affix": "057d088e751ea08124c4f83b893a9250bacfcbc715d1c19c52a93818160dba70",
@@ -29735,6 +29735,12 @@
           "values": "string"
         },
         {
+          "attribute": "label",
+          "defaultValue": "\"Mentions\"",
+          "description": "Provides the textarea accessible name.",
+          "values": "string"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -29747,7 +29753,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype MentionOption = string | { label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  name?: string\n  options?: MentionOption[]\n  placeholder?: string\n  trigger?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  name,\n  options = [],\n  placeholder,\n  trigger = '@',\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-mentions'\n], classProp, className)\n---\n\n<div class:list={classList} data-ui-mentions data-ui-mentions-trigger={trigger} {...passthrough}>\n  <textarea class=\"ui-textarea ui-mentions__input\" data-ui-mentions-input name={name} placeholder={placeholder} rows={3}></textarea>\n  <ul class=\"ui-mentions__list\" data-ui-mentions-list hidden role=\"listbox\">\n    {normalized.map(option => (\n      <li>\n        <button class=\"ui-mentions__option\" data-ui-mentions-option data-value={option.value} role=\"option\" type=\"button\">\n          {option.label}\n        </button>\n      </li>\n    ))}\n  </ul>\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype MentionOption = string | { label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  label?: string\n  name?: string\n  options?: MentionOption[]\n  placeholder?: string\n  trigger?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  label = 'Mentions',\n  name,\n  options = [],\n  placeholder,\n  trigger = '@',\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst listId = `ui-mentions-${Math.random().toString(36).slice(2)}-list`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-mentions'\n], classProp, className)\n---\n\n<div class:list={classList} data-ui-mentions data-ui-mentions-trigger={trigger} {...passthrough}>\n  <textarea\n    aria-autocomplete=\"list\"\n    aria-controls={listId}\n    aria-expanded=\"false\"\n    aria-label={label}\n    class=\"ui-textarea ui-mentions__input\"\n    data-ui-mentions-input\n    name={name}\n    placeholder={placeholder}\n    role=\"combobox\"\n    rows={3}\n  />\n  <ul class=\"ui-mentions__list\" data-ui-mentions-list hidden id={listId} role=\"listbox\">\n    {normalized.map((option, index) => (\n      <li>\n        <button\n          aria-selected=\"false\"\n          class=\"ui-mentions__option\"\n          data-ui-mentions-option\n          data-value={option.value}\n          id={`${listId}-option-${index}`}\n          role=\"option\"\n          type=\"button\"\n        >\n          {option.label}\n        </button>\n      </li>\n    ))}\n  </ul>\n</div>\n",
       "category": "Forms",
       "collections": [
         "Text entry"
@@ -29782,6 +29788,11 @@
               "type": "string"
             },
             {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
               "name": "name",
               "optional": true,
               "type": "string"
@@ -29803,7 +29814,7 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype MentionOption = string | { label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  name?: string\n  options?: MentionOption[]\n  placeholder?: string\n  trigger?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  name,\n  options = [],\n  placeholder,\n  trigger = '@',\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-mentions'\n], classProp, className)\n---\n\n<div class:list={classList} data-ui-mentions data-ui-mentions-trigger={trigger} {...passthrough}>\n  <textarea class=\"ui-textarea ui-mentions__input\" data-ui-mentions-input name={name} placeholder={placeholder} rows={3}></textarea>\n  <ul class=\"ui-mentions__list\" data-ui-mentions-list hidden role=\"listbox\">\n    {normalized.map(option => (\n      <li>\n        <button class=\"ui-mentions__option\" data-ui-mentions-option data-value={option.value} role=\"option\" type=\"button\">\n          {option.label}\n        </button>\n      </li>\n    ))}\n  </ul>\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype MentionOption = string | { label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  label?: string\n  name?: string\n  options?: MentionOption[]\n  placeholder?: string\n  trigger?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  label = 'Mentions',\n  name,\n  options = [],\n  placeholder,\n  trigger = '@',\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst listId = `ui-mentions-${Math.random().toString(36).slice(2)}-list`\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-mentions'\n], classProp, className)\n---\n\n<div class:list={classList} data-ui-mentions data-ui-mentions-trigger={trigger} {...passthrough}>\n  <textarea\n    aria-autocomplete=\"list\"\n    aria-controls={listId}\n    aria-expanded=\"false\"\n    aria-label={label}\n    class=\"ui-textarea ui-mentions__input\"\n    data-ui-mentions-input\n    name={name}\n    placeholder={placeholder}\n    role=\"combobox\"\n    rows={3}\n  />\n  <ul class=\"ui-mentions__list\" data-ui-mentions-list hidden id={listId} role=\"listbox\">\n    {normalized.map((option, index) => (\n      <li>\n        <button\n          aria-selected=\"false\"\n          class=\"ui-mentions__option\"\n          data-ui-mentions-option\n          data-value={option.value}\n          id={`${listId}-option-${index}`}\n          role=\"option\"\n          type=\"button\"\n        >\n          {option.label}\n        </button>\n      </li>\n    ))}\n  </ul>\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -29812,6 +29823,7 @@
             "options",
             "trigger",
             "name, placeholder",
+            "label",
             "class, className",
             "...native attributes"
           ],
@@ -29839,9 +29851,24 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "defaultValue",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
               "name": "name",
               "optional": true,
               "type": "string"
+            },
+            {
+              "name": "onValueChange",
+              "optional": true,
+              "type": "(value: string) => void"
             },
             {
               "name": "options",
@@ -29857,10 +29884,15 @@
               "name": "trigger",
               "optional": true,
               "type": "string"
+            },
+            {
+              "name": "value",
+              "optional": true,
+              "type": "string"
             }
           ],
-          "propsExtends": "Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'onChange'\n>",
-          "source": "export interface MentionsProps extends Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'onChange'\n> {\n  name?: string\n  options?: SelectOption[]\n  placeholder?: string\n  trigger?: string\n}\n\nexport const Mentions = ({\n  className,\n  name,\n  options = emptyOptions,\n  placeholder,\n  trigger = '@',\n  ...props\n}: MentionsProps) => (\n  <div\n    className={composeClassName('ui-mentions', className)}\n    data-ui-mentions\n    data-ui-mentions-trigger={trigger}\n    {...props}\n  >\n    <textarea\n      className=\"ui-textarea ui-mentions__input\"\n      data-ui-mentions-input\n      name={name}\n      placeholder={placeholder}\n      rows={3}\n    />\n    <ul\n      className=\"ui-mentions__list\"\n      data-ui-mentions-list\n      hidden\n      role=\"listbox\"\n    >\n      {options.map(normalizeOption).map(option => (\n        <li key={option.value}>\n          <button\n            className=\"ui-mentions__option\"\n            data-ui-mentions-option\n            data-value={option.value}\n            role=\"option\"\n            type=\"button\"\n          >\n            {option.label}\n          </button>\n        </li>\n      ))}\n    </ul>\n  </div>\n)",
+          "propsExtends": "Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'defaultValue' | 'onChange'\n>",
+          "source": "export interface MentionsProps extends Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'defaultValue' | 'onChange'\n> {\n  defaultValue?: string\n  label?: string\n  name?: string\n  onValueChange?: (value: string) => void\n  options?: SelectOption[]\n  placeholder?: string\n  trigger?: string\n  value?: string\n}\n\nexport const Mentions = ({\n  className,\n  defaultValue = '',\n  label = 'Mentions',\n  name,\n  onValueChange,\n  options = emptyOptions,\n  placeholder,\n  trigger = '@',\n  value,\n  ...props\n}: MentionsProps) => {\n  const generatedId = useId()\n  const inputRef = useRef<HTMLTextAreaElement>(null)\n  const [activeIndex, setActiveIndex] = useState(-1)\n  const [internalValue, setInternalValue] = useState(defaultValue)\n  const [query, setQuery] = useState<string | null>(null)\n  const currentValue = value ?? internalValue\n  const listId = `ui-mentions-${generatedId}-list`\n  const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')\n  const normalizedOptions = options.map(normalizeOption)\n\n  const visibleOptions = query === null ?\n    [] :\n    normalizedOptions.filter(option => option.value.toLowerCase().startsWith(query))\n\n  const expanded = visibleOptions.length > 0\n\n  const resolvedActiveIndex = expanded ?\n    Math.min(Math.max(activeIndex, 0), visibleOptions.length - 1) :\n    -1\n\n  const activeOption = visibleOptions[resolvedActiveIndex]\n\n  const setNextValue = (nextValue: string): void => {\n    if (value === undefined) setInternalValue(nextValue)\n\n    onValueChange?.(nextValue)\n  }\n\n  const closeList = (): void => {\n    setQuery(null)\n\n    setActiveIndex(-1)\n  }\n\n  const insertMention = (mention: string): void => {\n    const caret = inputRef.current?.selectionStart ?? currentValue.length\n\n    const before = currentValue\n      .slice(0, caret)\n      .replace(new RegExp(`${escapedTrigger}\\\\w*$`), `${trigger}${mention} `)\n\n    const nextValue = before + currentValue.slice(caret)\n\n    setNextValue(nextValue)\n\n    closeList()\n\n    requestAnimationFrame(() => {\n      inputRef.current?.focus()\n\n      inputRef.current?.setSelectionRange(before.length, before.length)\n    })\n  }\n\n  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>): void => {\n    if (event.key === 'Escape' && expanded) {\n      event.preventDefault()\n\n      closeList()\n\n      return\n    }\n\n    if (expanded && (\n      event.key === 'ArrowDown' || event.key === 'ArrowUp' ||\n      event.key === 'End' || event.key === 'Home'\n    )) {\n      event.preventDefault()\n\n      setActiveIndex(current => {\n        if (event.key === 'Home') return 0\n\n        if (event.key === 'End') return visibleOptions.length - 1\n\n        if (event.key === 'ArrowDown') return (current + 1) % visibleOptions.length\n\n        return (current - 1 + visibleOptions.length) % visibleOptions.length\n      })\n\n      return\n    }\n\n    if (event.key === 'Enter' && activeOption) {\n      event.preventDefault()\n\n      insertMention(activeOption.value)\n    }\n  }\n\n  return (\n    <div\n      className={composeClassName('ui-mentions', className)}\n      data-ui-mentions\n      data-ui-mentions-trigger={trigger}\n      {...props}\n    >\n      <textarea\n        aria-activedescendant={activeOption ? `${listId}-option-${resolvedActiveIndex}` : undefined}\n        aria-autocomplete=\"list\"\n        aria-controls={listId}\n        aria-expanded={expanded}\n        aria-label={label}\n        className=\"ui-textarea ui-mentions__input\"\n        data-ui-mentions-input\n        name={name}\n        onBlur={closeList}\n        onChange={event => {\n          const nextValue = event.currentTarget.value\n\n          const match = new RegExp(`${escapedTrigger}(\\\\w*)$`)\n            .exec(nextValue.slice(0, event.currentTarget.selectionStart))\n\n          const nextQuery = match ? (match[1] ?? '').toLowerCase() : null\n\n          setNextValue(nextValue)\n\n          setQuery(nextQuery)\n\n          setActiveIndex(nextQuery === null ? -1 : 0)\n        }}\n        onKeyDown={handleKeyDown}\n        placeholder={placeholder}\n        ref={inputRef}\n        role=\"combobox\"\n        rows={3}\n        value={currentValue}\n      />\n      <ul\n        className=\"ui-mentions__list\"\n        data-ui-mentions-list\n        hidden={!expanded}\n        id={listId}\n        role=\"listbox\"\n      >\n        {visibleOptions.map((option, index) => (\n          <li key={option.value}>\n            <button\n              aria-selected={index === resolvedActiveIndex}\n              className=\"ui-mentions__option\"\n              data-ui-mentions-option\n              data-value={option.value}\n              id={`${listId}-option-${index}`}\n              onClick={() => {\n                insertMention(option.value)\n              }}\n              onMouseDown={event => {\n                event.preventDefault()\n              }}\n              role=\"option\"\n              type=\"button\"\n            >\n              {option.label}\n            </button>\n          </li>\n        ))}\n      </ul>\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -29905,6 +29937,11 @@
         },
         {
           "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "label",
           "optional": true,
           "type": "string"
         },
@@ -31145,7 +31182,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"239\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A multi-framework UI system with 149 accessible primitives for Astro, React, and Web Components.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, and a machine-readable registry ship alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component\nexamples, and API details.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## License\n\nLumen is available under the [MIT License](./LICENSE).\n"
   },
   "meta": {
-    "catalogHash": "5fb2121d483664e76bb4b0cb038ee0f9e23db63c80ef716ff3b506cffb4dd424",
+    "catalogHash": "1bac278234fc1e51d609f4e88ee5d09a9858084d49b83ebc2d60818411a2d70e",
     "componentCount": 149,
     "packages": [
       "@santi020k/lumen-astro",
