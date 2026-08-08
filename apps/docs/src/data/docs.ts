@@ -1645,7 +1645,10 @@ const apiReferenceByComponent = {
   Input: [
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.'),
     apiRow(
-      'size', '"default" | "sm" | "lg"', '"default"', 'Controls the field height and font size.'
+      'size', 'number', 'native default', 'Sets the native input width in characters. Astro and Elements continue to accept the deprecated pre-1.0 sm/lg visual alias.'
+    ),
+    apiRow(
+      'visualSize, visual-size', '"default" | "sm" | "lg"', '"default"', 'Controls field height and font size. Use visualSize in Astro/React and visual-size in Elements.'
     )
   ],
   InputGroup: [
@@ -1767,7 +1770,10 @@ const apiReferenceByComponent = {
     ),
     apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.'),
     apiRow(
-      'size', '"default" | "sm" | "lg"', '"default"', 'Controls select height and font size.'
+      'size', 'number', 'native default', 'Sets the number of visible native options. Astro and Elements continue to accept the deprecated pre-1.0 sm/lg visual alias.'
+    ),
+    apiRow(
+      'visualSize, visual-size', '"default" | "sm" | "lg"', '"default"', 'Controls select height and font size. Use visualSize in Astro/React and visual-size in Elements.'
     )
   ],
   NavigationMenu: [

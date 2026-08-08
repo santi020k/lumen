@@ -15,11 +15,11 @@ import TemplateHeader from '../components/TemplateHeader.astro'
 import TemplateShell from '../components/TemplateShell.astro'
 
 const navigation = [
-  { icon: 'layout-dashboard', label: 'Overview' },
-  { icon: 'receipt-text', label: 'Orders' },
-  { icon: 'package', label: 'Products' },
-  { icon: 'warehouse', label: 'Inventory' },
-  { icon: 'users-round', label: 'Customers' }
+  { href: '#overview', icon: 'layout-dashboard', label: 'Overview' },
+  { href: '#orders', icon: 'receipt-text', label: 'Orders' },
+  { href: '#products', icon: 'package', label: 'Products' },
+  { href: '#inventory', icon: 'warehouse', label: 'Inventory' },
+  { href: '#customers', icon: 'users-round', label: 'Customers' }
 ] as const
 
 const metrics = [
@@ -73,7 +73,7 @@ const rows = [
 
   <MetricGrid {metrics} />
 
-  <section class="template-chart-grid" aria-label="Commerce charts">
+  <section class="template-chart-grid" id="products" aria-label="Commerce charts">
     <BarChart
       description="Daily gross sales for the current week."
       heading="Sales this week"
@@ -88,7 +88,7 @@ const rows = [
     />
   </section>
 
-  <section class="template-commerce-grid">
+  <section class="template-commerce-grid" id="inventory">
     <Card as="section" class="template-section">
       <div class="template-section__header">
         <div>
@@ -118,7 +118,7 @@ const rows = [
     </Card>
   </section>
 
-  <Card as="section" class="template-section">
+  <Card as="section" class="template-section" id="orders">
     <div class="template-section__header">
       <div>
         <h2>Recent orders</h2>
@@ -126,6 +126,6 @@ const rows = [
       </div>
       <Button variant="ghost">View all orders</Button>
     </div>
-    <StatusTable caption="Recent commerce orders" {rows} />
+    <StatusTable caption="Recent commerce orders" id="customers" {rows} />
   </Card>
 </TemplateShell>

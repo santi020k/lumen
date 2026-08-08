@@ -53,6 +53,10 @@ It exports adapters for `Select`, `DatePicker`, `InputOTP`, and `ListBox`. React
 validation, dirty/touched state, and submission state in this mode; do not also mount
 `useFormValidation` unless two validation sources are intentional.
 
+Zod and Yup schemas work through the official `@hookform/resolvers` package. Schema libraries stay
+optional application dependencies; Lumen consumes the resulting React Hook Form field errors
+without wrapping or changing the resolver contract.
+
 See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
 
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an

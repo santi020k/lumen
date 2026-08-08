@@ -12,10 +12,11 @@ interface StatusRow {
 
 interface Props {
   caption: string
+  id?: string
   rows: readonly StatusRow[]
 }
 
-const { caption, rows } = Astro.props
+const { caption, id, rows } = Astro.props
 
 const statusVariant = (status: StatusRow['status']) => {
   if (status === 'Active' || status === 'Completed') return 'success'
@@ -26,7 +27,7 @@ const statusVariant = (status: StatusRow['status']) => {
 }
 ---
 
-<Table class="template-table">
+<Table class="template-table" {id}>
   <table>
     <caption>{caption}</caption>
     <thead>

@@ -83,6 +83,19 @@ describe('@santi020k/lumen-astro package surface', () => {
     })
   })
 
+  test('keeps native form-control size separate from visual size', async () => {
+    const [input, nativeSelect] = await Promise.all([
+      readFile(new URL('./components/Input.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/NativeSelect.astro', packageRoot), 'utf8')
+    ])
+
+    for (const component of [input, nativeSelect]) {
+      expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
+      expect(component).toContain('const nativeSize = legacyVisualSize ? undefined : size')
+      expect(component).toContain('size={nativeSize}')
+    }
+  })
+
   test('keeps ButtonLink hover motion aligned with Button without client-side magnetic behavior', async () => {
     const buttonLink = await readFile(
       new URL('./components/ButtonLink.astro', packageRoot), 'utf8'

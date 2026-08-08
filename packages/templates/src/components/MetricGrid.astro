@@ -10,10 +10,11 @@ interface Metric {
 }
 
 interface Props {
+  id?: string
   metrics: readonly Metric[]
 }
 
-const { metrics } = Astro.props
+const { id, metrics } = Astro.props
 
 const badgeFor = (direction: Metric['direction']) => {
   if (direction === 'up') return 'success'
@@ -24,7 +25,7 @@ const badgeFor = (direction: Metric['direction']) => {
 }
 ---
 
-<section class="template-metrics" aria-label="Key metrics">
+<section class="template-metrics" aria-label="Key metrics" {id}>
   {metrics.map(metric => (
     <Card as="article" class="template-metric">
       <div class="template-metric__summary">

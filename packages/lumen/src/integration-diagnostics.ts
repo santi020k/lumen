@@ -1,8 +1,13 @@
 import { createHash } from 'node:crypto'
 import { readdir, readFile, stat } from 'node:fs/promises'
-import { extname, join, relative, resolve } from 'node:path'
+import { extname, join, relative, resolve, sep } from 'node:path'
 
-import { lumenComponentBehavior, type LumenComponentName, lumenStylingContracts } from '@santi020k/lumen-core'
+import {
+  lumenComponentBehavior,
+  type LumenComponentName,
+  lumenGlobalBehaviors,
+  lumenStylingContracts
+} from '@santi020k/lumen-core'
 
 export type LumenDiagnosticSeverity = 'advisory' | 'error'
 
@@ -25,14 +30,36 @@ export interface LumenDiagnosticReport {
 }
 
 const sourceExtensions = new Set(['.astro', '.css', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
-const ignoredDirectories = new Set(['.git', '.next', '.turbo', 'coverage', 'dist', 'node_modules'])
+
+const ignoredDirectories = new Set([
+  '.astro',
+  '.git',
+  '.next',
+  '.open-next',
+  '.output',
+  '.turbo',
+  '.vercel',
+  '.vite',
+  '.wrangler',
+  'build',
+  'coverage',
+  'dist',
+  'node_modules',
+  'out'
+])
 
 const publicRootSlots: ReadonlySet<string> = new Set(
   Object.values(lumenStylingContracts).flatMap(contract => [contract.rootSlot, ...contract.parts])
 )
 
-const findSourceFiles = async (root: string): Promise<string[]> => {
-  const files: string[] = []
+interface DiscoveredProject {
+  packageRoots: string[]
+  sourceFiles: string[]
+}
+
+const discoverProject = async (root: string): Promise<DiscoveredProject> => {
+  const packageRoots: string[] = []
+  const sourceFiles: string[] = []
 
   const visit = async (directory: string): Promise<void> => {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -40,14 +67,21 @@ const findSourceFiles = async (root: string): Promise<string[]> => {
 
       const path = join(directory, entry.name)
 
-      if (entry.isDirectory()) await visit(path)
-      else if (sourceExtensions.has(extname(entry.name))) files.push(path)
+      if (entry.isDirectory()) {
+        await visit(path)
+      } else if (entry.name === 'package.json') {
+        packageRoots.push(directory)
+      } else if (sourceExtensions.has(extname(entry.name))) {
+        sourceFiles.push(path)
+      }
     }
   }
 
   await visit(root)
 
-  return files
+  if (!packageRoots.includes(root)) packageRoots.push(root)
+
+  return { packageRoots, sourceFiles }
 }
 
 const importedNames = (source: string, packageName: string): string[] => {
@@ -80,11 +114,81 @@ interface SourceEntry {
   source: string
 }
 
-const getFrameworks = (joined: string): LumenFramework[] => [
-  joined.includes('@santi020k/lumen-astro') && 'astro',
-  joined.includes('@santi020k/lumen-elements') && 'elements',
-  joined.includes('@santi020k/lumen-react') && 'react'
-].filter((value): value is LumenFramework => Boolean(value))
+interface ApplicationBoundary {
+  root: string
+  sources: SourceEntry[]
+}
+
+const packageNamePattern = String.raw`@santi020k\/lumen-(?:astro|elements|react)(?:\/[^'"]*)?`
+
+const packageReferencePattern = new RegExp(
+  String.raw`(?:^|\n)\s*(?:export|import)\s+(?:type\s+)?(?:[^'"\n]*?\s+from\s+)?['"]` +
+  String.raw`(${packageNamePattern})['"]`,
+  'g'
+)
+
+const dynamicPackageReferencePattern = new RegExp(
+  String.raw`import\(\s*['"](${packageNamePattern})['"]\s*\)`,
+  'g'
+)
+
+const cssPackageReferencePattern = new RegExp(
+  String.raw`(?:^|\n)\s*@import\s+(?:url\(\s*)?['"](${packageNamePattern})['"]`,
+  'g'
+)
+
+const layoutFilePattern = /(?:^|\/)(?:layouts?\/[^/]+|[^/]*layout[^/]*)\.astro$/iu
+
+const getPackageReferences = (source: string): string[] => [
+  ...source.matchAll(packageReferencePattern),
+  ...source.matchAll(dynamicPackageReferencePattern),
+  ...source.matchAll(cssPackageReferencePattern)
+].flatMap(match => match[1] ? [match[1]] : [])
+
+const packageFramework = (packageName: string): LumenFramework | undefined => {
+  const framework = /^@santi020k\/lumen-(astro|elements|react)(?:\/|$)/u.exec(packageName)?.[1]
+
+  return framework === 'astro' || framework === 'elements' || framework === 'react' ?
+    framework :
+    undefined
+}
+
+const getFrameworks = (sources: SourceEntry[]): LumenFramework[] => [
+  ...new Set(sources.flatMap(item => getPackageReferences(item.source))
+    .filter(packageName => !packageName.endsWith('/styles.css') &&
+      !packageName.endsWith('/layers.css'))
+    .flatMap(packageName => {
+      const framework = packageFramework(packageName)
+
+      return framework ? [framework] : []
+    }))
+]
+
+const getBoundaryRoot = (file: string, packageRoots: string[], fallback: string): string => packageRoots
+  .filter(packageRoot => file === packageRoot || file.startsWith(`${packageRoot}${sep}`))
+  .sort((left, right) => right.length - left.length)[0] ?? fallback
+
+const createBoundaries = (
+  root: string,
+  packageRoots: string[],
+  sources: SourceEntry[]
+): ApplicationBoundary[] => {
+  const grouped = new Map<string, SourceEntry[]>()
+
+  for (const source of sources) {
+    const boundaryRoot = getBoundaryRoot(source.file, packageRoots, root)
+    const entries = grouped.get(boundaryRoot) ?? []
+
+    entries.push(source)
+
+    grouped.set(boundaryRoot, entries)
+  }
+
+  return [...grouped].map(([boundaryRoot, boundarySources]) => ({
+    root: boundaryRoot,
+    sources: boundarySources
+  }))
+}
 
 const collectCompatibilityFindings = (
   root: string,
@@ -121,57 +225,121 @@ const getCatalogFingerprint = (sources: SourceEntry[]): string => {
   return createHash('sha256').update(JSON.stringify(contracts)).digest('hex')
 }
 
-const collectRuntimeFindings = (
-  root: string,
-  sources: SourceEntry[],
-  runtimeComponents: string[]
-): LumenDiagnosticFinding[] => {
-  const imports = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro').map(name => ({ file: item.file, name })))
-  const mounts = sources.filter(item => /<UIPrimitives(?:\s|\/|>)/u.test(item.source))
-  const findings: LumenDiagnosticFinding[] = []
+const hasOnlyRuntimeBypassedComponents = (
+  source: string,
+  componentName: string,
+  bypassAttribute: string
+): boolean => {
+  const tagPattern = new RegExp(`<${componentName}(?=\\s|/|>)([^>]*)>`, 'g')
+  const tags = [...source.matchAll(tagPattern)]
 
-  if (runtimeComponents.length > 0 && mounts.length === 0) {
-    findings.push(finding(
-      imports[0] ? relative(root, imports[0].file) : 'package.json', 'astro-runtime-missing', `Interactive Astro imports require UIPrimitives: ${runtimeComponents.join(', ')}.`, 'Mount <UIPrimitives /> once in the root layout.'
-    ))
-  }
+  const falsePattern = new RegExp(
+    String.raw`\b${bypassAttribute}\s*=\s*(?:\{false\}|["']false["'])`,
+    'u'
+  )
 
-  for (const mount of mounts.slice(1)) {
-    findings.push(finding(
-      relative(root, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted more than once.', 'Keep one mount in the application root layout.'
-    ))
-  }
+  const truePattern = new RegExp(
+    String.raw`\b${bypassAttribute}(?:\s|/|$)|` +
+    String.raw`\b${bypassAttribute}\s*=\s*(?:\{true\}|["']true["'])`,
+    'u'
+  )
 
-  return findings
+  return tags.length > 0 && tags.every(match => {
+    const attributes = match[1] ?? ''
+
+    if (falsePattern.test(attributes)) return false
+
+    return truePattern.test(attributes)
+  })
 }
 
-const collectCssFindings = (root: string, sources: SourceEntry[]): LumenDiagnosticFinding[] => sources.filter(item => item.file.endsWith('.css')).flatMap(item => {
-  const layerIndex = item.source.indexOf('/layers.css')
-  const tailwindIndex = item.source.indexOf('tailwindcss')
-  const styleIndex = item.source.indexOf('/styles.css')
+const componentNeedsAstroRuntime = (
+  name: string,
+  importingSources: SourceEntry[]
+): boolean => {
+  if (!(name in lumenComponentBehavior)) return false
+
+  const behavior = lumenComponentBehavior[name as LumenComponentName]
+
+  if (behavior.astro !== 'ui-primitives') return false
+
+  if ('astroRuntimeBypass' in behavior && importingSources.length > 0 &&
+    importingSources.every(item => hasOnlyRuntimeBypassedComponents(
+      item.source,
+      name,
+      behavior.astroRuntimeBypass
+    ))) return false
+
+  return true
+}
+
+const getRuntimeImports = (sources: SourceEntry[]): { file: string, name: string }[] => {
+  const imports = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro')
+    .map(name => ({ file: item.file, name })))
+
+  return imports.filter(item => componentNeedsAstroRuntime(
+    item.name,
+    sources.filter(source => importedNames(source.source, '@santi020k/lumen-astro').includes(item.name))
+  ))
+}
+
+const getGlobalRuntimeBehaviors = (sources: SourceEntry[]): string[] => lumenGlobalBehaviors
+  .filter(behavior => sources.some(item => {
+    if (behavior.name === 'form-validation') return item.source.includes('data-ui-form')
+
+    return behavior.authoredBy.split(',').some(eventName => item.source.includes(eventName.trim()))
+  }))
+  .map(behavior => behavior.name)
+
+const collectRuntimeFindings = (
+  repositoryRoot: string,
+  boundary: ApplicationBoundary
+): { findings: LumenDiagnosticFinding[], runtimeComponents: string[] } => {
+  const runtimeImports = getRuntimeImports(boundary.sources)
+
+  const runtimeComponents = [
+    ...new Set([
+      ...runtimeImports.map(item => item.name),
+      ...getGlobalRuntimeBehaviors(boundary.sources)
+    ])
+  ]
+
+  const mountSources = boundary.sources.filter(item => /<UIPrimitives(?:\s|\/|>)/u.test(item.source))
   const findings: LumenDiagnosticFinding[] = []
 
-  if (
-    tailwindIndex >= 0 &&
-    (layerIndex < 0 || styleIndex < 0 || !(layerIndex < tailwindIndex && tailwindIndex < styleIndex))
-  ) {
+  if (runtimeComponents.length > 0 && mountSources.length === 0) {
+    const firstRuntimeImport = runtimeImports[0]
+
     findings.push(finding(
-      relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen styles.css.'
+      firstRuntimeImport ? relative(repositoryRoot, firstRuntimeImport.file) : relative(repositoryRoot, boundary.root),
+      'astro-runtime-missing',
+      `Interactive Astro usage requires UIPrimitives: ${runtimeComponents.join(', ')}.`,
+      'Mount <UIPrimitives /> once in the application root, or use a documented controlled prop when application code owns the behavior.'
     ))
   }
 
-  for (const match of item.source.matchAll(/\.ui-([a-z0-9-]+)/g)) {
-    const selector = match[1] ?? ''
+  for (const mount of mountSources) {
+    const mountCount = [...mount.source.matchAll(/<UIPrimitives(?:\s|\/|>)/g)].length
 
-    if (!publicRootSlots.has(selector)) {
+    if (mountCount > 1) {
       findings.push(finding(
-        relative(root, item.file), 'internal-selector', `Selector .ui-${selector} is not a documented stable root hook.`, 'Prefer component props, semantic tokens, documented custom properties, or [data-slot].', 'advisory'
+        relative(repositoryRoot, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted more than once in this file.', 'Keep one mount in the application root layout.'
       ))
     }
   }
 
-  return findings
-})
+  const layoutMounts = mountSources.filter(item => layoutFilePattern.test(item.file))
+
+  if (layoutMounts.length > 0) {
+    for (const mount of mountSources.filter(item => !layoutMounts.includes(item))) {
+      findings.push(finding(
+        relative(repositoryRoot, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted in both a layout and a route within this application boundary.', 'Keep the layout mount and remove the route-level mount.'
+      ))
+    }
+  }
+
+  return { findings, runtimeComponents }
+}
 
 const styleImportByFramework = {
   astro: '@santi020k/lumen-astro/styles.css',
@@ -179,69 +347,134 @@ const styleImportByFramework = {
   react: '@santi020k/lumen-react/styles.css'
 } as const
 
+const countOccurrences = (source: string, value: string): number => source.split(value).length - 1
+
+const collectCssFindings = (root: string, sources: SourceEntry[]): LumenDiagnosticFinding[] => sources
+  .filter(item => item.file.endsWith('.css'))
+  .flatMap(item => {
+    const layerIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/layers\.css["']/mu)
+    const tailwindIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["']tailwindcss["']/mu)
+    const styleIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/styles\.css["']/mu)
+    const findings: LumenDiagnosticFinding[] = []
+
+    if (
+      tailwindIndex >= 0 &&
+      styleIndex >= 0 &&
+      (layerIndex < 0 || !(layerIndex < tailwindIndex && tailwindIndex < styleIndex))
+    ) {
+      findings.push(finding(
+        relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen styles.css.'
+      ))
+    }
+
+    for (const match of item.source.matchAll(/\.ui-([a-z0-9-]+)/g)) {
+      const selector = match[1] ?? ''
+
+      if (!publicRootSlots.has(selector)) {
+        findings.push(finding(
+          relative(root, item.file), 'internal-selector', `Selector .ui-${selector} is not a documented stable root hook.`, 'Prefer component props, semantic tokens, documented custom properties, or [data-slot].', 'advisory'
+        ))
+      }
+    }
+
+    return findings
+  })
+
 const collectFrameworkStyleFindings = (
-  root: string,
-  sources: SourceEntry[],
+  repositoryRoot: string,
+  boundary: ApplicationBoundary,
   frameworks: LumenFramework[]
 ): LumenDiagnosticFinding[] => frameworks.flatMap(framework => {
-  const references = sources.filter(item => item.source.includes(styleImportByFramework[framework]))
+  const styleImport = styleImportByFramework[framework]
+  const references = boundary.sources.filter(item => item.source.includes(styleImport))
 
   if (references.length === 0) {
     return [finding(
-      'styles', 'framework-style-missing', `No ${styleImportByFramework[framework]} import was found.`, 'Load the matching adapter stylesheet once in the application root.'
+      relative(repositoryRoot, boundary.root) || '.',
+      'framework-style-missing',
+      `No ${styleImport} import was found in this application boundary.`,
+      'Load the matching adapter stylesheet once in the application root.'
     )]
   }
 
-  return references.slice(1).map(item => finding(
-    relative(root, item.file), 'framework-style-duplicate', `The ${framework} stylesheet is loaded more than once.`, 'Keep one stylesheet import in the application root.'
-  ))
+  return references.flatMap(item => countOccurrences(item.source, styleImport) > 1 ?
+    [finding(
+      relative(repositoryRoot, item.file), 'framework-style-duplicate', `The ${framework} stylesheet is loaded more than once in this file.`, 'Keep one stylesheet import in the application root.'
+    )] :
+    [])
 })
 
 const collectAdapterMismatchFindings = (
-  joined: string,
+  repositoryRoot: string,
+  boundary: ApplicationBoundary,
   frameworks: LumenFramework[]
 ): LumenDiagnosticFinding[] => {
-  const adapters = [...joined.matchAll(/@santi020k\/lumen-(astro|elements|react)\/styles\.css/g)]
-    .map(match => match[1])
-    .filter((adapter): adapter is LumenFramework => adapter === 'astro' || adapter === 'elements' || adapter === 'react')
+  const adapters = (Object.entries(styleImportByFramework) as [LumenFramework, string][])
+    .flatMap(([framework, styleImport]) => boundary.sources.some(item => item.source.includes(styleImport)) ?
+      [framework] :
+      [])
 
   return [...new Set(adapters)]
     .filter(adapter => !frameworks.includes(adapter))
     .map(adapter => finding(
-      'styles', 'adapter-style-mismatch', `The ${adapter} stylesheet is loaded without matching ${adapter} imports.`, 'Load the stylesheet from the adapter used by this application boundary.'
+      relative(repositoryRoot, boundary.root) || '.',
+      'adapter-style-mismatch',
+      `The ${adapter} stylesheet is loaded without matching ${adapter} imports in this application boundary.`,
+      'Load the stylesheet from the adapter used by this application boundary.'
     ))
 }
+
+const uniqueFindings = (findings: LumenDiagnosticFinding[]): LumenDiagnosticFinding[] => [
+  ...new Map(findings.map(item => [
+    `${item.file}\u0000${item.rule}\u0000${item.message}`,
+    item
+  ])).values()
+]
 
 export const inspectLumenIntegration = async (repository: string): Promise<LumenDiagnosticReport> => {
   const root = resolve(repository)
 
   if (!(await stat(root)).isDirectory()) throw new Error(`Not a directory: ${root}`)
 
-  const files = await findSourceFiles(root)
-  const sources = await Promise.all(files.map(async file => ({ file, source: await readFile(file, 'utf8') })))
-  const joined = sources.map(item => item.source).join('\n')
-  const frameworks = getFrameworks(joined)
-  const astroNames = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro'))
+  const discovered = await discoverProject(root)
 
-  const runtimeComponents = [...new Set(astroNames.filter(name => name in lumenComponentBehavior &&
-    lumenComponentBehavior[name as LumenComponentName].astro === 'ui-primitives'))]
+  const sources = await Promise.all(discovered.sourceFiles.map(async file => ({
+    file,
+    source: await readFile(file, 'utf8')
+  })))
+
+  const boundaries = createBoundaries(root, discovered.packageRoots, sources)
+  const frameworks = [...new Set(boundaries.flatMap(boundary => getFrameworks(boundary.sources)))]
+  const runtimeComponents = new Set<string>()
 
   const findings = [
     ...collectCompatibilityFindings(root, sources),
-    ...collectRuntimeFindings(root, sources, runtimeComponents),
-    ...collectCssFindings(root, sources),
-    ...collectFrameworkStyleFindings(root, sources, frameworks),
-    ...collectAdapterMismatchFindings(joined, frameworks)
+    ...collectCssFindings(root, sources)
   ]
+
+  for (const boundary of boundaries) {
+    const boundaryFrameworks = getFrameworks(boundary.sources)
+    const runtime = collectRuntimeFindings(root, boundary)
+
+    runtime.runtimeComponents.forEach(component => runtimeComponents.add(component))
+
+    findings.push(
+      ...runtime.findings,
+      ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks),
+      ...collectAdapterMismatchFindings(root, boundary, boundaryFrameworks)
+    )
+  }
+
+  const deduplicatedFindings = uniqueFindings(findings)
 
   return {
     catalogFingerprint: getCatalogFingerprint(sources),
-    findings,
+    findings: deduplicatedFindings,
     frameworks,
     generatedAt: new Date().toISOString(),
-    healthy: findings.every(item => item.severity !== 'error'),
+    healthy: deduplicatedFindings.every(item => item.severity !== 'error'),
     repository: root,
-    runtimeComponents
+    runtimeComponents: [...runtimeComponents]
   }
 }
 

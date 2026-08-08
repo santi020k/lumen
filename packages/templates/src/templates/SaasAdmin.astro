@@ -15,11 +15,11 @@ import TemplateHeader from '../components/TemplateHeader.astro'
 import TemplateShell from '../components/TemplateShell.astro'
 
 const navigation = [
-  { icon: 'layout-dashboard', label: 'Overview' },
-  { icon: 'users-round', label: 'Members' },
-  { icon: 'shield-check', label: 'Roles' },
-  { icon: 'credit-card', label: 'Billing' },
-  { icon: 'settings', label: 'Settings' }
+  { href: '#overview', icon: 'layout-dashboard', label: 'Overview' },
+  { href: '#members', icon: 'users-round', label: 'Members' },
+  { href: '#roles', icon: 'shield-check', label: 'Roles' },
+  { href: '#billing', icon: 'credit-card', label: 'Billing' },
+  { href: '#settings', icon: 'settings', label: 'Settings' }
 ] as const
 
 const metrics = [
@@ -45,7 +45,7 @@ const rows = [
     title="Good morning, Maya"
   />
 
-  <Alert>
+  <Alert id="roles">
     <Icon name="info" />
     <div>
       <strong>Quarterly access review is ready.</strong>
@@ -57,7 +57,7 @@ const rows = [
   <MetricGrid {metrics} />
 
   <section class="template-admin-grid" aria-label="Workspace health">
-    <Card as="section" class="template-section">
+    <Card as="section" class="template-section" id="billing">
       <div class="template-section__header">
         <div>
           <h2>Plan utilization</h2>
@@ -74,7 +74,7 @@ const rows = [
         </div>
       </div>
     </Card>
-    <Card as="section" class="template-section">
+    <Card as="section" class="template-section" id="settings">
       <div class="template-section__header">
         <div>
           <h2>Security posture</h2>
@@ -89,7 +89,7 @@ const rows = [
     </Card>
   </section>
 
-  <Card as="section" class="template-section">
+  <Card as="section" class="template-section" id="members">
     <div class="template-section__header template-section__header--wrap">
       <div>
         <h2>Recently active members</h2>

@@ -1,11 +1,26 @@
 ---
-import { Breadcrumb, Card, Link, Table } from '@santi020k/lumen-astro'
+import { Breadcrumb, Card, CodeTabs, Link, Table } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const install = 'pnpm add @santi020k/lumen-react @santi020k/lumen-react-hook-form react-hook-form'
+
+const schemaInstallItems = [
+  {
+    code: 'pnpm add @hookform/resolvers zod',
+    label: 'Zod',
+    language: 'bash',
+    value: 'zod'
+  },
+  {
+    code: 'pnpm add @hookform/resolvers yup',
+    label: 'Yup',
+    language: 'bash',
+    value: 'yup'
+  }
+] as const
 
 const registerExample = `import {
   Button,
@@ -81,6 +96,72 @@ const state = getLumenManagedFieldState({
   />
   <FieldError id={state.errorId} message={state.errorMessage} />
 </Field>`
+
+const zodExample = `import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+
+const profileSchema = z.object({
+  email: z.string().trim().email('Enter a valid email'),
+  role: z.string().trim().min(1, 'Choose a role')
+})
+
+type ProfileInput = z.input<typeof profileSchema>
+type ProfileValues = z.output<typeof profileSchema>
+
+const {
+  control,
+  formState: { errors },
+  handleSubmit,
+  register
+} = useForm<ProfileInput, unknown, ProfileValues>({
+  defaultValues: { email: '', role: '' },
+  resolver: zodResolver(profileSchema)
+})
+
+// Use register('email') on Input and pass control to
+// LumenSelectController. Render errors through FieldError.
+const submit = handleSubmit(async values => saveProfile(values))`
+
+const yupExample = `import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+
+const profileSchema = yup.object({
+  email: yup.string().trim().email('Enter a valid email').required('Email is required'),
+  role: yup.string().trim().required('Choose a role')
+})
+
+type ProfileValues = yup.InferType<typeof profileSchema>
+
+const {
+  control,
+  formState: { errors },
+  handleSubmit,
+  register
+} = useForm<ProfileValues>({
+  defaultValues: { email: '', role: '' },
+  resolver: yupResolver(profileSchema)
+})
+
+// Use register('email') on Input and pass control to
+// LumenSelectController. Render errors through FieldError.
+const submit = handleSubmit(async values => saveProfile(values))`
+
+const schemaExampleItems = [
+  {
+    code: zodExample,
+    label: 'Zod',
+    language: 'tsx',
+    value: 'zod'
+  },
+  {
+    code: yupExample,
+    label: 'Yup',
+    language: 'tsx',
+    value: 'yup'
+  }
+] as const
 
 const directControls = [
   'Input',
@@ -171,12 +252,39 @@ const adapters = [
       <CodeBlock code={controllerExample} lang="tsx" />
     </section>
 
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="schema-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="schema-title">Validate with Zod or Yup</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Install the official React Hook Form resolvers with one schema library. The resolver owns
+          schema parsing and returns standard React Hook Form errors, so native controls and Lumen’s
+          composite adapters use the same field-state mapping shown above.
+        </p>
+      </div>
+      <CodeTabs
+        ariaLabel="Schema library installation"
+        items={schemaInstallItems}
+        storageKey="preferred-form-schema"
+      />
+      <CodeTabs
+        ariaLabel="Schema resolver examples"
+        items={schemaExampleItems}
+        storageKey="preferred-form-schema"
+      />
+      <Card variant="muted">
+        <p class="text-sm/7 text-ink-soft">
+          Zod and Yup remain application dependencies. Lumen does not bundle either library and
+          does not alter resolver output, schema transforms, or server-validation behavior.
+        </p>
+      </Card>
+    </section>
+
     <section class="docs-section mt-10 space-y-4" aria-labelledby="rules-title">
       <h2 class="text-2xl font-bold text-ink" id="rules-title">Integration rules</h2>
       <ul class="m-0 grid list-disc gap-2 pl-5 text-sm/7 text-ink-soft">
         <li>Put initial values in useForm defaultValues so controlled fields never switch modes.</li>
         <li>Let React Hook Form own validation; do not add useFormValidation to the same form.</li>
-        <li>Use a resolver directly when the application needs schema validation.</li>
+        <li>Use Zod or Yup through @hookform/resolvers when the application needs schema validation.</li>
         <li>Keep authorization, server errors, and persistence in the application.</li>
         <li>Map server field errors with setError, then focus the ErrorSummary or first invalid field.</li>
       </ul>

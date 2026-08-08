@@ -6,20 +6,33 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
   class?: string | null
   className?: string
-  size?: 'default' | 'lg' | 'sm'
+  size?: HTMLAttributes<'input'>['size']
+  visualSize?: 'default' | 'lg' | 'sm'
 }
 
-const { class: classProp = '', className = '', size = 'default', type = 'text', ...rest } = Astro.props
+const {
+  class: classProp = '',
+  className = '',
+  size,
+  type = 'text',
+  visualSize,
+  ...rest
+} = Astro.props
+
+const legacyVisualSize = size === 'default' || size === 'lg' || size === 'sm' ? size : undefined
+const resolvedVisualSize = visualSize ?? legacyVisualSize ?? 'default'
+const nativeSize = legacyVisualSize ? undefined : size
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-input',
-  size === 'sm' && 'ui-input--sm',
-  size === 'lg' && 'ui-input--lg'
+  resolvedVisualSize === 'sm' && 'ui-input--sm',
+  resolvedVisualSize === 'lg' && 'ui-input--lg'
 ], classProp, className)
 ---
 
 <input
   class:list={classList}
+  size={nativeSize}
   type={type}
   {...passthrough}
 />

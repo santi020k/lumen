@@ -125,6 +125,9 @@ for (const slug of componentSlugs) {
 
       const ids = [...previewElement.querySelectorAll<HTMLElement>('[id]')].map(element => element.id)
       const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))]
+      const missingHashReferences = [...previewElement.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
+        .map(anchor => anchor.hash.slice(1))
+        .filter(id => id && !document.getElementById(decodeURIComponent(id)))
 
       const missingAriaReferences = [
         ...previewElement.querySelectorAll<HTMLElement>(
@@ -148,6 +151,7 @@ for (const slug of componentSlugs) {
       return {
         duplicateIds,
         missingAriaReferences,
+        missingHashReferences,
         unlabeledControls
       }
     })
@@ -156,6 +160,7 @@ for (const slug of componentSlugs) {
     expect(brokenImages).toEqual([])
     expect(accessibilityContract.duplicateIds).toEqual([])
     expect(accessibilityContract.missingAriaReferences).toEqual([])
+    expect(accessibilityContract.missingHashReferences).toEqual([])
     expect(accessibilityContract.unlabeledControls).toEqual([])
     expect(pageErrors).toEqual([])
   })
