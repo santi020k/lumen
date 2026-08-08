@@ -11,7 +11,7 @@ allowBuilds:
 catalog:
   "@astrojs/check": ^0.9.9
   "@astrojs/compiler": ^3.0.1
-  "@astrojs/mdx": ^7.0.3
+  "@astrojs/mdx": ^7.0.5
   "@astrojs/sitemap": ^3.7.3
   "@astrojs/ts-plugin": ^1.10.10
   "@changesets/changelog-github": ^0.7.0
@@ -20,7 +20,7 @@ catalog:
   "@commitlint/config-conventional": ^21.2.0
   "@fortawesome/free-brands-svg-icons": ^7.3.1
   "@lucide/icons": ^1.26.0
-  "@modelcontextprotocol/sdk": ^1.29.0
+  "@modelcontextprotocol/sdk": ^1.30.0
   "@playwright/test": ^1.61.1
   "@santi020k/commitprompt": ^1.0.0
   "@santi020k/eslint-config-astro": ^3.1.1
@@ -41,7 +41,7 @@ catalog:
   "@types/semver": ^7.7.1
   "@vitest/coverage-v8": ^4.1.10
   ajv: ^8.20.0
-  astro: ^7.1.3
+  astro: ^7.2.0
   axe-core: ^4.12.1
   cspell: ^10.0.1
   esbuild: ^0.28.1
@@ -50,7 +50,7 @@ catalog:
   jsdom: ^29.1.1
   knip: ^6.29.0
   lint-staged: ^17.2.0
-  next: ^16.2.10
+  next: ^16.3.0
   react: ^19.2.8
   react-dom: ^19.2.8
   react-hook-form: ^7.76.1
@@ -74,7 +74,15 @@ minimumReleaseAgeExclude:
   - "@santi020k/eslint-config-typescript"
 
 overrides:
+  "@hono/node-server": 2.0.12
   "brace-expansion@2.1.3": 2.1.4
+  "fast-uri@3": 3.1.5
+  "hono": 4.12.34
+  "ip-address@10": 10.4.0
+  "js-yaml@4": 4.3.1
+  "nanoid@3": 3.3.17
+  "postcss@8": 8.5.23
+  "svgo@4": 4.0.2
 
 peerDependencyRules:
   allowedVersions:
