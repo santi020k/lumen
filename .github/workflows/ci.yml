@@ -182,9 +182,10 @@ jobs:
           pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
           pnpm run check:bundle-size
           pnpm run check:framework-contracts
+          pnpm run check:security
           pnpm run check:publish-dry-run
           pnpm run check:consumer-packages
 
       - name: Validate release packages
         if: needs.classify.outputs.release-pr == 'true'
-        run: pnpm run build && pnpm run check:publish-dry-run
+        run: pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
