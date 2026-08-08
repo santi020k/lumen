@@ -15,7 +15,8 @@ const safeMax = max > 0 ? max : 100
 const safeValue = Math.min(safeMax, Math.max(0, value))
 const percentage = (safeValue / safeMax) * 100
 
-const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-progress'
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-progress'
 ], classProp, className)
 ---
 
@@ -24,8 +25,14 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-progress'
   aria-valuemin="0"
   aria-valuenow={safeValue}
   class:list={classList}
+  data-ui-progress
   role="progressbar"
   {...passthrough}
 >
-  <span class="ui-progress__bar" style={`width: ${percentage}%`}></span>
+  <span
+    class="ui-progress__bar"
+    data-slot="progress-indicator"
+    style={`width: ${percentage}%`}
+  >
+  </span>
 </div>

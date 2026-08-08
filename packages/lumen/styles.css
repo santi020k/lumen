@@ -1710,6 +1710,16 @@
   transition: width 260ms ease;
 }
 
+.ui-copy-button[data-state="copied"] {
+  border-color: hsl(var(--success));
+  color: hsl(var(--success));
+}
+
+.ui-copy-button[data-state="error"] {
+  border-color: hsl(var(--danger));
+  color: hsl(var(--danger));
+}
+
 .ui-skeleton {
   min-height: 1rem;
   border-radius: var(--ui-radius-sm);
@@ -5777,13 +5787,28 @@ a.ui-pill:focus-visible {
   padding: 0;
 }
 .ui-anchor a {
-  display: block;
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
   padding: 0.25rem 0.75rem;
   margin-left: -2px;
   border-left: 2px solid transparent;
   color: hsl(var(--ink-muted));
   text-decoration: none;
   font-size: 0.875rem;
+}
+.ui-anchor__content {
+  display: grid;
+  gap: 0.125rem;
+}
+.ui-anchor__index,
+.ui-anchor__description {
+  color: hsl(var(--ink-muted));
+  font-size: var(--ui-text-xs);
+}
+.ui-anchor__index {
+  min-width: 2ch;
+  font-variant-numeric: tabular-nums;
 }
 .ui-anchor a[data-depth="3"] {
   padding-inline-start: 1.5rem;
@@ -5798,7 +5823,8 @@ a.ui-pill:focus-visible {
 .ui-anchor a:hover {
   color: hsl(var(--ink));
 }
-.ui-anchor a[data-active="true"] {
+.ui-anchor a[data-active="true"],
+.ui-anchor a[aria-current="location"] {
   color: hsl(var(--brand));
   border-left-color: hsl(var(--brand));
   font-weight: 600;

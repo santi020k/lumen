@@ -474,6 +474,11 @@ describe('lumen product helpers', () => {
     expect(parseThemeCss(css)['ui-ease-emphasized']).toBe('cubic-bezier(0.22, 1, 0.36, 1)')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
+
+    const longBrand = `221 83% ${'0'.repeat(50_000)}%`
+
+    expect(createThemePalette(longBrand)['brand-soft']).toBe('221 83% 96%')
+    expect(createThemePalette('currentColor')['brand-soft']).toBe('currentColor')
   })
 
   test('creates theme builder tokens and export payloads', () => {
@@ -512,6 +517,15 @@ describe('lumen product helpers', () => {
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"glass-shadow"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"ui-radius"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'figma')).toContain('"collectionName": "Lumen"')
+
+    const tokensWithBraces = {
+      ...generated.tokens,
+      brand: '260 88% 60% { preserved }'
+    }
+
+    expect(exportThemeBuilderValue(tokensWithBraces, 'dark', 'css')).toContain(
+      '--brand: 260 88% 60% { preserved };'
+    )
   })
 
   test('exports theme tokens for Figma variables', () => {

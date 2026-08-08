@@ -481,10 +481,21 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(linkedPill).className).toBe('ui-pill ui-pill--brand')
     expect(propsOf(linkedPill)['data-variant']).toBe('brand')
     expect(propsOf(anchorLink)['data-depth']).toBe(3)
+    expect(propsOf(anchorLink)['aria-current']).toBe('location')
     expect(propsOf(NavigationMenu({ variant: 'unstyled' }) as ReactElement).className)
       .toBe('ui-navigation-menu ui-navigation-menu--unstyled')
     expect(propsOf(Sidebar({ variant: 'unstyled' }) as ReactElement).className)
       .toBe('ui-sidebar ui-sidebar--unstyled')
+  })
+
+  test('supports semantic items and stable progress indicator parts', () => {
+    const item = Item({ as: 'article', children: 'Release' }) as ReactElement
+    const progress = Progress({ value: 40 }) as ReactElement
+    const indicator = propsOf(progress).children as ReactElement
+
+    expect(item.type).toBe('article')
+    expect(propsOf(item)['data-slot']).toBe('item')
+    expect(propsOf(indicator)['data-slot']).toBe('progress-indicator')
   })
 
   test('renders remaining structural primitives', () => {

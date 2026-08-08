@@ -1337,22 +1337,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(root.hidden).toBe(false)
   })
 
-  test('anchor scroll spy marks the intersecting section link active', () => {
-    let observerCallback: IntersectionObserverCallback | undefined
-    const observe = vi.fn()
-    const disconnect = vi.fn()
-
-    vi.stubGlobal(
-      'IntersectionObserver', class {
-        constructor(callback: IntersectionObserverCallback) {
-          observerCallback = callback
-        }
-
-        disconnect = disconnect
-        observe = observe
-      }
-    )
-
+  test('anchor navigation synchronizes the accessible current link', () => {
     document.body.innerHTML = `
       <section id="intro"></section>
       <section id="api"></section>
@@ -1362,25 +1347,15 @@ describe('@santi020k/lumen-elements', () => {
       </lumen-anchor>
     `
 
-    const intro = document.querySelector<HTMLElement>('#intro')!
-    const api = document.querySelector<HTMLElement>('#api')!
     const links =
       document.querySelectorAll<HTMLAnchorElement>('lumen-anchor a')
 
-    expect(observe).toHaveBeenCalledWith(intro)
-    expect(observe).toHaveBeenCalledWith(api)
-
-    observerCallback?.(
-      [
-        {
-          isIntersecting: true,
-          target: api
-        } as unknown as IntersectionObserverEntry
-      ], {} as IntersectionObserver
-    )
+    links[1]?.click()
 
     expect(links[0]?.dataset.active).toBe('false')
+    expect(links[0]?.hasAttribute('aria-current')).toBe(false)
     expect(links[1]?.dataset.active).toBe('true')
+    expect(links[1]?.getAttribute('aria-current')).toBe('location')
   })
 
   test('transfer moves checked items and emits the moved values', () => {

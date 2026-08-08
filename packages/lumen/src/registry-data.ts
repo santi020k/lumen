@@ -685,6 +685,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'CopyButton',
+      type: 'component',
+      description: 'Copies arbitrary text or the content of another element with accessible feedback.',
+      category: 'Actions',
+      files: [
+        'packages/astro/components/CopyButton.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
       name: 'Command',
       type: 'component',
       description: 'Builds command palettes and filterable action lists.',
@@ -1315,10 +1330,12 @@ export const lumenRegistry = {
       category: 'Feedback',
       files: [
         'packages/astro/components/Progress.astro',
-        'packages/astro/styles/lumen.css'
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
       ],
       dependencies: [
-        'styles'
+        'styles',
+        'runtime'
       ]
     },
     {

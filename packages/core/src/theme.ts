@@ -150,6 +150,29 @@ export const parseThemeCss = (css: string): LumenThemeTokens => {
 
 const normalizeHue = (hue: number): number => ((Math.round(hue) % 360) + 360) % 360
 
+const replaceTrailingIntegerPercentage = (
+  value: string,
+  replacement: number
+): string => {
+  if (!value.endsWith('%')) return value
+
+  let digitStart = value.length - 2
+
+  while (digitStart >= 0) {
+    const character = value[digitStart]
+
+    if (character === undefined || character < '0' || character > '9') break
+
+    digitStart -= 1
+  }
+
+  const percentageStart = digitStart + 1
+
+  if (percentageStart === value.length - 1) return value
+
+  return `${value.slice(0, percentageStart)}${replacement}%`
+}
+
 const getHueFromToken = (value: string): number => {
   const hue = Number(value.trim().split(/\s+/)[0])
 
@@ -252,7 +275,7 @@ export const createThemePalette = (
 ): LumenThemeTokens => ({
   accent,
   brand,
-  'brand-soft': brand.replace(/(\d+)%$/, '96%'),
+  'brand-soft': replaceTrailingIntegerPercentage(brand, 96),
   'brand-solid': brand,
   canvas: '0 0% 100%',
   danger: '0 84% 60%',

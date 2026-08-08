@@ -9,6 +9,7 @@ import type {
   ElementType,
   HTMLAttributes,
   KeyboardEvent,
+  MouseEvent as ReactMouseEvent,
   ReactNode,
   Ref,
   RefObject
@@ -1673,6 +1674,117 @@ export const Code = ({
   )
 }
 
+export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
+  copiedLabel?: string
+  errorLabel?: string
+  label?: string
+  resetAfter?: number
+  target?: string
+  toast?: boolean
+  value?: string
+}
+
+const dispatchCopyToast = (
+  enabled: boolean,
+  title: string,
+  variant: 'destructive' | 'success'
+): void => {
+  if (!enabled) return
+
+  document.dispatchEvent(new CustomEvent('ui:toast', {
+    detail: { title, variant }
+  }))
+}
+
+const getCopyButtonLabel = (
+  state: 'copied' | 'error' | 'idle',
+  copiedLabel: string,
+  errorLabel: string,
+  label: string
+): string => ({ copied: copiedLabel, error: errorLabel, idle: label })[state]
+
+export const CopyButton = ({
+  children = 'Copy',
+  className,
+  copiedLabel = 'Copied to clipboard',
+  errorLabel = 'Could not copy to clipboard',
+  label = 'Copy to clipboard',
+  onClick,
+  resetAfter = 2000,
+  target,
+  toast = false,
+  type = 'button',
+  value,
+  ...props
+}: CopyButtonProps) => {
+  const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')
+  const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)
+
+  useEffect(() => () => {
+    globalThis.clearTimeout(resetTimerRef.current)
+  }, [])
+
+  const handleClick = async (event: ReactMouseEvent<HTMLButtonElement>) => {
+    onClick?.(event)
+
+    if (event.defaultPrevented) return
+
+    const button = event.currentTarget
+    const targetElement = target ? document.querySelector<HTMLElement>(target) : null
+    const text = value ?? targetElement?.innerText ?? targetElement?.textContent
+
+    try {
+      if (text === undefined) throw new Error(errorLabel)
+
+      await navigator.clipboard.writeText(text)
+
+      setState('copied')
+
+      button.dispatchEvent(new CustomEvent('ui:copy-success', {
+        bubbles: true,
+        detail: { value: text }
+      }))
+
+      dispatchCopyToast(toast, copiedLabel, 'success')
+    } catch (error) {
+      setState('error')
+
+      button.dispatchEvent(new CustomEvent('ui:copy-error', {
+        bubbles: true,
+        detail: { error }
+      }))
+
+      dispatchCopyToast(toast, errorLabel, 'destructive')
+    }
+
+    globalThis.clearTimeout(resetTimerRef.current)
+
+    resetTimerRef.current = globalThis.setTimeout(() => {
+      setState('idle')
+    }, resetAfter)
+  }
+
+  const accessibleLabel = getCopyButtonLabel(
+    state, copiedLabel, errorLabel, label
+  )
+
+  return (
+    <button
+      aria-label={accessibleLabel}
+      className={composeClassName(
+        'ui-button ui-button--outline ui-copy-button', className
+      )}
+      data-state={state}
+      data-ui-copy-button
+      onClick={handleClick}
+      type={type}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
+
 export interface CodeTabItem {
   code: string
   label: string
@@ -2992,17 +3104,17 @@ export const NumberField = ({
   />
 )
 
-export interface ItemProps extends ComponentPropsWithoutRef<'div'> {
+export interface ItemProps extends HTMLAttributes<HTMLElement> {
+  as?: 'article' | 'div' | 'li' | 'section'
   glass?: LumenGlassProp
 }
-export const Item = ({ className, glass = false, ...props }: ItemProps) => (
-  <div
-    className={composeClassName(
-      'ui-item', glassClass('ui-item', glass), className
-    )}
-    {...props}
-  />
-)
+export const Item = ({ as = 'div', className, glass = false, ...props }: ItemProps) => createElement(as, {
+  className: composeClassName(
+    'ui-item', glassClass('ui-item', glass), className
+  ),
+  'data-slot': 'item',
+  ...props
+})
 
 export type KbdProps = ComponentPropsWithoutRef<'kbd'>
 export const Kbd = ({ className, ...props }: KbdProps) => (
@@ -3330,7 +3442,11 @@ export const Progress = ({
       role="progressbar"
       {...props}
     >
-      <span className="ui-progress__bar" style={{ width: `${percentage}%` }} />
+      <span
+        className="ui-progress__bar"
+        data-slot="progress-indicator"
+        style={{ width: `${percentage}%` }}
+      />
     </div>
   )
 }
@@ -5787,47 +5903,163 @@ export const Tour = ({
 )
 
 export interface AnchorLink {
+  description?: ReactNode
   depth?: 1 | 2 | 3 | 4 | 5 | 6
   href: string
+  index?: ReactNode
   label: ReactNode
 }
 export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {
+  activationOffset?: number
   items?: AnchorLink[]
 }
 
 const emptyAnchorLinks: AnchorLink[] = []
 
+const createAnchorRef = () => {
+  let cleanup: (() => void) | undefined
+
+  return (root: HTMLElement | null) => {
+    cleanup?.()
+
+    cleanup = undefined
+
+    if (!root) return
+
+    const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
+
+    const targets = links.flatMap(link => {
+      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
+      const target = id ? document.getElementById(id) : null
+
+      return target ? [{ link, target }] : []
+    })
+
+    if (!targets.length) return
+
+    const abortController = new AbortController()
+    let frame = 0
+
+    const setActive = (active: HTMLAnchorElement) => {
+      for (const link of links) {
+        const isActive = link === active
+
+        link.dataset.active = String(isActive)
+
+        if (isActive) {
+          link.setAttribute('aria-current', 'location')
+        } else {
+          link.removeAttribute('aria-current')
+        }
+      }
+    }
+
+    const update = () => {
+      frame = 0
+
+      const scrollingElement =
+        document.scrollingElement ?? document.documentElement
+
+      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
+        scrollingElement.scrollHeight - 1
+
+      const offset = Number(root.dataset.uiAnchorOffset) || 0
+      let active = targets[0]?.link
+
+      if (atEnd) {
+        active = targets.at(-1)?.link
+      } else {
+        for (const item of targets) {
+          if (item.target.getBoundingClientRect().top > offset) break
+
+          active = item.link
+        }
+      }
+
+      if (active) setActive(active)
+    }
+
+    const requestUpdate = () => {
+      if (frame) return
+
+      frame = requestAnimationFrame(update)
+    }
+
+    for (const { link } of targets) {
+      link.addEventListener('click', () => {
+        setActive(link)
+      }, {
+        signal: abortController.signal
+      })
+    }
+
+    window.addEventListener('resize', requestUpdate, {
+      passive: true,
+      signal: abortController.signal
+    })
+
+    window.addEventListener('scroll', requestUpdate, {
+      passive: true,
+      signal: abortController.signal
+    })
+
+    update()
+
+    cleanup = () => {
+      abortController.abort()
+
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }
+}
+
 export const Anchor = ({
   'aria-label': ariaLabel = 'On this page',
+  activationOffset = 96,
   children,
   className,
   items = emptyAnchorLinks,
   ...props
-}: AnchorProps) => (
-  <nav
-    aria-label={ariaLabel}
-    className={composeClassName('ui-anchor', className)}
-    data-ui-anchor
-    {...props}
-  >
-    {items.length > 0 && (
-      <ol>
-        {items.map((item, index) => (
-          <li key={item.href}>
-            <a
-              data-active={index === 0 ? 'true' : 'false'}
-              data-depth={item.depth}
-              href={item.href}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ol>
-    )}
-    {children}
-  </nav>
-)
+}: AnchorProps) => {
+  const anchorRef = createAnchorRef()
+
+  return (
+    <nav
+      aria-label={ariaLabel}
+      className={composeClassName('ui-anchor', className)}
+      data-ui-anchor
+      data-ui-anchor-offset={Math.max(0, activationOffset)}
+      ref={anchorRef}
+      {...props}
+    >
+      {items.length > 0 && (
+        <ol>
+          {items.map((item, index) => (
+            <li key={item.href}>
+              <a
+                aria-current={index === 0 ? 'location' : undefined}
+                data-active={index === 0 ? 'true' : 'false'}
+                data-depth={item.depth}
+                href={item.href}
+              >
+                {item.index !== undefined && (
+                  <span className="ui-anchor__index">{item.index}</span>
+                )}
+                <span className="ui-anchor__content">
+                  <span className="ui-anchor__label">{item.label}</span>
+                  {item.description && (
+                    <span className="ui-anchor__description">{item.description}</span>
+                  )}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      )}
+      {children}
+    </nav>
+  )
+}
 
 export interface SegmentedProps extends Omit<
   ComponentPropsWithoutRef<'div'>,

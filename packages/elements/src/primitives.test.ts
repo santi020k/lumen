@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { defineLumenElements } from './index.js'
 
@@ -105,6 +105,41 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(scrollProgress.querySelector('.ui-scroll-progress__bar')).not.toBeNull()
     expect(connect('lumen-radio-group').hasAttribute('data-ui-radio-group')).toBe(true)
     expect(connect('lumen-collapsible').hasAttribute('data-ui-collapsible')).toBe(true)
+  })
+
+  test('synchronizes progress attributes and the stable indicator part', () => {
+    const progress = connect('lumen-progress', { max: '80', value: '40' })
+    const indicator = progress.querySelector<HTMLElement>(
+      '[data-slot="progress-indicator"]'
+    )
+
+    expect(progress.getAttribute('aria-valuemax')).toBe('80')
+    expect(progress.getAttribute('aria-valuenow')).toBe('40')
+    expect(indicator?.style.width).toBe('50%')
+
+    progress.setAttribute('value', '80')
+
+    expect(progress.getAttribute('aria-valuenow')).toBe('80')
+    expect(indicator?.style.width).toBe('100%')
+  })
+
+  test('copies arbitrary values and exposes success state', async () => {
+    const writeText = vi.fn(() => Promise.resolve())
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText }
+    })
+
+    const copyButton = connect('lumen-copy-button', { value: 'Invite link' })
+
+    copyButton.click()
+
+    await Promise.resolve()
+
+    expect(writeText).toHaveBeenCalledWith('Invite link')
+    expect(copyButton.dataset.state).toBe('copied')
+    expect(copyButton.getAttribute('aria-label')).toBe('Copied to clipboard')
   })
 
   test('resolves glass intensity classes on structural surfaces', () => {

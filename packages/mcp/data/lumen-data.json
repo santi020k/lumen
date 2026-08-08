@@ -33,6 +33,7 @@
       "CodeTabs": "8a791e910bd9d26de30281901d687db8be75f71d6655cee75b0f4bc4c8821169",
       "Combobox": "9b439a14dd342fc999136125c9e58bed49a94b3299f6b14c22249ed9fae68ef2",
       "Container": "cc6e98bd08fda79775f0ecfd2e394c36859971519493f214dad7c0a9a4f88a8c",
+      "CopyButton": "7dc2a9af4843b0c823dc279101d39e409bfc8f18ede05a67b1308c3b682d1c43",
       "Command": "4a927afdf69e957e75b00615c32ce44a4b629192a43cf7f6705c87089441c8c3",
       "ContextMenu": "59d3b87a5aae3a201d5d532646bc8d6813b64f4be8c34c40d797e7483a268dbf",
       "ColorPicker": "a4e6deb7d7f9cdd32f7b753a941dcb028cf57cb72282ca5a86920a03388c39a0",
@@ -57,7 +58,7 @@
       "Input": "d07d8adf4f7cecea7848771fe57289b7a7f3f0c1f58ed7f834ae7b44b074fb28",
       "InputGroup": "1e77e49544647c9aa14c1f8fa3b6b9be56fed7064c296e46ef53190b88bf8f80",
       "InputOTP": "b0b1b7a6e4d61d7dd24360fd8393b3d9129408e97227df6be9d6d2f807f2775b",
-      "Item": "b1af85348aa6ef0ab51b9879b8da5e0321ee46777def22938d94ca0252cb4a38",
+      "Item": "2af1510d266ded39f3b63a43dda5f62863e6d737527d846870b2472235e0f502",
       "Kbd": "4f170fb6ba9830720434a820e06f4d27ed2ac8dd5ee61cabc3b5ab31284669a9",
       "Label": "52463519e6b4f92a9e00d8ac631d054a5eb51b19af53aff265a4e8a4787dec36",
       "Link": "07db5d02896f860a49614552443a6bfc854c7d22f788b07c6c30c8ca54a77cd8",
@@ -76,7 +77,7 @@
       "PieChart": "887da71a440e8b142816dd6880012272aecbbab21d68c04c002e96cc5aef4265",
       "Pill": "f4a545d5076bc0c036ced62581cede27c8b198844300184f7970faf369be328c",
       "Popover": "0b82934bcf6ba7ad1d9661f23d83a051df11e7e32824250c99b109f851e25522",
-      "Progress": "08c76ed83fcb36bfd846569b3b58a29066ebc5c2e6ad29f87971671d10271c31",
+      "Progress": "d99c414c2dcb23453ed240b029fdecb4da49d0d4a9e04f33c562ff92b0a247f8",
       "Prose": "733e20cc9160ef85d89fba58050a463508ba19d8233866b7af0da50c6abc30f4",
       "RadioGroup": "b2ab01eebce50ecea99ba13aa0592ba113fd58da823fe8cb16679cb0f909bb3f",
       "Resizable": "43e7e8340caf1fc1d884f3a11ef4c860378effc8ba09d3c11392526781b5234d",
@@ -135,7 +136,7 @@
       "Stepper": "90a3b8179384eb296961eefe324d1b2ff22bdf4e779a0f38c10e89ebf31e4513",
       "FileUpload": "6c6b81eea960ff6c11dc5892e8af0384856f3ffcafb2da4f58df5ef5827c19ee",
       "Tour": "fb9a570dd68ce9202916fdc8f9b6455d5202513c70fe8c881363f63383b86678",
-      "Anchor": "4b4fb7a43b080093e92208cd0bfe74054ff7fc16b11ef601b7c9aea6962e9323",
+      "Anchor": "7ba9d7ce38eaac0e59d1c093c70cd48fd602740dd15429a96f73af0614fd99f8",
       "Segmented": "2d600e6de2dee44ab474c7f46305a6463edf65ca81bd8758bd43502f222ba8b4",
       "Toolbar": "3c12337e2a22bbeea1a7759cc6a1f20ce5bdbbc9161203f421423c1db353e9e8",
       "Descriptions": "0cb1503b7e9dc0e91388df2b6d34287e137ac9b04f8944551b59f60f3e60572e",
@@ -6718,6 +6719,304 @@
     {
       "apiReference": [
         {
+          "attribute": "value",
+          "defaultValue": "-",
+          "description": "Copies the supplied arbitrary text without requiring code semantics.",
+          "values": "string"
+        },
+        {
+          "attribute": "target",
+          "defaultValue": "-",
+          "description": "Copies text content or a form control value from the referenced element.",
+          "values": "CSS selector"
+        },
+        {
+          "attribute": "label, copiedLabel, errorLabel",
+          "defaultValue": "localized defaults",
+          "description": "Sets the accessible idle, success, and failure feedback.",
+          "values": "string"
+        },
+        {
+          "attribute": "resetAfter",
+          "defaultValue": "2000",
+          "description": "Sets how long the copied or error state remains active in milliseconds.",
+          "values": "number"
+        },
+        {
+          "attribute": "toast",
+          "defaultValue": "false",
+          "description": "Also dispatches a Lumen Toast notification for copy success or failure.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'button'> {\n  class?: string | null\n  className?: string\n  copiedLabel?: string\n  errorLabel?: string\n  label?: string\n  resetAfter?: number\n  target?: string\n  toast?: boolean\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  copiedLabel = 'Copied to clipboard',\n  errorLabel = 'Could not copy to clipboard',\n  label = 'Copy to clipboard',\n  resetAfter = 2000,\n  target,\n  toast = false,\n  type = 'button',\n  value,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-button',\n  'ui-button--outline',\n  'ui-copy-button'\n], classProp, className)\n---\n\n<button\n  aria-label={label}\n  class:list={classList}\n  data-copy-copied-label={copiedLabel}\n  data-copy-error-label={errorLabel}\n  data-copy-label={label}\n  data-copy-reset-after={Math.max(0, resetAfter)}\n  data-copy-target={target}\n  data-copy-toast={toast ? 'true' : undefined}\n  data-copy-value={value}\n  data-state=\"idle\"\n  data-ui-copy-button\n  type={type}\n  {...passthrough}\n>\n  <slot>Copy</slot>\n</button>\n",
+      "category": "Actions",
+      "collections": [],
+      "dependencies": [
+        "styles",
+        "runtime"
+      ],
+      "description": "Copies arbitrary text or the content of another element with accessible success and failure feedback.",
+      "behavior": {
+        "astro": "ui-primitives",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/CopyButton.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
+          "example": "<CopyButton value=\"https://lumen.santi020k.com\" toast>Copy link</CopyButton>",
+          "importStatement": "import { CopyButton } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "copiedLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "errorLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "resetAfter",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "target",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "toast",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "value",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'button'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'button'> {\n  class?: string | null\n  className?: string\n  copiedLabel?: string\n  errorLabel?: string\n  label?: string\n  resetAfter?: number\n  target?: string\n  toast?: boolean\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  copiedLabel = 'Copied to clipboard',\n  errorLabel = 'Could not copy to clipboard',\n  label = 'Copy to clipboard',\n  resetAfter = 2000,\n  target,\n  toast = false,\n  type = 'button',\n  value,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-button',\n  'ui-button--outline',\n  'ui-copy-button'\n], classProp, className)\n---\n\n<button\n  aria-label={label}\n  class:list={classList}\n  data-copy-copied-label={copiedLabel}\n  data-copy-error-label={errorLabel}\n  data-copy-label={label}\n  data-copy-reset-after={Math.max(0, resetAfter)}\n  data-copy-target={target}\n  data-copy-toast={toast ? 'true' : undefined}\n  data-copy-value={value}\n  data-state=\"idle\"\n  data-ui-copy-button\n  type={type}\n  {...passthrough}\n>\n  <slot>Copy</slot>\n</button>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "aria-label",
+            "data-state",
+            "data-ui-copy-button",
+            "role",
+            "tabindex",
+            "value",
+            "target",
+            "label, copiedLabel, errorLabel",
+            "resetAfter",
+            "toast",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
+          },
+          "example": "<lumen-copy-button value=\"https://lumen.santi020k.com\" toast>Copy link</lumen-copy-button>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "CopyButton: {\n    baseClassName: 'ui-button ui-button--outline ui-copy-button',\n    defaults: {\n      'aria-label': 'Copy to clipboard',\n      'data-state': 'idle',\n      'data-ui-copy-button': '',\n      role: 'button',\n      tabindex: '0'\n    },\n    tagName: 'lumen-copy-button'\n  }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-copy-button"
+        },
+        "react": {
+          "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
+          "example": "<CopyButton value=\"https://lumen.santi020k.com\" toast>Copy link</CopyButton>",
+          "importStatement": "import { CopyButton } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "copiedLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "errorLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "resetAfter",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "target",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "toast",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "value",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithoutRef<'button'>",
+          "source": "export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {\n  copiedLabel?: string\n  errorLabel?: string\n  label?: string\n  resetAfter?: number\n  target?: string\n  toast?: boolean\n  value?: string\n}\n\nexport const CopyButton = ({\n  children = 'Copy',\n  className,\n  copiedLabel = 'Copied to clipboard',\n  errorLabel = 'Could not copy to clipboard',\n  label = 'Copy to clipboard',\n  onClick,\n  resetAfter = 2000,\n  target,\n  toast = false,\n  type = 'button',\n  value,\n  ...props\n}: CopyButtonProps) => {\n  const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')\n  const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)\n\n  useEffect(() => () => {\n    globalThis.clearTimeout(resetTimerRef.current)\n  }, [])\n\n  const handleClick = async (event: ReactMouseEvent<HTMLButtonElement>) => {\n    onClick?.(event)\n\n    if (event.defaultPrevented) return\n\n    const button = event.currentTarget\n    const targetElement = target ? document.querySelector<HTMLElement>(target) : null\n    const text = value ?? targetElement?.innerText ?? targetElement?.textContent\n\n    try {\n      if (text === undefined) throw new Error(errorLabel)\n\n      await navigator.clipboard.writeText(text)\n\n      setState('copied')\n\n      button.dispatchEvent(new CustomEvent('ui:copy-success', {\n        bubbles: true,\n        detail: { value: text }\n      }))\n\n      dispatchCopyToast(toast, copiedLabel, 'success')\n    } catch (error) {\n      setState('error')\n\n      button.dispatchEvent(new CustomEvent('ui:copy-error', {\n        bubbles: true,\n        detail: { error }\n      }))\n\n      dispatchCopyToast(toast, errorLabel, 'destructive')\n    }\n\n    globalThis.clearTimeout(resetTimerRef.current)\n\n    resetTimerRef.current = globalThis.setTimeout(() => {\n      setState('idle')\n    }, resetAfter)\n  }\n\n  const accessibleLabel = getCopyButtonLabel(\n    state, copiedLabel, errorLabel, label\n  )\n\n  return (\n    <button\n      aria-label={accessibleLabel}\n      className={composeClassName(\n        'ui-button ui-button--outline ui-copy-button', className\n      )}\n      data-state={state}\n      data-ui-copy-button\n      onClick={handleClick}\n      type={type}\n      {...props}\n    >\n      {children}\n    </button>\n  )\n}",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "copy-button",
+      "keyboardInteractions": [],
+      "keywords": [
+        "accessible",
+        "actions",
+        "and",
+        "another",
+        "arbitrary",
+        "content",
+        "copies",
+        "copybutton",
+        "element",
+        "failure",
+        "feedback",
+        "success",
+        "text",
+        "the",
+        "with"
+      ],
+      "name": "CopyButton",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "copiedLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "errorLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "resetAfter",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "target",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "toast",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'button'>",
+      "recipes": [],
+      "runtimeEvents": [
+        {
+          "detail": "{ value: string }",
+          "name": "ui:copy-success",
+          "target": "CopyButton",
+          "when": "Fires after arbitrary text is written to the clipboard."
+        },
+        {
+          "detail": "{ error: unknown }",
+          "name": "ui:copy-error",
+          "target": "CopyButton",
+          "when": "Fires when the Clipboard API is unavailable or rejects the write."
+        }
+      ]
+    },
+    {
+      "apiReference": [
+        {
           "attribute": "glass",
           "defaultValue": "false",
           "description": "Applies the tokenized liquid-glass surface treatment with backdrop-filter fallbacks; \"subtle\" and \"strong\" adjust the fill intensity.",
@@ -11807,6 +12106,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "as",
+          "defaultValue": "\"div\"",
+          "description": "Selects the semantic host in Astro and React. Elements consumers can apply the public ui-item class to the equivalent native host.",
+          "values": "\"article\" | \"div\" | \"li\" | \"section\""
+        },
+        {
           "attribute": "children",
           "defaultValue": "required",
           "description": "Composes one compact aligned row.",
@@ -11825,7 +12130,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-item',\n  glass && 'ui-item--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  as?: 'article' | 'div' | 'li' | 'section'\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  as: Tag = 'div',\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-item',\n  glass && 'ui-item--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<Tag\n  class:list={classList}\n  data-slot=\"item\"\n  {...passthrough}\n>\n  <slot />\n</Tag>\n",
       "category": "Data display",
       "collections": [],
       "dependencies": [
@@ -11844,11 +12149,16 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
-          "example": "<Item><strong>Production docs</strong><span>Ready for review</span></Item>",
+          "example": "<Item as=\"article\"><strong>Production docs</strong><span>Ready for review</span></Item>",
           "importStatement": "import { Item } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
           "props": [
+            {
+              "name": "as",
+              "optional": true,
+              "type": "'article' | 'div' | 'li' | 'section'"
+            },
             {
               "name": "class",
               "optional": true,
@@ -11866,12 +12176,14 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-item',\n  glass && 'ui-item--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  {...passthrough}\n>\n  <slot />\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  as?: 'article' | 'div' | 'li' | 'section'\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n}\n\nconst {\n  as: Tag = 'div',\n  class: classProp = '',\n  className = '',\n  glass = false,\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-item',\n  glass && 'ui-item--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<Tag\n  class:list={classList}\n  data-slot=\"item\"\n  {...passthrough}\n>\n  <slot />\n</Tag>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
+            "data-slot",
             "glass",
+            "as",
             "children",
             "class, className",
             "...native attributes"
@@ -11881,32 +12193,37 @@
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
           },
-          "example": "<lumen-item><strong>Production docs</strong><span>Ready for review</span></lumen-item>",
+          "example": "<lumen-item as=\"article\"><strong>Production docs</strong><span>Ready for review</span></lumen-item>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
           "language": "html",
           "packageName": "@santi020k/lumen-elements",
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Item: {\n    attributeClasses: glassAttributeClasses('ui-item--glass'),\n    baseClassName: 'ui-item',\n    tagName: 'lumen-item'\n  }",
+          "source": "Item: {\n    attributeClasses: glassAttributeClasses('ui-item--glass'),\n    baseClassName: 'ui-item',\n    defaults: { 'data-slot': 'item' },\n    tagName: 'lumen-item'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-item"
         },
         "react": {
           "available": true,
-          "example": "<Item><strong>Production docs</strong><span>Ready for review</span></Item>",
+          "example": "<Item as=\"article\"><strong>Production docs</strong><span>Ready for review</span></Item>",
           "importStatement": "import { Item } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
+            {
+              "name": "as",
+              "optional": true,
+              "type": "'article' | 'div' | 'li' | 'section'"
+            },
             {
               "name": "glass",
               "optional": true,
               "type": "LumenGlassProp"
             }
           ],
-          "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface ItemProps extends ComponentPropsWithoutRef<'div'> {\n  glass?: LumenGlassProp\n}\n\nexport const Item = ({ className, glass = false, ...props }: ItemProps) => (\n  <div\n    className={composeClassName(\n      'ui-item', glassClass('ui-item', glass), className\n    )}\n    {...props}\n  />\n)",
+          "propsExtends": "HTMLAttributes<HTMLElement>",
+          "source": "export interface ItemProps extends HTMLAttributes<HTMLElement> {\n  as?: 'article' | 'div' | 'li' | 'section'\n  glass?: LumenGlassProp\n}\n\nexport const Item = ({ as = 'div', className, glass = false, ...props }: ItemProps) => createElement(as, {\n  className: composeClassName(\n    'ui-item', glassClass('ui-item', glass), className\n  ),\n  'data-slot': 'item',\n  ...props\n})",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -11964,6 +12281,11 @@
       ],
       "name": "Item",
       "props": [
+        {
+          "name": "as",
+          "optional": true,
+          "type": "'article' | 'div' | 'li' | 'section'"
+        },
         {
           "name": "class",
           "optional": true,
@@ -16003,6 +16325,12 @@
           "values": "number"
         },
         {
+          "attribute": "ui:progress-change",
+          "defaultValue": "-",
+          "description": "Updates Astro progress after hydration while keeping the indicator and ARIA values synchronized.",
+          "values": "CustomEvent<{ value: number, max?: number }>"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -16015,25 +16343,31 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  max?: number\n  value?: number\n}\n\nconst { class: classProp = '', className = '', max = 100, value = 0, ...rest } = Astro.props\nconst safeMax = max > 0 ? max : 100\nconst safeValue = Math.min(safeMax, Math.max(0, value))\nconst percentage = (safeValue / safeMax) * 100\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-progress'\n], classProp, className)\n---\n\n<div\n  aria-valuemax={safeMax}\n  aria-valuemin=\"0\"\n  aria-valuenow={safeValue}\n  class:list={classList}\n  role=\"progressbar\"\n  {...passthrough}\n>\n  <span class=\"ui-progress__bar\" style={`width: ${percentage}%`}></span>\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  max?: number\n  value?: number\n}\n\nconst { class: classProp = '', className = '', max = 100, value = 0, ...rest } = Astro.props\nconst safeMax = max > 0 ? max : 100\nconst safeValue = Math.min(safeMax, Math.max(0, value))\nconst percentage = (safeValue / safeMax) * 100\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-progress'\n], classProp, className)\n---\n\n<div\n  aria-valuemax={safeMax}\n  aria-valuemin=\"0\"\n  aria-valuenow={safeValue}\n  class:list={classList}\n  data-ui-progress\n  role=\"progressbar\"\n  {...passthrough}\n>\n  <span\n    class=\"ui-progress__bar\"\n    data-slot=\"progress-indicator\"\n    style={`width: ${percentage}%`}\n  >\n  </span>\n</div>\n",
       "category": "Feedback",
       "collections": [],
       "dependencies": [
-        "styles"
+        "styles",
+        "runtime"
       ],
       "description": "Shows completion, loading progress, or quota usage.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
       "files": [
         "packages/astro/components/Progress.astro",
-        "packages/astro/styles/lumen.css"
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
       ],
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Progress value={64} max={100} aria-label=\"Upload progress\" />",
           "importStatement": "import { Progress } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -16061,21 +16395,26 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  max?: number\n  value?: number\n}\n\nconst { class: classProp = '', className = '', max = 100, value = 0, ...rest } = Astro.props\nconst safeMax = max > 0 ? max : 100\nconst safeValue = Math.min(safeMax, Math.max(0, value))\nconst percentage = (safeValue / safeMax) * 100\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-progress'\n], classProp, className)\n---\n\n<div\n  aria-valuemax={safeMax}\n  aria-valuemin=\"0\"\n  aria-valuenow={safeValue}\n  class:list={classList}\n  role=\"progressbar\"\n  {...passthrough}\n>\n  <span class=\"ui-progress__bar\" style={`width: ${percentage}%`}></span>\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  max?: number\n  value?: number\n}\n\nconst { class: classProp = '', className = '', max = 100, value = 0, ...rest } = Astro.props\nconst safeMax = max > 0 ? max : 100\nconst safeValue = Math.min(safeMax, Math.max(0, value))\nconst percentage = (safeValue / safeMax) * 100\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-progress'\n], classProp, className)\n---\n\n<div\n  aria-valuemax={safeMax}\n  aria-valuemin=\"0\"\n  aria-valuenow={safeValue}\n  class:list={classList}\n  data-ui-progress\n  role=\"progressbar\"\n  {...passthrough}\n>\n  <span\n    class=\"ui-progress__bar\"\n    data-slot=\"progress-indicator\"\n    style={`width: ${percentage}%`}\n  >\n  </span>\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
+            "aria-valuemax",
+            "aria-valuemin",
+            "aria-valuenow",
+            "data-ui-progress",
+            "max",
             "role",
             "value",
-            "max",
+            "ui:progress-change",
             "class, className",
             "...native attributes"
           ],
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-progress value=\"64\" max=\"100\" aria-label=\"Upload progress\"></lumen-progress>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -16084,12 +16423,16 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Progress: {\n    baseClassName: 'ui-progress',\n    defaults: { role: 'progressbar' },\n    tagName: 'lumen-progress'\n  }",
+          "source": "Progress: {\n    baseClassName: 'ui-progress',\n    defaults: {\n      'aria-valuemax': '100',\n      'aria-valuemin': '0',\n      'aria-valuenow': '0',\n      'data-ui-progress': '',\n      max: '100',\n      role: 'progressbar',\n      value: '0'\n    },\n    tagName: 'lumen-progress'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-progress"
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Progress value={64} max={100} aria-label=\"Upload progress\" />",
           "importStatement": "import { Progress } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -16107,7 +16450,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {\n  max?: number\n  value?: number\n}\n\nexport const Progress = ({\n  className,\n  max = 100,\n  value = 0,\n  ...props\n}: ProgressProps) => {\n  const safeMax = max > 0 ? max : 100\n  const safeValue = Math.min(safeMax, Math.max(0, value))\n  const percentage = (safeValue / safeMax) * 100\n\n  return (\n    <div\n      aria-valuemax={safeMax}\n      aria-valuemin={0}\n      aria-valuenow={safeValue}\n      className={composeClassName('ui-progress', className)}\n      role=\"progressbar\"\n      {...props}\n    >\n      <span className=\"ui-progress__bar\" style={{ width: `${percentage}%` }} />\n    </div>\n  )\n}",
+          "source": "export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {\n  max?: number\n  value?: number\n}\n\nexport const Progress = ({\n  className,\n  max = 100,\n  value = 0,\n  ...props\n}: ProgressProps) => {\n  const safeMax = max > 0 ? max : 100\n  const safeValue = Math.min(safeMax, Math.max(0, value))\n  const percentage = (safeValue / safeMax) * 100\n\n  return (\n    <div\n      aria-valuemax={safeMax}\n      aria-valuemin={0}\n      aria-valuenow={safeValue}\n      className={composeClassName('ui-progress', className)}\n      role=\"progressbar\"\n      {...props}\n    >\n      <span\n        className=\"ui-progress__bar\"\n        data-slot=\"progress-indicator\"\n        style={{ width: `${percentage}%` }}\n      />\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -28114,8 +28457,14 @@
         {
           "attribute": "items",
           "defaultValue": "[]",
-          "description": "Defines the in-page navigation targets, labels, and optional heading depth from 1 through 6.",
-          "values": "Array<{ href, label, depth? }>"
+          "description": "Defines compact or rich in-page navigation items with optional hierarchy and supporting content.",
+          "values": "Array<{ href, label, depth?, index?, description? }>"
+        },
+        {
+          "attribute": "activationOffset",
+          "defaultValue": "96",
+          "description": "Sets the viewport-top offset in pixels used to activate sections during scrolling.",
+          "values": "number"
         },
         {
           "attribute": "class, className",
@@ -28130,7 +28479,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6\n\ninterface AnchorLink {\n  depth?: AnchorDepth\n  href: string\n  label: string\n}\n\nexport interface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  items?: AnchorLink[]\n}\n\nconst {\n  'aria-label': ariaLabel = 'On this page',\n  class: classProp = '',\n  className = '',\n  items = [],\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-anchor'\n], classProp, className)\n---\n\n<nav\n  aria-label={ariaLabel}\n  class:list={classList}\n  data-ui-anchor\n  {...passthrough}\n>\n  {items.length > 0 && (\n    <ol>\n      {items.map((item, index) => (\n        <li>\n          <a\n            data-active={index === 0 ? 'true' : 'false'}\n            data-depth={item.depth}\n            href={item.href}\n          >\n            {item.label}\n          </a>\n        </li>\n      ))}\n    </ol>\n  )}\n  <slot />\n</nav>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6\n\ninterface AnchorLink {\n  description?: string\n  depth?: AnchorDepth\n  href: string\n  index?: number | string\n  label: string\n}\n\nexport interface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  activationOffset?: number\n  items?: AnchorLink[]\n}\n\nconst {\n  'aria-label': ariaLabel = 'On this page',\n  activationOffset = 96,\n  class: classProp = '',\n  className = '',\n  items = [],\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-anchor'\n], classProp, className)\n---\n\n<nav\n  aria-label={ariaLabel}\n  class:list={classList}\n  data-ui-anchor\n  data-ui-anchor-offset={Math.max(0, activationOffset)}\n  {...passthrough}\n>\n  {items.length > 0 && (\n    <ol>\n      {items.map((item, index) => (\n        <li>\n          <a\n            aria-current={index === 0 ? 'location' : undefined}\n            data-active={index === 0 ? 'true' : 'false'}\n            data-depth={item.depth}\n            href={item.href}\n          >\n            {item.index !== undefined && (\n              <span class=\"ui-anchor__index\">{item.index}</span>\n            )}\n            <span class=\"ui-anchor__content\">\n              <span class=\"ui-anchor__label\">{item.label}</span>\n              {item.description && (\n                <span class=\"ui-anchor__description\">{item.description}</span>\n              )}\n            </span>\n          </a>\n        </li>\n      ))}\n    </ol>\n  )}\n  <slot />\n</nav>\n",
       "category": "Navigation",
       "collections": [
         "Disclosure and navigation"
@@ -28138,7 +28487,7 @@
       "dependencies": [],
       "description": "Links to sections within a long page and exposes the page’s local structure.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -28149,6 +28498,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Anchor items={[{ href: \"#installation\", label: \"Installation\", depth: 2 }, { href: \"#usage\", label: \"Usage\", depth: 3 }]} />",
           "importStatement": "import { Anchor } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -28165,27 +28518,35 @@
               "type": "string"
             },
             {
+              "name": "activationOffset",
+              "optional": true,
+              "type": "number"
+            },
+            {
               "name": "items",
               "optional": true,
               "type": "AnchorLink[]"
             }
           ],
           "propsExtends": "HTMLAttributes<'nav'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6\n\ninterface AnchorLink {\n  depth?: AnchorDepth\n  href: string\n  label: string\n}\n\nexport interface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  items?: AnchorLink[]\n}\n\nconst {\n  'aria-label': ariaLabel = 'On this page',\n  class: classProp = '',\n  className = '',\n  items = [],\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-anchor'\n], classProp, className)\n---\n\n<nav\n  aria-label={ariaLabel}\n  class:list={classList}\n  data-ui-anchor\n  {...passthrough}\n>\n  {items.length > 0 && (\n    <ol>\n      {items.map((item, index) => (\n        <li>\n          <a\n            data-active={index === 0 ? 'true' : 'false'}\n            data-depth={item.depth}\n            href={item.href}\n          >\n            {item.label}\n          </a>\n        </li>\n      ))}\n    </ol>\n  )}\n  <slot />\n</nav>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6\n\ninterface AnchorLink {\n  description?: string\n  depth?: AnchorDepth\n  href: string\n  index?: number | string\n  label: string\n}\n\nexport interface Props extends HTMLAttributes<'nav'> {\n  class?: string | null\n  className?: string\n  activationOffset?: number\n  items?: AnchorLink[]\n}\n\nconst {\n  'aria-label': ariaLabel = 'On this page',\n  activationOffset = 96,\n  class: classProp = '',\n  className = '',\n  items = [],\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-anchor'\n], classProp, className)\n---\n\n<nav\n  aria-label={ariaLabel}\n  class:list={classList}\n  data-ui-anchor\n  data-ui-anchor-offset={Math.max(0, activationOffset)}\n  {...passthrough}\n>\n  {items.length > 0 && (\n    <ol>\n      {items.map((item, index) => (\n        <li>\n          <a\n            aria-current={index === 0 ? 'location' : undefined}\n            data-active={index === 0 ? 'true' : 'false'}\n            data-depth={item.depth}\n            href={item.href}\n          >\n            {item.index !== undefined && (\n              <span class=\"ui-anchor__index\">{item.index}</span>\n            )}\n            <span class=\"ui-anchor__content\">\n              <span class=\"ui-anchor__label\">{item.label}</span>\n              {item.description && (\n                <span class=\"ui-anchor__description\">{item.description}</span>\n              )}\n            </span>\n          </a>\n        </li>\n      ))}\n    </ol>\n  )}\n  <slot />\n</nav>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
+            "activation-offset",
             "aria-label",
             "data-ui-anchor",
+            "data-ui-anchor-offset",
             "items",
+            "activationOffset",
             "class, className",
             "...native attributes"
           ],
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-anchor></lumen-anchor>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -28194,17 +28555,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Anchor: {\n    baseClassName: 'ui-anchor',\n    defaults: { 'aria-label': 'On this page', 'data-ui-anchor': '' },\n    tagName: 'lumen-anchor'\n  }",
+          "source": "Anchor: {\n    baseClassName: 'ui-anchor',\n    defaults: {\n      'aria-label': 'On this page',\n      'activation-offset': '96',\n      'data-ui-anchor': '',\n      'data-ui-anchor-offset': '96'\n    },\n    tagName: 'lumen-anchor'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-anchor"
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Anchor items={[{ href: \"#installation\", label: \"Installation\", depth: 2 }, { href: \"#usage\", label: \"Usage\", depth: 3 }]} />",
           "importStatement": "import { Anchor } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
+            {
+              "name": "activationOffset",
+              "optional": true,
+              "type": "number"
+            },
             {
               "name": "items",
               "optional": true,
@@ -28212,7 +28582,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'nav'>",
-          "source": "export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {\n  items?: AnchorLink[]\n}\n\nexport const Anchor = ({\n  'aria-label': ariaLabel = 'On this page',\n  children,\n  className,\n  items = emptyAnchorLinks,\n  ...props\n}: AnchorProps) => (\n  <nav\n    aria-label={ariaLabel}\n    className={composeClassName('ui-anchor', className)}\n    data-ui-anchor\n    {...props}\n  >\n    {items.length > 0 && (\n      <ol>\n        {items.map((item, index) => (\n          <li key={item.href}>\n            <a\n              data-active={index === 0 ? 'true' : 'false'}\n              data-depth={item.depth}\n              href={item.href}\n            >\n              {item.label}\n            </a>\n          </li>\n        ))}\n      </ol>\n    )}\n    {children}\n  </nav>\n)",
+          "source": "export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {\n  activationOffset?: number\n  items?: AnchorLink[]\n}\n\nexport const Anchor = ({\n  'aria-label': ariaLabel = 'On this page',\n  activationOffset = 96,\n  children,\n  className,\n  items = emptyAnchorLinks,\n  ...props\n}: AnchorProps) => {\n  const anchorRef = createAnchorRef()\n\n  return (\n    <nav\n      aria-label={ariaLabel}\n      className={composeClassName('ui-anchor', className)}\n      data-ui-anchor\n      data-ui-anchor-offset={Math.max(0, activationOffset)}\n      ref={anchorRef}\n      {...props}\n    >\n      {items.length > 0 && (\n        <ol>\n          {items.map((item, index) => (\n            <li key={item.href}>\n              <a\n                aria-current={index === 0 ? 'location' : undefined}\n                data-active={index === 0 ? 'true' : 'false'}\n                data-depth={item.depth}\n                href={item.href}\n              >\n                {item.index !== undefined && (\n                  <span className=\"ui-anchor__index\">{item.index}</span>\n                )}\n                <span className=\"ui-anchor__content\">\n                  <span className=\"ui-anchor__label\">{item.label}</span>\n                  {item.description && (\n                    <span className=\"ui-anchor__description\">{item.description}</span>\n                  )}\n                </span>\n              </a>\n            </li>\n          ))}\n        </ol>\n      )}\n      {children}\n    </nav>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -28255,6 +28625,11 @@
           "name": "className",
           "optional": true,
           "type": "string"
+        },
+        {
+          "name": "activationOffset",
+          "optional": true,
+          "type": "number"
         },
         {
           "name": "items",
@@ -31178,12 +31553,12 @@
     }
   ],
   "docs": {
-    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\nBrand marks are intentionally excluded from the default Lucide catalog. When a product needs them,\ninstall and register the optional pack once before rendering a namespaced icon:\n\n```ts\nimport { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'\n\nregisterLumenBrandIcons()\n```\n\nThen use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,\n`brand:figma`, `brand:linkedin`, `brand:whatsapp`, or `brand:youtube`, through the existing Astro,\nReact, or Web Component `Icon` API. The package also provides `brand:x` as an alias for\n`brand:x-twitter`.\n\nBrand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.\nThey still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as\nthe default icon catalog.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://meta` and `lumen://diagnostics` to identify and verify the snapshot.\n2. Read `lumen://rules`.\n3. Search for the use case with `lumen_search`, passing the target `framework` when known.\n4. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n5. Follow its framework behavior setup and hook/controller contract.\n6. Read related multi-component guidance with `lumen_get_recipe`.\n7. Request `detail: \"source\"` only when the usage contract is insufficient.\n8. Read `lumen://tokens` before introducing custom styling.\n9. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades to identify contracts that need refreshing.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://meta`, `lumen://catalog-manifest`, `lumen://diagnostics`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"@santi020k/lumen-react/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nKeep the layer prelude first. It places Tailwind base styles below Lumen components and Tailwind\nutilities above them, so consumer spacing, display, radius, width, and responsive visibility\nclasses override Lumen defaults predictably.\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n`Stat` defaults to a `div`. Choose `as=\"article\"` for a self-contained metric with supporting\ncontent, or `as=\"section\"` for a labeled region. Do not use a semantic root solely for styling.\nIts visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and\nkeep glass selective.\n\nFor long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional\nheading `depth` when hierarchy matters. Use `ScrollProgress` for document position; keep `Progress`\nfor application-controlled task completion. `Pill` accepts `neutral`, `brand`, and `outline`\nvariants, plus native link and count composition.\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\nThe React package entry is a client boundary. In Next.js, it can be imported by a Server Component\nwithout evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen\nsubtree becomes a Client Component boundary. Vite and other client-rendered React applications use\nthe same entry without additional setup.\n`Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.\n`Button asChild` composes the button contract onto one child element, while `Input visualSize` controls\npresentation without shadowing the native numeric `size` attribute.\n`Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\nFor React Hook Form, spread `register()` directly onto native-backed controls. Install\n`@santi020k/lumen-react-hook-form` only for controlled composites such as `Select`, `DatePicker`,\n`InputOTP`, and `ListBox`. Do not combine React Hook Form and `useFormValidation` unless the\napplication intentionally coordinates two validation sources.\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\nPut input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in\n`FormData`, validity, disabled state, focus, and reset through form-associated custom-element\nbehavior with a native-control fallback. Do not generate `<lumen-form>` as the submission\ncontainer.\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `BarChart`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,\n`Container`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,\n`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,\n`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,\n`PasswordField`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`, and `VisuallyHidden`.\n\n## Product Recipes\n\n- Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,\n  `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with\n  `lumen add <recipe>` for Astro, or add `--target react` / `--target elements`. Keep the generated\n  shared template stylesheet, then replace sample data and routes while preserving public Lumen\n  components, semantic tokens, accessible names, focus paths, and responsive navigation.\n- Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical\n  comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small\n  part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,\n  resampling, model evaluation, and domain calculations in application code. Keep `showTable`\n  enabled unless the same values are already available in a nearby semantic table. Prefer a bar\n  chart when precise slice comparison matters or the pie would exceed roughly seven categories.\n  Use `Chart` as the custom SVG/canvas escape hatch.\n  Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`\n  and `formatValue` for localized axes, SVG titles, and data tables. Choose\n  `presentation=\"bare\"` inside an existing Card, `categoryWidth` for long horizontal labels,\n  `markers=\"auto\"` or a numeric marker step for dense lines, and `emptyLabel` for actionable\n  source-specific guidance.\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own. Install and register\n  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as\n  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`\n  slot. Astro reports unknown named icons during development instead of failing silently.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\nlumen doctor --json\nlumen init --framework astro --tailwind\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
-    "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"239\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A multi-framework UI system with 149 accessible primitives for Astro, React, and Web Components.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, and a machine-readable registry ship alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component\nexamples, and API details.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## License\n\nLumen is available under the [MIT License](./LICENSE).\n"
+    "aiUsage": "# AI Usage Guide\n\nUse this guide when an AI agent is building an app with Lumen or updating examples that teach\nanother agent how to use the library.\n\n## Install the Lumen Agent Skill\n\nLumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe source lives in [`skills/lumen-ui`](../skills/lumen-ui). The skill provides the durable\nframework-selection, component-composition, theming, accessibility, and verification workflow.\nUse it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific\nrequests.\n\nThe skill and MCP server complement each other: the skill explains how to work, while\n`@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,\nsource, tokens, resources, and rules.\n\n## Pick the Right Package\n\nUse the framework requested by the user. Every adapter shares the same Lumen foundation.\n\n| App Target | Install | Import Components From | Load Styles From |\n| --- | --- | --- | --- |\n| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |\n| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |\n| React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |\n| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |\n| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |\n| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |\n\nEach framework package includes the shared foundation. Install `@santi020k/lumen` separately only\nwhen you need its framework-neutral CLI or registry metadata.\n\nBrand marks are intentionally excluded from the default Lucide catalog. When a product needs them,\ninstall and register the optional pack once before rendering a namespaced icon:\n\n```ts\nimport { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'\n\nregisterLumenBrandIcons()\n```\n\nThen use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,\n`brand:figma`, `brand:linkedin`, `brand:whatsapp`, or `brand:youtube`, through the existing Astro,\nReact, or Web Component `Icon` API. The package also provides `brand:x` as an alias for\n`brand:x-twitter`.\n\nBrand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.\nThey still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as\nthe default icon catalog.\n\n## MCP-Assisted Workflow\n\nConnect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns\nvalidated structured content as well as readable text, so agents can select components without\nscraping documentation.\n\n```bash\ncodex mcp add lumen -- npx -y @santi020k/lumen-mcp\n```\n\nFor Codex project configuration:\n\n```toml\n[mcp_servers.lumen]\nenabled = true\ncommand = \"npx\"\nargs = [\"-y\", \"@santi020k/lumen-mcp\"]\n```\n\nUse this sequence:\n\n1. Read `lumen://meta` and `lumen://diagnostics` to identify and verify the snapshot.\n2. Read `lumen://rules`.\n3. Search for the use case with `lumen_search`, passing the target `framework` when known.\n4. Inspect the selected framework with `lumen_get_component` and `detail: \"usage\"`.\n5. Follow its framework behavior setup and hook/controller contract.\n6. Read related multi-component guidance with `lumen_get_recipe`.\n7. Request `detail: \"source\"` only when the usage contract is insufficient.\n8. Read `lumen://tokens` before introducing custom styling.\n9. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades to identify contracts that need refreshing.\n\nExample framework-aware component request:\n\n```json\n{\n  \"name\": \"lumen_get_component\",\n  \"arguments\": {\n    \"name\": \"DateRangePicker\",\n    \"framework\": \"react\",\n    \"detail\": \"usage\"\n  }\n}\n```\n\nStable resources are available at `lumen://rules`, `lumen://tokens`, `lumen://components`,\n`lumen://meta`, `lumen://catalog-manifest`, `lumen://diagnostics`,\n`lumen://components/{name}`, and `lumen://recipes/{name}`. See\n[`packages/mcp/README.md`](../packages/mcp/README.md) for Claude Desktop, Cursor, generic stdio,\nlocal repository, and programmatic examples.\n\n## Minimal Setup\n\nImport the stylesheet once in the app's global CSS, root layout, or app entry.\n\n```css\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nIf Tailwind is present, keep both imports in the same shared CSS entry.\n\n```css\n@import \"@santi020k/lumen-react/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-react/styles.css\";\n```\n\nKeep the layer prelude first. It places Tailwind base styles below Lumen components and Tailwind\nutilities above them, so consumer spacing, display, radius, width, and responsive visibility\nclasses override Lumen defaults predictably.\n\nAstro apps should mount `UIPrimitives` once in the root layout when using interactive primitives\nsuch as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or\ntoasts. Do not place `UIPrimitives` in each component example or next to each primitive instance;\none root include enhances all matching `data-ui-*` markup on the page.\n\n```astro\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />\n```\n\n## Astro\n\nUse direct named imports from `@santi020k/lumen-astro`.\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button type=\"submit\">Subscribe</Button>\n</Card>\n```\n\n`Stat` defaults to a `div`. Choose `as=\"article\"` for a self-contained metric with supporting\ncontent, or `as=\"section\"` for a labeled region. Do not use a semantic root solely for styling.\nIts visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and\nkeep glass selective.\n\nFor long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional\nheading `depth`, `index`, and `description` when hierarchy matters. Use `activationOffset` for fixed\napplication headers. Use `ScrollProgress` for document position; keep `Progress` for\napplication-controlled task completion. In Astro, dispatch `ui:progress-change` with\n`{ value, max? }` from the `Progress` root when browser state changes after hydration. `Pill`\naccepts `neutral`, `brand`, and `outline`\nvariants, plus native link and count composition.\n\n## React\n\nReact components share the same visual classes and data attributes as Astro components. For\nbehavior-heavy primitives, use the React behavior hooks from `@santi020k/lumen-react` (`useDialog`,\n`usePopover`, `useDropdownMenu`, `useTabs`, `useSelect`, `useToast`, and `useTooltip`), which track\nthe Astro runtime's ARIA, keyboard, Escape, dismissal, and toast controller semantics.\n\nThe React package entry is a client boundary. In Next.js, it can be imported by a Server Component\nwithout evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen\nsubtree becomes a Client Component boundary. Vite and other client-rendered React applications use\nthe same entry without additional setup.\n`Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.\n`Button asChild` composes the button contract onto one child element, while `Input visualSize` controls\npresentation without shadowing the native numeric `size` attribute.\n`Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Subscribe</Button>\n    </Card>\n  )\n}\n```\n\nFor React Hook Form, spread `register()` directly onto native-backed controls. Install\n`@santi020k/lumen-react-hook-form` only for controlled composites such as `Select`, `DatePicker`,\n`InputOTP`, and `ListBox`. Do not combine React Hook Form and `useFormValidation` unless the\napplication intentionally coordinates two validation sources.\n\n## Web Components\n\nRegister custom elements once, then use `lumen-*` tags in HTML. The elements adapter includes\ninteractive behavior parity for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs,\nSelect, ThemeBuilder, Toast, Tooltip, forms, RichTextEditor, Schedule, and VirtualList: selection,\nvalidation, rich text command, context menu, schedule drag/drop, theme, and range events, ARIA\nstate, roving/listbox keyboard paths, Escape/outside dismissal, focus return/trapping, native\nselect form participation, and the same toast controller events as the Astro runtime.\n\n```html\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button type=\"submit\">Subscribe</lumen-button>\n</lumen-card>\n```\n\nPut input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in\n`FormData`, validity, disabled state, focus, and reset through form-associated custom-element\nbehavior with a native-control fallback. Do not generate `<lumen-form>` as the submission\ncontainer.\n\n## Component Selection\n\nThe shared catalog includes:\n\n`Accordion`, `Alert`, `AlertDialog`, `Agenda`, `AspectRatio`, `Attachment`, `Autocomplete`,\n`Avatar`, `Badge`, `BarChart`, `Breadcrumb`, `Bubble`, `Button`, `ButtonGroup`, `Calendar`, `Card`,\n`Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,\n`Container`, `ColorPicker`,\n`ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,\n`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,\n`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,\n`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,\n`PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,\n`ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,\n`Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,\n`TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and\n`VirtualList`, and `VisuallyHidden`.\n\n## Product Recipes\n\n- Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,\n  `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with\n  `lumen add <recipe>` for Astro, or add `--target react` / `--target elements`. Keep the generated\n  shared template stylesheet, then replace sample data and routes while preserving public Lumen\n  components, semantic tokens, accessible names, focus paths, and responsive navigation.\n- Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical\n  comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small\n  part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,\n  resampling, model evaluation, and domain calculations in application code. Keep `showTable`\n  enabled unless the same values are already available in a nearby semantic table. Prefer a bar\n  chart when precise slice comparison matters or the pie would exceed roughly seven categories.\n  Use `Chart` as the custom SVG/canvas escape hatch.\n  Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`\n  and `formatValue` for localized axes, SVG titles, and data tables. Choose\n  `presentation=\"bare\"` inside an existing Card, `categoryWidth` for long horizontal labels,\n  `markers=\"auto\"` or a numeric marker step for dense lines, and `emptyLabel` for actionable\n  source-specific guidance.\n- Use `Icon name=\"search\"` or any Lucide icon name for standard interface pictograms. Kebab-case\n  names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only\n  when the icon carries meaning on its own. Install and register\n  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as\n  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`\n  slot. Astro reports unknown named icons during development instead of failing silently.\n- Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and\n  event planning screens. Mark slots with `data-ui-schedule-slot` and events with\n  `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.\n  `Calendar` renders a hidden input plus selectable date grid; Astro `UIPrimitives` and registered\n  Web Components wire month navigation and roving keyboard focus directly, while React apps can use\n  the `Calendar` component or `useCalendar` for the same date selection contract.\n  Astro `UIPrimitives` and registered Web Components bind schedule drag/drop directly; React apps\n  can use `useSchedule` for `rootProps`, `getEventProps`, `getSlotProps`, and `ui:schedule-change`\n  parity. Use `createScheduleSlots`, `moveScheduleEvent`, and `expandRecurringScheduleEvent` from\n  `@santi020k/lumen-core` for reusable schedule state; use `getScheduleConflicts` and\n  `canPlaceScheduleEvent` before committing drag/drop changes. Persist local schedule edits with\n  `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any\n  `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for\n  snap-to-grid resize handles.\n- Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data\n  collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and\n  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`\n  and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the\n  rendered range changes. Use `createDataViewState`,\n  `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for\n  saved views, filtering, sorting, pagination, and virtualization math. Use\n  `createDataViewStorageKey`, `saveDataViewState`, and `loadDataViewState` when saved views should\n  survive navigation or reloads. Use `pinDataViewColumn`, `unpinDataViewColumn`,\n  `toggleDataViewSelection`, `createDataViewSearchParams`, and `createDataViewServerRequest` when\n  connecting dense views to router state or server-backed data.\n- Use `Resizable` for split-pane editors, dashboards, inspectors, and side-by-side review layouts.\n  Astro `UIPrimitives` and registered Web Components generate separator handles and pane sizing\n  directly; React apps can use the `Resizable` component or `useResizable` for pointer, keyboard,\n  min/max, and double-click reset parity.\n- Use `ThemeBuilder`, `ColorPicker`, `Card`, `Button`, and `Input` to build token preview and export\n  tools. Add `data-ui-theme-brand-hue`, `data-ui-theme-accent-hue`, `data-ui-theme-scheme`,\n  `data-ui-theme-mode`, manual color inputs such as `data-ui-theme-primary-hex`, and\n  `data-ui-theme-target` for scoped live previews. Add `data-ui-theme-export-format`,\n  `data-ui-theme-export`, and `data-ui-theme-output` to copy CSS, Figma variable JSON, or design\n  token JSON. Astro `UIPrimitives` and registered Web Components wire those controls directly;\n  React apps can use `useThemeBuilder` for the same tokens, exports, and control props. Use\n  `createThemePalette`, `createThemeBuilderTokens`, `exportThemeBuilderValue`, `exportThemeCss`,\n  `parseThemeCss`, and `scoreThemeContrast`\n  for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,\n  and `tuneThemeContrast` when generated palettes need readable foreground repair.\n- Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.\n  Controls with `data-ui-editor-command` dispatch browser editing commands and emit\n  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing\n  commands. Editable surfaces support common formatting shortcuts, synchronize toggle\n  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`\n  and registered Web Components bind those controls directly; React apps can use\n  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.\n  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor\n  package in the app and bridge toolbar buttons through the emitted command event instead of adding\n  the editor engine to Lumen.\n- Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,\n  and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that\n  should reflect native Constraint Validation API state into `Field` error slots on blur and submit.\n  For `InputOTP`, Astro `UIPrimitives` and registered Web Components render/sync a real native input\n  with visual OTP segments; React apps can use the `InputOTP` component or `useInputOTP` for the\n  same sanitization, paste handling, and caret navigation.\n  For `DateRangePicker`, Astro `UIPrimitives` and registered Web Components sync the paired native\n  date input `min`/`max` constraints directly; React apps can use `useDateRangePicker` for the same\n  start/end syncing props.\n  Use native attributes such as `required`, `pattern`, `min`, `max`, and `type`; add\n  `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or\n  `data-error-custom` when a control needs custom copy. Listen for `ui:validate` to call\n  `control.setCustomValidity(message)` before the runtime reads validity, and listen for\n  `ui:invalid` or `ui:valid` on the form for submission state. Astro `UIPrimitives` and registered\n  Web Components bind `data-ui-form` directly; React apps can use `useFormValidation` with `Field`\n  to get the same control props, CustomEvents, and error slot updates.\n- Use `Toast` for transient feedback. Static `<Toast>` markup works without\n  JavaScript. With Astro `UIPrimitives` or registered Web Components, create toasts with\n  `window.LumenToast.create(detail)`, `LumenToast.create(detail)` from `@santi020k/lumen-elements`,\n  or `document.dispatchEvent(new CustomEvent('ui:toast', { detail }))`; update them with\n  `.update(id, detail)` or `ui:toast-update`; and dismiss them with `.dismiss(id?)` or\n  `ui:toast-dismiss`. `detail` supports `title`, `description`, `variant`, `duration`, `placement`,\n  `max`, and `action: { label, value }`. Destructive toasts use `role=\"alert\"`; other variants use\n  `role=\"status\"`. Runtime toasts pause their timeout on hover or focus, and Escape dismisses the\n  focused toast.\n\n## Runtime CustomEvents\n\nWhen `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen\nuses these CustomEvents:\n\n| Event | Target | Detail | Fires When |\n| --- | --- | --- | --- |\n| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |\n| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |\n| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |\n| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |\n| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |\n| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |\n| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \\| 'manual', scheme: 'dark' \\| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |\n| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \\| 'figma' \\| 'tokens', tokens: Record<string, string> \\| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |\n| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |\n| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |\n| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |\n| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |\n| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |\n| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |\n| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |\n\n## Registry Helper\n\n`@santi020k/lumen` exports typed component, recipe, and documentation metadata from\n`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components\nare addressable by name, including kebab-case aliases such as `data-table`:\n\n```bash\nlumen list\nlumen show Button\nlumen show data-table\nlumen add Button\nlumen add Button --target react\nlumen add Button --target elements\nlumen add data-table\nlumen show scheduler\nlumen add scheduler\nlumen add scheduler --target react\nlumen add scheduler --target elements\nlumen add scheduler --dry-run\nlumen add scheduler --fail-on-conflict\nlumen add scheduler --force\nlumen add scheduler --merge\nlumen list --registry ./registry/lumen.registry.json\nlumen add custom-recipe --registry ./registry/custom.registry.json\nlumen add private-recipe --registry https://example.com/lumen.registry.json --registry-token \"$TOKEN\"\nlumen install\nlumen doctor --json\nlumen init --framework astro --tailwind\n```\n\n`lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper\nor `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,\n`--target react`, and `--target elements`; external registry inline files keep their authored paths\nand sources.\n\nBefore inventing a wrapper or custom class pattern, check the component source in\n`packages/astro/components`. Astro is the reference implementation for props, class names, data\nattributes, and accessible markup.\n\n## Styling Rules for Generated Code\n\n- Do not require consumers to configure Tailwind for Lumen components.\n- Prefer component props and composition before adding custom CSS.\n- Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,\n  `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,\n  `accent`, `success`, `warning`, and `danger`.\n- Use `glass` as a boolean prop or attribute for glass surfaces when supported.\n- Preserve semantic labels, keyboard paths, focus states, and native form attributes.\n\n## Figma Handoff\n\nUse `exportThemeFigmaVariables` from `@santi020k/lumen-core/figma` when a design workflow needs\nFigma variable-friendly color values, and `exportThemeDesignTokens` when exporting standard design\ntoken JSON for token importers. See [docs/figma.md](figma.md) for the recommended Figma workflow.\n\n## When Editing This Repo\n\n- Shared contracts belong in `packages/core`.\n- Astro implementation and standalone CSS belong in `packages/astro`.\n- React-specific primitives belong in `packages/react`.\n- Web Component-specific primitives belong in `packages/elements`.\n- Update the relevant package README when public usage changes.\n- Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component\n  contracts change.\n",
+    "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"239\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A multi-framework UI system with 150 accessible primitives for Astro, React, and Web Components.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, and a machine-readable registry ship alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component\nexamples, and API details.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## License\n\nLumen is available under the [MIT License](./LICENSE).\n"
   },
   "meta": {
-    "catalogHash": "1bac278234fc1e51d609f4e88ee5d09a9858084d49b83ebc2d60818411a2d70e",
-    "componentCount": 149,
+    "catalogHash": "3a6a2db6c7c882c449bca37b80ff5cc06b152b3a5b55c91e0c29c2ea58e45af4",
+    "componentCount": 150,
     "packages": [
       "@santi020k/lumen-astro",
       "@santi020k/lumen-react",

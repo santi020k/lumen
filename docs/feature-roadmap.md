@@ -70,6 +70,10 @@ surface; React and Web Components expose the same class and data contracts.
   React components and hooks, and Elements controller.
 - Version 1 compatibility cleanup: `ui:data-table-selection-change` is the only DataTable selection
   event, and glass-aware surfaces use the `glass` prop or attribute across all adapters.
+- Sibling application navigation and clipboard contracts: `Progress` supports hydrated updates,
+  `Anchor` supports rich items plus accessible deterministic scroll state, `Item` supports semantic
+  hosts, and `CopyButton` copies arbitrary values or referenced content with event and Toast
+  feedback across Astro, React, and Elements.
 
 ## Next
 

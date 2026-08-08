@@ -159,8 +159,11 @@ Its visual variants are `default`, `accent`, and `glass`; reserve `accent` for f
 keep glass selective.
 
 For long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional
-heading `depth` when hierarchy matters. Use `ScrollProgress` for document position; keep `Progress`
-for application-controlled task completion. `Pill` accepts `neutral`, `brand`, and `outline`
+heading `depth`, `index`, and `description` when hierarchy matters. Use `activationOffset` for fixed
+application headers. Use `ScrollProgress` for document position; keep `Progress` for
+application-controlled task completion. In Astro, dispatch `ui:progress-change` with
+`{ value, max? }` from the `Progress` root when browser state changes after hydration. `Pill`
+accepts `neutral`, `brand`, and `outline`
 variants, plus native link and count composition.
 
 ## React
@@ -239,7 +242,7 @@ The shared catalog includes:
 `DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
 `Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
 `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,
-`PasswordField`, `PieChart`, `Popover`, `Progress`, `RadioGroup`, `Resizable`, `RichTextEditor`,
+`PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
 `Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
 `TimeField`, `Toast`, `Toggle`, `ToggleGroup`, `Tooltip`, `Tree`, `TreeGrid`, `Typography`, and

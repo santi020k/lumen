@@ -1376,6 +1376,150 @@ const initCodeCopy = (scope: ParentNode): void => {
   }
 }
 
+const getCopyButtonValue = (button: HTMLElement): string | undefined => {
+  if (button.hasAttribute('data-copy-value')) {
+    return button.dataset.copyValue
+  }
+
+  const selector = button.dataset.copyTarget
+
+  if (!selector) return undefined
+
+  const target = document.querySelector<HTMLElement>(selector)
+
+  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+    return target.value
+  }
+
+  return target?.innerText ?? target?.textContent ?? undefined
+}
+
+const initCopyButtons = (scope: ParentNode): void => {
+  for (const button of scope.querySelectorAll<HTMLButtonElement>(
+    '[data-ui-copy-button]'
+  )) {
+    if (button.dataset.uiCopyButtonBound === 'true') continue
+
+    button.dataset.uiCopyButtonBound = 'true'
+
+    let resetTimer = 0
+
+    button.addEventListener('click', async () => {
+      const label = button.dataset.copyLabel ?? 'Copy to clipboard'
+
+      const copiedLabel = button.dataset.copyCopiedLabel ??
+        'Copied to clipboard'
+
+      const errorLabel = button.dataset.copyErrorLabel ??
+        'Could not copy to clipboard'
+
+      try {
+        const value = getCopyButtonValue(button)
+
+        if (value === undefined || !navigator.clipboard) {
+          throw new Error(errorLabel)
+        }
+
+        await navigator.clipboard.writeText(value)
+
+        button.dataset.state = 'copied'
+
+        button.setAttribute('aria-label', copiedLabel)
+
+        button.dispatchEvent(new CustomEvent('ui:copy-success', {
+          bubbles: true,
+          detail: { value }
+        }))
+
+        getCodeCopyLiveRegion().textContent = copiedLabel
+
+        if (button.dataset.copyToast === 'true') {
+          document.dispatchEvent(new CustomEvent('ui:toast', {
+            detail: { title: copiedLabel, variant: 'success' }
+          }))
+        }
+      } catch (error) {
+        button.dataset.state = 'error'
+
+        button.setAttribute('aria-label', errorLabel)
+
+        button.dispatchEvent(new CustomEvent('ui:copy-error', {
+          bubbles: true,
+          detail: { error }
+        }))
+
+        getCodeCopyLiveRegion().textContent = errorLabel
+
+        if (button.dataset.copyToast === 'true') {
+          document.dispatchEvent(new CustomEvent('ui:toast', {
+            detail: { title: errorLabel, variant: 'destructive' }
+          }))
+        }
+      }
+
+      window.clearTimeout(resetTimer)
+
+      const parsedResetAfter = Number(button.dataset.copyResetAfter)
+
+      const resetAfter = Number.isFinite(parsedResetAfter) ?
+        Math.max(0, parsedResetAfter) :
+        2000
+
+      resetTimer = window.setTimeout(() => {
+        button.dataset.state = 'idle'
+
+        button.setAttribute('aria-label', label)
+
+        getCodeCopyLiveRegion().textContent = ''
+      }, resetAfter)
+    })
+  }
+}
+
+interface ProgressChangeDetail {
+  max?: number
+  value?: number
+}
+
+const updateProgress = (
+  root: HTMLElement,
+  { max, value }: ProgressChangeDetail
+): void => {
+  const currentMax = Number(root.getAttribute('aria-valuemax')) || 100
+  const safeMax = max && max > 0 ? max : currentMax
+  const currentValue = Number(root.getAttribute('aria-valuenow')) || 0
+
+  const safeValue = Math.min(
+    safeMax, Math.max(0, Number.isFinite(value) ? (value ?? 0) : currentValue)
+  )
+
+  const indicator = root.querySelector<HTMLElement>(
+    '[data-slot="progress-indicator"]'
+  )
+
+  root.setAttribute('aria-valuemax', String(safeMax))
+
+  root.setAttribute('aria-valuenow', String(safeValue))
+
+  if (indicator) indicator.style.width = `${(safeValue / safeMax) * 100}%`
+}
+
+const initProgress = (scope: ParentNode): void => {
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-progress]')) {
+    if (root.dataset.uiProgressBound === 'true') continue
+
+    root.dataset.uiProgressBound = 'true'
+
+    root.addEventListener('ui:progress-change', event => {
+      const detail = event instanceof CustomEvent ?
+        (event.detail as ProgressChangeDetail) :
+        {}
+
+      updateProgress(root, detail)
+    })
+  }
+}
+
 const filterItems = (input: HTMLInputElement, items: HTMLElement[]): void => {
   const query = input.value.trim().toLowerCase()
 
@@ -4415,51 +4559,82 @@ const initFileUploads = (scope: ParentNode): void => {
 }
 
 const initAnchors = (scope: ParentNode): void => {
-  if (typeof IntersectionObserver === 'undefined') return
-
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
     if (root.dataset.uiBound === 'true') continue
 
     root.dataset.uiBound = 'true'
 
     const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-    const byId = new Map<string, HTMLAnchorElement>()
-    const targets: HTMLElement[] = []
+    const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
 
     for (const link of links) {
       const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
       const target = id ? document.getElementById(id) : null
 
       if (target) {
-        byId.set(id, link)
-
-        targets.push(target)
+        targets.push({ link, target })
       }
     }
 
     if (!targets.length) continue
 
-    const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
+    const setActive = (active: HTMLAnchorElement): void => {
+      for (const link of links) {
+        const isActive = link === active
 
-        for (const link of links) {
-          link.dataset.active = 'false'
+        link.dataset.active = String(isActive)
+
+        if (isActive) {
+          link.setAttribute('aria-current', 'location')
+        } else {
+          link.removeAttribute('aria-current')
         }
-
-        const active = byId.get(entry.target.id)
-
-        if (active) {
-          active.dataset.active = 'true'
-        }
-
-        break
       }
-    }, { rootMargin: '0px 0px -70% 0px', threshold: 0 })
-
-    for (const target of targets) {
-      observer.observe(target)
     }
+
+    const update = (): void => {
+      const scrollingElement = document.scrollingElement ?? document.documentElement
+
+      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
+        scrollingElement.scrollHeight - 1
+
+      const offset = Number(root.dataset.uiAnchorOffset) || 0
+      let active = targets[0]?.link
+
+      if (atEnd) {
+        active = targets.at(-1)?.link
+      } else {
+        for (const item of targets) {
+          if (item.target.getBoundingClientRect().top > offset) break
+
+          active = item.link
+        }
+      }
+
+      if (active) setActive(active)
+    }
+
+    let frame = 0
+
+    const requestUpdate = (): void => {
+      if (frame) return
+
+      frame = requestAnimationFrame(() => {
+        frame = 0
+
+        update()
+      })
+    }
+
+    for (const { link } of targets) {
+      link.addEventListener('click', () => setActive(link))
+    }
+
+    window.addEventListener('resize', requestUpdate, { passive: true })
+
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+
+    update()
   }
 }
 
@@ -5068,6 +5243,10 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initDatePickers(scope)
 
   initCodeCopy(scope)
+
+  initCopyButtons(scope)
+
+  initProgress(scope)
 
   initCarousel(scope)
 

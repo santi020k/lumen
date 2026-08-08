@@ -4,12 +4,14 @@ import type { HTMLAttributes } from 'astro/types'
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
+  as?: 'article' | 'div' | 'li' | 'section'
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
 }
 
 const {
+  as: Tag = 'div',
   class: classProp = '',
   className = '',
   glass = false,
@@ -24,9 +26,10 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<div
+<Tag
   class:list={classList}
+  data-slot="item"
   {...passthrough}
 >
   <slot />
-</div>
+</Tag>

@@ -96,13 +96,14 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 
 ## Long-form navigation
 
-`Anchor` accepts an optional heading `depth` so article tables of contents can preserve their
-hierarchy. `ScrollProgress` derives reading progress from the document and pins the indicator to
-the top or bottom viewport edge. Both use the single root `UIPrimitives` runtime.
+`Anchor` accepts heading `depth`, `index`, and `description` metadata plus an `activationOffset`.
+Its current link stays synchronized on click and scroll, including at the end of the document.
+`ScrollProgress` derives reading progress from the document and pins the indicator to the top or
+bottom viewport edge. Both use the single root `UIPrimitives` runtime.
 
 ```astro
 ---
-import { Anchor, ScrollProgress } from '@santi020k/lumen-astro'
+import { Anchor, CopyButton, ScrollProgress } from '@santi020k/lumen-astro'
 ---
 
 <ScrollProgress aria-label="Article reading progress" />
@@ -110,6 +111,15 @@ import { Anchor, ScrollProgress } from '@santi020k/lumen-astro'
   { depth: 2, href: '#install', label: 'Install' },
   { depth: 3, href: '#astro', label: 'Astro' }
 ]} />
+```
+
+`Progress` can be updated after hydration by dispatching `ui:progress-change` from its root with
+`{ value, max? }`. Use `CopyButton` to copy arbitrary text or a referenced element without giving
+non-code content `Code` semantics.
+
+```astro
+<p id="invite">Join the Lumen workspace</p>
+<CopyButton target="#invite" toast>Copy invite</CopyButton>
 ```
 
 ## Data visualization

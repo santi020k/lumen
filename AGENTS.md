@@ -60,6 +60,9 @@ before release-oriented work or broad cross-package changes.
   own theme tokens in `apps/docs/src/styles/global.css`.
 - Interactive Astro primitives should keep working without requiring Tailwind configuration from
   consumers.
+- Treat all library input as uncontrolled. Avoid backtracking-prone regular expressions and
+  single-occurrence replacements used as escaping or structural transforms; prefer linear scans
+  and add adversarial-length regression tests for parsers.
 - In Lumen-owned apps and documentation, always use the public Lumen component when an equivalent
   exists. Do not recreate a component by applying `ui-*` classes directly to a native element.
 - Keep native HTML only when it is required by a Lumen compound component's documented child

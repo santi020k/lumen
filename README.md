@@ -7,7 +7,7 @@
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  A multi-framework UI system with 149 accessible primitives for Astro, React, and Web Components.
+  A multi-framework UI system with 150 accessible primitives for Astro, React, and Web Components.
 </p>
 
 <p align="center">

@@ -55,8 +55,9 @@ validation, dirty/touched state, and submission state in this mode; do not also 
 
 See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
 
-For long articles, `Anchor` accepts an optional heading `depth` and `ScrollProgress` tracks the
-document without requiring a separate hook.
+For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
+`activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks
+the document without requiring a separate hook.
 
 ```tsx
 import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
@@ -66,6 +67,13 @@ import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
   { depth: 2, href: '#install', label: 'Install' },
   { depth: 3, href: '#react', label: 'React' }
 ]} />
+```
+
+Use `CopyButton` for clipboard actions on generated names, descriptions, messages, and links. Pass
+either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
+
+```tsx
+<CopyButton value="https://lumen.santi020k.com" toast>Copy link</CopyButton>
 ```
 
 ## Data visualization

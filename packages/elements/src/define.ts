@@ -464,6 +464,17 @@ const elementConfigs = {
     defaults: { 'data-ui-container': '', size: 'lg' },
     tagName: 'lumen-container'
   },
+  CopyButton: {
+    baseClassName: 'ui-button ui-button--outline ui-copy-button',
+    defaults: {
+      'aria-label': 'Copy to clipboard',
+      'data-state': 'idle',
+      'data-ui-copy-button': '',
+      role: 'button',
+      tabindex: '0'
+    },
+    tagName: 'lumen-copy-button'
+  },
   Command: {
     attributeClasses: glassAttributeClasses('ui-command--glass'),
     baseClassName: 'ui-command',
@@ -655,6 +666,7 @@ const elementConfigs = {
   Item: {
     attributeClasses: glassAttributeClasses('ui-item--glass'),
     baseClassName: 'ui-item',
+    defaults: { 'data-slot': 'item' },
     tagName: 'lumen-item'
   },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
@@ -792,7 +804,15 @@ const elementConfigs = {
   },
   Progress: {
     baseClassName: 'ui-progress',
-    defaults: { role: 'progressbar' },
+    defaults: {
+      'aria-valuemax': '100',
+      'aria-valuemin': '0',
+      'aria-valuenow': '0',
+      'data-ui-progress': '',
+      max: '100',
+      role: 'progressbar',
+      value: '0'
+    },
     tagName: 'lumen-progress'
   },
   Prose: { baseClassName: 'ui-prose', tagName: 'lumen-prose' },
@@ -1191,7 +1211,12 @@ const elementConfigs = {
   },
   Anchor: {
     baseClassName: 'ui-anchor',
-    defaults: { 'aria-label': 'On this page', 'data-ui-anchor': '' },
+    defaults: {
+      'aria-label': 'On this page',
+      'activation-offset': '96',
+      'data-ui-anchor': '',
+      'data-ui-anchor-offset': '96'
+    },
     tagName: 'lumen-anchor'
   },
   Segmented: {
@@ -1273,6 +1298,7 @@ const elementConfigs = {
 >
 
 const observedAttributeNames = [
+  'activation-offset',
   'animation',
   'area',
   'autocomplete',
@@ -7824,58 +7850,259 @@ class LumenFileUploadBehaviorElement extends LumenElement {
   }
 }
 
-class LumenAnchorBehaviorElement extends LumenElement {
-  private observer: IntersectionObserver | undefined
+class LumenProgressBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.update()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.update()
+  }
+
+  private update() {
+    const parsedMax = Number(this.getAttribute('max'))
+    const max = Number.isFinite(parsedMax) && parsedMax > 0 ? parsedMax : 100
+    const parsedValue = Number(this.getAttribute('value'))
+
+    const value = Math.min(
+      max, Math.max(0, Number.isFinite(parsedValue) ? parsedValue : 0)
+    )
+
+    let indicator = this.querySelector<HTMLElement>(
+      '[data-slot="progress-indicator"]'
+    )
+
+    if (!indicator) {
+      indicator = document.createElement('span')
+
+      indicator.className = 'ui-progress__bar'
+
+      indicator.dataset.slot = 'progress-indicator'
+
+      this.append(indicator)
+    }
+
+    this.setAttribute('aria-valuemax', String(max))
+
+    this.setAttribute('aria-valuenow', String(value))
+
+    indicator.style.width = `${(value / max) * 100}%`
+  }
+}
+
+class LumenCopyButtonBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
   override connectedCallback() {
     super.connectedCallback()
 
-    this.observer?.disconnect()
+    this.abortController?.abort()
 
-    if (typeof IntersectionObserver === 'undefined') return
+    this.abortController = new AbortController()
+
+    this.addEventListener('click', () => {
+      this.copy().catch(() => undefined)
+    }, {
+      signal: this.abortController.signal
+    })
+
+    this.addEventListener('keydown', event => {
+      if (event.key !== ' ' && event.key !== 'Enter') return
+
+      event.preventDefault()
+
+      this.click()
+    }, { signal: this.abortController.signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    globalThis.clearTimeout(this.resetTimer)
+  }
+
+  private copy = async () => {
+    const label = this.getAttribute('label') ?? 'Copy to clipboard'
+
+    const copiedLabel = this.getAttribute('copied-label') ??
+      'Copied to clipboard'
+
+    const errorLabel = this.getAttribute('error-label') ??
+      'Could not copy to clipboard'
+
+    try {
+      const selector = this.getAttribute('target')
+      const target = selector ? document.querySelector<HTMLElement>(selector) : null
+
+      const targetValue =
+        target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement ?
+          target.value :
+          target?.innerText ?? target?.textContent
+
+      const value = this.hasAttribute('value') ?
+        this.getAttribute('value') ?? '' :
+        targetValue
+
+      if (value === undefined) throw new Error(errorLabel)
+
+      await navigator.clipboard.writeText(value)
+
+      this.dataset.state = 'copied'
+
+      this.setAttribute('aria-label', copiedLabel)
+
+      this.dispatchEvent(new CustomEvent('ui:copy-success', {
+        bubbles: true,
+        detail: { value }
+      }))
+
+      if (this.hasAttribute('toast')) {
+        document.dispatchEvent(new CustomEvent('ui:toast', {
+          detail: { title: copiedLabel, variant: 'success' }
+        }))
+      }
+    } catch (error) {
+      this.dataset.state = 'error'
+
+      this.setAttribute('aria-label', errorLabel)
+
+      this.dispatchEvent(new CustomEvent('ui:copy-error', {
+        bubbles: true,
+        detail: { error }
+      }))
+
+      if (this.hasAttribute('toast')) {
+        document.dispatchEvent(new CustomEvent('ui:toast', {
+          detail: { title: errorLabel, variant: 'destructive' }
+        }))
+      }
+    }
+
+    globalThis.clearTimeout(this.resetTimer)
+
+    const parsedResetAfter = Number(this.getAttribute('reset-after') ?? '2000')
+
+    const resetAfter = Number.isFinite(parsedResetAfter) ?
+      Math.max(0, parsedResetAfter) :
+      2000
+
+    this.resetTimer = globalThis.setTimeout(() => {
+      this.dataset.state = 'idle'
+
+      this.setAttribute('aria-label', label)
+    }, resetAfter)
+  }
+}
+
+class LumenAnchorBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private frame = 0
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
 
     const links = [...this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-    const byId = new Map<string, HTMLAnchorElement>()
-    const targets: HTMLElement[] = []
+    const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
 
     for (const link of links) {
       const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
       const target = id ? document.getElementById(id) : null
 
       if (target) {
-        byId.set(id, link)
-
-        targets.push(target)
+        targets.push({ link, target })
       }
     }
 
     if (!targets.length) return
 
-    this.observer = new IntersectionObserver(
-      entries => {
-        const visibleEntry = entries.find(entry => entry.isIntersecting)
+    const setActive = (active: HTMLAnchorElement) => {
+      for (const link of links) {
+        const isActive = link === active
 
-        if (!visibleEntry) return
+        link.dataset.active = String(isActive)
 
-        for (const link of links) {
-          link.dataset.active = 'false'
+        if (isActive) {
+          link.setAttribute('aria-current', 'location')
+        } else {
+          link.removeAttribute('aria-current')
         }
-
-        const active = byId.get(visibleEntry.target.id)
-
-        if (active) active.dataset.active = 'true'
-      }, { rootMargin: '0px 0px -70% 0px', threshold: 0 }
-    )
-
-    for (const target of targets) {
-      this.observer.observe(target)
+      }
     }
+
+    const update = () => {
+      this.frame = 0
+
+      const scrollingElement =
+        document.scrollingElement ?? document.documentElement
+
+      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
+        scrollingElement.scrollHeight - 1
+
+      const offset = Number(
+        this.getAttribute('activation-offset') ?? this.dataset.uiAnchorOffset
+      ) || 0
+
+      let active = targets[0]?.link
+
+      if (atEnd) {
+        active = targets.at(-1)?.link
+      } else {
+        for (const item of targets) {
+          if (item.target.getBoundingClientRect().top > offset) break
+
+          active = item.link
+        }
+      }
+
+      if (active) setActive(active)
+    }
+
+    const requestUpdate = () => {
+      if (this.frame) return
+
+      this.frame = requestAnimationFrame(update)
+    }
+
+    for (const { link } of targets) {
+      link.addEventListener('click', () => {
+        setActive(link)
+      }, {
+        signal: this.abortController.signal
+      })
+    }
+
+    window.addEventListener('resize', requestUpdate, {
+      passive: true,
+      signal: this.abortController.signal
+    })
+
+    window.addEventListener('scroll', requestUpdate, {
+      passive: true,
+      signal: this.abortController.signal
+    })
+
+    update()
   }
 
   override disconnectedCallback() {
-    this.observer?.disconnect()
+    this.abortController?.abort()
 
-    this.observer = undefined
+    this.abortController = undefined
+
+    if (this.frame) cancelAnimationFrame(this.frame)
+
+    this.frame = 0
   }
 }
 
@@ -9061,6 +9288,7 @@ const behaviorElementClasses: Partial<
   Checkbox: LumenScalarFormControlElement,
   CodeTabs: LumenTabsBehaviorElement,
   ColorPicker: LumenScalarFormControlElement,
+  CopyButton: LumenCopyButtonBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
@@ -9075,6 +9303,7 @@ const behaviorElementClasses: Partial<
   Particles: LumenParticlesBehaviorElement,
   PieChart: LumenPieChartBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
+  Progress: LumenProgressBehaviorElement,
   PasswordField: LumenPasswordFieldBehaviorElement,
   Rating: LumenRatingBehaviorElement,
   RevealGroup: LumenRevealGroupBehaviorElement,
@@ -9302,6 +9531,7 @@ export const LumenCoverImageElement = elementClasses.CoverImage
 export const LumenGradientDividerElement = elementClasses.GradientDivider
 export const LumenCheckboxGroupElement = elementClasses.CheckboxGroup
 export const LumenContainerElement = elementClasses.Container
+export const LumenCopyButtonElement = elementClasses.CopyButton
 export const LumenErrorSummaryElement = elementClasses.ErrorSummary
 export const LumenFieldErrorElement = elementClasses.FieldError
 export const LumenFormElement = elementClasses.Form

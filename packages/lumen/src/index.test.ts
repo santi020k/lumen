@@ -44,6 +44,20 @@ describe('@santi020k/lumen umbrella package', () => {
     ])
   })
 
+  test('audits declarations after long malformed custom-property names without repeated scans', () => {
+    const malformedDeclaration = '--a'.repeat(50_000)
+
+    expect(auditLumenTokenCss(`${malformedDeclaration}\n  --surface: #fff;`, 'theme.css')).toEqual([
+      {
+        column: 3,
+        file: 'theme.css',
+        line: 2,
+        token: 'surface',
+        value: '#fff'
+      }
+    ])
+  })
+
   test('exports umbrella metadata and shared package metadata', () => {
     expect(lumen).toEqual({
       name: 'Lumen',

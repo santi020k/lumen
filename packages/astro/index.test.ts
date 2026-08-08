@@ -149,6 +149,24 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('.ui-anchor a[data-depth="3"]')
   })
 
+  test('ships dynamic progress, semantic items, and arbitrary text copy', async () => {
+    const [copyButton, item, progress, runtime] = await Promise.all([
+      readFile(new URL('./components/CopyButton.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Item.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Progress.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(copyButton).toContain('data-ui-copy-button')
+    expect(copyButton).toContain('data-copy-target={target}')
+    expect(item).toContain('as: Tag = \'div\'')
+    expect(item).toContain('data-slot="item"')
+    expect(progress).toContain('data-slot="progress-indicator"')
+    expect(runtime).toContain('root.addEventListener(\'ui:progress-change\'')
+    expect(runtime).toContain('new CustomEvent(\'ui:copy-success\'')
+    expect(runtime).toContain('new CustomEvent(\'ui:copy-error\'')
+  })
+
   test('aligns image and fallback avatars consistently in inline groups', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 

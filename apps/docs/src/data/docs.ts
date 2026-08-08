@@ -951,6 +951,18 @@ const keyboardInteractionsByComponent: Partial<
 
 export const runtimeEvents: RuntimeEventRow[] = [
   {
+    detail: '{ value: string }',
+    name: 'ui:copy-success',
+    target: 'CopyButton',
+    when: 'Fires after arbitrary text is written to the clipboard.'
+  },
+  {
+    detail: '{ error: unknown }',
+    name: 'ui:copy-error',
+    target: 'CopyButton',
+    when: 'Fires when the Clipboard API is unavailable or rejects the write.'
+  },
+  {
     detail: '{ from: string, to: string, values: string[] }',
     name: 'ui:transfer-change',
     target: 'Transfer root ([data-ui-transfer])',
@@ -1082,6 +1094,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
+  CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
     event => event.name === 'ui:data-table-selection-change'
   ),
@@ -1421,6 +1434,23 @@ const apiReferenceByComponent = {
       'wrap', 'boolean', 'true', 'Wraps long code lines instead of requiring horizontal scrolling.'
     )
   ],
+  CopyButton: [
+    apiRow(
+      'value', 'string', '-', 'Copies the supplied arbitrary text without requiring code semantics.'
+    ),
+    apiRow(
+      'target', 'CSS selector', '-', 'Copies text content or a form control value from the referenced element.'
+    ),
+    apiRow(
+      'label, copiedLabel, errorLabel', 'string', 'localized defaults', 'Sets the accessible idle, success, and failure feedback.'
+    ),
+    apiRow(
+      'resetAfter', 'number', '2000', 'Sets how long the copied or error state remains active in milliseconds.'
+    ),
+    apiRow(
+      'toast', 'boolean', 'false', 'Also dispatches a Lumen Toast notification for copy success or failure.'
+    )
+  ],
   Collapsible: [
     apiRow(
       'open', 'boolean', 'false', 'Uses the native details open state to show the collapsible content.'
@@ -1650,6 +1680,9 @@ const apiReferenceByComponent = {
   ],
   Item: [
     apiRow(
+      'as', '"article" | "div" | "li" | "section"', '"div"', 'Selects the semantic host in Astro and React. Elements consumers can apply the public ui-item class to the equivalent native host.'
+    ),
+    apiRow(
       'children', 'primary content, metadata, and optional actions', 'required', 'Composes one compact aligned row.'
     )
   ],
@@ -1814,7 +1847,10 @@ const apiReferenceByComponent = {
     apiRow(
       'value', 'number', '0', 'Sets the current progress value, clamped between 0 and max.'
     ),
-    apiRow('max', 'number', '100', 'Sets the upper bound for progress.')
+    apiRow('max', 'number', '100', 'Sets the upper bound for progress.'),
+    apiRow(
+      'ui:progress-change', 'CustomEvent<{ value: number, max?: number }>', '-', 'Updates Astro progress after hydration while keeping the indicator and ARIA values synchronized.'
+    )
   ],
   Prose: [
     apiRow(
@@ -2284,7 +2320,10 @@ const apiReferenceByComponent = {
   ],
   Anchor: [
     apiRow(
-      'items', 'Array<{ href, label, depth? }>', '[]', 'Defines the in-page navigation targets, labels, and optional heading depth from 1 through 6.'
+      'items', 'Array<{ href, label, depth?, index?, description? }>', '[]', 'Defines compact or rich in-page navigation items with optional hierarchy and supporting content.'
+    ),
+    apiRow(
+      'activationOffset', 'number', '96', 'Sets the viewport-top offset in pixels used to activate sections during scrolling.'
     )
   ],
   Segmented: [
@@ -2932,6 +2971,12 @@ export const componentDocs: ComponentDoc[] = (
       '<Container as="main" size="md"><h1>Account settings</h1></Container>'
     ],
     [
+      'CopyButton',
+      'Actions',
+      'Copies arbitrary text or the content of another element with accessible success and failure feedback.',
+      '<CopyButton value="https://lumen.santi020k.com" toast>Copy link</CopyButton>'
+    ],
+    [
       'Command',
       'Navigation',
       'Builds command palettes and filterable action lists.',
@@ -3079,7 +3124,7 @@ export const componentDocs: ComponentDoc[] = (
       'Item',
       'Data display',
       'Aligns primary content, supporting metadata, and optional actions in a compact row.',
-      '<Item><strong>Production docs</strong><span>Ready for review</span></Item>'
+      '<Item as="article"><strong>Production docs</strong><span>Ready for review</span></Item>'
     ],
     [
       'Kbd',

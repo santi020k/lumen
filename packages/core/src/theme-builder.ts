@@ -163,7 +163,14 @@ export const createThemeBuilderTokens = (
 export const exportThemeBuilderCss = (
   tokens: LumenThemeTokens,
   scheme: LumenThemeBuilderScheme
-): string => exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
+): string => {
+  const css = exportThemeCss(tokens)
+  const firstLineEnd = css.indexOf('\n')
+
+  if (firstLineEnd === -1) return css
+
+  return `${css.slice(0, firstLineEnd + 1)}  color-scheme: ${scheme};\n${css.slice(firstLineEnd + 1)}`
+}
 
 export const exportThemeBuilderValue = (
   tokens: LumenThemeTokens,
