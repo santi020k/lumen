@@ -1,5 +1,3 @@
-/* eslint-disable playwright/no-standalone-expect -- behaviorTest is a typed wrapper around Playwright's test function. */
-
 import { expect, type Page, test } from '@playwright/test'
 
 import type { LumenComponentName } from '../../packages/core/src/components.js'

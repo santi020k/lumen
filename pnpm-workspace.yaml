@@ -23,15 +23,15 @@ catalog:
   "@modelcontextprotocol/sdk": ^1.29.0
   "@playwright/test": ^1.61.1
   "@santi020k/commitprompt": ^1.0.0
-  "@santi020k/eslint-config-astro": ^3.1.0
-  "@santi020k/eslint-config-basic": ^3.2.0
-  "@santi020k/eslint-config-extensions": ^3.1.0
-  "@santi020k/eslint-config-formats": ^3.1.0
-  "@santi020k/eslint-config-libraries": ^3.1.0
+  "@santi020k/eslint-config-astro": ^3.1.1
+  "@santi020k/eslint-config-basic": ^3.3.0
+  "@santi020k/eslint-config-extensions": ^3.1.1
+  "@santi020k/eslint-config-formats": ^3.1.1
+  "@santi020k/eslint-config-libraries": ^3.1.1
   "@santi020k/eslint-config-next": ^3.1.0
   "@santi020k/eslint-config-react": ^3.1.0
-  "@santi020k/eslint-config-testing": ^3.1.0
-  "@santi020k/eslint-config-tools": ^3.1.0
+  "@santi020k/eslint-config-testing": ^3.1.1
+  "@santi020k/eslint-config-tools": ^3.1.1
   "@santi020k/theme": ^1.2.0
   "@tailwindcss/vite": ^4.3.3
   "@types/express": ^5.0.6
