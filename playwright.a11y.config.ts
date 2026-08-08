@@ -20,7 +20,7 @@ export default defineConfig({
     baseURL
   },
   webServer: {
-    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
+    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && ASTRO_PREVIEW_BACKGROUND=0 LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: false,
     url: baseURL
   }
