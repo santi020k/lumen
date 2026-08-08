@@ -1,3 +1,5 @@
+/// <reference types="astro/client" />
+
 declare module '@santi020k/theme/shiki' {
   interface Santi020kShikiTheme {
     colors: Record<string, string>
