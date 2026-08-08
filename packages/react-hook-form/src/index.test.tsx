@@ -1,7 +1,12 @@
 import { renderToStaticMarkup } from 'react-dom/server'
+import type { ResolverOptions } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
+import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { describe, expect, test } from 'vitest'
+import * as yup from 'yup'
+import * as z from 'zod'
 
 import {
   LumenListBoxController,
@@ -82,5 +87,51 @@ describe('React Hook Form adapters', () => {
     expect(markup).toContain('<option value="engineer" selected="">Engineer</option>')
     expect(markup).toContain('name="members"')
     expect(markup).toContain('<option value="amina" selected="">Amina</option>')
+  })
+
+  test('maps Zod resolver errors into Lumen field state', async () => {
+    const schema = z.object({
+      role: z.string().trim().min(1, 'Choose a role')
+    })
+    const options: ResolverOptions<z.input<typeof schema>> = {
+      fields: {},
+      names: ['role'],
+      shouldUseNativeValidation: false
+    }
+    const result = await zodResolver(schema)(
+      { role: '' },
+      undefined,
+      options
+    )
+    const state = getLumenManagedFieldState({
+      error: result.errors.role,
+      invalid: Boolean(result.errors.role)
+    }, 'role')
+
+    expect(state.errorMessage).toBe('Choose a role')
+    expect(state['aria-invalid']).toBe(true)
+  })
+
+  test('maps Yup resolver errors into Lumen field state', async () => {
+    const schema = yup.object({
+      role: yup.string().required('Choose a role')
+    })
+    const options: ResolverOptions<yup.InferType<typeof schema>> = {
+      fields: {},
+      names: ['role'],
+      shouldUseNativeValidation: false
+    }
+    const result = await yupResolver(schema)(
+      { role: '' },
+      undefined,
+      options
+    )
+    const state = getLumenManagedFieldState({
+      error: result.errors.role,
+      invalid: Boolean(result.errors.role)
+    }, 'role')
+
+    expect(state.errorMessage).toBe('Choose a role')
+    expect(state['aria-invalid']).toBe(true)
   })
 })

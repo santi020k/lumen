@@ -154,10 +154,15 @@ describe('@santi020k/lumen-elements primitives', () => {
       .toEqual(['ui-glass-subtle', 'ui-select', 'ui-select-field--glass'].sort())
   })
 
-  test('maps native select size to modifier classes', () => {
+  test('maps visual size while preserving the legacy size alias', () => {
     expect(classesOf(connect('lumen-native-select'))).toEqual(['ui-select'])
     expect(classesOf(connect('lumen-native-select', { size: 'sm' }))).toEqual(['ui-select', 'ui-select--sm'].sort())
-    expect(classesOf(connect('lumen-select', { size: 'lg' }))).toEqual(['ui-select', 'ui-select--lg'].sort())
+    expect(classesOf(connect('lumen-native-select', { 'visual-size': 'lg' })))
+      .toEqual(['ui-select', 'ui-select--lg'].sort())
+    expect(classesOf(connect('lumen-input', { 'visual-size': 'sm' })))
+      .toEqual(['ui-input', 'ui-input--sm'].sort())
+    expect(classesOf(connect('lumen-select', { size: 'lg' })))
+      .toEqual(['ui-select', 'ui-select--lg'].sort())
   })
 
   test('reapplies modifier classes when attributes change', () => {

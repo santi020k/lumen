@@ -53,6 +53,13 @@ The first implementation pass is complete as of July 30, 2026:
 - local consumer-fixture coverage and repeatable Astro/React import and icon measurements are
   documented.
 
+The August 8, 2026 fleet verification hardened the implemented diagnostics against the real sibling
+workspace shapes. `lumen doctor` now scopes setup to the nearest package boundary, ignores generated
+build trees, derives frameworks from import declarations instead of arbitrary package-name strings,
+validates Tailwind order only in Lumen stylesheet entries, understands controlled Astro toggles,
+and deduplicates repeated selector findings. Astro and Elements form controls also preserve native
+numeric `size` while exposing the same explicit visual-size contract as React.
+
 Two deeper release-engineering items remain follow-ups rather than blockers for these public
 contracts: semantic contract diffs against a requested target package version, and promoting each
 consumer architecture into its own independently built CI application if the current local fixture
@@ -173,9 +180,9 @@ Both React consumers maintain aliases around Lumen. Their code shows recurring n
 - add stable `data-slot` values;
 - export wrapper prop types without recreating them.
 
-The current `visualSize` direction for React `Input` should be completed across every component
-where a visual prop shadows a native attribute. Public prop types and wrapper examples should be
-exported and tested as supported API.
+The `visualSize` direction established by React `Input` now extends to Astro and Elements wherever
+a visual prop shadows the native numeric `size` attribute. Public prop types, compatibility aliases,
+and wrapper examples treat that separation as supported API.
 
 ### 4. Setup requirements need to be derivable from Lumen
 

@@ -51,6 +51,15 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 </Card>
 ```
 
+`Input` and `NativeSelect` preserve the native numeric `size` attribute. Use `visualSize="sm"` or
+`visualSize="lg"` for presentation. The pre-1.0 `size="sm|lg"` visual alias remains available for
+incremental migrations, but new code should keep native behavior and visual styling separate.
+
+```astro
+<Input size={32} visualSize="sm" />
+<NativeSelect size={8} visualSize="lg" />
+```
+
 ## Forms and Astro Actions
 
 `Form` renders a semantic form and preserves native `method`, `action`, `enctype`, autocomplete,

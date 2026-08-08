@@ -155,6 +155,7 @@ export type LumenComponentName = typeof lumenComponentNames[number]
 
 export interface LumenComponentBehavior {
   astro: 'none' | 'ui-primitives'
+  astroRuntimeBypass?: string
   elements: 'none' | 'registered-element'
   react: 'component' | 'hook' | 'none'
 }
@@ -297,7 +298,12 @@ export const lumenComponentBehavior = {
   TimeField: { astro: 'none', elements: 'registered-element', react: 'component' },
   Timeline: { astro: 'none', elements: 'registered-element', react: 'component' },
   Toast: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
-  Toggle: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  Toggle: {
+    astro: 'ui-primitives',
+    astroRuntimeBypass: 'controlled',
+    elements: 'registered-element',
+    react: 'component'
+  },
   ToggleGroup: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Toolbar: { astro: 'none', elements: 'registered-element', react: 'component' },
   Tooltip: { astro: 'none', elements: 'registered-element', react: 'hook' },

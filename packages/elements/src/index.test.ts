@@ -566,6 +566,10 @@ describe('@santi020k/lumen-elements', () => {
         <lumen-input name="email" type="email" value="first@example.com"></lumen-input>
         <lumen-textarea name="bio" value="Initial bio"></lumen-textarea>
         <lumen-checkbox checked name="updates" value="yes"></lumen-checkbox>
+        <lumen-native-select name="role" value="editor">
+          <option value="viewer">Viewer</option>
+          <option value="editor">Editor</option>
+        </lumen-native-select>
       </form>
     `
 
@@ -583,6 +587,7 @@ describe('@santi020k/lumen-elements', () => {
     expect(new FormData(form!).get('email')).toBe('first@example.com')
     expect(new FormData(form!).get('bio')).toBe('Initial bio')
     expect(new FormData(form!).get('updates')).toBe('yes')
+    expect(new FormData(form!).get('role')).toBe('editor')
 
     email!.value = 'next@example.com'
     bio!.value = 'Updated bio'
@@ -623,6 +628,29 @@ describe('@santi020k/lumen-elements', () => {
     email?.focus()
 
     expect(document.activeElement).toBe(nativeInput)
+  })
+
+  test('passes native input size through independently from visual size', () => {
+    document.body.innerHTML = `
+      <lumen-input name="code" size="12" visual-size="sm"></lumen-input>
+      <lumen-native-select name="members" size="4" visual-size="lg">
+        <option value="one">One</option>
+      </lumen-native-select>
+    `
+
+    const input = document.querySelector<HTMLElement>('lumen-input')
+    const nativeInput = input?.querySelector<HTMLInputElement>(
+      '[data-ui-element-control]'
+    )
+    const select = document.querySelector<HTMLElement>('lumen-native-select')
+    const nativeSelect = select?.querySelector<HTMLSelectElement>(
+      '[data-ui-element-control]'
+    )
+
+    expect(input?.classList.contains('ui-input--sm')).toBe(true)
+    expect(nativeInput?.size).toBe(12)
+    expect(select?.classList.contains('ui-select--lg')).toBe(true)
+    expect(nativeSelect?.size).toBe(4)
   })
 
   test('forms reflect validation, prevent duplicate submits, and reset status', async () => {

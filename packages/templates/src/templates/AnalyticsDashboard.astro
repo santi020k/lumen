@@ -18,10 +18,10 @@ import TemplateHeader from '../components/TemplateHeader.astro'
 import TemplateShell from '../components/TemplateShell.astro'
 
 const navigation = [
-  { icon: 'layout-dashboard', label: 'Overview' },
-  { icon: 'chart-no-axes-combined', label: 'Acquisition' },
-  { icon: 'users-round', label: 'Audience' },
-  { icon: 'scan-search', label: 'Reports' }
+  { href: '#overview', icon: 'layout-dashboard', label: 'Overview' },
+  { href: '#acquisition', icon: 'chart-no-axes-combined', label: 'Acquisition' },
+  { href: '#audience', icon: 'users-round', label: 'Audience' },
+  { href: '#reports', icon: 'scan-search', label: 'Reports' }
 ] as const
 
 const metrics = [
@@ -102,7 +102,7 @@ const rows = [
     title="Growth overview"
   />
 
-  <div class="template-toolbar" aria-label="Dashboard filters">
+  <div class="template-toolbar" id="reports" aria-label="Dashboard filters">
     <DateRangePicker aria-label="Reporting period">
       <Field>
         <Label for="analytics-start-date">Start</Label>
@@ -127,7 +127,7 @@ const rows = [
 
   <MetricGrid {metrics} />
 
-  <section class="template-chart-grid" aria-label="Growth charts">
+  <section class="template-chart-grid" id="acquisition" aria-label="Growth charts">
     <LineChart
       area
       description="Monthly recurring revenue compared with the operating target."
@@ -141,7 +141,7 @@ const rows = [
     />
   </section>
 
-  <Card as="section" class="template-section">
+  <Card as="section" class="template-section" id="audience">
     <div class="template-section__header">
       <div>
         <h2>Accounts to watch</h2>

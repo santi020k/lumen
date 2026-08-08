@@ -55,7 +55,9 @@ Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin
 `dashboard-shell`, and `validated-form`.
 
 Run `lumen doctor` to check adapter/style agreement, Tailwind layer order, Astro runtime mounts,
-and fragile internal selector dependencies. Use `--json` for CI and rollout automation. `lumen
+and fragile internal selector dependencies. In a workspace, diagnostics are scoped to the nearest
+package boundary, generated build trees are ignored, and application-controlled Astro `Toggle`
+instances do not require the shared runtime. Use `--json` for CI and rollout automation. `lumen
 init --framework <astro|react|elements> [--tailwind]` prints the canonical non-destructive setup.
 
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
