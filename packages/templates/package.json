@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-templates",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Shared product templates and dashboard examples for Lumen UI.",
   "type": "module",

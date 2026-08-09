@@ -1,5 +1,41 @@
 # @santi020k/lumen
 
+## 1.0.0
+
+### Major Changes
+
+- [#13](https://github.com/santi020k/lumen/pull/13) [`da44247`](https://github.com/santi020k/lumen/commit/da44247c127a77744bdd84ace78b85a9ba586839) Thanks [@santi020k](https://github.com/santi020k)! - Release Lumen 1.0 with stable public component, token, styling, framework, registry, and MCP
+  contracts. Remove the deprecated `surface="glass"` overlay alias and
+  `ui:datatable-selection-change` event; use the `glass` prop or attribute and
+  `ui:data-table-selection-change` instead.
+
+### Minor Changes
+
+- [#13](https://github.com/santi020k/lumen/pull/13) [`6e84499`](https://github.com/santi020k/lumen/commit/6e84499b05e1e3cda0087e686db88663de351c48) Thanks [@santi020k](https://github.com/santi020k)! - Add compound Card and Stat parts, stable styling contracts, wrapper-safe React composition,
+  framework behavior metadata, chart formatting and presentation controls, sibling-derived registry
+  recipes, and integration diagnostics with canonical setup generation.
+
+- [#13](https://github.com/santi020k/lumen/pull/13) [`46c2aca`](https://github.com/santi020k/lumen/commit/46c2aca5bac0579f8265b77a4991a7c640903914) Thanks [@santi020k](https://github.com/santi020k)! - Add arbitrary-text CopyButton behavior, hydrated Progress updates, richer accessible Anchor
+  scroll-spy navigation, and semantic Item hosts across framework adapters.
+
+- [#13](https://github.com/santi020k/lumen/pull/13) [`32448b0`](https://github.com/santi020k/lumen/commit/32448b02030177788ebcdbb4ee91eb55f3bbfbff) Thanks [@santi020k](https://github.com/santi020k)! - Add native-first form contracts and the Form, FieldError, ErrorSummary, PasswordField,
+  CheckboxGroup, ListBox, Container, Stack, Grid, and VisuallyHidden components across Astro, React,
+  and Elements.
+
+  Ship an optional React Hook Form adapter package, Astro Actions error normalization, form-associated
+  custom element behavior, accessible validation and error-summary focus, documented serialization,
+  and generated registry and MCP metadata.
+
+- [#13](https://github.com/santi020k/lumen/pull/13) [`988c097`](https://github.com/santi020k/lumen/commit/988c097967ddfc904e4bf308dadbf9eed153d793) Thanks [@santi020k](https://github.com/santi020k)! - Add five installable, multi-framework product template recipes for analytics, SaaS administration,
+  commerce, project workspaces, and authentication/onboarding.
+
+### Patch Changes
+
+- [#13](https://github.com/santi020k/lumen/pull/13) [`46c2aca`](https://github.com/santi020k/lumen/commit/46c2aca5bac0579f8265b77a4991a7c640903914) Thanks [@santi020k](https://github.com/santi020k)! - Parse token declarations in linear time to prevent crafted CSS from slowing down token audits.
+
+- Updated dependencies [[`6e84499`](https://github.com/santi020k/lumen/commit/6e84499b05e1e3cda0087e686db88663de351c48), [`46c2aca`](https://github.com/santi020k/lumen/commit/46c2aca5bac0579f8265b77a4991a7c640903914), [`46c2aca`](https://github.com/santi020k/lumen/commit/46c2aca5bac0579f8265b77a4991a7c640903914), [`32448b0`](https://github.com/santi020k/lumen/commit/32448b02030177788ebcdbb4ee91eb55f3bbfbff), [`da44247`](https://github.com/santi020k/lumen/commit/da44247c127a77744bdd84ace78b85a9ba586839)]:
+  - @santi020k/lumen-core@1.0.0
+
 ## 0.4.0
 
 ### Minor Changes
