@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+
 import { composeClassName } from '@santi020k/lumen-core'
 
 export interface Props extends HTMLAttributes<'div'> {
@@ -8,7 +9,6 @@ export interface Props extends HTMLAttributes<'div'> {
 }
 
 const { class: className, label, borderPosition = 'left', ...props } = Astro.props
-
 const borderClass = `ui-note--border-${borderPosition}`
 ---
 

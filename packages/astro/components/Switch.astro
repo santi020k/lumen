@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type HTMLInputAttributes = HTMLAttributes<'input'>
 
@@ -11,6 +11,7 @@ interface Props extends Omit<HTMLInputAttributes, 'type'> {
 }
 
 const { class: classProp = '', className = '', role = 'switch', ...rest } = Astro.props
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-switch'
 ], classProp, className)
 ---

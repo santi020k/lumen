@@ -6,7 +6,9 @@ export {
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenChartToneClassName,
   getLumenChartValueRatio,
+  getLumenPieChartVariantClassName,
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
@@ -39,10 +41,17 @@ export {
   tokenizeLumenCode
 } from './code.js'
 export {
+  type LumenComponentBehavior,
+  lumenComponentBehavior,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenGlobalBehavior,
+  lumenGlobalBehaviors,
   lumenPackages,
-  type LumenPackageTarget} from './components.js'
+  type LumenPackageTarget,
+  type LumenStylingContract,
+  lumenStylingContracts
+} from './components.js'
 export {
   applyDataViewState,
   createDataViewRequestUrl,
@@ -67,7 +76,7 @@ export {
   serializeDataViewState,
   sortDataRecords,
   toggleDataViewSelection,
-  unpinDataViewColumn} from './data.js'
+  unpinDataViewColumn } from './data.js'
 export {
   createFigmaVariableName,
   exportThemeDesignTokens,
@@ -85,6 +94,20 @@ export {
   type LumenFigmaVariableMode,
   type LumenStructureDesignToken
 } from './figma.js'
+export {
+  createLumenFormFailure,
+  createLumenFormSuccess,
+  getLumenFieldErrors,
+  type LumenFieldError,
+  type LumenFormErrorInput,
+  type LumenFormErrors,
+  type LumenFormFailure,
+  type LumenFormResult,
+  type LumenFormStatus,
+  lumenFormStatuses,
+  type LumenFormSuccess,
+  normalizeLumenFormErrors
+} from './forms.js'
 export {
   getLumenIcon,
   getLumenIconPack,
@@ -104,7 +127,6 @@ export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,
-  type LumenSurfaceAlias,
   resolveLumenAstroProps,
   resolveLumenGlass
 } from './props.js'
@@ -139,7 +161,7 @@ export {
   resizeScheduleEvents,
   saveScheduleEvents,
   scheduleEventsOverlap,
-  serializeScheduleEvents} from './schedule.js'
+  serializeScheduleEvents } from './schedule.js'
 export {
   createThemeFromHue,
   createThemePalette,

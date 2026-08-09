@@ -27,7 +27,7 @@ import {
   lumenComponentNames,
   lumenGlass,
   lumenPackages,
-  lumenRegistry} from './index.js'
+  lumenRegistry } from './index.js'
 
 describe('@santi020k/lumen umbrella package', () => {
   test('audits semantic token declarations that use complete CSS colors', () => {
@@ -41,6 +41,20 @@ describe('@santi020k/lumen umbrella package', () => {
     `, 'theme.css')).toEqual([
       expect.objectContaining({ file: 'theme.css', token: 'surface', value: '#fff' }),
       expect.objectContaining({ file: 'theme.css', token: 'ink', value: 'hsl(220 20% 10%)' })
+    ])
+  })
+
+  test('audits declarations after long malformed custom-property names without repeated scans', () => {
+    const malformedDeclaration = '--a'.repeat(50_000)
+
+    expect(auditLumenTokenCss(`${malformedDeclaration}\n  --surface: #fff;`, 'theme.css')).toEqual([
+      {
+        column: 3,
+        file: 'theme.css',
+        line: 2,
+        token: 'surface',
+        value: '#fff'
+      }
     ])
   })
 
@@ -66,6 +80,15 @@ describe('@santi020k/lumen umbrella package', () => {
       'theme-builder',
       'rich-text-editor',
       'data-visualization',
+      'analytics-dashboard',
+      'saas-admin',
+      'commerce-dashboard',
+      'project-workspace',
+      'auth-onboarding',
+      'docs-shell',
+      'marketing-shell',
+      'dashboard-shell',
+      'validated-form',
       'ai-docs',
       'figma-design-to-code'
     ])
@@ -142,7 +165,7 @@ describe('@santi020k/lumen umbrella package', () => {
       const source = await readFile(join(cwd, 'src/lumen/data-table.astro'), 'utf8')
 
       expect(result.added).toEqual(['src/lumen/data-table.astro'])
-      expect(source).toContain("import { DataTable as LumenDataTable } from '@santi020k/lumen-astro'")
+      expect(source).toContain('import { DataTable as LumenDataTable } from \'@santi020k/lumen-astro\'')
       expect(source).toContain('<LumenDataTable {...props}>')
 
       await writeFile(join(cwd, 'src/lumen/data-table.astro'), 'custom', 'utf8')
@@ -167,14 +190,14 @@ describe('@santi020k/lumen umbrella package', () => {
       const elementsSource = await readFile(join(cwd, 'src/lumen/button.ts'), 'utf8')
 
       expect(react.added).toEqual(['src/lumen/button.tsx'])
-      expect(reactSource).toContain("import { Button as LumenButton } from '@santi020k/lumen-react'")
+      expect(reactSource).toContain('import { Button as LumenButton } from \'@santi020k/lumen-react\'')
       expect(reactSource).toContain('export type ButtonProps = ComponentPropsWithoutRef<typeof LumenButton>')
       expect(reactSource).toContain('export const Button = (props: ButtonProps) => <LumenButton {...props} />')
 
       expect(elements.added).toEqual(['src/lumen/button.ts'])
-      expect(elementsSource).toContain("import {\n  defineLumenElements,\n  LumenButtonElement\n} from '@santi020k/lumen-elements'")
-      expect(elementsSource).toContain("export const buttonTagName = 'lumen-button' as const")
-      expect(elementsSource).toContain("'lumen-button': InstanceType<typeof LumenButtonElement>")
+      expect(elementsSource).toContain('import {\n  defineLumenElements,\n  LumenButtonElement\n} from \'@santi020k/lumen-elements\'')
+      expect(elementsSource).toContain('export const buttonTagName = \'lumen-button\' as const')
+      expect(elementsSource).toContain('\'lumen-button\': InstanceType<typeof LumenButtonElement>')
     } finally {
       await rm(cwd, { force: true, recursive: true })
     }
@@ -190,18 +213,73 @@ describe('@santi020k/lumen umbrella package', () => {
       const elementsSource = await readFile(join(cwd, 'src/lumen/theme-builder.html'), 'utf8')
 
       expect(react.added).toEqual(['src/lumen/scheduler.tsx'])
-      expect(reactSource).toContain("from '@santi020k/lumen-react'")
+      expect(reactSource).toContain('from \'@santi020k/lumen-react\'')
       expect(reactSource).toContain('export const SchedulerRecipe')
       expect(reactSource).toContain('useSchedule')
-      expect(reactSource).toContain("schedule.getSlotProps('monday')")
-      expect(reactSource).toContain("schedule.getEventProps('schedule-planning')")
+      expect(reactSource).toContain('schedule.getSlotProps(\'monday\')')
+      expect(reactSource).toContain('schedule.getEventProps(\'schedule-planning\')')
 
       expect(elements.added).toEqual(['src/lumen/theme-builder.html'])
-      expect(elementsSource).toContain("defineLumenElements()")
+      expect(elementsSource).toContain('defineLumenElements()')
       expect(elementsSource).toContain('<lumen-theme-builder')
       expect(elementsSource).toContain('data-lumen-theme-builder-recipe')
     } finally {
       await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('installs every product template for every framework target', async () => {
+    const templateNames = [
+      'analytics-dashboard',
+      'saas-admin',
+      'commerce-dashboard',
+      'project-workspace',
+      'auth-onboarding'
+    ] as const
+    const targets = ['astro', 'react', 'elements'] as const
+    const sourceMarkers = {
+      'analytics-dashboard': 'Growth overview',
+      'auth-onboarding': 'Create your workspace',
+      'commerce-dashboard': 'Commerce command center',
+      'project-workspace': 'Team workspace',
+      'saas-admin': 'Good morning, Maya'
+    } as const
+
+    for (const templateName of templateNames) {
+      for (const target of targets) {
+        const cwd = await mkdtemp(join(tmpdir(), `lumen-${templateName}-${target}-`))
+
+        try {
+          const result = await addLumenRegistryItem(templateName, { cwd, target })
+          const extensions = {
+            astro: 'astro',
+            elements: 'html',
+            react: 'tsx'
+          }
+          const extension = extensions[target]
+          const templatePath = join(cwd, `src/lumen/${templateName}.${extension}`)
+          const stylesheetPath = join(cwd, 'src/lumen/lumen-template.css')
+          const source = await readFile(templatePath, 'utf8')
+          const stylesheet = await readFile(stylesheetPath, 'utf8')
+
+          expect(result.added).toEqual([
+            'src/lumen/lumen-template.css',
+            `src/lumen/${templateName}.${extension}`
+          ].sort())
+          expect(source).toContain(sourceMarkers[templateName])
+          expect(stylesheet).toContain('.lumen-template__shell')
+
+          const frameworkMarkers = {
+            astro: '@santi020k/lumen-astro',
+            elements: 'defineLumenElements()',
+            react: '@santi020k/lumen-react'
+          }
+
+          expect(source).toContain(frameworkMarkers[target])
+        } finally {
+          await rm(cwd, { force: true, recursive: true })
+        }
+      }
     }
   })
 

@@ -1,12 +1,14 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
+
 import {
   createLumenPieGeometry,
+  getLumenChartToneClassName,
+  getLumenPieChartVariantClassName,
   hasLumenPieData,
   type LumenChartSeries,
   type LumenPieChartVariant
 } from '@santi020k/lumen-core'
-
-import type { HTMLAttributes } from 'astro/types'
 
 import Chart from './Chart.astro'
 
@@ -42,17 +44,18 @@ const {
   variant = 'donut',
   ...rest
 } = Astro.props
+
 const geometry = createLumenPieGeometry(series.data, { variant })
 const hasData = hasLumenPieData(series.data)
-const percentageFor = (percentage: number) =>
-  new Intl.NumberFormat(undefined, {
-    maximumFractionDigits: percentage < 0.01 ? 1 : 0,
-    style: 'percent'
-  }).format(percentage)
+
+const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
+  maximumFractionDigits: percentage < 0.01 ? 1 : 0,
+  style: 'percent'
+}).format(percentage)
 ---
 
 <Chart
-  class:list={['ui-pie-chart', `ui-pie-chart--${variant}`, classProp, className]}
+  class:list={['ui-pie-chart', getLumenPieChartVariantClassName(variant), classProp, className]}
   {caption}
   {description}
   {glass}
@@ -63,7 +66,7 @@ const percentageFor = (percentage: number) =>
     showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {geometry.slices.map(slice => (
-          <li class={`ui-chart-tone--${slice.tone}`}>
+          <li class={getLumenChartToneClassName(slice.tone)}>
             <span aria-hidden="true" />
             {slice.label}
           </li>
@@ -82,7 +85,7 @@ const percentageFor = (percentage: number) =>
         {
           geometry.slices.map(slice => (
             <path
-              class={`ui-chart-tone--${slice.tone}`}
+              class={getLumenChartToneClassName(slice.tone)}
               d={slice.path}
               fill-rule="evenodd"
             >
@@ -95,11 +98,11 @@ const percentageFor = (percentage: number) =>
       </g>
     </svg>
     {
-      variant === 'donut' && (centerLabel != null || centerValue != null) && (
+      variant === 'donut' && (centerLabel !== undefined || centerValue !== undefined) && (
         <>
           <div class="ui-pie-chart__center" aria-hidden="true">
-            {centerValue != null && <strong>{centerValue}</strong>}
-            {centerLabel != null && <span>{centerLabel}</span>}
+            {centerValue !== undefined && <strong>{centerValue}</strong>}
+            {centerLabel !== undefined && <span>{centerLabel}</span>}
           </div>
           <div class="ui-sr-only">
             {centerValue} {centerLabel}

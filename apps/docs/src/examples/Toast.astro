@@ -54,98 +54,97 @@ import {
         }
       }
 
-      const createToast = (detail: Record<string, unknown>) =>
-        lumenWindow.LumenToast?.create(detail)
+      const createToast = (detail: Record<string, unknown>) => lumenWindow.LumenToast?.create(detail)
 
       // eslint-disable-next-line complexity -- each branch mirrors one visible demo control.
-      this.addEventListener('click', (e) => {
+      this.addEventListener('click', e => {
         const target = e.target as HTMLElement
         const btn = target.closest('[data-ex-toast]')
 
         if (!btn) return
 
         const type = btn.getAttribute('data-ex-toast')
-        
+
         switch (type) {
-      case 'default': {
-        createToast({
-          description: 'Your draft is ready to keep editing.',
-          title: 'Draft saved'
-        })
+          case 'default': {
+            createToast({
+              description: 'Your draft is ready to keep editing.',
+              title: 'Draft saved'
+            })
 
-      break;
-      }
+            break
+          }
 
-      case 'success': {
-        createToast({
-          description: 'The latest version is now live.',
-          title: 'Published',
-          variant: 'success'
-        })
+          case 'success': {
+            createToast({
+              description: 'The latest version is now live.',
+              title: 'Published',
+              variant: 'success'
+            })
 
-      break;
-      }
+            break
+          }
 
-      case 'warning': {
-        createToast({
-          description: 'We will keep retrying in the background.',
-          title: 'Connection interrupted',
-          variant: 'warning'
-        })
+          case 'warning': {
+            createToast({
+              description: 'We will keep retrying in the background.',
+              title: 'Connection interrupted',
+              variant: 'warning'
+            })
 
-      break;
-      }
+            break
+          }
 
-      case 'error': {
-        createToast({
-          description: 'Check the required fields and try again.',
-          title: 'Could not save changes',
-          variant: 'destructive'
-        })
+          case 'error': {
+            createToast({
+              description: 'Check the required fields and try again.',
+              title: 'Could not save changes',
+              variant: 'destructive'
+            })
 
-      break;
-      }
+            break
+          }
 
-      case 'action': {
-        createToast({
-          action: { label: 'Undo', value: 'deploy' },
-          description: 'lumen-docs was moved to production.',
-          duration: 8000,
-          title: 'Deployment complete',
-          variant: 'success'
-        })
+          case 'action': {
+            createToast({
+              action: { label: 'Undo', value: 'deploy' },
+              description: 'lumen-docs was moved to production.',
+              duration: 8000,
+              title: 'Deployment complete',
+              variant: 'success'
+            })
 
-      break;
-      }
+            break
+          }
 
-      case 'progress': {
-        const toastId = createToast({
-          description: 'Preparing the production bundle.',
-          duration: 10000,
-          title: 'Deploying…'
-        })
+          case 'progress': {
+            const toastId = createToast({
+              description: 'Preparing the production bundle.',
+              duration: 10000,
+              title: 'Deploying…'
+            })
 
-        if (!toastId) return
+            if (!toastId) return
 
-        window.setTimeout(() => {
-          lumenWindow.LumenToast?.update(toastId, {
-            description: 'The production bundle is live.',
-            duration: 4000,
-            title: 'Deployment complete',
-            variant: 'success'
-          })
-        }, 1600)
+            window.setTimeout(() => {
+              lumenWindow.LumenToast?.update(toastId, {
+                description: 'The production bundle is live.',
+                duration: 4000,
+                title: 'Deployment complete',
+                variant: 'success'
+              })
+            }, 1600)
 
-      break;
-      }
+            break
+          }
 
-      case 'dismiss': {
-        lumenWindow.LumenToast?.dismiss()
+          case 'dismiss': {
+            lumenWindow.LumenToast?.dismiss()
 
-      break;
-      }
+            break
+          }
       // No default
-      }
+        }
       })
     }
   }

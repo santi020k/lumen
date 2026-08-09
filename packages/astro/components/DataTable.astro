@@ -1,15 +1,15 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
 type DataTableCell =
-  | boolean
-  | null
-  | number
-  | string
-  | undefined
-  | {
+  | boolean |
+  null |
+  number |
+  string |
+  undefined |
+  {
     label?: boolean | null | number | string
     sortValue?: boolean | null | number | string
     value?: boolean | null | number | string
@@ -51,15 +51,15 @@ const {
 } = Astro.props
 
 const hasData = columns.length > 0
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-data-table',
-    glass && 'ui-data-table--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-data-table',
+  glass && 'ui-data-table--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 
-const isCellObject = (cell: DataTableCell): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> =>
-  typeof cell === 'object' && cell !== null
+const isCellObject = (cell: DataTableCell): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null
 
 const formatCell = (cell: DataTableCell): string => {
   const value = isCellObject(cell) ? cell.label ?? cell.value : cell
@@ -73,8 +73,7 @@ const getSortValue = (cell: DataTableCell): string | undefined => {
   return String(cell.sortValue)
 }
 
-const getRowValue = (row: DataTableRow, index: number): string =>
-  String(row.rowValue ?? row.value ?? row.id ?? index)
+const getRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)
 ---
 
 <div
@@ -85,38 +84,40 @@ const getRowValue = (row: DataTableRow, index: number): string =>
   data-ui-glass-track={glass ? true : undefined}
   {...passthrough}
 >
-  {hasData ? (
-    <table>
-      <thead>
-        <tr>
-          {columns.map(column => (
-            <th
-              data-ui-datatable-sort-type={column.sort}
-              data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
-              scope="col"
-            >
-              {column.header ?? column.label ?? column.key}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, rowIndex) => (
-          <tr data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>
-            {columns.map(column => {
-              const cell = row[column.key]
-
-              return (
-                <td data-sort-value={getSortValue(cell)}>
-                  {formatCell(cell)}
-                </td>
-              )
-            })}
+  {hasData ?
+    (
+      <table>
+        <thead>
+          <tr>
+            {columns.map(column => (
+              <th
+                data-ui-datatable-sort-type={column.sort}
+                data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
+                scope="col"
+              >
+                {column.header ?? column.label ?? column.key}
+              </th>
+            ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
-  ) : (
-    <slot />
-  )}
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>
+              {columns.map(column => {
+                const cell = row[column.key]
+
+                return (
+                  <td data-sort-value={getSortValue(cell)}>
+                    {formatCell(cell)}
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) :
+    (
+      <slot />
+    )}
 </div>

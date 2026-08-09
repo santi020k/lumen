@@ -1,6 +1,8 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+
 import { composeClassName } from '@santi020k/lumen-core'
+
 import Icon from './Icon.astro'
 
 export interface Props extends HTMLAttributes<'div'> {
@@ -28,7 +30,7 @@ const stars = Array.from({ length: max }, (_, i) => i + 1)
   data-readonly={readonly ? 'true' : 'false'}
   {...props}
 >
-  {stars.map((star) => (
+  {stars.map(star => (
     <button
       type="button"
       class="ui-rating__star"

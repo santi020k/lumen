@@ -38,12 +38,11 @@ try {
 
     assert.ok(Array.isArray(results), `No structured search results for "${searchCase.query}"`)
 
-    const names = results.map((item) => item.name)
+    const names = results.map(item => item.name)
 
     for (const expected of searchCase.expectedInTop) {
       assert.ok(
-        names.includes(expected),
-        `"${searchCase.query}" expected ${expected} in top ${searchCase.top}; received ${names.join(', ')}`
+        names.includes(expected), `"${searchCase.query}" expected ${expected} in top ${searchCase.top}; received ${names.join(', ')}`
       )
     }
   }
@@ -51,7 +50,7 @@ try {
   if (!searchOnly) {
     const data = loadLumenData()
 
-    const evaluateComponent = async (component) => {
+    const evaluateComponent = async component => {
       for (const framework of ['astro', 'react', 'elements']) {
         if (!Reflect.get(component.frameworks, framework)) continue
 
@@ -61,21 +60,15 @@ try {
         })
 
         assert.equal(
-          result.isError,
-          false,
-          `${component.name} returned an MCP error for ${framework}`
+          result.isError, false, `${component.name} returned an MCP error for ${framework}`
         )
 
         assert.equal(
-          result.structuredContent?.found,
-          true,
-          `${component.name} was not found for ${framework}`
+          result.structuredContent?.found, true, `${component.name} was not found for ${framework}`
         )
 
         assert.match(
-          String(result.content[0]?.text),
-          /## Example/,
-          `${component.name} omitted its ${framework} example`
+          String(result.content[0]?.text), /## Example/, `${component.name} omitted its ${framework} example`
         )
 
         evaluatedContracts += 1

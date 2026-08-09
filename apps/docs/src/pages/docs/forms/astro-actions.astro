@@ -1,0 +1,144 @@
+---
+import { Breadcrumb, Card, Link, Stack } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const actionDefinition = `// src/actions/index.ts
+import { defineAction } from 'astro:actions'
+import { z } from 'astro:schema'
+
+export const server = {
+  updateProfile: defineAction({
+    accept: 'form',
+    input: z.object({
+      email: z.string().email(),
+      name: z.string().min(2)
+    }),
+    handler: async (input, context) => {
+      // Authorize context.user before writing.
+      await saveProfile(input)
+      return { updated: true }
+    }
+  })
+}`
+
+const actionForm = `---
+import { actions, isInputError } from 'astro:actions'
+import {
+  Button,
+  ErrorSummary,
+  Field,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  normalizeAstroActionErrors
+} from '@santi020k/lumen-astro'
+
+const result = Astro.getActionResult(actions.updateProfile)
+const errors = result?.error && isInputError(result.error)
+  ? normalizeAstroActionErrors(result.error, {
+      email: 'profile-email',
+      name: 'profile-name'
+    })
+  : normalizeAstroActionErrors(result?.error)
+
+const emailError = errors.fields.find(error => error.name === 'email')
+---
+
+<Form action={actions.updateProfile} method="POST" status={result?.error ? 'error' : 'idle'}>
+  <ErrorSummary errors={errors} />
+  <Field controlId="profile-email" describedBy="profile-email-error">
+    <Label for="profile-email">Email</Label>
+    <Input
+      aria-describedby={emailError ? 'profile-email-error' : undefined}
+      aria-invalid={emailError ? 'true' : undefined}
+      id="profile-email"
+      name="email"
+      required
+      type="email"
+    />
+    <FieldError id="profile-email-error" message={emailError?.message} />
+  </Field>
+  <Button type="submit">Save profile</Button>
+</Form>`
+
+const fileExample = `<Form
+  action={actions.uploadAvatar}
+  enctype="multipart/form-data"
+  method="POST"
+>
+  <FileUpload accept="image/*" name="avatar" required />
+  <Button type="submit">Upload avatar</Button>
+</Form>`
+---
+
+<DocsLayout
+  description="Connect Lumen native forms to Astro Actions with server-rendered field errors and progressive enhancement."
+  title="Astro Actions forms - Lumen UI"
+>
+  <div class="framework-page">
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><Link href="/docs">Docs</Link></li>
+        <li><Link href="/docs/forms">Forms</Link></li>
+        <li><span aria-current="page">Astro Actions</span></li>
+      </ol>
+    </Breadcrumb>
+
+    <DocsPageHero
+      description="Let Astro parse and validate the request while Lumen renders the same values, fields, and errors before JavaScript runs."
+      eyebrow="Astro integration"
+      stats={[
+        { label: 'Transport', value: 'FormData' },
+        { label: 'Rendering', value: 'Server' },
+        { label: 'Fallback', value: 'Native POST' }
+      ]}
+      title="Server-first forms with Astro Actions"
+    />
+
+    <section class="docs-section space-y-5" aria-labelledby="action-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="action-title">Define a form Action</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Use accept: 'form'. The Action owns parsing, schema validation, authorization, and the
+          write. Lumen does not wrap defineAction or require a resolver.
+        </p>
+      </div>
+      <CodeBlock code={actionDefinition} lang="ts" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="render-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="render-title">Render Action errors</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Read the submitted result with Astro.getActionResult. normalizeAstroActionErrors turns
+          ActionInputError fields into the shared ErrorSummary and FieldError contract.
+        </p>
+      </div>
+      <CodeBlock code={actionForm} lang="astro" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-5" aria-labelledby="files-title">
+      <h2 class="text-2xl font-bold text-ink" id="files-title">Files</h2>
+      <p class="max-w-3xl text-sm/7 text-ink-soft">
+        Keep multipart encoding explicit. Validate file type and size on the server even when the
+        client supplies accept.
+      </p>
+      <CodeBlock code={fileExample} lang="astro" />
+    </section>
+
+    <section class="docs-section mt-10 space-y-4" aria-labelledby="production-title">
+      <h2 class="text-2xl font-bold text-ink" id="production-title">Production checklist</h2>
+      <Stack gap="md">
+        <Card variant="muted">Authorize inside the Action before reading or writing private data.</Card>
+        <Card variant="muted">Rate-limit sensitive submissions and keep CSRF decisions in the application.</Card>
+        <Card variant="muted">After success, redirect to a GET route to avoid accidental resubmission.</Card>
+        <Card variant="muted">Re-render rejected values and errors on the server; enhancement is optional.</Card>
+        <Card variant="muted">Focus ErrorSummary only after a failed submit, not on every blur.</Card>
+      </Stack>
+    </section>
+  </div>
+</DocsLayout>

@@ -37,18 +37,21 @@ import {
   lumenCodeTokenClassNames,
   lumenColors,
   lumenColorTokenNames,
+  lumenComponentBehavior,
   lumenComponentNames,
   lumenDarkTheme,
   lumenFont,
   lumenGlass,
   lumenGlassEffectTokenNames,
   lumenGlassTokenNames,
+  lumenGlobalBehaviors,
   lumenIconNames,
   lumenLightTheme,
   lumenMotion,
   lumenPackages,
   lumenRadius,
   lumenStructureTokenNames,
+  lumenStylingContracts,
   lumenThemeAttribute,
   lumenTokenNames,
   moveScheduleEvent,
@@ -98,6 +101,12 @@ describe('lumen core metadata', () => {
     expect(
       createLumenLineGeometry([{ x: 0, y: 1 }]).points
     ).toHaveLength(1)
+    const barGeometry = createLumenBarGeometry([{
+      data: [{ x: 'stable-id', xLabel: 'Visible label', y: 1 }],
+      id: 'a',
+      label: 'A'
+    }], { categoryWidth: 180 })
+
     expect(
       createLumenBarGeometry([{
         data: [{ x: 'A', y: 1 }],
@@ -105,6 +114,10 @@ describe('lumen core metadata', () => {
         label: 'A'
       }]).marks
     ).toHaveLength(1)
+    expect(barGeometry.categories[0]).toMatchObject({
+      category: 'stable-id',
+      label: 'Visible label'
+    })
     expect(
       createLumenPieGeometry([{ x: 'A', y: 1 }]).slices
     ).toHaveLength(1)
@@ -116,9 +129,30 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-core',
       '@santi020k/lumen-astro',
       '@santi020k/lumen-react',
+      '@santi020k/lumen-react-hook-form',
       '@santi020k/lumen-elements',
       '@santi020k/lumen-icons-brand'
     ])
+  })
+
+  test('publishes framework behavior for every component and global authored behavior', () => {
+    expect(Object.keys(lumenComponentBehavior).sort()).toEqual([...lumenComponentNames].sort())
+    expect(lumenComponentBehavior.Card).toEqual({
+      astro: 'none',
+      elements: 'registered-element',
+      react: 'component'
+    })
+    expect(lumenComponentBehavior.Dialog).toEqual({
+      astro: 'ui-primitives',
+      elements: 'registered-element',
+      react: 'hook'
+    })
+    expect(lumenGlobalBehaviors.map(behavior => behavior.name)).toEqual(['form-validation', 'toast-events'])
+    expect(lumenStylingContracts.Card).toMatchObject({
+      rootSlot: 'card',
+      stability: 'stable'
+    })
+    expect(lumenStylingContracts.Card.parts).toContain('card-content')
   })
 })
 
@@ -158,8 +192,12 @@ describe('lumen icon helpers', () => {
   })
 
   test('rejects invalid icon-pack prefixes', () => {
-    expect(() => { registerLumenIconPack('', {}); }).toThrow('must be non-empty')
-    expect(() => { registerLumenIconPack('brand:social', {}); }).toThrow('cannot contain colons')
+    expect(() => {
+      registerLumenIconPack('', {})
+    }).toThrow('must be non-empty')
+    expect(() => {
+      registerLumenIconPack('brand:social', {})
+    }).toThrow('cannot contain colons')
   })
 })
 
@@ -211,7 +249,7 @@ paths: ['**/*.astro']
     expect(tokens.find(token => token.value === 'name')?.kind).toBe('keyword')
     expect(tokens.find(token => token.value === 'true')?.kind).toBe('type')
     expect(tokens.find(token => token.value === '3')?.kind).toBe('accent')
-    expect(tokens.find(token => token.value === "'**/*.astro'")?.kind).toBe('string')
+    expect(tokens.find(token => token.value === '\'**/*.astro\'')?.kind).toBe('string')
     expect(tokens.find(token => token.value === '# Run on pull requests')?.kind).toBe('comment')
   })
 
@@ -436,6 +474,11 @@ describe('lumen product helpers', () => {
     expect(parseThemeCss(css)['ui-ease-emphasized']).toBe('cubic-bezier(0.22, 1, 0.36, 1)')
     expect(getContrastRatio('0 0% 0%', '0 0% 100%')).toBe(21)
     expect(scoreThemeContrast(palette).wcagAA).toBe(true)
+
+    const longBrand = `221 83% ${'0'.repeat(50_000)}%`
+
+    expect(createThemePalette(longBrand)['brand-soft']).toBe('221 83% 96%')
+    expect(createThemePalette('currentColor')['brand-soft']).toBe('currentColor')
   })
 
   test('creates theme builder tokens and export payloads', () => {
@@ -474,6 +517,15 @@ describe('lumen product helpers', () => {
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"glass-shadow"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'tokens')).toContain('"ui-radius"')
     expect(exportThemeBuilderValue(generated.tokens, 'dark', 'figma')).toContain('"collectionName": "Lumen"')
+
+    const tokensWithBraces = {
+      ...generated.tokens,
+      brand: '260 88% 60% { preserved }'
+    }
+
+    expect(exportThemeBuilderValue(tokensWithBraces, 'dark', 'css')).toContain(
+      '--brand: 260 88% 60% { preserved };'
+    )
   })
 
   test('exports theme tokens for Figma variables', () => {
@@ -560,19 +612,19 @@ describe('lumen product helpers', () => {
   })
 })
 
-  test('derives a full palette from a single hue', () => {
-    const light = createThemeFromHue(280)
-    const dark = createThemeFromHue(280, { scheme: 'dark' })
-    const wrapped = createThemeFromHue(-80)
+test('derives a full palette from a single hue', () => {
+  const light = createThemeFromHue(280)
+  const dark = createThemeFromHue(280, { scheme: 'dark' })
+  const wrapped = createThemeFromHue(-80)
 
-    expect(light.brand).toBe('280 85% 53%')
-    expect(light.accent).toBe('70 70% 40%')
-    expect(light['surface-muted']).toBe('280 16% 96%')
-    expect(dark.canvas).toBe('280 24% 8%')
-    expect(dark.brand).toBe('280 88% 60%')
-    expect(wrapped.brand).toBe('280 85% 53%')
-    expect(scoreThemeContrast(light).wcagAA).toBe(true)
-  })
+  expect(light.brand).toBe('280 85% 53%')
+  expect(light.accent).toBe('70 70% 40%')
+  expect(light['surface-muted']).toBe('280 16% 96%')
+  expect(dark.canvas).toBe('280 24% 8%')
+  expect(dark.brand).toBe('280 88% 60%')
+  expect(wrapped.brand).toBe('280 85% 53%')
+  expect(scoreThemeContrast(light).wcagAA).toBe(true)
+})
 
 describe('lumen theme tokens', () => {
   test('keeps the public theme constants explicit', () => {
@@ -619,10 +671,10 @@ describe('lumen theme tokens', () => {
     expect(resolved.passthrough).toBe(rest)
   })
 
-  test('resolves deprecated surface aliases to the glass prop shape', () => {
+  test('resolves the glass prop shape', () => {
     expect(resolveLumenGlass()).toBe(false)
-    expect(resolveLumenGlass(false, 'glass')).toBe(true)
-    expect(resolveLumenGlass('subtle', 'default')).toBe('subtle')
-    expect(resolveLumenGlass('strong', 'glass')).toBe('strong')
+    expect(resolveLumenGlass(true)).toBe(true)
+    expect(resolveLumenGlass('subtle')).toBe('subtle')
+    expect(resolveLumenGlass('strong')).toBe('strong')
   })
 })

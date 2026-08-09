@@ -1,11 +1,10 @@
 ---
-import {
-  renderLumenIconSvg,
-  resolveLumenAstroProps,
-  type LumenIconName
-} from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import {
+  type LumenIconName,
+  renderLumenIconSvg,
+  resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
@@ -32,7 +31,10 @@ const isDecorative = decorative ?? !label
 const iconSvg = name ? renderLumenIconSvg(name) : ''
 
 if (name && !iconSvg && import.meta.env.DEV) {
-  console.warn(`[Lumen Icon] Unknown icon "${name}". Register an icon pack or use the default slot for project-specific SVGs.`)
+  console.warn(
+    `[Lumen Icon] Unknown icon "${name}". ` +
+    'Register an icon pack or use the default slot for project-specific SVGs.'
+  )
 }
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [

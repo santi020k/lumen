@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-/* eslint-disable complexity, unicorn/consistent-function-scoping */
+/* eslint-disable complexity */
 
 type DarkTheme = 'lumen-dark' | 'santi020k-dark'
 
@@ -90,7 +90,7 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
 
     if ([red, green, blue, alpha].some(part => Number.isNaN(part))) return null
 
-    return [red ?? 0, green ?? 0, blue ?? 0, alpha ?? 1]
+    return [red ?? 0, green ?? 0, blue ?? 0, alpha]
   }
 
   const blend = (top: Rgb, bottom: Rgb): Rgb => {
@@ -150,7 +150,7 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     if (testId) return `[data-ui-component="${testId}"]`
 
     const className = [...element.classList].slice(0, 2).join('.')
-    const label = element.textContent?.trim().replaceAll(/\s+/g, ' ').slice(0, 32)
+    const label = element.textContent.trim().replaceAll(/\s+/g, ' ').slice(0, 32)
 
     return `${element.tagName.toLowerCase()}${className ? `.${className}` : ''}${label ? ` "${label}"` : ''}`
   }
@@ -198,8 +198,6 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     const range = document.createRange()
     range.selectNodeContents(node)
     const rect = range.getBoundingClientRect()
-    range.detach()
-
     if (rect.width <= 0 || rect.height <= 0) continue
 
     const style = window.getComputedStyle(element)

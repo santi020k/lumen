@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="./lumen-template.css" />
+
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<div class="lumen-template lumen-template__shell">
+  <lumen-sidebar class="lumen-template__sidebar"><strong>Relay Projects</strong><nav aria-label="Projects"><a aria-current="page" href="#overview">Overview</a><a href="#projects">Projects</a><a href="#activity">Activity</a></nav></lumen-sidebar>
+  <main class="lumen-template__main" id="overview">
+    <header class="lumen-template__header"><div><lumen-badge variant="outline">Team delivery</lumen-badge><h1>Team workspace</h1><p>Priorities, delivery health, and next decisions.</p></div><lumen-button>New project</lumen-button></header>
+    <section class="lumen-template__metrics" aria-label="Delivery metrics"><lumen-card class="lumen-template__metric"><lumen-stat label="Open tasks" value="42"></lumen-stat><lumen-badge variant="warning">6 due soon</lumen-badge></lumen-card><lumen-card class="lumen-template__metric"><lumen-stat label="Milestones reached" value="18"></lumen-stat><lumen-badge variant="success">+4</lumen-badge></lumen-card><lumen-card class="lumen-template__metric"><lumen-stat label="At-risk projects" value="2"></lumen-stat><lumen-badge variant="destructive">Needs help</lumen-badge></lumen-card><lumen-card class="lumen-template__metric"><lumen-stat label="Delivery velocity" value="46 pts"></lumen-stat><lumen-badge variant="success">+6.4%</lumen-badge></lumen-card></section>
+    <section class="lumen-template__grid"><lumen-card class="lumen-template__panel"><h2>Active workstreams</h2><p>Mobile checkout · 72%</p><lumen-progress aria-label="Mobile checkout is 72% complete" value="72"></lumen-progress><p>Billing migration · 54%</p><lumen-progress aria-label="Billing migration is 54% complete" value="54"></lumen-progress></lumen-card><lumen-card class="lumen-template__panel" id="activity"><h2>Recent activity</h2><lumen-timeline><lumen-timeline-item>Amina completed checkout validation</lumen-timeline-item><lumen-timeline-item>Jon reviewed billing retries</lumen-timeline-item><lumen-timeline-item>Nora moved tokens to review</lumen-timeline-item></lumen-timeline></lumen-card></section>
+    <lumen-card class="lumen-template__panel" id="projects"><div class="lumen-template__section-header"><h2>Priority projects</h2><lumen-button variant="ghost">View all</lumen-button></div><lumen-table class="lumen-template__table"><table><thead><tr><th>Project</th><th>Owner</th><th>Status</th><th>Progress</th></tr></thead><tbody><tr><td>Mobile checkout</td><td>Amina</td><td><lumen-badge variant="success">Active</lumen-badge></td><td>72%</td></tr><tr><td>Billing migration</td><td>Jon</td><td><lumen-badge variant="destructive">At risk</lumen-badge></td><td>54%</td></tr></tbody></table></lumen-table></lumen-card>
+  </main>
+</div>

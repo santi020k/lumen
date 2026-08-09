@@ -51,6 +51,35 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 </Card>
 ```
 
+## Forms and Astro Actions
+
+`Form` renders a semantic form and preserves native `method`, `action`, `enctype`, autocomplete,
+reset, and no-JavaScript submission. Compose it with `Field`, `Label`, `FieldError`, and
+`ErrorSummary`.
+
+Astro Actions remain application-owned. Use `accept: 'form'`, read the result with
+`Astro.getActionResult()`, and pass `ActionInputError` to `normalizeAstroActionErrors()` so field
+errors receive stable control IDs.
+
+```astro
+---
+import { actions, isInputError } from 'astro:actions'
+import { ErrorSummary, Form, normalizeAstroActionErrors } from '@santi020k/lumen-astro'
+
+const result = Astro.getActionResult(actions.updateProfile)
+const errors = result?.error && isInputError(result.error)
+  ? normalizeAstroActionErrors(result.error)
+  : normalizeAstroActionErrors(result?.error)
+---
+
+<Form action={actions.updateProfile} method="POST">
+  <ErrorSummary {errors} />
+  <!-- fields -->
+</Form>
+```
+
+See the [Astro Actions form guide](https://lumen.santi020k.com/docs/forms/astro-actions).
+
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```astro
@@ -67,13 +96,14 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 
 ## Long-form navigation
 
-`Anchor` accepts an optional heading `depth` so article tables of contents can preserve their
-hierarchy. `ScrollProgress` derives reading progress from the document and pins the indicator to
-the top or bottom viewport edge. Both use the single root `UIPrimitives` runtime.
+`Anchor` accepts heading `depth`, `index`, and `description` metadata plus an `activationOffset`.
+Its current link stays synchronized on click and scroll, including at the end of the document.
+`ScrollProgress` derives reading progress from the document and pins the indicator to the top or
+bottom viewport edge. Both use the single root `UIPrimitives` runtime.
 
 ```astro
 ---
-import { Anchor, ScrollProgress } from '@santi020k/lumen-astro'
+import { Anchor, CopyButton, ScrollProgress } from '@santi020k/lumen-astro'
 ---
 
 <ScrollProgress aria-label="Article reading progress" />
@@ -81,6 +111,15 @@ import { Anchor, ScrollProgress } from '@santi020k/lumen-astro'
   { depth: 2, href: '#install', label: 'Install' },
   { depth: 3, href: '#astro', label: 'Astro' }
 ]} />
+```
+
+`Progress` can be updated after hydration by dispatching `ui:progress-change` from its root with
+`{ value, max? }`. Use `CopyButton` to copy arbitrary text or a referenced element without giving
+non-code content `Code` semantics.
+
+```astro
+<p id="invite">Join the Lumen workspace</p>
+<CopyButton target="#invite" toast>Copy invite</CopyButton>
 ```
 
 ## Data visualization
@@ -204,8 +243,7 @@ content readable without JavaScript and honor reduced-motion preferences.
 
 Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a
 boolean prop, and overlays or navigation primitives use the same prop while preserving semantic
-variants. The older `variant="glass"` form remains supported for cards. Overlay
-`surface="glass"` props are deprecated compatibility aliases that map to `glass`.
+variants. The older `variant="glass"` form remains supported for cards.
 
 ```astro
 <Card glass>Glass card</Card>

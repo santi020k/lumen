@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends Omit<HTMLAttributes<'span'>, 'prefix'> {
   class?: string | null
@@ -29,11 +29,14 @@ const {
 } = Astro.props
 
 const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
+
 const formatter = new Intl.NumberFormat(locale, {
   maximumFractionDigits: safeDecimals,
   minimumFractionDigits: safeDecimals
 })
+
 const formattedValue = `${prefix}${formatter.format(value)}${suffix}`
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-animated-number',
   `ui-motion-duration-${duration}`

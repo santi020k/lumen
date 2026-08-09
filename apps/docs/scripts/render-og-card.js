@@ -1,8 +1,22 @@
 import sharp from 'sharp'
 
-const homeBadge = { background: 'rgba(167,139,250,0.16)', border: 'rgba(167,139,250,0.36)', text: '#7c3aed' }
-const docsBadge = { background: 'rgba(96,165,250,0.14)', border: 'rgba(96,165,250,0.34)', text: '#2563eb' }
-const componentsBadge = { background: 'rgba(20,184,166,0.14)', border: 'rgba(20,184,166,0.34)', text: '#0f766e' }
+const homeBadge = {
+  background: 'rgba(167,139,250,0.16)',
+  border: 'rgba(167,139,250,0.36)',
+  text: '#7c3aed'
+}
+
+const docsBadge = {
+  background: 'rgba(96,165,250,0.14)',
+  border: 'rgba(96,165,250,0.34)',
+  text: '#2563eb'
+}
+
+const componentsBadge = {
+  background: 'rgba(20,184,166,0.14)',
+  border: 'rgba(20,184,166,0.34)',
+  text: '#0f766e'
+}
 
 const escapeHtml = value => value
   .replaceAll('&', '&amp;')
@@ -59,13 +73,15 @@ const wrapText = (value, maxLineLength, maxLines) => {
 
   const lastLine = lines.at(-1)
 
-  if (truncated && lastLine) return [...lines.slice(0, -1), appendEllipsis(lastLine)]
+  if (truncated && lastLine)
+    return [...lines.slice(0, -1), appendEllipsis(lastLine)]
 
   return lines
 }
 
 const renderTextLines = (lines, options) => lines
-  .map((line, index) => `
+  .map(
+    (line, index) => `
     <text
       x="${options.x}"
       y="${options.y + index * options.lineHeight}"
@@ -74,7 +90,8 @@ const renderTextLines = (lines, options) => lines
       font-size="${options.fontSize}"
       font-weight="${options.fontWeight}"
     >${escapeHtml(line)}</text>
-  `)
+  `
+  )
   .join('')
 
 const renderCard = ({ description, title, type }) => {
@@ -112,20 +129,31 @@ const renderCard = ({ description, title, type }) => {
       <rect width="1200" height="630" fill="url(#teal)" />
       <rect x="64" y="58" width="1072" height="3" fill="url(#accent)" />
 
-      <rect x="64" y="72" width="82" height="82" rx="22" fill="rgba(255,255,255,0.76)" stroke="rgba(17,12,29,0.12)" />
-      <text x="104" y="135" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif" font-size="58" font-weight="900" text-anchor="middle">L</text>
-      <text x="164" y="109" fill="#110c1d" font-family="Montserrat, Arial, sans-serif" font-size="28" font-weight="900">Lumen UI</text>
-      <text x="164" y="138" fill="rgba(17,12,29,0.56)" font-family="Montserrat, Arial, sans-serif" font-size="15" font-weight="900" letter-spacing="2">LUMEN.SANTI020K.COM</text>
+      <rect x="64" y="72" width="82" height="82" rx="22"
+        fill="rgba(255,255,255,0.76)" stroke="rgba(17,12,29,0.12)" />
+      <text x="104" y="135" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif"
+        font-size="58" font-weight="900" text-anchor="middle">L</text>
+      <text x="164" y="109" fill="#110c1d" font-family="Montserrat, Arial, sans-serif"
+        font-size="28" font-weight="900">Lumen UI</text>
+      <text x="164" y="138" fill="rgba(17,12,29,0.56)" font-family="Montserrat, Arial, sans-serif"
+        font-size="15" font-weight="900" letter-spacing="2">LUMEN.SANTI020K.COM</text>
 
       <rect x="912" y="88" width="224" height="44" rx="22" fill="${badge.background}" stroke="${badge.border}" />
-      <text x="1024" y="116" fill="${badge.text}" font-family="Montserrat, Arial, sans-serif" font-size="16" font-weight="900" letter-spacing="2" text-anchor="middle">${escapeHtml(type).toUpperCase()}</text>
+      <text x="1024" y="116" fill="${badge.text}" font-family="Montserrat, Arial, sans-serif"
+        font-size="16" font-weight="900" letter-spacing="2" text-anchor="middle">
+        ${escapeHtml(type).toUpperCase()}
+      </text>
 
       <rect x="64" y="254" width="116" height="4" rx="2" fill="#7c3aed" />
       ${renderTextLines(titleLines, { fill: '#110c1d', fontSize: titleSize, fontWeight: 900, lineHeight: titleSize * 1.06, x: 64, y: 342 })}
       ${renderTextLines(descriptionLines, { fill: 'rgba(17,12,29,0.68)', fontSize: 24, fontWeight: 400, lineHeight: 36, x: 64, y: descriptionY })}
 
-      <text x="64" y="574" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif" font-size="18" font-weight="900">Astro · React · Web Components</text>
-      <text x="1136" y="574" fill="rgba(17,12,29,0.52)" font-family="Montserrat, Arial, sans-serif" font-size="18" font-weight="900" text-anchor="end">Semantic primitives for product interfaces</text>
+      <text x="64" y="574" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif"
+        font-size="18" font-weight="900">Astro · React · Web Components</text>
+      <text x="1136" y="574" fill="rgba(17,12,29,0.52)" font-family="Montserrat, Arial, sans-serif"
+        font-size="18" font-weight="900" text-anchor="end">
+        Semantic primitives for product interfaces
+      </text>
     </svg>
   `
 }

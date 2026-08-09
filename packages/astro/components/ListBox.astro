@@ -1,0 +1,154 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface ListBoxOption {
+  disabled?: boolean
+  label: string
+  section?: string
+  value: string
+}
+
+interface Props extends Omit<HTMLAttributes<'select'>, 'size' | 'value'> {
+  class?: string | null
+  className?: string
+  emptyMessage?: string
+  label?: string
+  loading?: boolean
+  loadingMessage?: string
+  multiple?: boolean
+  options?: (ListBoxOption | string)[]
+  selectionFollowsFocus?: boolean
+  value?: string | string[]
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  disabled = false,
+  emptyMessage = 'No options available',
+  id,
+  label,
+  loading = false,
+  loadingMessage = 'Loading options',
+  multiple = false,
+  name,
+  options = [],
+  required = false,
+  selectionFollowsFocus = false,
+  value,
+  ...rest
+} = Astro.props
+
+const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+const optionGroups: { label?: string, options: ListBoxOption[] }[] = []
+
+for (const option of normalizedOptions) {
+  const currentGroup = optionGroups.at(-1)
+
+  if (!currentGroup || currentGroup.label !== option.section) {
+    optionGroups.push({
+      ...(option.section ? { label: option.section } : {}),
+      options: [option]
+    })
+  } else {
+    currentGroup.options.push(option)
+  }
+}
+
+let initialValues: string[] = []
+
+if (Array.isArray(value)) initialValues = value
+else if (value !== undefined) initialValues = [value]
+
+const selectedValues = new Set(initialValues)
+const controlId = id ?? `ui-list-box-${name ?? 'field'}`
+const listId = `${controlId}-list`
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-list-box'], classProp, className)
+---
+
+<div
+  class:list={classList}
+  data-loading={loading ? 'true' : undefined}
+  data-multiple={multiple ? 'true' : undefined}
+  data-selection-follows-focus={selectionFollowsFocus ? 'true' : undefined}
+  data-ui-list-box
+>
+  {label && <label class="ui-label" for={controlId}>{label}</label>}
+  <select
+    class="ui-list-box__native"
+    data-ui-list-box-native
+    disabled={disabled || loading}
+    id={controlId}
+    multiple={multiple}
+    name={name}
+    required={required}
+    size={Math.min(Math.max(normalizedOptions.length, 2), 8)}
+    {...passthrough}
+  >
+    {optionGroups.map(group => group.label ?
+      (
+        <optgroup label={group.label}>
+          {group.options.map(option => (
+            <option
+              disabled={option.disabled}
+              selected={selectedValues.has(option.value)}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ))}
+        </optgroup>
+      ) :
+      group.options.map(option => (
+        <option
+          disabled={option.disabled}
+          selected={selectedValues.has(option.value)}
+          value={option.value}
+        >
+          {option.label}
+        </option>
+      )))}
+  </select>
+  <div
+    aria-busy={loading ? 'true' : undefined}
+    aria-disabled={disabled || loading ? 'true' : undefined}
+    aria-multiselectable={multiple ? 'true' : undefined}
+    class="ui-list-box__list"
+    data-ui-list-box-list
+    hidden
+    id={listId}
+    role="listbox"
+    tabindex={disabled || loading ? undefined : '0'}
+  >
+    {!loading && !normalizedOptions.length && (
+      <div aria-disabled="true" class="ui-list-box__empty" role="option">{emptyMessage}</div>
+    )}
+    {!loading && optionGroups.map((group, groupIndex) => {
+      const groupLabelId = group.label ? `${controlId}-group-${groupIndex}` : undefined
+
+      const renderedOptions = group.options.map(option => (
+        <div
+          aria-disabled={option.disabled ? 'true' : undefined}
+          aria-selected={selectedValues.has(option.value) ? 'true' : 'false'}
+          data-ui-list-box-option
+          data-value={option.value}
+          role="option"
+        >
+          {option.label}
+        </div>
+      ))
+
+      return group.label ?
+        (
+          <div aria-labelledby={groupLabelId} role="group">
+            <div class="ui-list-box__section" id={groupLabelId}>{group.label}</div>
+            {renderedOptions}
+          </div>
+        ) :
+        renderedOptions
+    })}
+  </div>
+  {loading && <p class="ui-list-box__status" role="status">{loadingMessage}</p>}
+</div>

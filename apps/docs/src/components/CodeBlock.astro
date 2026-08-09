@@ -1,24 +1,20 @@
 ---
+import type { CodeLanguage } from 'astro'
+
 import { Code as AstroCode } from 'astro:components'
 
 import { Code } from '@santi020k/lumen-astro'
 
-import type { ComponentProps } from 'astro/types'
-
 import { cachedLumenThemes, cachedSanti020kThemes } from '../lib/lumen-shiki-themes'
-
-type AstroCodeProps = ComponentProps<typeof AstroCode>
 
 interface Props {
   code: string
-  lang?: AstroCodeProps['lang']
+  lang?: CodeLanguage
   title?: string
 }
 
 const { code, lang = 'plaintext', title } = Astro.props
-const language = typeof lang === 'string' ? lang : (lang?.name ?? 'code')
-const santi020kThemes = cachedSanti020kThemes as NonNullable<AstroCodeProps['themes']>
-const lumenThemes = cachedLumenThemes as NonNullable<AstroCodeProps['themes']>
+const language = typeof lang === 'string' ? lang : lang.name
 ---
 
 <Code
@@ -30,9 +26,9 @@ const lumenThemes = cachedLumenThemes as NonNullable<AstroCodeProps['themes']>
   variant="block"
 >
   <div class="docs-code-block__variant docs-code-block__variant--santi020k">
-    <AstroCode code={code} defaultColor={false} lang={lang} themes={santi020kThemes} />
+    <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedSanti020kThemes} />
   </div>
   <div class="docs-code-block__variant docs-code-block__variant--lumen">
-    <AstroCode code={code} defaultColor={false} lang={lang} themes={lumenThemes} />
+    <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedLumenThemes} />
   </div>
 </Code>

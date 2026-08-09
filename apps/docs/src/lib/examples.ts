@@ -1,22 +1,51 @@
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js'
 
-const liveModules = import.meta.glob<{ default: AstroComponentFactory }>('../examples/*.astro', { eager: true })
-const rawModules = import.meta.glob<string>('../examples/*.astro', { eager: true, import: 'default', query: '?raw' })
-const glassLiveModules = import.meta.glob<{ default: AstroComponentFactory }>('../examples/glass/*.astro', { eager: true })
-const glassRawModules = import.meta.glob<string>('../examples/glass/*.astro', { eager: true, import: 'default', query: '?raw' })
+const liveModules = import.meta.glob<{ default: AstroComponentFactory }>(
+  '../examples/*.astro', { eager: true }
+)
+
+const rawModules = import.meta.glob<string>('../examples/*.astro', {
+  eager: true,
+  import: 'default',
+  query: '?raw'
+})
+
+const glassLiveModules = import.meta.glob<{ default: AstroComponentFactory }>(
+  '../examples/glass/*.astro', {
+    eager: true
+  }
+)
+
+const glassRawModules = import.meta.glob<string>('../examples/glass/*.astro', {
+  eager: true,
+  import: 'default',
+  query: '?raw'
+})
+
 const nameFromPath = (path: string) => path.split('/').pop()?.replace('.astro', '') ?? path
 
-const toEntries = <Value>(modules: Record<string, Value>) =>
-  Object.fromEntries(Object.entries(modules).map(([path, module]) => [nameFromPath(path), module]))
+const toEntries = <Value>(modules: Record<string, Value>) => Object.fromEntries(
+  Object.entries(modules).map(([path, module]) => [
+    nameFromPath(path),
+    module
+  ])
+)
 
 const exampleComponents = toEntries(
-  Object.fromEntries(Object.entries(liveModules).map(([path, module]) => [path, module.default]))
+  Object.fromEntries(
+    Object.entries(liveModules).map(([path, module]) => [path, module.default])
+  )
 )
 
 const exampleSources = toEntries(rawModules)
 
 const glassExampleComponents = toEntries(
-  Object.fromEntries(Object.entries(glassLiveModules).map(([path, module]) => [path, module.default]))
+  Object.fromEntries(
+    Object.entries(glassLiveModules).map(([path, module]) => [
+      path,
+      module.default
+    ])
+  )
 )
 
 const glassExampleSources = toEntries(glassRawModules)

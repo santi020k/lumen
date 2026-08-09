@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="./lumen-template.css" />
+
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements()
+</script>
+
+<main class="lumen-template lumen-template__form-shell">
+  <lumen-card class="lumen-template__form">
+    <lumen-stepper current-step="1"></lumen-stepper>
+    <header><p class="lumen-template__muted">Step 2 of 4</p><h1>Create your workspace</h1><p class="lumen-template__muted">We’ll prepare the right starting point.</p></header>
+    <form class="lumen-template__form">
+      <lumen-field class="lumen-template__field"><label for="workspace-name">Workspace name</label><lumen-input id="workspace-name" name="workspace" placeholder="Northstar Labs" required></lumen-input></lumen-field>
+      <lumen-field class="lumen-template__field"><label for="work-email">Work email</label><lumen-input aria-invalid="true" id="work-email" name="email" type="email" value="maya@example" required></lumen-input><lumen-alert role="alert" variant="destructive">Enter a complete email address.</lumen-alert></lumen-field>
+      <fieldset class="lumen-template__choices"><legend>What are you setting up?</legend><label class="lumen-template__choice"><input checked name="intent" type="radio" value="team" /> A team workspace</label><label class="lumen-template__choice"><input name="intent" type="radio" value="personal" /> A personal workspace</label></fieldset>
+      <label><lumen-checkbox checked name="updates" value="updates"></lumen-checkbox> Send occasional onboarding tips</label>
+      <div><div class="lumen-template__section-header"><span>Setup progress</span><strong>50%</strong></div><lumen-progress aria-label="Setup is 50% complete" value="50"></lumen-progress></div>
+      <div class="lumen-template__actions"><lumen-button variant="ghost">Back</lumen-button><lumen-button type="submit">Continue</lumen-button></div>
+    </form>
+  </lumen-card>
+</main>

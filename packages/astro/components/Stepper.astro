@@ -1,9 +1,9 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
 
-type StepItem = string | { description?: string; title: string }
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+type StepItem = string | { description?: string, title: string }
 
 interface Props extends HTMLAttributes<'ol'> {
   class?: string | null
@@ -22,12 +22,15 @@ const {
   ...rest
 } = Astro.props
 
-const normalized = steps.map(step =>
-  typeof step === 'string' ? { description: undefined, title: step } : step
-)
+const normalized = steps.map(step => typeof step === 'string' ? { description: undefined, title: step } : step)
 
-const stepState = (index: number) =>
-  index < currentStep ? 'complete' : index === currentStep ? 'current' : 'upcoming'
+const stepState = (index: number) => {
+  if (index < currentStep) return 'complete'
+
+  if (index === currentStep) return 'current'
+
+  return 'upcoming'
+}
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-stepper',

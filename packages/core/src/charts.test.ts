@@ -64,8 +64,7 @@ describe('Lumen chart helpers', () => {
 
   test('centers a single line-chart point', () => {
     const geometry = createLumenLineGeometry(
-      [{ x: 'Only', y: 4 }],
-      { height: 100, padding: 10, width: 100 }
+      [{ x: 'Only', y: 4 }], { height: 100, padding: 10, width: 100 }
     )
 
     expect(geometry.points[0]?.xCoordinate).toBe(50)

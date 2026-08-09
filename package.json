@@ -12,14 +12,16 @@
     "test:coverage": "vitest run --coverage",
     "test:turbo": "turbo run test",
     "lint": "pnpm run lint:repo && turbo run lint",
-    "lint:repo": "eslint . --cache --no-warn-ignored",
+    "lint:repo": "eslint . --cache --no-warn-ignored --max-warnings=0",
     "lint:fix": "pnpm run lint:repo:fix && turbo run lint:fix",
-    "lint:repo:fix": "eslint . --cache --fix --no-warn-ignored",
+    "lint:repo:fix": "eslint . --cache --fix --no-warn-ignored --max-warnings=0",
     "lint:commits": "commitlint --from=origin/main --to=HEAD",
     "lint:spell": "cspell \"**\" --gitignore --cache --show-suggestions --show-context",
     "lint:knip": "knip",
     "check:publish-dry-run": "node scripts/check-publish-dry-run.mjs",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "measure:imports": "node scripts/measure-import-performance.mjs",
+    "measure:react-icons": "node scripts/measure-react-icon-performance.mjs",
     "check:figma-tokens": "node scripts/check-figma-theme-tokens.mjs",
     "check:framework-contracts": "node scripts/check-framework-contracts.mjs",
     "check:mcp-snapshot": "pnpm --filter @santi020k/lumen-mcp run check:snapshot",
@@ -43,7 +45,7 @@
     "prepare": "husky",
     "pre-commit": "lint-staged",
     "pre-push": "pnpm run typecheck && pnpm run test && pnpm run lint",
-    "commit": "cz",
+    "commit": "commitprompt",
     "test:a11y": "playwright test -c playwright.a11y.config.ts",
     "test:interactions": "playwright test -c playwright.interactions.config.ts",
     "test:visual": "playwright test",
@@ -55,13 +57,20 @@
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
     "@playwright/test": "catalog:",
+    "@santi020k/commitprompt": "catalog:",
+    "@santi020k/eslint-config-astro": "catalog:",
     "@santi020k/eslint-config-basic": "catalog:",
+    "@santi020k/eslint-config-extensions": "catalog:",
+    "@santi020k/eslint-config-formats": "catalog:",
+    "@santi020k/eslint-config-libraries": "catalog:",
+    "@santi020k/eslint-config-next": "catalog:",
+    "@santi020k/eslint-config-react": "catalog:",
+    "@santi020k/eslint-config-testing": "catalog:",
+    "@santi020k/eslint-config-tools": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "ajv": "catalog:",
-    "commitizen": "catalog:",
     "cspell": "catalog:",
-    "cz-conventional-changelog": "catalog:",
     "eslint": "catalog:",
     "husky": "catalog:",
     "knip": "catalog:",
@@ -69,12 +78,11 @@
     "tailwindcss": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
-    "typescript-eslint": "catalog:",
     "vitest": "catalog:",
     "wrangler": "catalog:"
   },
   "engines": {
-    "node": ">=22.18.0"
+    "node": ">=22.19.0"
   },
   "packageManager": "pnpm@10.32.1",
   "lint-staged": {
@@ -82,15 +90,10 @@
       "cspell --no-must-find-files"
     ],
     "*.{astro,js,mjs,ts,tsx,mts}": [
-      "eslint --fix --no-warn-ignored"
+      "eslint --fix --no-warn-ignored --max-warnings=0"
     ],
     "*.{json,jsonc,md,yml,yaml}": [
-      "eslint --fix --no-warn-ignored"
+      "eslint --fix --no-warn-ignored --max-warnings=0"
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }

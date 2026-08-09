@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Option {
   disabled?: boolean
@@ -35,22 +35,21 @@ const {
   ...rest
 } = Astro.props
 
-const normalizedOptions = options.map(option =>
-  typeof option === 'string' ? { label: option, value: option } : option
-)
-const selectedValue = value === undefined || value === null ? undefined : String(value)
+const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+const selectedValue = value ?? undefined
 const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
-const selectedOption = normalizedOptions.find(option => String(option.value) === selectedValue)
+const selectedOption = normalizedOptions.find(option => option.value === selectedValue)
 const selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`
 const triggerId = `${selectId}-trigger`
 const listId = `${selectId}-listbox`
 const placeholderText = placeholder ?? 'Select an option'
 const triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-select-field',
-    glass && 'ui-select-field--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-select-field',
+  glass && 'ui-select-field--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 
@@ -74,10 +73,20 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     required={required}
     {...passthrough}
   >
-    {placeholder && <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value="">{placeholder}</option>}
+    {placeholder && (
+      <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value="">
+        {placeholder}
+      </option>
+    )}
     <slot />
     {normalizedOptions.map(option => (
-      <option disabled={option.disabled} selected={selectedValue === String(option.value)} value={option.value}>{option.label}</option>
+      <option
+        disabled={option.disabled}
+        selected={selectedValue === option.value}
+        value={option.value}
+      >
+        {option.label}
+      </option>
     ))}
   </select>
 
@@ -105,7 +114,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
       {normalizedOptions.map(option => (
         <button
           aria-disabled={option.disabled ? 'true' : undefined}
-          aria-selected={selectedValue === String(option.value) ? 'true' : 'false'}
+          aria-selected={selectedValue === option.value ? 'true' : 'false'}
           data-ui-select-option
           data-value={option.value}
           disabled={option.disabled}

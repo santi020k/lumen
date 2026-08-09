@@ -213,9 +213,9 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
   document.addEventListener('keydown', event => {
     if (
-      event.key === '/'
-      && document.activeElement?.tagName !== 'INPUT'
-      && document.activeElement?.tagName !== 'TEXTAREA'
+      event.key === '/' &&
+      document.activeElement?.tagName !== 'INPUT' &&
+      document.activeElement?.tagName !== 'TEXTAREA'
     ) {
       event.preventDefault()
 

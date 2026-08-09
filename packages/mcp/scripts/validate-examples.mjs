@@ -47,11 +47,11 @@ try {
 
     if (component.frameworks.react) {
       const framework = component.frameworkDetails.react
-      const hasPackageImport = framework.example.includes("from '@santi020k/lumen-react'")
+      const hasPackageImport = framework.example.includes('from \'@santi020k/lumen-react\'')
 
-      const source = hasPackageImport
-        ? framework.example
-        : `${framework.importStatement}\n\nexport const Example = () => <>\n${framework.example}\n</>`
+      const source = hasPackageImport ?
+        framework.example :
+        `${framework.importStatement}\n\nexport const Example = () => <>\n${framework.example}\n</>`
 
       const path = join(temporaryRoot, `${component.kebab}.tsx`)
 

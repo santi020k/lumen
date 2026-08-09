@@ -7,6 +7,11 @@ import {
   runConsumerRollout
 } from './consumer-rollout.js'
 import {
+  createLumenSetup,
+  formatLumenDiagnostics,
+  inspectLumenIntegration
+} from './integration-diagnostics.js'
+import {
   addLumenRegistryItem,
   getLumenRegistryEntries,
   getLumenRegistryItem,
@@ -38,6 +43,10 @@ const allowDirty = args.includes('--allow-dirty')
 const noVerify = args.includes('--no-verify')
 const reportIndex = args.indexOf('--report')
 const reportPath = reportIndex >= 0 ? args[reportIndex + 1] : undefined
+const frameworkIndex = args.indexOf('--framework')
+const frameworkValue = frameworkIndex >= 0 ? args[frameworkIndex + 1] : undefined
+const json = args.includes('--json')
+const tailwind = args.includes('--tailwind')
 
 const excludeValues = args.flatMap((value, index) => {
   const nextValue = args[index + 1]
@@ -47,7 +56,7 @@ const excludeValues = args.flatMap((value, index) => {
 
 let conflict: 'error' | 'merge' | 'skip' = 'skip'
 
-const getRolloutArguments = (): { repositories: string[]; targetVersion?: string } => {
+const getRolloutArguments = (): { repositories: string[], targetVersion?: string } => {
   const values: string[] = []
   const optionsWithValues = new Set(['--exclude', '--report'])
 
@@ -85,6 +94,12 @@ const getAddTarget = (value: string | undefined, provided = false): LumenAddTarg
   throw new Error(`Unknown Lumen add target: ${value}. Use astro, react, or elements.`)
 }
 
+const getFramework = (value: string | undefined): LumenAddTarget => {
+  if (value === 'astro' || value === 'elements' || value === 'react') return value
+
+  throw new Error('Missing or invalid framework. Use --framework astro, react, or elements.')
+}
+
 if (failOnConflict) {
   conflict = 'error'
 } else if (merge) {
@@ -95,8 +110,7 @@ const formatList = (registry: LumenRegistry = lumenRegistry) => getLumenRegistry
   .map(item => `${item.name} (${item.type})`)
   .join('\n')
 
-const getRegistryFilePath = (file: NonNullable<LumenRegistryEntry['files']>[number]): string =>
-  typeof file === 'string' ? file : file.path
+const getRegistryFilePath = (file: NonNullable<LumenRegistryEntry['files']>[number]): string => typeof file === 'string' ? file : file.path
 
 const getRegistryItemFiles = (item: LumenRegistryEntry): string | undefined => {
   if (!item.files?.length) return undefined
@@ -104,21 +118,16 @@ const getRegistryItemFiles = (item: LumenRegistryEntry): string | undefined => {
   return item.files.map(getRegistryFilePath).join(', ')
 }
 
-const getRegistryItemDescription = (item: LumenRegistryEntry): string | undefined =>
-  'description' in item ? item.description : undefined
+const getRegistryItemDescription = (item: LumenRegistryEntry): string | undefined => 'description' in item ? item.description : undefined
+const getRegistryItemCategory = (item: LumenRegistryEntry): string | undefined => 'category' in item ? `category: ${item.category}` : undefined
 
-const getRegistryItemCategory = (item: LumenRegistryEntry): string | undefined =>
-  'category' in item ? `category: ${item.category}` : undefined
+const getRegistryItemComponents = (item: LumenRegistryEntry): string | undefined => 'components' in item && Array.isArray(item.components) && item.components.length > 0 ?
+  `components: ${item.components.join(', ')}` :
+  undefined
 
-const getRegistryItemComponents = (item: LumenRegistryEntry): string | undefined =>
-  'components' in item && Array.isArray(item.components) && item.components.length > 0
-    ? `components: ${item.components.join(', ')}`
-    : undefined
-
-const getRegistryItemDependencies = (item: LumenRegistryEntry): string | undefined =>
-  'dependencies' in item && item.dependencies.length > 0
-    ? `dependencies: ${item.dependencies.join(', ')}`
-    : undefined
+const getRegistryItemDependencies = (item: LumenRegistryEntry): string | undefined => 'dependencies' in item && item.dependencies.length > 0 ?
+  `dependencies: ${item.dependencies.join(', ')}` :
+  undefined
 
 const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) => {
   const item: LumenRegistryEntry | undefined =
@@ -212,6 +221,8 @@ const help = [
   '  lumen add <name>       Install a recipe or component into the current project',
   '  lumen install          Print install commands',
   '  lumen audit-tokens     Report incompatible semantic color custom properties',
+  '  lumen doctor           Inspect styles, adapters, runtime mounts, and selector usage',
+  '  lumen init             Print canonical framework setup without changing files',
   '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
   '',
   'Options:',
@@ -223,6 +234,9 @@ const help = [
   '  --registry <source>    Load list/show data from a local or remote registry JSON file',
   '  --registry-token <key> Use a bearer token for private remote registries',
   '  --target <framework>   Generate wrappers or recipe starters for astro, react, or elements',
+  '  --framework <name>     Select astro, react, or elements for lumen init',
+  '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
+  '  --json                 Print lumen doctor output as JSON',
   '  --apply                Apply a rollout (requires a target version)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
   '  --exclude <path>       Exclude a repository (repeatable)',
@@ -235,9 +249,9 @@ const help = [
 const run = async () => {
   let output = help
 
-  const registry = registrySource
-    ? await loadLumenRegistry(registrySource, registryToken ? { token: registryToken } : {})
-    : lumenRegistry
+  const registry = registrySource ?
+    await loadLumenRegistry(registrySource, registryToken ? { token: registryToken } : {}) :
+    lumenRegistry
 
   switch (command) {
     case 'audit-tokens': {
@@ -248,6 +262,22 @@ const run = async () => {
 
     case 'add': {
       if (name) output = await formatAddResult(name, registry)
+
+      break
+    }
+
+    case 'doctor': {
+      const report = await inspectLumenIntegration(cwd ?? process.cwd())
+
+      output = json ? JSON.stringify(report, undefined, 2) : formatLumenDiagnostics(report)
+
+      if (!report.healthy) process.exitCode = 1
+
+      break
+    }
+
+    case 'init': {
+      output = createLumenSetup(getFramework(frameworkValue), tailwind)
 
       break
     }

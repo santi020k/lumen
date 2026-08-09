@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+type StatTrendTone = 'danger' | 'neutral' | 'success' | 'warning'
+
+interface Props extends HTMLAttributes<'span'> {
+  class?: string | null
+  className?: string
+  tone?: StatTrendTone
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  tone = 'neutral',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest, ['ui-stat-trend', `ui-stat-trend--${tone}`], classProp, className
+)
+---
+
+<span class:list={classList} data-slot="stat-trend" data-tone={tone} {...passthrough}>
+  <slot />
+</span>

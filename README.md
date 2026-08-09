@@ -7,7 +7,7 @@
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  A multi-framework UI system with 123 accessible primitives for Astro, React, and Web Components.
+  A multi-framework UI system with 150 accessible primitives for Astro, React, and Web Components.
 </p>
 
 <p align="center">
@@ -39,6 +39,21 @@ framework's native authoring experience.
   application framework.
 - **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP
   server, `llms.txt`, and a machine-readable registry ship alongside the component system.
+- **Product-ready templates:** five responsive dashboard and application families are available as
+  live previews and installable Astro, React, and Elements recipes.
+
+## Dashboards and templates
+
+Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,
+SaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family
+uses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,
+and ships through the CLI for all three framework targets:
+
+```bash
+lumen add analytics-dashboard
+lumen add commerce-dashboard --target react
+lumen add auth-onboarding --target elements
+```
 
 ## Quick start
 
@@ -150,6 +165,7 @@ component defaults.
 | --- | --- |
 | [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |
 | [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |
+| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |
 | [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
 | [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
 | [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |
@@ -173,6 +189,9 @@ Additional machine-readable surfaces include:
 
 - [`llms.txt`](./llms.txt) for a concise project map.
 - [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.
+- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.
+- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.
+- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.

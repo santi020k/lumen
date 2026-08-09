@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'aside'> {
   class?: string | null
@@ -19,13 +19,13 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-alert',
-    variant === 'destructive' && 'ui-alert--destructive',
-    variant === 'success' && 'ui-alert--success',
-    variant === 'warning' && 'ui-alert--warning',
-    glass && 'ui-alert--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-alert',
+  variant === 'destructive' && 'ui-alert--destructive',
+  variant === 'success' && 'ui-alert--success',
+  variant === 'warning' && 'ui-alert--warning',
+  glass && 'ui-alert--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 

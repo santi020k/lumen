@@ -71,7 +71,8 @@ const searchIndexHref = '/docs-search.json'
     aria-label="Search results"
     data-docs-search-results
     hidden
-  ></div>
+  >
+  </div>
 </div>
 
 <script>
@@ -169,11 +170,11 @@ const searchIndexHref = '/docs-search.json'
     return window.__lumenDocsSearchIndex
   }
 
-  const isSearchNavigationKey = (key: string): boolean =>
-    key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter'
+  const isSearchNavigationKey = (key: string): boolean => key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter'
 
-  const getSearchOptions = (results: HTMLElement): HTMLAnchorElement[] =>
-    [...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')]
+  const getSearchOptions = (results: HTMLElement): HTMLAnchorElement[] => [
+    ...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')
+  ]
 
   const openSearchResults = (state: DocsSearchState): void => {
     state.results.hidden = false
@@ -309,11 +310,10 @@ const searchIndexHref = '/docs-search.json'
   const renderSearchCommands = (state: DocsSearchState, query = ''): void => {
     const normalizedQuery = normalizeSearchText(query.trim())
 
-    const commands = normalizedQuery
-      ? docsSearchCommands.filter(item =>
-          normalizeSearchText(`${item.command} ${item.title} ${item.keywords}`).includes(normalizedQuery)
-        )
-      : docsSearchCommands
+    const commands = normalizedQuery ?
+      docsSearchCommands.filter(item => normalizeSearchText(`${item.command} ${item.title} ${item.keywords}`)
+        .includes(normalizedQuery)) :
+      docsSearchCommands
 
     state.results.replaceChildren()
 
@@ -381,9 +381,9 @@ const searchIndexHref = '/docs-search.json'
     }
 
     if (query.length < 2) {
-      state.status.textContent = query.length === 1
-        ? 'Type one more character to search.'
-        : 'Type at least two characters to search.'
+      state.status.textContent = query.length === 1 ?
+        'Type one more character to search.' :
+        'Type at least two characters to search.'
 
       closeSearchResults(state)
 
@@ -402,7 +402,9 @@ const searchIndexHref = '/docs-search.json'
       state.results.append(createSearchOption(item, resultIndex, state.optionIdPrefix))
     }
 
-    state.status.textContent = `${matchedResults.length} search ${matchedResults.length === 1 ? 'result' : 'results'} available.`
+    const resultNoun = matchedResults.length === 1 ? 'result' : 'results'
+
+    state.status.textContent = `${matchedResults.length} search ${resultNoun} available.`
 
     openSearchResults(state)
 
@@ -537,9 +539,9 @@ const searchIndexHref = '/docs-search.json'
       const target = event.target
 
       if (
-        target instanceof HTMLInputElement
-        || target instanceof HTMLTextAreaElement
-        || (target instanceof HTMLElement && target.isContentEditable)
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target instanceof HTMLElement && target.isContentEditable)
       ) return
 
       const visibleSearchInput = [...document.querySelectorAll<HTMLInputElement>('[data-docs-search-input]')]

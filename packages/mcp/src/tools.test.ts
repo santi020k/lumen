@@ -40,19 +40,29 @@ describe('lumen-mcp data snapshot', () => {
       category: 'Forms',
       collections: ['Dates and time']
     })
-    expect(dateRangePicker?.dependencies).toEqual(expect.arrayContaining(['DatePicker']))
-    expect(dateRangePicker?.description).toMatch(/date range|start and end date/i)
+    expect(dateRangePicker?.dependencies).toEqual(
+      expect.arrayContaining(['DatePicker'])
+    )
+    expect(dateRangePicker?.description).toMatch(
+      /date range|start and end date/i
+    )
     expect(dateRangePicker?.apiReference).not.toHaveLength(0)
-    expect(dateRangePicker?.frameworkDetails.astro.source).toContain('interface Props')
-    expect(dateRangePicker?.frameworkDetails.react.source).toContain('DateRangePickerProps')
+    expect(dateRangePicker?.frameworkDetails.astro.source).toContain(
+      'interface Props'
+    )
+    expect(dateRangePicker?.frameworkDetails.react.source).toContain(
+      'DateRangePickerProps'
+    )
     expect(dateRangePicker?.frameworkDetails.elements).toMatchObject({
       available: true,
       registration: 'defineLumenElements()',
       tagName: 'lumen-date-range-picker'
     })
-    expect(data.components.every((component) =>
-      Object.values(component.frameworkDetails).every((framework) => framework.available)
-    )).toBe(true)
+    expect(
+      data.components.every(component => Object.values(component.frameworkDetails).every(
+        framework => framework.available
+      ))
+    ).toBe(true)
   })
 
   test('documents wrapped code and Astro motion runtime requirements', () => {
@@ -60,23 +70,31 @@ describe('lumen-mcp data snapshot', () => {
     const accordion = resolveComponent('Accordion', data)
     const code = resolveComponent('Code', data)
 
-    expect(accordion?.apiReference).toContainEqual(expect.objectContaining({
-      attribute: 'variant',
-      values: '"default" | "flush"'
-    }))
-    expect(accordion?.frameworkDetails.astro.props).toContainEqual(expect.objectContaining({
-      name: 'variant',
-      type: 'AccordionVariant'
-    }))
+    expect(accordion?.apiReference).toContainEqual(
+      expect.objectContaining({
+        attribute: 'variant',
+        values: '"default" | "flush"'
+      })
+    )
+    expect(accordion?.frameworkDetails.astro.props).toContainEqual(
+      expect.objectContaining({
+        name: 'variant',
+        type: 'AccordionVariant'
+      })
+    )
 
-    expect(code?.apiReference).toContainEqual(expect.objectContaining({
-      attribute: 'wrap',
-      defaultValue: 'false'
-    }))
-    expect(code?.frameworkDetails.astro.props).toContainEqual(expect.objectContaining({
-      name: 'wrap',
-      type: 'boolean'
-    }))
+    expect(code?.apiReference).toContainEqual(
+      expect.objectContaining({
+        attribute: 'wrap',
+        defaultValue: 'false'
+      })
+    )
+    expect(code?.frameworkDetails.astro.props).toContainEqual(
+      expect.objectContaining({
+        name: 'wrap',
+        type: 'boolean'
+      })
+    )
 
     for (const name of ['AnimatedNumber', 'RevealGroup', 'ScrollReveal']) {
       expect(resolveComponent(name, data)?.dependencies).toEqual(
@@ -90,10 +108,14 @@ describe('lumen-mcp data snapshot', () => {
     const readFsFile = Reflect.get(fs, 'readFileSync')
     const packageJson = JSON.parse(
       readFsFile(new URL('../package.json', import.meta.url), 'utf8')
-    ) as { version: string }
+    ) as {
+      version: string
+    }
 
     expect(data.meta.serverVersion).toBe(packageJson.version)
-    expect(data.meta.packageVersions['@santi020k/lumen-mcp']).toBe(packageJson.version)
+    expect(data.meta.packageVersions['@santi020k/lumen-mcp']).toBe(
+      packageJson.version
+    )
     expect(data.meta).not.toHaveProperty('generatedAt')
   })
 
@@ -103,15 +125,25 @@ describe('lumen-mcp data snapshot', () => {
     const dateRangePicker = resolveComponent('DateRangePicker', data)
 
     expect(dialog?.frameworkDetails.react.example).toContain('useDialog()')
-    expect(dialog?.frameworkDetails.react.example).toContain('dialog.triggerProps')
-    expect(dialog?.frameworkDetails.react.example).not.toContain('data-ui-dialog-trigger')
+    expect(dialog?.frameworkDetails.react.example).toContain(
+      'dialog.triggerProps'
+    )
+    expect(dialog?.frameworkDetails.react.example).not.toContain(
+      'data-ui-dialog-trigger'
+    )
     expect(dialog?.frameworkDetails.react.behavior).toMatchObject({
       hook: 'useDialog',
       mode: 'hook'
     })
-    expect(dialog?.frameworkDetails.elements.example).toContain('<lumen-dialog')
-    expect(dialog?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
-    expect(dateRangePicker?.frameworkDetails.astro.behavior?.setup).toContain('UIPrimitives')
+    expect(dialog?.frameworkDetails.elements.example).toContain(
+      '<lumen-dialog'
+    )
+    expect(dialog?.frameworkDetails.astro.behavior?.setup).toContain(
+      'UIPrimitives'
+    )
+    expect(dateRangePicker?.frameworkDetails.astro.behavior?.setup).toContain(
+      'UIPrimitives'
+    )
   })
 
   test('bundles React hook behavior for interactive components', () => {
@@ -120,9 +152,14 @@ describe('lumen-mcp data snapshot', () => {
     for (const name of ['AlertDialog', 'Dialog', 'Drawer', 'Sheet']) {
       const react = resolveComponent(name, data)?.frameworkDetails.react
 
-      expect(react?.behavior).toMatchObject({ hook: 'useDialog', mode: 'hook' })
+      expect(react?.behavior).toMatchObject({
+        hook: 'useDialog',
+        mode: 'hook'
+      })
       expect(react?.example).toContain('dialog.triggerProps')
-      expect(react?.example).not.toMatch(/data-ui-(?:alert-dialog|dialog|drawer|sheet)-trigger/)
+      expect(react?.example).not.toMatch(
+        /data-ui-(?:alert-dialog|dialog|drawer|sheet)-trigger/
+      )
     }
   })
 
@@ -130,7 +167,7 @@ describe('lumen-mcp data snapshot', () => {
     expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
       expect.objectContaining({ name: 'ui:data-table-selection-change' })
     )
-    expect(resolveComponent('DataTable')?.runtimeEvents).toContainEqual(
+    expect(resolveComponent('DataTable')?.runtimeEvents).not.toContainEqual(
       expect.objectContaining({ name: 'ui:datatable-selection-change' })
     )
   })
@@ -185,13 +222,15 @@ describe('listComponents', () => {
   })
 
   test('normalizes friendly recipe filters', () => {
-    expect(listComponents({ recipe: 'Advanced Fields' }).data.count)
-      .toBe(listComponents({ recipe: 'advanced-fields' }).data.count)
+    expect(listComponents({ recipe: 'Advanced Fields' }).data.count).toBe(
+      listComponents({ recipe: 'advanced-fields' }).data.count
+    )
   })
 
   test('returns a clear empty result', () => {
-    expect(listComponents({ query: 'definitely-not-a-component' }).text)
-      .toBe('No components matched the given filters.')
+    expect(listComponents({ query: 'definitely-not-a-component' }).text).toBe(
+      'No components matched the given filters.'
+    )
   })
 })
 
@@ -201,15 +240,19 @@ describe('getComponent', () => {
 
     expect(result.isError).toBeFalsy()
     expect(result.text).toContain('# Button')
-    expect(result.text).toContain("@santi020k/lumen-astro")
+    expect(result.text).toContain('@santi020k/lumen-astro')
     expect(result.text).not.toContain('reference source')
     expect(result.data.found).toBe(true)
   })
 
   test('returns React props, imports, examples, and source', () => {
-    const result = getComponent({ detail: 'source', framework: 'react', name: 'Button' })
+    const result = getComponent({
+      detail: 'source',
+      framework: 'react',
+      name: 'Button'
+    })
 
-    expect(result.text).toContain("@santi020k/lumen-react")
+    expect(result.text).toContain('@santi020k/lumen-react')
     expect(result.text).toContain('ButtonProps')
     expect(result.text).toContain('react reference source')
     expect(result.data.component).toHaveProperty('framework.source')
@@ -226,7 +269,10 @@ describe('getComponent', () => {
   })
 
   test('returns Web Component registration, attributes, and tag usage', () => {
-    const result = getComponent({ framework: 'elements', name: 'DateRangePicker' })
+    const result = getComponent({
+      framework: 'elements',
+      name: 'DateRangePicker'
+    })
 
     expect(result.text).toContain('<lumen-date-range-picker>')
     expect(result.data.component).toMatchObject({
@@ -280,7 +326,9 @@ describe('search', () => {
 
   test('ranks an exact component name first', () => {
     const result = search({ query: 'button' })
-    const firstResult = result.text.split('\n').find((line) => line.startsWith('component:'))
+    const firstResult = result.text
+      .split('\n')
+      .find(line => line.startsWith('component:'))
 
     expect(firstResult).toContain('component: Button')
     expect(result.data.results[0]).toMatchObject({
@@ -295,8 +343,10 @@ describe('search', () => {
 
     expect(result.text).toContain('DatePicker')
     expect(result.text).toContain('DateRangePicker')
-    expect(result.data.results.find((item) => item.name === 'DateRangePicker')?.matchedTerms)
-      .toEqual(['date', 'input'])
+    expect(
+      result.data.results.find(item => item.name === 'DateRangePicker')
+        ?.matchedTerms
+    ).toEqual(['date', 'input'])
   })
 
   test.each([
@@ -305,7 +355,7 @@ describe('search', () => {
     ['sortable table pagination', ['DataTable', 'Pagination']],
     ['dark mode theme', ['ThemeBuilder', 'ThemeToggle']]
   ])('returns useful partial matches for %s', (query, expectedNames) => {
-    const names = search({ query }).data.results.map((result) => result.name)
+    const names = search({ query }).data.results.map(result => result.name)
 
     expect(names).toEqual(expect.arrayContaining(expectedNames))
   })
@@ -321,7 +371,9 @@ describe('search', () => {
 
   test('honors the result limit', () => {
     const result = search({ limit: 1, query: 'input' })
-    const resultLines = result.text.split('\n').filter((line) => line.startsWith('component:'))
+    const resultLines = result.text
+      .split('\n')
+      .filter(line => line.startsWith('component:'))
 
     expect(result.text).toContain('(showing 1)')
     expect(resultLines).toHaveLength(1)
@@ -332,8 +384,9 @@ describe('search', () => {
   })
 
   test('returns a clear response when nothing matches', () => {
-    expect(search({ query: 'definitely-not-in-lumen' }).text)
-      .toBe('No matches for "definitely-not-in-lumen".')
+    expect(search({ query: 'definitely-not-in-lumen' }).text).toBe(
+      'No matches for "definitely-not-in-lumen".'
+    )
   })
 })
 
@@ -371,10 +424,15 @@ describe('catalog freshness and diagnostics', () => {
     const data = loadLumenData()
     const result = getCatalogManifest()
 
-    expect(Object.keys(result.data.manifest.components)).toHaveLength(data.components.length)
-    expect(Object.values(result.data.manifest.components))
-      .toEqual(expect.arrayContaining([expect.stringMatching(/^[a-f0-9]{64}$/)]))
-    expect(Object.keys(result.data.manifest.recipes)).toHaveLength(data.recipes.length)
+    expect(Object.keys(result.data.manifest.components)).toHaveLength(
+      data.components.length
+    )
+    expect(Object.values(result.data.manifest.components)).toEqual(
+      expect.arrayContaining([expect.stringMatching(/^[a-f0-9]{64}$/)])
+    )
+    expect(Object.keys(result.data.manifest.recipes)).toHaveLength(
+      data.recipes.length
+    )
   })
 
   test('reports unchanged and changed client manifests', () => {
@@ -403,9 +461,11 @@ describe('catalog freshness and diagnostics', () => {
     const data = loadLumenData()
 
     expect(diagnose().data.status).toBe('healthy')
-    expect(diagnose({
-      ...data,
-      meta: { ...data.meta, componentCount: 0 }
-    }).data.status).toBe('issues')
+    expect(
+      diagnose({
+        ...data,
+        meta: { ...data.meta, componentCount: 0 }
+      }).data.status
+    ).toBe('issues')
   })
 })

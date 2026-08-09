@@ -42,17 +42,21 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:image:alt" content={title} />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Lumen UI",
-      "url": "https://lumen.santi020k.com/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://lumen.santi020k.com/docs?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    })} />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Lumen UI',
+        url: 'https://lumen.santi020k.com/',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://lumen.santi020k.com/docs?q={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      })}
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
@@ -228,8 +232,8 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     sourceElement instanceof Element && Boolean(sourceElement.closest('[data-docs-nav]'))
   )
 
-  const getDocsSidebar = (targetDocument = document): HTMLElement | null => (
-    targetDocument.querySelector('[data-docs-sidebar]')
+  const getDocsSidebarScroller = (targetDocument = document): HTMLElement | null => (
+    targetDocument.querySelector('[data-docs-sidebar] [data-docs-nav]')
   )
 
   const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
@@ -258,8 +262,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     const y = Math.round(rect.top + rect.height / 2)
 
     const maxRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
+      Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)
     )
 
     const overlay = document.createElement('div')
@@ -302,9 +305,9 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   applyTheme(getPreferredTheme())
 
   document.addEventListener('click', event => {
-    const toggle = event.target instanceof Element
-      ? event.target.closest<HTMLElement>('[data-theme-toggle], [data-ui-theme-toggle]')
-      : null
+    const toggle = event.target instanceof Element ?
+      event.target.closest<HTMLElement>('[data-theme-toggle], [data-ui-theme-toggle]') :
+      null
 
     if (!toggle || isThemeAnimating) return
 
@@ -315,18 +318,18 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   })
 
   document.addEventListener('change', event => {
-    const select = event.target instanceof Element
-      ? event.target.closest<HTMLSelectElement>('[data-theme-select]')
-      : null
+    const select = event.target instanceof Element ?
+      event.target.closest<HTMLSelectElement>('[data-theme-select]') :
+      null
 
     if (!select) return
 
     const currentTheme = getPreferredTheme()
     const selectedFamily = select.value
 
-    const nextTheme = isThemeFamily(selectedFamily)
-      ? getTheme(selectedFamily, getThemeMode(currentTheme))
-      : normalizeTheme(selectedFamily)
+    const nextTheme = isThemeFamily(selectedFamily) ?
+      getTheme(selectedFamily, getThemeMode(currentTheme)) :
+      normalizeTheme(selectedFamily)
 
     if (!nextTheme) {
       syncThemeSelects(currentTheme)
@@ -356,7 +359,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
 
     shouldScrollDocsContentToTop = true
 
-    docsSidebarScrollTop = getDocsSidebar()?.scrollTop ?? 0
+    docsSidebarScrollTop = getDocsSidebarScroller()?.scrollTop ?? 0
   })
 
   document.addEventListener('astro:before-swap', event => {
@@ -376,10 +379,10 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
       top: 0
     })
 
-    const docsSidebar = getDocsSidebar()
+    const docsSidebarScroller = getDocsSidebarScroller()
 
-    if (docsSidebar) {
-      docsSidebar.scrollTop = docsSidebarScrollTop
+    if (docsSidebarScroller) {
+      docsSidebarScroller.scrollTop = docsSidebarScrollTop
     }
 
     shouldScrollDocsContentToTop = false

@@ -1,7 +1,14 @@
 {
   "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "rootDir": "../../../../",
+    "paths": {
+      "@santi020k/lumen-react": ["../../../react/src/index.ts"]
+    },
     "noEmit": true
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"]
 }

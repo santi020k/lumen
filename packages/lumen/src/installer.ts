@@ -1,23 +1,12 @@
-import {
-  access,
-  mkdir,
-  readdir,
-  readFile,
-  writeFile
-} from 'node:fs/promises'
-import {
-  dirname,
-  join,
-  relative,
-  sep
-} from 'node:path'
+import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname, join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import {
   getLumenRegistryItem,
   type LumenRegistry,
   type LumenRegistryEntry,
-  type LumenRegistryFile,
+  type LumenRegistryFile
 } from './registry.js'
 
 interface LumenRecipeFile {
@@ -54,39 +43,64 @@ export interface LumenAddResult {
 
 const templatesRoot = fileURLToPath(new URL('../templates/', import.meta.url))
 
-const loadRecipeTemplateFiles = async (
-  itemName: string,
-  target: LumenAddTarget
-): Promise<LumenRecipeFile[] | undefined> => {
-  const templateDir = join(templatesRoot, target, itemName)
+const productTemplateRecipes = new Set([
+  'analytics-dashboard',
+  'auth-onboarding',
+  'commerce-dashboard',
+  'project-workspace',
+  'saas-admin'
+])
+
+const loadTemplateDirectory = async (templateDir: string): Promise<LumenRecipeFile[]> => {
   let entries
 
   try {
     entries = await readdir(templateDir, { recursive: true, withFileTypes: true })
   } catch {
-    return undefined
+    return []
   }
 
-  const files = await Promise.all(entries
-    .filter(entry => entry.isFile())
-    .map(async entry => {
-      const absolutePath = join(entry.parentPath, entry.name)
+  return Promise.all(
+    entries
+      .filter(entry => entry.isFile())
+      .map(async entry => {
+        const absolutePath = join(entry.parentPath, entry.name)
 
-      return {
-        path: relative(templateDir, absolutePath).split(sep).join('/'),
-        source: await readFile(absolutePath, 'utf8')
-      }
-    }))
+        return {
+          path: relative(templateDir, absolutePath).split(sep).join('/'),
+          source: await readFile(absolutePath, 'utf8')
+        }
+      })
+  )
+}
 
-  files.sort((first, second) => first.path.localeCompare(second.path))
+const loadRecipeTemplateFiles = async (
+  itemName: string,
+  target: LumenAddTarget
+): Promise<LumenRecipeFile[] | undefined> => {
+  const templateDirectories = [
+    ...(productTemplateRecipes.has(itemName) ? [join(templatesRoot, 'shared', 'common')] : []),
+    join(templatesRoot, 'shared', itemName),
+    join(templatesRoot, target, itemName)
+  ]
+
+  const templateFiles = await Promise.all(templateDirectories.map(loadTemplateDirectory))
+  const filesByPath = new Map<string, LumenRecipeFile>()
+
+  for (const file of templateFiles.flat()) {
+    filesByPath.set(file.path, file)
+  }
+
+  const files = [...filesByPath.values()].sort((first, second) => first.path.localeCompare(second.path))
 
   return files.length > 0 ? files : undefined
 }
 
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
-const toCamelCase = (value: string): string =>
+const toCamelCase = (value: string): string => (
   value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
+)
 
 const createAstroComponentFile = (name: string): LumenRecipeFile => ({
   path: `src/lumen/${toKebabCase(name)}.astro`,
@@ -140,10 +154,7 @@ declare global {
   }
 }
 
-const createComponentFile = (
-  name: string,
-  target: LumenAddTarget
-): LumenRecipeFile => {
+const createComponentFile = (name: string, target: LumenAddTarget): LumenRecipeFile => {
   if (target === 'react') return createReactComponentFile(name)
 
   if (target === 'elements') return createElementsComponentFile(name)
@@ -151,10 +162,7 @@ const createComponentFile = (
   return createAstroComponentFile(name)
 }
 
-const getFilesForItem = async (
-  item: LumenRegistryEntry,
-  target: LumenAddTarget
-): Promise<LumenRecipeFile[]> => {
+const getFilesForItem = async (item: LumenRegistryEntry, target: LumenAddTarget): Promise<LumenRecipeFile[]> => {
   if (item.type === 'component') return [createComponentFile(item.name, target)]
 
   const targetRecipeFiles = await loadRecipeTemplateFiles(item.name, target)
@@ -163,12 +171,13 @@ const getFilesForItem = async (
     return targetRecipeFiles
   }
 
-  const inlineFiles = item.files
-    ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
-    .map(file => ({
-      path: file.path,
-      source: file.source
-    })) ?? []
+  const inlineFiles =
+    item.files
+      ?.filter((file): file is LumenRegistryFile => typeof file !== 'string')
+      .map(file => ({
+        path: file.path,
+        source: file.source
+      })) ?? []
 
   if (inlineFiles.length > 0) return inlineFiles
 
@@ -189,18 +198,13 @@ const fileExists = async (path: string): Promise<boolean> => {
   }
 }
 
-const mergeFileSource = ({
-  existing,
-  incoming,
-  path
-}: LumenMergeConflict): string => {
+const mergeFileSource = ({ existing, incoming, path }: LumenMergeConflict): string => {
   if (existing.includes(incoming.trim())) return existing
 
   return `${existing.trimEnd()}\n\n/* Lumen merge: ${path} */\n${incoming}`
 }
 
-const getConflictMode = (options: LumenAddOptions) =>
-  options.force ? 'overwrite' : options.conflict ?? 'skip'
+const getConflictMode = (options: LumenAddOptions) => (options.force ? 'overwrite' : (options.conflict ?? 'skip'))
 
 const getInstallSource = async (
   file: LumenRecipeFile,
@@ -218,11 +222,7 @@ const getInstallSource = async (
   })
 }
 
-const writeInstallFile = async (
-  target: string,
-  source: string,
-  dryRun: boolean | undefined
-) => {
+const writeInstallFile = async (target: string, source: string, dryRun: boolean | undefined) => {
   if (dryRun) return
 
   await mkdir(dirname(target), { recursive: true })
@@ -254,10 +254,7 @@ const installRegistryFile = async (
   return exists && conflict === 'merge' ? 'merged' : 'added'
 }
 
-export const addLumenRegistryItem = async (
-  name: string,
-  options: LumenAddOptions = {}
-): Promise<LumenAddResult> => {
+export const addLumenRegistryItem = async (name: string, options: LumenAddOptions = {}): Promise<LumenAddResult> => {
   const item = getLumenRegistryItem(name, options.registry)
 
   if (!item) {

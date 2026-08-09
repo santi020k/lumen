@@ -12,16 +12,14 @@ export interface ChangelogRelease {
   version: string
 }
 
-const escapeHtml = (value: string): string =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;')
+const escapeHtml = (value: string): string => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll('\'', '&#039;')
 
-const renderCode = (value: string): string =>
-  escapeHtml(value).replaceAll(/`([^`]+)`/g, '<code>$1</code>')
+const renderCode = (value: string): string => escapeHtml(value).replaceAll(/`([^`]+)`/g, '<code>$1</code>')
 
 export const renderChangelogInline = (value: string): string => {
   const linkPattern = /\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g

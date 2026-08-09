@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'input'> {
   class?: string | null
@@ -10,6 +10,7 @@ interface Props extends HTMLAttributes<'input'> {
 }
 
 const { class: classProp = '', className = '', type = 'search', ...rest } = Astro.props
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input', 'ui-autocomplete'
 ], classProp, className)
 ---

@@ -1,8 +1,5 @@
 /* eslint-disable complexity */
-import {
-  exportThemeDesignTokens,
-  exportThemeFigmaVariables
-} from './figma.js'
+import { exportThemeDesignTokens, exportThemeFigmaVariables } from './figma.js'
 import {
   createThemeFromHue,
   exportThemeCss,
@@ -42,13 +39,11 @@ export const coerceThemeBuilderExportFormat = (
 
 export const coerceThemeBuilderMode = (
   value?: string | null
-): LumenThemeBuilderMode =>
-  value === 'manual' ? 'manual' : 'generated'
+): LumenThemeBuilderMode => (value === 'manual' ? 'manual' : 'generated')
 
 export const coerceThemeBuilderScheme = (
   value?: string | null
-): LumenThemeBuilderScheme =>
-  value === 'dark' ? 'dark' : 'light'
+): LumenThemeBuilderScheme => (value === 'dark' ? 'dark' : 'light')
 
 export const normalizeThemeBuilderHue = (
   value: number | string | null | undefined,
@@ -65,7 +60,13 @@ export const normalizeThemeBuilderHex = (value: string): string | null => {
   const hex = value.trim().replace(/^#/, '')
 
   if (/^[\da-f]{3}$/i.test(hex)) {
-    return `#${hex.charAt(0)}${hex.charAt(0)}${hex.charAt(1)}${hex.charAt(1)}${hex.charAt(2)}${hex.charAt(2)}`.toLowerCase()
+    const expanded = [
+      hex.charAt(0),
+      hex.charAt(1),
+      hex.charAt(2)
+    ].map(character => character.repeat(2)).join('')
+
+    return `#${expanded}`.toLowerCase()
   }
 
   return /^[\da-f]{6}$/i.test(hex) ? `#${hex.toLowerCase()}` : null
@@ -114,16 +115,24 @@ export const createThemeBuilderTokens = (
   const hue = normalizeThemeBuilderHue(options.hue)
 
   const accentHue = normalizeThemeBuilderHue(
-    options.accentHue,
-    normalizeThemeBuilderHue(hue + 150)
+    options.accentHue, normalizeThemeBuilderHue(hue + 150)
   )
 
   const mode = coerceThemeBuilderMode(options.mode)
   const scheme = coerceThemeBuilderScheme(options.scheme)
-  const primary = options.primaryColor ? themeBuilderHexToHsl(options.primaryColor) : null
-  const secondary = options.secondaryColor ? themeBuilderHexToHsl(options.secondaryColor) : null
-  const baseHue = mode === 'manual' ? primary?.hue ?? hue : hue
-  const baseAccentHue = mode === 'manual' ? secondary?.hue ?? accentHue : accentHue
+
+  const primary = options.primaryColor ?
+    themeBuilderHexToHsl(options.primaryColor) :
+    null
+
+  const secondary = options.secondaryColor ?
+    themeBuilderHexToHsl(options.secondaryColor) :
+    null
+
+  const baseHue = mode === 'manual' ? (primary?.hue ?? hue) : hue
+
+  const baseAccentHue =
+    mode === 'manual' ? (secondary?.hue ?? accentHue) : accentHue
 
   const tokens = createThemeFromHue(baseHue, {
     accentHue: baseAccentHue,
@@ -154,7 +163,14 @@ export const createThemeBuilderTokens = (
 export const exportThemeBuilderCss = (
   tokens: LumenThemeTokens,
   scheme: LumenThemeBuilderScheme
-): string => exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
+): string => {
+  const css = exportThemeCss(tokens)
+  const firstLineEnd = css.indexOf('\n')
+
+  if (firstLineEnd === -1) return css
+
+  return `${css.slice(0, firstLineEnd + 1)}  color-scheme: ${scheme};\n${css.slice(firstLineEnd + 1)}`
+}
 
 export const exportThemeBuilderValue = (
   tokens: LumenThemeTokens,
@@ -162,10 +178,12 @@ export const exportThemeBuilderValue = (
   format: LumenThemeBuilderExportFormat
 ): string => {
   if (format === 'figma') {
-    return JSON.stringify(exportThemeFigmaVariables(tokens, {
-      collectionName: 'Lumen',
-      modeName: scheme === 'dark' ? 'Dark' : 'Light'
-    }), null, 2)
+    return JSON.stringify(
+      exportThemeFigmaVariables(tokens, {
+        collectionName: 'Lumen',
+        modeName: scheme === 'dark' ? 'Dark' : 'Light'
+      }), null, 2
+    )
   }
 
   if (format === 'tokens') {

@@ -5,7 +5,11 @@ const componentSource = await readFile(
   'utf8'
 )
 
-const componentNames = [...componentSource.matchAll(/^ {2}'([^']+)',?$/gm)]
+const componentCatalogSource = componentSource.match(
+  /export const lumenComponentNames = \[([\s\S]*?)\] as const/
+)?.[1] ?? ''
+
+const componentNames = [...componentCatalogSource.matchAll(/^ {2}'([^']+)',?$/gm)]
   .map(match => match[1])
 
 const [elementsSource, reactComponentsSource, reactHooksSource] = await Promise.all([
@@ -17,6 +21,11 @@ const [elementsSource, reactComponentsSource, reactHooksSource] = await Promise.
 const reactSource = `${reactComponentsSource}\n${reactHooksSource}`
 
 const exceptions = {
+  CardContent: 'ui-card__content',
+  CardDescription: 'ui-card__description',
+  CardFooter: 'ui-card__footer',
+  CardHeader: 'ui-card__header',
+  CardTitle: 'ui-card__title',
   NativeSelect: 'ui-select'
 }
 
@@ -65,11 +74,13 @@ const sharedBehaviorAttributes = [
   'data-ui-file-upload',
   'data-ui-hover-card',
   'data-ui-input-otp',
+  'data-ui-list-box',
   'data-ui-menubar',
   'data-ui-mentions',
   'data-ui-navigation-menu',
   'data-ui-popover',
   'data-ui-popconfirm',
+  'data-ui-password-field',
   'data-ui-radio-group',
   'data-ui-resizable',
   'data-ui-rich-text-editor',

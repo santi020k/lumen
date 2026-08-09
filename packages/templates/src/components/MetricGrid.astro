@@ -1,0 +1,41 @@
+---
+import { Badge, Card, Sparkline, Stat } from '@santi020k/lumen-astro'
+
+interface Metric {
+  change: string
+  direction: 'down' | 'neutral' | 'up'
+  label: string
+  points: readonly number[]
+  value: string
+}
+
+interface Props {
+  metrics: readonly Metric[]
+}
+
+const { metrics } = Astro.props
+
+const badgeFor = (direction: Metric['direction']) => {
+  if (direction === 'up') return 'success'
+
+  if (direction === 'down') return 'destructive'
+
+  return 'secondary'
+}
+---
+
+<section class="template-metrics" aria-label="Key metrics">
+  {metrics.map(metric => (
+    <Card as="article" class="template-metric">
+      <div class="template-metric__summary">
+        <Stat label={metric.label} value={metric.value} />
+        <Badge variant={badgeFor(metric.direction)}>{metric.change}</Badge>
+      </div>
+      <Sparkline
+        label={`${metric.label} recent trend`}
+        tone={metric.direction === 'down' ? 'danger' : 'brand'}
+        values={metric.points}
+      />
+    </Card>
+  ))}
+</section>

@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'span'> {
   class?: string | null
@@ -26,13 +26,16 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-{href
-  ? <a class:list={classList} data-variant={variant} href={href} {...passthrough}>
+{href ?
+  (
+    <a class:list={classList} data-variant={variant} href={href} {...passthrough}>
       <slot />
-      {count != null && <span class="ui-pill__count">{count}</span>}
+      {count !== undefined && <span class="ui-pill__count">{count}</span>}
     </a>
-  : <span class:list={classList} data-variant={variant} {...passthrough}>
+  ) :
+  (
+    <span class:list={classList} data-variant={variant} {...passthrough}>
       <slot />
-      {count != null && <span class="ui-pill__count">{count}</span>}
+      {count !== undefined && <span class="ui-pill__count">{count}</span>}
     </span>
-}
+  )}

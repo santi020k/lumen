@@ -1,17 +1,18 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
+
 import {
   alignLumenChartSeries,
   createLumenLineGeometry,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartSeries,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
-
-import type { HTMLAttributes } from 'astro/types'
 
 import Chart from './Chart.astro'
 
@@ -21,9 +22,13 @@ interface Props extends HTMLAttributes<'figure'> {
   class?: string | null
   className?: string
   description?: string
+  emptyLabel?: string
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
-  markers?: boolean
+  markers?: 'all' | 'auto' | 'none' | boolean | number
+  presentation?: 'bare' | 'default'
   referenceValue?: number
   series: readonly LumenChartSeries[]
   showLegend?: boolean
@@ -36,42 +41,56 @@ const {
   class: classProp = '',
   className = '',
   description,
+  emptyLabel = 'No chart data available.',
+  formatCategory = String,
+  formatValue = String,
   glass = false,
   heading,
-  markers = true,
+  markers = 'auto',
   referenceValue,
   series,
   showLegend = series.length > 1,
   showTable = true,
   ...rest
 } = Astro.props
+
 const width = 640
 const height = 320
 const padding = 44
 const categories = getLumenChartCategories(series)
 const hasData = hasLumenChartData(series)
 const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
 const domain = getLumenChartDomain([
   ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
   referenceValue ?? null
 ], false)
-const geometries = alignedSeries.map(item =>
-  createLumenLineGeometry(item.data, {
-    domain,
-    height,
-    includeZero: false,
-    padding,
-    width
-  })
-)
+
+const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
+  domain,
+  height,
+  includeZero: false,
+  padding,
+  width
+}))
+
 const ticks = getLumenChartTicks(domain)
 const labelStep = Math.max(1, Math.ceil(categories.length / 8))
-const valueFor = (item: LumenChartSeries, category: number | string) =>
-  item.data.find(datum => datum.x === category)
+let markerStep = 1
+
+if (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY
+else if (typeof markers === 'number') markerStep = Math.max(1, Math.round(markers))
+else if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))
+
+const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
+
+const categoryLabelFor = (category: number | string) => series.flatMap(item => item.data)
+  .find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+
 const referenceY =
-  referenceValue === undefined
-    ? undefined
-    : scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+  referenceValue === undefined ?
+    undefined :
+    scaleLumenChartValue(referenceValue, domain, height - padding, padding)
 ---
 
 <Chart
@@ -86,7 +105,7 @@ const referenceY =
     showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label="Chart legend">
         {series.map((item, index) => (
-          <li class={`ui-chart-tone--${resolveLumenChartTone(item.tone, index)}`}>
+          <li class={getLumenChartToneClassName(item.tone, index)}>
             <span aria-hidden="true" />
             {item.label}
           </li>
@@ -94,7 +113,7 @@ const referenceY =
       </ul>
     )
   }
-  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel}</p>}
   <div class="ui-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
@@ -103,19 +122,16 @@ const referenceY =
     >
       <g class="ui-chart__grid">
         {
-          ticks.map((tick) => {
+          ticks.map(tick => {
             const y = scaleLumenChartValue(
-              tick,
-              domain,
-              height - padding,
-              padding
+              tick, domain, height - padding, padding
             )
 
             return (
               <>
                 <line x1={padding} x2={width - padding} y1={y} y2={y} />
                 <text x={padding - 8} y={y}>
-                  {Number(tick.toPrecision(4))}
+                  {formatValue(tick)}
                 </text>
               </>
             )
@@ -132,12 +148,13 @@ const referenceY =
               return null
 
             const denominator = Math.max(1, categories.length - 1)
+
             const x =
               padding + (index / denominator) * (width - padding * 2)
 
             return (
               <text text-anchor="middle" x={x} y={height - 14}>
-                {String(category)}
+                {categoryLabelFor(category)}
               </text>
             )
           })
@@ -163,14 +180,14 @@ const referenceY =
           const tone = resolveLumenChartTone(item.tone, index)
 
           return (
-            <g class={`ui-line-chart__series ui-chart-tone--${tone}`}>
+            <g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>
               {area &&
                 geometry.areaPaths.map(path => (
                   <path class="ui-line-chart__area" d={path} />
                 ))}
               <path class="ui-line-chart__line" d={geometry.path} />
-              {markers &&
-                geometry.points.map(point => (
+              {Number.isFinite(markerStep) &&
+                geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
                   <circle
                     class="ui-line-chart__point"
                     cx={point.xCoordinate}
@@ -178,7 +195,7 @@ const referenceY =
                     r="3"
                   >
                     <title>
-                      {`${point.label ?? String(point.x)} · ${item.label}: ${point.y}`}
+                      {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
                     </title>
                   </circle>
                 ))}
@@ -203,16 +220,16 @@ const referenceY =
             <tbody>
               {categories.map(category => (
                 <tr>
-                  <th scope="row">{String(category)}</th>
+                  <th scope="row">{categoryLabelFor(category)}</th>
                   {series.map(item => {
                     const datum = valueFor(item, category)
 
                     return (
                       <td>
                         {datum?.label ??
-                          (datum?.y === null || datum === undefined
-                            ? 'Not available'
-                            : String(datum.y))}
+                          (datum?.y === null || datum === undefined ?
+                            'Not available' :
+                            formatValue(datum.y))}
                       </td>
                     )
                   })}

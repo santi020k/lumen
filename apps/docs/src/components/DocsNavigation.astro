@@ -29,6 +29,13 @@ const frameworkLinks = [
   ['Elements', '/docs/frameworks/elements']
 ] as const
 
+const formLinks = [
+  ['Forms overview', '/docs/forms'],
+  ['React Hook Form', '/docs/forms/react-hook-form'],
+  ['Astro Actions', '/docs/forms/astro-actions'],
+  ['Web Components', '/docs/forms/elements']
+] as const
+
 const isCurrent = (href: string) => currentPath === href
 const closeAttribute = closeOnNavigate ? true : undefined
 ---
@@ -51,6 +58,20 @@ const closeAttribute = closeOnNavigate ? true : undefined
   <div class="docs-sidebar__group">
     <p>Frameworks</p>
     {frameworkLinks.map(([label, href]) => (
+      <Link
+        aria-current={isCurrent(href) ? 'page' : undefined}
+        class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
+        data-ui-drawer-close={closeAttribute}
+        href={href}
+      >
+        <span>{label}</span>
+        {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
+      </Link>
+    ))}
+  </div>
+  <div class="docs-sidebar__group">
+    <p>Forms</p>
+    {formLinks.map(([label, href]) => (
       <Link
         aria-current={isCurrent(href) ? 'page' : undefined}
         class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}

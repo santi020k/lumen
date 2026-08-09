@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   as?: 'article' | 'div' | 'section'
@@ -21,20 +21,22 @@ const {
 } = Astro.props
 
 const isGlass = glass || variant === 'glass'
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-card',
-    variant === 'unstyled' && 'ui-card--unstyled',
-    variant === 'muted' && 'ui-card--muted',
-    variant === 'interactive' && 'ui-card--interactive',
-    isGlass && 'ui-card--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-card',
+  variant === 'unstyled' && 'ui-card--unstyled',
+  variant === 'muted' && 'ui-card--muted',
+  variant === 'interactive' && 'ui-card--interactive',
+  isGlass && 'ui-card--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 
 <Tag
-  data-variant={variant}
   class:list={classList}
+  data-slot="card"
+  data-variant={variant}
   {...passthrough}
 >
   <slot />

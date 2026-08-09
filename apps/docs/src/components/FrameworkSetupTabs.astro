@@ -20,7 +20,8 @@ const { setups } = Astro.props
         aria-selected={index === 0 ? 'true' : 'false'}
         id={`setup-tab-${setup.id}`}
         role="tab"
-      >{setup.label}</button>
+      >{setup.label}
+      </button>
     ))}
   </div>
   {setups.map((setup, index) => (
@@ -34,12 +35,15 @@ const { setups } = Astro.props
       <div class="
         grid gap-3
         md:grid-cols-3
-      ">
+      "
+      >
         {setup.installCommands.map(install => (
           <div class="space-y-2">
             <p class="
               text-xs font-black tracking-[0.14em] text-ink-muted uppercase
-            ">{install.label}</p>
+            "
+            >{install.label}
+            </p>
             <CodeBlock code={install.command} lang="bash" />
           </div>
         ))}

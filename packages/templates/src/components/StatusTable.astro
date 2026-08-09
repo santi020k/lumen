@@ -1,0 +1,65 @@
+---
+import { Avatar, Badge, Button, Icon, Table } from '@santi020k/lumen-astro'
+
+interface StatusRow {
+  detail: string
+  id: string
+  label: string
+  owner: string
+  status: 'Active' | 'At risk' | 'Completed' | 'Pending' | 'Trial'
+  value: string
+}
+
+interface Props {
+  caption: string
+  rows: readonly StatusRow[]
+}
+
+const { caption, rows } = Astro.props
+
+const statusVariant = (status: StatusRow['status']) => {
+  if (status === 'Active' || status === 'Completed') return 'success'
+
+  if (status === 'At risk') return 'destructive'
+
+  return 'warning'
+}
+---
+
+<Table class="template-table">
+  <table>
+    <caption>{caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Owner</th>
+        <th scope="col">Status</th>
+        <th scope="col">Value</th>
+        <th scope="col"><span class="ui-sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(row => (
+        <tr>
+          <th scope="row">
+            <span class="template-table__primary">{row.label}</span>
+            <small>{row.id} · {row.detail}</small>
+          </th>
+          <td>
+            <span class="template-table__owner">
+              <Avatar fallback={row.owner.split(' ').map(part => part[0]).join('')} />
+              {row.owner}
+            </span>
+          </td>
+          <td><Badge variant={statusVariant(row.status)}>{row.status}</Badge></td>
+          <td>{row.value}</td>
+          <td>
+            <Button aria-label={`Open actions for ${row.label}`} size="icon" variant="ghost">
+              <Icon name="ellipsis" />
+            </Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</Table>

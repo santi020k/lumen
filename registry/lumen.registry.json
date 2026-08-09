@@ -36,12 +36,7 @@
     {
       "name": "scheduler",
       "type": "recipe",
-      "components": [
-        "Schedule",
-        "Agenda",
-        "Calendar",
-        "DatePicker"
-      ]
+      "components": ["Schedule", "Agenda", "Calendar", "DatePicker"]
     },
     {
       "name": "data-collections",
@@ -58,23 +53,12 @@
     {
       "name": "theme-builder",
       "type": "recipe",
-      "components": [
-        "ThemeBuilder",
-        "ColorPicker",
-        "Card",
-        "Button",
-        "Input"
-      ]
+      "components": ["ThemeBuilder", "ColorPicker", "Card", "Button", "Input"]
     },
     {
       "name": "rich-text-editor",
       "type": "recipe",
-      "components": [
-        "RichTextEditor",
-        "ButtonGroup",
-        "ToggleGroup",
-        "Textarea"
-      ]
+      "components": ["RichTextEditor", "ButtonGroup", "ToggleGroup", "Textarea"]
     },
     {
       "name": "data-visualization",
@@ -90,13 +74,138 @@
       ]
     },
     {
+      "name": "analytics-dashboard",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "LineChart",
+        "BarChart",
+        "DateRangePicker",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "saas-admin",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "Alert",
+        "Progress",
+        "SearchField",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "commerce-dashboard",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "BarChart",
+        "PieChart",
+        "Progress",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "project-workspace",
+      "type": "recipe",
+      "components": [
+        "Sidebar",
+        "Stat",
+        "Sparkline",
+        "Progress",
+        "Timeline",
+        "Avatar",
+        "Table",
+        "Badge"
+      ]
+    },
+    {
+      "name": "auth-onboarding",
+      "type": "recipe",
+      "components": [
+        "Card",
+        "Stepper",
+        "Field",
+        "Label",
+        "Input",
+        "Alert",
+        "Checkbox",
+        "Progress",
+        "Button"
+      ]
+    },
+    {
+      "name": "docs-shell",
+      "type": "recipe",
+      "components": [
+        "SkipLink",
+        "NavigationMenu",
+        "ThemeToggle",
+        "Sidebar",
+        "Sheet",
+        "Prose",
+        "Pagination",
+        "Code",
+        "CodeTabs"
+      ]
+    },
+    {
+      "name": "marketing-shell",
+      "type": "recipe",
+      "components": [
+        "SkipLink",
+        "NavigationMenu",
+        "ButtonLink",
+        "Card",
+        "ScrollReveal",
+        "BackToTop"
+      ]
+    },
+    {
+      "name": "dashboard-shell",
+      "type": "recipe",
+      "components": [
+        "NavigationMenu",
+        "Sidebar",
+        "Card",
+        "Stat",
+        "StatTrend",
+        "Badge",
+        "SearchField",
+        "DateRangePicker",
+        "Empty",
+        "Table",
+        "Chart"
+      ]
+    },
+    {
+      "name": "validated-form",
+      "type": "recipe",
+      "components": [
+        "Form",
+        "Field",
+        "FieldError",
+        "Label",
+        "Input",
+        "NativeSelect",
+        "Textarea",
+        "Button"
+      ]
+    },
+    {
       "name": "ai-docs",
       "type": "documentation",
-      "files": [
-        "llms.txt",
-        "docs/ai-usage.md",
-        "docs/feature-roadmap.md"
-      ]
+      "files": ["llms.txt", "docs/ai-usage.md", "docs/feature-roadmap.md"]
     },
     {
       "name": "figma-design-to-code",
@@ -118,9 +227,7 @@
         "packages/astro/components/Accordion.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Alert",
@@ -131,9 +238,7 @@
         "packages/astro/components/Alert.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "AlertDialog",
@@ -146,11 +251,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Button",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Button", "styles", "runtime"]
     },
     {
       "name": "Agenda",
@@ -161,9 +262,7 @@
         "packages/astro/components/Agenda.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "AspectRatio",
@@ -174,9 +273,7 @@
         "packages/astro/components/AspectRatio.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Attachment",
@@ -187,9 +284,7 @@
         "packages/astro/components/Attachment.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Autocomplete",
@@ -200,9 +295,7 @@
         "packages/astro/components/Autocomplete.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Avatar",
@@ -213,9 +306,7 @@
         "packages/astro/components/Avatar.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "BackToTop",
@@ -226,9 +317,7 @@
         "packages/astro/components/BackToTop.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Badge",
@@ -239,9 +328,7 @@
         "packages/astro/components/Badge.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "BarChart",
@@ -253,10 +340,7 @@
         "packages/astro/components/Chart.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Chart",
-        "styles"
-      ]
+      "dependencies": ["Chart", "styles"]
     },
     {
       "name": "Breadcrumb",
@@ -267,9 +351,7 @@
         "packages/astro/components/Breadcrumb.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Bubble",
@@ -280,9 +362,7 @@
         "packages/astro/components/Bubble.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Button",
@@ -293,9 +373,7 @@
         "packages/astro/components/Button.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "ButtonGroup",
@@ -307,10 +385,7 @@
         "packages/astro/components/ButtonGroup.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Button",
-        "styles"
-      ]
+      "dependencies": ["Button", "styles"]
     },
     {
       "name": "Calendar",
@@ -322,10 +397,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Callout",
@@ -336,9 +408,7 @@
         "packages/astro/components/Callout.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Card",
@@ -349,9 +419,62 @@
         "packages/astro/components/Card.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "CardContent",
+      "type": "component",
+      "description": "Provides the main content region inside a card.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/CardContent.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Card", "styles"]
+    },
+    {
+      "name": "CardDescription",
+      "type": "component",
+      "description": "Adds supporting copy to a card header.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/CardDescription.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Card", "styles"]
+    },
+    {
+      "name": "CardFooter",
+      "type": "component",
+      "description": "Groups actions at the end of a card.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/CardFooter.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Card", "styles"]
+    },
+    {
+      "name": "CardHeader",
+      "type": "component",
+      "description": "Groups introductory content at the start of a card.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/CardHeader.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Card", "styles"]
+    },
+    {
+      "name": "CardTitle",
+      "type": "component",
+      "description": "Provides a semantic card title with a stable styling hook.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/CardTitle.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Card", "styles"]
     },
     {
       "name": "Carousel",
@@ -363,10 +486,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Chart",
@@ -377,9 +497,7 @@
         "packages/astro/components/Chart.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Checkbox",
@@ -390,9 +508,18 @@
         "packages/astro/components/Checkbox.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "CheckboxGroup",
+      "type": "component",
+      "description": "Groups related checkbox choices under one legend.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/CheckboxGroup.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Checkbox", "styles"]
     },
     {
       "name": "Collapsible",
@@ -403,9 +530,7 @@
         "packages/astro/components/Collapsible.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Code",
@@ -417,10 +542,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "CodeTabs",
@@ -434,12 +556,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Code",
-        "Tabs",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Code", "Tabs", "styles", "runtime"]
     },
     {
       "name": "Combobox",
@@ -451,10 +568,30 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
+    },
+    {
+      "name": "Container",
+      "type": "component",
+      "description": "Centers page content within responsive gutters and a maximum width.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/Container.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "CopyButton",
+      "type": "component",
+      "description": "Copies arbitrary text or the content of another element with accessible feedback.",
+      "category": "Actions",
+      "files": [
+        "packages/astro/components/CopyButton.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Command",
@@ -467,11 +604,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Input",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Input", "styles", "runtime"]
     },
     {
       "name": "ContextMenu",
@@ -483,10 +616,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "ColorPicker",
@@ -497,9 +627,7 @@
         "packages/astro/components/ColorPicker.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "DataTable",
@@ -511,10 +639,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "DatePicker",
@@ -525,9 +650,7 @@
         "packages/astro/components/DatePicker.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "DateRangePicker",
@@ -539,10 +662,7 @@
         "packages/astro/components/DateRangePicker.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "DatePicker",
-        "styles"
-      ]
+      "dependencies": ["DatePicker", "styles"]
     },
     {
       "name": "Dialog",
@@ -555,11 +675,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Button",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Button", "styles", "runtime"]
     },
     {
       "name": "Direction",
@@ -570,9 +686,7 @@
         "packages/astro/components/Direction.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Drawer",
@@ -585,11 +699,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Button",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Button", "styles", "runtime"]
     },
     {
       "name": "DropdownMenu",
@@ -602,11 +712,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Button",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Button", "styles", "runtime"]
     },
     {
       "name": "Empty",
@@ -617,9 +723,18 @@
         "packages/astro/components/Empty.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "ErrorSummary",
+      "type": "component",
+      "description": "Summarizes form errors and links people back to invalid controls.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/ErrorSummary.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
     },
     {
       "name": "Eyebrow",
@@ -630,9 +745,7 @@
         "packages/astro/components/Eyebrow.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Field",
@@ -645,11 +758,18 @@
         "packages/astro/components/Field.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Input",
-        "Label",
-        "styles"
-      ]
+      "dependencies": ["Input", "Label", "styles"]
+    },
+    {
+      "name": "FieldError",
+      "type": "component",
+      "description": "Displays an error connected to a form control.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/FieldError.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Field", "styles"]
     },
     {
       "name": "FloatingBadge",
@@ -660,9 +780,19 @@
         "packages/astro/components/FloatingBadge.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "Form",
+      "type": "component",
+      "description": "Adds consistent validation and submission state to a native form.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/Form.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "FormattedDate",
@@ -673,9 +803,7 @@
         "packages/astro/components/FormattedDate.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "HoverCard",
@@ -687,10 +815,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Icon",
@@ -702,9 +827,7 @@
         "packages/astro/styles/lumen.css",
         "packages/core/src/icons.ts"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Image",
@@ -715,9 +838,7 @@
         "packages/astro/components/Image.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Input",
@@ -728,9 +849,7 @@
         "packages/astro/components/Input.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "InputGroup",
@@ -742,10 +861,7 @@
         "packages/astro/components/InputGroup.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Input",
-        "styles"
-      ]
+      "dependencies": ["Input", "styles"]
     },
     {
       "name": "InputOTP",
@@ -757,10 +873,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Item",
@@ -771,9 +884,7 @@
         "packages/astro/components/Item.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Kbd",
@@ -784,9 +895,7 @@
         "packages/astro/components/Kbd.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Label",
@@ -798,10 +907,7 @@
         "packages/astro/components/Label.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Input",
-        "styles"
-      ]
+      "dependencies": ["Input", "styles"]
     },
     {
       "name": "Link",
@@ -812,9 +918,7 @@
         "packages/astro/components/Link.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "LineChart",
@@ -826,10 +930,19 @@
         "packages/astro/components/Chart.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Chart",
-        "styles"
-      ]
+      "dependencies": ["Chart", "styles"]
+    },
+    {
+      "name": "ListBox",
+      "type": "component",
+      "description": "Presents a visible single- or multi-select option list.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/ListBox.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Marker",
@@ -840,9 +953,7 @@
         "packages/astro/components/Marker.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Menubar",
@@ -854,10 +965,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Message",
@@ -870,11 +978,7 @@
         "packages/astro/components/Message.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Avatar",
-        "Bubble",
-        "styles"
-      ]
+      "dependencies": ["Avatar", "Bubble", "styles"]
     },
     {
       "name": "MessageScroller",
@@ -886,10 +990,7 @@
         "packages/astro/components/MessageScroller.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Message",
-        "styles"
-      ]
+      "dependencies": ["Message", "styles"]
     },
     {
       "name": "NativeSelect",
@@ -900,9 +1001,7 @@
         "packages/astro/components/NativeSelect.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "NavigationMenu",
@@ -914,10 +1013,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "NumberField",
@@ -928,9 +1024,7 @@
         "packages/astro/components/NumberField.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Pagination",
@@ -941,8 +1035,26 @@
         "packages/astro/components/Pagination.astro",
         "packages/astro/styles/lumen.css"
       ],
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "PasswordField",
+      "type": "component",
+      "description": "Combines a password input with guidance, errors, and a visibility toggle.",
+      "category": "Forms",
+      "files": [
+        "packages/astro/components/PasswordField.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
       "dependencies": [
-        "styles"
+        "Button",
+        "Field",
+        "FieldError",
+        "Input",
+        "Label",
+        "styles",
+        "runtime"
       ]
     },
     {
@@ -954,11 +1066,7 @@
         "packages/astro/components/PhoneInput.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Input",
-        "NativeSelect",
-        "styles"
-      ]
+      "dependencies": ["Input", "NativeSelect", "styles"]
     },
     {
       "name": "PieChart",
@@ -970,10 +1078,7 @@
         "packages/astro/components/Chart.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Chart",
-        "styles"
-      ]
+      "dependencies": ["Chart", "styles"]
     },
     {
       "name": "Pill",
@@ -984,9 +1089,7 @@
         "packages/astro/components/Pill.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Popover",
@@ -998,10 +1101,7 @@
         "packages/astro/components/Popover.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "Button",
-        "styles"
-      ]
+      "dependencies": ["Button", "styles"]
     },
     {
       "name": "Progress",
@@ -1010,11 +1110,10 @@
       "category": "Feedback",
       "files": [
         "packages/astro/components/Progress.astro",
-        "packages/astro/styles/lumen.css"
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Prose",
@@ -1025,9 +1124,7 @@
         "packages/astro/components/Prose.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "RadioGroup",
@@ -1039,10 +1136,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Resizable",
@@ -1054,10 +1148,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "RichTextEditor",
@@ -1071,12 +1162,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Button",
-        "ButtonGroup",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Button", "ButtonGroup", "styles", "runtime"]
     },
     {
       "name": "ScrollArea",
@@ -1087,9 +1173,7 @@
         "packages/astro/components/ScrollArea.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "ScrollProgress",
@@ -1101,10 +1185,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Schedule",
@@ -1116,10 +1197,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "SearchField",
@@ -1130,9 +1208,7 @@
         "packages/astro/components/SearchField.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Select",
@@ -1144,10 +1220,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Separator",
@@ -1158,9 +1231,7 @@
         "packages/astro/components/Separator.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Sheet",
@@ -1173,11 +1244,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Button",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Button", "styles", "runtime"]
     },
     {
       "name": "Sidebar",
@@ -1188,9 +1255,7 @@
         "packages/astro/components/Sidebar.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Skeleton",
@@ -1201,9 +1266,7 @@
         "packages/astro/components/Skeleton.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "SkipLink",
@@ -1214,9 +1277,7 @@
         "packages/astro/components/SkipLink.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Slider",
@@ -1227,9 +1288,7 @@
         "packages/astro/components/Slider.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Sonner",
@@ -1241,10 +1300,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Sparkline",
@@ -1255,9 +1311,7 @@
         "packages/astro/components/Sparkline.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Spinner",
@@ -1268,9 +1322,7 @@
         "packages/astro/components/Spinner.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Switch",
@@ -1281,9 +1333,7 @@
         "packages/astro/components/Switch.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Table",
@@ -1294,9 +1344,7 @@
         "packages/astro/components/Table.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Tabs",
@@ -1308,10 +1356,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "TagGroup",
@@ -1323,10 +1368,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Textarea",
@@ -1337,9 +1379,7 @@
         "packages/astro/components/Textarea.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "ThemeBuilder",
@@ -1351,10 +1391,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "ThemeToggle",
@@ -1365,9 +1402,7 @@
         "packages/astro/components/ThemeToggle.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "TimeField",
@@ -1378,9 +1413,7 @@
         "packages/astro/components/TimeField.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Toast",
@@ -1392,10 +1425,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Toggle",
@@ -1407,10 +1437,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "ToggleGroup",
@@ -1423,11 +1450,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "Toggle",
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["Toggle", "styles", "runtime"]
     },
     {
       "name": "Tooltip",
@@ -1438,9 +1461,7 @@
         "packages/astro/components/Tooltip.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Tree",
@@ -1451,9 +1472,7 @@
         "packages/astro/components/Tree.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "TreeGrid",
@@ -1464,9 +1483,7 @@
         "packages/astro/components/TreeGrid.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "Typography",
@@ -1477,9 +1494,7 @@
         "packages/astro/components/Typography.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": [
-        "styles"
-      ]
+      "dependencies": ["styles"]
     },
     {
       "name": "VirtualList",
@@ -1491,10 +1506,7 @@
         "packages/astro/styles/lumen.css",
         "packages/astro/runtime/UIPrimitives.astro"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "LanguageToggle",
@@ -1527,10 +1539,7 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "RevealGroup",
@@ -1543,10 +1552,7 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "ScrollReveal",
@@ -1559,10 +1565,7 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": [
-        "styles",
-        "runtime"
-      ]
+      "dependencies": ["styles", "runtime"]
     },
     {
       "name": "Stat",
@@ -1573,6 +1576,72 @@
         "packages/astro/components/Stat.astro",
         "packages/react/src/components.tsx"
       ]
+    },
+    {
+      "name": "StatDescription",
+      "type": "component",
+      "description": "Adds supporting context to a composed statistic.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/StatDescription.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Stat", "styles"]
+    },
+    {
+      "name": "StatIcon",
+      "type": "component",
+      "description": "Provides an icon region for a composed statistic.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/StatIcon.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Stat", "styles"]
+    },
+    {
+      "name": "StatLabel",
+      "type": "component",
+      "description": "Labels a composed statistic.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/StatLabel.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Stat", "styles"]
+    },
+    {
+      "name": "StatTrend",
+      "type": "component",
+      "description": "Communicates a metric delta with a semantic tone.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/StatTrend.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Stat", "styles"]
+    },
+    {
+      "name": "StatValue",
+      "type": "component",
+      "description": "Displays the prominent value in a composed statistic.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/StatValue.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["Stat", "styles"]
+    },
+    {
+      "name": "Stack",
+      "type": "component",
+      "description": "Arranges children with tokenized direction, spacing, and alignment.",
+      "category": "Layout",
+      "files": [
+        "packages/astro/components/Stack.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
     },
     {
       "name": "Meter",
@@ -1823,6 +1892,28 @@
         "packages/astro/components/SpeedDial.astro",
         "packages/react/src/components.tsx"
       ]
+    },
+    {
+      "name": "Grid",
+      "type": "component",
+      "category": "Layout",
+      "description": "Arranges content in fixed or responsive tokenized columns.",
+      "files": [
+        "packages/astro/components/Grid.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "VisuallyHidden",
+      "type": "component",
+      "category": "Layout",
+      "description": "Keeps meaningful content available to assistive technology without displaying it.",
+      "files": [
+        "packages/astro/components/VisuallyHidden.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
     }
   ]
 }

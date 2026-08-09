@@ -13,11 +13,11 @@ export type LumenIconData = LucideIconData & {
 export type LumenIconName = string
 export type LumenIconPack = Readonly<Record<string, LumenIconData>>
 
-const toKebabCase = (value: string) =>
-  value.trim()
-    .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replaceAll(/[\s_]+/g, '-')
-    .toLowerCase()
+const toKebabCase = (value: string) => value
+  .trim()
+  .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
+  .replaceAll(/[\s_]+/g, '-')
+  .toLowerCase()
 
 const lucideIconEntries = Object.entries(lucideIcons)
 const registeredIconPacks = new Map<string, LumenIconPack>()
@@ -59,7 +59,9 @@ export const registerLumenIconPack = (prefix: string, icons: LumenIconPack) => {
   const normalizedPrefix = toKebabCase(prefix)
 
   if (!normalizedPrefix || normalizedPrefix.includes(':')) {
-    throw new Error('Lumen icon pack prefixes must be non-empty and cannot contain colons.')
+    throw new Error(
+      'Lumen icon pack prefixes must be non-empty and cannot contain colons.'
+    )
   }
 
   const normalizedIcons = Object.fromEntries(
@@ -69,28 +71,34 @@ export const registerLumenIconPack = (prefix: string, icons: LumenIconPack) => {
   registeredIconPacks.set(normalizedPrefix, Object.freeze(normalizedIcons))
 }
 
-export const getLumenIconPack = (prefix: string): LumenIconPack | undefined =>
+export const getLumenIconPack = (prefix: string): LumenIconPack | undefined => (
   registeredIconPacks.get(toKebabCase(prefix))
+)
 
-export const getRegisteredLumenIconNames = () =>
-  [...registeredIconPacks.entries()]
-    .flatMap(([prefix, icons]) => Object.keys(icons).map(name => `${prefix}:${name}`))
-    .sort()
+export const getRegisteredLumenIconNames = () => [...registeredIconPacks.entries()]
+  .flatMap(([prefix, icons]) => Object.keys(icons).map(name => `${prefix}:${name}`))
+  .sort()
 
-const escapeHtmlAttribute = (value: string) =>
-  value.replaceAll('&', '&amp;')
-    .replaceAll('"', '&quot;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
+const escapeHtmlAttribute = (value: string) => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('"', '&quot;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
 
-const renderAttributes = (attributes: Record<string, string>) =>
-  Object.entries(attributes)
-    .map(([name, value]) => `${name}="${escapeHtmlAttribute(value)}"`)
-    .join(' ')
+const renderAttributes = (attributes: Record<string, string>) => Object.entries(attributes)
+  .map(([name, value]) => `${name}="${escapeHtmlAttribute(value)}"`)
+  .join(' ')
 
-const renderIconNode = ([tagName, attributes, children]: LumenIconNode): string => {
+const renderIconNode = ([
+  tagName,
+  attributes,
+  children
+]: LumenIconNode): string => {
   const renderedAttributes = renderAttributes(attributes)
-  const openingTag = renderedAttributes ? `<${tagName} ${renderedAttributes}` : `<${tagName}`
+
+  const openingTag = renderedAttributes ?
+    `<${tagName} ${renderedAttributes}` :
+    `<${tagName}`
 
   if (!children?.length) {
     return `${openingTag} />`
@@ -99,14 +107,18 @@ const renderIconNode = ([tagName, attributes, children]: LumenIconNode): string 
   return `${openingTag}>${children.map(renderIconNode).join('')}</${tagName}>`
 }
 
-export const resolveLumenIconName = (name: string): LumenIconName | undefined => {
+export const resolveLumenIconName = (
+  name: string
+): LumenIconName | undefined => {
   const { iconName, prefix } = parseIconName(name)
 
   if (!prefix) {
     return lumenIcons[iconName] ? iconName : undefined
   }
 
-  return registeredIconPacks.get(prefix)?.[iconName] ? `${prefix}:${iconName}` : undefined
+  return registeredIconPacks.get(prefix)?.[iconName] ?
+    `${prefix}:${iconName}` :
+    undefined
 }
 
 export const getLumenIcon = (name: string): LumenIconData | undefined => {
@@ -116,14 +128,19 @@ export const getLumenIcon = (name: string): LumenIconData | undefined => {
 
   const { iconName, prefix } = parseIconName(resolvedName)
 
-  return prefix ? registeredIconPacks.get(prefix)?.[iconName] : lumenIcons[iconName]
+  return prefix ?
+    registeredIconPacks.get(prefix)?.[iconName] :
+    lumenIcons[iconName]
 }
 
 export interface LumenIconSvgOptions {
   className?: string
 }
 
-export const renderLumenIconSvg = (name: string, options: LumenIconSvgOptions = {}) => {
+export const renderLumenIconSvg = (
+  name: string,
+  options: LumenIconSvgOptions = {}
+) => {
   const icon = getLumenIcon(name)
 
   if (!icon) return ''
@@ -132,7 +149,14 @@ export const renderLumenIconSvg = (name: string, options: LumenIconSvgOptions = 
   const source = icon.source ?? 'lucide'
   const width = 'size' in icon ? icon.size : icon.width
   const height = 'size' in icon ? icon.size : icon.height
-  const className = ['ui-icon__svg', `${source}-${icon.name}`, options.className].filter(Boolean).join(' ')
+
+  const className = [
+    'ui-icon__svg',
+    `${source}-${icon.name}`,
+    options.className
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return `<svg ${renderAttributes({
     'aria-hidden': 'true',

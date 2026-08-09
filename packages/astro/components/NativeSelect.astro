@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Option {
   disabled?: boolean
@@ -21,9 +21,8 @@ interface Props extends Omit<HTMLAttributes<'select'>, 'size'> {
 
 const { class: classProp = '', className = '', options = [], placeholder, size = 'default', ...rest } = Astro.props
 const hasValue = Object.hasOwn(rest, 'value')
-const normalizedOptions = options.map(option =>
-  typeof option === 'string' ? { label: option, value: option } : option
-)
+const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', size === 'sm' && 'ui-select--sm', size === 'lg' && 'ui-select--lg'
 ], classProp, className)
 ---

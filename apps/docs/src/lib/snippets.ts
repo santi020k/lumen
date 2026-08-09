@@ -8,15 +8,28 @@ export interface FrameworkSnippet {
 
 const lumenNames = new Set<string>(lumenComponentNames)
 const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-const valueDefaultTags = ['Checkbox', 'DatePicker', 'Input', 'InputOTP', 'Slider', 'Switch', 'Textarea']
-const valueDefaultPattern = new RegExp(`<(${valueDefaultTags.join('|')})([^>]*?) value="`, 'g')
+
+const valueDefaultTags = [
+  'Checkbox',
+  'DatePicker',
+  'Input',
+  'InputOTP',
+  'Slider',
+  'Switch',
+  'Textarea'
+]
+
+const valueDefaultPattern = new RegExp(
+  `<(${valueDefaultTags.join('|')})([^>]*?) value="`, 'g'
+)
 
 const splitExample = (raw: string) => {
   const match = /^---\n([\S\s]*?)\n---\n\n?([\S\s]*)$/.exec(raw.trim())
   const frontmatter = match?.[1]
   const body = match?.[2]
 
-  if (frontmatter === undefined || body === undefined) return { body: raw.trim(), frontmatter: '' }
+  if (frontmatter === undefined || body === undefined)
+    return { body: raw.trim(), frontmatter: '' }
 
   return { body: body.trim(), frontmatter: frontmatter.trim() }
 }
@@ -39,17 +52,21 @@ const toAstroSnippet = (raw: string): string => {
   return `---\n${frontmatter.trim()}\n---\n\n${body.trim()}\n`
 }
 
-const toCssCamelCase = (property: string) =>
-  property.replaceAll(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase())
+const uppercaseCssSegment = (_match: string, letter: string) => letter.toUpperCase()
+const toCssCamelCase = (property: string) => property.replaceAll(/-([a-z])/g, uppercaseCssSegment)
 
 const toReactStyleObject = (css: string) => {
   const declarations = css
     .split(';')
     .map(declaration => declaration.trim())
     .filter(Boolean)
-    .map((declaration) => {
+    .map(declaration => {
       const separatorIndex = declaration.indexOf(':')
-      const property = toCssCamelCase(declaration.slice(0, separatorIndex).trim())
+
+      const property = toCssCamelCase(
+        declaration.slice(0, separatorIndex).trim()
+      )
+
       const value = declaration.slice(separatorIndex + 1).trim()
 
       return `${property}: '${value}'`
@@ -58,19 +75,20 @@ const toReactStyleObject = (css: string) => {
   return `{{ ${declarations.join(', ')} }}`
 }
 
-const toReactBody = (body: string) =>
-  body
-    .replaceAll(valueDefaultPattern, '<$1$2 defaultValue="')
-    .replaceAll(/(?<=\s)style="([^"]*)"/g, (_match, css: string) => `style=${toReactStyleObject(css)}`)
-    .replaceAll(/(?<=\s)class=/g, 'className=')
-    .replaceAll(/(?<=\s)for=/g, 'htmlFor=')
-    .replaceAll(/(?<=\s)checked(?=[\s/>])/g, 'defaultChecked')
-    .replaceAll(/(?<=\s)stroke-width=/g, 'strokeWidth=')
-    .replaceAll(/(?<=\s)stop-color=/g, 'stopColor=')
-    .replaceAll(/(?<=\s)stop-opacity=/g, 'stopOpacity=')
-    .replaceAll(/(?<=\s)maxlength=/g, 'maxLength=')
-    .replaceAll(/(?<=\s)inputmode=/g, 'inputMode=')
-    .replaceAll(/(?<=\s)tabindex=/g, 'tabIndex=')
+const toReactBody = (body: string) => body
+  .replaceAll(valueDefaultPattern, '<$1$2 defaultValue="')
+  .replaceAll(
+    /(?<=\s)style="([^"]*)"/g, (_match, css: string) => `style=${toReactStyleObject(css)}`
+  )
+  .replaceAll(/(?<=\s)class=/g, 'className=')
+  .replaceAll(/(?<=\s)for=/g, 'htmlFor=')
+  .replaceAll(/(?<=\s)checked(?=[\s/>])/g, 'defaultChecked')
+  .replaceAll(/(?<=\s)stroke-width=/g, 'strokeWidth=')
+  .replaceAll(/(?<=\s)stop-color=/g, 'stopColor=')
+  .replaceAll(/(?<=\s)stop-opacity=/g, 'stopOpacity=')
+  .replaceAll(/(?<=\s)maxlength=/g, 'maxLength=')
+  .replaceAll(/(?<=\s)inputmode=/g, 'inputMode=')
+  .replaceAll(/(?<=\s)tabindex=/g, 'tabIndex=')
 
 const toReactSnippet = (body: string): string => {
   const components = usedComponents(body)
@@ -133,7 +151,7 @@ export const Example = () => (
     width={318}
   />
 )
-`,
+`
 }
 
 const elementsOverrides: Record<string, string> = {
@@ -201,15 +219,32 @@ const accent = "hsl(var(--accent))";</code></pre>
     <button data-ui-combobox-option data-value="Web Components" role="option" type="button">Web Components</button>
   </div>
 </lumen-combobox>
+`,
+  Form: `${elementsHeader}
+
+<form data-ui-form>
+  <lumen-button type="submit">Save changes</lumen-button>
+</form>
 `
 }
 
-export const buildSnippets = (name: string, raw: string): FrameworkSnippet[] => {
+export const buildSnippets = (
+  name: string,
+  raw: string
+): FrameworkSnippet[] => {
   const { body } = splitExample(raw)
 
   return [
     { code: toAstroSnippet(raw), label: 'Astro', lang: 'astro' },
-    { code: reactOverrides[name] ?? toReactSnippet(body), label: 'React', lang: 'tsx' },
-    { code: elementsOverrides[name] ?? toElementsSnippet(body), label: 'Elements', lang: 'html' }
+    {
+      code: reactOverrides[name] ?? toReactSnippet(body),
+      label: 'React',
+      lang: 'tsx'
+    },
+    {
+      code: elementsOverrides[name] ?? toElementsSnippet(body),
+      label: 'Elements',
+      lang: 'html'
+    }
   ]
 }

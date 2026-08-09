@@ -1,0 +1,47 @@
+---
+import { Badge, ButtonLink, Icon } from '@santi020k/lumen-astro'
+
+import TemplatePreviewFrame from './components/TemplatePreviewFrame.astro'
+import { lumenTemplates } from './templates'
+---
+
+<main class="template-gallery">
+  <section class="template-gallery__hero">
+    <div class="template-gallery__hero-copy">
+      <Badge variant="outline">
+        <Icon name="layout-template" size="sm" />
+        Production compositions
+      </Badge>
+      <h1>Start with the whole product surface.</h1>
+      <p>
+        Five responsive Lumen templates with accessible states, realistic data,
+        and source you can install for Astro, React, or Web Components.
+      </p>
+      <div class="template-gallery__hero-actions">
+        <ButtonLink href="#template-collection" showArrow>Explore templates</ButtonLink>
+        <ButtonLink href="/docs" variant="secondary">Read the documentation</ButtonLink>
+      </div>
+    </div>
+    <dl class="template-gallery__summary">
+      <div><dt>Templates</dt><dd>{lumenTemplates.length}</dd></div>
+      <div><dt>Frameworks</dt><dd>3</dd></div>
+      <div><dt>Theme modes</dt><dd>Light + dark</dd></div>
+    </dl>
+  </section>
+
+  <section class="template-gallery__collection" id="template-collection">
+    <header>
+      <div>
+        <span>Template collection</span>
+        <h2>Built around decisions, not decoration.</h2>
+      </div>
+      <p>
+        Every surface uses public Lumen primitives and semantic tokens, including
+        responsive layouts, keyboard paths, loading-ready structure, and exact-data views.
+      </p>
+    </header>
+    <div class="template-gallery__grid">
+      {lumenTemplates.map(template => <TemplatePreviewFrame {template} />)}
+    </div>
+  </section>
+</main>

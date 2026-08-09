@@ -1,7 +1,12 @@
 ---
 import {
   Button,
-  Card
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
 } from '@santi020k/lumen-astro'
 ---
 
@@ -18,5 +23,16 @@ import {
   <Card as="article" variant="interactive">
     <h3>Interactive</h3>
     <p>Hover and focus styles for clickable cards.</p>
+  </Card>
+  <Card variant="glass">
+    <CardHeader>
+      <CardTitle as="h3">Compound glass card</CardTitle>
+      <CardDescription>Stable public parts avoid implementation selectors.</CardDescription>
+    </CardHeader>
+    <CardContent>Content inherits the shared spacing contract.</CardContent>
+    <CardFooter>Footer actions remain freely composable.</CardFooter>
+  </Card>
+  <Card variant="unstyled">
+    <CardContent>Unstyled preserves semantics and stable hooks without a surface.</CardContent>
   </Card>
 </div>

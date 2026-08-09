@@ -1,37 +1,31 @@
 ---
-import { resolveLumenAstroProps, resolveLumenGlass } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'nav'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
-  /**
-   * @deprecated Use `glass` instead. `surface="glass"` maps to `glass={true}`.
-   */
-  surface?: 'default' | 'glass'
 }
 
 const {
   class: classProp = '',
   className = '',
   glass = false,
-  surface = 'default',
   ...rest
 } = Astro.props
 
-const resolvedGlass = resolveLumenGlass(glass, surface)
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-menubar',
-    resolvedGlass && 'ui-menubar--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-menubar',
+  glass && 'ui-menubar--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 ---
 
 <nav
-  data-surface={resolvedGlass ? 'glass' : 'default'}
+  data-surface={glass ? 'glass' : 'default'}
   data-ui-menubar
   class:list={classList}
   {...passthrough}

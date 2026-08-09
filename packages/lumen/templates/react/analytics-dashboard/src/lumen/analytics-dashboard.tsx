@@ -1,0 +1,143 @@
+import './lumen-template.css'
+
+import {
+  Badge,
+  BarChart,
+  Button,
+  Card,
+  LineChart,
+  Sidebar,
+  Sparkline,
+  Stat,
+  Table
+} from '@santi020k/lumen-react'
+
+const revenue = [
+  {
+    data: [
+      { x: 'Jan', y: 118 },
+      { x: 'Feb', y: 126 },
+      { x: 'Mar', y: 132 },
+      { x: 'Apr', y: 148 },
+      { x: 'May', y: 162 },
+      { x: 'Jun', y: 184 }
+    ],
+    id: 'revenue',
+    label: 'Revenue',
+    tone: 'brand' as const
+  }
+]
+
+const channels = [
+  {
+    data: [
+      { x: 'Organic', y: 4820 },
+      { x: 'Referral', y: 3180 },
+      { x: 'Paid', y: 2640 }
+    ],
+    id: 'visitors',
+    label: 'Visitors',
+    tone: 'brand' as const
+  }
+]
+
+const metrics = [
+  {
+    change: '+12.4%',
+    label: 'Monthly revenue',
+    values: [31, 33, 38, 41, 46, 52],
+    value: '$184,320'
+  },
+  {
+    change: '+8.2%',
+    label: 'Active accounts',
+    values: [40, 42, 45, 49, 53, 57],
+    value: '12,480'
+  },
+  {
+    change: '-1.6%',
+    label: 'Customer churn',
+    values: [26, 25, 24, 23, 20, 18],
+    value: '2.8%'
+  },
+  {
+    change: '+3.1%',
+    label: 'Net retention',
+    values: [44, 45, 47, 49, 50, 54],
+    value: '116%'
+  }
+]
+
+export const AnalyticsDashboardTemplate = () => (
+  <div className="lumen-template lumen-template__shell">
+    <Sidebar className="lumen-template__sidebar">
+      <strong>Pulse Analytics</strong>
+      <nav aria-label="Analytics">
+        <a aria-current="page" href="#overview">
+          Overview
+        </a>
+        <a href="#acquisition">Acquisition</a>
+        <a href="#accounts">Accounts</a>
+      </nav>
+    </Sidebar>
+    <main className="lumen-template__main" id="overview">
+      <header className="lumen-template__header">
+        <div>
+          <Badge variant="outline">Jun 1–30</Badge>
+          <h1>Growth overview</h1>
+          <p>Revenue, retention, and account health.</p>
+        </div>
+        <Button>Export report</Button>
+      </header>
+      <section className="lumen-template__metrics" aria-label="Key metrics">
+        {metrics.map(metric => (
+          <Card className="lumen-template__metric" key={metric.label}>
+            <Stat label={metric.label} value={metric.value} />
+            <Badge variant="success">{metric.change}</Badge>
+            <Sparkline label={`${metric.label} trend`} values={metric.values} />
+          </Card>
+        ))}
+      </section>
+      <section className="lumen-template__grid" id="acquisition">
+        <LineChart area heading="Revenue trajectory" series={revenue} />
+        <BarChart heading="Channel performance" series={channels} />
+      </section>
+      <Card className="lumen-template__panel" id="accounts">
+        <div className="lumen-template__section-header">
+          <h2>Accounts to watch</h2>
+          <Button variant="ghost">View all</Button>
+        </div>
+        <Table className="lumen-template__table">
+          <table>
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Northstar Labs</td>
+                <td>Enterprise</td>
+                <td>
+                  <Badge variant="success">Active</Badge>
+                </td>
+                <td>$18,400</td>
+              </tr>
+              <tr>
+                <td>Arc & Field</td>
+                <td>Enterprise</td>
+                <td>
+                  <Badge variant="destructive">At risk</Badge>
+                </td>
+                <td>$14,780</td>
+              </tr>
+            </tbody>
+          </table>
+        </Table>
+      </Card>
+    </main>
+  </div>
+)

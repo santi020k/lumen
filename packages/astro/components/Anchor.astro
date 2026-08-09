@@ -1,24 +1,28 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type AnchorDepth = 1 | 2 | 3 | 4 | 5 | 6
 
-type AnchorLink = {
+interface AnchorLink {
+  description?: string
   depth?: AnchorDepth
   href: string
+  index?: number | string
   label: string
 }
 
 export interface Props extends HTMLAttributes<'nav'> {
   class?: string | null
   className?: string
+  activationOffset?: number
   items?: AnchorLink[]
 }
 
 const {
   'aria-label': ariaLabel = 'On this page',
+  activationOffset = 96,
   class: classProp = '',
   className = '',
   items = [],
@@ -34,6 +38,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   aria-label={ariaLabel}
   class:list={classList}
   data-ui-anchor
+  data-ui-anchor-offset={Math.max(0, activationOffset)}
   {...passthrough}
 >
   {items.length > 0 && (
@@ -41,11 +46,20 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
       {items.map((item, index) => (
         <li>
           <a
+            aria-current={index === 0 ? 'location' : undefined}
             data-active={index === 0 ? 'true' : 'false'}
             data-depth={item.depth}
             href={item.href}
           >
-            {item.label}
+            {item.index !== undefined && (
+              <span class="ui-anchor__index">{item.index}</span>
+            )}
+            <span class="ui-anchor__content">
+              <span class="ui-anchor__label">{item.label}</span>
+              {item.description && (
+                <span class="ui-anchor__description">{item.description}</span>
+              )}
+            </span>
           </a>
         </li>
       ))}

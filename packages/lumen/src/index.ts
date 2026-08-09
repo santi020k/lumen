@@ -41,6 +41,8 @@ export {
   createDataViewState,
   createDataViewStorageKey,
   createLumenBarGeometry,
+  createLumenFormFailure,
+  createLumenFormSuccess,
   createLumenLineGeometry,
   createLumenPieGeometry,
   createScheduleSlots,
@@ -57,6 +59,7 @@ export {
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenChartValueRatio,
+  getLumenFieldErrors,
   getScheduleConflicts,
   getVirtualRange,
   hasLumenPieData,
@@ -88,6 +91,14 @@ export {
   type LumenDataRecord,
   type LumenDataViewServerRequest,
   type LumenDataViewState,
+  type LumenFieldError,
+  type LumenFormErrorInput,
+  type LumenFormErrors,
+  type LumenFormFailure,
+  type LumenFormResult,
+  type LumenFormStatus,
+  lumenFormStatuses,
+  type LumenFormSuccess,
   lumenGlass,
   type LumenGlassColorTokenName,
   lumenGlassColorTokenNames,
@@ -131,6 +142,7 @@ export {
   mergeThemeTokens,
   moveScheduleEvent,
   normalizeLumenCode,
+  normalizeLumenFormErrors,
   normalizeThemeBuilderHex,
   normalizeThemeBuilderHue,
   paginateDataRecords,
@@ -164,6 +176,14 @@ export const lumen = {
   scope: '@santi020k'
 } as const
 
+export {
+  createLumenSetup,
+  formatLumenDiagnostics,
+  inspectLumenIntegration,
+  type LumenDiagnosticFinding,
+  type LumenDiagnosticReport,
+  type LumenDiagnosticSeverity
+} from './integration-diagnostics.js'
 export {
   auditLumenTokenCss,
   type LumenTokenAuditFinding

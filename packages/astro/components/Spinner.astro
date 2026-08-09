@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'span'> {
   class?: string | null
@@ -19,8 +19,9 @@ const {
 } = Astro.props
 
 const isAccessible = Boolean(ariaLabel || ariaLabelledby)
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-spinner'
+  'ui-spinner'
 ], classProp, className)
 ---
 

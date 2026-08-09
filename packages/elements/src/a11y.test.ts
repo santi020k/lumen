@@ -52,7 +52,8 @@ describe('lumen elements accessibility', () => {
       <lumen-tabs data-ui-tabs>
         <div role="tablist" aria-label="Sections">
           <button role="tab" id="a11y-tab-1" aria-selected="true" aria-controls="a11y-panel-1">Preview</button>
-          <button role="tab" id="a11y-tab-2" aria-selected="false" aria-controls="a11y-panel-2" tabindex="-1">Code</button>
+          <button role="tab" id="a11y-tab-2" aria-selected="false"
+            aria-controls="a11y-panel-2" tabindex="-1">Code</button>
         </div>
         <section role="tabpanel" id="a11y-panel-1" aria-labelledby="a11y-tab-1">Panel</section>
         <section role="tabpanel" id="a11y-panel-2" aria-labelledby="a11y-tab-2" hidden>Panel</section>

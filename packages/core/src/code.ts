@@ -1,4 +1,5 @@
-export type LumenCodeTokenKind = 'accent' | 'comment' | 'keyword' | 'string' | 'symbol' | 'type'
+export type LumenCodeTokenKind =
+  'accent' | 'comment' | 'keyword' | 'string' | 'symbol' | 'type'
 
 export interface LumenCodeToken {
   kind?: LumenCodeTokenKind
@@ -16,7 +17,11 @@ export const lumenCodeTokenClassNames = {
 } as const satisfies Record<LumenCodeTokenKind, string>
 
 interface LumenCodeTokenizer {
-  getKind: (value: string, source: string, start: number) => LumenCodeTokenKind | undefined
+  getKind: (
+    value: string,
+    source: string,
+    start: number
+  ) => LumenCodeTokenKind | undefined
   pattern: RegExp
 }
 
@@ -29,11 +34,7 @@ const bashLikeLanguages = new Set([
   'zsh'
 ])
 
-const jsonLikeLanguages = new Set([
-  'json',
-  'json5',
-  'jsonc'
-])
+const jsonLikeLanguages = new Set(['json', 'json5', 'jsonc'])
 
 const javascriptLikeLanguages = new Set([
   'js',
@@ -45,15 +46,8 @@ const javascriptLikeLanguages = new Set([
   'typescript'
 ])
 
-const luaLikeLanguages = new Set([
-  'lua'
-])
-
-const markdownLikeLanguages = new Set([
-  'md',
-  'markdown',
-  'mdx'
-])
+const luaLikeLanguages = new Set(['lua'])
+const markdownLikeLanguages = new Set(['md', 'markdown', 'mdx'])
 
 const markupLikeLanguages = new Set([
   'astro',
@@ -64,14 +58,8 @@ const markupLikeLanguages = new Set([
   'xml'
 ])
 
-const sqlLikeLanguages = new Set([
-  'sql'
-])
-
-const yamlLikeLanguages = new Set([
-  'yaml',
-  'yml'
-])
+const sqlLikeLanguages = new Set(['sql'])
+const yamlLikeLanguages = new Set(['yaml', 'yml'])
 
 const javascriptKeywords = new Set([
   'as',
@@ -148,11 +136,7 @@ const bashKeywords = new Set([
   'while'
 ])
 
-const jsonKeywords = new Set([
-  'false',
-  'null',
-  'true'
-])
+const jsonKeywords = new Set(['false', 'null', 'true'])
 
 const luaKeywords = new Set([
   'and',
@@ -221,14 +205,49 @@ const yamlKeywords = new Set([
   'yes'
 ])
 
-const bashTokenPattern = /#[^\n]*|"(?:\\.|[^"\\])*"|'[^']*'|\$\{?[A-Za-z_][\w]*\}?|--?[A-Za-z][\w-]*|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[|&;<>()[\]{}=]+/g
-const javascriptTokenPattern = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b\d[\d._]*\b|\b[A-Za-z_$][\w$]*\b|[=+\-*%<>!?:.,;()[\]{}|&/]+/g
-const jsonTokenPattern = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|\b(?:false|null|true)\b|-?\b\d+(?:\.\d+)?(?:e[+-]?\d+)?\b|[{},:]|\[|\]/gi
-const luaTokenPattern = /--\[\[[\s\S]*?\]\]|--[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>~#.,:;()[\]{}]+/g
-const markdownTokenPattern = /```[\s\S]*?```|`[^`\n]+`|<!--[\s\S]*?-->|^#{1,6}(?=\s)|^>\s?|^\s*(?:[-+*]|\d+\.)\s+|\*\*|__|\*|_|\[[^\]]+\]\([^)]+\)/gm
-const markupTokenPattern = /<!--[\s\S]*?-->|---|<\/?|\/?>|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b[A-Za-z_][\w:.-]*\b|[{}=]/g
-const sqlTokenPattern = /--[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|\b[A-Za-z_][\w$]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>!.,;()[\]]+/g
-const yamlTokenPattern = /#[^\n]*|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|\b[A-Za-z_][\w.-]*(?=\s*:)|\b(?:false|no|null|off|on|true|yes)\b|\b\d+(?:\.\d+)?\b|[{},:&*!?|>@`~-]+|\[|\]/gi
+const bashTokenPattern = new RegExp([
+  String.raw`#[^\n]*|"(?:\\.|[^"\\])*"|'[^']*'|\$\{?[A-Za-z_][\w]*\}?|`,
+  String.raw`--?[A-Za-z][\w-]*|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[|&;<>()[\]{}=]+`
+].join(''), 'g')
+
+const javascriptTokenPattern = new RegExp([
+  String.raw`\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`,
+  '`(?:\\\\.|[^`\\\\])*`|',
+  String.raw`\b\d[\d._]*\b|\b[A-Za-z_$][\w$]*\b|[=+\-*%<>!?:.,;()[\]{}|&/]+`
+].join(''), 'g')
+
+const jsonTokenPattern = new RegExp([
+  String.raw`\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|`,
+  String.raw`\b(?:false|null|true)\b|-?\b\d+(?:\.\d+)?(?:e[+-]?\d+)?\b|[{},:]|\[|\]`
+].join(''), 'gi')
+
+const luaTokenPattern = new RegExp([
+  String.raw`--\[\[[\s\S]*?\]\]|--[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`,
+  String.raw`\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>~#.,:;()[\]{}]+`
+].join(''), 'g')
+
+const markdownTokenPattern = new RegExp([
+  '```[\\s\\S]*?```|`[^`\\n]+`|',
+  String.raw`<!--[\s\S]*?-->|^#{1,6}(?=\s)|^>\s?|^\s*(?:[-+*]|\d+\.)\s+|`,
+  String.raw`\*\*|__|\*|_|\[[^\]]+\]\([^)]+\)`
+].join(''), 'gm')
+
+const markupTokenPattern = new RegExp([
+  String.raw`<!--[\s\S]*?-->|---|<\/?|\/?>|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`,
+  String.raw`\b[A-Za-z_][\w:.-]*\b|[{}=]`
+].join(''), 'g')
+
+const sqlTokenPattern = new RegExp([
+  String.raw`--[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|`,
+  String.raw`\b[A-Za-z_][\w$]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>!.,;()[\]]+`
+].join(''), 'g')
+
+const yamlTokenPattern = new RegExp([
+  String.raw`#[^\n]*|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|\b[A-Za-z_][\w.-]*(?=\s*:)|`,
+  String.raw`\b(?:false|no|null|off|on|true|yes)\b|\b\d+(?:\.\d+)?\b|`,
+  '[{},:&*!?|>@`~-]+|\\[|\\]'
+].join(''), 'gi')
+
 const leadingWhitespacePattern = /^[\t ]*/
 const normalizeLanguage = (language = '') => language.trim().toLowerCase()
 const startsWithIdentifierPattern = /^[A-Za-z_$]/
@@ -252,7 +271,9 @@ export const normalizeLumenCode = (code: string) => {
   return lines.map(line => line.slice(trimBy)).join('\n')
 }
 
-const getJavascriptTokenKind = (value: string): LumenCodeTokenKind | undefined => {
+const getJavascriptTokenKind = (
+  value: string
+): LumenCodeTokenKind | undefined => {
   if (startsWithCommentPattern.exec(value)) return 'comment'
 
   if (startsWithStringPattern.exec(value)) return 'string'
@@ -288,7 +309,11 @@ const getBashTokenKind = (value: string): LumenCodeTokenKind | undefined => {
   return 'symbol'
 }
 
-const getJsonTokenKind = (value: string, source: string, start: number): LumenCodeTokenKind | undefined => {
+const getJsonTokenKind = (
+  value: string,
+  source: string,
+  start: number
+): LumenCodeTokenKind | undefined => {
   if (startsWithCommentPattern.exec(value)) return 'comment'
 
   if (value.startsWith('"')) {
@@ -330,7 +355,11 @@ const getMarkdownTokenKind = (value: string): LumenCodeTokenKind => {
   return 'symbol'
 }
 
-const getMarkupTokenKind = (value: string, source: string, start: number): LumenCodeTokenKind | undefined => {
+const getMarkupTokenKind = (
+  value: string,
+  source: string,
+  start: number
+): LumenCodeTokenKind | undefined => {
   if (value.startsWith('<!--')) return 'comment'
 
   if (startsWithStringPattern.exec(value)) return 'string'
@@ -344,7 +373,10 @@ const getMarkupTokenKind = (value: string, source: string, start: number): Lumen
 
   if (openingTagIndex < closingTagIndex) return undefined
 
-  const beforeValue = source.slice(openingTagIndex + 1, start).replace('/', '').trim()
+  const beforeValue = source
+    .slice(openingTagIndex + 1, start)
+    .replace('/', '')
+    .trim()
 
   return beforeValue === '' ? 'keyword' : 'type'
 }
@@ -363,7 +395,11 @@ const getSqlTokenKind = (value: string): LumenCodeTokenKind | undefined => {
   return 'symbol'
 }
 
-const getYamlTokenKind = (value: string, source: string, start: number): LumenCodeTokenKind | undefined => {
+const getYamlTokenKind = (
+  value: string,
+  source: string,
+  start: number
+): LumenCodeTokenKind | undefined => {
   if (value.startsWith('#')) return 'comment'
 
   if (startsWithStringPattern.exec(value)) return 'string'
@@ -381,7 +417,9 @@ const getYamlTokenKind = (value: string, source: string, start: number): LumenCo
   return 'symbol'
 }
 
-const getLumenCodeTokenizer = (language: string): LumenCodeTokenizer | undefined => {
+const getLumenCodeTokenizer = (
+  language: string
+): LumenCodeTokenizer | undefined => {
   if (javascriptLikeLanguages.has(language)) {
     return { getKind: getJavascriptTokenKind, pattern: javascriptTokenPattern }
   }
@@ -417,7 +455,10 @@ const getLumenCodeTokenizer = (language: string): LumenCodeTokenizer | undefined
   return undefined
 }
 
-export const tokenizeLumenCode = (code: string, language = ''): LumenCodeToken[] => {
+export const tokenizeLumenCode = (
+  code: string,
+  language = ''
+): LumenCodeToken[] => {
   const source = normalizeLumenCode(code)
   const tokens: LumenCodeToken[] = []
   const tokenizer = getLumenCodeTokenizer(normalizeLanguage(language))
@@ -445,11 +486,10 @@ export const tokenizeLumenCode = (code: string, language = ''): LumenCodeToken[]
   return tokens
 }
 
-const escapeLumenCodeHtml = (value: string) =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
+const escapeLumenCodeHtml = (value: string) => value
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
 
 const renderLumenCodeTokenHtml = (token: LumenCodeToken) => {
   const value = escapeLumenCodeHtml(token.value)
@@ -459,5 +499,4 @@ const renderLumenCodeTokenHtml = (token: LumenCodeToken) => {
   return `<span class="${lumenCodeTokenClassNames[token.kind]}">${value}</span>`
 }
 
-export const renderLumenCodeHtml = (code: string, language = '') =>
-  tokenizeLumenCode(code, language).map(renderLumenCodeTokenHtml).join('')
+export const renderLumenCodeHtml = (code: string, language = '') => tokenizeLumenCode(code, language).map(renderLumenCodeTokenHtml).join('')

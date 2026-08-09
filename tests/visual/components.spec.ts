@@ -24,6 +24,13 @@ interface VisualScenario {
 const componentSlugs = componentPageNames.map(componentNameToSlug)
 
 const themes: Theme[] = ['light', 'dark']
+const templateSlugs = [
+  'analytics-dashboard',
+  'saas-admin',
+  'commerce-dashboard',
+  'project-workspace',
+  'auth-onboarding'
+] as const
 
 const preparePage = async (page: Page, path: string, theme: Theme): Promise<void> => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
@@ -239,6 +246,26 @@ const interactiveScenarios: VisualScenario[] = [
     }
   }
 ]
+
+for (const theme of themes) {
+  test(`template gallery renders consistently (${theme})`, async ({ page }) => {
+    await preparePage(page, '/templates', theme)
+
+    await expect(page).toHaveScreenshot(`template-gallery-${theme}.png`, {
+      fullPage: true
+    })
+  })
+
+  for (const slug of templateSlugs) {
+    test(`${slug} template renders consistently (${theme})`, async ({ page }) => {
+      await preparePage(page, `/templates/${slug}`, theme)
+
+      await expect(page).toHaveScreenshot(`template-${slug}-${theme}.png`, {
+        fullPage: true
+      })
+    })
+  }
+}
 
 for (const theme of themes) {
   for (const slug of componentSlugs) {

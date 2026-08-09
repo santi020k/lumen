@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs/promises'
 
 import { lumenComponentNames } from '@santi020k/lumen-core'
-
 import { describe, expect, test } from 'vitest'
+
+import { normalizeAstroActionErrors } from './forms.js'
 
 /* cspell:ignore datatable */
 
@@ -11,20 +12,13 @@ const sharedStylesUrl = new URL('../lumen/styles.css', packageRoot)
 
 describe('@santi020k/lumen-astro package surface', () => {
   test('ships one Astro component file per shared component name', async () => {
-    await expect(Promise.all(
-      lumenComponentNames.map(componentName =>
-        readFile(new URL(`./components/${componentName}.astro`, packageRoot), 'utf8')
+    await expect(
+      Promise.all(
+        lumenComponentNames.map(componentName => readFile(
+          new URL(`./components/${componentName}.astro`, packageRoot), 'utf8'
+        ))
       )
-    )).resolves.toHaveLength(lumenComponentNames.length)
-  })
-
-  test('keeps runtime exports mirrored in TypeScript declarations', async () => {
-    const [runtime, declarations] = await Promise.all([
-      readFile(new URL('./index.ts', packageRoot), 'utf8'),
-      readFile(new URL('./index.d.ts', packageRoot), 'utf8')
-    ])
-
-    expect(declarations).toBe(runtime)
+    ).resolves.toHaveLength(lumenComponentNames.length)
   })
 
   test('documents every component export from the package index', async () => {
@@ -37,23 +31,64 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('uses the public runtime and CSS files referenced by package exports', async () => {
-    const packageJson = JSON.parse(await readFile(new URL('./package.json', packageRoot), 'utf8')) as {
+    const packageJson = JSON.parse(
+      await readFile(new URL('./package.json', packageRoot), 'utf8')
+    ) as {
       exports: Record<string, string | { import?: string }>
     }
 
-    expect(packageJson.exports['./runtime']).toBe('./runtime/UIPrimitives.astro')
+    expect(packageJson.exports['./runtime']).toBe(
+      './runtime/UIPrimitives.astro'
+    )
     expect(packageJson.exports['./styles.css']).toBe('./styles/lumen.css')
 
-    await expect(readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')).resolves.toContain('<script>')
-    await expect(readFile(new URL('./styles/lumen.css', packageRoot), 'utf8'))
-      .resolves.toContain('@import "@santi020k/lumen/styles.css"')
-    await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain('.ui-button')
+    await expect(
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ).resolves.toContain('<script>')
+    await expect(
+      readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
+    ).resolves.toContain('@import "@santi020k/lumen/styles.css"')
+    await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain(
+      '.ui-button'
+    )
+  })
+
+  test('normalizes Astro Action field errors for fields and summaries', () => {
+    expect(
+      normalizeAstroActionErrors(
+        {
+          fields: {
+            email: ['Enter a valid email address'],
+            role: 'Choose a role'
+          }
+        }, {
+          email: 'profile-email',
+          role: 'profile-role'
+        }
+      )
+    ).toEqual({
+      fields: [
+        {
+          controlId: 'profile-email',
+          message: 'Enter a valid email address',
+          name: 'email'
+        },
+        {
+          controlId: 'profile-role',
+          message: 'Choose a role',
+          name: 'role'
+        }
+      ],
+      form: []
+    })
   })
 
   test('keeps ButtonLink hover motion aligned with Button without client-side magnetic behavior', async () => {
-    const buttonLink = await readFile(new URL('./components/ButtonLink.astro', packageRoot), 'utf8')
+    const buttonLink = await readFile(
+      new URL('./components/ButtonLink.astro', packageRoot), 'utf8'
+    )
 
-    expect(buttonLink).toContain("'ui-button ui-button--primary'")
+    expect(buttonLink).toContain('\'ui-button ui-button--primary\'')
     expect(buttonLink).not.toContain('data-magnetic')
     expect(buttonLink).not.toContain('mousemove')
     expect(buttonLink).not.toContain('<script>')
@@ -64,10 +99,14 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(css).toContain('.ui-dialog--glass')
     expect(css).toContain('.ui-dialog--fullscreen')
-    expect(css).toMatch(/\.ui-theme-toggle[^}]*:focus-visible|:where\([^)]*\.ui-theme-toggle[^)]*\):focus-visible/)
+    expect(css).toMatch(
+      /\.ui-theme-toggle[^}]*:focus-visible|:where\([^)]*\.ui-theme-toggle[^)]*\):focus-visible/
+    )
     expect(css).toContain('.ui-alert--glass')
     expect(css).toContain('.ui-table-wrap--glass')
-    expect(css).toContain('.ui-date-picker-field--glass .ui-date-picker__popover')
+    expect(css).toContain(
+      '.ui-date-picker-field--glass .ui-date-picker__popover'
+    )
     expect(css).toContain('.ui-select-field--glass .ui-select__list')
     expect(css).toContain('@supports not ((backdrop-filter: blur(1px))')
   })
@@ -78,8 +117,8 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(sharedStylesUrl, 'utf8')
     ])
 
-    expect(component).toContain("variant?: 'brand' | 'neutral' | 'outline'")
-    expect(component).toContain("variant = 'neutral'")
+    expect(component).toContain('variant?: \'brand\' | \'neutral\' | \'outline\'')
+    expect(component).toContain('variant = \'neutral\'')
     expect(component).toContain('data-variant={variant}')
     expect(css).toMatch(/\.ui-pill\s*\{/)
     expect(css).toContain('.ui-pill--brand')
@@ -92,7 +131,9 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('ships hierarchical anchors and document scroll progress', async () => {
     const [anchor, scrollProgress, runtime, css] = await Promise.all([
       readFile(new URL('./components/Anchor.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/ScrollProgress.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./components/ScrollProgress.astro', packageRoot), 'utf8'
+      ),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
@@ -102,10 +143,28 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(scrollProgress).toContain('data-ui-scroll-progress')
     expect(scrollProgress).toContain('role="progressbar"')
     expect(runtime).toContain('initScrollProgress(scope)')
-    expect(runtime).toContain("root.setAttribute('aria-valuenow'")
+    expect(runtime).toContain('root.setAttribute(\'aria-valuenow\'')
     expect(css).toContain('.ui-scroll-progress')
     expect(css).toContain('.ui-scroll-progress--bottom')
     expect(css).toContain('.ui-anchor a[data-depth="3"]')
+  })
+
+  test('ships dynamic progress, semantic items, and arbitrary text copy', async () => {
+    const [copyButton, item, progress, runtime] = await Promise.all([
+      readFile(new URL('./components/CopyButton.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Item.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Progress.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(copyButton).toContain('data-ui-copy-button')
+    expect(copyButton).toContain('data-copy-target={target}')
+    expect(item).toContain('as: Tag = \'div\'')
+    expect(item).toContain('data-slot="item"')
+    expect(progress).toContain('data-slot="progress-indicator"')
+    expect(runtime).toContain('root.addEventListener(\'ui:progress-change\'')
+    expect(runtime).toContain('new CustomEvent(\'ui:copy-success\'')
+    expect(runtime).toContain('new CustomEvent(\'ui:copy-error\'')
   })
 
   test('aligns image and fallback avatars consistently in inline groups', async () => {
@@ -118,26 +177,36 @@ describe('@santi020k/lumen-astro package surface', () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
     expect(css).toMatch(/\.ui-breadcrumb li \+ li::before\s*\{/)
-    expect(css).toMatch(/\.ui-breadcrumb a:hover\s*\{[^}]*hsl\(var\(--brand\)\)/s)
+    expect(css).toMatch(
+      /\.ui-breadcrumb a:hover\s*\{[^}]*hsl\(var\(--brand\)\)/s
+    )
     expect(css).toMatch(/\.ui-breadcrumb a:focus-visible\s*\{[^}]*outline:/s)
-    expect(css).toMatch(/\.ui-breadcrumb \[aria-current="page"\]\s*\{[^}]*hsl\(var\(--ink\)\)/s)
+    expect(css).toMatch(
+      /\.ui-breadcrumb \[aria-current="page"\]\s*\{[^}]*hsl\(var\(--ink\)\)/s
+    )
   })
 
   test('keeps icons from collapsing inside input groups', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
-    expect(css).toContain('.ui-input-group > :where(span, strong):not(.ui-icon)')
-    expect(css).toMatch(/\.ui-input-group > \.ui-icon\s*\{[^}]*margin-inline-start: 0\.75rem;/s)
+    expect(css).toContain(
+      '.ui-input-group > :where(span, strong):not(.ui-icon)'
+    )
+    expect(css).toMatch(
+      /\.ui-input-group > \.ui-icon\s*\{[^}]*margin-inline-start: 0\.75rem;/s
+    )
   })
 
   test('supports semantic roots and visual variants for Stat', async () => {
-    const stat = await readFile(new URL('./components/Stat.astro', packageRoot), 'utf8')
+    const stat = await readFile(
+      new URL('./components/Stat.astro', packageRoot), 'utf8'
+    )
     const css = await readFile(sharedStylesUrl, 'utf8')
 
-    expect(stat).toContain("as?: 'article' | 'div' | 'section'")
-    expect(stat).toContain("variant?: 'accent' | 'default' | 'glass'")
-    expect(stat).toContain("as: Tag = 'div'")
-    expect(stat).toContain("variant = 'default'")
+    expect(stat).toContain('as?: \'article\' | \'div\' | \'section\'')
+    expect(stat).toContain('variant?: \'accent\' | \'bare\' | \'default\' | \'glass\'')
+    expect(stat).toContain('as: Tag = \'div\'')
+    expect(stat).toContain('variant = \'default\'')
     expect(stat).toContain('<Tag')
     expect(stat).toContain('data-variant={variant}')
     expect(stat).toContain('</Tag>')
@@ -148,14 +217,58 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).not.toContain('-webkit-text-fill-color')
   })
 
+  test('ships stable compound Card and Stat parts across the public surface', async () => {
+    const [index, card, stat, cardTitle, statTrend, css] = await Promise.all([
+      readFile(new URL('./index.ts', packageRoot), 'utf8'),
+      readFile(new URL('./components/Card.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Stat.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/CardTitle.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/StatTrend.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    for (const component of [
+      'CardContent',
+      'CardDescription',
+      'CardFooter',
+      'CardHeader',
+      'CardTitle',
+      'StatDescription',
+      'StatIcon',
+      'StatLabel',
+      'StatTrend',
+      'StatValue'
+    ]) {
+      expect(index).toContain(`export { default as ${component} }`)
+    }
+
+    expect(card).toContain('data-slot="card"')
+    expect(stat).toContain('data-slot="stat"')
+    expect(stat).toContain('\'bare\'')
+    expect(cardTitle).toContain('data-slot="card-title"')
+    expect(statTrend).toContain('data-slot="stat-trend"')
+    expect(css).toContain('--ui-card-padding')
+    expect(css).toContain('.ui-card__header')
+    expect(css).toContain('.ui-stat--bare')
+    expect(css).toContain('.ui-stat-trend--success')
+  })
+
   test('styles native meter tracks and values with shared color tokens', async () => {
     const css = await readFile(sharedStylesUrl, 'utf8')
 
     expect(css).toMatch(/\.ui-meter\s*\{[^}]*appearance: none/s)
-    expect(css).toMatch(/\.ui-meter::-webkit-meter-bar\s*\{[^}]*hsl\(var\(--surface-strong\)\)/s)
-    expect(css).toMatch(/\.ui-meter::-webkit-meter-optimum-value\s*\{[^}]*hsl\(var\(--brand-solid\)\)/s)
-    expect(css).toMatch(/\.ui-meter::-moz-meter-bar\s*\{[^}]*hsl\(var\(--brand-solid\)\)/s)
-    expect(css).not.toMatch(/\.ui-meter(?:\s|::)[^{]*\{[^}]*var\(--ui-(?:brand|surface-strong)\)/s)
+    expect(css).toMatch(
+      /\.ui-meter::-webkit-meter-bar\s*\{[^}]*hsl\(var\(--surface-strong\)\)/s
+    )
+    expect(css).toMatch(
+      /\.ui-meter::-webkit-meter-optimum-value\s*\{[^}]*hsl\(var\(--brand-solid\)\)/s
+    )
+    expect(css).toMatch(
+      /\.ui-meter::-moz-meter-bar\s*\{[^}]*hsl\(var\(--brand-solid\)\)/s
+    )
+    expect(css).not.toMatch(
+      /\.ui-meter(?:\s|::)[^{]*\{[^}]*var\(--ui-(?:brand|surface-strong)\)/s
+    )
   })
 
   test('ships the code primitive markup and standalone styles', async () => {
@@ -166,9 +279,9 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(component).toContain('code?: string')
     expect(component).toContain('renderLumenCodeHtml')
-    expect(component).toContain("variant = 'inline'")
-    expect(component).toContain("wrap = false")
-    expect(component).toContain("wrap && 'ui-code--wrap'")
+    expect(component).toContain('variant = \'inline\'')
+    expect(component).toContain('wrap = false')
+    expect(component).toContain('wrap && \'ui-code--wrap\'')
     expect(component).toContain('data-ui-code-copy')
     expect(component).toContain('Copy code to clipboard')
     expect(styles).toContain('.ui-code--inline')
@@ -188,14 +301,22 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('role="tablist"')
     expect(component).toContain('role="tab"')
     expect(component).toContain('role="tabpanel"')
-    expect(component).toContain('storageKey === undefined ? {} : { storageKey }')
+    expect(component).toContain(
+      'storageKey === undefined ? {} : { storageKey }'
+    )
     expect(component).toContain('<Code')
-    expect(index).toContain("export { default as CodeTabs } from './components/CodeTabs.astro'")
+    expect(index).toContain(
+      'export { default as CodeTabs } from \'./components/CodeTabs.astro\''
+    )
     expect(styles).toContain('.ui-code-tabs')
     expect(styles).toContain('.ui-code-tabs__tab[aria-selected="true"]')
-    expect(styles).toMatch(
-      /\.ui-code-tabs \.ui-code-tabs__tab\[aria-selected="true"\]\s*\{[^}]*background: hsl\(var\(--brand-soft\)\);[^}]*color: hsl\(var\(--brand\)\);/s
-    )
+    const selectedTabRule = new RegExp([
+      String.raw`\.ui-code-tabs \.ui-code-tabs__tab\[aria-selected="true"\]\s*\{`,
+      String.raw`[^}]*background: hsl\(var\(--brand-soft\)\);`,
+      String.raw`[^}]*color: hsl\(var\(--brand\)\);`
+    ].join(''), 's')
+
+    expect(styles).toMatch(selectedTabRule)
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 
@@ -205,14 +326,16 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(sharedStylesUrl, 'utf8')
     ])
 
-    expect(component).toContain("type AccordionVariant = 'default' | 'flush'")
-    expect(component).toContain("variant === 'flush' && 'ui-accordion--flush'")
+    expect(component).toContain('type AccordionVariant = \'default\' | \'flush\'')
+    expect(component).toContain('variant === \'flush\' && \'ui-accordion--flush\'')
     expect(component).toContain('data-variant={variant}')
     expect(styles).toContain('.ui-accordion summary::after')
     expect(styles).toContain('.ui-accordion details[open] > summary::after')
     expect(styles).toContain('.ui-accordion summary:focus-visible')
     expect(styles).toContain('.ui-accordion--flush details')
-    expect(styles).toContain('.ui-accordion--flush details[open] > summary::before')
+    expect(styles).toContain(
+      '.ui-accordion--flush details[open] > summary::before'
+    )
     expect(styles).toContain('.ui-collapsible[open]')
   })
 
@@ -223,7 +346,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     expect(component).toContain('encodeURIComponent(watermarkSvg)')
-    expect(component).toContain('font-family="Montserrat, Avenir Next, Segoe UI, sans-serif"')
+    expect(component).toContain(
+      'font-family="Montserrat, Avenir Next, Segoe UI, sans-serif"'
+    )
     expect(component).toContain('--ui-watermark-image')
     expect(styles).toContain('mask-image: var(--ui-watermark-image)')
     expect(styles).toContain('mask-repeat: repeat')
@@ -235,8 +360,8 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(sharedStylesUrl, 'utf8')
     ])
 
-    expect(component).toContain("HTMLAttributes<'span'>")
-    expect(component).toContain("animation?: 'reveal' | 'sequence'")
+    expect(component).toContain('HTMLAttributes<\'span\'>')
+    expect(component).toContain('animation?: \'reveal\' | \'sequence\'')
     expect(component).toContain('data-ui-animated-logo')
     expect(component).toContain('<slot />')
     expect(component).not.toContain('Santi020k')
@@ -248,7 +373,9 @@ describe('@santi020k/lumen-astro package surface', () => {
 
   test('ships AnimatedPortrait structure and motion as standalone styles', async () => {
     const [component, styles] = await Promise.all([
-      readFile(new URL('./components/AnimatedPortrait.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./components/AnimatedPortrait.astro', packageRoot), 'utf8'
+      ),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -263,8 +390,17 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships a consistent, reduced-motion-aware entrance and metric vocabulary', async () => {
-    const [animatedNumber, motionController, revealGroup, runtime, scrollReveal, styles] = await Promise.all([
-      readFile(new URL('./components/AnimatedNumber.astro', packageRoot), 'utf8'),
+    const [
+      animatedNumber,
+      motionController,
+      revealGroup,
+      runtime,
+      scrollReveal,
+      styles
+    ] = await Promise.all([
+      readFile(
+        new URL('./components/AnimatedNumber.astro', packageRoot), 'utf8'
+      ),
       readFile(new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/RevealGroup.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
@@ -272,20 +408,28 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(sharedStylesUrl, 'utf8')
     ])
 
-    expect(scrollReveal).toContain("duration?: 'fast' | 'standard' | 'slow'")
+    expect(scrollReveal).toContain('duration?: \'fast\' | \'standard\' | \'slow\'')
     expect(scrollReveal).toContain('once?: boolean')
     expect(scrollReveal).toContain('threshold?: number')
     expect(revealGroup).toContain('stagger?: number')
     expect(revealGroup).toContain('data-ui-reveal-group')
     expect(animatedNumber).toContain('data-ui-animated-number-output')
     expect(animatedNumber).toContain('class="ui-sr-only"')
-    expect(runtime).toContain("import('./controllers/motion.js')")
-    expect(motionController).toContain("'[data-ui-scroll-reveal], [data-ui-reveal-group]'")
-    expect(motionController).toContain('const initAnimatedNumbers = (scope: ParentNode): void =>')
+    expect(runtime).toContain('import(\'./controllers/motion.js\')')
+    expect(motionController).toContain(
+      '\'[data-ui-scroll-reveal], [data-ui-reveal-group]\''
+    )
+    expect(motionController).toContain(
+      'const initAnimatedNumbers = (scope: ParentNode): void =>'
+    )
     expect(styles).toContain('.ui-motion-duration-fast')
     expect(styles).toContain('.ui-reveal-group.is-revealed > *')
-    expect(styles).toContain('var(--ui-duration-slow) var(--ui-ease-emphasized)')
-    expect(styles).not.toContain('transform 220ms cubic-bezier(0.32, 0.72, 0, 1)')
+    expect(styles).toContain(
+      'var(--ui-duration-slow) var(--ui-ease-emphasized)'
+    )
+    expect(styles).not.toContain(
+      'transform 220ms cubic-bezier(0.32, 0.72, 0, 1)'
+    )
   })
 
   test('keeps Astro image optimization and dark artwork support', async () => {
@@ -294,19 +438,29 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(sharedStylesUrl, 'utf8')
     ])
 
-    expect(component).toContain("Image as AstroImage")
-    expect(component).toContain("from 'astro:assets'")
-    expect(component).toContain("loading = 'lazy'")
+    expect(component).toContain('Image as AstroImage')
+    expect(component).toContain('from \'astro:assets\'')
+    expect(component).toContain('loading = \'lazy\'')
     expect(component).toContain('invertOnDark')
     expect(component).toContain('<AstroImage')
     expect(styles).toContain('.ui-image--invert-dark')
   })
 
   test('keeps audited primitive semantics, runtime behavior, and standalone styles aligned', async () => {
-    const [backToTop, component, languageToggle, particles, runtime, scrollReveal, styles] = await Promise.all([
+    const [
+      backToTop,
+      component,
+      languageToggle,
+      particles,
+      runtime,
+      scrollReveal,
+      styles
+    ] = await Promise.all([
       readFile(new URL('./components/BackToTop.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ThemeToggle.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/LanguageToggle.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./components/LanguageToggle.astro', packageRoot), 'utf8'
+      ),
       readFile(new URL('./components/Particles.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
@@ -318,27 +472,41 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('<button')
     expect(component).toContain('type={type}')
     expect(component).toContain('data-ui-theme-toggle')
-    expect(component).toContain("storageKey = 'lumen-theme'")
-    expect(component).toContain("darkTheme = 'dark'")
+    expect(component).toContain('storageKey = \'lumen-theme\'')
+    expect(component).toContain('darkTheme = \'dark\'')
     expect(component).not.toContain('<lumen-theme-toggle')
     expect(languageToggle).toContain('<button')
     expect(languageToggle).not.toContain('<lumen-language-toggle')
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')
-    expect(particles).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')")
-    expect(particles).toContain("particle.className = 'ui-particles__particle'")
-    expect(particles).toContain("document.addEventListener('astro:after-swap'")
+    expect(particles).toContain(
+      'window.matchMedia(\'(prefers-reduced-motion: reduce)\')'
+    )
+    expect(particles).toContain(
+      'particle.className = \'ui-particles__particle\''
+    )
+    expect(particles).toContain('document.addEventListener(\'astro:after-swap\'')
     expect(scrollReveal).toContain('<div')
     expect(scrollReveal).not.toContain('<lumen-scroll-reveal')
-    const motionController = await readFile(new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8')
+    const motionController = await readFile(
+      new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8'
+    )
 
-    expect(runtime).toContain("import('./controllers/motion.js')")
-    expect(runtime).toContain('const initThemeToggles = (scope: ParentNode): void =>')
-    expect(runtime).toContain("overlay.dataset.uiThemeTransition = ''")
-    expect(runtime).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')")
-    expect(runtime).toContain("'ui:theme-change'")
-    expect(motionController).toContain('const initBackToTopButtons = (scope: ParentNode): void =>')
-    expect(motionController).toContain('const initScrollReveals = (scope: ParentNode): void =>')
+    expect(runtime).toContain('import(\'./controllers/motion.js\')')
+    expect(runtime).toContain(
+      'const initThemeToggles = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain('overlay.dataset.uiThemeTransition = \'\'')
+    expect(runtime).toContain(
+      'window.matchMedia(\'(prefers-reduced-motion: reduce)\')'
+    )
+    expect(runtime).toContain('\'ui:theme-change\'')
+    expect(motionController).toContain(
+      'const initBackToTopButtons = (scope: ParentNode): void =>'
+    )
+    expect(motionController).toContain(
+      'const initScrollReveals = (scope: ParentNode): void =>'
+    )
     expect(styles).toContain('.ui-particles')
     expect(styles).toContain('.ui-particles__particle')
     expect(styles).toContain('@keyframes ui-particle-drift')
@@ -361,9 +529,38 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(select).toContain('data-ui-select-trigger')
     expect(select).toContain('role="listbox"')
     expect(select).toContain('data-ui-select-option')
-    expect(runtime).toContain('const initSelects = (scope: ParentNode): void =>')
-    expect(runtime).toContain("select.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(runtime).toContain(
+      'const initSelects = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain(
+      'select.dispatchEvent(new Event(\'change\', { bubbles: true }))'
+    )
     expect(styles).toContain('.ui-select__list')
+  })
+
+  test('enhances PasswordField and ListBox with reset, success, keyboard, and typeahead behavior', async () => {
+    const [listBox, passwordField, runtime] = await Promise.all([
+      readFile(new URL('./components/ListBox.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./components/PasswordField.astro', packageRoot), 'utf8'
+      ),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(passwordField).toContain('data-ui-password-toggle')
+    expect(runtime).toContain(
+      'const initPasswordFields = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain('form.dataset.status === \'success\'')
+    expect(listBox).toContain('data-ui-list-box-native')
+    expect(listBox).toContain('data-ui-list-box-list')
+    expect(runtime).toContain(
+      'const initListBoxes = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain(
+      'root.dispatchEvent(new CustomEvent(\'ui:list-box-change\''
+    )
+    expect(runtime).toContain('typeahead += event.key.toLowerCase()')
   })
 
   test('keeps audited primitive semantics and examples documented', async () => {
@@ -378,33 +575,49 @@ describe('@santi020k/lumen-astro package surface', () => {
       runtime
     ] = await Promise.all([
       readFile(new URL('./components/Avatar.astro', packageRoot), 'utf8'),
-      readFile(new URL('../../apps/docs/src/examples/Breadcrumb.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('../../apps/docs/src/examples/Breadcrumb.astro', packageRoot), 'utf8'
+      ),
       readFile(new URL('./components/Combobox.astro', packageRoot), 'utf8'),
-      readFile(new URL('../../apps/docs/src/examples/Combobox.astro', packageRoot), 'utf8'),
-      readFile(new URL('../../apps/docs/src/data/docs.ts', packageRoot), 'utf8'),
+      readFile(
+        new URL('../../apps/docs/src/examples/Combobox.astro', packageRoot), 'utf8'
+      ),
+      readFile(
+        new URL('../../apps/docs/src/data/docs.ts', packageRoot), 'utf8'
+      ),
       readFile(new URL('./components/DropdownMenu.astro', packageRoot), 'utf8'),
-      readFile(new URL('../../apps/docs/src/examples/NativeSelect.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('../../apps/docs/src/examples/NativeSelect.astro', packageRoot), 'utf8'
+      ),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
     ])
 
-    expect(avatar).toContain("Astro.slots.has('default')")
-    expect(avatar).toContain("fallback ?? (!src && !hasDefaultSlot ? '?' : undefined)")
+    expect(avatar).toContain('Astro.slots.has(\'default\')')
+    expect(avatar).toContain(
+      'fallback ?? (!src && !hasDefaultSlot ? \'?\' : undefined)'
+    )
     expect(breadcrumbExample).toContain('<ol>')
     expect(breadcrumbExample).toContain('aria-current="page"')
     expect(combobox).toContain('type ComboboxOption = Option | string')
     expect(combobox).toContain('aria-disabled={option.disabled')
-    expect(comboboxExample).toContain("value: 'web-components'")
+    expect(comboboxExample).toContain('value: \'web-components\'')
     expect(docs).toContain('Use an ordered list inside the nav')
     expect(docs).toContain('data-ui-editor-command')
-    expect(docs).toContain('Runs formatting, block, alignment, history, link, list, or custom commands')
-    expect(dropdownMenu).toContain("interface Props extends HTMLAttributes<'div'>")
+    expect(docs).toContain(
+      'Runs formatting, block, alignment, history, link, list, or custom commands'
+    )
+    expect(dropdownMenu).toContain(
+      'interface Props extends HTMLAttributes<\'div\'>'
+    )
     expect(dropdownMenu).toContain('<div')
     expect(dropdownMenu).not.toContain('<menu')
     expect(nativeSelectExample).toContain('size="lg"')
     expect(nativeSelectExample).toContain('disabled')
-    expect(runtime).toContain(`trigger.setAttribute('aria-${'described' + 'by'}'`)
-    expect(runtime).toContain("tip.id = `ui-tooltip-${crypto.randomUUID()}`")
-    expect(runtime).toContain("item.getAttribute('aria-disabled') !== 'true'")
+    expect(runtime).toContain(
+      `trigger.setAttribute('aria-${'described' + 'by'}'`
+    )
+    expect(runtime).toContain('tip.id = `ui-tooltip-${crypto.randomUUID()}`')
+    expect(runtime).toContain('item.getAttribute(\'aria-disabled\') !== \'true\'')
   })
 
   test('ships Resizable as an enhanced split panel with accessible handles', async () => {
@@ -418,10 +631,12 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('data-ui-resizable-handle')
     expect(component).toContain('data-ui-resizable-default-sizes')
     expect(component).toContain('direction')
-    expect(runtime).toContain('const initResizableGroups = (scope: ParentNode): void =>')
-    expect(runtime).toContain("handle.setAttribute('role', 'separator')")
-    expect(runtime).toContain("handle.addEventListener('pointerdown'")
-    expect(runtime).toContain("event.key === 'Home'")
+    expect(runtime).toContain(
+      'const initResizableGroups = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain('handle.setAttribute(\'role\', \'separator\')')
+    expect(runtime).toContain('handle.addEventListener(\'pointerdown\'')
+    expect(runtime).toContain('event.key === \'Home\'')
     expect(styles).toContain('.ui-resizable__handle')
     expect(styles).toContain('[data-ui-resizable-panel]')
   })
@@ -436,10 +651,16 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('autocomplete')
     expect(component).toContain('data-ui-input-otp-native')
     expect(component).toContain('data-ui-input-otp-segment')
-    expect(runtime).toContain('const initInputOtpFields = (scope: ParentNode): void =>')
-    expect(runtime).toContain('const sanitizeOtpValue = (input: HTMLInputElement')
-    expect(runtime).toContain("input.addEventListener('paste'")
-    expect(runtime).toContain("input.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(runtime).toContain(
+      'const initInputOtpFields = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain(
+      'const sanitizeOtpValue = (input: HTMLInputElement'
+    )
+    expect(runtime).toContain('input.addEventListener(\'paste\'')
+    expect(runtime).toContain(
+      'input.dispatchEvent(new Event(\'change\', { bubbles: true }))'
+    )
     expect(styles).toContain('.ui-input-otp__segments')
     expect(styles).toContain('.ui-input-otp__native[data-ui-enhanced="true"]')
   })
@@ -462,10 +683,16 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('role="grid"')
     expect(component).toContain('role="gridcell"')
     expect(component).toContain('aria-selected={selectedIso === dateIso')
-    expect(runtime).toContain('const initCalendars = (scope: ParentNode): void =>')
-    expect(runtime).toContain("input.dispatchEvent(new Event('input', { bubbles: true }))")
-    expect(runtime).toContain("input.dispatchEvent(new Event('change', { bubbles: true }))")
-    expect(runtime).toContain("event.key !== 'PageDown'")
+    expect(runtime).toContain(
+      'const initCalendars = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain(
+      'input.dispatchEvent(new Event(\'input\', { bubbles: true }))'
+    )
+    expect(runtime).toContain(
+      'input.dispatchEvent(new Event(\'change\', { bubbles: true }))'
+    )
+    expect(runtime).toContain('event.key !== \'PageDown\'')
     expect(runtime).toContain('new Intl.DateTimeFormat(locale')
     expect(styles).toContain('.ui-calendar__nav')
     expect(styles).toContain('.ui-calendar td[aria-selected="true"]')
@@ -482,10 +709,14 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('data-ui-date-picker-trigger')
     expect(component).toContain('data-ui-date-picker-popover')
     expect(component).toContain('<Calendar')
-    expect(runtime).toContain('const initDatePickers = (scope: ParentNode): void =>')
+    expect(runtime).toContain(
+      'const initDatePickers = (scope: ParentNode): void =>'
+    )
     expect(runtime).toContain('initDatePickers(scope)')
-    expect(runtime).toContain("native.dataset.uiEnhanced = 'true'")
-    expect(runtime).toContain("native.dispatchEvent(new Event('change', { bubbles: true }))")
+    expect(runtime).toContain('native.dataset.uiEnhanced = \'true\'')
+    expect(runtime).toContain(
+      'native.dispatchEvent(new Event(\'change\', { bubbles: true }))'
+    )
     expect(runtime).toContain('closeDatePicker(root, true)')
     expect(styles).toContain('.ui-date-picker__icon')
     expect(styles).toContain('.ui-date-picker__popover > .ui-calendar')
@@ -493,15 +724,19 @@ describe('@santi020k/lumen-astro package surface', () => {
 
   test('composes DateRangePicker from synchronized custom DatePickers', async () => {
     const [component, runtime, styles] = await Promise.all([
-      readFile(new URL('./components/DateRangePicker.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./components/DateRangePicker.astro', packageRoot), 'utf8'
+      ),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(component).toContain('data-ui-date-range-picker')
-    expect(runtime).toContain('const initDateRangePickers = (scope: ParentNode): void =>')
-    expect(runtime).toContain("setAttribute('data-range-part', 'start')")
-    expect(runtime).toContain("setAttribute('data-range-part', 'end')")
+    expect(runtime).toContain(
+      'const initDateRangePickers = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain('setAttribute(\'data-range-part\', \'start\')')
+    expect(runtime).toContain('setAttribute(\'data-range-part\', \'end\')')
     expect(runtime).toContain('root.dataset.rangeState')
     expect(styles).toContain('.ui-date-range-picker::before')
     expect(styles).toContain('[data-range-part="start"]')
@@ -523,11 +758,15 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).toContain('data-sort-value')
     expect(component).toContain('<slot />')
     expect(component).not.toContain('ui-data-table__sort')
-    expect(runtime).toContain('const initDataTables = (scope: ParentNode): void =>')
-    expect(runtime).toContain("header.setAttribute('aria-sort', 'none')")
-    expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui:data-table-selection-change'")
-    expect(runtime).toContain("root.dispatchEvent(new CustomEvent('ui:datatable-selection-change'")
-    expect(runtime).toContain("input.type = 'hidden'")
+    expect(runtime).toContain(
+      'const initDataTables = (scope: ParentNode): void =>'
+    )
+    expect(runtime).toContain('header.setAttribute(\'aria-sort\', \'none\')')
+    expect(runtime).toContain(
+      'root.dispatchEvent(new CustomEvent(\'ui:data-table-selection-change\''
+    )
+    expect(runtime).not.toContain('ui:datatable-selection-change')
+    expect(runtime).toContain('input.type = \'hidden\'')
     expect(styles).toContain('.ui-data-table__sort')
     expect(styles).toContain('.ui-data-table tbody tr[data-state="selected"]')
   })
@@ -543,8 +782,12 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(aspectRatio).toContain('ratio?: number | string')
     expect(aspectRatio).toContain('Number.isFinite(ratio)')
     expect(avatar).toContain('fallbackText && <span')
-    expect(field).toContain(`data-ui-field-${'described' + 'by'}={fieldDescribedBy}`)
-    expect(runtime).toContain(`control.setAttribute('aria-${'described' + 'by'}'`)
+    expect(field).toContain(
+      `data-ui-field-${'described' + 'by'}={fieldDescribedBy}`
+    )
+    expect(runtime).toContain(
+      `control.setAttribute('aria-${'described' + 'by'}'`
+    )
   })
 
   test('enhances native form validation through Field error slots', async () => {
@@ -553,14 +796,18 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(sharedStylesUrl, 'utf8')
     ])
 
-    expect(runtime).toContain("form[data-ui-form]")
-    expect(runtime).toContain("form.dispatchEvent(new CustomEvent('ui:validate'")
-    expect(runtime).toContain("form.dispatchEvent(new CustomEvent('ui:invalid'")
-    expect(runtime).toContain("form.dispatchEvent(new CustomEvent('ui:valid'")
-    expect(runtime).toContain("'data-error-required'")
-    expect(runtime).toContain("'data-error-pattern'")
-    expect(runtime).toContain("'data-error-custom'")
-    expect(runtime).toContain("control.setAttribute('aria-invalid', 'true')")
+    expect(runtime).toContain('form[data-ui-form]')
+    expect(runtime).toContain(
+      'form.dispatchEvent(new CustomEvent(\'ui:validate\''
+    )
+    expect(runtime).toContain(
+      'form.dispatchEvent(new CustomEvent(\'ui:invalid\''
+    )
+    expect(runtime).toContain('form.dispatchEvent(new CustomEvent(\'ui:valid\'')
+    expect(runtime).toContain('\'data-error-required\'')
+    expect(runtime).toContain('\'data-error-pattern\'')
+    expect(runtime).toContain('\'data-error-custom\'')
+    expect(runtime).toContain('control.setAttribute(\'aria-invalid\', \'true\')')
     expect(runtime).toContain('firstInvalid?.focus({ preventScroll: true })')
     expect(styles).toContain('.ui-field > [data-ui-field-error]')
   })
@@ -574,45 +821,46 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     expect(toast).toContain('data-ui-toast')
-    expect(toast).toContain("variant === 'destructive' ? 'alert' : 'status'")
+    expect(toast).toContain('variant === \'destructive\' ? \'alert\' : \'status\'')
     expect(sonner).toContain('placement?:')
     expect(sonner).toContain('maxCount?: number')
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')
     expect(runtime).toContain('update: updateToast')
-    expect(runtime).toContain("document.addEventListener('ui:toast'")
-    expect(runtime).toContain("document.addEventListener('ui:toast-update'")
-    expect(runtime).toContain("document.addEventListener('ui:toast-dismiss'")
-    expect(runtime).toContain("'ui:toast-action'")
-    expect(runtime).toContain("toast.addEventListener('mouseenter', pause)")
-    expect(runtime).toContain("event.key !== 'Escape'")
+    expect(runtime).toContain('document.addEventListener(\'ui:toast\'')
+    expect(runtime).toContain('document.addEventListener(\'ui:toast-update\'')
+    expect(runtime).toContain('document.addEventListener(\'ui:toast-dismiss\'')
+    expect(runtime).toContain('\'ui:toast-action\'')
+    expect(runtime).toContain('toast.addEventListener(\'mouseenter\', pause)')
+    expect(runtime).toContain('event.key !== \'Escape\'')
     expect(styles).toContain('.ui-sonner[data-placement^="top"]')
     expect(styles).toContain('.ui-sonner[data-placement$="center"]')
     expect(styles).toContain('.ui-toast__action')
   })
 
   test('ships accessible, tokenized chart primitives with shared data fallbacks', async () => {
-    const [barChart, chart, lineChart, pieChart, sparkline, styles] = await Promise.all([
-      readFile(new URL('./components/BarChart.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/Chart.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/LineChart.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/Sparkline.astro', packageRoot), 'utf8'),
-      readFile(sharedStylesUrl, 'utf8')
-    ])
+    const [barChart, chart, lineChart, pieChart, sparkline, styles] =
+      await Promise.all([
+        readFile(new URL('./components/BarChart.astro', packageRoot), 'utf8'),
+        readFile(new URL('./components/Chart.astro', packageRoot), 'utf8'),
+        readFile(new URL('./components/LineChart.astro', packageRoot), 'utf8'),
+        readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
+        readFile(new URL('./components/Sparkline.astro', packageRoot), 'utf8'),
+        readFile(sharedStylesUrl, 'utf8')
+      ])
 
     expect(chart).toContain('heading?: string')
     expect(chart).toContain('ui-chart__heading')
     expect(barChart).toContain('createLumenBarGeometry')
     expect(barChart).toContain('View chart data')
-    expect(barChart).toContain("layout = 'grouped'")
+    expect(barChart).toContain('layout = \'grouped\'')
     expect(lineChart).toContain('createLumenLineGeometry')
     expect(lineChart).toContain('hasLumenChartData')
     expect(lineChart).toContain('referenceValue?: number')
     expect(lineChart).toContain('Not available')
     expect(pieChart).toContain('createLumenPieGeometry')
-    expect(pieChart).toContain("variant = 'donut'")
+    expect(pieChart).toContain('variant = \'donut\'')
     expect(pieChart).toContain('centerValue?: string')
     expect(pieChart).toContain('View chart data')
     expect(sparkline).toContain('label: string')
@@ -629,22 +877,30 @@ describe('@santi020k/lumen-astro package surface', () => {
 
   test('ships ThemeBuilder as a scoped token playground runtime', async () => {
     const [example, glassExample, runtime] = await Promise.all([
-      readFile(new URL('../../apps/docs/src/examples/ThemeBuilder.astro', packageRoot), 'utf8'),
-      readFile(new URL('../../apps/docs/src/examples/glass/ThemeBuilder.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('../../apps/docs/src/examples/ThemeBuilder.astro', packageRoot), 'utf8'
+      ),
+      readFile(
+        new URL(
+          '../../apps/docs/src/examples/glass/ThemeBuilder.astro', packageRoot
+        ), 'utf8'
+      ),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
     ])
 
     expect(example).toContain('data-ui-theme-target')
     expect(example).toContain('data-ui-theme-brand-hue')
     expect(example).toContain('data-ui-theme-accent-hue')
-    expect(glassExample).toContain('<ThemeBuilder data-ui-theme-target="#ex-glass-theme-preview" glass>')
+    expect(glassExample).toContain(
+      '<ThemeBuilder data-ui-theme-target="#ex-glass-theme-preview" glass>'
+    )
     expect(glassExample).toContain('data-ui-theme-brand-hue')
     expect(glassExample).toContain('data-ui-theme-accent-hue')
     expect(glassExample).toContain('data-ui-theme-export')
     expect(runtime).toContain('data-ui-theme-primary-hex')
     expect(runtime).toContain('data-ui-theme-export-format')
     expect(runtime).toContain('exportThemeFigmaVariables')
-    expect(runtime).toContain("'ui:theme-change'")
-    expect(runtime).toContain("'ui:theme-export'")
+    expect(runtime).toContain('\'ui:theme-change\'')
+    expect(runtime).toContain('\'ui:theme-export\'')
   })
 })

@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -17,16 +17,18 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-aspect-ratio'
+  'ui-aspect-ratio'
 ], classProp, className)
-const ratioValue = typeof ratio === 'number' && Number.isFinite(ratio)
-  ? String(ratio)
-  : typeof ratio === 'string'
-    ? ratio.trim()
-    : ''
+
+let ratioValue = ''
+
+if (typeof ratio === 'number' && Number.isFinite(ratio)) ratioValue = String(ratio)
+else if (typeof ratio === 'string') ratioValue = ratio.trim()
+
 const isValidRatio =
   /^\d+(\.\d+)?(\s*\/\s*\d+(\.\d+)?)?$/.test(ratioValue) &&
   ratioValue.split('/').every(value => Number(value.trim()) > 0)
+
 const safeRatio = isValidRatio ? ratioValue : '16 / 9'
 ---
 

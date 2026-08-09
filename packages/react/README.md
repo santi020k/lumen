@@ -37,8 +37,27 @@ export function SubscribeForm() {
 }
 ```
 
-For long articles, `Anchor` accepts an optional heading `depth` and `ScrollProgress` tracks the
-document without requiring a separate hook.
+## Forms
+
+`Form`, `Field`, `Label`, `FieldError`, and `ErrorSummary` provide the presentation and
+accessibility contract without replacing form state. Native-backed controls forward refs to their
+submitted DOM controls and work directly with React Hook Form's `register()`.
+
+For controlled composites, install the optional adapter:
+
+```bash
+pnpm add @santi020k/lumen-react-hook-form react-hook-form
+```
+
+It exports adapters for `Select`, `DatePicker`, `InputOTP`, and `ListBox`. React Hook Form owns
+validation, dirty/touched state, and submission state in this mode; do not also mount
+`useFormValidation` unless two validation sources are intentional.
+
+See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
+
+For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
+`activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks
+the document without requiring a separate hook.
 
 ```tsx
 import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
@@ -48,6 +67,13 @@ import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
   { depth: 2, href: '#install', label: 'Install' },
   { depth: 3, href: '#react', label: 'React' }
 ]} />
+```
+
+Use `CopyButton` for clipboard actions on generated names, descriptions, messages, and links. Pass
+either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
+
+```tsx
+<CopyButton value="https://lumen.santi020k.com" toast>Copy link</CopyButton>
 ```
 
 ## Data visualization
@@ -95,23 +121,29 @@ Other React applications continue to consume the same package and exports normal
 ## Compatibility wrappers
 
 The common wrapper primitives preserve their underlying DOM handles with React 19's ref-as-prop
-contract. `Button`, `Link`, `ButtonLink`, and `Input` accept `ref` directly. Use `Button asChild`
-to apply the button contract to one existing React element without adding another DOM node:
+contract. `Button`, `ButtonLink`, `Link`, `Input`, `Textarea`, `Label`, `Badge`, `Card`, and
+`Skeleton` accept `ref` directly. Use `Button asChild` or `ButtonLink asChild` to apply the
+corresponding contract to one existing React element without adding another DOM node:
 
 ```tsx
-import { Button } from '@santi020k/lumen-react'
+import { Button, ButtonLink, NativeSelect } from '@santi020k/lumen-react'
 import NextLink from 'next/link'
 
 <Button asChild variant="secondary">
   <NextLink href="/projects">Projects</NextLink>
 </Button>
+
+<ButtonLink asChild variant="ghost">
+  <NextLink href="/docs">Docs</NextLink>
+</ButtonLink>
 ```
 
-`Input` keeps the native numeric `size` attribute. Use `visualSize="sm"` or `visualSize="lg"` for
-Lumen's visual size modifiers:
+`Input` and `NativeSelect` keep the native numeric `size` attribute. Use `visualSize="sm"` or
+`visualSize="lg"` for Lumen's visual size modifiers:
 
 ```tsx
 <Input size={32} visualSize="sm" />
+<NativeSelect size={8} visualSize="lg" />
 ```
 
 Use `Icon` for Lucide icons by name across framework adapters.

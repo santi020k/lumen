@@ -1,0 +1,9 @@
+---
+import { Field, FieldError, Input, Label } from '@santi020k/lumen-astro'
+---
+
+<Field controlId="field-error-email" describedBy="field-error-message">
+  <Label for="field-error-email">Email</Label>
+  <Input id="field-error-email" type="email" aria-invalid="true" aria-describedby="field-error-message" />
+  <FieldError id="field-error-message" message="Enter a valid email address." />
+</Field>

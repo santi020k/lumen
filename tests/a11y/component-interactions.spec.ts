@@ -1,5 +1,3 @@
-/* eslint-disable playwright/no-standalone-expect -- behaviorTest is a typed wrapper around Playwright's test function. */
-
 import { expect, type Page, test } from '@playwright/test'
 
 import type { LumenComponentName } from '../../packages/core/src/components.js'
@@ -719,11 +717,13 @@ behaviorTest(['Mentions'], 'Mentions filters suggestions and inserts the selecte
 
   await input.fill('Hello @al')
   await expect(list).toBeVisible()
+  await expect(input).toHaveAttribute('aria-expanded', 'true')
   await expect(root.getByRole('option', { name: 'alice' })).toBeVisible()
   await expect(root.getByRole('option', { name: 'bob' })).toBeHidden()
-  await root.getByRole('option', { name: 'alice' }).dispatchEvent('mousedown')
+  await input.press('Enter')
   await expect(input).toHaveValue('Hello @alice ')
   await expect(list).toBeHidden()
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
 })
 
 behaviorTest(['TreeSelect'], 'TreeSelect commits a node and closes its disclosure', async ({ page }) => {
@@ -743,7 +743,7 @@ behaviorTest(['TreeSelect'], 'TreeSelect commits a node and closes its disclosur
 behaviorTest(['BackToTop'], 'BackToTop scrolls the document to the beginning', async ({ page }) => {
   await openPreview(page, 'back-to-top')
 
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+  await page.evaluate(() => { window.scrollTo(0, document.body.scrollHeight); })
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
 
   await page.getByRole('button', { name: 'Back to top' }).click()

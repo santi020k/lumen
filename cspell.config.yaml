@@ -2,12 +2,14 @@ version: "0.2"
 language: en
 words:
   - aaronmgz
+  - activedescendant
   - aeiou
   - affordances
   - browsable
   - targetable
   - affix
   - Affix
+  - Amina
   - alertdialog
   - anchor
   - Anchor
@@ -27,6 +29,7 @@ words:
   - Chakra
   - commitizen
   - commitlint
+  - commitprompt
   - contenteditable
   - coverimage
   - CoverImage
@@ -109,6 +112,7 @@ words:
   - textareas
   - toolbar
   - Toolbar
+  - Theo
   - Tour
   - transfer
   - Transfer
@@ -129,11 +133,16 @@ words:
   - vite
   - vitejs
   - vitest
+  - Luca
+  - Northstar
+  - topbar
   - watermark
   - Watermark
   - WCAG
   - wordmark
   - workerd
+  - workstream
+  - workstreams
   - workspaces
   - amannn
   - autorelease

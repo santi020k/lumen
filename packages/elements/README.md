@@ -38,6 +38,24 @@ Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
 </lumen-card>
 ```
 
+## Forms
+
+Use a native `<form data-ui-form>` as the container. Scalar Lumen controls are form-associated
+custom elements: they expose `value`, `form`, `validity`, `validationMessage`, `willValidate`,
+`checkValidity()`, `reportValidity()`, and `setCustomValidity()`, plus `checked` where relevant.
+They participate in `FormData`, disabled state, reset, focus, and state restoration. A single
+internal native control provides the same contract when `ElementInternals` is unavailable.
+
+```html
+<form data-ui-form method="POST">
+  <lumen-input name="email" required type="email"></lumen-input>
+  <lumen-password-field name="password" required></lumen-password-field>
+  <lumen-button type="submit">Sign in</lumen-button>
+</form>
+```
+
+See the [Elements form guide](https://lumen.santi020k.com/docs/forms/elements).
+
 Use `lumen-icon` for Lucide icons by name across framework adapters.
 
 ```html
@@ -116,7 +134,7 @@ Elements emit the same `ui-*` classes and `data-ui-*` attributes as the Astro pr
 remains the reference package, and the Web Components adapter now carries matching light-DOM
 behavior for DataTable, Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder,
 Toast, Tooltip, forms, Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable,
-VirtualList, FileUpload, Tour, Anchor, Transfer, Mentions, Cascader, and TreeSelect: selection,
+VirtualList, FileUpload, Tour, Anchor, CopyButton, Progress, Transfer, Mentions, Cascader, and TreeSelect: selection,
 validation, calendar grids, OTP segmentation, date range syncing, rich text command, context menu,
 schedule and file drag/drop, anchored tours, scroll spy, collection transfer, mention insertion,
 hierarchical selection, resizable pane sizing, theme, and range events, ARIA state, keyboard
@@ -132,11 +150,17 @@ Astro runtime's data event, validation, calendar grids, OTP segmentation, date r
 text command, context menu, schedule drag/drop, resizable pane sizing, theme export, ARIA,
 keyboard, Escape, dismissal, and toast controller semantics while keeping markup declarative and
 Declarative-Shadow-DOM friendly.
-FileUpload, Tour, Anchor, ScrollProgress, Transfer, Mentions, Cascader, and TreeSelect also run directly through
+FileUpload, Tour, Anchor, CopyButton, Progress, ScrollProgress, Transfer, Mentions, Cascader, and TreeSelect also run directly through
 their registered custom elements; no Astro runtime or host controller is required.
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
+
+```html
+<p id="invite">Join the Lumen workspace</p>
+<lumen-copy-button target="#invite" toast>Copy invite</lumen-copy-button>
+<lumen-progress aria-label="Upload progress" value="40"></lumen-progress>
+```
 
 ```html
 <script type="module">

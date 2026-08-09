@@ -124,9 +124,8 @@ const recordMatchesQuery = (record: LumenDataRecord, query: string): boolean => 
     .some(value => String(value ?? '').toLowerCase().includes(query))
 }
 
-const recordMatchesFilters = (record: LumenDataRecord, filters: LumenDataViewState['filters']): boolean =>
-  Object.entries(filters)
-    .every(([key, value]) => !value || String(record[key] ?? '') === value)
+const recordMatchesFilters = (record: LumenDataRecord, filters: LumenDataViewState['filters']): boolean => Object.entries(filters)
+  .every(([key, value]) => !value || String(record[key] ?? '') === value)
 
 export const filterDataRecords = <T extends LumenDataRecord>(
   records: readonly T[],
@@ -177,13 +176,10 @@ export const applyDataViewState = <T extends LumenDataRecord>(
   records: readonly T[],
   state: LumenDataViewState
 ) => paginateDataRecords(
-  sortDataRecords(filterDataRecords(records, state), state.sort),
-  state.page,
-  state.pageSize
+  sortDataRecords(filterDataRecords(records, state), state.sort), state.page, state.pageSize
 )
 
-export const createDataViewStorageKey = (name: string): string =>
-  `lumen:data-view:${name.trim().toLowerCase().replaceAll(/\s+/g, '-')}`
+export const createDataViewStorageKey = (name: string): string => `lumen:data-view:${name.trim().toLowerCase().replaceAll(/\s+/g, '-')}`
 
 export const saveDataViewState = (
   storage: LumenKeyValueWriter,
@@ -228,16 +224,15 @@ export const toggleDataViewSelection = (
 
   return createDataViewState({
     ...state,
-    selectedIds: nextSelected
-      ? [...new Set([...state.selectedIds, id])]
-      : state.selectedIds.filter(selectedId => selectedId !== id)
+    selectedIds: nextSelected ?
+      [...new Set([...state.selectedIds, id])] :
+      state.selectedIds.filter(selectedId => selectedId !== id)
   })
 }
 
 export const createDataViewSearchParams = (
   state: LumenDataViewState
-): URLSearchParams =>
-  new URLSearchParams(serializeDataViewState(state))
+): URLSearchParams => new URLSearchParams(serializeDataViewState(state))
 
 export const createDataViewRequestUrl = (
   endpoint: string,

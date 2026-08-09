@@ -1,0 +1,55 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'button'> {
+  class?: string | null
+  className?: string
+  copiedLabel?: string
+  errorLabel?: string
+  label?: string
+  resetAfter?: number
+  target?: string
+  toast?: boolean
+  value?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  copiedLabel = 'Copied to clipboard',
+  errorLabel = 'Could not copy to clipboard',
+  label = 'Copy to clipboard',
+  resetAfter = 2000,
+  target,
+  toast = false,
+  type = 'button',
+  value,
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-button',
+  'ui-button--outline',
+  'ui-copy-button'
+], classProp, className)
+---
+
+<button
+  aria-label={label}
+  class:list={classList}
+  data-copy-copied-label={copiedLabel}
+  data-copy-error-label={errorLabel}
+  data-copy-label={label}
+  data-copy-reset-after={Math.max(0, resetAfter)}
+  data-copy-target={target}
+  data-copy-toast={toast ? 'true' : undefined}
+  data-copy-value={value}
+  data-state="idle"
+  data-ui-copy-button
+  type={type}
+  {...passthrough}
+>
+  <slot>Copy</slot>
+</button>

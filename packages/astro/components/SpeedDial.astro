@@ -1,12 +1,12 @@
 ---
+import type { HTMLAttributes } from 'astro/types'
+
 import {
   renderLumenIconSvg,
   resolveLumenAstroProps
 } from '@santi020k/lumen-core'
 
-import type { HTMLAttributes } from 'astro/types'
-
-type SpeedDialAction = { icon?: string; label: string; value?: string }
+interface SpeedDialAction { icon?: string, label: string, value?: string }
 
 interface Props extends HTMLAttributes<'div'> {
   actions?: SpeedDialAction[]

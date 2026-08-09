@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'hr'> {
   class?: string | null
@@ -17,9 +17,9 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-separator',
-    orientation === 'horizontal' && 'ui-separator--horizontal',
-    orientation === 'vertical' && 'ui-separator--vertical'
+  'ui-separator',
+  orientation === 'horizontal' && 'ui-separator--horizontal',
+  orientation === 'vertical' && 'ui-separator--vertical'
 ], classProp, className)
 ---
 

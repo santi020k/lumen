@@ -130,7 +130,7 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
       stats={[
         { label: 'Tools', value: tools.length },
         { label: 'Resources', value: resources.length },
-        { label: 'Components', value: lumenComponentNames.length },
+        { label: 'Components', value: lumenComponentNames.length }
       ]}
       title="Give agents the Lumen contract."
     >
@@ -148,7 +148,8 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
           target="_blank"
           rel="noopener noreferrer"
           variant="outline"
-        >Read the README</DocsActionLink>
+        >Read the README
+        </DocsActionLink>
       </Fragment>
 
       <div class="mcp-hero-card" slot="visual" aria-label="MCP tools preview">
@@ -312,7 +313,8 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
         href={npmUrl}
         target="_blank"
         rel="noopener noreferrer"
-      >Open on npm</DocsActionLink>
+      >Open on npm
+      </DocsActionLink>
     </Card>
   </div>
 </DocsLayout>

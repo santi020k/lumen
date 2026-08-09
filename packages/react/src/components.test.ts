@@ -1,10 +1,10 @@
-import { registerLumenIconPack } from '@santi020k/lumen-core'
-
 import type {
   ComponentPropsWithoutRef,
   ReactElement
 } from 'react'
 import { isValidElement } from 'react'
+
+import { registerLumenIconPack } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
 import {
@@ -21,7 +21,15 @@ import {
   BarChart,
   Breadcrumb,
   Bubble,
+  Button,
   ButtonGroup,
+  ButtonLink,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   Carousel,
   Chart,
   Checkbox,
@@ -63,6 +71,12 @@ import {
   Sonner,
   Sparkline,
   Spinner,
+  Stat,
+  StatDescription,
+  StatIcon,
+  StatLabel,
+  StatTrend,
+  StatValue,
   Switch,
   TagGroup,
   Textarea,
@@ -87,6 +101,73 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Skeleton({}) as ReactElement).className).toBe('ui-skeleton')
     expect(propsOf(Kbd({}) as ReactElement).className).toBe('ui-kbd')
     expect(propsOf(Label({}) as ReactElement).className).toBe('ui-label')
+  })
+
+  test('preserves native props and refs across compatibility wrappers', () => {
+    const buttonRef = { current: null }
+    const inputRef = { current: null }
+    const wrapperRef = { current: null }
+    const button = Button({ 'aria-label': 'Save', ref: buttonRef, type: 'submit' }) as ReactElement
+    const input = Input({ inputMode: 'numeric', ref: inputRef, size: 24, visualSize: 'sm' }) as ReactElement
+
+    expect(propsOf(button).ref).toBe(buttonRef)
+    expect(propsOf(button).type).toBe('submit')
+    expect(propsOf(button)['aria-label']).toBe('Save')
+    expect(propsOf(input).ref).toBe(inputRef)
+    expect(propsOf(input).size).toBe(24)
+    expect(propsOf(input).inputMode).toBe('numeric')
+    expect(propsOf(input).className).toContain('ui-input--sm')
+    expect(propsOf(Textarea({ cols: 40, ref: wrapperRef }) as ReactElement).cols).toBe(40)
+    expect(propsOf(Label({ htmlFor: 'email', ref: wrapperRef }) as ReactElement).htmlFor).toBe('email')
+    expect(propsOf(Badge({ ref: wrapperRef, title: 'Status' }) as ReactElement).title).toBe('Status')
+    expect(propsOf(Card({ ref: wrapperRef, role: 'region' }) as ReactElement).role).toBe('region')
+    expect(propsOf(Skeleton({ ref: wrapperRef, role: 'status' }) as ReactElement).role).toBe('status')
+  })
+
+  test('supports router links through Button and ButtonLink asChild', () => {
+    const button = Button({
+      asChild: true,
+      children: Link({ children: 'Projects', className: 'router-link', href: '/projects' }),
+      variant: 'secondary'
+    }) as ReactElement
+    const buttonLink = ButtonLink({
+      asChild: true,
+      children: Link({ children: 'Docs', className: 'router-link', href: '/old' }),
+      href: '/docs',
+      variant: 'ghost'
+    }) as ReactElement
+
+    expect(button.type).toBe('a')
+    expect(propsOf(button).className).toContain('ui-button--secondary')
+    expect(propsOf(button)['data-slot']).toBe('button')
+    expect(buttonLink.type).toBe('a')
+    expect(propsOf(buttonLink).href).toBe('/docs')
+    expect(propsOf(buttonLink).className).toContain('ui-button--ghost')
+    expect(propsOf(buttonLink).className).toContain('router-link')
+    expect(propsOf(buttonLink)['data-slot']).toBe('button-link')
+  })
+
+  test('composes Card through stable public parts', () => {
+    expect(propsOf(Card({}) as ReactElement).uiClassName).toBe('ui-card')
+    expect(propsOf(Card({}) as ReactElement)['data-slot']).toBe('card')
+    expect(propsOf(CardHeader({}) as ReactElement).uiClassName).toBe('ui-card__header')
+    expect(propsOf(CardTitle({ as: 'h3' }) as ReactElement).uiClassName).toBe('ui-card__title')
+    expect(propsOf(CardTitle({ as: 'h3' }) as ReactElement).as).toBe('h3')
+    expect(propsOf(CardDescription({}) as ReactElement)['data-slot']).toBe('card-description')
+    expect(propsOf(CardContent({}) as ReactElement).uiClassName).toBe('ui-card__content')
+    expect(propsOf(CardFooter({}) as ReactElement).uiClassName).toBe('ui-card__footer')
+  })
+
+  test('composes Stat parts and semantic trend tones', () => {
+    expect(propsOf(Stat({ variant: 'bare' }) as ReactElement).className).toBe('ui-stat--bare')
+    expect(propsOf(Stat({ variant: 'bare' }) as ReactElement).uiClassName).toBe('ui-stat')
+    expect(propsOf(StatLabel({}) as ReactElement)['data-slot']).toBe('stat-label')
+    expect(propsOf(StatValue({ as: 'output' }) as ReactElement).uiClassName).toBe('ui-stat-value')
+    expect(propsOf(StatValue({ as: 'output' }) as ReactElement).as).toBe('output')
+    expect(propsOf(StatDescription({}) as ReactElement).uiClassName).toBe('ui-stat-description')
+    expect(propsOf(StatIcon({}) as ReactElement).className).toBe('ui-stat-icon')
+    expect(propsOf(StatTrend({ tone: 'success' }) as ReactElement).className)
+      .toBe('ui-stat-trend ui-stat-trend--success')
   })
 
   test('keeps native images lazy and supports framework image renderers', () => {
@@ -251,8 +332,8 @@ describe('@santi020k/lumen-react components', () => {
   test('resolves surface data attributes on glass-aware surfaces', () => {
     expect(propsOf(HoverCard({}) as ReactElement)['data-surface']).toBe('default')
     expect(propsOf(HoverCard({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
-    expect(propsOf(NavigationMenu({ surface: 'glass' }) as ReactElement)['data-surface']).toBe('glass')
-    expect(propsOf(NavigationMenu({ surface: 'glass' }) as ReactElement).className)
+    expect(propsOf(NavigationMenu({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
+    expect(propsOf(NavigationMenu({ glass: true }) as ReactElement).className)
       .toBe('ui-navigation-menu ui-navigation-menu--glass')
     expect(propsOf(Sheet({}) as ReactElement)['data-ui-sheet']).toBe(true)
     expect(propsOf(Sidebar({ glass: 'subtle' }) as ReactElement).className)
@@ -268,12 +349,18 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('builds native select with placeholder and normalized options', () => {
-    const select = NativeSelect({ options: ['Alpha', { label: 'Beta', value: 'b' }], placeholder: 'Pick' }) as ReactElement
+    const select = NativeSelect({
+      options: ['Alpha', { label: 'Beta', value: 'b' }],
+      placeholder: 'Pick',
+      size: 8,
+      visualSize: 'lg'
+    }) as ReactElement
     const props = propsOf(select)
     const children = props.children as [ReactElement, unknown, ReactElement[]]
 
     expect(select.type).toBe('select')
-    expect(props.className).toBe('ui-select')
+    expect(props.className).toBe('ui-select ui-select--lg')
+    expect(props.size).toBe(8)
     expect(props.defaultValue).toBe('')
     expect(propsOf(children[0]).value).toBe('')
     expect(propsOf(children[0]).disabled).toBe(true)
@@ -394,10 +481,21 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(linkedPill).className).toBe('ui-pill ui-pill--brand')
     expect(propsOf(linkedPill)['data-variant']).toBe('brand')
     expect(propsOf(anchorLink)['data-depth']).toBe(3)
+    expect(propsOf(anchorLink)['aria-current']).toBe('location')
     expect(propsOf(NavigationMenu({ variant: 'unstyled' }) as ReactElement).className)
       .toBe('ui-navigation-menu ui-navigation-menu--unstyled')
     expect(propsOf(Sidebar({ variant: 'unstyled' }) as ReactElement).className)
       .toBe('ui-sidebar ui-sidebar--unstyled')
+  })
+
+  test('supports semantic items and stable progress indicator parts', () => {
+    const item = Item({ as: 'article', children: 'Release' }) as ReactElement
+    const progress = Progress({ value: 40 }) as ReactElement
+    const indicator = propsOf(progress).children as ReactElement
+
+    expect(item.type).toBe('article')
+    expect(propsOf(item)['data-slot']).toBe('item')
+    expect(propsOf(indicator)['data-slot']).toBe('progress-indicator')
   })
 
   test('renders remaining structural primitives', () => {
@@ -475,17 +573,11 @@ describe('@santi020k/lumen-react components', () => {
       const children = propsOf(chart as ReactElement).children
       const elements = (Array.isArray(children) ? children : [children])
         .filter(isValidElement)
-      const plot = elements.find(child =>
-        String(propsOf(child).className).includes('ui-chart__plot')
-      )
+      const plot = elements.find(child => String(propsOf(child).className).includes('ui-chart__plot'))
 
-      expect(elements.some(child =>
-        propsOf(child).className === 'ui-chart__empty'
-      )).toBe(true)
+      expect(elements.some(child => propsOf(child).className === 'ui-chart__empty')).toBe(true)
       expect(propsOf(plot).hidden).toBe(true)
-      expect(elements.some(child =>
-        propsOf(child).className === 'ui-chart__data'
-      )).toBe(false)
+      expect(elements.some(child => propsOf(child).className === 'ui-chart__data')).toBe(false)
     }
   })
 
@@ -512,8 +604,8 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Command({ glass: true }) as ReactElement)['data-ui-command']).toBe(true)
     expect(propsOf(Command({ glass: true }) as ReactElement).className).toBe('ui-command ui-command--glass')
     expect(propsOf(Drawer({}) as ReactElement)['data-ui-drawer']).toBe(true)
-    expect(propsOf(Drawer({ surface: 'glass' }) as ReactElement)['data-surface']).toBe('glass')
-    expect(propsOf(Drawer({ surface: 'glass' }) as ReactElement).className).toBe('ui-drawer ui-drawer--glass')
+    expect(propsOf(Drawer({ glass: true }) as ReactElement)['data-surface']).toBe('glass')
+    expect(propsOf(Drawer({ glass: true }) as ReactElement).className).toBe('ui-drawer ui-drawer--glass')
   })
 
   test('renders context menu with menu role and surface data', () => {

@@ -25,6 +25,12 @@ const routes = [
   '/docs/figma',
   '/docs/mcp',
   '/docs/theme-playground',
+  '/templates',
+  '/templates/analytics-dashboard',
+  '/templates/saas-admin',
+  '/templates/commerce-dashboard',
+  '/templates/project-workspace',
+  '/templates/auth-onboarding',
   ...componentRoutes
 ]
 

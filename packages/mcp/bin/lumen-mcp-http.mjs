@@ -6,7 +6,7 @@ const host = process.env.LUMEN_MCP_HOST ?? '127.0.0.1'
 
 const allowedHosts = process.env.LUMEN_MCP_ALLOWED_HOSTS
   ?.split(',')
-  .map((value) => value.trim())
+  .map(value => value.trim())
   .filter(Boolean)
 
 try {

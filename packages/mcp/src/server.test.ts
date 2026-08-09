@@ -6,8 +6,7 @@ import { describe, expect, test } from 'vitest'
 import { loadLumenData } from './data.js'
 import { createLumenServer } from './server.js'
 
-const isTextContent = (item: unknown): item is { text: string; type: 'text' } =>
-  typeof item === 'object' &&
+const isTextContent = (item: unknown): item is { text: string, type: 'text' } => typeof item === 'object' &&
   item !== null &&
   'text' in item &&
   typeof item.text === 'string' &&
@@ -26,7 +25,7 @@ const resultText = (result: unknown): string => {
 
   return content
     .filter(isTextContent)
-    .map((item) => item.text)
+    .map(item => item.text)
     .join('\n')
 }
 
@@ -63,7 +62,7 @@ const withClient = async (callback: (client: Client, server: McpServer) => Promi
 
 describe('Lumen MCP protocol server', () => {
   test('reports the package version and usage instructions', async () => {
-    await withClient((client) => {
+    await withClient(client => {
       expect(client.getServerVersion()).toEqual({
         name: '@santi020k/lumen-mcp',
         version: loadLumenData().meta.serverVersion
@@ -73,10 +72,10 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test('registers the complete read-only tool surface', async () => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const response = await client.listTools()
 
-      expect(response.tools.map((tool) => tool.name)).toEqual([
+      expect(response.tools.map(tool => tool.name)).toEqual([
         'lumen_list_components',
         'lumen_get_component',
         'lumen_get_recipe',
@@ -101,7 +100,7 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test('calls a tool and serializes its text result', async () => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const result = await client.callTool({
         arguments: { detail: 'usage', framework: 'react', name: 'data-table' },
         name: 'lumen_get_component'
@@ -117,7 +116,7 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test('executes every catalog discovery tool over MCP', async () => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const [listResult, recipeResult, searchResult, metaResult, tokensResult, rulesResult] = await Promise.all([
         client.callTool({
           arguments: { framework: 'astro', query: 'button' },
@@ -168,7 +167,7 @@ describe('Lumen MCP protocol server', () => {
       name: 'lumen_search'
     }
   ])('rejects invalid arguments for $name', async ({ arguments: args, name }) => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const result = await client.callTool({ arguments: args, name })
 
       expect(result.isError).toBe(true)
@@ -177,7 +176,7 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test('compares catalog manifests and reports snapshot health over MCP', async () => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const manifest = await client.callTool({
         arguments: {},
         name: 'lumen_get_catalog_manifest'
@@ -200,7 +199,7 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test('preserves domain errors as MCP tool errors', async () => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const result = await client.callTool({
         arguments: { name: 'NotARealComponent' },
         name: 'lumen_get_component'
@@ -213,19 +212,19 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test('lists and reads stable catalog resources', async () => {
-    await withClient(async (client) => {
+    await withClient(async client => {
       const resources = await client.listResources()
       const templates = await client.listResourceTemplates()
 
-      expect(resources.resources.some((resource) => resource.uri === 'lumen://rules')).toBe(true)
-      expect(resources.resources.some((resource) => resource.uri === 'lumen://meta')).toBe(true)
-      expect(resources.resources.some((resource) => resource.uri === 'lumen://catalog-manifest'))
+      expect(resources.resources.some(resource => resource.uri === 'lumen://rules')).toBe(true)
+      expect(resources.resources.some(resource => resource.uri === 'lumen://meta')).toBe(true)
+      expect(resources.resources.some(resource => resource.uri === 'lumen://catalog-manifest'))
         .toBe(true)
-      expect(resources.resources.some((resource) => resource.uri === 'lumen://diagnostics'))
+      expect(resources.resources.some(resource => resource.uri === 'lumen://diagnostics'))
         .toBe(true)
-      expect(resources.resources.some((resource) => resource.uri === 'lumen://components/button'))
+      expect(resources.resources.some(resource => resource.uri === 'lumen://components/button'))
         .toBe(true)
-      expect(templates.resourceTemplates.map((template) => template.uriTemplate)).toEqual([
+      expect(templates.resourceTemplates.map(template => template.uriTemplate)).toEqual([
         'lumen://components/{name}',
         'lumen://recipes/{name}'
       ])

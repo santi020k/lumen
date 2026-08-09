@@ -80,12 +80,19 @@ baseline count; do not inflate that number with the 36 hidden icon components.
 
 ## Current maintenance state
 
-The canonical working file now contains 128 public component assets and 69 variables. The additions
-since the published baseline are `Sparkline`, `BarChart`, `LineChart`, `PieChart`, and
-`ScrollProgress`, plus 16 `color/chart/*` variables. The chart assets live on Data Display,
-`ScrollProgress` lives on Utilities, and the chart token specimens live on Foundations. Treat the
-123-asset figures above as the historical published baseline until the updated library is published
-through the Figma UI.
+The canonical working file now contains 149 public component assets and 69 variables. The latest
+code-to-Figma sync adds `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`,
+`CheckboxGroup`, `ErrorSummary`, `FieldError`, `Form`, `ListBox`, `PasswordField`,
+`StatDescription`, `StatIcon`, `StatLabel`, `StatTrend`, `StatValue`, `Container`, `Stack`, `Grid`,
+and `VisuallyHidden`.
+
+The same sync reconciles the current public APIs for existing assets: `Stat` exposes `Default`,
+`Accent`, `Bare`, and `Glass`; `Chart` exposes `Presentation=Default|Bare`; `BarChart` adds the same
+presentation axis; and `LineChart` exposes `Markers=None|Auto|All` plus
+`Presentation=Default|Bare`. Earlier working-file additions remain `Sparkline`, `BarChart`,
+`LineChart`, `PieChart`, and `ScrollProgress`, plus 16 `color/chart/*` variables. Treat the 123-asset
+figures above as the historical published baseline until the updated library is published through
+the Figma UI.
 
 ## Page organization
 
@@ -424,7 +431,7 @@ The initial templates are:
 Validate locally:
 
 ```bash
-pnpm exec figma connect parse --config figma.config.json
+pnpm dlx @figma/code-connect@1.5.0 connect parse --config figma.config.json
 pnpm exec tsc -p figma/tsconfig.json
 ```
 
@@ -440,7 +447,7 @@ published immediately after the account is eligible.
 From the repository root:
 
 ```bash
-pnpm exec figma connect parse --config figma.config.json
+pnpm dlx @figma/code-connect@1.5.0 connect parse --config figma.config.json
 pnpm exec tsc -p figma/tsconfig.json
 pnpm run check:registry
 pnpm --filter @santi020k/lumen test

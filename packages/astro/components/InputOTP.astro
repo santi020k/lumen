@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {
   class?: string | null
@@ -20,9 +20,11 @@ const {
   pattern = '[0-9]*',
   ...rest
 } = Astro.props
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input-otp-field'
 ], classProp, className)
-const segments = Array.from({ length: Math.max(1, Number(length) || 6) }, (_, index) => index)
+
+const segments = Array.from({ length: Math.max(1, length || 6) }, (_, index) => index)
 ---
 
 <div

@@ -1,0 +1,39 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'fieldset'> {
+  class?: string | null
+  className?: string
+  invalid?: boolean
+  legend?: string
+  orientation?: 'horizontal' | 'vertical'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  invalid = false,
+  legend,
+  orientation = 'vertical',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-checkbox-group',
+  `ui-checkbox-group--${orientation}`
+], classProp, className)
+---
+
+<fieldset
+  aria-invalid={invalid ? 'true' : undefined}
+  class:list={classList}
+  data-invalid={invalid ? 'true' : undefined}
+  data-orientation={orientation}
+  data-ui-checkbox-group
+  {...passthrough}
+>
+  {legend && <legend>{legend}</legend>}
+  <slot />
+</fieldset>

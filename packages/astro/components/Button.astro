@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'button'> {
   class?: string | null
@@ -23,26 +23,28 @@ const {
 } = Astro.props
 
 const isDisabled = Boolean(disabled) || loading
+
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-button',
-    variant === 'default' && 'ui-button--default',
-    variant === 'destructive' && 'ui-button--destructive',
-    variant === 'ghost' && 'ui-button--ghost',
-    variant === 'link' && 'ui-button--link',
-    variant === 'outline' && 'ui-button--outline',
-    variant === 'secondary' && 'ui-button--secondary',
-    size === 'default' && 'ui-button--default-size',
-    size === 'sm' && 'ui-button--sm',
-    size === 'lg' && 'ui-button--lg',
-    size === 'icon' && 'ui-button--icon',
-    isDisabled && 'ui-button--disabled',
-    loading && 'ui-button--loading'
+  'ui-button',
+  variant === 'default' && 'ui-button--default',
+  variant === 'destructive' && 'ui-button--destructive',
+  variant === 'ghost' && 'ui-button--ghost',
+  variant === 'link' && 'ui-button--link',
+  variant === 'outline' && 'ui-button--outline',
+  variant === 'secondary' && 'ui-button--secondary',
+  size === 'default' && 'ui-button--default-size',
+  size === 'sm' && 'ui-button--sm',
+  size === 'lg' && 'ui-button--lg',
+  size === 'icon' && 'ui-button--icon',
+  isDisabled && 'ui-button--disabled',
+  loading && 'ui-button--loading'
 ], classProp, className)
 ---
 
 <button
-  class:list={classList}
   aria-busy={loading || undefined}
+  class:list={classList}
+  data-slot="button"
   disabled={isDisabled || undefined}
   type={type}
   {...passthrough}

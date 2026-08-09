@@ -43,13 +43,13 @@ export interface LumenFigmaVariableExportOptions {
 }
 
 export type LumenDesignTokenType =
-  | 'color'
-  | 'cubicBezier'
-  | 'dimension'
-  | 'duration'
-  | 'fontFamily'
-  | 'number'
-  | 'shadow'
+  | 'color' |
+  'cubicBezier' |
+  'dimension' |
+  'duration' |
+  'fontFamily' |
+  'number' |
+  'shadow'
 
 export interface LumenDesignToken {
   $description: string
@@ -118,8 +118,7 @@ const lumenTokenDescriptions = {
   warning: 'Cautionary status color.'
 } as const satisfies Record<LumenThemeTokenName, string>
 
-const clamp = (value: number, min: number, max: number): number =>
-  Math.min(Math.max(value, min), max)
+const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max)
 
 const parseHslToken = (value: string) => {
   const [color = '', alpha = '1'] = value.split('/').map(part => part.trim())
@@ -175,8 +174,7 @@ const hslTokenToRgb = (value: string): [number, number, number] => {
   return rgb.map(channel => Math.round((channel + m) * 255)) as [number, number, number]
 }
 
-const channelToHex = (channel: number): string =>
-  clamp(Math.round(channel), 0, 255).toString(16).padStart(2, '0')
+const channelToHex = (channel: number): string => clamp(Math.round(channel), 0, 255).toString(16).padStart(2, '0')
 
 export const hslTokenToFigmaColor = (value: string): LumenFigmaColorValue => {
   const [r, g, b] = hslTokenToRgb(value)

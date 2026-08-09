@@ -1,0 +1,11 @@
+---
+import { CopyButton } from '@santi020k/lumen-astro'
+---
+
+<div class="grid gap-3">
+  <p id="share-message">Join the Lumen workspace at https://lumen.santi020k.com</p>
+  <div class="flex flex-wrap gap-2">
+    <CopyButton target="#share-message">Copy message</CopyButton>
+    <CopyButton value="https://lumen.santi020k.com" toast>Copy link</CopyButton>
+  </div>
+</div>

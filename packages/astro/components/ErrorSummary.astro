@@ -1,0 +1,54 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import type { LumenFormErrorInput } from '@santi020k/lumen-core'
+import { normalizeLumenFormErrors, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'section'> {
+  class?: string | null
+  className?: string
+  errors?: LumenFormErrorInput
+  heading?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  errors,
+  heading = 'There is a problem',
+  id,
+  ...rest
+} = Astro.props
+
+const normalizedErrors = normalizeLumenFormErrors(errors)
+
+const allErrors = [
+  ...normalizedErrors.form.map(message => ({ message })),
+  ...normalizedErrors.fields
+]
+
+const summaryId = id ?? 'ui-error-summary'
+const headingId = `${summaryId}-heading`
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-error-summary'], classProp, className)
+---
+
+<section
+  aria-labelledby={headingId}
+  class:list={classList}
+  data-ui-error-summary
+  hidden={allErrors.length === 0}
+  id={summaryId}
+  tabindex="-1"
+  {...passthrough}
+>
+  <h2 id={headingId}>{heading}</h2>
+  <ul>
+    {allErrors.map(error => (
+      <li>
+        {error.controlId ?
+          <a href={`#${error.controlId}`}>{error.message}</a> :
+          error.message}
+      </li>
+    ))}
+  </ul>
+</section>

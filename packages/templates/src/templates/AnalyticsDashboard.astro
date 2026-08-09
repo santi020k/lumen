@@ -1,0 +1,154 @@
+---
+import {
+  BarChart,
+  Button,
+  Card,
+  DateRangePicker,
+  Field,
+  Icon,
+  Input,
+  Label,
+  LineChart,
+  NativeSelect
+} from '@santi020k/lumen-astro'
+
+import MetricGrid from '../components/MetricGrid.astro'
+import StatusTable from '../components/StatusTable.astro'
+import TemplateHeader from '../components/TemplateHeader.astro'
+import TemplateShell from '../components/TemplateShell.astro'
+
+const navigation = [
+  { icon: 'layout-dashboard', label: 'Overview' },
+  { icon: 'chart-no-axes-combined', label: 'Acquisition' },
+  { icon: 'users-round', label: 'Audience' },
+  { icon: 'scan-search', label: 'Reports' }
+] as const
+
+const metrics = [
+  { change: '+12.4%', direction: 'up', label: 'Monthly revenue', points: [31, 33, 32, 38, 41, 46, 52], value: '$184,320' },
+  { change: '+8.2%', direction: 'up', label: 'Active accounts', points: [40, 42, 45, 44, 49, 53, 57], value: '12,480' },
+  { change: '-1.6%', direction: 'up', label: 'Customer churn', points: [26, 25, 24, 22, 23, 20, 18], value: '2.8%' },
+  { change: '+3.1%', direction: 'up', label: 'Net retention', points: [44, 45, 43, 47, 49, 50, 54], value: '116%' }
+] as const
+
+const revenueSeries = [
+  {
+    data: [
+      { x: 'Jan', y: 118 },
+      { x: 'Feb', y: 126 },
+      { x: 'Mar', y: 132 },
+      { x: 'Apr', y: 148 },
+      { x: 'May', y: 162 },
+      { x: 'Jun', y: 184 }
+    ],
+    id: 'revenue',
+    label: 'Revenue',
+    tone: 'brand'
+  },
+  {
+    data: [
+      { x: 'Jan', y: 102 },
+      { x: 'Feb', y: 110 },
+      { x: 'Mar', y: 117 },
+      { x: 'Apr', y: 123 },
+      { x: 'May', y: 139 },
+      { x: 'Jun', y: 151 }
+    ],
+    id: 'target',
+    label: 'Target',
+    tone: 'accent'
+  }
+] as const
+
+const channelSeries = [
+  {
+    data: [
+      { x: 'Organic', y: 4820 },
+      { x: 'Referral', y: 3180 },
+      { x: 'Paid', y: 2640 },
+      { x: 'Social', y: 1840 }
+    ],
+    id: 'visitors',
+    label: 'Visitors',
+    tone: 'brand'
+  },
+  {
+    data: [
+      { x: 'Organic', y: 810 },
+      { x: 'Referral', y: 620 },
+      { x: 'Paid', y: 540 },
+      { x: 'Social', y: 320 }
+    ],
+    id: 'converted',
+    label: 'Converted',
+    tone: 'success'
+  }
+] as const
+
+const rows = [
+  { detail: 'Enterprise', id: 'AC-2048', label: 'Northstar Labs', owner: 'Amina Bello', status: 'Active', value: '$18,400' },
+  { detail: 'Growth', id: 'AC-1982', label: 'Common Ground', owner: 'Jon Bell', status: 'Trial', value: '$8,250' },
+  { detail: 'Enterprise', id: 'AC-1894', label: 'Arc & Field', owner: 'Maya Chen', status: 'At risk', value: '$14,780' },
+  { detail: 'Scale', id: 'AC-1771', label: 'Beacon Works', owner: 'Nora Singh', status: 'Active', value: '$11,960' }
+] as const
+---
+
+<TemplateShell activeItem="Overview" {navigation} product="Pulse" workspace="Growth workspace">
+  <TemplateHeader
+    actionIcon="download"
+    actionLabel="Export report"
+    description="A weekly view of growth, retention, and the accounts that need attention."
+    eyebrow="Jun 1–30, 2026"
+    title="Growth overview"
+  />
+
+  <div class="template-toolbar" aria-label="Dashboard filters">
+    <DateRangePicker aria-label="Reporting period">
+      <Field>
+        <Label for="analytics-start-date">Start</Label>
+        <Input id="analytics-start-date" type="date" value="2026-06-01" />
+      </Field>
+      <span aria-hidden="true">–</span>
+      <Field>
+        <Label for="analytics-end-date">End</Label>
+        <Input id="analytics-end-date" type="date" value="2026-06-30" />
+      </Field>
+    </DateRangePicker>
+    <NativeSelect aria-label="Compare reporting period">
+      <option>Previous period</option>
+      <option>Previous year</option>
+      <option>No comparison</option>
+    </NativeSelect>
+    <Button variant="outline">
+      <Icon name="sliders-horizontal" size="sm" />
+      Filters
+    </Button>
+  </div>
+
+  <MetricGrid {metrics} />
+
+  <section class="template-chart-grid" aria-label="Growth charts">
+    <LineChart
+      area
+      description="Monthly recurring revenue compared with the operating target."
+      heading="Revenue trajectory"
+      series={revenueSeries}
+    />
+    <BarChart
+      description="Visitor and converted account volume by acquisition source."
+      heading="Channel performance"
+      series={channelSeries}
+    />
+  </section>
+
+  <Card as="section" class="template-section">
+    <div class="template-section__header">
+      <div>
+        <h2>Accounts to watch</h2>
+        <p>Expansion opportunities and accounts showing a change in health.</p>
+      </div>
+      <Button variant="ghost">View all accounts</Button>
+    </div>
+    <StatusTable caption="Accounts requiring review" {rows} />
+  </Card>
+</TemplateShell>

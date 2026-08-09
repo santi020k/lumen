@@ -24,9 +24,9 @@ const navLinks = [
   {
     href: '/docs',
     isActive: currentPath === '/docs' || (
-      currentPath.startsWith('/docs/')
-      && !currentPath.startsWith('/docs/components')
-      && !currentPath.startsWith('/docs/theme-playground')
+      currentPath.startsWith('/docs/') &&
+      !currentPath.startsWith('/docs/components') &&
+      !currentPath.startsWith('/docs/theme-playground')
     ),
     label: 'Docs'
   },
@@ -34,6 +34,11 @@ const navLinks = [
     href: '/docs/components',
     isActive: currentPath.startsWith('/docs/components'),
     label: 'Components'
+  },
+  {
+    href: '/templates',
+    isActive: currentPath.startsWith('/templates'),
+    label: 'Templates'
   },
   {
     href: '/docs/theme-playground',

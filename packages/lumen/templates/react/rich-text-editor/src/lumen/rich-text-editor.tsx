@@ -17,7 +17,14 @@ export const RichTextEditorRecipe = () => {
           <Button {...editor.getCommandProps('bold')}>Bold</Button>
           <Button {...editor.getCommandProps('italic')}>Italic</Button>
         </ButtonGroup>
-        <ToggleGroup><button {...editor.getCommandProps('insertUnorderedList')} type="button">List</button></ToggleGroup>
+        <ToggleGroup>
+          <button
+            {...editor.getCommandProps('insertUnorderedList')}
+            type="button"
+          >
+            List
+          </button>
+        </ToggleGroup>
       </div>
       <div {...editor.getEditableProps()}>Draft release notes...</div>
       <Textarea name="fallback" placeholder="Plain text fallback" />

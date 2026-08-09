@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -25,11 +25,11 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-resizable',
-    direction === 'vertical' && 'ui-resizable--vertical'
+  'ui-resizable',
+  direction === 'vertical' && 'ui-resizable--vertical'
 ], classProp, className)
-const serializeSize = (value: number | number[] | undefined) =>
-  Array.isArray(value) ? value.join(',') : value
+
+const serializeSize = (value: number | number[] | undefined) => Array.isArray(value) ? value.join(',') : value
 ---
 
 <div
@@ -50,6 +50,7 @@ const serializeSize = (value: number | number[] | undefined) =>
       role="separator"
       tabindex="0"
       type="button"
-    ></button>
+    >
+    </button>
   </template>
 </div>

@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'div' | 'footer'
+  class?: string | null
+  className?: string
+}
+
+const {
+  as: Tag = 'div',
+  class: classProp = '',
+  className = '',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest, ['ui-card__footer'], classProp, className
+)
+---
+
+<Tag class:list={classList} data-slot="card-footer" {...passthrough}>
+  <slot />
+</Tag>

@@ -1,8 +1,9 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-import Calendar from './Calendar.astro'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import Calendar from './Calendar.astro'
 
 interface Props extends HTMLAttributes<'input'> {
   class?: string | null
@@ -32,26 +33,28 @@ const triggerId = `${datePickerId}-trigger`
 const popoverId = `${datePickerId}-popover`
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-    'ui-date-picker-field',
-    glass && 'ui-date-picker-field--glass',
-    glass === 'subtle' && 'ui-glass-subtle',
-    glass === 'strong' && 'ui-glass-strong'
+  'ui-date-picker-field',
+  glass && 'ui-date-picker-field--glass',
+  glass === 'subtle' && 'ui-glass-subtle',
+  glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 
 const selectedValue = value === undefined || value === null ? undefined : String(value)
 const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
 const placeholderText = placeholder ?? 'Choose a date'
-const selectedDate = hasSelectedValue
-  ? new Date(`${selectedValue}T00:00:00.000Z`)
-  : undefined
-const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime())
-  ? new Intl.DateTimeFormat('en', {
-      day: 'numeric',
-      month: 'short',
-      timeZone: 'UTC',
-      year: 'numeric'
-    }).format(selectedDate)
-  : placeholderText
+
+const selectedDate = hasSelectedValue ?
+  new Date(`${selectedValue}T00:00:00.000Z`) :
+  undefined
+
+const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime()) ?
+  new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+    year: 'numeric'
+  }).format(selectedDate) :
+  placeholderText
 ---
 
 <div

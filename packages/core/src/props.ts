@@ -2,8 +2,6 @@ export type LumenClassValue = boolean | null | string | undefined
 
 export type LumenGlass = boolean | 'strong' | 'subtle'
 
-export type LumenSurfaceAlias = 'default' | 'glass'
-
 export interface LumenAstroPropsResult {
   classList: LumenClassValue[]
   passthrough: Record<string, unknown>
@@ -20,6 +18,5 @@ export const resolveLumenAstroProps = (
 })
 
 export const resolveLumenGlass = (
-  glass: LumenGlass = false,
-  surface: LumenSurfaceAlias = 'default'
-): LumenGlass => glass || surface === 'glass'
+  glass: LumenGlass = false
+): LumenGlass => glass

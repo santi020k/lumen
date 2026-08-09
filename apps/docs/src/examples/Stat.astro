@@ -1,9 +1,24 @@
 ---
-import { Stat } from '@santi020k/lumen-astro'
+import {
+  Icon,
+  Stat,
+  StatDescription,
+  StatIcon,
+  StatLabel,
+  StatTrend,
+  StatValue
+} from '@santi020k/lumen-astro'
 ---
 
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr));">
   <Stat as="article" label="Active workspaces" value="1,234" />
   <Stat as="article" label="Deploy success" value="99.8%" variant="accent" />
   <Stat as="article" label="Median build" value="42s" variant="glass" />
+  <Stat as="article" variant="bare">
+    <StatIcon><Icon name="activity" decorative /></StatIcon>
+    <StatLabel>Active workspaces</StatLabel>
+    <StatValue>1,234</StatValue>
+    <StatDescription>Compared with the previous 30 days</StatDescription>
+    <StatTrend tone="success">Up 8.2 percent</StatTrend>
+  </Stat>
 </div>

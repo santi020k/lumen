@@ -9,8 +9,7 @@ export interface DocsSearchItem {
 
 const COMPONENT_SCORE_BOOST = 75
 
-export const normalizeSearchText = (value: string): string =>
-  value.toLowerCase().normalize('NFKD').replaceAll(/[\u0300-\u036f]/g, '')
+export const normalizeSearchText = (value: string): string => value.toLowerCase().normalize('NFKD').replaceAll(/[\u0300-\u036f]/g, '')
 
 const scoreSearchItem = (item: DocsSearchItem, query: string): number => {
   const title = normalizeSearchText(item.title)
@@ -43,10 +42,9 @@ export const getMatchedSearchItems = (
   index: DocsSearchItem[],
   query: string,
   limit = 8
-): DocsSearchItem[] =>
-  index
-    .map(item => ({ item, score: scoreSearchItem(item, query) }))
-    .filter(result => result.score > 0)
-    .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
-    .slice(0, limit)
-    .map(result => result.item)
+): DocsSearchItem[] => index
+  .map(item => ({ item, score: scoreSearchItem(item, query) }))
+  .filter(result => result.score > 0)
+  .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
+  .slice(0, limit)
+  .map(result => result.item)

@@ -1,7 +1,7 @@
 ---
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
-
 import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'a'> {
   class?: string | null
@@ -25,13 +25,14 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   variant === 'inherit' && 'ui-link--inherit'
 ], classProp, className)
 
-const safeRel = newTab
-  ? [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ')
-  : rel
+const safeRel = newTab ?
+  [...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))].join(' ') :
+  rel
 ---
 
 <a
   class:list={classList}
+  data-slot="link"
   data-variant={variant}
   rel={safeRel}
   target={newTab ? '_blank' : target}
