@@ -3,6 +3,7 @@ name: CI
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
 
 permissions:
   contents: read
@@ -21,12 +22,25 @@ jobs:
       mcp: ${{ steps.paths.outputs.mcp }}
       playwright: ${{ steps.paths.outputs.playwright }}
       release-pr: ${{ steps.release.outputs.value }}
+      skip-changelog: ${{ steps.release.outputs.skip-changelog }}
     steps:
       - name: Detect release pull request
         id: release
         env:
           IS_RELEASE_PR: "${{ startsWith(github.head_ref, 'changeset-release/') }}"
-        run: echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
+          SKIP_CHANGELOG: >-
+            ${{
+              contains(github.event.pull_request.labels.*.name, 'skip-changelog') ||
+              startsWith(github.head_ref, 'changeset-release/') ||
+              startsWith(github.head_ref, 'chore/') ||
+              startsWith(github.head_ref, 'ci/') ||
+              startsWith(github.head_ref, 'docs/') ||
+              startsWith(github.head_ref, 'renovate/') ||
+              startsWith(github.head_ref, 'dependabot/')
+            }}
+        run: |
+          echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
+          echo "skip-changelog=$SKIP_CHANGELOG" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
@@ -166,7 +180,7 @@ jobs:
           ${{
             needs.classify.outputs.release-pr != 'true' &&
             matrix.node-version == '22.x' &&
-            !contains(github.event.pull_request.labels.*.name, 'skip-changelog')
+            needs.classify.outputs.skip-changelog != 'true'
           }}
         run: pnpm changeset status --since=origin/main
 
