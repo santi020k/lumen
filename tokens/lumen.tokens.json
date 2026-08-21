@@ -1,0 +1,109 @@
+{
+  "$description": "Canonical, platform-neutral foundations for Lumen UI.",
+  "$extensions": {
+    "com.santi020k.lumen": {
+      "schemaVersion": 1
+    }
+  },
+  "color": {
+    "light": {
+      "$type": "color",
+      "canvas": { "$description": "Base app or page background.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 0% 100%" } }, "$value": "#FFFFFF" },
+      "surface": { "$description": "Default component surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 0% 100%" } }, "$value": "#FFFFFF" },
+      "surface-muted": { "$description": "Subtle component surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "220 14% 96%" } }, "$value": "#F3F4F6" },
+      "surface-strong": { "$description": "Raised or stronger component surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "220 13% 91%" } }, "$value": "#E5E7EB" },
+      "line": { "$description": "Borders, dividers, and structural lines.", "$extensions": { "com.santi020k.lumen": { "cssValue": "220 13% 86%" } }, "$value": "#D7DAE0" },
+      "ink": { "$description": "Primary readable foreground color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "222 47% 11%" } }, "$value": "#0F1729" },
+      "ink-soft": { "$description": "Soft foreground color for tertiary content.", "$extensions": { "com.santi020k.lumen": { "cssValue": "215 16% 32%" } }, "$value": "#454F5F" },
+      "ink-muted": { "$description": "Muted foreground color for secondary content.", "$extensions": { "com.santi020k.lumen": { "cssValue": "215 12% 48%" } }, "$value": "#6C7889" },
+      "brand": { "$description": "Primary brand color for accents and active states.", "$extensions": { "com.santi020k.lumen": { "cssValue": "221 83% 53%" } }, "$value": "#2463EB" },
+      "brand-solid": { "$description": "Solid brand fill for high-emphasis controls.", "$extensions": { "com.santi020k.lumen": { "cssValue": "221 83% 46%" } }, "$value": "#1452D7" },
+      "brand-soft": { "$description": "Soft brand tint for selected or decorative surfaces.", "$extensions": { "com.santi020k.lumen": { "cssValue": "218 100% 97%" } }, "$value": "#F0F5FF" },
+      "on-brand": { "$description": "Readable foreground placed on a solid brand fill.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 0% 100%" } }, "$value": "#FFFFFF" },
+      "accent": { "$description": "Secondary action and emphasis color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "168 76% 36%" } }, "$value": "#16A286" },
+      "success": { "$description": "Positive or complete status color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "142 71% 36%" } }, "$value": "#1B9D4A" },
+      "warning": { "$description": "Cautionary status color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "38 92% 50%" } }, "$value": "#F59F0A" },
+      "danger": { "$description": "Destructive, error, or critical status color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 84% 60%" } }, "$value": "#EF4343" },
+      "on-danger": { "$description": "Readable foreground placed on a solid danger fill.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 0% 0%" } }, "$value": "#000000" }
+    },
+    "dark": {
+      "$type": "color",
+      "canvas": { "$description": "Base app or page background.", "$extensions": { "com.santi020k.lumen": { "cssValue": "224 24% 8%" } }, "$value": "#101219" },
+      "surface": { "$description": "Default component surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "224 18% 11%" } }, "$value": "#171A21" },
+      "surface-muted": { "$description": "Subtle component surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "223 16% 15%" } }, "$value": "#20242C" },
+      "surface-strong": { "$description": "Raised or stronger component surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "222 14% 22%" } }, "$value": "#303540" },
+      "line": { "$description": "Borders, dividers, and structural lines.", "$extensions": { "com.santi020k.lumen": { "cssValue": "222 14% 26%" } }, "$value": "#393F4C" },
+      "ink": { "$description": "Primary readable foreground color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "210 20% 96%" } }, "$value": "#F3F5F7" },
+      "ink-soft": { "$description": "Soft foreground color for tertiary content.", "$extensions": { "com.santi020k.lumen": { "cssValue": "214 14% 77%" } }, "$value": "#BCC3CD" },
+      "ink-muted": { "$description": "Muted foreground color for secondary content.", "$extensions": { "com.santi020k.lumen": { "cssValue": "216 10% 62%" } }, "$value": "#949CA8" },
+      "brand": { "$description": "Primary brand color for accents and active states.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 91% 56%" } }, "$value": "#29B4F5" },
+      "brand-solid": { "$description": "Solid brand fill for high-emphasis controls.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 91% 36%" } }, "$value": "#087AAF" },
+      "brand-soft": { "$description": "Soft brand tint for selected or decorative surfaces.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 84% 16%" } }, "$value": "#07354B" },
+      "on-brand": { "$description": "Readable foreground placed on a solid brand fill.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 0% 100%" } }, "$value": "#FFFFFF" },
+      "accent": { "$description": "Secondary action and emphasis color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "166 76% 43%" } }, "$value": "#1AC19A" },
+      "success": { "$description": "Positive or complete status color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "142 69% 45%" } }, "$value": "#24C25E" },
+      "warning": { "$description": "Cautionary status color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "38 92% 55%" } }, "$value": "#F6A823" },
+      "danger": { "$description": "Destructive, error, or critical status color.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 84% 65%" } }, "$value": "#F15B5B" },
+      "on-danger": { "$description": "Readable foreground placed on a solid danger fill.", "$extensions": { "com.santi020k.lumen": { "cssValue": "224 24% 8%" } }, "$value": "#101219" }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "zero": { "$value": { "unit": "px", "value": 0 } },
+    "xs": { "$value": { "unit": "px", "value": 4 } },
+    "sm": { "$value": { "unit": "px", "value": 8 } },
+    "md": { "$value": { "unit": "px", "value": 12 } },
+    "lg": { "$value": { "unit": "px", "value": 16 } },
+    "xl": { "$value": { "unit": "px", "value": 24 } },
+    "2xl": { "$value": { "unit": "px", "value": 32 } },
+    "3xl": { "$value": { "unit": "px", "value": 48 } }
+  },
+  "radius": {
+    "$type": "dimension",
+    "sm": { "$value": { "unit": "px", "value": 6 } },
+    "md": { "$value": { "unit": "px", "value": 10 } },
+    "lg": { "$value": { "unit": "px", "value": 12 } },
+    "full": { "$value": { "unit": "px", "value": 9999 } }
+  },
+  "typography": {
+    "font-family": {
+      "$type": "fontFamily",
+      "sans": { "$value": ["Montserrat", "Avenir Next", "Segoe UI", "sans-serif"] }
+    },
+    "font-size": {
+      "$type": "dimension",
+      "xs": { "$value": { "unit": "px", "value": 12 } },
+      "sm": { "$value": { "unit": "px", "value": 14 } },
+      "md": { "$value": { "unit": "px", "value": 16 } },
+      "lg": { "$value": { "unit": "px", "value": 18 } },
+      "xl": { "$value": { "unit": "px", "value": 20 } },
+      "2xl": { "$value": { "unit": "px", "value": 24 } }
+    },
+    "font-weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 },
+      "semibold": { "$value": 600 },
+      "bold": { "$value": 700 }
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "fast": { "$value": { "unit": "ms", "value": 120 } },
+      "standard": { "$value": { "unit": "ms", "value": 160 } },
+      "slow": { "$value": { "unit": "ms", "value": 300 } }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": { "$value": [0.32, 0.72, 0, 1] },
+      "emphasized": { "$value": [0.22, 1, 0.36, 1] }
+    }
+  },
+  "elevation": {
+    "$type": "number",
+    "resting": { "$value": 1 },
+    "raised": { "$value": 3 },
+    "overlay": { "$value": 6 }
+  }
+}

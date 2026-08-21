@@ -7,6 +7,11 @@ Most consumers should install a framework package such as `@santi020k/lumen-astr
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme
 tokens outside the shared stylesheet.
 
+Cross-platform foundations originate in `tokens/lumen.tokens.json` and are published as
+`@santi020k/lumen-tokens`. Core also exports generated hexadecimal light/dark palettes and native
+numeric spacing, radius, typography, duration, easing, and elevation values. The legacy
+`lumenColors` export retains CSS-ready HSL values.
+
 ## Chart Helpers
 
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic

@@ -13,6 +13,8 @@ out/
 .turbo/
 .vite/
 .cache/
+.gradle/
+.build/
 *.tsbuildinfo
 
 # Tool-specific caches.

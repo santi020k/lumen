@@ -1,0 +1,34 @@
+{
+  "name": "@santi020k/lumen-tokens",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Canonical cross-platform design tokens for Lumen UI.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./lumen.tokens.json",
+    "./lumen.tokens.json": "./lumen.tokens.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lumen.tokens.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/lumen.git",
+    "directory": "packages/tokens"
+  },
+  "homepage": "https://lumen.santi020k.com",
+  "bugs": {
+    "url": "https://github.com/santi020k/lumen/issues"
+  },
+  "author": {
+    "name": "Santiago Molina",
+    "url": "https://santi020k.com"
+  },
+  "license": "MIT"
+}

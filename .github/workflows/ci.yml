@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      native: ${{ steps.paths.outputs.native }}
       playwright: ${{ steps.paths.outputs.playwright }}
       release-pr: ${{ steps.release.outputs.value }}
     steps:
@@ -42,6 +43,49 @@ jobs:
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
           fi
+          if grep -Eq '^(packages/(compose|react-native|swift|tokens)/|tokens/|scripts/generate-platform-tokens\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+            echo "native=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "native=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  native-apple:
+    name: SwiftUI package
+    needs: classify
+    if: needs.classify.outputs.native == 'true'
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and test LumenUI
+        working-directory: packages/swift
+        run: swift test
+
+  native-android:
+    name: Compose library
+    needs: classify
+    if: needs.classify.outputs.native == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+
+      - name: Build and test Compose library
+        working-directory: packages/compose
+        run: ./gradlew test
 
   browser-contracts:
     name: Browser interaction contracts
@@ -74,7 +118,7 @@ jobs:
     name: Visual regression
     needs: classify
     if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
@@ -182,6 +226,7 @@ jobs:
           pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
           pnpm run check:bundle-size
           pnpm run check:framework-contracts
+          pnpm run check:platform-tokens
           pnpm run check:security
           pnpm run check:publish-dry-run
           pnpm run check:consumer-packages

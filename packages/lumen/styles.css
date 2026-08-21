@@ -22,10 +22,12 @@
   --brand: 221 83% 53%;
   --brand-solid: 221 83% 46%;
   --brand-soft: 218 100% 97%;
+  --on-brand: 0 0% 100%;
   --accent: 168 76% 36%;
   --success: 142 71% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
+  --on-danger: 0 0% 0%;
   --chart-axis: var(--ink-muted);
   --chart-diverging-mid: 220 13% 91%;
   --chart-diverging-negative: 0 84% 60%;
@@ -42,7 +44,7 @@
   --chart-series-6: 190 82% 42%;
   --chart-series-7: 52 92% 45%;
   --chart-series-8: 215 16% 47%;
-  --ui-on-danger: 0 0% 0%;
+  --ui-on-danger: var(--on-danger);
   --ui-radius: 0.625rem;
   --ui-radius-sm: 0.375rem;
   --ui-radius-lg: 0.75rem;
@@ -87,10 +89,12 @@
   --brand: 199 91% 56%;
   --brand-solid: 199 91% 36%;
   --brand-soft: 199 84% 16%;
+  --on-brand: 0 0% 100%;
   --accent: 166 76% 43%;
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
+  --on-danger: 224 24% 8%;
   --chart-axis: var(--ink-muted);
   --chart-diverging-mid: 222 14% 22%;
   --chart-diverging-negative: 0 84% 65%;
@@ -128,6 +132,7 @@
 }
 
 :root[data-theme$="-dark"] {
+  --on-danger: var(--canvas);
   --ui-on-danger: var(--canvas);
 }
 }
@@ -761,7 +766,7 @@
 .ui-button--default {
   background: hsl(var(--brand-solid));
   border-color: hsl(var(--brand-solid));
-  color: white;
+  color: hsl(var(--on-brand));
   box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
 }
 
@@ -773,7 +778,7 @@
 .ui-button--primary {
   background: hsl(var(--brand-solid));
   border-color: hsl(var(--brand-solid));
-  color: white;
+  color: hsl(var(--on-brand));
   box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
 }
 
@@ -816,7 +821,7 @@
 .ui-button--destructive {
   background: hsl(var(--danger));
   border-color: hsl(var(--danger));
-  color: hsl(var(--ui-on-danger));
+  color: hsl(var(--on-danger));
 }
 
 .ui-button--destructive:hover {

@@ -122,6 +122,28 @@ const parseTokenBlock = (source, identifier) => {
   return out
 }
 
+const toCamel = value => value.replaceAll(
+  /-([a-z0-9])/g,
+  (_, character) => character.toUpperCase()
+)
+
+const parsePlatformColors = source => {
+  if (!source) return {}
+
+  const parsed = JSON.parse(source)
+  const light = parsed.color?.light ?? {}
+
+  return Object.fromEntries(
+    Object.entries(light)
+      .filter(([name]) => !name.startsWith('$'))
+      .map(([name, token]) => [
+        toCamel(name),
+        token?.$extensions?.['com.santi020k.lumen']?.cssValue ?? token?.$value
+      ])
+      .filter(([, value]) => typeof value === 'string')
+  )
+}
+
 // Pull the `interface Props { ... }` body out of Astro frontmatter and turn it
 // into a compact list of { name, optional, type } records.
 const extractInterfaceBody = source => {
@@ -812,6 +834,7 @@ const loadWorkspaceFiles = async p => ({
   reactSource: await readIfExists(p('packages/react/src/components.tsx')),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
+  platformTokensSource: await readIfExists(p('tokens/lumen.tokens.json')),
   tokensSource: await readIfExists(p('packages/core/src/tokens.ts'))
 })
 
@@ -885,7 +908,15 @@ const main = async () => {
   const repoRoot = await findRepoRoot(scriptDir)
   const p = (...parts) => resolve(repoRoot, ...parts)
   const files = await loadWorkspaceFiles(p)
-  const { aiUsage, componentsSource, readme, rules, tokensSource } = files
+
+  const {
+    aiUsage,
+    componentsSource,
+    platformTokensSource,
+    readme,
+    rules,
+    tokensSource
+  } = files
 
   const packageJson = JSON.parse(
     await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8')
@@ -895,7 +926,7 @@ const main = async () => {
   const names = parseComponentNames(componentsSource)
   const ctxData = await buildContextData(files, registry, names)
   const chart = parseTokenBlock(tokensSource, 'lumenChart')
-  const colors = parseTokenBlock(tokensSource, 'lumenColors')
+  const colors = parsePlatformColors(platformTokensSource)
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
 
   const semanticTokens = [
@@ -910,10 +941,12 @@ const main = async () => {
     'brand',
     'brand-solid',
     'brand-soft',
+    'on-brand',
     'accent',
     'success',
     'warning',
-    'danger'
+    'danger',
+    'on-danger'
   ]
 
   const astroDir = p('packages/astro/components')
@@ -1048,7 +1081,9 @@ const main = async () => {
     '@santi020k/lumen-core': 'packages/core/package.json',
     '@santi020k/lumen-elements': 'packages/elements/package.json',
     '@santi020k/lumen-mcp': 'packages/mcp/package.json',
-    '@santi020k/lumen-react': 'packages/react/package.json'
+    '@santi020k/lumen-react': 'packages/react/package.json',
+    '@santi020k/lumen-react-native': 'packages/react-native/package.json',
+    '@santi020k/lumen-tokens': 'packages/tokens/package.json'
   }
 
   const packageVersions = {}

@@ -15,6 +15,7 @@ words:
   - Anchor
   - AnimatedLogo
   - AnimatedPortrait
+  - androidx
   - astrojs
   - autobuild
   - Autobuild
@@ -61,6 +62,7 @@ words:
   - hookform
   - inputmode
   - jsdom
+  - Jetpack
   - knip
   - labelledby
   - lede
@@ -74,6 +76,7 @@ words:
   - Mentions
   - microtask
   - microtasks
+  - Millis
   - modelcontextprotocol
   - noopener
   - noreferrer
@@ -85,6 +88,8 @@ words:
   - popconfirm
   - Popconfirm
   - postlens
+  - Pressable
+  - Proguard
   - preheading
   - qrcode
   - QRCode
@@ -147,6 +152,7 @@ words:
   - workstream
   - workstreams
   - workspaces
+  - gradlew
   - amannn
   - autorelease
   - ededed
@@ -162,3 +168,7 @@ ignorePaths:
   - .astro
   - .turbo
   - packages/mcp/data/**
+  - packages/compose/gradle.properties
+  - packages/compose/gradle/wrapper/**
+  - packages/compose/gradlew
+  - packages/compose/gradlew.bat

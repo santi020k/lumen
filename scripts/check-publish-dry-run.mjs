@@ -5,10 +5,12 @@ const packages = [
   '@santi020k/lumen-core',
   '@santi020k/lumen-astro',
   '@santi020k/lumen-react',
+  '@santi020k/lumen-react-native',
   '@santi020k/lumen-react-hook-form',
   '@santi020k/lumen-elements',
   '@santi020k/lumen-icons-brand',
-  '@santi020k/lumen-mcp'
+  '@santi020k/lumen-mcp',
+  '@santi020k/lumen-tokens'
 ]
 
 for (const packageName of packages) {

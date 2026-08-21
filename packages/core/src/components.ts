@@ -437,7 +437,16 @@ export const lumenStylingContracts = {
 export interface LumenPackageTarget {
   name: string
   packageName: string
-  runtime: 'astro' | 'core' | 'elements' | 'icons' | 'react' | 'umbrella'
+  runtime: 'astro' |
+    'compose' |
+    'core' |
+    'elements' |
+    'icons' |
+    'react' |
+    'react-native' |
+    'swift' |
+    'tokens' |
+    'umbrella'
 }
 
 export const lumenPackages = [
@@ -451,6 +460,18 @@ export const lumenPackages = [
     runtime: 'react'
   },
   { name: 'Lumen Elements', packageName: '@santi020k/lumen-elements', runtime: 'elements' },
+  {
+    name: 'Lumen React Native',
+    packageName: '@santi020k/lumen-react-native',
+    runtime: 'react-native'
+  },
+  { name: 'Lumen Tokens', packageName: '@santi020k/lumen-tokens', runtime: 'tokens' },
+  { name: 'Lumen SwiftUI', packageName: 'LumenUI', runtime: 'swift' },
+  {
+    name: 'Lumen Compose',
+    packageName: 'com.santi020k:lumen-compose',
+    runtime: 'compose'
+  },
   {
     name: 'Lumen Brand Icons',
     packageName: '@santi020k/lumen-icons-brand',

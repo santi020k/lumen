@@ -1,24 +1,31 @@
+import {
+  lumenCssColorTokens,
+  lumenDurations,
+  lumenEasings,
+  lumenFontFamilies,
+  lumenRadii
+} from './foundations.generated.js'
+
+export {
+  type LumenColorScheme,
+  lumenColorTokens,
+  lumenCssColorTokens,
+  lumenDurations,
+  lumenEasings,
+  lumenElevation,
+  lumenFontFamilies,
+  lumenFontSizes,
+  lumenFontWeights,
+  lumenRadii,
+  type LumenSemanticColor,
+  lumenSpacing } from './foundations.generated.js'
+
 export const lumenThemeAttribute = 'data-theme'
 export const lumenDarkTheme = 'dark'
 export const lumenLightTheme = 'light'
 
-export const lumenColors = {
-  accent: '264 95% 57%',
-  brand: '264 92% 47%',
-  brandSoft: '264 60% 94%',
-  brandSolid: '264 92% 42%',
-  canvas: '268 20% 98%',
-  danger: '0 84% 60%',
-  ink: '268 10% 20%',
-  inkMuted: '268 6% 28%',
-  inkSoft: '268 8% 36%',
-  line: '268 15% 84%',
-  success: '142 76% 36%',
-  surface: '268 20% 100%',
-  surfaceMuted: '268 20% 96%',
-  surfaceStrong: '268 15% 90%',
-  warning: '38 92% 50%'
-} as const
+export const lumenColors = lumenCssColorTokens.light
+export const lumenDarkColors = lumenCssColorTokens.dark
 
 export const lumenChart = {
   axis: 'var(--ink-muted)',
@@ -56,9 +63,9 @@ export const lumenGlass = {
 } as const
 
 export const lumenRadius = {
-  base: '0.625rem',
-  lg: '0.75rem',
-  sm: '0.375rem'
+  base: `${lumenRadii.md / 16}rem`,
+  lg: `${lumenRadii.lg / 16}rem`,
+  sm: `${lumenRadii.sm / 16}rem`
 } as const
 
 export const lumenShadow = {
@@ -67,15 +74,16 @@ export const lumenShadow = {
   sm: '0 1px 2px hsl(222 47% 11% / 0.06)'
 } as const
 
-export const lumenFont =
-  '"Montserrat", "Avenir Next", "Segoe UI", sans-serif' as const
+export const lumenFont = lumenFontFamilies.sans
+  .map(family => family === 'sans-serif' ? family : `"${family}"`)
+  .join(', ')
 
 export const lumenMotion = {
-  duration: '160ms',
-  durationFast: '120ms',
-  durationSlow: '300ms',
-  ease: 'cubic-bezier(0.32, 0.72, 0, 1)',
-  easeEmphasized: 'cubic-bezier(0.22, 1, 0.36, 1)'
+  duration: `${lumenDurations.standard}ms`,
+  durationFast: `${lumenDurations.fast}ms`,
+  durationSlow: `${lumenDurations.slow}ms`,
+  ease: `cubic-bezier(${lumenEasings.standard.join(', ')})`,
+  easeEmphasized: `cubic-bezier(${lumenEasings.emphasized.join(', ')})`
 } as const
 
 export const composeClassName = (...classes: (boolean | null | string | undefined)[]) => classes.filter(Boolean).join(' ')
