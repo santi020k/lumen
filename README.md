@@ -147,6 +147,9 @@ Import the styles and register the elements once:
 See the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component
 examples, and API details.
 
+For native applications, see the [cross-platform architecture](./docs/cross-platform.md) and
+[native component reference](./docs/native-components.md).
+
 ## Tailwind CSS
 
 Keep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace
@@ -198,6 +201,8 @@ Additional machine-readable surfaces include:
 - [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.
 - [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.
 - [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.
+- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged
+  web and native migration strategy.
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.

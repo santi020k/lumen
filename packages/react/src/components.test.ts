@@ -119,8 +119,10 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(input).className).toContain('ui-input--sm')
     expect(propsOf(Textarea({ cols: 40, ref: wrapperRef }) as ReactElement).cols).toBe(40)
     expect(propsOf(Label({ htmlFor: 'email', ref: wrapperRef }) as ReactElement).htmlFor).toBe('email')
+    expect(propsOf(Avatar({ fallback: 'SM', ref: wrapperRef }) as ReactElement).ref).toBe(wrapperRef)
     expect(propsOf(Badge({ ref: wrapperRef, title: 'Status' }) as ReactElement).title).toBe('Status')
     expect(propsOf(Card({ ref: wrapperRef, role: 'region' }) as ReactElement).role).toBe('region')
+    expect(propsOf(Separator({ ref: wrapperRef }) as ReactElement).ref).toBe(wrapperRef)
     expect(propsOf(Skeleton({ ref: wrapperRef, role: 'status' }) as ReactElement).role).toBe('status')
   })
 

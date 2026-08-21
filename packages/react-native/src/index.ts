@@ -7,6 +7,13 @@ export {
   type LumenControlSize,
   LumenDivider,
   type LumenDividerProps,
+  LumenIcon,
+  LumenIconButton,
+  type LumenIconButtonProps,
+  type LumenIconGraphic,
+  type LumenIconGraphicProps,
+  type LumenIconProps,
+  type LumenIconSize,
   LumenSpinner,
   type LumenSpinnerProps,
   LumenSurface,
@@ -25,6 +32,25 @@ export {
   LumenProvider,
   type LumenProviderProps
 } from './provider.js'
+export {
+  LumenAlert,
+  LumenAlertDescription,
+  type LumenAlertDescriptionProps,
+  type LumenAlertProps,
+  LumenAlertTitle,
+  type LumenAlertTitleProps,
+  LumenAvatar,
+  type LumenAvatarProps,
+  LumenCard,
+  type LumenCardProps,
+  LumenProgress,
+  type LumenProgressProps
+} from './shared-components.js'
+export {
+  type LumenAlertVariant,
+  type LumenAvatarSize,
+  type LumenCardVariant
+} from './shared-recipes.js'
 export {
   createLumenTheme,
   lumenDarkTheme,

@@ -13,7 +13,14 @@ let package = Package(
         .library(name: "LumenUI", targets: ["LumenUI"])
     ],
     targets: [
-        .target(name: "LumenUI"),
-        .testTarget(name: "LumenUITests", dependencies: ["LumenUI"])
+        .target(
+            name: "LumenUI",
+            path: "packages/swift/Sources/LumenUI"
+        ),
+        .testTarget(
+            name: "LumenUITests",
+            dependencies: ["LumenUI"],
+            path: "packages/swift/Tests/LumenUITests"
+        )
     ]
 )

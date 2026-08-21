@@ -1,4 +1,5 @@
 import {
+  type ComponentType,
   type ReactElement,
   type ReactNode,
   type Ref
@@ -6,6 +7,7 @@ import {
 import {
   ActivityIndicator,
   type ActivityIndicatorProps,
+  type ColorValue,
   type HostInstance,
   Pressable,
   type PressableProps,
@@ -24,6 +26,8 @@ import {
   resolveLumenButtonOpacity,
   resolveLumenButtonSize,
   resolveLumenControlMinHeight,
+  resolveLumenIconButtonSize,
+  resolveLumenIconSize,
   resolveLumenPressableStyle,
   resolveLumenSurfaceColor,
   resolveLumenTextColor,
@@ -103,6 +107,127 @@ export const LumenSurface = ({
 
 export type LumenButtonIntent = 'danger' | 'primary' | 'quiet' | 'secondary'
 export type LumenControlSize = 'lg' | 'md' | 'sm'
+export type LumenIconSize = 'lg' | 'md' | 'sm'
+
+export interface LumenIconGraphicProps {
+  color?: ColorValue
+  size?: number
+  strokeWidth?: number
+}
+
+export type LumenIconGraphic = ComponentType<LumenIconGraphicProps>
+
+export interface LumenIconProps extends Omit<ViewProps, 'children'> {
+  color?: ColorValue
+  decorative?: boolean
+  icon: LumenIconGraphic
+  label?: string
+  ref?: Ref<HostInstance>
+  size?: LumenIconSize
+  strokeWidth?: number
+}
+
+export const LumenIcon = ({
+  color,
+  decorative,
+  icon: Graphic,
+  label,
+  ref,
+  size = 'md',
+  strokeWidth = 2,
+  style,
+  ...props
+}: LumenIconProps): ReactElement => {
+  const theme = useLumenTheme()
+  const dimension = resolveLumenIconSize(size)
+  const isDecorative = decorative ?? !label
+
+  return (
+    <View
+      ref={ref}
+      {...props}
+      accessible={!isDecorative}
+      accessibilityElementsHidden={isDecorative}
+      accessibilityLabel={isDecorative ? undefined : label}
+      accessibilityRole={isDecorative ? undefined : 'image'}
+      importantForAccessibility={isDecorative ? 'no' : 'yes'}
+      style={[
+        {
+          alignItems: 'center',
+          height: dimension,
+          justifyContent: 'center',
+          width: dimension
+        },
+        style
+      ]}
+    >
+      <Graphic
+        color={color ?? theme.colors.ink}
+        size={dimension}
+        strokeWidth={strokeWidth}
+      />
+    </View>
+  )
+}
+
+export interface LumenIconButtonProps extends Omit<PressableProps, 'children'> {
+  icon: LumenIconGraphic
+  intent?: LumenButtonIntent
+  label: string
+  ref?: Ref<HostInstance>
+  size?: LumenControlSize
+  strokeWidth?: number
+}
+
+export const LumenIconButton = ({
+  accessibilityState,
+  disabled = false,
+  icon,
+  intent = 'quiet',
+  label,
+  ref,
+  size = 'md',
+  strokeWidth = 2,
+  style,
+  ...props
+}: LumenIconButtonProps): ReactElement => {
+  const theme = useLumenTheme()
+  const colors = resolveLumenButtonColors(theme.colors, intent)
+  const metrics = resolveLumenIconButtonSize(size)
+
+  return (
+    <Pressable
+      ref={ref}
+      {...props}
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ ...accessibilityState, disabled }}
+      disabled={disabled}
+      style={state => [
+        {
+          alignItems: 'center',
+          backgroundColor: colors.backgroundColor,
+          borderColor: colors.borderColor,
+          borderRadius: theme.radii.sm,
+          borderWidth: 1,
+          height: metrics.touchTarget,
+          justifyContent: 'center',
+          opacity: resolveLumenButtonOpacity(disabled, state.pressed),
+          width: metrics.touchTarget
+        },
+        resolveLumenPressableStyle(style, state)
+      ]}
+    >
+      <LumenIcon
+        color={colors.color}
+        decorative
+        icon={icon}
+        size={metrics.iconSize}
+        strokeWidth={strokeWidth}
+      />
+    </Pressable>
+  )
+}
 
 export interface LumenButtonProps extends Omit<PressableProps, 'children'> {
   children: ReactNode

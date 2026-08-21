@@ -49,22 +49,34 @@ Native adapters must not depend on the DOM, CSS class names, the Astro runtime, 
 | Universal foundations | Kept synchronized across every adapter | Colors, spacing, radius, typography, motion, elevation |
 | Universal primitives | Native implementation planned for every adapter | Theme, Text, Icon, Button, IconButton, Surface, TextField, Badge, Divider, Spinner |
 | Shared where appropriate | Added when the interaction maps cleanly | Cards, alerts, progress, avatars, disclosure controls |
+| Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, shortcut recording, SF Symbols selection |
 | Platform-specific | Uses platform conventions and does not promise API parity | Navigation, tab bars, sheets, date pickers, gestures, system menus |
 
 The web catalog remains the reference for design intent, not a requirement that all 150 components
 be ported. A native component is considered supported only after its public contract, accessibility
 behavior, tests, and usage documentation exist in that adapter.
 
+See [Native component reference](native-components.md) for installation, the support matrix,
+platform mappings, accessibility requirements, and contribution checks.
+
 ## Current status
 
 - The canonical token source and drift check are active.
 - React Native exposes complete foundations, theme context, and the first native primitives.
-- SwiftUI exposes generated foundations, `LumenTheme`, an environment modifier, and matching
-  native primitives.
+- SwiftUI exposes generated foundations, `LumenTheme`, automatic iOS/macOS control density, shared
+  native primitives, Apple-native form and structured-content components, and guarded macOS input
+  utilities.
 - Compose exposes generated foundations, a Material 3-backed `LumenTheme`, and matching native
   primitives.
-- Text, Surface, Button, TextField, Badge, Divider, and Spinner are implemented in all three native
-  adapters. Icon and IconButton are the next universal additions.
+- Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider, and Spinner are implemented in
+  all three native adapters. Icon glyph sources stay platform-native while their size, color,
+  intent, and accessibility contracts remain aligned.
+- Card, Alert, Progress, and Avatar are implemented in all three native adapters with shared
+  variants, normalization, measurements, and accessibility requirements.
+- The Apple tier includes Toggle, SettingsRow, Picker, Slider, SearchField, EmptyState, ListRow,
+  Banner, Stat, Gauge, SectionHeader, and StatusBar on iOS and macOS, plus ShortcutRecorder and
+  SymbolPicker on macOS.
+- Native navigation, window scenes, sheets, popovers, and system menus remain application-owned.
 
 ## Release discipline
 

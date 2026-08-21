@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import {
   consumerRolloutSucceeded,
   formatConsumerRollout,
+  resolveConsumerRolloutTargets,
   runConsumerRollout
 } from './consumer-rollout.js'
 import {
@@ -74,12 +75,7 @@ const getRolloutArguments = (): { repositories: string[], targetVersion?: string
     if (!value.startsWith('--')) values.push(value)
   }
 
-  const [targetVersion, ...repositories] = values
-
-  return {
-    repositories: repositories.length ? repositories : [process.cwd()],
-    ...(targetVersion ? { targetVersion } : {})
-  }
+  return resolveConsumerRolloutTargets(values)
 }
 
 const getAddTarget = (value: string | undefined, provided = false): LumenAddTarget => {

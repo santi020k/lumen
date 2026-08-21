@@ -1,6 +1,7 @@
 package com.santi020k.lumen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -25,6 +29,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -137,6 +143,79 @@ enum class LumenControlSize {
     Lg,
     Md,
     Sm
+}
+
+enum class LumenIconSize(val dimension: Dp) {
+    Sm(16.dp),
+    Md(20.dp),
+    Lg(24.dp)
+}
+
+@Composable
+fun LumenIcon(
+    imageVector: ImageVector,
+    contentDescription: String? = null,
+    modifier: Modifier = Modifier,
+    size: LumenIconSize = LumenIconSize.Md,
+    tint: Color = LocalLumenTheme.current.colors.ink
+) {
+    Icon(
+        imageVector = imageVector,
+        contentDescription = contentDescription,
+        modifier = modifier.size(size.dimension),
+        tint = tint
+    )
+}
+
+@Immutable
+data class LumenIconButtonMetrics(
+    val iconSize: LumenIconSize,
+    val touchTarget: Dp
+) {
+    companion object {
+        fun resolve(size: LumenControlSize): LumenIconButtonMetrics = when (size) {
+            LumenControlSize.Lg -> LumenIconButtonMetrics(LumenIconSize.Lg, 52.dp)
+            LumenControlSize.Md -> LumenIconButtonMetrics(LumenIconSize.Md, 44.dp)
+            LumenControlSize.Sm -> LumenIconButtonMetrics(LumenIconSize.Sm, 44.dp)
+        }
+    }
+}
+
+@Composable
+fun LumenIconButton(
+    imageVector: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    intent: LumenButtonIntent = LumenButtonIntent.Quiet,
+    size: LumenControlSize = LumenControlSize.Md,
+    enabled: Boolean = true
+) {
+    val palette = buttonPalette(LocalLumenTheme.current.colors, intent)
+    val metrics = LumenIconButtonMetrics.resolve(size)
+    val shape = RoundedCornerShape(LumenRadius.Sm)
+
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .size(metrics.touchTarget)
+            .clip(shape)
+            .border(1.dp, palette.border, shape),
+        enabled = enabled,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = palette.background,
+            contentColor = palette.foreground,
+            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContentColor = palette.foreground.copy(alpha = 0.52f)
+        )
+    ) {
+        LumenIcon(
+            imageVector = imageVector,
+            contentDescription = contentDescription,
+            size = metrics.iconSize,
+            tint = palette.foreground.copy(alpha = if (enabled) 1f else 0.52f)
+        )
+    }
 }
 
 @Immutable

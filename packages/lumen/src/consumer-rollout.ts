@@ -3,17 +3,32 @@ import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { join, relative, resolve } from 'node:path'
 import { promisify } from 'node:util'
 
-import { satisfies } from 'semver'
+import { satisfies, valid } from 'semver'
 
 import { inspectLumenIntegration, type LumenDiagnosticReport } from './integration-diagnostics.js'
 
 /* eslint-disable complexity -- Consumer inventory, semver checks, mutation, and verification intentionally evaluate full repository contracts. */
 
 const execFileAsync = promisify(execFile)
-const lumenPackagePattern = /^@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?$/
+
+const lumenPackageSuffixPattern =
+  '(?:astro|core|elements|icons-brand|mcp|react(?:-hook-form|-native)?|tokens)'
+
+const lumenPackageNamePattern = `@santi020k/lumen(?:-${lumenPackageSuffixPattern})?`
+const lumenPackagePattern = new RegExp(`^${lumenPackageNamePattern}$`)
+
+const lumenYamlReferencePattern = new RegExp(
+  `^\\s*['"]?(${lumenPackageNamePattern})['"]?\\s*:\\s*['"]?([^'"\\s#]+)['"]?`
+)
+
+const lumenLockReferencePattern = new RegExp(
+  `@santi020k/(lumen(?:-${lumenPackageSuffixPattern})?)@(\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?)`,
+  'g'
+)
+
 const dependencyFields = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'] as const
 
-export type LumenFramework = 'astro' | 'elements' | 'react'
+export type LumenFramework = 'astro' | 'elements' | 'react' | 'react-native'
 
 export interface ConsumerReference {
   file: string
@@ -58,6 +73,11 @@ export interface ConsumerRolloutReport {
   targetVersion?: string
 }
 
+export interface ConsumerRolloutTargets {
+  repositories: string[]
+  targetVersion?: string
+}
+
 export const consumerRolloutSucceeded = (report: ConsumerRolloutReport): boolean => report.repositories.every(
   repository => repository.valid && repository.commands.every(command => command.ok)
 )
@@ -74,6 +94,20 @@ interface PackageManifest {
 }
 
 const isLumenPackage = (name: string): boolean => lumenPackagePattern.test(name)
+
+export const resolveConsumerRolloutTargets = (
+  values: string[],
+  currentDirectory = process.cwd()
+): ConsumerRolloutTargets => {
+  const [firstValue, ...remainingValues] = values
+  const targetVersion = firstValue && valid(firstValue) ? firstValue : undefined
+  const repositories = targetVersion ? remainingValues : values
+
+  return {
+    repositories: repositories.length ? repositories : [currentDirectory],
+    ...(targetVersion ? { targetVersion } : {})
+  }
+}
 
 const pathExists = async (path: string): Promise<boolean> => {
   try {
@@ -147,8 +181,7 @@ const collectYamlReferences = (source: string, file: string): ConsumerReference[
   const references: ConsumerReference[] = []
 
   for (const line of source.split(/\r?\n/)) {
-    const match =
-      /^\s*['"]?(@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?)['"]?\s*:\s*['"]?([^'"\s#]+)['"]?/.exec(line)
+    const match = lumenYamlReferencePattern.exec(line)
 
     if (match?.[1] && match[2]) {
       references.push({ file, packageName: match[1], source: 'catalog', version: match[2] })
@@ -160,9 +193,8 @@ const collectYamlReferences = (source: string, file: string): ConsumerReference[
 
 const collectLockReferences = (source: string): ConsumerReference[] => {
   const references: ConsumerReference[] = []
-  const pattern = /@santi020k\/(lumen(?:-(?:astro|core|elements|mcp|react))?)@(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)/g
 
-  for (const match of source.matchAll(pattern)) {
+  for (const match of source.matchAll(lumenLockReferencePattern)) {
     if (match[1] && match[2]) {
       references.push({
         file: 'pnpm-lock.yaml',
@@ -223,7 +255,8 @@ export const inspectLumenConsumer = async (repository: string, targetVersion?: s
   const frameworks = [
     references.some(item => item.packageName === '@santi020k/lumen-astro') && 'astro',
     references.some(item => item.packageName === '@santi020k/lumen-elements') && 'elements',
-    references.some(item => item.packageName === '@santi020k/lumen-react') && 'react'
+    references.some(item => item.packageName === '@santi020k/lumen-react') && 'react',
+    references.some(item => item.packageName === '@santi020k/lumen-react-native') && 'react-native'
   ].filter(Boolean) as LumenFramework[]
 
   const warnings: string[] = []
@@ -326,10 +359,11 @@ export const updateLumenWorkspaceSource = (source: string, targetVersion: string
 
 const getVerificationScripts = (manifest: PackageManifest, frameworks: LumenFramework[]): string[] => {
   const scripts = manifest.scripts ?? {}
+  const shouldTypecheck = frameworks.some(framework => ['elements', 'react', 'react-native'].includes(framework))
 
   const preferred = [
     frameworks.includes('astro') && 'check',
-    (frameworks.includes('react') || frameworks.includes('elements')) && 'typecheck',
+    shouldTypecheck && 'typecheck',
     'build',
     scripts['test:browser'] && 'test:browser',
     scripts['test:e2e'] && 'test:e2e'

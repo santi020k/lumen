@@ -9,12 +9,26 @@ import {
   type ConsumerRolloutReport,
   consumerRolloutSucceeded,
   inspectLumenConsumer,
+  resolveConsumerRolloutTargets,
   satisfiesNodeEngine,
   updateLumenManifestSource,
   updateLumenWorkspaceSource
 } from './consumer-rollout.js'
 
 describe('consumer rollout', () => {
+  test('distinguishes an optional target version from repository paths', () => {
+    expect(resolveConsumerRolloutTargets(['../site', '../dashboard'], '/workspace')).toEqual({
+      repositories: ['../site', '../dashboard']
+    })
+    expect(resolveConsumerRolloutTargets(['1.2.3', '../site'], '/workspace')).toEqual({
+      repositories: ['../site'],
+      targetVersion: '1.2.3'
+    })
+    expect(resolveConsumerRolloutTargets([], '/workspace')).toEqual({
+      repositories: ['/workspace']
+    })
+  })
+
   test('preserves catalog indirection and semver range style in manifests', () => {
     const source = `${JSON.stringify({
       dependencies: {
@@ -117,7 +131,8 @@ minimumReleaseAgeExclude: [webpack, "esbuild"]
       }, undefined, 2)}\n`)
       await writeFile(join(root, 'apps', 'site', 'package.json'), `${JSON.stringify({
         dependencies: {
-          '@santi020k/lumen-astro': 'catalog:'
+          '@santi020k/lumen-astro': 'catalog:',
+          '@santi020k/lumen-react-native': 'catalog:'
         },
         name: 'site'
       }, undefined, 2)}\n`)
@@ -126,23 +141,26 @@ packages:
   - apps/*
 catalog:
   "@santi020k/lumen-astro": ^0.2.0
+  "@santi020k/lumen-react-native": ^0.2.0
 `)
       await writeFile(join(root, 'pnpm-lock.yaml'), `
 packages:
   '@santi020k/lumen-astro@0.2.0': {}
   '@santi020k/lumen-core@0.2.0': {}
+  '@santi020k/lumen-react-native@0.2.0': {}
 `)
 
       const inventory = await inspectLumenConsumer(root, '0.2.0')
 
       expect(inventory.packageManager).toBe('pnpm@10.32.1')
-      expect(inventory.frameworks).toEqual(['astro'])
+      expect(inventory.frameworks).toEqual(['astro', 'react-native'])
       expect(inventory.references.map(item => item.source)).toEqual(
         expect.arrayContaining(['manifest', 'catalog', 'lockfile'])
       )
       expect(inventory.resolvedVersions).toEqual({
         '@santi020k/lumen-astro': ['0.2.0'],
-        '@santi020k/lumen-core': ['0.2.0']
+        '@santi020k/lumen-core': ['0.2.0'],
+        '@santi020k/lumen-react-native': ['0.2.0']
       })
       expect(inventory.warnings).not.toContain(expect.stringContaining('resolves'))
     } finally {

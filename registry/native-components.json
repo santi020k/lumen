@@ -1,0 +1,273 @@
+{
+  "schemaVersion": 2,
+  "adapters": {
+    "reactNative": {
+      "package": "@santi020k/lumen-react-native",
+      "sourceDirectory": "packages/react-native/src"
+    },
+    "swiftUI": {
+      "package": "LumenUI",
+      "sourceDirectory": "packages/swift/Sources/LumenUI"
+    },
+    "compose": {
+      "package": "com.santi020k:lumen-compose",
+      "sourceDirectory": "packages/compose/src/main/kotlin/com/santi020k/lumen"
+    }
+  },
+  "components": [
+    {
+      "id": "theme",
+      "tier": "universal",
+      "contract": "Light and dark semantic foundations",
+      "accessibility": "Preserves platform environment preferences",
+      "symbols": {
+        "reactNative": "LumenProvider",
+        "swiftUI": "LumenTheme",
+        "compose": "LumenTheme"
+      }
+    },
+    {
+      "id": "text",
+      "tier": "universal",
+      "contract": "Body, caption, label, and title roles",
+      "accessibility": "Preserves native text scaling",
+      "symbols": {
+        "reactNative": "LumenText",
+        "swiftUI": "LumenText",
+        "compose": "LumenText"
+      }
+    },
+    {
+      "id": "icon",
+      "tier": "universal",
+      "contract": "Small, medium, and large native glyphs",
+      "accessibility": "Decorative unless explicitly labeled",
+      "symbols": {
+        "reactNative": "LumenIcon",
+        "swiftUI": "LumenIcon",
+        "compose": "LumenIcon"
+      }
+    },
+    {
+      "id": "icon-button",
+      "tier": "universal",
+      "contract": "Shared intent and native touch target",
+      "accessibility": "Requires an action label",
+      "symbols": {
+        "reactNative": "LumenIconButton",
+        "swiftUI": "LumenIconButton",
+        "compose": "LumenIconButton"
+      }
+    },
+    {
+      "id": "surface",
+      "tier": "universal",
+      "contract": "Semantic tone, padding, and radius",
+      "accessibility": "Does not add redundant semantics",
+      "symbols": {
+        "reactNative": "LumenSurface",
+        "swiftUI": "LumenSurface",
+        "compose": "LumenSurface"
+      }
+    },
+    {
+      "id": "button",
+      "tier": "universal",
+      "contract": "Intent, size, loading, and disabled states",
+      "accessibility": "Exposes native button and state semantics",
+      "symbols": {
+        "reactNative": "LumenButton",
+        "swiftUI": "LumenButton",
+        "compose": "LumenButton"
+      }
+    },
+    {
+      "id": "text-field",
+      "tier": "universal",
+      "contract": "Native text entry with error and disabled states",
+      "accessibility": "Exposes invalid and supporting error state",
+      "symbols": {
+        "reactNative": "LumenTextField",
+        "swiftUI": "LumenTextField",
+        "compose": "LumenTextField"
+      }
+    },
+    {
+      "id": "badge",
+      "tier": "universal",
+      "contract": "Neutral and semantic status tones",
+      "accessibility": "Retains its text content",
+      "symbols": {
+        "reactNative": "LumenBadge",
+        "swiftUI": "LumenBadge",
+        "compose": "LumenBadge"
+      }
+    },
+    {
+      "id": "divider",
+      "tier": "universal",
+      "contract": "One-unit semantic separator",
+      "accessibility": "Hidden as decorative structure",
+      "symbols": {
+        "reactNative": "LumenDivider",
+        "swiftUI": "LumenDivider",
+        "compose": "LumenDivider"
+      }
+    },
+    {
+      "id": "spinner",
+      "tier": "universal",
+      "contract": "Brand-colored indeterminate activity",
+      "accessibility": "Exposes a loading label",
+      "symbols": {
+        "reactNative": "LumenSpinner",
+        "swiftUI": "LumenSpinner",
+        "compose": "LumenSpinner"
+      }
+    },
+    {
+      "id": "card",
+      "tier": "shared",
+      "contract": "Default or muted container with optional action",
+      "accessibility": "Interactive form exposes native button semantics",
+      "symbols": {
+        "reactNative": "LumenCard",
+        "swiftUI": "LumenCard",
+        "compose": "LumenCard"
+      }
+    },
+    {
+      "id": "alert",
+      "tier": "shared",
+      "contract": "Default, destructive, success, and warning variants",
+      "accessibility": "Does not announce automatically",
+      "symbols": {
+        "reactNative": "LumenAlert",
+        "swiftUI": "LumenAlert",
+        "compose": "LumenAlert"
+      }
+    },
+    {
+      "id": "progress",
+      "tier": "shared",
+      "contract": "Determinate normalized value and maximum",
+      "accessibility": "Exposes native progress range semantics",
+      "symbols": {
+        "reactNative": "LumenProgress",
+        "swiftUI": "LumenProgress",
+        "compose": "LumenProgress"
+      }
+    },
+    {
+      "id": "avatar",
+      "tier": "shared",
+      "contract": "Native image, fallback, label, and shared sizes",
+      "accessibility": "Decorative unless identity is labeled",
+      "symbols": {
+        "reactNative": "LumenAvatar",
+        "swiftUI": "LumenAvatar",
+        "compose": "LumenAvatar"
+      }
+    }
+  ],
+  "appleComponents": [
+    {
+      "id": "toggle",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Native switch with Lumen brand tint and label",
+      "accessibility": "Preserves native toggle state and label semantics",
+      "symbol": "LumenToggle"
+    },
+    {
+      "id": "settings-row",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Title, supporting text, optional icon, and trailing control",
+      "accessibility": "Contains the native control without merging its interaction",
+      "symbol": "LumenSettingsRow"
+    },
+    {
+      "id": "picker",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Automatic, menu, or segmented native selection",
+      "accessibility": "Preserves native picker selection and label semantics",
+      "symbol": "LumenPicker"
+    },
+    {
+      "id": "slider",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Continuous or stepped range input with visible value context",
+      "accessibility": "Preserves native adjustable control semantics",
+      "symbol": "LumenSlider"
+    },
+    {
+      "id": "search-field",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Search input with semantic surface and clear action",
+      "accessibility": "Clear action is labeled and text input remains native",
+      "symbol": "LumenSearchField"
+    },
+    {
+      "id": "empty-state",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Icon, title, supporting copy, and optional next action",
+      "accessibility": "Retains readable content and native action order",
+      "symbol": "LumenEmptyState"
+    },
+    {
+      "id": "list-row",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Leading identity, flexible content, and trailing actions",
+      "accessibility": "Contains child controls without collapsing their semantics",
+      "symbol": "LumenListRow"
+    },
+    {
+      "id": "banner",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Semantic notice with optional actions and dismissal",
+      "accessibility": "Does not announce automatically and labels dismissal",
+      "symbol": "LumenBanner"
+    },
+    {
+      "id": "stat",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Compact semantic metric with label, value, and detail",
+      "accessibility": "Combines the metric into one readable element",
+      "symbol": "LumenStat"
+    },
+    {
+      "id": "gauge",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Clamped circular metric using semantic status tones",
+      "accessibility": "Exposes a label and formatted current value",
+      "symbol": "LumenGauge"
+    },
+    {
+      "id": "section-header",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Section identity, optional count, and trailing actions",
+      "accessibility": "Preserves action semantics and readable heading content",
+      "symbol": "LumenSectionHeader"
+    },
+    {
+      "id": "status-bar",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Compact semantic status with optional trailing content",
+      "accessibility": "Status meaning remains present in text, not color alone",
+      "symbol": "LumenStatusBar"
+    },
+    {
+      "id": "shortcut-recorder",
+      "platforms": ["macOS"],
+      "contract": "Keyboard shortcut capture, validation, clear, and cancel states",
+      "accessibility": "Displays the current shortcut and exposes labeled controls",
+      "symbol": "LumenShortcutRecorder"
+    },
+    {
+      "id": "symbol-picker",
+      "platforms": ["macOS"],
+      "contract": "Searchable and categorized SF Symbols selection",
+      "accessibility": "Labels every symbol and exposes selected state",
+      "symbol": "LumenSymbolPicker"
+    }
+  ]
+}

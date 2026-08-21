@@ -5,6 +5,8 @@ import {
   resolveLumenButtonOpacity,
   resolveLumenButtonSize,
   resolveLumenControlMinHeight,
+  resolveLumenIconButtonSize,
+  resolveLumenIconSize,
   resolveLumenSurfaceColor,
   resolveLumenTextColor
 } from './recipes.js'
@@ -30,6 +32,11 @@ describe('Lumen React Native primitive recipes', () => {
     expect(resolveLumenControlMinHeight('lg')).toBe(52)
     expect(resolveLumenButtonOpacity(true, false)).toBe(0.52)
     expect(resolveLumenButtonOpacity(false, true)).toBe(0.84)
+    expect(resolveLumenIconSize('sm')).toBe(16)
+    expect(resolveLumenIconSize('md')).toBe(20)
+    expect(resolveLumenIconSize('lg')).toBe(24)
+    expect(resolveLumenIconButtonSize('sm')).toEqual({ iconSize: 'sm', touchTarget: 44 })
+    expect(resolveLumenIconButtonSize('lg')).toEqual({ iconSize: 'lg', touchTarget: 52 })
   })
 
   test('maps content and surfaces without platform-specific color literals', () => {

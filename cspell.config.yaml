@@ -17,6 +17,7 @@ words:
   - AnimatedPortrait
   - androidx
   - astrojs
+  - archivebox
   - autobuild
   - Autobuild
   - Avenir
@@ -28,6 +29,8 @@ words:
   - Cascader
   - cascaders
   - Chakra
+  - checkmark
+  - circlepath
   - commitizen
   - commitlint
   - commitprompt
@@ -41,14 +44,17 @@ words:
   - describedby
   - descriptions
   - Descriptions
+  - desktopcomputer
   - dismissable
   - dogfooded
   - dropzone
   - esbuild
   - eslintcache
+  - exclamationmark
   - fileupload
   - FileUpload
   - fortawesome
+  - gearshape
   - geolocation
   - glassmorphism
   - gradientdivider
@@ -65,10 +71,13 @@ words:
   - Jetpack
   - knip
   - labelledby
+  - laptopcomputer
   - lede
   - linecap
   - llms
   - lucide
+  - magnifyingglass
+  - macwindow
   - Lumen
   - maxlength
   - memudo
@@ -135,6 +144,7 @@ words:
   - unrs
   - unshown
   - unstub
+  - uppercased
   - valuemax
   - valuenow
   - viewports
@@ -152,6 +162,9 @@ words:
   - workstream
   - workstreams
   - workspaces
+  - xmark
+  - temurin
+  - sdkmanager
   - gradlew
   - amannn
   - autorelease

@@ -9,6 +9,7 @@ import type {
 import type {
   LumenButtonIntent,
   LumenControlSize,
+  LumenIconSize,
   LumenSurfaceTone,
   LumenTextTone,
   LumenTextVariant
@@ -135,4 +136,22 @@ export const resolveLumenControlMinHeight = (size: LumenControlSize): number => 
   if (size === 'lg') return 52
 
   return 44
+}
+
+export const resolveLumenIconSize = (size: LumenIconSize): number => {
+  if (size === 'sm') return 16
+
+  if (size === 'lg') return 24
+
+  return 20
+}
+
+export const resolveLumenIconButtonSize = (
+  size: LumenControlSize
+): { iconSize: LumenIconSize, touchTarget: number } => {
+  if (size === 'sm') return { iconSize: 'sm', touchTarget: 44 }
+
+  if (size === 'lg') return { iconSize: 'lg', touchTarget: 52 }
+
+  return { iconSize: 'md', touchTarget: 44 }
 }

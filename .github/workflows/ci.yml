@@ -43,7 +43,7 @@ jobs:
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(packages/(compose|react-native|swift|tokens)/|tokens/|scripts/generate-platform-tokens\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(compose|react-native|swift|tokens)/|tokens/|scripts/generate-platform-tokens\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
             echo "native=true" >> "$GITHUB_OUTPUT"
           else
             echo "native=false" >> "$GITHUB_OUTPUT"
@@ -58,9 +58,15 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Build and test LumenUI
-        working-directory: packages/swift
+      - name: Build and test LumenUI for macOS
         run: swift test
+
+      - name: Build LumenUI for iOS
+        run: >-
+          xcodebuild -scheme LumenUI
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
 
   native-android:
     name: Compose library
@@ -75,6 +81,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
+                - sdkmanager
           java-version: 21
 
       - name: Setup Android SDK
@@ -85,7 +92,7 @@ jobs:
 
       - name: Build and test Compose library
         working-directory: packages/compose
-        run: ./gradlew test
+        run: ./gradlew test lint
 
   browser-contracts:
     name: Browser interaction contracts
@@ -226,6 +233,7 @@ jobs:
           pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
           pnpm run check:bundle-size
           pnpm run check:framework-contracts
+          pnpm run check:native-contracts
           pnpm run check:platform-tokens
           pnpm run check:security
           pnpm run check:publish-dry-run

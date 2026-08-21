@@ -530,7 +530,7 @@ export const Attachment = ({
     )
 }
 
-export interface AvatarProps extends ComponentPropsWithoutRef<'span'> {
+export interface AvatarProps extends ComponentPropsWithRef<'span'> {
   alt?: string
   fallback?: ReactNode
   src?: string
@@ -4295,7 +4295,7 @@ export const ListBox = (inputProps: ListBoxProps) => {
   )
 }
 
-export interface SeparatorProps extends ComponentPropsWithoutRef<'hr'> {
+export interface SeparatorProps extends ComponentPropsWithRef<'hr'> {
   orientation?: Orientation
 }
 

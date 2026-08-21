@@ -15,7 +15,8 @@ the other packages adapt or expose shared pieces.
 - `packages/react` holds React primitives.
 - `packages/elements` holds standards-based Web Components.
 - `packages/tokens` publishes the canonical platform-neutral token document.
-- `packages/react-native`, `packages/swift`, and `packages/compose` hold native platform adapters.
+- `packages/react-native`, `packages/swift`, and `packages/compose` hold native platform adapters;
+  the repository-root `Package.swift` exposes the SwiftUI sources to Swift Package Manager.
 - `packages/lumen` is the umbrella package and public package map.
 - `apps/docs` is the Astro documentation and demo site.
 
@@ -52,6 +53,8 @@ pnpm run typecheck
 pnpm run test
 pnpm run lint
 pnpm run validate
+swift test
+(cd packages/compose && ./gradlew test lint)
 ```
 
 For narrow checks, prefer the smallest command that covers the edited surface. Run `pnpm run validate`
