@@ -31604,16 +31604,16 @@
       "@santi020k/lumen-core"
     ],
     "packageVersions": {
-      "@santi020k/lumen-astro": "0.4.0",
-      "@santi020k/lumen-core": "0.4.0",
-      "@santi020k/lumen-elements": "0.4.0",
-      "@santi020k/lumen-mcp": "0.4.0",
-      "@santi020k/lumen-react": "0.4.0"
+      "@santi020k/lumen-astro": "1.0.0",
+      "@santi020k/lumen-core": "1.0.0",
+      "@santi020k/lumen-elements": "1.0.0",
+      "@santi020k/lumen-mcp": "1.0.0",
+      "@santi020k/lumen-react": "1.0.0"
     },
     "registryName": "lumen",
     "registryVersion": 1,
     "schemaVersion": 3,
-    "serverVersion": "0.4.0"
+    "serverVersion": "1.0.0"
   },
   "recipes": [
     {

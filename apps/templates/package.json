@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-template-showcase",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Standalone verification and preview app for Lumen product templates.",
   "type": "module",
