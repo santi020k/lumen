@@ -654,6 +654,27 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('[data-ui-resizable-panel]')
   })
 
+  test('ships controlled Kanban layout and move-request behavior', async () => {
+    const [board, column, empty, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/KanbanBoard.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/KanbanColumn.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/Empty.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(board).toContain('data-ui-kanban')
+    expect(board).toContain('aria-orientation="horizontal"')
+    expect(column).toContain('data-ui-kanban-column={value}')
+    expect(empty).toContain('variant?: \'compact\' | \'default\'')
+    expect(runtime).toContain('const initKanbanBoards = (scope: ParentNode): void =>')
+    expect(runtime).toContain('new CustomEvent(\'ui:kanban-move-request\'')
+    expect(runtime).toContain('cancelable: true')
+    expect(runtime).toContain('input: \'keyboard\' | \'pointer\'')
+    expect(styles).toContain('.ui-kanban__column[data-state="drop-target"]')
+    expect(styles).toContain('.ui-empty--compact')
+  })
+
   test('ships InputOTP as a native input enhanced into segments', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/InputOTP.astro', packageRoot), 'utf8'),

@@ -244,7 +244,7 @@ The shared catalog includes:
 `Container`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
-`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
+`Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
 `Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,
 `PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
@@ -291,6 +291,14 @@ The shared catalog includes:
   `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any
   `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for
   snap-to-grid resize handles.
+- Use `KanbanBoard` and `KanbanColumn` for status-based workspaces while continuing to use `Card` for
+  items. Mark items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a dedicated button;
+  do not make the whole card draggable. Astro and Elements emit the cancellable, controlled
+  `ui:kanban-move-request` event, and React provides `useKanban`. The event reports `itemId`,
+  `fromColumn`, `toColumn`, optional `beforeId`, and keyboard or pointer input, but never moves DOM or
+  persists application data. The host owns validation, `aria-busy`, optimistic state, rollback,
+  status names, and APIs. Use compact `Empty` states inside columns, preserve every column with
+  `Skeleton` blocks while loading, and paginate large columns. See [Kanban composition and movement](kanban.md).
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
   collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and
   `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`
@@ -363,6 +371,7 @@ uses these CustomEvents:
 | `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |
 | `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |
 | `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
+| `ui:kanban-move-request` | `KanbanBoard` root `[data-ui-kanban]` | `{ itemId: string, fromColumn: string, toColumn: string, beforeId?: string, input: 'keyboard' \| 'pointer' }` | A handle requests a controlled move; the event is cancellable and never moves data or DOM. |
 | `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |
 | `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |
 | `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |

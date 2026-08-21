@@ -1,0 +1,29 @@
+---
+import {
+  Button,
+  Card,
+  Empty,
+  KanbanBoard,
+  KanbanColumn
+} from '@santi020k/lumen-astro'
+---
+
+<KanbanBoard aria-label="Content workflow" style="--ui-kanban-column-min-height: 12rem">
+  <KanbanColumn value="review">
+    <h3>Review</h3>
+    <Card data-ui-kanban-item="accessibility-audit">
+      <Button
+        aria-label="Move Accessibility audit"
+        data-ui-kanban-handle
+        draggable="true"
+        size="sm"
+        variant="ghost"
+      >Move</Button>
+      <strong>Accessibility audit</strong>
+    </Card>
+  </KanbanColumn>
+  <KanbanColumn value="done">
+    <h3>Done</h3>
+    <Empty variant="compact"><p>No completed work.</p></Empty>
+  </KanbanColumn>
+</KanbanBoard>

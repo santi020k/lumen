@@ -23,11 +23,17 @@ import {
   Dialog,
   type DialogProps,
   DropdownMenu,
+  Empty,
+  type EmptyProps,
   Field,
   type FieldProps,
   Input,
   InputOTP,
   type InputProps,
+  KanbanBoard,
+  type KanbanBoardProps,
+  KanbanColumn,
+  type KanbanColumnProps,
   lumenComponentNames,
   Popover,
   Resizable,
@@ -47,6 +53,7 @@ import {
   useDropdownMenu,
   useFormValidation,
   useInputOTP,
+  useKanban,
   usePopover,
   useResizable,
   useRichTextEditor,
@@ -286,6 +293,23 @@ describe('@santi020k/lumen-react', () => {
     )
     expect(card.props['data-variant']).toBe('interactive')
     expect(card.props.uiClassName).toBe('ui-card')
+  })
+
+  test('renders Kanban layout and compact empty states', () => {
+    const board = KanbanBoard({ 'aria-label': 'Delivery board' }) as ReactElement<
+      KanbanBoardProps & { 'data-ui-kanban': boolean }
+    >
+    const column = KanbanColumn({ value: 'planned' }) as ReactElement<
+      KanbanColumnProps & { 'data-ui-kanban-column': string }
+    >
+    const empty = Empty({ variant: 'compact' }) as ReactElement<EmptyProps>
+
+    expect(board.props.className).toBe('ui-kanban-board ui-kanban')
+    expect(board.props['data-ui-kanban']).toBe(true)
+    expect(board.props.tabIndex).toBe(0)
+    expect(column.props.className).toBe('ui-kanban__column')
+    expect(column.props['data-ui-kanban-column']).toBe('planned')
+    expect(empty.props.className).toBe('ui-empty ui-empty--compact')
   })
 
   test('supports a semantic root element and visual variant for stats', () => {
@@ -803,6 +827,28 @@ describe('@santi020k/lumen-react', () => {
 
     expect(slot.dataset.state).toBeUndefined()
     expect(changes).toEqual([{ eventId: 'schedule-planning', slot: 'friday' }])
+  })
+
+  test('emits controlled Kanban move requests without moving items', () => {
+    const changes: unknown[] = []
+    const kanban = withHookDispatcher(() => useKanban({
+      onMoveRequest: detail => changes.push(detail)
+    }))
+    const accepted = kanban.requestMove({
+      fromColumn: 'inbox',
+      input: 'keyboard',
+      itemId: 'feedback-1',
+      toColumn: 'planned'
+    })
+
+    expect(accepted).toBe(true)
+    expect(changes).toEqual([{
+      fromColumn: 'inbox',
+      input: 'keyboard',
+      itemId: 'feedback-1',
+      toColumn: 'planned'
+    }])
+    expect(kanban.rootRef.current).toBeNull()
   })
 
   test('renders data display runtime contracts', () => {

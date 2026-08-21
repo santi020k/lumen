@@ -2599,12 +2599,48 @@ export const DropdownMenuContent = ({
 
 export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
+  variant?: 'compact' | 'default'
 }
-export const Empty = ({ className, glass = false, ...props }: EmptyProps) => (
+export const Empty = ({
+  className,
+  glass = false,
+  variant = 'default',
+  ...props
+}: EmptyProps) => (
   <section
     className={composeClassName(
-      'ui-empty', glassClass('ui-empty', glass), className
+      'ui-empty',
+      variant === 'compact' && 'ui-empty--compact',
+      glassClass('ui-empty', glass),
+      className
     )}
+    data-variant={variant}
+    {...props}
+  />
+)
+
+export type KanbanBoardProps = ComponentPropsWithoutRef<'section'>
+export const KanbanBoard = ({ className, tabIndex = 0, ...props }: KanbanBoardProps) => (
+  <section
+    aria-orientation="horizontal"
+    className={composeClassName('ui-kanban-board ui-kanban', className)}
+    data-ui-kanban
+    tabIndex={tabIndex}
+    {...props}
+  />
+)
+
+export interface KanbanColumnProps extends ComponentPropsWithoutRef<'section'> {
+  value: string
+}
+export const KanbanColumn = ({
+  className,
+  value,
+  ...props
+}: KanbanColumnProps) => (
+  <section
+    className={composeClassName('ui-kanban__column', className)}
+    data-ui-kanban-column={value}
     {...props}
   />
 )

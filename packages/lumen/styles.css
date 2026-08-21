@@ -2727,8 +2727,77 @@
   text-align: center;
 }
 
+.ui-empty--compact {
+  gap: 0.35rem;
+  border-radius: var(--ui-radius);
+  padding: 0.75rem;
+  font-size: 0.8125rem;
+}
+
 .ui-empty > * {
   margin: 0;
+}
+
+.ui-kanban {
+  --ui-kanban-column-width: clamp(18rem, 28vw, 22rem);
+  --ui-kanban-column-min-height: 28rem;
+  --ui-kanban-gap: 0.875rem;
+  display: grid;
+  min-width: 0;
+  grid-auto-columns: var(--ui-kanban-column-width);
+  grid-auto-flow: column;
+  gap: var(--ui-kanban-gap);
+  padding: 0.25rem 0.25rem 1rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+  scrollbar-gutter: stable;
+}
+
+.ui-kanban:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: 2px;
+}
+
+.ui-kanban__column {
+  min-width: 0;
+  min-height: var(--ui-kanban-column-min-height);
+  padding: 0.875rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-lg);
+  background: hsl(var(--surface-muted));
+  scroll-snap-align: start;
+  transition:
+    border-color var(--ui-duration) var(--ui-ease),
+    background var(--ui-duration) var(--ui-ease);
+}
+
+.ui-kanban__column[data-state="drop-target"] {
+  border-color: hsl(var(--brand));
+  background: hsl(var(--brand-soft));
+}
+
+[data-ui-kanban-item][data-state="dragging"] {
+  opacity: 0.6;
+}
+
+[data-ui-kanban-item][aria-busy="true"] {
+  cursor: progress;
+}
+
+[data-ui-kanban-handle] {
+  touch-action: none;
+  cursor: grab;
+}
+
+[data-ui-kanban-handle]:active {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-kanban__column {
+    transition: none;
+  }
 }
 
 .ui-item {

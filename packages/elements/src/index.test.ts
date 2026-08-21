@@ -189,6 +189,43 @@ describe('@santi020k/lumen-elements', () => {
     expect(statTrend.dataset.slot).toBe('stat-trend')
   })
 
+  test('emits controlled Kanban keyboard move requests without moving cards', () => {
+    const board = document.createElement('lumen-kanban-board')
+
+    board.setAttribute('aria-label', 'Delivery board')
+    board.innerHTML = `
+      <lumen-kanban-column value="inbox">
+        <lumen-card data-ui-kanban-item="feedback-1">
+          <button data-ui-kanban-handle aria-label="Move feedback">Move</button>
+        </lumen-card>
+      </lumen-kanban-column>
+      <lumen-kanban-column value="planned"><h2>Planned</h2></lumen-kanban-column>
+    `
+
+    const moves: unknown[] = []
+
+    board.addEventListener('ui:kanban-move-request', event => {
+      moves.push((event as CustomEvent).detail)
+    })
+    document.body.append(board)
+
+    const handle = board.querySelector<HTMLElement>('[data-ui-kanban-handle]')
+    const item = board.querySelector<HTMLElement>('[data-ui-kanban-item]')
+    const inbox = board.querySelector('lumen-kanban-column[value="inbox"]')
+
+    expect(handle?.draggable).toBe(true)
+
+    if (handle) press(handle, 'ArrowRight')
+
+    expect(moves).toEqual([{
+      fromColumn: 'inbox',
+      input: 'keyboard',
+      itemId: 'feedback-1',
+      toColumn: 'planned'
+    }])
+    expect(item?.parentElement).toBe(inbox)
+  })
+
   test('renders named Lucide icons with accessible labels', () => {
     const icon = document.createElement('lumen-icon')
 

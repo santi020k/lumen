@@ -220,6 +220,14 @@ shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
 attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
 
+## Kanban boards
+
+Use `KanbanBoard`, `KanbanColumn`, and ordinary `Card` items for status-based workspaces. The
+`useKanban` hook supplies root, column, item, and dedicated handle props and emits controlled move
+requests for keyboard, mouse, and touch input. It never moves application data or DOM. Keep pending
+state, persistence, rollback, and workflow rules in the host. Use `Empty variant="compact"` inside
+columns and card-shaped `Skeleton` blocks while loading.
+
 ## Motion
 
 Use `ScrollReveal` for one entrance, `RevealGroup` for tokenized child staggering, and

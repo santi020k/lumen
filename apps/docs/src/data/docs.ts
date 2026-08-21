@@ -1558,6 +1558,9 @@ const apiReferenceByComponent = {
   Empty: [
     apiRow(
       'children', 'heading, description, and optional action', 'required', 'Composes the empty-state explanation and recovery action.'
+    ),
+    apiRow(
+      'variant', '"compact" | "default"', '"default"', 'Uses the standard empty state or a denser treatment for bounded surfaces such as board columns.'
     )
   ],
   Eyebrow: [
@@ -1687,6 +1690,22 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'children', 'primary content, metadata, and optional actions', 'required', 'Composes one compact aligned row.'
+    )
+  ],
+  KanbanBoard: [
+    apiRow(
+      'ui:kanban-move-request', 'CustomEvent<LumenKanbanMoveDetail>', '-', 'Requests a controlled move without changing item ownership or persistence.'
+    ),
+    apiRow(
+      'data-ui-kanban-item', 'stable item id', 'required per movable item', 'Identifies each movable card with its stable application id.'
+    ),
+    apiRow(
+      'data-ui-kanban-handle', 'descendant attribute', 'required per movable item', 'Marks the dedicated keyboard, pointer, and touch movement control.'
+    )
+  ],
+  KanbanColumn: [
+    apiRow(
+      'value', 'string', 'required', 'Provides the stable application value used as a move destination.'
     )
   ],
   Kbd: [
@@ -3131,6 +3150,18 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Aligns primary content, supporting metadata, and optional actions in a compact row.',
       '<Item as="article"><strong>Production docs</strong><span>Ready for review</span></Item>'
+    ],
+    [
+      'KanbanBoard',
+      'Layout',
+      'Organizes controlled workflow columns with keyboard, pointer, and touch movement requests.',
+      '<KanbanBoard aria-label="Editorial workflow"><KanbanColumn value="planned"><h2>Planned</h2><Card data-ui-kanban-item="draft"><Button data-ui-kanban-handle aria-label="Move Draft article">Move</Button><strong>Draft article</strong></Card></KanbanColumn></KanbanBoard>'
+    ],
+    [
+      'KanbanColumn',
+      'Layout',
+      'Defines a named destination inside a controlled Kanban board.',
+      '<KanbanBoard aria-label="Editorial workflow"><KanbanColumn value="planned"><h2>Planned</h2><Card data-ui-kanban-item="draft"><Button data-ui-kanban-handle aria-label="Move Draft article">Move</Button><strong>Draft article</strong></Card></KanbanColumn></KanbanBoard>'
     ],
     [
       'Kbd',

@@ -124,6 +124,12 @@ export {
   resolveLumenIconName
 } from './icons.js'
 export {
+  createLumenKanbanMoveDetail,
+  getAdjacentKanbanColumn,
+  type LumenKanbanMoveDetail,
+  type LumenKanbanMoveInput
+} from './kanban.js'
+export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,

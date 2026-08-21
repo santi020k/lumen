@@ -227,6 +227,14 @@ with `--ui-logo-delay`.
 
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.
 
+## Kanban boards
+
+Compose `KanbanBoard` and `KanbanColumn` with ordinary `Card` items. Give every item a stable
+`data-ui-kanban-item` and add a dedicated button with `data-ui-kanban-handle`. `UIPrimitives` emits
+the cancellable `ui:kanban-move-request` event for keyboard, mouse, and touch movement without
+changing the DOM. Keep persistence, pending state, rollback, and status rules in the application.
+Use `Empty variant="compact"` inside empty columns and `Skeleton` cards while loading.
+
 ## Motion
 
 Use the shared `fast`, `standard`, and `slow` duration vocabulary across motion primitives.

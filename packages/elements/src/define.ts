@@ -7,6 +7,7 @@ import {
   coerceThemeBuilderScheme,
   composeClassName,
   createLumenBarGeometry,
+  createLumenKanbanMoveDetail,
   createLumenLineGeometry,
   createLumenPieGeometry,
   createThemeBuilderTokens,
@@ -24,6 +25,7 @@ import {
   lumenChartTones,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenKanbanMoveDetail,
   type LumenPieGeometrySlice,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
@@ -558,8 +560,12 @@ const elementConfigs = {
     tagName: 'lumen-dropdown-menu'
   },
   Empty: {
-    attributeClasses: glassAttributeClasses('ui-empty--glass'),
+    attributeClasses: {
+      ...glassAttributeClasses('ui-empty--glass'),
+      variant: { compact: 'ui-empty--compact' }
+    },
     baseClassName: 'ui-empty',
+    defaults: { variant: 'default' },
     tagName: 'lumen-empty'
   },
   ErrorSummary: {
@@ -671,6 +677,19 @@ const elementConfigs = {
     baseClassName: 'ui-item',
     defaults: { 'data-slot': 'item' },
     tagName: 'lumen-item'
+  },
+  KanbanBoard: {
+    baseClassName: 'ui-kanban-board ui-kanban',
+    defaults: {
+      'aria-orientation': 'horizontal',
+      'data-ui-kanban': '',
+      tabindex: '0'
+    },
+    tagName: 'lumen-kanban-board'
+  },
+  KanbanColumn: {
+    baseClassName: 'ui-kanban__column',
+    tagName: 'lumen-kanban-column'
   },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
   Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
@@ -8892,6 +8911,296 @@ class LumenTreeSelectBehaviorElement extends LumenElement {
   }
 }
 
+const kanbanColumnSelector = '[data-ui-kanban-column], lumen-kanban-column'
+const getKanbanColumnValue = (column: HTMLElement): string => column.dataset.uiKanbanColumn ?? column.getAttribute('value') ?? ''
+
+class LumenKanbanBoardBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private pointer: {
+    active: boolean
+    handle: HTMLElement
+    item: HTMLElement
+    pointerId: number
+    startX: number
+    startY: number
+  } | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    const { signal } = this.abortController
+
+    for (const handle of this.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
+      handle.draggable = true
+
+    this.addEventListener('dragstart', event => {
+      this.onDragStart(event)
+    }, { signal })
+
+    this.addEventListener('dragend', () => {
+      this.clearDragState()
+    }, { signal })
+
+    this.addEventListener('dragover', event => {
+      this.onDragOver(event)
+    }, { signal })
+
+    this.addEventListener('dragleave', event => {
+      this.onDragLeave(event)
+    }, { signal })
+
+    this.addEventListener('drop', event => {
+      this.onDrop(event)
+    }, { signal })
+
+    this.addEventListener('keydown', event => {
+      this.onKeyDown(event)
+    }, { signal })
+
+    this.addEventListener('pointerdown', event => {
+      this.onPointerDown(event)
+    }, { signal })
+
+    this.addEventListener('pointermove', event => {
+      this.onPointerMove(event)
+    }, { signal })
+
+    this.addEventListener('pointerup', event => {
+      this.onPointerUp(event)
+    }, { signal })
+
+    this.addEventListener('pointercancel', () => {
+      this.clearDragState()
+    }, { signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    this.clearDragState()
+  }
+
+  private getItem(target: EventTarget | null): HTMLElement | null {
+    return target instanceof Element ?
+      target.closest<HTMLElement>('[data-ui-kanban-item]') :
+      null
+  }
+
+  private getColumn(target: EventTarget | null): HTMLElement | null {
+    return target instanceof Element ? target.closest<HTMLElement>(kanbanColumnSelector) : null
+  }
+
+  private requestMove(
+    item: HTMLElement,
+    targetColumn: HTMLElement,
+    input: LumenKanbanMoveDetail['input']
+  ): void {
+    const fromColumnElement = item.closest<HTMLElement>(kanbanColumnSelector)
+
+    const detail = createLumenKanbanMoveDetail({
+      fromColumn: fromColumnElement ? getKanbanColumnValue(fromColumnElement) : '',
+      input,
+      itemId: item.dataset.uiKanbanItem ?? item.id,
+      toColumn: getKanbanColumnValue(targetColumn)
+    })
+
+    if (!detail) return
+
+    const accepted = this.dispatchEvent(new CustomEvent('ui:kanban-move-request', {
+      bubbles: true,
+      cancelable: true,
+      detail
+    }))
+
+    if (accepted) this.announce(`Move requested to ${this.columnLabel(targetColumn)}.`)
+  }
+
+  private columnLabel(column: HTMLElement): string {
+    return column.getAttribute('aria-label') ||
+      column.querySelector('h2, h3, [data-ui-kanban-column-label]')?.textContent.trim() ||
+      getKanbanColumnValue(column)
+  }
+
+  private announce(message: string): void {
+    let live = this.querySelector<HTMLElement>('[data-ui-kanban-live]')
+
+    if (!live) {
+      live = document.createElement('span')
+
+      live.className = 'ui-visually-hidden'
+
+      live.dataset.uiKanbanLive = ''
+
+      live.setAttribute('aria-live', 'polite')
+
+      live.setAttribute('role', 'status')
+
+      this.append(live)
+    }
+
+    live.textContent = message
+  }
+
+  private onDragStart(event: DragEvent): void {
+    const handle = event.target instanceof Element ?
+      event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
+      null
+
+    const item = this.getItem(handle)
+
+    if (!handle || !item || item.getAttribute('aria-busy') === 'true') {
+      event.preventDefault()
+
+      return
+    }
+
+    event.dataTransfer?.setData('text/plain', item.dataset.uiKanbanItem ?? item.id)
+
+    if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move'
+
+    item.dataset.state = 'dragging'
+  }
+
+  private onDragOver(event: DragEvent): void {
+    const column = this.getColumn(event.target)
+
+    if (!column) return
+
+    event.preventDefault()
+
+    column.dataset.state = 'drop-target'
+
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move'
+  }
+
+  private onDragLeave(event: DragEvent): void {
+    const column = this.getColumn(event.target)
+
+    if (
+      !column ||
+      (event.relatedTarget instanceof Node && column.contains(event.relatedTarget))
+    ) return
+
+    delete column.dataset.state
+  }
+
+  private onDrop(event: DragEvent): void {
+    const column = this.getColumn(event.target)
+    const itemId = event.dataTransfer?.getData('text/plain') ?? ''
+
+    const item = [...this.querySelectorAll<HTMLElement>('[data-ui-kanban-item]')]
+      .find(candidate => (candidate.dataset.uiKanbanItem ?? candidate.id) === itemId)
+
+    if (!column || !item) return
+
+    event.preventDefault()
+
+    this.requestMove(item, column, 'pointer')
+
+    this.clearDragState()
+  }
+
+  private onKeyDown(event: KeyboardEvent): void {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+
+    const handle = event.target instanceof Element ?
+      event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
+      null
+
+    const item = this.getItem(handle)
+    const currentColumn = this.getColumn(item)
+
+    if (!handle || !item || !currentColumn || item.getAttribute('aria-busy') === 'true') return
+
+    const columns = [...this.querySelectorAll<HTMLElement>(kanbanColumnSelector)]
+    const currentIndex = columns.indexOf(currentColumn)
+    const direction = event.key === 'ArrowRight' ? 1 : -1
+    const rtl = getComputedStyle(this).direction === 'rtl'
+    const target = columns[currentIndex + (rtl ? -direction : direction)]
+
+    if (!target) return
+
+    event.preventDefault()
+
+    this.requestMove(item, target, 'keyboard')
+  }
+
+  private onPointerDown(event: PointerEvent): void {
+    if (event.pointerType === 'mouse') return
+
+    const handle = event.target instanceof Element ?
+      event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
+      null
+
+    const item = this.getItem(handle)
+
+    if (!handle || !item || item.getAttribute('aria-busy') === 'true') return
+
+    this.pointer = {
+      active: false,
+      handle,
+      item,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY
+    }
+  }
+
+  private onPointerMove(event: PointerEvent): void {
+    if (this.pointer?.pointerId !== event.pointerId) return
+
+    if (!this.pointer.active && Math.hypot(
+      event.clientX - this.pointer.startX,
+      event.clientY - this.pointer.startY
+    ) < 8) return
+
+    this.pointer.active = true
+
+    this.pointer.handle.setPointerCapture(event.pointerId)
+
+    this.pointer.item.dataset.state = 'dragging'
+
+    const target = document.elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>(kanbanColumnSelector)
+
+    for (const column of this.querySelectorAll<HTMLElement>(kanbanColumnSelector)) {
+      if (column === target) column.dataset.state = 'drop-target'
+      else delete column.dataset.state
+    }
+  }
+
+  private onPointerUp(event: PointerEvent): void {
+    const pointer = this.pointer
+
+    if (pointer?.pointerId !== event.pointerId) return
+
+    const target = document.elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>(kanbanColumnSelector)
+
+    if (pointer.active && target) this.requestMove(pointer.item, target, 'pointer')
+
+    this.clearDragState()
+  }
+
+  private clearDragState(): void {
+    this.pointer = undefined
+
+    for (const item of this.querySelectorAll<HTMLElement>('[data-ui-kanban-item]'))
+      if (item.dataset.state === 'dragging') delete item.dataset.state
+
+    for (const column of this.querySelectorAll<HTMLElement>(kanbanColumnSelector))
+      if (column.dataset.state === 'drop-target') delete column.dataset.state
+  }
+}
+
 class LumenBackToTopBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
@@ -9323,6 +9632,7 @@ const behaviorElementClasses: Partial<
   FileUpload: LumenFileUploadBehaviorElement,
   Icon: LumenIconBehaviorElement,
   Input: LumenScalarFormControlElement,
+  KanbanBoard: LumenKanbanBoardBehaviorElement,
   LanguageToggle: LumenLanguageToggleBehaviorElement,
   LineChart: LumenLineChartBehaviorElement,
   ListBox: LumenListBoxBehaviorElement,
@@ -9493,6 +9803,8 @@ export const LumenInputGroupElement = elementClasses.InputGroup
 export const LumenInputOTPElement = elementClasses.InputOTP
 export const LumenNumberFieldElement = elementClasses.NumberField
 export const LumenItemElement = elementClasses.Item
+export const LumenKanbanBoardElement = elementClasses.KanbanBoard
+export const LumenKanbanColumnElement = elementClasses.KanbanColumn
 export const LumenKbdElement = elementClasses.Kbd
 export const LumenLabelElement = elementClasses.Label
 export const LumenLineChartElement = elementClasses.LineChart

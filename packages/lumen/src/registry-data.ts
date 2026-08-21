@@ -1061,6 +1061,34 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'KanbanBoard',
+      type: 'component',
+      description: 'Organizes controlled workflow columns and emits accessible move requests.',
+      category: 'Layout',
+      files: [
+        'packages/astro/components/KanbanBoard.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
+      name: 'KanbanColumn',
+      type: 'component',
+      description: 'Defines a named destination inside a controlled Kanban board.',
+      category: 'Layout',
+      files: [
+        'packages/astro/components/KanbanColumn.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Kbd',
       type: 'component',
       description: 'Displays keyboard shortcuts.',

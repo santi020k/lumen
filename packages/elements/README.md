@@ -165,6 +165,12 @@ Rich text controls may provide `data-ui-editor-value` for commands such as `form
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
 
+`<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
+contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a
+dedicated button. The board emits the cancellable `ui:kanban-move-request` event for keyboard,
+mouse, and touch movement without moving DOM or application data. Use
+`<lumen-empty variant="compact">` for column-level empty states.
+
 ```html
 <p id="invite">Join the Lumen workspace</p>
 <lumen-copy-button target="#invite" toast>Copy invite</lumen-copy-button>
