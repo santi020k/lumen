@@ -30,6 +30,7 @@ words:
   - commitizen
   - commitlint
   - commitprompt
+  - codemod
   - contenteditable
   - coverimage
   - CoverImage
