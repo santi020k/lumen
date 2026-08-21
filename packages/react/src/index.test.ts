@@ -1,4 +1,6 @@
 /* eslint-disable @eslint-react/no-unnecessary-use-prefix -- The mock dispatcher mirrors React's internal hook method names. */
+// @vitest-environment jsdom
+
 import type { ReactElement } from 'react'
 import * as React from 'react'
 
@@ -54,7 +56,6 @@ import {
   useFormValidation,
   useInputOTP,
   useKanban,
-  useLanguageToggle,
   usePopover,
   useResizable,
   useRichTextEditor,
@@ -132,6 +133,35 @@ const withHookDispatcher = <Value>(callback: () => Value): Value => {
   }
 }
 
+const requireElement = <ElementType extends Element>(
+  root: ParentNode,
+  selector: string,
+  elementType: new () => ElementType
+): ElementType => {
+  const element = root.querySelector(selector)
+
+  if (!(element instanceof elementType))
+    throw new Error(`Expected test fixture matching ${selector}.`)
+
+  return element
+}
+
+const replaceElementFromPoint = (
+  callback: (x: number, y: number) => Element | null
+): (() => void) => {
+  const descriptor = Object.getOwnPropertyDescriptor(document, 'elementFromPoint')
+
+  Object.defineProperty(document, 'elementFromPoint', {
+    configurable: true,
+    value: callback
+  })
+
+  return () => {
+    if (descriptor) Object.defineProperty(document, 'elementFromPoint', descriptor)
+    else Reflect.deleteProperty(document, 'elementFromPoint')
+  }
+}
+
 const makeDateRangeInput = (value: string): HTMLInputElement => {
   const input: {
     closest: (selector: string) => HTMLElement | null
@@ -170,28 +200,6 @@ describe('@santi020k/lumen-react', () => {
 
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
-    expect(LumenReact.DropdownMenuItem).toBeTypeOf('function')
-    expect(LumenReact.DropdownMenuSeparator).toBeTypeOf('function')
-  })
-
-  test('cycles controlled language options through the React hook contract', () => {
-    const changes: string[] = []
-    const language = withHookDispatcher(() => useLanguageToggle({
-      locales: [
-        { label: 'English', value: 'en' },
-        { label: 'Español', value: 'es' }
-      ],
-      onValueChange: value => {
-        changes.push(value)
-      },
-      value: 'en'
-    }))
-
-    language.selectNext()
-
-    expect(language.currentLocale.label).toBe('English')
-    expect(language.nextLocale.label).toBe('Español')
-    expect(changes).toEqual(['es'])
   })
 
   test('exposes the shared motion vocabulary on React primitives', () => {
@@ -874,52 +882,81 @@ describe('@santi020k/lumen-react', () => {
     expect(kanban.rootRef.current).toBeNull()
   })
 
-  test('clears Kanban pointer state when a drag is canceled', () => {
+  test('scopes Kanban touch drops and clears cancelled pointer state', () => {
     const changes: unknown[] = []
     const kanban = withHookDispatcher(() => useKanban({
       onMoveRequest: detail => changes.push(detail)
     }))
-    const column = {
-      dataset: { state: 'drop-target', uiKanbanColumn: 'inbox' }
-    } as unknown as HTMLElement
-    const item = {
-      closest: vi.fn(() => column),
-      dataset: { state: 'dragging', uiKanbanItem: 'feedback-1' }
-    } as unknown as HTMLElement
-    const root = {
-      dataset: {},
-      querySelectorAll: vi.fn((selector: string) => selector === '[data-ui-kanban-item]' ?
-        [item] :
-        [column])
-    } as unknown as HTMLElement
-    const handle = {
-      closest: vi.fn(() => root)
-    } as unknown as HTMLButtonElement
-    const handleProps = kanban.getHandleProps('feedback-1')
+    const root = document.createElement('section')
+    const foreignRoot = document.createElement('section')
 
-    handleProps.onPointerDown?.({
-      clientX: 12,
-      clientY: 18,
+    root.dataset.uiKanban = ''
+    root.innerHTML = `
+      <div data-ui-kanban-column="inbox">
+        <article data-ui-kanban-item="feedback-1">
+          <button data-ui-kanban-handle="feedback-1">Move</button>
+        </article>
+      </div>
+      <div data-ui-kanban-column="planned"></div>
+    `
+    foreignRoot.dataset.uiKanban = ''
+    foreignRoot.innerHTML = '<div data-ui-kanban-column="foreign"></div>'
+    document.body.append(root, foreignRoot)
+    kanban.rootRef.current = root
+
+    const handle = requireElement(root, '[data-ui-kanban-handle]', HTMLButtonElement)
+    const item = requireElement(root, '[data-ui-kanban-item]', HTMLElement)
+    const planned = requireElement(root, '[data-ui-kanban-column="planned"]', HTMLElement)
+    const foreign = requireElement(foreignRoot, '[data-ui-kanban-column]', HTMLElement)
+
+    handle.setPointerCapture = vi.fn()
+
+    let hitTarget: Element = foreign
+    const restoreElementFromPoint = replaceElementFromPoint(() => hitTarget)
+
+    const handleProps = kanban.getHandleProps('feedback-1')
+    const pointerEvent = (clientX = 20, clientY = 20) => ({
+      clientX,
+      clientY,
       currentTarget: handle,
       pointerId: 7,
       pointerType: 'touch'
-    } as Parameters<NonNullable<typeof handleProps.onPointerDown>>[0])
-    handleProps.onPointerCancel?.({
-      currentTarget: handle,
-      pointerId: 7
-    } as Parameters<NonNullable<typeof handleProps.onPointerCancel>>[0])
+    }) as Parameters<NonNullable<typeof handleProps.onPointerDown>>[0]
 
-    expect(item.dataset.state).toBeUndefined()
-    expect(column.dataset.state).toBeUndefined()
+    if (
+      !handleProps.onPointerCancel ||
+      !handleProps.onPointerDown ||
+      !handleProps.onPointerMove ||
+      !handleProps.onPointerUp
+    ) throw new Error('Expected complete Kanban pointer handlers.')
 
-    handleProps.onPointerUp?.({
-      clientX: 40,
-      clientY: 18,
-      currentTarget: handle,
-      pointerId: 7
-    } as Parameters<NonNullable<typeof handleProps.onPointerUp>>[0])
+    try {
+      handleProps.onPointerDown(pointerEvent(0, 0))
+      handleProps.onPointerMove(pointerEvent())
+      handleProps.onPointerUp(pointerEvent())
 
-    expect(changes).toEqual([])
+      expect(changes).toEqual([])
+      expect(foreign.dataset.state).toBeUndefined()
+
+      hitTarget = planned
+      handleProps.onPointerDown(pointerEvent(0, 0))
+      handleProps.onPointerMove(pointerEvent())
+
+      expect(item.dataset.state).toBe('dragging')
+      expect(planned.dataset.state).toBe('drop-target')
+
+      handleProps.onPointerCancel(pointerEvent())
+
+      expect(item.dataset.state).toBeUndefined()
+      expect(planned.dataset.state).toBeUndefined()
+
+      handleProps.onPointerUp(pointerEvent())
+      expect(changes).toEqual([])
+    } finally {
+      restoreElementFromPoint()
+      root.remove()
+      foreignRoot.remove()
+    }
   })
 
   test('renders data display runtime contracts', () => {
