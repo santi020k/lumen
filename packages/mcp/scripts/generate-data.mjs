@@ -65,6 +65,28 @@ const parseComponentNames = source => {
   return [...match[1].matchAll(/'([^']+)'/g)].map(m => m[1])
 }
 
+const readQuotedProperty = (source, property) => new RegExp(
+  `${property}:\\s*'([^']+)'`
+).exec(source)?.[1]
+
+const parseComponentBehaviorEntry = entry => {
+  const name = entry[1]
+  const body = entry[2] ?? ''
+  const astro = readQuotedProperty(body, 'astro')
+  const elements = readQuotedProperty(body, 'elements')
+  const react = readQuotedProperty(body, 'react')
+  const astroRuntimeBypass = readQuotedProperty(body, 'astroRuntimeBypass')
+
+  if (!name || !astro || !elements || !react) return []
+
+  return [[name, {
+    astro,
+    ...(astroRuntimeBypass ? { astroRuntimeBypass } : {}),
+    elements,
+    react
+  }]]
+}
+
 const parseComponentBehavior = source => {
   const match = source.match(
     /lumenComponentBehavior\s*=\s*\{([\s\S]*?)\}\s*as const satisfies/
@@ -73,16 +95,8 @@ const parseComponentBehavior = source => {
   if (!match) return new Map()
 
   return new Map(
-    [...match[1].matchAll(
-      /(\w+):\s*\{\s*astro:\s*'([^']+)',\s*elements:\s*'([^']+)',\s*react:\s*'([^']+)'\s*\}/g
-    )].map(entry => [
-      entry[1],
-      {
-        astro: entry[2],
-        elements: entry[3],
-        react: entry[4]
-      }
-    ])
+    [...match[1].matchAll(/(\w+):\s*\{([^{}]+)\}/g)]
+      .flatMap(parseComponentBehaviorEntry)
   )
 }
 
@@ -608,13 +622,17 @@ const toElementsExample = (example, elementComponents) => {
   return converted.includes('{') ? '' : converted
 }
 
-const getAstroBehavior = runtimeRequired => {
+const getAstroBehavior = (runtimeRequired, runtimeBypass) => {
   if (!runtimeRequired) return
 
   return {
+    ...(runtimeBypass ? { runtimeBypass } : {}),
     mode: 'runtime',
     setup:
-      'Mount UIPrimitives once in the application\'s root layout; do not mount it beside each component.'
+      'Mount UIPrimitives once in the application\'s root layout; do not mount it beside each component.' +
+      (runtimeBypass ?
+        ` Set ${runtimeBypass} when application code owns the complete interaction behavior.` :
+        '')
   }
 }
 
@@ -655,9 +673,10 @@ const frameworkBehavior = ({
   framework,
   hook,
   reactSource,
+  runtimeBypass,
   runtimeRequired
 }) => {
-  if (framework === 'astro') return getAstroBehavior(runtimeRequired)
+  if (framework === 'astro') return getAstroBehavior(runtimeRequired, runtimeBypass)
 
   if (framework === 'elements') return getElementsBehavior(runtimeRequired)
 
@@ -677,6 +696,7 @@ const buildFrameworkDetails = ({
   parsedAstro,
   react,
   reactHooks,
+  runtimeBypass,
   runtimeRequired
 }) => {
   const hookName = Reflect.get(reactHookByComponent, name)
@@ -714,7 +734,7 @@ const buildFrameworkDetails = ({
   return {
     astro: {
       available: hasAstro,
-      behavior: frameworkBehavior({ framework: 'astro', runtimeRequired }),
+      behavior: frameworkBehavior({ framework: 'astro', runtimeBypass, runtimeRequired }),
       example: doc.example,
       importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'`,
       language: 'astro',
@@ -938,6 +958,7 @@ const main = async () => {
       react: ctx.reactComponents.get(name),
       reactHooks: ctx.reactHooks,
       reactSource: ctx.files.reactSource,
+      runtimeBypass: behavior?.astroRuntimeBypass,
       runtimeRequired: behavior?.astro === 'ui-primitives'
     })
 

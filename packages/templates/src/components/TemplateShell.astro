@@ -10,6 +10,7 @@ import {
 } from '@santi020k/lumen-astro'
 
 interface NavigationItem {
+  href: `#${string}`
   icon: string
   label: string
 }
@@ -46,7 +47,7 @@ const { activeItem, navigation, product, workspace } = Astro.props
               template-shell__navigation-item--active
             `
           ]}
-          href={`#${item.label.toLowerCase().replaceAll(' ', '-')}`}
+          href={item.href}
         >
           <Icon name={item.icon} size="sm" />
           <span>{item.label}</span>
@@ -69,7 +70,7 @@ const { activeItem, navigation, product, workspace } = Astro.props
         {navigation.map(item => (
           <a
             aria-current={item.label === activeItem ? 'page' : undefined}
-            href={`#${item.label.toLowerCase().replaceAll(' ', '-')}`}
+            href={item.href}
           >
             {item.label}
           </a>

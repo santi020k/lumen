@@ -33,6 +33,7 @@
     "clean": "rm -rf dist coverage"
   },
   "devDependencies": {
+    "@hookform/resolvers": "catalog:",
     "@santi020k/lumen-react": "workspace:^",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
@@ -41,7 +42,9 @@
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yup": "catalog:",
+    "zod": "catalog:"
   },
   "peerDependencies": {
     "@santi020k/lumen-react": "^1.0.0",

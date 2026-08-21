@@ -1,5 +1,20 @@
 # @santi020k/lumen-elements
 
+## 1.1.0
+
+### Minor Changes
+
+- [`e5a6b36`](https://github.com/santi020k/lumen/commit/e5a6b366ed28a5513c375afb3f36ac26117b749f) Thanks [@santi020k](https://github.com/santi020k)! - Make `lumen doctor` workspace-aware, ignore generated build trees, parse real adapter imports,
+  recognize controlled Astro toggles, and deduplicate diagnostics. Preserve native form-control
+  `size` across adapters while adding explicit Astro `visualSize` and Elements `visual-size` styling
+  contracts with pre-1.0 alias compatibility.
+
+### Patch Changes
+
+- Updated dependencies [[`e5a6b36`](https://github.com/santi020k/lumen/commit/e5a6b366ed28a5513c375afb3f36ac26117b749f)]:
+  - @santi020k/lumen@1.1.0
+  - @santi020k/lumen-core@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

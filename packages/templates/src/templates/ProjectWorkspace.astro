@@ -16,11 +16,11 @@ import TemplateHeader from '../components/TemplateHeader.astro'
 import TemplateShell from '../components/TemplateShell.astro'
 
 const navigation = [
-  { icon: 'layout-dashboard', label: 'Overview' },
-  { icon: 'folder-kanban', label: 'Projects' },
-  { icon: 'list-checks', label: 'My tasks' },
-  { icon: 'calendar-days', label: 'Schedule' },
-  { icon: 'users-round', label: 'Team' }
+  { href: '#overview', icon: 'layout-dashboard', label: 'Overview' },
+  { href: '#projects', icon: 'folder-kanban', label: 'Projects' },
+  { href: '#my-tasks', icon: 'list-checks', label: 'My tasks' },
+  { href: '#schedule', icon: 'calendar-days', label: 'Schedule' },
+  { href: '#team', icon: 'users-round', label: 'Team' }
 ] as const
 
 const metrics = [
@@ -52,10 +52,10 @@ const workstreams = [
     title="Team workspace"
   />
 
-  <MetricGrid {metrics} />
+  <MetricGrid id="my-tasks" {metrics} />
 
-  <section class="template-project-grid">
-    <Card as="section" class="template-section">
+  <section class="template-project-grid" id="schedule">
+    <Card as="section" class="template-section" id="team">
       <div class="template-section__header">
         <div>
           <h2>Active workstreams</h2>
@@ -109,7 +109,7 @@ const workstreams = [
     </Card>
   </section>
 
-  <Card as="section" class="template-section">
+  <Card as="section" class="template-section" id="projects">
     <div class="template-section__header">
       <div>
         <h2>Priority projects</h2>

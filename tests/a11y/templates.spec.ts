@@ -61,9 +61,13 @@ for (const slug of templateSlugs) {
       ].find(Boolean) ?? ''
       const ids = [...main.querySelectorAll<HTMLElement>('[id]')]
         .map(element => element.id)
+      const missingHashReferences = [...main.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
+        .map(anchor => anchor.hash.slice(1))
+        .filter(id => id && !document.getElementById(decodeURIComponent(id)))
 
       return {
         duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+        missingHashReferences,
         unlabeledControls: controls
           .filter(control => !nameFor(control))
           .map(control => control.outerHTML.slice(0, 120))
@@ -71,6 +75,7 @@ for (const slug of templateSlugs) {
     })
 
     expect(accessibility.duplicateIds).toEqual([])
+    expect(accessibility.missingHashReferences).toEqual([])
     expect(accessibility.unlabeledControls).toEqual([])
     expect(pageErrors).toEqual([])
   })

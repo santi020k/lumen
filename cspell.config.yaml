@@ -30,6 +30,7 @@ words:
   - commitizen
   - commitlint
   - commitprompt
+  - codemod
   - contenteditable
   - coverimage
   - CoverImage
@@ -56,6 +57,8 @@ words:
   - hcol
   - Hoverable
   - hostable
+  - hono
+  - hookform
   - inputmode
   - jsdom
   - knip

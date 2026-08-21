@@ -54,6 +54,15 @@ internal native control provides the same contract when `ElementInternals` is un
 </form>
 ```
 
+`lumen-input` forwards the numeric `size` attribute to its internal native input. Use
+`visual-size="sm"` or `visual-size="lg"` for presentation. The pre-1.0 `size="sm|lg"` visual alias
+remains available for incremental migrations.
+
+```html
+<lumen-input name="code" size="12" visual-size="sm"></lumen-input>
+<lumen-native-select size="8" visual-size="lg"></lumen-native-select>
+```
+
 See the [Elements form guide](https://lumen.santi020k.com/docs/forms/elements).
 
 Use `lumen-icon` for Lucide icons by name across framework adapters.

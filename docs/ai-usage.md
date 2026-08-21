@@ -178,8 +178,10 @@ without evaluating Lumen's contexts and hooks in the React server runtime; the r
 subtree becomes a Client Component boundary. Vite and other client-rendered React applications use
 the same entry without additional setup.
 `Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.
-`Button asChild` composes the button contract onto one child element, while `Input visualSize` controls
-presentation without shadowing the native numeric `size` attribute.
+`Button asChild` composes the button contract onto one child element. Across adapters, native
+numeric `size` remains available on `Input` and `NativeSelect`; use `visualSize` in Astro and React,
+or `visual-size` in Elements, for presentation. The pre-1.0 Astro and Elements `size="sm|lg"`
+visual alias is deprecated but remains available for incremental migration.
 `Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.
 
 ```tsx
@@ -200,7 +202,9 @@ export function SubscribeForm() {
 For React Hook Form, spread `register()` directly onto native-backed controls. Install
 `@santi020k/lumen-react-hook-form` only for controlled composites such as `Select`, `DatePicker`,
 `InputOTP`, and `ListBox`. Do not combine React Hook Form and `useFormValidation` unless the
-application intentionally coordinates two validation sources.
+application intentionally coordinates two validation sources. For schema validation, use
+`zodResolver` or `yupResolver` from `@hookform/resolvers`; keep Zod or Yup in the application and
+render the resulting React Hook Form errors through Lumen's `FieldError` contract.
 
 ## Web Components
 

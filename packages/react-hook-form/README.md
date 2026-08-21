@@ -62,3 +62,52 @@ export function ProfileForm() {
 The package also exports `LumenDatePickerController`, `LumenInputOTPController`, and
 `LumenListBoxController`. Schema resolvers, field arrays, authorization, and persistence remain
 application concerns.
+
+## Zod and Yup
+
+Use the official React Hook Form resolvers for schema validation. Zod and Yup stay optional and are
+not bundled by Lumen.
+
+```bash
+# Zod
+pnpm add @hookform/resolvers zod
+
+# Yup
+pnpm add @hookform/resolvers yup
+```
+
+```tsx
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+
+const schema = z.object({
+  email: z.string().trim().email('Enter a valid email'),
+  role: z.string().trim().min(1, 'Choose a role')
+})
+
+const form = useForm<z.input<typeof schema>, unknown, z.output<typeof schema>>({
+  defaultValues: { email: '', role: '' },
+  resolver: zodResolver(schema)
+})
+```
+
+```tsx
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+
+const schema = yup.object({
+  email: yup.string().trim().email('Enter a valid email').required('Email is required'),
+  role: yup.string().trim().required('Choose a role')
+})
+
+const form = useForm<yup.InferType<typeof schema>>({
+  defaultValues: { email: '', role: '' },
+  resolver: yupResolver(schema)
+})
+```
+
+Read errors from `form.formState.errors` and pass them through `getLumenManagedFieldState` as in
+the adapter example above. React Hook Form remains the only validation owner; do not also mount
+Lumen's `useFormValidation` on the same form.

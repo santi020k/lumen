@@ -647,7 +647,10 @@ const elementConfigs = {
     tagName: 'lumen-image'
   },
   Input: {
-    attributeClasses: { size: { lg: 'ui-input--lg', sm: 'ui-input--sm' } },
+    attributeClasses: {
+      size: { lg: 'ui-input--lg', sm: 'ui-input--sm' },
+      'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
+    },
     baseClassName: 'ui-input',
     defaults: { type: 'text' },
     tagName: 'lumen-input'
@@ -745,7 +748,10 @@ const elementConfigs = {
     tagName: 'lumen-message-scroller'
   },
   NativeSelect: {
-    attributeClasses: { size: { lg: 'ui-select--lg', sm: 'ui-select--sm' } },
+    attributeClasses: {
+      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' },
+      'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
+    },
     baseClassName: 'ui-select',
     tagName: 'lumen-native-select'
   },
@@ -1355,7 +1361,8 @@ const observedAttributeNames = [
   'type',
   'value',
   'values',
-  'variant'
+  'variant',
+  'visual-size'
 ]
 
 const hasDocument = (): boolean => typeof document !== 'undefined'
@@ -4677,7 +4684,7 @@ export class LumenElement extends HTMLElement {
   }
 }
 
-type LumenScalarNativeControl = HTMLInputElement | HTMLTextAreaElement
+type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
 const scalarControlAttributes = [
   'accept',
@@ -4698,6 +4705,7 @@ const scalarControlAttributes = [
   'readonly',
   'required',
   'rows',
+  'size',
   'step'
 ] as const
 
@@ -4716,7 +4724,7 @@ const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
 
 class LumenScalarFormControlElement extends LumenElement {
   static formAssociated = true
-  static nativeTagName: 'input' | 'textarea' = 'input'
+  static nativeTagName: 'input' | 'select' | 'textarea' = 'input'
 
   private control: LumenScalarNativeControl | undefined
   private defaultCheckedState = false
@@ -4798,7 +4806,8 @@ class LumenScalarFormControlElement extends LumenElement {
   }
 
   get type(): string {
-    if (this.control instanceof HTMLInputElement) return this.control.type
+    if (this.control instanceof HTMLInputElement ||
+      this.control instanceof HTMLSelectElement) return this.control.type
 
     return 'textarea'
   }
@@ -4842,11 +4851,18 @@ class LumenScalarFormControlElement extends LumenElement {
 
     if (!hasDocument()) return
 
-    this.defaultValueState = this.getAttribute('value') ?? this.textContent
+    const Constructor = this
+      .constructor as typeof LumenScalarFormControlElement
+
+    this.defaultValueState = this.getAttribute('value') ??
+      (Constructor.nativeTagName === 'textarea' ? this.textContent : '')
 
     this.defaultCheckedState = this.hasAttribute('checked')
 
     this.ensureControl()
+
+    if (this.control instanceof HTMLSelectElement &&
+      !this.hasAttribute('value')) this.defaultValueState = this.control.value
 
     this.syncControlAttributes()
 
@@ -4951,9 +4967,17 @@ class LumenScalarFormControlElement extends LumenElement {
 
     control.className = this.className
 
-    control.defaultValue = this.defaultValueState
+    if (control instanceof HTMLInputElement ||
+      control instanceof HTMLTextAreaElement) {
+      control.defaultValue = this.defaultValueState
+    }
 
-    control.value = this.defaultValueState
+    if (control instanceof HTMLSelectElement) {
+      control.append(...[...this.children].filter(child => child instanceof HTMLOptionElement ||
+        child instanceof HTMLOptGroupElement))
+    }
+
+    if (this.defaultValueState) control.value = this.defaultValueState
 
     if (control instanceof HTMLInputElement) {
       control.defaultChecked = this.defaultCheckedState
@@ -5053,6 +5077,10 @@ class LumenScalarFormControlElement extends LumenElement {
 
 class LumenTextareaFormControlElement extends LumenScalarFormControlElement {
   static override nativeTagName = 'textarea' as const
+}
+
+class LumenNativeSelectFormControlElement extends LumenScalarFormControlElement {
+  static override nativeTagName = 'select' as const
 }
 
 class LumenPasswordFieldBehaviorElement extends LumenElement {
@@ -9299,6 +9327,7 @@ const behaviorElementClasses: Partial<
   LineChart: LumenLineChartBehaviorElement,
   ListBox: LumenListBoxBehaviorElement,
   Mentions: LumenMentionsBehaviorElement,
+  NativeSelect: LumenNativeSelectFormControlElement,
   NumberField: LumenScalarFormControlElement,
   Particles: LumenParticlesBehaviorElement,
   PieChart: LumenPieChartBehaviorElement,

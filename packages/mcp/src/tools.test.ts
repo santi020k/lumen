@@ -146,6 +146,17 @@ describe('lumen-mcp data snapshot', () => {
     )
   })
 
+  test('bundles conditional Astro runtime bypass metadata', () => {
+    const toggle = resolveComponent('Toggle', loadLumenData())
+
+    expect(toggle?.frameworkDetails.astro.behavior).toMatchObject({
+      runtimeBypass: 'controlled'
+    })
+    expect(toggle?.frameworkDetails.astro.behavior?.setup).toContain(
+      'Set controlled'
+    )
+  })
+
   test('bundles React hook behavior for interactive components', () => {
     const data = loadLumenData()
 

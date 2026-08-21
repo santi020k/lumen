@@ -147,6 +147,10 @@ describe('lumen core metadata', () => {
       elements: 'registered-element',
       react: 'hook'
     })
+    expect(lumenComponentBehavior.Toggle).toMatchObject({
+      astro: 'ui-primitives',
+      astroRuntimeBypass: 'controlled'
+    })
     expect(lumenGlobalBehaviors.map(behavior => behavior.name)).toEqual(['form-validation', 'toast-events'])
     expect(lumenStylingContracts.Card).toMatchObject({
       rootSlot: 'card',
