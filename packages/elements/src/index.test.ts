@@ -63,6 +63,22 @@ const createDragEvent = (
   return event
 }
 
+const replaceElementFromPoint = (
+  callback: (x: number, y: number) => Element | null
+): (() => void) => {
+  const descriptor = Object.getOwnPropertyDescriptor(document, 'elementFromPoint')
+
+  Object.defineProperty(document, 'elementFromPoint', {
+    configurable: true,
+    value: callback
+  })
+
+  return () => {
+    if (descriptor) Object.defineProperty(document, 'elementFromPoint', descriptor)
+    else Reflect.deleteProperty(document, 'elementFromPoint')
+  }
+}
+
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'checkVisibility', {
     configurable: true,
@@ -224,6 +240,67 @@ describe('@santi020k/lumen-elements', () => {
       toColumn: 'planned'
     }])
     expect(item?.parentElement).toBe(inbox)
+  })
+
+  test('initializes added Kanban handles and rejects foreign pointer drops', async () => {
+    const board = document.createElement('lumen-kanban-board')
+    const foreignBoard = document.createElement('lumen-kanban-board')
+
+    board.innerHTML = `
+      <lumen-kanban-column value="inbox"></lumen-kanban-column>
+      <lumen-kanban-column value="planned"></lumen-kanban-column>
+    `
+    foreignBoard.innerHTML = '<lumen-kanban-column value="foreign"></lumen-kanban-column>'
+    document.body.append(board, foreignBoard)
+
+    const item = document.createElement('lumen-card')
+    const handle = document.createElement('button')
+
+    item.dataset.uiKanbanItem = 'feedback-1'
+    handle.dataset.uiKanbanHandle = ''
+    handle.textContent = 'Move'
+    handle.setPointerCapture = vi.fn()
+    item.append(handle)
+    board.querySelector('lumen-kanban-column[value="inbox"]')?.append(item)
+
+    await vi.waitFor(() => {
+      expect(handle.draggable).toBe(true)
+    })
+
+    const foreignColumn = foreignBoard.querySelector<HTMLElement>('lumen-kanban-column')
+
+    if (!foreignColumn) throw new Error('Expected a foreign Kanban column.')
+
+    const restoreElementFromPoint = replaceElementFromPoint(() => foreignColumn)
+
+    const moves: unknown[] = []
+
+    board.addEventListener('ui:kanban-move-request', event => {
+      moves.push((event as CustomEvent).detail)
+    })
+
+    const dispatchPointer = (type: string, clientX = 20, clientY = 20) => {
+      const event = new Event(type, { bubbles: true, cancelable: true })
+
+      Object.defineProperties(event, {
+        clientX: { value: clientX },
+        clientY: { value: clientY },
+        pointerId: { value: 7 },
+        pointerType: { value: 'touch' }
+      })
+      handle.dispatchEvent(event)
+    }
+
+    try {
+      dispatchPointer('pointerdown', 0, 0)
+      dispatchPointer('pointermove')
+      dispatchPointer('pointerup')
+
+      expect(moves).toEqual([])
+      expect(foreignColumn.dataset.state).toBeUndefined()
+    } finally {
+      restoreElementFromPoint()
+    }
   })
 
   test('renders named Lucide icons with accessible labels', () => {

@@ -2953,6 +2953,19 @@ const setKanbanDropTarget = (
   }
 }
 
+const getKanbanColumnAtPoint = (
+  root: HTMLElement | null,
+  clientX: number,
+  clientY: number
+): HTMLElement | null => {
+  if (!root) return null
+
+  const column = document.elementFromPoint(clientX, clientY)
+    ?.closest<HTMLElement>('[data-ui-kanban-column]') ?? null
+
+  return column?.closest<HTMLElement>('[data-ui-kanban]') === root ? column : null
+}
+
 const requestKeyboardKanbanMove = (
   event: KeyboardEvent<HTMLButtonElement>,
   itemId: string,
@@ -3012,9 +3025,7 @@ const updateKanbanPointer = (
   event.currentTarget.setPointerCapture(event.pointerId)
 
   const item = getKanbanItem(root, pointer.itemId)
-
-  const target = document.elementFromPoint(event.clientX, event.clientY)
-    ?.closest<HTMLElement>('[data-ui-kanban-column]')
+  const target = getKanbanColumnAtPoint(root, event.clientX, event.clientY)
 
   if (item) item.dataset.state = 'dragging'
 
@@ -3029,17 +3040,14 @@ const finishKanbanPointer = (
 ): void => {
   if (pointer?.pointerId !== event.pointerId) return
 
-  const item = getKanbanItem(root, pointer.itemId)
-
   if (!pointer.active) return
 
-  if (!item) return
+  const item = getKanbanItem(root, pointer.itemId)
 
-  const fromColumn = item.closest<HTMLElement>('[data-ui-kanban-column]')
+  const fromColumn = item?.closest<HTMLElement>('[data-ui-kanban-column]')
     ?.dataset.uiKanbanColumn
 
-  const toColumn = document.elementFromPoint(event.clientX, event.clientY)
-    ?.closest<HTMLElement>('[data-ui-kanban-column]')
+  const toColumn = getKanbanColumnAtPoint(root, event.clientX, event.clientY)
     ?.dataset.uiKanbanColumn
 
   clearKanbanInteractionState(root, item)
@@ -3130,6 +3138,18 @@ export const useKanban = ({
         const root = getKanbanRoot(event.currentTarget, rootRef.current)
 
         updateKanbanPointer(event, pointerRef.current, root)
+      }),
+      onPointerCancel: composeHandlers(props.onPointerCancel, (event: PointerEvent<HTMLButtonElement>) => {
+        const pointer = pointerRef.current
+
+        if (pointer?.pointerId !== event.pointerId) return
+
+        pointerRef.current = null
+
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+        const item = getKanbanItem(root, pointer.itemId)
+
+        clearKanbanInteractionState(root, item)
       }),
       onPointerUp: composeHandlers(props.onPointerUp, (event: PointerEvent<HTMLButtonElement>) => {
         const pointer = pointerRef.current

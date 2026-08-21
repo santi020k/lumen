@@ -8916,6 +8916,7 @@ const getKanbanColumnValue = (column: HTMLElement): string => column.dataset.uiK
 
 class LumenKanbanBoardBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
+  private mutationObserver: MutationObserver | undefined
   private pointer: {
     active: boolean
     handle: HTMLElement
@@ -8936,8 +8937,15 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     const { signal } = this.abortController
 
-    for (const handle of this.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
-      handle.draggable = true
+    this.initializeHandles()
+
+    this.mutationObserver?.disconnect()
+
+    this.mutationObserver = new MutationObserver(() => {
+      this.initializeHandles()
+    })
+
+    this.mutationObserver.observe(this, { childList: true, subtree: true })
 
     this.addEventListener('dragstart', event => {
       this.onDragStart(event)
@@ -8985,17 +8993,36 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     this.abortController = undefined
 
+    this.mutationObserver?.disconnect()
+
+    this.mutationObserver = undefined
+
     this.clearDragState()
   }
 
+  private initializeHandles(): void {
+    for (const handle of this.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
+      handle.draggable = true
+  }
+
   private getItem(target: EventTarget | null): HTMLElement | null {
-    return target instanceof Element ?
+    const item = target instanceof Element ?
       target.closest<HTMLElement>('[data-ui-kanban-item]') :
+      null
+
+    return item?.closest<HTMLElement>('[data-ui-kanban], lumen-kanban-board') === this ?
+      item :
       null
   }
 
   private getColumn(target: EventTarget | null): HTMLElement | null {
-    return target instanceof Element ? target.closest<HTMLElement>(kanbanColumnSelector) : null
+    const column = target instanceof Element ?
+      target.closest<HTMLElement>(kanbanColumnSelector) :
+      null
+
+    return column?.closest<HTMLElement>('[data-ui-kanban], lumen-kanban-board') === this ?
+      column :
+      null
   }
 
   private requestMove(
@@ -9168,8 +9195,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     this.pointer.item.dataset.state = 'dragging'
 
-    const target = document.elementFromPoint(event.clientX, event.clientY)
-      ?.closest<HTMLElement>(kanbanColumnSelector)
+    const target = this.getColumn(document.elementFromPoint(event.clientX, event.clientY))
 
     for (const column of this.querySelectorAll<HTMLElement>(kanbanColumnSelector)) {
       if (column === target) column.dataset.state = 'drop-target'
@@ -9182,8 +9208,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     if (pointer?.pointerId !== event.pointerId) return
 
-    const target = document.elementFromPoint(event.clientX, event.clientY)
-      ?.closest<HTMLElement>(kanbanColumnSelector)
+    const target = this.getColumn(document.elementFromPoint(event.clientX, event.clientY))
 
     if (pointer.active && target) this.requestMove(pointer.item, target, 'pointer')
 

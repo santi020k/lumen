@@ -3242,12 +3242,12 @@ const kanbanColumnSelector = '[data-ui-kanban-column]'
 
 const initKanbanBoards = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-kanban]')) {
+    for (const handle of root.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
+      handle.draggable = true
+
     if (root.dataset.uiKanbanBound === 'true') continue
 
     root.dataset.uiKanbanBound = 'true'
-
-    for (const handle of root.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
-      handle.draggable = true
 
     let pointer: {
       active: boolean
@@ -3258,13 +3258,21 @@ const initKanbanBoards = (scope: ParentNode): void => {
       startY: number
     } | undefined
 
-    const itemFor = (target: EventTarget | null): HTMLElement | null => target instanceof Element ?
-      target.closest<HTMLElement>('[data-ui-kanban-item]') :
-      null
+    const itemFor = (target: EventTarget | null): HTMLElement | null => {
+      const item = target instanceof Element ?
+        target.closest<HTMLElement>('[data-ui-kanban-item]') :
+        null
 
-    const columnFor = (target: EventTarget | null): HTMLElement | null => target instanceof Element ?
-      target.closest<HTMLElement>(kanbanColumnSelector) :
-      null
+      return item?.closest<HTMLElement>('[data-ui-kanban]') === root ? item : null
+    }
+
+    const columnFor = (target: EventTarget | null): HTMLElement | null => {
+      const column = target instanceof Element ?
+        target.closest<HTMLElement>(kanbanColumnSelector) :
+        null
+
+      return column?.closest<HTMLElement>('[data-ui-kanban]') === root ? column : null
+    }
 
     const clearState = (): void => {
       pointer = undefined
@@ -3447,8 +3455,7 @@ const initKanbanBoards = (scope: ParentNode): void => {
 
       pointer.item.dataset.state = 'dragging'
 
-      const target = document.elementFromPoint(event.clientX, event.clientY)
-        ?.closest<HTMLElement>(kanbanColumnSelector)
+      const target = columnFor(document.elementFromPoint(event.clientX, event.clientY))
 
       for (const column of root.querySelectorAll<HTMLElement>(kanbanColumnSelector)) {
         if (column === target) column.dataset.state = 'drop-target'
@@ -3459,8 +3466,7 @@ const initKanbanBoards = (scope: ParentNode): void => {
     root.addEventListener('pointerup', event => {
       if (!pointer || pointer.pointerId !== event.pointerId) return
 
-      const target = document.elementFromPoint(event.clientX, event.clientY)
-        ?.closest<HTMLElement>(kanbanColumnSelector)
+      const target = columnFor(document.elementFromPoint(event.clientX, event.clientY))
 
       if (pointer.active && target) requestMove(pointer.item, target, 'pointer')
 

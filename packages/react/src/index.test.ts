@@ -1,4 +1,6 @@
 /* eslint-disable @eslint-react/no-unnecessary-use-prefix -- The mock dispatcher mirrors React's internal hook method names. */
+// @vitest-environment jsdom
+
 import type { ReactElement } from 'react'
 import * as React from 'react'
 
@@ -128,6 +130,35 @@ const withHookDispatcher = <Value>(callback: () => Value): Value => {
     return callback()
   } finally {
     internals.H = previousDispatcher
+  }
+}
+
+const requireElement = <ElementType extends Element>(
+  root: ParentNode,
+  selector: string,
+  elementType: new () => ElementType
+): ElementType => {
+  const element = root.querySelector(selector)
+
+  if (!(element instanceof elementType))
+    throw new Error(`Expected test fixture matching ${selector}.`)
+
+  return element
+}
+
+const replaceElementFromPoint = (
+  callback: (x: number, y: number) => Element | null
+): (() => void) => {
+  const descriptor = Object.getOwnPropertyDescriptor(document, 'elementFromPoint')
+
+  Object.defineProperty(document, 'elementFromPoint', {
+    configurable: true,
+    value: callback
+  })
+
+  return () => {
+    if (descriptor) Object.defineProperty(document, 'elementFromPoint', descriptor)
+    else Reflect.deleteProperty(document, 'elementFromPoint')
   }
 }
 
@@ -849,6 +880,83 @@ describe('@santi020k/lumen-react', () => {
       toColumn: 'planned'
     }])
     expect(kanban.rootRef.current).toBeNull()
+  })
+
+  test('scopes Kanban touch drops and clears cancelled pointer state', () => {
+    const changes: unknown[] = []
+    const kanban = withHookDispatcher(() => useKanban({
+      onMoveRequest: detail => changes.push(detail)
+    }))
+    const root = document.createElement('section')
+    const foreignRoot = document.createElement('section')
+
+    root.dataset.uiKanban = ''
+    root.innerHTML = `
+      <div data-ui-kanban-column="inbox">
+        <article data-ui-kanban-item="feedback-1">
+          <button data-ui-kanban-handle="feedback-1">Move</button>
+        </article>
+      </div>
+      <div data-ui-kanban-column="planned"></div>
+    `
+    foreignRoot.dataset.uiKanban = ''
+    foreignRoot.innerHTML = '<div data-ui-kanban-column="foreign"></div>'
+    document.body.append(root, foreignRoot)
+    kanban.rootRef.current = root
+
+    const handle = requireElement(root, '[data-ui-kanban-handle]', HTMLButtonElement)
+    const item = requireElement(root, '[data-ui-kanban-item]', HTMLElement)
+    const planned = requireElement(root, '[data-ui-kanban-column="planned"]', HTMLElement)
+    const foreign = requireElement(foreignRoot, '[data-ui-kanban-column]', HTMLElement)
+
+    handle.setPointerCapture = vi.fn()
+
+    let hitTarget: Element = foreign
+    const restoreElementFromPoint = replaceElementFromPoint(() => hitTarget)
+
+    const handleProps = kanban.getHandleProps('feedback-1')
+    const pointerEvent = (clientX = 20, clientY = 20) => ({
+      clientX,
+      clientY,
+      currentTarget: handle,
+      pointerId: 7,
+      pointerType: 'touch'
+    }) as Parameters<NonNullable<typeof handleProps.onPointerDown>>[0]
+
+    if (
+      !handleProps.onPointerCancel ||
+      !handleProps.onPointerDown ||
+      !handleProps.onPointerMove ||
+      !handleProps.onPointerUp
+    ) throw new Error('Expected complete Kanban pointer handlers.')
+
+    try {
+      handleProps.onPointerDown(pointerEvent(0, 0))
+      handleProps.onPointerMove(pointerEvent())
+      handleProps.onPointerUp(pointerEvent())
+
+      expect(changes).toEqual([])
+      expect(foreign.dataset.state).toBeUndefined()
+
+      hitTarget = planned
+      handleProps.onPointerDown(pointerEvent(0, 0))
+      handleProps.onPointerMove(pointerEvent())
+
+      expect(item.dataset.state).toBe('dragging')
+      expect(planned.dataset.state).toBe('drop-target')
+
+      handleProps.onPointerCancel(pointerEvent())
+
+      expect(item.dataset.state).toBeUndefined()
+      expect(planned.dataset.state).toBeUndefined()
+
+      handleProps.onPointerUp(pointerEvent())
+      expect(changes).toEqual([])
+    } finally {
+      restoreElementFromPoint()
+      root.remove()
+      foreignRoot.remove()
+    }
   })
 
   test('renders data display runtime contracts', () => {

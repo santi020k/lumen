@@ -671,6 +671,18 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain('new CustomEvent(\'ui:kanban-move-request\'')
     expect(runtime).toContain('cancelable: true')
     expect(runtime).toContain('input: \'keyboard\' | \'pointer\'')
+
+    const kanbanRuntime = runtime.slice(
+      runtime.indexOf('const initKanbanBoards'),
+      runtime.indexOf('const initTreeCollections')
+    )
+
+    expect(kanbanRuntime.indexOf('handle.draggable = true')).toBeLessThan(
+      kanbanRuntime.indexOf('if (root.dataset.uiKanbanBound === \'true\') continue')
+    )
+    expect(kanbanRuntime).toContain(
+      'column?.closest<HTMLElement>(\'[data-ui-kanban]\') === root'
+    )
     expect(styles).toContain('.ui-kanban__column[data-state="drop-target"]')
     expect(styles).toContain('.ui-empty--compact')
   })
