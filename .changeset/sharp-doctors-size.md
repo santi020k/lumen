@@ -1,9 +1,9 @@
 ---
-"@santi020k/lumen": patch
+"@santi020k/lumen": minor
 "@santi020k/lumen-astro": minor
-"@santi020k/lumen-core": patch
+"@santi020k/lumen-core": minor
 "@santi020k/lumen-elements": minor
-"@santi020k/lumen-mcp": patch
+"@santi020k/lumen-mcp": minor
 ---
 
 Make `lumen doctor` workspace-aware, ignore generated build trees, parse real adapter imports,
