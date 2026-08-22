@@ -1,5 +1,18 @@
 ---
-import { Badge, Card, Icon, Input, Kbd, Label, Link } from '@santi020k/lumen-astro'
+import {
+  Badge,
+  Button,
+  Card,
+  Icon,
+  Input,
+  Kbd,
+  Label,
+  Link,
+  Progress,
+  Select,
+  Switch,
+  Tabs
+} from '@santi020k/lumen-astro'
 
 import {
   componentCategories,
@@ -61,6 +74,165 @@ const glassCount = componentDocs.filter(component => component.glass).length
         </div>
       </dl>
     </header>
+
+    <section class="components-live" aria-labelledby="components-live-title">
+      <div class="components-live__heading">
+        <div>
+          <p>Rendered with Lumen</p>
+          <h2 id="components-live-title">See the components in action</h2>
+        </div>
+        <p>
+          These are real components, not screenshots. Try the controls here, then open any
+          component to resize its preview, compare frameworks, and edit it in the browser.
+        </p>
+      </div>
+
+      <div class="components-live__grid">
+        <Card as="article" class="components-live-card">
+          <div
+            class="
+              components-live-card__preview
+              components-live-card__preview--actions
+            "
+          >
+            <Button>Continue</Button>
+            <Button variant="outline">Preview</Button>
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Actions</small><h3>Button</h3></div>
+            <Link href="/docs/components/button">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div class="components-live-card__preview">
+            <Label for="components-live-email">Email address</Label>
+            <Input
+              id="components-live-email"
+              name="components-live-email"
+              placeholder="you@example.com"
+              type="email"
+            />
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Forms</small><h3>Input</h3></div>
+            <Link href="/docs/components/input">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div class="components-live-card__preview">
+            <Card class="components-live-card__sample" variant="muted">
+              <Badge variant="success">Active</Badge>
+              <strong>Team workspace</strong>
+              <span>Everything your team needs to ship.</span>
+            </Card>
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Layout</small><h3>Card</h3></div>
+            <Link href="/docs/components/card">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div
+            class="
+              components-live-card__preview
+              components-live-card__preview--badges
+            "
+          >
+            <Badge>New</Badge>
+            <Badge variant="success">Ready</Badge>
+            <Badge variant="warning">Review</Badge>
+            <Badge variant="outline">Draft</Badge>
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Data display</small><h3>Badge</h3></div>
+            <Link href="/docs/components/badge">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div class="components-live-card__preview">
+            <Label class="components-live-switch" for="components-live-notifications">
+              <span><strong>Notifications</strong><small>Product updates and mentions</small></span>
+              <Switch checked id="components-live-notifications" name="components-live-notifications" />
+            </Label>
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Forms</small><h3>Switch</h3></div>
+            <Link href="/docs/components/switch">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div
+            class="
+              components-live-card__preview
+              components-live-card__preview--progress
+            "
+          >
+            <div><strong>Documentation</strong><span>72%</span></div>
+            <Progress aria-label="Documentation progress" value={72} />
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Feedback</small><h3>Progress</h3></div>
+            <Link href="/docs/components/progress">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div class="components-live-card__preview">
+            <Tabs initialValue="preview">
+              <div role="tablist" aria-label="Live component view">
+                <button
+                  aria-controls="components-live-preview-panel"
+                  aria-selected="true"
+                  id="components-live-preview-tab"
+                  role="tab"
+                >Preview</button>
+                <button
+                  aria-controls="components-live-code-panel"
+                  aria-selected="false"
+                  id="components-live-code-tab"
+                  role="tab"
+                >Code</button>
+              </div>
+              <div
+                aria-labelledby="components-live-preview-tab"
+                id="components-live-preview-panel"
+                role="tabpanel"
+              >A shared visual contract.</div>
+              <div
+                aria-labelledby="components-live-code-tab"
+                hidden
+                id="components-live-code-panel"
+                role="tabpanel"
+              >Astro, React, and Elements.</div>
+            </Tabs>
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Navigation</small><h3>Tabs</h3></div>
+            <Link href="/docs/components/tabs">Open playground</Link>
+          </div>
+        </Card>
+
+        <Card as="article" class="components-live-card">
+          <div class="components-live-card__preview">
+            <Label for="components-live-framework">Framework</Label>
+            <Select id="components-live-framework" name="components-live-framework" placeholder="Choose one">
+              <option value="astro">Astro</option>
+              <option value="react">React</option>
+              <option value="elements">Web Components</option>
+            </Select>
+          </div>
+          <div class="components-live-card__meta">
+            <div><small>Forms</small><h3>Select</h3></div>
+            <Link href="/docs/components/select">Open playground</Link>
+          </div>
+        </Card>
+      </div>
+    </section>
 
     <section class="components-patterns" aria-labelledby="component-patterns-title">
       <div class="components-patterns__heading">
@@ -299,6 +471,156 @@ const glassCount = componentDocs.filter(component => component.glass).length
   .components-explorer {
     display: grid;
     gap: 1.5rem;
+  }
+
+  .components-live {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .components-live__heading {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .components-live__heading > div > p {
+    margin-bottom: 0.25rem;
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .components-live__heading h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.65rem, 3vw, 2.25rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+
+  .components-live__heading > p {
+    max-width: 42rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .components-live__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .components-live-card {
+    display: grid;
+    min-height: 18rem;
+    grid-template-rows: minmax(11rem, 1fr) auto;
+    gap: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .components-live-card__preview {
+    display: grid;
+    align-content: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 1.35rem;
+    background:
+      radial-gradient(circle at 15% 0%, hsl(var(--brand) / 0.12), transparent 44%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted) / 0.72));
+  }
+
+  .components-live-card__preview--actions,
+  .components-live-card__preview--badges {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .components-live-card__preview--progress > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: hsl(var(--ink));
+    font-size: 0.82rem;
+  }
+
+  .components-live-card__sample {
+    display: grid;
+    gap: 0.45rem;
+    padding: 1rem;
+  }
+
+  .components-live-card__sample :global(.ui-badge) {
+    width: fit-content;
+  }
+
+  .components-live-card__sample strong {
+    color: hsl(var(--ink));
+    font-size: 0.9rem;
+  }
+
+  .components-live-card__sample > span {
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .components-live-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .components-live-switch > span {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .components-live-switch small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+
+  .components-live-card__meta {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .components-live-card__meta > div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .components-live-card__meta small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .components-live-card__meta h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .components-live-card__meta a {
+    font-size: 0.72rem;
+    font-weight: 800;
+    white-space: nowrap;
   }
 
   .components-patterns {
@@ -602,6 +924,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
   }
 
   @media (min-width: 48rem) {
+    .components-live__heading,
     .components-patterns__heading,
     .components-section__heading {
       grid-template-columns: minmax(12rem, 0.8fr) minmax(18rem, 1fr);

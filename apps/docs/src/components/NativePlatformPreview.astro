@@ -1,0 +1,132 @@
+---
+import {
+  Badge,
+  Card,
+  Icon,
+  Image
+} from '@santi020k/lumen-astro'
+
+import type { DocsPlatformId, PlatformGuide } from '../data/platforms'
+
+interface NativePreview {
+  alt: string
+  height: number
+  runtime: string
+  src: string
+  width: number
+}
+
+interface Props {
+  guide: PlatformGuide
+}
+
+const nativePreviews: Partial<Record<DocsPlatformId, NativePreview>> = {
+  android: {
+    alt: 'Lumen component gallery running in a native Jetpack Compose Android application',
+    height: 1920,
+    runtime: 'Jetpack Compose · Android emulator',
+    src: '/native-previews/android-compose.png',
+    width: 1080
+  },
+  apple: {
+    alt: 'Lumen component gallery rendered directly by the LumenUI SwiftUI package',
+    height: 1440,
+    runtime: 'SwiftUI · LumenUI package',
+    src: '/native-previews/apple-native.png',
+    width: 1640
+  },
+  'react-native': {
+    alt: 'Lumen component gallery running in a native React Native Android application',
+    height: 1920,
+    runtime: 'React Native · Android emulator',
+    src: '/native-previews/react-native-android.png',
+    width: 1080
+  }
+}
+
+const { guide } = Astro.props
+const preview = nativePreviews[guide.id]
+---
+
+{preview && (
+  <section class="native-preview docs-section" aria-labelledby="native-preview-title">
+    <div class="docs-section-heading">
+      <p>Real platform output</p>
+      <h2 id="native-preview-title">Rendered by {guide.label}</h2>
+      <p>
+        This is a static capture from a native preview host using the package in this repository.
+        The controls are not HTML elements and their interaction continues inside the native app.
+      </p>
+    </div>
+
+    <Card class="native-preview__frame" variant="muted">
+      <div class="native-preview__toolbar">
+        <Badge variant="outline">Native capture</Badge>
+        <span><Icon decorative name="monitor" size="sm" />{preview.runtime}</span>
+      </div>
+      <div class="native-preview__canvas">
+        <Image
+          alt={preview.alt}
+          height={preview.height}
+          loading="eager"
+          src={preview.src}
+          width={preview.width}
+        />
+      </div>
+    </Card>
+  </section>
+)}
+
+<style>
+  :global(.native-preview__frame) {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .native-preview__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .native-preview__toolbar > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .native-preview__canvas {
+    display: grid;
+    place-items: center;
+    min-height: 24rem;
+    padding: clamp(1rem, 4vw, 2.5rem);
+    background:
+      radial-gradient(circle at 50% 0%, hsl(var(--brand) / 0.12), transparent 42%),
+      hsl(var(--surface-strong));
+  }
+
+  .native-preview__canvas :global(img) {
+    display: block;
+    width: min(100%, 34rem);
+    height: auto;
+    max-height: 48rem;
+    object-fit: contain;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.25rem;
+    background: hsl(var(--canvas));
+    box-shadow: 0 1.5rem 4rem hsl(var(--ink) / 0.16);
+  }
+
+  @media (max-width: 38rem) {
+    .native-preview__toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

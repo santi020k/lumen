@@ -2867,7 +2867,7 @@ export const componentDocs: ComponentDoc[] = (
       'BarChart',
       'Data display',
       'Compares categorical or discrete-period values with grouped and stacked bars.',
-      '<BarChart aria-label="Downloads by project" heading="Package downloads" orientation="horizontal" series={[{ id: "downloads", label: "Downloads", data: [{ x: "Lumen", y: 18420 }, { x: "Observatory", y: 6320 }] }]} />'
+      '<BarChart aria-label="Downloads by project" heading="Package downloads" orientation="horizontal" series={[{ id: "downloads", label: "Downloads", data: [{ x: "Lumen", y: 18420 }, { x: "Astro Doctor", y: 6320 }] }]} />'
     ],
     [
       'Breadcrumb',

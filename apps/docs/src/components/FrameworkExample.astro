@@ -5,8 +5,7 @@ import {
   ButtonGroup,
   ButtonLink,
   CodeTabs,
-  Icon,
-  ThemeToggle
+  Icon
 } from '@santi020k/lumen-astro'
 
 import type { FrameworkSnippet } from '../lib/snippets'
@@ -35,7 +34,7 @@ const stackBlitzUrl = new URL('https://stackblitz.com/~/github.com/santi020k/lum
 
 stackBlitzUrl.searchParams.set('file', examplePath)
 
-stackBlitzUrl.searchParams.set(['initial', 'path'].join(''), `/docs/components/${componentSlug}`)
+stackBlitzUrl.searchParams.set(['initial', 'path'].join(''), `/docs/components/${componentSlug}/`)
 
 stackBlitzUrl.searchParams.set('startScript', 'docs:dev')
 
@@ -87,10 +86,14 @@ const codeTabItems = snippets.map(snippet => ({
         </Button>
       </ButtonGroup>
       <span class="framework-example__tool-divider" aria-hidden="true"></span>
-      <ThemeToggle
-        aria-label="Toggle playground color theme"
-        class="framework-example__icon-button"
-      />
+      <Button
+        aria-label="Toggle color theme"
+        data-theme-toggle
+        size="icon"
+        variant="ghost"
+      >
+        <Icon decorative name="sun-moon" size="sm" />
+      </Button>
       <Button
         aria-label="Toggle preview grid"
         aria-pressed="false"
@@ -283,8 +286,7 @@ const codeTabItems = snippets.map(snippet => ({
     padding: 0.15rem;
   }
 
-  .framework-example__tools :global(.ui-button),
-  .framework-example__tools :global(.ui-theme-toggle) {
+  .framework-example__tools :global(.ui-button) {
     width: 2.15rem;
     min-width: 2.15rem;
     height: 2.15rem;

@@ -1,6 +1,4 @@
 import SwiftUI
-import LumenSpacing
-import LumenRadius
 
 public enum LumenCardVariant: Sendable {
     case accent
