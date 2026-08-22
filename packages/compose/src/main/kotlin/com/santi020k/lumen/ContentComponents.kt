@@ -130,10 +130,10 @@ fun LumenGraphic(
         LumenGraphicTone.Brand -> colors.brand
         LumenGraphicTone.Neutral -> colors.inkMuted
     }
-    val semanticsModifier = if (label == null) {
-        Modifier.clearAndSetSemantics {}
-    } else {
-        Modifier.semantics { contentDescription = label }
+    val semanticsModifier = Modifier.clearAndSetSemantics {
+        if (label != null) {
+            contentDescription = label
+        }
     }
 
     Box(

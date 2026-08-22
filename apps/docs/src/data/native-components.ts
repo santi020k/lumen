@@ -2660,7 +2660,7 @@ const additionalDefinitions: ComponentDefinition[] = [
     examples: {
       android: `LumenGraphic(
     variant = LumenGraphicVariant.Orbit,
-    contentDescription = "Project overview"
+    label = "Project overview"
 ) {
     ProjectArtwork()
 }`,
@@ -2687,7 +2687,7 @@ const additionalDefinitions: ComponentDefinition[] = [
       property('size', 'sm · md · lg', 'md', 'Selects a shared native dimension.'),
       property('tone', 'brand · accent · neutral', 'brand', 'Selects the semantic decoration color.'),
       property(
-        { android: 'contentDescription', apple: 'label', 'react-native': 'label' },
+        'label',
         { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' },
         { android: 'null', apple: 'nil', 'react-native': 'undefined' },
         'Optionally exposes the composition as one labeled image.'
@@ -2821,10 +2821,22 @@ const additionalDefinitions: ComponentDefinition[] = [
       property('title / description', 'Native localized text', 'Description optional', 'Explains the decision.'),
       property('confirmLabel / cancelLabel', 'Native localized text', 'Cancel label: Cancel', 'Names both actions.'),
       property(
-        'destructive / confirmDisabled / confirmLoading',
-        'Boolean states',
+        { android: 'destructive', apple: 'confirmRole', 'react-native': 'destructive' },
+        { android: 'Boolean', apple: 'ButtonRole?', 'react-native': 'boolean' },
+        { android: 'false', apple: 'nil', 'react-native': 'false' },
+        'Communicates whether the confirm action is destructive.'
+      ),
+      property(
+        { android: 'confirmEnabled', apple: 'confirmDisabled', 'react-native': 'confirmDisabled' },
+        { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
+        { android: 'true', apple: 'false', 'react-native': 'false' },
+        'Controls whether the confirm action can be activated.'
+      ),
+      property(
+        'confirmLoading',
+        { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
         'false',
-        'Communicates confirm intent and asynchronous availability.'
+        'Communicates asynchronous confirmation progress.'
       )
     ],
     slug: 'alert-dialog',
