@@ -1,5 +1,13 @@
 # @santi020k/lumen-react-native
 
+## 0.2.0
+
+### Minor Changes
+
+- [#28](https://github.com/santi020k/lumen/pull/28) [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75) Thanks [@santi020k](https://github.com/santi020k)! - Add intentionally platform-specific native controls without requiring artificial adapter parity.
+  React Native gains a semantic pull-to-refresh control, SwiftUI gains a bounded date field with
+  validation context, and Compose gains a Material floating action button with Lumen intents and sizes.
+
 ## 0.1.0
 
 ### Minor Changes

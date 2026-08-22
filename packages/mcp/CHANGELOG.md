@@ -1,5 +1,20 @@
 # @santi020k/lumen-mcp
 
+## 1.3.0
+
+### Patch Changes
+
+- [#28](https://github.com/santi020k/lumen/pull/28) [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75) Thanks [@santi020k](https://github.com/santi020k)! - Add intentionally platform-specific native controls without requiring artificial adapter parity.
+  React Native gains a semantic pull-to-refresh control, SwiftUI gains a bounded date field with
+  validation context, and Compose gains a Material floating action button with Lumen intents and sizes.
+
+- [#28](https://github.com/santi020k/lumen/pull/28) [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75) Thanks [@santi020k](https://github.com/santi020k)! - Let SwiftUI and Compose applications integrate product-owned themes through public native APIs.
+  Swift palettes now have a public initializer and can be injected without forcing the preferred
+  system appearance. Compose can map an existing Material 3 color scheme into Lumen semantic roles,
+  preserve explicit product colors, and reuse product typography and shapes through one provider.
+  Move consumable Compose plugin versions to the standalone settings boundary, enforce Android lint
+  warnings as errors, refresh the native toolchain baseline, and document release-pinned installation.
+
 ## 1.2.0
 
 ### Minor Changes

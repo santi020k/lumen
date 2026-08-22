@@ -1,5 +1,12 @@
 # @santi020k/lumen-playground-react-native
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75)]:
+  - @santi020k/lumen-react-native@0.2.0
+
 ## 0.0.1
 
 ### Patch Changes
