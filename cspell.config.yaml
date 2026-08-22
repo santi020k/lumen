@@ -1,6 +1,7 @@
 version: "0.2"
 language: en
 words:
+  - swiftui
   - aaronmgz
   - activedescendant
   - aeiou
@@ -15,10 +16,13 @@ words:
   - Anchor
   - AnimatedLogo
   - AnimatedPortrait
+  - androidx
   - astrojs
+  - archivebox
   - autobuild
   - Autobuild
   - Avenir
+  - avdmanager
   - blockquotes
   - buttonlink
   - ButtonLink
@@ -27,6 +31,9 @@ words:
   - Cascader
   - cascaders
   - Chakra
+  - checkmark
+  - circlepath
+  - cmdline
   - commitizen
   - commitlint
   - commitprompt
@@ -40,15 +47,22 @@ words:
   - describedby
   - descriptions
   - Descriptions
+  - desktopcomputer
+  - deepmerge
   - dismissable
   - dogfooded
+  - Dokka
   - dropzone
   - esbuild
+  - esac
   - eslintcache
+  - exclamationmark
   - fileupload
   - FileUpload
   - fortawesome
+  - gearshape
   - geolocation
+  - getprop
   - glassmorphism
   - gradientdivider
   - GradientDivider
@@ -61,12 +75,17 @@ words:
   - hookform
   - inputmode
   - jsdom
+  - Jetpack
   - knip
   - labelledby
+  - laptopcomputer
   - lede
+  - largecircle
   - linecap
   - llms
   - lucide
+  - magnifyingglass
+  - macwindow
   - Lumen
   - maxlength
   - memudo
@@ -74,6 +93,8 @@ words:
   - Mentions
   - microtask
   - microtasks
+  - Millis
+  - minimatch
   - modelcontextprotocol
   - noopener
   - noreferrer
@@ -85,6 +106,8 @@ words:
   - popconfirm
   - Popconfirm
   - postlens
+  - Pressable
+  - Proguard
   - preheading
   - qrcode
   - QRCode
@@ -111,10 +134,13 @@ words:
   - Stepper
   - stylesheet
   - stylelintcache
+  - subnavigation
+  - swiftshader
   - swrow
   - textareas
   - toolbar
   - Toolbar
+  - toggleable
   - Theo
   - Tour
   - transfer
@@ -130,6 +156,7 @@ words:
   - unrs
   - unshown
   - unstub
+  - uppercased
   - valuemax
   - valuenow
   - viewports
@@ -147,6 +174,14 @@ words:
   - workstream
   - workstreams
   - workspaces
+  - workscene
+  - xmark
+  - xcodegen
+  - xcodeproj
+  - reactnative
+  - temurin
+  - sdkmanager
+  - gradlew
   - amannn
   - autorelease
   - ededed
@@ -162,3 +197,12 @@ ignorePaths:
   - .astro
   - .turbo
   - packages/mcp/data/**
+  - packages/compose/gradle.properties
+  - packages/compose/gradle/wrapper/**
+  - packages/compose/gradlew
+  - packages/compose/gradlew.bat
+  - apps/docs/native-previews/android-compose/gradle.properties
+  - apps/playground-android/gradle.properties
+  - apps/playground-apple/LumenApplePlayground.xcodeproj/**
+  - apps/playground-apple/Supporting/Info.plist
+  - apps/playground-apple/project.yml

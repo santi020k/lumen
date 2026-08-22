@@ -1,0 +1,34 @@
+---
+const endpoint = import.meta.env.PUBLIC_EXPOSURE_ANALYTICS_ENDPOINT?.trim() ?? ''
+---
+
+<script is:inline define:vars={{ endpoint }}>
+  if (!document.documentElement.dataset.exposureMetricsReady) {
+    document.documentElement.dataset.exposureMetricsReady = 'true'
+
+    document.addEventListener('click', event => {
+      const target = event.target instanceof Element ? event.target.closest('[data-exposure-event]') : null
+
+      if (!(target instanceof HTMLAnchorElement)) return
+
+      const name = target.dataset.exposureEvent
+
+      if (!name) return
+
+      const detail = {
+        destination: target.href,
+        name,
+        path: window.location.pathname
+      }
+
+      document.dispatchEvent(new CustomEvent('lumen:exposure', { detail }))
+
+      if (!endpoint) return
+
+      navigator.sendBeacon(endpoint, JSON.stringify({
+        ...detail,
+        occurredAt: new Date().toISOString()
+      }))
+    })
+  }
+</script>

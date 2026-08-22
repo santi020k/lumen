@@ -1,0 +1,111 @@
+---
+import {
+  ContextNavigation,
+  Icon,
+  Label,
+  Link,
+  NativeSelect,
+  NavigationMenu
+} from '@santi020k/lumen-astro'
+
+import { getDocsContextLinks, isDocsContextLinkCurrent } from '../data/docs-context-navigation'
+import { getDocsPlatform, platformGuides } from '../data/platforms'
+
+interface Props {
+  currentPath: string
+}
+
+const { currentPath } = Astro.props
+const activePlatform = getDocsPlatform(currentPath)
+const activeGuide = activePlatform ? platformGuides.find(guide => guide.id === activePlatform) : undefined
+const links = getDocsContextLinks(activePlatform)
+---
+
+<div
+  class="docs-context-navigation"
+  data-docs-platform-selector
+  data-current-platform={activePlatform ?? ''}
+>
+  <ContextNavigation class="docs-context-navigation__shell" variant="unstyled">
+    <div class="docs-context-navigation__platform" slot="context">
+      <Icon decorative name="panels-top-left" size="sm" />
+      <div>
+        <Label for="docs-context-platform-select">Documentation for</Label>
+        <NativeSelect
+          id="docs-context-platform-select"
+          aria-label="Choose documentation platform"
+          data-docs-platform-select
+          size="sm"
+        >
+          <option value="/docs" selected={!activePlatform}>All platforms</option>
+          {platformGuides.map(guide => (
+            <option value={guide.href} selected={activePlatform === guide.id}>{guide.shortLabel}</option>
+          ))}
+        </NativeSelect>
+      </div>
+    </div>
+
+    <NavigationMenu
+      class="docs-context-navigation__links"
+      aria-label={`${activeGuide?.shortLabel ?? 'All platforms'} documentation`}
+      variant="unstyled"
+    >
+      {links.map(link => {
+        const isCurrent = isDocsContextLinkCurrent(link, currentPath)
+
+        return (
+          <Link
+            class="docs-context-navigation__link no-underline"
+            href={link.href}
+            aria-current={isCurrent ? 'page' : undefined}
+          >
+            {link.label}
+          </Link>
+        )
+      })}
+    </NavigationMenu>
+  </ContextNavigation>
+</div>
+
+<script>
+  const docsPlatformStorageKey = 'lumen-docs-platform'
+
+  const initDocsContextNavigation = (): void => {
+    const container = document.querySelector<HTMLElement>('.docs-context-navigation')
+
+    if (!container || container.dataset.initialized === 'true') return
+
+    const select = container.querySelector<HTMLSelectElement>('[data-docs-platform-select]')
+
+    if (!select) return
+
+    select.addEventListener('change', () => {
+      if (select.value === '/docs') {
+        window.localStorage.removeItem(docsPlatformStorageKey)
+      } else {
+        window.localStorage.setItem(docsPlatformStorageKey, select.value)
+      }
+
+      window.location.assign(select.value)
+    })
+
+    const links = container.querySelector<HTMLElement>('.docs-context-navigation__links')
+    const currentLink = links?.querySelector<HTMLElement>('[aria-current="page"]')
+
+    if (links && currentLink) {
+      const linksRect = links.getBoundingClientRect()
+      const currentLinkRect = currentLink.getBoundingClientRect()
+
+      const centeredOffset = links.scrollLeft + currentLinkRect.left - linksRect.left -
+        (links.clientWidth - currentLink.clientWidth) / 2
+
+      links.scrollLeft = Math.max(0, centeredOffset)
+    }
+
+    container.dataset.initialized = 'true'
+  }
+
+  initDocsContextNavigation()
+
+  document.addEventListener('astro:after-swap', initDocsContextNavigation)
+</script>

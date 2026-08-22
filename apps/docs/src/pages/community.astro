@@ -1,0 +1,741 @@
+---
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  Icon,
+  Image,
+  Link,
+  Marker
+} from '@santi020k/lumen-astro'
+
+import NewsletterSignup from '../components/NewsletterSignup.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const projects = [
+  {
+    category: 'iOS photo studio',
+    description: 'An editorial product experience spanning an Astro launch site and a native SwiftUI application.',
+    href: 'https://postlens.santi020k.com',
+    image: '/use-cases/postlens-desktop-live.jpg',
+    mobileImage: '/use-cases/postlens-mobile-live.jpg',
+    name: 'PostLens',
+    stack: 'Astro · SwiftUI'
+  },
+  {
+    category: 'Developer tooling',
+    description: 'A focused documentation and product surface for improving quality, security, and accessibility in Astro projects.',
+    href: 'https://doctor.santi020k.com',
+    image: '/use-cases/astro-doctor-desktop-live.jpg',
+    mobileImage: null,
+    name: 'Astro Doctor',
+    stack: 'Astro · Lumen'
+  },
+  {
+    category: 'Theme ecosystem',
+    description: 'A shared visual language carried across developer tools, browser surfaces, and documentation.',
+    href: 'https://theme.santi020k.com',
+    image: '/use-cases/theme-desktop.jpg',
+    mobileImage: null,
+    name: 'Santi020k Themes',
+    stack: 'Web · Design tokens'
+  }
+] as const
+
+const [featuredProject, ...projectGrid] = projects
+
+const waysToJoin = [
+  {
+    description: 'Show what you shipped, the platform you chose, and the Lumen pieces that helped.',
+    href: 'https://github.com/santi020k/lumen/issues/new?template=showcase.yml',
+    icon: 'image-plus',
+    label: 'Submit your project'
+  },
+  {
+    description: 'Share the one friction point or missing capability that would improve your next build.',
+    href: 'https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml',
+    icon: 'message-square-text',
+    label: 'Take the adoption survey'
+  },
+  {
+    description: 'Follow releases and new examples directly from GitHub without joining another mailing list.',
+    href: 'https://github.com/santi020k/lumen/subscription',
+    icon: 'bell',
+    label: 'Watch Lumen updates'
+  }
+] as const
+---
+
+<BaseLayout
+  description="Meet the projects, contributors, and teams building accessible interfaces with Lumen UI."
+  title="Community — Lumen UI"
+>
+  <main class="community-page">
+    <section class="community-hero">
+      <div class="community-hero__inner">
+        <div class="community-hero__copy">
+          <Badge variant="outline">The Lumen community</Badge>
+          <h1>Build in public. Make the system better.</h1>
+          <p>
+            Lumen gets sharper every time someone ships a real product, finds an awkward edge, or
+            shares a better way forward. Bring the work. Bring the friction. Help shape what comes
+            next.
+          </p>
+          <div class="community-actions">
+            <ButtonLink
+              data-exposure-event="community-submit-project"
+              href="https://github.com/santi020k/lumen/issues/new?template=showcase.yml"
+              newTab
+              showArrow
+            >
+              Submit your project
+            </ButtonLink>
+            <ButtonLink href="/guides" variant="secondary">Build something first</ButtonLink>
+          </div>
+        </div>
+        <div class="community-hero__loop" aria-label="How the community improves Lumen">
+          <span>The open loop</span>
+          <ol>
+            <li>
+              <span>01</span>
+              <div>
+                <Icon decorative name="rocket" />
+                <div>
+                  <strong>Ship something real</strong>
+                  <p>Use Lumen where the constraints are honest.</p>
+                </div>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <Icon decorative name="message-square-text" />
+                <div>
+                  <strong>Share what bends</strong>
+                  <p>Show the gap, the workaround, or the missing piece.</p>
+                </div>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <Icon decorative name="sparkles" />
+                <div>
+                  <strong>Improve the system</strong>
+                  <p>Turn real evidence into better defaults for everyone.</p>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-section" aria-labelledby="community-showcase-title">
+      <header class="community-section__heading">
+        <div>
+          <Marker variant="success">Community showcase</Marker>
+          <h2 id="community-showcase-title">Made with Lumen</h2>
+        </div>
+        <p>Real products reveal what documentation and component tests cannot.</p>
+      </header>
+      <div class="community-showcase">
+        <Card as="article" class="community-featured-project" variant="interactive">
+          <div class="community-featured-project__visual">
+            <Image
+              alt={`${featuredProject.name} desktop interface preview`}
+              class="community-featured-project__desktop"
+              height="900"
+              loading="eager"
+              src={featuredProject.image}
+              width="1440"
+            />
+            {featuredProject.mobileImage && (
+              <Image
+                alt={`${featuredProject.name} mobile interface preview`}
+                class="community-featured-project__mobile"
+                height="844"
+                loading="eager"
+                src={featuredProject.mobileImage}
+                width="390"
+              />
+            )}
+            <span class="community-featured-project__label">Featured build</span>
+          </div>
+          <div class="community-project__body community-project__body--featured">
+            <div>
+              <span>{featuredProject.category}</span>
+              <Badge variant="outline">{featuredProject.stack}</Badge>
+            </div>
+            <h3>{featuredProject.name}</h3>
+            <p>{featuredProject.description}</p>
+            <Link href={featuredProject.href} rel="noopener noreferrer" target="_blank">
+              Visit project <Icon decorative name="arrow-up-right" size="sm" />
+            </Link>
+          </div>
+        </Card>
+
+        <div class="community-projects">
+          {projectGrid.map(project => (
+            <Card as="article" class="community-project" variant="interactive">
+              <Image
+                alt={`${project.name} interface preview`}
+                height="900"
+                loading="lazy"
+                src={project.image}
+                width="1440"
+              />
+              <div class="community-project__body">
+                <div>
+                  <span>{project.category}</span>
+                  <Badge variant="outline">{project.stack}</Badge>
+                </div>
+                <h3>{project.name}</h3>
+                <p>{project.description}</p>
+                <Link href={project.href} rel="noopener noreferrer" target="_blank">
+                  Visit project <Icon decorative name="arrow-up-right" size="sm" />
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="community-participate" aria-labelledby="community-join-title">
+      <header>
+        <div>
+          <Marker>Shape what comes next</Marker>
+          <h2 id="community-join-title">Pick your way in.</h2>
+        </div>
+        <p>
+          No Discord to keep up with. No standing meeting. Every path is asynchronous, public, and
+          useful even if you only have five minutes.
+        </p>
+      </header>
+      <div class="community-participate__list">
+        {waysToJoin.map((item, index) => (
+          <article class="community-participate__item">
+            <span>0{index + 1}</span>
+            <div class="community-participate__icon">
+              <Icon decorative name={item.icon} />
+            </div>
+            <div class="community-participate__copy">
+              <h3>{item.label}</h3>
+              <p>{item.description}</p>
+            </div>
+            <ButtonLink
+              data-exposure-event={`community-${item.icon}`}
+              href={item.href}
+              newTab
+              showArrow
+              variant="secondary"
+            >
+              {item.label}
+            </ButtonLink>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <div class="community-closing">
+      <NewsletterSignup />
+
+      <section class="community-team-callout" aria-labelledby="community-teams-title">
+        <span><Icon decorative name="building-2" /></span>
+        <div>
+          <Badge variant="secondary">For product teams</Badge>
+          <h2 id="community-teams-title">Taking Lumen beyond one product?</h2>
+          <p>
+            Bring your platforms, constraints, and migration questions. Help Lumen grow around the
+            reality of shared product systems.
+          </p>
+        </div>
+        <ButtonLink href="/teams" showArrow>Explore the team path</ButtonLink>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .community-page {
+    width: min(100% - 2.5rem, 78rem);
+    margin-inline: auto;
+    padding-block: 0 clamp(3rem, 7vw, 6rem);
+  }
+
+  .community-hero {
+    position: relative;
+    left: 50%;
+    width: 100dvw;
+    overflow: hidden;
+    margin-left: -50dvw;
+    border-bottom: 1px solid hsl(var(--line));
+    background:
+      linear-gradient(hsl(var(--line) / 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--line) / 0.35) 1px, transparent 1px),
+      radial-gradient(circle at 78% 24%, hsl(var(--brand) / 0.18), transparent 32%);
+    background-size: 4rem 4rem, 4rem 4rem, auto;
+  }
+
+  .community-hero__inner {
+    display: grid;
+    width: min(100% - 2.5rem, 78rem);
+    gap: clamp(3rem, 7vw, 7rem);
+    margin-inline: auto;
+    padding-block: clamp(3rem, 6vw, 4rem) clamp(3rem, 5vw, 3.5rem);
+  }
+
+  .community-hero__copy,
+  .community-hero__loop {
+    position: relative;
+    z-index: 1;
+  }
+
+  .community-hero__copy {
+    max-width: 52rem;
+  }
+
+  .community-hero h1 {
+    max-width: 12ch;
+    margin-top: 1.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(3.4rem, 7vw, 5.2rem);
+    font-weight: 900;
+    letter-spacing: -0.07em;
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+
+  .community-hero__copy > p {
+    max-width: 39rem;
+    margin-top: 2rem;
+    color: hsl(var(--ink-soft));
+    font-size: clamp(1rem, 2vw, 1.18rem);
+    line-height: 1.75;
+  }
+
+  .community-hero__loop {
+    display: grid;
+    gap: 1rem;
+    align-self: end;
+    padding: 0.5rem 0;
+  }
+
+  .community-hero__loop > span {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .community-hero__loop ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .community-hero__loop li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.8rem;
+    padding-block: 1.15rem;
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .community-hero__loop li:last-child {
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .community-hero__loop li > span {
+    color: hsl(var(--ink-muted));
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .community-hero__loop li > div {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .community-hero__loop li :global(.ui-icon) {
+    color: hsl(var(--brand));
+  }
+
+  .community-hero__loop strong {
+    display: block;
+    color: hsl(var(--ink));
+  }
+
+  .community-hero__loop p {
+    margin-top: 0.2rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+
+  .community-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .community-section {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .community-section__heading {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .community-section__heading h2,
+  .community-team-callout h2 {
+    max-width: 14ch;
+    margin-top: 0.75rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .community-section__heading > p {
+    margin-top: 0;
+  }
+
+  .community-showcase {
+    display: grid;
+    gap: 1rem;
+  }
+
+  :global(.community-featured-project.ui-card),
+  :global(.community-project.ui-card) {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .community-featured-project__visual {
+    position: relative;
+    min-height: clamp(22rem, 58vw, 38rem);
+    overflow: hidden;
+    border-bottom: 1px solid hsl(var(--line));
+    background:
+      radial-gradient(circle at 80% 20%, hsl(var(--brand) / 0.28), transparent 32%),
+      hsl(var(--surface-strong));
+    isolation: isolate;
+  }
+
+  .community-featured-project__visual::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, transparent 48%, hsl(var(--canvas) / 0.48));
+    content: '';
+    pointer-events: none;
+  }
+
+  .community-featured-project__visual :global(.community-featured-project__desktop.ui-image) {
+    position: absolute;
+    top: 7%;
+    left: 6%;
+    width: 86%;
+    height: auto;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    box-shadow: 0 2rem 5rem hsl(var(--canvas) / 0.42);
+  }
+
+  .community-featured-project__visual :global(.community-featured-project__mobile.ui-image) {
+    position: absolute;
+    right: 5%;
+    bottom: 1rem;
+    z-index: 2;
+    width: clamp(9rem, 26%, 15rem);
+    height: auto;
+    border: 0.4rem solid hsl(var(--surface-strong));
+    border-radius: 1.6rem;
+    box-shadow: 0 1.5rem 4rem hsl(var(--canvas) / 0.7);
+  }
+
+  .community-featured-project__label {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    z-index: 3;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 999px;
+    background: hsl(var(--surface) / 0.9);
+    color: hsl(var(--ink));
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .community-projects {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .community-project :global(.ui-image) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .community-project__body {
+    padding: 1.35rem;
+  }
+
+  .community-project__body--featured {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .community-project__body > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+  }
+
+  .community-project h3,
+  .community-featured-project h3 {
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  .community-featured-project h3 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: -0.035em;
+  }
+
+  .community-project p,
+  .community-featured-project p {
+    margin-top: 0.55rem;
+  }
+
+  .community-project :global(a),
+  .community-featured-project :global(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1rem;
+  }
+
+  .community-participate {
+    display: grid;
+    gap: clamp(2.5rem, 7vw, 6rem);
+    margin-top: clamp(4.5rem, 8vw, 5rem);
+    padding-block: clamp(2.5rem, 4vw, 3rem);
+    border-block: 1px solid hsl(var(--line));
+  }
+
+  .community-participate header h2 {
+    max-width: 10ch;
+    margin-top: 0.9rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.7rem, 5vw, 4.25rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.94;
+  }
+
+  .community-participate header > p {
+    max-width: 31rem;
+    margin-top: 1.5rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.75;
+  }
+
+  .community-participate__list {
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .community-participate__item {
+    display: grid;
+    grid-template-columns: 2rem 3rem minmax(0, 1fr);
+    align-items: start;
+    gap: 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .community-participate__item > span {
+    padding-top: 0.8rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .community-participate__icon {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border-radius: 50%;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .community-participate__copy h3 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.2rem, 2vw, 1.55rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  .community-participate__copy p {
+    max-width: 34rem;
+    margin-top: 0.4rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
+  .community-participate__item :global(.ui-button-link) {
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  .community-closing {
+    display: grid;
+    align-items: start;
+    gap: 1rem;
+    margin-top: clamp(4.5rem, 8vw, 7rem);
+  }
+
+  .community-closing :global(.newsletter-signup.ui-card) {
+    align-content: start;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 0;
+  }
+
+  .community-closing :global(.newsletter-signup__copy) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .community-team-callout {
+    display: grid;
+    align-items: start;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 4vw, 2rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .community-team-callout > span {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border-radius: 50%;
+    background: hsl(var(--surface-strong));
+    color: hsl(var(--brand));
+  }
+
+  .community-team-callout h2 {
+    max-width: 18ch;
+    margin-top: 0.8rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.8rem, 3vw, 2.25rem);
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    line-height: 1.03;
+  }
+
+  .community-team-callout p {
+    margin-top: 0.8rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
+  @media (min-width: 48rem) {
+    .community-projects {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .community-section__heading {
+      grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+    }
+
+    .community-participate__item {
+      grid-template-columns: 2rem 3rem minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .community-participate__item > span {
+      padding-top: 0;
+    }
+
+    .community-participate__item :global(.ui-button-link) {
+      grid-column: auto;
+      justify-self: end;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .community-hero__inner {
+      grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 0.55fr);
+    }
+
+    .community-showcase {
+      grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.55fr);
+    }
+
+    .community-projects {
+      grid-template-columns: 1fr;
+    }
+
+    .community-project :global(.ui-image) {
+      aspect-ratio: 16 / 8;
+    }
+
+    .community-project__body {
+      padding: 1.1rem 1.25rem 1.25rem;
+    }
+
+    .community-project h3 {
+      margin-top: 0.7rem;
+    }
+
+    .community-project p {
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .community-participate {
+      grid-template-columns: minmax(18rem, 0.68fr) minmax(0, 1.32fr);
+    }
+
+    .community-closing {
+      grid-template-columns: minmax(0, 1.25fr) minmax(19rem, 0.75fr);
+    }
+
+    .community-team-callout :global(.ui-button-link) {
+      margin-top: auto;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .community-hero {
+      background-size: 2.75rem 2.75rem, 2.75rem 2.75rem, auto;
+    }
+
+    .community-participate__item :global(.ui-button-link) {
+      grid-column: 2 / -1;
+    }
+  }
+</style>

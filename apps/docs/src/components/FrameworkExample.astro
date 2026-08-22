@@ -1,19 +1,42 @@
 ---
-import { Badge, CodeTabs, Icon } from '@santi020k/lumen-astro'
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  ButtonLink,
+  CodeTabs,
+  Icon
+} from '@santi020k/lumen-astro'
 
 import type { FrameworkSnippet } from '../lib/snippets'
 
 interface Props {
+  componentName: string
+  examplePath?: string
   groupId: string
   previewClass?: string
   snippets: FrameworkSnippet[]
 }
 
 const {
+  componentName,
+  examplePath = `apps/docs/src/examples/${componentName}.astro`,
   groupId,
   previewClass = 'component-doc-preview',
   snippets
 } = Astro.props
+
+const componentSlug = componentName
+  .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
+  .toLowerCase()
+
+const stackBlitzUrl = new URL('https://stackblitz.com/~/github.com/santi020k/lumen')
+
+stackBlitzUrl.searchParams.set('file', examplePath)
+
+stackBlitzUrl.searchParams.set(['initial', 'path'].join(''), `/docs/components/${componentSlug}/`)
+
+stackBlitzUrl.searchParams.set('startScript', 'docs:dev')
 
 const codeTabItems = snippets.map(snippet => ({
   code: snippet.code,
@@ -32,14 +55,81 @@ const codeTabItems = snippets.map(snippet => ({
       </Badge>
       <span>Same visual contract, native framework API</span>
     </div>
-    <span class="framework-example__status">
-      <Icon decorative name="shield-check" size="sm" />
-      Catalog adapter available
-    </span>
+    <div class="framework-example__tools">
+      <ButtonGroup aria-label="Preview width">
+        <Button
+          aria-label="Desktop preview width"
+          aria-pressed="true"
+          data-playground-width="desktop"
+          size="icon"
+          variant="ghost"
+        >
+          <Icon decorative name="monitor" size="sm" />
+        </Button>
+        <Button
+          aria-label="Tablet preview width"
+          aria-pressed="false"
+          data-playground-width="tablet"
+          size="icon"
+          variant="ghost"
+        >
+          <Icon decorative name="tablet" size="sm" />
+        </Button>
+        <Button
+          aria-label="Phone preview width"
+          aria-pressed="false"
+          data-playground-width="phone"
+          size="icon"
+          variant="ghost"
+        >
+          <Icon decorative name="smartphone" size="sm" />
+        </Button>
+      </ButtonGroup>
+      <span class="framework-example__tool-divider" aria-hidden="true"></span>
+      <Button
+        aria-label="Toggle color theme"
+        data-theme-toggle
+        size="icon"
+        variant="ghost"
+      >
+        <Icon decorative name="sun-moon" size="sm" />
+      </Button>
+      <Button
+        aria-label="Toggle preview grid"
+        aria-pressed="false"
+        data-playground-grid
+        size="icon"
+        variant="ghost"
+      >
+        <Icon decorative name="grid-3x3" size="sm" />
+      </Button>
+      <Button
+        aria-label="View preview fullscreen"
+        data-playground-fullscreen
+        size="icon"
+        variant="ghost"
+      >
+        <Icon decorative name="maximize" size="sm" />
+      </Button>
+      <Button
+        aria-label="Reset playground"
+        data-playground-reset
+        size="icon"
+        variant="ghost"
+      >
+        <Icon decorative name="rotate-ccw" size="sm" />
+      </Button>
+    </div>
   </div>
 
-  <div class:list={[previewClass, 'docs-preview', 'framework-example__preview']}>
-    <slot />
+  <div class="framework-example__canvas" data-playground-canvas data-playground-grid-visible="false">
+    <div
+      class:list={[previewClass, 'docs-preview', 'framework-example__preview']}
+      data-playground-preview
+      data-playground-viewport="desktop"
+    >
+      <slot />
+    </div>
   </div>
 
   <div class="framework-example__code">
@@ -50,12 +140,23 @@ const codeTabItems = snippets.map(snippet => ({
         three packages share the same tokens and <code>ui-*</code> class contract.
       </span>
     </div>
-    <CodeTabs
-      ariaLabel="Framework"
-      class="framework-example__code-tabs"
-      items={codeTabItems}
-      storageKey="lumen-docs-framework"
-    />
+    <div class="framework-example__code-actions">
+      <CodeTabs
+        ariaLabel="Framework"
+        class="framework-example__code-tabs"
+        items={codeTabItems}
+        storageKey="lumen-docs-framework"
+      />
+      <ButtonLink
+        class="framework-example__browser-link"
+        href={stackBlitzUrl.toString()}
+        newTab
+        showArrow
+        variant="secondary"
+      >
+        Edit {componentName} in browser
+      </ButtonLink>
+    </div>
   </div>
 </div>
 
@@ -68,6 +169,29 @@ const codeTabItems = snippets.map(snippet => ({
 
       const label = example.querySelector<HTMLElement>('[data-framework-label]')
       const tabsRoot = example.querySelector<HTMLElement>('.framework-example__code-tabs')
+      const canvas = example.querySelector<HTMLElement>('[data-playground-canvas]')
+      const preview = example.querySelector<HTMLElement>('[data-playground-preview]')
+      const gridButton = example.querySelector<HTMLButtonElement>('[data-playground-grid]')
+      const fullscreenButton = example.querySelector<HTMLButtonElement>('[data-playground-fullscreen]')
+      const resetButton = example.querySelector<HTMLButtonElement>('[data-playground-reset]')
+      const widthButtons = example.querySelectorAll<HTMLButtonElement>('[data-playground-width]')
+
+      const setViewport = (viewport: string) => {
+        if (preview) preview.dataset.playgroundViewport = viewport
+
+        for (const button of widthButtons) {
+          button.setAttribute(
+            'aria-pressed',
+            String(button.dataset.playgroundWidth === viewport)
+          )
+        }
+      }
+
+      const setGridVisible = (visible: boolean) => {
+        if (canvas) canvas.dataset.playgroundGridVisible = String(visible)
+
+        gridButton?.setAttribute('aria-pressed', String(visible))
+      }
 
       const updateLabel = () => {
         const selectedTab = tabsRoot?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
@@ -77,6 +201,30 @@ const codeTabItems = snippets.map(snippet => ({
       }
 
       tabsRoot?.addEventListener('ui:tabs-change', updateLabel)
+
+      for (const button of widthButtons) {
+        button.addEventListener('click', () => {
+          setViewport(button.dataset.playgroundWidth ?? 'desktop')
+        })
+      }
+
+      gridButton?.addEventListener('click', () => {
+        setGridVisible(gridButton.getAttribute('aria-pressed') !== 'true')
+      })
+
+      fullscreenButton?.addEventListener('click', () => {
+        if (!canvas?.requestFullscreen) return
+
+        void canvas.requestFullscreen()
+      })
+
+      resetButton?.addEventListener('click', () => {
+        setViewport('desktop')
+
+        setGridVisible(false)
+
+        preview?.scrollTo({ left: 0, top: 0 })
+      })
 
       requestAnimationFrame(updateLabel)
     }
@@ -101,7 +249,7 @@ const codeTabItems = snippets.map(snippet => ({
 
   .framework-example__toolbar,
   .framework-example__target,
-  .framework-example__status {
+  .framework-example__tools {
     display: flex;
     align-items: center;
   }
@@ -127,21 +275,82 @@ const codeTabItems = snippets.map(snippet => ({
     gap: 0.35rem;
   }
 
-  .framework-example__status {
-    gap: 0.35rem;
-    color: hsl(var(--success));
-    font-size: 0.72rem;
-    font-weight: 800;
+  .framework-example__tools {
+    gap: 0.3rem;
+  }
+
+  .framework-example__tools :global(.ui-button-group) {
+    gap: 0.15rem;
+    border-radius: 999px;
+    background: hsl(var(--surface) / 0.8);
+    padding: 0.15rem;
+  }
+
+  .framework-example__tools :global(.ui-button) {
+    width: 2.15rem;
+    min-width: 2.15rem;
+    height: 2.15rem;
+    min-height: 2.15rem;
+    padding: 0;
+  }
+
+  .framework-example__tools :global([aria-pressed="true"]) {
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand-solid));
+  }
+
+  .framework-example__tool-divider {
+    width: 1px;
+    height: 1.4rem;
+    margin-inline: 0.15rem;
+    background: hsl(var(--line));
+  }
+
+  .framework-example__canvas {
+    display: grid;
+    min-height: 15rem;
+    overflow: auto;
+    background: hsl(var(--canvas));
+    padding: 1rem;
+  }
+
+  .framework-example__canvas[data-playground-grid-visible="true"] {
+    background-color: hsl(var(--canvas));
+    background-image:
+      linear-gradient(hsl(var(--line) / 0.45) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--line) / 0.45) 1px, transparent 1px);
+    background-size: 1rem 1rem;
+  }
+
+  .framework-example__canvas:fullscreen {
+    align-content: center;
+    padding: clamp(1rem, 4vw, 4rem);
   }
 
   .framework-example__preview {
-    min-height: 15rem;
+    align-self: center;
+    justify-self: center;
+    transition: max-width 180ms ease, box-shadow 180ms ease;
+  }
+
+  .framework-example__preview[data-playground-viewport="tablet"] {
+    max-width: 48rem;
+  }
+
+  .framework-example__preview[data-playground-viewport="phone"] {
+    max-width: 24rem;
+  }
+
+  .framework-example__canvas .framework-example__preview {
+    min-height: 13rem;
     border: 0;
-    border-radius: 0;
+    border-radius: 0.85rem;
     background:
       radial-gradient(circle at 5% 0%, hsl(var(--brand) / 0.09), transparent 35%),
       linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted) / 0.74));
-    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.12);
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.12),
+      0 1rem 2.5rem hsl(var(--ink) / 0.08);
   }
 
   .framework-example__code {
@@ -155,6 +364,16 @@ const codeTabItems = snippets.map(snippet => ({
   .framework-example__code > div:first-child {
     display: grid;
     gap: 0.2rem;
+  }
+
+  .framework-example__code-actions {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .framework-example__browser-link {
+    justify-self: start;
   }
 
   .framework-example__code p,
@@ -176,8 +395,14 @@ const codeTabItems = snippets.map(snippet => ({
   }
 
   @media (max-width: 640px) {
-    .framework-example__status {
+    .framework-example__tools {
       width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.15rem;
+    }
+
+    .framework-example__canvas {
+      padding: 0.75rem;
     }
   }
 </style>

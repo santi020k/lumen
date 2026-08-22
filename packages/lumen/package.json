@@ -69,10 +69,18 @@
     "url": "https://github.com/santi020k/lumen.git",
     "directory": "packages/lumen"
   },
-  "homepage": "https://lumen.santi020k.com",
+  "homepage": "https://lumen.santi020k.com/docs",
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
+  "keywords": [
+    "accessible-ui",
+    "component-library",
+    "cross-platform",
+    "design-system",
+    "lumen",
+    "ui"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"

@@ -30,11 +30,19 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |
 | React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |
 | Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |
+| React Native / Expo | `@santi020k/lumen-react-native` | `@santi020k/lumen-react-native` | Not applicable |
+| Apple / SwiftUI | Swift Package `https://github.com/santi020k/lumen` | `LumenUI` | Not applicable |
+| Android / Compose | Local `packages/compose` module | `com.santi020k.lumen` | Not applicable |
 | Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
 | Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
+
+For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
+Swift Package product to the application target and apply `.lumenTheme(...)` near the root. For
+Compose, include the local `lumen-compose` Gradle module and wrap content in `LumenTheme`. Native
+adapters do not load CSS or the Astro runtime.
 
 Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,
 install and register the optional pack once before rendering a namespaced icon:
@@ -59,6 +67,11 @@ the default icon catalog.
 Connect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns
 validated structured content as well as readable text, so agents can select components without
 scraping documentation.
+
+The MCP per-component catalog covers Astro, React, Web Components, React Native, SwiftUI, and
+Compose. Use `lumen_list_native_components` to discover platform availability and
+`lumen_get_native_component` for installation, setup, API, examples, accessibility guidance, and
+optional reference source. The skill still verifies installed packages when local versions differ.
 
 ```bash
 codex mcp add lumen -- npx -y @santi020k/lumen-mcp
@@ -107,6 +120,9 @@ local repository, and programmatic examples.
 ## Minimal Setup
 
 Import the stylesheet once in the app's global CSS, root layout, or app entry.
+
+This section applies to web targets. Native adapters use their provider or theme APIs instead of a
+stylesheet.
 
 ```css
 @import "@santi020k/lumen-react/styles.css";
@@ -244,8 +260,8 @@ The shared catalog includes:
 `Container`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
-`Input`, `InputGroup`, `InputOTP`, `Item`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
-`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,
+`Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
+`Message`, `MessageScroller`, `NativeSelect`, `ContextNavigation`, `NavigationMenu`, `NumberField`, `Pagination`,
 `PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
 `Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,
@@ -291,6 +307,14 @@ The shared catalog includes:
   `createScheduleStorageKey`, `saveScheduleEvents`, and `loadScheduleEvents` against any
   `localStorage`-compatible adapter. Use `resizeScheduleEvent` and `resizeScheduleEvents` for
   snap-to-grid resize handles.
+- Use `KanbanBoard` and `KanbanColumn` for status-based workspaces while continuing to use `Card` for
+  items. Mark items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a dedicated button;
+  do not make the whole card draggable. Astro and Elements emit the cancellable, controlled
+  `ui:kanban-move-request` event, and React provides `useKanban`. The event reports `itemId`,
+  `fromColumn`, `toColumn`, optional `beforeId`, and keyboard or pointer input, but never moves DOM or
+  persists application data. The host owns validation, `aria-busy`, optimistic state, rollback,
+  status names, and APIs. Use compact `Empty` states inside columns, preserve every column with
+  `Skeleton` blocks while loading, and paginate large columns. See [Kanban composition and movement](kanban.md).
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
   collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and
   `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`
@@ -363,6 +387,7 @@ uses these CustomEvents:
 | `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |
 | `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |
 | `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
+| `ui:kanban-move-request` | `KanbanBoard` root `[data-ui-kanban]` | `{ itemId: string, fromColumn: string, toColumn: string, beforeId?: string, input: 'keyboard' \| 'pointer' }` | A handle requests a controlled move; the event is cancellable and never moves data or DOM. |
 | `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |
 | `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |
 | `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |

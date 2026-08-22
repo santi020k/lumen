@@ -10,64 +10,39 @@ import {
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
+import {
+  getActiveSiteNavigationIndex,
+  siteNavigationItems
+} from '../data/site-navigation'
+
+import DocsContextNavigation from './DocsContextNavigation.astro'
 import GitHubIcon from './GitHubIcon.astro'
+import GlobalDocsSearch from './GlobalDocsSearch.astro'
 import LumenLogo from './LumenLogo.astro'
 
 const currentPath = Astro.url.pathname
-
-const navLinks = [
-  {
-    href: '/',
-    isActive: currentPath === '/',
-    label: 'Home'
-  },
-  {
-    href: '/docs',
-    isActive: currentPath === '/docs' || (
-      currentPath.startsWith('/docs/') &&
-      !currentPath.startsWith('/docs/components') &&
-      !currentPath.startsWith('/docs/theme-playground')
-    ),
-    label: 'Docs'
-  },
-  {
-    href: '/docs/components',
-    isActive: currentPath.startsWith('/docs/components'),
-    label: 'Components'
-  },
-  {
-    href: '/templates',
-    isActive: currentPath.startsWith('/templates'),
-    label: 'Templates'
-  },
-  {
-    href: '/docs/theme-playground',
-    isActive: currentPath.startsWith('/docs/theme-playground'),
-    label: 'Theme'
-  }
-] as const
-
-const activeIndex = Math.max(0, navLinks.findIndex(link => link.isActive))
+const hasDocsContext = currentPath.startsWith('/docs') || currentPath === '/changelog'
+const activeIndex = getActiveSiteNavigationIndex(currentPath)
 const componentCount = lumenComponentNames.length
 ---
 
 <div class="docs-site-header">
   <header class="docs-header-shell" data-site-header>
-    <Link class="docs-header-brand no-underline" href="/">
+    <Link class="docs-header-brand no-underline" href="/" aria-label="Lumen UI home">
       <LumenLogo markClass="size-7" />
       <Badge class="docs-header-count" variant="outline">{componentCount}</Badge>
     </Link>
 
-    <NavigationMenu class="docs-nav-track" aria-label="Main menu" style={`--item-count:${navLinks.length};--active-index:${activeIndex};`}>
-      <span class="docs-nav-indicator" aria-hidden="true"></span>
-      {navLinks.map(link => (
+    <NavigationMenu class="docs-nav-track" aria-label="Primary" style={`--item-count:${siteNavigationItems.length};--active-index:${activeIndex};`}>
+      {activeIndex >= 0 && <span class="docs-nav-indicator" aria-hidden="true"></span>}
+      {siteNavigationItems.map((link, index) => (
         <Link
           class:list={[
             'docs-nav-link no-underline',
-            link.isActive && 'docs-nav-link--active'
+            index === activeIndex && 'docs-nav-link--active'
           ]}
           href={link.href}
-          aria-current={link.isActive ? 'page' : undefined}
+          aria-current={index === activeIndex ? 'page' : undefined}
         >
           {link.label}
         </Link>
@@ -75,6 +50,8 @@ const componentCount = lumenComponentNames.length
     </NavigationMenu>
 
     <div class="docs-header-actions">
+      <GlobalDocsSearch />
+
       <Link
         class="docs-header-github no-underline"
         href="https://github.com/santi020k/lumen"
@@ -95,8 +72,8 @@ const componentCount = lumenComponentNames.length
             aria-label="Theme family"
             size="sm"
           >
-            <option value="santi020k">Santi020k</option>
             <option value="lumen">Lumen</option>
+            <option value="santi020k">Santi020k</option>
           </NativeSelect>
         </div>
         <span class="docs-theme-divider" aria-hidden="true"></span>
@@ -110,13 +87,20 @@ const componentCount = lumenComponentNames.length
       </div>
     </div>
   </header>
+  {hasDocsContext && <DocsContextNavigation currentPath={currentPath} />}
 </div>
 
 <script>
+  let siteHeaderScrollController: AbortController | undefined
+
   const initSiteHeader = () => {
     const header = document.querySelector<HTMLElement>('[data-site-header]')
 
     if (!header) return
+
+    siteHeaderScrollController?.abort()
+
+    siteHeaderScrollController = new AbortController()
 
     const onScroll = () => {
       header.dataset.scrolled = String(window.scrollY > 8)
@@ -124,7 +108,10 @@ const componentCount = lumenComponentNames.length
 
     onScroll()
 
-    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('scroll', onScroll, {
+      passive: true,
+      signal: siteHeaderScrollController.signal
+    })
   }
 
   initSiteHeader()

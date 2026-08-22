@@ -37,6 +37,7 @@ import {
   ColorPicker,
   Command,
   ContextMenu,
+  ContextNavigation,
   Direction,
   Drawer,
   Empty,
@@ -119,8 +120,10 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(input).className).toContain('ui-input--sm')
     expect(propsOf(Textarea({ cols: 40, ref: wrapperRef }) as ReactElement).cols).toBe(40)
     expect(propsOf(Label({ htmlFor: 'email', ref: wrapperRef }) as ReactElement).htmlFor).toBe('email')
+    expect(propsOf(Avatar({ fallback: 'SM', ref: wrapperRef }) as ReactElement).ref).toBe(wrapperRef)
     expect(propsOf(Badge({ ref: wrapperRef, title: 'Status' }) as ReactElement).title).toBe('Status')
     expect(propsOf(Card({ ref: wrapperRef, role: 'region' }) as ReactElement).role).toBe('region')
+    expect(propsOf(Separator({ ref: wrapperRef }) as ReactElement).ref).toBe(wrapperRef)
     expect(propsOf(Skeleton({ ref: wrapperRef, role: 'status' }) as ReactElement).role).toBe('status')
   })
 
@@ -338,6 +341,21 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Sheet({}) as ReactElement)['data-ui-sheet']).toBe(true)
     expect(propsOf(Sidebar({ glass: 'subtle' }) as ReactElement).className)
       .toBe('ui-sidebar ui-sidebar--glass ui-glass-subtle')
+  })
+
+  test('composes contextual navigation with an optional leading region', () => {
+    const navigation = ContextNavigation({
+      children: 'Links',
+      context: 'Web',
+      variant: 'unstyled'
+    }) as ReactElement
+    const children = propsOf(navigation).children as ReactElement[]
+
+    expect(propsOf(navigation).className)
+      .toBe('ui-context-navigation ui-context-navigation--unstyled')
+    expect(propsOf(children[0]).className).toBe('ui-context-navigation__context')
+    expect(propsOf(children[0])['data-slot']).toBe('context-navigation-context')
+    expect(children[1]).toBe('Links')
   })
 
   test('applies glass intensity on structural glass surfaces', () => {

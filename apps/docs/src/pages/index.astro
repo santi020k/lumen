@@ -1,6 +1,6 @@
 ---
 
-/* cspell:ignore aaronmgz Aarón commitprompt coolstead difftale */
+/* cspell:ignore aaronmgz Aarón commitprompt coolstead */
 
 import {
   Alert,
@@ -33,6 +33,8 @@ import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
 import GitHubIcon from '../components/GitHubIcon.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
+import type { DocsPlatformId } from '../data/platforms'
+import { productPlatformGuides } from '../data/platforms'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
 const componentCount = lumenComponentNames.length
@@ -51,12 +53,49 @@ const heroInstallers = frameworkSetups.map(setup => ({
   label: setup.label
 }))
 
+const platformPresentation = {
+  android: {
+    icon: 'bot',
+    preview: '/native-previews/android-compose.png',
+    runtime: 'Jetpack Compose · Material 3'
+  },
+  apple: {
+    icon: 'apple',
+    preview: '/native-previews/apple-native.png',
+    runtime: 'SwiftUI · five Apple platforms'
+  },
+  foundations: {
+    icon: 'layers-3',
+    preview: undefined,
+    runtime: 'One canonical token source'
+  },
+  'react-native': {
+    icon: 'smartphone',
+    preview: '/native-previews/react-native-android.png',
+    runtime: 'React Native · Expo ready'
+  },
+  web: {
+    icon: 'panels-top-left',
+    preview: undefined,
+    runtime: 'Astro · React · Web Components'
+  }
+} satisfies Record<DocsPlatformId, {
+  icon: string
+  preview: string | undefined
+  runtime: string
+}>
+
+const platformShowcase = productPlatformGuides.map(guide => ({
+  ...guide,
+  ...platformPresentation[guide.id]
+}))
+
 const principles = [
   {
-    description: 'One semantic class contract keeps Astro, React, and custom elements visually aligned.',
+    description: 'One semantic token and component contract keeps web and native products recognizably aligned.',
     icon: 'layers-3',
-    metric: '3 targets',
-    title: 'Change frameworks, not your design language.'
+    metric: '4 surfaces',
+    title: 'Change platforms, not your design language.'
   },
   {
     description: 'Keyboard paths, focus management, labels, and meaningful markup are part of the primitive.',
@@ -88,120 +127,77 @@ interface UseCase {
   description: string
   featured?: boolean
   href: string
-  image: {
+  desktop: {
     height: number
     src: string
     width: number
   }
-  linkLabel?: string
+  mobile: {
+    height: number
+    src: string
+    width: number
+  }
   name: string
+  stack: string
 }
 
 const useCases: readonly UseCase[] = [
   {
-    category: 'AI marketplace',
-    description: 'A bilingual real-estate discovery experience that turns dense property signals into a calm, guided search.',
-    href: 'https://memudo.ai',
-    image: { height: 720, src: '/use-cases/memudo.jpg', width: 1280 },
-    name: 'MeMudo.ai',
-    featured: true
+    category: 'Developer quality',
+    description: 'A deterministic Astro health-check toolkit spanning a CLI, ESLint plugin, editor extension, GitHub Action, docs, and agent skills.',
+    desktop: { height: 895, src: '/use-cases/astro-doctor-desktop-live.jpg', width: 1432 },
+    featured: true,
+    href: 'https://doctor.santi020k.com',
+    mobile: { height: 827, src: '/use-cases/astro-doctor-mobile-live.jpg', width: 382 },
+    name: 'Astro Doctor',
+    stack: 'Astro · TypeScript'
   },
   {
     category: 'Developer tooling',
-    description: 'A bold documentation and product surface for catching quality, security, and accessibility problems in Astro code.',
-    href: 'https://doctor.santi020k.com',
-    image: { height: 716, src: '/use-cases/astro-doctor.png', width: 1272 },
-    name: 'Astro Doctor',
-    featured: true
+    description: 'A DX-first ESLint toolkit with strong defaults for JavaScript and TypeScript teams, presented through focused, approachable documentation.',
+    desktop: { height: 900, src: '/use-cases/eslint-config-desktop-live.jpg', width: 1440 },
+    href: 'https://eslint.santi020k.com',
+    mobile: { height: 844, src: '/use-cases/eslint-config-mobile-live.jpg', width: 390 },
+    name: 'eslint-config-basic',
+    stack: 'Astro · ESLint'
   },
   {
-    category: 'Family platform',
-    description: 'A warm, bilingual family experience built around milestones, memories, and the arrival of baby Aarón.',
-    href: 'https://aaronmgz.com',
-    image: { height: 716, src: '/use-cases/aaronmgz.png', width: 1272 },
-    name: 'Aarón MGZ'
-  },
-  {
-    category: 'CLI documentation',
-    description: 'A focused product story for writing intentional Conventional Commits without memorizing the syntax.',
-    href: 'https://commitprompt.santi020k.com',
-    image: { height: 720, src: '/use-cases/commitprompt.png', width: 1280 },
-    name: 'Commitprompt'
-  },
-  {
-    category: 'macOS utility',
-    description: 'A safety-minded landing page for steady Mac cooling, live thermal insight, and quieter fan control.',
-    href: 'https://coolstead.santi020k.com',
-    image: { height: 630, src: '/use-cases/coolstead.jpg', width: 1200 },
-    name: 'Coolstead'
+    category: 'iOS photo studio',
+    description: 'An iPhone-first visual content studio with a cinematic product story for private, on-device photo selection, enhancement, and composition.',
+    desktop: { height: 900, src: '/use-cases/postlens-desktop-live.jpg', width: 1440 },
+    href: 'https://postlens.santi020k.com',
+    mobile: { height: 844, src: '/use-cases/postlens-mobile-live.jpg', width: 390 },
+    name: 'PostLens',
+    stack: 'Astro · SwiftUI'
   },
   {
     category: 'Editor intelligence',
-    description: 'Documentation for dependency health, safe update targets, and vulnerability signals inside VS Code and Zed.',
+    description: 'A VS Code extension and documentation experience that makes dependency updates, workspace catalogs, and security signals easier to act on.',
+    desktop: { height: 900, src: '/use-cases/dep-beacon-desktop-live.jpg', width: 1440 },
     href: 'https://beacon.santi020k.com',
-    image: { height: 900, src: '/use-cases/dep-beacon.jpg', width: 1600 },
-    name: 'Dep Beacon'
+    mobile: { height: 844, src: '/use-cases/dep-beacon-mobile-live.jpg', width: 390 },
+    name: 'Dep Beacon',
+    stack: 'Astro · VS Code'
   },
   {
-    category: 'VS Code extension',
-    description: 'A crisp product site for AI-assisted commits, pull-request drafts, and file history without leaving the editor.',
-    href: 'https://difftale.santi020k.com',
-    image: { height: 630, src: '/use-cases/difftale.jpg', width: 1200 },
-    name: 'Difftale'
-  },
-  {
-    category: 'Documentation system',
-    description: 'A deep technical reference that makes a large, multi-package ESLint platform approachable and navigable.',
-    href: 'https://eslint.santi020k.com',
-    image: { height: 630, src: '/use-cases/eslint-config.webp', width: 1200 },
-    name: 'ESLint Config'
-  },
-  {
-    category: 'Private dashboard',
-    description: 'An owner-only project intelligence workspace for repository, package, deployment, and attention signals.',
-    href: 'https://github.com/santi020k/observatory',
-    image: { height: 720, src: '/use-cases/observatory.jpg', width: 1280 },
-    linkLabel: 'View source',
-    name: 'Observatory'
-  },
-  {
-    category: 'iPhone app',
-    description: 'A bilingual launch and support hub for a private, on-device visual studio for photos and social layouts.',
-    href: 'https://postlens.santi020k.com',
-    image: { height: 630, src: '/use-cases/postlens.png', width: 1200 },
-    name: 'PostLens'
-  },
-  {
-    category: 'Theme ecosystem',
-    description: 'One calm violet design language presented across VS Code, Zed, Chrome, and terminal experiences.',
-    href: 'https://theme.santi020k.com',
-    image: { height: 630, src: '/use-cases/theme.png', width: 1200 },
-    name: 'Santi020k Theme'
-  },
-  {
-    category: 'Personal platform',
-    description: 'A content-rich home for engineering work, open-source projects, writing, talks, and professional history.',
-    href: 'https://santi020k.com',
-    image: { height: 630, src: '/use-cases/portfolio.webp', width: 1200 },
-    name: 'Santiago Molina'
-  },
-  {
-    category: 'macOS productivity',
-    description: 'A product and commerce site for organizing application windows into focused, restorable workspaces.',
-    href: 'https://workspace.santi020k.com',
-    image: { height: 630, src: '/use-cases/workspace-organizer.png', width: 1200 },
-    name: 'Workspace Organizer'
+    category: 'macOS utility',
+    description: 'A safety-minded native Mac utility with a calm product surface for thermal monitoring and gradual, bounded fan control.',
+    desktop: { height: 900, src: '/use-cases/coolstead-desktop-live.jpg', width: 1440 },
+    href: 'https://coolstead.santi020k.com',
+    mobile: { height: 844, src: '/use-cases/coolstead-mobile-live.jpg', width: 390 },
+    name: 'Coolstead',
+    stack: 'Astro · SwiftUI'
   }
 ]
 
 const pageDescription =
   `Lumen is a crafted multi-framework UI system with ${componentCount} accessible primitives ` +
-  'for Astro, React, and Web Components.'
+  'for Web, React Native, Apple platforms, and Android.'
 ---
 
 <BaseLayout
   description={pageDescription}
-  title="Lumen UI — Crafted primitives for every framework"
+  title="Lumen UI — Crafted primitives for web and native platforms"
 >
   <main class="home">
     <section class="home-hero">
@@ -216,8 +212,8 @@ const pageDescription =
           people <em>want</em> to use.
         </h1>
         <p class="home-hero__lede">
-          A complete UI foundation for Astro, React, and Web Components.
-          Accessible by default, beautifully tokenized, and designed to feel like yours.
+          A complete UI foundation for Web, React Native, Apple platforms, and Android.
+          Accessible by default, beautifully tokenized, and native to every environment.
         </p>
         <div class="home-hero__actions">
           <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
@@ -228,8 +224,8 @@ const pageDescription =
           </ButtonLink>
         </div>
         <Tabs class="home-installer" glass="subtle">
-          <span class="home-installer__label">Quick install</span>
-          <div role="tablist" aria-label="Choose a framework to install">
+          <span class="home-installer__label">Web quick install</span>
+          <div role="tablist" aria-label="Choose a web framework to install">
             {heroInstallers.map((installer, index) => (
               <button
                 aria-controls={`hero-install-panel-${installer.id}`}
@@ -280,8 +276,8 @@ const pageDescription =
           <Stat label="components">
             <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
           </Stat>
-          <Stat label="framework targets">
-            <span class="ui-stat-value"><AnimatedNumber value={3} /></span>
+          <Stat label="platform surfaces">
+            <span class="ui-stat-value"><AnimatedNumber value={4} /></span>
           </Stat>
           <Stat label="runtime lock-in">
             <span class="ui-stat-value"><AnimatedNumber value={0} /></span>
@@ -432,8 +428,8 @@ const pageDescription =
           </div>
           <div class="home-section__aside">
             <p>
-              From consumer products and native-app launches to private dashboards and deep
-              technical documentation, these real projects use Lumen without losing their voice.
+              One shared foundation, five unmistakable identities. Explore real Lumen products
+              across desktop and mobile—not component demos, but finished experiences.
             </p>
           </div>
         </div>
@@ -448,18 +444,37 @@ const pageDescription =
               { 'home-use-case--featured': useCase.featured }
             ]}
           >
-            <div class="home-use-case__preview">
-              <Image
-                alt={`${useCase.name} website preview`}
-                height={useCase.image.height}
-                src={useCase.image.src}
-                width={useCase.image.width}
-              />
+            <div class="home-use-case__stage">
+              <div class="home-use-case__browser">
+                <div class="home-use-case__browser-bar" aria-hidden="true">
+                  <span><i></i><i></i><i></i></span>
+                  <code>{new URL(useCase.href).hostname.replace('www.', '')}</code>
+                </div>
+                <Image
+                  alt={`${useCase.name} website on desktop`}
+                  height={useCase.desktop.height}
+                  src={useCase.desktop.src}
+                  width={useCase.desktop.width}
+                />
+              </div>
+              <div class="home-use-case__phone">
+                <span aria-hidden="true"></span>
+                <Image
+                  alt={`${useCase.name} website on mobile`}
+                  height={useCase.mobile.height}
+                  src={useCase.mobile.src}
+                  width={useCase.mobile.width}
+                />
+              </div>
+              <Badge class="home-use-case__viewport-badge" variant="secondary">
+                <Icon decorative name="panels-top-left" size="sm" />
+                Desktop + mobile
+              </Badge>
             </div>
             <div class="home-use-case__body">
               <div class="home-use-case__meta">
                 <Badge variant="outline">{useCase.category}</Badge>
-                <span>{new URL(useCase.href).hostname.replace('www.', '')}</span>
+                <span>{useCase.stack}</span>
               </div>
               <h3>{useCase.name}</h3>
               <p>{useCase.description}</p>
@@ -470,7 +485,7 @@ const pageDescription =
                 showArrow
                 variant="inline"
               >
-                {'linkLabel' in useCase ? useCase.linkLabel : 'Visit project'}
+                Experience the project
               </ButtonLink>
             </div>
           </Card>
@@ -550,23 +565,89 @@ const pageDescription =
       </ScrollReveal>
     </section>
 
-    <section class="home-section home-container" aria-labelledby="framework-title">
+    <section class="home-section home-container home-platforms" aria-labelledby="platforms-title">
       <ScrollReveal animation="slide-up">
         <div class="home-section__head home-section__head--split">
           <div>
-            <Eyebrow>Bring your framework</Eyebrow>
-            <h2 id="framework-title">One design language.<br />Three native implementations.</h2>
+            <Eyebrow>Built for every surface</Eyebrow>
+            <h2 id="platforms-title">One design language.<br />Four native destinations.</h2>
           </div>
           <div class="home-section__aside">
             <p>
-              Start with the adapter for your stack. The names, tokens, and interaction
-              model stay familiar when your project changes.
+              Share semantic color, type, spacing, motion, and component intent—then let each
+              platform render and behave the way its users expect.
             </p>
+            <ButtonLink href="/docs/foundations" showArrow variant="inline">
+              Explore shared foundations
+            </ButtonLink>
           </div>
         </div>
       </ScrollReveal>
-      <div class="home-framework">
-        <FrameworkSetupTabs setups={frameworkSetups} />
+
+      <RevealGroup class="home-platforms__grid" stagger={70}>
+        {platformShowcase.map((platform, index) => (
+          <Card
+            as="article"
+            class:list={[
+            'home-platform',
+            { 'home-platform--web': platform.id === 'web' }
+            ]}
+          >
+            <div class="home-platform__visual">
+              {platform.preview ?
+(
+                <Image
+                  alt={`${platform.label} Lumen component gallery`}
+                  height={platform.id === 'apple' ? 1440 : 1920}
+                  src={platform.preview}
+                  width={platform.id === 'apple' ? 1640 : 1080}
+                />
+              ) :
+(
+                <div class="home-platform__web-canvas" aria-hidden="true">
+                  <span><Icon decorative name="asterisk" size="sm" />Astro</span>
+                  <span><Icon decorative name="atom" size="sm" />React</span>
+                  <span><Icon decorative name="blocks" size="sm" />Elements</span>
+                  <div>
+                    <i></i><i></i><i></i>
+                  </div>
+                </div>
+              )}
+              <span class="home-platform__number" aria-hidden="true">0{index + 1}</span>
+            </div>
+            <div class="home-platform__body">
+              <div class="home-platform__meta">
+                <span><Icon decorative name={platform.icon} size="sm" />{platform.runtime}</span>
+                <div>
+                  <Marker variant="success">{platform.status}</Marker>
+                  {platform.maturity && <Marker variant="warning">{platform.maturity}</Marker>}
+                </div>
+              </div>
+              <h3>{platform.label}</h3>
+              <p>{platform.summary}</p>
+              <code>{platform.packageName}</code>
+              <ButtonLink href={platform.href} showArrow variant="inline">
+                Build for {platform.shortLabel}
+              </ButtonLink>
+            </div>
+          </Card>
+        ))}
+      </RevealGroup>
+
+      <div class="home-web-setup" aria-labelledby="web-setup-title">
+        <div class="home-web-setup__head">
+          <div>
+            <Badge variant="outline">Full web catalog</Badge>
+            <h3 id="web-setup-title">Choose your web adapter.</h3>
+          </div>
+          <p>
+            Astro, React, and standards-based custom elements expose the complete primitive
+            catalog through one visual and behavioral contract.
+          </p>
+        </div>
+        <div class="home-framework">
+          <FrameworkSetupTabs setups={frameworkSetups} />
+        </div>
       </div>
     </section>
 
@@ -1115,53 +1196,162 @@ const pageDescription =
   .home-use-cases__grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 1.25rem;
     margin-top: 3rem;
   }
 
   .home-use-case {
-    grid-column: span 4;
+    display: flex;
+    min-width: 0;
+    grid-column: span 6;
+    flex-direction: column;
     overflow: hidden;
     border-color: hsl(var(--line) / .78);
     background: hsl(var(--surface) / .88);
-    box-shadow: 0 18px 52px -44px hsl(var(--ink) / .65);
+    box-shadow: 0 24px 64px -46px hsl(var(--ink) / .68);
     padding: 0;
   }
 
   .home-use-case--featured {
-    grid-column: span 6;
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1.65fr) minmax(18rem, .75fr);
   }
 
-  .home-use-case__preview {
+  .home-use-case__stage {
     position: relative;
+    min-height: 24rem;
     overflow: hidden;
-    aspect-ratio: 16 / 9;
     border-bottom: 1px solid hsl(var(--line) / .72);
-    background: hsl(var(--surface-muted));
+    background:
+      radial-gradient(circle at 78% 28%, hsl(var(--brand) / .2), transparent 34%),
+      linear-gradient(145deg, hsl(var(--surface-muted)), hsl(var(--surface-strong)));
+    padding: clamp(1.4rem, 3vw, 2.5rem) clamp(2.1rem, 5vw, 4.5rem) clamp(2rem, 4vw, 3.5rem)
+      clamp(1.1rem, 2.5vw, 2rem);
   }
 
-  .home-use-case__preview::after {
+  .home-use-case--featured .home-use-case__stage {
+    min-height: 31rem;
+    border-right: 1px solid hsl(var(--line) / .72);
+    border-bottom: 0;
+  }
+
+  .home-use-case__stage::before {
     position: absolute;
-    inset: auto 0 0;
-    height: 22%;
-    background: linear-gradient(transparent, hsl(var(--ink) / .12));
+    inset: 0;
+    background-image: linear-gradient(hsl(var(--line) / .24) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--line) / .24) 1px, transparent 1px);
+    background-size: 2.25rem 2.25rem;
+    mask-image: linear-gradient(to bottom right, black, transparent 70%);
     content: "";
     pointer-events: none;
   }
 
-  .home-use-case__preview :global(.ui-image) {
+  .home-use-case__browser {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border: 1px solid hsl(var(--line));
+    border-radius: .85rem;
+    background: hsl(var(--canvas));
+    box-shadow: 0 2rem 4rem -2rem hsl(var(--ink) / .6);
+  }
+
+  .home-use-case__browser-bar {
+    display: grid;
+    height: 2rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: .65rem;
+    border-bottom: 1px solid hsl(var(--line) / .75);
+    background: hsl(var(--surface));
+    padding-inline: .7rem;
+  }
+
+  .home-use-case__browser-bar > span {
+    display: flex;
+    gap: .28rem;
+  }
+
+  .home-use-case__browser-bar i {
+    width: .42rem;
+    height: .42rem;
+    border-radius: 50%;
+    background: hsl(var(--line));
+  }
+
+  .home-use-case__browser-bar code {
+    overflow: hidden;
+    color: hsl(var(--ink-muted));
+    font-size: .56rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-use-case__browser :global(.ui-image) {
+    display: block;
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
     object-position: top center;
   }
 
+  .home-use-case__phone {
+    position: absolute;
+    z-index: 2;
+    right: clamp(.65rem, 2.5vw, 1.6rem);
+    bottom: clamp(.7rem, 2vw, 1.35rem);
+    width: clamp(5.6rem, 21%, 8.2rem);
+    overflow: hidden;
+    border: 3px solid hsl(var(--ink));
+    border-radius: 1.3rem;
+    background: hsl(var(--ink));
+    box-shadow: 0 1.2rem 2.8rem hsl(var(--ink) / .42);
+  }
+
+  .home-use-case__phone > span {
+    position: absolute;
+    z-index: 1;
+    top: .35rem;
+    left: 50%;
+    width: 32%;
+    height: .28rem;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: hsl(var(--ink));
+  }
+
+  .home-use-case__phone :global(.ui-image) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 390 / 844;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .home-use-case__viewport-badge {
+    position: absolute;
+    z-index: 3;
+    bottom: 1rem;
+    left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    box-shadow: 0 .8rem 2rem hsl(var(--ink) / .18);
+  }
+
   .home-use-case__body {
     display: flex;
-    min-height: 15rem;
+    min-height: 16rem;
     flex-direction: column;
     align-items: flex-start;
-    padding: 1.25rem;
+    padding: clamp(1.25rem, 2.5vw, 1.8rem);
+  }
+
+  .home-use-case--featured .home-use-case__body {
+    min-height: 0;
+    padding: clamp(1.6rem, 3.5vw, 2.8rem);
   }
 
   .home-use-case__meta {
@@ -1175,9 +1365,11 @@ const pageDescription =
   .home-use-case__meta > span {
     overflow: hidden;
     color: hsl(var(--ink-muted));
-    font-family: var(--santi020k-font-mono, monospace);
     font-size: .62rem;
+    font-weight: 750;
+    letter-spacing: .04em;
     text-overflow: ellipsis;
+    text-transform: uppercase;
     white-space: nowrap;
   }
 
@@ -1203,12 +1395,17 @@ const pageDescription =
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .home-use-case__preview :global(.ui-image) {
+    .home-use-case__browser,
+    .home-use-case__phone {
       transition: transform 420ms cubic-bezier(.22, 1, .36, 1);
     }
 
-    .home-use-case:hover .home-use-case__preview :global(.ui-image) {
-      transform: scale(1.025);
+    .home-use-case:hover .home-use-case__browser {
+      transform: translateY(-.2rem);
+    }
+
+    .home-use-case:hover .home-use-case__phone {
+      transform: translateY(-.45rem) rotate(1.5deg);
     }
   }
 
@@ -1394,6 +1591,270 @@ const pageDescription =
     color: hsl(var(--ink-soft));
   }
 
+  .home-platforms {
+    position: relative;
+  }
+
+  .home-platforms::before {
+    position: absolute;
+    top: clamp(8rem, 15vw, 13rem);
+    right: -12%;
+    z-index: -1;
+    width: 28rem;
+    height: 28rem;
+    border-radius: 50%;
+    background: hsl(var(--brand) / .1);
+    filter: blur(90px);
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-platforms__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .home-platform {
+    display: grid;
+    min-width: 0;
+    grid-template-rows: 18rem 1fr;
+    overflow: hidden;
+    border-color: hsl(var(--line) / .78);
+    background: hsl(var(--surface) / .9);
+    box-shadow: 0 26px 72px -58px hsl(var(--ink) / .72);
+    padding: 0;
+  }
+
+  .home-platform__visual {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    place-items: end center;
+    overflow: hidden;
+    border-bottom: 1px solid hsl(var(--line) / .72);
+    background:
+      linear-gradient(hsl(var(--line) / .23) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--line) / .23) 1px, transparent 1px),
+      radial-gradient(circle at 50% 118%, hsl(var(--brand) / .22), transparent 48%),
+      hsl(var(--surface-muted) / .72);
+    background-size: 2rem 2rem, 2rem 2rem, auto, auto;
+    padding: 2.2rem 2.2rem 0;
+  }
+
+  .home-platform__visual::after {
+    position: absolute;
+    inset: auto 0 0;
+    height: 28%;
+    background: linear-gradient(transparent, hsl(var(--ink) / .08));
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-platform__visual :global(.ui-image) {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: auto;
+    max-width: min(88%, 18rem);
+    height: calc(100% + .65rem);
+    border: 1px solid hsl(var(--line));
+    border-bottom: 0;
+    border-radius: 1.15rem 1.15rem 0 0;
+    background: hsl(var(--canvas));
+    box-shadow: 0 1.6rem 3.5rem -1.8rem hsl(var(--ink) / .65);
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .home-platform__number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    color: hsl(var(--ink-muted));
+    font: 700 .67rem/1 var(--santi020k-font-mono, monospace);
+    letter-spacing: .08em;
+  }
+
+  .home-platform__web-canvas {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: min(100%, 25rem);
+    height: calc(100% - .25rem);
+    grid-template-columns: repeat(3, auto);
+    grid-template-rows: auto 1fr;
+    justify-content: start;
+    gap: .55rem;
+    overflow: hidden;
+    border: 1px solid hsl(var(--line));
+    border-bottom: 0;
+    border-radius: 1.15rem 1.15rem 0 0;
+    background: hsl(var(--canvas));
+    box-shadow: 0 1.6rem 3.5rem -1.8rem hsl(var(--ink) / .65);
+    padding: 1rem;
+  }
+
+  .home-platform__web-canvas > span {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border: 1px solid hsl(var(--line) / .8);
+    border-radius: 999px;
+    background: hsl(var(--surface));
+    padding: .4rem .55rem;
+    color: hsl(var(--ink-soft));
+    font-size: .64rem;
+    font-weight: 750;
+  }
+
+  .home-platform__web-canvas > span:first-child,
+  .home-platform__web-canvas > span:first-child :global(.ui-icon) {
+    color: hsl(var(--brand));
+  }
+
+  .home-platform__web-canvas > div {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: .7fr 1.3fr;
+    grid-template-rows: .65fr .35fr;
+    gap: .65rem;
+    border-top: 1px solid hsl(var(--line) / .72);
+    padding-top: 1rem;
+  }
+
+  .home-platform__web-canvas i {
+    display: block;
+    border: 1px solid hsl(var(--line) / .72);
+    border-radius: .65rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .home-platform__web-canvas i:first-child {
+    grid-row: 1 / -1;
+  }
+
+  .home-platform__web-canvas i:nth-child(2) {
+    background: linear-gradient(135deg, hsl(var(--brand-soft)), hsl(var(--surface)));
+  }
+
+  .home-platform__body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .home-platform__meta {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .home-platform__meta > span {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: .45rem;
+    color: hsl(var(--ink-muted));
+    font-size: .68rem;
+    font-weight: 750;
+    letter-spacing: .03em;
+  }
+
+  .home-platform__meta > span :global(.ui-icon) {
+    flex: 0 0 auto;
+    color: hsl(var(--brand));
+  }
+
+  .home-platform__meta > div {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .35rem;
+  }
+
+  .home-platform h3 {
+    margin: 1.65rem 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+    font-weight: 780;
+    letter-spacing: -.025em;
+    line-height: 1.08;
+  }
+
+  .home-platform__body > p {
+    max-width: 35rem;
+    margin: .75rem 0 1.35rem;
+    color: hsl(var(--ink-soft));
+    font-size: .84rem;
+    line-height: 1.65;
+  }
+
+  .home-platform__body > code {
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid hsl(var(--line) / .78);
+    border-radius: .55rem;
+    background: hsl(var(--surface-muted) / .72);
+    padding: .46rem .58rem;
+    color: hsl(var(--ink-soft));
+    font-size: .65rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-platform__body > :global(.ui-button-link) {
+    margin-top: auto;
+    padding-top: 1.35rem;
+  }
+
+  .home-web-setup {
+    margin-top: 1rem;
+    border: 1px solid hsl(var(--line) / .78);
+    border-radius: 1.35rem;
+    background:
+      radial-gradient(circle at 8% 0%, hsl(var(--brand) / .12), transparent 28%),
+      hsl(var(--surface-muted) / .42);
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+  }
+
+  .home-web-setup__head {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(20rem, 1.15fr);
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .home-web-setup__head h3 {
+    margin: .85rem 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    letter-spacing: -.02em;
+    line-height: 1.1;
+  }
+
+  .home-web-setup__head > p {
+    max-width: 38rem;
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .84rem;
+    line-height: 1.65;
+  }
+
+  .home-web-setup .home-framework {
+    margin-top: 1.5rem;
+    background: hsl(var(--surface));
+  }
+
   .home-framework {
     margin-top: 3rem;
     border: 1px solid hsl(var(--line) / .8);
@@ -1470,9 +1931,13 @@ const pageDescription =
       max-width: 34rem;
     }
 
-    .home-use-case,
-    .home-use-case--featured {
+    .home-use-case {
       grid-column: span 6;
+    }
+
+    .home-use-case--featured {
+      grid-column: 1 / -1;
+      grid-template-columns: minmax(0, 1.25fr) minmax(17rem, .75fr);
     }
 
     .home-ai {
@@ -1481,6 +1946,12 @@ const pageDescription =
 
     .home-ai__copy > p {
       max-width: 42rem;
+    }
+
+    .home-web-setup__head {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 1rem;
     }
   }
 
@@ -1561,6 +2032,16 @@ const pageDescription =
       grid-column: auto;
     }
 
+    .home-use-case--featured {
+      grid-template-columns: 1fr;
+    }
+
+    .home-use-case--featured .home-use-case__stage {
+      min-height: 24rem;
+      border-right: 0;
+      border-bottom: 1px solid hsl(var(--line) / .72);
+    }
+
     .home-specimen {
       min-height: 17rem;
     }
@@ -1581,6 +2062,31 @@ const pageDescription =
 
     .home-ai__agent-flow {
       grid-template-columns: 1fr;
+    }
+
+    .home-platforms__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .home-platform {
+      grid-template-rows: 15rem 1fr;
+    }
+
+    .home-platform__visual {
+      padding: 1.75rem 1rem 0;
+    }
+
+    .home-platform__body {
+      min-height: 20rem;
+    }
+
+    .home-web-setup {
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+
+    .home-web-setup .home-framework {
+      margin-top: 1rem;
     }
 
     .home-specimen__swatches span::before {
@@ -1607,6 +2113,28 @@ const pageDescription =
 
     .home-specimen__center :global(.ui-button-group) {
       transform: scale(.86);
+    }
+
+    .home-platform__meta {
+      display: grid;
+    }
+
+    .home-platform__meta > div {
+      justify-content: flex-start;
+    }
+
+    .home-platform__web-canvas {
+      grid-template-columns: repeat(3, 1fr);
+      padding: .8rem;
+    }
+
+    .home-platform__web-canvas > span {
+      justify-content: center;
+      padding-inline: .35rem;
+    }
+
+    .home-platform__web-canvas > span :global(.ui-icon) {
+      display: none;
     }
   }
 </style>

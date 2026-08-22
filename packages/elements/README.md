@@ -63,6 +63,31 @@ remains available for incremental migrations.
 <lumen-native-select size="8" visual-size="lg"></lumen-native-select>
 ```
 
+## Context navigation
+
+Use `lumen-context-navigation` below a primary header when links change with a selected platform,
+product, or workspace. Mark the stable selector or identity with `slot="context"` and compose the
+related links with one independently named navigation menu. Long link sets scroll horizontally.
+
+```html
+<lumen-context-navigation>
+  <lumen-native-select
+    slot="context"
+    aria-label="Documentation platform"
+    visual-size="sm"
+  >
+    <option>Web</option>
+    <option>Apple</option>
+    <option>Android</option>
+  </lumen-native-select>
+  <lumen-navigation-menu aria-label="Web documentation" variant="unstyled">
+    <a href="/docs/web" aria-current="page">Overview</a>
+    <a href="/docs/components">Components</a>
+    <a href="/docs/web/playground">Playground</a>
+  </lumen-navigation-menu>
+</lumen-context-navigation>
+```
+
 See the [Elements form guide](https://lumen.santi020k.com/docs/forms/elements).
 
 Use `lumen-icon` for Lucide icons by name across framework adapters.
@@ -164,6 +189,12 @@ their registered custom elements; no Astro runtime or host controller is require
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
+
+`<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
+contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a
+dedicated button. The board emits the cancellable `ui:kanban-move-request` event for keyboard,
+mouse, and touch movement without moving DOM or application data. Use
+`<lumen-empty variant="compact">` for column-level empty states.
 
 ```html
 <p id="invite">Join the Lumen workspace</p>

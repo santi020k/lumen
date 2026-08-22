@@ -2,399 +2,508 @@
 import {
   Badge,
   Card,
-  Field,
-  Input,
-  Label,
+  Icon,
   Link,
-  Marker,
-  Progress,
-  Switch,
-  Toggle,
-  ToggleGroup
+  Marker
 } from '@santi020k/lumen-astro'
+import { lumenComponentNames } from '@santi020k/lumen-core'
 
-import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
-import FrameworkSetupTabs from '../../components/FrameworkSetupTabs.astro'
-import {
-  componentDocs,
-  frameworkGuides,
-  frameworkPackages,
-  frameworkSetups,
-  glassSurfaceExamples,
-  globalStyleSetups,
-  runtimeFeatures,
-  themeSetups
-} from '../../data/docs'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import { getPlatformGuide, productPlatformGuides } from '../../data/platforms'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
-const frameworkHighlights = [
-  ['Astro', 'Reference implementation', '@santi020k/lumen-astro'],
-  ['React', 'Adapter primitives', '@santi020k/lumen-react'],
-  ['Elements', 'Custom elements', '@santi020k/lumen-elements']
-] as const
+const foundations = getPlatformGuide('foundations')
+const platformNumbers = ['01', '02', '03', '04']
 
-const heroStats = [
-  [String(componentDocs.length), 'components'],
-  ['3', 'framework targets'],
-  ['1', 'shared stylesheet']
+const resources = [
+  {
+    description: 'Use the same variables, component intent, and handoff vocabulary as the code packages.',
+    href: '/docs/figma',
+    icon: 'figma',
+    label: 'Design workflow',
+    linkLabel: 'Open Figma guidance',
+    title: 'Figma library'
+  },
+  {
+    description: 'Give coding agents direct access to Lumen’s real component contracts and usage rules.',
+    href: '/docs/ai-skill',
+    icon: 'sparkles',
+    label: 'Agent workflow',
+    linkLabel: 'Install the AI skill',
+    title: 'AI integrations'
+  },
+  {
+    description: 'Follow package changes across web and native adapters from one release timeline.',
+    href: '/changelog',
+    icon: 'history',
+    label: 'What changed',
+    linkLabel: 'Read the changelog',
+    title: 'Release history'
+  }
 ] as const
-
-const setupSteps = [
-  ['1', 'Install a target package', 'Add Astro, React, or Elements; every target shares the same stylesheet package.'],
-  ['2', 'Load styles once', 'Import the standalone stylesheet from a global CSS file, root layout, or app entry.'],
-  ['3', 'Build on one contract', 'Markup, tokens, glass surfaces, and runtime behavior stay identical across targets.']
-] as const
-
-const basicThemeSetups = themeSetups.slice(0, 2)
-const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme')
 ---
 
 <DocsLayout
-  description="Install and use Lumen UI, a multi-framework primitive component system for Astro, React, and Elements."
-  title="Getting started - Lumen UI"
+  description="Choose the Lumen UI documentation for Web, React Native, Apple platforms, or Android, and explore their shared foundations."
+  title="Documentation - Lumen UI"
 >
-  <section class="docs-hero docs-intro-hero" id="introduction" aria-labelledby="intro-title">
-    <div class="docs-hero__content">
-      <Badge variant="outline">Getting started</Badge>
-      <h1 class="docs-intro-title" id="intro-title">
-        Build once. Use Lumen everywhere.
-      </h1>
-      <p class="max-w-2xl text-lg/8 text-ink-soft">
-        Semantic markup, one token-driven stylesheet, and a small progressive-enhancement
-        runtime. Pick a framework below; the markup and class contract stay the same everywhere.
-      </p>
-      <div class="flex flex-wrap gap-3">
-        <DocsActionLink href="#installation">Install Lumen</DocsActionLink>
-        <DocsActionLink href="/docs/components" variant="outline">Browse components</DocsActionLink>
-      </div>
-      <div class="docs-hero__stats" role="list" aria-label="Library overview">
-        {heroStats.map(([value, label]) => (
-          <div role="listitem">
-            <strong>{value}</strong>
-            <span>{label}</span>
+  <div class="docs-gateway-page">
+    <DocsPageHero
+      description="Choose the technology you are building for. Every Lumen adapter shares one semantic design language while preserving its platform’s native rendering, interaction, and accessibility conventions."
+      eyebrow="Lumen documentation"
+      stats={[
+        { label: 'Platforms', value: productPlatformGuides.length },
+        { label: 'Adapters', value: 6 },
+        { label: 'Web primitives', value: lumenComponentNames.length }
+      ]}
+      title="One system, every platform."
+    >
+      <Fragment slot="actions">
+        <DocsActionLink href="#platforms">
+          Choose a platform
+          <Icon decorative name="arrow-down" size="sm" />
+        </DocsActionLink>
+        <DocsActionLink href="/docs/foundations" variant="outline">
+          Explore foundations
+          <Icon decorative name="arrow-right" size="sm" />
+        </DocsActionLink>
+      </Fragment>
+
+      <div class="docs-platform-map" slot="visual" aria-label="Lumen platform architecture">
+        <div class="docs-platform-map__source">
+          <span><Icon decorative name="palette" size="sm" /></span>
+          <div>
+            <strong>Shared foundations</strong>
+            <small>Tokens · roles · behavior</small>
           </div>
+        </div>
+        <div class="docs-platform-map__branches" aria-hidden="true"></div>
+        <ul>
+          {productPlatformGuides.map(guide => (
+            <li>
+              <span>{guide.shortLabel.slice(0, 2).toUpperCase()}</span>
+              <strong>{guide.shortLabel}</strong>
+              <small>{guide.status}</small>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </DocsPageHero>
+
+    <section class="docs-gateway-section" id="platforms" aria-labelledby="platforms-title">
+      <div class="docs-gateway-section__heading">
+        <div>
+          <p>Choose your environment</p>
+          <h2 id="platforms-title">Start with the platform</h2>
+        </div>
+        <p>
+          Each guide uses the vocabulary, setup, and accessibility conventions expected by its
+          ecosystem. The shared foundations stay familiar when you move between them.
+        </p>
+      </div>
+      <div class="docs-platform-grid">
+        {productPlatformGuides.map((guide, index) => (
+          <Link class="docs-platform-link no-underline" href={guide.href}>
+            <Card as="article" class="docs-platform-card" variant="muted">
+              <div class="docs-platform-card__top">
+                <span>{platformNumbers[index]}</span>
+                <div>
+                  <Marker variant="success">{guide.status}</Marker>
+                  {guide.maturity && <Marker variant="warning">{guide.maturity}</Marker>}
+                </div>
+              </div>
+              <div>
+                <p>{guide.eyebrow}</p>
+                <h3>{guide.label}</h3>
+                <code>{guide.packageName}</code>
+              </div>
+              <p>{guide.summary}</p>
+              <span class="docs-platform-card__action">
+                Open {guide.shortLabel} docs
+                <Icon decorative name="arrow-right" size="sm" />
+              </span>
+            </Card>
+          </Link>
         ))}
       </div>
-    </div>
-    <div class="docs-hero__preview" aria-label="Framework support overview">
-      <Card class="docs-hero__surface" glass="strong">
-        <div class="docs-hero__bar">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div class="docs-hero__showcase-head">
-          <div>
-            <p>Glass system</p>
-            <strong>Built from Lumen primitives</strong>
-          </div>
-          <Marker variant="success">Live</Marker>
-        </div>
-        <ToggleGroup aria-label="Framework target">
-          <Toggle pressed>Astro</Toggle>
-          <Toggle>React</Toggle>
-          <Toggle>Elements</Toggle>
-        </ToggleGroup>
-        <Field class="docs-hero__field" glass="subtle">
-          <Label for="docs-workspace">Workspace</Label>
-          <Input id="docs-workspace" placeholder="lumen-labs" value="lumen-labs" />
-        </Field>
-        <label class="docs-hero__switch">
-          <Switch name="docs-glass-release" checked /> Ship glass surfaces
-        </label>
-        <Progress value={84} aria-label="Glass system coverage" />
-        <div class="docs-hero__grid">
-          {frameworkHighlights.map(([name, label, packageName]) => (
-            <div class="docs-framework-tile">
-              <span>{name}</span>
-              <strong>{label}</strong>
-              <code>{packageName}</code>
-            </div>
+    </section>
+
+    <Card
+      as="section"
+      class="docs-foundations-feature"
+      glass="subtle"
+      aria-labelledby="foundations-title"
+    >
+      <div class="docs-foundations-feature__copy">
+        <Badge variant="outline">{foundations.eyebrow}</Badge>
+        <h2 id="foundations-title">One foundation beneath every adapter</h2>
+        <p>{foundations.summary}</p>
+        <DocsActionLink href={foundations.href} variant="outline">
+          Understand the system
+          <Icon decorative name="arrow-right" size="sm" />
+        </DocsActionLink>
+      </div>
+      <div class="docs-foundations-feature__system">
+        <span class="docs-foundations-feature__label">Canonical vocabulary</span>
+        <div class="docs-foundations-feature__roles" role="list" aria-label="Shared foundation roles">
+          {foundations.components.slice(0, 6).map(component => (
+            <span role="listitem">{component}</span>
           ))}
         </div>
-        <div class="docs-token-strip" aria-label="Theme token examples">
-          <span style="--swatch: hsl(var(--brand));"></span>
-          <span style="--swatch: hsl(var(--accent));"></span>
-          <span style="--swatch: hsl(var(--success));"></span>
-          <span style="--swatch: hsl(var(--warning));"></span>
-          <span style="--swatch: hsl(var(--danger));"></span>
-        </div>
-      </Card>
-    </div>
-  </section>
+        <p>One token source, translated into platform-native values and components.</p>
+      </div>
+    </Card>
 
-  <div class="docs-step-grid" aria-label="Setup overview">
-    {setupSteps.map(([step, title, description]) => (
-      <Card as="article" class="docs-step" variant="muted">
-        <span>{step}</span>
+    <section class="docs-gateway-section" aria-labelledby="resources-title">
+      <div class="docs-gateway-section__heading">
         <div>
-          <h2>{title}</h2>
-          <p>{description}</p>
+          <p>Build with confidence</p>
+          <h2 id="resources-title">Keep design and code in sync</h2>
         </div>
-      </Card>
-    ))}
-  </div>
-
-  <section class="docs-section" id="installation" aria-labelledby="install-title">
-    <div class="docs-section-heading">
-      <p>Start here</p>
-      <h2 id="install-title">Install and use</h2>
-    </div>
-    <FrameworkSetupTabs setups={frameworkSetups} />
-  </section>
-
-  <section class="docs-section" id="framework-guides" aria-labelledby="framework-guides-title">
-    <div class="docs-section-heading">
-      <p>Framework contracts</p>
-      <h2 id="framework-guides-title">Framework-specific guidance</h2>
-      <p>
-        Lumen keeps one visual contract, but each target has its own integration surface for
-        behavior, local wrappers, and registration.
-      </p>
-    </div>
-    <div class="
-      grid gap-4
-      lg:grid-cols-3
-    "
-    >
-      {frameworkGuides.map(guide => (
-        <Link
-          class="
-            block rounded-2xl no-underline transition-colors outline-none
-            hover:bg-surface-strong
-            focus-visible:ring-2 focus-visible:ring-brand
-            focus-visible:ring-offset-2
-          "
-          href={`/docs/frameworks/${guide.id}`}
-        >
-          <Card class="docs-example-card h-full" variant="muted">
-            <div class="space-y-2">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-base font-bold text-ink">{guide.title}</h3>
-                <Badge variant="outline">{guide.packageName}</Badge>
-              </div>
-              <ul class="m-0 grid gap-2 pl-4 text-sm/6 text-ink-soft">
-                {guide.body.map(item => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </Card>
-        </Link>
-      ))}
-    </div>
-  </section>
-
-  <section class="docs-section" id="global-styles" aria-labelledby="global-styles-title">
-    <div class="docs-section-heading">
-      <p>Shared stylesheet</p>
-      <h2 id="global-styles-title">Add styles once</h2>
-      <p>
-        Lumen ships standalone CSS. Load it once from a global CSS file, root layout, or app
-        entry; Tailwind configuration is optional.
-      </p>
-    </div>
-    <div class="
-      grid gap-4
-      lg:grid-cols-3
-    "
-    >
-      {globalStyleSetups.map(setup => (
-        <Card class="docs-example-card" variant="muted">
-          <div class="space-y-1">
-            <h3 class="text-base font-bold text-ink">{setup.label}</h3>
-            <p class="text-sm/6 text-ink-soft">{setup.description}</p>
-          </div>
-          <div class="docs-code-compact">
-            <CodeBlock code={setup.code} lang={setup.lang} />
-          </div>
-        </Card>
-      ))}
-    </div>
-  </section>
-
-  <section class="docs-section" id="themes" aria-labelledby="themes-title">
-    <div class="docs-section-heading">
-      <p>Token contract</p>
-      <h2 id="themes-title">Themes</h2>
-      <p>
-        Color tokens live on the root data-theme attribute. Light and dark ship built in, and any
-        brand can be expressed through the same token contract.
-      </p>
-    </div>
-    <div class="
-      grid gap-4
-      lg:grid-cols-2
-    "
-    >
-      {basicThemeSetups.map(setup => (
-        <Card class="docs-example-card" variant="muted">
-          <div class="space-y-1">
-            <h3 class="text-base font-bold text-ink">{setup.label}</h3>
-            <p class="text-sm/6 text-ink-soft">{setup.description}</p>
-          </div>
-          <div class="docs-code-compact">
-            <CodeBlock code={setup.code} lang={setup.lang} />
-          </div>
-        </Card>
-      ))}
-    </div>
-    {customThemeSetup && (
-      <Card class="docs-theme-feature" variant="muted">
-        <div class="docs-theme-feature__intro">
-          <h3 class="text-base font-bold text-ink">{customThemeSetup.label}</h3>
-          <p class="text-sm/6 text-ink-soft">{customThemeSetup.description}</p>
-          <div class="docs-token-strip docs-token-strip--flush" aria-label="Theme token examples">
-            <span style="--swatch: hsl(var(--brand));"></span>
-            <span style="--swatch: hsl(var(--accent));"></span>
-            <span style="--swatch: hsl(var(--success));"></span>
-            <span style="--swatch: hsl(var(--warning));"></span>
-            <span style="--swatch: hsl(var(--danger));"></span>
-          </div>
-        </div>
-        <div class="docs-code-compact">
-          <CodeBlock code={customThemeSetup.code} lang={customThemeSetup.lang} />
-        </div>
-      </Card>
-    )}
-  </section>
-
-  <section class="docs-section" id="glassmorphism" aria-labelledby="glassmorphism-title">
-    <div class="docs-section-heading">
-      <p>Surface system</p>
-      <h2 id="glassmorphism-title">Glassmorphism surfaces</h2>
-      <p>
-        Glass is a surface treatment, not a theme: shared tokens control blur, saturation, borders,
-        and highlights, with fallbacks for browsers without backdrop-filter support.
-      </p>
-    </div>
-    <div
-      class="docs-glass-demo"
-      style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
-    >
-      <Card class="max-w-sm space-y-3 p-5" glass>
-        <Badge variant="outline">Glass</Badge>
-        <h3 class="text-xl font-black text-ink">Translucent by design</h3>
-        <p class="text-sm/7 text-ink-soft">
-          Shared tokens control blur, saturation, borders, highlights, and shadow depth across
-          light and dark themes.
+        <p>
+          Move from design to implementation with the same public vocabulary, then keep up with
+          the system as its packages evolve.
         </p>
-      </Card>
-    </div>
-    <div class="
-      grid gap-4
-      md:grid-cols-3
-    "
-    >
-      {glassSurfaceExamples.map(example => (
-        <Card class="docs-example-card" variant="muted">
-          <div class="space-y-1">
-            <h3 class="text-base font-bold text-ink">{example.label}</h3>
-            <p class="text-sm/6 text-ink-soft">{example.description}</p>
-          </div>
-          <div class="docs-code-compact">
-            <CodeBlock code={example.code} lang={example.lang} />
-          </div>
-        </Card>
-      ))}
-    </div>
-  </section>
-
-  <section class="docs-section" id="packages" aria-labelledby="packages-title">
-    <div class="docs-section-heading">
-      <p>Package map</p>
-      <h2 id="packages-title">Packages</h2>
-    </div>
-    <div class="
-      grid gap-4
-      md:grid-cols-2
-    "
-    >
-      {frameworkPackages.map(([name, packageName, status, description]) => (
-        <Card class="docs-package-card">
-          <div class="flex items-center justify-between gap-3">
-            <h3 class="text-base font-bold text-ink">{name}</h3>
-            <Badge variant="outline">{status}</Badge>
-          </div>
-          <p class="font-mono text-xs text-ink-muted">{packageName}</p>
-          <p class="text-sm/6 text-ink-soft">{description}</p>
-        </Card>
-      ))}
-    </div>
-  </section>
-
-  <section class="docs-section" id="runtime" aria-labelledby="runtime-title">
-    <div class="docs-section-heading">
-      <p>Behavior layer</p>
-      <h2 id="runtime-title">Progressive-enhancement runtime</h2>
-      <p>
-        Mount UIPrimitives once in your Astro root layout to wire every interactive primitive.
-        Static components never need it, and component snippets assume the root layout already owns
-        that runtime include.
-      </p>
-    </div>
-    <div class="
-      grid gap-4
-      md:grid-cols-2
-    "
-    >
-      {runtimeFeatures.map(([feature, description]) => (
-        <Card class="docs-runtime-card" variant="muted">
-          <h3 class="text-sm font-bold text-ink">{feature}</h3>
-          <p class="text-sm/6 text-ink-soft">{description}</p>
-        </Card>
-      ))}
-    </div>
-  </section>
-
-  <Card as="section" class="docs-next" variant="muted" aria-labelledby="next-title">
-    <h2 id="next-title">Next steps</h2>
-    <p>
-      Every component page includes a live preview plus code for all three targets.
-    </p>
-    <div class="flex flex-wrap gap-3">
-      <DocsActionLink href="/docs/components">Browse the component reference</DocsActionLink>
-      <DocsActionLink href="https://github.com/santi020k/lumen" variant="outline">
-        View on GitHub
-      </DocsActionLink>
-    </div>
-  </Card>
+      </div>
+      <div class="docs-resource-grid">
+        {resources.map(resource => (
+          <Card as="article" class="docs-resource-card" variant="muted">
+            <div class="docs-resource-card__icon">
+              <Icon decorative name={resource.icon} size="sm" />
+            </div>
+            <span>{resource.label}</span>
+            <h3>{resource.title}</h3>
+            <p>{resource.description}</p>
+            <Link href={resource.href}>
+              {resource.linkLabel} <Icon decorative name="arrow-right" size="sm" />
+            </Link>
+          </Card>
+        ))}
+      </div>
+    </section>
+  </div>
 </DocsLayout>
 
+<script>
+  const legacyWebSections = new Set([
+    '#installation',
+    '#framework-guides',
+    '#global-styles',
+    '#themes',
+    '#glassmorphism',
+    '#packages',
+    '#runtime'
+  ])
+
+  if (window.location.pathname === '/docs' && legacyWebSections.has(window.location.hash)) {
+    window.location.replace(`/docs/web${window.location.hash}`)
+  }
+</script>
+
 <style>
-  .docs-intro-hero {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    margin-bottom: 3rem;
-    padding: clamp(1.5rem, 4vw, 3rem);
-    border: 1px solid hsl(var(--line));
-    border-radius: 1.5rem;
-    background:
-      radial-gradient(circle at 88% 8%, hsl(var(--brand) / 0.2), transparent 32%),
-      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  .docs-gateway-page,
+  .docs-gateway-section {
+    display: grid;
   }
 
-  .docs-intro-title {
-    max-width: 12ch;
+  .docs-gateway-page {
+    gap: 3.5rem;
+  }
+
+  .docs-gateway-section {
+    gap: 1.4rem;
+    scroll-margin-top: 10rem;
+  }
+
+  .docs-platform-map {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.8rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.1rem;
+    background: hsl(var(--canvas) / 0.62);
+    backdrop-filter: blur(14px);
+  }
+
+  .docs-platform-map__source,
+  .docs-platform-map li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.72rem 0.8rem;
+    border-radius: 0.75rem;
+  }
+
+  .docs-platform-map__source {
+    grid-template-columns: auto minmax(0, 1fr);
+    background: hsl(var(--brand-soft) / 0.88);
+  }
+
+  .docs-platform-map__source > span,
+  .docs-resource-card__icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 0.65rem;
+    background: hsl(var(--surface));
+    color: hsl(var(--brand));
+  }
+
+  .docs-platform-map__source > div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .docs-platform-map__source strong,
+  .docs-platform-map li strong {
     color: hsl(var(--ink));
-    font-size: clamp(2.5rem, 5vw, 4.25rem);
+    font-size: 0.78rem;
+  }
+
+  .docs-platform-map__source small,
+  .docs-platform-map li small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.65rem;
+  }
+
+  .docs-platform-map__branches {
+    width: 1px;
+    height: 0.7rem;
+    margin-inline: 1.8rem;
+    background: hsl(var(--brand) / 0.55);
+  }
+
+  .docs-platform-map ul {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .docs-platform-map li {
+    background: hsl(var(--surface) / 0.82);
+  }
+
+  .docs-platform-map li > span {
+    width: 2rem;
+    color: hsl(var(--brand));
+    font: 800 0.62rem/1 var(--font-mono);
+  }
+
+  .docs-gateway-section__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.85fr);
+    gap: 2rem;
+    align-items: end;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .docs-gateway-section__heading > div > p,
+  .docs-resource-card > span,
+  .docs-foundations-feature__label {
+    color: hsl(var(--brand));
+    font-size: 0.7rem;
     font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.02;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
-  .docs-intro-hero :global(.docs-hero__surface) {
-    background: hsl(var(--canvas) / 0.7);
-    backdrop-filter: blur(18px);
+  .docs-gateway-section__heading h2,
+  .docs-foundations-feature h2 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
   }
 
-  .docs-intro-hero :global(.docs-hero__stats > div) {
-    min-width: 7rem;
-    padding: 0.75rem;
+  .docs-gateway-section__heading > p,
+  .docs-foundations-feature p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .docs-platform-grid,
+  .docs-resource-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .docs-platform-link {
+    display: block;
+    border-radius: 1.25rem;
+    outline: none;
+  }
+
+  .docs-platform-link:focus-visible {
+    box-shadow: 0 0 0 2px hsl(var(--brand));
+  }
+
+  .docs-platform-link :global(.docs-platform-card) {
+    display: grid;
+    gap: 1.25rem;
+    height: 100%;
+    min-height: 18rem;
+    padding: 1.5rem;
+    transition: border-color 160ms ease, transform 160ms ease, background-color 160ms ease;
+  }
+
+  .docs-platform-link:hover :global(.docs-platform-card) {
+    border-color: hsl(var(--brand) / 0.45);
+    background: hsl(var(--surface-strong));
+    transform: translateY(-2px);
+  }
+
+  .docs-platform-card__top,
+  .docs-platform-card__action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .docs-platform-card__top > span {
+    color: hsl(var(--ink-muted));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .docs-platform-card__top > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+  }
+
+  .docs-platform-card h3 {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink));
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+  }
+
+  .docs-platform-card > div:nth-child(2) > p {
+    color: hsl(var(--brand));
+    font-size: 0.68rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .docs-platform-card code {
+    overflow-wrap: anywhere;
+    color: hsl(var(--brand));
+    font-size: 0.72rem;
+  }
+
+  .docs-platform-card > p,
+  .docs-resource-grid p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .docs-platform-card__action {
+    justify-content: flex-start;
+    margin-top: auto;
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+
+  :global(.docs-foundations-feature) {
+    display: grid;
+    gap: 2rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .docs-foundations-feature__copy,
+  .docs-foundations-feature__system {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 1rem;
+  }
+
+  .docs-foundations-feature__system {
+    padding: 1.25rem;
     border: 1px solid hsl(var(--line));
-    border-radius: 0.8rem;
-    background: hsl(var(--canvas) / 0.6);
+    border-radius: 1rem;
+    background: hsl(var(--canvas) / 0.62);
+  }
+
+  .docs-foundations-feature__roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .docs-foundations-feature__roles span {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 999px;
+    background: hsl(var(--surface) / 0.88);
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  :global(.docs-resource-card) {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.7rem;
+    min-height: 17rem;
+    padding: 1.4rem;
+  }
+
+  .docs-resource-grid h3 {
+    color: hsl(var(--ink));
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
+  .docs-resource-grid :global(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    margin-top: auto;
+    font-size: 0.875rem;
+    font-weight: 750;
+  }
+
+  @media (min-width: 48rem) {
+    .docs-platform-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .docs-resource-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    :global(.docs-foundations-feature) {
+      grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.9fr);
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .docs-gateway-section__heading {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
   }
 </style>

@@ -7,7 +7,7 @@
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  A multi-framework UI system with 150 accessible primitives for Astro, React, and Web Components.
+  A cross-platform UI system with 150+ web primitives and shared native foundations.
 </p>
 
 <p align="center">
@@ -28,9 +28,11 @@
 
 Lumen gives applications a consistent visual language without tying them to one rendering model.
 Its packages share tokens, component contracts, styles, and interaction patterns while keeping each
-framework's native authoring experience.
+framework and platform's native authoring experience.
 
 - **Framework native:** Astro components, React primitives, and standards-based custom elements.
+- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens preserve the
+  same semantic roles without introducing DOM or CSS assumptions.
 - **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion
   support are built into the primitives.
 - **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer
@@ -55,7 +57,7 @@ lumen add commerce-dashboard --target react
 lumen add auth-onboarding --target elements
 ```
 
-## Quick start
+## Web quick start
 
 Install the package for your framework:
 
@@ -142,8 +144,34 @@ Import the styles and register the elements once:
 </lumen-card>
 ```
 
-See the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component
-examples, and API details.
+See the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,
+component examples, and API details.
+
+For native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),
+[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or
+[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The
+[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token
+and component contract; repository contributors can also use the
+[cross-platform architecture](./docs/cross-platform.md) and
+[native component reference](./docs/native-components.md).
+
+> **Native platform status: Beta.** The shared token foundation is stable, while the React Native,
+> SwiftUI, and Compose component APIs are being validated through real applications and may evolve.
+> Review release notes when upgrading and share platform-specific feedback.
+
+## Native playgrounds
+
+The repository includes three searchable, interactive galleries built from the real native
+packages:
+
+- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,
+  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.
+- [`apps/playground-apple`](./apps/playground-apple) builds as an iOS Xcode app for devices and
+  TestFlight, or as a macOS Swift Package executable for local exploration.
+- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a
+  directly installable debug APK.
+
+See the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.
 
 ## Tailwind CSS
 
@@ -168,6 +196,10 @@ component defaults.
 | [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |
 | [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
 | [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
+| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |
+| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |
+| [`LumenUI`](./packages/swift) | Swift Package for SwiftUI foundations and native primitives |
+| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |
 | [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |
 | [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
 | [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
@@ -192,9 +224,13 @@ Additional machine-readable surfaces include:
 - [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.
 - [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.
 - [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.
+- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged
+  web and native migration strategy.
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.
+- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,
+  and component-parity policy.
 
 ## Contributing
 
@@ -209,6 +245,20 @@ pnpm run validate
 
 Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package
 changes require a changeset.
+
+## Community
+
+Lumen is free and MIT licensed while the project focuses on adoption, public examples, and
+real-world feedback.
+
+- Explore task-oriented [guides](https://lumen.santi020k.com/guides).
+- Share a public project in the [community showcase](https://lumen.santi020k.com/community).
+- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).
+- Tell us what would improve your next build through the
+  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).
+
+Maintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,
+campaign measurement, video scripts, and launch copy.
 
 ## License
 

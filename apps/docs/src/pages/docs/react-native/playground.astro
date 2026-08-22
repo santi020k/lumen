@@ -1,0 +1,8 @@
+---
+import PlatformPlayground from '../../../components/PlatformPlayground.astro'
+import { getPlatformGuide } from '../../../data/platforms'
+
+const guide = getPlatformGuide('react-native')
+---
+
+<PlatformPlayground guide={guide} />

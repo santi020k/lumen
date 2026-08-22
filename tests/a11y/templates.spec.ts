@@ -13,7 +13,7 @@ test('template gallery exposes every live preview and install command', async ({
 
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Start with the whole product surface.'
+    name: 'Skip the blank canvas. Ship the product.'
   })).toBeVisible()
 
   for (const slug of templateSlugs) {
@@ -22,7 +22,9 @@ test('template gallery exposes every live preview and install command', async ({
     })
 
     await expect(card).toBeVisible()
-    await expect(card.locator('code')).toContainText(`lumen add ${slug} --target astro`)
+    await expect(card.locator('code').filter({ hasText: '--target astro' })).toContainText(
+      `lumen add ${slug} --target astro`
+    )
   }
 })
 

@@ -11,6 +11,7 @@ const alias = {
   '@santi020k/lumen-elements': fileURLToPath(new URL('./packages/elements/src/index.ts', import.meta.url)),
   '@santi020k/lumen-icons-brand': fileURLToPath(new URL('./packages/icons-brand/src/index.ts', import.meta.url)),
   '@santi020k/lumen-react': fileURLToPath(new URL('./packages/react/src/index.ts', import.meta.url)),
+  '@santi020k/lumen-react-native': fileURLToPath(new URL('./packages/react-native/src/index.ts', import.meta.url)),
   '@santi020k/lumen-react-hook-form': fileURLToPath(new URL('./packages/react-hook-form/src/index.ts', import.meta.url))
 }
 
@@ -61,6 +62,7 @@ export default defineConfig({
       project('lumen', 'packages/lumen'),
       project('mcp', 'packages/mcp'),
       project('react', 'packages/react'),
+      project('react-native', 'packages/react-native'),
       project('react-hook-form', 'packages/react-hook-form', {
         include: ['src/**/*.test.ts', 'src/**/*.test.tsx']
       }),

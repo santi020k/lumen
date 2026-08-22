@@ -124,6 +124,12 @@ export {
   resolveLumenIconName
 } from './icons.js'
 export {
+  createLumenKanbanMoveDetail,
+  getAdjacentKanbanColumn,
+  type LumenKanbanMoveDetail,
+  type LumenKanbanMoveInput
+} from './kanban.js'
+export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,
@@ -219,12 +225,25 @@ export {
   composeClassName,
   lumenChart,
   lumenColors,
+  type LumenColorScheme,
+  lumenColorTokens,
+  lumenCssColorTokens,
+  lumenDarkColors,
   lumenDarkTheme,
+  lumenDurations,
+  lumenEasings,
+  lumenElevation,
   lumenFont,
+  lumenFontFamilies,
+  lumenFontSizes,
+  lumenFontWeights,
   lumenGlass,
   lumenLightTheme,
   lumenMotion,
+  lumenRadii,
   lumenRadius,
+  type LumenSemanticColor,
   lumenShadow,
+  lumenSpacing,
   lumenThemeAttribute
 } from './tokens.js'

@@ -33,6 +33,7 @@ export const lumenComponentNames = [
   'Container',
   'CopyButton',
   'Command',
+  'ContextNavigation',
   'ContextMenu',
   'ColorPicker',
   'DataTable',
@@ -57,6 +58,8 @@ export const lumenComponentNames = [
   'InputGroup',
   'InputOTP',
   'Item',
+  'KanbanBoard',
+  'KanbanColumn',
   'Kbd',
   'Label',
   'Link',
@@ -203,6 +206,7 @@ export const lumenComponentBehavior = {
   Command: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Container: { astro: 'none', elements: 'registered-element', react: 'component' },
   CopyButton: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  ContextNavigation: { astro: 'none', elements: 'registered-element', react: 'component' },
   ContextMenu: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   CoverImage: { astro: 'none', elements: 'registered-element', react: 'component' },
   DataTable: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
@@ -231,6 +235,8 @@ export const lumenComponentBehavior = {
   InputGroup: { astro: 'none', elements: 'registered-element', react: 'component' },
   InputOTP: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Item: { astro: 'none', elements: 'registered-element', react: 'component' },
+  KanbanBoard: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
+  KanbanColumn: { astro: 'none', elements: 'registered-element', react: 'component' },
   Kbd: { astro: 'none', elements: 'registered-element', react: 'component' },
   Label: { astro: 'none', elements: 'registered-element', react: 'component' },
   LanguageToggle: { astro: 'none', elements: 'registered-element', react: 'component' },
@@ -392,6 +398,16 @@ export const lumenStylingContracts = {
     rootSlot: 'code-tabs',
     stability: 'stable'
   },
+  ContextNavigation: {
+    customProperties: [
+      '--ui-context-navigation-gap',
+      '--ui-context-navigation-min-height',
+      '--ui-context-navigation-padding'
+    ],
+    parts: ['context-navigation-context'],
+    rootSlot: 'context-navigation',
+    stability: 'stable'
+  },
   Link: {
     customProperties: ['--ui-link-font-weight', '--ui-link-underline-offset'],
     parts: [],
@@ -433,7 +449,16 @@ export const lumenStylingContracts = {
 export interface LumenPackageTarget {
   name: string
   packageName: string
-  runtime: 'astro' | 'core' | 'elements' | 'icons' | 'react' | 'umbrella'
+  runtime: 'astro' |
+    'compose' |
+    'core' |
+    'elements' |
+    'icons' |
+    'react' |
+    'react-native' |
+    'swift' |
+    'tokens' |
+    'umbrella'
 }
 
 export const lumenPackages = [
@@ -447,6 +472,18 @@ export const lumenPackages = [
     runtime: 'react'
   },
   { name: 'Lumen Elements', packageName: '@santi020k/lumen-elements', runtime: 'elements' },
+  {
+    name: 'Lumen React Native',
+    packageName: '@santi020k/lumen-react-native',
+    runtime: 'react-native'
+  },
+  { name: 'Lumen Tokens', packageName: '@santi020k/lumen-tokens', runtime: 'tokens' },
+  { name: 'Lumen SwiftUI', packageName: 'LumenUI', runtime: 'swift' },
+  {
+    name: 'Lumen Compose',
+    packageName: 'com.santi020k:lumen-compose',
+    runtime: 'compose'
+  },
   {
     name: 'Lumen Brand Icons',
     packageName: '@santi020k/lumen-icons-brand',

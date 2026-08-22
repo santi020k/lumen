@@ -1,6 +1,9 @@
 ---
-import { Badge, ButtonLink, Icon } from '@santi020k/lumen-astro'
+import { Badge, ButtonLink, Icon, Image } from '@santi020k/lumen-astro'
 
+import analyticsDesktop from './assets/previews/analytics-dashboard-santi020k-light-desktop.jpg'
+import onboardingMobile from './assets/previews/auth-onboarding-santi020k-light-mobile.jpg'
+import commerceDesktop from './assets/previews/commerce-dashboard-santi020k-light-desktop.jpg'
 import TemplatePreviewFrame from './components/TemplatePreviewFrame.astro'
 import { lumenTemplates } from './templates'
 ---
@@ -12,21 +15,60 @@ import { lumenTemplates } from './templates'
         <Icon name="layout-template" size="sm" />
         Production compositions
       </Badge>
-      <h1>Start with the whole product surface.</h1>
+      <h1>Skip the blank canvas. <em>Ship the product.</em></h1>
       <p>
-        Five responsive Lumen templates with accessible states, realistic data,
-        and source you can install for Astro, React, or Web Components.
+        Start from a complete, responsive product experience—not a pile of disconnected screens.
+        Choose a template, keep the Lumen foundations, and make the workflow yours.
       </p>
       <div class="template-gallery__hero-actions">
         <ButtonLink href="#template-collection" showArrow>Explore templates</ButtonLink>
         <ButtonLink href="/docs" variant="secondary">Read the documentation</ButtonLink>
       </div>
+      <dl class="template-gallery__summary">
+        <div><dd>{lumenTemplates.length}</dd><dt>complete recipes</dt></div>
+        <div><dd>3</dd><dt>web targets</dt></div>
+        <div><dd>2</dd><dt>theme modes</dt></div>
+      </dl>
     </div>
-    <dl class="template-gallery__summary">
-      <div><dt>Templates</dt><dd>{lumenTemplates.length}</dd></div>
-      <div><dt>Frameworks</dt><dd>3</dd></div>
-      <div><dt>Theme modes</dt><dd>Light + dark</dd></div>
-    </dl>
+
+    <div class="template-gallery__hero-preview" aria-label="A selection of Lumen templates">
+      <div class="template-gallery__hero-preview-label">
+        <span><i></i> Live template preview</span>
+        <span>Responsive by default</span>
+      </div>
+      <a
+        class="template-gallery__hero-browser"
+        href="/templates/analytics-dashboard"
+        aria-label="Open the analytics dashboard template"
+      >
+        <span class="template-gallery__browser-bar" aria-hidden="true">
+          <i></i><i></i><i></i>
+          <span>Analytics dashboard</span>
+        </span>
+        <Image alt="" src={analyticsDesktop} />
+      </a>
+      <a
+        class="
+          template-gallery__hero-card template-gallery__hero-card--commerce
+        "
+        href="/templates/commerce-dashboard"
+        aria-label="Open the commerce dashboard template"
+      >
+        <Image alt="" src={commerceDesktop} />
+        <span>Commerce</span>
+      </a>
+      <a
+        class="template-gallery__hero-phone"
+        href="/templates/auth-onboarding"
+        aria-label="Open the authentication and onboarding template"
+      >
+        <Image alt="" src={onboardingMobile} />
+      </a>
+      <Badge class="template-gallery__hero-proof" variant="outline">
+        <Icon name="check" size="sm" />
+        Built with public primitives
+      </Badge>
+    </div>
   </section>
 
   <section class="template-gallery__collection" id="template-collection">
@@ -36,8 +78,8 @@ import { lumenTemplates } from './templates'
         <h2>Built around decisions, not decoration.</h2>
       </div>
       <p>
-        Every surface uses public Lumen primitives and semantic tokens, including
-        responsive layouts, keyboard paths, loading-ready structure, and exact-data views.
+        Every screenshot comes from the live template. Each recipe uses public Lumen primitives
+        and semantic tokens, with responsive layouts, keyboard paths, and exact-data views.
       </p>
     </header>
     <div class="template-gallery__grid">

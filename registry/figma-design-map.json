@@ -54,6 +54,7 @@
     { "pattern": "page navigation numbers", "components": ["Pagination"] },
     { "pattern": "breadcrumb trail", "components": ["Breadcrumb"] },
     { "pattern": "left navigation column", "components": ["Sidebar", "NavigationMenu"] },
+    { "pattern": "contextual product or platform subnavigation", "components": ["ContextNavigation", "NavigationMenu", "NativeSelect"] },
     { "pattern": "progress bar", "components": ["Progress"] },
     { "pattern": "loading placeholder blocks", "components": ["Skeleton", "Spinner"] },
     { "pattern": "inline notification banner", "components": ["Alert"] },

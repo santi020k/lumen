@@ -99,6 +99,8 @@ const lumenTokenDescriptions = {
   'ink-muted': 'Muted foreground color for secondary content.',
   'ink-soft': 'Soft foreground color for tertiary content.',
   line: 'Borders, dividers, and structural lines.',
+  'on-brand': 'Readable foreground placed on a solid brand fill.',
+  'on-danger': 'Readable foreground placed on a solid danger fill.',
   success: 'Positive or complete status color.',
   surface: 'Default component surface.',
   'surface-muted': 'Subtle component surface.',

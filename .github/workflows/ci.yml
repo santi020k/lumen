@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      native: ${{ steps.paths.outputs.native }}
       compatibility: ${{ steps.paths.outputs.compatibility }}
       mcp: ${{ steps.paths.outputs.mcp }}
       playwright: ${{ steps.paths.outputs.playwright }}
@@ -68,6 +69,105 @@ jobs:
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
           fi
+          if grep -Eq '^(packages/(compose|react-native|swift|tokens)/|tokens/|scripts/generate-platform-tokens\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+            echo "native=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "native=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  native-apple:
+    name: SwiftUI package
+    needs: classify
+    if: needs.classify.outputs.native == 'true'
+    runs-on: macos-15
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Build and test LumenUI for macOS
+        run: swift test
+
+      - name: Build LumenUI for iOS
+        run: >-
+          xcodebuild -scheme LumenUI
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
+
+  native-android:
+    name: Compose library
+    needs: classify
+    if: needs.classify.outputs.native == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Setup Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install Android platform
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0" \
+            "platform-tools" \
+            "emulator" \
+            "system-images;android-35;google_apis;x86_64"
+
+      - name: Build and test Compose library
+        working-directory: packages/compose
+        run: ./gradlew test lint assembleDebugAndroidTest verifyMavenPublication
+
+      - name: Run Compose accessibility tests on Android
+        working-directory: packages/compose
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          adb="$android_sdk_root/platform-tools/adb"
+          emulator="$android_sdk_root/emulator/emulator"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/lumen-avd"
+          mkdir -p "$ANDROID_AVD_HOME"
+
+          echo no | "$android_sdk_root/cmdline-tools/latest/bin/avdmanager" create avd \
+            --force \
+            --name lumen-ci \
+            --path "$ANDROID_AVD_HOME/lumen-ci.avd" \
+            --package "system-images;android-35;google_apis;x86_64"
+
+          "$emulator" -list-avds | grep -Fx lumen-ci # cspell:ignore avds
+
+          if [[ -e /dev/kvm ]]; then
+            sudo chmod 666 /dev/kvm
+          fi
+
+          "$emulator" -avd lumen-ci \
+            -no-window \
+            -no-audio \
+            -no-snapshot-save \
+            -no-boot-anim \
+            -gpu swiftshader_indirect \
+            > "$RUNNER_TEMP/lumen-emulator.log" 2>&1 &
+          emulator_pid=$!
+          trap '"$adb" emu kill >/dev/null 2>&1 || kill "$emulator_pid" >/dev/null 2>&1 || true' EXIT
+
+          if ! timeout 240 "$adb" wait-for-device; then
+            cat "$RUNNER_TEMP/lumen-emulator.log" >&2
+            exit 1
+          fi
+          for _ in {1..120}; do
+            if [[ "$("$adb" shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]; then
+              ./gradlew connectedDebugAndroidTest
+              exit 0
+            fi
+            sleep 2
+          done
+
+          cat "$RUNNER_TEMP/lumen-emulator.log" >&2
+          exit 1
 
   browser-contracts:
     name: Browser interaction contracts
@@ -121,7 +221,21 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: Run visual regression suite
+        id: visual-regression
+        continue-on-error: true
         run: pnpm run test:visual
+
+      - name: Upload visual regression diagnostics
+        if: steps.visual-regression.outcome == 'failure'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: visual-regression-diagnostics
+          path: test-results
+          if-no-files-found: error
+
+      - name: Fail on visual regression
+        if: steps.visual-regression.outcome == 'failure'
+        run: exit 1
 
   mcp-node-20:
     name: MCP compatibility (Node 20)
@@ -210,7 +324,8 @@ jobs:
           pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
           pnpm run check:bundle-size
           pnpm run check:framework-contracts
-          pnpm audit --audit-level moderate
+          pnpm run check:native-contracts
+          pnpm run check:platform-tokens
           pnpm run check:security
           pnpm run check:publish-dry-run
           pnpm run check:consumer-packages

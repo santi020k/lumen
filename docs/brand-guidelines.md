@@ -33,6 +33,7 @@ The shared token vocabulary is the brand contract:
 | Text | `ink`, `ink-soft`, `ink-muted` |
 | Borders | `line` |
 | Action color | `brand`, `brand-solid`, `brand-soft` |
+| On-color foregrounds | `on-brand`, `on-danger` |
 | Secondary accent | `accent` |
 | Status | `success`, `warning`, `danger` |
 

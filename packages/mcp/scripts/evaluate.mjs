@@ -22,6 +22,7 @@ await Promise.all([
 ])
 
 let evaluatedContracts = 0
+let evaluatedNativeContracts = 0
 
 try {
   for (const searchCase of searchCases) {
@@ -79,6 +80,35 @@ try {
       await evaluateComponent(component)
     }
 
+    for (const component of data.nativeComponents) {
+      for (const platform of Object.keys(component.implementations)) {
+        const result = await client.callTool({
+          arguments: { detail: 'usage', name: component.name, platform },
+          name: 'lumen_get_native_component'
+        })
+
+        assert.equal(
+          result.isError,
+          false,
+          `${component.name} returned an MCP error for ${platform}`
+        )
+
+        assert.equal(
+          result.structuredContent?.found,
+          true,
+          `${component.name} was not found for ${platform}`
+        )
+
+        assert.match(
+          String(result.content[0]?.text),
+          /## Example/,
+          `${component.name} omitted its ${platform} example`
+        )
+
+        evaluatedNativeContracts += 1
+      }
+    }
+
     const diagnostics = await client.callTool({
       arguments: {},
       name: 'lumen_diagnose'
@@ -105,6 +135,7 @@ try {
       'lumen://meta',
       'lumen://catalog-manifest',
       'lumen://diagnostics',
+      'lumen://native-components',
       'lumen://rules'
     ]) {
       const resource = await client.readResource({ uri })
@@ -113,9 +144,13 @@ try {
     }
   }
 
+  const evaluationSummary = searchOnly ?
+    '\n' :
+    `; ${evaluatedContracts} web framework contracts and ` +
+    `${evaluatedNativeContracts} native platform contracts passed end-to-end\n`
+
   process.stdout.write(
-    `lumen-mcp: ${searchCases.length} search cases passed` +
-    (searchOnly ? '\n' : `; ${evaluatedContracts} framework contracts passed end-to-end\n`)
+    `lumen-mcp: ${searchCases.length} search cases passed${evaluationSummary}`
   )
 } finally {
   await client.close()

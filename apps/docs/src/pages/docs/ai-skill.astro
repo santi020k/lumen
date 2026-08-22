@@ -1,5 +1,5 @@
 ---
-import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
+import { Badge, Card, CodeTabs, Icon, Link } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
@@ -10,9 +10,45 @@ const installCommand = 'npx skills add santi020k/lumen --skill lumen-ui'
 const skillUrl = 'https://github.com/santi020k/lumen/tree/main/skills/lumen-ui'
 
 const workflow = [
-  ['01', 'Understand the app', 'The skill detects Astro, React, or Web Components and preserves the project’s architecture.', 'scan-search'],
+  ['01', 'Understand the app', 'The skill detects the web or native target and preserves the project’s architecture.', 'scan-search'],
   ['02', 'Use real contracts', 'It retrieves current components, props, tokens, and rules instead of inventing a parallel UI system.', 'blocks'],
   ['03', 'Compose and verify', 'It maps product intent to accessible Lumen primitives, then checks the edited surface.', 'shield-check']
+] as const
+
+const targetPackages = [
+  ['Astro', '@santi020k/lumen-astro'],
+  ['React', '@santi020k/lumen-react'],
+  ['Web Components', '@santi020k/lumen-elements'],
+  ['React Native', '@santi020k/lumen-react-native'],
+  ['SwiftUI', 'LumenUI'],
+  ['Jetpack Compose', 'lumen-compose']
+] as const
+
+const platformPrompts = [
+  {
+    code: `Use $lumen-ui to build an accessible account settings screen in this Astro app.
+Use public Lumen components, load the stylesheet once, and mount UIPrimitives once at the root.`,
+    label: 'Astro',
+    value: 'astro'
+  },
+  {
+    code: `Use $lumen-ui to build this screen in the existing React Native app.
+Use @santi020k/lumen-react-native, one LumenProvider, and native accessibility states.`,
+    label: 'React Native',
+    value: 'react-native'
+  },
+  {
+    code: `Use $lumen-ui to build this screen in SwiftUI.
+Use the LumenUI package, preserve native navigation, and support Dynamic Type and VoiceOver.`,
+    label: 'SwiftUI',
+    value: 'apple'
+  },
+  {
+    code: `Use $lumen-ui to build this screen with Jetpack Compose.
+Use the lumen-compose module and LumenTheme, and preserve TalkBack and native state behavior.`,
+    label: 'Compose',
+    value: 'compose'
+  }
 ] as const
 
 const compatibleAgents = [
@@ -24,9 +60,15 @@ const compatibleAgents = [
   'Windsurf'
 ] as const
 
+const installJourney = [
+  ['1', 'Run the command', 'Open a terminal anywhere and run the installation command shown above.'],
+  ['2', 'Choose your AI tools', 'Follow the installer prompts and select each compatible coding tool you use.'],
+  ['3', 'Open your application', 'Open the project in that tool and ask for Lumen by name or invoke $lumen-ui explicitly.']
+] as const
+
 const examplePrompt = `Use $lumen-ui to build an account settings page in this app.
 Keep the current framework and data flow, use Lumen primitives and tokens,
-and include validation, loading, success, and keyboard states.`
+and include validation, loading, success, and platform-native accessibility states.`
 ---
 
 <DocsLayout
@@ -35,11 +77,11 @@ and include validation, loading, success, and keyboard states.`
 >
   <div class="skill-page">
     <DocsPageHero
-      description="A portable Agent Skill that teaches coding assistants how to select, compose, theme, and verify Lumen components across Astro, React, and Web Components."
+      description="A portable Agent Skill that teaches coding assistants how to select, compose, theme, and verify Lumen components across web and native applications."
       eyebrow="AI-native UI"
       stats={[
         { label: 'Install', value: '1 command' },
-        { label: 'Targets', value: 3 },
+        { label: 'Targets', value: 6 },
         { label: 'Format', value: 'SKILL.md' }
       ]}
       title="Give your AI the Lumen design system."
@@ -97,6 +139,57 @@ and include validation, loading, success, and keyboard states.`
           {compatibleAgents.map(agent => <Badge variant="outline">{agent}</Badge>)}
           <Badge variant="secondary">and other Agent Skills clients</Badge>
         </div>
+      </Card>
+
+      <ol class="skill-install-steps" aria-label="AI skill installation steps">
+        {installJourney.map(([number, title, description]) => (
+          <li>
+            <Card as="article" class="skill-install-step" variant="muted">
+              <span>{number}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="skill-section" aria-labelledby="targets-title">
+      <div class="skill-section__heading">
+        <div>
+          <p>Choose the application target</p>
+          <h2 id="targets-title">One skill, six Lumen adapters</h2>
+        </div>
+        <p>
+          Open the application folder in your AI coding tool and name the platform in the request.
+          The skill keeps the existing framework and selects the corresponding public package.
+        </p>
+      </div>
+
+      <div class="skill-targets" role="list" aria-label="Lumen application targets">
+        {targetPackages.map(([target, packageName]) => (
+          <Card class="skill-target" role="listitem" variant="muted">
+            <strong>{target}</strong>
+            <code>{packageName}</code>
+          </Card>
+        ))}
+      </div>
+
+      <CodeTabs
+        ariaLabel="Example Lumen prompts by application target"
+        items={platformPrompts}
+        storageKey="lumen-ai-platform-prompt"
+      />
+
+      <Card as="section" class="skill-native-note" variant="muted">
+        <Icon decorative name="info" size="sm" />
+        <p>
+          The skill and optional MCP server support all six targets. MCP provides live component
+          contracts for web, React Native, SwiftUI, and Jetpack Compose; the agent can still verify
+          APIs from the installed package when a project uses a different version.
+        </p>
       </Card>
     </section>
 
@@ -170,6 +263,40 @@ and include validation, loading, success, and keyboard states.`
   .skill-page,
   .skill-section {
     display: grid;
+  }
+
+  .skill-targets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: .75rem;
+  }
+
+  :global(.skill-target) {
+    display: grid;
+    gap: .35rem;
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .skill-target strong {
+    color: hsl(var(--ink));
+    font-size: .9rem;
+  }
+
+  .skill-target code {
+    overflow-wrap: anywhere;
+    color: hsl(var(--brand));
+    font-size: .75rem;
+  }
+
+  :global(.skill-native-note) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: .75rem;
+    padding: 1rem;
+    color: hsl(var(--ink-soft));
+    font-size: .875rem;
+    line-height: 1.6;
   }
 
   .skill-page {
@@ -286,6 +413,47 @@ and include validation, loading, success, and keyboard states.`
     gap: .45rem;
   }
 
+  .skill-install-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.skill-install-step) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: .75rem;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .skill-install-steps span {
+    display: grid;
+    width: 1.75rem;
+    height: 1.75rem;
+    place-items: center;
+    border-radius: 999px;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    font-size: .75rem;
+    font-weight: 900;
+  }
+
+  .skill-install-steps h3 {
+    color: hsl(var(--ink));
+    font-size: .9rem;
+  }
+
+  .skill-install-steps p {
+    margin-top: .25rem;
+    color: hsl(var(--ink-soft));
+    font-size: .8rem;
+    line-height: 1.55;
+  }
+
   .skill-workflow {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -360,6 +528,7 @@ and include validation, loading, success, and keyboard states.`
 
   @media (max-width: 760px) {
     .skill-section__heading,
+    .skill-install-steps,
     .skill-workflow,
     .skill-pair {
       grid-template-columns: 1fr;

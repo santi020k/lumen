@@ -14,6 +14,9 @@ the other packages adapt or expose shared pieces.
   enhancement runtime.
 - `packages/react` holds React primitives.
 - `packages/elements` holds standards-based Web Components.
+- `packages/tokens` publishes the canonical platform-neutral token document.
+- `packages/react-native`, `packages/swift`, and `packages/compose` hold native platform adapters;
+  the repository-root `Package.swift` exposes the SwiftUI sources to Swift Package Manager.
 - `packages/lumen` is the umbrella package and public package map.
 - `apps/docs` is the Astro documentation and demo site.
 
@@ -25,6 +28,10 @@ and visual guidance.
 
 - Prefer the existing package boundaries. Shared contracts belong in `packages/core`; framework
   details belong in the matching framework package.
+- Treat `tokens/lumen.tokens.json` as the canonical native foundation source. Run
+  `pnpm run generate:platform-tokens` after changing it and commit the generated adapter sources.
+- Share semantic roles and behavior contracts across native adapters, but use SwiftUI, Compose, and
+  React Native conventions instead of reproducing DOM APIs.
 - Treat Astro as the reference surface unless the task explicitly targets another framework.
 - Keep public APIs small and stable. Add exports intentionally and update the package README when
   the usage story changes.
@@ -46,6 +53,8 @@ pnpm run typecheck
 pnpm run test
 pnpm run lint
 pnpm run validate
+swift test
+(cd packages/compose && ./gradlew test lint)
 ```
 
 For narrow checks, prefer the smallest command that covers the edited surface. Run `pnpm run validate`
@@ -55,7 +64,7 @@ before release-oriented work or broad cross-package changes.
 
 - Components should use the existing token names: `canvas`, `surface`, `surface-muted`,
   `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,
-  `accent`, `success`, `warning`, and `danger`.
+  `on-brand`, `accent`, `success`, `warning`, `danger`, and `on-danger`.
 - Standalone component CSS lives in `packages/astro/styles/lumen.css`. The docs app can layer its
   own theme tokens in `apps/docs/src/styles/global.css`.
 - Interactive Astro primitives should keep working without requiring Tailwind configuration from

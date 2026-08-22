@@ -23,11 +23,17 @@ import {
   Dialog,
   type DialogProps,
   DropdownMenu,
+  Empty,
+  type EmptyProps,
   Field,
   type FieldProps,
   Input,
   InputOTP,
   type InputProps,
+  KanbanBoard,
+  type KanbanBoardProps,
+  KanbanColumn,
+  type KanbanColumnProps,
   lumenComponentNames,
   Popover,
   Resizable,
@@ -47,6 +53,7 @@ import {
   useDropdownMenu,
   useFormValidation,
   useInputOTP,
+  useKanban,
   usePopover,
   useResizable,
   useRichTextEditor,
@@ -286,6 +293,23 @@ describe('@santi020k/lumen-react', () => {
     )
     expect(card.props['data-variant']).toBe('interactive')
     expect(card.props.uiClassName).toBe('ui-card')
+  })
+
+  test('renders Kanban layout and compact empty states', () => {
+    const board = KanbanBoard({ 'aria-label': 'Delivery board' }) as ReactElement<
+      KanbanBoardProps & { 'data-ui-kanban': boolean }
+    >
+    const column = KanbanColumn({ value: 'planned' }) as ReactElement<
+      KanbanColumnProps & { 'data-ui-kanban-column': string }
+    >
+    const empty = Empty({ variant: 'compact' }) as ReactElement<EmptyProps>
+
+    expect(board.props.className).toBe('ui-kanban-board ui-kanban')
+    expect(board.props['data-ui-kanban']).toBe(true)
+    expect(board.props.tabIndex).toBe(0)
+    expect(column.props.className).toBe('ui-kanban__column')
+    expect(column.props['data-ui-kanban-column']).toBe('planned')
+    expect(empty.props.className).toBe('ui-empty ui-empty--compact')
   })
 
   test('supports a semantic root element and visual variant for stats', () => {
@@ -803,6 +827,76 @@ describe('@santi020k/lumen-react', () => {
 
     expect(slot.dataset.state).toBeUndefined()
     expect(changes).toEqual([{ eventId: 'schedule-planning', slot: 'friday' }])
+  })
+
+  test('emits controlled Kanban move requests without moving items', () => {
+    const changes: unknown[] = []
+    const kanban = withHookDispatcher(() => useKanban({
+      onMoveRequest: detail => changes.push(detail)
+    }))
+    const accepted = kanban.requestMove({
+      fromColumn: 'inbox',
+      input: 'keyboard',
+      itemId: 'feedback-1',
+      toColumn: 'planned'
+    })
+
+    expect(accepted).toBe(true)
+    expect(changes).toEqual([{
+      fromColumn: 'inbox',
+      input: 'keyboard',
+      itemId: 'feedback-1',
+      toColumn: 'planned'
+    }])
+    expect(kanban.rootRef.current).toBeNull()
+  })
+
+  test('clears Kanban pointer state when a drag is canceled', () => {
+    const changes: unknown[] = []
+    const kanban = withHookDispatcher(() => useKanban({
+      onMoveRequest: detail => changes.push(detail)
+    }))
+    const column = {
+      dataset: { state: 'drop-target', uiKanbanColumn: 'inbox' }
+    } as unknown as HTMLElement
+    const item = {
+      closest: vi.fn(() => column),
+      dataset: { state: 'dragging', uiKanbanItem: 'feedback-1' }
+    } as unknown as HTMLElement
+    const root = {
+      dataset: {},
+      querySelectorAll: vi.fn((selector: string) => selector === '[data-ui-kanban-item]' ?
+        [item] :
+        [column])
+    } as unknown as HTMLElement
+    const handle = {
+      closest: vi.fn(() => root)
+    } as unknown as HTMLButtonElement
+    const handleProps = kanban.getHandleProps('feedback-1')
+
+    handleProps.onPointerDown?.({
+      clientX: 12,
+      clientY: 18,
+      currentTarget: handle,
+      pointerId: 7,
+      pointerType: 'touch'
+    } as Parameters<NonNullable<typeof handleProps.onPointerDown>>[0])
+    handleProps.onPointerCancel?.({
+      currentTarget: handle,
+      pointerId: 7
+    } as Parameters<NonNullable<typeof handleProps.onPointerCancel>>[0])
+
+    expect(item.dataset.state).toBeUndefined()
+    expect(column.dataset.state).toBeUndefined()
+
+    handleProps.onPointerUp?.({
+      clientX: 40,
+      clientY: 18,
+      currentTarget: handle,
+      pointerId: 7
+    } as Parameters<NonNullable<typeof handleProps.onPointerUp>>[0])
+
+    expect(changes).toEqual([])
   })
 
   test('renders data display runtime contracts', () => {

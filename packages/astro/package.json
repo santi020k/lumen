@@ -68,10 +68,19 @@
     "url": "https://github.com/santi020k/lumen.git",
     "directory": "packages/astro"
   },
-  "homepage": "https://lumen.santi020k.com",
+  "homepage": "https://lumen.santi020k.com/docs/frameworks/astro",
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
+  "keywords": [
+    "astro",
+    "astro-components",
+    "accessible-ui",
+    "component-library",
+    "design-system",
+    "lumen",
+    "ui"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"

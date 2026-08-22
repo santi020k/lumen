@@ -9,11 +9,14 @@ import {
   getCatalogManifest,
   getComponent,
   getMeta,
+  getNativeComponent,
   getRecipe,
   getRules,
   getTokens,
   listComponents,
+  listNativeComponents,
   resolveComponent,
+  resolveNativeComponent,
   resolveRecipe,
   search
 } from './tools.js'
@@ -24,6 +27,8 @@ describe('lumen-mcp data snapshot', () => {
 
     expect(data.components.length).toBeGreaterThan(50)
     expect(data.meta.componentCount).toBe(data.components.length)
+    expect(data.meta.nativeComponentCount).toBe(data.nativeComponents.length)
+    expect(data.nativeComponents.length).toBeGreaterThan(20)
     expect(data.meta.catalogHash).toMatch(/^[a-f0-9]{64}$/)
     expect(data.meta.schemaVersion).toBeGreaterThanOrEqual(2)
     expect(data.meta.serverVersion).toMatch(/^\d+\.\d+\.\d+/)
@@ -189,6 +194,55 @@ describe('lumen-mcp data snapshot', () => {
 
     expect(license).toContain('MIT License')
     expect(license).toContain('Santiago Molina')
+  })
+})
+
+describe('native component tools', () => {
+  test('resolves names, ids, and platform symbols', () => {
+    expect(resolveNativeComponent('Button')?.id).toBe('button')
+    expect(resolveNativeComponent('settings-row')?.name).toBe('Settings row')
+    expect(resolveNativeComponent('LumenButton')?.id).toBe('button')
+  })
+
+  test('lists only components available on the selected platform', () => {
+    const reactNative = listNativeComponents({ platform: 'react-native' })
+    const swiftUI = listNativeComponents({ platform: 'swiftui' })
+
+    expect(reactNative.text).toContain('Button')
+    expect(reactNative.text).not.toContain('Symbol picker')
+    expect(swiftUI.text).toContain('Symbol picker')
+  })
+
+  test('returns install, API, example, and source for each native family', () => {
+    const reactNative = getNativeComponent({
+      detail: 'source',
+      name: 'Button',
+      platform: 'react-native'
+    })
+    const swiftUI = getNativeComponent({ name: 'Symbol picker', platform: 'swiftui' })
+    const compose = getNativeComponent({ name: 'Settings row', platform: 'compose' })
+
+    expect(reactNative.text).toContain('@santi020k/lumen-react-native')
+    expect(reactNative.text).toContain('Reference source')
+    expect(swiftUI.text).toContain('import LumenUI')
+    expect(compose.text).toContain('import com.santi020k.lumen.LumenSettingsRow')
+  })
+
+  test('reports unavailable platform implementations clearly', () => {
+    const result = getNativeComponent({ name: 'Symbol picker', platform: 'react-native' })
+
+    expect(result.isError).toBe(true)
+    expect(result.text).toContain('Available platforms: swiftui')
+  })
+
+  test('searches native contracts by platform', () => {
+    const result = search({ platform: 'compose', query: 'settings row' })
+
+    expect(result.data.results).toContainEqual(expect.objectContaining({
+      kind: 'native-component',
+      name: 'Settings row'
+    }))
+    expect(result.data.results.every(item => item.kind !== 'component')).toBe(true)
   })
 })
 

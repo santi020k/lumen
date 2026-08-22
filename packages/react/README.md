@@ -150,6 +150,32 @@ import NextLink from 'next/link'
 <NativeSelect size={8} visualSize="lg" />
 ```
 
+## Context navigation
+
+Use `ContextNavigation` below a primary header when links change with a selected platform,
+product, or workspace. Pass the stable selector or identity through `context` and compose the
+related links with one independently named `NavigationMenu`. Long link sets scroll horizontally.
+
+```tsx
+import { ContextNavigation, NativeSelect, NavigationMenu } from '@santi020k/lumen-react'
+
+<ContextNavigation
+  context={(
+    <NativeSelect aria-label="Documentation platform" visualSize="sm">
+      <option>Web</option>
+      <option>Apple</option>
+      <option>Android</option>
+    </NativeSelect>
+  )}
+>
+  <NavigationMenu aria-label="Web documentation" variant="unstyled">
+    <a href="/docs/web" aria-current="page">Overview</a>
+    <a href="/docs/components">Components</a>
+    <a href="/docs/web/playground">Playground</a>
+  </NavigationMenu>
+</ContextNavigation>
+```
+
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```tsx
@@ -219,6 +245,14 @@ applications.
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
 attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
+
+## Kanban boards
+
+Use `KanbanBoard`, `KanbanColumn`, and ordinary `Card` items for status-based workspaces. The
+`useKanban` hook supplies root, column, item, and dedicated handle props and emits controlled move
+requests for keyboard, mouse, and touch input. It never moves application data or DOM. Keep pending
+state, persistence, rollback, and workflow rules in the host. Use `Empty variant="compact"` inside
+columns and card-shaped `Skeleton` blocks while loading.
 
 ## Motion
 

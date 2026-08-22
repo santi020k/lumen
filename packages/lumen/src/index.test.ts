@@ -76,6 +76,7 @@ describe('@santi020k/lumen umbrella package', () => {
       'all-components',
       'advanced-fields',
       'scheduler',
+      'context-navigation',
       'data-collections',
       'theme-builder',
       'rich-text-editor',
@@ -100,6 +101,9 @@ describe('@santi020k/lumen umbrella package', () => {
         'Calendar',
         'DatePicker'
       ]
+    })
+    expect(getLumenRegistryItem('context-navigation')).toMatchObject({
+      components: ['ContextNavigation', 'NavigationMenu', 'NativeSelect', 'Link']
     })
 
     expect(lumenRegistry.components.map(component => component.name)).toEqual(lumenComponentNames)

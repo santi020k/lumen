@@ -1,0 +1,442 @@
+---
+import {
+  Badge,
+  Breadcrumb,
+  Card,
+  CodeTabs,
+  Icon,
+  Link,
+  Pagination,
+  Table
+} from '@santi020k/lumen-astro'
+
+import {
+  getNativeComponentsForPlatform,
+  type NativeComponentDoc,
+  type NativePlatformId
+} from '../data/native-components'
+import type { PlatformGuide } from '../data/platforms'
+import DocsLayout from '../layouts/DocsLayout.astro'
+
+interface Props {
+  component: NativeComponentDoc
+  guide: PlatformGuide & { id: NativePlatformId }
+}
+
+const { component, guide } = Astro.props
+const implementation = component.implementations[guide.id]
+
+if (!implementation) {
+  throw new Error(`${component.name} is not available for ${guide.label}`)
+}
+
+const platformComponents = getNativeComponentsForPlatform(guide.id)
+const componentIndex = platformComponents.findIndex(item => item.slug === component.slug)
+const previous = componentIndex > 0 ? platformComponents[componentIndex - 1] : undefined
+const next = componentIndex < platformComponents.length - 1 ? platformComponents[componentIndex + 1] : undefined
+
+const otherPlatforms = (['react-native', 'apple', 'android'] as const)
+  .filter(platform => platform !== guide.id && component.implementations[platform])
+
+const platformLabels: Record<NativePlatformId, string> = {
+  android: 'Android / Compose',
+  apple: 'Apple / SwiftUI',
+  'react-native': 'React Native'
+}
+---
+
+<DocsLayout
+  description={`${component.name} for ${guide.label}: native usage, API reference, and accessibility guidance.`}
+  title={`${component.name} for ${guide.shortLabel} - Lumen UI`}
+>
+  <Breadcrumb class="native-detail-breadcrumb">
+    <ol>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href={guide.href}>{guide.shortLabel}</a></li>
+      <li><a href={`${guide.href}/components`}>Components</a></li>
+      <li><span aria-current="page">{component.name}</span></li>
+    </ol>
+  </Breadcrumb>
+
+  <header class="native-detail-hero">
+    <div class="native-detail-hero__copy">
+      <div class="native-detail-hero__badges">
+        <Badge variant="secondary">{component.category}</Badge>
+        <Badge variant="outline">{guide.shortLabel}</Badge>
+        {guide.maturity && <Badge variant="warning">{guide.maturity}</Badge>}
+      </div>
+      <h1>{component.name}</h1>
+      <p>{component.summary}</p>
+      <div class="native-detail-hero__links">
+        <Link href="#usage">Usage <Icon decorative name="arrow-down" size="sm" /></Link>
+        <Link href="#api">API reference <Icon decorative name="arrow-down" size="sm" /></Link>
+      </div>
+    </div>
+    <Card class="native-detail-hero__meta" variant="muted">
+      <span>Public API</span>
+      <code>{implementation.exportName}</code>
+      <small>{platformLabels[guide.id]}</small>
+    </Card>
+  </header>
+
+  <section class="native-detail-section" id="usage" aria-labelledby="usage-title">
+    <div class="native-detail-heading">
+      <p>Native example</p>
+      <h2 id="usage-title">Use {component.name}</h2>
+      <p>{component.guidance}</p>
+    </div>
+    <CodeTabs
+      ariaLabel={`${component.name} ${guide.shortLabel} example`}
+      items={[{
+        code: implementation.example,
+        label: guide.shortLabel,
+        language: implementation.language,
+        value: guide.id
+      }]}
+    />
+  </section>
+
+  <section class="native-detail-section" id="api" aria-labelledby="api-title">
+    <div class="native-detail-heading">
+      <p>Reference</p>
+      <h2 id="api-title">Public API</h2>
+      <p>The primary shared and platform-specific options exposed by {implementation.exportName}.</p>
+    </div>
+    <Table class="native-detail-table">
+      <table>
+        <thead>
+          <tr>
+            <th>API</th>
+            <th>Values or type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {implementation.api.map(row => (
+            <tr>
+              <th scope="row">{row.name}</th>
+              <td><code>{row.values}</code></td>
+              <td><code>{row.defaultValue}</code></td>
+              <td>{row.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Table>
+  </section>
+
+  <section class="native-detail-section" aria-labelledby="behavior-title">
+    <div class="native-detail-heading">
+      <p>Native behavior</p>
+      <h2 id="behavior-title">Design and accessibility</h2>
+    </div>
+    <div class="native-detail-notes">
+      <Card as="article" variant="muted">
+        <span><Icon decorative name="lightbulb" size="sm" /></span>
+        <div><h3>When to use it</h3><p>{component.guidance}</p></div>
+      </Card>
+      <Card as="article" variant="muted">
+        <span><Icon decorative name="accessibility" size="sm" /></span>
+        <div><h3>Accessibility</h3><p>{component.accessibility}</p></div>
+      </Card>
+    </div>
+  </section>
+
+  {otherPlatforms.length > 0 && (
+    <Card as="section" class="native-detail-availability" variant="muted" aria-labelledby="availability-title">
+      <div>
+        <p>Shared component</p>
+        <h2 id="availability-title">Available on other platforms</h2>
+      </div>
+      <div>
+        {otherPlatforms.map(platform => (
+          <Link href={`/docs/${platform}/components/${component.slug}`}>
+            {platformLabels[platform]} <Icon decorative name="arrow-right" size="sm" />
+          </Link>
+        ))}
+      </div>
+    </Card>
+  )}
+
+  <Pagination class="native-detail-pagination" aria-label="Native component pagination">
+    {previous ?
+      (
+        <Link href={`${guide.href}/components/${previous.slug}`}>
+          <Icon decorative name="arrow-left" size="sm" />
+          <span><small>Previous</small><strong>{previous.name}</strong></span>
+        </Link>
+      ) :
+      <span />}
+    {next && (
+      <Link href={`${guide.href}/components/${next.slug}`}>
+        <span><small>Next</small><strong>{next.name}</strong></span>
+        <Icon decorative name="arrow-right" size="sm" />
+      </Link>
+    )}
+  </Pagination>
+</DocsLayout>
+
+<style>
+  .native-detail-breadcrumb {
+    margin-bottom: 2rem;
+  }
+
+  .native-detail-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.8rem;
+  }
+
+  .native-detail-breadcrumb li:not(:last-child)::after {
+    margin-left: 0.5rem;
+    content: '/';
+  }
+
+  .native-detail-breadcrumb a:hover {
+    color: hsl(var(--brand));
+  }
+
+  .native-detail-hero {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 92% 0%, hsl(var(--brand) / 0.2), transparent 34%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .native-detail-hero__copy,
+  .native-detail-heading {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .native-detail-hero__badges,
+  .native-detail-hero__links,
+  .native-detail-availability > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .native-detail-hero h1 {
+    color: hsl(var(--ink));
+    font-size: clamp(2.75rem, 7vw, 5rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .native-detail-hero__copy > p {
+    max-width: 44rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.1rem;
+    line-height: 1.75;
+  }
+
+  .native-detail-hero__links :global(a),
+  .native-detail-availability :global(a),
+  .native-detail-pagination :global(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 800;
+  }
+
+  :global(.native-detail-hero__meta) {
+    display: grid;
+    align-content: center;
+    gap: 0.55rem;
+    min-width: 14rem;
+    padding: 1.5rem;
+  }
+
+  .native-detail-hero__meta span,
+  .native-detail-heading > p:first-child,
+  .native-detail-availability > div:first-child p {
+    color: hsl(var(--brand));
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .native-detail-hero__meta code {
+    overflow-wrap: anywhere;
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .native-detail-hero__meta small,
+  .native-detail-heading > p:last-child,
+  .native-detail-notes p {
+    color: hsl(var(--ink-soft));
+  }
+
+  .native-detail-section {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 3.5rem;
+  }
+
+  .native-detail-heading h2,
+  .native-detail-availability h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 900;
+  }
+
+  .native-detail-heading > p:last-child {
+    max-width: 48rem;
+    line-height: 1.7;
+  }
+
+  :global(.native-detail-table) {
+    overflow-x: auto;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--surface));
+  }
+
+  .native-detail-table table {
+    width: 100%;
+    min-width: 48rem;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.875rem;
+  }
+
+  .native-detail-table th,
+  .native-detail-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid hsl(var(--line));
+    color: hsl(var(--ink-soft));
+    vertical-align: top;
+  }
+
+  .native-detail-table thead th {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: hsl(var(--surface-muted));
+  }
+
+  .native-detail-table tbody th {
+    color: hsl(var(--ink));
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+  }
+
+  .native-detail-table code {
+    font-size: 0.75rem;
+  }
+
+  .native-detail-notes {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .native-detail-notes :global(article) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .native-detail-notes article > span {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.7rem;
+    color: hsl(var(--brand));
+    background: hsl(var(--brand-soft));
+  }
+
+  .native-detail-notes h3 {
+    margin-bottom: 0.35rem;
+    color: hsl(var(--ink));
+    font-weight: 900;
+  }
+
+  .native-detail-notes p {
+    line-height: 1.65;
+  }
+
+  :global(.native-detail-availability) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+    padding: 1.5rem;
+  }
+
+  .native-detail-availability > div:first-child {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .native-detail-availability h2 {
+    font-size: 1.25rem;
+  }
+
+  :global(.native-detail-pagination) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .native-detail-pagination :global(a) {
+    padding: 1rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.85rem;
+    color: hsl(var(--ink));
+  }
+
+  .native-detail-pagination :global(a:last-child) {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .native-detail-pagination span {
+    display: grid;
+  }
+
+  .native-detail-pagination small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+  }
+
+  @media (min-width: 52rem) {
+    .native-detail-hero {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .native-detail-notes {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    :global(.native-detail-availability) {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    :global(.native-detail-pagination) {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

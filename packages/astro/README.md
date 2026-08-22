@@ -60,6 +60,31 @@ incremental migrations, but new code should keep native behavior and visual styl
 <NativeSelect size={8} visualSize="lg" />
 ```
 
+## Context navigation
+
+Use `ContextNavigation` below a primary header when the available links change with a selected
+platform, product, or workspace. Put the stable selector or identity in the `context` slot and one
+independently named `NavigationMenu` in the default slot. Long link sets scroll horizontally.
+
+```astro
+---
+import { ContextNavigation, NativeSelect, NavigationMenu } from '@santi020k/lumen-astro'
+---
+
+<ContextNavigation>
+  <NativeSelect slot="context" aria-label="Documentation platform" visualSize="sm">
+    <option>Web</option>
+    <option>Apple</option>
+    <option>Android</option>
+  </NativeSelect>
+  <NavigationMenu aria-label="Web documentation" variant="unstyled">
+    <a href="/docs/web" aria-current="page">Overview</a>
+    <a href="/docs/components">Components</a>
+    <a href="/docs/web/playground">Playground</a>
+  </NavigationMenu>
+</ContextNavigation>
+```
+
 ## Forms and Astro Actions
 
 `Form` renders a semantic form and preserves native `method`, `action`, `enctype`, autocomplete,
@@ -226,6 +251,14 @@ For a choreographed logo, set `animation="sequence"` and mark individual SVG lay
 with `--ui-logo-delay`.
 
 The package ships the complete Astro primitive catalog plus a small progressive-enhancement runtime for dialogs, popovers, tabs, menus, command filtering, carousels, and toasts.
+
+## Kanban boards
+
+Compose `KanbanBoard` and `KanbanColumn` with ordinary `Card` items. Give every item a stable
+`data-ui-kanban-item` and add a dedicated button with `data-ui-kanban-handle`. `UIPrimitives` emits
+the cancellable `ui:kanban-move-request` event for keyboard, mouse, and touch movement without
+changing the DOM. Keep persistence, pending state, rollback, and status rules in the application.
+Use `Empty variant="compact"` inside empty columns and `Skeleton` cards while loading.
 
 ## Motion
 

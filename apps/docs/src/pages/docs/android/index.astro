@@ -1,0 +1,8 @@
+---
+import PlatformOverview from '../../../components/PlatformOverview.astro'
+import { getPlatformGuide } from '../../../data/platforms'
+
+const guide = getPlatformGuide('android')
+---
+
+<PlatformOverview guide={guide} />

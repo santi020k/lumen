@@ -1,0 +1,36 @@
+{
+  "name": "@santi020k/lumen-playground-react-native",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "android": "expo start --android",
+    "build": "expo export --platform web",
+    "build:android:apk": "eas build --platform android --profile preview",
+    "build:android:store": "eas build --platform android --profile production",
+    "build:ios": "eas build --platform ios --profile production",
+    "dev": "expo start",
+    "ios": "expo start --ios",
+    "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "catalog:",
+    "@santi020k/lumen-react-native": "workspace:*",
+    "expo": "catalog:",
+    "expo-system-ui": "catalog:",
+    "expo-updates": "catalog:",
+    "lucide-react-native": "catalog:",
+    "react": "catalog:expo",
+    "react-dom": "catalog:expo",
+    "react-native": "catalog:expo",
+    "react-native-svg": "catalog:expo",
+    "react-native-web": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "eas-cli": "catalog:",
+    "typescript": "catalog:"
+  }
+}

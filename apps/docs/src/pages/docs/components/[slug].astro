@@ -113,6 +113,12 @@ export function HeroImage() {
 ---
 
 <DocsLayout
+  breadcrumbs={[
+    { href: '/', label: 'Home' },
+    { href: '/docs', label: 'Docs' },
+    { href: '/docs/components', label: 'Components' },
+    { href: `/docs/components/${componentSlug}`, label: component.name }
+  ]}
   description={`${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
   title={`${component.name} - Lumen UI`}
 >
@@ -173,8 +179,8 @@ export function HeroImage() {
           <p>
             <small>Design source</small>
             {component.figmaNodeId ?
-              <a href={figmaUrl} rel="noreferrer" target="_blank">Linked component node</a> :
-              <a href={figmaUrl}>Behavior-only contract</a>}
+              <Link href={figmaUrl} rel="noreferrer" target="_blank">Linked component node</Link> :
+              <Link href={figmaUrl}>Behavior-only contract</Link>}
           </p>
         </div>
       </div>
@@ -204,10 +210,10 @@ export function HeroImage() {
         </div>
         <nav aria-label={`Components related to ${component.name}`}>
           {relatedComponents.map(related => (
-            <a href={`/docs/components/${toSlug(related.name)}`}>
+            <Link href={`/docs/components/${toSlug(related.name)}`}>
               <span>{related.name}</span>
               <small>{related.summary}</small>
-            </a>
+            </Link>
           ))}
         </nav>
       </aside>
@@ -225,7 +231,11 @@ export function HeroImage() {
         Choose Astro, React, or Elements to compare native usage against the shared visual output.
         Each example assumes the framework-level setup is already complete.
       </p>
-      <FrameworkExample groupId={`code-${componentSlug}`} snippets={snippets}>
+      <FrameworkExample
+        componentName={component.name}
+        groupId={`code-${componentSlug}`}
+        snippets={snippets}
+      >
         <Example />
       </FrameworkExample>
     </section>
@@ -409,6 +419,8 @@ export function HeroImage() {
           </p>
         </div>
         <FrameworkExample
+          componentName={component.name}
+          examplePath={`apps/docs/src/examples/glass/${component.name}.astro`}
           groupId={`code-${componentSlug}-glass`}
           previewClass=""
           snippets={glassSnippets}

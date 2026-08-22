@@ -10,6 +10,9 @@ import {
 } from '@santi020k/lumen-astro'
 import { lumenComponentNames } from '@santi020k/lumen-core'
 
+import type { DocsPlatformId } from '../data/platforms'
+import { platformGuides } from '../data/platforms'
+
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
 
@@ -17,30 +20,44 @@ const footerGroups = [
   {
     links: [
       { href: '/docs', label: 'Start' },
+      { href: '/guides', label: 'Guides' },
       { href: '/docs/components', label: 'Components' },
       { href: '/templates', label: 'Templates' },
-      { href: '/docs/icons', label: 'Icons' },
-      { href: '/docs/brand-icons', label: 'Brand icons' },
-      { href: '/docs/theme-playground', label: 'Theme playground' }
+      { href: '/community', label: 'Community' },
+      { href: '/teams', label: 'For teams' },
+      { href: '/docs/icons', label: 'Icons' }
     ],
     title: 'Explore'
   },
   {
     links: [
+      { href: '/docs/web', label: 'Web' },
       { href: '/docs/frameworks/astro', label: 'Astro' },
       { href: '/docs/frameworks/react', label: 'React' },
-      { href: '/docs/frameworks/elements', label: 'Elements' },
+      { href: '/docs/frameworks/elements', label: 'Web Components' },
+      { href: '/docs/react-native', label: 'React Native' },
+      { href: '/docs/apple', label: 'Apple / SwiftUI' },
+      { href: '/docs/android', label: 'Android / Compose' },
+      { href: '/docs/foundations', label: 'Foundations' }
+    ],
+    title: 'Platforms'
+  },
+  {
+    links: [
       { href: '/docs/figma', label: 'Figma' },
       { href: '/docs/ai-skill', label: 'AI skill' },
-      { href: '/docs/mcp', label: 'MCP server' }
+      { href: '/docs/mcp', label: 'MCP server' },
+      { href: '/docs/brand-icons', label: 'Brand icons' },
+      { href: '/docs/theme-playground', label: 'Theme playground' }
     ],
-    title: 'Use Lumen'
+    title: 'Tooling'
   },
   {
     links: [
       { href: 'https://github.com/santi020k/lumen', label: 'GitHub' },
       { href: 'https://www.npmjs.com/package/@santi020k/lumen', label: 'npm' },
       { href: '/changelog', label: 'Changelog' },
+      { href: '/guides/rss.xml', label: 'Guides RSS' },
       {
         href: 'https://www.figma.com/community/file/1662337342676541513',
         label: 'Figma Community'
@@ -54,35 +71,39 @@ const footerGroups = [
 const currentYear = new Date().getFullYear()
 const componentCount = lumenComponentNames.length
 
-const frameworkLinks = [
+const webInstallers = [
   {
     command: 'pnpm add @santi020k/lumen-astro',
-    href: '/docs/frameworks/astro',
-    icon: 'asterisk',
-    label: 'Astro',
-    meta: 'Reference'
+    label: 'Astro'
   },
   {
     command: 'pnpm add @santi020k/lumen-react',
-    href: '/docs/frameworks/react',
-    icon: 'atom',
-    label: 'React',
-    meta: 'Full catalog'
+    label: 'React'
   },
   {
     command: 'pnpm add @santi020k/lumen-elements',
-    href: '/docs/frameworks/elements',
-    icon: 'blocks',
-    label: 'Elements',
-    meta: 'Web standards'
+    label: 'Elements'
   }
 ] as const
 
-const installTabs = frameworkLinks.map(framework => ({
+const installTabs = webInstallers.map(framework => ({
   code: framework.command,
   label: framework.label,
   language: 'bash',
   value: framework.label.toLowerCase()
+}))
+
+const platformPresentation = {
+  android: { icon: 'bot', runtime: 'Jetpack Compose' },
+  apple: { icon: 'apple', runtime: 'SwiftUI' },
+  foundations: { icon: 'layers-3', runtime: 'Shared tokens' },
+  'react-native': { icon: 'smartphone', runtime: 'React Native' },
+  web: { icon: 'panels-top-left', runtime: 'Astro · React · Elements' }
+} satisfies Record<DocsPlatformId, { icon: string, runtime: string }>
+
+const footerPlatforms = platformGuides.map(guide => ({
+  ...guide,
+  ...platformPresentation[guide.id]
 }))
 ---
 
@@ -105,11 +126,11 @@ const installTabs = frameworkLinks.map(framework => ({
           <Badge variant="outline">{componentCount} primitives</Badge>
         </div>
         <h2 id="docs-site-footer-title">
-          Pick your framework.<br /><em>Keep your system.</em>
+          Pick your platform.<br /><em>Keep your system.</em>
         </h2>
         <p>
-          Start with the reference Astro package, use the complete React
-          catalog, or bring standards-based components anywhere HTML runs.
+          Build for the web, React Native, Apple platforms, or Android with one
+          semantic design language and native behavior in every environment.
         </p>
         <div class="docs-site-footer__actions">
           <ButtonLink href="/docs" showArrow variant="primary">
@@ -126,31 +147,50 @@ const installTabs = frameworkLinks.map(framework => ({
         </div>
       </div>
 
-      <div class="docs-site-footer__quickstart">
-        <div class="docs-site-footer__quickstart-heading">
-          <span>Quick start</span>
-          <Marker variant="success">3 packages</Marker>
+      <div class="docs-site-footer__launchpad">
+        <div class="docs-site-footer__launchpad-heading">
+          <div>
+            <span>Choose a platform</span>
+            <p>Native behavior, one semantic foundation.</p>
+          </div>
+          <Badge variant="outline">{footerPlatforms.length} surfaces</Badge>
         </div>
-        <CodeTabs
-          ariaLabel="Choose a framework package"
-          items={installTabs}
-          storageKey="lumen-footer-framework"
-        />
-        <div class="docs-site-footer__frameworks">
-          {frameworkLinks.map(framework => (
+
+        <div class="docs-site-footer__platforms">
+          {footerPlatforms.map(platform => (
             <Link
-              aria-label={`${framework.label} guide`}
-              class="docs-site-footer__framework"
-              href={framework.href}
+              aria-label={`${platform.label} platform guide`}
+              class:list={[
+                'docs-site-footer__platform',
+                platform.id === 'web' && 'docs-site-footer__platform--web'
+              ]}
+              href={platform.href}
             >
-              <Icon name={framework.icon} size="sm" />
+              <Icon decorative name={platform.icon} size="sm" />
               <span>
-                <strong>{framework.label}</strong>
-                <small>{framework.meta}</small>
+                <strong>{platform.label}</strong>
+                <span class="docs-site-footer__platform-meta">
+                  <small>{platform.runtime}</small>
+                  <span class="docs-site-footer__platform-status">
+                    {platform.maturity ?? platform.status}
+                  </span>
+                </span>
               </span>
-              <Icon name="arrow-right" size="sm" />
+              <Icon decorative name="arrow-right" size="sm" />
             </Link>
           ))}
+        </div>
+
+        <div class="docs-site-footer__quickstart">
+          <div class="docs-site-footer__quickstart-heading">
+            <span>Web quick start</span>
+            <Marker variant="success">3 packages</Marker>
+          </div>
+          <CodeTabs
+            ariaLabel="Choose a web framework package"
+            items={installTabs}
+            storageKey="lumen-footer-framework"
+          />
         </div>
       </div>
     </section>
@@ -163,7 +203,7 @@ const installTabs = frameworkLinks.map(framework => ({
           <LumenLogo markClass="size-9" />
         </Link>
         <p>
-          Calm, accessible primitives for Astro, React, and the platform.
+          Calm, accessible primitives for web and native platforms.
         </p>
         <span class="docs-site-footer__signature">
           <Icon name="heart" size="sm" />

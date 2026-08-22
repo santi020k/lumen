@@ -19,6 +19,7 @@ uses the same record when it audits consumer CSS.
 | Button | `--ui-button-font-size`, `--ui-button-font-weight`, `--ui-button-gap`, `--ui-button-min-height`, `--ui-button-padding`, `--ui-button-radius` |
 | Card | `--ui-card-gap`, `--ui-card-padding`, `--ui-card-section-gap` |
 | CodeTabs | `--ui-code-tabs-list-padding`, `--ui-code-tabs-tab-padding` |
+| ContextNavigation | `--ui-context-navigation-gap`, `--ui-context-navigation-min-height`, `--ui-context-navigation-padding` |
 | Link | `--ui-link-font-weight`, `--ui-link-underline-offset` |
 | NavigationMenu | `--ui-navigation-menu-gap`, `--ui-navigation-menu-item-padding` |
 | Sidebar | `--ui-sidebar-gap`, `--ui-sidebar-padding`, `--ui-sidebar-width` |
@@ -32,11 +33,11 @@ uses the same record when it audits consumer CSS.
 ## Stable parts
 
 The foundational roots use `data-slot="button"`, `button-link`, `card`, `code`, `code-tabs`, `link`,
-`navigation-menu`, `sidebar`, `stat`, `table`, and `theme-toggle`.
+`context-navigation`, `navigation-menu`, `sidebar`, `stat`, `table`, and `theme-toggle`.
 
 Card additionally exposes `card-header`, `card-title`, `card-description`, `card-content`, and
-`card-footer`. Stat exposes `stat-label`, `stat-value`, `stat-description`, `stat-icon`, and
-`stat-trend`.
+`card-footer`. ContextNavigation exposes `context-navigation-context`. Stat exposes `stat-label`,
+`stat-value`, `stat-description`, `stat-icon`, and `stat-trend`.
 
 ```css
 [data-slot="card"] {

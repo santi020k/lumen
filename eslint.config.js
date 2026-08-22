@@ -1,7 +1,6 @@
 import { defineConfig } from '@santi020k/eslint-config-basic'
 
-/** @type {Promise<import('@santi020k/eslint-config-basic').FlatConfigArray>} */
-const config = defineConfig({
+export default defineConfig({
   projects: {
     'packages/lumen': {
       frameworks: {
@@ -16,5 +15,3 @@ const config = defineConfig({
     noUnknownClasses: false
   }
 })
-
-export default config

@@ -1,5 +1,7 @@
 ---
-import { Badge, ButtonLink, Card, Icon } from '@santi020k/lumen-astro'
+import type { ImageMetadata } from 'astro'
+
+import { Badge, ButtonLink, Card, CodeTabs, Icon, Image } from '@santi020k/lumen-astro'
 
 import {
   getTemplateInstallCommand,
@@ -11,6 +13,50 @@ interface Props {
 }
 
 const { template } = Astro.props
+
+const previewThemes = [
+  'santi020k-light',
+  'santi020k-dark',
+  'lumen-light',
+  'lumen-dark'
+] as const
+
+type PreviewTheme = typeof previewThemes[number]
+
+type PreviewViewport = 'desktop' | 'mobile'
+
+const previewImageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/previews/*-{lumen,santi020k}-{light,dark}-{desktop,mobile}.jpg',
+  { eager: true }
+)
+
+const getPreviewImage = (theme: PreviewTheme, viewport: PreviewViewport): ImageMetadata => {
+  const path = `../assets/previews/${template.slug}-${theme}-${viewport}.jpg`
+  const image = previewImageModules[path]
+
+  if (!image) throw new Error(`Missing template preview image: ${path}`)
+
+  return image.default
+}
+
+const themedPreviews = previewThemes.map(theme => ({
+  desktop: getPreviewImage(theme, 'desktop'),
+  mobile: getPreviewImage(theme, 'mobile'),
+  theme
+}))
+
+const frameworkLabels = {
+  astro: 'Astro',
+  elements: 'Web Components',
+  react: 'React'
+} as const
+
+const installCommands = template.frameworks.map(framework => ({
+  code: getTemplateInstallCommand(template.slug, framework),
+  label: frameworkLabels[framework],
+  language: 'bash',
+  value: framework
+}))
 ---
 
 <Card as="article" class="template-gallery-card" variant="interactive">
@@ -19,14 +65,32 @@ const { template } = Astro.props
     href={`/templates/${template.slug}`}
     aria-label={`Preview ${template.name}`}
   >
-    <span
-      class="template-gallery-card__mock"
-      data-template={template.slug}
-    >
-      <span class="template-gallery-card__mock-sidebar"></span>
-      <span class="template-gallery-card__mock-content">
-        <span></span><span></span><span></span>
-        <strong></strong>
+    <span class="template-gallery-card__preview-stage">
+      <span class="template-gallery-card__desktop-preview">
+        <span class="template-gallery-card__viewport-label">Desktop</span>
+        <span class="template-gallery-card__image-stack">
+          {themedPreviews.map(preview => (
+            <Image
+              alt=""
+              class="template-gallery-card__theme-image"
+              data-preview-theme={preview.theme}
+              src={preview.desktop}
+            />
+          ))}
+        </span>
+      </span>
+      <span class="template-gallery-card__mobile-preview">
+        <span class="template-gallery-card__viewport-label">Mobile</span>
+        <span class="template-gallery-card__image-stack">
+          {themedPreviews.map(preview => (
+            <Image
+              alt=""
+              class="template-gallery-card__theme-image"
+              data-preview-theme={preview.theme}
+              src={preview.mobile}
+            />
+          ))}
+        </span>
       </span>
     </span>
   </a>
@@ -39,22 +103,30 @@ const { template } = Astro.props
       <h2>{template.name}</h2>
       <p>{template.description}</p>
     </div>
-    <div class="template-gallery-card__frameworks">
-      {template.frameworks.map(framework => (
-        <Badge variant="outline">{framework}</Badge>
-      ))}
+    <div class="template-gallery-card__availability">
+      <Badge variant="outline">
+        <Icon name="blocks" size="sm" />
+        One recipe, three targets
+      </Badge>
+      <span>Switch once; every card remembers your platform.</span>
     </div>
-    <code>{getTemplateInstallCommand(template.slug, 'astro')}</code>
+    <CodeTabs
+      ariaLabel={`Install ${template.name} by platform`}
+      class="template-gallery-card__install"
+      items={installCommands}
+      storageKey="lumen-template-platform"
+      wrap={false}
+    />
     <div class="template-gallery-card__actions">
       <ButtonLink href={`/templates/${template.slug}`} showArrow>
         Live preview
       </ButtonLink>
       <ButtonLink
-        href={`https://github.com/santi020k/lumen/tree/main/packages/lumen/templates/astro/${template.slug}`}
+        href="https://github.com/santi020k/lumen/tree/main/packages/lumen/templates"
         newTab
         variant="secondary"
       >
-        View source
+        Browse implementations
       </ButtonLink>
     </div>
   </div>

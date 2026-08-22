@@ -1,0 +1,63 @@
+name: Adoption feedback
+description: Tell us how you use Lumen and what would make it more useful.
+title: "Adoption feedback: "
+labels:
+  - feedback
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This short survey shapes Lumen's roadmap. Avoid sharing confidential company or project information.
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: How are you using Lumen?
+      options:
+        - Evaluating it
+        - Building a personal project
+        - Building a client project
+        - Using it with a product team
+        - Teaching or creating content
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Primary platform
+      options:
+        - Astro
+        - React
+        - Web Components
+        - React Native
+        - SwiftUI
+        - Jetpack Compose
+        - Figma
+        - AI skill or MCP
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What are you trying to build?
+      placeholder: A dashboard, design system, mobile app...
+    validations:
+      required: true
+  - type: textarea
+    id: friction
+    attributes:
+      label: What is the biggest source of friction?
+      description: Missing component, confusing documentation, setup problem, design gap, or anything else.
+    validations:
+      required: true
+  - type: textarea
+    id: request
+    attributes:
+      label: What should Lumen improve next?
+    validations:
+      required: true
+  - type: checkboxes
+    id: follow-up
+    attributes:
+      label: Follow-up
+      options:
+        - label: I am open to answering follow-up questions in this issue.

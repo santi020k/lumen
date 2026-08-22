@@ -2,22 +2,36 @@
 import { Button, Drawer, Icon } from '@santi020k/lumen-astro'
 
 import DocsNavigation from '../components/DocsNavigation.astro'
-import DocsSearch from '../components/DocsSearch.astro'
-import { componentDocs } from '../data/docs'
+import { getDocsPlatform, getPlatformGuide } from '../data/platforms'
 
 import BaseLayout from './BaseLayout.astro'
 
 interface Props {
+  breadcrumbs?: {
+    href: string
+    label: string
+  }[]
   description: string
   title: string
 }
 
-const { description, title } = Astro.props
+const { breadcrumbs, description, title } = Astro.props
 const currentPath = Astro.url.pathname.replace(/\/$/, '')
+const activePlatform = getDocsPlatform(currentPath)
+
+const navigationDescription = activePlatform ?
+  getPlatformGuide(activePlatform).status :
+  'Web and native guides'
+
+let navigationLabel = 'All documentation'
+
+if (activePlatform) navigationLabel = `${getPlatformGuide(activePlatform).shortLabel} docs`
+
+if (currentPath === '/changelog') navigationLabel = 'Changelog'
 
 ---
 
-<BaseLayout description={description} title={title}>
+<BaseLayout breadcrumbs={breadcrumbs ?? []} description={description} title={title}>
   <div class="docs-shell">
     <div class="docs-shell__wash" aria-hidden="true"></div>
     <aside
@@ -30,41 +44,28 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '')
           <span><Icon decorative name="book-open" size="sm" /></span>
           <div>
             <strong>Documentation</strong>
-            <small>{componentDocs.length} production primitives</small>
+            <small>{navigationDescription}</small>
           </div>
         </div>
-        <DocsSearch
-          class="max-w-none"
-          inputId="docs-sidebar-search-input"
-          optionIdPrefix="docs-sidebar-search"
-          placeholder="Search the docs..."
-          resultsId="docs-sidebar-search-results"
-        />
       </div>
 
-      <DocsNavigation currentPath={currentPath} />
+      <DocsNavigation currentPath={currentPath} platform={activePlatform} />
     </aside>
     <main class="docs-content">
-      <div class="docs-mobile-search">
-        <div class="docs-mobile-search__header">
-          <span>Documentation</span>
+      <div class="docs-mobile-navigation-bar">
+        <div class="docs-mobile-navigation-bar__header">
+          <span>{navigationLabel}</span>
           <Button
             class="docs-mobile-nav-trigger"
             size="sm"
             variant="outline"
             data-ui-drawer-trigger="docs-mobile-navigation"
-            aria-label="Browse documentation pages"
+            aria-label={`Browse ${navigationLabel.toLowerCase()}`}
           >
             <Icon decorative name="menu" size="sm" />
             Browse
           </Button>
         </div>
-        <DocsSearch
-          class="max-w-2xl"
-          inputId="docs-mobile-search-input"
-          optionIdPrefix="docs-mobile-search"
-          resultsId="docs-mobile-search-results"
-        />
       </div>
       <slot />
     </main>
@@ -75,8 +76,8 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '')
     >
       <div class="docs-mobile-drawer__header">
         <div>
-          <strong id="docs-mobile-navigation-title">Documentation</strong>
-          <small>{componentDocs.length} production primitives</small>
+          <strong id="docs-mobile-navigation-title">{navigationLabel}</strong>
+          <small>{navigationDescription}</small>
         </div>
         <Button
           size="icon"
@@ -87,7 +88,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '')
           <Icon decorative name="x" size="sm" />
         </Button>
       </div>
-      <DocsNavigation closeOnNavigate currentPath={currentPath} />
+      <DocsNavigation currentPath={currentPath} platform={activePlatform} />
     </Drawer>
   </div>
 </BaseLayout>

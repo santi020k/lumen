@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'section'> {
+  class?: string | null
+  className?: string
+  value: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  value,
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-kanban__column'
+], classProp, className)
+---
+
+<section
+  class:list={classList}
+  data-ui-kanban-column={value}
+  {...passthrough}
+>
+  <slot />
+</section>

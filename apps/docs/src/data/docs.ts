@@ -536,6 +536,7 @@ export const componentCollections: ComponentCollection[] = [
       'ContextMenu',
       'Menubar',
       'NavigationMenu',
+      'ContextNavigation',
       'Command'
     ]
   },
@@ -1492,6 +1493,17 @@ const apiReferenceByComponent = {
     )
   ],
   ContextMenu: [],
+  ContextNavigation: [
+    apiRow(
+      'context / slot="context"', 'rendered content', '-', 'Provides a stable leading region for a scope label, selector, or product identity.'
+    ),
+    apiRow(
+      'variant', '"default" | "unstyled"', '"default"', 'Keeps the responsive layout while allowing an application-owned surface to remove the default border, background, and padding.'
+    ),
+    apiRow(
+      'children', 'NavigationMenu', 'required', 'Provides the related links as one independently named navigation group.'
+    )
+  ],
   ColorPicker: [
     apiRow('type', 'HTML input type', '"color"', 'Sets the native input type.')
   ],
@@ -1558,6 +1570,9 @@ const apiReferenceByComponent = {
   Empty: [
     apiRow(
       'children', 'heading, description, and optional action', 'required', 'Composes the empty-state explanation and recovery action.'
+    ),
+    apiRow(
+      'variant', '"compact" | "default"', '"default"', 'Uses the standard empty state or a denser treatment for bounded surfaces such as board columns.'
     )
   ],
   Eyebrow: [
@@ -1687,6 +1702,22 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'children', 'primary content, metadata, and optional actions', 'required', 'Composes one compact aligned row.'
+    )
+  ],
+  KanbanBoard: [
+    apiRow(
+      'ui:kanban-move-request', 'CustomEvent<LumenKanbanMoveDetail>', '-', 'Requests a controlled move without changing item ownership or persistence.'
+    ),
+    apiRow(
+      'data-ui-kanban-item', 'stable item id', 'required per movable item', 'Identifies each movable card with its stable application id.'
+    ),
+    apiRow(
+      'data-ui-kanban-handle', 'descendant attribute', 'required per movable item', 'Marks the dedicated keyboard, pointer, and touch movement control.'
+    )
+  ],
+  KanbanColumn: [
+    apiRow(
+      'value', 'string', 'required', 'Provides the stable application value used as a move destination.'
     )
   ],
   Kbd: [
@@ -2600,6 +2631,11 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     distinction:
       'Use Select for selection without text search or Autocomplete when free-form values are allowed.'
   },
+  ContextNavigation: {
+    when: 'Use below a primary header when links change with the selected product, platform, workspace, or documentation scope.',
+    distinction:
+      'Use NavigationMenu alone for one flat group of links, Tabs for switching content without navigation, or Sidebar for deeper long-form navigation.'
+  },
   DataTable: {
     when: 'Use for dense records that need interactive behaviors such as sorting, filtering, or selection.',
     distinction:
@@ -2848,7 +2884,7 @@ export const componentDocs: ComponentDoc[] = (
       'BarChart',
       'Data display',
       'Compares categorical or discrete-period values with grouped and stacked bars.',
-      '<BarChart aria-label="Downloads by project" heading="Package downloads" orientation="horizontal" series={[{ id: "downloads", label: "Downloads", data: [{ x: "Lumen", y: 18420 }, { x: "Observatory", y: 6320 }] }]} />'
+      '<BarChart aria-label="Downloads by project" heading="Package downloads" orientation="horizontal" series={[{ id: "downloads", label: "Downloads", data: [{ x: "Lumen", y: 18420 }, { x: "Astro Doctor", y: 6320 }] }]} />'
     ],
     [
       'Breadcrumb',
@@ -2987,6 +3023,12 @@ export const componentDocs: ComponentDoc[] = (
       'Navigation',
       'Builds command palettes and filterable action lists.',
       '<Command><Input placeholder="Type a command..." /><button data-ui-command-item>Open docs</button></Command>'
+    ],
+    [
+      'ContextNavigation',
+      'Navigation',
+      'Pairs a stable scope selector or identity with horizontally scrollable contextual links.',
+      '<ContextNavigation><div slot="context">Documentation for <strong>Web</strong></div><NavigationMenu variant="unstyled" aria-label="Web documentation"><a href="/docs/web" aria-current="page">Overview</a><a href="/docs/components">Components</a></NavigationMenu></ContextNavigation>'
     ],
     [
       'ContextMenu',
@@ -3131,6 +3173,18 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Aligns primary content, supporting metadata, and optional actions in a compact row.',
       '<Item as="article"><strong>Production docs</strong><span>Ready for review</span></Item>'
+    ],
+    [
+      'KanbanBoard',
+      'Layout',
+      'Organizes controlled workflow columns with keyboard, pointer, and touch movement requests.',
+      '<KanbanBoard aria-label="Editorial workflow"><KanbanColumn value="planned"><h2>Planned</h2><Card data-ui-kanban-item="draft"><Button data-ui-kanban-handle aria-label="Move Draft article">Move</Button><strong>Draft article</strong></Card></KanbanColumn></KanbanBoard>'
+    ],
+    [
+      'KanbanColumn',
+      'Layout',
+      'Defines a named destination inside a controlled Kanban board.',
+      '<KanbanBoard aria-label="Editorial workflow"><KanbanColumn value="planned"><h2>Planned</h2><Card data-ui-kanban-item="draft"><Button data-ui-kanban-handle aria-label="Move Draft article">Move</Button><strong>Draft article</strong></Card></KanbanColumn></KanbanBoard>'
     ],
     [
       'Kbd',

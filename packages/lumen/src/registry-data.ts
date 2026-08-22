@@ -9,7 +9,9 @@ export const lumenRegistry = {
     '@santi020k/lumen-astro',
     '@santi020k/lumen-react',
     '@santi020k/lumen-elements',
-    '@santi020k/lumen-core'
+    '@santi020k/lumen-core',
+    '@santi020k/lumen-react-native',
+    '@santi020k/lumen-tokens'
   ],
   items: [
     {
@@ -43,6 +45,16 @@ export const lumenRegistry = {
         'Agenda',
         'Calendar',
         'DatePicker'
+      ]
+    },
+    {
+      name: 'context-navigation',
+      type: 'recipe',
+      components: [
+        'ContextNavigation',
+        'NavigationMenu',
+        'NativeSelect',
+        'Link'
       ]
     },
     {
@@ -717,6 +729,20 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'ContextNavigation',
+      type: 'component',
+      description: 'Pairs a stable scope selector or identity with horizontally scrollable contextual links.',
+      category: 'Navigation',
+      files: [
+        'packages/astro/components/ContextNavigation.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'NavigationMenu',
+        'styles'
+      ]
+    },
+    {
       name: 'ContextMenu',
       type: 'component',
       description: 'Provides contextual actions for a selected object.',
@@ -1054,6 +1080,34 @@ export const lumenRegistry = {
       category: 'Data display',
       files: [
         'packages/astro/components/Item.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'KanbanBoard',
+      type: 'component',
+      description: 'Organizes controlled workflow columns and emits accessible move requests.',
+      category: 'Layout',
+      files: [
+        'packages/astro/components/KanbanBoard.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
+      name: 'KanbanColumn',
+      type: 'component',
+      description: 'Defines a named destination inside a controlled Kanban board.',
+      category: 'Layout',
+      files: [
+        'packages/astro/components/KanbanColumn.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [

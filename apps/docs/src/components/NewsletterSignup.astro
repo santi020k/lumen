@@ -1,0 +1,130 @@
+---
+import {
+  Button,
+  ButtonLink,
+  Card,
+  Field,
+  Form,
+  Icon,
+  Input,
+  Label
+} from '@santi020k/lumen-astro'
+
+const formAction = import.meta.env.PUBLIC_NEWSLETTER_FORM_ACTION?.trim() ?? ''
+---
+
+<Card class="newsletter-signup" variant="muted">
+  <div class="newsletter-signup__copy">
+    <span><Icon decorative name="mail" /></span>
+    <div>
+      <small>Stay close to the work</small>
+      <h2>Useful updates, only when there is something to show.</h2>
+      <p>
+        New guides, templates, releases, and community projects. No content treadmill.
+      </p>
+    </div>
+  </div>
+
+  {formAction ?
+(
+    <Form action={formAction} class="newsletter-signup__form" method="post">
+      <Field>
+        <Label class="sr-only" for="community-newsletter-email">Email address</Label>
+        <Input
+          autocomplete="email"
+          id="community-newsletter-email"
+          name="email"
+          placeholder="you@example.com"
+          required
+          type="email"
+        />
+      </Field>
+      <Button data-exposure-event="community-newsletter-submit" type="submit">
+        Subscribe
+      </Button>
+    </Form>
+  ) :
+(
+    <ButtonLink
+      data-exposure-event="community-watch-updates"
+      href="https://github.com/santi020k/lumen/subscription"
+      newTab
+      variant="secondary"
+    >
+      <Icon decorative name="bell" size="sm" />
+      Watch updates on GitHub
+    </ButtonLink>
+  )}
+</Card>
+
+<style>
+  :global(.newsletter-signup.ui-card) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: space-between;
+    gap: clamp(2rem, 4vw, 3rem);
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 92% 12%, hsl(var(--brand) / 0.22), transparent 34%),
+      hsl(var(--surface-muted));
+  }
+
+  .newsletter-signup__copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .newsletter-signup__copy > span {
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    border-radius: 50%;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .newsletter-signup small {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .newsletter-signup h2 {
+    max-width: 18ch;
+    margin-top: 0.7rem;
+    color: hsl(var(--ink));
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+  }
+
+  .newsletter-signup p {
+    max-width: 34rem;
+    margin-top: 0.8rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.6;
+  }
+
+  :global(.newsletter-signup__form.ui-form) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.65rem;
+  }
+
+  .newsletter-signup__form :global(.ui-field) {
+    margin: 0;
+  }
+
+  @media (max-width: 32rem) {
+    :global(.newsletter-signup__form.ui-form) {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

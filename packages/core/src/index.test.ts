@@ -37,8 +37,10 @@ import {
   lumenCodeTokenClassNames,
   lumenColors,
   lumenColorTokenNames,
+  lumenColorTokens,
   lumenComponentBehavior,
   lumenComponentNames,
+  lumenDarkColors,
   lumenDarkTheme,
   lumenFont,
   lumenGlass,
@@ -50,6 +52,7 @@ import {
   lumenMotion,
   lumenPackages,
   lumenRadius,
+  lumenSpacing,
   lumenStructureTokenNames,
   lumenStylingContracts,
   lumenThemeAttribute,
@@ -85,6 +88,7 @@ describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
     expect(lumenComponentNames).toContain('CodeTabs')
+    expect(lumenComponentNames).toContain('ContextNavigation')
     expect(lumenComponentNames).toContain('BarChart')
     expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('LineChart')
@@ -131,6 +135,10 @@ describe('lumen core metadata', () => {
       '@santi020k/lumen-react',
       '@santi020k/lumen-react-hook-form',
       '@santi020k/lumen-elements',
+      '@santi020k/lumen-react-native',
+      '@santi020k/lumen-tokens',
+      'LumenUI',
+      'com.santi020k:lumen-compose',
       '@santi020k/lumen-icons-brand'
     ])
   })
@@ -157,6 +165,11 @@ describe('lumen core metadata', () => {
       stability: 'stable'
     })
     expect(lumenStylingContracts.Card.parts).toContain('card-content')
+    expect(lumenStylingContracts.ContextNavigation).toMatchObject({
+      parts: ['context-navigation-context'],
+      rootSlot: 'context-navigation',
+      stability: 'stable'
+    })
   })
 })
 
@@ -636,6 +649,11 @@ describe('lumen theme tokens', () => {
     expect(lumenDarkTheme).toBe('dark')
     expect(lumenLightTheme).toBe('light')
     expect(lumenColors.brand).toMatch(/^\d+ \d+% \d+%$/)
+    expect(lumenColors.brand).toBe('221 83% 53%')
+    expect(lumenDarkColors.brand).toBe('199 91% 56%')
+    expect(lumenColorTokens.light.brand).toBe('#2463EB')
+    expect(lumenColorTokens.dark.brand).toBe('#29B4F5')
+    expect(lumenSpacing.lg).toBe(16)
     expect(lumenGlass.blur).toBe('22px')
     expect(lumenGlass.bg).toContain('/')
     expect(lumenColorTokenNames).toContain('glass-bg')

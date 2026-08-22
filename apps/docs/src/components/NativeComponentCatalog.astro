@@ -1,0 +1,358 @@
+---
+import {
+  Badge,
+  Card,
+  Icon,
+  Input,
+  Link
+} from '@santi020k/lumen-astro'
+
+import {
+  getNativeComponentsForPlatform,
+  nativeComponentCategories,
+  type NativePlatformId
+} from '../data/native-components'
+import type { PlatformGuide } from '../data/platforms'
+import DocsLayout from '../layouts/DocsLayout.astro'
+
+import NativePlatformPreview from './NativePlatformPreview.astro'
+
+interface Props {
+  guide: PlatformGuide & { id: NativePlatformId }
+}
+
+const { guide } = Astro.props
+const components = getNativeComponentsForPlatform(guide.id)
+
+const categories = nativeComponentCategories.filter(category => (
+  components.some(component => component.category === category)
+))
+---
+
+<DocsLayout
+  description={`Browse every ${guide.label} component in Lumen with native examples, API details, and accessibility guidance.`}
+  title={`${guide.label} components - Lumen UI`}
+>
+  <header class="native-catalog-hero">
+    <div>
+      <div class="native-catalog-hero__badges">
+        <Badge variant="secondary">{guide.shortLabel} reference</Badge>
+        {guide.maturity && <Badge variant="warning">{guide.maturity}</Badge>}
+      </div>
+      <h1>Native components</h1>
+      <p>
+        Explore all {components.length} components available for {guide.label}. Each reference page
+        includes real native usage, the public API, design guidance, and accessibility behavior.
+      </p>
+    </div>
+    <Card class="native-catalog-hero__stat" variant="muted">
+      <strong>{components.length}</strong>
+      <span>documented components</span>
+      <small>{categories.length} categories</small>
+    </Card>
+  </header>
+
+  <section class="native-catalog-tools" aria-labelledby="native-catalog-title">
+    <div>
+      <p>Component library</p>
+      <h2 id="native-catalog-title">Browse the {guide.shortLabel} catalog</h2>
+    </div>
+    <label class="native-catalog-search">
+      <span class="sr-only">Search {guide.shortLabel} components</span>
+      <Icon decorative name="search" size="sm" />
+      <Input
+        data-native-component-search
+        placeholder="Search components..."
+        type="search"
+      />
+    </label>
+  </section>
+
+  <p class="native-catalog-empty" data-native-component-empty hidden>
+    No components match that search.
+  </p>
+
+  <div class="native-catalog-sections" data-native-component-catalog>
+    {categories.map(category => {
+      const categoryComponents = components.filter(component => component.category === category)
+
+      return (
+        <section data-native-component-section aria-labelledby={`category-${category.replaceAll(' ', '-').toLowerCase()}`}>
+          <div class="native-catalog-section__heading">
+            <h2 id={`category-${category.replaceAll(' ', '-').toLowerCase()}`}>{category}</h2>
+            <Badge variant="outline">{categoryComponents.length}</Badge>
+          </div>
+          <div class="native-component-grid">
+            {categoryComponents.map(component => (
+              <Card
+                as="article"
+                class="native-component-card"
+                data-native-component
+                data-search-value={`${component.name} ${component.summary} ${component.category}`.toLowerCase()}
+                variant="muted"
+              >
+                <div class="native-component-card__top">
+                  <span><Icon decorative name="box" size="sm" /></span>
+                  <Badge variant="outline">{component.implementations[guide.id]?.exportName}</Badge>
+                </div>
+                <div>
+                  <h3>
+                    <Link href={`${guide.href}/components/${component.slug}`} variant="inherit">
+                      {component.name}
+                    </Link>
+                  </h3>
+                  <p>{component.summary}</p>
+                </div>
+                <Link href={`${guide.href}/components/${component.slug}`}>
+                  View reference <Icon decorative name="arrow-right" size="sm" />
+                </Link>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )
+    })}
+  </div>
+
+  <NativePlatformPreview guide={guide} />
+</DocsLayout>
+
+<script>
+  const initializeNativeCatalog = () => {
+    const search = document.querySelector<HTMLInputElement>('[data-native-component-search]')
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-native-component]')]
+    const sections = [...document.querySelectorAll<HTMLElement>('[data-native-component-section]')]
+    const empty = document.querySelector<HTMLElement>('[data-native-component-empty]')
+
+    if (!search || !empty) return
+
+    const filterComponents = () => {
+      const query = search.value.trim().toLowerCase()
+
+      for (const card of cards) {
+        card.hidden = !(card.dataset.searchValue ?? '').includes(query)
+      }
+
+      for (const section of sections) {
+        section.hidden = !section.querySelector('[data-native-component]:not([hidden])')
+      }
+
+      empty.hidden = cards.some(card => !card.hidden)
+    }
+
+    search.addEventListener('input', filterComponents)
+  }
+
+  document.addEventListener('astro:page-load', initializeNativeCatalog)
+</script>
+
+<style>
+  .native-catalog-hero {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 92% 0%, hsl(var(--brand) / 0.2), transparent 34%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .native-catalog-hero > div:first-child {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .native-catalog-hero__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .native-catalog-hero h1 {
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .native-catalog-hero p {
+    max-width: 48rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  :global(.native-catalog-hero__stat) {
+    display: grid;
+    align-content: center;
+    gap: 0.2rem;
+    min-width: 12rem;
+    padding: 1.5rem;
+  }
+
+  .native-catalog-hero__stat strong {
+    color: hsl(var(--brand));
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .native-catalog-hero__stat span {
+    color: hsl(var(--ink));
+    font-weight: 800;
+  }
+
+  .native-catalog-hero__stat small,
+  .native-component-card p {
+    color: hsl(var(--ink-soft));
+  }
+
+  .native-catalog-tools {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .native-catalog-tools > div {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .native-catalog-tools p {
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .native-catalog-tools h2,
+  .native-catalog-section__heading h2 {
+    color: hsl(var(--ink));
+    font-weight: 900;
+  }
+
+  .native-catalog-tools h2 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .native-catalog-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: min(100%, 20rem);
+  }
+
+  .native-catalog-search > :global(svg) {
+    position: absolute;
+    z-index: 1;
+    left: 0.85rem;
+    color: hsl(var(--ink-muted));
+    pointer-events: none;
+  }
+
+  .native-catalog-search :global(input) {
+    width: 100%;
+    padding-left: 2.5rem;
+  }
+
+  .native-catalog-empty {
+    margin-top: 2rem;
+    padding: 2rem;
+    border: 1px dashed hsl(var(--line));
+    border-radius: 1rem;
+    color: hsl(var(--ink-soft));
+    text-align: center;
+  }
+
+  .native-catalog-sections,
+  .native-catalog-sections > section {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .native-catalog-sections {
+    gap: 3rem;
+    margin-top: 2.5rem;
+  }
+
+  .native-catalog-section__heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .native-catalog-section__heading h2 {
+    font-size: 1.25rem;
+  }
+
+  .native-component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1rem;
+  }
+
+  :global(.native-component-card) {
+    display: grid;
+    align-content: space-between;
+    gap: 1.5rem;
+    min-height: 15rem;
+    padding: 1.25rem;
+  }
+
+  .native-component-card__top,
+  .native-component-card > :global(a) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .native-component-card__top > span {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.7rem;
+    color: hsl(var(--brand));
+    background: hsl(var(--brand-soft));
+  }
+
+  .native-component-card h3 {
+    margin-bottom: 0.5rem;
+    color: hsl(var(--ink));
+    font-size: 1.15rem;
+    font-weight: 900;
+  }
+
+  .native-component-card p {
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .native-component-card > :global(a) {
+    justify-content: flex-start;
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+
+  @media (min-width: 52rem) {
+    .native-catalog-hero {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .native-catalog-tools {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .native-catalog-search {
+      width: 100%;
+    }
+  }
+</style>

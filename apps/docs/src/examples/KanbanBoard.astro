@@ -1,0 +1,36 @@
+---
+import {
+  Badge,
+  Button,
+  Card,
+  KanbanBoard,
+  KanbanColumn
+} from '@santi020k/lumen-astro'
+
+const columns = [
+  { label: 'Planned', value: 'planned' },
+  { label: 'In progress', value: 'active' },
+  { label: 'Released', value: 'released' }
+]
+---
+
+<KanbanBoard aria-label="Editorial workflow" style="--ui-kanban-column-min-height: 12rem">
+  {columns.map((column, index) => (
+    <KanbanColumn value={column.value}>
+      <h3>{column.label}</h3>
+      {index === 0 && (
+        <Card data-ui-kanban-item="release-notes">
+          <Button
+            aria-label="Move Release notes"
+            data-ui-kanban-handle
+            draggable="true"
+            size="sm"
+            variant="ghost"
+          >Move</Button>
+          <strong>Release notes</strong>
+          <Badge variant="secondary">Docs</Badge>
+        </Card>
+      )}
+    </KanbanColumn>
+  ))}
+</KanbanBoard>

@@ -1,0 +1,291 @@
+---
+import { Badge, ButtonLink, Card, Icon, Marker } from '@santi020k/lumen-astro'
+
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const teamNeeds = [
+  ['layers-3', 'Cross-platform consistency', 'Share semantic roles while preserving native framework conventions.'],
+  ['accessibility', 'Accessible foundations', 'Start from documented keyboard, focus, screen-reader, and reduced-motion behavior.'],
+  ['bot', 'AI-ready contracts', 'Give coding agents structured component metadata instead of relying on visual guesswork.'],
+  ['git-compare-arrows', 'Practical adoption', 'Introduce Lumen by surface or workflow without replacing a working application architecture.']
+] as const
+
+const evaluationSteps = [
+  ['01', 'Choose one representative screen', 'Pick a surface with forms, navigation, feedback, and real product states.'],
+  ['02', 'Build a small proof', 'Use the public packages, templates, Figma library, skill, and MCP server at no cost.'],
+  ['03', 'Share the evidence', 'Tell us what worked, what did not, and what your team would need before wider adoption.']
+] as const
+---
+
+<BaseLayout
+  description="Evaluate Lumen UI for a product team with an open, evidence-driven adoption path."
+  title="For teams — Lumen UI"
+>
+  <main class="teams-page">
+    <section class="teams-hero">
+      <div class="teams-hero__copy">
+        <Badge variant="outline">For product teams</Badge>
+        <h1>Evaluate the system before you commit to it.</h1>
+        <p>
+          Lumen is free and MIT licensed. Use a real screen, real constraints, and real accessibility
+          requirements to decide whether it belongs in your product stack.
+        </p>
+        <div class="teams-actions">
+          <ButtonLink href="/templates" showArrow>Start from a template</ButtonLink>
+          <ButtonLink
+            data-exposure-event="teams-adoption-feedback"
+            href="https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml"
+            newTab
+            variant="secondary"
+          >
+            Share team requirements
+          </ButtonLink>
+        </div>
+      </div>
+      <Card class="teams-principle" glass="strong">
+        <Marker variant="success">No sales gate</Marker>
+        <blockquote>
+          “The goal is to earn adoption by making the open library useful—not by withholding the
+          pieces teams need to evaluate it.”
+        </blockquote>
+      </Card>
+    </section>
+
+    <section class="teams-section" aria-labelledby="team-needs-title">
+      <header>
+        <span>Why teams evaluate Lumen</span>
+        <h2 id="team-needs-title">One product language, without one rendering model.</h2>
+      </header>
+      <div class="teams-needs">
+        {teamNeeds.map(([icon, title, description]) => (
+          <Card as="article" class="teams-need">
+            <Icon decorative name={icon} />
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="teams-section teams-evaluation" aria-labelledby="evaluation-title">
+      <header>
+        <span>A low-risk evaluation</span>
+        <h2 id="evaluation-title">Prove value on one production-shaped surface.</h2>
+      </header>
+      <ol>
+        {evaluationSteps.map(([number, title, description]) => (
+          <li>
+            <span>{number}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="teams-evaluation__actions">
+        <ButtonLink href="/guides/ship-a-settings-screen" showArrow>
+          Follow the evaluation guide
+        </ButtonLink>
+        <ButtonLink href="/docs/figma" variant="secondary">Review the Figma workflow</ButtonLink>
+        <ButtonLink href="/docs/mcp" variant="secondary">Connect the MCP server</ButtonLink>
+      </div>
+    </section>
+
+    <section class="teams-callout" aria-labelledby="teams-callout-title">
+      <div>
+        <Badge variant="secondary">Help shape the roadmap</Badge>
+        <h2 id="teams-callout-title">Have constraints the current library does not cover?</h2>
+        <p>
+          Open a public adoption-feedback issue with your platform, product surface, and biggest
+          friction point. You do not need to be an existing user.
+        </p>
+      </div>
+      <ButtonLink
+        data-exposure-event="teams-start-conversation"
+        href="https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml"
+        newTab
+        showArrow
+      >
+        Start the conversation
+      </ButtonLink>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .teams-page {
+    width: min(100% - 2.5rem, 76rem);
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+
+  .teams-hero {
+    display: grid;
+    align-items: end;
+    gap: 2rem;
+    min-height: 34rem;
+    padding: clamp(2rem, 5vw, 4rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      linear-gradient(135deg, hsl(var(--surface)), hsl(var(--surface-muted))),
+      hsl(var(--surface));
+  }
+
+  .teams-hero h1 {
+    max-width: 13ch;
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.7rem, 7vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.97;
+  }
+
+  .teams-hero__copy > p,
+  .teams-need p,
+  .teams-evaluation p,
+  .teams-callout p {
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  .teams-hero__copy > p {
+    max-width: 42rem;
+    margin-top: 1.25rem;
+    font-size: 1.05rem;
+  }
+
+  .teams-actions,
+  .teams-evaluation__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  :global(.teams-principle.ui-card) {
+    padding: 1.5rem;
+  }
+
+  .teams-principle blockquote {
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: 1.2rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .teams-section,
+  .teams-callout {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .teams-section header > span {
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .teams-section h2,
+  .teams-callout h2 {
+    max-width: 18ch;
+    margin-top: 0.7rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .teams-needs {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  :global(.teams-need.ui-card) {
+    padding: 1.5rem;
+  }
+
+  .teams-need :global(.ui-icon) {
+    color: hsl(var(--brand));
+  }
+
+  .teams-need h3,
+  .teams-evaluation h3 {
+    margin-top: 0.9rem;
+    color: hsl(var(--ink));
+    font-weight: 800;
+  }
+
+  .teams-need p,
+  .teams-evaluation p {
+    margin-top: 0.45rem;
+  }
+
+  .teams-evaluation {
+    padding: clamp(1.5rem, 5vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .teams-evaluation ol {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .teams-evaluation li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .teams-evaluation li > span {
+    color: hsl(var(--brand));
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+  }
+
+  .teams-evaluation h3 {
+    margin-top: 0;
+  }
+
+  .teams-callout {
+    display: grid;
+    align-items: center;
+    gap: 2rem;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    border: 1px solid hsl(var(--brand) / 0.35);
+    border-radius: 1.5rem;
+    background: hsl(var(--brand-soft) / 0.38);
+  }
+
+  .teams-callout p {
+    max-width: 44rem;
+    margin-top: 0.8rem;
+  }
+
+  @media (min-width: 48rem) {
+    .teams-needs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .teams-callout {
+      grid-template-columns: minmax(0, 1.4fr) auto;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .teams-hero {
+      grid-template-columns: minmax(0, 1.4fr) minmax(17rem, 0.6fr);
+    }
+  }
+</style>

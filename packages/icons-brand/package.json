@@ -50,10 +50,17 @@
     "url": "https://github.com/santi020k/lumen.git",
     "directory": "packages/icons-brand"
   },
-  "homepage": "https://lumen.santi020k.com",
+  "homepage": "https://lumen.santi020k.com/docs/brand-icons",
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
+  "keywords": [
+    "brand-icons",
+    "design-system",
+    "icons",
+    "lumen",
+    "ui"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"

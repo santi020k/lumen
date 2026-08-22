@@ -1,0 +1,691 @@
+---
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  CodeTabs,
+  Icon,
+  Link,
+  Marker
+} from '@santi020k/lumen-astro'
+
+import type { PlatformGuide } from '../data/platforms'
+import DocsLayout from '../layouts/DocsLayout.astro'
+
+import CodeBlock from './CodeBlock.astro'
+import NativePlatformPreview from './NativePlatformPreview.astro'
+import PlatformShipping from './PlatformShipping.astro'
+
+interface Props {
+  guide: PlatformGuide
+}
+
+const { guide } = Astro.props
+const hasNativeCatalog = guide.id === 'android' || guide.id === 'apple' || guide.id === 'react-native'
+
+const nativeAiPrompts = {
+  android: `Use $lumen-ui to build this screen with Jetpack Compose.
+Use the local lumen-compose module, LumenTheme, and public Compose components.
+Preserve Android navigation and state, and include loading, empty, error, and TalkBack behavior.`,
+  apple: `Use $lumen-ui to build this screen in SwiftUI.
+Use the LumenUI Swift package and public SwiftUI components.
+Preserve native navigation and state, and include loading, empty, error, Dynamic Type, and VoiceOver behavior.`,
+  'react-native': `Use $lumen-ui to build this screen in the existing React Native app.
+Use @santi020k/lumen-react-native and mount one LumenProvider at the app root.
+Preserve navigation and state, and include loading, empty, error, and native accessibility behavior.`
+} as const
+
+const nativeAiPrompt = hasNativeCatalog ? nativeAiPrompts[guide.id as keyof typeof nativeAiPrompts] : undefined
+
+const nativeGuideLinks = hasNativeCatalog ?
+[
+  ['download', 'Install and configure', 'Requirements, package setup, and your first native screen.', '#installation'],
+  ['palette', 'Theme and appearance', 'Follow the system or save an application appearance preference.', '#theme'],
+  ['play', 'Run the playground', 'Open the native gallery on a simulator, emulator, or device.', `${guide.href}/playground`],
+  ['box', 'Component reference', `Browse every ${guide.shortLabel} primitive, example, API, and accessibility note.`, `${guide.href}/components`],
+  ['sparkles', 'Use with AI', 'Give a coding agent the package-aware Lumen workflow.', '#ai-usage'],
+  ['landmark', 'Platform contract', `Understand how Lumen follows ${guide.shortLabel} conventions.`, '#principles']
+] as const :
+[]
+---
+
+<DocsLayout
+  description={guide.summary}
+  title={`${guide.title} - Lumen UI`}
+>
+  <section class="platform-hero" aria-labelledby="platform-title">
+    <div class="platform-hero__copy">
+      <div class="platform-hero__eyebrow">
+        <Badge variant="outline">{guide.eyebrow}</Badge>
+        <Marker variant="success">{guide.status}</Marker>
+        {guide.maturity && <Marker variant="warning">{guide.maturity}</Marker>}
+      </div>
+      <h1 id="platform-title">{guide.title}</h1>
+      <p>{guide.summary}</p>
+      <div class="platform-hero__actions">
+        <ButtonLink href="#installation" showArrow>Start building</ButtonLink>
+        <ButtonLink href={hasNativeCatalog ? `${guide.href}/components` : '#components'} variant="secondary">
+          {hasNativeCatalog ? 'Browse components' : 'View coverage'}
+        </ButtonLink>
+      </div>
+    </div>
+
+    <Card class="platform-hero__package" glass="subtle">
+      <span>Package</span>
+      <code>{guide.packageName}</code>
+      <p>{guide.installNote}</p>
+    </Card>
+  </section>
+
+  {guide.maturity && guide.maturityNote && (
+    <Card as="section" class="platform-maturity" variant="muted" aria-labelledby="platform-maturity-title">
+      <Badge variant="warning">{guide.maturity}</Badge>
+      <div>
+        <h2 id="platform-maturity-title">Ready for feedback-driven adoption</h2>
+        <p>{guide.maturityNote}</p>
+      </div>
+    </Card>
+  )}
+
+  {hasNativeCatalog && (
+    <nav class="platform-guide-map" aria-labelledby="platform-guide-map-title">
+      <div class="platform-guide-map__heading">
+        <p>Everything in one place</p>
+        <h2 id="platform-guide-map-title">The complete {guide.shortLabel} guide</h2>
+        <p>Installation, appearance, examples, and API guidance stay together in the {guide.shortLabel} documentation.</p>
+      </div>
+      <div class="platform-guide-map__links">
+        {nativeGuideLinks.map(([icon, label, description, href]) => (
+          <Link class="platform-guide-map__link" href={href} variant="inherit">
+            <span><Icon decorative name={icon} size="sm" /></span>
+            <span><strong>{label}</strong><small>{description}</small></span>
+            <Icon decorative name="arrow-right" size="sm" />
+          </Link>
+        ))}
+      </div>
+    </nav>
+  )}
+
+  <section class="docs-section" id="installation" aria-labelledby="installation-title">
+    <div class="docs-section-heading">
+      <p>Get started</p>
+      <h2 id="installation-title">Install and configure</h2>
+      <p>{guide.installNote}</p>
+    </div>
+    {guide.prerequisites && (
+      <Card as="section" class="platform-prerequisites" variant="muted" aria-labelledby="prerequisites-title">
+        <div>
+          <Badge variant="outline">Before you begin</Badge>
+          <h3 id="prerequisites-title">What you need</h3>
+        </div>
+        <ul>
+          {guide.prerequisites.map(prerequisite => <li>{prerequisite}</li>)}
+        </ul>
+      </Card>
+    )}
+    {guide.setupSteps && (
+      <ol class="platform-setup-steps" aria-label={`${guide.label} installation steps`}>
+        {guide.setupSteps.map((step, index) => (
+          <li>
+            <Card as="article" class="platform-setup-step" variant="muted">
+              <span aria-hidden="true">{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ol>
+    )}
+    <CodeTabs
+      ariaLabel={`${guide.label} setup examples`}
+      items={guide.codeExamples}
+      storageKey={`lumen-${guide.id}-setup`}
+    />
+  </section>
+
+  {guide.playgroundCommands && guide.playgroundNote && (
+    <section class="docs-section" id="playground" aria-labelledby="playground-title">
+      <div class="docs-section-heading">
+        <p>Try every component</p>
+        <h2 id="playground-title">Run the {guide.shortLabel} playground</h2>
+        <p>{guide.playgroundNote}</p>
+      </div>
+      <CodeTabs
+        ariaLabel={`${guide.label} playground commands`}
+        items={guide.playgroundCommands}
+        storageKey={`lumen-${guide.id}-playground`}
+      />
+      {guide.shippingNotes && <PlatformShipping notes={guide.shippingNotes} />}
+    </section>
+  )}
+
+  {guide.theme && (
+    <section class="docs-section" id="theme" aria-labelledby="theme-title">
+      <div class="docs-section-heading">
+        <p>Appearance</p>
+        <h2 id="theme-title">Choose and change the theme</h2>
+        <p>{guide.theme.description}</p>
+      </div>
+      <CodeTabs
+        ariaLabel={`${guide.label} theme examples`}
+        items={guide.theme.examples}
+        storageKey={`lumen-${guide.id}-theme`}
+      />
+      <div class="platform-theme-grid">
+        <Card as="section" class="platform-theme-note" variant="muted" aria-labelledby="theme-roles-title">
+          <Icon decorative name="palette" size="sm" />
+          <div><h3 id="theme-roles-title">Style with semantic roles</h3><p>{guide.theme.note}</p></div>
+        </Card>
+        <Card as="section" class="platform-theme-checklist" variant="muted" aria-labelledby="theme-checklist-title">
+          <div><Icon decorative name="list-checks" size="sm" /><h3 id="theme-checklist-title">Verify both appearances</h3></div>
+          <ul>{guide.theme.verification.map(item => <li>{item}</li>)}</ul>
+        </Card>
+      </div>
+    </section>
+  )}
+
+  {nativeAiPrompt && (
+    <section class="docs-section" id="ai-usage" aria-labelledby="ai-usage-title">
+      <div class="docs-section-heading">
+        <p>Continue with AI</p>
+        <h2 id="ai-usage-title">Give your coding tool the Lumen workflow</h2>
+        <p>
+          Install the portable skill once, open your application in a compatible coding tool, and
+          name the target platform in the request. The skill reads the native package and
+          documentation before selecting components.
+        </p>
+      </div>
+      <div class="platform-ai-grid">
+        <Card as="article" class="platform-ai-card" variant="muted">
+          <Badge variant="outline">1 · Install the skill</Badge>
+          <CodeBlock code="npx skills add santi020k/lumen --skill lumen-ui" lang="bash" title="Terminal" />
+          <p>Follow the installer prompts and select the AI coding tools available on your machine.</p>
+        </Card>
+        <Card as="article" class="platform-ai-card" variant="muted">
+          <Badge variant="outline">2 · Ask for the native target</Badge>
+          <CodeBlock code={nativeAiPrompt} title="Prompt" />
+          <p>Review the generated package imports, component states, and platform accessibility behavior.</p>
+        </Card>
+      </div>
+      <Card as="section" class="platform-ai-note" variant="muted">
+        <Icon decorative name="info" size="sm" />
+        <p>
+          The Agent Skill and optional MCP server cover web and native adapters. MCP can list the
+          components available for this platform and return installation, setup, API examples,
+          accessibility guidance, and reference source for each documented native component.
+        </p>
+        <Link href="/docs/ai-skill">Open the complete AI setup guide</Link>
+      </Card>
+    </section>
+  )}
+
+  <NativePlatformPreview guide={guide} />
+
+  <section class="docs-section" id="components" aria-labelledby="components-title">
+    <div class="docs-section-heading">
+      <p>Supported surface</p>
+      <h2 id="components-title">Components and capabilities</h2>
+      <p>{guide.componentNote}</p>
+    </div>
+    <div class="platform-components" role="list" aria-label={`${guide.label} support`}>
+      {guide.components.map(component => (
+        <Card class="platform-component" role="listitem" variant="muted">
+          <Icon decorative name="check" size="sm" />
+          <span>{component}</span>
+        </Card>
+      ))}
+    </div>
+    {hasNativeCatalog && (
+      <div class="platform-components__action">
+        <ButtonLink href={`${guide.href}/components`} showArrow>Open the full component reference</ButtonLink>
+      </div>
+    )}
+  </section>
+
+  <section class="docs-section" id="principles" aria-labelledby="principles-title">
+    <div class="docs-section-heading">
+      <p>Platform contract</p>
+      <h2 id="principles-title">Designed for {guide.label}</h2>
+    </div>
+    <div class="platform-principles">
+      {guide.principles.map((principle, index) => (
+        <Card as="article" class="platform-principle" variant="muted">
+          <span aria-hidden="true">0{index + 1}</span>
+          <h3>{principle.title}</h3>
+          <p>{principle.description}</p>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <Card as="section" class="docs-next" variant="muted" aria-labelledby="related-title">
+    <h2 id="related-title">Continue exploring</h2>
+    <p>Move between platform guidance without losing the shared Lumen design language.</p>
+    <div class="platform-related">
+      {guide.relatedLinks.map(link => {
+        const isExternal = link.href.startsWith('http')
+
+        return (
+          <Link
+            href={link.href}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+            target={isExternal ? '_blank' : undefined}
+          >
+            {link.label}
+            <Icon decorative name={isExternal ? 'arrow-up-right' : 'arrow-right'} size="sm" />
+          </Link>
+        )
+      })}
+    </div>
+  </Card>
+</DocsLayout>
+
+<style>
+  .platform-hero {
+    display: grid;
+    gap: 2rem;
+    overflow: hidden;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 92% 0%, hsl(var(--brand) / 0.2), transparent 34%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .platform-hero__copy {
+    display: grid;
+    align-content: center;
+    gap: 1.25rem;
+  }
+
+  .platform-hero__eyebrow,
+  .platform-hero__actions,
+  .platform-related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .platform-hero h1 {
+    max-width: 13ch;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .platform-hero__copy > p {
+    max-width: 44rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  .platform-hero :global(.platform-hero__package) {
+    display: grid;
+    align-content: end;
+    gap: 0.8rem;
+    min-width: 0;
+    padding: 1.5rem;
+  }
+
+  .platform-hero__package span {
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .platform-hero__package code {
+    overflow-wrap: anywhere;
+    color: hsl(var(--brand));
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .platform-hero__package p,
+  .platform-maturity p,
+  .platform-principle p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  :global(.platform-maturity) {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1.25rem;
+  }
+
+  .platform-maturity > div,
+  .platform-theme-note > div {
+    display: grid;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .platform-guide-map {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.25rem;
+    background: hsl(var(--surface));
+  }
+
+  .platform-guide-map__heading {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+  }
+
+  .platform-guide-map__heading > p:first-child {
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .platform-guide-map__heading h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 900;
+  }
+
+  .platform-guide-map__heading > p:last-child,
+  .platform-theme-note p,
+  .platform-theme-checklist ul {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .platform-guide-map__links,
+  .platform-theme-grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .platform-guide-map :global(.platform-guide-map__link) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border-radius: 0.85rem;
+    text-decoration: none;
+    transition: background-color 160ms ease;
+  }
+
+  .platform-guide-map :global(.platform-guide-map__link:hover) {
+    background: hsl(var(--surface-muted));
+  }
+
+  .platform-guide-map :global(.platform-guide-map__link:focus-visible) {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 2px;
+  }
+
+  .platform-guide-map__link > span:first-child {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.65rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .platform-guide-map__link > span:nth-child(2) {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .platform-guide-map__link strong,
+  .platform-theme-note h3,
+  .platform-theme-checklist h3 {
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+
+  .platform-guide-map__link small {
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .platform-guide-map__link > :global(svg:last-child) {
+    color: hsl(var(--ink-muted));
+  }
+
+  .platform-theme-grid {
+    margin-top: 1rem;
+  }
+
+  :global(.platform-theme-note),
+  :global(.platform-theme-checklist) {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  :global(.platform-theme-note) {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .platform-theme-checklist > div {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .platform-theme-checklist ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .platform-maturity h2 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .platform-components {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .platform-ai-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  :global(.platform-ai-card) {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.25rem;
+  }
+
+  .platform-ai-card > p,
+  .platform-ai-note p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  :global(.platform-ai-note) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+
+  .platform-ai-note :global(a) {
+    grid-column: 2;
+  }
+
+  :global(.platform-prerequisites) {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+  }
+
+  .platform-prerequisites > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .platform-prerequisites h3,
+  .platform-setup-step h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .platform-prerequisites ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .platform-setup-steps {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.platform-setup-step) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .platform-setup-step > span {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 999px;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .platform-setup-step p {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .platform-components__action {
+    margin-top: 1.25rem;
+  }
+
+  :global(.platform-component) {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 0.85rem 1rem;
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .platform-component :global(svg) {
+    flex: 0 0 auto;
+    color: hsl(var(--success));
+  }
+
+  .platform-principles {
+    display: grid;
+    gap: 1rem;
+  }
+
+  :global(.platform-principle) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    padding: 1.25rem;
+  }
+
+  .platform-principle > span {
+    grid-row: 1 / span 2;
+    color: hsl(var(--brand));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .platform-principle h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .platform-related :global(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  @media (min-width: 56rem) {
+    .platform-hero {
+      grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+      min-height: 30rem;
+    }
+
+    .platform-principles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .platform-prerequisites {
+      grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+    }
+
+    .platform-setup-steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .platform-ai-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .platform-guide-map {
+      grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.35fr);
+    }
+
+    .platform-guide-map__links,
+    .platform-theme-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

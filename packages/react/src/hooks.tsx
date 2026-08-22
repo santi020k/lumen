@@ -11,6 +11,7 @@ import {
   type JSX,
   type KeyboardEvent,
   type MouseEvent,
+  type PointerEvent,
   type ReactNode,
   type Ref,
   type RefObject,
@@ -27,10 +28,12 @@ import {
 import {
   coerceThemeBuilderExportFormat,
   composeClassName,
+  createLumenKanbanMoveDetail,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
+  type LumenKanbanMoveDetail,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail as CoreRichTextCommandDetail,
   type LumenThemeBuilderExportFormat,
@@ -433,6 +436,28 @@ export interface ScheduleController {
     slot: string,
     props?: ComponentPropsWithRef<'section'>
   ) => LumenProps<'section'>
+  rootProps: LumenProps<'section'>
+  rootRef: RefObject<HTMLElement | null>
+}
+
+export interface KanbanOptions {
+  onMoveRequest?: ChangeHandler<LumenKanbanMoveDetail> | undefined
+}
+
+export interface KanbanController {
+  getColumnProps: (
+    column: string,
+    props?: ComponentPropsWithRef<'section'>
+  ) => LumenProps<'section'>
+  getHandleProps: (
+    itemId: string,
+    props?: ComponentPropsWithRef<'button'>
+  ) => LumenProps<'button'>
+  getItemProps: (
+    itemId: string,
+    props?: ComponentPropsWithRef<'article'>
+  ) => LumenProps<'article'>
+  requestMove: (detail: LumenKanbanMoveDetail) => boolean
   rootProps: LumenProps<'section'>
   rootRef: RefObject<HTMLElement | null>
 }
@@ -2884,6 +2909,297 @@ export const useSchedule = ({
     rootProps: {
       'data-ui-schedule': true,
       ref: rootRef
+    },
+    rootRef
+  }
+}
+
+const getKanbanRoot = (
+  element: HTMLElement,
+  fallback: HTMLElement | null
+): HTMLElement | null => element.closest<HTMLElement>('[data-ui-kanban]') ?? fallback
+
+const getKanbanItem = (root: HTMLElement | null, itemId: string): HTMLElement | null => [...(root?.querySelectorAll<HTMLElement>('[data-ui-kanban-item]') ?? [])]
+  .find(item => item.dataset.uiKanbanItem === itemId) ?? null
+
+const getKanbanColumnValues = (root: HTMLElement | null): string[] => [...(root?.querySelectorAll<HTMLElement>('[data-ui-kanban-column]') ?? [])]
+  .map(column => column.dataset.uiKanbanColumn ?? '')
+  .filter(Boolean)
+
+interface KanbanPointerState {
+  active: boolean
+  itemId: string
+  pointerId: number
+  startX: number
+  startY: number
+}
+
+const isKanbanArrowKey = (key: string): key is 'ArrowLeft' | 'ArrowRight' => ['ArrowLeft', 'ArrowRight'].includes(key)
+
+const clearKanbanInteractionState = (root: HTMLElement | null, item: HTMLElement | null): void => {
+  if (item?.dataset.state === 'dragging') delete item.dataset.state
+
+  for (const column of root?.querySelectorAll<HTMLElement>('[data-ui-kanban-column]') ?? [])
+    delete column.dataset.state
+}
+
+const setKanbanDropTarget = (
+  root: HTMLElement | null,
+  target: HTMLElement | null | undefined
+): void => {
+  for (const column of root?.querySelectorAll<HTMLElement>('[data-ui-kanban-column]') ?? []) {
+    if (column === target) column.dataset.state = 'drop-target'
+    else delete column.dataset.state
+  }
+}
+
+const requestKeyboardKanbanMove = (
+  event: KeyboardEvent<HTMLButtonElement>,
+  itemId: string,
+  root: HTMLElement | null,
+  requestMove: KanbanController['requestMove']
+): void => {
+  if (!isKanbanArrowKey(event.key)) return
+
+  if (!root) return
+
+  const item = getKanbanItem(root, itemId)
+
+  if (!item) return
+
+  if (item.getAttribute('aria-busy') === 'true') return
+
+  const fromColumn = item.closest<HTMLElement>('[data-ui-kanban-column]')
+    ?.dataset.uiKanbanColumn
+
+  if (!fromColumn) return
+
+  const columns = getKanbanColumnValues(root)
+  const currentIndex = columns.indexOf(fromColumn)
+  const visualDirection = event.key === 'ArrowRight' ? 1 : -1
+
+  const direction = getComputedStyle(root).direction === 'rtl' ?
+    -visualDirection :
+    visualDirection
+
+  const toColumn = columns[currentIndex + direction]
+
+  if (!toColumn) return
+
+  event.preventDefault()
+
+  requestMove({ fromColumn, input: 'keyboard', itemId, toColumn })
+}
+
+const updateKanbanPointer = (
+  event: PointerEvent<HTMLButtonElement>,
+  pointer: KanbanPointerState | null,
+  root: HTMLElement | null
+): void => {
+  if (pointer?.pointerId !== event.pointerId) return
+
+  const distance = Math.hypot(
+    event.clientX - pointer.startX,
+    event.clientY - pointer.startY
+  )
+
+  if (distance < 8) {
+    if (!pointer.active) return
+  }
+
+  pointer.active = true
+
+  event.currentTarget.setPointerCapture(event.pointerId)
+
+  const item = getKanbanItem(root, pointer.itemId)
+
+  const target = document.elementFromPoint(event.clientX, event.clientY)
+    ?.closest<HTMLElement>('[data-ui-kanban-column]')
+
+  if (item) item.dataset.state = 'dragging'
+
+  setKanbanDropTarget(root, target)
+}
+
+const finishKanbanPointer = (
+  event: PointerEvent<HTMLButtonElement>,
+  pointer: KanbanPointerState | null,
+  root: HTMLElement | null,
+  requestMove: KanbanController['requestMove']
+): void => {
+  if (pointer?.pointerId !== event.pointerId) return
+
+  const item = getKanbanItem(root, pointer.itemId)
+
+  if (!pointer.active) return
+
+  if (!item) return
+
+  const fromColumn = item.closest<HTMLElement>('[data-ui-kanban-column]')
+    ?.dataset.uiKanbanColumn
+
+  const toColumn = document.elementFromPoint(event.clientX, event.clientY)
+    ?.closest<HTMLElement>('[data-ui-kanban-column]')
+    ?.dataset.uiKanbanColumn
+
+  clearKanbanInteractionState(root, item)
+
+  if (fromColumn && toColumn)
+    requestMove({ fromColumn, input: 'pointer', itemId: pointer.itemId, toColumn })
+}
+
+export const useKanban = ({
+  onMoveRequest
+}: KanbanOptions = {}): KanbanController => {
+  const rootRef = useRef<HTMLElement | null>(null)
+  const pointerRef = useRef<KanbanPointerState | null>(null)
+
+  const requestMove = useCallback<KanbanController['requestMove']>(detail => {
+    const normalized = createLumenKanbanMoveDetail(detail)
+
+    if (!normalized) return false
+
+    const accepted = rootRef.current && typeof CustomEvent !== 'undefined' ?
+      rootRef.current.dispatchEvent(
+        new CustomEvent('ui:kanban-move-request', {
+          bubbles: true,
+          cancelable: true,
+          detail: normalized
+        })
+      ) :
+      true
+
+    if (accepted) onMoveRequest?.(normalized)
+
+    return accepted
+  }, [onMoveRequest])
+
+  const getItemProps = useCallback<KanbanController['getItemProps']>(
+    (itemId, props = {}) => ({
+      ...props,
+      'data-ui-kanban-item': itemId,
+      id: props.id ?? itemId
+    }), []
+  )
+
+  const getHandleProps = useCallback<KanbanController['getHandleProps']>(
+    (itemId, props = {}) => ({
+      ...props,
+      'aria-keyshortcuts': props['aria-keyshortcuts'] ?? 'ArrowLeft ArrowRight',
+      'data-ui-kanban-handle': itemId,
+      draggable: props.draggable ?? true,
+      onDragEnd: composeHandlers(props.onDragEnd, event => {
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+        const item = getKanbanItem(root, itemId)
+
+        if (item?.dataset.state === 'dragging') delete item.dataset.state
+      }),
+      onDragStart: composeHandlers(props.onDragStart, event => {
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+        const item = getKanbanItem(root, itemId)
+
+        if (!item || item.getAttribute('aria-busy') === 'true') {
+          event.preventDefault()
+
+          return
+        }
+
+        event.dataTransfer.setData('text/plain', itemId)
+
+        event.dataTransfer.effectAllowed = 'move'
+
+        item.dataset.state = 'dragging'
+      }),
+      onKeyDown: composeHandlers(props.onKeyDown, event => {
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+
+        requestKeyboardKanbanMove(event, itemId, root, requestMove)
+      }),
+      onPointerDown: composeHandlers(props.onPointerDown, (event: PointerEvent<HTMLButtonElement>) => {
+        if (event.pointerType === 'mouse') return
+
+        pointerRef.current = {
+          active: false,
+          itemId,
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY
+        }
+      }),
+      onPointerCancel: composeHandlers(props.onPointerCancel, (event: PointerEvent<HTMLButtonElement>) => {
+        const pointer = pointerRef.current
+
+        if (pointer?.pointerId !== event.pointerId) return
+
+        pointerRef.current = null
+
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+        const item = getKanbanItem(root, pointer.itemId)
+
+        clearKanbanInteractionState(root, item)
+      }),
+      onPointerMove: composeHandlers(props.onPointerMove, (event: PointerEvent<HTMLButtonElement>) => {
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+
+        updateKanbanPointer(event, pointerRef.current, root)
+      }),
+      onPointerUp: composeHandlers(props.onPointerUp, (event: PointerEvent<HTMLButtonElement>) => {
+        const pointer = pointerRef.current
+
+        pointerRef.current = null
+
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+
+        finishKanbanPointer(event, pointer, root, requestMove)
+      }),
+      type: props.type ?? 'button'
+    }), [requestMove]
+  )
+
+  const getColumnProps = useCallback<KanbanController['getColumnProps']>(
+    (column, props = {}) => ({
+      ...props,
+      'data-ui-kanban-column': column,
+      onDragLeave: composeHandlers(props.onDragLeave, event => {
+        delete event.currentTarget.dataset.state
+      }),
+      onDragOver: composeHandlers(props.onDragOver, event => {
+        event.preventDefault()
+
+        event.dataTransfer.dropEffect = 'move'
+
+        event.currentTarget.dataset.state = 'drop-target'
+      }),
+      onDrop: composeHandlers(props.onDrop, event => {
+        event.preventDefault()
+
+        delete event.currentTarget.dataset.state
+
+        const itemId = event.dataTransfer.getData('text/plain')
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+        const item = getKanbanItem(root, itemId)
+
+        const fromColumn = item?.closest<HTMLElement>('[data-ui-kanban-column]')
+          ?.dataset.uiKanbanColumn
+
+        if (item?.dataset.state === 'dragging') delete item.dataset.state
+
+        if (fromColumn)
+          requestMove({ fromColumn, input: 'pointer', itemId, toColumn: column })
+      })
+    }), [requestMove]
+  )
+
+  return {
+    getColumnProps,
+    getHandleProps,
+    getItemProps,
+    requestMove,
+    rootProps: {
+      'aria-orientation': 'horizontal',
+      'data-ui-kanban': true,
+      ref: rootRef,
+      tabIndex: 0
     },
     rootRef
   }

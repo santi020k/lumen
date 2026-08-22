@@ -1,0 +1,25 @@
+---
+import NativeComponentCatalog from '../../../../components/NativeComponentCatalog.astro'
+import type { NativePlatformId } from '../../../../data/native-components'
+import { getPlatformGuide } from '../../../../data/platforms'
+
+export const getStaticPaths = () => (
+  (['react-native', 'apple', 'android'] as const).map(platform => ({
+    params: { platform },
+    props: { platform }
+  }))
+)
+
+interface Props {
+  platform: NativePlatformId
+}
+
+const props: Props = Astro.props
+const { platform } = props
+
+const guide = getPlatformGuide(platform) as ReturnType<typeof getPlatformGuide> & {
+  id: NativePlatformId
+}
+---
+
+<NativeComponentCatalog guide={guide} />

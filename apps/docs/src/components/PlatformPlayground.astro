@@ -1,0 +1,59 @@
+---
+import { Badge, ButtonLink, Card, CodeTabs, Icon } from '@santi020k/lumen-astro'
+
+import type { PlatformGuide } from '../data/platforms'
+import DocsLayout from '../layouts/DocsLayout.astro'
+
+import PlatformShipping from './PlatformShipping.astro'
+
+interface Props {
+  guide: PlatformGuide
+}
+
+const { guide } = Astro.props
+const commands = guide.playgroundCommands ?? []
+---
+
+<DocsLayout
+  breadcrumbs={[
+    { href: guide.href, label: guide.shortLabel },
+    { href: `${guide.href}/playground`, label: 'Playground' }
+  ]}
+  description={`Run the ${guide.label} component playground locally.`}
+  title={`${guide.shortLabel} playground - Lumen UI`}
+>
+  <section class="docs-hero docs-intro-hero" aria-labelledby="playground-title">
+    <div class="docs-hero__content">
+      <Badge variant="outline">{guide.shortLabel} playground</Badge>
+      <h1 class="docs-intro-title" id="playground-title">Try every component on {guide.shortLabel}</h1>
+      <p class="max-w-2xl text-lg/8 text-ink-soft">
+        {guide.playgroundNote ?? `Open the ${guide.shortLabel} gallery and explore Lumen components in their native runtime.`}
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <ButtonLink href="#run" showArrow>Run the playground</ButtonLink>
+        <ButtonLink href={`${guide.href}/components`} variant="secondary">Browse components</ButtonLink>
+      </div>
+    </div>
+    <Card class="docs-hero__surface docs-hero__surface--summary" glass="strong">
+      <Icon decorative name="play" size="lg" />
+      <h2>Real package, real runtime</h2>
+      <p class="text-ink-soft">
+        The gallery uses the local Lumen package, so component behavior and tokens match the code in this repository.
+      </p>
+    </Card>
+  </section>
+
+  <section class="docs-section" id="run" aria-labelledby="run-title">
+    <div class="docs-section-heading">
+      <p>Local gallery</p>
+      <h2 id="run-title">Run the {guide.shortLabel} playground</h2>
+      <p>Choose the workflow that matches your development environment.</p>
+    </div>
+    <CodeTabs
+      ariaLabel={`${guide.label} playground commands`}
+      items={commands}
+      storageKey={`lumen-${guide.id}-playground-page`}
+    />
+    {guide.shippingNotes && <PlatformShipping notes={guide.shippingNotes} />}
+  </section>
+</DocsLayout>

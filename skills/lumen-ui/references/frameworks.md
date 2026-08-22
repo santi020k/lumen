@@ -90,6 +90,86 @@ In a bundled app, prefer importing `@santi020k/lumen-elements/styles.css` from t
 entry module instead of writing a literal package path in HTML. Registered elements provide the
 matching behavior layer; do not add a parallel interaction library for the same primitive.
 
+## React Native and Expo
+
+Install the package in the existing application:
+
+```bash
+pnpm add @santi020k/lumen-react-native
+```
+
+Mount one provider near the application root:
+
+```tsx
+import {
+  LumenButton,
+  LumenProvider,
+  LumenSurface,
+  LumenText
+} from '@santi020k/lumen-react-native'
+
+export function App() {
+  return (
+    <LumenProvider scheme="system">
+      <LumenSurface>
+        <LumenText variant="title">Welcome</LumenText>
+        <LumenButton onPress={() => {}}>Continue</LumenButton>
+      </LumenSurface>
+    </LumenProvider>
+  )
+}
+```
+
+React and React Native are application-provided peers. Do not import web styles or mount the Astro
+runtime. Keep navigation and state in the host app. Verify public component props against the
+installed package before generating code. Icons accept an application-provided native graphic
+component with the documented `color`, `size`, and `strokeWidth` contract.
+
+## SwiftUI
+
+Add `https://github.com/santi020k/lumen` with Swift Package Manager, use the `main` branch, and
+link the `LumenUI` product to the application target. Then import and theme near the root:
+
+```swift
+import LumenUI
+
+struct AppRoot: View {
+    var body: some View {
+        LumenSurface {
+            LumenText("Welcome", variant: .title)
+            LumenButton("Continue", action: continueFlow)
+        }
+        .lumenTheme(.light)
+    }
+}
+```
+
+Preserve SwiftUI navigation, bindings, environment values, Dynamic Type, VoiceOver, and SF Symbols.
+Do not reproduce DOM props or CSS concepts. Confirm whether a component is shared across Apple
+platforms or limited to macOS before using it.
+
+## Jetpack Compose
+
+Until a remote Maven release is available, include `packages/compose` from a Lumen checkout or Git
+submodule and add `implementation(project(":lumen-compose"))` to the app module. Wrap content in
+the native theme:
+
+```kotlin
+import com.santi020k.lumen.LumenTheme
+
+LumenTheme {
+    LumenSurface {
+        LumenText("Welcome", variant = LumenTextVariant.Title)
+        LumenButton(onClick = ::continueFlow) {
+            Text("Continue")
+        }
+    }
+}
+```
+
+Preserve Compose state, navigation, focus, Material 3 conventions, TalkBack semantics, and native
+`ImageVector` icons. Do not translate web markup or CSS APIs into Compose.
+
 ## Shared Rules
 
 - Use direct named imports from the selected framework package.

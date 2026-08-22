@@ -37,6 +37,8 @@ const preparePage = async (page: Page, path: string, theme: Theme): Promise<void
 
   await page.goto(path)
 
+  await page.evaluate(() => document.fonts.ready)
+
   await page.evaluate(themeName => {
     document.documentElement.dataset.theme = themeName
   }, theme)
@@ -234,14 +236,15 @@ const interactiveScenarios: VisualScenario[] = [
     path: '/docs',
     fullPage: false,
     prepare: async page => {
-      const search = page.locator('[data-docs-search]').first()
-      const input = search.locator('[data-docs-search-input]')
-      const results = search.locator('[data-docs-search-results]')
+      await page.getByRole('button', { name: 'Search Lumen' }).click()
+
+      const input = page.locator('[data-docs-search-input]:visible').first()
 
       await input.click()
       await page.keyboard.type('select')
 
       await expect(input).toHaveAttribute('aria-expanded', 'true')
+      const results = page.locator('[data-docs-search-results]:visible').first()
       await expect(results.locator('[role="option"]').first()).toBeVisible()
     }
   }

@@ -530,7 +530,7 @@ export const Attachment = ({
     )
 }
 
-export interface AvatarProps extends ComponentPropsWithoutRef<'span'> {
+export interface AvatarProps extends ComponentPropsWithRef<'span'> {
   alt?: string
   fallback?: ReactNode
   src?: string
@@ -2599,12 +2599,48 @@ export const DropdownMenuContent = ({
 
 export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
+  variant?: 'compact' | 'default'
 }
-export const Empty = ({ className, glass = false, ...props }: EmptyProps) => (
+export const Empty = ({
+  className,
+  glass = false,
+  variant = 'default',
+  ...props
+}: EmptyProps) => (
   <section
     className={composeClassName(
-      'ui-empty', glassClass('ui-empty', glass), className
+      'ui-empty',
+      variant === 'compact' && 'ui-empty--compact',
+      glassClass('ui-empty', glass),
+      className
     )}
+    data-variant={variant}
+    {...props}
+  />
+)
+
+export type KanbanBoardProps = ComponentPropsWithoutRef<'section'>
+export const KanbanBoard = ({ className, tabIndex = 0, ...props }: KanbanBoardProps) => (
+  <section
+    aria-orientation="horizontal"
+    className={composeClassName('ui-kanban-board ui-kanban', className)}
+    data-ui-kanban
+    tabIndex={tabIndex}
+    {...props}
+  />
+)
+
+export interface KanbanColumnProps extends ComponentPropsWithoutRef<'section'> {
+  value: string
+}
+export const KanbanColumn = ({
+  className,
+  value,
+  ...props
+}: KanbanColumnProps) => (
+  <section
+    className={composeClassName('ui-kanban__column', className)}
+    data-ui-kanban-column={value}
     {...props}
   />
 )
@@ -3339,6 +3375,41 @@ export const NavigationMenu = ({
     data-variant={variant}
     {...props}
   />
+)
+
+export interface ContextNavigationProps
+  extends ComponentPropsWithoutRef<'div'> {
+  context?: ReactNode
+  variant?: 'default' | 'unstyled'
+}
+
+export const ContextNavigation = ({
+  children,
+  className,
+  context,
+  variant = 'default',
+  ...props
+}: ContextNavigationProps) => (
+  <div
+    className={composeClassName(
+      'ui-context-navigation',
+      variant === 'unstyled' && 'ui-context-navigation--unstyled',
+      className
+    )}
+    data-slot="context-navigation"
+    data-variant={variant}
+    {...props}
+  >
+    {context && (
+      <div
+        className="ui-context-navigation__context"
+        data-slot="context-navigation-context"
+      >
+        {context}
+      </div>
+    )}
+    {children}
+  </div>
 )
 
 export type PaginationProps = ComponentPropsWithoutRef<'nav'>
@@ -4259,7 +4330,7 @@ export const ListBox = (inputProps: ListBoxProps) => {
   )
 }
 
-export interface SeparatorProps extends ComponentPropsWithoutRef<'hr'> {
+export interface SeparatorProps extends ComponentPropsWithRef<'hr'> {
   orientation?: Orientation
 }
 

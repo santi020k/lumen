@@ -5,19 +5,124 @@ import '../styles/global.css'
 
 import { UIPrimitives } from '@santi020k/lumen-astro'
 
+import ExposureMetrics from '../components/ExposureMetrics.astro'
 import SiteFooter from '../components/SiteFooter.astro'
 import SiteHeader from '../components/SiteHeader.astro'
 import { getSocialImageUrl } from '../lib/social-image'
 
 interface Props {
+  article?: {
+    author: string
+    publishedAt: string
+    updatedAt?: string
+  }
+  breadcrumbs?: {
+    href: string
+    label: string
+  }[]
   description: string
+  noindex?: boolean
   socialImage?: string
   title: string
 }
 
-const { description, socialImage, title } = Astro.props
+const {
+  article,
+  breadcrumbs = [],
+  description,
+  noindex = false,
+  socialImage,
+  title
+} = Astro.props
+
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialImage)
+const siteUrl = new URL('/', Astro.site)
+const organizationId = new URL('/#organization', Astro.site)
+const websiteId = new URL('/#website', Astro.site)
+const softwareId = new URL('/#software', Astro.site)
+const pageId = new URL(`${Astro.url.pathname}#webpage`, Astro.site)
+
+const getCanonicalItemUrl = (href: string): URL => new URL(
+  href === '/' || href.endsWith('/') ? href : `${href}/`,
+  Astro.site
+)
+
+const pageStructuredData = article ?
+  {
+    '@id': pageId,
+    '@type': 'TechArticle',
+    author: {
+      '@type': 'Person',
+      name: article.author
+    },
+    dateModified: article.updatedAt ?? article.publishedAt,
+    datePublished: article.publishedAt,
+    description,
+    headline: title,
+    image: socialImageUrl,
+    isPartOf: { '@id': websiteId },
+    mainEntityOfPage: canonicalUrl,
+    publisher: { '@id': organizationId },
+    url: canonicalUrl
+  } :
+  {
+    '@id': pageId,
+    '@type': 'WebPage',
+    description,
+    isPartOf: { '@id': websiteId },
+    name: title,
+    url: canonicalUrl
+  }
+
+const breadcrumbStructuredData = breadcrumbs.length > 0 ?
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((item, index) => ({
+      '@type': 'ListItem',
+      item: getCanonicalItemUrl(item.href),
+      name: item.label,
+      position: index + 1
+    }))
+  } :
+  undefined
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@id': organizationId,
+      '@type': 'Organization',
+      name: 'Lumen UI',
+      sameAs: [
+        'https://github.com/santi020k/lumen',
+        'https://www.figma.com/community/file/1662337342676541513'
+      ],
+      url: siteUrl
+    },
+    {
+      '@id': websiteId,
+      '@type': 'WebSite',
+      name: 'Lumen UI',
+      publisher: { '@id': organizationId },
+      url: siteUrl
+    },
+    {
+      '@id': softwareId,
+      '@type': 'SoftwareSourceCode',
+      author: { '@id': organizationId },
+      codeRepository: 'https://github.com/santi020k/lumen',
+      description: 'An open-source UI system for accessible web and native product interfaces.',
+      isAccessibleForFree: true,
+      license: 'https://opensource.org/license/mit',
+      name: 'Lumen UI',
+      programmingLanguage: ['TypeScript', 'Swift', 'Kotlin'],
+      url: siteUrl
+    },
+    pageStructuredData,
+    ...(breadcrumbStructuredData ? [breadcrumbStructuredData] : [])
+  ]
+}
 ---
 
 <html lang="en">
@@ -25,9 +130,10 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#f8fafc" />
-    <link rel="canonical" href={canonicalUrl} />
-    <meta property="og:type" content="website" />
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
+    <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:site_name" content="Lumen UI" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -37,6 +143,9 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={title} />
+    {article && <meta property="article:published_time" content={article.publishedAt} />}
+    {article?.updatedAt && <meta property="article:modified_time" content={article.updatedAt} />}
+    {article && <meta property="article:author" content={article.author} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -45,17 +154,13 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     <script
       is:inline
       type="application/ld+json"
-      set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: 'Lumen UI',
-        url: 'https://lumen.santi020k.com/',
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: 'https://lumen.santi020k.com/docs?q={search_term_string}',
-          'query-input': 'required name=search_term_string'
-        }
-      })}
+      set:html={JSON.stringify(structuredData)}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Lumen UI Guides"
+      href={new URL('/guides/rss.xml', Astro.site)}
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
@@ -93,7 +198,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
       }
 
       const getSystemTheme = () => (
-        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'santi020k-dark' : 'santi020k-light'
+        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'lumen-dark' : 'lumen-light'
       )
 
       const initialTheme = getStoredTheme() ?? getSystemTheme()
@@ -105,9 +210,13 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   </head>
   <body>
     <UIPrimitives />
+    <a class="docs-skip-link" href="#main-content">Skip to main content</a>
     <SiteHeader />
-    <slot />
+    <div class="docs-site-content" id="main-content" tabindex="-1">
+      <slot />
+    </div>
     <SiteFooter />
+    <ExposureMetrics />
   </body>
 </html>
 
@@ -178,7 +287,7 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   }
 
   const getSystemTheme = (): ColorTheme => (
-    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'santi020k-dark' : 'santi020k-light'
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'lumen-dark' : 'lumen-light'
   )
 
   const getPreferredTheme = (): ColorTheme => getStoredTheme() ?? getSystemTheme()
@@ -235,6 +344,19 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   const getDocsSidebarScroller = (targetDocument = document): HTMLElement | null => (
     targetDocument.querySelector('[data-docs-sidebar] [data-docs-nav]')
   )
+
+  const revealCurrentDocsLink = (scroller: HTMLElement | null): void => {
+    const currentLink = scroller?.querySelector<HTMLElement>('[aria-current="page"]')
+
+    if (!scroller || !currentLink) return
+
+    const scrollerRect = scroller.getBoundingClientRect()
+    const linkRect = currentLink.getBoundingClientRect()
+
+    if (linkRect.top < scrollerRect.top || linkRect.bottom > scrollerRect.bottom) {
+      scroller.scrollTop += linkRect.top - scrollerRect.top - 24
+    }
+  }
 
   const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
   let isThemeAnimating = false
@@ -303,6 +425,8 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
   }
 
   applyTheme(getPreferredTheme())
+
+  revealCurrentDocsLink(getDocsSidebarScroller())
 
   document.addEventListener('click', event => {
     const toggle = event.target instanceof Element ?
@@ -384,6 +508,8 @@ const socialImageUrl = getSocialImageUrl(Astro.url.pathname, Astro.site, socialI
     if (docsSidebarScroller) {
       docsSidebarScroller.scrollTop = docsSidebarScrollTop
     }
+
+    revealCurrentDocsLink(docsSidebarScroller)
 
     shouldScrollDocsContentToTop = false
 

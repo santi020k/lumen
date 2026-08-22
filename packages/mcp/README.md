@@ -3,7 +3,7 @@
 A [Model Context Protocol](https://modelcontextprotocol.io) server for the Lumen
 multi-framework primitive UI system. It gives AI agents structured access to
 components, real framework contracts, recipes, design tokens, accessibility
-behavior, runtime events, and Lumen's generation rules.
+behavior, runtime events, native platform contracts, and Lumen's generation rules.
 
 The published server ships a self-contained catalog snapshot, so consumers do
 not need a checkout of the Lumen repository.
@@ -14,12 +14,14 @@ not need a checkout of the Lumen repository.
 | --- | --- |
 | `lumen_list_components` | List components with descriptions, categories, framework availability, collections, and recipe membership. Filter by `framework`, `recipe`, or natural-language `query`. |
 | `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, accessibility, guidance, and events. |
+| `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
+| `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
 | `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
-| `lumen_search` | Rank tolerant natural-language matches across component descriptions, curated collections, framework contracts, props, attributes, recipes, tokens, and agent rules. Optionally filter component contracts by framework. |
+| `lumen_search` | Rank natural-language matches across web and native contracts, recipes, tokens, and agent rules. Optionally filter by web framework or native platform. |
 | `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
-| `lumen_get_catalog_manifest` | Return stable per-component and per-recipe fingerprints that clients can retain between upgrades. |
+| `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |
 | `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |
-| `lumen_diagnose` | Verify snapshot integrity and report framework coverage when testing a connection. |
+| `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
 | `lumen_get_tokens` | Return semantic token names, base colors, glass tokens, and the theme attribute. |
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
@@ -36,6 +38,8 @@ Every tool returns both readable text and validated `structuredContent`.
 | `lumen://tokens` | Structured design tokens. |
 | `lumen://components` | Compact component catalog. |
 | `lumen://components/{name}` | Component metadata and default Astro usage. |
+| `lumen://native-components` | Compact native component catalog with platform availability. |
+| `lumen://native-components/{name}` | Native component metadata and usage for an available platform. |
 | `lumen://recipes/{name}` | Recipe metadata and install commands. |
 
 ## Install and connect
@@ -137,8 +141,8 @@ package does not provide those infrastructure controls.
 
 1. Read `lumen://meta` and call `lumen_diagnose` to identify and verify the bundled snapshot.
 2. Read `lumen://rules`.
-3. Call `lumen_search` with the requested use case and target framework.
-4. Call `lumen_get_component` with `detail: "usage"`.
+3. Call `lumen_search` with the requested use case and target framework or platform.
+4. For web, call `lumen_get_component`; for native, call `lumen_get_native_component` with `detail: "usage"`.
 5. Follow the returned framework behavior section: mount Astro `UIPrimitives` once, use the named React hook/controller, or register custom elements once.
 6. Inspect a related recipe with `lumen_get_recipe` when the UI needs multiple primitives.
 7. Request `detail: "source"` only when the usage contract is insufficient.
@@ -168,6 +172,17 @@ Example calls:
   "arguments": {
     "name": "advanced-fields",
     "framework": "react"
+  }
+}
+```
+
+```json
+{
+  "name": "lumen_get_native_component",
+  "arguments": {
+    "name": "Settings row",
+    "platform": "swiftui",
+    "detail": "usage"
   }
 }
 ```
@@ -204,6 +219,7 @@ The reusable handlers return readable text plus typed data:
 import {
   getComponent,
   getMeta,
+  getNativeComponent,
   getRecipe,
   search
 } from '@santi020k/lumen-mcp/tools'
@@ -215,6 +231,12 @@ const component = getComponent({
   detail: 'usage',
   framework: 'react',
   name: 'DateRangePicker'
+}).data.component
+
+const nativeComponent = getNativeComponent({
+  detail: 'usage',
+  name: 'Settings row',
+  platform: 'react-native'
 }).data.component
 
 const recipe = getRecipe({
@@ -238,6 +260,8 @@ const server = createLumenServer()
 - The shared component catalog and registry metadata.
 - Astro and React component declarations.
 - The Web Component definition registry.
+- The native registry and React Native, SwiftUI, and Compose adapter sources.
+- Native documentation examples, API rows, accessibility, and platform guidance.
 - Documentation examples, API rows, guidance, keyboard interactions, and runtime events.
 - Design tokens, recipes, `docs/ai-usage.md`, and `llms.txt`.
 

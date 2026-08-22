@@ -34,3 +34,7 @@ jobs:
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: moderate
+          # Transitive React Native build dependency; neither advisory has a patched release yet.
+          # Remove these exceptions when image-size publishes a fixed version.
+          # cspell:disable-next-line -- GitHub advisory identifiers are machine-generated.
+          allow-ghsas: GHSA-5p2g-fcmc-qvqq, GHSA-w3rx-r6r6-pgpr

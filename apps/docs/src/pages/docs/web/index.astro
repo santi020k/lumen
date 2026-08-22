@@ -1,0 +1,400 @@
+---
+import {
+  Badge,
+  Card,
+  Field,
+  Input,
+  Label,
+  Link,
+  Marker,
+  Progress,
+  Switch,
+  Toggle,
+  ToggleGroup
+} from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsActionLink from '../../../components/DocsActionLink.astro'
+import FrameworkSetupTabs from '../../../components/FrameworkSetupTabs.astro'
+import {
+  componentDocs,
+  frameworkGuides,
+  frameworkPackages,
+  frameworkSetups,
+  glassSurfaceExamples,
+  globalStyleSetups,
+  runtimeFeatures,
+  themeSetups
+} from '../../../data/docs'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const frameworkHighlights = [
+  ['Astro', 'Reference implementation', '@santi020k/lumen-astro'],
+  ['React', 'Adapter primitives', '@santi020k/lumen-react'],
+  ['Elements', 'Custom elements', '@santi020k/lumen-elements']
+] as const
+
+const heroStats = [
+  [String(componentDocs.length), 'components'],
+  ['3', 'framework targets'],
+  ['1', 'shared stylesheet']
+] as const
+
+const setupSteps = [
+  ['1', 'Install a target package', 'Add Astro, React, or Elements; every target shares the same stylesheet package.'],
+  ['2', 'Load styles once', 'Import the standalone stylesheet from a global CSS file, root layout, or app entry.'],
+  ['3', 'Build on one contract', 'Markup, tokens, glass surfaces, and runtime behavior stay identical across targets.']
+] as const
+
+const basicThemeSetups = themeSetups.slice(0, 2)
+const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme')
+---
+
+<DocsLayout
+  description="Install and use Lumen UI on the web with Astro, React, or standards-based Web Components."
+  title="Web documentation - Lumen UI"
+>
+  <section class="docs-hero docs-intro-hero" id="introduction" aria-labelledby="intro-title">
+    <div class="docs-hero__content">
+      <Badge variant="outline">Web documentation</Badge>
+      <h1 class="docs-intro-title" id="intro-title">
+        Build once. Use Lumen everywhere.
+      </h1>
+      <p class="max-w-2xl text-lg/8 text-ink-soft">
+        Semantic markup, one token-driven stylesheet, and a small progressive-enhancement
+        runtime. Pick a framework below; the markup and class contract stay the same everywhere.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <DocsActionLink href="#installation">Install Lumen</DocsActionLink>
+        <DocsActionLink href="/docs/components" variant="outline">Browse components</DocsActionLink>
+      </div>
+      <div class="docs-hero__stats" role="list" aria-label="Library overview">
+        {heroStats.map(([value, label]) => (
+          <div role="listitem">
+            <strong>{value}</strong>
+            <span>{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="docs-hero__preview" aria-label="Framework support overview">
+      <Card class="docs-hero__surface" glass="strong">
+        <div class="docs-hero__bar">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="docs-hero__showcase-head">
+          <div>
+            <p>Glass system</p>
+            <strong>Built from Lumen primitives</strong>
+          </div>
+          <Marker variant="success">Live</Marker>
+        </div>
+        <ToggleGroup aria-label="Framework target">
+          <Toggle pressed>Astro</Toggle>
+          <Toggle>React</Toggle>
+          <Toggle>Elements</Toggle>
+        </ToggleGroup>
+        <Field class="docs-hero__field" glass="subtle">
+          <Label for="docs-workspace">Workspace</Label>
+          <Input id="docs-workspace" placeholder="lumen-labs" value="lumen-labs" />
+        </Field>
+        <label class="docs-hero__switch">
+          <Switch name="docs-glass-release" checked /> Ship glass surfaces
+        </label>
+        <Progress value={84} aria-label="Glass system coverage" />
+        <div class="docs-hero__grid">
+          {frameworkHighlights.map(([name, label, packageName]) => (
+            <div class="docs-framework-tile">
+              <span>{name}</span>
+              <strong>{label}</strong>
+              <code>{packageName}</code>
+            </div>
+          ))}
+        </div>
+        <div class="docs-token-strip" aria-label="Theme token examples">
+          <span style="--swatch: hsl(var(--brand));"></span>
+          <span style="--swatch: hsl(var(--accent));"></span>
+          <span style="--swatch: hsl(var(--success));"></span>
+          <span style="--swatch: hsl(var(--warning));"></span>
+          <span style="--swatch: hsl(var(--danger));"></span>
+        </div>
+      </Card>
+    </div>
+  </section>
+
+  <div class="docs-step-grid" aria-label="Setup overview">
+    {setupSteps.map(([step, title, description]) => (
+      <Card as="article" class="docs-step" variant="muted">
+        <span>{step}</span>
+        <div>
+          <h2>{title}</h2>
+          <p>{description}</p>
+        </div>
+      </Card>
+    ))}
+  </div>
+
+  <section class="docs-section" id="installation" aria-labelledby="install-title">
+    <div class="docs-section-heading">
+      <p>Start here</p>
+      <h2 id="install-title">Install and use</h2>
+    </div>
+    <FrameworkSetupTabs setups={frameworkSetups} />
+  </section>
+
+  <section class="docs-section" id="framework-guides" aria-labelledby="framework-guides-title">
+    <div class="docs-section-heading">
+      <p>Framework contracts</p>
+      <h2 id="framework-guides-title">Framework-specific guidance</h2>
+      <p>
+        Lumen keeps one visual contract, but each target has its own integration surface for
+        behavior, local wrappers, and registration.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-3
+    "
+    >
+      {frameworkGuides.map(guide => (
+        <Link
+          class="
+            block rounded-2xl no-underline transition-colors outline-none
+            hover:bg-surface-strong
+            focus-visible:ring-2 focus-visible:ring-brand
+            focus-visible:ring-offset-2
+          "
+          href={`/docs/frameworks/${guide.id}`}
+        >
+          <Card class="docs-example-card h-full" variant="muted">
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <h3 class="text-base font-bold text-ink">{guide.title}</h3>
+                <Badge variant="outline">{guide.packageName}</Badge>
+              </div>
+              <ul class="m-0 grid gap-2 pl-4 text-sm/6 text-ink-soft">
+                {guide.body.map(item => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  </section>
+
+  <section class="docs-section" id="global-styles" aria-labelledby="global-styles-title">
+    <div class="docs-section-heading">
+      <p>Shared stylesheet</p>
+      <h2 id="global-styles-title">Add styles once</h2>
+      <p>
+        Lumen ships standalone CSS. Load it once from a global CSS file, root layout, or app
+        entry; Tailwind configuration is optional.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-3
+    "
+    >
+      {globalStyleSetups.map(setup => (
+        <Card class="docs-example-card" variant="muted">
+          <div class="space-y-1">
+            <h3 class="text-base font-bold text-ink">{setup.label}</h3>
+            <p class="text-sm/6 text-ink-soft">{setup.description}</p>
+          </div>
+          <div class="docs-code-compact">
+            <CodeBlock code={setup.code} lang={setup.lang} />
+          </div>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <section class="docs-section" id="themes" aria-labelledby="themes-title">
+    <div class="docs-section-heading">
+      <p>Token contract</p>
+      <h2 id="themes-title">Themes</h2>
+      <p>
+        Color tokens live on the root data-theme attribute. Light and dark ship built in, and any
+        brand can be expressed through the same token contract.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      lg:grid-cols-2
+    "
+    >
+      {basicThemeSetups.map(setup => (
+        <Card class="docs-example-card" variant="muted">
+          <div class="space-y-1">
+            <h3 class="text-base font-bold text-ink">{setup.label}</h3>
+            <p class="text-sm/6 text-ink-soft">{setup.description}</p>
+          </div>
+          <div class="docs-code-compact">
+            <CodeBlock code={setup.code} lang={setup.lang} />
+          </div>
+        </Card>
+      ))}
+    </div>
+    {customThemeSetup && (
+      <Card class="docs-theme-feature" variant="muted">
+        <div class="docs-theme-feature__intro">
+          <h3 class="text-base font-bold text-ink">{customThemeSetup.label}</h3>
+          <p class="text-sm/6 text-ink-soft">{customThemeSetup.description}</p>
+          <div class="docs-token-strip docs-token-strip--flush" aria-label="Theme token examples">
+            <span style="--swatch: hsl(var(--brand));"></span>
+            <span style="--swatch: hsl(var(--accent));"></span>
+            <span style="--swatch: hsl(var(--success));"></span>
+            <span style="--swatch: hsl(var(--warning));"></span>
+            <span style="--swatch: hsl(var(--danger));"></span>
+          </div>
+        </div>
+        <div class="docs-code-compact">
+          <CodeBlock code={customThemeSetup.code} lang={customThemeSetup.lang} />
+        </div>
+      </Card>
+    )}
+  </section>
+
+  <section class="docs-section" id="glassmorphism" aria-labelledby="glassmorphism-title">
+    <div class="docs-section-heading">
+      <p>Surface system</p>
+      <h2 id="glassmorphism-title">Glassmorphism surfaces</h2>
+      <p>
+        Glass is a surface treatment, not a theme: shared tokens control blur, saturation, borders,
+        and highlights, with fallbacks for browsers without backdrop-filter support.
+      </p>
+    </div>
+    <div
+      class="docs-glass-demo"
+      style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
+    >
+      <Card class="max-w-sm space-y-3 p-5" glass>
+        <Badge variant="outline">Glass</Badge>
+        <h3 class="text-xl font-black text-ink">Translucent by design</h3>
+        <p class="text-sm/7 text-ink-soft">
+          Shared tokens control blur, saturation, borders, highlights, and shadow depth across
+          light and dark themes.
+        </p>
+      </Card>
+    </div>
+    <div class="
+      grid gap-4
+      md:grid-cols-3
+    "
+    >
+      {glassSurfaceExamples.map(example => (
+        <Card class="docs-example-card" variant="muted">
+          <div class="space-y-1">
+            <h3 class="text-base font-bold text-ink">{example.label}</h3>
+            <p class="text-sm/6 text-ink-soft">{example.description}</p>
+          </div>
+          <div class="docs-code-compact">
+            <CodeBlock code={example.code} lang={example.lang} />
+          </div>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <section class="docs-section" id="packages" aria-labelledby="packages-title">
+    <div class="docs-section-heading">
+      <p>Package map</p>
+      <h2 id="packages-title">Packages</h2>
+    </div>
+    <div class="
+      grid gap-4
+      md:grid-cols-2
+    "
+    >
+      {frameworkPackages.map(([name, packageName, status, description]) => (
+        <Card class="docs-package-card">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-base font-bold text-ink">{name}</h3>
+            <Badge variant="outline">{status}</Badge>
+          </div>
+          <p class="font-mono text-xs text-ink-muted">{packageName}</p>
+          <p class="text-sm/6 text-ink-soft">{description}</p>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <section class="docs-section" id="runtime" aria-labelledby="runtime-title">
+    <div class="docs-section-heading">
+      <p>Behavior layer</p>
+      <h2 id="runtime-title">Progressive-enhancement runtime</h2>
+      <p>
+        Mount UIPrimitives once in your Astro root layout to wire every interactive primitive.
+        Static components never need it, and component snippets assume the root layout already owns
+        that runtime include.
+      </p>
+    </div>
+    <div class="
+      grid gap-4
+      md:grid-cols-2
+    "
+    >
+      {runtimeFeatures.map(([feature, description]) => (
+        <Card class="docs-runtime-card" variant="muted">
+          <h3 class="text-sm font-bold text-ink">{feature}</h3>
+          <p class="text-sm/6 text-ink-soft">{description}</p>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <Card as="section" class="docs-next" variant="muted" aria-labelledby="next-title">
+    <h2 id="next-title">Next steps</h2>
+    <p>
+      Every component page includes a live preview plus code for all three targets.
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <DocsActionLink href="/docs/components">Browse the component reference</DocsActionLink>
+      <DocsActionLink href="https://github.com/santi020k/lumen" variant="outline">
+        View on GitHub
+      </DocsActionLink>
+    </div>
+  </Card>
+</DocsLayout>
+
+<style>
+  .docs-intro-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 88% 8%, hsl(var(--brand) / 0.2), transparent 32%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .docs-intro-title {
+    max-width: 12ch;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 5vw, 4.25rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+  }
+
+  .docs-intro-hero :global(.docs-hero__surface) {
+    background: hsl(var(--canvas) / 0.7);
+    backdrop-filter: blur(18px);
+  }
+
+  .docs-intro-hero :global(.docs-hero__stats > div) {
+    min-width: 7rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.8rem;
+    background: hsl(var(--canvas) / 0.6);
+  }
+</style>

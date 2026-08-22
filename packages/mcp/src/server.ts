@@ -8,10 +8,12 @@ import {
   getCatalogManifest,
   getComponent,
   getMeta,
+  getNativeComponent,
   getRecipe,
   getRules,
   getTokens,
   listComponents,
+  listNativeComponents,
   type LumenToolResult,
   search
 } from './tools.js'
@@ -43,6 +45,23 @@ const componentOutputSchema = z.strictObject({
   message: z.string().trim().optional()
 })
 
+const nativePlatformSchema = z.enum(['react-native', 'swiftui', 'compose'])
+
+const nativeComponentSummarySchema = z.strictObject({
+  accessibility: z.string().trim(),
+  category: z.string().trim(),
+  id: z.string().trim(),
+  name: z.string().trim(),
+  platforms: z.array(nativePlatformSchema),
+  summary: z.string().trim(),
+  tier: z.string().trim()
+})
+
+const listNativeComponentsOutputSchema = z.strictObject({
+  components: z.array(nativeComponentSummarySchema),
+  count: z.int().min(0)
+})
+
 const recipeOutputSchema = z.strictObject({
   found: z.boolean(),
   message: z.string().trim().optional(),
@@ -53,9 +72,10 @@ const searchResultSchema = z.strictObject({
   category: z.string().trim().optional(),
   description: z.string().trim(),
   frameworks: z.array(z.enum(['astro', 'elements', 'react'])).optional(),
-  kind: z.enum(['component', 'recipe', 'rule', 'token']),
+  kind: z.enum(['component', 'native-component', 'recipe', 'rule', 'token']),
   matchedTerms: z.array(z.string().trim()),
   name: z.string().trim(),
+  platforms: z.array(nativePlatformSchema).optional(),
   score: z.number()
 })
 
@@ -83,6 +103,7 @@ const metaOutputSchema = z.strictObject({
   meta: z.strictObject({
     catalogHash: z.string().trim().regex(/^[a-f0-9]{64}$/),
     componentCount: z.int().min(0),
+    nativeComponentCount: z.int().min(0),
     packages: z.array(z.string().trim()),
     packageVersions: z.record(z.string(), z.string().trim()),
     registryName: z.string().trim(),
@@ -94,6 +115,8 @@ const metaOutputSchema = z.strictObject({
 
 const catalogManifestSchema = z.strictObject({
   components: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/)),
+  nativeComponents: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/))
+    .optional(),
   recipes: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/))
 })
 
@@ -113,6 +136,7 @@ const catalogManifestOutputSchema = z.strictObject({
 const catalogDiffOutputSchema = z.strictObject({
   components: catalogChangesSchema,
   currentCatalogHash: z.string().trim().regex(/^[a-f0-9]{64}$/),
+  nativeComponents: catalogChangesSchema,
   recipes: catalogChangesSchema,
   unchanged: z.boolean()
 })
@@ -127,6 +151,11 @@ const diagnosticsOutputSchema = z.strictObject({
     astro: z.int().min(0),
     elements: z.int().min(0),
     react: z.int().min(0)
+  }),
+  nativeCoverage: z.strictObject({
+    compose: z.int().min(0),
+    'react-native': z.int().min(0),
+    swiftui: z.int().min(0)
   }),
   status: z.enum(['healthy', 'issues'])
 })
@@ -160,7 +189,7 @@ export const createLumenServer = (): McpServer => {
     { name: '@santi020k/lumen-mcp', version: data.meta.serverVersion }, {
       instructions:
         'Read lumen://meta, lumen://diagnostics, and lumen://rules before generating Lumen code. Search or list the catalog, ' +
-        'then inspect the selected component for the target framework at usage detail before requesting source.'
+        'then inspect the selected web or native component for the target framework or platform at usage detail before requesting source.'
     }
   )
 
@@ -208,6 +237,37 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerTool(
+    'lumen_list_native_components', {
+      annotations: readOnlyAnnotations,
+      description:
+        'List native Lumen components with platform availability, accessibility, category, and shared contract tier.',
+      inputSchema: z.strictObject({
+        platform: nativePlatformSchema.optional()
+          .meta({ description: 'Only list components available for this native platform.' }),
+        query: z.string().trim().min(1).optional()
+          .meta({ description: 'Natural-language component or native use-case query.' })
+      }),
+      outputSchema: listNativeComponentsOutputSchema
+    }, args => toMcpResult(listNativeComponents(args))
+  )
+
+  server.registerTool(
+    'lumen_get_native_component', {
+      annotations: readOnlyAnnotations,
+      description:
+        'Get install steps, imports, setup, API, accessible usage example, and optional reference source for React Native, SwiftUI, or Compose.',
+      inputSchema: z.strictObject({
+        detail: z.enum(['summary', 'usage', 'source']).default('usage'),
+        name: z.string().trim().min(1)
+          .meta({ description: 'Native component name, id, export, or symbol.' }),
+        platform: nativePlatformSchema
+          .meta({ description: 'Native implementation contract to return.' })
+      }),
+      outputSchema: componentOutputSchema
+    }, args => toMcpResult(getNativeComponent(args))
+  )
+
+  server.registerTool(
     'lumen_get_recipe', {
       annotations: readOnlyAnnotations,
       description:
@@ -237,6 +297,8 @@ export const createLumenServer = (): McpServer => {
         limit: z.int().min(1).max(100)
           .optional()
           .meta({ description: 'Maximum results to return (1-100, default 20).' }),
+        platform: nativePlatformSchema.optional()
+          .meta({ description: 'Only search native component contracts for this platform.' }),
         query: z.string().trim().min(1)
           .meta({ description: 'Keyword or natural-language use-case to search for.' })
       }),
@@ -285,7 +347,7 @@ export const createLumenServer = (): McpServer => {
     'lumen_diagnose', {
       annotations: readOnlyAnnotations,
       description:
-        'Run deterministic snapshot integrity checks and report framework coverage. Useful when testing a new MCP connection.',
+        'Run deterministic snapshot integrity checks and report web framework and native platform coverage. Useful when testing a new MCP connection.',
       inputSchema: z.strictObject({}),
       outputSchema: diagnosticsOutputSchema
     }, () => toMcpResult(diagnose())
@@ -360,6 +422,13 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerResource(
+    'lumen-native-components', 'lumen://native-components', {
+      description: 'Compact structured native component catalog.',
+      mimeType: 'application/json'
+    }, uri => jsonResource(uri, listNativeComponents().data)
+  )
+
+  server.registerResource(
     'lumen-component', new ResourceTemplate('lumen://components/{name}', {
       complete: {
         name: value => data.components
@@ -381,6 +450,42 @@ export const createLumenServer = (): McpServer => {
     }, (uri, variables) => {
       const name = String(variables.name)
       const result = getComponent({ detail: 'usage', framework: 'astro', name })
+
+      return jsonResource(uri, result.data)
+    }
+  )
+
+  server.registerResource(
+    'lumen-native-component', new ResourceTemplate('lumen://native-components/{name}', {
+      complete: {
+        name: value => data.nativeComponents
+          .map(component => component.name)
+          .filter(name => name.toLowerCase().includes(value.toLowerCase()))
+          .slice(0, 30)
+      },
+      list: () => ({
+        resources: data.nativeComponents.map(component => ({
+          description: component.summary,
+          mimeType: 'application/json',
+          name: component.name,
+          uri: `lumen://native-components/${component.id}`
+        }))
+      })
+    }), {
+      description: 'Native component metadata and platform usage.',
+      mimeType: 'application/json'
+    }, (uri, variables) => {
+      const name = String(variables.name)
+
+      const component = data.nativeComponents.find(item => (
+        item.id === name || item.name === name
+      ))
+
+      const platform = component ?
+        Object.keys(component.implementations)[0] as 'compose' | 'react-native' | 'swiftui' :
+        'react-native'
+
+      const result = getNativeComponent({ detail: 'usage', name, platform })
 
       return jsonResource(uri, result.data)
     }

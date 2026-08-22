@@ -13,6 +13,14 @@
   color: "0075ca"
   description: Documentation changes
 
+- name: "feedback"
+  color: "d4c5f9"
+  description: Adoption feedback from a Lumen user or evaluator
+
+- name: "showcase"
+  color: "0e8a16"
+  description: A public project built with Lumen
+
 # Automated path labels
 - name: "core"
   color: "7c3aed"
