@@ -3,6 +3,7 @@ name: CI
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
 
 permissions:
   contents: read
@@ -18,16 +19,31 @@ jobs:
     timeout-minutes: 5
     outputs:
       native: ${{ steps.paths.outputs.native }}
+      compatibility: ${{ steps.paths.outputs.compatibility }}
+      mcp: ${{ steps.paths.outputs.mcp }}
       playwright: ${{ steps.paths.outputs.playwright }}
       release-pr: ${{ steps.release.outputs.value }}
+      skip-changelog: ${{ steps.release.outputs.skip-changelog }}
     steps:
       - name: Detect release pull request
         id: release
         env:
           IS_RELEASE_PR: "${{ startsWith(github.head_ref, 'changeset-release/') }}"
-        run: echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
+          SKIP_CHANGELOG: >-
+            ${{
+              contains(github.event.pull_request.labels.*.name, 'skip-changelog') ||
+              startsWith(github.head_ref, 'changeset-release/') ||
+              startsWith(github.head_ref, 'chore/') ||
+              startsWith(github.head_ref, 'ci/') ||
+              startsWith(github.head_ref, 'docs/') ||
+              startsWith(github.head_ref, 'renovate/') ||
+              startsWith(github.head_ref, 'dependabot/')
+            }}
+        run: |
+          echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
+          echo "skip-changelog=$SKIP_CHANGELOG" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
           fetch-depth: 0
 
@@ -38,6 +54,16 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          if grep -Eq '^(apps/next-smoke/|apps/templates/|packages/|registry/|scripts/|eslint\.config\.js$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig[^/]*\.json$|turbo\.json$|vitest\.config\.ts$)' <<< "$changed_files"; then
+            echo "compatibility=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "compatibility=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(packages/(core|lumen|mcp)/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig[^/]*\.json$|turbo\.json$|vitest\.config\.ts$)' <<< "$changed_files"; then
+            echo "mcp=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "mcp=false" >> "$GITHUB_OUTPUT"
+          fi
           if grep -Eq '^(apps/docs/|packages/|tests/a11y/|tests/visual/|playwright(\.[^/]*)?\.config\.ts$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
             echo "playwright=true" >> "$GITHUB_OUTPUT"
           else
@@ -140,13 +166,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.2.0
         with:
           node-version: 22.x
           cache: pnpm
@@ -167,13 +193,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.2.0
         with:
           node-version: 22.x
           cache: pnpm
@@ -190,17 +216,17 @@ jobs:
   mcp-node-20:
     name: MCP compatibility (Node 20)
     needs: classify
-    if: needs.classify.outputs.release-pr != 'true'
+    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.mcp == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - name: Setup Node.js 20
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.2.0
         with:
           node-version: 20.20.x
           cache: pnpm
@@ -218,33 +244,35 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        node-version: '${{ fromJSON(needs.classify.outputs.release-pr == ''true'' && ''["22.x"]'' || ''["22.x","24.x"]'') }}'
+        node-version: '${{ fromJSON((needs.classify.outputs.release-pr == ''true'' || needs.classify.outputs.compatibility != ''true'') && ''["22.x"]'' || ''["22.x","24.x"]'') }}'
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.2.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
 
-      - name: Turborepo cache
-        uses: actions/cache@v5
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ matrix.node-version }}-
-            ${{ runner.os }}-turbo-
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Require a changeset
+        if: >-
+          ${{
+            needs.classify.outputs.release-pr != 'true' &&
+            matrix.node-version == '22.x' &&
+            needs.classify.outputs.skip-changelog != 'true'
+          }}
+        run: pnpm changeset status --since=origin/main
 
       - name: Run CI checks
         if: needs.classify.outputs.release-pr != 'true'
@@ -274,6 +302,7 @@ jobs:
           pnpm run check:framework-contracts
           pnpm run check:native-contracts
           pnpm run check:platform-tokens
+          pnpm audit --audit-level moderate
           pnpm run check:security
           pnpm run check:publish-dry-run
           pnpm run check:consumer-packages
