@@ -1,5 +1,23 @@
 # @santi020k/lumen-astro
 
+## 1.3.0
+
+### Minor Changes
+
+- [#28](https://github.com/santi020k/lumen/pull/28) [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75) Thanks [@santi020k](https://github.com/santi020k)! - Add discoverable Astro compound parts for dropdown menus, popovers, tabs, and tooltips so
+  applications no longer need to recreate their runtime data and ARIA contracts by hand.
+
+- [#28](https://github.com/santi020k/lumen/pull/28) [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75) Thanks [@santi020k](https://github.com/santi020k)! - Add controlled and uncontrolled language-toggle behavior across the shared core, Astro, React, and
+  Elements adapters, including persistence, document-language synchronization, accessible labels,
+  events, and a React hook. Add discoverable dropdown-menu trigger, content, item, separator,
+  disabled, and status contracts across Astro and React.
+
+### Patch Changes
+
+- Updated dependencies [[`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75), [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75), [`f2bd75a`](https://github.com/santi020k/lumen/commit/f2bd75a4fcae423d1096bdffc33591025c13eb75)]:
+  - @santi020k/lumen@1.3.0
+  - @santi020k/lumen-core@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes
