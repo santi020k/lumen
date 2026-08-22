@@ -88,6 +88,7 @@ describe('lumen core metadata', () => {
   test('exports a stable component catalog without duplicates', () => {
     expect(lumenComponentNames).toContain('Button')
     expect(lumenComponentNames).toContain('CodeTabs')
+    expect(lumenComponentNames).toContain('ContextNavigation')
     expect(lumenComponentNames).toContain('BarChart')
     expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('LineChart')
@@ -164,6 +165,11 @@ describe('lumen core metadata', () => {
       stability: 'stable'
     })
     expect(lumenStylingContracts.Card.parts).toContain('card-content')
+    expect(lumenStylingContracts.ContextNavigation).toMatchObject({
+      parts: ['context-navigation-context'],
+      rootSlot: 'context-navigation',
+      stability: 'stable'
+    })
   })
 })
 

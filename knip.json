@@ -2,11 +2,8 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
-      "ignoreDependencies": [
-        "tailwindcss"
-      ],
-      "entry": [
-        "scripts/check-figma-theme-tokens.mjs"
+      "ignoreBinaries": [
+        "swift"
       ],
       "project": [
         "*.js",
@@ -18,9 +15,21 @@
         "src/pages/**/*.astro",
         "scripts/**/*.{js,mjs}"
       ],
+      "ignoreDependencies": [
+        "@santi020k/lumen",
+        "tailwindcss"
+      ],
       "project": [
-        "src/**/*.{astro,css,ts}",
+        "src/**/*.{astro,ts}",
         "scripts/**/*.{js,mjs}"
+      ]
+    },
+    "apps/playground-react-native": {
+      "ignoreBinaries": [
+        "eas"
+      ],
+      "ignoreDependencies": [
+        "eas-cli"
       ]
     },
     "packages/astro": {

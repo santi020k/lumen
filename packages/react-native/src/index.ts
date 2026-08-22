@@ -1,4 +1,24 @@
 export {
+  LumenButtonGroup,
+  type LumenButtonGroupOrientation,
+  type LumenButtonGroupProps,
+  LumenChip,
+  type LumenChipProps,
+  LumenFieldGroup,
+  type LumenFieldGroupProps,
+  LumenTextarea,
+  type LumenTextareaProps,
+  LumenToast,
+  type LumenToastProps
+} from './additional-components.js'
+export {
+  LumenDisclosure,
+  type LumenDisclosureProps,
+  LumenSkeleton,
+  type LumenSkeletonProps,
+  type LumenSkeletonShape
+} from './content-components.js'
+export {
   LumenSearchField,
   type LumenSearchFieldProps,
   LumenSettingsRow,

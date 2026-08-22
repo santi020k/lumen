@@ -37,6 +37,7 @@ import {
   ColorPicker,
   Command,
   ContextMenu,
+  ContextNavigation,
   Direction,
   Drawer,
   Empty,
@@ -340,6 +341,21 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Sheet({}) as ReactElement)['data-ui-sheet']).toBe(true)
     expect(propsOf(Sidebar({ glass: 'subtle' }) as ReactElement).className)
       .toBe('ui-sidebar ui-sidebar--glass ui-glass-subtle')
+  })
+
+  test('composes contextual navigation with an optional leading region', () => {
+    const navigation = ContextNavigation({
+      children: 'Links',
+      context: 'Web',
+      variant: 'unstyled'
+    }) as ReactElement
+    const children = propsOf(navigation).children as ReactElement[]
+
+    expect(propsOf(navigation).className)
+      .toBe('ui-context-navigation ui-context-navigation--unstyled')
+    expect(propsOf(children[0]).className).toBe('ui-context-navigation__context')
+    expect(propsOf(children[0])['data-slot']).toBe('context-navigation-context')
+    expect(children[1]).toBe('Links')
   })
 
   test('applies glass intensity on structural glass surfaces', () => {

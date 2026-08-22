@@ -19,24 +19,34 @@ import {
   LumenBadge,
   LumenBanner,
   LumenButton,
+  LumenButtonGroup,
   LumenCard,
+  LumenCheckbox,
+  LumenChip,
+  LumenDisclosure,
   LumenDivider,
   LumenEmptyState,
+  LumenFieldGroup,
   LumenIcon,
   LumenIconButton,
   type LumenIconGraphicProps,
   LumenListRow,
   LumenProgress,
   LumenProvider,
+  LumenRadioGroup,
   LumenSearchField,
   LumenSectionHeader,
+  LumenSegmentedControl,
   LumenSettingsRow,
+  LumenSkeleton,
   LumenSpinner,
   LumenStat,
   LumenStatusBar,
   LumenSurface,
   LumenText,
+  LumenTextarea,
   LumenTextField,
+  LumenToast,
   LumenToggle,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
@@ -62,16 +72,26 @@ const componentNames = [
   'Icon',
   'Icon button',
   'Button',
+  'Button group',
   'Text field',
+  'Textarea',
+  'Field group',
   'Toggle',
   'Settings row',
   'Search field',
+  'Checkbox',
+  'Radio group',
+  'Segmented control',
+  'Chip',
   'Badge',
   'Divider',
   'Spinner',
   'Card',
   'Alert',
+  'Toast',
   'Progress',
+  'Skeleton',
+  'Disclosure',
   'Avatar',
   'Empty state',
   'List row',
@@ -193,10 +213,17 @@ const Playground = ({
 }): ReactElement => {
   const theme = useLumenTheme()
   const [email, setEmail] = useState('hello@lumen.dev')
+  const [notes, setNotes] = useState('Native components now share one documented contract.')
   const [query, setQuery] = useState('')
   const [saved, setSaved] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const [profile, setProfile] = useState('balanced')
+  const [density, setDensity] = useState('comfortable')
+  const [detailsExpanded, setDetailsExpanded] = useState(true)
   const [showBanner, setShowBanner] = useState(true)
+  const [showToast, setShowToast] = useState(true)
+  const [designSelected, setDesignSelected] = useState(true)
 
   const visibleNames = useMemo(() => componentNames.filter(name => (
     name.toLowerCase().includes(query.trim().toLowerCase())
@@ -269,9 +296,9 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isVisible('Button')}>
+        <Visibility visible={isAnyVisible('Button', 'Button group', 'Chip')}>
           <ComponentSection description="Press each intent and inspect disabled and loading states." title="Buttons">
-            <View style={styles.row}>
+            <LumenButtonGroup>
               <LumenButton onPress={() => {
                 setSaved(true)
               }}
@@ -294,16 +321,33 @@ const Playground = ({
               >
                 Danger
               </LumenButton>
-            </View>
+            </LumenButtonGroup>
             <View style={styles.row}>
               <LumenButton disabled>Disabled</LumenButton>
               <LumenButton loading>Saving</LumenButton>
+              <LumenChip
+                label="Design"
+                onPress={() => {
+                  setDesignSelected(previous => !previous)
+                }}
+                selected={designSelected}
+              />
             </View>
           </ComponentSection>
         </Visibility>
 
         <Visibility
-          visible={isAnyVisible('Text field', 'Toggle', 'Settings row', 'Search field')}
+          visible={isAnyVisible(
+            'Text field',
+            'Textarea',
+            'Field group',
+            'Toggle',
+            'Settings row',
+            'Search field',
+            'Checkbox',
+            'Radio group',
+            'Segmented control'
+          )}
         >
           <ComponentSection description="Edit controls to exercise native focus, switch, and clear behavior." title="Forms">
             <LumenTextField
@@ -319,6 +363,23 @@ const Playground = ({
               placeholder="Invalid value"
               value="lumen playground"
             />
+            <LumenTextarea
+              description="Summarize the native release."
+              label="Release notes"
+              onChangeText={setNotes}
+              value={notes}
+            />
+            <LumenFieldGroup
+              description="These controls retain independent focus and labels."
+              label="Publication checks"
+              required
+            >
+              <LumenCheckbox
+                checked={termsAccepted}
+                label="Confirm accessibility review"
+                onCheckedChange={setTermsAccepted}
+              />
+            </LumenFieldGroup>
             <LumenToggle
               description="Receive component release notes."
               label="Release notifications"
@@ -337,6 +398,32 @@ const Playground = ({
               description="Download stable updates automatically."
               graphic={<LumenIcon decorative icon={CheckGraphic} size="sm" />}
               title="Automatic updates"
+            />
+            <LumenCheckbox
+              checked={termsAccepted}
+              description="Required before publishing this native component set."
+              label="Confirm accessibility review"
+              onCheckedChange={setTermsAccepted}
+            />
+            <LumenRadioGroup
+              label="Performance profile"
+              onValueChange={setProfile}
+              options={[
+                { description: 'Reduce background activity.', label: 'Quiet', value: 'quiet' },
+                { description: 'Recommended for most projects.', label: 'Balanced', value: 'balanced' },
+                { description: 'Prioritize responsiveness.', label: 'Performance', value: 'performance' }
+              ]}
+              value={profile}
+            />
+            <LumenSegmentedControl
+              label="Control density"
+              onValueChange={setDensity}
+              options={[
+                { label: 'Compact', value: 'compact' },
+                { label: 'Comfortable', value: 'comfortable' },
+                { disabled: true, label: 'Spacious', value: 'spacious' }
+              ]}
+              value={density}
             />
           </ComponentSection>
         </Visibility>
@@ -368,7 +455,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Alert', 'Banner')}>
+        <Visibility visible={isAnyVisible('Alert', 'Banner', 'Toast')}>
           <ComponentSection description="Alerts preserve readable titles and descriptions across tones." title="Alert">
             <LumenAlert variant="success">
               <LumenAlertTitle>Playground is ready</LumenAlertTitle>
@@ -396,6 +483,16 @@ const Playground = ({
                   Restore banner
                 </LumenButton>
               )}
+            <Visibility visible={showToast}>
+              <LumenToast
+                description="All shared native catalogs were updated."
+                onDismiss={() => {
+                  setShowToast(false)
+                }}
+                title="Changes saved"
+                variant="success"
+              />
+            </Visibility>
           </ComponentSection>
         </Visibility>
 
@@ -406,6 +503,29 @@ const Playground = ({
               <LumenText tone="muted">86%</LumenText>
             </View>
             <LumenProgress label="Documentation coverage" value={86} />
+          </ComponentSection>
+        </Visibility>
+
+        <Visibility visible={isAnyVisible('Skeleton', 'Disclosure')}>
+          <ComponentSection
+            description="Loading placeholders stay quiet, while disclosures expose controlled expanded state."
+            title="Content states"
+          >
+            <View style={styles.row}>
+              <LumenSkeleton height={44} shape="circle" width={44} />
+              <View style={{ flex: 1, gap: theme.spacing.sm }}>
+                <LumenSkeleton height={16} label="Loading profile" width="72%" />
+                <LumenSkeleton height={12} width="48%" />
+              </View>
+            </View>
+            <LumenDisclosure
+              description="Press the header to verify native expanded state."
+              expanded={detailsExpanded}
+              onExpandedChange={setDetailsExpanded}
+              title="Implementation notes"
+            >
+              <LumenText tone="soft">Each adapter owns its native rendering and focus behavior.</LumenText>
+            </LumenDisclosure>
           </ComponentSection>
         </Visibility>
 
@@ -425,7 +545,7 @@ const Playground = ({
                   Refresh
                 </LumenButton>
               )}
-              count="23"
+              count={String(componentNames.length)}
               subtitle="Shared native contracts"
               title="Workspace"
             />
@@ -435,7 +555,7 @@ const Playground = ({
                 label="Shared components"
                 style={styles.statItem}
                 tone="accent"
-                value="23"
+                value={String(componentNames.length)}
               />
               <LumenStat
                 detail="All repository gates"
@@ -478,7 +598,13 @@ const Playground = ({
         <LumenStatusBar
           message={`Powered by @santi020k/lumen-react-native · ${theme.scheme} theme`}
           tone="success"
-          trailing={<LumenText tone="muted" variant="caption">23 shared</LumenText>}
+          trailing={(
+            <LumenText tone="muted" variant="caption">
+              {componentNames.length}
+              {' '}
+              shared
+            </LumenText>
+          )}
         />
       </ScrollView>
     </LumenSurface>

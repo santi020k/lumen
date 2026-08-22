@@ -89,10 +89,18 @@
     "url": "https://github.com/santi020k/lumen.git",
     "directory": "packages/core"
   },
-  "homepage": "https://lumen.santi020k.com",
+  "homepage": "https://lumen.santi020k.com/docs/foundations",
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
+  "keywords": [
+    "accessible-ui",
+    "component-metadata",
+    "design-system",
+    "design-tokens",
+    "lumen",
+    "ui"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"

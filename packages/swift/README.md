@@ -52,8 +52,9 @@ struct AppRoot: View {
 }
 ```
 
-The native set includes Text, Icon, IconButton, Surface, Button, TextField, Toggle, SettingsRow,
-Picker, Slider, SearchField, Badge, Divider, Spinner, Card, Alert, Banner, Progress, EmptyState,
+The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
+FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider,
+SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Disclosure, EmptyState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
 ShortcutRecorder and searchable SF Symbols picker.
 Components preserve Dynamic Type, SwiftUI environment behavior, and native accessibility instead
@@ -107,3 +108,6 @@ LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
 
 See the [native component reference](../../docs/native-components.md) for the complete API matrix,
 state contracts, native image mapping, and accessibility requirements.
+See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Apple OS,
+Swift, and Xcode baselines, and use the
+[native device validation matrix](../../docs/native-device-validation.md) for VoiceOver evidence.

@@ -19,6 +19,8 @@
     "@expo/metro-runtime": "catalog:",
     "@santi020k/lumen-react-native": "workspace:*",
     "expo": "catalog:",
+    "expo-system-ui": "catalog:",
+    "expo-updates": "catalog:",
     "lucide-react-native": "catalog:",
     "react": "catalog:expo",
     "react-dom": "catalog:expo",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@types/react": "catalog:",
+    "eas-cli": "catalog:",
     "typescript": "catalog:"
   }
 }

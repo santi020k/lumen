@@ -483,6 +483,14 @@ const elementConfigs = {
     defaults: { 'data-ui-command': '' },
     tagName: 'lumen-command'
   },
+  ContextNavigation: {
+    attributeClasses: {
+      variant: { unstyled: 'ui-context-navigation--unstyled' }
+    },
+    baseClassName: 'ui-context-navigation',
+    defaults: { 'data-slot': 'context-navigation' },
+    tagName: 'lumen-context-navigation'
+  },
   ColorPicker: {
     baseClassName: 'ui-color-picker',
     defaults: { type: 'color' },
@@ -9785,6 +9793,7 @@ export const LumenCodeElement = elementClasses.Code
 export const LumenCodeTabsElement = elementClasses.CodeTabs
 export const LumenComboboxElement = elementClasses.Combobox
 export const LumenCommandElement = elementClasses.Command
+export const LumenContextNavigationElement = elementClasses.ContextNavigation
 export const LumenColorPickerElement = elementClasses.ColorPicker
 export const LumenContextMenuElement = elementClasses.ContextMenu
 export const LumenDataTableElement = elementClasses.DataTable

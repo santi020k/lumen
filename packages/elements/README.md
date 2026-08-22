@@ -63,6 +63,31 @@ remains available for incremental migrations.
 <lumen-native-select size="8" visual-size="lg"></lumen-native-select>
 ```
 
+## Context navigation
+
+Use `lumen-context-navigation` below a primary header when links change with a selected platform,
+product, or workspace. Mark the stable selector or identity with `slot="context"` and compose the
+related links with one independently named navigation menu. Long link sets scroll horizontally.
+
+```html
+<lumen-context-navigation>
+  <lumen-native-select
+    slot="context"
+    aria-label="Documentation platform"
+    visual-size="sm"
+  >
+    <option>Web</option>
+    <option>Apple</option>
+    <option>Android</option>
+  </lumen-native-select>
+  <lumen-navigation-menu aria-label="Web documentation" variant="unstyled">
+    <a href="/docs/web" aria-current="page">Overview</a>
+    <a href="/docs/components">Components</a>
+    <a href="/docs/web/playground">Playground</a>
+  </lumen-navigation-menu>
+</lumen-context-navigation>
+```
+
 See the [Elements form guide](https://lumen.santi020k.com/docs/forms/elements).
 
 Use `lumen-icon` for Lucide icons by name across framework adapters.

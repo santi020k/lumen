@@ -536,6 +536,7 @@ export const componentCollections: ComponentCollection[] = [
       'ContextMenu',
       'Menubar',
       'NavigationMenu',
+      'ContextNavigation',
       'Command'
     ]
   },
@@ -1492,6 +1493,17 @@ const apiReferenceByComponent = {
     )
   ],
   ContextMenu: [],
+  ContextNavigation: [
+    apiRow(
+      'context / slot="context"', 'rendered content', '-', 'Provides a stable leading region for a scope label, selector, or product identity.'
+    ),
+    apiRow(
+      'variant', '"default" | "unstyled"', '"default"', 'Keeps the responsive layout while allowing an application-owned surface to remove the default border, background, and padding.'
+    ),
+    apiRow(
+      'children', 'NavigationMenu', 'required', 'Provides the related links as one independently named navigation group.'
+    )
+  ],
   ColorPicker: [
     apiRow('type', 'HTML input type', '"color"', 'Sets the native input type.')
   ],
@@ -2619,6 +2631,11 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     distinction:
       'Use Select for selection without text search or Autocomplete when free-form values are allowed.'
   },
+  ContextNavigation: {
+    when: 'Use below a primary header when links change with the selected product, platform, workspace, or documentation scope.',
+    distinction:
+      'Use NavigationMenu alone for one flat group of links, Tabs for switching content without navigation, or Sidebar for deeper long-form navigation.'
+  },
   DataTable: {
     when: 'Use for dense records that need interactive behaviors such as sorting, filtering, or selection.',
     distinction:
@@ -3006,6 +3023,12 @@ export const componentDocs: ComponentDoc[] = (
       'Navigation',
       'Builds command palettes and filterable action lists.',
       '<Command><Input placeholder="Type a command..." /><button data-ui-command-item>Open docs</button></Command>'
+    ],
+    [
+      'ContextNavigation',
+      'Navigation',
+      'Pairs a stable scope selector or identity with horizontally scrollable contextual links.',
+      '<ContextNavigation><div slot="context">Documentation for <strong>Web</strong></div><NavigationMenu variant="unstyled" aria-label="Web documentation"><a href="/docs/web" aria-current="page">Overview</a><a href="/docs/components">Components</a></NavigationMenu></ContextNavigation>'
     ],
     [
       'ContextMenu',

@@ -68,9 +68,10 @@ Connect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. T
 validated structured content as well as readable text, so agents can select components without
 scraping documentation.
 
-The current MCP per-component catalog covers Astro, React, and Web Components. For React Native,
-SwiftUI, and Compose, use the portable skill with the installed adapter source, package README, and
-native component documentation as the API contract.
+The MCP per-component catalog covers Astro, React, Web Components, React Native, SwiftUI, and
+Compose. Use `lumen_list_native_components` to discover platform availability and
+`lumen_get_native_component` for installation, setup, API, examples, accessibility guidance, and
+optional reference source. The skill still verifies installed packages when local versions differ.
 
 ```bash
 codex mcp add lumen -- npx -y @santi020k/lumen-mcp
@@ -260,7 +261,7 @@ The shared catalog includes:
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
 `Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
-`Message`, `MessageScroller`, `NativeSelect`, `NavigationMenu`, `NumberField`, `Pagination`,
+`Message`, `MessageScroller`, `NativeSelect`, `ContextNavigation`, `NavigationMenu`, `NumberField`, `Pagination`,
 `PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,
 `Slider`, `Sparkline`, `Spinner`, `Stack`, `Switch`, `Table`, `Tabs`, `TagGroup`, `Textarea`, `ThemeBuilder`,

@@ -43,7 +43,7 @@ jobs:
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(packages/(compose|react-native|swift|tokens)/|tokens/|scripts/generate-platform-tokens\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(compose|react-native|swift|tokens)/|tokens/|scripts/generate-platform-tokens\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
             echo "native=true" >> "$GITHUB_OUTPUT"
           else
             echo "native=false" >> "$GITHUB_OUTPUT"
@@ -73,7 +73,7 @@ jobs:
     needs: classify
     if: needs.classify.outputs.native == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
 
@@ -81,18 +81,57 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-                - sdkmanager
           java-version: 21
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Install Android platform
-        run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+        run: >-
+          sdkmanager
+          "platforms;android-37.0"
+          "build-tools;36.0.0"
+          "platform-tools"
+          "emulator"
+          "system-images;android-35;google_apis;x86_64"
 
       - name: Build and test Compose library
         working-directory: packages/compose
-        run: ./gradlew test lint
+        run: ./gradlew test lint assembleDebugAndroidTest verifyMavenPublication
+
+      - name: Run Compose accessibility tests on Android
+        working-directory: packages/compose
+        run: |
+          echo no | avdmanager create avd \
+            --force \
+            --name lumen-ci \
+            --package "system-images;android-35;google_apis;x86_64"
+
+          if [[ -e /dev/kvm ]]; then
+            sudo chmod 666 /dev/kvm
+          fi
+
+          emulator -avd lumen-ci \
+            -no-window \
+            -no-audio \
+            -no-snapshot-save \
+            -no-boot-anim \
+            -gpu swiftshader_indirect \
+            > "$RUNNER_TEMP/lumen-emulator.log" 2>&1 &
+          emulator_pid=$!
+          trap 'adb emu kill >/dev/null 2>&1 || kill "$emulator_pid" >/dev/null 2>&1 || true' EXIT
+
+          adb wait-for-device
+          for _ in {1..120}; do
+            if [[ "$(adb shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]; then
+              ./gradlew connectedDebugAndroidTest
+              exit 0
+            fi
+            sleep 2
+          done
+
+          cat "$RUNNER_TEMP/lumen-emulator.log" >&2
+          exit 1
 
   browser-contracts:
     name: Browser interaction contracts

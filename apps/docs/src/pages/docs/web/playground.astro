@@ -1,0 +1,69 @@
+---
+import { Badge, ButtonLink, Card, Icon, Link } from '@santi020k/lumen-astro'
+
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const playgrounds = [
+  {
+    description: 'Open live examples for every documented web primitive and inspect its API and accessibility contract.',
+    href: '/docs/components',
+    icon: 'box',
+    label: 'Component examples'
+  },
+  {
+    description: 'Tune semantic colors, preview light and dark appearances, and export the resulting theme tokens.',
+    href: '/docs/theme-playground',
+    icon: 'palette',
+    label: 'Theme playground'
+  },
+  {
+    description: 'Explore complete application layouts built with the same public Astro, React, and Elements primitives.',
+    href: '/templates',
+    icon: 'panels-top-left',
+    label: 'Template previews'
+  }
+] as const
+---
+
+<DocsLayout
+  breadcrumbs={[
+    { href: '/docs/web', label: 'Web' },
+    { href: '/docs/web/playground', label: 'Playground' }
+  ]}
+  description="Explore Lumen web components, themes, and complete templates in interactive examples."
+  title="Web playground - Lumen UI"
+>
+  <section class="docs-hero docs-intro-hero" aria-labelledby="playground-title">
+    <div class="docs-hero__content">
+      <Badge variant="outline">Web playground</Badge>
+      <h1 class="docs-intro-title" id="playground-title">Explore Lumen in the browser</h1>
+      <p class="max-w-2xl text-lg/8 text-ink-soft">
+        Try individual primitives, shape a token-driven theme, or inspect complete product layouts before adding Lumen to an application.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <ButtonLink href="/docs/components" showArrow>Browse components</ButtonLink>
+        <ButtonLink href="/docs/theme-playground" variant="secondary">Create a theme</ButtonLink>
+      </div>
+    </div>
+  </section>
+
+  <div
+    aria-label="Web playgrounds"
+    class="
+      grid gap-4
+      lg:grid-cols-3
+    "
+    role="list"
+  >
+    {playgrounds.map(playground => (
+      <Link class="block rounded-2xl no-underline" href={playground.href} role="listitem">
+        <Card class="docs-example-card h-full" variant="muted">
+          <Icon decorative name={playground.icon} size="lg" />
+          <h2 class="text-xl font-bold text-ink">{playground.label}</h2>
+          <p class="text-sm/6 text-ink-soft">{playground.description}</p>
+          <span class="font-semibold text-brand">Open playground →</span>
+        </Card>
+      </Link>
+    ))}
+  </div>
+</DocsLayout>

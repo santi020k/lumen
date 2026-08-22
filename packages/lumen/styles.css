@@ -230,6 +230,7 @@
   .ui-combobox,
   .ui-code,
   .ui-command,
+  .ui-context-navigation,
   .ui-callout,
   .ui-color-picker,
   .ui-dialog,
@@ -2184,6 +2185,50 @@
 .ui-menu :where(a, button, [role="menuitem"]):hover {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand));
+}
+
+.ui-context-navigation {
+  --ui-context-navigation-gap: 1rem;
+  --ui-context-navigation-min-height: 3.25rem;
+  --ui-context-navigation-padding: 0.5rem 1rem;
+
+  display: flex;
+  min-width: 0;
+  min-height: var(--ui-context-navigation-min-height);
+  align-items: center;
+  gap: var(--ui-context-navigation-gap);
+  border-block: 1px solid hsl(var(--line));
+  background: hsl(var(--surface));
+  padding: var(--ui-context-navigation-padding);
+}
+
+.ui-context-navigation__context,
+.ui-context-navigation > [slot="context"] {
+  display: flex;
+  min-width: max-content;
+  flex: 0 0 auto;
+  align-items: center;
+  padding-inline-end: var(--ui-context-navigation-gap);
+  border-inline-end: 1px solid hsl(var(--line));
+}
+
+.ui-context-navigation > :where(.ui-navigation-menu, lumen-navigation-menu) {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.ui-context-navigation > :where(.ui-navigation-menu, lumen-navigation-menu)::-webkit-scrollbar {
+  display: none;
+}
+
+.ui-context-navigation--unstyled {
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 
 .ui-menubar,

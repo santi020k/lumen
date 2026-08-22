@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
+import { getNativeComponentsForPlatform, type NativePlatformId } from './native-components'
 import {
   getDocsPlatform,
   getPlatformGuide,
@@ -29,6 +30,25 @@ describe('platform documentation', () => {
     }
   })
 
+  test('documents theme selection for every native platform guide', () => {
+    for (const guide of productPlatformGuides.filter(candidate => candidate.id !== 'web')) {
+      expect(guide.theme?.examples.length).toBeGreaterThan(0)
+      expect(guide.theme?.verification).toHaveLength(3)
+    }
+  })
+
+  test('lists every documented component available to each native platform', () => {
+    for (const platform of ['react-native', 'apple', 'android'] satisfies NativePlatformId[]) {
+      expect(getPlatformGuide(platform).components).toEqual(
+        getNativeComponentsForPlatform(platform).map(component => component.name)
+      )
+    }
+
+    expect(getPlatformGuide('react-native').components).toHaveLength(33)
+    expect(getPlatformGuide('android').components).toHaveLength(36)
+    expect(getPlatformGuide('apple').components).toHaveLength(38)
+  })
+
   test('maps new and legacy web routes to the correct contextual navigation', () => {
     expect(getDocsPlatform('/docs/web')).toBe('web')
     expect(getDocsPlatform('/docs/components/button')).toBe('web')
@@ -38,6 +58,8 @@ describe('platform documentation', () => {
     expect(getDocsPlatform('/docs/android')).toBe('android')
     expect(getDocsPlatform('/docs/foundations')).toBe('foundations')
     expect(getDocsPlatform('/docs')).toBeUndefined()
+    expect(getDocsPlatform('/docs/appleton')).toBeUndefined()
+    expect(getDocsPlatform('/docs/components-library')).toBeUndefined()
   })
 
   test('resolves every published guide by id', () => {

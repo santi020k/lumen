@@ -11,12 +11,11 @@ import { getPlatformGuide } from '../data/platforms'
 import { toSlug } from '../lib/routes'
 
 interface Props {
-  closeOnNavigate?: boolean
   currentPath: string
   platform: DocsPlatformId | undefined
 }
 
-const { closeOnNavigate = false, currentPath, platform } = Astro.props
+const { currentPath, platform } = Astro.props
 
 const gettingStarted = [
   ['Documentation home', '/docs'],
@@ -57,34 +56,45 @@ const nativeComponents = nativePlatform ? getNativeComponentsForPlatform(nativeP
 
 const platformSectionLinks = activeGuide ?
   [
-    ['Overview', activeGuide.href],
+    [`${activeGuide.shortLabel} guide`, activeGuide.href],
     ['Install and configure', `${activeGuide.href}#installation`],
-    ...(nativePlatform ? [['Run the playground', `${activeGuide.href}#playground`] as const] : []),
+    ...(nativePlatform ? [['Theme and appearance', `${activeGuide.href}#theme`] as const] : []),
+    ...(nativePlatform ? [['Run the playground', `${activeGuide.href}/playground`] as const] : []),
     ...(nativePlatform ? [['Use with AI', `${activeGuide.href}#ai-usage`] as const] : []),
-    ['Component reference', nativePlatform ? `${activeGuide.href}/components` : `${activeGuide.href}#components`],
+    ['Components', nativePlatform ? `${activeGuide.href}/components` : `${activeGuide.href}#components`],
     ['Platform contract', `${activeGuide.href}#principles`]
   ] as const :
   []
 
 const isCurrent = (href: string) => currentPath === href
-const closeAttribute = closeOnNavigate ? true : undefined
+const nativeComponentsHref = activeGuide ? activeGuide.href + '/components' : ''
+
+const isNativeCategoryCurrent = (category: string) => nativeComponents.some(component => (
+  component.category === category && isCurrent(`${nativeComponentsHref}/${component.slug}`)
+))
+
+const isWebCategoryCurrent = (category: string) => componentDocs.some(component => (
+  component.category === category && isCurrent(`/docs/components/${toSlug(component.name)}`)
+))
+
 ---
 
 <nav class="docs-sidebar__nav" data-docs-nav>
-  <div class="docs-sidebar__group">
-    <p>Start here</p>
-    {gettingStarted.map(([label, href]) => (
-      <Link
-        aria-current={isCurrent(href) ? 'page' : undefined}
-        class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-        data-ui-drawer-close={closeAttribute}
-        href={href}
-      >
-        <span>{label}</span>
-        {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
-      </Link>
-    ))}
-  </div>
+  {!platform && (
+    <div class="docs-sidebar__group">
+      <p>Start here</p>
+      {gettingStarted.map(([label, href]) => (
+        <Link
+          aria-current={isCurrent(href) ? 'page' : undefined}
+          class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
+          href={href}
+        >
+          <span>{label}</span>
+          {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
+        </Link>
+      ))}
+    </div>
+  )}
   {activeGuide && (
     <div class="docs-sidebar__group">
       <p>{activeGuide.shortLabel}</p>
@@ -92,7 +102,6 @@ const closeAttribute = closeOnNavigate ? true : undefined
         <Link
           aria-current={isCurrent(href) ? 'page' : undefined}
           class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-          data-ui-drawer-close={closeAttribute}
           href={href}
         >
           <span>{label}</span>
@@ -108,7 +117,6 @@ const closeAttribute = closeOnNavigate ? true : undefined
         <Link
           aria-current={isCurrent(href) ? 'page' : undefined}
           class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-          data-ui-drawer-close={closeAttribute}
           href={href}
         >
           <span>{label}</span>
@@ -121,12 +129,15 @@ const closeAttribute = closeOnNavigate ? true : undefined
     <>
       <div class="docs-sidebar__components-label">
         <span>Components</span>
-        <Link data-ui-drawer-close={closeAttribute} href={`${activeGuide.href}/components`}>Browse all</Link>
+        <Link href={`${activeGuide.href}/components`}>Browse all</Link>
       </div>
       {nativeComponentCategories.filter(category => (
         nativeComponents.some(component => component.category === category)
       )).map(category => (
-        <details class="docs-sidebar__group docs-sidebar__group--collapsible" open>
+        <details
+          class="docs-sidebar__group docs-sidebar__group--collapsible"
+          open={isNativeCategoryCurrent(category)}
+        >
           <summary>
             <span>{category}</span>
             <span>
@@ -144,7 +155,6 @@ const closeAttribute = closeOnNavigate ? true : undefined
                 <Link
                   aria-current={isCurrent(href) ? 'page' : undefined}
                   class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-                  data-ui-drawer-close={closeAttribute}
                   href={href}
                 >
                   <span class="truncate">{component.name}</span>
@@ -163,7 +173,6 @@ const closeAttribute = closeOnNavigate ? true : undefined
         <Link
           aria-current={isCurrent(href) ? 'page' : undefined}
           class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-          data-ui-drawer-close={closeAttribute}
           href={href}
         >
           <span>{label}</span>
@@ -179,7 +188,6 @@ const closeAttribute = closeOnNavigate ? true : undefined
         <Link
           aria-current={isCurrent(href) ? 'page' : undefined}
           class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
-          data-ui-drawer-close={closeAttribute}
           href={href}
         >
           <span>{label}</span>
@@ -192,12 +200,12 @@ const closeAttribute = closeOnNavigate ? true : undefined
     <>
       <div class="docs-sidebar__components-label">
         <span>Components</span>
-        <Link data-ui-drawer-close={closeAttribute} href="/docs/components">Browse all</Link>
+        <Link href="/docs/components">Browse all</Link>
       </div>
       {componentCategories.map(category => (
         <details
           class="docs-sidebar__group docs-sidebar__group--collapsible"
-          open
+          open={isWebCategoryCurrent(category)}
         >
           <summary>
             <span>{category}</span>
@@ -216,7 +224,6 @@ const closeAttribute = closeOnNavigate ? true : undefined
                   'docs-sidebar__link': true,
                   'is-current': isCurrent(`/docs/components/${toSlug(component.name)}`)
                 }}
-                data-ui-drawer-close={closeAttribute}
                 href={`/docs/components/${toSlug(component.name)}`}
               >
                 <span class="truncate">{component.name}</span>

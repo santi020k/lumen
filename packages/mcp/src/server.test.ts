@@ -78,6 +78,8 @@ describe('Lumen MCP protocol server', () => {
       expect(response.tools.map(tool => tool.name)).toEqual([
         'lumen_list_components',
         'lumen_get_component',
+        'lumen_list_native_components',
+        'lumen_get_native_component',
         'lumen_get_recipe',
         'lumen_search',
         'lumen_get_meta',
@@ -117,10 +119,18 @@ describe('Lumen MCP protocol server', () => {
 
   test('executes every catalog discovery tool over MCP', async () => {
     await withClient(async client => {
-      const [listResult, recipeResult, searchResult, metaResult, tokensResult, rulesResult] = await Promise.all([
+      const discoveryResults = await Promise.all([
         client.callTool({
           arguments: { framework: 'astro', query: 'button' },
           name: 'lumen_list_components'
+        }),
+        client.callTool({
+          arguments: { platform: 'react-native', query: 'button' },
+          name: 'lumen_list_native_components'
+        }),
+        client.callTool({
+          arguments: { name: 'Button', platform: 'swiftui' },
+          name: 'lumen_get_native_component'
         }),
         client.callTool({
           arguments: { framework: 'elements', name: 'scheduler' },
@@ -134,15 +144,27 @@ describe('Lumen MCP protocol server', () => {
         client.callTool({ arguments: {}, name: 'lumen_get_tokens' }),
         client.callTool({ arguments: {}, name: 'lumen_get_rules' })
       ])
+      const [
+        listResult,
+        nativeListResult,
+        nativeResult,
+        recipeResult,
+        searchResult,
+        metaResult,
+        tokensResult,
+        rulesResult
+      ] = discoveryResults
 
       expect(resultText(listResult)).toContain('Button')
+      expect(resultText(nativeListResult)).toContain('Button')
+      expect(resultText(nativeResult)).toContain('import LumenUI')
       expect(resultText(recipeResult)).toContain('lumen add scheduler --target elements')
       expect(resultText(searchResult)).toContain('DatePicker')
       expect(resultText(metaResult)).toContain('Catalog hash')
       expect(resultText(tokensResult)).toContain('Lumen design tokens')
       expect(resultText(rulesResult)).toContain('@santi020k/lumen')
 
-      for (const result of [listResult, recipeResult, searchResult, metaResult, tokensResult, rulesResult]) {
+      for (const result of discoveryResults) {
         expect(result.isError).toBe(false)
         expect(resultStructuredContent(result)).not.toEqual({})
       }
@@ -150,6 +172,10 @@ describe('Lumen MCP protocol server', () => {
   })
 
   test.each([
+    {
+      arguments: { name: 'Button', platform: 'ios' },
+      name: 'lumen_get_native_component'
+    },
     {
       arguments: { framework: 'vue' },
       name: 'lumen_list_components'
@@ -224,19 +250,24 @@ describe('Lumen MCP protocol server', () => {
         .toBe(true)
       expect(resources.resources.some(resource => resource.uri === 'lumen://components/button'))
         .toBe(true)
+      expect(resources.resources.some(resource => resource.uri === 'lumen://native-components'))
+        .toBe(true)
       expect(templates.resourceTemplates.map(template => template.uriTemplate)).toEqual([
         'lumen://components/{name}',
+        'lumen://native-components/{name}',
         'lumen://recipes/{name}'
       ])
 
-      const [rules, component, recipe] = await Promise.all([
+      const [rules, component, nativeComponent, recipe] = await Promise.all([
         client.readResource({ uri: 'lumen://rules' }),
         client.readResource({ uri: 'lumen://components/date-range-picker' }),
+        client.readResource({ uri: 'lumen://native-components/button' }),
         client.readResource({ uri: 'lumen://recipes/advanced-fields' })
       ])
 
       expect(rules.contents[0]).toMatchObject({ mimeType: 'text/markdown' })
       expect(JSON.stringify(component.contents[0])).toContain('DateRangePicker')
+      expect(JSON.stringify(nativeComponent.contents[0])).toContain('LumenButton')
       expect(JSON.stringify(recipe.contents[0])).toContain('advanced-fields')
     })
   })

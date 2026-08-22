@@ -23,8 +23,8 @@ The generator produces and verifies:
 | --- | --- |
 | Core and web tooling | TypeScript CSS and platform-neutral values |
 | React Native | TypeScript hexadecimal colors and numeric dimensions |
-| SwiftUI | Swift `Color`, `CGFloat`, and duration values |
-| Jetpack Compose | Compose `Color`, `Dp`, `Sp`, and duration values |
+| SwiftUI | Swift `Color`, `CGFloat`, duration, cubic Bezier, and elevation values |
+| Jetpack Compose | Compose `Color`, `Dp`, `Sp`, duration, cubic Bezier, and elevation values |
 | Token consumers | Published `@santi020k/lumen-tokens` JSON |
 
 The check also compares the semantic light and dark colors with `packages/lumen/styles.css`, so a
@@ -48,7 +48,7 @@ Native adapters must not depend on the DOM, CSS class names, the Astro runtime, 
 | --- | --- | --- |
 | Universal foundations | Kept synchronized across every adapter | Colors, spacing, radius, typography, motion, elevation |
 | Universal primitives | Native implementation planned for every adapter | Theme, Text, Icon, Button, IconButton, Surface, TextField, Badge, Divider, Spinner |
-| Shared where appropriate | Added when the interaction maps cleanly | Cards, alerts, progress, avatars, disclosure controls |
+| Shared where appropriate | Added when the interaction maps cleanly | Cards, alerts, toast feedback, chips, field composition, progress, avatars, disclosure controls |
 | Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, shortcut recording, SF Symbols selection |
 | Platform-specific | Uses platform conventions and does not promise API parity | Navigation, tab bars, sheets, date pickers, gestures, system menus |
 
@@ -80,21 +80,24 @@ Individual features that do not yet meet the adapter's Beta support bar should b
 ## Current status
 
 - The canonical token source and drift check are active.
-- React Native exposes complete foundations, theme context, and the first native primitives.
-- SwiftUI exposes generated foundations, `LumenTheme`, automatic iOS/macOS control density, shared
-  native primitives, Apple-native form and structured-content components, and guarded macOS input
-  utilities.
-- Compose exposes generated foundations, a Material 3-backed `LumenTheme`, and matching native
-  primitives.
-- Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider, and Spinner are implemented in
-  all three native adapters. Icon glyph sources stay platform-native while their size, color,
-  intent, and accessibility contracts remain aligned.
-- Card, Alert, Progress, and Avatar are implemented in all three native adapters with shared
-  variants, normalization, measurements, and accessibility requirements.
-- The Apple tier includes Toggle, SettingsRow, Picker, Slider, SearchField, EmptyState, ListRow,
-  Banner, Stat, Gauge, SectionHeader, and StatusBar on iOS and macOS, plus ShortcutRecorder and
-  SymbolPicker on macOS.
+- Motion duration, easing, and elevation values are generated for every native adapter.
+- React Native, SwiftUI, and Compose expose the complete shared native component tier with native
+  rendering, state, and accessibility behavior.
+- Theme, Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider, and Spinner are
+  implemented in all three native adapters. Icon glyph sources stay platform-native while their
+  size, color, intent, and accessibility contracts remain aligned.
+- ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup,
+  SegmentedControl, Chip, Card, Alert, Toast, Progress, Skeleton, Disclosure, Avatar, EmptyState,
+  ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
+  adapters with shared semantic contracts.
+- Picker, Slider, and Gauge are available in SwiftUI and Compose, where stable dependency-free
+  native controls exist. The Apple tier additionally includes ShortcutRecorder and SymbolPicker on macOS.
 - Native navigation, window scenes, sheets, popovers, and system menus remain application-owned.
+- The executable checks and manual hardware matrix live in
+  [Native device validation](native-device-validation.md). A platform remains Beta until the matrix
+  contains representative physical-device evidence.
+- Declared minimum versions and verified toolchains live in the
+  [native compatibility matrix](native-compatibility.md).
 
 ## Release discipline
 

@@ -4,6 +4,9 @@ import type {
   LumenData,
   LumenFramework,
   LumenFrameworkSnapshot,
+  LumenNativeComponentSnapshot,
+  LumenNativeImplementationSnapshot,
+  LumenNativePlatform,
   LumenRecipeSnapshot
 } from './data.js'
 import { loadLumenData } from './data.js'
@@ -27,6 +30,17 @@ export interface ComponentSummary {
 }
 
 export type FrameworkFilter = LumenFramework
+export type NativePlatformFilter = LumenNativePlatform
+
+export interface NativeComponentSummary {
+  accessibility: string
+  category: string
+  id: string
+  name: string
+  platforms: LumenNativePlatform[]
+  summary: string
+  tier: string
+}
 
 export interface LumenToolResult<Data = unknown> {
   data: Data
@@ -38,9 +52,10 @@ export interface SearchResult {
   category?: string
   description: string
   frameworks?: LumenFramework[]
-  kind: 'component' | 'recipe' | 'rule' | 'token'
+  kind: 'component' | 'native-component' | 'recipe' | 'rule' | 'token'
   matchedTerms: string[]
   name: string
+  platforms?: LumenNativePlatform[]
   score: number
 }
 
@@ -110,6 +125,22 @@ const componentSummary = (
   recipes: component.recipes.map(recipe => recipe.name)
 })
 
+const availableNativePlatforms = (
+  component: LumenNativeComponentSnapshot
+): LumenNativePlatform[] => Object.keys(component.implementations) as LumenNativePlatform[]
+
+const nativeComponentSummary = (
+  component: LumenNativeComponentSnapshot
+): NativeComponentSummary => ({
+  accessibility: component.accessibility,
+  category: component.category,
+  id: component.id,
+  name: component.name,
+  platforms: availableNativePlatforms(component),
+  summary: component.summary,
+  tier: component.tier
+})
+
 export const resolveComponent = (
   name: string,
   data: LumenData = loadLumenData()
@@ -130,6 +161,23 @@ export const resolveRecipe = (
   const target = normalize(name)
 
   return data.recipes.find(recipe => normalize(recipe.name) === target)
+}
+
+export const resolveNativeComponent = (
+  name: string,
+  data: LumenData = loadLumenData()
+): LumenNativeComponentSnapshot | undefined => {
+  const target = normalize(name)
+
+  return data.nativeComponents.find(component => (
+    component.name === name ||
+    normalize(component.name) === target ||
+    normalize(component.id) === target ||
+    Object.values(component.implementations).some(implementation => (
+      normalize(implementation.exportName) === target ||
+      normalize(implementation.symbol) === target
+    ))
+  ))
 }
 
 const frameworkBehaviorSearchText = (
@@ -179,6 +227,40 @@ const componentSearchText = (
     .map(row => `${row.attribute} ${row.values} ${row.description}`)
     .join(' '),
   frameworkSearchText(component, framework)
+].join(' ')
+
+const nativeImplementationSearchText = (
+  implementation: LumenNativeImplementationSnapshot
+) => [
+  implementation.exportName,
+  implementation.symbol,
+  implementation.packageName,
+  implementation.importStatement,
+  implementation.api.map(row => (
+    `${row.name} ${row.values} ${row.description}`
+  )).join(' '),
+  implementation.example
+].join(' ')
+
+const nativeComponentSearchText = (
+  component: LumenNativeComponentSnapshot,
+  platform?: LumenNativePlatform
+) => [
+  component.name,
+  component.id,
+  component.summary,
+  component.category,
+  component.contract,
+  component.guidance,
+  component.accessibility,
+  component.tier,
+  platform ?? '',
+  ...(platform ?
+    [component.implementations[platform]].filter(
+      (implementation): implementation is LumenNativeImplementationSnapshot => Boolean(implementation)
+    ) :
+    Object.values(component.implementations)
+  ).map(nativeImplementationSearchText)
 ].join(' ')
 
 const scoreCandidate = (
@@ -231,24 +313,32 @@ const appendSearchResult = (
   candidate: Omit<SearchResult, 'matchedTerms' | 'score'>,
   query: string,
   terms: string[],
-  searchableText: string
+  searchableText: string,
+  scoreAdjustment = 0
 ) => {
   const match = scoreCandidate(
     query, terms, searchableText, candidate.kind === 'rule' ? '' : candidate.name
   )
 
-  if (match.score > 0) results.push({ ...candidate, ...match })
+  if (match.score > 0) {
+    results.push({
+      ...candidate,
+      ...match,
+      score: Math.max(1, match.score + scoreAdjustment)
+    })
+  }
 }
 
-const collectSearchResults = (
+const collectComponentSearchResults = (
   query: string,
   terms: string[],
   data: LumenData,
-  framework?: LumenFramework
+  framework?: LumenFramework,
+  platform?: LumenNativePlatform
 ): SearchResult[] => {
   const results: SearchResult[] = []
 
-  for (const component of data.components) {
+  for (const component of platform ? [] : data.components) {
     if (framework && !Reflect.get(component.frameworks, framework)) continue
 
     appendSearchResult(
@@ -261,6 +351,32 @@ const collectSearchResults = (
       }, query, terms, componentSearchText(component, framework)
     )
   }
+
+  if (!platform || framework) return results
+
+  for (const component of data.nativeComponents) {
+    if (!component.implementations[platform]) continue
+
+    appendSearchResult(
+      results, {
+        category: component.category,
+        description: component.summary,
+        kind: 'native-component',
+        name: component.name,
+        platforms: availableNativePlatforms(component)
+      }, query, terms, nativeComponentSearchText(component, platform)
+    )
+  }
+
+  return results
+}
+
+const collectReferenceSearchResults = (
+  query: string,
+  terms: string[],
+  data: LumenData
+): SearchResult[] => {
+  const results: SearchResult[] = []
 
   for (const recipe of data.recipes) {
     appendSearchResult(
@@ -295,6 +411,17 @@ const collectSearchResults = (
 
   return results
 }
+
+const collectSearchResults = (
+  query: string,
+  terms: string[],
+  data: LumenData,
+  framework?: LumenFramework,
+  platform?: LumenNativePlatform
+): SearchResult[] => [
+  ...collectComponentSearchResults(query, terms, data, framework, platform),
+  ...collectReferenceSearchResults(query, terms, data)
+]
 
 export const listComponents = (
   args: {
@@ -617,6 +744,166 @@ export const getComponent = (
   }
 }
 
+export const listNativeComponents = (
+  args: {
+    platform?: NativePlatformFilter | undefined
+    query?: string | undefined
+  } = {},
+  data: LumenData = loadLumenData()
+): LumenToolResult<{ components: NativeComponentSummary[], count: number }> => {
+  const query = args.query?.trim()
+  const terms = query ? meaningfulSearchTerms(query) : []
+
+  const components = data.nativeComponents.filter(component => (
+    (!args.platform || Boolean(component.implementations[args.platform])) &&
+    (!query || scoreCandidate(
+      query,
+      terms,
+      nativeComponentSearchText(component, args.platform),
+      component.name
+    ).score > 0)
+  )).map(nativeComponentSummary)
+
+  return {
+    data: { components, count: components.length },
+    text: components.length === 0 ?
+      'No native components matched the given filters.' :
+      `${components.length} native component(s):\n\n${components.map(component => (
+        `${component.name} (${component.id}) — ${component.summary} — ${component.platforms.join(', ')}`
+      )).join('\n')}`
+  }
+}
+
+const nativeComponentDetail = (
+  component: LumenNativeComponentSnapshot,
+  platform: LumenNativePlatform,
+  detail: ComponentDetailLevel,
+  data: LumenData
+) => {
+  const implementation = component.implementations[platform]
+
+  if (!implementation) return undefined
+
+  const common = {
+    ...nativeComponentSummary(component),
+    contract: component.contract,
+    guidance: component.guidance,
+    platform
+  }
+
+  if (detail === 'summary') {
+    return {
+      ...common,
+      implementation: {
+        exportName: implementation.exportName,
+        packageName: implementation.packageName,
+        symbol: implementation.symbol
+      }
+    }
+  }
+
+  const usage = { ...common, implementation }
+
+  return detail === 'source' ?
+    {
+      ...usage,
+      source: data.nativeSources[platform][implementation.sourceFile]
+    } :
+    usage
+}
+
+const formatNativeComponent = (
+  component: LumenNativeComponentSnapshot,
+  platform: LumenNativePlatform,
+  detail: ComponentDetailLevel,
+  data: LumenData
+) => {
+  const implementation = component.implementations[platform]
+
+  if (!implementation) return ''
+
+  const sections = [
+    `# ${component.name}`,
+    component.summary,
+    `Category: ${component.category}`,
+    `Tier: ${component.tier}`,
+    `Platform: ${platform}`,
+    `Available platforms: ${availableNativePlatforms(component).join(', ')}`,
+    `Package: ${implementation.packageName}`,
+    `Install: ${implementation.install}`,
+    `Import: ${implementation.importStatement}`,
+    `Setup: ${implementation.setup}`,
+    '',
+    '## Accessibility',
+    component.accessibility,
+    '',
+    '## Contract',
+    component.contract,
+    '',
+    '## Guidance',
+    component.guidance
+  ]
+
+  if (detail === 'summary') return sections.join('\n')
+
+  if (implementation.api.length > 0) {
+    sections.push('', '## API', ...implementation.api.map(row => (
+      `- \`${row.name}\` ${row.values} (default: ${row.defaultValue}) — ${row.description}`
+    )))
+  }
+
+  sections.push('', '## Example', `\`\`\`${implementation.language}`, implementation.example, '```')
+
+  if (detail === 'source') {
+    sections.push(
+      '',
+      `## Reference source (${implementation.sourceFile})`,
+      `\`\`\`${implementation.language}`,
+      data.nativeSources[platform][implementation.sourceFile]?.trimEnd() ?? '',
+      '```'
+    )
+  }
+
+  return sections.join('\n')
+}
+
+export const getNativeComponent = (
+  args: {
+    detail?: ComponentDetailLevel | undefined
+    name: string
+    platform: NativePlatformFilter
+  },
+  data: LumenData = loadLumenData()
+): LumenToolResult<{
+  component?: ReturnType<typeof nativeComponentDetail>
+  found: boolean
+  message?: string
+}> => {
+  const component = resolveNativeComponent(args.name, data)
+
+  if (!component) {
+    const message = `Unknown native component "${args.name}". Use lumen_list_native_components to see available names.`
+
+    return { data: { found: false, message }, isError: true, text: message }
+  }
+
+  if (!component.implementations[args.platform]) {
+    const message = `${component.name} is not available for ${args.platform}. Available platforms: ${availableNativePlatforms(component).join(', ')}.`
+
+    return { data: { found: false, message }, isError: true, text: message }
+  }
+
+  const detail = args.detail ?? 'usage'
+
+  return {
+    data: {
+      component: nativeComponentDetail(component, args.platform, detail, data),
+      found: true
+    },
+    text: formatNativeComponent(component, args.platform, detail, data)
+  }
+}
+
 export const getRecipe = (
   args: { framework?: FrameworkFilter | undefined, name: string },
   data: LumenData = loadLumenData()
@@ -666,6 +953,7 @@ export const search = (
   args: {
     framework?: FrameworkFilter | undefined
     limit?: number | undefined
+    platform?: NativePlatformFilter | undefined
     query: string
   },
   data: LumenData = loadLumenData()
@@ -687,14 +975,15 @@ export const search = (
   const limit = Math.max(1, Math.min(args.limit ?? 20, 100))
 
   const results = collectSearchResults(
-    query, meaningfulSearchTerms(query), data, args.framework
+    query, meaningfulSearchTerms(query), data, args.framework, args.platform
   )
 
   const kindPriority: Record<SearchResult['kind'], number> = {
     component: 0,
-    recipe: 1,
-    rule: 3,
-    token: 2
+    'native-component': 1,
+    recipe: 2,
+    rule: 4,
+    token: 3
   }
 
   results.sort(
@@ -729,7 +1018,8 @@ export const getMeta = (
     `Server version: ${data.meta.serverVersion}`,
     `Schema version: ${data.meta.schemaVersion}`,
     `Catalog hash: ${data.meta.catalogHash}`,
-    `Components: ${data.meta.componentCount}`,
+    `Web components: ${data.meta.componentCount}`,
+    `Native components: ${data.meta.nativeComponentCount}`,
     '',
     '## Package versions',
     ...Object.entries(data.meta.packageVersions).map(
@@ -786,6 +1076,7 @@ export const getCatalogManifest = (
     '# Lumen catalog manifest',
     `Catalog hash: ${data.meta.catalogHash}`,
     `Components: ${Object.keys(data.catalogManifest.components).length}`,
+    `Native components: ${Object.keys(data.catalogManifest.nativeComponents ?? {}).length}`,
     `Recipes: ${Object.keys(data.catalogManifest.recipes).length}`,
     '',
     'Keep this structured result and pass its manifest to lumen_diff_catalog after an MCP update.'
@@ -801,6 +1092,7 @@ export const diffCatalog = (
 ): LumenToolResult<{
   components: CatalogChanges
   currentCatalogHash: string
+  nativeComponents: CatalogChanges
   recipes: CatalogChanges
   unchanged: boolean
 }> => {
@@ -812,10 +1104,18 @@ export const diffCatalog = (
     data.catalogManifest.recipes, args.baseline.recipes
   )
 
+  const nativeComponents = diffManifestSection(
+    data.catalogManifest.nativeComponents ?? {},
+    args.baseline.nativeComponents ?? {}
+  )
+
   const changedCount = [
     ...components.added,
     ...components.changed,
     ...components.removed,
+    ...nativeComponents.added,
+    ...nativeComponents.changed,
+    ...nativeComponents.removed,
     ...recipes.added,
     ...recipes.changed,
     ...recipes.removed
@@ -830,6 +1130,7 @@ export const diffCatalog = (
     data: {
       components,
       currentCatalogHash: data.meta.catalogHash,
+      nativeComponents,
       recipes,
       unchanged
     },
@@ -841,32 +1142,24 @@ export const diffCatalog = (
         `Changed entries: ${changedCount}`,
         `Components — added: ${components.added.length}, changed: ${components.changed.length}, ` +
         `removed: ${components.removed.length}`,
+        `Native components — added: ${nativeComponents.added.length}, changed: ${nativeComponents.changed.length}, ` +
+        `removed: ${nativeComponents.removed.length}`,
         `Recipes — added: ${recipes.added.length}, changed: ${recipes.changed.length}, ` +
         `removed: ${recipes.removed.length}`
       ].join('\n')
   }
 }
 
-export const diagnose = (
-  data: LumenData = loadLumenData()
-): LumenToolResult<{
-  checks: { message: string, name: string, status: 'fail' | 'pass' }[]
-  frameworkCoverage: Record<LumenFramework, number>
-  status: 'healthy' | 'issues'
-}> => {
+interface DiagnosticCheck {
+  message: string
+  name: string
+  status: 'fail' | 'pass'
+}
+
+const webDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
   const componentNames = data.components.map(component => component.name)
 
-  const frameworkCoverage = {
-    astro: data.components.filter(component => component.frameworks.astro)
-      .length,
-    elements: data.components.filter(
-      component => component.frameworks.elements
-    ).length,
-    react: data.components.filter(component => component.frameworks.react)
-      .length
-  }
-
-  const checks = [
+  return [
     {
       message: `${data.components.length} component records match metadata.`,
       name: 'component-count',
@@ -900,28 +1193,99 @@ export const diagnose = (
         const details = Reflect.get(component.frameworkDetails, framework) as
             LumenFrameworkSnapshot | undefined
 
-        return (
-          Boolean(details?.example.trim()) &&
-          Boolean(details?.importStatement.trim())
-        )
+        return Boolean(details?.example.trim()) && Boolean(details?.importStatement.trim())
       })) ?
         'pass' :
         'fail'
     }
-  ] satisfies { message: string, name: string, status: 'fail' | 'pass' }[]
+  ]
+}
+
+const nativeDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
+  const nativeComponentNames = data.nativeComponents.map(component => component.name)
+
+  return [
+    {
+      message: `${data.nativeComponents.length} native component records match metadata.`,
+      name: 'native-component-count',
+      status: data.nativeComponents.length === data.meta.nativeComponentCount ?
+        'pass' :
+        'fail'
+    },
+    {
+      message: 'Native component names and ids are unique.',
+      name: 'unique-native-components',
+      status:
+        new Set(nativeComponentNames).size === nativeComponentNames.length &&
+          new Set(data.nativeComponents.map(component => component.id)).size === data.nativeComponents.length ?
+          'pass' :
+          'fail'
+    },
+    {
+      message: 'Every native component has a manifest fingerprint.',
+      name: 'native-component-manifest',
+      status: nativeComponentNames.every(name => (
+        Reflect.get(data.catalogManifest.nativeComponents ?? {}, name)
+      )) ?
+        'pass' :
+        'fail'
+    },
+    {
+      message: 'Every native implementation has usage, import, and bundled reference source.',
+      name: 'native-contracts',
+      status: data.nativeComponents.every(component => (
+        Object.entries(component.implementations).every(([platform, implementation]) => (
+          Boolean(implementation.example.trim()) &&
+          Boolean(implementation.importStatement.trim()) &&
+          Boolean(data.nativeSources[platform as LumenNativePlatform][implementation.sourceFile]?.trim())
+        ))
+      )) ?
+        'pass' :
+        'fail'
+    }
+  ]
+}
+
+export const diagnose = (
+  data: LumenData = loadLumenData()
+): LumenToolResult<{
+  checks: DiagnosticCheck[]
+  frameworkCoverage: Record<LumenFramework, number>
+  nativeCoverage: Record<LumenNativePlatform, number>
+  status: 'healthy' | 'issues'
+}> => {
+  const frameworkCoverage = {
+    astro: data.components.filter(component => component.frameworks.astro)
+      .length,
+    elements: data.components.filter(
+      component => component.frameworks.elements
+    ).length,
+    react: data.components.filter(component => component.frameworks.react)
+      .length
+  }
+
+  const nativeCoverage = {
+    compose: data.nativeComponents.filter(component => component.implementations.compose).length,
+    'react-native': data.nativeComponents.filter(component => component.implementations['react-native']).length,
+    swiftui: data.nativeComponents.filter(component => component.implementations.swiftui).length
+  }
+
+  const checks = [...webDiagnosticChecks(data), ...nativeDiagnosticChecks(data)]
 
   const status = checks.every(check => check.status === 'pass') ?
     'healthy' :
     'issues'
 
   return {
-    data: { checks, frameworkCoverage, status },
+    data: { checks, frameworkCoverage, nativeCoverage, status },
     isError: status === 'issues',
     text: [
       `# Lumen MCP diagnostics: ${status}`,
       `Catalog hash: ${data.meta.catalogHash}`,
       `Framework coverage — Astro: ${frameworkCoverage.astro}, ` +
       `React: ${frameworkCoverage.react}, Elements: ${frameworkCoverage.elements}`,
+      `Native coverage — React Native: ${nativeCoverage['react-native']}, ` +
+      `SwiftUI: ${nativeCoverage.swiftui}, Compose: ${nativeCoverage.compose}`,
       '',
       ...checks.map(
         check => `- ${check.status.toUpperCase()} ${check.name}: ${check.message}`

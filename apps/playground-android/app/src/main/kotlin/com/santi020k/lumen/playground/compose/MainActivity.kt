@@ -34,20 +34,34 @@ import com.santi020k.lumen.LumenBadgeTone
 import com.santi020k.lumen.LumenBanner
 import com.santi020k.lumen.LumenBannerVariant
 import com.santi020k.lumen.LumenButton
+import com.santi020k.lumen.LumenButtonGroup
 import com.santi020k.lumen.LumenButtonIntent
 import com.santi020k.lumen.LumenCard
 import com.santi020k.lumen.LumenCardVariant
+import com.santi020k.lumen.LumenCheckbox
+import com.santi020k.lumen.LumenChip
 import com.santi020k.lumen.LumenDivider
+import com.santi020k.lumen.LumenDisclosure
 import com.santi020k.lumen.LumenEmptyState
+import com.santi020k.lumen.LumenFieldGroup
+import com.santi020k.lumen.LumenGauge
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
 import com.santi020k.lumen.LumenListRow
 import com.santi020k.lumen.LumenMetricTone
 import com.santi020k.lumen.LumenProgress
+import com.santi020k.lumen.LumenPicker
+import com.santi020k.lumen.LumenPickerOption
+import com.santi020k.lumen.LumenRadioGroup
 import com.santi020k.lumen.LumenSearchField
 import com.santi020k.lumen.LumenSectionHeader
 import com.santi020k.lumen.LumenSettingsRow
+import com.santi020k.lumen.LumenSegmentedControl
+import com.santi020k.lumen.LumenSelectionOption
+import com.santi020k.lumen.LumenSkeleton
+import com.santi020k.lumen.LumenSkeletonShape
 import com.santi020k.lumen.LumenSpinner
+import com.santi020k.lumen.LumenSlider
 import com.santi020k.lumen.LumenStat
 import com.santi020k.lumen.LumenStatusBar
 import com.santi020k.lumen.LumenSurface
@@ -56,10 +70,12 @@ import com.santi020k.lumen.LumenSurfaceRadius
 import com.santi020k.lumen.LumenSurfaceTone
 import com.santi020k.lumen.LumenText
 import com.santi020k.lumen.LumenTextField
+import com.santi020k.lumen.LumenTextarea
 import com.santi020k.lumen.LumenTextTone
 import com.santi020k.lumen.LumenTextVariant
 import com.santi020k.lumen.LumenTheme
 import com.santi020k.lumen.LumenToggle
+import com.santi020k.lumen.LumenToast
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,22 +99,39 @@ private val sections = listOf(
     PlaygroundSection(
         title = "Actions",
         description = "Buttons expose intent, loading, enabled, and pressed states.",
-        names = setOf("Button")
+        names = setOf("Button", "Button group", "Chip")
     ),
     PlaygroundSection(
         title = "Forms",
-        description = "Text, search, toggle, and settings controls retain native behavior.",
-        names = setOf("Text field", "Toggle", "Settings row", "Search field")
+        description = "Text, toggles, and selection controls retain native behavior.",
+        names = setOf(
+            "Text field",
+            "Textarea",
+            "Field group",
+            "Toggle",
+            "Settings row",
+            "Search field",
+            "Checkbox",
+            "Radio group",
+            "Segmented control",
+            "Picker",
+            "Slider"
+        )
     ),
     PlaygroundSection(
         title = "Feedback",
         description = "Badges, banners, alerts, progress, and status communicate outcomes.",
-        names = setOf("Badge", "Divider", "Spinner", "Alert", "Progress", "Banner", "Status bar")
+        names = setOf("Badge", "Divider", "Spinner", "Alert", "Progress", "Banner", "Toast", "Status bar")
+    ),
+    PlaygroundSection(
+        title = "Content states",
+        description = "Loading placeholders and disclosures preserve native semantics.",
+        names = setOf("Skeleton", "Disclosure")
     ),
     PlaygroundSection(
         title = "Data display",
         description = "Cards, avatars, metrics, headers, and rows compose into product content.",
-        names = setOf("Card", "Avatar", "Empty state", "List row", "Stat", "Section header")
+        names = setOf("Card", "Avatar", "Empty state", "List row", "Stat", "Gauge", "Section header")
     )
 )
 
@@ -121,6 +154,10 @@ private fun PlaygroundContent(
 ) {
     var email by remember { mutableStateOf("hello@lumen.dev") }
     var notificationsEnabled by remember { mutableStateOf(true) }
+    var accessibilityReviewed by remember { mutableStateOf(false) }
+    var profile by remember { mutableStateOf("balanced") }
+    var density by remember { mutableStateOf("comfortable") }
+    var disclosureExpanded by remember { mutableStateOf(true) }
     var query by remember { mutableStateOf("") }
     var saved by remember { mutableStateOf(false) }
     var showBanner by remember { mutableStateOf(true) }
@@ -198,11 +235,21 @@ private fun PlaygroundContent(
                             email = email,
                             onEmailChange = { email = it },
                             notificationsEnabled = notificationsEnabled,
-                            onNotificationsChange = { notificationsEnabled = it }
+                            onNotificationsChange = { notificationsEnabled = it },
+                            accessibilityReviewed = accessibilityReviewed,
+                            onAccessibilityReviewedChange = { accessibilityReviewed = it },
+                            profile = profile,
+                            onProfileChange = { profile = it },
+                            density = density,
+                            onDensityChange = { density = it }
                         )
                         "Feedback" -> FeedbackExample(
                             showBanner = showBanner,
                             onBannerVisibilityChange = { showBanner = it }
+                        )
+                        "Content states" -> ContentStatesExample(
+                            expanded = disclosureExpanded,
+                            onExpandedChange = { disclosureExpanded = it }
                         )
                         "Data display" -> DataExample(saved = saved, onToggleSaved = { saved = !saved })
                     }
@@ -232,7 +279,11 @@ private fun PlaygroundContent(
                     message = "Powered by the local lumen-compose module",
                     tone = LumenMetricTone.Success,
                     trailing = {
-                        LumenText("23 shared", variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)
+                        LumenText(
+                            "${sections.flatMap { it.names }.toSet().size} components",
+                            variant = LumenTextVariant.Caption,
+                            tone = LumenTextTone.Muted
+                        )
                     }
                 )
             }
@@ -287,8 +338,10 @@ private fun FoundationsExample() {
 
 @Composable
 private fun ActionsExample() {
+    var designSelected by remember { mutableStateOf(true) }
+
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        LumenButtonGroup {
             LumenButton(onClick = {}) { Text("Primary") }
             LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) { Text("Secondary") }
         }
@@ -296,6 +349,11 @@ private fun ActionsExample() {
             LumenButton(onClick = {}, intent = LumenButtonIntent.Danger) { Text("Danger") }
             LumenButton(onClick = {}, loading = true) { Text("Loading") }
             LumenButton(onClick = {}, enabled = false) { Text("Disabled") }
+            LumenChip(
+                label = "Design",
+                selected = designSelected,
+                onClick = { designSelected = !designSelected }
+            )
         }
     }
 }
@@ -305,8 +363,18 @@ private fun FormsExample(
     email: String,
     onEmailChange: (String) -> Unit,
     notificationsEnabled: Boolean,
-    onNotificationsChange: (Boolean) -> Unit
+    onNotificationsChange: (Boolean) -> Unit,
+    accessibilityReviewed: Boolean,
+    onAccessibilityReviewedChange: (Boolean) -> Unit,
+    profile: String,
+    onProfileChange: (String) -> Unit,
+    density: String,
+    onDensityChange: (String) -> Unit
 ) {
+    var notes by remember { mutableStateOf("Native components now share one documented contract.") }
+    var pickerProfile by remember { mutableStateOf("balanced") }
+    var sliderValue by remember { mutableStateOf(72f) }
+
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         LumenTextField(
             value = email,
@@ -314,6 +382,23 @@ private fun FormsExample(
             label = "Email address",
             modifier = Modifier.fillMaxWidth()
         )
+        LumenTextarea(
+            value = notes,
+            onValueChange = { notes = it },
+            label = "Release notes",
+            description = "Summarize the native release."
+        )
+        LumenFieldGroup(
+            label = "Publication checks",
+            description = "Contained controls retain independent focus and labels.",
+            required = true
+        ) {
+            LumenCheckbox(
+                label = "Confirm accessibility review",
+                checked = accessibilityReviewed,
+                onCheckedChange = onAccessibilityReviewedChange
+            )
+        }
         LumenTextField(
             value = "lumen playground",
             onValueChange = {},
@@ -340,6 +425,78 @@ private fun FormsExample(
                 onCheckedChange = onNotificationsChange
             )
         }
+        LumenCheckbox(
+            label = "Confirm accessibility review",
+            description = "Required before publishing this native component set.",
+            checked = accessibilityReviewed,
+            onCheckedChange = onAccessibilityReviewedChange
+        )
+        LumenRadioGroup(
+            label = "Performance profile",
+            options = listOf(
+                LumenSelectionOption("quiet", "Quiet", "Reduce background activity."),
+                LumenSelectionOption("balanced", "Balanced", "Recommended for most projects."),
+                LumenSelectionOption("performance", "Performance", "Prioritize responsiveness.")
+            ),
+            value = profile,
+            onValueChange = onProfileChange
+        )
+        LumenSegmentedControl(
+            label = "Control density",
+            options = listOf(
+                LumenSelectionOption("compact", "Compact"),
+                LumenSelectionOption("comfortable", "Comfortable"),
+                LumenSelectionOption("spacious", "Spacious", enabled = false)
+            ),
+            value = density,
+            onValueChange = onDensityChange
+        )
+        LumenPicker(
+            label = "Profile",
+            value = pickerProfile,
+            options = listOf(
+                LumenPickerOption("quiet", "Quiet"),
+                LumenPickerOption("balanced", "Balanced"),
+                LumenPickerOption("performance", "Performance")
+            ),
+            onValueChange = { pickerProfile = it }
+        )
+        LumenSlider(
+            label = "Documentation coverage",
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            valueRange = 0f..100f,
+            steps = 99,
+            valueLabel = "${sliderValue.toInt()}%"
+        )
+    }
+}
+
+@Composable
+private fun ContentStatesExample(expanded: Boolean, onExpandedChange: (Boolean) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LumenSkeleton(width = 44.dp, height = 44.dp, shape = LumenSkeletonShape.Circle)
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                LumenSkeleton(width = 180.dp, height = 16.dp, label = "Loading profile")
+                LumenSkeleton(width = 120.dp, height = 12.dp)
+            }
+        }
+        LumenDisclosure(
+            title = "Implementation notes",
+            description = "Tap the header to verify native expanded state.",
+            expanded = expanded,
+            onExpandedChange = onExpandedChange
+        ) {
+            LumenText("Each adapter owns its native rendering and focus behavior.", tone = LumenTextTone.Soft)
+        }
     }
 }
 
@@ -348,6 +505,8 @@ private fun FeedbackExample(
     showBanner: Boolean,
     onBannerVisibilityChange: (Boolean) -> Unit
 ) {
+    var showToast by remember { mutableStateOf(true) }
+
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             LumenBadge("Ready", tone = LumenBadgeTone.Success)
@@ -377,6 +536,14 @@ private fun FeedbackExample(
                 Text("Restore banner")
             }
         }
+        if (showToast) {
+            LumenToast(
+                title = "Changes saved",
+                description = "All shared native catalogs were updated.",
+                variant = LumenBannerVariant.Success,
+                onDismiss = { showToast = false }
+            )
+        }
     }
 }
 
@@ -386,7 +553,7 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
         LumenSectionHeader(
             title = "Workspace",
             subtitle = "Shared native contracts",
-            count = "23",
+            count = "28",
             actions = {
                 LumenButton(
                     onClick = onToggleSaved,
@@ -402,7 +569,7 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
         ) {
             LumenStat(
                 label = "Shared components",
-                value = "23",
+                value = "28",
                 modifier = Modifier.weight(1f),
                 detail = "Across three adapters",
                 tone = LumenMetricTone.Accent
@@ -412,6 +579,12 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
                 value = "Passing",
                 modifier = Modifier.weight(1f),
                 detail = "All repository gates",
+                tone = LumenMetricTone.Success
+            )
+            LumenGauge(
+                label = "Coverage",
+                value = 86f,
+                valueLabel = "86%",
                 tone = LumenMetricTone.Success
             )
         }

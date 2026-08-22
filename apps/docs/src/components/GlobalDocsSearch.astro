@@ -1,0 +1,81 @@
+---
+import { Button, Dialog, Icon } from '@santi020k/lumen-astro'
+
+import DocsSearch from './DocsSearch.astro'
+
+const dialogId = 'global-docs-search'
+const titleId = `${dialogId}-title`
+---
+
+<Button
+  class="docs-header-search"
+  size="icon"
+  variant="ghost"
+  aria-keyshortcuts="Meta+K Control+K"
+  aria-label="Search Lumen"
+  data-ui-dialog-trigger={dialogId}
+  title="Search Lumen (Command or Control K)"
+>
+  <Icon decorative name="search" size="sm" />
+</Button>
+
+<Dialog
+  id={dialogId}
+  class="docs-global-search-dialog"
+  aria-labelledby={titleId}
+>
+  <header class="docs-global-search-dialog__header">
+    <div>
+      <h2 id={titleId}>Search Lumen</h2>
+      <p>Find components, APIs, guides, and recipes.</p>
+    </div>
+  </header>
+
+  <DocsSearch
+    class="docs-global-search-dialog__search max-w-none"
+    inputId="global-docs-search-input"
+    optionIdPrefix="global-docs-search"
+    placeholder="Search components, APIs, guides, and recipes..."
+    resultsId="global-docs-search-results"
+  />
+
+  <Button
+    class="docs-global-search-dialog__close"
+    size="icon"
+    variant="ghost"
+    aria-label="Close search"
+    data-ui-dialog-close
+  >
+    <Icon decorative name="x" size="sm" />
+  </Button>
+</Dialog>
+
+<script>
+  const initGlobalDocsSearch = (): void => {
+    if (document.documentElement.dataset.globalDocsSearchBound === 'true') return
+
+    document.documentElement.dataset.globalDocsSearchBound = 'true'
+
+    document.addEventListener('keydown', event => {
+      if (event.key.toLowerCase() !== 'k' || (!event.metaKey && !event.ctrlKey) || event.altKey) return
+
+      event.preventDefault()
+
+      const dialog = document.getElementById('global-docs-search')
+
+      if (!(dialog instanceof HTMLDialogElement)) return
+
+      if (dialog.open) {
+        dialog.close()
+
+        return
+      }
+
+      document.querySelector<HTMLButtonElement>('[data-ui-dialog-trigger="global-docs-search"]')?.click()
+    })
+  }
+
+  initGlobalDocsSearch()
+
+  document.addEventListener('astro:page-load', initGlobalDocsSearch)
+</script>

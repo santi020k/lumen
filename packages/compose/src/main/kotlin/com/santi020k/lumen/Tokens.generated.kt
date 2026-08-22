@@ -98,8 +98,23 @@ object LumenTypography {
     const val BoldWeight = 700
 }
 
+data class LumenCubicBezier(
+    val x1: Float,
+    val y1: Float,
+    val x2: Float,
+    val y2: Float
+)
+
 object LumenMotion {
     const val FastDurationMillis = 120
     const val StandardDurationMillis = 160
     const val SlowDurationMillis = 300
+    val StandardEasing = LumenCubicBezier(0.32f, 0.72f, 0f, 1f)
+    val EmphasizedEasing = LumenCubicBezier(0.22f, 1f, 0.36f, 1f)
+}
+
+object LumenElevation {
+    val Resting = 1f.dp
+    val Raised = 3f.dp
+    val Overlay = 6f.dp
 }

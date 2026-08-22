@@ -15,7 +15,7 @@ import {
   unlink,
   writeFile
 } from 'node:fs/promises'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import ts from 'typescript'
@@ -830,6 +830,7 @@ const loadWorkspaceFiles = async p => ({
   aiUsage: await readIfExists(p('docs/ai-usage.md')),
   componentsSource: await readIfExists(p('packages/core/src/components.ts')),
   docsSource: await readIfExists(p('apps/docs/src/data/docs.ts')),
+  nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
   elementsSource: await readIfExists(p('packages/elements/src/define.ts')),
   reactSource: await readIfExists(p('packages/react/src/components.tsx')),
   readme: await readIfExists(p('README.md')),
@@ -846,6 +847,145 @@ const loadRegistry = async p => {
   } catch {
     return { items: [] }
   }
+}
+
+const loadNativeRegistry = async p => JSON.parse(
+  await readFile(p('registry/native-components.json'), 'utf8')
+)
+
+const nativePlatformConfigs = {
+  compose: {
+    adapter: 'compose',
+    docsPlatform: 'android',
+    importStatement: symbol => `import com.santi020k.lumen.${symbol}`,
+    install:
+      'Include packages/compose from a Lumen checkout or Git submodule, then add implementation(project(":lumen-compose")).',
+    setup: 'Wrap application content in LumenTheme and preserve Compose state and navigation.'
+  },
+  'react-native': {
+    adapter: 'reactNative',
+    docsPlatform: 'react-native',
+    importStatement: symbol => `import { ${symbol} } from '@santi020k/lumen-react-native'`,
+    install: 'pnpm add @santi020k/lumen-react-native',
+    setup: 'Mount one LumenProvider near the application root. Native adapters do not load CSS or the Astro runtime.'
+  },
+  swiftui: {
+    adapter: 'swiftUI',
+    docsPlatform: 'apple',
+    importStatement: () => 'import LumenUI',
+    install:
+      'Add https://github.com/santi020k/lumen with Swift Package Manager and link the LumenUI product to the application target.',
+    setup: 'Apply .lumenTheme(...) near the SwiftUI application root and preserve native environment behavior.'
+  }
+}
+
+const nativeSourceExtensions = {
+  compose: new Set(['.kt']),
+  'react-native': new Set(['.ts', '.tsx']),
+  swiftui: new Set(['.swift'])
+}
+
+const extensionOf = fileName => {
+  const index = fileName.lastIndexOf('.')
+
+  return index === -1 ? '' : fileName.slice(index)
+}
+
+const loadNativeSources = async (repoRoot, nativeRegistry) => {
+  const sources = {}
+
+  for (const [platform, config] of Object.entries(nativePlatformConfigs)) {
+    const adapter = nativeRegistry.adapters[config.adapter]
+    const directory = resolve(repoRoot, adapter.sourceDirectory)
+    const files = {}
+
+    for (const fileName of await readdir(directory)) {
+      if (!nativeSourceExtensions[platform].has(extensionOf(fileName))) continue
+
+      const absolutePath = join(directory, fileName)
+
+      files[relative(repoRoot, absolutePath)] = await readFile(absolutePath, 'utf8')
+    }
+
+    sources[platform] = files
+  }
+
+  return sources
+}
+
+const findNativeSourceFile = (sources, platform, symbol) => {
+  const match = Object.entries(sources[platform]).find(([, source]) => source.includes(symbol))
+
+  if (!match) throw new Error(`Missing ${platform} source for native symbol ${symbol}.`)
+
+  return match[0]
+}
+
+const nativeRegistryEntry = (nativeRegistry, id) => (
+  nativeRegistry.components.find(component => component.id === id) ??
+  nativeRegistry.appleComponents.find(component => component.id === id)
+)
+
+const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
+  const docsData = await loadDocsData(files.nativeDocsSource)
+  const sources = await loadNativeSources(repoRoot, nativeRegistry)
+
+  const registryEntries = [
+    ...nativeRegistry.components,
+    ...nativeRegistry.appleComponents
+  ]
+
+  for (const registryEntry of registryEntries) {
+    if (!docsData.nativeComponentDocs.some(doc => doc.slug === registryEntry.id)) {
+      throw new Error(`Native registry entry ${registryEntry.id} is missing from native documentation.`)
+    }
+  }
+
+  const components = docsData.nativeComponentDocs.map(doc => {
+    const registryEntry = nativeRegistryEntry(nativeRegistry, doc.slug)
+
+    if (!registryEntry) throw new Error(`Native documentation entry ${doc.slug} is missing from the native registry.`)
+
+    const implementations = {}
+
+    for (const [platform, config] of Object.entries(nativePlatformConfigs)) {
+      const implementation = doc.implementations[config.docsPlatform]
+
+      if (!implementation) continue
+
+      const symbol = registryEntry.symbols?.[config.adapter] ?? registryEntry.symbol
+
+      if (!symbol) throw new Error(`Native registry entry ${doc.slug} is missing a ${platform} symbol.`)
+
+      implementations[platform] = {
+        api: implementation.api,
+        example: implementation.example,
+        exportName: implementation.exportName,
+        importStatement: config.importStatement(symbol),
+        install: config.install,
+        language: implementation.language,
+        packageName: nativeRegistry.adapters[config.adapter].package,
+        setup: config.setup,
+        sourceFile: findNativeSourceFile(sources, platform, symbol),
+        symbol
+      }
+    }
+
+    return {
+      accessibility: doc.accessibility,
+      category: doc.category,
+      contract: registryEntry.contract,
+      guidance: doc.guidance,
+      id: doc.slug,
+      implementations,
+      name: doc.name,
+      summary: doc.summary,
+      ...(registryEntry.platforms ? { supportedPlatforms: registryEntry.platforms } : {}),
+      tier: registryEntry.tier ?? 'apple'
+    }
+  })
+
+  return { components, sources }
 }
 
 const mapRecipesByComponent = registry => {
@@ -923,8 +1063,15 @@ const main = async () => {
   )
 
   const registry = await loadRegistry(p)
+  const nativeRegistry = await loadNativeRegistry(p)
   const names = parseComponentNames(componentsSource)
   const ctxData = await buildContextData(files, registry, names)
+
+  const {
+    components: nativeComponents,
+    sources: nativeSources
+  } = await buildNativeComponents(repoRoot, files, nativeRegistry)
+
   const chart = parseTokenBlock(tokensSource, 'lumenChart')
   const colors = parsePlatformColors(platformTokensSource)
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
@@ -1094,8 +1241,20 @@ const main = async () => {
     Reflect.set(packageVersions, packageName, manifest.version)
   }
 
+  packageVersions.LumenUI = 'workspace'
+
+  packageVersions['com.santi020k:lumen-compose'] = 'workspace'
+
   const catalogHash = createHash('sha256')
-    .update(JSON.stringify({ components, docs, recipes, rules, tokens }))
+    .update(JSON.stringify({
+      components,
+      docs,
+      nativeComponents,
+      nativeSources,
+      recipes,
+      rules,
+      tokens
+    }))
     .digest('hex')
 
   const catalogManifest = {
@@ -1103,6 +1262,20 @@ const main = async () => {
       components.map(component => [
         component.name,
         createHash('sha256').update(JSON.stringify(component)).digest('hex')
+      ])
+    ),
+    nativeComponents: Object.fromEntries(
+      nativeComponents.map(component => [
+        component.name,
+        createHash('sha256').update(JSON.stringify({
+          component,
+          sources: Object.fromEntries(
+            Object.entries(component.implementations).map(([platform, implementation]) => [
+              platform,
+              nativeSources[platform][implementation.sourceFile]
+            ])
+          )
+        })).digest('hex')
       ])
     ),
     recipes: Object.fromEntries(
@@ -1120,18 +1293,24 @@ const main = async () => {
     meta: {
       catalogHash,
       componentCount: components.length,
-      packages: registry.packages ?? [
-        '@santi020k/lumen-astro',
-        '@santi020k/lumen-react',
-        '@santi020k/lumen-elements',
-        '@santi020k/lumen-core'
-      ],
+      nativeComponentCount: nativeComponents.length,
+      packages: [...new Set([
+        ...(registry.packages ?? [
+          '@santi020k/lumen-astro',
+          '@santi020k/lumen-react',
+          '@santi020k/lumen-elements',
+          '@santi020k/lumen-core'
+        ]),
+        ...Object.values(nativeRegistry.adapters).map(adapter => adapter.package)
+      ])],
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 3,
+      schemaVersion: 4,
       serverVersion: packageJson.version
     },
+    nativeComponents,
+    nativeSources,
     recipes,
     rules,
     tokens
@@ -1169,6 +1348,7 @@ const main = async () => {
 
   process.stdout.write(
     `lumen-mcp: wrote data/lumen-data.json (${components.length} components, ` +
+    `${nativeComponents.length} native components, ` +
     `${Object.keys(colors).length} color tokens, ${rules.length} bytes of rules)\n`
   )
 }

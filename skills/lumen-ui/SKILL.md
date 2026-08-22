@@ -24,8 +24,8 @@ Treat Astro as the reference surface, while following the user's existing stack.
      search with the target framework, then read the selected component's usage contract and tokens.
      Retain the catalog manifest when the client supports caching so a later catalog diff identifies
      only the contracts that changed.
-   - For native targets, inspect the installed adapter source/types and native documentation. The
-     MCP per-component catalog currently covers web targets only.
+   - For native targets, prefer `lumen_list_native_components` and `lumen_get_native_component`,
+     then verify installed adapter source/types when the local package version may differ.
    - Otherwise inspect installed package types/source or use the Lumen CLI and online docs.
    - Never invent a component, prop, variant, event, or import path from memory.
 4. Plan the interface as product structure and states, then map each part to the smallest suitable
@@ -65,7 +65,7 @@ Treat Astro as the reference surface, while following the user's existing stack.
 
 ## Discovery Without MCP
 
-If Lumen is installed, inspect its exported types and package README. For the web catalog, otherwise use:
+If Lumen is installed, inspect its exported types and package README. For the catalog, otherwise use:
 
 ```bash
 pnpm exec lumen list
@@ -74,7 +74,7 @@ pnpm exec lumen show Button
 
 Use the project's package-manager equivalent of `lumen show <name>` before relying on an unfamiliar
 web component. Component names also accept kebab-case aliases such as `data-table`. For a native
-component, inspect the matching adapter and native component documentation instead. If the CLI is
+component, use the MCP native list/get tools or inspect the matching adapter and documentation. If the CLI is
 not installed, use the public documentation or GitHub source below.
 
 Current public documentation:

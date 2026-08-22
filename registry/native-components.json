@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "adapters": {
     "reactNative": {
       "package": "@santi020k/lumen-react-native",
@@ -93,6 +93,28 @@
       }
     },
     {
+      "id": "textarea",
+      "tier": "shared",
+      "contract": "Multiline native text entry with supporting and error states",
+      "accessibility": "Preserves native multiline editing and exposes its visible label and error context",
+      "symbols": {
+        "reactNative": "LumenTextarea",
+        "swiftUI": "LumenTextarea",
+        "compose": "LumenTextarea"
+      }
+    },
+    {
+      "id": "field-group",
+      "tier": "shared",
+      "contract": "Label, description, required state, control content, and validation message",
+      "accessibility": "Keeps child control semantics independent while presenting readable field context",
+      "symbols": {
+        "reactNative": "LumenFieldGroup",
+        "swiftUI": "LumenFieldGroup",
+        "compose": "LumenFieldGroup"
+      }
+    },
+    {
       "id": "toggle",
       "tier": "shared",
       "contract": "Native switch behavior with visible label and disabled state",
@@ -123,6 +145,61 @@
         "reactNative": "LumenSearchField",
         "swiftUI": "LumenSearchField",
         "compose": "LumenSearchField"
+      }
+    },
+    {
+      "id": "checkbox",
+      "tier": "shared",
+      "contract": "Controlled Boolean selection with visible label and optional supporting text",
+      "accessibility": "Exposes native checkbox state, disabled state, and a readable label",
+      "symbols": {
+        "reactNative": "LumenCheckbox",
+        "swiftUI": "LumenCheckbox",
+        "compose": "LumenCheckbox"
+      }
+    },
+    {
+      "id": "radio-group",
+      "tier": "shared",
+      "contract": "Single selection from labeled options with optional supporting text",
+      "accessibility": "Exposes a named native radio group and selected or disabled option states",
+      "symbols": {
+        "reactNative": "LumenRadioGroup",
+        "swiftUI": "LumenRadioGroup",
+        "compose": "LumenRadioGroup"
+      }
+    },
+    {
+      "id": "segmented-control",
+      "tier": "shared",
+      "contract": "Compact single selection from a small set of peer options",
+      "accessibility": "Exposes a named single-selection group and selected or disabled segment states",
+      "symbols": {
+        "reactNative": "LumenSegmentedControl",
+        "swiftUI": "LumenSegmentedControl",
+        "compose": "LumenSegmentedControl"
+      }
+    },
+    {
+      "id": "chip",
+      "tier": "shared",
+      "contract": "Compact display, selection, and removal with semantic selected and disabled states",
+      "accessibility": "Separates selection and removal actions while exposing selected and disabled state",
+      "symbols": {
+        "reactNative": "LumenChip",
+        "swiftUI": "LumenChip",
+        "compose": "LumenChip"
+      }
+    },
+    {
+      "id": "button-group",
+      "tier": "shared",
+      "contract": "Horizontal or vertical layout for a small set of related actions",
+      "accessibility": "Contains native buttons without merging their independent action names",
+      "symbols": {
+        "reactNative": "LumenButtonGroup",
+        "swiftUI": "LumenButtonGroup",
+        "compose": "LumenButtonGroup"
       }
     },
     {
@@ -181,6 +258,17 @@
       }
     },
     {
+      "id": "toast",
+      "tier": "shared",
+      "contract": "App-controlled transient feedback with semantic tone, optional action, and dismissal",
+      "accessibility": "Announces concise status while preserving independent action and dismissal controls",
+      "symbols": {
+        "reactNative": "LumenToast",
+        "swiftUI": "LumenToast",
+        "compose": "LumenToast"
+      }
+    },
+    {
       "id": "progress",
       "tier": "shared",
       "contract": "Determinate normalized value and maximum",
@@ -189,6 +277,28 @@
         "reactNative": "LumenProgress",
         "swiftUI": "LumenProgress",
         "compose": "LumenProgress"
+      }
+    },
+    {
+      "id": "skeleton",
+      "tier": "shared",
+      "contract": "Text, rectangle, and circle loading placeholders with normalized dimensions",
+      "accessibility": "Decorative by default or exposes a labeled indeterminate loading state",
+      "symbols": {
+        "reactNative": "LumenSkeleton",
+        "swiftUI": "LumenSkeleton",
+        "compose": "LumenSkeleton"
+      }
+    },
+    {
+      "id": "disclosure",
+      "tier": "shared",
+      "contract": "Controlled progressive disclosure with title, supporting text, and native content",
+      "accessibility": "The trigger exposes expanded and disabled state while collapsed content leaves the tree",
+      "symbols": {
+        "reactNative": "LumenDisclosure",
+        "swiftUI": "LumenDisclosure",
+        "compose": "LumenDisclosure"
       }
     },
     {
@@ -267,30 +377,39 @@
         "swiftUI": "LumenStatusBar",
         "compose": "LumenStatusBar"
       }
-    }
-  ],
-  "appleComponents": [
+    },
     {
       "id": "picker",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Automatic, menu, or segmented native selection",
-      "accessibility": "Preserves native picker selection and label semantics",
-      "symbol": "LumenPicker"
+      "tier": "shared",
+      "contract": "Native single-value selection using platform-appropriate menu or picker presentation",
+      "accessibility": "Preserves native selection behavior and reports the selected value",
+      "symbols": {
+        "swiftUI": "LumenPicker",
+        "compose": "LumenPicker"
+      }
     },
     {
       "id": "slider",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Continuous or stepped range input with visible value context",
-      "accessibility": "Preserves native adjustable control semantics",
-      "symbol": "LumenSlider"
+      "tier": "shared",
+      "contract": "Continuous or stepped range input with visible formatted value context",
+      "accessibility": "Preserves native adjustable semantics and reports the formatted current value",
+      "symbols": {
+        "swiftUI": "LumenSlider",
+        "compose": "LumenSlider"
+      }
     },
     {
       "id": "gauge",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Clamped circular metric using semantic status tones",
-      "accessibility": "Exposes a label and formatted current value",
-      "symbol": "LumenGauge"
-    },
+      "tier": "shared",
+      "contract": "Clamped circular metric with a formatted accessible value",
+      "accessibility": "Exposes a label, normalized range, and formatted current value",
+      "symbols": {
+        "swiftUI": "LumenGauge",
+        "compose": "LumenGauge"
+      }
+    }
+  ],
+  "appleComponents": [
     {
       "id": "shortcut-recorder",
       "platforms": ["macOS"],

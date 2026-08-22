@@ -159,8 +159,10 @@ describe('@santi020k/lumen-elements', () => {
   test('applies primitive classes when elements connect', () => {
     const button = document.createElement('lumen-button')
     const card = document.createElement('lumen-card')
+    const contextNavigation = document.createElement('lumen-context-navigation')
 
-    document.body.append(button, card)
+    contextNavigation.setAttribute('variant', 'unstyled')
+    document.body.append(button, card, contextNavigation)
 
     expect([...button.classList].sort()).toEqual(
       ['ui-button', 'ui-button--default', 'ui-button--default-size'].sort()
@@ -168,6 +170,11 @@ describe('@santi020k/lumen-elements', () => {
     expect(button.getAttribute('role')).toBe('button')
     expect(button.tabIndex).toBe(0)
     expect([...card.classList]).toEqual(['ui-card'])
+    expect([...contextNavigation.classList]).toEqual([
+      'ui-context-navigation',
+      'ui-context-navigation--unstyled'
+    ])
+    expect(contextNavigation.dataset.slot).toBe('context-navigation')
   })
 
   test('registers stable compound Card and Stat part contracts', () => {

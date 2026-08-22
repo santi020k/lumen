@@ -1,0 +1,92 @@
+---
+import { ButtonLink, Card, Icon } from '@santi020k/lumen-astro'
+
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  description="The requested Lumen UI page could not be found."
+  noindex
+  socialImage="/og/pages/index.webp"
+  title="Page not found — Lumen UI"
+>
+  <main class="not-found-page">
+    <Card class="not-found-card" glass="subtle">
+      <span class="not-found-icon" aria-hidden="true">
+        <Icon decorative name="file-question" size="lg" />
+      </span>
+      <p>404 · Page not found</p>
+      <h1>This path has gone dark.</h1>
+      <p>
+        The page may have moved or the address may be incomplete. Search the documentation or
+        continue from one of Lumen’s main starting points.
+      </p>
+      <div class="not-found-actions">
+        <ButtonLink href="/docs" showArrow>Browse documentation</ButtonLink>
+        <ButtonLink href="/guides" variant="secondary">Read the guides</ButtonLink>
+        <ButtonLink href="/" variant="inline">Return home</ButtonLink>
+      </div>
+    </Card>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found-page {
+    display: grid;
+    width: min(100% - 2.5rem, 68rem);
+    min-height: 70vh;
+    place-items: center;
+    margin-inline: auto;
+    padding-block: clamp(4rem, 10vw, 9rem);
+  }
+
+  :global(.not-found-card.ui-card) {
+    width: min(100%, 42rem);
+    padding: clamp(2rem, 7vw, 4rem);
+    text-align: center;
+  }
+
+  .not-found-icon {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    margin-inline: auto;
+    border-radius: 1rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .not-found-card > p:first-of-type {
+    margin-top: 1.5rem;
+    color: hsl(var(--brand));
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .not-found-card h1 {
+    margin-top: 0.65rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.4rem, 7vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .not-found-card h1 + p {
+    max-width: 34rem;
+    margin: 1.25rem auto 0;
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  .not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

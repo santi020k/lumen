@@ -33,6 +33,7 @@ export const lumenComponentNames = [
   'Container',
   'CopyButton',
   'Command',
+  'ContextNavigation',
   'ContextMenu',
   'ColorPicker',
   'DataTable',
@@ -205,6 +206,7 @@ export const lumenComponentBehavior = {
   Command: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Container: { astro: 'none', elements: 'registered-element', react: 'component' },
   CopyButton: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  ContextNavigation: { astro: 'none', elements: 'registered-element', react: 'component' },
   ContextMenu: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   CoverImage: { astro: 'none', elements: 'registered-element', react: 'component' },
   DataTable: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
@@ -394,6 +396,16 @@ export const lumenStylingContracts = {
     customProperties: ['--ui-code-tabs-list-padding', '--ui-code-tabs-tab-padding'],
     parts: [],
     rootSlot: 'code-tabs',
+    stability: 'stable'
+  },
+  ContextNavigation: {
+    customProperties: [
+      '--ui-context-navigation-gap',
+      '--ui-context-navigation-min-height',
+      '--ui-context-navigation-padding'
+    ],
+    parts: ['context-navigation-context'],
+    rootSlot: 'context-navigation',
     stability: 'stable'
   },
   Link: {

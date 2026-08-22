@@ -6,6 +6,16 @@ import org.junit.Test
 
 class PrimitivesTest {
     @Test
+    fun foundationMotionAndElevationMatchCanonicalTokens() {
+        assertEquals(160, LumenMotion.StandardDurationMillis)
+        assertEquals(LumenCubicBezier(0.32f, 0.72f, 0f, 1f), LumenMotion.StandardEasing)
+        assertEquals(LumenCubicBezier(0.22f, 1f, 0.36f, 1f), LumenMotion.EmphasizedEasing)
+        assertEquals(1.dp, LumenElevation.Resting)
+        assertEquals(3.dp, LumenElevation.Raised)
+        assertEquals(6.dp, LumenElevation.Overlay)
+    }
+
+    @Test
     fun buttonMetricsPreserveNativeTouchTargets() {
         assertEquals(36.dp, LumenButtonMetrics.resolve(LumenControlSize.Sm).minHeight)
         assertEquals(44.dp, LumenButtonMetrics.resolve(LumenControlSize.Md).minHeight)
@@ -53,6 +63,27 @@ class PrimitivesTest {
         assertEquals(true, LumenSearchFieldState.resolve("lumen", true).showClearAction)
         assertEquals(false, LumenSearchFieldState.resolve("", true).showClearAction)
         assertEquals(false, LumenSearchFieldState.resolve("lumen", false).showClearAction)
+    }
+
+    @Test
+    fun selectionAndSkeletonModelsUseSafeDefaults() {
+        assertEquals(
+            LumenSelectionOption(value = "balanced", label = "Balanced"),
+            LumenSelectionOption(value = "balanced", label = "Balanced", enabled = true)
+        )
+        assertEquals(24.dp, resolveLumenSkeletonHeight(24.dp))
+        assertEquals(16.dp, resolveLumenSkeletonHeight(0.dp))
+        assertEquals(16.dp, resolveLumenSkeletonHeight(Float.NaN.dp))
+    }
+
+    @Test
+    fun pickerAndAdditionalComponentModelsPreserveStableDefaults() {
+        assertEquals(
+            LumenPickerOption(value = "balanced", label = "Balanced"),
+            LumenPickerOption(value = "balanced", label = "Balanced", enabled = true)
+        )
+        assertEquals(LumenButtonGroupOrientation.Horizontal, LumenButtonGroupOrientation.valueOf("Horizontal"))
+        assertEquals(LumenProgressValue(100f, 72f), LumenProgressValue.resolve(72f, 100f))
     }
 
     @Test

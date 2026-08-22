@@ -3377,6 +3377,41 @@ export const NavigationMenu = ({
   />
 )
 
+export interface ContextNavigationProps
+  extends ComponentPropsWithoutRef<'div'> {
+  context?: ReactNode
+  variant?: 'default' | 'unstyled'
+}
+
+export const ContextNavigation = ({
+  children,
+  className,
+  context,
+  variant = 'default',
+  ...props
+}: ContextNavigationProps) => (
+  <div
+    className={composeClassName(
+      'ui-context-navigation',
+      variant === 'unstyled' && 'ui-context-navigation--unstyled',
+      className
+    )}
+    data-slot="context-navigation"
+    data-variant={variant}
+    {...props}
+  >
+    {context && (
+      <div
+        className="ui-context-navigation__context"
+        data-slot="context-navigation-context"
+      >
+        {context}
+      </div>
+    )}
+    {children}
+  </div>
+)
+
 export type PaginationProps = ComponentPropsWithoutRef<'nav'>
 export const Pagination = ({
   'aria-label': ariaLabel = 'Pagination',

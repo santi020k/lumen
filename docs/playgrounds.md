@@ -2,9 +2,10 @@
 
 Lumen includes one searchable component gallery for each native adapter. Use these apps to evaluate
 the real components, capture documentation screenshots, and prepare distributable marketing builds.
-Each gallery covers all 23 shared native contracts, including semantic Card variants, controlled
-forms, structured feedback, metrics, rows, empty states, and light/dark theme behavior. The Apple
-gallery additionally exercises the five intentionally platform-specific controls.
+Each gallery covers all 33 contracts shared by every native adapter, including semantic Card
+variants, multiline and grouped forms, chips, action groups, transient feedback, metrics, rows,
+empty states, and light/dark theme behavior. Compose and Apple additionally exercise Picker, Slider,
+and Gauge; the Apple gallery also includes two intentionally macOS-specific controls.
 
 ## First-time repository setup
 

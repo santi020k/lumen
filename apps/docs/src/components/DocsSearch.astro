@@ -176,6 +176,29 @@ const searchIndexHref = '/docs-search.json'
     ...results.querySelectorAll<HTMLAnchorElement>('[role="option"]')
   ]
 
+  const focusAvailableDocsSearch = (): boolean => {
+    const visibleSearchInput = [...document.querySelectorAll<HTMLInputElement>('[data-docs-search-input]')]
+      .find(candidate => candidate.getClientRects().length > 0)
+
+    if (visibleSearchInput) {
+      visibleSearchInput.focus()
+
+      visibleSearchInput.select()
+
+      return true
+    }
+
+    const globalSearchTrigger = document.querySelector<HTMLButtonElement>(
+      '[data-ui-dialog-trigger="global-docs-search"]'
+    )
+
+    if (!globalSearchTrigger) return false
+
+    globalSearchTrigger.click()
+
+    return true
+  }
+
   const openSearchResults = (state: DocsSearchState): void => {
     state.results.hidden = false
 
@@ -524,6 +547,14 @@ const searchIndexHref = '/docs-search.json'
 
       document.addEventListener('click', event => {
         if (event.target instanceof Node && !root.contains(event.target)) {
+          const dialog = root.closest<HTMLDialogElement>('dialog[open]')
+
+          const dialogTrigger = event.target instanceof Element ?
+            event.target.closest<HTMLElement>('[data-ui-dialog-trigger]') :
+            null
+
+          if (dialog && dialogTrigger?.dataset.uiDialogTrigger === dialog.id) return
+
           closeSearchResults(state)
         }
       })
@@ -544,16 +575,9 @@ const searchIndexHref = '/docs-search.json'
         (target instanceof HTMLElement && target.isContentEditable)
       ) return
 
-      const visibleSearchInput = [...document.querySelectorAll<HTMLInputElement>('[data-docs-search-input]')]
-        .find(candidate => candidate.getClientRects().length > 0)
-
-      if (!visibleSearchInput) return
+      if (!focusAvailableDocsSearch()) return
 
       event.preventDefault()
-
-      visibleSearchInput.focus()
-
-      visibleSearchInput.select()
     })
   }
 

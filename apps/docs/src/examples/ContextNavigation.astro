@@ -1,0 +1,26 @@
+---
+import {
+  ContextNavigation,
+  Label,
+  NativeSelect,
+  NavigationMenu
+} from '@santi020k/lumen-astro'
+---
+
+<ContextNavigation>
+  <div slot="context">
+    <Label for="context-navigation-example">Documentation for</Label>
+    <NativeSelect id="context-navigation-example" visualSize="sm">
+      <option>Web</option>
+      <option>React Native</option>
+      <option>Apple</option>
+      <option>Android</option>
+    </NativeSelect>
+  </div>
+  <NavigationMenu aria-label="Web documentation" variant="unstyled">
+    <a href="#overview" aria-current="page">Overview</a>
+    <a href="#components">Components</a>
+    <a href="#playground">Playground</a>
+    <a href="#frameworks">Frameworks</a>
+  </NavigationMenu>
+</ContextNavigation>

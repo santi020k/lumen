@@ -1,3 +1,5 @@
+import { getNativeComponentsForPlatform } from './native-components'
+
 export type DocsPlatformId = 'android' | 'apple' | 'foundations' | 'react-native' | 'web'
 
 interface PlatformCodeExample {
@@ -22,6 +24,13 @@ interface PlatformSetupStep {
   title: string
 }
 
+interface PlatformThemeGuide {
+  description: string
+  examples: PlatformCodeExample[]
+  note: string
+  verification: string[]
+}
+
 export interface PlatformGuide {
   codeExamples: PlatformCodeExample[]
   componentNote: string
@@ -44,28 +53,16 @@ export interface PlatformGuide {
   shortLabel: string
   status: string
   summary: string
+  theme?: PlatformThemeGuide
   title: string
 }
 
 const nativeBetaNote =
   'The native adapter is available for testing and early production adoption, but its public API may evolve as Lumen validates it in real applications. Review release notes when upgrading.'
 
-const sharedNativeComponents = [
-  'Theme',
-  'Text',
-  'Icon',
-  'Icon button',
-  'Surface',
-  'Button',
-  'Text field',
-  'Badge',
-  'Divider',
-  'Spinner',
-  'Card',
-  'Alert',
-  'Progress',
-  'Avatar'
-]
+const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => (
+  getNativeComponentsForPlatform(platform).map(component => component.name)
+)
 
 export const platformGuides: PlatformGuide[] = [
   {
@@ -174,7 +171,7 @@ npx react-native start`,
     ],
     componentNote:
       'These primitives share semantic intent with Web, SwiftUI, and Compose while retaining React Native props, refs, and accessibility behavior.',
-    components: sharedNativeComponents,
+    components: nativeComponentNames('react-native'),
     eyebrow: 'React Native',
     href: '/docs/react-native',
     id: 'react-native',
@@ -256,6 +253,41 @@ pnpm playground:react-native`,
     status: 'Native primitives',
     summary:
       'Use Lumen foundations and native primitives in React Native without depending on CSS, DOM behavior, or the web runtime.',
+    theme: {
+      description:
+        'LumenProvider follows the device appearance by default. Pass light or dark when an in-app preference should override the system, and keep the provider near the application root so every screen receives the same semantic colors and foundation values.',
+      examples: [
+        {
+          code: `<LumenProvider scheme="system">
+  <AppNavigation />
+</LumenProvider>`,
+          label: 'Follow system',
+          language: 'tsx',
+          value: 'system'
+        },
+        {
+          code: `type Appearance = 'light' | 'dark'
+
+const [appearance, setAppearance] = useState<Appearance>('light')
+
+return (
+  <LumenProvider scheme={appearance}>
+    <AppNavigation />
+  </LumenProvider>
+)`,
+          label: 'App preference',
+          language: 'tsx',
+          value: 'preference'
+        }
+      ],
+      note:
+        'Components consume semantic roles such as canvas, surface, ink, brand, success, warning, and danger. Keep product code on those roles rather than assigning one-off colors to individual components.',
+      verification: [
+        'Switch the device between light and dark while the app is open.',
+        'Check text and icon contrast in default, disabled, error, and loading states.',
+        'Test the largest supported font scale and screen-reader labels in both schemes.'
+      ]
+    },
     title: 'Lumen for React Native'
   },
   {
@@ -314,24 +346,8 @@ struct ExampleApp: App {
       }
     ],
     componentNote:
-      'The shared native tier is complemented by Apple-specific controls that preserve SwiftUI navigation, focus, and window behavior.',
-    components: [
-      ...sharedNativeComponents,
-      'Toggle',
-      'Settings row',
-      'Picker',
-      'Slider',
-      'Search field',
-      'Empty state',
-      'List row',
-      'Banner',
-      'Stat',
-      'Gauge',
-      'Section header',
-      'Status bar',
-      'Shortcut recorder',
-      'Symbol picker'
-    ],
+      'The shared native tier is complemented by SwiftUI and macOS-specific controls that preserve native navigation, focus, and window behavior.',
+    components: nativeComponentNames('apple'),
     eyebrow: 'Apple platforms',
     href: '/docs/apple',
     id: 'apple',
@@ -407,6 +423,41 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     status: 'SwiftUI package',
     summary:
       'Share a Lumen design language across iPhone, iPad, Mac, Apple TV, and Apple Watch while keeping SwiftUI behavior native.',
+    theme: {
+      description:
+        'Apply one built-in Lumen theme to the root content view. The modifier shares semantic colors through the SwiftUI environment and sets the matching preferred color scheme for native controls, sheets, and system surfaces.',
+      examples: [
+        {
+          code: `WindowGroup {
+    AppRoot()
+        .lumenTheme(.light)
+}`,
+          label: 'Light',
+          language: 'swift',
+          value: 'light'
+        },
+        {
+          code: `@AppStorage("useDarkAppearance") private var useDarkAppearance = false
+
+var body: some Scene {
+    WindowGroup {
+        AppRoot()
+            .lumenTheme(useDarkAppearance ? .dark : .light)
+    }
+}`,
+          label: 'Saved preference',
+          language: 'swift',
+          value: 'preference'
+        }
+      ],
+      note:
+        'Use Lumen semantic colors through public components instead of styling each control independently. The selected theme also keeps SF Symbols, native controls, and presented views aligned with the same appearance.',
+      verification: [
+        'Preview every supported device family in light and dark appearances.',
+        'Check sheets, menus, focus rings, and system controls as well as the main view.',
+        'Test Dynamic Type, Increase Contrast, and VoiceOver in both themes.'
+      ]
+    },
     title: 'Lumen for Apple platforms'
   },
   {
@@ -453,7 +504,7 @@ LumenTheme {
     ],
     componentNote:
       'Compose implements the shared native tier using Kotlin and Material 3 conventions rather than translating web markup.',
-    components: sharedNativeComponents,
+    components: nativeComponentNames('android'),
     eyebrow: 'Android platform',
     href: '/docs/android',
     id: 'android',
@@ -528,6 +579,37 @@ pnpm playground:android:build`,
     status: 'Compose module',
     summary:
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',
+    theme: {
+      description:
+        'LumenTheme follows the device appearance by default and maps Lumen semantic colors into Material 3. Pass darkTheme explicitly only when the application offers its own saved appearance preference.',
+      examples: [
+        {
+          code: `LumenTheme {
+    AppNavigation()
+}`,
+          label: 'Follow system',
+          language: 'kotlin',
+          value: 'system'
+        },
+        {
+          code: `var useDarkTheme by rememberSaveable { mutableStateOf(false) }
+
+LumenTheme(darkTheme = useDarkTheme) {
+    AppNavigation()
+}`,
+          label: 'App preference',
+          language: 'kotlin',
+          value: 'preference'
+        }
+      ],
+      note:
+        'LumenTheme provides both LocalLumenTheme and MaterialTheme. Prefer Lumen components and semantic roles so Lumen and Material content stay visually consistent inside the same hierarchy.',
+      verification: [
+        'Change the emulator or device appearance while the app is running.',
+        'Check system bars, dialogs, fields, and disabled or error states in both schemes.',
+        'Test large font sizes, high-contrast settings, and TalkBack descriptions.'
+      ]
+    },
     title: 'Lumen for Android'
   },
   {
@@ -602,5 +684,7 @@ const docsPlatformPrefixes: readonly (readonly [string, DocsPlatformId])[] = [
 ]
 
 export const getDocsPlatform = (pathname: string): DocsPlatformId | undefined => (
-  docsPlatformPrefixes.find(([prefix]) => pathname.startsWith(prefix))?.[1]
+  docsPlatformPrefixes.find(([prefix]) => (
+    pathname === prefix || pathname.startsWith(`${prefix}/`)
+  ))?.[1]
 )

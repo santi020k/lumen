@@ -63,6 +63,14 @@
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
+  "keywords": [
+    "accessible-forms",
+    "design-system",
+    "lumen",
+    "react",
+    "react-hook-form",
+    "ui"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"

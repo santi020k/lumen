@@ -4,6 +4,7 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
+import { nativeComponentDocs } from '../../data/native-components'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const packageName = '@santi020k/lumen-mcp'
@@ -22,13 +23,23 @@ const tools = [
     'component'
   ],
   [
+    'lumen_list_native_components',
+    'List native components with React Native, SwiftUI, and Compose availability, accessibility, category, and contract tier.',
+    'list'
+  ],
+  [
+    'lumen_get_native_component',
+    'Return native install and setup steps, imports, API rows, examples, accessibility guidance, and optional adapter source.',
+    'component'
+  ],
+  [
     'lumen_get_recipe',
     'Return a recipe’s purpose, categories, components, files, and framework-specific install command.',
     'blocks'
   ],
   [
     'lumen_search',
-    'Rank tolerant natural-language matches across descriptions, framework contracts, recipes, tokens, and rules.',
+    'Rank natural-language matches across web or native platform contracts, recipes, tokens, and rules.',
     'search'
   ],
   [
@@ -38,7 +49,7 @@ const tools = [
   ],
   [
     'lumen_get_catalog_manifest',
-    'Return stable fingerprints for every component and recipe so clients can retain a known baseline.',
+    'Return stable fingerprints for every web component, native component, and recipe.',
     'notebook-tabs'
   ],
   [
@@ -48,7 +59,7 @@ const tools = [
   ],
   [
     'lumen_diagnose',
-    'Verify snapshot integrity and report framework coverage when testing a new connection.',
+    'Verify snapshot integrity and report web framework plus native platform coverage.',
     'stethoscope'
   ],
   [
@@ -64,21 +75,23 @@ const tools = [
 ] as const
 
 const workflow = [
-  ['01', 'Verify the snapshot', 'lumen_get_meta identifies the snapshot and lumen_diagnose verifies its integrity and framework coverage.'],
-  ['02', 'Discover', 'The agent calls lumen_list_components or lumen_search with the target framework to find the right primitives.'],
-  ['03', 'Read framework usage', 'lumen_get_component returns authored examples and the required Astro runtime, React hook, or Elements registration contract.'],
+  ['01', 'Verify the snapshot', 'lumen_get_meta identifies the snapshot and lumen_diagnose verifies web and native coverage.'],
+  ['02', 'Discover', 'The agent lists web or native components, or searches with a target framework or platform.'],
+  ['03', 'Read target usage', 'The matching get tool returns installation, setup, imports, API, examples, accessibility, and runtime guidance.'],
   ['04', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
   ['05', 'Track changes', 'Retain lumen://catalog-manifest and compare it after upgrades to refresh only contracts that changed.']
 ] as const
 
 const resources = [
   ['lumen://meta', 'Snapshot provenance, package versions, and deterministic catalog hash.'],
-  ['lumen://catalog-manifest', 'Stable component and recipe fingerprints for change detection.'],
-  ['lumen://diagnostics', 'Snapshot integrity checks and framework coverage.'],
+  ['lumen://catalog-manifest', 'Stable web, native, and recipe fingerprints for change detection.'],
+  ['lumen://diagnostics', 'Snapshot integrity checks and web plus native coverage.'],
   ['lumen://rules', 'Agent generation rules as Markdown.'],
   ['lumen://tokens', 'Structured semantic, color, glass, and theme tokens.'],
   ['lumen://components', 'Compact structured component catalog.'],
   ['lumen://components/{name}', 'One component’s metadata and default Astro usage.'],
+  ['lumen://native-components', 'Native component catalog with platform availability.'],
+  ['lumen://native-components/{name}', 'One native component’s metadata and platform usage.'],
   ['lumen://recipes/{name}', 'Recipe metadata and framework install commands.']
 ] as const
 
@@ -120,17 +133,18 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 ---
 
 <DocsLayout
-  description="Connect the Lumen MCP server so AI agents can discover components, read framework contracts and recipes, and follow Lumen tokens and rules."
+  description="Connect the Lumen MCP server so AI agents can discover web and native components, read platform contracts and recipes, and follow Lumen tokens and rules."
   title="MCP server - Lumen UI"
 >
   <div class="mcp-page">
     <DocsPageHero
-      description="A Model Context Protocol server that gives AI agents structured access to Lumen component contracts, framework usage, recipes, design tokens, resources, and generation rules."
+      description="A Model Context Protocol server that gives AI agents structured access to Lumen web and native contracts, platform usage, recipes, design tokens, resources, and generation rules."
       eyebrow="AI integration"
       stats={[
         { label: 'Tools', value: tools.length },
         { label: 'Resources', value: resources.length },
-        { label: 'Components', value: lumenComponentNames.length }
+        { label: 'Web components', value: lumenComponentNames.length },
+        { label: 'Native components', value: nativeComponentDocs.length }
       ]}
       title="Give agents the Lumen contract."
     >
@@ -159,7 +173,7 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
         </div>
         <div>
           <span><Icon decorative name="component" /></span>
-          <p><strong>lumen_get_component</strong><small>Framework contracts</small></p>
+          <p><strong>lumen_get_native_component</strong><small>Native contracts</small></p>
         </div>
         <div>
           <span><Icon decorative name="scroll-text" /></span>
@@ -176,7 +190,7 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
         </div>
         <p>
           Every tool returns readable text plus validated structured content, grounded in the same
-          catalog, docs, framework source, tokens, and rules the packages ship.
+          catalog, docs, web and native source, tokens, and rules the packages ship.
         </p>
       </div>
 
@@ -280,7 +294,7 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
           <h2 id="workflow-title">Discover, read, and stay on-system</h2>
         </div>
         <p>
-          Start compact, read the target framework’s usage contract, and request full source only
+          Start compact, read the target framework or platform usage contract, and request full source only
           when the imports, examples, accessibility notes, and API rows are insufficient.
         </p>
       </div>
@@ -571,6 +585,12 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
     gap: 1.25rem;
     align-items: center;
     padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .mcp-file-card > div {
+    display: grid;
+    gap: 0.5rem;
+    min-width: 0;
   }
 
   .mcp-file-card > code {

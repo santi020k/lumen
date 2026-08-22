@@ -150,6 +150,32 @@ import NextLink from 'next/link'
 <NativeSelect size={8} visualSize="lg" />
 ```
 
+## Context navigation
+
+Use `ContextNavigation` below a primary header when links change with a selected platform,
+product, or workspace. Pass the stable selector or identity through `context` and compose the
+related links with one independently named `NavigationMenu`. Long link sets scroll horizontally.
+
+```tsx
+import { ContextNavigation, NativeSelect, NavigationMenu } from '@santi020k/lumen-react'
+
+<ContextNavigation
+  context={(
+    <NativeSelect aria-label="Documentation platform" visualSize="sm">
+      <option>Web</option>
+      <option>Apple</option>
+      <option>Android</option>
+    </NativeSelect>
+  )}
+>
+  <NavigationMenu aria-label="Web documentation" variant="unstyled">
+    <a href="/docs/web" aria-current="page">Overview</a>
+    <a href="/docs/components">Components</a>
+    <a href="/docs/web/playground">Playground</a>
+  </NavigationMenu>
+</ContextNavigation>
+```
+
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```tsx

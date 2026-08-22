@@ -4,7 +4,7 @@ import { gzipSync } from 'node:zlib'
 const budgets = [
   { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 32_000, raw: 162_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, raw: 5_000 },
-  { file: 'packages/lumen/styles.css', gzip: 27_000, raw: 160_000 },
+  { file: 'packages/lumen/styles.css', gzip: 27_000, raw: 162_000 },
   { file: 'packages/react/dist/components.js', gzip: 30_000, raw: 140_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 19_000, raw: 96_000 },
   { file: 'packages/elements/dist/define.js', gzip: 43_000, raw: 250_000 }

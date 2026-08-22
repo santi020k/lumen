@@ -11,6 +11,11 @@ import Testing
     #expect(LumenSpacing.lg == 16)
     #expect(LumenRadius.md == 10)
     #expect(LumenMotion.standardDuration == 0.16)
+    #expect(LumenMotion.standardEasing == LumenCubicBezier(x1: 0.32, y1: 0.72, x2: 0, y2: 1))
+    #expect(LumenMotion.emphasizedEasing == LumenCubicBezier(x1: 0.22, y1: 1, x2: 0.36, y2: 1))
+    #expect(LumenElevation.resting == 1)
+    #expect(LumenElevation.raised == 3)
+    #expect(LumenElevation.overlay == 6)
 }
 
 @Test func buttonMetricsAdaptToDesktopAndMobileInputs() {

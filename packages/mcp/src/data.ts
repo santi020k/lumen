@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 
 export interface LumenCatalogManifest {
   components: Record<string, string>
+  nativeComponents?: Record<string, string> | undefined
   recipes: Record<string, string>
 }
 
@@ -64,6 +65,7 @@ export interface LumenData {
   meta: {
     catalogHash: string
     componentCount: number
+    nativeComponentCount: number
     packages: string[]
     packageVersions: Record<string, string>
     registryName: string
@@ -71,6 +73,8 @@ export interface LumenData {
     schemaVersion: number
     serverVersion: string
   }
+  nativeComponents: LumenNativeComponentSnapshot[]
+  nativeSources: Record<LumenNativePlatform, Record<string, string>>
   recipes: LumenRecipeSnapshot[]
   rules: string
   tokens: {
@@ -81,6 +85,41 @@ export interface LumenData {
     themeAttribute: string
   }
 }
+
+interface LumenNativeApiRow {
+  defaultValue: string
+  description: string
+  name: string
+  values: string
+}
+
+export interface LumenNativeComponentSnapshot {
+  accessibility: string
+  category: string
+  contract: string
+  guidance: string
+  id: string
+  implementations: Partial<Record<LumenNativePlatform, LumenNativeImplementationSnapshot>>
+  name: string
+  summary: string
+  supportedPlatforms?: string[]
+  tier: string
+}
+
+export interface LumenNativeImplementationSnapshot {
+  api: LumenNativeApiRow[]
+  example: string
+  exportName: string
+  importStatement: string
+  install: string
+  language: 'kotlin' | 'swift' | 'tsx'
+  packageName: string
+  setup: string
+  sourceFile: string
+  symbol: string
+}
+
+export type LumenNativePlatform = 'compose' | 'react-native' | 'swiftui'
 
 export type LumenFramework = 'astro' | 'elements' | 'react'
 

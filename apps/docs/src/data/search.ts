@@ -104,7 +104,8 @@ const recipeItems: DocsSearchItem[] = [
       guide.status,
       guide.summary,
       guide.components.join(' '),
-      guide.principles.map(principle => `${principle.title} ${principle.description}`).join(' ')
+      guide.principles.map(principle => `${principle.title} ${principle.description}`).join(' '),
+      guide.theme ? `theme appearance light dark system semantic colors ${guide.theme.description} ${guide.theme.note}` : ''
     ),
     title: guide.title,
     type: 'Recipe' as const

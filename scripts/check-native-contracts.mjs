@@ -27,7 +27,7 @@ const readSourceDirectory = async directory => {
   return contents.flat().join('\n')
 }
 
-assert.equal(registry.schemaVersion, 2, 'Unsupported native contract schema version')
+assert.equal(registry.schemaVersion, 3, 'Unsupported native contract schema version')
 
 assert.deepEqual(Object.keys(registry.adapters).sort(), [...adapterNames].sort())
 
@@ -72,8 +72,13 @@ for (const component of registry.components) {
 
   assert.ok(component.accessibility.length > 0)
 
-  for (const adapterName of adapterNames) {
-    const symbol = component.symbols[adapterName]
+  const implementationEntries = Object.entries(component.symbols)
+
+  assert.ok(implementationEntries.length > 0, `${component.id} must support at least one adapter`)
+
+  for (const [adapterName, symbol] of implementationEntries) {
+    assert.ok(adapterNames.includes(adapterName), `${component.id} uses an unknown adapter ${adapterName}`)
+
     const escapedSymbol = escapeRegExp(symbol)
 
     assert.equal(typeof symbol, 'string', `${component.id} is missing ${adapterName} symbol`)
@@ -103,7 +108,10 @@ for (const component of registry.components) {
     if (adapterName === 'compose') {
       assert.match(
         sourceByAdapter.compose,
-        new RegExp(`(?:^|\\n)(?:@[^\\n]+\\n)*(?:(?:data|enum)\\s+class|class|fun|object)\\s+${escapedSymbol}\\b`),
+        new RegExp(
+          `(?:^|\\n)(?:@[^\\n]+\\n)*(?:(?:data|enum)\\s+class|class|fun(?:\\s+<[^>]+>)?|object)`
+            + `\\s+${escapedSymbol}\\b`
+        ),
         `${component.id} claims Compose support, but ${symbol} is not a public declaration`
       )
     }

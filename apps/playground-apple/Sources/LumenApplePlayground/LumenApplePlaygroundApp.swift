@@ -13,18 +13,27 @@ struct LumenApplePlaygroundApp: App {
 
 private struct ApplePlaygroundView: View {
     @State private var email = "hello@lumen.dev"
+    @State private var accessibilityReviewed = false
+    @State private var disclosureExpanded = true
     @State private var isDark = false
     @State private var notificationsEnabled = true
+    @State private var notes = "Native components now share one documented contract."
     @State private var progress = 76.0
     @State private var query = ""
     @State private var selectedDensity = "Comfortable"
+    @State private var selectedProfile = "balanced"
+    @State private var selectedLayout = "comfortable"
     @State private var selectedSymbol = "sparkles"
     @State private var showBanner = true
+    @State private var showToast = true
+    @State private var designSelected = true
 
     private let componentNames = [
-        "Theme", "Text", "Surface", "Icon", "Icon button", "Button", "Text field", "Badge",
-        "Divider", "Spinner", "Card", "Alert", "Progress", "Avatar", "Toggle", "Settings row",
-        "Picker", "Slider", "Search field", "Empty state", "List row", "Banner", "Stat", "Gauge",
+        "Theme", "Text", "Surface", "Icon", "Icon button", "Button", "Button group", "Text field",
+        "Textarea", "Field group", "Chip", "Badge",
+        "Divider", "Spinner", "Card", "Alert", "Progress", "Skeleton", "Disclosure", "Avatar",
+        "Toggle", "Settings row", "Checkbox", "Radio group", "Segmented control",
+        "Picker", "Slider", "Search field", "Empty state", "List row", "Banner", "Toast", "Stat", "Gauge",
         "Section header", "Status bar", "Shortcut recorder", "Symbol picker"
     ]
 
@@ -45,6 +54,7 @@ private struct ApplePlaygroundView: View {
                 actionsSection
                 formsSection
                 feedbackSection
+                contentStatesSection
                 dataSection
                 emptyStateSection
 
@@ -61,7 +71,7 @@ private struct ApplePlaygroundView: View {
                 }
 
                 LumenStatusBar("Powered by the local LumenUI package", tone: .success) {
-                    LumenText("23 shared", variant: .caption, tone: .muted)
+                    LumenText("\(componentNames.count) components", variant: .caption, tone: .muted)
                 }
             }
                 .frame(maxWidth: 820)
@@ -117,14 +127,21 @@ private struct ApplePlaygroundView: View {
 
     @ViewBuilder
     private var actionsSection: some View {
-        if matches("Button") {
+        if matches("Button", "Button group", "Chip") {
             PlaygroundSection("Buttons", description: "Try every intent, loading, and disabled state.") {
-                FlowLayout {
+                LumenButtonGroup {
                     LumenButton("Primary") {}
                     LumenButton("Secondary", intent: .secondary) {}
                     LumenButton("Danger", intent: .danger) {}
+                }
+                FlowLayout {
                     LumenButton("Loading", loading: true) {}
                     LumenButton("Disabled", disabled: true) {}
+                    LumenChip(
+                        "Design",
+                        selected: designSelected,
+                        onPress: { designSelected.toggle() }
+                    )
                 }
             }
         }
@@ -132,10 +149,37 @@ private struct ApplePlaygroundView: View {
 
     @ViewBuilder
     private var formsSection: some View {
-        if matches("Text field", "Toggle", "Settings row", "Picker", "Slider", "Search field") {
+        if matches(
+            "Text field",
+            "Textarea",
+            "Field group",
+            "Toggle",
+            "Settings row",
+            "Picker",
+            "Slider",
+            "Search field",
+            "Checkbox",
+            "Radio group",
+            "Segmented control"
+        ) {
             PlaygroundSection("Forms", description: "Edit controls to exercise native focus and input behavior.") {
                 VStack(alignment: .leading, spacing: LumenSpacing.lg) {
                     LumenTextField("Email address", text: $email)
+                    LumenTextarea(
+                        "Release notes",
+                        text: $notes,
+                        description: "Summarize the native release."
+                    )
+                    LumenFieldGroup(
+                        "Publication checks",
+                        description: "Contained controls retain independent focus and labels.",
+                        required: true
+                    ) {
+                        LumenCheckbox(
+                            "Confirm accessibility review",
+                            isChecked: $accessibilityReviewed
+                        )
+                    }
                     LumenSettingsRow(
                         "Notifications",
                         description: "Receive component release updates.",
@@ -146,6 +190,37 @@ private struct ApplePlaygroundView: View {
                         }
                         .labelsHidden()
                     }
+                    LumenCheckbox(
+                        "Confirm accessibility review",
+                        isChecked: $accessibilityReviewed,
+                        description: "Required before publishing this native component set."
+                    )
+                    LumenRadioGroup(
+                        "Performance profile",
+                        selection: $selectedProfile,
+                        options: [
+                            LumenSelectionOption("Quiet", value: "quiet", description: "Reduce background activity."),
+                            LumenSelectionOption(
+                                "Balanced",
+                                value: "balanced",
+                                description: "Recommended for most projects."
+                            ),
+                            LumenSelectionOption(
+                                "Performance",
+                                value: "performance",
+                                description: "Prioritize responsiveness."
+                            )
+                        ]
+                    )
+                    LumenSegmentedControl(
+                        "Control density",
+                        selection: $selectedLayout,
+                        options: [
+                            LumenSelectionOption("Compact", value: "compact"),
+                            LumenSelectionOption("Comfortable", value: "comfortable"),
+                            LumenSelectionOption("Spacious", value: "spacious", isDisabled: true)
+                        ]
+                    )
                     LumenPicker("Density", selection: $selectedDensity, style: .segmented) {
                         Text("Compact").tag("Compact")
                         Text("Comfortable").tag("Comfortable")
@@ -163,8 +238,38 @@ private struct ApplePlaygroundView: View {
     }
 
     @ViewBuilder
+    private var contentStatesSection: some View {
+        if matches("Skeleton", "Disclosure") {
+            PlaygroundSection(
+                "Content states",
+                description: "Loading placeholders and disclosures preserve native semantics."
+            ) {
+                VStack(alignment: .leading, spacing: LumenSpacing.lg) {
+                    HStack(spacing: LumenSpacing.md) {
+                        LumenSkeleton(width: 44, height: 44, shape: .circle)
+                        VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+                            LumenSkeleton(width: 180, height: 16, label: "Loading profile")
+                            LumenSkeleton(width: 120, height: 12)
+                        }
+                    }
+                    LumenDisclosure(
+                        "Implementation notes",
+                        isExpanded: $disclosureExpanded,
+                        description: "Expand to inspect native content behavior."
+                    ) {
+                        LumenText(
+                            "Each adapter owns its native rendering and focus behavior.",
+                            tone: .soft
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
     private var feedbackSection: some View {
-        if matches("Badge", "Divider", "Spinner", "Alert", "Progress", "Banner") {
+        if matches("Badge", "Divider", "Spinner", "Alert", "Progress", "Banner", "Toast") {
             PlaygroundSection("Feedback", description: "Status and progress remain understandable without color alone.") {
                 VStack(alignment: .leading, spacing: LumenSpacing.lg) {
                     FlowLayout {
@@ -192,6 +297,14 @@ private struct ApplePlaygroundView: View {
                     } else {
                         LumenButton("Restore banner", intent: .secondary) { showBanner = true }
                     }
+                    if showToast {
+                        LumenToast(
+                            "Changes saved",
+                            description: "All shared native catalogs were updated.",
+                            variant: .success,
+                            onDismiss: { showToast = false }
+                        )
+                    }
                 }
             }
         }
@@ -202,11 +315,15 @@ private struct ApplePlaygroundView: View {
         if matches("Card", "Avatar", "List row", "Stat", "Gauge", "Section header") {
             PlaygroundSection("Data display", description: "Cards, identity, metrics, and structured rows.") {
                 VStack(alignment: .leading, spacing: LumenSpacing.lg) {
-                    LumenSectionHeader("Workspace", subtitle: "Native component coverage", count: "28")
+                    LumenSectionHeader(
+                        "Workspace",
+                        subtitle: "Native component coverage",
+                        count: String(componentNames.count)
+                    )
                     HStack(spacing: LumenSpacing.md) {
                         LumenStat(
                             "Components",
-                            value: "28",
+                            value: String(componentNames.count),
                             detail: "SwiftUI APIs",
                             systemName: "square.grid.2x2",
                             tone: .brand

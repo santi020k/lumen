@@ -10,10 +10,15 @@ private enum FixtureProfile: String, CaseIterable {
 }
 
 private struct AppleComponentCatalogFixture: View {
+    @State private var isDisclosureExpanded = true
     @State private var isEnabled = true
+    @State private var isReviewed = false
+    @State private var notes = "Native release notes"
     @State private var profile = FixtureProfile.balanced
     @State private var query = ""
     @State private var sliderValue = 50.0
+    @State private var selection = FixtureProfile.balanced
+    @State private var tagSelected = true
 
     #if os(macOS)
     @State private var shortcut: LumenShortcut?
@@ -48,6 +53,57 @@ private struct AppleComponentCatalogFixture: View {
 
                 LumenSearchField("Search components", text: $query)
 
+                LumenTextarea(
+                    "Release notes",
+                    text: $notes,
+                    description: "Summarize the native release."
+                )
+
+                LumenFieldGroup("Publication checks", required: true) {
+                    LumenCheckbox("Confirm accessibility review", isChecked: $isReviewed)
+                }
+
+                LumenButtonGroup {
+                    LumenButton("Save", action: {})
+                    LumenButton("Cancel", intent: .secondary, action: {})
+                    LumenChip("Design", selected: tagSelected, onPress: { tagSelected.toggle() })
+                }
+
+                LumenCheckbox(
+                    "Confirm accessibility review",
+                    isChecked: $isReviewed,
+                    description: "Required before publishing."
+                )
+
+                LumenRadioGroup(
+                    "Profile",
+                    selection: $selection,
+                    options: FixtureProfile.allCases.map {
+                        LumenSelectionOption($0.rawValue.capitalized, value: $0)
+                    }
+                )
+
+                LumenSegmentedControl(
+                    "Profile",
+                    selection: $selection,
+                    options: FixtureProfile.allCases.map {
+                        LumenSelectionOption($0.rawValue.capitalized, value: $0)
+                    }
+                )
+
+                HStack {
+                    LumenSkeleton(width: 44, height: 44, shape: .circle)
+                    LumenSkeleton(height: 16, label: "Loading profile")
+                }
+
+                LumenDisclosure(
+                    "Implementation notes",
+                    isExpanded: $isDisclosureExpanded,
+                    description: "Native state and accessibility behavior."
+                ) {
+                    Text("Each adapter owns its native rendering.")
+                }
+
                 LumenEmptyState(
                     "Nothing here yet",
                     systemName: "tray",
@@ -75,6 +131,13 @@ private struct AppleComponentCatalogFixture: View {
                 ) {
                     LumenButton("Undo", intent: .quiet, size: .sm, action: {})
                 }
+
+                LumenToast(
+                    "Changes saved",
+                    description: "All shared native catalogs were updated.",
+                    variant: .success,
+                    onDismiss: {}
+                )
 
                 LumenSectionHeader("Overview", subtitle: "Current workspace", count: "3") {
                     LumenButton("Refresh", intent: .quiet, size: .sm, action: {})

@@ -1,6 +1,7 @@
 version: "0.2"
 language: en
 words:
+  - swiftui
   - aaronmgz
   - activedescendant
   - aeiou
@@ -21,6 +22,7 @@ words:
   - autobuild
   - Autobuild
   - Avenir
+  - avdmanager
   - blockquotes
   - buttonlink
   - ButtonLink
@@ -47,8 +49,10 @@ words:
   - desktopcomputer
   - dismissable
   - dogfooded
+  - Dokka
   - dropzone
   - esbuild
+  - esac
   - eslintcache
   - exclamationmark
   - fileupload
@@ -56,6 +60,7 @@ words:
   - fortawesome
   - gearshape
   - geolocation
+  - getprop
   - glassmorphism
   - gradientdivider
   - GradientDivider
@@ -73,6 +78,7 @@ words:
   - labelledby
   - laptopcomputer
   - lede
+  - largecircle
   - linecap
   - llms
   - lucide
@@ -125,6 +131,8 @@ words:
   - Stepper
   - stylesheet
   - stylelintcache
+  - subnavigation
+  - swiftshader
   - swrow
   - textareas
   - toolbar
@@ -163,6 +171,7 @@ words:
   - workstream
   - workstreams
   - workspaces
+  - workscene
   - xmark
   - xcodegen
   - xcodeproj

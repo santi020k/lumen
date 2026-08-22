@@ -1,0 +1,73 @@
+---
+import { Card, Icon } from '@santi020k/lumen-astro'
+
+interface Props {
+  notes: string[]
+}
+
+const { notes } = Astro.props
+---
+
+<Card as="section" class="platform-shipping" variant="muted">
+  <div class="platform-shipping__heading">
+    <Icon decorative name="package" size="sm" />
+    <div>
+      <h3>Installing locally versus publishing</h3>
+      <p>You can run the gallery locally before configuring any store account.</p>
+    </div>
+  </div>
+  <ul>
+    {notes.map(note => <li>{note}</li>)}
+  </ul>
+</Card>
+
+<style>
+  :global(.platform-shipping) {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.25rem;
+  }
+
+  .platform-shipping__heading {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .platform-shipping__heading > div {
+    min-width: 0;
+  }
+
+  .platform-shipping__heading h3 {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .platform-shipping__heading p {
+    margin: 0.25rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .platform-shipping ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+    list-style: disc;
+  }
+
+  @media (min-width: 56rem) {
+    :global(.platform-shipping) {
+      grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+    }
+  }
+</style>

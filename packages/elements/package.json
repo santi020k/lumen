@@ -64,10 +64,19 @@
     "url": "https://github.com/santi020k/lumen.git",
     "directory": "packages/elements"
   },
-  "homepage": "https://lumen.santi020k.com",
+  "homepage": "https://lumen.santi020k.com/docs/frameworks/elements",
   "bugs": {
     "url": "https://github.com/santi020k/lumen/issues"
   },
+  "keywords": [
+    "accessible-ui",
+    "component-library",
+    "custom-elements",
+    "design-system",
+    "lumen",
+    "ui",
+    "web-components"
+  ],
   "author": {
     "name": "Santiago Molina",
     "url": "https://santi020k.com"

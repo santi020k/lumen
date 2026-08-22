@@ -48,6 +48,16 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'context-navigation',
+      type: 'recipe',
+      components: [
+        'ContextNavigation',
+        'NavigationMenu',
+        'NativeSelect',
+        'Link'
+      ]
+    },
+    {
       name: 'data-collections',
       type: 'recipe',
       components: [
@@ -716,6 +726,20 @@ export const lumenRegistry = {
         'Input',
         'styles',
         'runtime'
+      ]
+    },
+    {
+      name: 'ContextNavigation',
+      type: 'component',
+      description: 'Pairs a stable scope selector or identity with horizontally scrollable contextual links.',
+      category: 'Navigation',
+      files: [
+        'packages/astro/components/ContextNavigation.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'NavigationMenu',
+        'styles'
       ]
     },
     {

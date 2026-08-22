@@ -94,8 +94,30 @@ public enum LumenTypography {
     public static let boldWeight: Font.Weight = .bold
 }
 
+public struct LumenCubicBezier: Equatable, Sendable {
+    public let x1: Double
+    public let y1: Double
+    public let x2: Double
+    public let y2: Double
+
+    public init(x1: Double, y1: Double, x2: Double, y2: Double) {
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+    }
+}
+
 public enum LumenMotion {
     public static let fastDuration: Double = 0.12
     public static let standardDuration: Double = 0.16
     public static let slowDuration: Double = 0.30
+    public static let standardEasing = LumenCubicBezier(x1: 0.32, y1: 0.72, x2: 0, y2: 1)
+    public static let emphasizedEasing = LumenCubicBezier(x1: 0.22, y1: 1, x2: 0.36, y2: 1)
+}
+
+public enum LumenElevation {
+    public static let resting: CGFloat = 1
+    public static let raised: CGFloat = 3
+    public static let overlay: CGFloat = 6
 }

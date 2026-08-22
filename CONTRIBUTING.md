@@ -41,6 +41,25 @@ Add a changeset when a package consumer can observe the change: new components, 
 styling changes, exports, runtime behavior, or package metadata. Skip changesets for internal-only
 docs, tests, refactors, and CI maintenance.
 
+## Documentation and Guides
+
+Use **Guides** for task-oriented learning content. Keep API reference material under `/docs` and
+release history in the changelog.
+
+When adding a guide:
+
+1. Register its title, description, author, publication date, and route in
+   `apps/docs/src/data/guides.ts`.
+2. Add the page below `apps/docs/src/pages/guides` and reuse that registered metadata in
+   `BaseLayout` so article, social, breadcrumb, and RSS metadata stay aligned.
+3. Teach one concrete product outcome with working code, important product states, accessibility
+   checks, and a clear next step.
+4. Add the guide to the documentation search index and generated social-image catalog.
+5. Run the docs typecheck, tests, lint, and build before opening a pull request.
+
+Do not publish generic announcements as guides. A guide should leave a developer able to build or
+verify something they could not confidently complete before reading it.
+
 ## Publishing
 
 All work merges into `main`; contributors do not create or merge a separate release branch.
