@@ -30,11 +30,14 @@ import {
   enhanceLumenResizable,
   enhanceLumenRichTextEditors,
   enhanceLumenSchedules,
+  LumenBackdropElement,
   LumenButtonElement,
   LumenCardElement,
   type LumenElement,
   lumenElementDefinitions,
+  LumenGraphicElement,
   LumenIconElement,
+  LumenIllustrationElement,
   LumenToast
 } from './index.js'
 
@@ -100,8 +103,61 @@ describe('@santi020k/lumen-elements', () => {
     defineLumenElements(customElements)
 
     expect(customElements.get('lumen-button')).toBe(LumenButtonElement)
+    expect(customElements.get('lumen-backdrop')).toBe(LumenBackdropElement)
     expect(customElements.get('lumen-card')).toBe(LumenCardElement)
+    expect(customElements.get('lumen-graphic')).toBe(LumenGraphicElement)
     expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
+    expect(customElements.get('lumen-illustration')).toBe(LumenIllustrationElement)
+  })
+
+  test('keeps graphics decorative until they receive a label', () => {
+    const graphic = document.createElement('lumen-graphic')
+
+    document.body.appendChild(graphic)
+
+    expect(graphic.className).toContain('ui-graphic--orbit')
+    expect(graphic.getAttribute('aria-hidden')).toBe('true')
+
+    graphic.setAttribute('label', 'Product constellation')
+
+    expect(graphic.getAttribute('aria-hidden')).toBeNull()
+    expect(graphic.getAttribute('aria-label')).toBe('Product constellation')
+    expect(graphic.getAttribute('role')).toBe('img')
+
+    graphic.removeAttribute('label')
+
+    expect(graphic.getAttribute('aria-hidden')).toBe('true')
+    expect(graphic.getAttribute('aria-label')).toBeNull()
+    expect(graphic.getAttribute('role')).toBeNull()
+  })
+
+  test('applies backdrop presets while preserving child content', () => {
+    const backdrop = document.createElement('lumen-backdrop')
+    backdrop.textContent = 'Readable content'
+    backdrop.setAttribute('intensity', 'strong')
+    backdrop.setAttribute('tone', 'neutral')
+    backdrop.setAttribute('variant', 'rays')
+    document.body.appendChild(backdrop)
+
+    expect(backdrop.className).toContain('ui-backdrop--rays')
+    expect(backdrop.className).toContain('ui-backdrop--neutral')
+    expect(backdrop.className).toContain('ui-backdrop--strong')
+    expect(backdrop.textContent).toContain('Readable content')
+  })
+
+  test('keeps illustrations decorative until they receive a label', () => {
+    const illustration = document.createElement('lumen-illustration')
+    illustration.setAttribute('variant', 'success')
+    document.body.appendChild(illustration)
+
+    expect(illustration.className).toContain('ui-illustration--success')
+    expect(illustration.getAttribute('aria-hidden')).toBe('true')
+
+    illustration.setAttribute('label', 'Saved successfully')
+
+    expect(illustration.getAttribute('aria-hidden')).toBeNull()
+    expect(illustration.getAttribute('aria-label')).toBe('Saved successfully')
+    expect(illustration.getAttribute('role')).toBe('img')
   })
 
   test('coordinates uncontrolled language state, persistence, labels, and events', () => {

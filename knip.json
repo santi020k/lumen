@@ -3,6 +3,7 @@
   "workspaces": {
     ".": {
       "ignoreBinaries": [
+        "quality",
         "swift"
       ],
       "project": [

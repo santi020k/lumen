@@ -16,3 +16,23 @@ export const resolveLumenDisclosureState = (
 export const resolveLumenSkeletonHeight = (height: number): number => (
   Number.isFinite(height) && height > 0 ? height : 16
 )
+
+export type LumenGraphicSize = 'lg' | 'md' | 'sm'
+
+export const resolveLumenGraphicSize = (size: LumenGraphicSize): number => ({
+  lg: 320,
+  md: 240,
+  sm: 160
+})[size]
+
+export type LumenBackdropIntensity = 'medium' | 'strong' | 'subtle'
+
+export const resolveLumenBackdropOpacity = (
+  intensity: LumenBackdropIntensity
+): number => ({ medium: 0.68, strong: 1, subtle: 0.4 })[intensity]
+
+export type LumenIllustrationSize = 'lg' | 'md' | 'sm'
+
+export const resolveLumenIllustrationSize = (
+  size: LumenIllustrationSize
+): number => ({ lg: 176, md: 128, sm: 96 })[size]

@@ -1,127 +1,50 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { defineConfig } from '@santi020k/og'
+import { createPathCards } from '@santi020k/og'
+import { definePresetConfig } from '@santi020k/og/presets'
 
 import { componentDocs } from '../src/data/docs.ts'
 import { toSlug } from '../src/lib/routes.ts'
-import { getSocialImageSlug } from '../src/lib/social-image.ts'
 
-import { renderOgCard } from './render-og-card.js'
+const directory = path.dirname(fileURLToPath(import.meta.url))
+const root = path.resolve(directory, '..')
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const root = path.resolve(__dirname, '..')
-const specs = []
-
-const addPage = (pathname, props) => {
-  const slug = getSocialImageSlug(pathname) || 'index'
-
-  specs.push({
-    output: `${slug}.webp`,
-    props
-  })
-}
-
-addPage('/', {
-  description:
-    `A multi-framework primitive UI system with ${componentDocs.length} components ` +
-    'for Astro, React, and Web Components.',
-  title: 'Write it once. Ship it in any framework.',
-  type: 'Home'
+const page = (pathname, title, description, badge) => ({
+  data: { badge, description, title, variant: 'docs' },
+  pathname
 })
 
-addPage('/docs', {
-  description:
-    'Install Lumen UI, load the shared stylesheet, and use one semantic component contract across every target.',
-  title: 'One primitive system, three framework targets.',
-  type: 'Docs'
-})
+const pages = [
+  page('/', 'Write it once. Ship it in any framework.', `A multi-framework primitive UI system with ${componentDocs.length} components for Astro, React, and Web Components.`, 'Home'),
+  page('/docs', 'One primitive system, three framework targets.', 'Install Lumen UI and use one semantic component contract across every target.', 'Docs'),
+  page('/docs/components', 'Components', `Browse ${componentDocs.length} primitives with live previews for Astro, React, and Elements.`, 'Components'),
+  page('/templates', 'Product-ready templates. Free and open source.', 'Install complete analytics, SaaS, commerce, workspace, and onboarding experiences.', 'Templates'),
+  page('/guides', 'Start with a product problem.', 'Task-oriented tutorials for accessible, production-shaped workflows.', 'Guides'),
+  page('/guides/ship-a-settings-screen', 'Ship an accessible settings screen.', 'Build and verify a responsive account settings surface in every supported framework.', 'Guide'),
+  page('/community', 'Made with Lumen.', 'Explore projects built with Lumen, share your work, and shape the roadmap.', 'Community'),
+  page('/teams', 'Prove the system before you commit.', 'Evaluate Lumen with a real product surface, real constraints, and no sales gate.', 'For teams'),
+  page('/docs/ai-skill', 'Give your AI the design system.', 'Install the portable skill so coding agents select and verify real Lumen components.', 'AI skill'),
+  page('/docs/mcp', 'Real component contracts for AI agents.', 'Connect agents to structured components, tokens, recipes, and usage rules.', 'MCP server'),
+  page('/docs/figma', 'One product language from design to code.', 'Use semantic variables, component variants, and Code Connect mappings.', 'Figma'),
+  page('/docs/theme-playground', 'Build a theme from semantic roles.', 'Tune color roles, preview accessible components, and export the resulting CSS.', 'Theme playground'),
+  ...componentDocs.map(component => page(
+    `/docs/components/${toSlug(component.name)}`,
+    component.name,
+    `${component.summary} Usage examples for Astro, React, and Elements.`,
+    component.category
+  ))
+]
 
-addPage('/docs/components', {
-  description:
-    `Browse ${componentDocs.length} Lumen UI primitives with live previews and usage examples ` +
-    'for Astro, React, and Elements.',
-  title: 'Components',
-  type: 'Components'
-})
-
-addPage('/templates', {
-  description:
-    'Install complete analytics, SaaS, commerce, workspace, and onboarding experiences for Astro, React, or Web Components.',
-  title: 'Product-ready templates. Free and open source.',
-  type: 'Templates'
-})
-
-addPage('/guides', {
-  description:
-    'Task-oriented tutorials that combine Lumen primitives into accessible, production-shaped product workflows.',
-  title: 'Start with a product problem.',
-  type: 'Guides'
-})
-
-addPage('/guides/ship-a-settings-screen', {
-  description:
-    'Build and verify a responsive account settings surface in Astro, React, or Web Components.',
-  title: 'Ship an accessible settings screen.',
-  type: 'Guide'
-})
-
-addPage('/community', {
-  description:
-    'Explore projects built with Lumen, share your work, and help shape the open-source roadmap.',
-  title: 'Made with Lumen.',
-  type: 'Community'
-})
-
-addPage('/teams', {
-  description:
-    'Evaluate Lumen with a real product surface, real constraints, and no sales gate.',
-  title: 'Prove the system before you commit.',
-  type: 'For teams'
-})
-
-addPage('/docs/ai-skill', {
-  description:
-    'Install the portable Lumen skill so coding agents select, compose, theme, and verify real Lumen components.',
-  title: 'Give your AI the design system.',
-  type: 'AI skill'
-})
-
-addPage('/docs/mcp', {
-  description:
-    'Connect AI agents to structured Lumen components, framework contracts, tokens, recipes, and usage rules.',
-  title: 'Real component contracts for AI agents.',
-  type: 'MCP server'
-})
-
-addPage('/docs/figma', {
-  description:
-    'Use the public Figma library, semantic variables, component variants, and Code Connect mappings.',
-  title: 'One product language from design to code.',
-  type: 'Figma'
-})
-
-addPage('/docs/theme-playground', {
-  description:
-    'Tune semantic color roles, preview accessible Lumen components, and export the resulting CSS.',
-  title: 'Build a theme from semantic roles.',
-  type: 'Theme playground'
-})
-
-for (const component of componentDocs) {
-  addPage(`/docs/components/${toSlug(component.name)}`, {
-    description: `${component.summary} Usage examples for Astro, React, and Elements.`,
-    title: component.name,
-    type: component.category
-  })
-}
-
-export default defineConfig({
-  cache: { sources: ['scripts/render-og-card.js'] },
-  cards: specs.map(spec => ({ data: spec.props, output: spec.output })),
+export default definePresetConfig({
+  cards: createPathCards(pages),
   clean: true,
   concurrency: 'auto',
   outputDirectory: 'public/og/pages',
-  renderer: renderOgCard,
+  preset: {
+    brand: { domain: 'lumen.santi020k.com', name: 'Lumen UI' },
+    theme: { accent: '#945df4', background: '#0d0718', panel: '#1c1528' },
+    variant: 'docs'
+  },
   root
 })

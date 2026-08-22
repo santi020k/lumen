@@ -12,12 +12,29 @@ export {
   type LumenToastProps
 } from './additional-components.js'
 export {
+  LumenBackdrop,
+  type LumenBackdropProps,
+  type LumenBackdropTone,
+  type LumenBackdropVariant,
   LumenDisclosure,
   type LumenDisclosureProps,
+  LumenGraphic,
+  type LumenGraphicProps,
+  type LumenGraphicTone,
+  type LumenGraphicVariant,
+  LumenIllustration,
+  type LumenIllustrationProps,
+  type LumenIllustrationTone,
+  type LumenIllustrationVariant,
   LumenSkeleton,
   type LumenSkeletonProps,
   type LumenSkeletonShape
 } from './content-components.js'
+export {
+  type LumenBackdropIntensity,
+  type LumenGraphicSize,
+  type LumenIllustrationSize
+} from './content-recipes.js'
 export {
   LumenSearchField,
   type LumenSearchFieldProps,
@@ -27,6 +44,25 @@ export {
   type LumenToggleProps
 } from './form-components.js'
 export {
+  LumenAlertDialog,
+  type LumenAlertDialogProps,
+  LumenMenu,
+  type LumenMenuItem,
+  type LumenMenuProps,
+  LumenShareButton,
+  type LumenShareButtonProps,
+  LumenSheet,
+  type LumenSheetProps
+} from './overlay-components.js'
+export {
+  type LumenMenuPosition,
+  type LumenMenuPositionInput,
+  resolveLumenMenuPosition
+} from './overlay-recipes.js'
+export {
+  LumenNavigationBar,
+  type LumenNavigationBarProps,
+  type LumenNavigationItem,
   LumenRefreshControl,
   type LumenRefreshControlProps
 } from './platform-components.js'

@@ -44,9 +44,9 @@ describe('platform documentation', () => {
       )
     }
 
-    expect(getPlatformGuide('react-native').components).toHaveLength(34)
-    expect(getPlatformGuide('android').components).toHaveLength(37)
-    expect(getPlatformGuide('apple').components).toHaveLength(39)
+    expect(getPlatformGuide('react-native').components).toHaveLength(42)
+    expect(getPlatformGuide('android').components).toHaveLength(45)
+    expect(getPlatformGuide('apple').components).toHaveLength(47)
   })
 
   test('maps new and legacy web routes to the correct contextual navigation', () => {

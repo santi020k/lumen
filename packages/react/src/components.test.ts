@@ -17,6 +17,7 @@ import {
   Attachment,
   Autocomplete,
   Avatar,
+  Backdrop,
   Badge,
   BarChart,
   Breadcrumb,
@@ -41,8 +42,10 @@ import {
   Direction,
   Drawer,
   Empty,
+  Graphic,
   HoverCard,
   Icon,
+  Illustration,
   Image,
   Input,
   InputGroup,
@@ -206,6 +209,42 @@ describe('@santi020k/lumen-react components', () => {
 
     expect(propsOf(AnimatedLogo({ animation: 'sequence' }) as ReactElement)['data-animation'])
       .toBe('sequence')
+  })
+
+  test('renders portable decorative graphics with opt-in image semantics', () => {
+    const decorative = Graphic({ children: 'mark', tone: 'accent', variant: 'grid' }) as ReactElement
+    const labelled = Graphic({ label: 'Product constellation', size: 'lg' }) as ReactElement
+
+    expect(propsOf(decorative).className).toBe(
+      'ui-graphic ui-graphic--grid ui-graphic--accent ui-graphic--md'
+    )
+    expect(propsOf(decorative)['aria-hidden']).toBe(true)
+    expect(propsOf(labelled).role).toBe('img')
+    expect(propsOf(labelled)['aria-label']).toBe('Product constellation')
+    expect(propsOf(labelled)['aria-hidden']).toBeUndefined()
+  })
+
+  test('renders ambient backdrops without changing content semantics', () => {
+    const backdrop = Backdrop({ children: 'Readable content', intensity: 'strong', tone: 'neutral', variant: 'dots' }) as ReactElement
+    const props = propsOf(backdrop)
+
+    expect(props.className).toBe(
+      'ui-backdrop ui-backdrop--dots ui-backdrop--neutral ui-backdrop--strong'
+    )
+    expect(props.children).toEqual(expect.objectContaining({ type: 'div' }))
+    expect(propsOf(props.children as ReactElement).className).toBe('ui-backdrop__content')
+  })
+
+  test('renders semantic illustrations with decorative defaults', () => {
+    const decorative = Illustration({ variant: 'success' }) as ReactElement
+    const labelled = Illustration({ label: 'Connection unavailable', size: 'lg', variant: 'offline' }) as ReactElement
+
+    expect(propsOf(decorative).className).toBe(
+      'ui-illustration ui-illustration--success ui-illustration--auto ui-illustration--md'
+    )
+    expect(propsOf(decorative)['aria-hidden']).toBe(true)
+    expect(propsOf(labelled).role).toBe('img')
+    expect(propsOf(labelled)['aria-label']).toBe('Connection unavailable')
   })
 
   test('applies alert variant class and data attribute', () => {

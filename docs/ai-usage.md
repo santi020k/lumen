@@ -265,7 +265,7 @@ The shared catalog includes:
 `Container`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
 `DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
-`Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
+`Graphic`, `Backdrop`, `Illustration`, `Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
 `Message`, `MessageScroller`, `NativeSelect`, `ContextNavigation`, `NavigationMenu`, `NumberField`, `Pagination`,
 `PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
 `ScrollArea`, `Schedule`, `SearchField`, `Select`, `Separator`, `Sheet`, `Sidebar`, `Skeleton`,

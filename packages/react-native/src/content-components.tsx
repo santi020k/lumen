@@ -9,7 +9,15 @@ import {
   type ViewProps
 } from 'react-native'
 
-import { resolveLumenDisclosureState, resolveLumenSkeletonHeight } from './content-recipes.js'
+import {
+  type LumenBackdropIntensity,
+  type LumenGraphicSize,
+  type LumenIllustrationSize,
+  resolveLumenBackdropOpacity,
+  resolveLumenDisclosureState,
+  resolveLumenGraphicSize,
+  resolveLumenIllustrationSize,
+  resolveLumenSkeletonHeight } from './content-recipes.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -61,6 +69,334 @@ export const LumenSkeleton = ({
         style
       ]}
     />
+  )
+}
+
+export type LumenGraphicTone = 'accent' | 'brand' | 'neutral'
+export type LumenGraphicVariant = 'glow' | 'grid' | 'orbit'
+
+export interface LumenGraphicProps extends ViewProps {
+  children?: ReactNode
+  label?: string
+  ref?: Ref<HostInstance>
+  size?: LumenGraphicSize
+  tone?: LumenGraphicTone
+  variant?: LumenGraphicVariant
+}
+
+const graphicLines = Array.from({ length: 7 }, (_, index) => index)
+const backdropDots = Array.from({ length: 48 }, (_, index) => index)
+
+export const LumenGraphic = ({
+  children,
+  label,
+  ref,
+  size = 'md',
+  style,
+  tone = 'brand',
+  variant = 'orbit',
+  ...props
+}: LumenGraphicProps): ReactElement => {
+  const theme = useLumenTheme()
+  const dimension = resolveLumenGraphicSize(size)
+
+  const color = {
+    accent: theme.colors.accent,
+    brand: theme.colors.brand,
+    neutral: theme.colors.inkMuted
+  }[tone]
+
+  return (
+    <View
+      ref={ref}
+      {...props}
+      accessible={Boolean(label)}
+      accessibilityElementsHidden={!label}
+      accessibilityLabel={label}
+      accessibilityRole={label ? 'image' : undefined}
+      importantForAccessibility={label ? 'yes' : 'no-hide-descendants'}
+      style={[
+        {
+          alignItems: 'center',
+          height: dimension,
+          justifyContent: 'center',
+          overflow: 'hidden',
+          position: 'relative',
+          width: dimension
+        },
+        style
+      ]}
+    >
+      {variant === 'glow' ?
+        <View style={{ backgroundColor: color, borderRadius: dimension / 2, height: '72%', opacity: 0.18, width: '72%' }} /> :
+        null}
+      {variant === 'grid' ?
+        (
+          <View style={{ height: '76%', opacity: 0.18, position: 'absolute', width: '76%' }}>
+            {graphicLines.map(index => (
+              <View
+                key={`horizontal-${index}`}
+                style={{ backgroundColor: color, height: 1, left: 0, position: 'absolute', right: 0, top: `${index * 16.66}%` }}
+              />
+            ))}
+            {graphicLines.map(index => (
+              <View
+                key={`vertical-${index}`}
+                style={{ backgroundColor: color, bottom: 0, left: `${index * 16.66}%`, position: 'absolute', top: 0, width: 1 }}
+              />
+            ))}
+          </View>
+        ) :
+        null}
+      {variant === 'orbit' ?
+        (
+          <>
+            {[0.9, 0.62, 0.34].map(ratio => (
+              <View
+                key={ratio}
+                style={{
+                  borderColor: color,
+                  borderRadius: dimension,
+                  borderWidth: 1,
+                  height: dimension * ratio,
+                  opacity: 0.24,
+                  position: 'absolute',
+                  width: dimension * ratio
+                }}
+              />
+            ))}
+            <View style={{ backgroundColor: color, height: 1, opacity: 0.18, position: 'absolute', width: '72%' }} />
+            <View style={{ backgroundColor: color, height: '72%', opacity: 0.18, position: 'absolute', width: 1 }} />
+          </>
+        ) :
+        null}
+      <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute' }}>
+        {children}
+      </View>
+    </View>
+  )
+}
+
+export type LumenBackdropTone = 'accent' | 'brand' | 'neutral'
+export type LumenBackdropVariant = 'aurora' | 'dots' | 'grid' | 'rays'
+
+export interface LumenBackdropProps extends ViewProps {
+  children?: ReactNode
+  intensity?: LumenBackdropIntensity
+  ref?: Ref<HostInstance>
+  tone?: LumenBackdropTone
+  variant?: LumenBackdropVariant
+}
+
+export const LumenBackdrop = ({
+  children,
+  intensity = 'medium',
+  ref,
+  style,
+  tone = 'brand',
+  variant = 'aurora',
+  ...props
+}: LumenBackdropProps): ReactElement => {
+  const theme = useLumenTheme()
+  const color = { accent: theme.colors.accent, brand: theme.colors.brand, neutral: theme.colors.inkMuted }[tone]
+  const secondaryColor = tone === 'neutral' ? theme.colors.surfaceStrong : theme.colors.accent
+  const opacity = resolveLumenBackdropOpacity(intensity)
+
+  return (
+    <View ref={ref} {...props} style={[{ minHeight: 160, overflow: 'hidden', position: 'relative' }, style]}>
+      <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        pointerEvents="none"
+        style={{ bottom: 0, left: 0, opacity, position: 'absolute', right: 0, top: 0 }}
+      >
+        {variant === 'aurora' ?
+          (
+            <>
+              <View style={{ backgroundColor: color, borderRadius: 140, height: 280, left: -70, opacity: 0.22, position: 'absolute', top: -100, width: 280 }} />
+              <View style={{ backgroundColor: secondaryColor, borderRadius: 120, bottom: -110, height: 240, opacity: 0.18, position: 'absolute', right: -50, width: 240 }} />
+            </>
+          ) :
+          null}
+        {variant === 'grid' ?
+          (
+            <>
+              {graphicLines.map(index => (
+                <View key={`backdrop-horizontal-${index}`} style={{ backgroundColor: color, height: 1, left: 0, opacity: 0.18, position: 'absolute', right: 0, top: `${index * 16.66}%` }} />
+              ))}
+              {graphicLines.map(index => (
+                <View key={`backdrop-vertical-${index}`} style={{ backgroundColor: color, bottom: 0, left: `${index * 16.66}%`, opacity: 0.18, position: 'absolute', top: 0, width: 1 }} />
+              ))}
+            </>
+          ) :
+          null}
+        {variant === 'dots' ?
+          backdropDots.map(index => (
+            <View
+              key={`backdrop-dot-${index}`}
+              style={{
+                backgroundColor: color,
+                borderRadius: 2,
+                height: 3,
+                left: `${(index % 8) * 14 + 1}%`,
+                opacity: 0.28,
+                position: 'absolute',
+                top: `${Math.floor(index / 8) * 19 + 2}%`,
+                width: 3
+              }}
+            />
+          )) :
+          null}
+        {variant === 'rays' ?
+          graphicLines.map(index => (
+            <View
+              key={`backdrop-ray-${index}`}
+              style={{
+                backgroundColor: color,
+                height: 1,
+                left: '50%',
+                opacity: 0.2,
+                position: 'absolute',
+                top: '50%',
+                transform: [{ rotate: `${index * 24 - 72}deg` }, { translateX: -240 }],
+                width: 480
+              }}
+            />
+          )) :
+          null}
+      </View>
+      <View style={{ zIndex: 1 }}>{children}</View>
+    </View>
+  )
+}
+
+export type LumenIllustrationTone = 'accent' | 'auto' | 'brand' | 'neutral'
+export type LumenIllustrationVariant = 'empty' | 'error' | 'offline' | 'success'
+
+export interface LumenIllustrationProps extends ViewProps {
+  label?: string
+  ref?: Ref<HostInstance>
+  size?: LumenIllustrationSize
+  tone?: LumenIllustrationTone
+  variant?: LumenIllustrationVariant
+}
+
+interface LumenIllustrationArtworkProps {
+  color: string
+  dimension: number
+  strokeWidth: number
+  variant: LumenIllustrationVariant
+}
+
+const LumenIllustrationArtwork = ({
+  color,
+  dimension,
+  strokeWidth,
+  variant
+}: LumenIllustrationArtworkProps): ReactElement | null => {
+  const line = (width: number, rotation: string, left: number, top: number): ReactElement => (
+    <View
+      style={{
+        backgroundColor: color,
+        borderRadius: strokeWidth,
+        height: strokeWidth,
+        left,
+        position: 'absolute',
+        top,
+        transform: [{ rotate: rotation }],
+        width
+      }}
+    />
+  )
+
+  if (variant === 'empty') {
+    return (
+      <View
+        style={{
+          borderColor: color,
+          borderRadius: dimension * 0.08,
+          borderWidth: strokeWidth,
+          height: dimension * 0.34,
+          marginTop: dimension * 0.14,
+          width: dimension * 0.52
+        }}
+      >
+        <View style={{ backgroundColor: color, height: strokeWidth, left: '18%', opacity: 0.7, position: 'absolute', top: '38%', width: '64%' }} />
+      </View>
+    )
+  }
+
+  if (variant === 'offline') {
+    return (
+      <View style={{ height: dimension * 0.52, position: 'relative', width: dimension * 0.64 }}>
+        <View style={{ borderColor: color, borderRadius: dimension, borderWidth: strokeWidth, bottom: dimension * 0.08, height: dimension * 0.32, position: 'absolute', width: '100%' }} />
+        {line(dimension * 0.72, '45deg', -dimension * 0.04, dimension * 0.24)}
+      </View>
+    )
+  }
+
+  return (
+    <View style={{ borderColor: color, borderRadius: dimension, borderWidth: strokeWidth, height: dimension * 0.52, position: 'relative', width: dimension * 0.52 }}>
+      {variant === 'success' ?
+        (
+          <>
+            {line(dimension * 0.16, '45deg', dimension * 0.1, dimension * 0.25)}
+            {line(dimension * 0.26, '-45deg', dimension * 0.19, dimension * 0.21)}
+          </>
+        ) :
+        (
+          <>
+            {line(dimension * 0.28, '45deg', dimension * 0.11, dimension * 0.25)}
+            {line(dimension * 0.28, '-45deg', dimension * 0.11, dimension * 0.25)}
+          </>
+        )}
+    </View>
+  )
+}
+
+export const LumenIllustration = ({
+  label,
+  ref,
+  size = 'md',
+  style,
+  tone = 'auto',
+  variant = 'empty',
+  ...props
+}: LumenIllustrationProps): ReactElement => {
+  const theme = useLumenTheme()
+  const dimension = resolveLumenIllustrationSize(size)
+
+  const semanticColor = {
+    empty: theme.colors.brand,
+    error: theme.colors.danger,
+    offline: theme.colors.inkMuted,
+    success: theme.colors.success
+  }[variant]
+
+  const color = tone === 'auto' ?
+    semanticColor :
+    {
+      accent: theme.colors.accent,
+      brand: theme.colors.brand,
+      neutral: theme.colors.inkMuted
+    }[tone]
+
+  const strokeWidth = Math.max(2, dimension / 48)
+
+  return (
+    <View
+      ref={ref}
+      {...props}
+      accessible={Boolean(label)}
+      accessibilityElementsHidden={!label}
+      accessibilityLabel={label}
+      accessibilityRole={label ? 'image' : undefined}
+      importantForAccessibility={label ? 'yes' : 'no-hide-descendants'}
+      style={[{ alignItems: 'center', height: dimension, justifyContent: 'center', position: 'relative', width: dimension }, style]}
+    >
+      <View style={{ backgroundColor: color, borderRadius: dimension, height: '82%', opacity: 0.1, position: 'absolute', width: '82%' }} />
+      <LumenIllustrationArtwork color={color} dimension={dimension} strokeWidth={strokeWidth} variant={variant} />
+    </View>
   )
 }
 
