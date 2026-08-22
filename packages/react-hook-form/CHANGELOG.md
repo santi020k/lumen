@@ -1,5 +1,11 @@
 # @santi020k/lumen-react-hook-form
 
+## 1.0.1
+
+### Patch Changes
+
+- [#25](https://github.com/santi020k/lumen/pull/25) [`2c480eb`](https://github.com/santi020k/lumen/commit/2c480eb61ff3e14d526fd1f528f9c0a7d1591684) Thanks [@santi020k](https://github.com/santi020k)! - Improve package discovery with framework-specific documentation homepages and npm search keywords.
+
 ## 1.0.0
 
 ### Major Changes
