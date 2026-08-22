@@ -39,8 +39,10 @@ words:
   - commitprompt
   - codemod
   - contenteditable
+  - ContracTrack
   - coverimage
   - CoverImage
+  - Coolstead
   - Cowork
   - datalist
   - datatable
@@ -64,6 +66,7 @@ words:
   - geolocation
   - getprop
   - glassmorphism
+  - gitlink
   - gradientdivider
   - GradientDivider
   - hashkey
