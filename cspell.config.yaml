@@ -33,6 +33,7 @@ words:
   - Chakra
   - checkmark
   - circlepath
+  - cmdline
   - commitizen
   - commitlint
   - commitprompt

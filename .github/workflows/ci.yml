@@ -79,7 +79,7 @@ jobs:
     name: SwiftUI package
     needs: classify
     if: needs.classify.outputs.native == 'true'
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -110,13 +110,14 @@ jobs:
           java-version: 21
 
       - name: Install Android platform
-        run: >-
-          sdkmanager
-          "platforms;android-37.0"
-          "build-tools;36.0.0"
-          "platform-tools"
-          "emulator"
-          "system-images;android-35;google_apis;x86_64"
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0" \
+            "platform-tools" \
+            "emulator" \
+            "system-images;android-35;google_apis;x86_64"
 
       - name: Build and test Compose library
         working-directory: packages/compose

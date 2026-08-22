@@ -64,7 +64,11 @@ jobs:
           java-version: 21
 
       - name: Install Android platform
-        run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0"
 
       - name: Build Central Portal bundle
         working-directory: packages/compose
