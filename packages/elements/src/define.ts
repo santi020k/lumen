@@ -6212,6 +6212,11 @@ class LumenTabsBehaviorElement extends LumenElement {
   private setupTabs(signal: AbortSignal): void {
     const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')]
     const panels = [...this.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
+    const tabList = tabs[0]?.closest<HTMLElement>('[role="tablist"]')
+
+    const orientation = tabList?.getAttribute('aria-orientation') === 'vertical' ?
+      'vertical' :
+      'horizontal'
 
     if (!tabs.length || !panels.length) return
 
@@ -6245,7 +6250,9 @@ class LumenTabsBehaviorElement extends LumenElement {
 
       tab.addEventListener(
         'keydown', event => {
-          const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+          const keys = orientation === 'vertical' ?
+            ['ArrowUp', 'ArrowDown', 'Home', 'End'] :
+            ['ArrowLeft', 'ArrowRight', 'Home', 'End']
 
           if (!keys.includes(event.key)) return
 
@@ -6256,7 +6263,10 @@ class LumenTabsBehaviorElement extends LumenElement {
           const nextTab =
             tabs[
               getLoopedIndex(
-                event.key, Math.max(0, currentIndex), tabs.length, ['ArrowRight']
+                event.key,
+                Math.max(0, currentIndex),
+                tabs.length,
+                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
               )
             ]
 
@@ -9332,7 +9342,7 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
 
     const requestedValue = controlled ?
       this.getAttribute('value') || undefined :
-      storedValue ?? documentValue ?? this.getAttribute('default-value') ?? undefined
+      storedValue ?? this.getAttribute('default-value') ?? documentValue
 
     const { current } = getLumenLocalePair(this.locales, requestedValue)
 

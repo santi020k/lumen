@@ -958,6 +958,7 @@ export const useLanguageToggle = ({
       initializedRef.current = true
 
       const preferredValue = readLanguageStorage(storageKey) ??
+        defaultValue ??
         document.documentElement.lang
 
       if (
@@ -980,7 +981,7 @@ export const useLanguageToggle = ({
         // Storage can be unavailable in privacy modes.
       }
     }
-  }, [controlledValue, locales, storageKey, value])
+  }, [controlledValue, defaultValue, locales, storageKey, value])
 
   return {
     currentLocale: pair.current,
@@ -1156,7 +1157,9 @@ export const useTabs = ({
           activate(triggerValue)
         }),
         onKeyDown: composeHandlers(props.onKeyDown, event => {
-          const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+          const keys = orientation === 'vertical' ?
+            ['ArrowUp', 'ArrowDown', 'Home', 'End'] :
+            ['ArrowLeft', 'ArrowRight', 'Home', 'End']
 
           if (!keys.includes(event.key)) return
 
@@ -1173,7 +1176,10 @@ export const useTabs = ({
           const nextTab =
             tabs[
               getLoopedIndex(
-                event.key, Math.max(0, currentIndex), tabs.length, ['ArrowRight']
+                event.key,
+                Math.max(0, currentIndex),
+                tabs.length,
+                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
               )
             ]
 
@@ -1190,7 +1196,7 @@ export const useTabs = ({
         type: props.type ?? 'button',
         'data-value': triggerValue
       }
-    }, [activate, selectedValue, tabsId]
+    }, [activate, orientation, selectedValue, tabsId]
   )
 
   const getPanelProps = useCallback<TabsController['getPanelProps']>(

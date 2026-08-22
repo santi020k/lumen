@@ -54,6 +54,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(item).toContain('aria-disabled')
     expect(separator).toContain('role="separator"')
     expect(runtime).toContain('root.hasAttribute(\'data-ui-dropdown-menu\')')
+    expect(runtime).toContain('event.target instanceof Element')
     expect(styles).toContain('.ui-menu__item-status')
     expect(styles).toContain('.ui-menu__separator')
   })
@@ -560,6 +561,12 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(languageToggle).toContain('labelTemplate')
     expect(runtime).toContain('new CustomEvent(\'ui:language-change\'')
     expect(runtime).toContain('document.documentElement.lang = next.value')
+    expect(runtime).toContain(
+      'storedValue ?? control.dataset.uiLanguageInitialValue ?? documentValue'
+    )
+    expect(runtime).toContain(
+      'orientation === \'vertical\' ? [\'ArrowDown\'] : [\'ArrowRight\']'
+    )
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')
     expect(particles).toContain(
