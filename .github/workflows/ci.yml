@@ -209,7 +209,29 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: Run visual regression suite
+        id: visual-regression
+        continue-on-error: true
         run: pnpm run test:visual
+
+      - name: Regenerate failed template baselines for review
+        if: steps.visual-regression.outcome == 'failure'
+        run: >-
+          pnpm exec playwright test
+          --config playwright.visual.config.ts
+          --update-snapshots
+          --grep template
+
+      - name: Upload regenerated visual baselines
+        if: steps.visual-regression.outcome == 'failure'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: visual-baselines
+          path: tests/visual/components.spec.ts-snapshots
+          if-no-files-found: error
+
+      - name: Fail on visual regression
+        if: steps.visual-regression.outcome == 'failure'
+        run: exit 1
 
   mcp-node-20:
     name: MCP compatibility (Node 20)
