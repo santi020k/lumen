@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+  label?: string
+  size?: 'lg' | 'md' | 'sm'
+  tone?: 'accent' | 'brand' | 'neutral'
+  variant?: 'glow' | 'grid' | 'orbit'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  label,
+  size = 'md',
+  tone = 'brand',
+  variant = 'orbit',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-graphic',
+  `ui-graphic--${variant}`,
+  `ui-graphic--${tone}`,
+  `ui-graphic--${size}`
+], classProp, className)
+---
+
+<div
+  aria-hidden={label ? undefined : 'true'}
+  aria-label={label}
+  class:list={classList}
+  role={label ? 'img' : undefined}
+  {...passthrough}
+>
+  <div class="ui-graphic__content">
+    <slot />
+  </div>
+</div>

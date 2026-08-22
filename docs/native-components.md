@@ -109,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.2.0")
+    implementation("com.santi020k:lumen-compose:0.3.0")
 }
 ```
 
@@ -141,15 +141,20 @@ mapped Lumen values when the application needs them independently.
 | Checkbox          | `LumenCheckbox`         | `LumenCheckbox`         | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text               |
 | Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`       | `LumenRadioGroup`       | Named single selection with disabled option support                       |
 | Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl` | `LumenSegmentedControl` | Compact single selection from a small peer set                            |
+| Navigation bar    | `LumenNavigationBar`    | `LumenNavigationBar`    | `LumenNavigationBar`    | Controlled app destinations with selected and disabled states             |
 | Chip              | `LumenChip`             | `LumenChip`             | `LumenChip`             | Compact display, selection, and separately labeled removal                |
 | Badge             | `LumenBadge`            | `LumenBadge`            | `LumenBadge`            | Neutral, accent, success, warning, and danger tones                       |
 | Divider           | `LumenDivider`          | `LumenDivider`          | `LumenDivider`          | Semantic line color and decorative semantics                              |
 | Spinner           | `LumenSpinner`          | `LumenSpinner`          | `LumenSpinner`          | Brand color and accessible loading label                                  |
 | Card              | `LumenCard`             | `LumenCard`             | `LumenCard`             | Neutral and semantic surfaces; optional native action                     |
 | Alert             | `LumenAlert`            | `LumenAlert`            | `LumenAlert`            | Default, destructive, success, and warning variants                       |
+| Alert dialog      | `LumenAlertDialog`      | `lumenAlertDialog`      | `LumenAlertDialog`      | Controlled confirmation with destructive, disabled, and loading states    |
 | Toast             | `LumenToast`            | `LumenToast`            | `LumenToast`            | App-controlled transient feedback with optional action and dismissal      |
 | Progress          | `LumenProgress`         | `LumenProgress`         | `LumenProgress`         | Determinate, clamped value and valid maximum                              |
 | Skeleton          | `LumenSkeleton`         | `LumenSkeleton`         | `LumenSkeleton`         | Text, rectangle, or circle loading placeholder; decorative unless labeled |
+| Graphic           | `LumenGraphic`          | `LumenGraphic`          | `LumenGraphic`          | Token-aware glow, grid, or orbit around app-provided artwork              |
+| Backdrop          | `LumenBackdrop`         | `LumenBackdrop`         | `LumenBackdrop`         | Ambient aurora, dots, grid, or rays behind native content                 |
+| Illustration      | `LumenIllustration`     | `LumenIllustration`     | `LumenIllustration`     | Built-in empty, success, error, and offline semantic scenes               |
 | Disclosure        | `LumenDisclosure`       | `LumenDisclosure`       | `LumenDisclosure`       | Controlled expanded state with native trigger and content semantics       |
 | Avatar            | `LumenAvatar`           | `LumenAvatar`           | `LumenAvatar`           | Native image source, fallback, label, and shared sizes                    |
 | Empty state       | `LumenEmptyState`       | `LumenEmptyState`       | `LumenEmptyState`       | Title, supporting copy, optional graphic, and recovery actions            |
@@ -161,6 +166,9 @@ mapped Lumen values when the application needs them independently.
 | Picker            | —                       | `LumenPicker`           | `LumenPicker`           | Native single-value selection without a React Native dependency           |
 | Slider            | —                       | `LumenSlider`           | `LumenSlider`           | Native continuous or stepped range input                                  |
 | Gauge             | —                       | `LumenGauge`            | `LumenGauge`            | Clamped circular metric with a formatted accessible value                 |
+| Sheet             | `LumenSheet`            | `lumenSheet`            | `LumenSheet`            | Controlled supplemental surface with native modal dismissal               |
+| Menu              | `LumenMenu`             | `LumenMenu`             | `LumenMenu`             | Anchored actions with disabled and destructive item states                |
+| Share button      | `LumenShareButton`      | `LumenShareButton`      | `LumenShareButton`      | Token-aware action backed by the operating system share surface           |
 
 The web-only Card variants `glass` and `unstyled` are deliberately not shared. Blur, material, and
 unstyled layout behavior do not have a stable cross-platform meaning. Native Card interaction is
@@ -183,9 +191,85 @@ Picker, slider, and gauge are shared by SwiftUI and Compose because both platfor
 dependency-free native controls. React Native applications can pair Lumen tokens with their chosen
 control library rather than making the shared package impose one dependency.
 
-These components are intentionally smaller than application structure. Continue using native
-`NavigationSplitView`, `List`, `Form`, `Toolbar`, sheets, popovers, and window scenes so SwiftUI owns
+`LumenNavigationBar` covers a small set of peer app destinations while leaving the selected screen,
+navigation history, deep links, and restoration in application code. Continue using native routers,
+`NavigationSplitView`, navigation stacks, popovers, and window scenes for hierarchical
 navigation, focus restoration, keyboard routing, and window behavior.
+
+### Shared destination navigation
+
+Each adapter uses the same controlled-selection contract with native icon types. Keep destination
+labels short, supply a meaningful label for the group, and let the application render the selected
+screen through its existing router or navigation stack.
+
+```tsx
+<LumenNavigationBar
+  accessibilityLabel="Primary navigation"
+  items={destinations}
+  value={destination}
+  onValueChange={setDestination}
+/>
+```
+
+```swift
+LumenNavigationBar(
+    "Primary navigation",
+    selection: $destination,
+    items: [
+        LumenNavigationItem("Home", value: .home, systemName: "house"),
+        LumenNavigationItem("Search", value: .search, systemName: "magnifyingglass")
+    ]
+)
+```
+
+```kotlin
+LumenNavigationBar(
+    items = destinations,
+    selectedValue = destination,
+    onValueChange = ::setDestination
+)
+```
+
+### Confirmation, sheets, menus, and sharing
+
+Overlay state and application data remain controlled by the host. Lumen supplies consistent action
+roles, spacing, and accessibility while each adapter uses its native modal and share presentation.
+SwiftUI exposes alert and sheet presentation as view modifiers so focus restoration remains attached
+to the presenting view.
+
+```swift
+LumenButton("Delete report") { showConfirmation = true }
+    .lumenAlertDialog(
+        isPresented: $showConfirmation,
+        title: "Delete report?",
+        confirmLabel: "Delete",
+        confirmRole: .destructive,
+        onConfirm: deleteReport
+    )
+
+LumenShareButton("Share report", item: reportText)
+```
+
+```kotlin
+LumenSheet(
+    visible = showEditor,
+    onDismiss = { showEditor = false },
+    title = "Edit report"
+) {
+    ReportEditor()
+}
+```
+
+```tsx
+<LumenAlertDialog
+  visible={showConfirmation}
+  title="Delete report?"
+  confirmLabel="Delete"
+  destructive
+  onConfirm={deleteReport}
+  onDismiss={() => setShowConfirmation(false)}
+/>
+```
 
 ### Platform-native actions and input
 

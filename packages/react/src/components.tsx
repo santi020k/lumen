@@ -5747,6 +5747,125 @@ export const AnimatedLogo = ({
   />
 )
 
+export interface GraphicProps extends ComponentPropsWithoutRef<'div'> {
+  label?: string
+  size?: 'lg' | 'md' | 'sm'
+  tone?: 'accent' | 'brand' | 'neutral'
+  variant?: 'glow' | 'grid' | 'orbit'
+}
+
+export const Graphic = ({
+  children,
+  className,
+  label,
+  size = 'md',
+  tone = 'brand',
+  variant = 'orbit',
+  ...props
+}: GraphicProps) => (
+  <div
+    aria-hidden={label ? undefined : true}
+    aria-label={label}
+    className={composeClassName(
+      'ui-graphic',
+      `ui-graphic--${variant}`,
+      `ui-graphic--${tone}`,
+      `ui-graphic--${size}`,
+      className
+    )}
+    role={label ? 'img' : undefined}
+    {...props}
+  >
+    <div className="ui-graphic__content">{children}</div>
+  </div>
+)
+
+export interface BackdropProps extends ComponentPropsWithoutRef<'div'> {
+  intensity?: 'medium' | 'strong' | 'subtle'
+  tone?: 'accent' | 'brand' | 'neutral'
+  variant?: 'aurora' | 'dots' | 'grid' | 'rays'
+}
+
+export const Backdrop = ({
+  children,
+  className,
+  intensity = 'medium',
+  tone = 'brand',
+  variant = 'aurora',
+  ...props
+}: BackdropProps) => (
+  <div
+    className={composeClassName(
+      'ui-backdrop',
+      `ui-backdrop--${variant}`,
+      `ui-backdrop--${tone}`,
+      `ui-backdrop--${intensity}`,
+      className
+    )}
+    {...props}
+  >
+    <div className="ui-backdrop__content">{children}</div>
+  </div>
+)
+
+export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
+  label?: string
+  size?: 'lg' | 'md' | 'sm'
+  tone?: 'accent' | 'auto' | 'brand' | 'neutral'
+  variant?: 'empty' | 'error' | 'offline' | 'success'
+}
+
+export const Illustration = ({
+  className,
+  label,
+  size = 'md',
+  tone = 'auto',
+  variant = 'empty',
+  ...props
+}: IllustrationProps) => (
+  <span
+    aria-hidden={label ? undefined : true}
+    aria-label={label}
+    className={composeClassName(
+      'ui-illustration',
+      `ui-illustration--${variant}`,
+      `ui-illustration--${tone}`,
+      `ui-illustration--${size}`,
+      className
+    )}
+    role={label ? 'img' : undefined}
+    {...props}
+  >
+    <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
+      <circle className="ui-illustration__wash" cx="60" cy="60" r="48" />
+      {variant === 'empty' && (
+        <g>
+          <path d="M32 48h56l-7 35H39l-7-35Z" />
+          <path d="M43 48 49 36h22l6 12M47 66h26" />
+        </g>
+      )}
+      {variant === 'success' && (
+        <g>
+          <circle cx="60" cy="60" r="28" />
+          <path d="m45 60 10 10 21-23" />
+        </g>
+      )}
+      {variant === 'error' && (
+        <g>
+          <circle cx="60" cy="60" r="28" />
+          <path d="m49 49 22 22m0-22L49 71" />
+        </g>
+      )}
+      {variant === 'offline' && (
+        <g>
+          <path d="M37 74h44a14 14 0 0 0 1-28 23 23 0 0 0-42-4 16 16 0 0 0-3 32Z" />
+          <path d="m38 34 44 52" />
+        </g>
+      )}
+    </svg>
+  </span>
+)
+
 export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>
 export const AnimatedPortrait = ({
   className,

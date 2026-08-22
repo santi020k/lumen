@@ -77,6 +77,21 @@ import Testing
     #expect(LumenAvatarSize.lg.dimension == 56)
 }
 
+@Test func graphicDimensionsMatchTheSharedContract() {
+    #expect(LumenGraphicSize.sm.dimension == 160)
+    #expect(LumenGraphicSize.md.dimension == 240)
+    #expect(LumenGraphicSize.lg.dimension == 320)
+}
+
+@Test func backdropAndIllustrationMetricsMatchTheSharedContract() {
+    #expect(LumenBackdropIntensity.subtle.opacity == 0.4)
+    #expect(LumenBackdropIntensity.medium.opacity == 0.68)
+    #expect(LumenBackdropIntensity.strong.opacity == 1)
+    #expect(LumenIllustrationSize.sm.dimension == 96)
+    #expect(LumenIllustrationSize.md.dimension == 128)
+    #expect(LumenIllustrationSize.lg.dimension == 176)
+}
+
 #if os(iOS) || os(macOS)
 @Test func sliderConfigurationRejectsInvalidSteps() {
     let bounds = 0.0...100.0

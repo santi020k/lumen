@@ -291,6 +291,39 @@
       }
     },
     {
+      "id": "graphic",
+      "tier": "shared",
+      "contract": "Token-aware glow, grid, and orbit presets around application-provided artwork",
+      "accessibility": "Decorative by default or exposed as one labeled image",
+      "symbols": {
+        "reactNative": "LumenGraphic",
+        "swiftUI": "LumenGraphic",
+        "compose": "LumenGraphic"
+      }
+    },
+    {
+      "id": "backdrop",
+      "tier": "shared",
+      "contract": "Ambient aurora, dots, grid, and rays behind application content with semantic tones and intensity",
+      "accessibility": "The decorative layer stays hidden while child content preserves its native semantics",
+      "symbols": {
+        "reactNative": "LumenBackdrop",
+        "swiftUI": "LumenBackdrop",
+        "compose": "LumenBackdrop"
+      }
+    },
+    {
+      "id": "illustration",
+      "tier": "shared",
+      "contract": "Built-in empty, success, error, and offline scenes with shared semantic colors and sizes",
+      "accessibility": "Decorative by default or exposed as one labeled image",
+      "symbols": {
+        "reactNative": "LumenIllustration",
+        "swiftUI": "LumenIllustration",
+        "compose": "LumenIllustration"
+      }
+    },
+    {
       "id": "disclosure",
       "tier": "shared",
       "contract": "Controlled progressive disclosure with title, supporting text, and native content",
@@ -406,6 +439,61 @@
       "symbols": {
         "swiftUI": "LumenGauge",
         "compose": "LumenGauge"
+      }
+    },
+    {
+      "id": "alert-dialog",
+      "tier": "shared",
+      "contract": "Controlled confirmation with cancel, confirm, destructive, disabled, and loading states",
+      "accessibility": "Uses native modal focus, alert semantics, and independently named actions",
+      "symbols": {
+        "reactNative": "LumenAlertDialog",
+        "swiftUI": "lumenAlertDialog",
+        "compose": "LumenAlertDialog"
+      }
+    },
+    {
+      "id": "sheet",
+      "tier": "shared",
+      "contract": "Controlled supplemental surface with optional heading, description, actions, and native dismissal",
+      "accessibility": "Uses native modal focus containment and preserves application content semantics",
+      "symbols": {
+        "reactNative": "LumenSheet",
+        "swiftUI": "lumenSheet",
+        "compose": "LumenSheet"
+      }
+    },
+    {
+      "id": "menu",
+      "tier": "shared",
+      "contract": "Anchored action menu with labeled disabled and destructive item states",
+      "accessibility": "Exposes native menu roles, expanded state, and independently named actions",
+      "symbols": {
+        "reactNative": "LumenMenu",
+        "swiftUI": "LumenMenu",
+        "compose": "LumenMenu"
+      }
+    },
+    {
+      "id": "share-button",
+      "tier": "shared",
+      "contract": "Token-aware button that presents the operating system share surface for application-owned content",
+      "accessibility": "Retains native button semantics and delegates destination selection to the operating system",
+      "symbols": {
+        "reactNative": "LumenShareButton",
+        "swiftUI": "LumenShareButton",
+        "compose": "LumenShareButton"
+      }
+    },
+    {
+      "id": "navigation-bar",
+      "tier": "shared",
+      "contract": "Controlled selection from a small set of peer app destinations",
+      "accessibility": "Names the destination group and exposes selected and disabled item states",
+      "symbols": {
+        "reactNative": "LumenNavigationBar",
+        "swiftUI": "LumenNavigationBar",
+        "compose": "LumenNavigationBar"
       }
     }
   ],

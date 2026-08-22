@@ -11,6 +11,41 @@ const adapterNames = ['reactNative', 'swiftUI', 'compose']
 const supportedExtensions = new Set(['.kt', '.swift', '.ts', '.tsx'])
 const escapeRegExp = value => value.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
+const hasPublicSwiftSymbol = (source, symbol) => {
+  const escapedSymbol = escapeRegExp(symbol)
+
+  if (new RegExp(`public\\s+(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`).test(source)) {
+    return true
+  }
+
+  let extensionStart = source.indexOf('public extension ')
+
+  while (extensionStart !== -1) {
+    const bodyStart = source.indexOf('{', extensionStart)
+
+    if (bodyStart === -1) return false
+
+    let depth = 1
+    let cursor = bodyStart + 1
+
+    while (cursor < source.length && depth > 0) {
+      if (source[cursor] === '{') depth += 1
+
+      if (source[cursor] === '}') depth -= 1
+
+      cursor += 1
+    }
+
+    const body = source.slice(bodyStart + 1, cursor - 1)
+
+    if (new RegExp(`\\bfunc\\s+${escapedSymbol}\\b`).test(body)) return true
+
+    extensionStart = source.indexOf('public extension ', cursor)
+  }
+
+  return false
+}
+
 const readSourceDirectory = async directory => {
   const entries = await readdir(directory, { withFileTypes: true })
 
@@ -98,9 +133,8 @@ for (const component of registry.components) {
     }
 
     if (adapterName === 'swiftUI') {
-      assert.match(
-        sourceByAdapter.swiftUI,
-        new RegExp(`public\\s+(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`),
+      assert.ok(
+        hasPublicSwiftSymbol(sourceByAdapter.swiftUI, symbol),
         `${component.id} claims SwiftUI support, but ${symbol} is not public`
       )
     }
@@ -163,9 +197,8 @@ for (const component of registry.platformComponents) {
   }
 
   if (component.adapter === 'swiftUI') {
-    assert.match(
-      sourceByAdapter.swiftUI,
-      new RegExp(`public\\s+(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`),
+    assert.ok(
+      hasPublicSwiftSymbol(sourceByAdapter.swiftUI, component.symbol),
       `${component.id} claims SwiftUI support, but ${component.symbol} is not public`
     )
   }

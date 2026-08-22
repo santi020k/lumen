@@ -7,6 +7,7 @@ export type NativeComponentCategory =
   'Forms' |
   'Foundations' |
   'Layout' |
+  'Navigation' |
   'macOS utilities'
 
 interface NativeApiRow {
@@ -1893,6 +1894,76 @@ const additionalDefinitions: ComponentDefinition[] = [
   },
   {
     accessibility:
+      'The group has a readable navigation label and every destination exposes selected and disabled state through native tab semantics.',
+    category: 'Navigation',
+    examples: {
+      android: `LumenNavigationBar(
+    items = destinations,
+    selectedValue = destination,
+    onValueChange = ::setDestination
+)`,
+      apple: `LumenNavigationBar(
+    selection: $destination,
+    items: destinations
+)`,
+      'react-native': `<LumenNavigationBar
+  items={destinations}
+  value={destination}
+  onValueChange={setDestination}
+/>`
+    },
+    exports: {
+      android: 'LumenNavigationBar',
+      apple: 'LumenNavigationBar',
+      'react-native': 'LumenNavigationBar'
+    },
+    guidance:
+      'Use for a small set of peer app destinations. Keep hierarchical navigation, history, deep links, restoration, and screen rendering in the application router or native navigation stack.',
+    name: 'Navigation bar',
+    properties: [
+      property(
+        'items',
+        {
+          android: 'List<LumenNavigationItem<Value>>',
+          apple: '[LumenNavigationItem<Selection>]',
+          'react-native': 'readonly LumenNavigationItem[]'
+        },
+        'Required',
+        'Provides destination values, short labels, native icons, and disabled state.'
+      ),
+      property(
+        { android: 'selectedValue', apple: 'selection', 'react-native': 'value' },
+        {
+          android: 'Value',
+          apple: 'Binding<Selection>',
+          'react-native': 'string'
+        },
+        'Required',
+        'Stores the active destination.'
+      ),
+      property(
+        'onValueChange',
+        {
+          android: '(Value) -> Unit',
+          apple: 'Binding setter',
+          'react-native': '(string) => void'
+        },
+        'Required',
+        'Requests a destination change without owning navigation history.'
+      ),
+      property(
+        { android: 'accessibilityLabel', apple: 'label', 'react-native': 'accessibilityLabel' },
+        'String',
+        'Primary navigation',
+        'Names the destination group for assistive technology.'
+      )
+    ],
+    slug: 'navigation-bar',
+    summary:
+      'Select among peer application destinations with native visuals and controlled state.'
+  },
+  {
+    accessibility:
       'The title, description, optional graphic, and recovery actions remain in a readable native order.',
     category: 'Feedback',
     examples: {
@@ -2581,6 +2652,331 @@ const additionalDefinitions: ComponentDefinition[] = [
     slug: 'symbol-picker',
     summary:
       'Search and choose from labeled, categorized SF Symbols in a native macOS picker.'
+  },
+  {
+    accessibility:
+      'Decorative graphics stay hidden from assistive technology; an optional label exposes the complete composition as one image.',
+    category: 'Data display',
+    examples: {
+      android: `LumenGraphic(
+    variant = LumenGraphicVariant.Orbit,
+    label = "Project overview"
+) {
+    ProjectArtwork()
+}`,
+      apple: `LumenGraphic(
+    variant: .orbit,
+    label: "Project overview"
+) {
+    ProjectArtwork()
+}`,
+      'react-native': `<LumenGraphic variant="orbit" label="Project overview">
+  <ProjectArtwork />
+</LumenGraphic>`
+    },
+    exports: {
+      android: 'LumenGraphic',
+      apple: 'LumenGraphic',
+      'react-native': 'LumenGraphic'
+    },
+    guidance:
+      'Use to frame meaningful application artwork with a restrained token-aware preset. Leave the label absent when the surrounding content already communicates the same meaning.',
+    name: 'Graphic',
+    properties: [
+      property('variant', 'glow · grid · orbit', 'orbit', 'Selects the decorative composition.'),
+      property('size', 'sm · md · lg', 'md', 'Selects a shared native dimension.'),
+      property('tone', 'brand · accent · neutral', 'brand', 'Selects the semantic decoration color.'),
+      property(
+        'label',
+        { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Optionally exposes the composition as one labeled image.'
+      )
+    ],
+    slug: 'graphic',
+    summary: 'Frame application-provided artwork with token-aware glow, grid, or orbit decoration.'
+  },
+  {
+    accessibility:
+      'The ambient layer has no accessibility semantics; child content keeps its native reading order, names, and controls.',
+    category: 'Data display',
+    examples: {
+      android: `LumenBackdrop(
+    intensity = LumenBackdropIntensity.Medium,
+    variant = LumenBackdropVariant.Aurora
+) {
+    ProjectOverview()
+}`,
+      apple: `LumenBackdrop(
+    intensity: .medium,
+    variant: .aurora
+) {
+    ProjectOverview()
+}`,
+      'react-native': `<LumenBackdrop intensity="medium" variant="aurora">
+  <ProjectOverview />
+</LumenBackdrop>`
+    },
+    exports: {
+      android: 'LumenBackdrop',
+      apple: 'LumenBackdrop',
+      'react-native': 'LumenBackdrop'
+    },
+    guidance:
+      'Use behind meaningful hero, empty-state, or highlighted content. Keep child surfaces and text on semantic tokens so contrast does not depend on the decoration.',
+    name: 'Backdrop',
+    properties: [
+      property('variant', 'aurora · dots · grid · rays', 'aurora', 'Selects the ambient pattern.'),
+      property('tone', 'brand · accent · neutral', 'brand', 'Selects the semantic decoration color.'),
+      property('intensity', 'subtle · medium · strong', 'medium', 'Controls only the decoration opacity.'),
+      property('content', 'Native view content', 'Required', 'Renders meaningful content above the decorative layer.')
+    ],
+    slug: 'backdrop',
+    summary: 'Place a token-aware ambient pattern behind native application content.'
+  },
+  {
+    accessibility:
+      'Illustrations are decorative by default; an optional label exposes the complete scene as one image.',
+    category: 'Feedback',
+    examples: {
+      android: `LumenIllustration(
+    variant = LumenIllustrationVariant.Success,
+    label = "Saved successfully"
+)`,
+      apple: `LumenIllustration(
+    variant: .success,
+    label: "Saved successfully"
+)`,
+      'react-native': `<LumenIllustration
+  label="Saved successfully"
+  variant="success"
+/>`
+    },
+    exports: {
+      android: 'LumenIllustration',
+      apple: 'LumenIllustration',
+      'react-native': 'LumenIllustration'
+    },
+    guidance:
+      'Use the built-in scene when its state matches the product message. Keep it decorative when the adjacent heading and description already communicate the same status.',
+    name: 'Illustration',
+    properties: [
+      property('variant', 'empty · success · error · offline', 'empty', 'Selects the semantic scene.'),
+      property('tone', 'auto · brand · accent · neutral', 'auto', 'Uses the state color automatically or an explicit portable tone.'),
+      property('size', 'sm · md · lg', 'md', 'Selects the shared 96, 128, or 176 unit dimension.'),
+      property(
+        { android: 'label', apple: 'label', 'react-native': 'label' },
+        { android: 'String?', apple: 'String?', 'react-native': 'string' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Optionally exposes the illustration as one labeled image.'
+      )
+    ],
+    slug: 'illustration',
+    summary: 'Render a built-in empty, success, error, or offline semantic scene.'
+  },
+  {
+    accessibility:
+      'Native modal focus stays inside the confirmation surface and cancel and confirm remain independently named actions.',
+    category: 'Feedback',
+    examples: {
+      android: `LumenAlertDialog(
+    visible = showConfirmation,
+    title = "Delete report?",
+    confirmLabel = "Delete",
+    destructive = true,
+    onConfirm = ::deleteReport,
+    onDismiss = { showConfirmation = false }
+)`,
+      apple: `content.lumenAlertDialog(
+    isPresented: $showConfirmation,
+    title: "Delete report?",
+    confirmLabel: "Delete",
+    confirmRole: .destructive,
+    onConfirm: deleteReport
+)`,
+      'react-native': `<LumenAlertDialog
+  visible={showConfirmation}
+  title="Delete report?"
+  confirmLabel="Delete"
+  destructive
+  onConfirm={deleteReport}
+  onDismiss={() => setShowConfirmation(false)}
+/>`
+    },
+    exports: {
+      android: 'LumenAlertDialog',
+      apple: 'lumenAlertDialog',
+      'react-native': 'LumenAlertDialog'
+    },
+    guidance:
+      'Use for short consequential confirmations. Keep visibility and mutation state in the application and reserve destructive styling for irreversible or difficult-to-recover actions.',
+    name: 'Alert dialog',
+    properties: [
+      property(
+        { android: 'visible', apple: 'isPresented', 'react-native': 'visible' },
+        { android: 'Boolean', apple: 'Binding<Bool>', 'react-native': 'boolean' },
+        'Required',
+        'Controls native modal presentation.'
+      ),
+      property('title / description', 'Native localized text', 'Description optional', 'Explains the decision.'),
+      property('confirmLabel / cancelLabel', 'Native localized text', 'Cancel label: Cancel', 'Names both actions.'),
+      property(
+        { android: 'destructive', apple: 'confirmRole', 'react-native': 'destructive' },
+        { android: 'Boolean', apple: 'ButtonRole?', 'react-native': 'boolean' },
+        { android: 'false', apple: 'nil', 'react-native': 'false' },
+        'Communicates whether the confirm action is destructive.'
+      ),
+      property(
+        { android: 'confirmEnabled', apple: 'confirmDisabled', 'react-native': 'confirmDisabled' },
+        { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
+        { android: 'true', apple: 'false', 'react-native': 'false' },
+        'Controls whether the confirm action can be activated.'
+      ),
+      property(
+        'confirmLoading',
+        { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
+        'false',
+        'Communicates asynchronous confirmation progress.'
+      )
+    ],
+    slug: 'alert-dialog',
+    summary: 'Request a controlled native confirmation with explicit cancel and confirm states.'
+  },
+  {
+    accessibility:
+      'The native modal presentation contains focus while preserving the semantics and reading order of application-owned content.',
+    category: 'Layout',
+    examples: {
+      android: `LumenSheet(
+    visible = showEditor,
+    onDismiss = { showEditor = false },
+    title = "Edit report"
+) {
+    ReportEditor()
+}`,
+      apple: `content.lumenSheet(
+    isPresented: $showEditor,
+    title: "Edit report"
+) {
+    ReportEditor()
+}`,
+      'react-native': `<LumenSheet
+  visible={showEditor}
+  title="Edit report"
+  onDismiss={() => setShowEditor(false)}
+>
+  <ReportEditor />
+</LumenSheet>`
+    },
+    exports: {
+      android: 'LumenSheet',
+      apple: 'lumenSheet',
+      'react-native': 'LumenSheet'
+    },
+    guidance:
+      'Use for supplemental editing or detail that should not replace the current screen. Keep form state and dismissal decisions application-owned.',
+    name: 'Sheet',
+    properties: [
+      property(
+        { android: 'visible', apple: 'isPresented', 'react-native': 'visible' },
+        { android: 'Boolean', apple: 'Binding<Bool>', 'react-native': 'boolean' },
+        'Required',
+        'Controls native sheet presentation.'
+      ),
+      property('title / description', 'Native localized text', 'nil / undefined', 'Provides optional heading context.'),
+      property('onDismiss', '() -> Void', 'Required', 'Returns presentation ownership to the application.'),
+      property('content / actions', 'Native view slots', 'Actions optional', 'Composes application-owned content and actions.')
+    ],
+    slug: 'sheet',
+    summary: 'Present supplemental application content in a controlled native sheet.'
+  },
+  {
+    accessibility:
+      'The trigger exposes expanded state and each native menu action reports its label, disabled state, and destructive role.',
+    category: 'Actions',
+    examples: {
+      android: `LumenMenu(
+    expanded = showMenu,
+    onDismissRequest = { showMenu = false },
+    items = actions
+)`,
+      apple: `LumenMenu(items: actions) {
+    Label("More", systemImage: "ellipsis")
+}`,
+      'react-native': `<LumenMenu
+  accessibilityLabel="More actions"
+  trigger={<MoreIcon />}
+  items={actions}
+/>`
+    },
+    exports: {
+      android: 'LumenMenu',
+      apple: 'LumenMenu',
+      'react-native': 'LumenMenu'
+    },
+    guidance:
+      'Use for a short set of contextual actions. Keep labels unique and concise, and do not hide a screen\'s only primary action inside a menu.',
+    name: 'Menu',
+    properties: [
+      property('items', 'Native Lumen menu item collection', 'Required', 'Provides labeled actions and states.'),
+      property(
+        { android: 'expanded', apple: 'Native Menu state', 'react-native': 'Internal trigger state' },
+        { android: 'Boolean', apple: 'Native', 'react-native': 'Native Modal' },
+        'Collapsed',
+        'Controls or reports native menu presentation.'
+      ),
+      property('disabled', 'Boolean', 'false', 'Keeps an unavailable item readable but inactive.'),
+      property('destructive / role', 'Destructive action role', 'false / nil', 'Marks a destructive action semantically and visually.')
+    ],
+    slug: 'menu',
+    summary: 'Present a native anchored action menu with shared item-state semantics.'
+  },
+  {
+    accessibility:
+      'The trigger remains a native labeled button and destination selection is delegated to the operating system share surface.',
+    category: 'Actions',
+    examples: {
+      android: `LumenShareButton(
+    payload = LumenSharePayload(text = reportText),
+    chooserTitle = "Share report"
+)`,
+      apple: 'LumenShareButton("Share report", item: reportText)',
+      'react-native': `<LumenShareButton
+  label="Share report"
+  content={{ message: reportText }}
+/>`
+    },
+    exports: {
+      android: 'LumenShareButton',
+      apple: 'LumenShareButton',
+      'react-native': 'LumenShareButton'
+    },
+    guidance:
+      'Use to share application-owned text, URLs, or files through the operating system. Keep content generation, file permissions, completion feedback, and error handling in the application.',
+    name: 'Share button',
+    properties: [
+      property(
+        { android: 'payload', apple: 'item', 'react-native': 'content' },
+        { android: 'LumenSharePayload', apple: 'Transferable', 'react-native': 'ShareContent' },
+        'Required',
+        'Supplies application-owned share content.'
+      ),
+      property(
+        { android: 'chooserTitle', apple: 'Native share title', 'react-native': 'options' },
+        { android: 'String', apple: 'System-provided', 'react-native': 'ShareOptions' },
+        { android: 'Required', apple: 'System-provided', 'react-native': 'undefined' },
+        'Configures the native share presentation.'
+      ),
+      property('label', 'Native localized text', 'Share', 'Names the trigger action.'),
+      property(
+        { android: 'onFailure', apple: 'Native ShareLink result', 'react-native': 'onError / onShared' },
+        'Platform callback',
+        'No-op',
+        'Lets the application report sharing outcomes where the platform exposes them.'
+      )
+    ],
+    slug: 'share-button',
+    summary: 'Open the operating system share surface from a token-aware native action.'
   }
 ]
 
@@ -2594,6 +2990,7 @@ export const nativeComponentCategories: NativeComponentCategory[] = [
   'Actions',
   'Forms',
   'Layout',
+  'Navigation',
   'Data display',
   'Feedback',
   'macOS utilities'

@@ -7,9 +7,11 @@ in [README.md](README.md), and AI-specific instructions live in [AGENTS.md](AGEN
 
 ```bash
 pnpm install
+pnpm run hooks:install
 pnpm run dev
 ```
 
+Install the [Quality CLI](https://github.com/santi020k/quality) before running the hook installer.
 The docs app is the fastest way to inspect components while working.
 
 ## Change Workflow

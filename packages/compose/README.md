@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.2.0")
+    implementation("com.santi020k:lumen-compose:0.3.0")
 }
 ```
 
@@ -85,7 +85,12 @@ can pass `LumenThemeValues` instead.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
 FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Chip, Picker,
-Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress, Skeleton, Disclosure, Gauge, and Avatar.
+Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
+Illustration, Disclosure, Gauge, and Avatar.
+`LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` add Material-native controlled
+presentation and Android share-sheet integration while application state remains host-owned.
+`LumenNavigationBar` provides Material-native destination selection while the application retains
+ownership of its navigation controller, back stack, deep links, and selected screen.
 The Android-specific tier includes `LumenFloatingActionButton`, with Material-native geometry and
 Lumen brand, accent, or danger intents.
 The module intentionally uses

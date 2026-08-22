@@ -361,6 +361,20 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'Backdrop',
+      type: 'component',
+      description: 'Adds a token-aware ambient pattern behind meaningful content.',
+      category: 'Brand',
+      files: [
+        'packages/astro/components/Backdrop.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'BackToTop',
       type: 'component',
       description: 'Returns user to the top of the page.',
@@ -989,6 +1003,20 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'Graphic',
+      type: 'component',
+      description: 'Frames custom artwork in a token-aware glow, grid, or orbit graphic.',
+      category: 'Brand',
+      files: [
+        'packages/astro/components/Graphic.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'HoverCard',
       type: 'component',
       description: 'Shows extra context on hover and focus.',
@@ -1025,6 +1053,20 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/Image.astro',
         'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'Illustration',
+      type: 'component',
+      description: 'Renders a built-in semantic empty, success, error, or offline illustration.',
+      category: 'Feedback',
+      files: [
+        'packages/astro/components/Illustration.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
       ],
       dependencies: [
         'styles'

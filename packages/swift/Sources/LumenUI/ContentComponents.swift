@@ -59,6 +59,376 @@ public struct LumenSkeleton: View {
     }
 }
 
+public enum LumenGraphicSize: Sendable {
+    case lg
+    case md
+    case sm
+
+    var dimension: CGFloat {
+        switch self {
+        case .lg: 320
+        case .md: 240
+        case .sm: 160
+        }
+    }
+}
+
+public enum LumenGraphicTone: Sendable {
+    case accent
+    case brand
+    case neutral
+}
+
+public enum LumenGraphicVariant: Sendable {
+    case glow
+    case grid
+    case orbit
+}
+
+public struct LumenGraphic<Content: View>: View {
+    @Environment(\.lumenTheme) private var theme
+
+    private let content: Content
+    private let label: String?
+    private let size: LumenGraphicSize
+    private let tone: LumenGraphicTone
+    private let variant: LumenGraphicVariant
+
+    public init(
+        label: String? = nil,
+        size: LumenGraphicSize = .md,
+        tone: LumenGraphicTone = .brand,
+        variant: LumenGraphicVariant = .orbit,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.label = label
+        self.size = size
+        self.tone = tone
+        self.variant = variant
+        self.content = content()
+    }
+
+    public var body: some View {
+        ZStack {
+            graphicLayer
+            content
+        }
+        .frame(width: size.dimension, height: size.dimension)
+        .clipped()
+        .accessibilityElement(children: label == nil ? .ignore : .combine)
+        .accessibilityHidden(label == nil)
+        .accessibilityLabel(Text(label ?? ""))
+    }
+
+    private var color: Color {
+        switch tone {
+        case .accent: theme.colors.accent
+        case .brand: theme.colors.brand
+        case .neutral: theme.colors.inkMuted
+        }
+    }
+
+    @ViewBuilder
+    private var graphicLayer: some View {
+        switch variant {
+        case .glow:
+            Circle()
+                .fill(
+                    RadialGradient(
+                        colors: [color.opacity(0.3), color.opacity(0)],
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: size.dimension * 0.42
+                    )
+                )
+                .padding(size.dimension * 0.08)
+        case .grid:
+            Canvas { context, canvasSize in
+                var path = Path()
+                for index in 0...6 {
+                    let position = CGFloat(index) * canvasSize.width / 6
+                    path.move(to: CGPoint(x: position, y: 0))
+                    path.addLine(to: CGPoint(x: position, y: canvasSize.height))
+                    path.move(to: CGPoint(x: 0, y: position))
+                    path.addLine(to: CGPoint(x: canvasSize.width, y: position))
+                }
+                context.stroke(path, with: .color(color.opacity(0.18)), lineWidth: 1)
+            }
+            .padding(size.dimension * 0.12)
+        case .orbit:
+            Canvas { context, canvasSize in
+                let bounds = CGRect(origin: .zero, size: canvasSize)
+                for ratio in [0.9, 0.62, 0.34] {
+                    let inset = canvasSize.width * (1 - ratio) / 2
+                    context.stroke(
+                        Path(ellipseIn: bounds.insetBy(dx: inset, dy: inset)),
+                        with: .color(color.opacity(0.24)),
+                        lineWidth: 1
+                    )
+                }
+                var axes = Path()
+                axes.move(to: CGPoint(x: canvasSize.width * 0.14, y: canvasSize.height / 2))
+                axes.addLine(to: CGPoint(x: canvasSize.width * 0.86, y: canvasSize.height / 2))
+                axes.move(to: CGPoint(x: canvasSize.width / 2, y: canvasSize.height * 0.14))
+                axes.addLine(to: CGPoint(x: canvasSize.width / 2, y: canvasSize.height * 0.86))
+                context.stroke(axes, with: .color(color.opacity(0.18)), lineWidth: 1)
+            }
+        }
+    }
+}
+
+public enum LumenBackdropIntensity: Sendable {
+    case medium
+    case strong
+    case subtle
+
+    var opacity: Double {
+        switch self {
+        case .medium: 0.68
+        case .strong: 1
+        case .subtle: 0.4
+        }
+    }
+}
+
+public enum LumenBackdropTone: Sendable {
+    case accent
+    case brand
+    case neutral
+}
+
+public enum LumenBackdropVariant: Sendable {
+    case aurora
+    case dots
+    case grid
+    case rays
+}
+
+public struct LumenBackdrop<Content: View>: View {
+    @Environment(\.lumenTheme) private var theme
+
+    private let content: Content
+    private let intensity: LumenBackdropIntensity
+    private let tone: LumenBackdropTone
+    private let variant: LumenBackdropVariant
+
+    public init(
+        intensity: LumenBackdropIntensity = .medium,
+        tone: LumenBackdropTone = .brand,
+        variant: LumenBackdropVariant = .aurora,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.intensity = intensity
+        self.tone = tone
+        self.variant = variant
+        self.content = content()
+    }
+
+    public var body: some View {
+        ZStack {
+            backdropLayer
+                .opacity(intensity.opacity)
+                .accessibilityHidden(true)
+            content
+        }
+        .clipped()
+    }
+
+    private var color: Color {
+        switch tone {
+        case .accent: theme.colors.accent
+        case .brand: theme.colors.brand
+        case .neutral: theme.colors.inkMuted
+        }
+    }
+
+    private var secondaryColor: Color {
+        tone == .neutral ? theme.colors.surfaceStrong : theme.colors.accent
+    }
+
+    @ViewBuilder
+    private var backdropLayer: some View {
+        switch variant {
+        case .aurora:
+            GeometryReader { proxy in
+                Circle()
+                    .fill(color.opacity(0.22))
+                    .frame(width: proxy.size.width * 0.72)
+                    .offset(x: -proxy.size.width * 0.2, y: -proxy.size.height * 0.46)
+                Circle()
+                    .fill(secondaryColor.opacity(0.18))
+                    .frame(width: proxy.size.width * 0.62)
+                    .offset(x: proxy.size.width * 0.58, y: proxy.size.height * 0.44)
+            }
+        case .dots:
+            Canvas { context, canvasSize in
+                for row in 0..<6 {
+                    for column in 0..<8 {
+                        let point = CGPoint(
+                            x: (CGFloat(column) + 0.5) * canvasSize.width / 8,
+                            y: (CGFloat(row) + 0.5) * canvasSize.height / 6
+                        )
+                        context.fill(
+                            Path(ellipseIn: CGRect(x: point.x - 1.5, y: point.y - 1.5, width: 3, height: 3)),
+                            with: .color(color.opacity(0.28))
+                        )
+                    }
+                }
+            }
+        case .grid:
+            Canvas { context, canvasSize in
+                var path = Path()
+                for index in 0...6 {
+                    let x = CGFloat(index) * canvasSize.width / 6
+                    let y = CGFloat(index) * canvasSize.height / 6
+                    path.move(to: CGPoint(x: x, y: 0))
+                    path.addLine(to: CGPoint(x: x, y: canvasSize.height))
+                    path.move(to: CGPoint(x: 0, y: y))
+                    path.addLine(to: CGPoint(x: canvasSize.width, y: y))
+                }
+                context.stroke(path, with: .color(color.opacity(0.18)), lineWidth: 1)
+            }
+        case .rays:
+            Canvas { context, canvasSize in
+                var path = Path()
+                let center = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
+                let radius = sqrt(
+                    canvasSize.width * canvasSize.width + canvasSize.height * canvasSize.height
+                )
+                for index in 0..<12 {
+                    let angle = CGFloat(index) * .pi / 6
+                    path.move(to: center)
+                    path.addLine(to: CGPoint(
+                        x: center.x + cos(angle) * radius,
+                        y: center.y + sin(angle) * radius
+                    ))
+                }
+                context.stroke(path, with: .color(color.opacity(0.2)), lineWidth: 1)
+            }
+        }
+    }
+}
+
+public enum LumenIllustrationSize: Sendable {
+    case lg
+    case md
+    case sm
+
+    var dimension: CGFloat {
+        switch self {
+        case .lg: 176
+        case .md: 128
+        case .sm: 96
+        }
+    }
+}
+
+public enum LumenIllustrationTone: Sendable {
+    case accent
+    case auto
+    case brand
+    case neutral
+}
+
+public enum LumenIllustrationVariant: Sendable {
+    case empty
+    case error
+    case offline
+    case success
+}
+
+public struct LumenIllustration: View {
+    @Environment(\.lumenTheme) private var theme
+
+    private let label: String?
+    private let size: LumenIllustrationSize
+    private let tone: LumenIllustrationTone
+    private let variant: LumenIllustrationVariant
+
+    public init(
+        variant: LumenIllustrationVariant = .empty,
+        tone: LumenIllustrationTone = .auto,
+        size: LumenIllustrationSize = .md,
+        label: String? = nil
+    ) {
+        self.variant = variant
+        self.tone = tone
+        self.size = size
+        self.label = label
+    }
+
+    public var body: some View {
+        Canvas { context, canvasSize in
+            let scale = min(canvasSize.width, canvasSize.height) / 120
+            let lineWidth = max(2, 2.5 * scale)
+            let bounds = CGRect(origin: .zero, size: canvasSize)
+            context.fill(
+                Path(ellipseIn: bounds.insetBy(dx: 11 * scale, dy: 11 * scale)),
+                with: .color(color.opacity(0.1))
+            )
+            drawArtwork(context: &context, scale: scale, lineWidth: lineWidth)
+        }
+        .frame(width: size.dimension, height: size.dimension)
+        .accessibilityElement(children: .ignore)
+        .accessibilityHidden(label == nil)
+        .accessibilityLabel(Text(label ?? ""))
+    }
+
+    private var color: Color {
+        switch tone {
+        case .accent: theme.colors.accent
+        case .brand: theme.colors.brand
+        case .neutral: theme.colors.inkMuted
+        case .auto:
+            switch variant {
+            case .empty: theme.colors.brand
+            case .error: theme.colors.danger
+            case .offline: theme.colors.inkMuted
+            case .success: theme.colors.success
+            }
+        }
+    }
+
+    private func drawArtwork(context: inout GraphicsContext, scale: CGFloat, lineWidth: CGFloat) {
+        switch variant {
+        case .empty:
+            var tray = Path(roundedRect: CGRect(x: 29, y: 43, width: 62, height: 40).scaled(by: scale), cornerRadius: 8 * scale)
+            tray.move(to: CGPoint(x: 40 * scale, y: 60 * scale))
+            tray.addLine(to: CGPoint(x: 80 * scale, y: 60 * scale))
+            context.stroke(tray, with: .color(color), lineWidth: lineWidth)
+        case .error, .success:
+            context.stroke(
+                Path(ellipseIn: CGRect(x: 30, y: 30, width: 60, height: 60).scaled(by: scale)),
+                with: .color(color),
+                lineWidth: lineWidth
+            )
+            var symbol = Path()
+            if variant == .success {
+                symbol.move(to: CGPoint(x: 44 * scale, y: 61 * scale))
+                symbol.addLine(to: CGPoint(x: 55 * scale, y: 72 * scale))
+                symbol.addLine(to: CGPoint(x: 77 * scale, y: 48 * scale))
+            } else {
+                symbol.move(to: CGPoint(x: 47 * scale, y: 47 * scale))
+                symbol.addLine(to: CGPoint(x: 73 * scale, y: 73 * scale))
+                symbol.move(to: CGPoint(x: 73 * scale, y: 47 * scale))
+                symbol.addLine(to: CGPoint(x: 47 * scale, y: 73 * scale))
+            }
+            context.stroke(symbol, with: .color(color), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+        case .offline:
+            var cloud = Path(roundedRect: CGRect(x: 24, y: 45, width: 72, height: 35).scaled(by: scale), cornerRadius: 18 * scale)
+            cloud.move(to: CGPoint(x: 30 * scale, y: 30 * scale))
+            cloud.addLine(to: CGPoint(x: 90 * scale, y: 90 * scale))
+            context.stroke(cloud, with: .color(color), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+        }
+    }
+}
+
+private extension CGRect {
+    func scaled(by scale: CGFloat) -> CGRect {
+        CGRect(x: origin.x * scale, y: origin.y * scale, width: width * scale, height: height * scale)
+    }
+}
+
 public struct LumenDisclosure<Content: View>: View {
     @Binding private var isExpanded: Bool
     @Environment(\.lumenTheme) private var theme
