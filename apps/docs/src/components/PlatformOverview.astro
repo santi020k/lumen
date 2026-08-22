@@ -1,0 +1,251 @@
+---
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  CodeTabs,
+  Icon,
+  Link,
+  Marker
+} from '@santi020k/lumen-astro'
+
+import type { PlatformGuide } from '../data/platforms'
+import DocsLayout from '../layouts/DocsLayout.astro'
+
+interface Props {
+  guide: PlatformGuide
+}
+
+const { guide } = Astro.props
+---
+
+<DocsLayout
+  description={guide.summary}
+  title={`${guide.title} - Lumen UI`}
+>
+  <section class="platform-hero" aria-labelledby="platform-title">
+    <div class="platform-hero__copy">
+      <div class="platform-hero__eyebrow">
+        <Badge variant="outline">{guide.eyebrow}</Badge>
+        <Marker variant="success">{guide.status}</Marker>
+      </div>
+      <h1 id="platform-title">{guide.title}</h1>
+      <p>{guide.summary}</p>
+      <div class="platform-hero__actions">
+        <ButtonLink href="#installation" showArrow>Start building</ButtonLink>
+        <ButtonLink href="#components" variant="secondary">View coverage</ButtonLink>
+      </div>
+    </div>
+
+    <Card class="platform-hero__package" glass="subtle">
+      <span>Package</span>
+      <code>{guide.packageName}</code>
+      <p>{guide.installNote}</p>
+    </Card>
+  </section>
+
+  <section class="docs-section" id="installation" aria-labelledby="installation-title">
+    <div class="docs-section-heading">
+      <p>Get started</p>
+      <h2 id="installation-title">Install and configure</h2>
+      <p>{guide.installNote}</p>
+    </div>
+    <CodeTabs
+      ariaLabel={`${guide.label} setup examples`}
+      items={guide.codeExamples}
+      storageKey={`lumen-${guide.id}-setup`}
+    />
+  </section>
+
+  <section class="docs-section" id="components" aria-labelledby="components-title">
+    <div class="docs-section-heading">
+      <p>Supported surface</p>
+      <h2 id="components-title">Components and capabilities</h2>
+      <p>{guide.componentNote}</p>
+    </div>
+    <div class="platform-components" role="list" aria-label={`${guide.label} support`}>
+      {guide.components.map(component => (
+        <Card class="platform-component" role="listitem" variant="muted">
+          <Icon decorative name="check" size="sm" />
+          <span>{component}</span>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <section class="docs-section" id="principles" aria-labelledby="principles-title">
+    <div class="docs-section-heading">
+      <p>Platform contract</p>
+      <h2 id="principles-title">Designed for {guide.label}</h2>
+    </div>
+    <div class="platform-principles">
+      {guide.principles.map((principle, index) => (
+        <Card as="article" class="platform-principle" variant="muted">
+          <span aria-hidden="true">0{index + 1}</span>
+          <h3>{principle.title}</h3>
+          <p>{principle.description}</p>
+        </Card>
+      ))}
+    </div>
+  </section>
+
+  <Card as="section" class="docs-next" variant="muted" aria-labelledby="related-title">
+    <h2 id="related-title">Continue exploring</h2>
+    <p>Move between platform guidance without losing the shared Lumen design language.</p>
+    <div class="platform-related">
+      {guide.relatedLinks.map(link => {
+        const isExternal = link.href.startsWith('http')
+
+        return (
+          <Link
+            href={link.href}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+            target={isExternal ? '_blank' : undefined}
+          >
+            {link.label}
+            <Icon decorative name={isExternal ? 'arrow-up-right' : 'arrow-right'} size="sm" />
+          </Link>
+        )
+      })}
+    </div>
+  </Card>
+</DocsLayout>
+
+<style>
+  .platform-hero {
+    display: grid;
+    gap: 2rem;
+    overflow: hidden;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 92% 0%, hsl(var(--brand) / 0.2), transparent 34%),
+      linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-muted)));
+  }
+
+  .platform-hero__copy {
+    display: grid;
+    align-content: center;
+    gap: 1.25rem;
+  }
+
+  .platform-hero__eyebrow,
+  .platform-hero__actions,
+  .platform-related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .platform-hero h1 {
+    max-width: 13ch;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .platform-hero__copy > p {
+    max-width: 44rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  .platform-hero :global(.platform-hero__package) {
+    display: grid;
+    align-content: end;
+    gap: 0.8rem;
+    min-width: 0;
+    padding: 1.5rem;
+  }
+
+  .platform-hero__package span {
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .platform-hero__package code {
+    overflow-wrap: anywhere;
+    color: hsl(var(--brand));
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .platform-hero__package p,
+  .platform-principle p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .platform-components {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  :global(.platform-component) {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 0.85rem 1rem;
+    color: hsl(var(--ink));
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .platform-component :global(svg) {
+    flex: 0 0 auto;
+    color: hsl(var(--success));
+  }
+
+  .platform-principles {
+    display: grid;
+    gap: 1rem;
+  }
+
+  :global(.platform-principle) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    padding: 1.25rem;
+  }
+
+  .platform-principle > span {
+    grid-row: 1 / span 2;
+    color: hsl(var(--brand));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .platform-principle h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .platform-related :global(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  @media (min-width: 56rem) {
+    .platform-hero {
+      grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+      min-height: 30rem;
+    }
+
+    .platform-principles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

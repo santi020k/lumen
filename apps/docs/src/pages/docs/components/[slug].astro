@@ -225,7 +225,11 @@ export function HeroImage() {
         Choose Astro, React, or Elements to compare native usage against the shared visual output.
         Each example assumes the framework-level setup is already complete.
       </p>
-      <FrameworkExample groupId={`code-${componentSlug}`} snippets={snippets}>
+      <FrameworkExample
+        componentName={component.name}
+        groupId={`code-${componentSlug}`}
+        snippets={snippets}
+      >
         <Example />
       </FrameworkExample>
     </section>
@@ -409,6 +413,8 @@ export function HeroImage() {
           </p>
         </div>
         <FrameworkExample
+          componentName={component.name}
+          examplePath={`apps/docs/src/examples/glass/${component.name}.astro`}
           groupId={`code-${componentSlug}-glass`}
           previewClass=""
           snippets={glassSnippets}

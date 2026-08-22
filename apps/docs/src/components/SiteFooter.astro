@@ -30,6 +30,10 @@ const footerGroups = [
       { href: '/docs/frameworks/astro', label: 'Astro' },
       { href: '/docs/frameworks/react', label: 'React' },
       { href: '/docs/frameworks/elements', label: 'Elements' },
+      { href: '/docs/react-native', label: 'React Native' },
+      { href: '/docs/apple', label: 'Apple / SwiftUI' },
+      { href: '/docs/android', label: 'Android / Compose' },
+      { href: '/docs/foundations', label: 'Foundations' },
       { href: '/docs/figma', label: 'Figma' },
       { href: '/docs/ai-skill', label: 'AI skill' },
       { href: '/docs/mcp', label: 'MCP server' }
@@ -105,11 +109,11 @@ const installTabs = frameworkLinks.map(framework => ({
           <Badge variant="outline">{componentCount} primitives</Badge>
         </div>
         <h2 id="docs-site-footer-title">
-          Pick your framework.<br /><em>Keep your system.</em>
+          Pick your platform.<br /><em>Keep your system.</em>
         </h2>
         <p>
-          Start with the reference Astro package, use the complete React
-          catalog, or bring standards-based components anywhere HTML runs.
+          Build for the web, React Native, Apple platforms, or Android with one
+          semantic design language and native behavior in every environment.
         </p>
         <div class="docs-site-footer__actions">
           <ButtonLink href="/docs" showArrow variant="primary">
@@ -129,7 +133,7 @@ const installTabs = frameworkLinks.map(framework => ({
       <div class="docs-site-footer__quickstart">
         <div class="docs-site-footer__quickstart-heading">
           <span>Quick start</span>
-          <Marker variant="success">3 packages</Marker>
+          <Marker variant="success">Web packages</Marker>
         </div>
         <CodeTabs
           ariaLabel="Choose a framework package"
@@ -163,7 +167,7 @@ const installTabs = frameworkLinks.map(framework => ({
           <LumenLogo markClass="size-9" />
         </Link>
         <p>
-          Calm, accessible primitives for Astro, React, and the platform.
+          Calm, accessible primitives for web and native platforms.
         </p>
         <span class="docs-site-footer__signature">
           <Icon name="heart" size="sm" />

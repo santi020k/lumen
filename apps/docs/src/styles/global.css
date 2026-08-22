@@ -1769,7 +1769,7 @@ pre code {
 
 .docs-mobile-drawer[open] {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
 }
 
 .docs-mobile-drawer > * + * {
@@ -1802,6 +1802,7 @@ pre code {
 }
 
 .docs-mobile-drawer .docs-sidebar__nav {
+  align-content: start;
   overscroll-behavior: contain;
 }
 

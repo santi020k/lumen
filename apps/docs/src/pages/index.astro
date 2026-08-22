@@ -53,10 +53,10 @@ const heroInstallers = frameworkSetups.map(setup => ({
 
 const principles = [
   {
-    description: 'One semantic class contract keeps Astro, React, and custom elements visually aligned.',
+    description: 'One semantic token and component contract keeps web and native products recognizably aligned.',
     icon: 'layers-3',
-    metric: '3 targets',
-    title: 'Change frameworks, not your design language.'
+    metric: '4 surfaces',
+    title: 'Change platforms, not your design language.'
   },
   {
     description: 'Keyboard paths, focus management, labels, and meaningful markup are part of the primitive.',
@@ -196,12 +196,12 @@ const useCases: readonly UseCase[] = [
 
 const pageDescription =
   `Lumen is a crafted multi-framework UI system with ${componentCount} accessible primitives ` +
-  'for Astro, React, and Web Components.'
+  'for Web, React Native, Apple platforms, and Android.'
 ---
 
 <BaseLayout
   description={pageDescription}
-  title="Lumen UI — Crafted primitives for every framework"
+  title="Lumen UI — Crafted primitives for web and native platforms"
 >
   <main class="home">
     <section class="home-hero">
@@ -216,8 +216,8 @@ const pageDescription =
           people <em>want</em> to use.
         </h1>
         <p class="home-hero__lede">
-          A complete UI foundation for Astro, React, and Web Components.
-          Accessible by default, beautifully tokenized, and designed to feel like yours.
+          A complete UI foundation for Web, React Native, Apple platforms, and Android.
+          Accessible by default, beautifully tokenized, and native to every environment.
         </p>
         <div class="home-hero__actions">
           <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
@@ -228,8 +228,8 @@ const pageDescription =
           </ButtonLink>
         </div>
         <Tabs class="home-installer" glass="subtle">
-          <span class="home-installer__label">Quick install</span>
-          <div role="tablist" aria-label="Choose a framework to install">
+          <span class="home-installer__label">Web quick install</span>
+          <div role="tablist" aria-label="Choose a web framework to install">
             {heroInstallers.map((installer, index) => (
               <button
                 aria-controls={`hero-install-panel-${installer.id}`}
@@ -280,8 +280,8 @@ const pageDescription =
           <Stat label="components">
             <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
           </Stat>
-          <Stat label="framework targets">
-            <span class="ui-stat-value"><AnimatedNumber value={3} /></span>
+          <Stat label="platform surfaces">
+            <span class="ui-stat-value"><AnimatedNumber value={4} /></span>
           </Stat>
           <Stat label="runtime lock-in">
             <span class="ui-stat-value"><AnimatedNumber value={0} /></span>
@@ -554,13 +554,13 @@ const pageDescription =
       <ScrollReveal animation="slide-up">
         <div class="home-section__head home-section__head--split">
           <div>
-            <Eyebrow>Bring your framework</Eyebrow>
-            <h2 id="framework-title">One design language.<br />Three native implementations.</h2>
+            <Eyebrow>Web packages</Eyebrow>
+            <h2 id="framework-title">One web contract.<br />Three framework implementations.</h2>
           </div>
           <div class="home-section__aside">
             <p>
-              Start with the adapter for your stack. The names, tokens, and interaction
-              model stay familiar when your project changes.
+              Start with the adapter for your web stack. For React Native, Apple, and Android,
+              choose the platform guide from the documentation gateway.
             </p>
           </div>
         </div>

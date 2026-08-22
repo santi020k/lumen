@@ -15,6 +15,7 @@ import {
   runtimeEvents,
   themeSetups
 } from './docs'
+import { platformGuides } from './platforms'
 
 const canonicalComponentNames = new Set<string>(lumenComponentNames)
 
@@ -86,13 +87,28 @@ const recipeItems: DocsSearchItem[] = [
     category: 'Getting started',
     description:
       'Install Lumen, load the shared stylesheet, and choose Astro, React, or Elements.',
-    href: '/docs#installation',
+    href: '/docs/web#installation',
     keywords: normalizeKeywords(
       'install setup getting started framework package astro react elements stylesheet'
     ),
     title: 'Install and use Lumen',
     type: 'Recipe'
   },
+  ...platformGuides.map(guide => ({
+    category: 'Platform documentation',
+    description: guide.summary,
+    href: guide.href,
+    keywords: normalizeKeywords(
+      guide.label,
+      guide.packageName,
+      guide.status,
+      guide.summary,
+      guide.components.join(' '),
+      guide.principles.map(principle => `${principle.title} ${principle.description}`).join(' ')
+    ),
+    title: guide.title,
+    type: 'Recipe' as const
+  })),
   {
     category: 'Forms',
     description:
@@ -257,7 +273,7 @@ const recipeItems: DocsSearchItem[] = [
   ...globalStyleSetups.map(setup => ({
     category: 'Shared stylesheet',
     description: setup.description,
-    href: '/docs#global-styles',
+    href: '/docs/web#global-styles',
     keywords: normalizeKeywords(
       setup.label, setup.description, setup.code, 'styles css tailwind'
     ),
@@ -267,7 +283,7 @@ const recipeItems: DocsSearchItem[] = [
   ...themeSetups.map(setup => ({
     category: 'Themes',
     description: setup.description,
-    href: '/docs#themes',
+    href: '/docs/web#themes',
     keywords: normalizeKeywords(
       setup.label, setup.description, setup.code, 'theme tokens'
     ),
@@ -277,7 +293,7 @@ const recipeItems: DocsSearchItem[] = [
   ...glassSurfaceExamples.map(example => ({
     category: 'Glassmorphism',
     description: example.description,
-    href: '/docs#glassmorphism',
+    href: '/docs/web#glassmorphism',
     keywords: normalizeKeywords(
       example.label, example.description, example.code, 'glass surface blur'
     ),

@@ -7,7 +7,7 @@
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  A cross-platform UI system with 150 web primitives and shared native foundations.
+  A cross-platform UI system with 150+ web primitives and shared native foundations.
 </p>
 
 <p align="center">
@@ -57,7 +57,7 @@ lumen add commerce-dashboard --target react
 lumen add auth-onboarding --target elements
 ```
 
-## Quick start
+## Web quick start
 
 Install the package for your framework:
 
@@ -144,10 +144,15 @@ Import the styles and register the elements once:
 </lumen-card>
 ```
 
-See the [documentation](https://lumen.santi020k.com/docs) for installation, theming, component
-examples, and API details.
+See the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,
+component examples, and API details.
 
-For native applications, see the [cross-platform architecture](./docs/cross-platform.md) and
+For native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),
+[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or
+[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The
+[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token
+and component contract; repository contributors can also use the
+[cross-platform architecture](./docs/cross-platform.md) and
 [native component reference](./docs/native-components.md).
 
 ## Tailwind CSS
