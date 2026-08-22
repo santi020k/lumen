@@ -32,7 +32,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
 | Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `1.2.0`  | `LumenUI`                                    | Not applicable                         |
-| Android / Compose          | Maven Central `com.santi020k:lumen-compose:0.2.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:0.3.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
 | Optional brand icons       | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
@@ -42,7 +42,7 @@ when you need its framework-neutral CLI or registry metadata.
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
 and apply `.lumenTheme(...)` near the root. For Compose, install
-`com.santi020k:lumen-compose:0.2.0` from Maven Central and wrap content in `LumenTheme`. Native
+`com.santi020k:lumen-compose:0.3.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,

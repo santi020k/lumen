@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.2.0")
+    implementation("com.santi020k:lumen-compose:0.3.0")
 }
 ```
 
