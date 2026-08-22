@@ -93,6 +93,39 @@
       }
     },
     {
+      "id": "toggle",
+      "tier": "shared",
+      "contract": "Native switch behavior with visible label and disabled state",
+      "accessibility": "Exposes native switch state and a readable label",
+      "symbols": {
+        "reactNative": "LumenToggle",
+        "swiftUI": "LumenToggle",
+        "compose": "LumenToggle"
+      }
+    },
+    {
+      "id": "settings-row",
+      "tier": "shared",
+      "contract": "Title, supporting text, optional graphic, and trailing control",
+      "accessibility": "Contains the native control without merging its interaction",
+      "symbols": {
+        "reactNative": "LumenSettingsRow",
+        "swiftUI": "LumenSettingsRow",
+        "compose": "LumenSettingsRow"
+      }
+    },
+    {
+      "id": "search-field",
+      "tier": "shared",
+      "contract": "Native search input with semantic surface and clear action",
+      "accessibility": "Labels the input and clear action while preserving native editing",
+      "symbols": {
+        "reactNative": "LumenSearchField",
+        "swiftUI": "LumenSearchField",
+        "compose": "LumenSearchField"
+      }
+    },
+    {
       "id": "badge",
       "tier": "universal",
       "contract": "Neutral and semantic status tones",
@@ -128,7 +161,7 @@
     {
       "id": "card",
       "tier": "shared",
-      "contract": "Default or muted container with optional action",
+      "contract": "Neutral or semantic container with optional native action",
       "accessibility": "Interactive form exposes native button semantics",
       "symbols": {
         "reactNative": "LumenCard",
@@ -168,23 +201,75 @@
         "swiftUI": "LumenAvatar",
         "compose": "LumenAvatar"
       }
+    },
+    {
+      "id": "empty-state",
+      "tier": "shared",
+      "contract": "Title, supporting copy, optional graphic, and recovery actions",
+      "accessibility": "Retains readable content and native action order",
+      "symbols": {
+        "reactNative": "LumenEmptyState",
+        "swiftUI": "LumenEmptyState",
+        "compose": "LumenEmptyState"
+      }
+    },
+    {
+      "id": "list-row",
+      "tier": "shared",
+      "contract": "Leading identity, flexible content, and trailing actions",
+      "accessibility": "Contains child controls without collapsing their semantics",
+      "symbols": {
+        "reactNative": "LumenListRow",
+        "swiftUI": "LumenListRow",
+        "compose": "LumenListRow"
+      }
+    },
+    {
+      "id": "banner",
+      "tier": "shared",
+      "contract": "Semantic notice with optional actions and dismissal",
+      "accessibility": "Does not announce automatically and labels dismissal",
+      "symbols": {
+        "reactNative": "LumenBanner",
+        "swiftUI": "LumenBanner",
+        "compose": "LumenBanner"
+      }
+    },
+    {
+      "id": "stat",
+      "tier": "shared",
+      "contract": "Compact semantic metric with label, value, and detail",
+      "accessibility": "Combines the metric into one readable element",
+      "symbols": {
+        "reactNative": "LumenStat",
+        "swiftUI": "LumenStat",
+        "compose": "LumenStat"
+      }
+    },
+    {
+      "id": "section-header",
+      "tier": "shared",
+      "contract": "Section identity, optional count, and trailing actions",
+      "accessibility": "Preserves action semantics and readable heading content",
+      "symbols": {
+        "reactNative": "LumenSectionHeader",
+        "swiftUI": "LumenSectionHeader",
+        "compose": "LumenSectionHeader"
+      }
+    },
+    {
+      "id": "status-bar",
+      "tier": "shared",
+      "contract": "Compact semantic status with optional trailing content",
+      "accessibility": "Status meaning remains present in text, not color alone",
+      "symbols": {
+        "reactNative": "LumenStatusBar",
+        "swiftUI": "LumenStatusBar",
+        "compose": "LumenStatusBar"
+      }
     }
   ],
   "appleComponents": [
-    {
-      "id": "toggle",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Native switch with Lumen brand tint and label",
-      "accessibility": "Preserves native toggle state and label semantics",
-      "symbol": "LumenToggle"
-    },
-    {
-      "id": "settings-row",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Title, supporting text, optional icon, and trailing control",
-      "accessibility": "Contains the native control without merging its interaction",
-      "symbol": "LumenSettingsRow"
-    },
     {
       "id": "picker",
       "platforms": ["iOS", "macOS"],
@@ -200,60 +285,11 @@
       "symbol": "LumenSlider"
     },
     {
-      "id": "search-field",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Search input with semantic surface and clear action",
-      "accessibility": "Clear action is labeled and text input remains native",
-      "symbol": "LumenSearchField"
-    },
-    {
-      "id": "empty-state",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Icon, title, supporting copy, and optional next action",
-      "accessibility": "Retains readable content and native action order",
-      "symbol": "LumenEmptyState"
-    },
-    {
-      "id": "list-row",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Leading identity, flexible content, and trailing actions",
-      "accessibility": "Contains child controls without collapsing their semantics",
-      "symbol": "LumenListRow"
-    },
-    {
-      "id": "banner",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Semantic notice with optional actions and dismissal",
-      "accessibility": "Does not announce automatically and labels dismissal",
-      "symbol": "LumenBanner"
-    },
-    {
-      "id": "stat",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Compact semantic metric with label, value, and detail",
-      "accessibility": "Combines the metric into one readable element",
-      "symbol": "LumenStat"
-    },
-    {
       "id": "gauge",
       "platforms": ["iOS", "macOS"],
       "contract": "Clamped circular metric using semantic status tones",
       "accessibility": "Exposes a label and formatted current value",
       "symbol": "LumenGauge"
-    },
-    {
-      "id": "section-header",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Section identity, optional count, and trailing actions",
-      "accessibility": "Preserves action semantics and readable heading content",
-      "symbol": "LumenSectionHeader"
-    },
-    {
-      "id": "status-bar",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Compact semantic status with optional trailing content",
-      "accessibility": "Status meaning remains present in text, not color alone",
-      "symbol": "LumenStatusBar"
     },
     {
       "id": "shortcut-recorder",

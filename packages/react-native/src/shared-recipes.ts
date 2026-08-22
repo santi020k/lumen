@@ -2,7 +2,13 @@ import type { LumenTheme } from './theme.js'
 
 export type LumenAlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 export type LumenAvatarSize = 'lg' | 'md' | 'sm'
-export type LumenCardVariant = 'default' | 'muted'
+export type LumenCardVariant =
+  'accent' |
+  'default' |
+  'destructive' |
+  'muted' |
+  'success' |
+  'warning'
 
 export const resolveLumenAlertColors = (
   colors: LumenTheme['colors'],
@@ -31,10 +37,30 @@ export const resolveLumenAvatarSize = (size: LumenAvatarSize): number => {
   return 40
 }
 
+export const resolveLumenCardColors = (
+  colors: LumenTheme['colors'],
+  variant: LumenCardVariant
+) => {
+  if (variant === 'default') {
+    return { backgroundColor: colors.surface, borderColor: colors.line }
+  }
+
+  if (variant === 'muted') {
+    return { backgroundColor: colors.surfaceMuted, borderColor: colors.line }
+  }
+
+  const accentColor = variant === 'destructive' ? colors.danger : colors[variant]
+
+  return {
+    backgroundColor: `${accentColor}0F`,
+    borderColor: `${accentColor}3D`
+  }
+}
+
 export const resolveLumenCardColor = (
   colors: LumenTheme['colors'],
   variant: LumenCardVariant
-): string => variant === 'muted' ? colors.surfaceMuted : colors.surface
+): string => resolveLumenCardColors(colors, variant).backgroundColor
 
 export interface LumenProgressValue {
   max: number

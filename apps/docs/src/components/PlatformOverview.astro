@@ -12,6 +12,7 @@ import {
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import CodeBlock from './CodeBlock.astro'
 import NativePlatformPreview from './NativePlatformPreview.astro'
 
 interface Props {
@@ -19,6 +20,21 @@ interface Props {
 }
 
 const { guide } = Astro.props
+const hasNativeCatalog = guide.id === 'android' || guide.id === 'apple' || guide.id === 'react-native'
+
+const nativeAiPrompts = {
+  android: `Use $lumen-ui to build this screen with Jetpack Compose.
+Use the local lumen-compose module, LumenTheme, and public Compose components.
+Preserve Android navigation and state, and include loading, empty, error, and TalkBack behavior.`,
+  apple: `Use $lumen-ui to build this screen in SwiftUI.
+Use the LumenUI Swift package and public SwiftUI components.
+Preserve native navigation and state, and include loading, empty, error, Dynamic Type, and VoiceOver behavior.`,
+  'react-native': `Use $lumen-ui to build this screen in the existing React Native app.
+Use @santi020k/lumen-react-native and mount one LumenProvider at the app root.
+Preserve navigation and state, and include loading, empty, error, and native accessibility behavior.`
+} as const
+
+const nativeAiPrompt = hasNativeCatalog ? nativeAiPrompts[guide.id as keyof typeof nativeAiPrompts] : undefined
 ---
 
 <DocsLayout
@@ -30,12 +46,15 @@ const { guide } = Astro.props
       <div class="platform-hero__eyebrow">
         <Badge variant="outline">{guide.eyebrow}</Badge>
         <Marker variant="success">{guide.status}</Marker>
+        {guide.maturity && <Marker variant="warning">{guide.maturity}</Marker>}
       </div>
       <h1 id="platform-title">{guide.title}</h1>
       <p>{guide.summary}</p>
       <div class="platform-hero__actions">
         <ButtonLink href="#installation" showArrow>Start building</ButtonLink>
-        <ButtonLink href="#components" variant="secondary">View coverage</ButtonLink>
+        <ButtonLink href={hasNativeCatalog ? `${guide.href}/components` : '#components'} variant="secondary">
+          {hasNativeCatalog ? 'Browse components' : 'View coverage'}
+        </ButtonLink>
       </div>
     </div>
 
@@ -46,18 +65,118 @@ const { guide } = Astro.props
     </Card>
   </section>
 
+  {guide.maturity && guide.maturityNote && (
+    <Card as="section" class="platform-maturity" variant="muted" aria-labelledby="platform-maturity-title">
+      <Badge variant="warning">{guide.maturity}</Badge>
+      <div>
+        <h2 id="platform-maturity-title">Ready for feedback-driven adoption</h2>
+        <p>{guide.maturityNote}</p>
+      </div>
+    </Card>
+  )}
+
   <section class="docs-section" id="installation" aria-labelledby="installation-title">
     <div class="docs-section-heading">
       <p>Get started</p>
       <h2 id="installation-title">Install and configure</h2>
       <p>{guide.installNote}</p>
     </div>
+    {guide.prerequisites && (
+      <Card as="section" class="platform-prerequisites" variant="muted" aria-labelledby="prerequisites-title">
+        <div>
+          <Badge variant="outline">Before you begin</Badge>
+          <h3 id="prerequisites-title">What you need</h3>
+        </div>
+        <ul>
+          {guide.prerequisites.map(prerequisite => <li>{prerequisite}</li>)}
+        </ul>
+      </Card>
+    )}
+    {guide.setupSteps && (
+      <ol class="platform-setup-steps" aria-label={`${guide.label} installation steps`}>
+        {guide.setupSteps.map((step, index) => (
+          <li>
+            <Card as="article" class="platform-setup-step" variant="muted">
+              <span aria-hidden="true">{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ol>
+    )}
     <CodeTabs
       ariaLabel={`${guide.label} setup examples`}
       items={guide.codeExamples}
       storageKey={`lumen-${guide.id}-setup`}
     />
   </section>
+
+  {guide.playgroundCommands && guide.playgroundNote && (
+    <section class="docs-section" id="playground" aria-labelledby="playground-title">
+      <div class="docs-section-heading">
+        <p>Try every component</p>
+        <h2 id="playground-title">Run the {guide.shortLabel} playground</h2>
+        <p>{guide.playgroundNote}</p>
+      </div>
+      <CodeTabs
+        ariaLabel={`${guide.label} playground commands`}
+        items={guide.playgroundCommands}
+        storageKey={`lumen-${guide.id}-playground`}
+      />
+      {guide.shippingNotes && (
+        <Card as="section" class="platform-shipping" variant="muted">
+          <div>
+            <Icon decorative name="package" size="sm" />
+            <div>
+              <h3>Installing locally versus publishing</h3>
+              <p>You can run the gallery locally before configuring any store account.</p>
+            </div>
+          </div>
+          <ul>
+            {guide.shippingNotes.map(note => <li>{note}</li>)}
+          </ul>
+        </Card>
+      )}
+    </section>
+  )}
+
+  {nativeAiPrompt && (
+    <section class="docs-section" id="ai-usage" aria-labelledby="ai-usage-title">
+      <div class="docs-section-heading">
+        <p>Continue with AI</p>
+        <h2 id="ai-usage-title">Give your coding tool the Lumen workflow</h2>
+        <p>
+          Install the portable skill once, open your application in a compatible coding tool, and
+          name the target platform in the request. The skill reads the native package and
+          documentation before selecting components.
+        </p>
+      </div>
+      <div class="platform-ai-grid">
+        <Card as="article" class="platform-ai-card" variant="muted">
+          <Badge variant="outline">1 · Install the skill</Badge>
+          <CodeBlock code="npx skills add santi020k/lumen --skill lumen-ui" lang="bash" title="Terminal" />
+          <p>Follow the installer prompts and select the AI coding tools available on your machine.</p>
+        </Card>
+        <Card as="article" class="platform-ai-card" variant="muted">
+          <Badge variant="outline">2 · Ask for the native target</Badge>
+          <CodeBlock code={nativeAiPrompt} title="Prompt" />
+          <p>Review the generated package imports, component states, and platform accessibility behavior.</p>
+        </Card>
+      </div>
+      <Card as="section" class="platform-ai-note" variant="muted">
+        <Icon decorative name="info" size="sm" />
+        <p>
+          The Agent Skill covers web and native adapters. The optional MCP server currently adds
+          live per-component lookup for Astro, React, and Web Components; native agents use the
+          installed package source and native documentation as their contract.
+        </p>
+        <Link href="/docs/ai-skill">Open the complete AI setup guide</Link>
+      </Card>
+    </section>
+  )}
 
   <NativePlatformPreview guide={guide} />
 
@@ -75,6 +194,11 @@ const { guide } = Astro.props
         </Card>
       ))}
     </div>
+    {hasNativeCatalog && (
+      <div class="platform-components__action">
+        <ButtonLink href={`${guide.href}/components`} showArrow>Open the full component reference</ButtonLink>
+      </div>
+    )}
   </section>
 
   <section class="docs-section" id="principles" aria-labelledby="principles-title">
@@ -182,16 +306,137 @@ const { guide } = Astro.props
   }
 
   .platform-hero__package p,
+  .platform-maturity p,
   .platform-principle p {
     color: hsl(var(--ink-soft));
     font-size: 0.875rem;
     line-height: 1.65;
   }
 
+  :global(.platform-maturity) {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1.25rem;
+  }
+
+  .platform-maturity h2 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
   .platform-components {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
     gap: 0.75rem;
+  }
+
+  .platform-ai-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  :global(.platform-ai-card) {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.25rem;
+  }
+
+  .platform-ai-card > p,
+  .platform-ai-note p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  :global(.platform-ai-note) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+
+  .platform-ai-note :global(a) {
+    grid-column: 2;
+  }
+
+  :global(.platform-prerequisites),
+  :global(.platform-shipping) {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+  }
+
+  .platform-prerequisites > div,
+  .platform-shipping > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .platform-prerequisites h3,
+  .platform-shipping h3,
+  .platform-setup-step h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .platform-prerequisites ul,
+  .platform-shipping ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .platform-setup-steps {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.platform-setup-step) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .platform-setup-step > span {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 999px;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .platform-setup-step p,
+  .platform-shipping p {
+    margin-top: 0.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .platform-components__action {
+    margin-top: 1.25rem;
   }
 
   :global(.platform-component) {
@@ -250,6 +495,19 @@ const { guide } = Astro.props
 
     .platform-principles {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .platform-prerequisites,
+    .platform-shipping {
+      grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+    }
+
+    .platform-setup-steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .platform-ai-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

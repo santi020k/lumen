@@ -33,6 +33,8 @@ import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
 import GitHubIcon from '../components/GitHubIcon.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
+import type { DocsPlatformId } from '../data/platforms'
+import { productPlatformGuides } from '../data/platforms'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
 const componentCount = lumenComponentNames.length
@@ -49,6 +51,43 @@ const heroInstallers = frameworkSetups.map(setup => ({
   icon: installerIcons[setup.id],
   id: setup.id,
   label: setup.label
+}))
+
+const platformPresentation = {
+  android: {
+    icon: 'bot',
+    preview: '/native-previews/android-compose.png',
+    runtime: 'Jetpack Compose · Material 3'
+  },
+  apple: {
+    icon: 'apple',
+    preview: '/native-previews/apple-native.png',
+    runtime: 'SwiftUI · five Apple platforms'
+  },
+  foundations: {
+    icon: 'layers-3',
+    preview: undefined,
+    runtime: 'One canonical token source'
+  },
+  'react-native': {
+    icon: 'smartphone',
+    preview: '/native-previews/react-native-android.png',
+    runtime: 'React Native · Expo ready'
+  },
+  web: {
+    icon: 'panels-top-left',
+    preview: undefined,
+    runtime: 'Astro · React · Web Components'
+  }
+} satisfies Record<DocsPlatformId, {
+  icon: string
+  preview: string | undefined
+  runtime: string
+}>
+
+const platformShowcase = productPlatformGuides.map(guide => ({
+  ...guide,
+  ...platformPresentation[guide.id]
 }))
 
 const principles = [
@@ -513,23 +552,89 @@ const pageDescription =
       </ScrollReveal>
     </section>
 
-    <section class="home-section home-container" aria-labelledby="framework-title">
+    <section class="home-section home-container home-platforms" aria-labelledby="platforms-title">
       <ScrollReveal animation="slide-up">
         <div class="home-section__head home-section__head--split">
           <div>
-            <Eyebrow>Web packages</Eyebrow>
-            <h2 id="framework-title">One web contract.<br />Three framework implementations.</h2>
+            <Eyebrow>Built for every surface</Eyebrow>
+            <h2 id="platforms-title">One design language.<br />Four native destinations.</h2>
           </div>
           <div class="home-section__aside">
             <p>
-              Start with the adapter for your web stack. For React Native, Apple, and Android,
-              choose the platform guide from the documentation gateway.
+              Share semantic color, type, spacing, motion, and component intent—then let each
+              platform render and behave the way its users expect.
             </p>
+            <ButtonLink href="/docs/foundations" showArrow variant="inline">
+              Explore shared foundations
+            </ButtonLink>
           </div>
         </div>
       </ScrollReveal>
-      <div class="home-framework">
-        <FrameworkSetupTabs setups={frameworkSetups} />
+
+      <RevealGroup class="home-platforms__grid" stagger={70}>
+        {platformShowcase.map((platform, index) => (
+          <Card
+as="article"
+class:list={[
+            'home-platform',
+            { 'home-platform--web': platform.id === 'web' }
+          ]}
+          >
+            <div class="home-platform__visual">
+              {platform.preview ?
+(
+                <Image
+                  alt={`${platform.label} Lumen component gallery`}
+                  height={platform.id === 'apple' ? 1440 : 1920}
+                  src={platform.preview}
+                  width={platform.id === 'apple' ? 1640 : 1080}
+                />
+              ) :
+(
+                <div class="home-platform__web-canvas" aria-hidden="true">
+                  <span><Icon decorative name="asterisk" size="sm" />Astro</span>
+                  <span><Icon decorative name="atom" size="sm" />React</span>
+                  <span><Icon decorative name="blocks" size="sm" />Elements</span>
+                  <div>
+                    <i></i><i></i><i></i>
+                  </div>
+                </div>
+              )}
+              <span class="home-platform__number" aria-hidden="true">0{index + 1}</span>
+            </div>
+            <div class="home-platform__body">
+              <div class="home-platform__meta">
+                <span><Icon decorative name={platform.icon} size="sm" />{platform.runtime}</span>
+                <div>
+                  <Marker variant="success">{platform.status}</Marker>
+                  {platform.maturity && <Marker variant="warning">{platform.maturity}</Marker>}
+                </div>
+              </div>
+              <h3>{platform.label}</h3>
+              <p>{platform.summary}</p>
+              <code>{platform.packageName}</code>
+              <ButtonLink href={platform.href} showArrow variant="inline">
+                Build for {platform.shortLabel}
+              </ButtonLink>
+            </div>
+          </Card>
+        ))}
+      </RevealGroup>
+
+      <div class="home-web-setup" aria-labelledby="web-setup-title">
+        <div class="home-web-setup__head">
+          <div>
+            <Badge variant="outline">Full web catalog</Badge>
+            <h3 id="web-setup-title">Choose your web adapter.</h3>
+          </div>
+          <p>
+            Astro, React, and standards-based custom elements expose the complete primitive
+            catalog through one visual and behavioral contract.
+          </p>
+        </div>
+        <div class="home-framework">
+          <FrameworkSetupTabs setups={frameworkSetups} />
+        </div>
       </div>
     </section>
 

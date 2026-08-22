@@ -5,6 +5,10 @@ each platform's rendering, image, focus, and accessibility systems. This referen
 the supported component surface, platform mappings, and the checks required for a component to be
 considered supported.
 
+> **Beta:** Native component APIs are ready for testing and early production adoption, but may
+> evolve as they are validated in real applications. The shared token foundation is stable. Review
+> release notes when upgrading; features below the Beta support bar are labeled Experimental.
+
 ## Install and consume
 
 ### React Native
@@ -28,8 +32,23 @@ components satisfy that contract; install its peer requirements only when the ap
 
 ### SwiftUI
 
-Add `https://github.com/santi020k/lumen` as a Swift Package dependency and select the `LumenUI`
-product. The repository-root `Package.swift` is the public package entry point.
+In Xcode, choose **File → Add Package Dependencies**, paste
+`https://github.com/santi020k/lumen`, and choose **Branch** with `main` as the dependency rule. Add
+the `LumenUI` product to the application target. The repository-root `Package.swift` is the public
+package entry point; no CocoaPod or npm package is involved.
+
+Projects with their own Swift package manifest can declare the dependency directly:
+
+```swift
+dependencies: [
+    .package(
+        url: "https://github.com/santi020k/lumen",
+        branch: "main"
+    )
+]
+```
+
+Then import the linked product and apply a theme near the application root:
 
 ```swift
 import LumenUI
@@ -69,12 +88,19 @@ SharedProfileActions().lumenControlDensity(.regular)
 ### Jetpack Compose
 
 The Android module publishes as `com.santi020k:lumen-compose`. Until a remote Maven repository is
-configured for a release, include the module from the checkout:
+configured for a release, add the Lumen repository as a submodule inside the Android project:
+
+```bash
+git submodule add https://github.com/santi020k/lumen.git Vendor/lumen
+git submodule update --init --recursive
+```
+
+Then include the local module:
 
 ```kotlin
 // settings.gradle.kts
 include(":lumen-compose")
-project(":lumen-compose").projectDir = file("../lumen/packages/compose")
+project(":lumen-compose").projectDir = file("Vendor/lumen/packages/compose")
 ```
 
 ```kotlin
@@ -98,13 +124,22 @@ the complete Lumen token object through `LocalLumenTheme`.
 | Surface | `LumenSurface` | `LumenSurface` | `LumenSurface` | Semantic surface, padding, and radius roles |
 | Button | `LumenButton` | `LumenButton` | `LumenButton` | Primary, secondary, quiet, danger, loading, disabled |
 | Text field | `LumenTextField` | `LumenTextField` | `LumenTextField` | Error and disabled states with native input behavior |
+| Toggle | `LumenToggle` | `LumenToggle` | `LumenToggle` | Native switch behavior with visible label and disabled state |
+| Settings row | `LumenSettingsRow` | `LumenSettingsRow` | `LumenSettingsRow` | Supporting copy, optional graphic, and trailing native control |
+| Search field | `LumenSearchField` | `LumenSearchField` | `LumenSearchField` | Native search entry with labeled clear action |
 | Badge | `LumenBadge` | `LumenBadge` | `LumenBadge` | Neutral, accent, success, warning, and danger tones |
 | Divider | `LumenDivider` | `LumenDivider` | `LumenDivider` | Semantic line color and decorative semantics |
 | Spinner | `LumenSpinner` | `LumenSpinner` | `LumenSpinner` | Brand color and accessible loading label |
-| Card | `LumenCard` | `LumenCard` | `LumenCard` | Default or muted surface; optional native action |
+| Card | `LumenCard` | `LumenCard` | `LumenCard` | Neutral and semantic surfaces; optional native action |
 | Alert | `LumenAlert` | `LumenAlert` | `LumenAlert` | Default, destructive, success, and warning variants |
 | Progress | `LumenProgress` | `LumenProgress` | `LumenProgress` | Determinate, clamped value and valid maximum |
 | Avatar | `LumenAvatar` | `LumenAvatar` | `LumenAvatar` | Native image source, fallback, label, and shared sizes |
+| Empty state | `LumenEmptyState` | `LumenEmptyState` | `LumenEmptyState` | Title, supporting copy, optional graphic, and recovery actions |
+| List row | `LumenListRow` | `LumenListRow` | `LumenListRow` | Leading identity, flexible content, and trailing actions |
+| Banner | `LumenBanner` | `LumenBanner` | `LumenBanner` | Semantic notice with optional actions and dismissal |
+| Stat | `LumenStat` | `LumenStat` | `LumenStat` | Compact semantic metric with label, value, and detail |
+| Section header | `LumenSectionHeader` | `LumenSectionHeader` | `LumenSectionHeader` | Section identity, optional count, and trailing actions |
+| Status bar | `LumenStatusBar` | `LumenStatusBar` | `LumenStatusBar` | Compact textual status and optional trailing content |
 
 The web-only Card variants `glass` and `unstyled` are deliberately not shared. Blur, material, and
 unstyled layout behavior do not have a stable cross-platform meaning. Native Card interaction is
@@ -119,29 +154,26 @@ Compose.
 
 | Component | Platforms | Contract |
 | --- | --- | --- |
-| `LumenToggle` | iOS, macOS | Native switch behavior with Lumen brand tint |
-| `LumenSettingsRow` | iOS, macOS | Title, supporting description, optional icon, and trailing native control |
 | `LumenPicker` | iOS, macOS | Automatic, menu, or segmented native picker presentation |
 | `LumenSlider` | iOS, macOS | Continuous or stepped range input with a visible value label |
-| `LumenSearchField` | iOS, macOS | Density-aware search input with a labeled clear action |
-| `LumenEmptyState` | iOS, macOS | Icon, title, supporting copy, and an optional next action |
-| `LumenListRow` | iOS, macOS | Flexible leading identity, content, and trailing actions |
-| `LumenBanner` | iOS, macOS | Semantic notice with optional actions and dismissal |
-| `LumenStat` | iOS, macOS | Compact metric with semantic tone, value, and supporting detail |
 | `LumenGauge` | iOS, macOS | Clamped circular metric with a formatted accessible value |
-| `LumenSectionHeader` | iOS, macOS | Section identity, optional count badge, and trailing actions |
-| `LumenStatusBar` | iOS, macOS | Compact textual status and optional trailing content |
 | `LumenShortcutRecorder` | macOS | Keyboard capture with cancel, clear, and application validation states |
 | `LumenSymbolPicker` | macOS | Searchable categorized SF Symbols selection |
+
+Picker, slider, and gauge stay Apple-specific because React Native does not provide dependency-free
+core equivalents and each native platform has materially different selection and visualization
+conventions. Applications can pair Lumen tokens with their chosen platform control library rather
+than making the shared package impose one dependency.
 
 These components are intentionally smaller than application structure. Continue using native
 `NavigationSplitView`, `List`, `Form`, `Toolbar`, sheets, popovers, and window scenes so SwiftUI owns
 navigation, focus restoration, keyboard routing, and window behavior.
 
-### Settings and selection
+### Shared settings and Apple selection
 
 `LumenSettingsRow` keeps explanatory copy aligned while the contained control retains independent
-focus and accessibility semantics:
+focus and accessibility semantics on every native adapter. SwiftUI additionally provides native
+picker and slider wrappers where those controls have stable dependency-free APIs:
 
 ```swift
 LumenSettingsRow(
@@ -168,7 +200,11 @@ LumenSlider(
 )
 ```
 
-### Empty, row, and feedback states
+### Shared empty, row, and feedback states
+
+Empty states, list rows, banners, stats, section headers, and status bars share one semantic contract
+across React Native, SwiftUI, and Compose. Their graphic and action slots remain native so each app
+can supply Lucide, SF Symbols, or `ImageVector` content without introducing an icon dependency.
 
 ```swift
 LumenEmptyState(
@@ -245,9 +281,9 @@ LumenSymbolPickerButton("Workspace symbol", selectedName: $symbolName)
 
 ### Card
 
-Cards use semantic surface tones, the `line` border, the large radius, and extra-large padding.
-Every native adapter provides `default` and `muted`. SwiftUI additionally provides `accent`,
-`success`, `warning`, and `destructive` with restrained semantic backgrounds and borders.
+Cards use semantic surface tones, the large radius, and extra-large padding. Every native adapter
+provides `default`, `muted`, `accent`, `success`, `warning`, and `destructive` with restrained
+semantic backgrounds and borders.
 Supplying an action gives the card native button semantics and pressed feedback. Do not place an
 interactive card inside another button or place unrelated controls inside a card-level action.
 

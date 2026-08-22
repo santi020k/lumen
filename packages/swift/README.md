@@ -1,10 +1,37 @@
 # LumenUI for SwiftUI
 
+> **Beta:** This package is ready for testing and early production adoption. Its public API may
+> evolve as it is validated in real applications; review release notes when upgrading.
+
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
 
-Add `https://github.com/santi020k/lumen` through Swift Package Manager and select the `LumenUI`
-product. The package manifest lives at the repository root so the Git dependency works directly.
+In Xcode, choose **File → Add Package Dependencies**, paste
+`https://github.com/santi020k/lumen`, and use the `main` branch as the dependency rule. Add the
+`LumenUI` product to your application target. The package manifest lives at the repository root, so
+the Git dependency works directly; no npm package, CocoaPod, or copied source is required.
+
+For a project managed with `Package.swift`, add the package and product explicitly:
+
+```swift
+dependencies: [
+    .package(
+        url: "https://github.com/santi020k/lumen",
+        branch: "main"
+    )
+],
+targets: [
+    .target(
+        name: "YourApp",
+        dependencies: [
+            .product(name: "LumenUI", package: "lumen")
+        ]
+    )
+]
+```
+
+After Xcode resolves the package, import `LumenUI` in the SwiftUI view that owns the application
+surface and apply one theme near the root:
 
 ```swift
 import LumenUI

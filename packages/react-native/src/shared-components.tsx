@@ -26,7 +26,7 @@ import {
   type LumenCardVariant,
   resolveLumenAlertColors,
   resolveLumenAvatarSize,
-  resolveLumenCardColor,
+  resolveLumenCardColors,
   resolveLumenProgressValue
 } from './shared-recipes.js'
 import { useLumenTheme } from './theme-context.js'
@@ -42,6 +42,7 @@ export const LumenCard = ({
   accessibilityState,
   children,
   disabled = false,
+  onLongPress,
   onPress,
   ref,
   style,
@@ -49,25 +50,49 @@ export const LumenCard = ({
   ...props
 }: LumenCardProps): ReactElement => {
   const theme = useLumenTheme()
-  const interactive = Boolean(onPress)
+  const interactive = Boolean(onPress ?? onLongPress)
+  const colors = resolveLumenCardColors(theme.colors, variant)
+
+  const cardStyle = {
+    backgroundColor: colors.backgroundColor,
+    borderColor: colors.borderColor,
+    borderRadius: theme.radii.lg,
+    borderWidth: 1,
+    gap: theme.spacing.lg,
+    padding: theme.spacing.xl
+  }
+
+  if (!interactive) {
+    return (
+      <View
+        ref={ref}
+        {...props}
+        accessibilityRole={accessibilityRole}
+        accessibilityState={accessibilityState}
+        style={[
+          cardStyle,
+          resolveLumenPressableStyle(style, { pressed: false })
+        ]}
+      >
+        {children}
+      </View>
+    )
+  }
 
   return (
     <Pressable
       ref={ref}
       {...props}
-      accessibilityRole={accessibilityRole ?? (interactive ? 'button' : undefined)}
+      accessibilityRole={accessibilityRole ?? 'button'}
       accessibilityState={{ ...accessibilityState, disabled: disabled || undefined }}
-      disabled={disabled || !interactive}
+      disabled={disabled}
+      onLongPress={onLongPress}
       onPress={onPress}
       style={state => [
         {
-          backgroundColor: resolveLumenCardColor(theme.colors, variant),
-          borderColor: interactive && state.pressed ? theme.colors.brand : theme.colors.line,
-          borderRadius: theme.radii.lg,
-          borderWidth: 1,
-          gap: theme.spacing.lg,
-          opacity: resolveLumenButtonOpacity(disabled, interactive && state.pressed),
-          padding: theme.spacing.xl
+          ...cardStyle,
+          borderColor: state.pressed ? theme.colors.brand : colors.borderColor,
+          opacity: resolveLumenButtonOpacity(disabled, state.pressed)
         },
         resolveLumenPressableStyle(style, state)
       ]}

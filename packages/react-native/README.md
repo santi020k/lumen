@@ -1,8 +1,23 @@
 # @santi020k/lumen-react-native
 
+> **Beta:** This package is ready for testing and early production adoption. Its public API may
+> evolve as it is validated in real applications; review release notes when upgrading.
+
 React Native foundations and primitives for Lumen UI. The package exposes canonical light and dark
 themes together with native Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider,
-Spinner, Card, Alert, Progress, and Avatar implementations.
+Spinner, Card, Alert, Progress, Avatar, Toggle, SettingsRow, and SearchField implementations.
+The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar
+for common product layouts without giving up native composition.
+
+Install the package in an existing Expo or React Native application:
+
+```bash
+pnpm add @santi020k/lumen-react-native
+# or: npm install @santi020k/lumen-react-native
+```
+
+React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
+`LumenProvider` near the application root; no stylesheet or web runtime is required:
 
 ```ts
 import {
@@ -25,6 +40,13 @@ export function App() {
     </LumenProvider>
   )
 }
+```
+
+Start the application with its normal Expo or React Native command:
+
+```bash
+npx expo start
+# or: npx react-native start
 ```
 
 The package intentionally uses native numeric dimensions and hexadecimal colors instead of CSS

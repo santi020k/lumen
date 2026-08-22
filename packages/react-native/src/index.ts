@@ -1,4 +1,12 @@
 export {
+  LumenSearchField,
+  type LumenSearchFieldProps,
+  LumenSettingsRow,
+  type LumenSettingsRowProps,
+  LumenToggle,
+  type LumenToggleProps
+} from './form-components.js'
+export {
   LumenBadge,
   type LumenBadgeProps,
   LumenButton,
@@ -33,6 +41,14 @@ export {
   type LumenProviderProps
 } from './provider.js'
 export {
+  LumenCheckbox,
+  type LumenCheckboxProps,
+  LumenRadioGroup,
+  type LumenRadioGroupProps,
+  LumenSegmentedControl,
+  type LumenSegmentedControlProps,
+  type LumenSelectionOption } from './selection-components.js'
+export {
   LumenAlert,
   LumenAlertDescription,
   type LumenAlertDescriptionProps,
@@ -51,6 +67,24 @@ export {
   type LumenAvatarSize,
   type LumenCardVariant
 } from './shared-recipes.js'
+export {
+  LumenBanner,
+  type LumenBannerProps,
+  LumenEmptyState,
+  type LumenEmptyStateProps,
+  LumenListRow,
+  type LumenListRowProps,
+  LumenSectionHeader,
+  type LumenSectionHeaderProps,
+  LumenStat,
+  type LumenStatProps,
+  LumenStatusBar,
+  type LumenStatusBarProps
+} from './structured-components.js'
+export {
+  type LumenBannerVariant,
+  type LumenMetricTone
+} from './structured-recipes.js'
 export {
   createLumenTheme,
   lumenDarkTheme,

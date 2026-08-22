@@ -30,11 +30,19 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |
 | React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |
 | Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |
+| React Native / Expo | `@santi020k/lumen-react-native` | `@santi020k/lumen-react-native` | Not applicable |
+| Apple / SwiftUI | Swift Package `https://github.com/santi020k/lumen` | `LumenUI` | Not applicable |
+| Android / Compose | Local `packages/compose` module | `com.santi020k.lumen` | Not applicable |
 | Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
 | Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
+
+For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
+Swift Package product to the application target and apply `.lumenTheme(...)` near the root. For
+Compose, include the local `lumen-compose` Gradle module and wrap content in `LumenTheme`. Native
+adapters do not load CSS or the Astro runtime.
 
 Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,
 install and register the optional pack once before rendering a namespaced icon:
@@ -59,6 +67,10 @@ the default icon catalog.
 Connect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns
 validated structured content as well as readable text, so agents can select components without
 scraping documentation.
+
+The current MCP per-component catalog covers Astro, React, and Web Components. For React Native,
+SwiftUI, and Compose, use the portable skill with the installed adapter source, package README, and
+native component documentation as the API contract.
 
 ```bash
 codex mcp add lumen -- npx -y @santi020k/lumen-mcp
@@ -107,6 +119,9 @@ local repository, and programmatic examples.
 ## Minimal Setup
 
 Import the stylesheet once in the app's global CSS, root layout, or app entry.
+
+This section applies to web targets. Native adapters use their provider or theme APIs instead of a
+stylesheet.
 
 ```css
 @import "@santi020k/lumen-react/styles.css";

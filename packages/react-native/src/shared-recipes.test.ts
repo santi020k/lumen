@@ -4,6 +4,7 @@ import {
   resolveLumenAlertColors,
   resolveLumenAvatarSize,
   resolveLumenCardColor,
+  resolveLumenCardColors,
   resolveLumenProgressValue
 } from './shared-recipes.js'
 import { lumenDarkTheme, lumenLightTheme } from './theme.js'
@@ -19,6 +20,10 @@ describe('Lumen React Native shared component recipes', () => {
     expect(resolveLumenCardColor(lumenDarkTheme.colors, 'muted')).toBe(
       lumenDarkTheme.colors.surfaceMuted
     )
+    expect(resolveLumenCardColors(lumenLightTheme.colors, 'warning')).toEqual({
+      backgroundColor: `${lumenLightTheme.colors.warning}0F`,
+      borderColor: `${lumenLightTheme.colors.warning}3D`
+    })
   })
 
   test('normalizes invalid and out-of-range progress values', () => {

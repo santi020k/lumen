@@ -65,7 +65,10 @@ const platformNumbers = ['01', '02', '03', '04']
           <Card as="article" class="docs-platform-card" variant="muted">
             <div class="docs-platform-card__top">
               <span>{platformNumbers[index]}</span>
-              <Marker variant="success">{guide.status}</Marker>
+              <div>
+                <Marker variant="success">{guide.status}</Marker>
+                {guide.maturity && <Marker variant="warning">{guide.maturity}</Marker>}
+              </div>
             </div>
             <div>
               <h3>{guide.label}</h3>
@@ -254,6 +257,13 @@ const platformNumbers = ['01', '02', '03', '04']
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 800;
+  }
+
+  .docs-platform-card__top > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
   }
 
   .docs-platform-card h3 {

@@ -13,6 +13,7 @@ catalog:
   "@astrojs/compiler": ^3.0.1
   "@astrojs/mdx": ^7.0.5
   "@astrojs/sitemap": ^3.7.3
+  "@expo/metro-runtime": ^57.0.12
   "@astrojs/ts-plugin": ^1.10.10
   "@changesets/changelog-github": ^0.7.0
   "@changesets/cli": ^2.31.1
@@ -48,15 +49,19 @@ catalog:
   cspell: ^10.0.1
   esbuild: ^0.28.1
   eslint: ^10.7.0
+  expo: ^57.0.15
   husky: ^9.1.7
   jsdom: ^29.1.1
   knip: ^6.29.0
   lint-staged: ^17.2.0
+  lucide-react-native: ^1.33.0
   next: ^16.3.0
   react: ^19.2.8
   react-dom: ^19.2.8
   react-native: ^0.87.0
   react-hook-form: ^7.76.1
+  react-native-svg: ^15.15.5
+  react-native-web: ^0.21.2
   semver: ^7.8.0
   sharp: ^0.35.3
   tailwindcss: ^4.3.3
@@ -67,6 +72,13 @@ catalog:
   wrangler: ^4.114.0
   yup: ^1.7.1
   zod: ^4.4.3
+
+catalogs:
+  expo:
+    react: 19.2.3
+    react-dom: 19.2.3
+    react-native: 0.86.2
+    react-native-svg: 15.15.4
 
 ignoredBuiltDependencies:
   - esbuild

@@ -1,14 +1,13 @@
 export type NativePlatformId = 'android' | 'apple' | 'react-native'
 
 export type NativeComponentCategory =
-  | 'Actions'
-  | 'Apple patterns'
-  | 'Data display'
-  | 'Feedback'
-  | 'Forms'
-  | 'Foundations'
-  | 'Layout'
-  | 'macOS utilities'
+  'Actions' |
+  'Data display' |
+  'Feedback' |
+  'Forms' |
+  'Foundations' |
+  'Layout' |
+  'macOS utilities'
 
 export interface NativeApiRow {
   defaultValue: string
@@ -347,8 +346,8 @@ const sharedDefinitions: ComponentDefinition[] = [
     text = "Active",
     tone = LumenBadgeTone.Success
 )`,
-      apple: `LumenBadge("Active", tone: .success)`,
-      'react-native': `<LumenBadge tone="success">Active</LumenBadge>`
+      apple: 'LumenBadge("Active", tone: .success)',
+      'react-native': '<LumenBadge tone="success">Active</LumenBadge>'
     },
     exports: { android: 'LumenBadge', apple: 'LumenBadge', 'react-native': 'LumenBadge' },
     guidance: 'Use short status or classification labels. Prefer normal text for sentences, instructions, and frequently changing numeric values.',
@@ -413,10 +412,10 @@ const sharedDefinitions: ComponentDefinition[] = [
 </LumenCard>`
     },
     exports: { android: 'LumenCard', apple: 'LumenCard', 'react-native': 'LumenCard' },
-    guidance: 'Use default and muted cards for grouped content. Apple also supports restrained semantic variants. Provide a card-level action only when the entire card performs one action.',
+    guidance: 'Use default and muted cards for grouped content, and restrained semantic variants when the surface conveys a real state. Provide a card-level action only when the entire card performs one action.',
     name: 'Card',
     properties: [
-      property('variant', { android: 'default · muted', apple: 'default · muted · accent · success · warning · destructive', 'react-native': 'default · muted' }, 'default', 'Selects the native surface treatment.'),
+      property('variant', 'default · muted · accent · success · warning · destructive', 'default', 'Selects the native surface treatment.'),
       property({ android: 'onClick', apple: 'action', 'react-native': 'onPress' }, 'Optional callback', 'nil', 'Makes the whole card interactive.'),
       property({ android: 'content', apple: 'content', 'react-native': 'children' }, 'Native content', 'Required', 'Composes the card body.'),
       property({ android: 'modifier', apple: 'SwiftUI modifiers', 'react-native': 'style' }, 'Native layout API', '—', 'Controls card placement and sizing.')
@@ -514,25 +513,67 @@ const sharedDefinitions: ComponentDefinition[] = [
   }
 ]
 
-const appleDefinitions: ComponentDefinition[] = [
+const additionalDefinitions: ComponentDefinition[] = [
   {
-    accessibility: 'The visible label and native switch remain one SwiftUI control with standard VoiceOver state and activation behavior.',
+    accessibility: 'The visible label and native switch expose standard platform state and activation behavior.',
     category: 'Forms',
-    examples: { apple: 'LumenToggle("Automatic updates", isOn: $automaticUpdates)' },
-    exports: { apple: 'LumenToggle' },
+    examples: {
+      android: `LumenToggle(
+    label = "Automatic updates",
+    checked = automaticUpdates,
+    onCheckedChange = ::setAutomaticUpdates
+)`,
+      apple: 'LumenToggle("Automatic updates", isOn: $automaticUpdates)',
+      'react-native': `<LumenToggle
+  label="Automatic updates"
+  value={automaticUpdates}
+  onValueChange={setAutomaticUpdates}
+/>`
+    },
+    exports: { android: 'LumenToggle', apple: 'LumenToggle', 'react-native': 'LumenToggle' },
     guidance: 'Use for an immediately applied Boolean setting. Use a button when an action does not represent persistent on/off state.',
     name: 'Toggle',
     properties: [
-      property('isOn', 'Binding<Bool>', 'Required', 'Stores native on/off state.'),
-      property('label', 'LocalizedStringKey or custom View', 'Required', 'Provides the visible and accessible label.')
+      property(
+        { android: 'checked', apple: 'isOn', 'react-native': 'value' },
+        { android: 'Boolean', apple: 'Binding<Bool>', 'react-native': 'boolean' },
+        'Required',
+        'Stores native on/off state.'
+      ),
+      property('label', { android: 'String', apple: 'LocalizedStringKey or custom View', 'react-native': 'string' }, 'Required', 'Provides the visible and accessible label.'),
+      property(
+        { android: 'onCheckedChange', apple: 'Binding setter', 'react-native': 'onValueChange' },
+        '(Boolean) -> Unit',
+        'Required',
+        'Updates the controlled state.'
+      ),
+      property(
+        { android: 'showLabel', apple: '.labelsHidden()', 'react-native': 'showLabel' },
+        'Boolean',
+        'true',
+        'Can visually hide a repeated label while preserving its accessible name.'
+      ),
+      property('enabled', 'Boolean', 'true', 'Controls native disabled state.')
     ],
     slug: 'toggle',
-    summary: 'Present a native SwiftUI switch with Lumen brand tint.'
+    summary: 'Present a labeled native switch with Lumen brand tint.'
   },
   {
     accessibility: 'The explanatory copy and trailing control remain contained while the control preserves independent focus and semantics.',
-    category: 'Apple patterns',
+    category: 'Forms',
     examples: {
+      android: `LumenSettingsRow(
+    title = "Automatic updates",
+    description = "Download stable updates automatically.",
+    control = {
+        LumenToggle(
+            label = "Automatic updates",
+            checked = automaticUpdates,
+            showLabel = false,
+            onCheckedChange = ::setAutomaticUpdates
+        )
+    }
+)`,
       apple: `LumenSettingsRow(
     "Automatic updates",
     description: "Download stable updates automatically.",
@@ -540,19 +581,36 @@ const appleDefinitions: ComponentDefinition[] = [
 ) {
     LumenToggle("Automatic updates", isOn: $automaticUpdates)
         .labelsHidden()
-}`
+}`,
+      'react-native': `<LumenSettingsRow
+  title="Automatic updates"
+  description="Download stable updates automatically."
+  control={
+    <LumenToggle
+      label="Automatic updates"
+      value={automaticUpdates}
+      showLabel={false}
+      onValueChange={setAutomaticUpdates}
+    />
+  }
+/>`
     },
-    exports: { apple: 'LumenSettingsRow' },
+    exports: { android: 'LumenSettingsRow', apple: 'LumenSettingsRow', 'react-native': 'LumenSettingsRow' },
     guidance: 'Use to align repeated settings rows. The trailing content should be a compact native control rather than unrelated actions.',
     name: 'Settings row',
     properties: [
-      property('title', 'LocalizedStringKey', 'Required', 'Names the setting.'),
-      property('description', 'LocalizedStringKey?', 'nil', 'Adds supporting explanation.'),
-      property('systemName', 'SF Symbol name?', 'nil', 'Adds an optional leading symbol.'),
-      property('control', '@ViewBuilder () -> Control', 'Required', 'Provides the trailing native control.')
+      property('title', { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' }, 'Required', 'Names the setting.'),
+      property('description', { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' }, { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Adds supporting explanation.'),
+      property(
+        { android: 'graphic', apple: 'systemName', 'react-native': 'graphic' },
+        { android: '(@Composable () -> Unit)?', apple: 'SF Symbol name?', 'react-native': 'ReactNode' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Adds an optional leading graphic.'
+      ),
+      property('control', { android: '@Composable () -> Unit', apple: '@ViewBuilder () -> Control', 'react-native': 'ReactNode' }, 'Required', 'Provides the trailing native control.')
     ],
     slug: 'settings-row',
-    summary: 'Align a setting title and explanation with an optional symbol and trailing native control.'
+    summary: 'Align a setting title and explanation with an optional graphic and trailing native control.'
   },
   {
     accessibility: 'The picker retains native selection semantics, keyboard behavior, and VoiceOver announcements for its selected value.',
@@ -602,69 +660,116 @@ const appleDefinitions: ComponentDefinition[] = [
   {
     accessibility: 'The field uses native text input and provides a labeled clear button whenever text is present.',
     category: 'Forms',
-    examples: { apple: 'LumenSearchField("Search workspaces", text: $query)' },
-    exports: { apple: 'LumenSearchField' },
+    examples: {
+      android: `LumenSearchField(
+    value = query,
+    onValueChange = ::setQuery,
+    prompt = "Search workspaces"
+)`,
+      apple: 'LumenSearchField("Search workspaces", text: $query)',
+      'react-native': `<LumenSearchField
+  value={query}
+  onChangeText={setQuery}
+  prompt="Search workspaces"
+/>`
+    },
+    exports: { android: 'LumenSearchField', apple: 'LumenSearchField', 'react-native': 'LumenSearchField' },
     guidance: 'Use for filtering an existing collection. Keep search results and empty states close to the field so focus changes remain understandable.',
     name: 'Search field',
     properties: [
       property('prompt', 'String', 'Search', 'Provides placeholder and field context.'),
-      property('text', 'Binding<String>', 'Required', 'Stores the current search query.'),
-      property('isEnabled', 'SwiftUI environment', 'true', 'Controls native disabled presentation.')
+      property({ android: 'value', apple: 'text', 'react-native': 'value' }, { android: 'String', apple: 'Binding<String>', 'react-native': 'string' }, 'Required', 'Stores the current search query.'),
+      property({ android: 'onValueChange', apple: 'Binding setter', 'react-native': 'onChangeText' }, '(String) -> Unit', 'Required', 'Updates the controlled query.'),
+      property({ android: 'enabled', apple: 'isEnabled', 'react-native': 'editable' }, 'Boolean', 'true', 'Controls native disabled presentation.'),
+      property('clearLabel', 'String', 'Clear search', 'Names the clear action.')
     ],
     slug: 'search-field',
-    summary: 'Filter Apple-platform content with a density-aware native search field and clear action.'
+    summary: 'Filter native content with a density-aware search field and clear action.'
   },
   {
-    accessibility: 'The icon, title, description, and optional action remain a contained group with native text scaling.',
+    accessibility: 'The title, description, optional graphic, and recovery actions remain in a readable native order.',
     category: 'Feedback',
     examples: {
+      android: `LumenEmptyState(
+    title = "No saved workspaces",
+    description = "Create a workspace to get started.",
+    actions = { LumenButton(onClick = ::createWorkspace) { Text("Create") } }
+)`,
       apple: `LumenEmptyState(
     "No saved workspaces",
     systemName: "rectangle.stack",
     description: "Create a workspace to get started."
 ) {
     LumenButton("Create Workspace", action: createWorkspace)
-}`
+}`,
+      'react-native': `<LumenEmptyState
+  title="No saved workspaces"
+  description="Create a workspace to get started."
+  actions={<LumenButton onPress={createWorkspace}>Create</LumenButton>}
+/>`
     },
-    exports: { apple: 'LumenEmptyState' },
+    exports: { android: 'LumenEmptyState', apple: 'LumenEmptyState', 'react-native': 'LumenEmptyState' },
     guidance: 'Explain why the state is empty and offer one useful next action when recovery is possible. Do not use for loading or error states.',
     name: 'Empty state',
     properties: [
-      property('title', 'LocalizedStringKey', 'Required', 'Names the empty state.'),
-      property('systemName', 'SF Symbol name', 'Required', 'Provides the supporting symbol.'),
-      property('description', 'LocalizedStringKey?', 'nil', 'Explains the state or next step.'),
-      property('actions', '@ViewBuilder () -> Actions', 'EmptyView', 'Provides optional recovery actions.')
+      property('title', { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' }, 'Required', 'Names the empty state.'),
+      property(
+        { android: 'graphic', apple: 'systemName', 'react-native': 'graphic' },
+        { android: '(@Composable () -> Unit)?', apple: 'SF Symbol name', 'react-native': 'ReactNode' },
+        { android: 'null', apple: 'Required', 'react-native': 'undefined' },
+        'Provides an optional platform-native supporting graphic.'
+      ),
+      property('description', { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' }, { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Explains the state or next step.'),
+      property('actions', { android: '(@Composable () -> Unit)?', apple: '@ViewBuilder () -> Actions', 'react-native': 'ReactNode' }, { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' }, 'Provides optional recovery actions.')
     ],
     slug: 'empty-state',
-    summary: 'Explain missing content with a symbol, supporting copy, and optional recovery action.'
+    summary: 'Explain missing content with supporting copy, an optional graphic, and a recovery action.'
   },
   {
     accessibility: 'Leading identity, main content, and trailing actions remain contained while interactive descendants keep their own semantics.',
-    category: 'Apple patterns',
+    category: 'Layout',
     examples: {
+      android: `LumenListRow(
+    leading = { LumenAvatar(fallback = "SM") },
+    trailing = { LumenBadge("Admin") }
+) {
+    LumenText("Santiago", variant = LumenTextVariant.Label)
+}`,
       apple: `LumenListRow {
     LumenAvatar(fallback: "SM")
 } content: {
     LumenText("Santiago", variant: .label)
 } trailing: {
     LumenBadge("Admin")
-}`
+}`,
+      'react-native': `<LumenListRow
+  leading={<LumenAvatar fallback="SM" />}
+  trailing={<LumenBadge>Admin</LumenBadge>}
+>
+  <LumenText variant="label">Santiago</LumenText>
+</LumenListRow>`
     },
-    exports: { apple: 'LumenListRow' },
-    guidance: 'Use for repeated rows with a stable leading/content/trailing structure. Continue using native List for scrolling, selection, and navigation.',
+    exports: { android: 'LumenListRow', apple: 'LumenListRow', 'react-native': 'LumenListRow' },
+    guidance: 'Use for repeated rows with a stable leading/content/trailing structure. Continue using native collection components for scrolling, selection, and navigation.',
     name: 'List row',
     properties: [
-      property('leading', '@ViewBuilder () -> Leading', 'Required', 'Provides identity or a leading visual.'),
-      property('content', '@ViewBuilder () -> Content', 'Required', 'Provides the primary row content.'),
-      property('trailing', '@ViewBuilder () -> Trailing', 'EmptyView', 'Provides status or compact actions.')
+      property('leading', { android: '(@Composable () -> Unit)?', apple: '@ViewBuilder () -> Leading', 'react-native': 'ReactNode' }, { android: 'null', apple: 'Required', 'react-native': 'undefined' }, 'Provides identity or a leading visual.'),
+      property({ android: 'content', apple: 'content', 'react-native': 'children' }, { android: '@Composable () -> Unit', apple: '@ViewBuilder () -> Content', 'react-native': 'ReactNode' }, 'Required', 'Provides the primary row content.'),
+      property('trailing', { android: '(@Composable () -> Unit)?', apple: '@ViewBuilder () -> Trailing', 'react-native': 'ReactNode' }, { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' }, 'Provides status or compact actions.')
     ],
     slug: 'list-row',
-    summary: 'Compose a flexible Apple-platform row with leading identity, content, and trailing actions.'
+    summary: 'Compose a flexible native row with leading identity, content, and trailing actions.'
   },
   {
-    accessibility: 'A banner is inline content, not a live announcement. The application decides whether newly inserted content needs a VoiceOver announcement.',
+    accessibility: 'A banner is inline content, not a live announcement. The application decides whether newly inserted content needs a platform announcement.',
     category: 'Feedback',
     examples: {
+      android: `LumenBanner(
+    title = "Workspace assigned automatically",
+    description = "Moved the app to Documentation.",
+    variant = LumenBannerVariant.Accent,
+    onDismiss = ::dismissAssignment
+)`,
       apple: `LumenBanner(
     "Workspace assigned automatically",
     description: "Moved Safari to Documentation.",
@@ -672,17 +777,23 @@ const appleDefinitions: ComponentDefinition[] = [
     onDismiss: dismissAssignment
 ) {
     LumenButton("Undo", intent: .quiet, size: .sm, action: undo)
-}`
+}`,
+      'react-native': `<LumenBanner
+  title="Workspace assigned automatically"
+  description="Moved the app to Documentation."
+  variant="accent"
+  onDismiss={dismissAssignment}
+/>`
     },
-    exports: { apple: 'LumenBanner' },
+    exports: { android: 'LumenBanner', apple: 'LumenBanner', 'react-native': 'LumenBanner' },
     guidance: 'Use for persistent inline notices with optional action and dismissal. Prefer Alert for compact semantic content without banner structure.',
     name: 'Banner',
     properties: [
-      property('title', 'LocalizedStringKey', 'Required', 'Names the notice.'),
-      property('description', 'LocalizedStringKey?', 'nil', 'Adds supporting detail.'),
-      property('variant', 'default · accent · destructive · success · warning', 'default', 'Selects semantic presentation and default symbol.'),
-      property('onDismiss', '(() -> Void)?', 'nil', 'Adds a labeled dismiss action.'),
-      property('actions', '@ViewBuilder () -> Actions', 'EmptyView', 'Provides optional inline actions.')
+      property('title', { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' }, 'Required', 'Names the notice.'),
+      property('description', { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' }, { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Adds supporting detail.'),
+      property('variant', 'default · accent · destructive · success · warning', 'default', 'Selects semantic presentation.'),
+      property('onDismiss', '(() -> Void)?', { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Adds a labeled dismiss action.'),
+      property('actions', { android: '(@Composable () -> Unit)?', apple: '@ViewBuilder () -> Actions', 'react-native': 'ReactNode' }, { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' }, 'Provides optional inline actions.')
     ],
     slug: 'banner',
     summary: 'Present a structured semantic notice with optional actions and dismissal.'
@@ -691,22 +802,39 @@ const appleDefinitions: ComponentDefinition[] = [
     accessibility: 'Metric content is combined into a concise readable unit. The value must remain meaningful without relying on color or icon alone.',
     category: 'Data display',
     examples: {
+      android: `LumenStat(
+    label = "Open windows",
+    value = "12",
+    detail = "Across 3 workspaces",
+    tone = LumenMetricTone.Accent
+)`,
       apple: `LumenStat(
     "Open windows",
     value: "12",
     detail: "Across 3 workspaces",
     systemName: "macwindow",
     tone: .accent
-)`
+)`,
+      'react-native': `<LumenStat
+  label="Open windows"
+  value="12"
+  detail="Across 3 workspaces"
+  tone="accent"
+/>`
     },
-    exports: { apple: 'LumenStat' },
+    exports: { android: 'LumenStat', apple: 'LumenStat', 'react-native': 'LumenStat' },
     guidance: 'Use for a compact product metric. Avoid decorative dashboard numbers that do not support a decision or task.',
     name: 'Stat',
     properties: [
-      property('label', 'LocalizedStringKey', 'Required', 'Names the metric.'),
+      property('label', { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' }, 'Required', 'Names the metric.'),
       property('value', 'String', 'Required', 'Provides the formatted metric value.'),
-      property('detail', 'LocalizedStringKey?', 'nil', 'Adds supporting context.'),
-      property('systemName', 'SF Symbol name?', 'nil', 'Adds an optional semantic symbol.'),
+      property('detail', { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' }, { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Adds supporting context.'),
+      property(
+        { android: 'graphic', apple: 'systemName', 'react-native': 'graphic' },
+        { android: '(@Composable () -> Unit)?', apple: 'SF Symbol name?', 'react-native': 'ReactNode' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Adds an optional semantic graphic.'
+      ),
       property('tone', 'neutral · brand · accent · success · warning · danger', 'brand', 'Selects semantic emphasis.')
     ],
     slug: 'stat',
@@ -739,24 +867,34 @@ const appleDefinitions: ComponentDefinition[] = [
   },
   {
     accessibility: 'The section identity, optional count, and actions remain a contained group while actions preserve their own labels.',
-    category: 'Apple patterns',
+    category: 'Layout',
     examples: {
+      android: `LumenSectionHeader(
+    title = "Workspaces",
+    subtitle = "Recently used",
+    count = "4"
+)`,
       apple: `LumenSectionHeader(
     "Workspaces",
     subtitle: "Recently used",
     count: "4"
 ) {
     LumenButton("Add", intent: .quiet, size: .sm, action: addWorkspace)
-}`
+}`,
+      'react-native': `<LumenSectionHeader
+  title="Workspaces"
+  subtitle="Recently used"
+  count="4"
+/>`
     },
-    exports: { apple: 'LumenSectionHeader' },
+    exports: { android: 'LumenSectionHeader', apple: 'LumenSectionHeader', 'react-native': 'LumenSectionHeader' },
     guidance: 'Use above a native section or collection. Keep actions compact and directly related to the section.',
     name: 'Section header',
     properties: [
-      property('title', 'LocalizedStringKey', 'Required', 'Names the section.'),
-      property('subtitle', 'LocalizedStringKey?', 'nil', 'Adds supporting context.'),
-      property('count', 'String?', 'nil', 'Shows an optional count badge.'),
-      property('actions', '@ViewBuilder () -> Actions', 'EmptyView', 'Provides trailing section actions.')
+      property('title', { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' }, 'Required', 'Names the section.'),
+      property('subtitle', { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' }, { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Adds supporting context.'),
+      property('count', { android: 'String?', apple: 'String?', 'react-native': 'string' }, { android: 'null', apple: 'nil', 'react-native': 'undefined' }, 'Shows an optional count badge.'),
+      property('actions', { android: '(@Composable () -> Unit)?', apple: '@ViewBuilder () -> Actions', 'react-native': 'ReactNode' }, { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' }, 'Provides trailing section actions.')
     ],
     slug: 'section-header',
     summary: 'Identify a native section with optional supporting copy, count, and trailing actions.'
@@ -765,17 +903,26 @@ const appleDefinitions: ComponentDefinition[] = [
     accessibility: 'The visible status dot is decorative; the message carries status meaning in text. Trailing controls retain independent semantics.',
     category: 'Feedback',
     examples: {
+      android: `LumenStatusBar(
+    message = "All changes saved",
+    tone = LumenMetricTone.Success
+)`,
       apple: `LumenStatusBar("All changes saved", tone: .success) {
     Text("Just now")
-}`
+}`,
+      'react-native': `<LumenStatusBar
+  message="All changes saved"
+  tone="success"
+  trailing={<LumenText variant="caption">Just now</LumenText>}
+/>`
     },
-    exports: { apple: 'LumenStatusBar' },
-    guidance: 'Use for compact persistent application status, especially in desktop layouts. Do not replace system status bars or navigation chrome.',
+    exports: { android: 'LumenStatusBar', apple: 'LumenStatusBar', 'react-native': 'LumenStatusBar' },
+    guidance: 'Use for compact persistent application status. Do not replace system status bars or navigation chrome.',
     name: 'Status bar',
     properties: [
-      property('message', 'LocalizedStringKey', 'Required', 'Provides the textual status.'),
+      property('message', { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' }, 'Required', 'Provides the textual status.'),
       property('tone', 'neutral · brand · accent · success · warning · danger', 'neutral', 'Selects the semantic dot color.'),
-      property('trailing', '@ViewBuilder () -> Trailing', 'EmptyView', 'Provides optional trailing content.')
+      property('trailing', { android: '(@Composable () -> Unit)?', apple: '@ViewBuilder () -> Trailing', 'react-native': 'ReactNode' }, { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' }, 'Provides optional trailing content.')
     ],
     slug: 'status-bar',
     summary: 'Present compact textual application status with optional trailing content.'
@@ -826,7 +973,7 @@ const appleDefinitions: ComponentDefinition[] = [
   }
 ]
 
-export const nativeComponentDocs = [...sharedDefinitions, ...appleDefinitions]
+export const nativeComponentDocs = [...sharedDefinitions, ...additionalDefinitions]
   .map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [
@@ -836,7 +983,6 @@ export const nativeComponentCategories: NativeComponentCategory[] = [
   'Layout',
   'Data display',
   'Feedback',
-  'Apple patterns',
   'macOS utilities'
 ]
 

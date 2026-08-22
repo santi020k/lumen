@@ -1,0 +1,44 @@
+name: LumenApplePlayground
+options:
+  bundleIdPrefix: com.santi020k.lumen
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  LumenUI:
+    path: ../..
+targets:
+  LumenApplePlayground:
+    type: application
+    platform: iOS
+    sources:
+      - Sources/LumenApplePlayground
+    dependencies:
+      - package: LumenUI
+        product: LumenUI
+    settings:
+      base:
+        CURRENT_PROJECT_VERSION: 1
+        DEVELOPMENT_TEAM: ""
+        GENERATE_INFOPLIST_FILE: YES
+        MARKETING_VERSION: 1.0.0
+        PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple
+        SWIFT_VERSION: 6.0
+        TARGETED_DEVICE_FAMILY: "1,2"
+    info:
+      path: Supporting/Info.plist
+      properties:
+        CFBundleDisplayName: Lumen Playground
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+schemes:
+  LumenApplePlayground:
+    build:
+      targets:
+        LumenApplePlayground: all
+    run:
+      config: Debug
+    archive:
+      config: Release

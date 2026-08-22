@@ -2,6 +2,10 @@
 import { Badge, Icon, Link } from '@santi020k/lumen-astro'
 
 import { componentCategories, componentDocs } from '../data/docs'
+import {
+  getNativeComponentsForPlatform,
+  nativeComponentCategories
+} from '../data/native-components'
 import type { DocsPlatformId } from '../data/platforms'
 import { getPlatformGuide } from '../data/platforms'
 import { toSlug } from '../lib/routes'
@@ -45,11 +49,19 @@ const webFoundationLinks = [
 
 const activeGuide = platform && platform !== 'web' ? getPlatformGuide(platform) : undefined
 
+const nativePlatform = platform === 'android' || platform === 'apple' || platform === 'react-native' ?
+  platform :
+  undefined
+
+const nativeComponents = nativePlatform ? getNativeComponentsForPlatform(nativePlatform) : []
+
 const platformSectionLinks = activeGuide ?
   [
     ['Overview', activeGuide.href],
     ['Install and configure', `${activeGuide.href}#installation`],
-    ['Components and capabilities', `${activeGuide.href}#components`],
+    ...(nativePlatform ? [['Run the playground', `${activeGuide.href}#playground`] as const] : []),
+    ...(nativePlatform ? [['Use with AI', `${activeGuide.href}#ai-usage`] as const] : []),
+    ['Component reference', nativePlatform ? `${activeGuide.href}/components` : `${activeGuide.href}#components`],
     ['Platform contract', `${activeGuide.href}#principles`]
   ] as const :
   []
@@ -104,6 +116,45 @@ const closeAttribute = closeOnNavigate ? true : undefined
         </Link>
       ))}
     </div>
+  )}
+  {activeGuide && nativePlatform && (
+    <>
+      <div class="docs-sidebar__components-label">
+        <span>Components</span>
+        <Link data-ui-drawer-close={closeAttribute} href={`${activeGuide.href}/components`}>Browse all</Link>
+      </div>
+      {nativeComponentCategories.filter(category => (
+        nativeComponents.some(component => component.category === category)
+      )).map(category => (
+        <details class="docs-sidebar__group docs-sidebar__group--collapsible" open>
+          <summary>
+            <span>{category}</span>
+            <span>
+              <Badge variant="outline">
+                {nativeComponents.filter(component => component.category === category).length}
+              </Badge>
+              <Icon decorative name="chevron-right" size="sm" />
+            </span>
+          </summary>
+          <div>
+            {nativeComponents.filter(component => component.category === category).map(component => {
+              const href = `${activeGuide.href}/components/${component.slug}`
+
+              return (
+                <Link
+                  aria-current={isCurrent(href) ? 'page' : undefined}
+                  class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
+                  data-ui-drawer-close={closeAttribute}
+                  href={href}
+                >
+                  <span class="truncate">{component.name}</span>
+                </Link>
+              )
+            })}
+          </div>
+        </details>
+      ))}
+    </>
   )}
   {platform === 'web' && (
     <div class="docs-sidebar__group">

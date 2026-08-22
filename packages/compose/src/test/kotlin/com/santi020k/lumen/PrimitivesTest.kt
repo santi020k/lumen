@@ -33,4 +33,37 @@ class PrimitivesTest {
         assertEquals(40.dp, LumenAvatarSize.Md.dimension)
         assertEquals(56.dp, LumenAvatarSize.Lg.dimension)
     }
+
+    @Test
+    fun structuredComponentsUseSemanticToneColors() {
+        assertEquals(LumenColors.Light.accent, lumenMetricColor(LumenColors.Light, LumenMetricTone.Accent))
+        assertEquals(LumenColors.Dark.inkMuted, lumenMetricColor(LumenColors.Dark, LumenMetricTone.Neutral))
+        assertEquals(
+            LumenColors.Light.brand,
+            lumenBannerPalette(LumenColors.Light, LumenBannerVariant.Default).accent
+        )
+        assertEquals(
+            LumenColors.Dark.success,
+            lumenBannerPalette(LumenColors.Dark, LumenBannerVariant.Success).accent
+        )
+    }
+
+    @Test
+    fun searchFieldOnlyClearsEditableQueries() {
+        assertEquals(true, LumenSearchFieldState.resolve("lumen", true).showClearAction)
+        assertEquals(false, LumenSearchFieldState.resolve("", true).showClearAction)
+        assertEquals(false, LumenSearchFieldState.resolve("lumen", false).showClearAction)
+    }
+
+    @Test
+    fun cardVariantsUseSemanticSurfaces() {
+        assertEquals(
+            LumenCardPalette(LumenColors.Light.surfaceMuted, LumenColors.Light.line),
+            lumenCardPalette(LumenColors.Light, LumenCardVariant.Muted)
+        )
+        assertEquals(
+            LumenColors.Dark.warning.copy(alpha = 0.24f),
+            lumenCardPalette(LumenColors.Dark, LumenCardVariant.Warning).border
+        )
+    }
 }

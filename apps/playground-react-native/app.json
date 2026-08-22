@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Lumen React Native Playground",
+    "slug": "lumen-react-native-playground",
+    "version": "1.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.santi020k.lumen.playground.reactnative"
+    },
+    "android": {
+      "package": "com.santi020k.lumen.playground.reactnative"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

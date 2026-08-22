@@ -59,6 +59,24 @@ behavior, tests, and usage documentation exist in that adapter.
 See [Native component reference](native-components.md) for installation, the support matrix,
 platform mappings, accessibility requirements, and contribution checks.
 
+## Native beta policy
+
+The shared token foundation is stable. The React Native, SwiftUI, and Jetpack Compose component
+adapters are **Beta**: they are available for testing and early production adoption, but their
+public APIs may evolve as Lumen gathers evidence from real applications. Breaking changes must be
+documented in release notes with a practical migration path.
+
+A native adapter graduates from Beta after it has:
+
+- at least one active consumer application;
+- accessibility and interaction testing on representative physical devices;
+- a documented platform and toolchain compatibility matrix;
+- component contracts that remain stable across multiple releases; and
+- a documented deprecation policy for future API changes.
+
+Individual features that do not yet meet the adapter's Beta support bar should be labeled
+**Experimental** and must not be presented as part of the supported component surface.
+
 ## Current status
 
 - The canonical token source and drift check are active.

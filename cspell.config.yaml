@@ -129,6 +129,7 @@ words:
   - textareas
   - toolbar
   - Toolbar
+  - toggleable
   - Theo
   - Tour
   - transfer
@@ -163,6 +164,9 @@ words:
   - workstreams
   - workspaces
   - xmark
+  - xcodegen
+  - xcodeproj
+  - reactnative
   - temurin
   - sdkmanager
   - gradlew
@@ -185,3 +189,8 @@ ignorePaths:
   - packages/compose/gradle/wrapper/**
   - packages/compose/gradlew
   - packages/compose/gradlew.bat
+  - apps/docs/native-previews/android-compose/gradle.properties
+  - apps/playground-android/gradle.properties
+  - apps/playground-apple/LumenApplePlayground.xcodeproj/**
+  - apps/playground-apple/Supporting/Info.plist
+  - apps/playground-apple/project.yml

@@ -27,15 +27,43 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 enum class LumenCardVariant {
+    Accent,
     Default,
-    Muted
+    Destructive,
+    Muted,
+    Success,
+    Warning
+}
+
+@Immutable
+data class LumenCardPalette(
+    val background: Color,
+    val border: Color
+)
+
+fun lumenCardPalette(colors: LumenColorPalette, variant: LumenCardVariant): LumenCardPalette {
+    if (variant == LumenCardVariant.Default) return LumenCardPalette(colors.surface, colors.line)
+
+    if (variant == LumenCardVariant.Muted) return LumenCardPalette(colors.surfaceMuted, colors.line)
+
+    val accent = when (variant) {
+        LumenCardVariant.Accent -> colors.accent
+        LumenCardVariant.Destructive -> colors.danger
+        LumenCardVariant.Success -> colors.success
+        LumenCardVariant.Warning -> colors.warning
+        LumenCardVariant.Default, LumenCardVariant.Muted -> colors.line
+    }
+
+    return LumenCardPalette(
+        background = accent.copy(alpha = 0.06f),
+        border = accent.copy(alpha = 0.24f)
+    )
 }
 
 @Composable
@@ -43,23 +71,23 @@ fun LumenCard(
     modifier: Modifier = Modifier,
     variant: LumenCardVariant = LumenCardVariant.Default,
     onClick: (() -> Unit)? = null,
+    enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colors = LocalLumenTheme.current.colors
+    val palette = lumenCardPalette(colors, variant)
     val interactionModifier = if (onClick == null) {
         Modifier
     } else {
-        Modifier
-            .clickable(onClick = onClick)
-            .semantics { role = Role.Button }
+        Modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick)
     }
 
     Surface(
         modifier = modifier.then(interactionModifier),
-        color = if (variant == LumenCardVariant.Muted) colors.surfaceMuted else colors.surface,
+        color = palette.background,
         contentColor = colors.ink,
         shape = RoundedCornerShape(LumenRadius.Lg),
-        border = androidx.compose.foundation.BorderStroke(1.dp, colors.line)
+        border = androidx.compose.foundation.BorderStroke(1.dp, palette.border)
     ) {
         Box(modifier = Modifier.padding(LumenSpacing.Xl)) {
             content()
