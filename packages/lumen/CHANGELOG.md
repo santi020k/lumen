@@ -1,5 +1,23 @@
 # @santi020k/lumen
 
+## 1.4.0
+
+### Minor Changes
+
+- [#30](https://github.com/santi020k/lumen/pull/30) [`6299eae`](https://github.com/santi020k/lumen/commit/6299eaefd2f09d50c10105eb81dc1e21e9e644ce) Thanks [@santi020k](https://github.com/santi020k)! - Add token-aware `Graphic`, `Backdrop`, and `Illustration` primitives across Astro, React, Elements,
+  React Native, SwiftUI, and Compose. Shared decorative presets frame application artwork, add ambient
+  patterns behind content, and provide semantic empty, success, error, and offline scenes without
+  bundling platform-specific bitmap assets.
+
+- [#30](https://github.com/santi020k/lumen/pull/30) [`6299eae`](https://github.com/santi020k/lumen/commit/6299eaefd2f09d50c10105eb81dc1e21e9e644ce) Thanks [@santi020k](https://github.com/santi020k)! - Add controlled alert-dialog, sheet, and anchored-menu contracts across React Native, SwiftUI, and
+  Compose. Add token-aware share buttons that delegate destination selection to each operating
+  system while keeping application content and presentation state host-owned.
+
+### Patch Changes
+
+- Updated dependencies [[`6299eae`](https://github.com/santi020k/lumen/commit/6299eaefd2f09d50c10105eb81dc1e21e9e644ce)]:
+  - @santi020k/lumen-core@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes
