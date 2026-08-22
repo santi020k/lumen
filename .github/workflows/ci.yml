@@ -129,11 +129,16 @@ jobs:
           android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
           adb="$android_sdk_root/platform-tools/adb"
           emulator="$android_sdk_root/emulator/emulator"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/lumen-avd"
+          mkdir -p "$ANDROID_AVD_HOME"
 
           echo no | "$android_sdk_root/cmdline-tools/latest/bin/avdmanager" create avd \
             --force \
             --name lumen-ci \
+            --path "$ANDROID_AVD_HOME/lumen-ci.avd" \
             --package "system-images;android-35;google_apis;x86_64"
+
+          "$emulator" -list-avds | grep -Fx lumen-ci # cspell:ignore avds
 
           if [[ -e /dev/kvm ]]; then
             sudo chmod 666 /dev/kvm
