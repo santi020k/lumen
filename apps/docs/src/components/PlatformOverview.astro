@@ -12,6 +12,7 @@ import {
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import NativePlatformPreview from './NativePlatformPreview.astro'
 
 interface Props {
   guide: PlatformGuide
@@ -57,6 +58,8 @@ const { guide } = Astro.props
       storageKey={`lumen-${guide.id}-setup`}
     />
   </section>
+
+  <NativePlatformPreview guide={guide} />
 
   <section class="docs-section" id="components" aria-labelledby="components-title">
     <div class="docs-section-heading">
