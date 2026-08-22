@@ -1231,6 +1231,75 @@ const elementConfigs = {
     baseClassName: 'ui-gradient-divider',
     tagName: 'lumen-gradient-divider'
   },
+  Graphic: {
+    attributeClasses: {
+      size: {
+        lg: 'ui-graphic--lg',
+        md: 'ui-graphic--md',
+        sm: 'ui-graphic--sm'
+      },
+      tone: {
+        accent: 'ui-graphic--accent',
+        brand: 'ui-graphic--brand',
+        neutral: 'ui-graphic--neutral'
+      },
+      variant: {
+        glow: 'ui-graphic--glow',
+        grid: 'ui-graphic--grid',
+        orbit: 'ui-graphic--orbit'
+      }
+    },
+    baseClassName: 'ui-graphic',
+    defaults: { size: 'md', tone: 'brand', variant: 'orbit' },
+    tagName: 'lumen-graphic'
+  },
+  Backdrop: {
+    attributeClasses: {
+      intensity: {
+        medium: 'ui-backdrop--medium',
+        strong: 'ui-backdrop--strong',
+        subtle: 'ui-backdrop--subtle'
+      },
+      tone: {
+        accent: 'ui-backdrop--accent',
+        brand: 'ui-backdrop--brand',
+        neutral: 'ui-backdrop--neutral'
+      },
+      variant: {
+        aurora: 'ui-backdrop--aurora',
+        dots: 'ui-backdrop--dots',
+        grid: 'ui-backdrop--grid',
+        rays: 'ui-backdrop--rays'
+      }
+    },
+    baseClassName: 'ui-backdrop',
+    defaults: { intensity: 'medium', tone: 'brand', variant: 'aurora' },
+    tagName: 'lumen-backdrop'
+  },
+  Illustration: {
+    attributeClasses: {
+      size: {
+        lg: 'ui-illustration--lg',
+        md: 'ui-illustration--md',
+        sm: 'ui-illustration--sm'
+      },
+      tone: {
+        accent: 'ui-illustration--accent',
+        auto: 'ui-illustration--auto',
+        brand: 'ui-illustration--brand',
+        neutral: 'ui-illustration--neutral'
+      },
+      variant: {
+        empty: 'ui-illustration--empty',
+        error: 'ui-illustration--error',
+        offline: 'ui-illustration--offline',
+        success: 'ui-illustration--success'
+      }
+    },
+    baseClassName: 'ui-illustration',
+    defaults: { size: 'md', tone: 'auto', variant: 'empty' },
+    tagName: 'lumen-illustration'
+  },
   Stepper: {
     attributeClasses: { orientation: { vertical: 'ui-stepper--vertical' } },
     baseClassName: 'ui-stepper',
@@ -1359,6 +1428,7 @@ const observedAttributeNames = [
   'glass',
   'heading',
   'hover',
+  'intensity',
   'label',
   'label-template',
   'locale',
@@ -5836,6 +5906,84 @@ class LumenIconBehaviorElement extends LumenElement {
   }
 }
 
+class LumenGraphicBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.syncAccessibility()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    this.syncAccessibility()
+  }
+
+  private syncAccessibility() {
+    const label = this.getAttribute('label')
+
+    if (label) {
+      this.removeAttribute('aria-hidden')
+
+      this.setAttribute('aria-label', label)
+
+      this.setAttribute('role', 'img')
+    } else {
+      this.setAttribute('aria-hidden', 'true')
+
+      this.removeAttribute('aria-label')
+
+      this.removeAttribute('role')
+    }
+  }
+}
+
+const illustrationArtwork: Readonly<Record<string, string>> = {
+  empty: '<path d="M32 48h56l-7 35H39l-7-35Z"/><path d="M43 48 49 36h22l6 12M47 66h26"/>',
+  error: '<circle cx="60" cy="60" r="28"/><path d="m49 49 22 22m0-22L49 71"/>',
+  offline: '<path d="M37 74h44a14 14 0 0 0 1-28 23 23 0 0 0-42-4 16 16 0 0 0-3 32Z"/><path d="m38 34 44 52"/>',
+  success: '<circle cx="60" cy="60" r="28"/><path d="m45 60 10 10 21-23"/>'
+}
+
+class LumenIllustrationBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderIllustration()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    this.renderIllustration()
+  }
+
+  private renderIllustration() {
+    const label = this.getAttribute('label')
+
+    const artwork = illustrationArtwork[this.getAttribute('variant') ?? 'empty'] ??
+      illustrationArtwork.empty ?? ''
+
+    const markup = `<svg aria-hidden="true" fill="none" viewBox="0 0 120 120"><circle class="ui-illustration__wash" cx="60" cy="60" r="48"/><g>${artwork}</g></svg>`
+
+    if (this.innerHTML !== markup) this.innerHTML = markup
+
+    if (label) {
+      this.removeAttribute('aria-hidden')
+
+      this.setAttribute('aria-label', label)
+
+      this.setAttribute('role', 'img')
+    } else {
+      this.setAttribute('aria-hidden', 'true')
+
+      this.removeAttribute('aria-label')
+
+      this.removeAttribute('role')
+    }
+  }
+}
+
 class LumenDialogBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private lastTrigger: HTMLElement | undefined
@@ -9790,6 +9938,8 @@ const behaviorElementClasses: Partial<
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
   FileUpload: LumenFileUploadBehaviorElement,
+  Graphic: LumenGraphicBehaviorElement,
+  Illustration: LumenIllustrationBehaviorElement,
   Icon: LumenIconBehaviorElement,
   Input: LumenScalarFormControlElement,
   KanbanBoard: LumenKanbanBoardBehaviorElement,
@@ -10031,6 +10181,9 @@ export const LumenAnimatedPortraitElement = elementClasses.AnimatedPortrait
 export const LumenButtonLinkElement = elementClasses.ButtonLink
 export const LumenCoverImageElement = elementClasses.CoverImage
 export const LumenGradientDividerElement = elementClasses.GradientDivider
+export const LumenGraphicElement = elementClasses.Graphic
+export const LumenBackdropElement = elementClasses.Backdrop
+export const LumenIllustrationElement = elementClasses.Illustration
 export const LumenCheckboxGroupElement = elementClasses.CheckboxGroup
 export const LumenContainerElement = elementClasses.Container
 export const LumenCopyButtonElement = elementClasses.CopyButton

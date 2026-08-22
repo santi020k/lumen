@@ -100,6 +100,19 @@ class PrimitivesTest {
     }
 
     @Test
+    fun navigationDestinationsUseControlledSelection() {
+        assertEquals(true, isLumenNavigationItemSelected("home", "home"))
+        assertEquals(false, isLumenNavigationItemSelected("search", "home"))
+    }
+
+    @Test
+    fun sharePayloadsRequireTextOrAContentUri() {
+        assertEquals(false, LumenSharePayload().hasContent)
+        assertEquals(false, LumenSharePayload(text = "   ").hasContent)
+        assertEquals(true, LumenSharePayload(text = "Share this report").hasContent)
+    }
+
+    @Test
     fun progressValuesAreFiniteAndClamped() {
         assertEquals(LumenProgressValue(100f, 100f), LumenProgressValue.resolve(120f, 100f))
         assertEquals(LumenProgressValue(100f, 0f), LumenProgressValue.resolve(-10f, 0f))
@@ -111,6 +124,31 @@ class PrimitivesTest {
         assertEquals(32.dp, LumenAvatarSize.Sm.dimension)
         assertEquals(40.dp, LumenAvatarSize.Md.dimension)
         assertEquals(56.dp, LumenAvatarSize.Lg.dimension)
+    }
+
+    @Test
+    fun graphicDimensionsMatchTheSharedContract() {
+        assertEquals(160.dp, LumenGraphicSize.Sm.dimension)
+        assertEquals(240.dp, LumenGraphicSize.Md.dimension)
+        assertEquals(320.dp, LumenGraphicSize.Lg.dimension)
+    }
+
+    @Test
+    fun backdropAndIllustrationMetricsMatchTheSharedContract() {
+        assertEquals(0.4f, LumenBackdropIntensity.Subtle.opacity)
+        assertEquals(0.68f, LumenBackdropIntensity.Medium.opacity)
+        assertEquals(1f, LumenBackdropIntensity.Strong.opacity)
+        assertEquals(96.dp, LumenIllustrationSize.Sm.dimension)
+        assertEquals(128.dp, LumenIllustrationSize.Md.dimension)
+        assertEquals(176.dp, LumenIllustrationSize.Lg.dimension)
+        assertEquals(
+            LumenColors.Light.success,
+            lumenIllustrationColor(
+                LumenColors.Light,
+                LumenIllustrationTone.Auto,
+                LumenIllustrationVariant.Success
+            )
+        )
     }
 
     @Test

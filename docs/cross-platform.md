@@ -87,14 +87,16 @@ Individual features that do not yet meet the adapter's Beta support bar should b
   implemented in all three native adapters. Icon glyph sources stay platform-native while their
   size, color, intent, and accessibility contracts remain aligned.
 - ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup,
-  SegmentedControl, Chip, Card, Alert, Toast, Progress, Skeleton, Disclosure, Avatar, EmptyState,
-  ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
+  SegmentedControl, NavigationBar, Chip, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
+  Illustration, Disclosure,
+  Avatar, EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
   adapters with shared semantic contracts.
 - Picker, Slider, and Gauge are available in SwiftUI and Compose, where stable dependency-free
   native controls exist. The platform tier includes RefreshControl for React Native,
   FloatingActionButton for Compose, DateField for Apple platforms, and ShortcutRecorder and
   SymbolPicker on macOS.
-- Native navigation, window scenes, sheets, popovers, and system menus remain application-owned.
+- NavigationBar provides controlled peer-destination selection. Navigation stacks, history, deep
+  links, window scenes, sheets, popovers, and system menus remain application-owned.
 - The executable checks and manual hardware matrix live in
   [Native device validation](native-device-validation.md). A platform remains Beta until the matrix
   contains representative physical-device evidence.

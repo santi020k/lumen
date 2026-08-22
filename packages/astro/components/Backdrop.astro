@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+  intensity?: 'medium' | 'strong' | 'subtle'
+  tone?: 'accent' | 'brand' | 'neutral'
+  variant?: 'aurora' | 'dots' | 'grid' | 'rays'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  intensity = 'medium',
+  tone = 'brand',
+  variant = 'aurora',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-backdrop',
+  `ui-backdrop--${variant}`,
+  `ui-backdrop--${tone}`,
+  `ui-backdrop--${intensity}`
+], classProp, className)
+---
+
+<div class:list={classList} {...passthrough}>
+  <div class="ui-backdrop__content">
+    <slot />
+  </div>
+</div>

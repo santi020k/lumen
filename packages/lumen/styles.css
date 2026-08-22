@@ -194,6 +194,12 @@
   }
 }
 
+@keyframes ui-graphic-orbit {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 .ui-sr-only {
   position: absolute;
   width: 1px;
@@ -216,6 +222,7 @@
   .ui-attachment,
   .ui-autocomplete,
   .ui-avatar,
+  .ui-backdrop,
   .ui-back-to-top,
   .ui-badge,
   .ui-bubble,
@@ -242,12 +249,14 @@
   .ui-floating-badge,
   .ui-formatted-date,
   .ui-gradient-divider,
+  .ui-graphic,
   .ui-icon,
   .ui-input,
   .ui-input-group,
   .ui-input-otp-field,
   .ui-input-otp,
   .ui-image,
+  .ui-illustration,
   .ui-item,
   .ui-kbd,
   .ui-label,
@@ -1040,6 +1049,166 @@
   );
 }
 
+.ui-backdrop {
+  --ui-backdrop-color: var(--brand);
+  --ui-backdrop-secondary: var(--accent);
+  --ui-backdrop-opacity: 0.68;
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.ui-backdrop::before {
+  content: '';
+  inset: 0;
+  opacity: var(--ui-backdrop-opacity);
+  pointer-events: none;
+  position: absolute;
+}
+
+.ui-backdrop__content,
+.ui-backdrop > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-backdrop--subtle { --ui-backdrop-opacity: 0.4; }
+.ui-backdrop--strong { --ui-backdrop-opacity: 1; }
+.ui-backdrop--accent { --ui-backdrop-color: var(--accent); --ui-backdrop-secondary: var(--brand); }
+.ui-backdrop--neutral { --ui-backdrop-color: var(--ink-muted); --ui-backdrop-secondary: var(--ink-soft); }
+
+.ui-backdrop--aurora::before {
+  background:
+    radial-gradient(ellipse at 18% 8%, hsl(var(--ui-backdrop-color) / 0.28), transparent 46%),
+    radial-gradient(ellipse at 86% 92%, hsl(var(--ui-backdrop-secondary) / 0.2), transparent 48%);
+}
+
+.ui-backdrop--dots::before {
+  background-image: radial-gradient(circle, hsl(var(--ui-backdrop-color) / 0.28) 1px, transparent 1.5px);
+  background-size: 1.25rem 1.25rem;
+  mask-image: radial-gradient(ellipse, black 12%, transparent 76%);
+}
+
+.ui-backdrop--grid::before {
+  background-image:
+    linear-gradient(hsl(var(--ui-backdrop-color) / 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--ui-backdrop-color) / 0.14) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+  mask-image: linear-gradient(black, transparent 92%);
+}
+
+.ui-backdrop--rays::before {
+  background: repeating-conic-gradient(from 210deg at 50% 0%, hsl(var(--ui-backdrop-color) / 0.12) 0 4deg, transparent 4deg 13deg);
+  mask-image: linear-gradient(black, transparent 88%);
+}
+
+.ui-illustration {
+  --ui-illustration-color: var(--brand);
+  color: hsl(var(--ui-illustration-color));
+  display: inline-grid;
+  place-items: center;
+  width: var(--ui-illustration-size, 8rem);
+}
+
+.ui-illustration svg { display: block; height: auto; overflow: visible; width: 100%; }
+.ui-illustration :where(path, circle) { stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.ui-illustration__wash { fill: hsl(var(--ui-illustration-color) / 0.1); stroke: none !important; }
+.ui-illustration--sm { --ui-illustration-size: 6rem; }
+.ui-illustration--lg { --ui-illustration-size: 11rem; }
+.ui-illustration--auto.ui-illustration--success { --ui-illustration-color: var(--success); }
+.ui-illustration--auto.ui-illustration--error { --ui-illustration-color: var(--danger); }
+.ui-illustration--auto.ui-illustration--offline { --ui-illustration-color: var(--ink-muted); }
+.ui-illustration--accent { --ui-illustration-color: var(--accent); }
+.ui-illustration--neutral { --ui-illustration-color: var(--ink-muted); }
+
+.ui-graphic {
+  --ui-graphic-color: var(--brand);
+  --ui-graphic-secondary: var(--accent);
+  aspect-ratio: 1;
+  display: grid;
+  isolation: isolate;
+  max-width: 100%;
+  overflow: hidden;
+  place-items: center;
+  position: relative;
+  width: var(--ui-graphic-size, 15rem);
+}
+
+.ui-graphic::before,
+.ui-graphic::after {
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ui-graphic > *,
+.ui-graphic__content {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-graphic--sm {
+  --ui-graphic-size: 10rem;
+}
+
+.ui-graphic--md {
+  --ui-graphic-size: 15rem;
+}
+
+.ui-graphic--lg {
+  --ui-graphic-size: 20rem;
+}
+
+.ui-graphic--accent {
+  --ui-graphic-color: var(--accent);
+  --ui-graphic-secondary: var(--brand);
+}
+
+.ui-graphic--neutral {
+  --ui-graphic-color: var(--ink-muted);
+  --ui-graphic-secondary: var(--ink-soft);
+}
+
+.ui-graphic--glow::before {
+  background: radial-gradient(
+    circle,
+    hsl(var(--ui-graphic-color) / 0.3),
+    hsl(var(--ui-graphic-secondary) / 0.12) 38%,
+    transparent 70%
+  );
+  filter: blur(0.75rem);
+}
+
+.ui-graphic--grid::before {
+  background-image:
+    linear-gradient(hsl(var(--ui-graphic-color) / 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--ui-graphic-color) / 0.13) 1px, transparent 1px),
+    radial-gradient(circle, hsl(var(--ui-graphic-secondary) / 0.18), transparent 66%);
+  background-size: 1.5rem 1.5rem, 1.5rem 1.5rem, 100% 100%;
+  mask-image: radial-gradient(circle, black 20%, transparent 74%);
+}
+
+.ui-graphic--orbit::before {
+  background:
+    linear-gradient(90deg, transparent 49.75%, hsl(var(--ui-graphic-color) / 0.16) 50%, transparent 50.25%),
+    linear-gradient(transparent 49.75%, hsl(var(--ui-graphic-color) / 0.16) 50%, transparent 50.25%),
+    radial-gradient(circle, transparent 0 17%, hsl(var(--ui-graphic-color) / 0.22) 17.4% 17.8%, transparent 18.2% 31%, hsl(var(--ui-graphic-color) / 0.28) 31.4% 31.8%, transparent 32.2% 45%, hsl(var(--ui-graphic-color) / 0.18) 45.4% 45.8%, transparent 46.2% 49%, hsl(var(--ui-graphic-secondary) / 0.28) 49.4% 49.8%, transparent 50.2%),
+    radial-gradient(circle, hsl(var(--ui-graphic-color) / 0.18), transparent 68%);
+}
+
+.ui-graphic--orbit::after {
+  animation: ui-graphic-orbit 18s linear infinite;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0 72%,
+    hsl(var(--ui-graphic-color) / 0.42) 82%,
+    transparent 92%
+  );
+  inset: 8%;
+  mask-image: radial-gradient(circle, transparent 0 42%, black 42.5% 49%, transparent 49.5%);
+}
+
 .ui-particles {
   position: relative;
   display: block;
@@ -1146,6 +1315,10 @@
   .ui-animated-logo[data-animation="sequence"] [data-ui-logo-pop],
   .ui-animated-logo[data-animation="sequence"] [data-ui-logo-draw],
   .ui-animated-logo[data-animation="sequence"] [data-ui-logo-reveal] {
+    animation: none;
+  }
+
+  .ui-graphic--orbit::after {
     animation: none;
   }
 

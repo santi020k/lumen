@@ -12,8 +12,11 @@ private enum FixtureProfile: String, CaseIterable {
 private struct AppleComponentCatalogFixture: View {
     @State private var isDisclosureExpanded = true
     @State private var isEnabled = true
+    @State private var isAlertPresented = false
     @State private var isReviewed = false
+    @State private var isSheetPresented = false
     @State private var releaseDate = Date()
+    @State private var navigationDestination = FixtureProfile.balanced
     @State private var notes = "Native release notes"
     @State private var profile = FixtureProfile.balanced
     @State private var query = ""
@@ -98,6 +101,15 @@ private struct AppleComponentCatalogFixture: View {
                     }
                 )
 
+                LumenNavigationBar(
+                    selection: $navigationDestination,
+                    items: [
+                        LumenNavigationItem("Quiet", value: .quiet, systemName: "speaker.slash"),
+                        LumenNavigationItem("Balanced", value: .balanced, systemName: "slider.horizontal.3"),
+                        LumenNavigationItem("Performance", value: .performance, systemName: "bolt")
+                    ]
+                )
+
                 HStack {
                     LumenSkeleton(width: 44, height: 44, shape: .circle)
                     LumenSkeleton(height: 16, label: "Loading profile")
@@ -163,6 +175,39 @@ private struct AppleComponentCatalogFixture: View {
 
                 LumenStatusBar("Ready", tone: .success) {
                     Text("Updated now")
+                }
+
+                LumenMenu(
+                    items: [
+                        LumenMenuItem("Export", systemName: "square.and.arrow.up", action: {}),
+                        LumenMenuItem("Delete", systemName: "trash", role: .destructive, action: {})
+                    ]
+                ) {
+                    Text("More actions")
+                }
+
+                LumenShareButton("Share report", item: "Native Lumen report")
+
+                LumenButton("Confirm action") {
+                    isAlertPresented = true
+                }
+                .lumenAlertDialog(
+                    isPresented: $isAlertPresented,
+                    title: "Confirm publication",
+                    description: "This publishes the native component catalog.",
+                    confirmLabel: "Publish",
+                    onConfirm: {}
+                )
+
+                LumenButton("Open sheet") {
+                    isSheetPresented = true
+                }
+                .lumenSheet(
+                    isPresented: $isSheetPresented,
+                    title: "Release details",
+                    description: "Review the current native release."
+                ) {
+                    Text("Sheet content")
                 }
 
                 LumenCard(variant: .accent) {

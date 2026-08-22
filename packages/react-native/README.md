@@ -6,10 +6,13 @@
 React Native foundations and primitives for Lumen UI. The package exposes canonical light and dark
 themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField,
 Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
-SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Skeleton, and Disclosure implementations.
-The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar
-for common product layouts without giving up native composition. `LumenRefreshControl` adds a
+SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Skeleton, Graphic, Backdrop,
+Illustration, and Disclosure implementations.
+The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
+controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
 React Native-specific pull-to-refresh indicator using the active semantic theme.
+`LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
+presentation and operating-system sharing without introducing a separate interaction dependency.
 
 Install the package in an existing Expo or React Native application:
 
@@ -49,6 +52,17 @@ Start the application with its normal Expo or React Native command:
 ```bash
 npx expo start
 # or: npx react-native start
+```
+
+Use `LumenNavigationBar` for a small set of peer app destinations. The application still owns the
+router, navigation history, and selected screen:
+
+```tsx
+<LumenNavigationBar
+  items={destinations}
+  value={destination}
+  onValueChange={setDestination}
+/>
 ```
 
 The package intentionally uses native numeric dimensions and hexadecimal colors instead of CSS

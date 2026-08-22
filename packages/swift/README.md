@@ -77,9 +77,14 @@ changes remain application-owned while Lumen components read the supplied palett
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
 FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider, DateField,
-SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Disclosure, EmptyState,
+SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Graphic,
+Backdrop, Illustration, Disclosure, EmptyState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
 ShortcutRecorder and searchable SF Symbols picker.
+Native presentation is available through `.lumenAlertDialog`, `.lumenSheet`, `LumenMenu`, and
+`LumenShareButton`; the application continues to own presentation state and shared content.
+`LumenNavigationBar` selects among a small set of peer destinations while the application retains
+ownership of its `NavigationStack`, `NavigationSplitView`, deep links, and restoration state.
 Components preserve Dynamic Type, SwiftUI environment behavior, and native accessibility instead
 of reproducing DOM behavior. Icons use SF Symbols so rendering follows Apple platform conventions;
 standalone icons are decorative unless labeled, and icon-only buttons require a label.

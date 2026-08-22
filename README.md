@@ -22,6 +22,7 @@
 
 <p align="center">
   <a href="https://github.com/santi020k/lumen/actions"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square"></a>
+  <a href="https://github.com/santi020k/lumen/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/@santi020k/lumen-astro"><img alt="npm version" src="https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm"></a>
   <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-111827?style=flat-square"></a>
 </p>
@@ -223,6 +224,7 @@ Additional machine-readable surfaces include:
 - [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.
 - [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.
 - [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.
+- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.
 - [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.
 - [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged
   web and native migration strategy.

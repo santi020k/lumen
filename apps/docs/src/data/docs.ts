@@ -1165,6 +1165,20 @@ const apiReferenceByComponent = {
       'fallback', 'string', '-', 'Fallback text shown when no image source is provided.'
     )
   ],
+  Backdrop: [
+    apiRow(
+      'variant', '"aurora" | "dots" | "grid" | "rays"', '"aurora"', 'Selects the ambient background pattern.'
+    ),
+    apiRow(
+      'tone', '"brand" | "accent" | "neutral"', '"brand"', 'Uses a semantic Lumen color for the pattern.'
+    ),
+    apiRow(
+      'intensity', '"subtle" | "medium" | "strong"', '"medium"', 'Controls decoration opacity without fading child content.'
+    ),
+    apiRow(
+      'children', 'rendered content', 'required', 'Keeps meaningful content above the decorative layer.'
+    )
+  ],
   AnimatedLogo: [
     apiRow(
       'children', 'inline SVG', 'required', 'Wraps any inline SVG logo and applies the reveal animation without changing its artwork.'
@@ -1593,6 +1607,20 @@ const apiReferenceByComponent = {
       'children', 'human-readable date text', 'required', 'Provides the localized text shown to people.'
     )
   ],
+  Graphic: [
+    apiRow(
+      'variant', '"glow" | "grid" | "orbit"', '"orbit"', 'Selects a portable decorative pattern around application-provided artwork.'
+    ),
+    apiRow(
+      'tone', '"brand" | "accent" | "neutral"', '"brand"', 'Uses the matching semantic Lumen color without introducing a product palette.'
+    ),
+    apiRow(
+      'size', '"sm" | "md" | "lg"', '"md"', 'Uses the shared 160, 240, or 320 unit composition size.'
+    ),
+    apiRow(
+      'label', 'string', '-', 'Exposes the complete composition as one named image; without it the graphic is decorative.'
+    )
+  ],
   HoverCard: [disclosureTriggerApiRow],
   Icon: [
     apiRow(
@@ -1641,6 +1669,20 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'as', 'React ElementType', '"img"', 'React only: renders a compatible optimizer such as next/image while retaining Lumen classes and forwarding optimizer props.'
+    )
+  ],
+  Illustration: [
+    apiRow(
+      'variant', '"empty" | "success" | "error" | "offline"', '"empty"', 'Selects a built-in semantic scene.'
+    ),
+    apiRow(
+      'tone', '"auto" | "brand" | "accent" | "neutral"', '"auto"', 'Uses the variant semantic color automatically or an explicit portable tone.'
+    ),
+    apiRow(
+      'size', '"sm" | "md" | "lg"', '"md"', 'Uses the shared 96, 128, or 176 unit illustration size.'
+    ),
+    apiRow(
+      'label', 'string', '-', 'Exposes the illustration as one named image; without it the artwork is decorative.'
     )
   ],
   Field: [
@@ -2884,6 +2926,12 @@ export const componentDocs: ComponentDoc[] = (
       '<Avatar src="/icon.svg" alt="Lumen">LU</Avatar>'
     ],
     [
+      'Backdrop',
+      'Brand',
+      'Adds a portable ambient pattern behind meaningful content.',
+      '<Backdrop intensity="medium" tone="brand" variant="aurora"><Card variant="glass">Project overview</Card></Backdrop>'
+    ],
+    [
       'BackToTop',
       'Navigation',
       'Returns user to the top of the page.',
@@ -3148,6 +3196,12 @@ export const componentDocs: ComponentDoc[] = (
       '<FormattedDate datetime="2026-07-23">July 23, 2026</FormattedDate>'
     ],
     [
+      'Graphic',
+      'Brand',
+      'Frames product-owned artwork with portable glow, grid, or orbit treatments.',
+      '<Graphic size="lg" tone="accent" variant="orbit"><Icon name="sparkles" decorative size="xl" /></Graphic>'
+    ],
+    [
       'HoverCard',
       'Overlays',
       'Shows extra context on hover and focus.',
@@ -3164,6 +3218,12 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
       '<Image alt="Lumen UI logo" invertOnDark layout="fixed" src="/logo.svg" />'
+    ],
+    [
+      'Illustration',
+      'Feedback',
+      'Shows a built-in semantic scene for empty, success, error, or offline states.',
+      '<Illustration label="No projects yet" size="md" variant="empty" />'
     ],
     [
       'Input',

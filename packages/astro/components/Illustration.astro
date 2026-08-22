@@ -1,0 +1,67 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'span'> {
+  class?: string | null
+  className?: string
+  label?: string
+  size?: 'lg' | 'md' | 'sm'
+  tone?: 'accent' | 'auto' | 'brand' | 'neutral'
+  variant?: 'empty' | 'error' | 'offline' | 'success'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  label,
+  size = 'md',
+  tone = 'auto',
+  variant = 'empty',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-illustration',
+  `ui-illustration--${variant}`,
+  `ui-illustration--${tone}`,
+  `ui-illustration--${size}`
+], classProp, className)
+---
+
+<span
+  aria-hidden={label ? undefined : 'true'}
+  aria-label={label}
+  class:list={classList}
+  role={label ? 'img' : undefined}
+  {...passthrough}
+>
+  <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
+    <circle class="ui-illustration__wash" cx="60" cy="60" r="48" />
+    {variant === 'empty' && (
+      <g>
+        <path d="M32 48h56l-7 35H39l-7-35Z" />
+        <path d="M43 48 49 36h22l6 12M47 66h26" />
+      </g>
+    )}
+    {variant === 'success' && (
+      <g>
+        <circle cx="60" cy="60" r="28" />
+        <path d="m45 60 10 10 21-23" />
+      </g>
+    )}
+    {variant === 'error' && (
+      <g>
+        <circle cx="60" cy="60" r="28" />
+        <path d="m49 49 22 22m0-22L49 71" />
+      </g>
+    )}
+    {variant === 'offline' && (
+      <g>
+        <path d="M37 74h44a14 14 0 0 0 1-28 23 23 0 0 0-42-4 16 16 0 0 0-3 32Z" />
+        <path d="m38 34 44 52" />
+      </g>
+    )}
+  </svg>
+</span>
