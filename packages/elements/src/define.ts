@@ -12,9 +12,11 @@ import {
   createLumenPieGeometry,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  formatLumenLanguageLabel,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenLocalePair,
   getLumenRichTextShortcut,
   getVirtualRange,
   hasLumenChartData,
@@ -26,12 +28,14 @@ import {
   type LumenComponentName,
   lumenComponentNames,
   type LumenKanbanMoveDetail,
+  type LumenLocaleOption,
   type LumenPieGeometrySlice,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
+  normalizeLumenLocales,
   normalizeThemeBuilderHex,
   parseThemeCss,
   renderLumenIconSvg,
@@ -1063,6 +1067,7 @@ const elementConfigs = {
   },
   LanguageToggle: {
     baseClassName: 'ui-language-toggle',
+    defaults: { 'data-ui-language-toggle': '' },
     tagName: 'lumen-language-toggle'
   },
   Particles: { baseClassName: 'ui-particles', tagName: 'lumen-particles' },
@@ -1342,6 +1347,7 @@ const observedAttributeNames = [
   'checked',
   'columns',
   'decimals',
+  'default-value',
   'delay',
   'decorative',
   'direction',
@@ -1354,7 +1360,9 @@ const observedAttributeNames = [
   'heading',
   'hover',
   'label',
+  'label-template',
   'locale',
+  'locales',
   'layout',
   'markers',
   'max',
@@ -1382,6 +1390,7 @@ const observedAttributeNames = [
   'surface',
   'stagger',
   'step',
+  'storage-key',
   'suffix',
   'threshold',
   'tone',
@@ -9219,13 +9228,146 @@ class LumenBackToTopBehaviorElement extends LumenElement {
   }
 }
 
+const isUnknownArray = (value: unknown): value is unknown[] => Array.isArray(value)
+
+const parseLanguageLocales = (value: string | null): readonly LumenLocaleOption[] => {
+  if (!value) return normalizeLumenLocales(undefined)
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!isUnknownArray(parsed)) return normalizeLumenLocales(undefined)
+
+    return normalizeLumenLocales(parsed.flatMap(item => {
+      if (!item || typeof item !== 'object' || !('label' in item) || !('value' in item)) return []
+
+      const { label, value: localeValue } = item
+
+      return typeof label === 'string' && typeof localeValue === 'string' ?
+        [{ label, value: localeValue }] :
+        []
+    }))
+  } catch {
+    return normalizeLumenLocales(undefined)
+  }
+}
+
 class LumenLanguageToggleBehaviorElement extends LumenElement {
+  private locales = normalizeLumenLocales(undefined)
+
+  private readonly handleClick = () => {
+    const { current, next } = getLumenLocalePair(
+      this.locales,
+      this.dataset.uiLanguageValue
+    )
+
+    if (!this.hasAttribute('value')) {
+      document.documentElement.lang = next.value
+
+      this.sync(next.value)
+
+      const storageKey = this.getAttribute('storage-key')
+
+      if (storageKey) {
+        try {
+          localStorage.setItem(storageKey, next.value)
+        } catch {
+          // Storage can be unavailable in privacy modes.
+        }
+      }
+    }
+
+    this.dispatchEvent(new CustomEvent('ui:language-change', {
+      bubbles: true,
+      composed: true,
+      detail: { previousValue: current.value, value: next.value }
+    }))
+  }
+
   override connectedCallback() {
     super.connectedCallback()
 
-    this.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('language-change'))
-    })
+    this.initialize(true)
+
+    this.addEventListener('click', this.handleClick)
+  }
+
+  override disconnectedCallback() {
+    this.removeEventListener('click', this.handleClick)
+  }
+
+  override attributeChangedCallback(
+    name?: string,
+    previousValue?: string | null,
+    value?: string | null
+  ) {
+    super.attributeChangedCallback(name, previousValue, value)
+
+    if (
+      this.isConnected &&
+      name &&
+      ['default-value', 'label-template', 'locales', 'value'].includes(name)
+    ) this.initialize(false)
+  }
+
+  private initialize(readStorage: boolean): void {
+    this.locales = parseLanguageLocales(this.getAttribute('locales'))
+
+    const controlled = this.hasAttribute('value')
+    let storedValue: string | null = null
+
+    if (!controlled && readStorage) {
+      const storageKey = this.getAttribute('storage-key')
+
+      if (storageKey) {
+        try {
+          storedValue = localStorage.getItem(storageKey)
+        } catch {
+          // Storage can be unavailable in privacy modes.
+        }
+      }
+    }
+
+    const documentValue = document.documentElement.lang || undefined
+
+    const requestedValue = controlled ?
+      this.getAttribute('value') || undefined :
+      storedValue ?? documentValue ?? this.getAttribute('default-value') ?? undefined
+
+    const { current } = getLumenLocalePair(this.locales, requestedValue)
+
+    this.sync(current.value)
+
+    if (!controlled) document.documentElement.lang = current.value
+  }
+
+  private sync(value: string): void {
+    const { current, next } = getLumenLocalePair(this.locales, value)
+
+    const template = this.getAttribute('label-template') ??
+      'Change language from {current} to {next}'
+
+    let label = this.querySelector<HTMLElement>('[data-ui-language-label]')
+
+    if (!label && !this.textContent.trim()) {
+      label = document.createElement('span')
+
+      label.dataset.uiLanguageLabel = ''
+
+      this.append(label)
+    }
+
+    this.dataset.uiLanguageValue = current.value
+
+    this.dataset.uiLanguageNextValue = next.value
+
+    this.setAttribute('aria-label', formatLumenLanguageLabel(template, current, next))
+
+    if (label) {
+      label.lang = next.value
+
+      label.textContent = next.label
+    }
   }
 }
 

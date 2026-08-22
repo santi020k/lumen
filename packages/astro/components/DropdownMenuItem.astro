@@ -1,0 +1,39 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'button'> {
+  class?: string | null
+  className?: string
+  status?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  disabled = false,
+  status,
+  type = 'button',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  ['ui-menu__item'],
+  classProp,
+  className
+)
+---
+
+<button
+  type={type}
+  role="menuitem"
+  class:list={classList}
+  disabled={disabled}
+  aria-disabled={disabled ? 'true' : undefined}
+  {...passthrough}
+>
+  <span class="ui-menu__item-label"><slot /></span>
+  {status && <span class="ui-menu__item-status">{status}</span>}
+</button>

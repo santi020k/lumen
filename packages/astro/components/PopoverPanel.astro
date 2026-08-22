@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  ['ui-popover__panel'],
+  classProp,
+  className
+)
+---
+
+<div class:list={classList} {...passthrough}>
+  <slot />
+</div>

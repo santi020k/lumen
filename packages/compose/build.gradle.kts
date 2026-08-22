@@ -2,18 +2,15 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.Zip
 
 plugins {
-    id("com.android.library") version "9.1.1"
+    id("com.android.library")
     id("maven-publish")
     id("org.jetbrains.dokka-javadoc") version "2.2.0"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21"
+    id("org.jetbrains.kotlin.plugin.compose")
     id("signing")
 }
 
 group = "com.santi020k"
-val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion")
-    .orElse(providers.environmentVariable("LUMEN_COMPOSE_VERSION"))
-    .orElse("0.1.0")
-    .get()
+val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion").get()
 version = lumenComposeVersion
 
 android {
@@ -34,6 +31,10 @@ android {
         singleVariant("release") {
             withSourcesJar()
         }
+    }
+
+    lint {
+        warningsAsErrors = true
     }
 }
 

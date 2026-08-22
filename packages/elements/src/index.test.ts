@@ -78,6 +78,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  document.documentElement.lang = 'en'
+
+  localStorage.clear()
+
   vi.useRealTimers()
   vi.unstubAllGlobals()
 })
@@ -98,6 +102,33 @@ describe('@santi020k/lumen-elements', () => {
     expect(customElements.get('lumen-button')).toBe(LumenButtonElement)
     expect(customElements.get('lumen-card')).toBe(LumenCardElement)
     expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
+  })
+
+  test('coordinates uncontrolled language state, persistence, labels, and events', () => {
+    localStorage.clear()
+
+    document.documentElement.lang = 'en'
+
+    const toggle = document.createElement('lumen-language-toggle')
+
+    toggle.setAttribute('storage-key', 'test-language')
+
+    const changes: unknown[] = []
+
+    toggle.addEventListener('ui:language-change', event => {
+      if (event instanceof CustomEvent) changes.push(event.detail)
+    })
+
+    document.body.append(toggle)
+
+    expect(toggle.getAttribute('aria-label')).toContain('English')
+    expect(toggle.textContent).toBe('Español')
+
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(document.documentElement.lang).toBe('es')
+    expect(localStorage.getItem('test-language')).toBe('es')
+    expect(changes).toEqual([{ previousValue: 'en', value: 'es' }])
   })
 
   test('keeps motion elements readable when motion is reduced', () => {

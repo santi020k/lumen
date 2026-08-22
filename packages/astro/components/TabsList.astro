@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+  orientation?: 'horizontal' | 'vertical'
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  orientation = 'horizontal',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  [],
+  classProp,
+  className
+)
+---
+
+<div
+  role="tablist"
+  aria-orientation={orientation}
+  class:list={classList}
+  {...passthrough}
+>
+  <slot />
+</div>

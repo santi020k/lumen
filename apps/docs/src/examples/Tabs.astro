@@ -1,16 +1,21 @@
 ---
-import { Tabs } from '@santi020k/lumen-astro'
+import {
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTrigger
+} from '@santi020k/lumen-astro'
 ---
 
-<Tabs>
-  <div role="tablist" aria-label="Package targets">
-    <button id="ex-tab-astro" role="tab" aria-controls="ex-panel-astro" aria-selected="true">Astro</button>
-    <button id="ex-tab-react" role="tab" aria-controls="ex-panel-react">React</button>
-  </div>
-  <section id="ex-panel-astro" role="tabpanel" aria-labelledby="ex-tab-astro">
+<Tabs initialValue="astro">
+  <TabsList aria-label="Package targets">
+    <TabsTrigger value="astro">Astro</TabsTrigger>
+    <TabsTrigger value="react">React</TabsTrigger>
+  </TabsList>
+  <TabsPanel value="astro">
     <p>All primitives are available as Astro components.</p>
-  </section>
-  <section id="ex-panel-react" role="tabpanel" aria-labelledby="ex-tab-react" hidden>
+  </TabsPanel>
+  <TabsPanel value="react">
     <p>The same API surface is available in React.</p>
-  </section>
+  </TabsPanel>
 </Tabs>

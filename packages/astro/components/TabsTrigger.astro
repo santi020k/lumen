@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'button'> {
+  class?: string | null
+  className?: string
+  value: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  type = 'button',
+  value,
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  [],
+  classProp,
+  className
+)
+---
+
+<button
+  type={type}
+  role="tab"
+  data-value={value}
+  class:list={classList}
+  {...passthrough}
+>
+  <slot />
+</button>

@@ -1732,7 +1732,22 @@ const apiReferenceByComponent = {
   ],
   LanguageToggle: [
     apiRow(
-      'children', 'locale label', 'required', 'Shows the current locale or language abbreviation.'
+      'locales', 'LumenLocaleOption[]', 'English and Spanish', 'Defines the ordered locale values and human-readable labels to cycle through.'
+    ),
+    apiRow(
+      'defaultValue', 'string', 'first locale', 'Sets the initial locale for uncontrolled usage.'
+    ),
+    apiRow(
+      'value', 'string', '-', 'Enables controlled usage; ui:language-change requests the next locale without mutating document language.'
+    ),
+    apiRow(
+      'storageKey', 'string', '-', 'Persists uncontrolled locale selection when browser storage is available.'
+    ),
+    apiRow(
+      'labelTemplate', 'string', 'Change language from {current} to {next}', 'Localizes the accessible label while retaining current and next locale names.'
+    ),
+    apiRow(
+      'children', 'locale label or custom content', 'next locale label', 'Overrides the generated visible next-locale label.'
     ),
     apiRow(
       'type', '"button" | "submit" | "reset"', '"button"', 'Sets the native button type.'
@@ -3501,8 +3516,8 @@ export const componentDocs: ComponentDoc[] = (
     [
       'LanguageToggle',
       'Actions',
-      'Presents the current locale as a compact control for changing language.',
-      '<LanguageToggle aria-label="Change language">EN</LanguageToggle>'
+      'Coordinates controlled or persistent locale selection and document language as a compact accessible control.',
+      '<LanguageToggle defaultValue="en" storageKey="site-language" locales={[{ label: \'English\', value: \'en\' }, { label: \'Español\', value: \'es\' }]} />'
     ],
     [
       'Particles',
@@ -3938,20 +3953,62 @@ export function NotificationsPopover() {
       hookApiRow('close', '() => void', '-', 'Close the menu.'),
       hookApiRow('toggle', '() => void', '-', 'Toggle the menu.')
     ],
-    code: `import { Button, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@santi020k/lumen-react'
-import { useDropdownMenu } from '@santi020k/lumen-react'
+    code: `import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@santi020k/lumen-react'
 
 export function ActionsMenu() {
-  const menu = useDropdownMenu()
-
   return (
-    <DropdownMenu {...menu.rootProps}>
-      <DropdownMenuTrigger {...menu.triggerProps}>Actions</DropdownMenuTrigger>
-      <DropdownMenuContent {...menu.panelProps}>
-        <button>Edit</button>
-        <button>Delete</button>
+    <DropdownMenu>
+      <DropdownMenuTrigger>Actions</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem status="Admin">Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}`
+  },
+  {
+    name: 'useLanguageToggle',
+    description:
+      'Coordinates controlled or uncontrolled locale cycling, persistence, and document language synchronization for React applications.',
+    options: [
+      hookApiRow('defaultValue', 'string', 'first locale', 'Initial uncontrolled locale value.'),
+      hookApiRow('value', 'string', '-', 'Controlled locale value.'),
+      hookApiRow(
+        'locales', 'LumenLocaleOption[]', 'English and Spanish', 'Ordered locale values and visible labels.'
+      ),
+      hookApiRow(
+        'storageKey', 'string', '-', 'Persists and restores the uncontrolled locale when storage is available.'
+      ),
+      hookApiRow(
+        'onValueChange', '(value: string) => void', '-', 'Receives the next requested or applied locale.'
+      )
+    ],
+    controller: [
+      hookApiRow('value', 'string', '-', 'Current locale value.'),
+      hookApiRow('currentLocale', 'LumenLocaleOption', '-', 'Current locale value and label.'),
+      hookApiRow('nextLocale', 'LumenLocaleOption', '-', 'Next locale value and label.'),
+      hookApiRow('selectNext', '() => void', '-', 'Requests or applies the next locale.')
+    ],
+    code: `import { LanguageToggle } from '@santi020k/lumen-react'
+
+export function LocaleControl() {
+  return (
+    <LanguageToggle
+      defaultValue="en"
+      storageKey="site-language"
+      locales={[
+        { label: 'English', value: 'en' },
+        { label: 'Español', value: 'es' }
+      ]}
+    />
   )
 }`
   },

@@ -38,6 +38,39 @@ Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
 </lumen-card>
 ```
 
+## Language selection
+
+`lumen-language-toggle` cycles through an ordered JSON `locales` list and generates visible
+next-language text plus an accessible label. Uncontrolled usage synchronizes
+`document.documentElement.lang`; `storage-key` also restores and persists the selection when
+browser storage is available.
+
+```html
+<lumen-language-toggle
+  default-value="en"
+  locales='[{"label":"English","value":"en"},{"label":"Español","value":"es"}]'
+  storage-key="site-language"
+></lumen-language-toggle>
+```
+
+The element defaults to English and Spanish when `locales` is absent or has no valid entries. Use
+`label-template="Switch language from {current} to {next}"` to customize its accessible label; the
+`{current}` and `{next}` placeholders expand to the configured labels. Custom child content
+replaces only the generated visible label.
+
+Every activation emits a bubbling, composed `ui:language-change` event with
+`{ previousValue, value }`. Adding a `value` attribute enables controlled usage: the event requests
+the next locale, while the application updates `value`, document language, and persistence.
+
+```js
+const languageToggle = document.querySelector('lumen-language-toggle')
+
+languageToggle.addEventListener('ui:language-change', event => {
+  languageToggle.setAttribute('value', event.detail.value)
+  document.documentElement.lang = event.detail.value
+})
+```
+
 ## Forms
 
 Use a native `<form data-ui-form>` as the container. Scalar Lumen controls are form-associated

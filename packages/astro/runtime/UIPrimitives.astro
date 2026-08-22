@@ -15,13 +15,16 @@ import {
   exportThemeCss,
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
+  formatLumenLanguageLabel,
+  getLumenLocalePair,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
+  type LumenLocaleOption,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
   type LumenThemeTokens,
-  lumenTokenNames
-} from '@santi020k/lumen-core'
+  lumenTokenNames,
+  normalizeLumenLocales } from '@santi020k/lumen-core'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -236,6 +239,18 @@ const initDisclosures = (scope: ParentNode): void => {
 
       nextItem?.focus()
     })
+
+    if (root.hasAttribute('data-ui-dropdown-menu')) {
+      panel.addEventListener('click', event => {
+        const item = event.target instanceof HTMLElement ?
+          event.target.closest<HTMLElement>('[role="menuitem"]') :
+          null
+
+        if (!item || item.matches(':disabled, [aria-disabled="true"]')) return
+
+        setOpen(trigger, panel, false)
+      })
+    }
 
     if (root.hasAttribute('data-ui-hover-card')) {
       root.addEventListener('mouseenter', () => setOpen(trigger, panel, true))
@@ -1278,6 +1293,109 @@ const initThemeToggles = (scope: ParentNode): void => {
       const current = root.dataset.theme
 
       transition(control, current === darkTheme ? lightTheme : darkTheme)
+    })
+  }
+}
+
+const isUnknownArray = (value: unknown): value is unknown[] => Array.isArray(value)
+
+const parseLanguageToggleLocales = (value: string | undefined): readonly LumenLocaleOption[] => {
+  if (!value) return normalizeLumenLocales(undefined)
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!isUnknownArray(parsed)) return normalizeLumenLocales(undefined)
+
+    const locales = parsed.flatMap(item => {
+      if (!item || typeof item !== 'object' || !('label' in item) || !('value' in item)) return []
+
+      const { label, value: localeValue } = item
+
+      return typeof label === 'string' && typeof localeValue === 'string' ?
+        [{ label, value: localeValue }] :
+        []
+    })
+
+    return normalizeLumenLocales(locales)
+  } catch {
+    return normalizeLumenLocales(undefined)
+  }
+}
+
+const initLanguageToggles = (scope: ParentNode): void => {
+  for (const control of scope.querySelectorAll<HTMLButtonElement>('[data-ui-language-toggle]')) {
+    if (control.dataset.uiBound === 'true') continue
+
+    control.dataset.uiBound = 'true'
+
+    const locales = parseLanguageToggleLocales(control.dataset.uiLanguageLocales)
+    const storageKey = control.dataset.uiLanguageStorageKey
+    const controlled = control.hasAttribute('data-ui-language-controlled')
+
+    const labelTemplate = control.dataset.uiLanguageLabelTemplate ??
+      'Change language from {current} to {next}'
+
+    const sync = (value: string): void => {
+      const { current, next } = getLumenLocalePair(locales, value)
+      const label = control.querySelector<HTMLElement>('[data-ui-language-label]')
+
+      control.dataset.uiLanguageValue = current.value
+
+      control.dataset.uiLanguageNextValue = next.value
+
+      control.setAttribute('aria-label', formatLumenLanguageLabel(labelTemplate, current, next))
+
+      if (label) {
+        label.lang = next.value
+
+        label.textContent = next.label
+      }
+    }
+
+    let storedValue: string | null = null
+
+    if (!controlled && storageKey) {
+      try {
+        storedValue = localStorage.getItem(storageKey)
+      } catch {
+        // Storage can be unavailable in privacy modes.
+      }
+    }
+
+    const documentValue = document.documentElement.lang || undefined
+
+    const initialValue = controlled ?
+      control.dataset.uiLanguageValue :
+      storedValue ?? documentValue ?? control.dataset.uiLanguageInitialValue
+
+    const initialPair = getLumenLocalePair(locales, initialValue)
+
+    sync(initialPair.current.value)
+
+    if (!controlled) document.documentElement.lang = initialPair.current.value
+
+    control.addEventListener('click', () => {
+      const { current, next } = getLumenLocalePair(locales, control.dataset.uiLanguageValue)
+
+      if (!controlled) {
+        document.documentElement.lang = next.value
+
+        sync(next.value)
+
+        if (storageKey) {
+          try {
+            localStorage.setItem(storageKey, next.value)
+          } catch {
+            // Storage can be unavailable in privacy modes.
+          }
+        }
+      }
+
+      control.dispatchEvent(new CustomEvent('ui:language-change', {
+        bubbles: true,
+        detail: { previousValue: current.value, value: next.value }
+      }))
     })
   }
 }
@@ -5459,6 +5577,8 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initToggles(scope)
 
   initThemeToggles(scope)
+
+  initLanguageToggles(scope)
 
   initCommand(scope)
 

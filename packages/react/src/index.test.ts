@@ -54,6 +54,7 @@ import {
   useFormValidation,
   useInputOTP,
   useKanban,
+  useLanguageToggle,
   usePopover,
   useResizable,
   useRichTextEditor,
@@ -169,6 +170,28 @@ describe('@santi020k/lumen-react', () => {
 
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
+    expect(LumenReact.DropdownMenuItem).toBeTypeOf('function')
+    expect(LumenReact.DropdownMenuSeparator).toBeTypeOf('function')
+  })
+
+  test('cycles controlled language options through the React hook contract', () => {
+    const changes: string[] = []
+    const language = withHookDispatcher(() => useLanguageToggle({
+      locales: [
+        { label: 'English', value: 'en' },
+        { label: 'Español', value: 'es' }
+      ],
+      onValueChange: value => {
+        changes.push(value)
+      },
+      value: 'en'
+    }))
+
+    language.selectNext()
+
+    expect(language.currentLocale.label).toBe('English')
+    expect(language.nextLocale.label).toBe('Español')
+    expect(changes).toEqual(['es'])
   })
 
   test('exposes the shared motion vocabulary on React primitives', () => {

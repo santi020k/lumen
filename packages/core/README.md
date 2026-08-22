@@ -12,6 +12,35 @@ Cross-platform foundations originate in `tokens/lumen.tokens.json` and are publi
 numeric spacing, radius, typography, duration, easing, and elevation values. The legacy
 `lumenColors` export retains CSS-ready HSL values.
 
+## Language Helpers
+
+The root entry exports the shared locale contract used by the Astro, React, and Elements language
+controls. `normalizeLumenLocales` trims labels and values, removes duplicate or invalid values, and
+falls back to `lumenDefaultLocales`. `getLumenLocalePair` resolves the current locale and the next
+cyclic option, while `formatLumenLanguageLabel` fills the `{current}` and `{next}` placeholders in
+an accessible-label template.
+
+```ts
+import {
+  formatLumenLanguageLabel,
+  getLumenLocalePair,
+  type LumenLocaleOption,
+  normalizeLumenLocales
+} from '@santi020k/lumen-core'
+
+const locales: readonly LumenLocaleOption[] = normalizeLumenLocales([
+  { label: 'English', value: 'en' },
+  { label: 'Español', value: 'es' }
+])
+
+const { current, next } = getLumenLocalePair(locales, 'en')
+const label = formatLumenLanguageLabel(
+  'Change language from {current} to {next}',
+  current,
+  next
+)
+```
+
 ## Chart Helpers
 
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic

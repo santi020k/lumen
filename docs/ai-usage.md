@@ -24,33 +24,34 @@ source, tokens, resources, and rules.
 
 Use the framework requested by the user. Every adapter shares the same Lumen foundation.
 
-| App Target | Install | Import Components From | Load Styles From |
-| --- | --- | --- | --- |
-| Astro | `@santi020k/lumen-astro` | `@santi020k/lumen-astro` | `@santi020k/lumen-astro/styles.css` |
-| React | `@santi020k/lumen-react` | `@santi020k/lumen-react` | `@santi020k/lumen-react/styles.css` |
-| React Hook Form composites | `@santi020k/lumen-react-hook-form` | `@santi020k/lumen-react-hook-form` | Uses React styles |
-| Web Components | `@santi020k/lumen-elements` | `@santi020k/lumen-elements/define` | `@santi020k/lumen-elements/styles.css` |
-| React Native / Expo | `@santi020k/lumen-react-native` | `@santi020k/lumen-react-native` | Not applicable |
-| Apple / SwiftUI | Swift Package `https://github.com/santi020k/lumen` | `LumenUI` | Not applicable |
-| Android / Compose | Local `packages/compose` module | `com.santi020k.lumen` | Not applicable |
-| Package metadata | `@santi020k/lumen-core` | `@santi020k/lumen-core` | Not applicable |
-| Optional brand icons | `@santi020k/lumen-icons-brand` | Register once, then use the framework `Icon` | Uses framework styles |
+| App Target                 | Install                                                                | Import Components From                       | Load Styles From                       |
+| -------------------------- | ---------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------- |
+| Astro                      | `@santi020k/lumen-astro`                                               | `@santi020k/lumen-astro`                     | `@santi020k/lumen-astro/styles.css`    |
+| React                      | `@santi020k/lumen-react`                                               | `@santi020k/lumen-react`                     | `@santi020k/lumen-react/styles.css`    |
+| React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
+| Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
+| React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `1.2.0`  | `LumenUI`                                    | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:0.2.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
+| Optional brand icons       | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
 
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
-Swift Package product to the application target and apply `.lumenTheme(...)` near the root. For
-Compose, include the local `lumen-compose` Gradle module and wrap content in `LumenTheme`. Native
+Swift Package product to the application target, use an exact or compatible release-version rule,
+and apply `.lumenTheme(...)` near the root. For Compose, install
+`com.santi020k:lumen-compose:0.2.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,
 install and register the optional pack once before rendering a namespaced icon:
 
 ```ts
-import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
+import { registerLumenBrandIcons } from "@santi020k/lumen-icons-brand";
 
-registerLumenBrandIcons()
+registerLumenBrandIcons();
 ```
 
 Then use any canonical Font Awesome Free brand name, such as `brand:github`, `brand:discord`,
@@ -201,8 +202,8 @@ visual alias is deprecated but remains available for incremental migration.
 `Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.
 
 ```tsx
-import '@santi020k/lumen-react/styles.css'
-import { Button, Card, Input, Label } from '@santi020k/lumen-react'
+import "@santi020k/lumen-react/styles.css";
+import { Button, Card, Input, Label } from "@santi020k/lumen-react";
 
 export function SubscribeForm() {
   return (
@@ -211,7 +212,7 @@ export function SubscribeForm() {
       <Input id="email" type="email" placeholder="you@example.com" />
       <Button type="submit">Subscribe</Button>
     </Card>
-  )
+  );
 }
 ```
 
@@ -233,14 +234,18 @@ select form participation, and the same toast controller events as the Astro run
 
 ```html
 <script type="module">
-  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  import { defineLumenElements } from "@santi020k/lumen-elements/define";
 
-  defineLumenElements()
+  defineLumenElements();
 </script>
 
 <lumen-card>
   <label for="email">Email</label>
-  <lumen-input id="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-input
+    id="email"
+    type="email"
+    placeholder="you@example.com"
+  ></lumen-input>
   <lumen-button type="submit">Subscribe</lumen-button>
 </lumen-card>
 ```
@@ -382,24 +387,25 @@ The shared catalog includes:
 When `UIPrimitives` is mounted, or when Web Components are registered for matching behavior, Lumen
 uses these CustomEvents:
 
-| Event | Target | Detail | Fires When |
-| --- | --- | --- | --- |
-| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]` | `{ values: string[] }` | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values. |
-| `ui:schedule-change` | `Schedule` root `[data-ui-schedule]` | `{ eventId?: string, slot?: string }` | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`. |
-| `ui:virtual-list-range` | `VirtualList` root `[data-ui-virtual-list]` | `{ startIndex: number, endIndex: number }` | The virtual list calculates its visible range on init or scroll. |
-| `ui:kanban-move-request` | `KanbanBoard` root `[data-ui-kanban]` | `{ itemId: string, fromColumn: string, toColumn: string, beforeId?: string, input: 'keyboard' \| 'pointer' }` | A handle requests a controlled move; the event is cancellable and never moves data or DOM. |
-| `ui:tag-remove` | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }` | A `[data-ui-tag-remove]` control removes its closest tag or list item. |
-| `ui:editor-command` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | A toolbar control or keyboard shortcut runs an editor command. |
-| `ui:editor-change` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ html: string, text: string }` | Editable content changes or an editor command runs. |
-| `ui:theme-change` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ hue: number, accentHue: number, mode: 'generated' \| 'manual', scheme: 'dark' \| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens. |
-| `ui:theme-export` | `ThemeBuilder` root `[data-ui-theme-builder]` | `{ css?: string, format: 'css' \| 'figma' \| 'tokens', tokens: Record<string, string> \| null, value: string }` | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |
-| `ui:validate` | Form `[data-ui-form]` | `{ control, form, value }` | Before validation state is read, so custom code can call `control.setCustomValidity(message)`. |
-| `ui:invalid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control. |
-| `ui:valid` | Form `[data-ui-form]` | `{ control?, controls?, form }` | Blur or submit validation finds the checked control or form valid. |
-| `ui:toast` | `document` | `{ id?, title?, description?, variant?, duration?, placement?, action? }` | Creates a runtime toast in the matching notification viewport. |
-| `ui:toast-update` | `document` | `{ id, title?, description?, variant?, duration? }` | Updates a runtime toast. |
-| `ui:toast-dismiss` | `document` | `{ id? }` | Dismisses one runtime toast, or all runtime toasts when `id` is omitted. |
-| `ui:toast-action` | Toast `[data-ui-toast]` | `{ id, value? }` | A runtime toast action button is pressed, unless the action specifies a custom event name. |
+| Event                            | Target                                                   | Detail                                                                                                                         | Fires When                                                                                                |
+| -------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `ui:data-table-selection-change` | `DataTable` root `[data-ui-datatable]`                   | `{ values: string[] }`                                                                                                         | Selectable row checkboxes, the select-all checkbox, or form reset changes selected row values.            |
+| `ui:schedule-change`             | `Schedule` root `[data-ui-schedule]`                     | `{ eventId?: string, slot?: string }`                                                                                          | A draggable schedule event is dropped on a `[data-ui-schedule-slot]`.                                     |
+| `ui:virtual-list-range`          | `VirtualList` root `[data-ui-virtual-list]`              | `{ startIndex: number, endIndex: number }`                                                                                     | The virtual list calculates its visible range on init or scroll.                                          |
+| `ui:kanban-move-request`         | `KanbanBoard` root `[data-ui-kanban]`                    | `{ itemId: string, fromColumn: string, toColumn: string, beforeId?: string, input: 'keyboard' \| 'pointer' }`                  | A handle requests a controlled move; the event is cancellable and never moves data or DOM.                |
+| `ui:tag-remove`                  | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }`                                                                                                           | A `[data-ui-tag-remove]` control removes its closest tag or list item.                                    |
+| `ui:editor-command`              | `RichTextEditor` root `[data-ui-rich-text-editor]`       | `{ command: string, executed: boolean, value?: string }`                                                                       | A toolbar control or keyboard shortcut runs an editor command.                                            |
+| `ui:editor-change`               | `RichTextEditor` root `[data-ui-rich-text-editor]`       | `{ html: string, text: string }`                                                                                               | Editable content changes or an editor command runs.                                                       |
+| `ui:theme-change`                | `ThemeBuilder` root `[data-ui-theme-builder]`            | `{ hue: number, accentHue: number, mode: 'generated' \| 'manual', scheme: 'dark' \| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens.                                      |
+| `ui:theme-export`                | `ThemeBuilder` root `[data-ui-theme-builder]`            | `{ css?: string, format: 'css' \| 'figma' \| 'tokens', tokens: Record<string, string> \| null, value: string }`                | A `[data-ui-theme-export]` control writes the selected export to the output and clipboard when available. |
+| `ui:language-change`             | `LanguageToggle` control                                 | `{ previousValue: string, value: string }`                                                                                      | Requests or applies the next configured locale.                                                           |
+| `ui:validate`                    | Form `[data-ui-form]`                                    | `{ control, form, value }`                                                                                                     | Before validation state is read, so custom code can call `control.setCustomValidity(message)`.            |
+| `ui:invalid`                     | Form `[data-ui-form]`                                    | `{ control?, controls?, form }`                                                                                                | Blur or submit validation finds invalid controls. Failed submits focus the first invalid control.         |
+| `ui:valid`                       | Form `[data-ui-form]`                                    | `{ control?, controls?, form }`                                                                                                | Blur or submit validation finds the checked control or form valid.                                        |
+| `ui:toast`                       | `document`                                               | `{ id?, title?, description?, variant?, duration?, placement?, action? }`                                                      | Creates a runtime toast in the matching notification viewport.                                            |
+| `ui:toast-update`                | `document`                                               | `{ id, title?, description?, variant?, duration? }`                                                                            | Updates a runtime toast.                                                                                  |
+| `ui:toast-dismiss`               | `document`                                               | `{ id? }`                                                                                                                      | Dismisses one runtime toast, or all runtime toasts when `id` is omitted.                                  |
+| `ui:toast-action`                | Toast `[data-ui-toast]`                                  | `{ id, value? }`                                                                                                               | A runtime toast action button is pressed, unless the action specifies a custom event name.                |
 
 ## Registry Helper
 

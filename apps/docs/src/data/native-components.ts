@@ -2392,6 +2392,108 @@ const additionalDefinitions: ComponentDefinition[] = [
   },
   {
     accessibility:
+      'The native refresh gesture remains owned by the scroll container. Supply an accessibility label that describes the refreshed content.',
+    category: 'Feedback',
+    examples: {
+      'react-native': `<ScrollView
+  refreshControl={(
+    <LumenRefreshControl
+      accessibilityLabel="Refresh projects"
+      refreshing={refreshing}
+      onRefresh={refreshProjects}
+    />
+  )}
+>
+  {content}
+</ScrollView>`
+    },
+    exports: { 'react-native': 'LumenRefreshControl' },
+    guidance:
+      'Attach to a React Native ScrollView or compatible list. Keep refresh state and completion in application code.',
+    name: 'Refresh control',
+    properties: [
+      property('refreshing', 'boolean', 'Required', 'Reports whether the native indicator is active.'),
+      property('onRefresh', '() => void', 'Required', 'Starts the application refresh operation.'),
+      property(
+        'indicatorTone',
+        'brand · accent · neutral',
+        'brand',
+        'Selects the semantic native indicator color.'
+      ),
+      property(
+        'accessibilityLabel',
+        'string',
+        'Application-provided',
+        'Names the content refreshed by the gesture.'
+      )
+    ],
+    slug: 'refresh-control',
+    summary: 'Apply Lumen semantic colors to React Native pull-to-refresh behavior.'
+  },
+  {
+    accessibility:
+      'The native picker retains its label and adjustable behavior. Supporting or validation text remains visible in the same contained group.',
+    category: 'Forms',
+    examples: {
+      apple: `LumenDateField(
+    "Release date",
+    selection: $releaseDate,
+    components: .dateAndTime,
+    bounds: .from(.now),
+    description: "Choose when this version becomes available."
+)`
+    },
+    exports: { apple: 'LumenDateField' },
+    guidance:
+      'Use for Apple date or time input that needs Lumen supporting and validation context. Keep calendar and locale behavior native.',
+    name: 'Date field',
+    properties: [
+      property('title', 'LocalizedStringKey', 'Required', 'Labels the native date picker.'),
+      property('selection', 'Binding<Date>', 'Required', 'Stores the selected native date value.'),
+      property('components', 'date · dateAndTime · time', 'date', 'Chooses the visible date and time parts.'),
+      property(
+        'bounds',
+        'unbounded · closed · from · through',
+        'unbounded',
+        'Constrains selection using native picker bounds.'
+      ),
+      property(
+        'description / errorMessage',
+        'LocalizedStringKey?',
+        'nil',
+        'Shows supporting text or a semantic danger validation message.'
+      )
+    ],
+    slug: 'date-field',
+    summary: 'Select an Apple-native date or time with bounds and validation context.'
+  },
+  {
+    accessibility:
+      'The required content description names the icon-only action while the control preserves native Material button semantics.',
+    category: 'Actions',
+    examples: {
+      android: `LumenFloatingActionButton(
+    imageVector = Icons.Default.Add,
+    contentDescription = "Create project",
+    onClick = ::createProject
+)`
+    },
+    exports: { android: 'LumenFloatingActionButton' },
+    guidance:
+      'Use for one prominent Material screen action. Keep navigation bars and scaffold placement in application code.',
+    name: 'Floating action button',
+    properties: [
+      property('imageVector', 'ImageVector', 'Required', 'Renders the native action glyph.'),
+      property('contentDescription', 'String', 'Required', 'Names the icon-only action.'),
+      property('onClick', '() -> Unit', 'Required', 'Runs the primary screen action.'),
+      property('intent', 'brand · accent · danger', 'brand', 'Selects a semantic action palette.'),
+      property('size', 'regular · small', 'regular', 'Selects Material-native FAB geometry.')
+    ],
+    slug: 'floating-action-button',
+    summary: 'Present a prominent Material-native action using Lumen semantic intent.'
+  },
+  {
+    accessibility:
       'Recording, current shortcut, validation error, cancel, change, and clear states all have visible native labels.',
     category: 'macOS utilities',
     examples: {

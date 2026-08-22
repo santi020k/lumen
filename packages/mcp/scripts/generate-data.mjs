@@ -6,15 +6,7 @@
 // runtime. This keeps @santi020k/lumen-mcp installable without the whole repo.
 
 import { createHash, randomUUID } from 'node:crypto'
-import {
-  access,
-  mkdir,
-  readdir,
-  readFile,
-  rename,
-  unlink,
-  writeFile
-} from 'node:fs/promises'
+import { access, mkdir, readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -52,22 +44,18 @@ const exists = async path => {
   }
 }
 
-const readIfExists = async path => (await exists(path)) ? readFile(path, 'utf8') : ''
+const readIfExists = async path => ((await exists(path)) ? readFile(path, 'utf8') : '')
 
 // Extract the quoted entries of `export const lumenComponentNames = [ ... ]`.
 const parseComponentNames = source => {
-  const match = source.match(
-    /lumenComponentNames\s*=\s*\[([\s\S]*?)\]\s*as const/
-  )
+  const match = source.match(/lumenComponentNames\s*=\s*\[([\s\S]*?)\]\s*as const/)
 
   if (!match) return []
 
   return [...match[1].matchAll(/'([^']+)'/g)].map(m => m[1])
 }
 
-const readQuotedProperty = (source, property) => new RegExp(
-  `${property}:\\s*'([^']+)'`
-).exec(source)?.[1]
+const readQuotedProperty = (source, property) => new RegExp(`${property}:\\s*'([^']+)'`).exec(source)?.[1]
 
 const parseComponentBehaviorEntry = entry => {
   const name = entry[1]
@@ -79,24 +67,26 @@ const parseComponentBehaviorEntry = entry => {
 
   if (!name || !astro || !elements || !react) return []
 
-  return [[name, {
-    astro,
-    ...(astroRuntimeBypass ? { astroRuntimeBypass } : {}),
-    elements,
-    react
-  }]]
+  return [
+    [
+      name,
+      {
+        astro,
+        ...(astroRuntimeBypass ? { astroRuntimeBypass } : {}),
+        elements,
+        react
+      }
+    ]
+  ]
 }
 
 const parseComponentBehavior = source => {
-  const match = source.match(
-    /lumenComponentBehavior\s*=\s*\{([\s\S]*?)\}\s*as const satisfies/
-  )
+  const match = source.match(/lumenComponentBehavior\s*=\s*\{([\s\S]*?)\}\s*as const satisfies/)
 
   if (!match) return new Map()
 
   return new Map(
-    [...match[1].matchAll(/(\w+):\s*\{([^{}]+)\}/g)]
-      .flatMap(parseComponentBehaviorEntry)
+    [...match[1].matchAll(/(\w+):\s*\{([^{}]+)\}/g)].flatMap(parseComponentBehaviorEntry)
   )
 }
 
@@ -122,10 +112,7 @@ const parseTokenBlock = (source, identifier) => {
   return out
 }
 
-const toCamel = value => value.replaceAll(
-  /-([a-z0-9])/g,
-  (_, character) => character.toUpperCase()
-)
+const toCamel = value => value.replaceAll(/-([a-z0-9])/g, (_, character) => character.toUpperCase())
 
 const parsePlatformColors = source => {
   if (!source) return {}
@@ -155,10 +142,7 @@ const extractInterfaceBody = source => {
 
     if (braceStart !== -1 && end !== -1) {
       const between = source.slice(interfaceStart + 15, braceStart).trim()
-
-      const extendsClause = between.startsWith('extends ') ?
-        between.slice(8).trim() :
-        null
+      const extendsClause = between.startsWith('extends ') ? between.slice(8).trim() : null
 
       return { body: source.slice(braceStart + 1, end), extendsClause }
     }
@@ -178,9 +162,7 @@ const extractTypeBody = source => {
       const between = source.slice(typeStart + 10, braceStart).trim()
 
       const extendsClause =
-        between.startsWith('=') && between.endsWith('&') ?
-          between.slice(1, -1).trim() :
-          null
+        between.startsWith('=') && between.endsWith('&') ? between.slice(1, -1).trim() : null
 
       return { body: source.slice(braceStart + 1, end), extendsClause }
     }
@@ -199,18 +181,12 @@ const parseProps = source => {
   for (const line of extracted.body.split('\n')) {
     const trimmed = line.trim()
 
-    if (
-      !trimmed ||
-      trimmed.startsWith('//') ||
-      trimmed.startsWith('*') ||
-      trimmed.startsWith('/*')
-    )
+    if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*'))
       continue
 
     const m = trimmed.match(/^([A-Za-z_][\w-]*)(\?)?\s*:\s*(.+?);?$/)
 
-    if (m)
-      props.push({ name: m[1], optional: Boolean(m[2]), type: m[3].trim() })
+    if (m) props.push({ name: m[1], optional: Boolean(m[2]), type: m[3].trim() })
   }
 
   return { extends: extracted.extendsClause, props }
@@ -222,8 +198,7 @@ const toKebab = name => name
   .toLowerCase()
 
 const parseMemberProps = (members, sourceFile) => members.flatMap(member => {
-  if (!ts.isPropertySignature(member) || !member.name || !member.type)
-    return []
+  if (!ts.isPropertySignature(member) || !member.name || !member.type) return []
 
   const name = member.name.getText(sourceFile).replaceAll(/['"]/g, '')
 
@@ -275,19 +250,14 @@ const parseTypeScriptProps = (declaration, sourceFile) => {
 
 const processTypeStatement = (statement, propDeclarations) => {
   if (
-    (ts.isInterfaceDeclaration(statement) ||
-      ts.isTypeAliasDeclaration(statement)) &&
-      statement.name.text.endsWith('Props')
+    (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) &&
+    statement.name.text.endsWith('Props')
   ) {
     propDeclarations.set(statement.name.text.slice(0, -5), statement)
   }
 }
 
-const processFunctionStatement = (
-  statement,
-  componentNameSet,
-  componentDeclarations
-) => {
+const processFunctionStatement = (statement, componentNameSet, componentDeclarations) => {
   if (
     ts.isFunctionDeclaration(statement) &&
     statement.name &&
@@ -297,17 +267,10 @@ const processFunctionStatement = (
   }
 }
 
-const processVariableStatement = (
-  statement,
-  componentNameSet,
-  componentDeclarations
-) => {
+const processVariableStatement = (statement, componentNameSet, componentDeclarations) => {
   if (ts.isVariableStatement(statement)) {
     for (const declaration of statement.declarationList.declarations) {
-      if (
-        ts.isIdentifier(declaration.name) &&
-        componentNameSet.has(declaration.name.text)
-      ) {
+      if (ts.isIdentifier(declaration.name) && componentNameSet.has(declaration.name.text)) {
         componentDeclarations.set(declaration.name.text, statement)
       }
     }
@@ -329,7 +292,11 @@ const processReactStatement = (
 
 const parseReactComponents = (source, componentNames) => {
   const sourceFile = ts.createSourceFile(
-    'components.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX
+    'components.tsx',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX
   )
 
   const componentNameSet = new Set(componentNames)
@@ -337,9 +304,7 @@ const parseReactComponents = (source, componentNames) => {
   const propDeclarations = new Map()
 
   for (const statement of sourceFile.statements) {
-    processReactStatement(
-      statement, componentNameSet, componentDeclarations, propDeclarations
-    )
+    processReactStatement(statement, componentNameSet, componentDeclarations, propDeclarations)
   }
 
   return new Map(
@@ -381,18 +346,14 @@ const unwrapExpression = expression => {
 }
 
 const processElementConfigProperty = (property, sourceFile) => {
-  if (
-    !ts.isPropertyAssignment(property) ||
-    !ts.isObjectLiteralExpression(property.initializer)
-  )
+  if (!ts.isPropertyAssignment(property) || !ts.isObjectLiteralExpression(property.initializer))
     return null
 
   const name = propertyName(property, sourceFile)
   const config = property.initializer
 
   const tagNameProperty = config.properties.find(
-    entry => ts.isPropertyAssignment(entry) &&
-      propertyName(entry, sourceFile) === 'tagName'
+    entry => ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName'
   )
 
   const tagName =
@@ -406,9 +367,7 @@ const processElementConfigProperty = (property, sourceFile) => {
     if (
       !ts.isPropertyAssignment(entry) ||
       !ts.isObjectLiteralExpression(entry.initializer) ||
-      !['attributeClasses', 'defaults'].includes(
-        propertyName(entry, sourceFile)
-      )
+      !['attributeClasses', 'defaults'].includes(propertyName(entry, sourceFile))
     )
       return []
 
@@ -431,8 +390,7 @@ const processElementStatement = (statement, entries, sourceFile) => {
   if (!ts.isVariableStatement(statement)) return
 
   for (const declaration of statement.declarationList.declarations) {
-    const initializer =
-      declaration.initializer && unwrapExpression(declaration.initializer)
+    const initializer = declaration.initializer && unwrapExpression(declaration.initializer)
 
     if (
       !ts.isIdentifier(declaration.name) ||
@@ -452,7 +410,11 @@ const processElementStatement = (statement, entries, sourceFile) => {
 
 const parseElementComponents = (source, componentNames) => {
   const sourceFile = ts.createSourceFile(
-    'define.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS
+    'define.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
   )
 
   const entries = new Map()
@@ -607,13 +569,15 @@ const reactExampleForComponent = (name, hook, fallback) => {
         .replaceAll('Open dialog', 'Open filters')
         .replaceAll('Confirm action', 'Filters')
         .replaceAll(
-          'Are you sure you want to continue?', 'Adjust the records shown in this view.'
+          'Are you sure you want to continue?',
+          'Adjust the records shown in this view.'
         ) :
       example
         .replaceAll('Open dialog', 'Open details')
         .replaceAll('Confirm action', 'Project details')
         .replaceAll(
-          'Are you sure you want to continue?', 'Review supporting information without leaving the page.'
+          'Are you sure you want to continue?',
+          'Review supporting information without leaving the page.'
         )
   }
 
@@ -634,7 +598,7 @@ const toElementsExample = (example, elementComponents) => {
   }
 
   converted = converted
-    .replaceAll(/<\/?TimelineItem>/g, tag => tag.startsWith('</') ? '</li>' : '<li>')
+    .replaceAll(/<\/?TimelineItem>/g, tag => (tag.startsWith('</') ? '</li>' : '<li>'))
     .replaceAll(/(\s[\w-]+)=\{(-?[0-9]+\.[0-9]+)\}/g, '$1="$2"')
     .replaceAll(/(\s[\w-]+)=\{(-?[0-9]+)\}/g, '$1="$2"')
     .replaceAll(/(\s[\w-]+)=\{true\}/g, '$1')
@@ -662,9 +626,7 @@ const getElementsBehavior = runtimeRequired => ({
   mode: 'registration',
   setup:
     'Call defineLumenElements() once before rendering Lumen custom elements.' +
-    (runtimeRequired ?
-      ' Registration includes this component’s interactive behavior.' :
-      '')
+    (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '')
 })
 
 const getReactBehavior = (hook, reactSource, runtimeRequired) => {
@@ -691,22 +653,15 @@ const getReactBehavior = (hook, reactSource, runtimeRequired) => {
   }
 }
 
-const frameworkBehavior = ({
-  framework,
-  hook,
-  reactSource,
-  runtimeBypass,
-  runtimeRequired
-}) => {
+const frameworkBehavior = ({ framework, hook, reactSource, runtimeBypass, runtimeRequired }) => {
   if (framework === 'astro') return getAstroBehavior(runtimeRequired, runtimeBypass)
 
   if (framework === 'elements') return getElementsBehavior(runtimeRequired)
 
-  if (framework === 'react')
-    return getReactBehavior(hook, reactSource, runtimeRequired)
+  if (framework === 'react') return getReactBehavior(hook, reactSource, runtimeRequired)
 }
 
-const withFallback = (values, fallback) => values.length > 0 ? values : [fallback]
+const withFallback = (values, fallback) => (values.length > 0 ? values : [fallback])
 
 const buildFrameworkDetails = ({
   astroSource,
@@ -756,7 +711,11 @@ const buildFrameworkDetails = ({
   return {
     astro: {
       available: hasAstro,
-      behavior: frameworkBehavior({ framework: 'astro', runtimeBypass, runtimeRequired }),
+      behavior: frameworkBehavior({
+        framework: 'astro',
+        runtimeBypass,
+        runtimeRequired
+      }),
       example: doc.example,
       importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'`,
       language: 'astro',
@@ -768,16 +727,12 @@ const buildFrameworkDetails = ({
     },
     elements: {
       attributes: [
-        ...new Set([
-          ...element.attributes,
-          ...doc.apiReference.map(row => row.attribute)
-        ])
+        ...new Set([...element.attributes, ...doc.apiReference.map(row => row.attribute)])
       ],
       available: Boolean(element.source),
       behavior: frameworkBehavior({ framework: 'elements', runtimeRequired }),
       example: elementsExample || `<${element.tagName}></${element.tagName}>`,
-      importStatement:
-        'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'',
+      importStatement: 'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'',
       language: 'html',
       packageName: '@santi020k/lumen-elements',
       props: [],
@@ -815,10 +770,7 @@ const keywordsForComponent = (doc, collections) => [
       doc.summary,
       doc.guidance?.when,
       doc.guidance?.distinction,
-      ...collections.flatMap(collection => [
-        collection.title,
-        collection.description
-      ])
+      ...collections.flatMap(collection => [collection.title, collection.description])
     ]
       .filter(Boolean)
       .flatMap(value => value.toLowerCase().split(/[^a-z0-9]+/))
@@ -841,17 +793,13 @@ const loadWorkspaceFiles = async p => ({
 
 const loadRegistry = async p => {
   try {
-    return JSON.parse(
-      await readFile(p('registry/lumen.registry.json'), 'utf8')
-    )
+    return JSON.parse(await readFile(p('registry/lumen.registry.json'), 'utf8'))
   } catch {
     return { items: [] }
   }
 }
 
-const loadNativeRegistry = async p => JSON.parse(
-  await readFile(p('registry/native-components.json'), 'utf8')
-)
+const loadNativeRegistry = async p => JSON.parse(await readFile(p('registry/native-components.json'), 'utf8'))
 
 const nativePlatformConfigs = {
   compose: {
@@ -859,7 +807,7 @@ const nativePlatformConfigs = {
     docsPlatform: 'android',
     importStatement: symbol => `import com.santi020k.lumen.${symbol}`,
     install:
-      'Include packages/compose from a Lumen checkout or Git submodule, then add implementation(project(":lumen-compose")).',
+      'Include packages/compose from a shallow Git checkout pinned to the Lumen release tag, then add implementation(project(":lumen-compose")).',
     setup: 'Wrap application content in LumenTheme and preserve Compose state and navigation.'
   },
   'react-native': {
@@ -867,15 +815,17 @@ const nativePlatformConfigs = {
     docsPlatform: 'react-native',
     importStatement: symbol => `import { ${symbol} } from '@santi020k/lumen-react-native'`,
     install: 'pnpm add @santi020k/lumen-react-native',
-    setup: 'Mount one LumenProvider near the application root. Native adapters do not load CSS or the Astro runtime.'
+    setup:
+      'Mount one LumenProvider near the application root. Native adapters do not load CSS or the Astro runtime.'
   },
   swiftui: {
     adapter: 'swiftUI',
     docsPlatform: 'apple',
     importStatement: () => 'import LumenUI',
     install:
-      'Add https://github.com/santi020k/lumen with Swift Package Manager and link the LumenUI product to the application target.',
-    setup: 'Apply .lumenTheme(...) near the SwiftUI application root and preserve native environment behavior.'
+      'Add https://github.com/santi020k/lumen with Swift Package Manager, pin an exact or compatible release version, and link the LumenUI product to the application target.',
+    setup:
+      'Apply .lumenTheme(...) near the SwiftUI application root and preserve native environment behavior.'
   }
 }
 
@@ -921,30 +871,27 @@ const findNativeSourceFile = (sources, platform, symbol) => {
   return match[0]
 }
 
-const nativeRegistryEntry = (nativeRegistry, id) => (
-  nativeRegistry.components.find(component => component.id === id) ??
-  nativeRegistry.appleComponents.find(component => component.id === id)
-)
+const nativeRegistryEntry = (nativeRegistry, id) => nativeRegistry.components.find(component => component.id === id) ??
+  nativeRegistry.platformComponents.find(component => component.id === id)
 
 const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
   const docsData = await loadDocsData(files.nativeDocsSource)
   const sources = await loadNativeSources(repoRoot, nativeRegistry)
-
-  const registryEntries = [
-    ...nativeRegistry.components,
-    ...nativeRegistry.appleComponents
-  ]
+  const registryEntries = [...nativeRegistry.components, ...nativeRegistry.platformComponents]
 
   for (const registryEntry of registryEntries) {
     if (!docsData.nativeComponentDocs.some(doc => doc.slug === registryEntry.id)) {
-      throw new Error(`Native registry entry ${registryEntry.id} is missing from native documentation.`)
+      throw new Error(
+        `Native registry entry ${registryEntry.id} is missing from native documentation.`
+      )
     }
   }
 
   const components = docsData.nativeComponentDocs.map(doc => {
     const registryEntry = nativeRegistryEntry(nativeRegistry, doc.slug)
 
-    if (!registryEntry) throw new Error(`Native documentation entry ${doc.slug} is missing from the native registry.`)
+    if (!registryEntry)
+      throw new Error(`Native documentation entry ${doc.slug} is missing from the native registry.`)
 
     const implementations = {}
 
@@ -955,7 +902,8 @@ const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
 
       const symbol = registryEntry.symbols?.[config.adapter] ?? registryEntry.symbol
 
-      if (!symbol) throw new Error(`Native registry entry ${doc.slug} is missing a ${platform} symbol.`)
+      if (!symbol)
+        throw new Error(`Native registry entry ${doc.slug} is missing a ${platform} symbol.`)
 
       implementations[platform] = {
         api: implementation.api,
@@ -981,7 +929,7 @@ const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
       name: doc.name,
       summary: doc.summary,
       ...(registryEntry.platforms ? { supportedPlatforms: registryEntry.platforms } : {}),
-      tier: registryEntry.tier ?? 'apple'
+      tier: registryEntry.tier ?? 'platform-specific'
     }
   })
 
@@ -1010,28 +958,19 @@ const buildContextData = async (files, registry, names) => {
   const missingBehavior = names.filter(name => !componentBehavior.has(name))
 
   if (missingBehavior.length > 0) {
-    throw new Error(
-      `Missing framework behavior metadata for: ${missingBehavior.join(', ')}`
-    )
+    throw new Error(`Missing framework behavior metadata for: ${missingBehavior.join(', ')}`)
   }
 
   return {
     componentBehavior,
-    docsByComponent: new Map(
-      docsData.componentDocs.map(doc => [doc.name, doc])
-    ),
+    docsByComponent: new Map(docsData.componentDocs.map(doc => [doc.name, doc])),
     docsData,
     elementComponents: parseElementComponents(files.elementsSource, names),
     reactComponents: parseReactComponents(files.reactSource, names),
-    reactHooks: new Map(
-      docsData.reactHooksReference.map(hook => [hook.name, hook])
-    ),
+    reactHooks: new Map(docsData.reactHooksReference.map(hook => [hook.name, hook])),
     recipesByComponent: mapRecipesByComponent(registry),
     registryComponents: new Map(
-      (registry.components ?? []).map(component => [
-        component.name,
-        component
-      ])
+      (registry.components ?? []).map(component => [component.name, component])
     )
   }
 }
@@ -1048,29 +987,18 @@ const main = async () => {
   const repoRoot = await findRepoRoot(scriptDir)
   const p = (...parts) => resolve(repoRoot, ...parts)
   const files = await loadWorkspaceFiles(p)
-
-  const {
-    aiUsage,
-    componentsSource,
-    platformTokensSource,
-    readme,
-    rules,
-    tokensSource
-  } = files
-
-  const packageJson = JSON.parse(
-    await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8')
-  )
-
+  const { aiUsage, componentsSource, platformTokensSource, readme, rules, tokensSource } = files
+  const packageJson = JSON.parse(await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8'))
   const registry = await loadRegistry(p)
   const nativeRegistry = await loadNativeRegistry(p)
   const names = parseComponentNames(componentsSource)
   const ctxData = await buildContextData(files, registry, names)
 
-  const {
-    components: nativeComponents,
-    sources: nativeSources
-  } = await buildNativeComponents(repoRoot, files, nativeRegistry)
+  const { components: nativeComponents, sources: nativeSources } = await buildNativeComponents(
+    repoRoot,
+    files,
+    nativeRegistry
+  )
 
   const chart = parseTokenBlock(tokensSource, 'lumenChart')
   const colors = parsePlatformColors(platformTokensSource)
@@ -1099,22 +1027,14 @@ const main = async () => {
   const astroDir = p('packages/astro/components')
 
   const astroFiles = new Set(
-    (await exists(astroDir)) ?
-      (await readdir(astroDir)).filter(f => f.endsWith('.astro')) :
-      []
+    (await exists(astroDir)) ? (await readdir(astroDir)).filter(f => f.endsWith('.astro')) : []
   )
 
   const getAstroProps = async (name, ctx) => {
     const fileName = `${name}.astro`
     const hasAstro = ctx.astroFiles.has(fileName)
-
-    const astroSource = hasAstro ?
-      await readFile(join(ctx.astroDir, fileName), 'utf8') :
-      ''
-
-    const parsed = hasAstro ?
-      parseProps(astroSource) :
-      { extends: null, props: [] }
+    const astroSource = hasAstro ? await readFile(join(ctx.astroDir, fileName), 'utf8') : ''
+    const parsed = hasAstro ? parseProps(astroSource) : { extends: null, props: [] }
 
     return { astroSource, hasAstro, parsed }
   }
@@ -1183,9 +1103,7 @@ const main = async () => {
     components.push(await buildComponentData(name, ctx))
   }
 
-  const componentMap = new Map(
-    components.map(component => [component.name, component])
-  )
+  const componentMap = new Map(components.map(component => [component.name, component]))
 
   const recipes = (registry.items ?? [])
     .filter(item => item.type === 'recipe' || item.type === 'component-set')
@@ -1194,9 +1112,7 @@ const main = async () => {
         .map(name => componentMap.get(name))
         .filter(Boolean)
 
-      const categories = [
-        ...new Set(recipeComponents.map(component => component.category))
-      ].sort()
+      const categories = [...new Set(recipeComponents.map(component => component.category))].sort()
 
       return {
         ...item,
@@ -1246,15 +1162,17 @@ const main = async () => {
   packageVersions['com.santi020k:lumen-compose'] = 'workspace'
 
   const catalogHash = createHash('sha256')
-    .update(JSON.stringify({
-      components,
-      docs,
-      nativeComponents,
-      nativeSources,
-      recipes,
-      rules,
-      tokens
-    }))
+    .update(
+      JSON.stringify({
+        components,
+        docs,
+        nativeComponents,
+        nativeSources,
+        recipes,
+        rules,
+        tokens
+      })
+    )
     .digest('hex')
 
   const catalogManifest = {
@@ -1267,15 +1185,19 @@ const main = async () => {
     nativeComponents: Object.fromEntries(
       nativeComponents.map(component => [
         component.name,
-        createHash('sha256').update(JSON.stringify({
-          component,
-          sources: Object.fromEntries(
-            Object.entries(component.implementations).map(([platform, implementation]) => [
-              platform,
-              nativeSources[platform][implementation.sourceFile]
-            ])
+        createHash('sha256')
+          .update(
+            JSON.stringify({
+              component,
+              sources: Object.fromEntries(
+                Object.entries(component.implementations).map(([platform, implementation]) => [
+                  platform,
+                  nativeSources[platform][implementation.sourceFile]
+                ])
+              )
+            })
           )
-        })).digest('hex')
+          .digest('hex')
       ])
     ),
     recipes: Object.fromEntries(
@@ -1294,15 +1216,17 @@ const main = async () => {
       catalogHash,
       componentCount: components.length,
       nativeComponentCount: nativeComponents.length,
-      packages: [...new Set([
-        ...(registry.packages ?? [
-          '@santi020k/lumen-astro',
-          '@santi020k/lumen-react',
-          '@santi020k/lumen-elements',
-          '@santi020k/lumen-core'
-        ]),
-        ...Object.values(nativeRegistry.adapters).map(adapter => adapter.package)
-      ])],
+      packages: [
+        ...new Set([
+          ...(registry.packages ?? [
+            '@santi020k/lumen-astro',
+            '@santi020k/lumen-react',
+            '@santi020k/lumen-elements',
+            '@santi020k/lumen-core'
+          ]),
+          ...Object.values(nativeRegistry.adapters).map(adapter => adapter.package)
+        ])
+      ],
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,

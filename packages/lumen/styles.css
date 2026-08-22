@@ -2187,6 +2187,32 @@
   color: hsl(var(--brand));
 }
 
+.ui-menu :where(a, button, [role="menuitem"]):is(:disabled, [aria-disabled="true"]) {
+  color: hsl(var(--ink-muted));
+  cursor: not-allowed;
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.ui-menu__item-label {
+  min-width: 0;
+  flex: 1;
+}
+
+.ui-menu__item-status {
+  color: hsl(var(--ink-muted));
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ui-menu__separator,
+.ui-menu [role="separator"] {
+  height: 1px;
+  margin: 0.35rem 0.25rem;
+  border: 0;
+  background: hsl(var(--line));
+}
+
 .ui-context-navigation {
   --ui-context-navigation-gap: 1rem;
   --ui-context-navigation-min-height: 3.25rem;

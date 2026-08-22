@@ -27,6 +27,11 @@ export {
   type LumenToggleProps
 } from './form-components.js'
 export {
+  LumenRefreshControl,
+  type LumenRefreshControlProps
+} from './platform-components.js'
+export { type LumenRefreshIndicatorTone } from './platform-recipes.js'
+export {
   LumenBadge,
   type LumenBadgeProps,
   LumenButton,

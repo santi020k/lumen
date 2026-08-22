@@ -3,7 +3,7 @@
 <!-- cspell:words Contrac Coolstead Difftale Fenix Workscene -->
 
 This guide records the component audit of the sibling projects in the `santi020k` workspace and
-turns it into an incremental Lumen adoption plan. The audit reflects the workspace on 2026-08-21;
+turns it into an incremental Lumen adoption plan. The audit reflects the workspace on 2026-08-22;
 rerun the checks against current source before starting a migration.
 
 ## Product boundary
@@ -26,17 +26,31 @@ That boundary keeps products recognizably themselves:
 
 Twenty-three external package surfaces already depend directly on a Lumen web adapter.
 
-| Adoption group | Projects | Current state |
-| --- | --- | --- |
-| Astro products | ContracTrack, Aaron web, Astro Doctor docs, Commitprompt docs, Coolstead website, Cult web, Dep Beacon docs, Difftale website, ESLint Config Basic docs, Fenix web, Observatory web, PostLens website, RoadScore web, Workscene website, and the root website | Direct `lumen-astro` consumers |
-| Theme sites | Chrome, Codex, terminal, VS Code, main, and Zed sites in `santi020k-theme` | Direct `lumen-astro` consumers |
-| React UI packages | `@aaronmgz/ui` and `@memudo/ui` | Partial `lumen-react` adoption behind stable product-facing wrappers |
-| React Native | RoadScore mobile | Local primitives; Lumen adoption waits on a published native package and React Native 0.86 compatibility evidence |
-| SwiftUI | PostLens iOS, Coolstead macOS, and Workscene macOS | Native product components; no `LumenUI` package dependency yet |
-| Jetpack Compose | No active sibling consumer found | Keep the adapter contract-tested until a product needs it |
+| Adoption group    | Projects                                                                                                                                                                                                                                                      | Current state                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Astro products    | ContracTrack, Aaron web, Astro Doctor docs, Commitprompt docs, Coolstead website, Cult web, Dep Beacon docs, Difftale website, ESLint Config Basic docs, Fenix web, Observatory web, PostLens website, RoadScore web, Workscene website, and the root website | Direct `lumen-astro` consumers                                                                                    |
+| Theme sites       | Chrome, Codex, terminal, VS Code, main, and Zed sites in `santi020k-theme`                                                                                                                                                                                    | Direct `lumen-astro` consumers                                                                                    |
+| React UI packages | `@aaronmgz/ui` and `@memudo/ui`                                                                                                                                                                                                                               | Partial `lumen-react` adoption behind stable product-facing wrappers                                              |
+| React Native      | RoadScore mobile                                                                                                                                                                                                                                              | Local primitives; Lumen adoption waits on a published native package and React Native 0.86 compatibility evidence |
+| SwiftUI           | ContracTrack iOS and macOS, PostLens iOS, Coolstead macOS, and Workscene macOS                                                                                                                                                                                | `LumenUI` v1.2.0 consumers with product-owned theme mappings                                                      |
+| Jetpack Compose   | ContracTrack Android                                                                                                                                                                                                                                          | Existing Lumen v1.2.0 source pin; migrate maintained consumers to the Maven Central artifact                      |
 
 The website package in each native product already uses Lumen. Native adoption can therefore share
 the same semantic language without forcing the website and app to use the same rendering model.
+
+### Maintained native compatibility inventory
+
+| Consumer                   | Pinned release                  | Last verified toolchain                                               | Adopted surface                                                                                                 | Remaining manual evidence                                                           |
+| -------------------------- | ------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| ContracTrack iOS and macOS | `LumenUI` 1.2.0                 | Swift 6 / Xcode 16; iOS 16 and macOS 13 baselines                     | Theme context, banners, buttons, empty states, settings rows, text fields, toasts, stats, pickers, and toggles  | VoiceOver on physical iPhone and Mac, high contrast, and live language switching    |
+| PostLens iOS               | `LumenUI` 1.2.0                 | Swift 6 / Xcode 16; iOS 16 baseline                                   | Theme context, icons, button groups, progress normalization, skeletons, and product-specific photo compositions | VoiceOver, largest Dynamic Type sizes, reduced motion, and widget gallery           |
+| Coolstead macOS            | `LumenUI` 1.2.0                 | Swift 6 / Xcode 16; macOS 13 baseline                                 | Theme context, buttons, gauges, settings rows, toggles, and product-owned thermal visualizations                | VoiceOver, keyboard traversal, menu-bar interaction, and high contrast              |
+| Workscene macOS            | `LumenUI` 1.2.0                 | Swift 6 / Xcode 16; macOS 13 baseline                                 | Theme context, banners, empty states, settings rows, toggles, and window-management compositions                | VoiceOver, keyboard traversal, settings scene, and menu-bar surfaces                |
+| ContracTrack Android       | Lumen Compose v1.2.0 source tag | JDK 21, Android Gradle Plugin 9.3, Compose plugin 2.4, API 23 minimum | Theme context, semantic palette mapping, surfaces, toggles, banners, alerts, and empty states                   | TalkBack on hardware, large font/display scaling, reduced motion, and high contrast |
+
+The inventory records compatibility evidence, not ownership transfer. Product navigation, domain
+logic, specialized visualizations, localization dictionaries, and application state remain in the
+consumer.
 
 ## What the local catalogs tell us
 
@@ -49,12 +63,12 @@ switch, table, tabs, textarea, toggle group, and tooltip.
 This is primarily an adoption and compatibility problem, not a request to add fifty new visual
 components to Lumen.
 
-| Migration shape | Examples | Approach |
-| --- | --- | --- |
-| Direct wrapper replacement | Alert, Badge, Button, Card, Input, Progress, Separator, Skeleton, Spinner, Textarea | Preserve the product export and delegate rendering and appearance to Lumen |
-| Compatibility adapter | Avatar, Field, Select, Tabs | Keep the product API temporarily while adapting it to the closest Lumen contract |
-| Controlled behavior migration | Alert Dialog, Dialog, Drawer, Dropdown Menu, Sheet | Migrate feature by feature because trigger, portal, focus, and controlled-state APIs differ |
-| Product composition | Admin page, filter select, site header, publishing card, score badge, thermal card | Keep local and replace only the primitives inside it |
+| Migration shape               | Examples                                                                            | Approach                                                                                    |
+| ----------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Direct wrapper replacement    | Alert, Badge, Button, Card, Input, Progress, Separator, Skeleton, Spinner, Textarea | Preserve the product export and delegate rendering and appearance to Lumen                  |
+| Compatibility adapter         | Avatar, Field, Select, Tabs                                                         | Keep the product API temporarily while adapting it to the closest Lumen contract            |
+| Controlled behavior migration | Alert Dialog, Dialog, Drawer, Dropdown Menu, Sheet                                  | Migrate feature by feature because trigger, portal, focus, and controlled-state APIs differ |
+| Product composition           | Admin page, filter select, site header, publishing card, score badge, thermal card  | Keep local and replace only the primitives inside it                                        |
 
 The most useful component ideas for Lumen are therefore contract improvements discovered during
 migration:
@@ -90,7 +104,7 @@ controlled state, and accessible naming for every overlay or selector. Avatar is
 API-design probe because both React packages expose root, image, and fallback parts while Lumen
 currently exposes one concise component.
 
-### Wave 3: SwiftUI pilots
+### Wave 3: SwiftUI pilots (completed for the maintained applications)
 
 Begin with leaf surfaces that already match the shared native catalog:
 

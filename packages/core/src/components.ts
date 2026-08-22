@@ -239,7 +239,7 @@ export const lumenComponentBehavior = {
   KanbanColumn: { astro: 'none', elements: 'registered-element', react: 'component' },
   Kbd: { astro: 'none', elements: 'registered-element', react: 'component' },
   Label: { astro: 'none', elements: 'registered-element', react: 'component' },
-  LanguageToggle: { astro: 'none', elements: 'registered-element', react: 'component' },
+  LanguageToggle: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   LineChart: { astro: 'none', elements: 'registered-element', react: 'component' },
   Link: { astro: 'none', elements: 'registered-element', react: 'component' },
   ListBox: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },

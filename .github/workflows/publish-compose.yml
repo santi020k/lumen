@@ -1,15 +1,14 @@
 name: Publish Compose to Maven Central
 
 on:
+  push:
+    tags:
+      - compose-v*
   workflow_dispatch:
     inputs:
-      version:
-        description: Maven version to publish
-        required: true
-        type: string
       publishing-type:
         description: Publish automatically after Central validation or hold for manual approval
-        default: USER_MANAGED
+        default: AUTOMATIC
         options:
           - USER_MANAGED
           - AUTOMATIC
@@ -20,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-compose-${{ inputs.version }}
+  group: publish-compose-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -29,7 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      LUMEN_COMPOSE_VERSION: ${{ inputs.version }}
       MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
       MAVEN_SIGNING_KEY: ${{ secrets.MAVEN_SIGNING_KEY }}
@@ -37,12 +35,32 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Validate version
+      - name: Resolve and validate version
+        env:
+          REQUESTED_PUBLISHING_TYPE: ${{ inputs['publishing-type'] }}
         run: |
+          LUMEN_COMPOSE_VERSION="$(sed -n 's/^lumenComposeVersion=//p' packages/compose/gradle.properties)"
           if [[ ! "$LUMEN_COMPOSE_VERSION" =~ ^[0-9A-Za-z][0-9A-Za-z._-]*$ ]]; then
             echo "Invalid Maven version: $LUMEN_COMPOSE_VERSION" >&2
             exit 1
           fi
+
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            tag_version="${GITHUB_REF_NAME#compose-v}"
+            if [[ "$tag_version" != "$LUMEN_COMPOSE_VERSION" ]]; then
+              echo "Tag version $tag_version does not match canonical Compose version $LUMEN_COMPOSE_VERSION." >&2
+              exit 1
+            fi
+            PUBLISHING_TYPE="AUTOMATIC"
+          else
+            PUBLISHING_TYPE="$REQUESTED_PUBLISHING_TYPE"
+          fi
+
+          echo "LUMEN_COMPOSE_VERSION=$LUMEN_COMPOSE_VERSION" >> "$GITHUB_ENV"
+          echo "PUBLISHING_TYPE=$PUBLISHING_TYPE" >> "$GITHUB_ENV"
+
+      - name: Validate documentation version
+        run: node scripts/sync-compose-version.mjs --check
 
       - name: Validate publication credentials
         run: |
@@ -76,8 +94,6 @@ jobs:
 
       - name: Upload to Maven Central
         id: upload
-        env:
-          PUBLISHING_TYPE: ${{ inputs['publishing-type'] }}
         run: |
           bundle_path="$(find packages/compose/build/central-bundle -name '*.zip' -type f -print -quit)"
           if [[ -z "$bundle_path" ]]; then
@@ -99,7 +115,6 @@ jobs:
       - name: Wait for Maven Central validation
         env:
           DEPLOYMENT_ID: ${{ steps.upload.outputs.deployment-id }}
-          PUBLISHING_TYPE: ${{ inputs['publishing-type'] }}
         run: |
           central_auth="$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 | tr -d '\n')"
           echo "::add-mask::$central_auth"
@@ -135,6 +150,6 @@ jobs:
           exit 1
 
       - name: Record manual approval instructions
-        if: inputs['publishing-type'] == 'USER_MANAGED'
+        if: github.event_name == 'workflow_dispatch' && inputs['publishing-type'] == 'USER_MANAGED'
         run: |
           echo "Validate and publish deployment \`${{ steps.upload.outputs.deployment-id }}\` in the Maven Central Portal." >> "$GITHUB_STEP_SUMMARY"

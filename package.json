@@ -2,6 +2,7 @@
   "name": "@santi020k/lumen-root",
   "version": "0.0.0",
   "private": true,
+  "description": "Accessible UI primitives and shared design foundations for web and native applications.",
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter @santi020k/lumen-docs dev",
@@ -26,6 +27,8 @@
     "check:figma-tokens": "node scripts/check-figma-theme-tokens.mjs",
     "generate:platform-tokens": "node scripts/generate-platform-tokens.mjs",
     "check:platform-tokens": "node scripts/generate-platform-tokens.mjs --check",
+    "sync:compose-version": "node scripts/sync-compose-version.mjs",
+    "check:compose-version": "node scripts/sync-compose-version.mjs --check",
     "check:framework-contracts": "node scripts/check-framework-contracts.mjs",
     "check:native-contracts": "node scripts/check-native-contracts.mjs",
     "check:mcp-snapshot": "pnpm --filter @santi020k/lumen-mcp run check:snapshot",
@@ -35,7 +38,7 @@
     "check:mcp-evaluation": "pnpm --filter @santi020k/lumen-mcp run eval",
     "sync:registry": "node scripts/sync-registry.mjs",
     "check:registry": "node scripts/sync-registry.mjs --check && node scripts/validate-registry.mjs && pnpm run check:figma-tokens",
-    "validate": "pnpm run check:platform-tokens && pnpm run build && pnpm run check:bundle-size && pnpm run check:framework-contracts && pnpm run check:native-contracts && pnpm run check:mcp-snapshot && pnpm run check:mcp-evaluation && pnpm run typecheck && pnpm run test && pnpm run lint && pnpm run lint:spell && pnpm run lint:knip && pnpm run check:registry && pnpm run check:security && pnpm run check:publish-dry-run && pnpm run check:consumer-packages && pnpm run check:mcp-package",
+    "validate": "pnpm run check:platform-tokens && pnpm run check:compose-version && pnpm run build && pnpm run check:bundle-size && pnpm run check:framework-contracts && pnpm run check:native-contracts && pnpm run check:mcp-snapshot && pnpm run check:mcp-evaluation && pnpm run typecheck && pnpm run test && pnpm run lint && pnpm run lint:spell && pnpm run lint:knip && pnpm run check:registry && pnpm run check:security && pnpm run check:publish-dry-run && pnpm run check:consumer-packages && pnpm run check:mcp-package",
     "ok": "pnpm install --frozen-lockfile && pnpm run validate",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only && pnpm --filter @santi020k/lumen-mcp run generate",
@@ -95,6 +98,7 @@
     "node": ">=22.19.0"
   },
   "packageManager": "pnpm@10.32.1",
+  "license": "MIT",
   "lint-staged": {
     "*": [
       "cspell --no-must-find-files"

@@ -27,13 +27,13 @@ const readSourceDirectory = async directory => {
   return contents.flat().join('\n')
 }
 
-assert.equal(registry.schemaVersion, 3, 'Unsupported native contract schema version')
+assert.equal(registry.schemaVersion, 4, 'Unsupported native contract schema version')
 
 assert.deepEqual(Object.keys(registry.adapters).sort(), [...adapterNames].sort())
 
 assert.ok(Array.isArray(registry.components) && registry.components.length > 0)
 
-assert.ok(Array.isArray(registry.appleComponents) && registry.appleComponents.length > 0)
+assert.ok(Array.isArray(registry.platformComponents) && registry.platformComponents.length > 0)
 
 const sourceByAdapter = Object.fromEntries(await Promise.all(adapterNames.map(async adapterName => {
   const adapter = registry.adapters[adapterName]
@@ -123,9 +123,9 @@ for (const component of registry.components) {
   }
 }
 
-const applePlatforms = new Set(['iOS', 'macOS'])
+const nativePlatforms = new Set(['Android', 'iOS', 'macOS'])
 
-for (const component of registry.appleComponents) {
+for (const component of registry.platformComponents) {
   assert.equal(typeof component.id, 'string')
 
   assert.ok(!ids.has(component.id), `Duplicate native component id: ${component.id}`)
@@ -135,8 +135,10 @@ for (const component of registry.appleComponents) {
   assert.ok(Array.isArray(component.platforms) && component.platforms.length > 0)
 
   for (const platform of component.platforms) {
-    assert.ok(applePlatforms.has(platform), `Unsupported Apple platform for ${component.id}`)
+    assert.ok(nativePlatforms.has(platform), `Unsupported native platform for ${component.id}`)
   }
+
+  assert.ok(adapterNames.includes(component.adapter), `${component.id} uses an unknown adapter`)
 
   assert.equal(typeof component.contract, 'string')
 
@@ -150,11 +152,31 @@ for (const component of registry.appleComponents) {
 
   const escapedSymbol = escapeRegExp(component.symbol)
 
-  assert.match(
-    sourceByAdapter.swiftUI,
-    new RegExp(`public\\s+(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`),
-    `${component.id} claims SwiftUI support, but ${component.symbol} is not public`
-  )
+  assert.match(sourceByAdapter[component.adapter], new RegExp(`\\b${escapedSymbol}\\b`))
+
+  if (component.adapter === 'reactNative') {
+    assert.match(
+      reactNativeIndex,
+      new RegExp(`\\b${escapedSymbol}\\b`),
+      `${component.id} claims React Native support, but ${component.symbol} is not publicly exported`
+    )
+  }
+
+  if (component.adapter === 'swiftUI') {
+    assert.match(
+      sourceByAdapter.swiftUI,
+      new RegExp(`public\\s+(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`),
+      `${component.id} claims SwiftUI support, but ${component.symbol} is not public`
+    )
+  }
+
+  if (component.adapter === 'compose') {
+    assert.match(
+      sourceByAdapter.compose,
+      new RegExp(`(?:^|\\n)(?:@[^\\n]+\\n)*(?:(?:data|enum)\\s+class|class|fun)\\s+${escapedSymbol}\\b`),
+      `${component.id} claims Compose support, but ${component.symbol} is not public`
+    )
+  }
 
   assert.ok(
     documentation.includes(`\`${component.symbol}\``),
@@ -170,5 +192,5 @@ assert.match(
 
 process.stdout.write(
   `Checked ${registry.components.length} shared native contracts and `
-    + `${registry.appleComponents.length} Apple contracts across ${adapterNames.length} adapters.\n`
+    + `${registry.platformComponents.length} platform contracts across ${adapterNames.length} adapters.\n`
 )

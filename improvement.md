@@ -159,6 +159,17 @@ repeated dialog focus management, and raw navigation menus with copied keyboard 
 these as migration suggestions rather than errors because product-specific composition remains a
 valid use case.
 
+Progress on August 22, 2026:
+
+- [x] `LanguageToggle` now has shared locale options, controlled and uncontrolled behavior,
+      persistence, document-language synchronization, accessible current/next labels,
+      `ui:language-change`, and a React hook.
+- [x] Astro now exports dropdown trigger, content, item, and separator parts with disabled and
+      status treatments; the same item and separator contracts are available in React.
+- [ ] The responsive site-header composition remains a candidate for a later release after another
+      consumer confirms the same navigation and responsive-label contract.
+- [ ] The platform-download composition remains a recipe candidate rather than a public component.
+
 ## Cross-platform v1.2 adoption findings (August 22, 2026)
 
 This follow-up records what the first real multi-platform adoption taught us after Lumen v1.2.0 was
@@ -398,6 +409,21 @@ device checks.
 3. Update the project-adoption inventory with the completed pilots.
 4. Improve the shallow, pinned Android submodule fallback documentation.
 5. Add tests for custom native palettes and System/Light/Dark transitions.
+
+Progress on August 22, 2026:
+
+- [x] Production Swift Package Manager guidance now leads with exact `1.2.0` pinning, documents
+      compatible-version policy, XcodeGen and deterministic generator ownership, and
+      `Package.resolved` verification.
+- [x] Compose enforces Android lint warnings as errors, keeps `Modifier` first among optional
+      parameters, and marks generated palette and easing value types immutable.
+- [x] The project-adoption inventory records the completed SwiftUI and Compose pilots, pinned
+      versions, verified toolchains, adopted component subsets, and remaining device checks.
+- [x] The Android fallback now uses a shallow tag-pinned submodule, documents CI and Gitlink
+      verification, and provides a host-owned adapter path for Gradle plugin differences.
+- [x] Custom palette mapping tests cover Material-to-Lumen and Lumen-to-Material roles; Swift tests
+      cover application-owned palettes and the option that leaves System/Light/Dark appearance
+      under application control.
 
 ### v1.3.0
 

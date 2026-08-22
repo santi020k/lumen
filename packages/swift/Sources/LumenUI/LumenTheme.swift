@@ -18,6 +18,14 @@ public struct LumenTheme: Sendable {
     public static let dark = LumenTheme(colors: LumenColors.dark, scheme: .dark)
 }
 
+extension LumenTheme {
+    func resolvedPreferredColorScheme(enforceColorScheme: Bool) -> ColorScheme? {
+        guard enforceColorScheme else { return nil }
+
+        return scheme == .dark ? .dark : .light
+    }
+}
+
 private struct LumenThemeKey: EnvironmentKey {
     static let defaultValue = LumenTheme.light
 }
@@ -30,8 +38,8 @@ public extension EnvironmentValues {
 }
 
 public extension View {
-    func lumenTheme(_ theme: LumenTheme) -> some View {
+    func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View {
         environment(\.lumenTheme, theme)
-            .preferredColorScheme(theme.scheme == .dark ? .dark : .light)
+            .preferredColorScheme(theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme))
     }
 }

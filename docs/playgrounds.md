@@ -5,7 +5,8 @@ the real components, capture documentation screenshots, and prepare distributabl
 Each gallery covers all 33 contracts shared by every native adapter, including semantic Card
 variants, multiline and grouped forms, chips, action groups, transient feedback, metrics, rows,
 empty states, and light/dark theme behavior. Compose and Apple additionally exercise Picker, Slider,
-and Gauge; the Apple gallery also includes two intentionally macOS-specific controls.
+and Gauge. The galleries also demonstrate React Native pull-to-refresh, the Compose floating action
+button, the Apple date field, and two intentionally macOS-specific controls.
 
 ## First-time repository setup
 
@@ -90,13 +91,15 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Branch as the dependency rule and enter `main`.
+3. Choose Exact Version and enter `1.2.0`. Use Up to Next Major Version from `1.2.0` only when the
+   application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.
 6. Apply `.lumenTheme(.light)`, `.lumenTheme(.dark)`, or your chosen theme near the root view.
 
 LumenUI is a Swift Package. It does not require npm, CocoaPods, or copying the Swift sources into
-the application.
+the application. Commit `Package.resolved` and verify its version and revision match the intended
+release tag before shipping.
 
 ### Run on an iOS simulator
 
@@ -191,8 +194,8 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications currently include `packages/compose` from a Lumen checkout or Git submodule;
-  a remote Maven artifact is not yet available.
+- Android applications install `com.santi020k:lumen-compose:0.2.0` from Maven Central. The repository
+  playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application
 integration examples.

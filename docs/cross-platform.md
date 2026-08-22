@@ -49,8 +49,8 @@ Native adapters must not depend on the DOM, CSS class names, the Astro runtime, 
 | Universal foundations | Kept synchronized across every adapter | Colors, spacing, radius, typography, motion, elevation |
 | Universal primitives | Native implementation planned for every adapter | Theme, Text, Icon, Button, IconButton, Surface, TextField, Badge, Divider, Spinner |
 | Shared where appropriate | Added when the interaction maps cleanly | Cards, alerts, toast feedback, chips, field composition, progress, avatars, disclosure controls |
-| Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, shortcut recording, SF Symbols selection |
-| Platform-specific | Uses platform conventions and does not promise API parity | Navigation, tab bars, sheets, date pickers, gestures, system menus |
+| Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, date fields, shortcut recording, SF Symbols selection |
+| Platform-specific | Uses platform conventions and does not promise API parity | Pull-to-refresh controls, floating actions, date fields, gestures |
 
 The web catalog remains the reference for design intent, not a requirement that all 150 components
 be ported. A native component is considered supported only after its public contract, accessibility
@@ -91,7 +91,9 @@ Individual features that do not yet meet the adapter's Beta support bar should b
   ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
   adapters with shared semantic contracts.
 - Picker, Slider, and Gauge are available in SwiftUI and Compose, where stable dependency-free
-  native controls exist. The Apple tier additionally includes ShortcutRecorder and SymbolPicker on macOS.
+  native controls exist. The platform tier includes RefreshControl for React Native,
+  FloatingActionButton for Compose, DateField for Apple platforms, and ShortcutRecorder and
+  SymbolPicker on macOS.
 - Native navigation, window scenes, sheets, popovers, and system menus remain application-owned.
 - The executable checks and manual hardware matrix live in
   [Native device validation](native-device-validation.md). A platform remains Beta until the matrix

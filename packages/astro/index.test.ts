@@ -30,6 +30,72 @@ describe('@santi020k/lumen-astro package surface', () => {
     }
   })
 
+  test('exports discoverable dropdown menu compound parts', async () => {
+    const [content, index, item, runtime, separator, trigger, styles] = await Promise.all([
+      readFile(new URL('./components/DropdownMenuContent.astro', packageRoot), 'utf8'),
+      readFile(new URL('./index.ts', packageRoot), 'utf8'),
+      readFile(new URL('./components/DropdownMenuItem.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/DropdownMenuSeparator.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/DropdownMenuTrigger.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    for (const name of [
+      'DropdownMenuContent',
+      'DropdownMenuItem',
+      'DropdownMenuSeparator',
+      'DropdownMenuTrigger'
+    ]) expect(index).toContain(`export { default as ${name} }`)
+
+    expect(trigger).toContain('data-ui-trigger')
+    expect(content).toContain('role = \'menu\'')
+    expect(item).toContain('role="menuitem"')
+    expect(item).toContain('aria-disabled')
+    expect(separator).toContain('role="separator"')
+    expect(runtime).toContain('root.hasAttribute(\'data-ui-dropdown-menu\')')
+    expect(styles).toContain('.ui-menu__item-status')
+    expect(styles).toContain('.ui-menu__separator')
+  })
+
+  test('exports discoverable popover, tabs, and tooltip compound parts', async () => {
+    const [
+      index,
+      popoverPanel,
+      popoverTrigger,
+      tabsList,
+      tabsPanel,
+      tabsTrigger,
+      tooltipContent
+    ] = await Promise.all([
+      readFile(new URL('./index.ts', packageRoot), 'utf8'),
+      readFile(new URL('./components/PopoverPanel.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/PopoverTrigger.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/TabsList.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/TabsPanel.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/TabsTrigger.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/TooltipContent.astro', packageRoot), 'utf8')
+    ])
+
+    for (const name of [
+      'PopoverPanel',
+      'PopoverTrigger',
+      'TabsList',
+      'TabsPanel',
+      'TabsTrigger',
+      'TooltipContent'
+    ]) expect(index).toContain(`export { default as ${name} }`)
+
+    expect(popoverTrigger).toContain('data-ui-trigger')
+    expect(popoverPanel).toContain('[\'ui-popover__panel\']')
+    expect(tabsList).toContain('role="tablist"')
+    expect(tabsTrigger).toContain('role="tab"')
+    expect(tabsTrigger).toContain('data-value={value}')
+    expect(tabsPanel).toContain('role="tabpanel"')
+    expect(tabsPanel).toContain('data-value={value}')
+    expect(tooltipContent).toContain('role="tooltip"')
+  })
+
   test('uses the public runtime and CSS files referenced by package exports', async () => {
     const packageJson = JSON.parse(
       await readFile(new URL('./package.json', packageRoot), 'utf8')
@@ -490,6 +556,10 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(component).not.toContain('<lumen-theme-toggle')
     expect(languageToggle).toContain('<button')
     expect(languageToggle).not.toContain('<lumen-language-toggle')
+    expect(languageToggle).toContain('data-ui-language-locales')
+    expect(languageToggle).toContain('labelTemplate')
+    expect(runtime).toContain('new CustomEvent(\'ui:language-change\'')
+    expect(runtime).toContain('document.documentElement.lang = next.value')
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')
     expect(particles).toContain(

@@ -60,6 +60,63 @@ incremental migrations, but new code should keep native behavior and visual styl
 <NativeSelect size={8} visualSize="lg" />
 ```
 
+## Compound interactive components
+
+Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the
+shared progressive-enhancement runtime. Prefer these parts over recreating roles and `data-ui-*`
+attributes by hand.
+
+```astro
+---
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Popover,
+  PopoverPanel,
+  PopoverTrigger,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTrigger,
+  Tooltip,
+  TooltipContent
+} from '@santi020k/lumen-astro'
+---
+
+<DropdownMenu>
+  <DropdownMenuTrigger>Download</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>macOS</DropdownMenuItem>
+    <DropdownMenuItem>Windows</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem disabled status="Soon">Android</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+<Popover>
+  <PopoverTrigger>Filters</PopoverTrigger>
+  <PopoverPanel>Filter controls</PopoverPanel>
+</Popover>
+
+<Tabs initialValue="preview">
+  <TabsList aria-label="Workspace view">
+    <TabsTrigger value="preview">Preview</TabsTrigger>
+    <TabsTrigger value="code">Code</TabsTrigger>
+  </TabsList>
+  <TabsPanel value="preview">Rendered result</TabsPanel>
+  <TabsPanel value="code">Source code</TabsPanel>
+</Tabs>
+
+<Tooltip>
+  <Button aria-label="Save changes">Save</Button>
+  <TooltipContent>Save changes</TooltipContent>
+</Tooltip>
+```
+
 ## Context navigation
 
 Use `ContextNavigation` below a primary header when the available links change with a selected
