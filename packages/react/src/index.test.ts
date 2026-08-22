@@ -851,6 +851,54 @@ describe('@santi020k/lumen-react', () => {
     expect(kanban.rootRef.current).toBeNull()
   })
 
+  test('clears Kanban pointer state when a drag is canceled', () => {
+    const changes: unknown[] = []
+    const kanban = withHookDispatcher(() => useKanban({
+      onMoveRequest: detail => changes.push(detail)
+    }))
+    const column = {
+      dataset: { state: 'drop-target', uiKanbanColumn: 'inbox' }
+    } as unknown as HTMLElement
+    const item = {
+      closest: vi.fn(() => column),
+      dataset: { state: 'dragging', uiKanbanItem: 'feedback-1' }
+    } as unknown as HTMLElement
+    const root = {
+      dataset: {},
+      querySelectorAll: vi.fn((selector: string) => selector === '[data-ui-kanban-item]' ?
+        [item] :
+        [column])
+    } as unknown as HTMLElement
+    const handle = {
+      closest: vi.fn(() => root)
+    } as unknown as HTMLButtonElement
+    const handleProps = kanban.getHandleProps('feedback-1')
+
+    handleProps.onPointerDown?.({
+      clientX: 12,
+      clientY: 18,
+      currentTarget: handle,
+      pointerId: 7,
+      pointerType: 'touch'
+    } as Parameters<NonNullable<typeof handleProps.onPointerDown>>[0])
+    handleProps.onPointerCancel?.({
+      currentTarget: handle,
+      pointerId: 7
+    } as Parameters<NonNullable<typeof handleProps.onPointerCancel>>[0])
+
+    expect(item.dataset.state).toBeUndefined()
+    expect(column.dataset.state).toBeUndefined()
+
+    handleProps.onPointerUp?.({
+      clientX: 40,
+      clientY: 18,
+      currentTarget: handle,
+      pointerId: 7
+    } as Parameters<NonNullable<typeof handleProps.onPointerUp>>[0])
+
+    expect(changes).toEqual([])
+  })
+
   test('renders data display runtime contracts', () => {
     const table = DataTable({
       columns: [

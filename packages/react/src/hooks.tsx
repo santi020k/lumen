@@ -3126,6 +3126,18 @@ export const useKanban = ({
           startY: event.clientY
         }
       }),
+      onPointerCancel: composeHandlers(props.onPointerCancel, (event: PointerEvent<HTMLButtonElement>) => {
+        const pointer = pointerRef.current
+
+        if (pointer?.pointerId !== event.pointerId) return
+
+        pointerRef.current = null
+
+        const root = getKanbanRoot(event.currentTarget, rootRef.current)
+        const item = getKanbanItem(root, pointer.itemId)
+
+        clearKanbanInteractionState(root, item)
+      }),
       onPointerMove: composeHandlers(props.onPointerMove, (event: PointerEvent<HTMLButtonElement>) => {
         const root = getKanbanRoot(event.currentTarget, rootRef.current)
 
