@@ -126,7 +126,11 @@ jobs:
       - name: Run Compose accessibility tests on Android
         working-directory: packages/compose
         run: |
-          echo no | avdmanager create avd \
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          adb="$android_sdk_root/platform-tools/adb"
+          emulator="$android_sdk_root/emulator/emulator"
+
+          echo no | "$android_sdk_root/cmdline-tools/latest/bin/avdmanager" create avd \
             --force \
             --name lumen-ci \
             --package "system-images;android-35;google_apis;x86_64"
@@ -135,7 +139,7 @@ jobs:
             sudo chmod 666 /dev/kvm
           fi
 
-          emulator -avd lumen-ci \
+          "$emulator" -avd lumen-ci \
             -no-window \
             -no-audio \
             -no-snapshot-save \
@@ -143,11 +147,11 @@ jobs:
             -gpu swiftshader_indirect \
             > "$RUNNER_TEMP/lumen-emulator.log" 2>&1 &
           emulator_pid=$!
-          trap 'adb emu kill >/dev/null 2>&1 || kill "$emulator_pid" >/dev/null 2>&1 || true' EXIT
+          trap '"$adb" emu kill >/dev/null 2>&1 || kill "$emulator_pid" >/dev/null 2>&1 || true' EXIT
 
-          adb wait-for-device
+          "$adb" wait-for-device
           for _ in {1..120}; do
-            if [[ "$(adb shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]; then
+            if [[ "$("$adb" shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]; then
               ./gradlew connectedDebugAndroidTest
               exit 0
             fi
@@ -217,7 +221,7 @@ jobs:
         if: steps.visual-regression.outcome == 'failure'
         run: >-
           pnpm exec playwright test
-          --config playwright.visual.config.ts
+          --config playwright.config.ts
           --update-snapshots
           --grep template
 

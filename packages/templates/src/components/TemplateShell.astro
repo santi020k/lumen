@@ -77,7 +77,7 @@ const { activeItem, navigation, product, workspace } = Astro.props
         ))}
       </nav>
       <div class="template-shell__topbar-actions">
-        <ThemeToggle aria-label="Switch color mode" />
+        <ThemeToggle aria-label="Switch color mode" controlled />
         <Button aria-label="View notifications" size="icon" variant="ghost">
           <Icon name="bell" />
         </Button>
