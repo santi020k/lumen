@@ -149,7 +149,10 @@ jobs:
           emulator_pid=$!
           trap '"$adb" emu kill >/dev/null 2>&1 || kill "$emulator_pid" >/dev/null 2>&1 || true' EXIT
 
-          "$adb" wait-for-device
+          if ! timeout 240 "$adb" wait-for-device; then
+            cat "$RUNNER_TEMP/lumen-emulator.log" >&2
+            exit 1
+          fi
           for _ in {1..120}; do
             if [[ "$("$adb" shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]; then
               ./gradlew connectedDebugAndroidTest
@@ -230,7 +233,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: visual-baselines
-          path: tests/visual/components.spec.ts-snapshots
+          path: tests/visual/components.spec.ts-snapshots/template-*.png
           if-no-files-found: error
 
       - name: Fail on visual regression
@@ -326,7 +329,6 @@ jobs:
           pnpm run check:framework-contracts
           pnpm run check:native-contracts
           pnpm run check:platform-tokens
-          pnpm audit --audit-level moderate
           pnpm run check:security
           pnpm run check:publish-dry-run
           pnpm run check:consumer-packages

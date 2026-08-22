@@ -37,6 +37,8 @@ const preparePage = async (page: Page, path: string, theme: Theme): Promise<void
 
   await page.goto(path)
 
+  await page.evaluate(() => document.fonts.ready)
+
   await page.evaluate(themeName => {
     document.documentElement.dataset.theme = themeName
   }, theme)
