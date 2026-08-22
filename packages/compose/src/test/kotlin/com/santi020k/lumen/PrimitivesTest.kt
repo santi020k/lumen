@@ -1,5 +1,7 @@
 package com.santi020k.lumen
 
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -16,6 +18,53 @@ class PrimitivesTest {
     }
 
     @Test
+    fun materialColorSchemesMapToLumenSemanticRoles() {
+        val material = lightColorScheme(
+            primary = Color(0xFF112233),
+            secondary = Color(0xFF445566),
+            background = Color(0xFFF8F9FA),
+            error = Color(0xFFAA0000)
+        )
+        val palette = material.toLumenColorPalette(
+            fallback = LumenColors.Light,
+            overrides = LumenMaterialColorOverrides(
+                brand = Color(0xFF123456),
+                success = Color(0xFF008844),
+                warning = Color(0xFFFFAA00)
+            )
+        )
+
+        assertEquals(Color(0xFF123456), palette.brand)
+        assertEquals(Color(0xFF445566), palette.accent)
+        assertEquals(Color(0xFF008844), palette.success)
+        assertEquals(Color(0xFFFFAA00), palette.warning)
+        assertEquals(Color(0xFFAA0000), palette.danger)
+        assertEquals(Color(0xFFF8F9FA), palette.canvas)
+    }
+
+    @Test
+    fun lumenPalettesMapBackToMaterialSemanticRoles() {
+        val material = LumenColors.Dark.toMaterialColorScheme(isDark = true)
+
+        assertEquals(LumenColors.Dark.brand, material.primary)
+        assertEquals(LumenColors.Dark.brandSoft, material.primaryContainer)
+        assertEquals(LumenColors.Dark.accent, material.secondary)
+        assertEquals(LumenColors.Dark.canvas, material.background)
+        assertEquals(LumenColors.Dark.surfaceMuted, material.surfaceVariant)
+        assertEquals(LumenColors.Dark.surfaceStrong, material.surfaceContainerHigh)
+        assertEquals(LumenColors.Dark.inkMuted, material.onSurfaceVariant)
+        assertEquals(LumenColors.Dark.danger, material.error)
+    }
+
+    @Test
+    fun materialMappingsKeepCanonicalSuccessAndWarningWithoutOverrides() {
+        val palette = lightColorScheme().toLumenColorPalette(fallback = LumenColors.Dark)
+
+        assertEquals(LumenColors.Dark.success, palette.success)
+        assertEquals(LumenColors.Dark.warning, palette.warning)
+    }
+
+    @Test
     fun buttonMetricsPreserveNativeTouchTargets() {
         assertEquals(36.dp, LumenButtonMetrics.resolve(LumenControlSize.Sm).minHeight)
         assertEquals(44.dp, LumenButtonMetrics.resolve(LumenControlSize.Md).minHeight)
@@ -28,6 +77,26 @@ class PrimitivesTest {
         assertEquals(44.dp, LumenIconButtonMetrics.resolve(LumenControlSize.Sm).touchTarget)
         assertEquals(44.dp, LumenIconButtonMetrics.resolve(LumenControlSize.Md).touchTarget)
         assertEquals(52.dp, LumenIconButtonMetrics.resolve(LumenControlSize.Lg).touchTarget)
+    }
+
+    @Test
+    fun floatingActionButtonsUseMaterialMetricsAndSemanticIntents() {
+        assertEquals(
+            LumenFloatingActionButtonMetrics(40.dp, LumenIconSize.Md),
+            LumenFloatingActionButtonMetrics.resolve(LumenFloatingActionButtonSize.Small)
+        )
+        assertEquals(
+            LumenFloatingActionButtonMetrics(56.dp, LumenIconSize.Lg),
+            LumenFloatingActionButtonMetrics.resolve(LumenFloatingActionButtonSize.Regular)
+        )
+        assertEquals(
+            LumenFloatingActionButtonPalette(LumenColors.Light.brandSolid, LumenColors.Light.onBrand),
+            lumenFloatingActionButtonPalette(LumenColors.Light, LumenFloatingActionButtonIntent.Brand)
+        )
+        assertEquals(
+            LumenFloatingActionButtonPalette(LumenColors.Dark.danger, LumenColors.Dark.onDanger),
+            lumenFloatingActionButtonPalette(LumenColors.Dark, LumenFloatingActionButtonIntent.Danger)
+        )
     }
 
     @Test

@@ -1,19 +1,40 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import {
+  formatLumenLanguageLabel,
+  getLumenLocalePair,
+  type LumenLocaleOption,
+  normalizeLumenLocales,
+  resolveLumenAstroProps
+} from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'button'> {
   class?: string | null
   className?: string
+  defaultValue?: string
+  labelTemplate?: string
+  locales?: readonly LumenLocaleOption[]
+  storageKey?: string
+  value?: string
 }
 
 const {
   class: classProp = '',
   className = '',
+  defaultValue,
+  labelTemplate = 'Change language from {current} to {next}',
+  locales: localeOptions,
+  storageKey,
   type = 'button',
+  value,
   ...rest
 } = Astro.props
+
+const locales = normalizeLumenLocales(localeOptions)
+const initialValue = value ?? defaultValue ?? locales[0]?.value
+const { current, next } = getLumenLocalePair(locales, initialValue)
+const accessibleLabel = formatLumenLanguageLabel(labelTemplate, current, next)
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-language-toggle'
@@ -24,7 +45,19 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   type={type}
   class:list={classList}
   data-ui-language-toggle
+  data-ui-language-controlled={value === undefined ? undefined : ''}
+  data-ui-language-initial-value={initialValue}
+  data-ui-language-label-template={labelTemplate}
+  data-ui-language-locales={JSON.stringify(locales)}
+  data-ui-language-value={current.value}
+  data-ui-language-next-value={next.value}
+  data-ui-language-storage-key={storageKey}
+  aria-label={accessibleLabel}
   {...passthrough}
 >
-  <slot />
+  {
+    Astro.slots.has('default') ?
+      <slot /> :
+      <span data-ui-language-label lang={next.value}>{next.label}</span>
+  }
 </button>

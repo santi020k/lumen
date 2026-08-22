@@ -7,45 +7,35 @@ This Android library provides native Compose foundations and primitives generate
 canonical design tokens. It follows the same semantic color roles, spacing, radii, typography, and
 motion vocabulary as the web, React Native, and SwiftUI adapters.
 
-Until a remote Maven artifact is available, include Lumen as a Git submodule in the Android project:
-
-```bash
-git submodule add https://github.com/santi020k/lumen.git Vendor/lumen
-git submodule update --init --recursive
-```
-
-Connect the local module in `settings.gradle.kts`:
+Add Maven Central to the application's repositories, then add Lumen to `app/build.gradle.kts`:
 
 ```kotlin
-include(":lumen-compose")
-project(":lumen-compose").projectDir = file("Vendor/lumen/packages/compose")
-```
+repositories {
+    mavenCentral()
+}
 
-Then add the module to the application dependencies in `app/build.gradle.kts`:
-
-```kotlin
 dependencies {
-    implementation(project(":lumen-compose"))
+    implementation("com.santi020k:lumen-compose:0.2.0")
 }
 ```
 
-The module is prepared for Maven Central under `com.santi020k:lumen-compose`. A maintainer can build
-a signed Central Portal bundle with:
+The version in `packages/compose/gradle.properties` is canonical. `pnpm sync:compose-version`
+updates every public installation example, and `pnpm check:compose-version` prevents release or
+documentation checks from passing with stale coordinates.
+
+A maintainer can build a signed Central Portal bundle with:
 
 ```bash
 MAVEN_SIGNING_KEY="..." \
 MAVEN_SIGNING_PASSWORD="..." \
-LUMEN_COMPOSE_VERSION="0.1.0" \
 ./gradlew centralPortalBundle
 ```
 
-The repository's manual **Publish Compose to Maven Central** workflow builds, tests, signs, and
-uploads that bundle. It defaults to a user-managed deployment so Central validation can be reviewed
-before publication. Before the first run, verify the `com.santi020k` namespace in the Central Portal
-and add `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `MAVEN_SIGNING_KEY`, and
-`MAVEN_SIGNING_PASSWORD` as GitHub Actions repository secrets. Once the first release is visible on
-Maven Central, applications can replace the local module dependency with
-`implementation("com.santi020k:lumen-compose:<version>")`.
+Pushing a `compose-v<version>` tag builds, tests, signs, and automatically publishes the version
+declared in `gradle.properties`. The workflow rejects a tag whose version does not match that file.
+It requires `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `MAVEN_SIGNING_KEY`, and
+`MAVEN_SIGNING_PASSWORD` as GitHub Actions repository secrets. A manual workflow run remains
+available for recovery or a user-managed Central deployment.
 
 Sync Gradle and wrap the application content in `LumenTheme`:
 
@@ -68,19 +58,54 @@ LumenTheme {
 }
 ```
 
+If the application already owns a Material 3 theme, pass its values through the single Lumen
+provider instead of nesting another `MaterialTheme` or overriding `LocalLumenTheme` manually:
+
+```kotlin
+LumenTheme(
+    darkTheme = useDarkTheme,
+    materialColorScheme = productColorScheme,
+    materialColorOverrides = LumenMaterialColorOverrides(
+        brand = productBrand,
+        accent = productAccent,
+        success = productSuccess,
+        warning = productWarning
+    ),
+    typography = ProductTypography,
+    shapes = ProductShapes
+) {
+    AppContent()
+}
+```
+
+The Material mapping supplies canvas, surface, text, line, brand, accent, and danger roles. The
+explicit overrides preserve product semantics that Material does not model directly or that must
+remain distinct from its primary and secondary colors. Applications with complete Lumen palettes
+can pass `LumenThemeValues` instead.
+
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
 FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Chip, Picker,
 Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress, Skeleton, Disclosure, Gauge, and Avatar.
+The Android-specific tier includes `LumenFloatingActionButton`, with Material-native geometry and
+Lumen brand, accent, or danger intents.
 The module intentionally uses
 Material 3/Compose APIs and TalkBack semantics rather than translating DOM behavior. Icons accept
 app-provided `ImageVector` values, remain decorative when their content description is omitted, and
 require a description inside `LumenIconButton`.
 
+```kotlin
+LumenFloatingActionButton(
+    imageVector = Icons.Default.Add,
+    contentDescription = "Create project",
+    onClick = ::createProject
+)
+```
+
 EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
 with native Compose slots for graphics, actions, and trailing content.
 
-See the [native component reference](../../docs/native-components.md) for local Gradle setup, the
-complete API matrix, native image mapping, and accessibility requirements.
+See the [native component reference](../../docs/native-components.md) for installation, the complete
+API matrix, native image mapping, and accessibility requirements.
 Use the [native device validation matrix](../../docs/native-device-validation.md) when verifying
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Android,

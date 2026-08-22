@@ -19,6 +19,44 @@ public struct LumenColorPalette: Sendable {
     public let warning: Color
     public let danger: Color
     public let onDanger: Color
+
+    public init(
+        canvas: Color,
+        surface: Color,
+        surfaceMuted: Color,
+        surfaceStrong: Color,
+        line: Color,
+        ink: Color,
+        inkSoft: Color,
+        inkMuted: Color,
+        brand: Color,
+        brandSolid: Color,
+        brandSoft: Color,
+        onBrand: Color,
+        accent: Color,
+        success: Color,
+        warning: Color,
+        danger: Color,
+        onDanger: Color
+    ) {
+        self.canvas = canvas
+        self.surface = surface
+        self.surfaceMuted = surfaceMuted
+        self.surfaceStrong = surfaceStrong
+        self.line = line
+        self.ink = ink
+        self.inkSoft = inkSoft
+        self.inkMuted = inkMuted
+        self.brand = brand
+        self.brandSolid = brandSolid
+        self.brandSoft = brandSoft
+        self.onBrand = onBrand
+        self.accent = accent
+        self.success = success
+        self.warning = warning
+        self.danger = danger
+        self.onDanger = onDanger
+    }
 }
 
 public enum LumenColors {

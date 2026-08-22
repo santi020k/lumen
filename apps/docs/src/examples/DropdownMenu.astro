@@ -1,15 +1,19 @@
 ---
 import {
-  Button,
-  DropdownMenu
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from '@santi020k/lumen-astro'
 ---
 
 <DropdownMenu>
-  <Button variant="outline" data-ui-trigger>More actions</Button>
-  <div role="menu">
-    <button role="menuitem">Rename</button>
-    <button role="menuitem">Duplicate</button>
-    <button role="menuitem">Archive</button>
-  </div>
+  <DropdownMenuTrigger>More actions</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>Rename</DropdownMenuItem>
+    <DropdownMenuItem>Duplicate</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem disabled status="Soon">Archive</DropdownMenuItem>
+  </DropdownMenuContent>
 </DropdownMenu>

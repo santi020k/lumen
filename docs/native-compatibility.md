@@ -11,7 +11,7 @@ accessibility evidence is tracked separately in the
 | --- | --- | --- | --- |
 | React Native | React 19.2 or newer and React Native 0.86.2 or newer | TypeScript 6 and Node.js 22.12 or newer | Package build, typecheck, lint, and Vitest suites; Expo playground typecheck and lint |
 | SwiftUI | iOS 16, macOS 13, tvOS 16, and watchOS 9 | Swift tools 6.0 and the current stable Xcode selected by CI | `swift test` on macOS and a generic iOS Simulator build |
-| Jetpack Compose | Android API 23 or newer | JDK 21, Android Gradle Plugin 9.1.1, Kotlin Compose plugin 2.3.21, compile SDK 37 | Unit tests, Android lint, release publication verification, Android test APK build, and instrumentation on API 35 |
+| Jetpack Compose | Android API 23 or newer | JDK 21, Gradle 9.5, Android Gradle Plugin 9.3.1, Kotlin Compose plugin 2.4.10, compile SDK 37 | Unit tests, Android lint, release publication verification, Android test APK build, and instrumentation on API 35 |
 
 The React Native peer dependency declarations, Swift package platform declarations, and Compose
 Gradle configuration are authoritative when this document and package metadata differ.

@@ -31,16 +31,19 @@ import {
   createLumenKanbanMoveDetail,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  getLumenLocalePair,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
   type LumenKanbanMoveDetail,
+  type LumenLocaleOption,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail as CoreRichTextCommandDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderMode,
   type LumenThemeBuilderResult,
   type LumenThemeBuilderScheme,
-  type LumenThemeTokens
+  type LumenThemeTokens,
+  normalizeLumenLocales
 } from '@santi020k/lumen-core'
 
 type ChangeHandler<T> = (value: T) => void
@@ -163,6 +166,21 @@ export type PopoverController = DisclosureController
 export type DropdownMenuOptions = DisclosureOptions
 
 export type DropdownMenuController = DisclosureController
+
+export interface LanguageToggleOptions {
+  defaultValue?: string | undefined
+  locales?: readonly LumenLocaleOption[] | undefined
+  onValueChange?: ChangeHandler<string> | undefined
+  storageKey?: string | undefined
+  value?: string | undefined
+}
+
+export interface LanguageToggleController {
+  currentLocale: LumenLocaleOption
+  nextLocale: LumenLocaleOption
+  selectNext: () => void
+  value: string
+}
 
 export type ContextMenuOptions = DisclosureOptions
 
@@ -905,6 +923,78 @@ export const useDropdownMenu = (
   options: DropdownMenuOptions = {}
 ): DropdownMenuController => useDisclosureController(options, 'menu')
 
+const readLanguageStorage = (storageKey: string | undefined): string | null => {
+  if (!storageKey) return null
+
+  try {
+    return localStorage.getItem(storageKey)
+  } catch {
+    return null
+  }
+}
+
+export const useLanguageToggle = ({
+  defaultValue,
+  locales: localeOptions,
+  onValueChange,
+  storageKey,
+  value: controlledValue
+}: LanguageToggleOptions = {}): LanguageToggleController => {
+  const locales = useMemo(
+    () => normalizeLumenLocales(localeOptions),
+    [localeOptions]
+  )
+
+  const defaultPair = getLumenLocalePair(locales, defaultValue)
+  const [internalValue, setInternalValue] = useState(defaultPair.current.value)
+  const value = controlledValue ?? internalValue
+  const pair = getLumenLocalePair(locales, value)
+  const initializedRef = useRef(false)
+
+  useEffect(() => {
+    if (controlledValue !== undefined) return
+
+    if (!initializedRef.current) {
+      initializedRef.current = true
+
+      const preferredValue = readLanguageStorage(storageKey) ??
+        defaultValue ??
+        document.documentElement.lang
+
+      if (
+        preferredValue &&
+        preferredValue !== value &&
+        locales.some(locale => locale.value === preferredValue)
+      ) {
+        setInternalValue(preferredValue)
+
+        return
+      }
+    }
+
+    document.documentElement.lang = value
+
+    if (storageKey) {
+      try {
+        localStorage.setItem(storageKey, value)
+      } catch {
+        // Storage can be unavailable in privacy modes.
+      }
+    }
+  }, [controlledValue, defaultValue, locales, storageKey, value])
+
+  return {
+    currentLocale: pair.current,
+    nextLocale: pair.next,
+    selectNext: () => {
+      if (controlledValue === undefined) setInternalValue(pair.next.value)
+
+      onValueChange?.(pair.next.value)
+    },
+    value: pair.current.value
+  }
+}
+
 export const useContextMenu = ({
   defaultOpen = false,
   id,
@@ -1067,7 +1157,9 @@ export const useTabs = ({
           activate(triggerValue)
         }),
         onKeyDown: composeHandlers(props.onKeyDown, event => {
-          const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+          const keys = orientation === 'vertical' ?
+            ['ArrowUp', 'ArrowDown', 'Home', 'End'] :
+            ['ArrowLeft', 'ArrowRight', 'Home', 'End']
 
           if (!keys.includes(event.key)) return
 
@@ -1084,7 +1176,10 @@ export const useTabs = ({
           const nextTab =
             tabs[
               getLoopedIndex(
-                event.key, Math.max(0, currentIndex), tabs.length, ['ArrowRight']
+                event.key,
+                Math.max(0, currentIndex),
+                tabs.length,
+                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
               )
             ]
 
@@ -1101,7 +1196,7 @@ export const useTabs = ({
         type: props.type ?? 'button',
         'data-value': triggerValue
       }
-    }, [activate, selectedValue, tabsId]
+    }, [activate, orientation, selectedValue, tabsId]
   )
 
   const getPanelProps = useCallback<TabsController['getPanelProps']>(

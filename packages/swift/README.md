@@ -7,9 +7,11 @@
 design tokens as the web, React Native, and Compose adapters.
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and use the `main` branch as the dependency rule. Add the
-`LumenUI` product to your application target. The package manifest lives at the repository root, so
-the Git dependency works directly; no npm package, CocoaPod, or copied source is required.
+`https://github.com/santi020k/lumen`, and use **Exact Version** `1.2.0` for a reproducible production
+build. Choose **Up to Next Major Version** from `1.2.0` when the application intentionally accepts
+compatible Lumen updates. Reserve the `main` branch for local evaluation. Add the `LumenUI` product
+to your application target. The package manifest lives at the repository root, so the Git
+dependency works directly; no npm package, CocoaPod, or copied source is required.
 
 For a project managed with `Package.swift`, add the package and product explicitly:
 
@@ -17,7 +19,7 @@ For a project managed with `Package.swift`, add the package and product explicit
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        branch: "main"
+        exact: "1.2.0"
     )
 ],
 targets: [
@@ -29,6 +31,14 @@ targets: [
     )
 ]
 ```
+
+Use `.package(url: "https://github.com/santi020k/lumen", from: "1.2.0")` instead when the
+application's update policy accepts later compatible releases. Commit `Package.resolved` for
+applications, generated Xcode projects, and CI builds, then verify its `version` is `1.2.0` and its
+`revision` matches the `v1.2.0` tag before shipping. XcodeGen projects use the same policy in
+`project.yml` with `version: 1.2.0` for compatible updates or `exactVersion: 1.2.0` for an exact
+pin. Deterministic project generators should declare the requirement in their checked-in source
+and regenerate the project instead of patching the generated `.xcodeproj`.
 
 After Xcode resolves the package, import `LumenUI` in the SwiftUI view that owns the application
 surface and apply one theme near the root:
@@ -52,8 +62,21 @@ struct AppRoot: View {
 }
 ```
 
+Applications can construct `LumenColorPalette` directly when they already own light and dark
+product palettes. If a stored System/Light/Dark preference is application-owned, inject the chosen
+semantic values without forcing SwiftUI's appearance:
+
+```swift
+AppRoot()
+    .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
+```
+
+Apply the modifier to every independent scene that presents Lumen content, including macOS window,
+settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`, system appearance
+changes remain application-owned while Lumen components read the supplied palette.
+
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider,
+FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider, DateField,
 SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Disclosure, EmptyState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
 ShortcutRecorder and searchable SF Symbols picker.
@@ -96,6 +119,13 @@ LumenEmptyState(
 ) {
     LumenButton("Create Workspace", action: createWorkspace)
 }
+
+LumenDateField(
+    "Release date",
+    selection: $releaseDate,
+    bounds: .from(.now),
+    description: "Choose when this version becomes available."
+)
 ```
 
 On macOS, shortcut validation remains application-owned while Lumen handles capture and presentation:

@@ -33,9 +33,11 @@ components satisfy that contract; install its peer requirements only when the ap
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Branch** with `main` as the dependency rule. Add
-the `LumenUI` product to the application target. The repository-root `Package.swift` is the public
-package entry point; no CocoaPod or npm package is involved.
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `1.2.0` for a reproducible
+production build. Use **Up to Next Major Version** from `1.2.0` only when the application accepts
+compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
+application target. The repository-root `Package.swift` is the public package entry point; no
+CocoaPod or npm package is involved.
 
 Projects with their own Swift package manifest can declare the dependency directly:
 
@@ -43,10 +45,15 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        branch: "main"
+        exact: "1.2.0"
     )
 ]
 ```
+
+Use `from: "1.2.0"` instead of `exact: "1.2.0"` for a compatible-version policy. Commit
+`Package.resolved` for application and CI builds and verify that its version and revision match the
+intended release tag. XcodeGen and other deterministic project generators should keep the package
+requirement in their checked-in configuration and regenerate project files from that source.
 
 Then import the linked product and apply a theme near the application root:
 
@@ -85,33 +92,34 @@ Override the automatic choice only when the product requires it:
 SharedProfileActions().lumenControlDensity(.regular)
 ```
 
+Applications can initialize `LumenColorPalette` and `LumenTheme` from product-owned light and dark
+palettes. Use `.lumenTheme(productTheme, enforceColorScheme: false)` when the application's stored
+System/Light/Dark preference owns the preferred appearance. Apply the modifier to every independent
+window, settings, menu-bar, widget, and preview scene that renders Lumen content.
+
 ### Jetpack Compose
 
-The Android module publishes as `com.santi020k:lumen-compose`. Until a remote Maven repository is
-configured for a release, add the Lumen repository as a submodule inside the Android project:
-
-```bash
-git submodule add https://github.com/santi020k/lumen.git Vendor/lumen
-git submodule update --init --recursive
-```
-
-Then include the local module:
-
-```kotlin
-// settings.gradle.kts
-include(":lumen-compose")
-project(":lumen-compose").projectDir = file("Vendor/lumen/packages/compose")
-```
+The Android module is available from Maven Central. Add `mavenCentral()` to the application's
+repositories and use the published coordinate:
 
 ```kotlin
 // app/build.gradle.kts
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation(project(":lumen-compose"))
+    implementation("com.santi020k:lumen-compose:0.2.0")
 }
 ```
 
 Wrap application content in `LumenTheme`; it maps the shared palette to Material 3 while retaining
 the complete Lumen token object through `LocalLumenTheme`.
+
+Applications with an existing Material theme can pass `materialColorScheme`, `typography`, and
+`shapes` to the same `LumenTheme` call. `LumenMaterialColorOverrides` preserves explicit brand,
+accent, success, and warning semantics, and `ColorScheme.toLumenColorPalette(...)` exposes the
+mapped Lumen values when the application needs them independently.
 
 ## Supported surface
 
@@ -126,7 +134,7 @@ the complete Lumen token object through `LocalLumenTheme`.
 | Button group      | `LumenButtonGroup`      | `LumenButtonGroup`      | `LumenButtonGroup`      | Horizontal or vertical layout for related actions                         |
 | Text field        | `LumenTextField`        | `LumenTextField`        | `LumenTextField`        | Error and disabled states with native input behavior                      |
 | Textarea          | `LumenTextarea`         | `LumenTextarea`         | `LumenTextarea`         | Multiline native editing with supporting and error states                 |
-| Field group       | `LumenFieldGroup`       | `LumenFieldGroup`       | `LumenFieldGroup`       | Shared label, guidance, required state, and validation message             |
+| Field group       | `LumenFieldGroup`       | `LumenFieldGroup`       | `LumenFieldGroup`       | Shared label, guidance, required state, and validation message            |
 | Toggle            | `LumenToggle`           | `LumenToggle`           | `LumenToggle`           | Native switch behavior with visible label and disabled state              |
 | Settings row      | `LumenSettingsRow`      | `LumenSettingsRow`      | `LumenSettingsRow`      | Supporting copy, optional graphic, and trailing native control            |
 | Search field      | `LumenSearchField`      | `LumenSearchField`      | `LumenSearchField`      | Native search entry with labeled clear action                             |
@@ -160,15 +168,16 @@ enabled by an action or press callback instead of a visual-only `interactive` va
 
 ## Platform-specific components
 
-The SwiftUI package also provides components grounded in repeated patterns from Lumen-owned iOS and
-macOS applications. They use the same theme, density, spacing, radius, and accessibility contracts
-as the shared native tier without forcing platform-specific Apple behavior onto React Native or
-Compose.
+Each native adapter also provides a small set of controls grounded in its own interaction model.
+They use Lumen tokens and accessibility rules without promising artificial API parity.
 
-| Component               | Platforms  | Contract                                                               |
-| ----------------------- | ---------- | ---------------------------------------------------------------------- |
-| `LumenShortcutRecorder` | macOS      | Keyboard capture with cancel, clear, and application validation states |
-| `LumenSymbolPicker`     | macOS      | Searchable categorized SF Symbols selection                            |
+| Component                   | Adapter      | Platforms    | Contract                                                               |
+| --------------------------- | ------------ | ------------ | ---------------------------------------------------------------------- |
+| `LumenRefreshControl`       | React Native | iOS, Android | Pull-to-refresh state with semantic native indicator colors            |
+| `LumenDateField`            | SwiftUI      | iOS, macOS   | Native date/time selection with bounds and validation context          |
+| `LumenShortcutRecorder`     | SwiftUI      | macOS        | Keyboard capture with cancel, clear, and application validation states |
+| `LumenSymbolPicker`         | SwiftUI      | macOS        | Searchable categorized SF Symbols selection                            |
+| `LumenFloatingActionButton` | Compose      | Android      | Material floating action with semantic intent and native sizing        |
 
 Picker, slider, and gauge are shared by SwiftUI and Compose because both platforms provide stable,
 dependency-free native controls. React Native applications can pair Lumen tokens with their chosen
@@ -177,6 +186,48 @@ control library rather than making the shared package impose one dependency.
 These components are intentionally smaller than application structure. Continue using native
 `NavigationSplitView`, `List`, `Form`, `Toolbar`, sheets, popovers, and window scenes so SwiftUI owns
 navigation, focus restoration, keyboard routing, and window behavior.
+
+### Platform-native actions and input
+
+React Native scroll containers retain ownership of scrolling while Lumen supplies the refresh
+indicator. The application owns refreshing state and completion:
+
+```tsx
+<ScrollView
+  refreshControl={(
+    <LumenRefreshControl
+      accessibilityLabel="Refresh projects"
+      refreshing={refreshing}
+      onRefresh={refreshProjects}
+    />
+  )}
+>
+  {content}
+</ScrollView>
+```
+
+Apple applications can constrain native date or date-and-time selection and provide supporting or
+validation text without replacing `DatePicker` behavior:
+
+```swift
+LumenDateField(
+    "Release date",
+    selection: $releaseDate,
+    components: .dateAndTime,
+    bounds: .from(.now),
+    description: "Choose when this version becomes available."
+)
+```
+
+Compose applications can use a Material-native floating action while keeping Lumen semantic intent:
+
+```kotlin
+LumenFloatingActionButton(
+    imageVector = Icons.Default.Add,
+    contentDescription = "Create project",
+    onClick = ::createProject
+)
+```
 
 ### Shared settings and native selection
 

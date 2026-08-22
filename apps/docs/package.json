@@ -6,8 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/generate-og-images.mjs && astro build",
-    "generate:og": "node scripts/generate-og-images.mjs",
+    "build": "santi-og generate --config scripts/generate-og-images.mjs && astro build",
+    "generate:og": "santi-og generate --config scripts/generate-og-images.mjs",
+    "generate:og:force": "santi-og generate --config scripts/generate-og-images.mjs --force",
+    "check:og": "santi-og check --config scripts/generate-og-images.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "typecheck": "astro check",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@astrojs/check": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
+    "@santi020k/og": "catalog:",
     "sharp": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

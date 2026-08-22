@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  role = 'menu',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  ['ui-menu__content'],
+  classProp,
+  className
+)
+---
+
+<div role={role} class:list={classList} {...passthrough}>
+  <slot />
+</div>

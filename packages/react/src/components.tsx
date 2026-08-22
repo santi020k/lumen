@@ -35,6 +35,7 @@ import {
   createLumenBarGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  formatLumenLanguageLabel,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
@@ -66,6 +67,7 @@ import {
   type DialogOptions,
   type DropdownMenuController,
   type DropdownMenuOptions,
+  type LanguageToggleOptions,
   type PopoverController,
   type PopoverOptions,
   type ResizableDirection,
@@ -78,6 +80,7 @@ import {
   useDialog,
   useDropdownMenu,
   useInputOTP,
+  useLanguageToggle,
   usePopover,
   useResizable,
   useSelect,
@@ -2597,6 +2600,54 @@ export const DropdownMenuContent = ({
   )
 }
 
+export interface DropdownMenuItemProps extends ComponentPropsWithoutRef<'button'> {
+  status?: string | undefined
+}
+
+export const DropdownMenuItem = ({
+  children,
+  className,
+  disabled = false,
+  onClick,
+  status,
+  ...props
+}: DropdownMenuItemProps) => {
+  const menu = requireContext(
+    useContext(DropdownMenuContext), 'DropdownMenuItem'
+  )
+
+  return (
+    <button
+      {...props}
+      aria-disabled={disabled || undefined}
+      className={composeClassName('ui-menu__item', className)}
+      disabled={disabled}
+      onClick={event => {
+        onClick?.(event)
+
+        if (!event.defaultPrevented && !disabled) menu.close()
+      }}
+      role={props.role ?? 'menuitem'}
+      type={props.type ?? 'button'}
+    >
+      <span className="ui-menu__item-label">{children}</span>
+      {status && <span className="ui-menu__item-status">{status}</span>}
+    </button>
+  )
+}
+
+export type DropdownMenuSeparatorProps = ComponentPropsWithoutRef<'div'>
+export const DropdownMenuSeparator = ({
+  className,
+  ...props
+}: DropdownMenuSeparatorProps) => (
+  <div
+    className={composeClassName('ui-menu__separator', className)}
+    role={props.role ?? 'separator'}
+    {...props}
+  />
+)
+
 export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
   variant?: 'compact' | 'default'
@@ -5051,18 +5102,72 @@ export const ThemeToggle = ({
   </button>
 )
 
-export type LanguageToggleProps = ComponentPropsWithoutRef<'button'>
+export interface LanguageToggleProps
+  extends Omit<ComponentPropsWithoutRef<'button'>, 'defaultValue' | 'value'>,
+  LanguageToggleOptions {
+  labelTemplate?: string | undefined
+}
+
 export const LanguageToggle = ({
+  children,
   className,
+  defaultValue,
+  labelTemplate = 'Change language from {current} to {next}',
+  locales,
+  onClick,
+  onValueChange,
+  storageKey,
   type = 'button',
+  value,
   ...props
-}: LanguageToggleProps) => (
-  <button
-    className={composeClassName('ui-language-toggle', className)}
-    type={type}
-    {...props}
-  />
-)
+}: LanguageToggleProps) => {
+  const language = useLanguageToggle({
+    defaultValue,
+    locales,
+    onValueChange,
+    storageKey,
+    value
+  })
+
+  const accessibleLabel = formatLumenLanguageLabel(
+    labelTemplate,
+    language.currentLocale,
+    language.nextLocale
+  )
+
+  return (
+    <button
+      aria-label={accessibleLabel}
+      className={composeClassName('ui-language-toggle', className)}
+      data-ui-language-next-value={language.nextLocale.value}
+      data-ui-language-toggle
+      data-ui-language-value={language.value}
+      onClick={event => {
+        onClick?.(event)
+
+        if (event.defaultPrevented) return
+
+        language.selectNext()
+
+        event.currentTarget.dispatchEvent(new CustomEvent('ui:language-change', {
+          bubbles: true,
+          detail: {
+            previousValue: language.currentLocale.value,
+            value: language.nextLocale.value
+          }
+        }))
+      }}
+      type={type}
+      {...props}
+    >
+      {children ?? (
+        <span lang={language.nextLocale.value}>
+          {language.nextLocale.label}
+        </span>
+      )}
+    </button>
+  )
+}
 
 export interface ParticlesProps extends ComponentPropsWithoutRef<'div'> {
   density?: 'low' | 'medium' | 'high'

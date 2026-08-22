@@ -6,7 +6,9 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sourcePath = join(repoRoot, 'tokens/lumen.tokens.json')
 const checkOnly = process.argv.includes('--check')
 const lumenExtension = 'com.santi020k.lumen'
-const toCamelCase = value => value.replaceAll(/-([a-z0-9])/g, (_, character) => character.toUpperCase())
+
+const toCamelCase = value =>
+  value.replaceAll(/-([a-z0-9])/g, (_, character) => character.toUpperCase())
 
 const toPascalCase = value => {
   const camel = toCamelCase(value)
@@ -14,8 +16,8 @@ const toPascalCase = value => {
   return `${camel.slice(0, 1).toUpperCase()}${camel.slice(1)}`
 }
 
-const toNativeCamelCase = value => /^\d/.test(value) ? `size${value}` : toCamelCase(value)
-const toNativePascalCase = value => /^\d/.test(value) ? `Size${value}` : toPascalCase(value)
+const toNativeCamelCase = value => (/^\d/.test(value) ? `size${value}` : toCamelCase(value))
+const toNativePascalCase = value => (/^\d/.test(value) ? `Size${value}` : toPascalCase(value))
 
 const requiredRecord = (value, path) => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -41,9 +43,10 @@ const requiredNumber = (value, path) => {
   return value
 }
 
-const tokenEntries = (group, path) => Object.entries(requiredRecord(group, path))
-  .filter(([name]) => !name.startsWith('$'))
-  .map(([name, token]) => [name, requiredRecord(token, `${path}.${name}`)])
+const tokenEntries = (group, path) =>
+  Object.entries(requiredRecord(group, path))
+    .filter(([name]) => !name.startsWith('$'))
+    .map(([name, token]) => [name, requiredRecord(token, `${path}.${name}`)])
 
 const tokenValue = (token, path) => {
   if (!Object.hasOwn(token, '$value')) throw new TypeError(`Missing $value at ${path}.`)
@@ -51,34 +54,55 @@ const tokenValue = (token, path) => {
   return token.$value
 }
 
-const colorEntries = (source, scheme) => tokenEntries(
-  requiredRecord(requiredRecord(source.color, 'color')[scheme], `color.${scheme}`),
-  `color.${scheme}`
-).map(([name, token]) => {
-  const extensions = requiredRecord(token.$extensions, `color.${scheme}.${name}.$extensions`)
-  const lumen = requiredRecord(extensions[lumenExtension], `color.${scheme}.${name}.$extensions.${lumenExtension}`)
+const colorEntries = (source, scheme) =>
+  tokenEntries(
+    requiredRecord(requiredRecord(source.color, 'color')[scheme], `color.${scheme}`),
+    `color.${scheme}`
+  ).map(([name, token]) => {
+    const extensions = requiredRecord(token.$extensions, `color.${scheme}.${name}.$extensions`)
 
-  return {
-    css: requiredString(lumen.cssValue, `color.${scheme}.${name}.$extensions.${lumenExtension}.cssValue`),
-    description: requiredString(token.$description, `color.${scheme}.${name}.$description`),
-    hex: requiredString(tokenValue(token, `color.${scheme}.${name}`), `color.${scheme}.${name}.$value`),
-    name
-  }
-})
+    const lumen = requiredRecord(
+      extensions[lumenExtension],
+      `color.${scheme}.${name}.$extensions.${lumenExtension}`
+    )
 
-const dimensionEntries = (source, groupName) => tokenEntries(source[groupName], groupName).map(([name, token]) => {
-  const value = requiredRecord(tokenValue(token, `${groupName}.${name}`), `${groupName}.${name}.$value`)
-  const unit = requiredString(value.unit, `${groupName}.${name}.$value.unit`)
+    return {
+      css: requiredString(
+        lumen.cssValue,
+        `color.${scheme}.${name}.$extensions.${lumenExtension}.cssValue`
+      ),
+      description: requiredString(token.$description, `color.${scheme}.${name}.$description`),
+      hex: requiredString(
+        tokenValue(token, `color.${scheme}.${name}`),
+        `color.${scheme}.${name}.$value`
+      ),
+      name
+    }
+  })
 
-  if (unit !== 'px') throw new TypeError(`Only px dimensions are supported at ${groupName}.${name}.`)
+const dimensionEntries = (source, groupName) =>
+  tokenEntries(source[groupName], groupName).map(([name, token]) => {
+    const value = requiredRecord(
+      tokenValue(token, `${groupName}.${name}`),
+      `${groupName}.${name}.$value`
+    )
 
-  return { name, value: requiredNumber(value.value, `${groupName}.${name}.$value.value`) }
-})
+    const unit = requiredString(value.unit, `${groupName}.${name}.$value.unit`)
 
-const nestedEntries = (source, parent, group) => tokenEntries(
-  requiredRecord(requiredRecord(source[parent], parent)[group], `${parent}.${group}`),
-  `${parent}.${group}`
-)
+    if (unit !== 'px')
+      throw new TypeError(`Only px dimensions are supported at ${groupName}.${name}.`)
+
+    return {
+      name,
+      value: requiredNumber(value.value, `${groupName}.${name}.$value.value`)
+    }
+  })
+
+const nestedEntries = (source, parent, group) =>
+  tokenEntries(
+    requiredRecord(requiredRecord(source[parent], parent)[group], `${parent}.${group}`),
+    `${parent}.${group}`
+  )
 
 const readSource = async () => {
   const source = JSON.parse(await readFile(sourcePath, 'utf8'))
@@ -92,11 +116,18 @@ const readSource = async () => {
   return {
     dark,
     durations: nestedEntries(source, 'motion', 'duration').map(([name, token]) => {
-      const value = requiredRecord(tokenValue(token, `motion.duration.${name}`), `motion.duration.${name}.$value`)
+      const value = requiredRecord(
+        tokenValue(token, `motion.duration.${name}`),
+        `motion.duration.${name}.$value`
+      )
 
-      if (value.unit !== 'ms') throw new TypeError(`Only ms durations are supported at motion.duration.${name}.`)
+      if (value.unit !== 'ms')
+        throw new TypeError(`Only ms durations are supported at motion.duration.${name}.`)
 
-      return { name, value: requiredNumber(value.value, `motion.duration.${name}.$value.value`) }
+      return {
+        name,
+        value: requiredNumber(value.value, `motion.duration.${name}.$value.value`)
+      }
     }),
     easings: nestedEntries(source, 'motion', 'easing').map(([name, token]) => {
       const value = tokenValue(token, `motion.easing.${name}`)
@@ -105,7 +136,12 @@ const readSource = async () => {
         throw new TypeError(`Expected four cubic Bézier values at motion.easing.${name}.$value.`)
       }
 
-      return { name, value: value.map((item, index) => requiredNumber(item, `motion.easing.${name}.$value.${index}`)) }
+      return {
+        name,
+        value: value.map((item, index) =>
+          requiredNumber(item, `motion.easing.${name}.$value.${index}`)
+        )
+      }
     }),
     elevation: tokenEntries(source.elevation, 'elevation').map(([name, token]) => ({
       name,
@@ -115,21 +151,33 @@ const readSource = async () => {
       const value = tokenValue(token, `typography.font-family.${name}`)
 
       if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
-        throw new TypeError(`Expected a font family array at typography.font-family.${name}.$value.`)
+        throw new TypeError(
+          `Expected a font family array at typography.font-family.${name}.$value.`
+        )
       }
 
       return { name, value }
     }),
     fontSizes: nestedEntries(source, 'typography', 'font-size').map(([name, token]) => {
-      const value = requiredRecord(tokenValue(token, `typography.font-size.${name}`), `typography.font-size.${name}.$value`)
+      const value = requiredRecord(
+        tokenValue(token, `typography.font-size.${name}`),
+        `typography.font-size.${name}.$value`
+      )
 
-      if (value.unit !== 'px') throw new TypeError(`Only px font sizes are supported at typography.font-size.${name}.`)
+      if (value.unit !== 'px')
+        throw new TypeError(`Only px font sizes are supported at typography.font-size.${name}.`)
 
-      return { name, value: requiredNumber(value.value, `typography.font-size.${name}.$value.value`) }
+      return {
+        name,
+        value: requiredNumber(value.value, `typography.font-size.${name}.$value.value`)
+      }
     }),
     fontWeights: nestedEntries(source, 'typography', 'font-weight').map(([name, token]) => ({
       name,
-      value: requiredNumber(tokenValue(token, `typography.font-weight.${name}`), `typography.font-weight.${name}.$value`)
+      value: requiredNumber(
+        tokenValue(token, `typography.font-weight.${name}`),
+        `typography.font-weight.${name}.$value`
+      )
     })),
     light,
     radii: dimensionEntries(source, 'radius'),
@@ -137,13 +185,15 @@ const readSource = async () => {
   }
 }
 
-const tsProperty = value => /^[A-Za-z_$][\w$]*$/.test(value) ? value : JSON.stringify(value)
+const tsProperty = value => (/^[A-Za-z_$][\w$]*$/.test(value) ? value : JSON.stringify(value))
 
-const tsObject = (entries, value, indentation = '  ') => entries
-  .map(entry => `${indentation}${tsProperty(toCamelCase(entry.name))}: ${value(entry)}`)
-  .join(',\n')
+const tsObject = (entries, value, indentation = '  ') =>
+  entries
+    .map(entry => `${indentation}${tsProperty(toCamelCase(entry.name))}: ${value(entry)}`)
+    .join(',\n')
 
-const generateTypeScript = tokens => `/* This file is generated by scripts/generate-platform-tokens.mjs. */
+const generateTypeScript =
+  tokens => `/* This file is generated by scripts/generate-platform-tokens.mjs. */
 
 export const lumenColorTokens = {
   light: {
@@ -209,27 +259,38 @@ const swiftColorArguments = hex => {
     .join(', ')
 }
 
-const swiftBezierArguments = values => [
-  `x1: ${values[0]}`,
-  `y1: ${values[1]}`,
-  `x2: ${values[2]}`,
-  `y2: ${values[3]}`
-].join(', ')
+const swiftBezierArguments = values =>
+  [`x1: ${values[0]}`, `y1: ${values[1]}`, `x2: ${values[2]}`, `y2: ${values[3]}`].join(', ')
 
 const generateSwift = tokens => `// This file is generated by scripts/generate-platform-tokens.mjs.
 import SwiftUI
 
 public struct LumenColorPalette: Sendable {
 ${tokens.light.map(token => `    public let ${toCamelCase(token.name)}: Color`).join('\n')}
+
+    public init(
+${tokens.light
+  .map(token => `        ${toCamelCase(token.name)}: Color,`)
+  .join('\n')
+  .replace(/,$/, '')}
+    ) {
+${tokens.light.map(token => `        self.${toCamelCase(token.name)} = ${toCamelCase(token.name)}`).join('\n')}
+    }
 }
 
 public enum LumenColors {
     public static let light = LumenColorPalette(
-${tokens.light.map(token => `        ${toCamelCase(token.name)}: Color(${swiftColorArguments(token.hex)}),`).join('\n').replace(/,$/, '')}
+${tokens.light
+  .map(token => `        ${toCamelCase(token.name)}: Color(${swiftColorArguments(token.hex)}),`)
+  .join('\n')
+  .replace(/,$/, '')}
     )
 
     public static let dark = LumenColorPalette(
-${tokens.dark.map(token => `        ${toCamelCase(token.name)}: Color(${swiftColorArguments(token.hex)}),`).join('\n').replace(/,$/, '')}
+${tokens.dark
+  .map(token => `        ${toCamelCase(token.name)}: Color(${swiftColorArguments(token.hex)}),`)
+  .join('\n')
+  .replace(/,$/, '')}
     )
 }
 
@@ -271,26 +332,37 @@ ${tokens.elevation.map(token => `    public static let ${toCamelCase(token.name)
 `
 
 const kotlinColor = hex => `Color(0xFF${hex.slice(1)})`
-const kotlinFloat = value => Number.isInteger(value) ? `${value}f` : `${value}f`
+const kotlinFloat = value => (Number.isInteger(value) ? `${value}f` : `${value}f`)
 
 const generateKotlin = tokens => `// This file is generated by scripts/generate-platform-tokens.mjs.
 package com.santi020k.lumen
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@Immutable
 data class LumenColorPalette(
-${tokens.light.map(token => `    val ${toCamelCase(token.name)}: Color,`).join('\n').replace(/,$/, '')}
+${tokens.light
+  .map(token => `    val ${toCamelCase(token.name)}: Color,`)
+  .join('\n')
+  .replace(/,$/, '')}
 )
 
 object LumenColors {
     val Light = LumenColorPalette(
-${tokens.light.map(token => `        ${toCamelCase(token.name)} = ${kotlinColor(token.hex)},`).join('\n').replace(/,$/, '')}
+${tokens.light
+  .map(token => `        ${toCamelCase(token.name)} = ${kotlinColor(token.hex)},`)
+  .join('\n')
+  .replace(/,$/, '')}
     )
 
     val Dark = LumenColorPalette(
-${tokens.dark.map(token => `        ${toCamelCase(token.name)} = ${kotlinColor(token.hex)},`).join('\n').replace(/,$/, '')}
+${tokens.dark
+  .map(token => `        ${toCamelCase(token.name)} = ${kotlinColor(token.hex)},`)
+  .join('\n')
+  .replace(/,$/, '')}
     )
 }
 
@@ -307,6 +379,7 @@ ${tokens.fontSizes.map(token => `    val ${toNativePascalCase(token.name)}Size =
 ${tokens.fontWeights.map(token => `    const val ${toPascalCase(token.name)}Weight = ${token.value}`).join('\n')}
 }
 
+@Immutable
 data class LumenCubicBezier(
     val x1: Float,
     val y1: Float,
@@ -335,11 +408,13 @@ const assertStylesMatch = async tokens => {
   for (const [scheme, marker, colors] of blocks) {
     const markerIndex = styles.indexOf(marker)
 
-    if (markerIndex === -1) throw new Error(`Missing ${scheme} theme block in packages/lumen/styles.css.`)
+    if (markerIndex === -1)
+      throw new Error(`Missing ${scheme} theme block in packages/lumen/styles.css.`)
 
     const blockEnd = styles.indexOf('\n}', markerIndex)
 
-    if (blockEnd === -1) throw new Error(`Unterminated ${scheme} theme block in packages/lumen/styles.css.`)
+    if (blockEnd === -1)
+      throw new Error(`Unterminated ${scheme} theme block in packages/lumen/styles.css.`)
 
     const block = styles.slice(markerIndex, blockEnd)
 
@@ -384,14 +459,21 @@ const main = async () => {
     ['packages/core/src/foundations.generated.ts', generateTypeScript(tokens)],
     ['packages/react-native/src/tokens.generated.ts', generateTypeScript(tokens)],
     ['packages/swift/Sources/LumenUI/Tokens.generated.swift', generateSwift(tokens)],
-    ['packages/compose/src/main/kotlin/com/santi020k/lumen/Tokens.generated.kt', generateKotlin(tokens)]
+    [
+      'packages/compose/src/main/kotlin/com/santi020k/lumen/Tokens.generated.kt',
+      generateKotlin(tokens)
+    ]
   ]
 
-  await Promise.all(outputs.map(([path, content]) => writeGeneratedFile(join(repoRoot, path), content)))
+  await Promise.all(
+    outputs.map(([path, content]) => writeGeneratedFile(join(repoRoot, path), content))
+  )
 
   await assertStylesMatch(tokens)
 
-  process.stdout.write(`lumen-platform-tokens: ${checkOnly ? 'verified' : 'generated'} ${outputs.length} outputs\n`)
+  process.stdout.write(
+    `lumen-platform-tokens: ${checkOnly ? 'verified' : 'generated'} ${outputs.length} outputs\n`
+  )
 }
 
 await main()

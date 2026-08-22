@@ -154,8 +154,8 @@ enum class LumenIconSize(val dimension: Dp) {
 @Composable
 fun LumenIcon(
     imageVector: ImageVector,
-    contentDescription: String? = null,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     size: LumenIconSize = LumenIconSize.Md,
     tint: Color = LocalLumenTheme.current.colors.ink
 ) {

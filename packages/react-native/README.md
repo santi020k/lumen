@@ -8,7 +8,8 @@ themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup
 Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
 SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Skeleton, and Disclosure implementations.
 The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar
-for common product layouts without giving up native composition.
+for common product layouts without giving up native composition. `LumenRefreshControl` adds a
+React Native-specific pull-to-refresh indicator using the active semantic theme.
 
 Install the package in an existing Expo or React Native application:
 
@@ -55,6 +56,22 @@ values. Components use native accessibility roles, states, touch targets, and re
 on the DOM or the Lumen web runtime. `LumenIcon` accepts any graphic component with `color`, `size`,
 and `strokeWidth` props; Lucide React Native components work directly. Standalone icons are
 decorative unless given a label, while every `LumenIconButton` requires an accessible label.
+
+Attach the refresh control to a native scroll container without replacing its scrolling behavior:
+
+```tsx
+<ScrollView
+  refreshControl={(
+    <LumenRefreshControl
+      accessibilityLabel="Refresh projects"
+      refreshing={refreshing}
+      onRefresh={refreshProjects}
+    />
+  )}
+>
+  {content}
+</ScrollView>
+```
 
 See the [native component reference](../../docs/native-components.md) for the complete API matrix,
 state contracts, image-source mapping, and accessibility requirements.

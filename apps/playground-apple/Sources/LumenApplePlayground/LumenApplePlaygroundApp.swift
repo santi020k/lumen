@@ -20,6 +20,7 @@ private struct ApplePlaygroundView: View {
     @State private var notes = "Native components now share one documented contract."
     @State private var progress = 76.0
     @State private var query = ""
+    @State private var releaseDate = Date()
     @State private var selectedDensity = "Comfortable"
     @State private var selectedProfile = "balanced"
     @State private var selectedLayout = "comfortable"
@@ -33,7 +34,7 @@ private struct ApplePlaygroundView: View {
         "Textarea", "Field group", "Chip", "Badge",
         "Divider", "Spinner", "Card", "Alert", "Progress", "Skeleton", "Disclosure", "Avatar",
         "Toggle", "Settings row", "Checkbox", "Radio group", "Segmented control",
-        "Picker", "Slider", "Search field", "Empty state", "List row", "Banner", "Toast", "Stat", "Gauge",
+        "Picker", "Slider", "Date field", "Search field", "Empty state", "List row", "Banner", "Toast", "Stat", "Gauge",
         "Section header", "Status bar", "Shortcut recorder", "Symbol picker"
     ]
 
@@ -157,6 +158,7 @@ private struct ApplePlaygroundView: View {
             "Settings row",
             "Picker",
             "Slider",
+            "Date field",
             "Search field",
             "Checkbox",
             "Radio group",
@@ -231,6 +233,11 @@ private struct ApplePlaygroundView: View {
                         in: 0...100,
                         step: 1,
                         valueLabel: "\(Int(progress))%"
+                    )
+                    LumenDateField(
+                        "Release date",
+                        selection: $releaseDate,
+                        description: "Choose when this component becomes available."
                     )
                 }
             }

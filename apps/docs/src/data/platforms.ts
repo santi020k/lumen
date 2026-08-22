@@ -60,9 +60,8 @@ export interface PlatformGuide {
 const nativeBetaNote =
   'The native adapter is available for testing and early production adoption, but its public API may evolve as Lumen validates it in real applications. Review release notes when upgrading.'
 
-const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => (
-  getNativeComponentsForPlatform(platform).map(component => component.name)
-)
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.2.0'
+const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
   {
@@ -98,7 +97,8 @@ export const platformGuides: PlatformGuide[] = [
     packageName: '@santi020k/lumen-{astro,react,elements}',
     principles: [
       {
-        description: 'Astro is the reference implementation for the complete catalog and behavior contract.',
+        description:
+          'Astro is the reference implementation for the complete catalog and behavior contract.',
         title: 'Reference surface'
       },
       {
@@ -106,7 +106,8 @@ export const platformGuides: PlatformGuide[] = [
         title: 'Framework-native behavior'
       },
       {
-        description: 'Custom elements bring the same design language anywhere standards-based HTML runs.',
+        description:
+          'Custom elements bring the same design language anywhere standards-based HTML runs.',
         title: 'Portable elements'
       }
     ],
@@ -213,34 +214,43 @@ pnpm playground:react-native`,
     ],
     principles: [
       {
-        description: 'Numeric dimensions and hexadecimal colors are generated directly from the canonical token source.',
+        description:
+          'Numeric dimensions and hexadecimal colors are generated directly from the canonical token source.',
         title: 'Native foundations'
       },
       {
-        description: 'Components use native accessibility roles, states, touch targets, and refs without a DOM runtime.',
+        description:
+          'Components use native accessibility roles, states, touch targets, and refs without a DOM runtime.',
         title: 'Native semantics'
       },
       {
-        description: 'The provider follows the system color scheme or an explicit light or dark selection.',
+        description:
+          'The provider follows the system color scheme or an explicit light or dark selection.',
         title: 'Theme context'
       }
     ],
     relatedLinks: [
       { href: '/docs/foundations', label: 'Shared foundations' },
       { href: '#playground', label: 'Run the playground' },
-      { href: 'https://github.com/santi020k/lumen/tree/main/packages/react-native', label: 'Package source' }
+      {
+        href: 'https://github.com/santi020k/lumen/tree/main/packages/react-native',
+        label: 'Package source'
+      }
     ],
     setupSteps: [
       {
-        description: 'Run the install command from an existing Expo or React Native application. React and React Native remain peer dependencies supplied by your app.',
+        description:
+          'Run the install command from an existing Expo or React Native application. React and React Native remain peer dependencies supplied by your app.',
         title: 'Install the native package'
       },
       {
-        description: 'Mount one LumenProvider near the application root. Use scheme="system" to follow the device appearance automatically.',
+        description:
+          'Mount one LumenProvider near the application root. Use scheme="system" to follow the device appearance automatically.',
         title: 'Add the theme provider'
       },
       {
-        description: 'Start Expo or your native bundler, then open the app on web, an emulator, a simulator, or a physical device.',
+        description:
+          'Start Expo or your native bundler, then open the app on web, an emulator, a simulator, or a physical device.',
         title: 'Run a native target'
       }
     ],
@@ -280,8 +290,7 @@ return (
           value: 'preference'
         }
       ],
-      note:
-        'Components consume semantic roles such as canvas, surface, ink, brand, success, warning, and danger. Keep product code on those roles rather than assigning one-off colors to individual components.',
+      note: 'Components consume semantic roles such as canvas, surface, ink, brand, success, warning, and danger. Keep product code on those roles rather than assigning one-off colors to individual components.',
       verification: [
         'Switch the device between light and dark while the app is open.',
         'Check text and icon contrast in default, disabled, error, and loading states.',
@@ -297,7 +306,7 @@ return (
 https://github.com/santi020k/lumen
 
 # Dependency Rule
-Branch: main
+Exact Version: 1.2.0
 
 # Add this product to your application target
 LumenUI`,
@@ -310,7 +319,7 @@ LumenUI`,
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        branch: "main"
+        exact: "1.2.0"
     )
 ],
 targets: [
@@ -352,7 +361,7 @@ struct ExampleApp: App {
     href: '/docs/apple',
     id: 'apple',
     installNote:
-      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, use the main branch, and attach the LumenUI product to your application target.',
+      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 1.2.0 for production, and attach the LumenUI product to your application target.',
     label: 'Apple / SwiftUI',
     maturity: 'Beta',
     maturityNote: nativeBetaNote,
@@ -387,30 +396,38 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
         title: 'Apple platform coverage'
       },
       {
-        description: 'Controls automatically use touch-friendly mobile density and compact pointer-friendly Mac density.',
+        description:
+          'Controls automatically use touch-friendly mobile density and compact pointer-friendly Mac density.',
         title: 'Adaptive density'
       },
       {
-        description: 'Dynamic Type, SF Symbols, environment values, VoiceOver, and native controls remain first-class.',
+        description:
+          'Dynamic Type, SF Symbols, environment values, VoiceOver, and native controls remain first-class.',
         title: 'SwiftUI conventions'
       }
     ],
     relatedLinks: [
       { href: '/docs/foundations', label: 'Shared foundations' },
       { href: '#playground', label: 'Run the playground' },
-      { href: 'https://github.com/santi020k/lumen/tree/main/packages/swift', label: 'Package source' }
+      {
+        href: 'https://github.com/santi020k/lumen/tree/main/packages/swift',
+        label: 'Package source'
+      }
     ],
     setupSteps: [
       {
-        description: 'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and use the main branch as the dependency rule.',
+        description:
+          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 1.2.0 for production. Use a compatible-version rule only when the application accepts compatible updates.',
         title: 'Add the Swift package'
       },
       {
-        description: 'Select the LumenUI library product and attach it to the application target that renders your SwiftUI views.',
+        description:
+          'Select the LumenUI library product and attach it to the application target that renders your SwiftUI views.',
         title: 'Link LumenUI to the target'
       },
       {
-        description: 'Import LumenUI, wrap the root surface in lumenTheme, select a simulator, and press Run.',
+        description:
+          'Import LumenUI, wrap the root surface in lumenTheme, select a simulator, and press Run.',
         title: 'Import, theme, and run'
       }
     ],
@@ -450,8 +467,7 @@ var body: some Scene {
           value: 'preference'
         }
       ],
-      note:
-        'Use Lumen semantic colors through public components instead of styling each control independently. The selected theme also keeps SF Symbols, native controls, and presented views aligned with the same appearance.',
+      note: 'Use Lumen semantic colors through public components instead of styling each control independently. The selected theme also keeps SF Symbols, native controls, and presented views aligned with the same appearance.',
       verification: [
         'Preview every supported device family in light and dark appearances.',
         'Check sheets, menus, focus rings, and system controls as well as the main view.',
@@ -463,28 +479,17 @@ var body: some Scene {
   {
     codeExamples: [
       {
-        code: `git submodule add https://github.com/santi020k/lumen.git Vendor/lumen
-git submodule update --init --recursive`,
-        label: 'Get Lumen',
-        language: 'bash',
-        value: 'checkout'
-      },
-      {
-        code: `// settings.gradle.kts
-include(":lumen-compose")
-project(":lumen-compose").projectDir = file("Vendor/lumen/packages/compose")`,
-        label: 'settings.gradle.kts',
-        language: 'kotlin',
-        value: 'settings'
-      },
-      {
         code: `// app/build.gradle.kts
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation(project(":lumen-compose"))
+    implementation("${lumenComposeCoordinate}")
 }`,
-        label: 'app/build.gradle.kts',
+        label: 'Install',
         language: 'kotlin',
-        value: 'dependency'
+        value: 'install'
       },
       {
         code: `import com.santi020k.lumen.LumenTheme
@@ -509,7 +514,7 @@ LumenTheme {
     href: '/docs/android',
     id: 'android',
     installNote:
-      'Until a remote Maven release is configured, include the lumen-compose module from a Lumen checkout and wrap application content in LumenTheme.',
+      `Install ${lumenComposeCoordinate} from Maven Central and wrap application content in LumenTheme.`,
     label: 'Android / Compose',
     maturity: 'Beta',
     maturityNote: nativeBetaNote,
@@ -535,15 +540,17 @@ pnpm playground:android:build`,
     prerequisites: [
       'Android Studio with JDK 17 or newer',
       'Android SDK 37 and an emulator or USB-debuggable device',
-      'A Lumen checkout or Git submodule while the Compose package is distributed as a local Gradle module'
+      'Maven Central enabled in the application repositories'
     ],
     principles: [
       {
-        description: 'Generated colors, dimensions, typography, motion, and elevation map into Compose-native values.',
+        description:
+          'Generated colors, dimensions, typography, motion, and elevation map into Compose-native values.',
         title: 'Generated foundations'
       },
       {
-        description: 'LumenTheme maps the shared semantic palette into Material 3 while exposing the full token object.',
+        description:
+          'LumenTheme maps the shared semantic palette into Material 3 while exposing the full token object.',
         title: 'Material 3 integration'
       },
       {
@@ -554,20 +561,25 @@ pnpm playground:android:build`,
     relatedLinks: [
       { href: '/docs/foundations', label: 'Shared foundations' },
       { href: '#playground', label: 'Run the playground' },
-      { href: 'https://github.com/santi020k/lumen/tree/main/packages/compose', label: 'Module source' }
+      {
+        href: 'https://github.com/santi020k/lumen/tree/main/packages/compose',
+        label: 'Module source'
+      }
     ],
     setupSteps: [
       {
-        description: 'Clone Lumen beside your application or add it as a Git submodule. There is not yet a remote Maven artifact to download.',
-        title: 'Make the Compose module available'
+        description: `Add implementation("${lumenComposeCoordinate}") to the application module.`,
+        title: 'Install from Maven Central'
       },
       {
-        description: 'Point settings.gradle.kts to packages/compose, include the module, and add implementation(project(":lumen-compose")) to the app target.',
-        title: 'Connect the Gradle module'
+        description:
+          'Wrap application content in LumenTheme. It follows the system appearance by default and keeps Lumen and Material 3 content aligned.',
+        title: 'Add the theme provider'
       },
       {
-        description: 'Sync Gradle, wrap application content in LumenTheme, then run an emulator or build a debug APK.',
-        title: 'Sync, theme, and run'
+        description:
+          'Sync Gradle, then run an emulator, a connected Android device, or build a debug APK.',
+        title: 'Sync and run'
       }
     ],
     shippingNotes: [
@@ -602,8 +614,7 @@ LumenTheme(darkTheme = useDarkTheme) {
           value: 'preference'
         }
       ],
-      note:
-        'LumenTheme provides both LocalLumenTheme and MaterialTheme. Prefer Lumen components and semantic roles so Lumen and Material content stay visually consistent inside the same hierarchy.',
+      note: 'LumenTheme provides both LocalLumenTheme and MaterialTheme. Prefer Lumen components and semantic roles so Lumen and Material content stay visually consistent inside the same hierarchy.',
       verification: [
         'Change the emulator or device appearance while the app is running.',
         'Check system bars, dialogs, fields, and disabled or error states in both schemes.',
@@ -623,7 +634,16 @@ LumenTheme(darkTheme = useDarkTheme) {
     ],
     componentNote:
       'Foundations define shared roles and expectations. Each adapter remains responsible for native rendering, interaction, focus, and navigation.',
-    components: ['Color', 'Spacing', 'Radius', 'Typography', 'Motion', 'Elevation', 'Light theme', 'Dark theme'],
+    components: [
+      'Color',
+      'Spacing',
+      'Radius',
+      'Typography',
+      'Motion',
+      'Elevation',
+      'Light theme',
+      'Dark theme'
+    ],
     eyebrow: 'Shared design language',
     href: '/docs/foundations',
     id: 'foundations',
@@ -633,15 +653,18 @@ LumenTheme(darkTheme = useDarkTheme) {
     packageName: '@santi020k/lumen-tokens',
     principles: [
       {
-        description: 'tokens/lumen.tokens.json is the canonical platform-neutral source for every generated adapter.',
+        description:
+          'tokens/lumen.tokens.json is the canonical platform-neutral source for every generated adapter.',
         title: 'One token source'
       },
       {
-        description: 'Semantic purpose, variants, states, content rules, and accessibility expectations form the shared contract.',
+        description:
+          'Semantic purpose, variants, states, content rules, and accessibility expectations form the shared contract.',
         title: 'Shared intent'
       },
       {
-        description: 'Rendering, gestures, navigation, focus systems, and platform conventions stay inside each adapter.',
+        description:
+          'Rendering, gestures, navigation, focus systems, and platform conventions stay inside each adapter.',
         title: 'Native implementation'
       }
     ],
@@ -683,8 +706,6 @@ const docsPlatformPrefixes: readonly (readonly [string, DocsPlatformId])[] = [
   ['/docs/theme-playground', 'web']
 ]
 
-export const getDocsPlatform = (pathname: string): DocsPlatformId | undefined => (
-  docsPlatformPrefixes.find(([prefix]) => (
-    pathname === prefix || pathname.startsWith(`${prefix}/`)
-  ))?.[1]
-)
+export const getDocsPlatform = (pathname: string): DocsPlatformId | undefined => docsPlatformPrefixes.find(
+  ([prefix]) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+)?.[1]

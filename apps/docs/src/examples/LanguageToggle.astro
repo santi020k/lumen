@@ -2,4 +2,11 @@
 import { LanguageToggle } from '@santi020k/lumen-astro'
 ---
 
-<LanguageToggle aria-label="Change language">EN</LanguageToggle>
+<LanguageToggle
+  defaultValue="en"
+  storageKey="site-language"
+  locales={[
+    { label: 'English', value: 'en' },
+    { label: 'Español', value: 'es' }
+  ]}
+/>

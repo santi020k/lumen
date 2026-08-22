@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "adapters": {
     "reactNative": {
       "package": "@santi020k/lumen-react-native",
@@ -409,9 +409,10 @@
       }
     }
   ],
-  "appleComponents": [
+  "platformComponents": [
     {
       "id": "shortcut-recorder",
+      "adapter": "swiftUI",
       "platforms": ["macOS"],
       "contract": "Keyboard shortcut capture, validation, clear, and cancel states",
       "accessibility": "Displays the current shortcut and exposes labeled controls",
@@ -419,10 +420,35 @@
     },
     {
       "id": "symbol-picker",
+      "adapter": "swiftUI",
       "platforms": ["macOS"],
       "contract": "Searchable and categorized SF Symbols selection",
       "accessibility": "Labels every symbol and exposes selected state",
       "symbol": "LumenSymbolPicker"
+    },
+    {
+      "id": "date-field",
+      "adapter": "swiftUI",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Native date and time selection with bounds, supporting text, and validation messaging",
+      "accessibility": "Keeps the native adjustable picker label and presents supporting or validation context",
+      "symbol": "LumenDateField"
+    },
+    {
+      "id": "refresh-control",
+      "adapter": "reactNative",
+      "platforms": ["iOS", "Android"],
+      "contract": "Native pull-to-refresh state with semantic indicator colors",
+      "accessibility": "Preserves native refresh gestures and exposes the application-provided loading label",
+      "symbol": "LumenRefreshControl"
+    },
+    {
+      "id": "floating-action-button",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Material-native floating action with semantic intent and small or regular sizing",
+      "accessibility": "Requires a readable icon action description and preserves native button semantics",
+      "symbol": "LumenFloatingActionButton"
     }
   ]
 }

@@ -2,11 +2,14 @@ package com.santi020k.lumen
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertHasClickAction
@@ -18,12 +21,44 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.tryPerformAccessibilityChecks
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
 class AccessibilityTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
+
+    @Test
+    fun productMaterialThemePopulatesMaterialAndLumenScopesTogether() {
+        val productScheme = lightColorScheme(
+            primary = Color(0xFF102A43),
+            secondary = Color(0xFF486581),
+            background = Color(0xFFF0F4F8)
+        )
+        val productSuccess = Color(0xFF14804A)
+        var observedLumenValues: LumenThemeValues? = null
+        var observedMaterialPrimary: Color? = null
+
+        composeRule.setContent {
+            LumenTheme(
+                darkTheme = false,
+                materialColorScheme = productScheme,
+                materialColorOverrides = LumenMaterialColorOverrides(success = productSuccess)
+            ) {
+                observedLumenValues = LocalLumenTheme.current
+                observedMaterialPrimary = MaterialTheme.colorScheme.primary
+            }
+        }
+
+        composeRule.runOnIdle {
+            assertEquals(productScheme.primary, observedMaterialPrimary)
+            assertEquals(productScheme.background, observedLumenValues?.colors?.canvas)
+            assertEquals(productScheme.primary, observedLumenValues?.colors?.brand)
+            assertEquals(productSuccess, observedLumenValues?.colors?.success)
+            assertEquals(false, observedLumenValues?.isDark)
+        }
+    }
 
     @OptIn(ExperimentalTestApi::class)
     @Test

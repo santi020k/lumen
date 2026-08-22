@@ -13,6 +13,7 @@ private struct AppleComponentCatalogFixture: View {
     @State private var isDisclosureExpanded = true
     @State private var isEnabled = true
     @State private var isReviewed = false
+    @State private var releaseDate = Date()
     @State private var notes = "Native release notes"
     @State private var profile = FixtureProfile.balanced
     @State private var query = ""
@@ -49,6 +50,12 @@ private struct AppleComponentCatalogFixture: View {
                     in: 0...100,
                     step: 5,
                     valueLabel: "\(Int(sliderValue)) percent"
+                )
+
+                LumenDateField(
+                    "Release date",
+                    selection: $releaseDate,
+                    description: "Choose when this native component ships."
                 )
 
                 LumenSearchField("Search components", text: $query)

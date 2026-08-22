@@ -147,7 +147,7 @@ behaviorTest(['ContextMenu'], 'ContextMenu opens from the keyboard and closes wi
   await expect(menu).toBeHidden()
 })
 
-behaviorTest(['DropdownMenu'], 'DropdownMenu restores its closed state after Escape', async ({ page }) => {
+behaviorTest(['DropdownMenu'], 'DropdownMenu closes from Escape and nested menu-item artwork', async ({ page }) => {
   await openPreview(page, 'dropdown-menu')
 
   const trigger = page.locator('.component-doc-preview [data-ui-trigger]')
@@ -157,6 +157,28 @@ behaviorTest(['DropdownMenu'], 'DropdownMenu restores its closed state after Esc
   await expect(trigger).toHaveAttribute('aria-expanded', 'true')
   await expect(menu).toBeVisible()
   await page.keyboard.press('Escape')
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+  await expect(menu).toBeHidden()
+
+  await trigger.click()
+
+  const firstItem = menu.getByRole('menuitem').first()
+
+  await firstItem.evaluate(item => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+
+    svg.setAttribute('height', '16')
+    svg.setAttribute('viewBox', '0 0 16 16')
+    svg.setAttribute('width', '16')
+    path.setAttribute('d', 'M2 8h12')
+    svg.append(path)
+    item.prepend(svg)
+  })
+  await firstItem.locator('path').evaluate(path => {
+    path.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
   await expect(menu).toBeHidden()
 })

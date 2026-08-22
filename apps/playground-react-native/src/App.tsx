@@ -34,6 +34,7 @@ import {
   LumenProgress,
   LumenProvider,
   LumenRadioGroup,
+  LumenRefreshControl,
   LumenSearchField,
   LumenSectionHeader,
   LumenSegmentedControl,
@@ -90,6 +91,7 @@ const componentNames = [
   'Alert',
   'Toast',
   'Progress',
+  'Refresh control',
   'Skeleton',
   'Disclosure',
   'Avatar',
@@ -223,6 +225,7 @@ const Playground = ({
   const [detailsExpanded, setDetailsExpanded] = useState(true)
   const [showBanner, setShowBanner] = useState(true)
   const [showToast, setShowToast] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [designSelected, setDesignSelected] = useState(true)
 
   const visibleNames = useMemo(() => componentNames.filter(name => (
@@ -234,7 +237,23 @@ const Playground = ({
 
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        refreshControl={(
+          <LumenRefreshControl
+            accessibilityLabel="Refresh component catalog"
+            onRefresh={() => {
+              setRefreshing(true)
+
+              globalThis.setTimeout(() => {
+                setRefreshing(false)
+              }, 800)
+            }}
+            refreshing={refreshing}
+          />
+        )}
+      >
         <View style={styles.hero}>
           <View style={styles.heroCopy}>
             <LumenBadge tone="accent">{Platform.OS}</LumenBadge>

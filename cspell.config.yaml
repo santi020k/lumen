@@ -39,8 +39,10 @@ words:
   - commitprompt
   - codemod
   - contenteditable
+  - ContracTrack
   - coverimage
   - CoverImage
+  - Coolstead
   - Cowork
   - datalist
   - datatable
@@ -55,6 +57,7 @@ words:
   - dropzone
   - esbuild
   - esac
+  - Español
   - eslintcache
   - exclamationmark
   - fileupload
@@ -64,6 +67,7 @@ words:
   - geolocation
   - getprop
   - glassmorphism
+  - gitlink
   - gradientdivider
   - GradientDivider
   - hashkey

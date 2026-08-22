@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +45,9 @@ import com.santi020k.lumen.LumenDivider
 import com.santi020k.lumen.LumenDisclosure
 import com.santi020k.lumen.LumenEmptyState
 import com.santi020k.lumen.LumenFieldGroup
+import com.santi020k.lumen.LumenFloatingActionButton
+import com.santi020k.lumen.LumenFloatingActionButtonIntent
+import com.santi020k.lumen.LumenFloatingActionButtonSize
 import com.santi020k.lumen.LumenGauge
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
@@ -99,7 +103,7 @@ private val sections = listOf(
     PlaygroundSection(
         title = "Actions",
         description = "Buttons expose intent, loading, enabled, and pressed states.",
-        names = setOf("Button", "Button group", "Chip")
+        names = setOf("Button", "Button group", "Chip", "Floating action button")
     ),
     PlaygroundSection(
         title = "Forms",
@@ -353,6 +357,20 @@ private fun ActionsExample() {
                 label = "Design",
                 selected = designSelected,
                 onClick = { designSelected = !designSelected }
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            LumenFloatingActionButton(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Create component",
+                onClick = {}
+            )
+            LumenFloatingActionButton(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Create urgent component",
+                onClick = {},
+                intent = LumenFloatingActionButtonIntent.Danger,
+                size = LumenFloatingActionButtonSize.Small
             )
         }
     }

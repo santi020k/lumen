@@ -7,6 +7,34 @@ import Testing
     #expect(LumenTheme.dark.scheme == .dark)
 }
 
+@Test func productPalettesAndAppearanceOwnershipRemainApplicationControlled() {
+    let defaults = LumenColors.light
+    let productPalette = LumenColorPalette(
+        canvas: defaults.canvas,
+        surface: defaults.surface,
+        surfaceMuted: defaults.surfaceMuted,
+        surfaceStrong: defaults.surfaceStrong,
+        line: defaults.line,
+        ink: defaults.ink,
+        inkSoft: defaults.inkSoft,
+        inkMuted: defaults.inkMuted,
+        brand: .red,
+        brandSolid: defaults.brandSolid,
+        brandSoft: defaults.brandSoft,
+        onBrand: defaults.onBrand,
+        accent: defaults.accent,
+        success: defaults.success,
+        warning: defaults.warning,
+        danger: defaults.danger,
+        onDanger: defaults.onDanger
+    )
+    let productTheme = LumenTheme(colors: productPalette, scheme: .light)
+
+    #expect(productTheme.colors.brand == .red)
+    #expect(productTheme.resolvedPreferredColorScheme(enforceColorScheme: true) == .light)
+    #expect(productTheme.resolvedPreferredColorScheme(enforceColorScheme: false) == nil)
+}
+
 @Test func foundationDimensionsUseNativePoints() {
     #expect(LumenSpacing.lg == 16)
     #expect(LumenRadius.md == 10)
@@ -57,6 +85,19 @@ import Testing
     #expect(LumenSliderConfiguration.resolve(bounds: bounds, step: 0).step == nil)
     #expect(LumenSliderConfiguration.resolve(bounds: bounds, step: -.infinity).step == nil)
     #expect(LumenSliderConfiguration.resolve(bounds: bounds, step: .nan).step == nil)
+}
+
+@Test func dateFieldBoundsClampValuesWithoutChangingUnboundedDates() {
+    let lowerBound = Date(timeIntervalSince1970: 1_000)
+    let upperBound = Date(timeIntervalSince1970: 2_000)
+    let before = Date(timeIntervalSince1970: 500)
+    let after = Date(timeIntervalSince1970: 2_500)
+
+    #expect(LumenDateFieldBounds.closed(lowerBound...upperBound).clamped(before) == lowerBound)
+    #expect(LumenDateFieldBounds.closed(lowerBound...upperBound).clamped(after) == upperBound)
+    #expect(LumenDateFieldBounds.from(lowerBound).clamped(before) == lowerBound)
+    #expect(LumenDateFieldBounds.through(upperBound).clamped(after) == upperBound)
+    #expect(LumenDateFieldBounds.unbounded.clamped(after) == after)
 }
 #endif
 

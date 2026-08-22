@@ -78,6 +78,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  document.documentElement.lang = 'en'
+
+  localStorage.clear()
+
   vi.useRealTimers()
   vi.unstubAllGlobals()
 })
@@ -98,6 +102,45 @@ describe('@santi020k/lumen-elements', () => {
     expect(customElements.get('lumen-button')).toBe(LumenButtonElement)
     expect(customElements.get('lumen-card')).toBe(LumenCardElement)
     expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
+  })
+
+  test('coordinates uncontrolled language state, persistence, labels, and events', () => {
+    localStorage.clear()
+
+    document.documentElement.lang = 'en'
+
+    const toggle = document.createElement('lumen-language-toggle')
+
+    toggle.setAttribute('storage-key', 'test-language')
+
+    const changes: unknown[] = []
+
+    toggle.addEventListener('ui:language-change', event => {
+      if (event instanceof CustomEvent) changes.push(event.detail)
+    })
+
+    document.body.append(toggle)
+
+    expect(toggle.getAttribute('aria-label')).toContain('English')
+    expect(toggle.textContent).toBe('Español')
+
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(document.documentElement.lang).toBe('es')
+    expect(localStorage.getItem('test-language')).toBe('es')
+    expect(changes).toEqual([{ previousValue: 'en', value: 'es' }])
+  })
+
+  test('prefers an explicit language default over the document language', () => {
+    document.documentElement.lang = 'en'
+
+    const toggle = document.createElement('lumen-language-toggle')
+
+    toggle.setAttribute('default-value', 'es')
+    document.body.append(toggle)
+
+    expect(toggle.dataset.uiLanguageValue).toBe('es')
+    expect(document.documentElement.lang).toBe('es')
   })
 
   test('keeps motion elements readable when motion is reduced', () => {
@@ -444,6 +487,31 @@ describe('@santi020k/lumen-elements', () => {
     expect(third?.getAttribute('aria-selected')).toBe('true')
 
     press(third as HTMLElement, 'Home')
+    expect(first?.getAttribute('aria-selected')).toBe('true')
+  })
+
+  test('vertical tabs use Up and Down instead of Left and Right', () => {
+    document.body.innerHTML = `
+      <lumen-tabs>
+        <div role="tablist" aria-orientation="vertical">
+          <button id="vertical-one" role="tab" aria-selected="true" aria-controls="vertical-panel-one">One</button>
+          <button id="vertical-two" role="tab" aria-selected="false" aria-controls="vertical-panel-two">Two</button>
+        </div>
+        <section id="vertical-panel-one" role="tabpanel">One panel</section>
+        <section id="vertical-panel-two" role="tabpanel" hidden>Two panel</section>
+      </lumen-tabs>
+    `
+
+    const first = document.querySelector<HTMLButtonElement>('#vertical-one')
+    const second = document.querySelector<HTMLButtonElement>('#vertical-two')
+
+    press(first as HTMLElement, 'ArrowRight')
+    expect(first?.getAttribute('aria-selected')).toBe('true')
+
+    press(first as HTMLElement, 'ArrowDown')
+    expect(second?.getAttribute('aria-selected')).toBe('true')
+
+    press(second as HTMLElement, 'ArrowUp')
     expect(first?.getAttribute('aria-selected')).toBe('true')
   })
 

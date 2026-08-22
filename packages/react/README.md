@@ -37,6 +37,60 @@ export function SubscribeForm() {
 }
 ```
 
+## Dropdown menus
+
+Compose dropdown menus from the public trigger, content, item, and separator parts. Items close the
+menu after a successful selection; preventing the item's click event keeps it open. Disabled items
+remain unavailable, and `status` adds short trailing context to the item.
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@santi020k/lumen-react'
+
+<DropdownMenu>
+  <DropdownMenuTrigger>Download</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>macOS</DropdownMenuItem>
+    <DropdownMenuItem>Windows</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem disabled status="Soon">Android</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## Language selection
+
+`LanguageToggle` cycles through an ordered locale list and generates an accessible label that
+describes the current and next languages. Uncontrolled usage synchronizes
+`document.documentElement.lang` and can restore the selection from `storageKey` when browser
+storage is available.
+
+```tsx
+import { LanguageToggle } from '@santi020k/lumen-react'
+
+const locales = [
+  { label: 'English', value: 'en' },
+  { label: 'Español', value: 'es' }
+]
+
+<LanguageToggle
+  defaultValue="en"
+  locales={locales}
+  storageKey="site-language"
+/>
+```
+
+Pass `value` and `onValueChange` when the application owns locale state. Controlled usage requests
+the next value without changing document language or browser storage; update those application
+concerns alongside the controlled value. `useLanguageToggle` exposes the same contract through
+`value`, `currentLocale`, `nextLocale`, and `selectNext` for custom controls. Both forms use English
+and Spanish defaults when `locales` is omitted.
+
 ## Forms
 
 `Form`, `Field`, `Label`, `FieldError`, and `ErrorSummary` provide the presentation and

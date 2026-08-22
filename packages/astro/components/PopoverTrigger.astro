@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'button'> {
+  class?: string | null
+  className?: string
+}
+
+const {
+  class: classProp = '',
+  className = '',
+  type = 'button',
+  ...rest
+} = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest,
+  ['ui-button', 'ui-button--outline', 'ui-button--default-size'],
+  classProp,
+  className
+)
+---
+
+<button
+  type={type}
+  class:list={classList}
+  data-ui-trigger
+  aria-haspopup="menu"
+  {...passthrough}
+>
+  <slot />
+</button>

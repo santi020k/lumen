@@ -130,6 +130,13 @@ export {
   type LumenKanbanMoveInput
 } from './kanban.js'
 export {
+  formatLumenLanguageLabel,
+  getLumenLocalePair,
+  lumenDefaultLocales,
+  type LumenLocaleOption,
+  normalizeLumenLocales
+} from './language.js'
+export {
   type LumenAstroPropsResult,
   type LumenClassValue,
   type LumenGlass,
