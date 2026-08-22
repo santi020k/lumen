@@ -32207,20 +32207,20 @@
       "com.santi020k:lumen-compose"
     ],
     "packageVersions": {
-      "@santi020k/lumen-astro": "1.1.0",
-      "@santi020k/lumen-core": "1.1.0",
-      "@santi020k/lumen-elements": "1.1.0",
-      "@santi020k/lumen-mcp": "1.1.0",
-      "@santi020k/lumen-react": "1.0.0",
-      "@santi020k/lumen-react-native": "0.0.0",
-      "@santi020k/lumen-tokens": "0.0.0",
+      "@santi020k/lumen-astro": "1.2.0",
+      "@santi020k/lumen-core": "1.2.0",
+      "@santi020k/lumen-elements": "1.2.0",
+      "@santi020k/lumen-mcp": "1.2.0",
+      "@santi020k/lumen-react": "1.2.0",
+      "@santi020k/lumen-react-native": "0.1.0",
+      "@santi020k/lumen-tokens": "0.1.0",
       "LumenUI": "workspace",
       "com.santi020k:lumen-compose": "workspace"
     },
     "registryName": "lumen",
     "registryVersion": 1,
     "schemaVersion": 4,
-    "serverVersion": "1.1.0"
+    "serverVersion": "1.2.0"
   },
   "nativeComponents": [
     {
