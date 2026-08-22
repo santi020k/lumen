@@ -46,6 +46,69 @@ addPage('/docs/components', {
   type: 'Components'
 })
 
+addPage('/templates', {
+  description:
+    'Install complete analytics, SaaS, commerce, workspace, and onboarding experiences for Astro, React, or Web Components.',
+  title: 'Product-ready templates. Free and open source.',
+  type: 'Templates'
+})
+
+addPage('/guides', {
+  description:
+    'Task-oriented tutorials that combine Lumen primitives into accessible, production-shaped product workflows.',
+  title: 'Start with a product problem.',
+  type: 'Guides'
+})
+
+addPage('/guides/ship-a-settings-screen', {
+  description:
+    'Build and verify a responsive account settings surface in Astro, React, or Web Components.',
+  title: 'Ship an accessible settings screen.',
+  type: 'Guide'
+})
+
+addPage('/community', {
+  description:
+    'Explore projects built with Lumen, share your work, and help shape the open-source roadmap.',
+  title: 'Made with Lumen.',
+  type: 'Community'
+})
+
+addPage('/teams', {
+  description:
+    'Evaluate Lumen with a real product surface, real constraints, and no sales gate.',
+  title: 'Prove the system before you commit.',
+  type: 'For teams'
+})
+
+addPage('/docs/ai-skill', {
+  description:
+    'Install the portable Lumen skill so coding agents select, compose, theme, and verify real Lumen components.',
+  title: 'Give your AI the design system.',
+  type: 'AI skill'
+})
+
+addPage('/docs/mcp', {
+  description:
+    'Connect AI agents to structured Lumen components, framework contracts, tokens, recipes, and usage rules.',
+  title: 'Real component contracts for AI agents.',
+  type: 'MCP server'
+})
+
+addPage('/docs/figma', {
+  description:
+    'Use the public Figma library, semantic variables, component variants, and Code Connect mappings.',
+  title: 'One product language from design to code.',
+  type: 'Figma'
+})
+
+addPage('/docs/theme-playground', {
+  description:
+    'Tune semantic color roles, preview accessible Lumen components, and export the resulting CSS.',
+  title: 'Build a theme from semantic roles.',
+  type: 'Theme playground'
+})
+
 for (const component of componentDocs) {
   addPage(`/docs/components/${toSlug(component.name)}`, {
     description: `${component.summary} Usage examples for Astro, React, and Elements.`,

@@ -198,6 +198,39 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Guides',
+    description:
+      'Build and verify a production-shaped account settings screen in Astro, React, or Web Components.',
+    href: '/guides/ship-a-settings-screen',
+    keywords: normalizeKeywords(
+      'guide tutorial account settings screen evaluation form validation keyboard accessibility astro react web components'
+    ),
+    title: 'Ship an accessible settings screen',
+    type: 'Recipe'
+  },
+  {
+    category: 'Community',
+    description:
+      'Explore public projects built with Lumen, submit your work, and share adoption feedback.',
+    href: '/community',
+    keywords: normalizeKeywords(
+      'community showcase built with lumen submit project survey feedback updates newsletter'
+    ),
+    title: 'Lumen community',
+    type: 'Recipe'
+  },
+  {
+    category: 'Adoption',
+    description:
+      'Evaluate Lumen on a production-shaped surface and share product-team requirements.',
+    href: '/teams',
+    keywords: normalizeKeywords(
+      'teams adoption evaluation proof of concept migration design system product requirements enterprise'
+    ),
+    title: 'Lumen for teams',
+    type: 'Recipe'
+  },
+  {
     category: 'Foundations',
     description:
       'Browse the full Lucide icon set available through the Lumen Icon component and copy icon names.',

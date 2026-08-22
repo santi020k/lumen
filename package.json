@@ -31,6 +31,7 @@
     "check:mcp-snapshot": "pnpm --filter @santi020k/lumen-mcp run check:snapshot",
     "check:mcp-package": "pnpm --filter @santi020k/lumen-mcp run smoke:package",
     "check:consumer-packages": "node scripts/smoke-consumer-packages.mjs",
+    "check:exposure-launch": "node apps/docs/scripts/check-exposure-launch.mjs",
     "check:mcp-evaluation": "pnpm --filter @santi020k/lumen-mcp run eval",
     "sync:registry": "node scripts/sync-registry.mjs",
     "check:registry": "node scripts/sync-registry.mjs --check && node scripts/validate-registry.mjs && pnpm run check:figma-tokens",

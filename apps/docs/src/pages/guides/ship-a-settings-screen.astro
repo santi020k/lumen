@@ -1,0 +1,429 @@
+---
+import {
+  Alert,
+  Badge,
+  ButtonLink,
+  Card,
+  CodeTabs,
+  Icon,
+  Marker
+} from '@santi020k/lumen-astro'
+
+import { getGuide } from '../../data/guides'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const guide = getGuide('/guides/ship-a-settings-screen')
+
+const articleMetadata = {
+  author: guide.author,
+  publishedAt: guide.publishedAt,
+  ...(guide.updatedAt ? { updatedAt: guide.updatedAt } : {})
+}
+
+const installExamples = [
+  { code: 'pnpm add @santi020k/lumen-astro', label: 'Astro', language: 'bash', value: 'astro' },
+  { code: 'pnpm add @santi020k/lumen-react', label: 'React', language: 'bash', value: 'react' },
+  { code: 'pnpm add @santi020k/lumen-elements', label: 'Elements', language: 'bash', value: 'elements' }
+] as const
+
+const screenExamples = [
+  {
+    code: `---
+import '@santi020k/lumen-astro/styles.css'
+import { Alert, Button, Card, Field, Input, Label, Switch } from '@santi020k/lumen-astro'
+---
+
+<Card as="section" aria-labelledby="profile-title">
+  <h2 id="profile-title">Profile</h2>
+  <form data-ui-form>
+    <Field>
+      <Label for="display-name">Display name</Label>
+      <Input id="display-name" name="displayName" required />
+    </Field>
+    <Switch name="productUpdates">Product updates</Switch>
+    <Button type="submit">Save changes</Button>
+  </form>
+  <Alert role="status">Changes are saved after a successful response.</Alert>
+</Card>`,
+    label: 'Astro',
+    language: 'astro',
+    value: 'astro'
+  },
+  {
+    code: `import '@santi020k/lumen-react/styles.css'
+import { Alert, Button, Card, Field, Input, Label, Switch } from '@santi020k/lumen-react'
+
+export function ProfileSettings() {
+  return (
+    <Card as="section" aria-labelledby="profile-title">
+      <h2 id="profile-title">Profile</h2>
+      <form>
+        <Field>
+          <Label htmlFor="display-name">Display name</Label>
+          <Input id="display-name" name="displayName" required />
+        </Field>
+        <Switch name="productUpdates">Product updates</Switch>
+        <Button type="submit">Save changes</Button>
+      </form>
+      <Alert role="status">Changes are saved after a successful response.</Alert>
+    </Card>
+  )
+}`,
+    label: 'React',
+    language: 'tsx',
+    value: 'react'
+  },
+  {
+    code: `import '@santi020k/lumen-elements/styles.css'
+import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+defineLumenElements()
+
+document.querySelector('#app').innerHTML = \
+  \`<lumen-card aria-labelledby="profile-title">
+    <h2 id="profile-title">Profile</h2>
+    <form>
+      <label for="display-name">Display name</label>
+      <lumen-input id="display-name" name="displayName" required></lumen-input>
+      <lumen-switch name="productUpdates">Product updates</lumen-switch>
+      <lumen-button type="submit">Save changes</lumen-button>
+    </form>
+    <lumen-alert role="status">Changes are saved after a successful response.</lumen-alert>
+  </lumen-card>\``,
+    label: 'Elements',
+    language: 'ts',
+    value: 'elements'
+  }
+] as const
+
+const verification = [
+  ['Keyboard', 'Reach every control, see focus, submit the form, and recover from invalid input without a pointer.'],
+  ['Screen reader', 'Confirm the section heading, labels, validation messages, switch state, and save result are announced.'],
+  ['Product states', 'Exercise initial, dirty, submitting, success, error, disabled, and destructive states.'],
+  ['Responsive layout', 'Test narrow content and text zoom without clipping actions or hiding validation feedback.']
+] as const
+---
+
+<BaseLayout
+  article={articleMetadata}
+  breadcrumbs={[
+    { href: '/', label: 'Home' },
+    { href: '/guides', label: 'Guides' },
+    { href: guide.href, label: guide.title }
+  ]}
+  description={guide.description}
+  title={`${guide.title} — Lumen UI`}
+>
+  <main class="tutorial-page">
+    <header class="tutorial-hero">
+      <Badge variant="outline">Evaluation guide · 20 minutes</Badge>
+      <h1>Ship an accessible settings screen.</h1>
+      <p>
+        Test Lumen on a compact but production-shaped surface: labeled inputs, preference state,
+        validation, save feedback, responsive layout, and keyboard behavior.
+      </p>
+      <div class="tutorial-hero__actions">
+        <ButtonLink href="#install" showArrow>Start the build</ButtonLink>
+        <ButtonLink href="/templates/saas-admin" variant="secondary">Open the full SaaS template</ButtonLink>
+      </div>
+    </header>
+
+    <div class="tutorial-layout">
+      <aside aria-label="Guide outline">
+        <Card>
+          <strong>In this guide</strong>
+          <ol>
+            <li><a href="#install">Install the target package</a></li>
+            <li><a href="#compose">Compose the surface</a></li>
+            <li><a href="#states">Connect real states</a></li>
+            <li><a href="#verify">Verify the result</a></li>
+          </ol>
+        </Card>
+      </aside>
+
+      <article class="tutorial-content">
+        <section id="install">
+          <Marker>Step 1</Marker>
+          <h2>Install the package for the application you already have.</h2>
+          <p>
+            Keep the current framework and architecture. Lumen provides a native adapter for each
+            web target; it does not require a migration to Astro.
+          </p>
+          <CodeTabs
+            ariaLabel="Install Lumen for a web framework"
+            items={installExamples}
+            storageKey="lumen-guide-framework"
+          />
+          <Alert>
+            Load the package stylesheet once at the application boundary. Astro applications also
+            mount <code>UIPrimitives</code> once; Elements applications register custom elements once.
+          </Alert>
+        </section>
+
+        <section id="compose">
+          <Marker>Step 2</Marker>
+          <h2>Compose the smallest useful settings surface.</h2>
+          <p>
+            Start from structure and behavior. The product owns persistence and request state;
+            Lumen owns the accessible presentation contract.
+          </p>
+          <CodeTabs
+            ariaLabel="Settings screen by framework"
+            items={screenExamples}
+            storageKey="lumen-guide-framework"
+          />
+        </section>
+
+        <section id="states">
+          <Marker>Step 3</Marker>
+          <h2>Connect the states your users will actually encounter.</h2>
+          <div class="tutorial-state-grid">
+            <Card as="article" variant="muted">
+              <Icon decorative name="loader-circle" />
+              <h3>Submitting</h3>
+              <p>Disable duplicate submission, retain field values, and expose a clear progress label.</p>
+            </Card>
+            <Card as="article" variant="muted">
+              <Icon decorative name="circle-check" />
+              <h3>Saved</h3>
+              <p>Announce success through a status region without moving keyboard focus unexpectedly.</p>
+            </Card>
+            <Card as="article" variant="muted">
+              <Icon decorative name="triangle-alert" />
+              <h3>Failed</h3>
+              <p>Keep the entered values, identify the problem, and leave a direct path to retry.</p>
+            </Card>
+          </div>
+        </section>
+
+        <section id="verify">
+          <Marker variant="success">Step 4</Marker>
+          <h2>Verify behavior, not just appearance.</h2>
+          <ol class="tutorial-checklist">
+            {verification.map(([title, description]) => (
+              <li>
+                <Icon decorative name="check" size="sm" />
+                <div>
+                  <strong>{title}</strong>
+                  <p>{description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <Alert variant="success">
+            If this bounded screen works for your product constraints, continue with the SaaS
+            template or evaluate a second surface with heavier navigation and data display.
+          </Alert>
+        </section>
+      </article>
+    </div>
+
+    <section class="tutorial-next" aria-labelledby="tutorial-next-title">
+      <div>
+        <Badge variant="secondary">Built it?</Badge>
+        <h2 id="tutorial-next-title">Show the community what you learned.</h2>
+        <p>Finished products and honest adoption feedback both improve Lumen for the next team.</p>
+      </div>
+      <ButtonLink
+        data-exposure-event="guide-submit-project"
+        href="https://github.com/santi020k/lumen/issues/new?template=showcase.yml"
+        newTab
+        showArrow
+      >
+        Submit your project
+      </ButtonLink>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .tutorial-page {
+    width: min(100% - 2.5rem, 76rem);
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+
+  .tutorial-hero {
+    padding: clamp(2rem, 6vw, 5rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 88% 10%, hsl(var(--brand) / 0.2), transparent 32%),
+      hsl(var(--surface));
+  }
+
+  .tutorial-hero h1 {
+    max-width: 13ch;
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .tutorial-hero > p,
+  .tutorial-content section > p,
+  .tutorial-state-grid p,
+  .tutorial-checklist p,
+  .tutorial-next p {
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  .tutorial-hero > p {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    font-size: 1.05rem;
+  }
+
+  .tutorial-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .tutorial-layout {
+    display: grid;
+    gap: 3rem;
+    margin-top: clamp(3rem, 7vw, 6rem);
+  }
+
+  .tutorial-layout aside :global(.ui-card) {
+    padding: 1.25rem;
+  }
+
+  .tutorial-layout aside strong {
+    color: hsl(var(--ink));
+  }
+
+  .tutorial-layout aside ol {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.9rem;
+  }
+
+  .tutorial-content {
+    min-width: 0;
+  }
+
+  .tutorial-content section + section {
+    margin-top: clamp(4rem, 9vw, 7rem);
+  }
+
+  .tutorial-content h2,
+  .tutorial-next h2 {
+    max-width: 20ch;
+    margin-top: 0.75rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    line-height: 1.06;
+  }
+
+  .tutorial-content section > p {
+    max-width: 47rem;
+    margin-top: 1rem;
+  }
+
+  .tutorial-content :global(.ui-code-tabs),
+  .tutorial-content :global(.ui-alert) {
+    margin-top: 1.5rem;
+  }
+
+  .tutorial-state-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .tutorial-state-grid :global(.ui-card) {
+    padding: 1.25rem;
+  }
+
+  .tutorial-state-grid :global(.ui-icon) {
+    color: hsl(var(--brand));
+  }
+
+  .tutorial-state-grid h3 {
+    margin-top: 0.8rem;
+    color: hsl(var(--ink));
+    font-weight: 800;
+  }
+
+  .tutorial-state-grid p {
+    margin-top: 0.45rem;
+  }
+
+  .tutorial-checklist {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .tutorial-checklist li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.9rem;
+    background: hsl(var(--surface));
+  }
+
+  .tutorial-checklist :global(.ui-icon) {
+    margin-top: 0.2rem;
+    color: hsl(var(--success));
+  }
+
+  .tutorial-checklist strong {
+    color: hsl(var(--ink));
+  }
+
+  .tutorial-checklist p {
+    margin-top: 0.25rem;
+  }
+
+  .tutorial-next {
+    display: grid;
+    align-items: center;
+    gap: 2rem;
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding: clamp(1.5rem, 5vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .tutorial-next p {
+    max-width: 42rem;
+    margin-top: 0.75rem;
+  }
+
+  @media (min-width: 48rem) {
+    .tutorial-state-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .tutorial-next {
+      grid-template-columns: minmax(0, 1.3fr) auto;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .tutorial-layout {
+      grid-template-columns: 14rem minmax(0, 1fr);
+    }
+
+    .tutorial-layout aside {
+      position: sticky;
+      top: 7rem;
+      align-self: start;
+    }
+  }
+</style>

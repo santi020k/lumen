@@ -246,6 +246,20 @@ pnpm run validate
 Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package
 changes require a changeset.
 
+## Community
+
+Lumen is free and MIT licensed while the project focuses on adoption, public examples, and
+real-world feedback.
+
+- Explore task-oriented [guides](https://lumen.santi020k.com/guides).
+- Share a public project in the [community showcase](https://lumen.santi020k.com/community).
+- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).
+- Tell us what would improve your next build through the
+  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).
+
+Maintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,
+campaign measurement, video scripts, and launch copy.
+
 ## License
 
 Lumen is available under the [MIT License](./LICENSE).

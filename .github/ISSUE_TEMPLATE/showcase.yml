@@ -1,0 +1,60 @@
+name: Built with Lumen
+description: Share a public project for the Lumen community showcase.
+title: "Showcase: "
+labels:
+  - showcase
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for building with Lumen. Public, production, experimental, and open-source projects are all welcome.
+  - type: input
+    id: project-name
+    attributes:
+      label: Project name
+      placeholder: Acme Dashboard
+    validations:
+      required: true
+  - type: input
+    id: project-url
+    attributes:
+      label: Public URL
+      description: Link to the live project or public repository.
+      placeholder: https://example.com
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Lumen platform
+      multiple: true
+      options:
+        - Astro
+        - React
+        - Web Components
+        - React Native
+        - SwiftUI
+        - Jetpack Compose
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: What did you build?
+      description: Tell us what Lumen helped you ship and which primitives were most useful.
+      placeholder: We used Lumen to...
+    validations:
+      required: true
+  - type: input
+    id: image
+    attributes:
+      label: Preview image
+      description: Optional link to a screenshot or social image that we may use in the gallery.
+      placeholder: https://example.com/preview.png
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Showcase permission
+      options:
+        - label: Lumen may feature this project and the submitted image on its website and social channels.
+          required: true

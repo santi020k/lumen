@@ -1,0 +1,235 @@
+---
+import { Badge, ButtonLink, Card, Icon, Marker } from '@santi020k/lumen-astro'
+
+import { guideDestinations } from '../../data/guides'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  description="Task-oriented Lumen UI tutorials for building accessible product interfaces across web, native, Figma, and AI workflows."
+  title="Guides — Lumen UI"
+>
+  <main class="guides-page">
+    <header class="guides-hero">
+      <div>
+        <Badge variant="outline">Practical guides</Badge>
+        <h1>Start with a product problem, not a component list.</h1>
+        <p>
+          Follow focused paths that combine Lumen primitives into real workflows, with setup,
+          accessibility, and verification included.
+        </p>
+        <ButtonLink href="/guides/rss.xml" variant="inline">
+          <Icon decorative name="rss" size="sm" />
+          Follow Guides via RSS
+        </ButtonLink>
+      </div>
+      <Card class="guides-hero__path" glass="subtle">
+        <Marker variant="success">Recommended first</Marker>
+        <h2>Evaluate Lumen on one representative screen.</h2>
+        <p>Forms, feedback, layout, tokens, and keyboard behavior in one bounded exercise.</p>
+        <ButtonLink href="/guides/ship-a-settings-screen" showArrow>
+          Build the settings screen
+        </ButtonLink>
+      </Card>
+    </header>
+
+    <section class="guides-section" aria-labelledby="guides-list-title">
+      <div class="guides-section__heading">
+        <span>Choose an outcome</span>
+        <h2 id="guides-list-title">Useful paths through the system</h2>
+      </div>
+      <div class="guides-grid">
+        {guideDestinations.map(guide => (
+          <Card as="article" class="guide-card" variant="interactive">
+            <div class="guide-card__top">
+              <span><Icon decorative name={guide.icon} /></span>
+              <Badge variant="outline">{guide.readingTime}</Badge>
+            </div>
+            <h3>{guide.title}</h3>
+            <p>{guide.description}</p>
+            <ButtonLink href={guide.href} showArrow variant="inline">Follow the guide</ButtonLink>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="guides-contribute" aria-labelledby="guides-contribute-title">
+      <div>
+        <Badge variant="secondary">Teach with Lumen</Badge>
+        <h2 id="guides-contribute-title">Solved something others will encounter?</h2>
+        <p>
+          Propose a guide or share the finished project. Specific lessons from real products make
+          the library easier to adopt than generic announcements do.
+        </p>
+      </div>
+      <ButtonLink href="https://github.com/santi020k/lumen/issues/new" newTab showArrow>
+        Propose a guide
+      </ButtonLink>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .guides-page {
+    width: min(100% - 2.5rem, 76rem);
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+
+  .guides-hero {
+    display: grid;
+    align-items: end;
+    gap: 2rem;
+    padding: clamp(2rem, 5vw, 4rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 90% 5%, hsl(var(--accent) / 0.16), transparent 30%),
+      hsl(var(--surface));
+  }
+
+  .guides-hero h1 {
+    max-width: 14ch;
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .guides-hero > div > p,
+  .guides-hero__path p,
+  .guide-card p,
+  .guides-contribute p {
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  .guides-hero > div > p {
+    max-width: 42rem;
+    margin-top: 1.25rem;
+    font-size: 1.05rem;
+  }
+
+  :global(.guides-hero__path.ui-card) {
+    padding: 1.5rem;
+  }
+
+  .guides-hero__path h2 {
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .guides-hero__path p {
+    margin-top: 0.65rem;
+  }
+
+  .guides-hero__path :global(.ui-button-link) {
+    margin-top: 1rem;
+  }
+
+  .guides-section,
+  .guides-contribute {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .guides-section__heading > span {
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .guides-section__heading h2,
+  .guides-contribute h2 {
+    margin-top: 0.65rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .guides-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  :global(.guide-card.ui-card) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+  }
+
+  .guide-card__top {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .guide-card__top > span {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border-radius: 0.8rem;
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+  }
+
+  .guide-card h3 {
+    margin-top: 1.25rem;
+    color: hsl(var(--ink));
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  .guide-card p {
+    margin-top: 0.55rem;
+  }
+
+  .guide-card :global(.ui-button-link) {
+    margin-top: auto;
+    transform: translateY(1rem);
+  }
+
+  .guides-contribute {
+    display: grid;
+    align-items: center;
+    gap: 2rem;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .guides-contribute p {
+    max-width: 43rem;
+    margin-top: 0.8rem;
+  }
+
+  @media (min-width: 48rem) {
+    .guides-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .guides-contribute {
+      grid-template-columns: minmax(0, 1.3fr) auto;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .guides-hero {
+      grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.6fr);
+    }
+  }
+</style>

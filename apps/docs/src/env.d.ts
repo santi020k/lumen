@@ -1,5 +1,14 @@
 /// <reference types="astro/client" />
 
+interface ImportMetaEnv {
+  readonly PUBLIC_EXPOSURE_ANALYTICS_ENDPOINT?: string
+  readonly PUBLIC_NEWSLETTER_FORM_ACTION?: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
 declare module '@santi020k/theme/shiki' {
   interface Santi020kShikiTheme {
     colors: Record<string, string>

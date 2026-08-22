@@ -41,6 +41,11 @@ const navLinks = [
     label: 'Templates'
   },
   {
+    href: '/community',
+    isActive: currentPath.startsWith('/community') || currentPath.startsWith('/teams'),
+    label: 'Community'
+  },
+  {
     href: '/docs/theme-playground',
     isActive: currentPath.startsWith('/docs/theme-playground'),
     label: 'Theme'
