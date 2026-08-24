@@ -1,7 +1,8 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { createPathCards } from '@santi020k/og'
+import { createCards, pathnameOutput } from '@santi020k/og'
+import { definePageMetadata } from '@santi020k/og/metadata'
 import { definePresetConfig } from '@santi020k/og/presets'
 
 import { componentDocs } from '../src/data/docs.ts'
@@ -10,9 +11,12 @@ import { toSlug } from '../src/lib/routes.ts'
 const directory = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(directory, '..')
 
-const page = (pathname, title, description, badge) => ({
-  data: { badge, description, title, variant: 'docs' },
-  pathname
+const page = (pathname, title, description, badge) => definePageMetadata({
+  badge,
+  description,
+  image: { alt: `${title} — Lumen UI` },
+  pathname,
+  title
 })
 
 const pages = [
@@ -37,10 +41,24 @@ const pages = [
 ]
 
 export default definePresetConfig({
-  cards: createPathCards(pages),
+  cards: createCards(pages, item => ({
+    badge: item.badge,
+    description: item.description,
+    title: item.title,
+    variant: 'docs'
+  }), {
+    output: item => pathnameOutput(item.pathname),
+    route: item => ({
+      alt: item.image.alt,
+      description: item.description,
+      pathname: item.pathname,
+      title: item.title
+    })
+  }),
   clean: true,
   concurrency: 'auto',
   outputDirectory: 'public/og/pages',
+  routeManifest: { file: 'public/og/manifest.json', publicPath: '/og/pages' },
   preset: {
     brand: { domain: 'lumen.santi020k.com', name: 'Lumen UI' },
     theme: { accent: '#945df4', background: '#0d0718', panel: '#1c1528' },

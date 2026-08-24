@@ -388,6 +388,13 @@ export const createLumenServer = (): McpServer => {
   )
 
   server.registerResource(
+    'lumen-release-manifest', 'lumen://release-manifest', {
+      description: 'Cross-platform npm, Swift Package Manager, and Maven release coordinates and migration requirements.',
+      mimeType: 'application/json'
+    }, uri => jsonResource(uri, data.releaseManifest)
+  )
+
+  server.registerResource(
     'lumen-diagnostics', 'lumen://diagnostics', {
       description: 'Lumen MCP snapshot integrity checks and framework coverage.',
       mimeType: 'application/json'

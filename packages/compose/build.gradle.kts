@@ -42,8 +42,10 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
 
     implementation(composeBom)
+    implementation("androidx.compose.animation:animation")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
     androidTestImplementation(composeBom)
@@ -56,7 +58,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 }
 
-val dokkaJavadocJar by tasks.registering(Jar::class) {
+val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
     group = "documentation"
     description = "Packages the generated public API reference for Maven consumers."
     dependsOn(tasks.named("dokkaGeneratePublicationJavadoc"))
@@ -126,6 +128,7 @@ tasks.register("verifyMavenPublication") {
     group = "verification"
     description = "Verifies the unsigned local publication shape and required Maven Central metadata."
     dependsOn("publishReleasePublicationToCentralStagingRepository")
+    dependsOn(":wear:publishReleasePublicationToCentralStagingRepository")
 
     doLast {
         val coordinateDirectory = layout.buildDirectory
@@ -150,6 +153,23 @@ tasks.register("verifyMavenPublication") {
         listOf("<name>", "<description>", "<licenses>", "<developers>", "<scm>").forEach { element ->
             require(element in pom) { "Maven publication POM is missing $element metadata." }
         }
+
+        val wearPrefix = "lumen-compose-wear-$lumenComposeVersion"
+        val wearDirectory = layout.buildDirectory
+            .dir("central-staging/com/santi020k/lumen-compose-wear/$lumenComposeVersion")
+            .get()
+            .asFile
+        val missingWearArtifacts = listOf(
+            "$wearPrefix.aar",
+            "$wearPrefix.module",
+            "$wearPrefix.pom",
+            "$wearPrefix-sources.jar",
+            "$wearPrefix-javadoc.jar"
+        ).filterNot { wearDirectory.resolve(it).isFile }
+
+        require(missingWearArtifacts.isEmpty()) {
+            "Lumen Wear publication is missing: ${missingWearArtifacts.joinToString()}"
+        }
     }
 }
 
@@ -157,12 +177,17 @@ tasks.register<Zip>("centralPortalBundle") {
     group = "publishing"
     description = "Builds the signed deployment bundle accepted by the Maven Central Portal."
     dependsOn("publishReleasePublicationToCentralStagingRepository")
+    dependsOn(":wear:publishReleasePublicationToCentralStagingRepository")
     archiveFileName.set("lumen-compose-$lumenComposeVersion-central.zip")
     destinationDirectory.set(layout.buildDirectory.dir("central-bundle"))
 
     val coordinatePath = "com/santi020k/lumen-compose/$lumenComposeVersion"
     from(layout.buildDirectory.dir("central-staging/$coordinatePath")) {
         into(coordinatePath)
+    }
+    val wearCoordinatePath = "com/santi020k/lumen-compose-wear/$lumenComposeVersion"
+    from(layout.buildDirectory.dir("central-staging/$wearCoordinatePath")) {
+        into(wearCoordinatePath)
     }
 
     doFirst {
@@ -188,8 +213,19 @@ tasks.register<Zip>("centralPortalBundle") {
             .map { "$it.asc" }
             .filterNot { coordinateDirectory.resolve(it).isFile }
 
-        require(missingSignatures.isEmpty()) {
-            "Maven Central bundle is missing signatures: ${missingSignatures.joinToString()}"
+        val wearDirectory = layout.buildDirectory.dir("central-staging/$wearCoordinatePath").get().asFile
+        val wearPrefix = "lumen-compose-wear-$lumenComposeVersion"
+        val missingWearSignatures = listOf(
+            "$wearPrefix.aar",
+            "$wearPrefix.module",
+            "$wearPrefix.pom",
+            "$wearPrefix-sources.jar",
+            "$wearPrefix-javadoc.jar"
+        ).map { "$it.asc" }.filterNot { wearDirectory.resolve(it).isFile }
+
+        require(missingSignatures.isEmpty() && missingWearSignatures.isEmpty()) {
+            "Maven Central bundle is missing signatures: " +
+                (missingSignatures + missingWearSignatures).joinToString()
         }
     }
 }

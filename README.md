@@ -41,7 +41,8 @@ framework and platform's native authoring experience.
 - **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an
   application framework.
 - **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP
-  server, `llms.txt`, and a machine-readable registry ship alongside the component system.
+  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship
+  alongside the component system.
 - **Product-ready templates:** five responsive dashboard and application families are available as
   live previews and installable Astro, React, and Elements recipes.
 
@@ -201,6 +202,7 @@ component defaults.
 | [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |
 | [`LumenUI`](./packages/swift) | Swift Package for SwiftUI foundations and native primitives |
 | [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |
+| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |
 | [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |
 | [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
 | [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
@@ -233,6 +235,8 @@ Additional machine-readable surfaces include:
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.
 - [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,
   and component-parity policy.
+- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the
+  boundary between Lumen presentation and platform-owned application structure.
 
 ## Contributing
 

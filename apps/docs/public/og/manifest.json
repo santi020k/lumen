@@ -1,0 +1,2678 @@
+{
+  "generatorVersion": "0.6.0",
+  "routes": {
+    "/": {
+      "alt": "Write it once. Ship it in any framework. — Lumen UI",
+      "description": "A multi-framework primitive UI system with 155 components for Astro, React, and Web Components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "index.webp",
+          "primary": true,
+          "url": "/og/pages/index.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/",
+      "title": "Write it once. Ship it in any framework."
+    },
+    "/docs": {
+      "alt": "One primitive system, three framework targets. — Lumen UI",
+      "description": "Install Lumen UI and use one semantic component contract across every target.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs.webp",
+          "primary": true,
+          "url": "/og/pages/docs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs",
+      "title": "One primitive system, three framework targets."
+    },
+    "/docs/components": {
+      "alt": "Components — Lumen UI",
+      "description": "Browse 155 primitives with live previews for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components",
+      "title": "Components"
+    },
+    "/templates": {
+      "alt": "Product-ready templates. Free and open source. — Lumen UI",
+      "description": "Install complete analytics, SaaS, commerce, workspace, and onboarding experiences.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "templates.webp",
+          "primary": true,
+          "url": "/og/pages/templates.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/templates",
+      "title": "Product-ready templates. Free and open source."
+    },
+    "/guides": {
+      "alt": "Start with a product problem. — Lumen UI",
+      "description": "Task-oriented tutorials for accessible, production-shaped workflows.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "guides.webp",
+          "primary": true,
+          "url": "/og/pages/guides.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/guides",
+      "title": "Start with a product problem."
+    },
+    "/guides/ship-a-settings-screen": {
+      "alt": "Ship an accessible settings screen. — Lumen UI",
+      "description": "Build and verify a responsive account settings surface in every supported framework.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "guides--ship-a-settings-screen.webp",
+          "primary": true,
+          "url": "/og/pages/guides--ship-a-settings-screen.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/guides/ship-a-settings-screen",
+      "title": "Ship an accessible settings screen."
+    },
+    "/community": {
+      "alt": "Made with Lumen. — Lumen UI",
+      "description": "Explore projects built with Lumen, share your work, and shape the roadmap.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "community.webp",
+          "primary": true,
+          "url": "/og/pages/community.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/community",
+      "title": "Made with Lumen."
+    },
+    "/teams": {
+      "alt": "Prove the system before you commit. — Lumen UI",
+      "description": "Evaluate Lumen with a real product surface, real constraints, and no sales gate.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "teams.webp",
+          "primary": true,
+          "url": "/og/pages/teams.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/teams",
+      "title": "Prove the system before you commit."
+    },
+    "/docs/ai-skill": {
+      "alt": "Give your AI the design system. — Lumen UI",
+      "description": "Install the portable skill so coding agents select and verify real Lumen components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--ai-skill.webp",
+          "primary": true,
+          "url": "/og/pages/docs--ai-skill.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/ai-skill",
+      "title": "Give your AI the design system."
+    },
+    "/docs/mcp": {
+      "alt": "Real component contracts for AI agents. — Lumen UI",
+      "description": "Connect agents to structured components, tokens, recipes, and usage rules.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--mcp.webp",
+          "primary": true,
+          "url": "/og/pages/docs--mcp.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/mcp",
+      "title": "Real component contracts for AI agents."
+    },
+    "/docs/figma": {
+      "alt": "One product language from design to code. — Lumen UI",
+      "description": "Use semantic variables, component variants, and Code Connect mappings.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--figma.webp",
+          "primary": true,
+          "url": "/og/pages/docs--figma.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/figma",
+      "title": "One product language from design to code."
+    },
+    "/docs/theme-playground": {
+      "alt": "Build a theme from semantic roles. — Lumen UI",
+      "description": "Tune color roles, preview accessible components, and export the resulting CSS.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--theme-playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--theme-playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/theme-playground",
+      "title": "Build a theme from semantic roles."
+    },
+    "/docs/components/accordion": {
+      "alt": "Accordion — Lumen UI",
+      "description": "Stacks collapsible content sections. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--accordion.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--accordion.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/accordion",
+      "title": "Accordion"
+    },
+    "/docs/components/alert": {
+      "alt": "Alert — Lumen UI",
+      "description": "Surfaces contextual status messages. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--alert.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--alert.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/alert",
+      "title": "Alert"
+    },
+    "/docs/components/alert-dialog": {
+      "alt": "AlertDialog — Lumen UI",
+      "description": "Confirms destructive or high-commitment actions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--alert-dialog.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--alert-dialog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/alert-dialog",
+      "title": "AlertDialog"
+    },
+    "/docs/components/agenda": {
+      "alt": "Agenda — Lumen UI",
+      "description": "Lists upcoming appointments, tasks, or dated events. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--agenda.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--agenda.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/agenda",
+      "title": "Agenda"
+    },
+    "/docs/components/aspect-ratio": {
+      "alt": "AspectRatio — Lumen UI",
+      "description": "Keeps media and embeds in a predictable ratio. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--aspect-ratio.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--aspect-ratio.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/aspect-ratio",
+      "title": "AspectRatio"
+    },
+    "/docs/components/attachment": {
+      "alt": "Attachment — Lumen UI",
+      "description": "Displays a file attachment with metadata. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--attachment.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--attachment.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/attachment",
+      "title": "Attachment"
+    },
+    "/docs/components/autocomplete": {
+      "alt": "Autocomplete — Lumen UI",
+      "description": "Captures searchable text connected to suggestions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--autocomplete.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--autocomplete.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/autocomplete",
+      "title": "Autocomplete"
+    },
+    "/docs/components/avatar": {
+      "alt": "Avatar — Lumen UI",
+      "description": "Represents a person, team, or entity. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--avatar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--avatar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/avatar",
+      "title": "Avatar"
+    },
+    "/docs/components/backdrop": {
+      "alt": "Backdrop — Lumen UI",
+      "description": "Adds a portable ambient pattern behind meaningful content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--backdrop.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--backdrop.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/backdrop",
+      "title": "Backdrop"
+    },
+    "/docs/components/back-to-top": {
+      "alt": "BackToTop — Lumen UI",
+      "description": "Returns user to the top of the page. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--back-to-top.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--back-to-top.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/back-to-top",
+      "title": "BackToTop"
+    },
+    "/docs/components/badge": {
+      "alt": "Badge — Lumen UI",
+      "description": "Labels status, type, plan, or count information. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/badge",
+      "title": "Badge"
+    },
+    "/docs/components/bar-chart": {
+      "alt": "BarChart — Lumen UI",
+      "description": "Compares categorical or discrete-period values with grouped and stacked bars. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--bar-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--bar-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/bar-chart",
+      "title": "BarChart"
+    },
+    "/docs/components/breadcrumb": {
+      "alt": "Breadcrumb — Lumen UI",
+      "description": "Shows page hierarchy and parent navigation. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--breadcrumb.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--breadcrumb.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/breadcrumb",
+      "title": "Breadcrumb"
+    },
+    "/docs/components/bubble": {
+      "alt": "Bubble — Lumen UI",
+      "description": "Frames chat messages and short comments. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--bubble.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--bubble.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/bubble",
+      "title": "Bubble"
+    },
+    "/docs/components/button": {
+      "alt": "Button — Lumen UI",
+      "description": "Triggers primary, secondary, destructive, and quiet actions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/button",
+      "title": "Button"
+    },
+    "/docs/components/button-group": {
+      "alt": "ButtonGroup — Lumen UI",
+      "description": "Groups related button actions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--button-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--button-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/button-group",
+      "title": "ButtonGroup"
+    },
+    "/docs/components/calendar": {
+      "alt": "Calendar — Lumen UI",
+      "description": "Presents a calendar surface for date selection. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--calendar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--calendar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/calendar",
+      "title": "Calendar"
+    },
+    "/docs/components/callout": {
+      "alt": "Callout — Lumen UI",
+      "description": "Emphasizes an important explanation, caveat, or instruction within page content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--callout.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--callout.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/callout",
+      "title": "Callout"
+    },
+    "/docs/components/card": {
+      "alt": "Card — Lumen UI",
+      "description": "Frames a focused item, metric, plan, or form. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--card.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--card.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/card",
+      "title": "Card"
+    },
+    "/docs/components/card-content": {
+      "alt": "CardContent — Lumen UI",
+      "description": "Provides the main content region inside a Card. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--card-content.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--card-content.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/card-content",
+      "title": "CardContent"
+    },
+    "/docs/components/card-description": {
+      "alt": "CardDescription — Lumen UI",
+      "description": "Adds supporting copy to a Card header. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--card-description.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--card-description.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/card-description",
+      "title": "CardDescription"
+    },
+    "/docs/components/card-footer": {
+      "alt": "CardFooter — Lumen UI",
+      "description": "Groups actions at the end of a Card. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--card-footer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--card-footer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/card-footer",
+      "title": "CardFooter"
+    },
+    "/docs/components/card-header": {
+      "alt": "CardHeader — Lumen UI",
+      "description": "Groups introductory content at the start of a Card. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--card-header.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--card-header.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/card-header",
+      "title": "CardHeader"
+    },
+    "/docs/components/card-title": {
+      "alt": "CardTitle — Lumen UI",
+      "description": "Provides a semantic Card title with a stable styling hook. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--card-title.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--card-title.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/card-title",
+      "title": "CardTitle"
+    },
+    "/docs/components/carousel": {
+      "alt": "Carousel — Lumen UI",
+      "description": "Displays a horizontal sequence of slides. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--carousel.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--carousel.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/carousel",
+      "title": "Carousel"
+    },
+    "/docs/components/chart": {
+      "alt": "Chart — Lumen UI",
+      "description": "Frames metric headers, SVG plots, and captions for lightweight data visualization. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/chart",
+      "title": "Chart"
+    },
+    "/docs/components/checkbox": {
+      "alt": "Checkbox — Lumen UI",
+      "description": "Captures a binary form value. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--checkbox.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--checkbox.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/checkbox",
+      "title": "Checkbox"
+    },
+    "/docs/components/checkbox-group": {
+      "alt": "CheckboxGroup — Lumen UI",
+      "description": "Groups related checkbox choices under one legend. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--checkbox-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--checkbox-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/checkbox-group",
+      "title": "CheckboxGroup"
+    },
+    "/docs/components/collapsible": {
+      "alt": "Collapsible — Lumen UI",
+      "description": "Shows and hides one optional content region. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--collapsible.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--collapsible.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/collapsible",
+      "title": "Collapsible"
+    },
+    "/docs/components/code": {
+      "alt": "Code — Lumen UI",
+      "description": "Renders inline code and framed code blocks with theme-aware palettes. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--code.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--code.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/code",
+      "title": "Code"
+    },
+    "/docs/components/code-tabs": {
+      "alt": "CodeTabs — Lumen UI",
+      "description": "Groups related code examples into accessible, persistent tabs. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--code-tabs.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--code-tabs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/code-tabs",
+      "title": "CodeTabs"
+    },
+    "/docs/components/combobox": {
+      "alt": "Combobox — Lumen UI",
+      "description": "Combines text entry and option selection. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--combobox.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--combobox.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/combobox",
+      "title": "Combobox"
+    },
+    "/docs/components/container": {
+      "alt": "Container — Lumen UI",
+      "description": "Centers page content within responsive gutters and a maximum width. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--container.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--container.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/container",
+      "title": "Container"
+    },
+    "/docs/components/copy-button": {
+      "alt": "CopyButton — Lumen UI",
+      "description": "Copies arbitrary text or the content of another element with accessible success and failure feedback. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--copy-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--copy-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/copy-button",
+      "title": "CopyButton"
+    },
+    "/docs/components/command": {
+      "alt": "Command — Lumen UI",
+      "description": "Builds command palettes and filterable action lists. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--command.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--command.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/command",
+      "title": "Command"
+    },
+    "/docs/components/context-navigation": {
+      "alt": "ContextNavigation — Lumen UI",
+      "description": "Pairs a stable scope selector or identity with horizontally scrollable contextual links. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--context-navigation.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--context-navigation.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/context-navigation",
+      "title": "ContextNavigation"
+    },
+    "/docs/components/context-menu": {
+      "alt": "ContextMenu — Lumen UI",
+      "description": "Provides contextual actions for a selected object. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--context-menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--context-menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/context-menu",
+      "title": "ContextMenu"
+    },
+    "/docs/components/color-picker": {
+      "alt": "ColorPicker — Lumen UI",
+      "description": "Captures a color token or brand swatch value. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--color-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--color-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/color-picker",
+      "title": "ColorPicker"
+    },
+    "/docs/components/data-table": {
+      "alt": "DataTable — Lumen UI",
+      "description": "Styles dense tabular data and records. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--data-table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--data-table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/data-table",
+      "title": "DataTable"
+    },
+    "/docs/components/date-picker": {
+      "alt": "DatePicker — Lumen UI",
+      "description": "Selects a date from a polished, accessible Calendar popover. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--date-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--date-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/date-picker",
+      "title": "DatePicker"
+    },
+    "/docs/components/date-range-picker": {
+      "alt": "DateRangePicker — Lumen UI",
+      "description": "Selects a start and end date through a cohesive pair of custom Calendar popovers. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--date-range-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--date-range-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/date-range-picker",
+      "title": "DateRangePicker"
+    },
+    "/docs/components/dialog": {
+      "alt": "Dialog — Lumen UI",
+      "description": "Presents modal content for focused tasks. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dialog.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dialog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dialog",
+      "title": "Dialog"
+    },
+    "/docs/components/direction": {
+      "alt": "Direction — Lumen UI",
+      "description": "Controls directional layout and text flow. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--direction.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--direction.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/direction",
+      "title": "Direction"
+    },
+    "/docs/components/drawer": {
+      "alt": "Drawer — Lumen UI",
+      "description": "Slides in supporting navigation, filters, or task panels. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--drawer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--drawer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/drawer",
+      "title": "Drawer"
+    },
+    "/docs/components/dropdown-menu": {
+      "alt": "DropdownMenu — Lumen UI",
+      "description": "Shows compact actions from a trigger. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dropdown-menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dropdown-menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dropdown-menu",
+      "title": "DropdownMenu"
+    },
+    "/docs/components/empty": {
+      "alt": "Empty — Lumen UI",
+      "description": "Explains an empty state and next action. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--empty.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--empty.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/empty",
+      "title": "Empty"
+    },
+    "/docs/components/error-summary": {
+      "alt": "ErrorSummary — Lumen UI",
+      "description": "Summarizes form errors and links people back to invalid controls. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--error-summary.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--error-summary.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/error-summary",
+      "title": "ErrorSummary"
+    },
+    "/docs/components/eyebrow": {
+      "alt": "Eyebrow — Lumen UI",
+      "description": "Introduces or categorizes the heading that immediately follows it. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--eyebrow.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--eyebrow.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/eyebrow",
+      "title": "Eyebrow"
+    },
+    "/docs/components/field": {
+      "alt": "Field — Lumen UI",
+      "description": "Groups labels, controls, descriptions, and errors. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/field",
+      "title": "Field"
+    },
+    "/docs/components/field-error": {
+      "alt": "FieldError — Lumen UI",
+      "description": "Displays an error connected to a form control. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--field-error.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--field-error.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/field-error",
+      "title": "FieldError"
+    },
+    "/docs/components/floating-badge": {
+      "alt": "FloatingBadge — Lumen UI",
+      "description": "Shows a high-emphasis notification count over an icon, avatar, or control. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--floating-badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--floating-badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/floating-badge",
+      "title": "FloatingBadge"
+    },
+    "/docs/components/form": {
+      "alt": "Form — Lumen UI",
+      "description": "Adds consistent validation and submission state to a native form. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--form.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--form.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/form",
+      "title": "Form"
+    },
+    "/docs/components/formatted-date": {
+      "alt": "FormattedDate — Lumen UI",
+      "description": "Pairs human-readable date text with a machine-readable datetime value. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--formatted-date.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--formatted-date.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/formatted-date",
+      "title": "FormattedDate"
+    },
+    "/docs/components/graphic": {
+      "alt": "Graphic — Lumen UI",
+      "description": "Frames product-owned artwork with portable glow, grid, or orbit treatments. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--graphic.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--graphic.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/graphic",
+      "title": "Graphic"
+    },
+    "/docs/components/hover-card": {
+      "alt": "HoverCard — Lumen UI",
+      "description": "Shows extra context on hover and focus. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--hover-card.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--hover-card.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/hover-card",
+      "title": "HoverCard"
+    },
+    "/docs/components/icon": {
+      "alt": "Icon — Lumen UI",
+      "description": "Renders Lucide icons with Lumen sizing and accessibility defaults. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/icon",
+      "title": "Icon"
+    },
+    "/docs/components/image": {
+      "alt": "Image — Lumen UI",
+      "description": "Styles accessible images while preserving Astro, Next.js, and browser-native optimization. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--image.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--image.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/image",
+      "title": "Image"
+    },
+    "/docs/components/illustration": {
+      "alt": "Illustration — Lumen UI",
+      "description": "Shows a built-in semantic scene for empty, success, error, or offline states. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--illustration.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--illustration.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/illustration",
+      "title": "Illustration"
+    },
+    "/docs/components/input": {
+      "alt": "Input — Lumen UI",
+      "description": "Captures short text, email, password, search, or numeric values. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--input.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--input.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/input",
+      "title": "Input"
+    },
+    "/docs/components/input-group": {
+      "alt": "InputGroup — Lumen UI",
+      "description": "Combines inputs with prefixes, suffixes, or controls. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--input-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--input-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/input-group",
+      "title": "InputGroup"
+    },
+    "/docs/components/input-otp": {
+      "alt": "InputOTP — Lumen UI",
+      "description": "Collects one-time passcodes and verification codes. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--input-otp.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--input-otp.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/input-otp",
+      "title": "InputOTP"
+    },
+    "/docs/components/item": {
+      "alt": "Item — Lumen UI",
+      "description": "Aligns primary content, supporting metadata, and optional actions in a compact row. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--item.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--item.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/item",
+      "title": "Item"
+    },
+    "/docs/components/kanban-board": {
+      "alt": "KanbanBoard — Lumen UI",
+      "description": "Organizes controlled workflow columns with keyboard, pointer, and touch movement requests. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--kanban-board.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--kanban-board.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/kanban-board",
+      "title": "KanbanBoard"
+    },
+    "/docs/components/kanban-column": {
+      "alt": "KanbanColumn — Lumen UI",
+      "description": "Defines a named destination inside a controlled Kanban board. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--kanban-column.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--kanban-column.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/kanban-column",
+      "title": "KanbanColumn"
+    },
+    "/docs/components/kbd": {
+      "alt": "Kbd — Lumen UI",
+      "description": "Displays keyboard shortcuts. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--kbd.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--kbd.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/kbd",
+      "title": "Kbd"
+    },
+    "/docs/components/label": {
+      "alt": "Label — Lumen UI",
+      "description": "Labels form controls with consistent spacing. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--label.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--label.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/label",
+      "title": "Label"
+    },
+    "/docs/components/link": {
+      "alt": "Link — Lumen UI",
+      "description": "Styles ordinary text navigation while preserving native anchor behavior. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--link.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--link.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/link",
+      "title": "Link"
+    },
+    "/docs/components/line-chart": {
+      "alt": "LineChart — Lumen UI",
+      "description": "Shows ordered trends, multiple series, missing-value gaps, areas, markers, and reference values. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--line-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--line-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/line-chart",
+      "title": "LineChart"
+    },
+    "/docs/components/list-box": {
+      "alt": "ListBox — Lumen UI",
+      "description": "Presents a visible single- or multi-select option list. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--list-box.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--list-box.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/list-box",
+      "title": "ListBox"
+    },
+    "/docs/components/marker": {
+      "alt": "Marker — Lumen UI",
+      "description": "Highlights status, position, or annotations. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--marker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--marker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/marker",
+      "title": "Marker"
+    },
+    "/docs/components/menubar": {
+      "alt": "Menubar — Lumen UI",
+      "description": "Creates horizontal application menus. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--menubar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--menubar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/menubar",
+      "title": "Menubar"
+    },
+    "/docs/components/message": {
+      "alt": "Message — Lumen UI",
+      "description": "Structures a chat, activity, or system message. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--message.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--message.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/message",
+      "title": "Message"
+    },
+    "/docs/components/message-scroller": {
+      "alt": "MessageScroller — Lumen UI",
+      "description": "Provides a scrollable message feed. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--message-scroller.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--message-scroller.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/message-scroller",
+      "title": "MessageScroller"
+    },
+    "/docs/components/native-select": {
+      "alt": "NativeSelect — Lumen UI",
+      "description": "Styles the browser-native select element. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--native-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--native-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/native-select",
+      "title": "NativeSelect"
+    },
+    "/docs/components/navigation-menu": {
+      "alt": "NavigationMenu — Lumen UI",
+      "description": "Builds grouped top-level navigation. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--navigation-menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--navigation-menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/navigation-menu",
+      "title": "NavigationMenu"
+    },
+    "/docs/components/number-field": {
+      "alt": "NumberField — Lumen UI",
+      "description": "Captures constrained numeric values. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--number-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--number-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/number-field",
+      "title": "NumberField"
+    },
+    "/docs/components/pagination": {
+      "alt": "Pagination — Lumen UI",
+      "description": "Moves through paginated records or result sets. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--pagination.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--pagination.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/pagination",
+      "title": "Pagination"
+    },
+    "/docs/components/password-field": {
+      "alt": "PasswordField — Lumen UI",
+      "description": "Combines a password input with guidance, errors, and a visibility toggle. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--password-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--password-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/password-field",
+      "title": "PasswordField"
+    },
+    "/docs/components/phone-input": {
+      "alt": "PhoneInput — Lumen UI",
+      "description": "Pairs a country dial-code select with a telephone number input. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--phone-input.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--phone-input.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/phone-input",
+      "title": "PhoneInput"
+    },
+    "/docs/components/pie-chart": {
+      "alt": "PieChart — Lumen UI",
+      "description": "Shows part-to-whole relationships as an accessible donut or pie chart. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--pie-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--pie-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/pie-chart",
+      "title": "PieChart"
+    },
+    "/docs/components/pill": {
+      "alt": "Pill — Lumen UI",
+      "description": "Pairs a rounded text label with an optional trailing count. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--pill.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--pill.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/pill",
+      "title": "Pill"
+    },
+    "/docs/components/popover": {
+      "alt": "Popover — Lumen UI",
+      "description": "Displays lightweight floating content from a trigger. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--popover.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--popover.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/popover",
+      "title": "Popover"
+    },
+    "/docs/components/progress": {
+      "alt": "Progress — Lumen UI",
+      "description": "Shows completion, loading progress, or quota usage. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/progress",
+      "title": "Progress"
+    },
+    "/docs/components/prose": {
+      "alt": "Prose — Lumen UI",
+      "description": "Adds readable spacing and typography to rendered Markdown or CMS content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--prose.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--prose.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/prose",
+      "title": "Prose"
+    },
+    "/docs/components/radio-group": {
+      "alt": "RadioGroup — Lumen UI",
+      "description": "Groups mutually exclusive options. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--radio-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--radio-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/radio-group",
+      "title": "RadioGroup"
+    },
+    "/docs/components/resizable": {
+      "alt": "Resizable — Lumen UI",
+      "description": "Frames panes that can be resized. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--resizable.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--resizable.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/resizable",
+      "title": "Resizable"
+    },
+    "/docs/components/rich-text-editor": {
+      "alt": "RichTextEditor — Lumen UI",
+      "description": "Frames rich text toolbar and editing compositions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--rich-text-editor.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--rich-text-editor.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/rich-text-editor",
+      "title": "RichTextEditor"
+    },
+    "/docs/components/scroll-area": {
+      "alt": "ScrollArea — Lumen UI",
+      "description": "Provides a styled scroll container. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--scroll-area.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--scroll-area.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/scroll-area",
+      "title": "ScrollArea"
+    },
+    "/docs/components/scroll-progress": {
+      "alt": "ScrollProgress — Lumen UI",
+      "description": "Shows the reader’s current position in a long document. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--scroll-progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--scroll-progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/scroll-progress",
+      "title": "ScrollProgress"
+    },
+    "/docs/components/schedule": {
+      "alt": "Schedule — Lumen UI",
+      "description": "Displays calendar events across day, week, or resource grids. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--schedule.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--schedule.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/schedule",
+      "title": "Schedule"
+    },
+    "/docs/components/search-field": {
+      "alt": "SearchField — Lumen UI",
+      "description": "Captures search queries with native search semantics. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--search-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--search-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/search-field",
+      "title": "SearchField"
+    },
+    "/docs/components/select": {
+      "alt": "Select — Lumen UI",
+      "description": "Provides an enhanced single-choice list when text search is not needed. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/select",
+      "title": "Select"
+    },
+    "/docs/components/separator": {
+      "alt": "Separator — Lumen UI",
+      "description": "Creates a semantic visual boundary between adjacent content groups. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--separator.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--separator.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/separator",
+      "title": "Separator"
+    },
+    "/docs/components/sheet": {
+      "alt": "Sheet — Lumen UI",
+      "description": "Shows a side sheet for secondary flows. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--sheet.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--sheet.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/sheet",
+      "title": "Sheet"
+    },
+    "/docs/components/sidebar": {
+      "alt": "Sidebar — Lumen UI",
+      "description": "Builds persistent app navigation. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--sidebar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--sidebar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/sidebar",
+      "title": "Sidebar"
+    },
+    "/docs/components/skeleton": {
+      "alt": "Skeleton — Lumen UI",
+      "description": "Reserves space during loading states. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--skeleton.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--skeleton.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/skeleton",
+      "title": "Skeleton"
+    },
+    "/docs/components/skip-link": {
+      "alt": "SkipLink — Lumen UI",
+      "description": "Lets keyboard users bypass repeated navigation and move directly to main content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--skip-link.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--skip-link.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/skip-link",
+      "title": "SkipLink"
+    },
+    "/docs/components/slider": {
+      "alt": "Slider — Lumen UI",
+      "description": "Captures numeric values across a bounded range. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/slider",
+      "title": "Slider"
+    },
+    "/docs/components/sparkline": {
+      "alt": "Sparkline — Lumen UI",
+      "description": "Shows a compact, text-labelled trend beside an existing metric. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--sparkline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--sparkline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/sparkline",
+      "title": "Sparkline"
+    },
+    "/docs/components/spinner": {
+      "alt": "Spinner — Lumen UI",
+      "description": "Indicates short loading states. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--spinner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--spinner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/spinner",
+      "title": "Spinner"
+    },
+    "/docs/components/switch": {
+      "alt": "Switch — Lumen UI",
+      "description": "Toggles a single setting on or off. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--switch.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--switch.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/switch",
+      "title": "Switch"
+    },
+    "/docs/components/table": {
+      "alt": "Table — Lumen UI",
+      "description": "Styles semantic tables for records and comparisons. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/table",
+      "title": "Table"
+    },
+    "/docs/components/tabs": {
+      "alt": "Tabs — Lumen UI",
+      "description": "Switches between related panels. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tabs.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tabs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tabs",
+      "title": "Tabs"
+    },
+    "/docs/components/tag-group": {
+      "alt": "TagGroup — Lumen UI",
+      "description": "Groups removable or selectable tags. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tag-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tag-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tag-group",
+      "title": "TagGroup"
+    },
+    "/docs/components/textarea": {
+      "alt": "Textarea — Lumen UI",
+      "description": "Captures longer free-form text. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--textarea.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--textarea.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/textarea",
+      "title": "Textarea"
+    },
+    "/docs/components/theme-builder": {
+      "alt": "ThemeBuilder — Lumen UI",
+      "description": "Builds scoped token previews with hue, scheme, manual color, and export controls. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--theme-builder.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--theme-builder.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/theme-builder",
+      "title": "ThemeBuilder"
+    },
+    "/docs/components/theme-toggle": {
+      "alt": "ThemeToggle — Lumen UI",
+      "description": "Switches between the configured light and dark color themes. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--theme-toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--theme-toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/theme-toggle",
+      "title": "ThemeToggle"
+    },
+    "/docs/components/time-field": {
+      "alt": "TimeField — Lumen UI",
+      "description": "Captures a native time value. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--time-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--time-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/time-field",
+      "title": "TimeField"
+    },
+    "/docs/components/toast": {
+      "alt": "Toast — Lumen UI",
+      "description": "Displays temporary feedback for background actions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--toast.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--toast.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/toast",
+      "title": "Toast"
+    },
+    "/docs/components/toggle": {
+      "alt": "Toggle — Lumen UI",
+      "description": "Keeps the pressed state of a tool action such as pin, mute, or bold. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/toggle",
+      "title": "Toggle"
+    },
+    "/docs/components/toggle-group": {
+      "alt": "ToggleGroup — Lumen UI",
+      "description": "Coordinates related pressed-state controls with shared keyboard navigation. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--toggle-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--toggle-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/toggle-group",
+      "title": "ToggleGroup"
+    },
+    "/docs/components/tooltip": {
+      "alt": "Tooltip — Lumen UI",
+      "description": "Adds concise helper text to compact controls. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tooltip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tooltip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tooltip",
+      "title": "Tooltip"
+    },
+    "/docs/components/tree": {
+      "alt": "Tree — Lumen UI",
+      "description": "Displays hierarchical navigation or object collections. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tree.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tree.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tree",
+      "title": "Tree"
+    },
+    "/docs/components/tree-grid": {
+      "alt": "TreeGrid — Lumen UI",
+      "description": "Displays hierarchical rows with grid-like columns. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tree-grid.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tree-grid.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tree-grid",
+      "title": "TreeGrid"
+    },
+    "/docs/components/typography": {
+      "alt": "Typography — Lumen UI",
+      "description": "Gives hand-authored semantic text consistent Lumen spacing, color, and reading rhythm. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--typography.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--typography.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/typography",
+      "title": "Typography"
+    },
+    "/docs/components/virtual-list": {
+      "alt": "VirtualList — Lumen UI",
+      "description": "Frames long scrollable collections for virtualization adapters. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--virtual-list.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--virtual-list.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/virtual-list",
+      "title": "VirtualList"
+    },
+    "/docs/components/language-toggle": {
+      "alt": "LanguageToggle — Lumen UI",
+      "description": "Coordinates controlled or persistent locale selection and document language as a compact accessible control. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--language-toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--language-toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/language-toggle",
+      "title": "LanguageToggle"
+    },
+    "/docs/components/particles": {
+      "alt": "Particles — Lumen UI",
+      "description": "Adds a density-controlled decorative particle field behind foreground content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--particles.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--particles.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/particles",
+      "title": "Particles"
+    },
+    "/docs/components/animated-number": {
+      "alt": "AnimatedNumber — Lumen UI",
+      "description": "Animates a formatted metric while keeping one stable accessible value. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--animated-number.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--animated-number.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/animated-number",
+      "title": "AnimatedNumber"
+    },
+    "/docs/components/reveal-group": {
+      "alt": "RevealGroup — Lumen UI",
+      "description": "Reveals a group of direct children with tokenized, reduced-motion-aware staggering. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--reveal-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--reveal-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/reveal-group",
+      "title": "RevealGroup"
+    },
+    "/docs/components/scroll-reveal": {
+      "alt": "ScrollReveal — Lumen UI",
+      "description": "Animates wrapped content as it first enters the viewport. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--scroll-reveal.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--scroll-reveal.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/scroll-reveal",
+      "title": "ScrollReveal"
+    },
+    "/docs/components/stat": {
+      "alt": "Stat — Lumen UI",
+      "description": "Pairs one prominent metric with a concise descriptive label. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stat.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stat.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stat",
+      "title": "Stat"
+    },
+    "/docs/components/stat-description": {
+      "alt": "StatDescription — Lumen UI",
+      "description": "Adds supporting context to a composed statistic. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stat-description.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stat-description.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stat-description",
+      "title": "StatDescription"
+    },
+    "/docs/components/stat-icon": {
+      "alt": "StatIcon — Lumen UI",
+      "description": "Provides an icon region for a composed statistic. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stat-icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stat-icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stat-icon",
+      "title": "StatIcon"
+    },
+    "/docs/components/stat-label": {
+      "alt": "StatLabel — Lumen UI",
+      "description": "Labels a composed statistic. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stat-label.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stat-label.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stat-label",
+      "title": "StatLabel"
+    },
+    "/docs/components/stat-trend": {
+      "alt": "StatTrend — Lumen UI",
+      "description": "Communicates a metric delta with a semantic tone. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stat-trend.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stat-trend.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stat-trend",
+      "title": "StatTrend"
+    },
+    "/docs/components/stat-value": {
+      "alt": "StatValue — Lumen UI",
+      "description": "Displays the prominent value in a composed statistic. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stat-value.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stat-value.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stat-value",
+      "title": "StatValue"
+    },
+    "/docs/components/stack": {
+      "alt": "Stack — Lumen UI",
+      "description": "Arranges children with tokenized direction, spacing, and alignment. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stack.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stack.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stack",
+      "title": "Stack"
+    },
+    "/docs/components/meter": {
+      "alt": "Meter — Lumen UI",
+      "description": "Displays a scalar value within a known range. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--meter.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--meter.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/meter",
+      "title": "Meter"
+    },
+    "/docs/components/note": {
+      "alt": "Note — Lumen UI",
+      "description": "Keeps supplementary information visually attached to nearby content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--note.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--note.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/note",
+      "title": "Note"
+    },
+    "/docs/components/rating": {
+      "alt": "Rating — Lumen UI",
+      "description": "Collects or presents a bounded star-based score. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--rating.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--rating.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/rating",
+      "title": "Rating"
+    },
+    "/docs/components/timeline": {
+      "alt": "Timeline — Lumen UI",
+      "description": "Orders milestones or activity events along a chronological track. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--timeline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--timeline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/timeline",
+      "title": "Timeline"
+    },
+    "/docs/components/animated-logo": {
+      "alt": "AnimatedLogo — Lumen UI",
+      "description": "Reveals any inline SVG logo with accessible, reduced-motion-aware animation. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--animated-logo.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--animated-logo.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/animated-logo",
+      "title": "AnimatedLogo"
+    },
+    "/docs/components/animated-portrait": {
+      "alt": "AnimatedPortrait — Lumen UI",
+      "description": "Presents a portrait with optional motion and floating profile facts. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--animated-portrait.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--animated-portrait.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/animated-portrait",
+      "title": "AnimatedPortrait"
+    },
+    "/docs/components/button-link": {
+      "alt": "ButtonLink — Lumen UI",
+      "description": "Gives navigation the visual emphasis of a button while retaining anchor semantics. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--button-link.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--button-link.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/button-link",
+      "title": "ButtonLink"
+    },
+    "/docs/components/cover-image": {
+      "alt": "CoverImage — Lumen UI",
+      "description": "Presents responsive editorial artwork with optional hover lift and gradient treatment. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--cover-image.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--cover-image.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/cover-image",
+      "title": "CoverImage"
+    },
+    "/docs/components/gradient-divider": {
+      "alt": "GradientDivider — Lumen UI",
+      "description": "Separates sections with a decorative brand-colored gradient line. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--gradient-divider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--gradient-divider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/gradient-divider",
+      "title": "GradientDivider"
+    },
+    "/docs/components/stepper": {
+      "alt": "Stepper — Lumen UI",
+      "description": "Shows a person’s current position and progress through an ordered multi-step flow. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stepper.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stepper.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stepper",
+      "title": "Stepper"
+    },
+    "/docs/components/file-upload": {
+      "alt": "FileUpload — Lumen UI",
+      "description": "Collects files through a picker or drag-and-drop target. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--file-upload.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--file-upload.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/file-upload",
+      "title": "FileUpload"
+    },
+    "/docs/components/tour": {
+      "alt": "Tour — Lumen UI",
+      "description": "Guides people through product features using a sequence of anchored steps. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tour.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tour.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tour",
+      "title": "Tour"
+    },
+    "/docs/components/anchor": {
+      "alt": "Anchor — Lumen UI",
+      "description": "Links to sections within a long page and exposes the page’s local structure. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--anchor.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--anchor.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/anchor",
+      "title": "Anchor"
+    },
+    "/docs/components/segmented": {
+      "alt": "Segmented — Lumen UI",
+      "description": "Presents a small, always-visible set of mutually exclusive values. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--segmented.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--segmented.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/segmented",
+      "title": "Segmented"
+    },
+    "/docs/components/toolbar": {
+      "alt": "Toolbar — Lumen UI",
+      "description": "Groups frequently used controls into one compact action row. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--toolbar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--toolbar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/toolbar",
+      "title": "Toolbar"
+    },
+    "/docs/components/descriptions": {
+      "alt": "Descriptions — Lumen UI",
+      "description": "Presents a set of labeled facts as an aligned key–value list. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--descriptions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--descriptions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/descriptions",
+      "title": "Descriptions"
+    },
+    "/docs/components/popconfirm": {
+      "alt": "Popconfirm — Lumen UI",
+      "description": "Requests a brief confirmation beside the action that triggered it. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--popconfirm.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--popconfirm.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/popconfirm",
+      "title": "Popconfirm"
+    },
+    "/docs/components/transfer": {
+      "alt": "Transfer — Lumen UI",
+      "description": "Moves selected items between available and chosen collections. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--transfer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--transfer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/transfer",
+      "title": "Transfer"
+    },
+    "/docs/components/cascader": {
+      "alt": "Cascader — Lumen UI",
+      "description": "Selects one value by drilling through dependent levels of a hierarchy. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--cascader.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--cascader.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/cascader",
+      "title": "Cascader"
+    },
+    "/docs/components/tree-select": {
+      "alt": "TreeSelect — Lumen UI",
+      "description": "Selects nodes from a branching hierarchy inside a dropdown. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tree-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tree-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tree-select",
+      "title": "TreeSelect"
+    },
+    "/docs/components/mentions": {
+      "alt": "Mentions — Lumen UI",
+      "description": "Captures multi-line text with suggestions triggered by @ mentions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--mentions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--mentions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/mentions",
+      "title": "Mentions"
+    },
+    "/docs/components/qrcode": {
+      "alt": "QRCode — Lumen UI",
+      "description": "Renders a scannable QR code for a URL or other short value. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--qrcode.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--qrcode.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/qrcode",
+      "title": "QRCode"
+    },
+    "/docs/components/watermark": {
+      "alt": "Watermark — Lumen UI",
+      "description": "Overlays a text or image watermark on content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--watermark.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--watermark.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/watermark",
+      "title": "Watermark"
+    },
+    "/docs/components/affix": {
+      "alt": "Affix — Lumen UI",
+      "description": "Keeps important controls visible after their original position scrolls out of view. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--affix.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--affix.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/affix",
+      "title": "Affix"
+    },
+    "/docs/components/speed-dial": {
+      "alt": "SpeedDial — Lumen UI",
+      "description": "Expands a floating primary action into a compact set of related actions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--speed-dial.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--speed-dial.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/speed-dial",
+      "title": "SpeedDial"
+    },
+    "/docs/components/grid": {
+      "alt": "Grid — Lumen UI",
+      "description": "Arranges content in fixed or responsive tokenized columns. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--grid.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--grid.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/grid",
+      "title": "Grid"
+    },
+    "/docs/components/visually-hidden": {
+      "alt": "VisuallyHidden — Lumen UI",
+      "description": "Keeps meaningful content available to assistive technology without displaying it. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--visually-hidden.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--visually-hidden.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/visually-hidden",
+      "title": "VisuallyHidden"
+    }
+  },
+  "version": 1
+}

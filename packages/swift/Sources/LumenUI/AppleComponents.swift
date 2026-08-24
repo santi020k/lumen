@@ -125,4 +125,51 @@ public struct LumenDateField: View {
         )
     }
 }
+
+/// A token-aware URL action that preserves SwiftUI's native link-opening behavior.
+public struct LumenLink<Label: View>: View {
+    @Environment(\.lumenTheme) private var theme
+
+    private let destination: URL
+    private let label: Label
+    private let showsExternalIndicator: Bool
+
+    public init(
+        destination: URL,
+        showsExternalIndicator: Bool = false,
+        @ViewBuilder label: () -> Label
+    ) {
+        self.destination = destination
+        self.label = label()
+        self.showsExternalIndicator = showsExternalIndicator
+    }
+
+    public var body: some View {
+        Link(destination: destination) {
+            HStack(spacing: LumenSpacing.xs) {
+                label
+
+                if showsExternalIndicator {
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption2.weight(.semibold))
+                        .accessibilityHidden(true)
+                }
+            }
+        }
+        .foregroundStyle(theme.colors.brandSolid)
+        .underline()
+    }
+}
+
+public extension LumenLink where Label == Text {
+    init(
+        _ title: LocalizedStringKey,
+        destination: URL,
+        showsExternalIndicator: Bool = false
+    ) {
+        self.init(destination: destination, showsExternalIndicator: showsExternalIndicator) {
+            Text(title)
+        }
+    }
+}
 #endif

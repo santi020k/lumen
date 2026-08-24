@@ -835,6 +835,18 @@ const nativeSourceExtensions = {
   swiftui: new Set(['.swift'])
 }
 
+const nativeImplementationOverrides = [
+  {
+    install:
+      'Include packages/compose from a shallow Git checkout pinned to the Lumen release tag, then add implementation(project(":wear")).',
+    packageName: 'com.santi020k:lumen-compose-wear',
+    platform: 'compose',
+    setup:
+      'Wrap wearable content in LumenWearTheme inside the application-owned Wear Material theme.',
+    sourcePrefix: 'packages/compose/wear/'
+  }
+]
+
 const extensionOf = fileName => {
   const index = fileName.lastIndexOf('.')
 
@@ -846,15 +858,18 @@ const loadNativeSources = async (repoRoot, nativeRegistry) => {
 
   for (const [platform, config] of Object.entries(nativePlatformConfigs)) {
     const adapter = nativeRegistry.adapters[config.adapter]
-    const directory = resolve(repoRoot, adapter.sourceDirectory)
     const files = {}
 
-    for (const fileName of await readdir(directory)) {
-      if (!nativeSourceExtensions[platform].has(extensionOf(fileName))) continue
+    for (const sourceDirectory of [adapter.sourceDirectory, ...(adapter.additionalSourceDirectories ?? [])]) {
+      const directory = resolve(repoRoot, sourceDirectory)
 
-      const absolutePath = join(directory, fileName)
+      for (const fileName of await readdir(directory)) {
+        if (!nativeSourceExtensions[platform].has(extensionOf(fileName))) continue
 
-      files[relative(repoRoot, absolutePath)] = await readFile(absolutePath, 'utf8')
+        const absolutePath = join(directory, fileName)
+
+        files[relative(repoRoot, absolutePath)] = await readFile(absolutePath, 'utf8')
+      }
     }
 
     sources[platform] = files
@@ -873,6 +888,28 @@ const findNativeSourceFile = (sources, platform, symbol) => {
 
 const nativeRegistryEntry = (nativeRegistry, id) => nativeRegistry.components.find(component => component.id === id) ??
   nativeRegistry.platformComponents.find(component => component.id === id)
+
+const buildNativeImplementation = ({ config, implementation, nativeRegistry, platform, sources, symbol }) => {
+  const sourceFile = findNativeSourceFile(sources, platform, symbol)
+
+  const implementationOverride = nativeImplementationOverrides.find(candidate => (
+    candidate.platform === platform && sourceFile.startsWith(candidate.sourcePrefix)
+  ))
+
+  return {
+    api: implementation.api,
+    example: implementation.example,
+    exportName: implementation.exportName,
+    importStatement: config.importStatement(symbol),
+    install: implementationOverride?.install ?? config.install,
+    language: implementation.language,
+    packageName:
+      implementationOverride?.packageName ?? nativeRegistry.adapters[config.adapter].package,
+    setup: implementationOverride?.setup ?? config.setup,
+    sourceFile,
+    symbol
+  }
+}
 
 const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
   const docsData = await loadDocsData(files.nativeDocsSource)
@@ -905,18 +942,14 @@ const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
       if (!symbol)
         throw new Error(`Native registry entry ${doc.slug} is missing a ${platform} symbol.`)
 
-      implementations[platform] = {
-        api: implementation.api,
-        example: implementation.example,
-        exportName: implementation.exportName,
-        importStatement: config.importStatement(symbol),
-        install: config.install,
-        language: implementation.language,
-        packageName: nativeRegistry.adapters[config.adapter].package,
-        setup: config.setup,
-        sourceFile: findNativeSourceFile(sources, platform, symbol),
+      implementations[platform] = buildNativeImplementation({
+        config,
+        implementation,
+        nativeRegistry,
+        platform,
+        sources,
         symbol
-      }
+      })
     }
 
     return {
@@ -991,6 +1024,7 @@ const main = async () => {
   const packageJson = JSON.parse(await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8'))
   const registry = await loadRegistry(p)
   const nativeRegistry = await loadNativeRegistry(p)
+  const releaseManifest = JSON.parse(await readFile(p('registry/release-manifest.json'), 'utf8'))
   const names = parseComponentNames(componentsSource)
   const ctxData = await buildContextData(files, registry, names)
 
@@ -1161,6 +1195,8 @@ const main = async () => {
 
   packageVersions['com.santi020k:lumen-compose'] = 'workspace'
 
+  packageVersions['com.santi020k:lumen-compose-wear'] = 'workspace'
+
   const catalogHash = createHash('sha256')
     .update(
       JSON.stringify({
@@ -1169,6 +1205,7 @@ const main = async () => {
         nativeComponents,
         nativeSources,
         recipes,
+        releaseManifest,
         rules,
         tokens
       })
@@ -1230,12 +1267,13 @@ const main = async () => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 4,
+      schemaVersion: 5,
       serverVersion: packageJson.version
     },
     nativeComponents,
     nativeSources,
     recipes,
+    releaseManifest,
     rules,
     tokens
   }

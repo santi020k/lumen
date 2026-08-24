@@ -11,7 +11,10 @@
     },
     "compose": {
       "package": "com.santi020k:lumen-compose",
-      "sourceDirectory": "packages/compose/src/main/kotlin/com/santi020k/lumen"
+      "sourceDirectory": "packages/compose/src/main/kotlin/com/santi020k/lumen",
+      "additionalSourceDirectories": [
+        "packages/compose/wear/src/main/kotlin/com/santi020k/lumen/wear"
+      ]
     }
   },
   "components": [
@@ -488,12 +491,62 @@
     {
       "id": "navigation-bar",
       "tier": "shared",
-      "contract": "Controlled selection from a small set of peer app destinations",
-      "accessibility": "Names the destination group and exposes selected and disabled item states",
+      "contract": "Controlled selection from peer app destinations with re-selection callbacks and optional dot, text, or count badges",
+      "accessibility": "Names the destination group and exposes selected, disabled, and badge status without relying on color alone",
       "symbols": {
         "reactNative": "LumenNavigationBar",
         "swiftUI": "LumenNavigationBar",
         "compose": "LumenNavigationBar"
+      }
+    },
+    {
+      "id": "wearable-action",
+      "tier": "shared",
+      "contract": "At-a-glance round primary action with semantic intent, disabled state, and wearable sizing",
+      "accessibility": "Requires a concise action label and preserves native button semantics",
+      "symbols": {
+        "swiftUI": "LumenWatchActionButton",
+        "compose": "LumenWearActionButton"
+      }
+    },
+    {
+      "id": "wearable-progress",
+      "tier": "shared",
+      "contract": "Clamped circular progress surrounding app-owned wearable content",
+      "accessibility": "Exposes a normalized progress range without duplicating inner content",
+      "symbols": {
+        "swiftUI": "LumenWatchProgressRing",
+        "compose": "LumenWearProgressRing"
+      }
+    },
+    {
+      "id": "wearable-status",
+      "tier": "shared",
+      "contract": "Compact text-first wearable status using semantic tone",
+      "accessibility": "Keeps status meaning in text rather than color alone",
+      "symbols": {
+        "swiftUI": "LumenWatchStatus",
+        "compose": "LumenWearStatus"
+      }
+    },
+    {
+      "id": "wearable-metric",
+      "tier": "shared",
+      "contract": "At-a-glance wearable label, value, and optional detail",
+      "accessibility": "Presents the metric as one concise readable unit",
+      "symbols": {
+        "swiftUI": "LumenWatchMetric",
+        "compose": "LumenWearMetric"
+      }
+    },
+    {
+      "id": "wearable-list-row",
+      "tier": "shared",
+      "contract": "Compact wearable row with flexible leading, content, and trailing slots",
+      "accessibility": "Preserves child action semantics and readable traversal order",
+      "symbols": {
+        "swiftUI": "LumenWatchListRow",
+        "compose": "LumenWearListRow"
       }
     }
   ],
@@ -523,6 +576,30 @@
       "symbol": "LumenDateField"
     },
     {
+      "id": "link",
+      "adapter": "swiftUI",
+      "platforms": ["iOS", "macOS"],
+      "contract": "Token-aware URL action backed by SwiftUI native link opening",
+      "accessibility": "Preserves the native link role, visible label, focus behavior, and disabled state",
+      "symbol": "LumenLink"
+    },
+    {
+      "id": "tab-bar-minimization",
+      "adapter": "swiftUI",
+      "platforms": ["iOS"],
+      "contract": "Availability-safe native tab-bar minimization with automatic, never, and scroll-direction policies",
+      "accessibility": "Delegates motion, safe-area, focus, and reduced-motion behavior to the native SwiftUI tab bar",
+      "symbol": "lumenTabBarMinimizeBehavior"
+    },
+    {
+      "id": "tab-accessory",
+      "adapter": "swiftUI",
+      "platforms": ["iOS"],
+      "contract": "Adaptive expanded and compact content above or inline with a native tab bar",
+      "accessibility": "Preserves the semantics of application-owned accessory content across native placements",
+      "symbol": "LumenTabAccessory"
+    },
+    {
       "id": "refresh-control",
       "adapter": "reactNative",
       "platforms": ["iOS", "Android"],
@@ -531,10 +608,50 @@
       "symbol": "LumenRefreshControl"
     },
     {
+      "id": "collapsible-navigation-bar",
+      "adapter": "reactNative",
+      "platforms": ["iOS", "Android"],
+      "contract": "Animated bottom navigation that hides after forward scroll travel and reveals on reverse travel or at the top",
+      "accessibility": "Removes hidden destinations from interaction and the accessibility tree while preserving native list ownership",
+      "symbol": "LumenCollapsibleNavigationBar"
+    },
+    {
+      "id": "navigation-accessory",
+      "adapter": "reactNative",
+      "platforms": ["iOS", "Android"],
+      "contract": "Compact status or action content above a React Native bottom navigation bar",
+      "accessibility": "Preserves the semantics of application-owned accessory content and collapses with hidden navigation",
+      "symbol": "LumenNavigationAccessory"
+    },
+    {
+      "id": "navigation-bar-scroll-behavior",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Threshold-based nested-scroll visibility state for a Material navigation bar",
+      "accessibility": "Stops exposing the navigation bar after its exit transition without consuming descendant scroll input",
+      "symbol": "LumenNavigationBarScrollState"
+    },
+    {
+      "id": "navigation-bar-accessory",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Compact token-aware content above Material bottom navigation coordinated with its scroll visibility",
+      "accessibility": "Preserves application-owned child semantics and exits the layout with hidden navigation",
+      "symbol": "LumenNavigationBarAccessory"
+    },
+    {
+      "id": "adaptive-navigation-scaffold",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Material adaptive navigation that switches between bottom bar and rail from window size and device posture",
+      "accessibility": "Uses Material navigation semantics while preserving application-owned destination content and routing",
+      "symbol": "LumenAdaptiveNavigationScaffold"
+    },
+    {
       "id": "floating-action-button",
       "adapter": "compose",
       "platforms": ["Android"],
-      "contract": "Material-native floating action with semantic intent and small or regular sizing",
+      "contract": "Material-native floating action with semantic intent, sizing, and optional hide or follow-navigation behavior",
       "accessibility": "Requires a readable icon action description and preserves native button semantics",
       "symbol": "LumenFloatingActionButton"
     }

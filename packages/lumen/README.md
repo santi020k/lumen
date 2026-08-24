@@ -43,6 +43,7 @@ lumen add saas-admin --target react
 lumen add commerce-dashboard --target elements
 lumen audit-tokens ./src
 lumen doctor --json
+lumen doctor-native --json
 lumen init --framework astro --tailwind
 ```
 
@@ -57,8 +58,22 @@ Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin
 Run `lumen doctor` to check adapter/style agreement, Tailwind layer order, Astro runtime mounts,
 and fragile internal selector dependencies. In a workspace, diagnostics are scoped to the nearest
 package boundary, generated build trees are ignored, and application-controlled Astro `Toggle`
-instances do not require the shared runtime. Use `--json` for CI and rollout automation. `lumen
-init --framework <astro|react|elements> [--tailwind]` prints the canonical non-destructive setup.
+instances do not require the shared runtime. It also suggests matching Lumen primitives for likely
+hand-built dropdown, theme, dialog-focus, and keyboard-menu behavior. These suggestions stay
+advisory because product-specific composition can be intentional. Use `--json` for CI and rollout
+automation. `lumen init --framework <astro|react|elements> [--tailwind]` prints the canonical
+non-destructive setup.
+
+Run `lumen doctor-native` in an Apple or Android consumer to report the resolved Swift package
+tag/revision or Compose artifact version, compare it with Lumen's bundled cross-platform release
+manifest, and audit public theme placement. Findings are suggestions or warnings: the command does
+not classify application-owned navigation or controls as migration failures. Pass `--manifest`
+to audit against a prerelease manifest and `--json` for CI.
+
+The same machine-readable metadata is published as
+`@santi020k/lumen/release-manifest.json`. It records every npm package version and peer range, the
+Swift tag, Maven coordinates, required stylesheet/runtime setup, deprecations, removals, and
+codemod availability.
 
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that

@@ -77,6 +77,35 @@ import Testing
     #expect(LumenAvatarSize.lg.dimension == 56)
 }
 
+@Test func navigationBadgesCapVisibleCountsAndRetainAccessibleValues() {
+    let badge = LumenNavigationBadge.count(128)
+
+    #expect(badge.displayText == "99+")
+    #expect(badge.spokenLabel == "128 new items")
+    #expect(LumenNavigationBadge.dot().displayText == nil)
+}
+
+@Test func navigationSelectionSeparatesChangesFromReselection() {
+    var changes: [String] = []
+    var reselectionEvents: [String] = []
+
+    dispatchLumenNavigationSelection(
+        itemValue: "search",
+        selectedValue: "home",
+        onValueChange: { changes.append($0) },
+        onReselect: { reselectionEvents.append($0) }
+    )
+    dispatchLumenNavigationSelection(
+        itemValue: "home",
+        selectedValue: "home",
+        onValueChange: { changes.append($0) },
+        onReselect: { reselectionEvents.append($0) }
+    )
+
+    #expect(changes == ["search"])
+    #expect(reselectionEvents == ["home"])
+}
+
 @Test func graphicDimensionsMatchTheSharedContract() {
     #expect(LumenGraphicSize.sm.dimension == 160)
     #expect(LumenGraphicSize.md.dimension == 240)

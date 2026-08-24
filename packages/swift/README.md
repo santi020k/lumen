@@ -76,7 +76,7 @@ settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`,
 changes remain application-owned while Lumen components read the supplied palette.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider, DateField,
+FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider, DateField, Link,
 SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Graphic,
 Backdrop, Illustration, Disclosure, EmptyState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
@@ -84,10 +84,26 @@ ShortcutRecorder and searchable SF Symbols picker.
 Native presentation is available through `.lumenAlertDialog`, `.lumenSheet`, `LumenMenu`, and
 `LumenShareButton`; the application continues to own presentation state and shared content.
 `LumenNavigationBar` selects among a small set of peer destinations while the application retains
-ownership of its `NavigationStack`, `NavigationSplitView`, deep links, and restoration state.
+ownership of its `NavigationStack`, `NavigationSplitView`, deep links, and restoration state. Items
+support accessible dot, text, and capped count badges; `onReselect` lets the application scroll its
+active content to the top or pop its nested stack.
+Native `TabView` screens can opt into `.lumenTabBarMinimizeBehavior(...)` and attach adaptive
+expanded/compact content with `.lumenTabViewBottomAccessory` and `LumenTabAccessory`. iOS 26 uses
+the system tab behavior; earlier supported iOS releases retain the normal tab bar and use a
+token-aware safe-area accessory fallback.
 Components preserve Dynamic Type, SwiftUI environment behavior, and native accessibility instead
 of reproducing DOM behavior. Icons use SF Symbols so rendering follows Apple platform conventions;
 standalone icons are decorative unless labeled, and icon-only buttons require a label.
+
+`LumenDisclosure` supports concise text labels and rich application-owned label views, with either
+controlled or presentation-local expansion state. `LumenLink` applies semantic link treatment while
+delegating URL opening, focus, disabled state, and accessibility behavior to SwiftUI.
+
+watchOS targets use a focused at-a-glance tier instead of the full phone catalog:
+`LumenWatchActionButton`, `LumenWatchProgressRing`, `LumenWatchStatus`, `LumenWatchMetric`, and
+`LumenWatchListRow`. Apply `.lumenTheme(...)` at the watch app root. Keep Digital Crown behavior,
+Always On policy, complications, WidgetKit timelines, notifications, haptics, synchronization, and
+health or safety decisions in the application.
 
 The same component APIs work in iOS and macOS targets. Lumen automatically uses touch-friendly
 control dimensions on iPhone and iPad, and compact pointer-friendly dimensions on Mac. Shared views

@@ -35,6 +35,8 @@ describe('lumen-mcp data snapshot', () => {
     expect(data.tokens.semantic).toContain('brand')
     expect(data.tokens.chart.series1).toBeDefined()
     expect(data.rules.length).toBeGreaterThan(0)
+    expect(data.releaseManifest.release.version).toMatch(/^\d+\.\d+\.\d+/)
+    expect(data.releaseManifest.release.compose.artifacts).toContain('com.santi020k:lumen-compose')
   })
 
   test('bundles rich metadata and real framework contracts', () => {
@@ -226,6 +228,16 @@ describe('native component tools', () => {
     expect(reactNative.text).toContain('Reference source')
     expect(swiftUI.text).toContain('import LumenUI')
     expect(compose.text).toContain('import com.santi020k.lumen.LumenSettingsRow')
+  })
+
+  test('routes wearable Compose components to the Wear OS artifact', () => {
+    const wearable = resolveNativeComponent('wearable-action')
+
+    expect(wearable?.implementations.compose).toMatchObject({
+      packageName: 'com.santi020k:lumen-compose-wear',
+      sourceFile: 'packages/compose/wear/src/main/kotlin/com/santi020k/lumen/wear/WearComponents.kt'
+    })
+    expect(wearable?.implementations.compose?.install).toContain('project(":wear")')
   })
 
   test('reports unavailable platform implementations clearly', () => {

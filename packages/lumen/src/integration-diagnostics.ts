@@ -212,6 +212,81 @@ const collectCompatibilityFindings = (
   return findings
 })
 
+const hasImportedPrimitive = (sources: SourceEntry[], names: readonly string[]): boolean => [
+  '@santi020k/lumen-astro',
+  '@santi020k/lumen-react'
+].some(packageName => sources.some(item => (
+  importedNames(item.source, packageName).some(name => names.includes(name))
+)))
+
+interface DuplicatedBehaviorRule {
+  detects: (source: string, sourceLower: string) => boolean
+  imports: readonly string[]
+  message: string
+  remediation: string
+  rule: string
+}
+
+const duplicatedBehaviorRules: readonly DuplicatedBehaviorRule[] = [
+  {
+    detects: (_source, sourceLower) => sourceLower.includes('<details') &&
+      (sourceLower.includes('dropdown') || sourceLower.includes('menu')),
+    imports: ['Collapsible', 'DropdownMenu'],
+    message: 'A details-based dropdown or menu may duplicate Lumen disclosure or menu behavior.',
+    remediation: 'Review DropdownMenu or Collapsible before maintaining a separate controller; keep the custom composition when its semantics differ.',
+    rule: 'hand-built-dropdown'
+  },
+  {
+    detects: (source, sourceLower) => source.includes('localStorage') &&
+      sourceLower.includes('theme') &&
+      (source.includes('classList') || sourceLower.includes('data-theme') || source.includes('dataset')),
+    imports: ['ThemeToggle'],
+    message: 'Custom theme persistence may duplicate ThemeToggle behavior.',
+    remediation: 'Review ThemeToggle before maintaining separate storage and document-theme synchronization.',
+    rule: 'hand-built-theme-persistence'
+  },
+  {
+    detects: (source, sourceLower) => [
+      'role="dialog"',
+      'role=\'dialog\'',
+      'aria-modal'
+    ].some(value => sourceLower.includes(value)) &&
+    source.includes('Tab') &&
+    source.includes('focus') &&
+    (source.includes('keydown') || source.includes('onKeyDown')),
+    imports: ['Dialog'],
+    message: 'Custom dialog keyboard and focus management may duplicate Lumen Dialog behavior.',
+    remediation: 'Review Dialog before maintaining a separate focus trap; keep product-specific dialog content application-owned.',
+    rule: 'hand-built-dialog-focus'
+  },
+  {
+    detects: (source, sourceLower) => [
+      'role="menu"',
+      'role=\'menu\''
+    ].some(value => sourceLower.includes(value)) &&
+    ['ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp'].some(key => source.includes(key)),
+    imports: ['DropdownMenu', 'Menubar', 'NavigationMenu'],
+    message: 'A raw menu with arrow-key handling may duplicate Lumen menu behavior.',
+    remediation: 'Review DropdownMenu, Menubar, or NavigationMenu before maintaining a separate keyboard controller.',
+    rule: 'hand-built-menu-keyboard'
+  }
+]
+
+const collectDuplicatedBehaviorFindings = (
+  root: string,
+  sources: SourceEntry[]
+): LumenDiagnosticFinding[] => sources.flatMap(item => {
+  const file = relative(root, item.file)
+  const source = item.source
+  const sourceLower = source.toLowerCase()
+
+  return duplicatedBehaviorRules.flatMap(rule => (
+    rule.detects(source, sourceLower) && !hasImportedPrimitive(sources, rule.imports) ?
+      [finding(file, rule.rule, rule.message, rule.remediation, 'advisory')] :
+      []
+  ))
+})
+
 const getCatalogFingerprint = (sources: SourceEntry[]): string => {
   const names = [...new Set(sources.flatMap(item => [
     ...importedNames(item.source, '@santi020k/lumen-astro'),
@@ -459,6 +534,7 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
     runtime.runtimeComponents.forEach(component => runtimeComponents.add(component))
 
     findings.push(
+      ...collectDuplicatedBehaviorFindings(root, boundary.sources),
       ...runtime.findings,
       ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks),
       ...collectAdapterMismatchFindings(root, boundary, boundaryFrameworks)

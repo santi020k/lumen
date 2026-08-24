@@ -42,7 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Validate release packages
-        run: pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
+        run: pnpm run check:release-manifest && pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
 
       - name: Create release pull request or publish
         id: changesets
@@ -59,6 +59,20 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+
+      - name: Verify published npm package family
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: |
+          jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
+            while IFS=$'\t' read -r package_name package_version; do
+              registry_version="$(npm view "$package_name@$package_version" version)"
+              if [[ "$registry_version" != "$package_version" ]]; then
+                echo "$package_name expected $package_version but npm returned $registry_version" >&2
+                exit 1
+              fi
+            done
 
       - name: Create repository version tag
         if: steps.changesets.outputs.published == 'true'

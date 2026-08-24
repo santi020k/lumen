@@ -1124,21 +1124,44 @@ const sharedDefinitions: ComponentDefinition[] = [
       'Use for multi-line freeform input. Prefer Text field for short single-line values and keep validation messages concise.',
     name: 'Textarea',
     properties: [
-      property('label', 'String', 'Required', 'Provides the visible and accessible label.'),
+      property(
+        'label',
+        'String',
+        'Required',
+        'Provides the visible and accessible label.'
+      ),
       property(
         { android: 'value', apple: 'text', 'react-native': 'value' },
-        { android: 'String', apple: 'Binding<String>', 'react-native': 'string' },
+        {
+          android: 'String',
+          apple: 'Binding<String>',
+          'react-native': 'string'
+        },
         'Required',
         'Stores the controlled text value.'
       ),
       property(
-        { android: 'onValueChange', apple: 'Binding setter', 'react-native': 'onChangeText' },
+        {
+          android: 'onValueChange',
+          apple: 'Binding setter',
+          'react-native': 'onChangeText'
+        },
         '(String) -> Unit',
         'Required',
         'Updates the controlled text value.'
       ),
-      property('description', 'String?', 'nil', 'Adds supporting input guidance.'),
-      property('errorMessage', 'String?', 'nil', 'Marks and explains an invalid value.')
+      property(
+        'description',
+        'String?',
+        'nil',
+        'Adds supporting input guidance.'
+      ),
+      property(
+        'errorMessage',
+        'String?',
+        'nil',
+        'Marks and explains an invalid value.'
+      )
     ],
     slug: 'textarea',
     summary:
@@ -1180,11 +1203,36 @@ const sharedDefinitions: ComponentDefinition[] = [
       'Use when several controls share one label or validation message. Do not use it to duplicate a label already owned by one Text field or Textarea.',
     name: 'Field group',
     properties: [
-      property('label', 'String', 'Required', 'Names the grouped field controls.'),
-      property('description', 'String?', 'nil', 'Adds shared supporting guidance.'),
-      property('errorMessage', 'String?', 'nil', 'Adds a shared validation message.'),
-      property('required', 'Boolean', 'false', 'Shows that the grouped answer is required.'),
-      property('content', 'Native content', 'Required', 'Provides independently accessible controls.')
+      property(
+        'label',
+        'String',
+        'Required',
+        'Names the grouped field controls.'
+      ),
+      property(
+        'description',
+        'String?',
+        'nil',
+        'Adds shared supporting guidance.'
+      ),
+      property(
+        'errorMessage',
+        'String?',
+        'nil',
+        'Adds a shared validation message.'
+      ),
+      property(
+        'required',
+        'Boolean',
+        'false',
+        'Shows that the grouped answer is required.'
+      ),
+      property(
+        'content',
+        'Native content',
+        'Required',
+        'Provides independently accessible controls.'
+      )
     ],
     slug: 'field-group',
     summary:
@@ -1232,8 +1280,18 @@ const sharedDefinitions: ComponentDefinition[] = [
         'nil',
         'Makes the chip selectable or actionable.'
       ),
-      property('onRemove', 'Callback?', 'nil', 'Adds a separate removal action.'),
-      property('removeLabel', 'String', 'Remove label', 'Names the removal action.')
+      property(
+        'onRemove',
+        'Callback?',
+        'nil',
+        'Adds a separate removal action.'
+      ),
+      property(
+        'removeLabel',
+        'String',
+        'Remove label',
+        'Names the removal action.'
+      )
     ],
     slug: 'chip',
     summary:
@@ -1266,8 +1324,18 @@ const sharedDefinitions: ComponentDefinition[] = [
       'Use for a small set of related actions. Do not use it for single selection; use Segmented control or Radio group instead.',
     name: 'Button group',
     properties: [
-      property('orientation', 'horizontal · vertical', 'horizontal', 'Controls action layout.'),
-      property('content', 'Native buttons', 'Required', 'Provides independently operable actions.')
+      property(
+        'orientation',
+        'horizontal · vertical',
+        'horizontal',
+        'Controls action layout.'
+      ),
+      property(
+        'content',
+        'Native buttons',
+        'Required',
+        'Provides independently operable actions.'
+      )
     ],
     slug: 'button-group',
     summary:
@@ -1307,15 +1375,30 @@ const sharedDefinitions: ComponentDefinition[] = [
     name: 'Toast',
     properties: [
       property('title', 'String', 'Required', 'Provides concise feedback.'),
-      property('description', 'String?', 'nil', 'Adds short supporting context.'),
+      property(
+        'description',
+        'String?',
+        'nil',
+        'Adds short supporting context.'
+      ),
       property(
         'variant',
         'default · destructive · success · warning',
         'default',
         'Selects semantic feedback tone.'
       ),
-      property('action', 'Native action content', 'nil', 'Provides one optional recovery action.'),
-      property('onDismiss', 'Callback?', 'nil', 'Adds a labeled dismissal action.')
+      property(
+        'action',
+        'Native action content',
+        'nil',
+        'Provides one optional recovery action.'
+      ),
+      property(
+        'onDismiss',
+        'Callback?',
+        'nil',
+        'Adds a labeled dismissal action.'
+      )
     ],
     slug: 'toast',
     summary:
@@ -1516,7 +1599,10 @@ const additionalDefinitions: ComponentDefinition[] = [
       ),
       property(
         { android: 'options', apple: 'content' },
-        { android: 'List<LumenPickerOption<T>>', apple: '@ViewBuilder () -> Content' },
+        {
+          android: 'List<LumenPickerOption<T>>',
+          apple: '@ViewBuilder () -> Content'
+        },
         'Required',
         'Provides labeled native options.'
       ),
@@ -1571,7 +1657,10 @@ const additionalDefinitions: ComponentDefinition[] = [
       ),
       property(
         { android: 'valueRange', apple: 'bounds' },
-        { android: 'ClosedFloatingPointRange<Float>', apple: 'ClosedRange<Double>' },
+        {
+          android: 'ClosedFloatingPointRange<Float>',
+          apple: 'ClosedRange<Double>'
+        },
         'Required',
         'Defines the valid range.'
       ),
@@ -1900,16 +1989,19 @@ const additionalDefinitions: ComponentDefinition[] = [
       android: `LumenNavigationBar(
     items = destinations,
     selectedValue = destination,
-    onValueChange = ::setDestination
+    onValueChange = ::setDestination,
+    onReselect = ::scrollDestinationToTop
 )`,
       apple: `LumenNavigationBar(
     selection: $destination,
-    items: destinations
+    items: destinations,
+    onReselect: scrollDestinationToTop
 )`,
       'react-native': `<LumenNavigationBar
   items={destinations}
   value={destination}
   onValueChange={setDestination}
+  onReselect={scrollDestinationToTop}
 />`
     },
     exports: {
@@ -1929,10 +2021,14 @@ const additionalDefinitions: ComponentDefinition[] = [
           'react-native': 'readonly LumenNavigationItem[]'
         },
         'Required',
-        'Provides destination values, short labels, native icons, and disabled state.'
+        'Provides destination values, short labels, native icons, disabled state, and optional dot, text, or capped count badges.'
       ),
       property(
-        { android: 'selectedValue', apple: 'selection', 'react-native': 'value' },
+        {
+          android: 'selectedValue',
+          apple: 'selection',
+          'react-native': 'value'
+        },
         {
           android: 'Value',
           apple: 'Binding<Selection>',
@@ -1952,7 +2048,21 @@ const additionalDefinitions: ComponentDefinition[] = [
         'Requests a destination change without owning navigation history.'
       ),
       property(
-        { android: 'accessibilityLabel', apple: 'label', 'react-native': 'accessibilityLabel' },
+        'onReselect',
+        {
+          android: '((Value) -> Unit)?',
+          apple: '((Selection) -> Void)?',
+          'react-native': '((value: string) => void)?'
+        },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Handles a second activation of the selected destination, such as scrolling to top or popping its stack.'
+      ),
+      property(
+        {
+          android: 'accessibilityLabel',
+          apple: 'label',
+          'react-native': 'accessibilityLabel'
+        },
         'String',
         'Primary navigation',
         'Names the destination group for assistive technology.'
@@ -2463,6 +2573,240 @@ const additionalDefinitions: ComponentDefinition[] = [
   },
   {
     accessibility:
+      'Hidden destinations stop receiving pointer input and are removed from the accessibility tree. The application keeps native list and router ownership.',
+    category: 'Navigation',
+    examples: {
+      'react-native': `const navigation = useLumenNavigationBarVisibility()
+
+<FlatList
+  data={items}
+  onScroll={navigation.onScroll}
+  scrollEventThrottle={16}
+  renderItem={renderItem}
+/>
+<LumenCollapsibleNavigationBar
+  items={destinations}
+  value={destination}
+  visible={navigation.visible}
+  onValueChange={setDestination}
+/>`
+    },
+    exports: { 'react-native': 'LumenCollapsibleNavigationBar' },
+    guidance:
+      'Use with the visibility hook when more content space is valuable during deliberate vertical scrolling. Keep safe areas, virtualization, and routing in application code.',
+    name: 'Collapsible navigation bar',
+    properties: [
+      property(
+        'visible',
+        'boolean',
+        'Required',
+        'Controls the animated expanded or collapsed state.'
+      ),
+      property(
+        'items',
+        'readonly LumenNavigationItem[]',
+        'Required',
+        'Defines peer destinations.'
+      ),
+      property(
+        'value',
+        'string',
+        'Required',
+        'Identifies the selected destination.'
+      ),
+      property(
+        'onValueChange',
+        '(value: string) => void',
+        'Required',
+        'Requests destination selection.'
+      ),
+      property(
+        'containerStyle',
+        'StyleProp<ViewStyle>',
+        'undefined',
+        'Styles the animated outer container without replacing its collapse dimensions.'
+      ),
+      property(
+        'accessory',
+        'ReactNode',
+        'undefined',
+        'Adds compact application-owned content that collapses with the navigation bar.'
+      )
+    ],
+    slug: 'collapsible-navigation-bar',
+    summary:
+      'Animate a React Native destination bar in response to native vertical scroll travel.'
+  },
+  {
+    accessibility:
+      'The container preserves the semantics of its application-owned status and actions. When supplied to the collapsible bar, it leaves the accessibility tree with navigation.',
+    category: 'Navigation',
+    examples: {
+      'react-native': `<LumenCollapsibleNavigationBar
+  accessory={(
+    <LumenText variant="label">Uploading 3 files</LumenText>
+  )}
+  items={destinations}
+  value={destination}
+  visible={navigation.visible}
+  onValueChange={setDestination}
+/>`
+    },
+    exports: { 'react-native': 'LumenNavigationAccessory' },
+    guidance:
+      'Use for one compact persistent activity such as playback, upload, recording, or an active call. Keep safe-area padding and domain state in the application.',
+    name: 'Navigation accessory',
+    properties: [
+      property(
+        'children',
+        'ReactNode',
+        'Required',
+        'Provides compact status or independently accessible actions.'
+      ),
+      property(
+        'style',
+        'StyleProp<ViewStyle>',
+        'undefined',
+        'Extends the fixed compact native container.'
+      )
+    ],
+    slug: 'navigation-accessory',
+    summary: 'Place compact application status or actions above React Native bottom navigation.'
+  },
+  {
+    accessibility:
+      'The behavior observes but does not consume nested-scroll input. After exit, the Material navigation bar is absent from layout and semantics.',
+    category: 'Navigation',
+    examples: {
+      android: `val navigationScrollState = rememberLumenNavigationBarScrollState()
+
+Scaffold(
+    modifier = Modifier.lumenNavigationBarScrollBehavior(navigationScrollState),
+    bottomBar = {
+        LumenNavigationBar(
+            items = destinations,
+            selectedValue = destination,
+            onValueChange = ::setDestination,
+            scrollState = navigationScrollState
+        )
+    }
+) { padding ->
+    LazyColumn(contentPadding = padding) { /* application content */ }
+}`
+    },
+    exports: { android: 'LumenNavigationBarScrollState' },
+    guidance:
+      'Attach the modifier above a vertical lazy or scrollable child and pass the same state to the bottom bar. Keep Scaffold, navigation, and collection state application-owned.',
+    name: 'Navigation bar scroll behavior',
+    properties: [
+      property(
+        'initiallyVisible',
+        'Boolean',
+        'true',
+        'Sets the remembered initial visibility.'
+      ),
+      property(
+        'threshold',
+        'Dp',
+        '16.dp',
+        'Sets deliberate travel required before visibility changes.'
+      ),
+      property(
+        'show()',
+        'function',
+        'Available',
+        'Reveals navigation for application-owned events.'
+      ),
+      property(
+        'hide()',
+        'function',
+        'Available',
+        'Hides navigation for application-owned events.'
+      )
+    ],
+    slug: 'navigation-bar-scroll-behavior',
+    summary:
+      'Coordinate Material bottom navigation visibility through the Compose nested-scroll chain.'
+  },
+  {
+    accessibility:
+      'Application-owned content retains its native semantics and exits the layout together with hidden bottom navigation.',
+    category: 'Navigation',
+    examples: {
+      android: `LumenNavigationBarAccessory(scrollState = navigationScrollState) {
+    LumenText("Uploading 3 files", variant = LumenTextVariant.Label)
+}`
+    },
+    exports: { android: 'LumenNavigationBarAccessory' },
+    guidance:
+      'Place directly above LumenNavigationBar for one compact activity such as playback, upload, recording, or an active call. Keep domain state and actions application-owned.',
+    name: 'Navigation bar accessory',
+    properties: [
+      property(
+        'scrollState',
+        'LumenNavigationBarScrollState?',
+        'null',
+        'Coordinates entry and exit with scroll-responsive navigation.'
+      ),
+      property(
+        'content',
+        '@Composable () -> Unit',
+        'Required',
+        'Provides compact status or independently accessible actions.'
+      )
+    ],
+    slug: 'navigation-bar-accessory',
+    summary: 'Place compact application status or actions above Material bottom navigation.'
+  },
+  {
+    accessibility:
+      'Material supplies navigation bar or rail semantics, selected and disabled state, keyboard traversal, and badge placement while destination content remains application-owned.',
+    category: 'Navigation',
+    examples: {
+      android: `LumenAdaptiveNavigationScaffold(
+    items = destinations,
+    selectedValue = destination,
+    onValueChange = ::setDestination,
+    onReselect = ::scrollDestinationToTop
+) {
+    DestinationContent(destination)
+}`
+    },
+    exports: { android: 'LumenAdaptiveNavigationScaffold' },
+    guidance:
+      'Use as the primary app surface when navigation should change between a bottom bar and rail across phones, tablets, folding devices, split screen, and desktop windows. Keep routing and destination state controlled.',
+    name: 'Adaptive navigation scaffold',
+    properties: [
+      property(
+        'items',
+        'List<LumenNavigationItem<Value>>',
+        'Required',
+        'Provides controlled destinations, badges, icons, and disabled state.'
+      ),
+      property(
+        'selectedValue',
+        'Value',
+        'Required',
+        'Identifies the active application-owned destination.'
+      ),
+      property(
+        'onValueChange / onReselect',
+        'callbacks',
+        'Application-provided',
+        'Separates destination changes from repeated activation.'
+      ),
+      property(
+        'content',
+        '@Composable () -> Unit',
+        'Required',
+        'Renders the selected destination without transferring router ownership.'
+      )
+    ],
+    slug: 'adaptive-navigation-scaffold',
+    summary: 'Adapt Material primary navigation between bottom bar and rail as the window changes.'
+  },
+  {
+    accessibility:
       'The native refresh gesture remains owned by the scroll container. Supply an accessibility label that describes the refreshed content.',
     category: 'Feedback',
     examples: {
@@ -2483,8 +2827,18 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Attach to a React Native ScrollView or compatible list. Keep refresh state and completion in application code.',
     name: 'Refresh control',
     properties: [
-      property('refreshing', 'boolean', 'Required', 'Reports whether the native indicator is active.'),
-      property('onRefresh', '() => void', 'Required', 'Starts the application refresh operation.'),
+      property(
+        'refreshing',
+        'boolean',
+        'Required',
+        'Reports whether the native indicator is active.'
+      ),
+      property(
+        'onRefresh',
+        '() => void',
+        'Required',
+        'Starts the application refresh operation.'
+      ),
       property(
         'indicatorTone',
         'brand · accent · neutral',
@@ -2499,7 +2853,8 @@ const additionalDefinitions: ComponentDefinition[] = [
       )
     ],
     slug: 'refresh-control',
-    summary: 'Apply Lumen semantic colors to React Native pull-to-refresh behavior.'
+    summary:
+      'Apply Lumen semantic colors to React Native pull-to-refresh behavior.'
   },
   {
     accessibility:
@@ -2519,9 +2874,24 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Use for Apple date or time input that needs Lumen supporting and validation context. Keep calendar and locale behavior native.',
     name: 'Date field',
     properties: [
-      property('title', 'LocalizedStringKey', 'Required', 'Labels the native date picker.'),
-      property('selection', 'Binding<Date>', 'Required', 'Stores the selected native date value.'),
-      property('components', 'date · dateAndTime · time', 'date', 'Chooses the visible date and time parts.'),
+      property(
+        'title',
+        'LocalizedStringKey',
+        'Required',
+        'Labels the native date picker.'
+      ),
+      property(
+        'selection',
+        'Binding<Date>',
+        'Required',
+        'Stores the selected native date value.'
+      ),
+      property(
+        'components',
+        'date · dateAndTime · time',
+        'date',
+        'Chooses the visible date and time parts.'
+      ),
       property(
         'bounds',
         'unbounded · closed · from · through',
@@ -2536,7 +2906,8 @@ const additionalDefinitions: ComponentDefinition[] = [
       )
     ],
     slug: 'date-field',
-    summary: 'Select an Apple-native date or time with bounds and validation context.'
+    summary:
+      'Select an Apple-native date or time with bounds and validation context.'
   },
   {
     accessibility:
@@ -2546,7 +2917,9 @@ const additionalDefinitions: ComponentDefinition[] = [
       android: `LumenFloatingActionButton(
     imageVector = Icons.Default.Add,
     contentDescription = "Create project",
-    onClick = ::createProject
+    onClick = ::createProject,
+    scrollState = navigationScrollState,
+    navigationBehavior = LumenFloatingActionButtonNavigationBehavior.HideWithNavigation
 )`
     },
     exports: { android: 'LumenFloatingActionButton' },
@@ -2554,14 +2927,168 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Use for one prominent Material screen action. Keep navigation bars and scaffold placement in application code.',
     name: 'Floating action button',
     properties: [
-      property('imageVector', 'ImageVector', 'Required', 'Renders the native action glyph.'),
-      property('contentDescription', 'String', 'Required', 'Names the icon-only action.'),
-      property('onClick', '() -> Unit', 'Required', 'Runs the primary screen action.'),
-      property('intent', 'brand · accent · danger', 'brand', 'Selects a semantic action palette.'),
-      property('size', 'regular · small', 'regular', 'Selects Material-native FAB geometry.')
+      property(
+        'imageVector',
+        'ImageVector',
+        'Required',
+        'Renders the native action glyph.'
+      ),
+      property(
+        'contentDescription',
+        'String',
+        'Required',
+        'Names the icon-only action.'
+      ),
+      property(
+        'onClick',
+        '() -> Unit',
+        'Required',
+        'Runs the primary screen action.'
+      ),
+      property(
+        'intent',
+        'brand · accent · danger',
+        'brand',
+        'Selects a semantic action palette.'
+      ),
+      property(
+        'size',
+        'regular · small',
+        'regular',
+        'Selects Material-native FAB geometry.'
+      ),
+      property(
+        'navigationBehavior',
+        'alwaysVisible · hideWithNavigation · followNavigation',
+        'alwaysVisible',
+        'Keeps, hides, or repositions the action as scroll-responsive navigation changes.'
+      ),
+      property(
+        'scrollState',
+        'LumenNavigationBarScrollState?',
+        'null',
+        'Supplies the navigation visibility used by coordinated behavior.'
+      )
     ],
     slug: 'floating-action-button',
-    summary: 'Present a prominent Material-native action using Lumen semantic intent.'
+    summary:
+      'Present a prominent Material-native action using Lumen semantic intent.'
+  },
+  {
+    accessibility:
+      'SwiftUI preserves the native link role, visible label, keyboard focus, disabled state, and URL-opening behavior.',
+    category: 'Actions',
+    examples: {
+      apple: `LumenLink(
+    "Read privacy policy",
+    destination: privacyPolicyURL,
+    showsExternalIndicator: true
+)`
+    },
+    exports: { apple: 'LumenLink' },
+    guidance:
+      'Use for external or system URL actions that need Lumen semantic treatment. Keep in-app routing and URL policy in application code.',
+    name: 'Link',
+    properties: [
+      property(
+        'label',
+        'LocalizedStringKey or custom View',
+        'Required',
+        'Provides visible link content.'
+      ),
+      property(
+        'destination',
+        'URL',
+        'Required',
+        'Provides the native URL destination.'
+      ),
+      property(
+        'showsExternalIndicator',
+        'Bool',
+        'false',
+        'Adds a decorative external-destination symbol without changing the accessible label.'
+      )
+    ],
+    slug: 'link',
+    summary:
+      'Open an Apple URL using native SwiftUI behavior and Lumen semantic styling.'
+  },
+  {
+    accessibility:
+      'SwiftUI retains native tab focus, safe-area adjustment, animation, and reduced-motion behavior while the application owns selection and navigation state.',
+    category: 'Navigation',
+    examples: {
+      apple: `TabView(selection: $selection) {
+    FeedView().tabItem { Label("Feed", systemImage: "rectangle.stack") }
+    ProfileView().tabItem { Label("Profile", systemImage: "person") }
+}
+.lumenTabBarMinimizeBehavior(.onScrollDown)`
+    },
+    exports: { apple: 'lumenTabBarMinimizeBehavior' },
+    guidance:
+      'Apply to a native TabView. iOS 26 uses system minimization on iPhone; earlier supported releases retain the normal tab bar without a custom imitation.',
+    name: 'Tab bar minimization',
+    properties: [
+      property(
+        'behavior',
+        'automatic · never · onScrollDown · onScrollUp',
+        'Required',
+        'Selects the native minimization policy.'
+      ),
+      property(
+        'availability',
+        'iOS 16 or newer',
+        'Required',
+        'Uses native minimization on iOS 26 and a no-op compatibility fallback before iOS 26.'
+      )
+    ],
+    slug: 'tab-bar-minimization',
+    summary:
+      'Let an iPhone native tab bar minimize and expand in response to scrolling.'
+  },
+  {
+    accessibility:
+      'Expanded and compact content preserve their own readable labels, controls, and traversal order while SwiftUI owns placement changes.',
+    category: 'Navigation',
+    examples: {
+      apple: `TabView {
+    FeedView().tabItem { Label("Feed", systemImage: "rectangle.stack") }
+}
+.lumenTabViewBottomAccessory {
+    LumenTabAccessory {
+        ExpandedUploadStatus()
+    } compact: {
+        CompactUploadStatus()
+    }
+}`
+    },
+    exports: { apple: 'LumenTabAccessory' },
+    guidance:
+      'Use for a mini player, call, upload, recording, or persistent status. Keep accessory domain state and actions application-owned.',
+    name: 'Tab accessory',
+    properties: [
+      property(
+        'expanded',
+        '@ViewBuilder () -> View',
+        'Required',
+        'Provides content displayed above a regular-size tab bar.'
+      ),
+      property(
+        'compact',
+        '@ViewBuilder () -> View',
+        'Required',
+        'Provides reduced content displayed inline with a minimized tab bar.'
+      ),
+      property(
+        'isEnabled',
+        'Bool',
+        'true',
+        'Controls whether the surrounding tab accessory modifier presents content.'
+      )
+    ],
+    slug: 'tab-accessory',
+    summary:
+      'Adapt application-owned accessory content to expanded and inline tab-bar placement.'
   },
   {
     accessibility:
@@ -2683,18 +3210,38 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Use to frame meaningful application artwork with a restrained token-aware preset. Leave the label absent when the surrounding content already communicates the same meaning.',
     name: 'Graphic',
     properties: [
-      property('variant', 'glow · grid · orbit', 'orbit', 'Selects the decorative composition.'),
-      property('size', 'sm · md · lg', 'md', 'Selects a shared native dimension.'),
-      property('tone', 'brand · accent · neutral', 'brand', 'Selects the semantic decoration color.'),
+      property(
+        'variant',
+        'glow · grid · orbit',
+        'orbit',
+        'Selects the decorative composition.'
+      ),
+      property(
+        'size',
+        'sm · md · lg',
+        'md',
+        'Selects a shared native dimension.'
+      ),
+      property(
+        'tone',
+        'brand · accent · neutral',
+        'brand',
+        'Selects the semantic decoration color.'
+      ),
       property(
         'label',
-        { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string' },
+        {
+          android: 'String?',
+          apple: 'LocalizedStringKey?',
+          'react-native': 'string'
+        },
         { android: 'null', apple: 'nil', 'react-native': 'undefined' },
         'Optionally exposes the composition as one labeled image.'
       )
     ],
     slug: 'graphic',
-    summary: 'Frame application-provided artwork with token-aware glow, grid, or orbit decoration.'
+    summary:
+      'Frame application-provided artwork with token-aware glow, grid, or orbit decoration.'
   },
   {
     accessibility:
@@ -2726,13 +3273,34 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Use behind meaningful hero, empty-state, or highlighted content. Keep child surfaces and text on semantic tokens so contrast does not depend on the decoration.',
     name: 'Backdrop',
     properties: [
-      property('variant', 'aurora · dots · grid · rays', 'aurora', 'Selects the ambient pattern.'),
-      property('tone', 'brand · accent · neutral', 'brand', 'Selects the semantic decoration color.'),
-      property('intensity', 'subtle · medium · strong', 'medium', 'Controls only the decoration opacity.'),
-      property('content', 'Native view content', 'Required', 'Renders meaningful content above the decorative layer.')
+      property(
+        'variant',
+        'aurora · dots · grid · rays',
+        'aurora',
+        'Selects the ambient pattern.'
+      ),
+      property(
+        'tone',
+        'brand · accent · neutral',
+        'brand',
+        'Selects the semantic decoration color.'
+      ),
+      property(
+        'intensity',
+        'subtle · medium · strong',
+        'medium',
+        'Controls only the decoration opacity.'
+      ),
+      property(
+        'content',
+        'Native view content',
+        'Required',
+        'Renders meaningful content above the decorative layer.'
+      )
     ],
     slug: 'backdrop',
-    summary: 'Place a token-aware ambient pattern behind native application content.'
+    summary:
+      'Place a token-aware ambient pattern behind native application content.'
   },
   {
     accessibility:
@@ -2761,9 +3329,24 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Use the built-in scene when its state matches the product message. Keep it decorative when the adjacent heading and description already communicate the same status.',
     name: 'Illustration',
     properties: [
-      property('variant', 'empty · success · error · offline', 'empty', 'Selects the semantic scene.'),
-      property('tone', 'auto · brand · accent · neutral', 'auto', 'Uses the state color automatically or an explicit portable tone.'),
-      property('size', 'sm · md · lg', 'md', 'Selects the shared 96, 128, or 176 unit dimension.'),
+      property(
+        'variant',
+        'empty · success · error · offline',
+        'empty',
+        'Selects the semantic scene.'
+      ),
+      property(
+        'tone',
+        'auto · brand · accent · neutral',
+        'auto',
+        'Uses the state color automatically or an explicit portable tone.'
+      ),
+      property(
+        'size',
+        'sm · md · lg',
+        'md',
+        'Selects the shared 96, 128, or 176 unit dimension.'
+      ),
       property(
         { android: 'label', apple: 'label', 'react-native': 'label' },
         { android: 'String?', apple: 'String?', 'react-native': 'string' },
@@ -2772,7 +3355,8 @@ const additionalDefinitions: ComponentDefinition[] = [
       )
     ],
     slug: 'illustration',
-    summary: 'Render a built-in empty, success, error, or offline semantic scene.'
+    summary:
+      'Render a built-in empty, success, error, or offline semantic scene.'
   },
   {
     accessibility:
@@ -2814,20 +3398,42 @@ const additionalDefinitions: ComponentDefinition[] = [
     properties: [
       property(
         { android: 'visible', apple: 'isPresented', 'react-native': 'visible' },
-        { android: 'Boolean', apple: 'Binding<Bool>', 'react-native': 'boolean' },
+        {
+          android: 'Boolean',
+          apple: 'Binding<Bool>',
+          'react-native': 'boolean'
+        },
         'Required',
         'Controls native modal presentation.'
       ),
-      property('title / description', 'Native localized text', 'Description optional', 'Explains the decision.'),
-      property('confirmLabel / cancelLabel', 'Native localized text', 'Cancel label: Cancel', 'Names both actions.'),
       property(
-        { android: 'destructive', apple: 'confirmRole', 'react-native': 'destructive' },
+        'title / description',
+        'Native localized text',
+        'Description optional',
+        'Explains the decision.'
+      ),
+      property(
+        'confirmLabel / cancelLabel',
+        'Native localized text',
+        'Cancel label: Cancel',
+        'Names both actions.'
+      ),
+      property(
+        {
+          android: 'destructive',
+          apple: 'confirmRole',
+          'react-native': 'destructive'
+        },
         { android: 'Boolean', apple: 'ButtonRole?', 'react-native': 'boolean' },
         { android: 'false', apple: 'nil', 'react-native': 'false' },
         'Communicates whether the confirm action is destructive.'
       ),
       property(
-        { android: 'confirmEnabled', apple: 'confirmDisabled', 'react-native': 'confirmDisabled' },
+        {
+          android: 'confirmEnabled',
+          apple: 'confirmDisabled',
+          'react-native': 'confirmDisabled'
+        },
         { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
         { android: 'true', apple: 'false', 'react-native': 'false' },
         'Controls whether the confirm action can be activated.'
@@ -2840,7 +3446,8 @@ const additionalDefinitions: ComponentDefinition[] = [
       )
     ],
     slug: 'alert-dialog',
-    summary: 'Request a controlled native confirmation with explicit cancel and confirm states.'
+    summary:
+      'Request a controlled native confirmation with explicit cancel and confirm states.'
   },
   {
     accessibility:
@@ -2879,16 +3486,36 @@ const additionalDefinitions: ComponentDefinition[] = [
     properties: [
       property(
         { android: 'visible', apple: 'isPresented', 'react-native': 'visible' },
-        { android: 'Boolean', apple: 'Binding<Bool>', 'react-native': 'boolean' },
+        {
+          android: 'Boolean',
+          apple: 'Binding<Bool>',
+          'react-native': 'boolean'
+        },
         'Required',
         'Controls native sheet presentation.'
       ),
-      property('title / description', 'Native localized text', 'nil / undefined', 'Provides optional heading context.'),
-      property('onDismiss', '() -> Void', 'Required', 'Returns presentation ownership to the application.'),
-      property('content / actions', 'Native view slots', 'Actions optional', 'Composes application-owned content and actions.')
+      property(
+        'title / description',
+        'Native localized text',
+        'nil / undefined',
+        'Provides optional heading context.'
+      ),
+      property(
+        'onDismiss',
+        '() -> Void',
+        'Required',
+        'Returns presentation ownership to the application.'
+      ),
+      property(
+        'content / actions',
+        'Native view slots',
+        'Actions optional',
+        'Composes application-owned content and actions.'
+      )
     ],
     slug: 'sheet',
-    summary: 'Present supplemental application content in a controlled native sheet.'
+    summary:
+      'Present supplemental application content in a controlled native sheet.'
   },
   {
     accessibility:
@@ -2918,18 +3545,38 @@ const additionalDefinitions: ComponentDefinition[] = [
       'Use for a short set of contextual actions. Keep labels unique and concise, and do not hide a screen\'s only primary action inside a menu.',
     name: 'Menu',
     properties: [
-      property('items', 'Native Lumen menu item collection', 'Required', 'Provides labeled actions and states.'),
       property(
-        { android: 'expanded', apple: 'Native Menu state', 'react-native': 'Internal trigger state' },
+        'items',
+        'Native Lumen menu item collection',
+        'Required',
+        'Provides labeled actions and states.'
+      ),
+      property(
+        {
+          android: 'expanded',
+          apple: 'Native Menu state',
+          'react-native': 'Internal trigger state'
+        },
         { android: 'Boolean', apple: 'Native', 'react-native': 'Native Modal' },
         'Collapsed',
         'Controls or reports native menu presentation.'
       ),
-      property('disabled', 'Boolean', 'false', 'Keeps an unavailable item readable but inactive.'),
-      property('destructive / role', 'Destructive action role', 'false / nil', 'Marks a destructive action semantically and visually.')
+      property(
+        'disabled',
+        'Boolean',
+        'false',
+        'Keeps an unavailable item readable but inactive.'
+      ),
+      property(
+        'destructive / role',
+        'Destructive action role',
+        'false / nil',
+        'Marks a destructive action semantically and visually.'
+      )
     ],
     slug: 'menu',
-    summary: 'Present a native anchored action menu with shared item-state semantics.'
+    summary:
+      'Present a native anchored action menu with shared item-state semantics.'
   },
   {
     accessibility:
@@ -2957,26 +3604,273 @@ const additionalDefinitions: ComponentDefinition[] = [
     properties: [
       property(
         { android: 'payload', apple: 'item', 'react-native': 'content' },
-        { android: 'LumenSharePayload', apple: 'Transferable', 'react-native': 'ShareContent' },
+        {
+          android: 'LumenSharePayload',
+          apple: 'Transferable',
+          'react-native': 'ShareContent'
+        },
         'Required',
         'Supplies application-owned share content.'
       ),
       property(
-        { android: 'chooserTitle', apple: 'Native share title', 'react-native': 'options' },
-        { android: 'String', apple: 'System-provided', 'react-native': 'ShareOptions' },
-        { android: 'Required', apple: 'System-provided', 'react-native': 'undefined' },
+        {
+          android: 'chooserTitle',
+          apple: 'Native share title',
+          'react-native': 'options'
+        },
+        {
+          android: 'String',
+          apple: 'System-provided',
+          'react-native': 'ShareOptions'
+        },
+        {
+          android: 'Required',
+          apple: 'System-provided',
+          'react-native': 'undefined'
+        },
         'Configures the native share presentation.'
       ),
-      property('label', 'Native localized text', 'Share', 'Names the trigger action.'),
       property(
-        { android: 'onFailure', apple: 'Native ShareLink result', 'react-native': 'onError / onShared' },
+        'label',
+        'Native localized text',
+        'Share',
+        'Names the trigger action.'
+      ),
+      property(
+        {
+          android: 'onFailure',
+          apple: 'Native ShareLink result',
+          'react-native': 'onError / onShared'
+        },
         'Platform callback',
         'No-op',
         'Lets the application report sharing outcomes where the platform exposes them.'
       )
     ],
     slug: 'share-button',
-    summary: 'Open the operating system share surface from a token-aware native action.'
+    summary:
+      'Open the operating system share surface from a token-aware native action.'
+  },
+  {
+    accessibility:
+      'Requires one concise action label, preserves native button semantics, and exposes disabled state without duplicating visible content.',
+    category: 'Actions',
+    examples: {
+      android: `LumenWearActionButton(
+    accessibilityLabel = "Start contraction",
+    onClick = ::startContraction
+) { TimerLabel() }`,
+      apple: `LumenWatchActionButton("Start contraction", action: startContraction) {
+    TimerLabel()
+}`
+    },
+    exports: {
+      android: 'LumenWearActionButton',
+      apple: 'LumenWatchActionButton'
+    },
+    guidance:
+      'Use for one essential wrist action. Keep haptics, health or safety policy, synchronization, and command handling in the application.',
+    name: 'Wearable action',
+    properties: [
+      property(
+        'accessibilityLabel',
+        'Native localized text',
+        'Required',
+        'Names the essential action.'
+      ),
+      property(
+        { android: 'onClick', apple: 'action' },
+        '() -> Unit',
+        'Required',
+        'Runs application-owned behavior.'
+      ),
+      property(
+        'tone',
+        'brand · accent · success · warning · danger · neutral',
+        'brand',
+        'Applies semantic intent.'
+      ),
+      property(
+        'dimension',
+        'Native display units',
+        '120',
+        'Clamps the round target to wearable-safe bounds.'
+      ),
+      property(
+        'enabled',
+        'Boolean',
+        'true',
+        'Controls action and disabled presentation.'
+      )
+    ],
+    slug: 'wearable-action',
+    summary:
+      'Present one at-a-glance, round primary action on watchOS or Wear OS.'
+  },
+  {
+    accessibility:
+      'Exposes a normalized progress range while application-owned inner content retains its own readable semantics.',
+    category: 'Data display',
+    examples: {
+      android: `LumenWearProgressRing(value = elapsed, maximum = threshold) {
+    TimerLabel()
+}`,
+      apple: `LumenWatchProgressRing(value: elapsed, maximum: threshold) {
+    TimerLabel()
+}`
+    },
+    exports: {
+      android: 'LumenWearProgressRing',
+      apple: 'LumenWatchProgressRing'
+    },
+    guidance:
+      'Use for short at-a-glance progress. Keep long-running background work, Always On policy, and timeline updates application-owned.',
+    name: 'Wearable progress',
+    properties: [
+      property(
+        'value',
+        'Finite numeric value',
+        'Required',
+        'Provides current progress.'
+      ),
+      property(
+        'maximum',
+        'Positive numeric value',
+        '1',
+        'Defines the upper bound.'
+      ),
+      property(
+        'tone',
+        'brand · accent · success · warning · danger · neutral',
+        'brand',
+        'Applies semantic progress color.'
+      ),
+      property(
+        'lineWidth',
+        'Native display units',
+        '4',
+        'Controls the clamped ring stroke.'
+      ),
+      property(
+        'content',
+        'Native view slot',
+        'Required',
+        'Provides application-owned center content.'
+      )
+    ],
+    slug: 'wearable-progress',
+    summary:
+      'Surround wearable content with clamped semantic circular progress.'
+  },
+  {
+    accessibility:
+      'Keeps status meaning in concise text instead of relying on semantic color alone.',
+    category: 'Feedback',
+    examples: {
+      android:
+        'LumenWearStatus(text = "Phone unavailable", tone = LumenWearTone.Warning)',
+      apple:
+        'LumenWatchStatus("5-1-1", systemName: "cross.case.fill", tone: .danger)'
+    },
+    exports: { android: 'LumenWearStatus', apple: 'LumenWatchStatus' },
+    guidance:
+      'Use for a short, high-value wrist status. Do not use a badge as the only representation of an urgent notification.',
+    name: 'Wearable status',
+    properties: [
+      property(
+        { android: 'text', apple: 'title' },
+        'Native localized text',
+        'Required',
+        'Provides concise status meaning.'
+      ),
+      property(
+        'tone',
+        'brand · accent · success · warning · danger · neutral',
+        'neutral',
+        'Applies semantic emphasis.'
+      ),
+      property(
+        { android: 'leading', apple: 'systemName' },
+        'Optional native visual',
+        'nil',
+        'Adds a supporting wearable glyph.'
+      )
+    ],
+    slug: 'wearable-status',
+    summary: 'Show a compact, text-first semantic status on the wrist.'
+  },
+  {
+    accessibility:
+      'Combines label, value, and optional detail into one concise readable metric.',
+    category: 'Data display',
+    examples: {
+      android:
+        'LumenWearMetric(label = "Duration", value = elapsed, tone = LumenWearTone.Brand)',
+      apple: 'LumenWatchMetric("Duration", value: elapsed, tone: .brand)'
+    },
+    exports: { android: 'LumenWearMetric', apple: 'LumenWatchMetric' },
+    guidance:
+      'Use for one high-priority value with a short label. Avoid dashboard grids that overload small round screens.',
+    name: 'Wearable metric',
+    properties: [
+      property(
+        'label',
+        'Native localized text',
+        'Required',
+        'Names the metric.'
+      ),
+      property('value', 'String', 'Required', 'Provides the formatted value.'),
+      property(
+        'detail',
+        'Optional native localized text',
+        'nil',
+        'Adds brief supporting context.'
+      ),
+      property(
+        'tone',
+        'brand · accent · success · warning · danger · neutral',
+        'neutral',
+        'Applies semantic value color.'
+      )
+    ],
+    slug: 'wearable-metric',
+    summary:
+      'Present one at-a-glance wearable label, value, and optional detail.'
+  },
+  {
+    accessibility:
+      'Preserves child actions and content in native traversal order without collapsing distinct controls.',
+    category: 'Layout',
+    examples: {
+      android: 'LumenWearListRow { TimerHistoryLabel() }',
+      apple: 'LumenWatchListRow { TimerHistoryLabel() }'
+    },
+    exports: { android: 'LumenWearListRow', apple: 'LumenWatchListRow' },
+    guidance:
+      'Use inside native wearable scrolling containers. Keep list state, selection, navigation, and rotary input in the application.',
+    name: 'Wearable list row',
+    properties: [
+      property(
+        'leading',
+        'Optional native view slot',
+        'nil / EmptyView',
+        'Provides compact identity.'
+      ),
+      property(
+        'content',
+        'Native view slot',
+        'Required',
+        'Provides primary row content.'
+      ),
+      property(
+        'trailing',
+        'Optional native view slot',
+        'nil / EmptyView',
+        'Provides short status or actions.'
+      )
+    ],
+    slug: 'wearable-list-row',
+    summary: 'Compose a compact wearable row with flexible content slots.'
   }
 ]
 

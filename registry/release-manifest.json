@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "release": {
+    "compose": {
+      "artifacts": [
+        "com.santi020k:lumen-compose",
+        "com.santi020k:lumen-compose-wear"
+      ],
+      "version": "0.4.0"
+    },
+    "npm": {
+      "packages": {
+        "@santi020k/lumen-astro": {
+          "peerDependencies": {
+            "astro": ">=5"
+          },
+          "version": "1.4.0"
+        },
+        "@santi020k/lumen-core": {
+          "peerDependencies": {},
+          "version": "1.4.0"
+        },
+        "@santi020k/lumen-elements": {
+          "peerDependencies": {},
+          "version": "1.4.0"
+        },
+        "@santi020k/lumen-icons-brand": {
+          "peerDependencies": {},
+          "version": "1.0.1"
+        },
+        "@santi020k/lumen": {
+          "peerDependencies": {},
+          "version": "1.4.0"
+        },
+        "@santi020k/lumen-mcp": {
+          "peerDependencies": {},
+          "version": "1.4.0"
+        },
+        "@santi020k/lumen-react": {
+          "peerDependencies": {
+            "react": ">=19"
+          },
+          "version": "1.4.0"
+        },
+        "@santi020k/lumen-react-hook-form": {
+          "peerDependencies": {
+            "@santi020k/lumen-react": "^1.0.0",
+            "react": ">=19",
+            "react-hook-form": ">=7.76.0 <8"
+          },
+          "version": "1.0.1"
+        },
+        "@santi020k/lumen-react-native": {
+          "peerDependencies": {
+            "react": ">=19.2",
+            "react-native": ">=0.86.2"
+          },
+          "version": "0.3.0"
+        },
+        "@santi020k/lumen-tokens": {
+          "peerDependencies": {},
+          "version": "0.1.0"
+        }
+      }
+    },
+    "swift": {
+      "package": "https://github.com/santi020k/lumen.git",
+      "revision": null,
+      "tag": "v1.4.0"
+    },
+    "version": "1.4.0"
+  },
+  "migration": {
+    "codemod": null,
+    "css": {
+      "astro": "@santi020k/lumen-astro/styles.css",
+      "elements": "@santi020k/lumen-elements/styles.css",
+      "react": "@santi020k/lumen-react/styles.css"
+    },
+    "deprecatedExports": [],
+    "removedExports": [],
+    "runtime": {
+      "astro": "Mount UIPrimitives once when an imported component declares the ui-primitives runtime.",
+      "elements": "Call defineLumenElements once before rendering lumen-* elements.",
+      "react": "Use the public React behavior hooks for behavior-heavy primitives."
+    }
+  }
+}

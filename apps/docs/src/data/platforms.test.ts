@@ -1,6 +1,9 @@
 import { describe, expect, test } from 'vitest'
 
-import { getNativeComponentsForPlatform, type NativePlatformId } from './native-components'
+import {
+  getNativeComponentsForPlatform,
+  type NativePlatformId
+} from './native-components'
 import {
   getDocsPlatform,
   getPlatformGuide,
@@ -17,7 +20,9 @@ describe('platform documentation', () => {
       'android',
       'foundations'
     ])
-    expect(new Set(platformGuides.map(guide => guide.href)).size).toBe(platformGuides.length)
+    expect(new Set(platformGuides.map(guide => guide.href)).size).toBe(
+      platformGuides.length
+    )
     expect(productPlatformGuides).toHaveLength(4)
   })
 
@@ -31,22 +36,30 @@ describe('platform documentation', () => {
   })
 
   test('documents theme selection for every native platform guide', () => {
-    for (const guide of productPlatformGuides.filter(candidate => candidate.id !== 'web')) {
+    for (const guide of productPlatformGuides.filter(
+      candidate => candidate.id !== 'web'
+    )) {
       expect(guide.theme?.examples.length).toBeGreaterThan(0)
       expect(guide.theme?.verification).toHaveLength(3)
     }
   })
 
   test('lists every documented component available to each native platform', () => {
-    for (const platform of ['react-native', 'apple', 'android'] satisfies NativePlatformId[]) {
+    for (const platform of [
+      'react-native',
+      'apple',
+      'android'
+    ] satisfies NativePlatformId[]) {
       expect(getPlatformGuide(platform).components).toEqual(
-        getNativeComponentsForPlatform(platform).map(component => component.name)
+        getNativeComponentsForPlatform(platform).map(
+          component => component.name
+        )
       )
     }
 
-    expect(getPlatformGuide('react-native').components).toHaveLength(42)
-    expect(getPlatformGuide('android').components).toHaveLength(45)
-    expect(getPlatformGuide('apple').components).toHaveLength(47)
+    expect(getPlatformGuide('react-native').components).toHaveLength(44)
+    expect(getPlatformGuide('android').components).toHaveLength(53)
+    expect(getPlatformGuide('apple').components).toHaveLength(55)
   })
 
   test('maps new and legacy web routes to the correct contextual navigation', () => {

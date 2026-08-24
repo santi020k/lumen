@@ -15,6 +15,7 @@ pnpm --filter @santi020k/lumen-react-native run typecheck
 pnpm --filter @santi020k/lumen-react-native run test
 swift test
 (cd packages/compose && ./gradlew test lint assembleDebugAndroidTest)
+(cd packages/compose && ./gradlew :wear:testDebugUnitTest :wear:lintDebug)
 ```
 
 The Compose instrumentation suite verifies actionable semantics, selected state, polite toast live
@@ -37,7 +38,9 @@ Do not replace a physical-device result with a simulator or emulator result.
 | React Native on Android | API 23-class device | Current Android device | TalkBack, font size and display size, remove animations, high contrast | Pending |
 | SwiftUI on iOS | iOS 16 device | Current iPhone and iOS | VoiceOver, Dynamic Type, Reduce Motion, Increase Contrast | Pending |
 | SwiftUI on macOS | macOS 13 Mac | Current macOS Mac | VoiceOver, Full Keyboard Access, Reduce Motion, Increase Contrast | Partial hardware pass recorded below |
+| SwiftUI on watchOS | watchOS 9 Apple Watch | Current Apple Watch and watchOS | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, Always On | Pending |
 | Compose on Android | API 23-class device | Current Android device | TalkBack, font size and display size, remove animations, high contrast | Pending |
+| Compose on Wear OS | API 30-class watch | Current Wear OS watch | TalkBack, font scaling, remove animations, round-screen clipping, rotary input | Pending |
 
 ## Component pass
 

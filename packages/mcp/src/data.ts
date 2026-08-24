@@ -76,6 +76,7 @@ export interface LumenData {
   nativeComponents: LumenNativeComponentSnapshot[]
   nativeSources: Record<LumenNativePlatform, Record<string, string>>
   recipes: LumenRecipeSnapshot[]
+  releaseManifest: LumenReleaseManifest
   rules: string
   tokens: {
     chart: Record<string, string>
@@ -84,6 +85,28 @@ export interface LumenData {
     semantic: string[]
     themeAttribute: string
   }
+}
+
+interface LumenReleaseManifest {
+  migration: {
+    codemod: null | string
+    css: Record<string, string>
+    deprecatedExports: string[]
+    removedExports: string[]
+    runtime: Record<string, string>
+  }
+  release: {
+    compose: { artifacts: string[], version: string }
+    npm: {
+      packages: Record<string, {
+        peerDependencies: Record<string, string>
+        version: string
+      }>
+    }
+    swift: { package: string, revision: null | string, tag: string }
+    version: string
+  }
+  schemaVersion: number
 }
 
 interface LumenNativeApiRow {
