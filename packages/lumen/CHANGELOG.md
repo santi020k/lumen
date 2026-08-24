@@ -1,5 +1,30 @@
 # @santi020k/lumen
 
+## 1.5.0
+
+### Minor Changes
+
+- [#33](https://github.com/santi020k/lumen/pull/33) [`dbd8430`](https://github.com/santi020k/lumen/commit/dbd8430aca1f935f4ac1dcb201bda2f4e7f52663) Thanks [@santi020k](https://github.com/santi020k)! - Add a token-aware SwiftUI `LumenLink`, rich and locally controlled SwiftUI disclosure labels,
+  availability-safe native tab-bar minimization, adaptive tab accessories, and developed native
+  composition guidance for settings, dense rows, asynchronous states, metrics, navigation, and
+  adaptive actions. Add threshold-based nested-scroll navigation behavior for Compose and a dependency-
+  free visibility controller with an animated collapsible navigation bar for React Native while
+  retaining platform-owned navigation, scrolling, and lifecycle behavior.
+
+  Add cross-adapter destination re-selection and accessible dot, text, and capped count badges;
+  compact Compose and React Native navigation accessories; Material adaptive bar/rail navigation for
+  Android; and Compose floating actions that can hide or follow scroll-responsive navigation.
+
+- [#33](https://github.com/santi020k/lumen/pull/33) [`dbd8430`](https://github.com/santi020k/lumen/commit/dbd8430aca1f935f4ac1dcb201bda2f4e7f52663) Thanks [@santi020k](https://github.com/santi020k)! - Publish a cross-platform release manifest, expose it through the MCP server, and add
+  `lumen doctor-native` for read-only Swift and Compose version, resolver-pin, and theme-placement
+  diagnostics. Extend the web doctor with advisory suggestions for likely hand-built dropdown, theme,
+  dialog-focus, and keyboard-menu behavior while preserving application-specific compositions.
+
+- [#33](https://github.com/santi020k/lumen/pull/33) [`dbd8430`](https://github.com/santi020k/lumen/commit/dbd8430aca1f935f4ac1dcb201bda2f4e7f52663) Thanks [@santi020k](https://github.com/santi020k)! - Add focused watchOS and Wear OS component contracts for round essential actions, circular progress,
+  compact statuses, at-a-glance metrics, and wearable list rows. Publish Wear OS through the separate
+  `lumen-compose-wear` artifact, make the Swift package genuinely compile for its declared watchOS
+  platform, and keep watch lifecycle and domain behavior application-owned.
+
 ## 1.4.0
 
 ### Minor Changes

@@ -1,5 +1,21 @@
 # @santi020k/lumen-mcp
 
+## 1.5.0
+
+### Minor Changes
+
+- [#33](https://github.com/santi020k/lumen/pull/33) [`dbd8430`](https://github.com/santi020k/lumen/commit/dbd8430aca1f935f4ac1dcb201bda2f4e7f52663) Thanks [@santi020k](https://github.com/santi020k)! - Publish a cross-platform release manifest, expose it through the MCP server, and add
+  `lumen doctor-native` for read-only Swift and Compose version, resolver-pin, and theme-placement
+  diagnostics. Extend the web doctor with advisory suggestions for likely hand-built dropdown, theme,
+  dialog-focus, and keyboard-menu behavior while preserving application-specific compositions.
+
+### Patch Changes
+
+- [#33](https://github.com/santi020k/lumen/pull/33) [`dbd8430`](https://github.com/santi020k/lumen/commit/dbd8430aca1f935f4ac1dcb201bda2f4e7f52663) Thanks [@santi020k](https://github.com/santi020k)! - Add focused watchOS and Wear OS component contracts for round essential actions, circular progress,
+  compact statuses, at-a-glance metrics, and wearable list rows. Publish Wear OS through the separate
+  `lumen-compose-wear` artifact, make the Swift package genuinely compile for its declared watchOS
+  platform, and keep watch lifecycle and domain behavior application-owned.
+
 ## 1.4.0
 
 ### Patch Changes
