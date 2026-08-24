@@ -4,6 +4,11 @@ import process from 'node:process'
 const checkOnly = process.argv.includes('--check')
 const gradlePropertiesPath = new URL('../packages/compose/gradle.properties', import.meta.url)
 
+const consumerGradlePropertiesPath = new URL(
+  '../apps/playground-android/gradle.properties',
+  import.meta.url
+)
+
 const documentationPaths = [
   '../apps/docs/src/data/platforms.ts',
   '../docs/ai-usage.md',
@@ -27,9 +32,32 @@ if (!versionMatch) {
 }
 
 const version = versionMatch[1]
+const consumerGradleProperties = await readFile(consumerGradlePropertiesPath, 'utf8')
+const consumerVersionPattern = /^lumenComposeVersion=.*$/mu
+const expectedConsumerVersion = `lumenComposeVersion=${version}`
 const coordinatePattern = /com\.santi020k:lumen-compose:[0-9A-Za-z][0-9A-Za-z._-]*/gu
 const wearableCoordinatePattern = /com\.santi020k:lumen-compose-wear:[0-9A-Za-z][0-9A-Za-z._-]*/gu
 const stalePaths = []
+
+if (!consumerVersionPattern.test(consumerGradleProperties)) {
+  if (checkOnly) {
+    stalePaths.push(consumerGradlePropertiesPath.pathname)
+  } else {
+    await writeFile(
+      consumerGradlePropertiesPath,
+      `${consumerGradleProperties.trimEnd()}\n${expectedConsumerVersion}\n`
+    )
+  }
+} else if (!consumerGradleProperties.includes(expectedConsumerVersion)) {
+  if (checkOnly) {
+    stalePaths.push(consumerGradlePropertiesPath.pathname)
+  } else {
+    await writeFile(
+      consumerGradlePropertiesPath,
+      consumerGradleProperties.replace(consumerVersionPattern, expectedConsumerVersion)
+    )
+  }
+}
 
 const synchronize = async (paths, pattern, coordinate) => {
   for (const path of paths) {
@@ -64,7 +92,7 @@ await synchronize(
 
 if (stalePaths.length > 0) {
   throw new Error(
-    `Compose documentation is not synchronized with ${version}:\n${stalePaths.join('\n')}\nRun pnpm sync:compose-version.`
+    `Compose consumers and documentation are not synchronized with ${version}:\n${stalePaths.join('\n')}\nRun pnpm sync:compose-version.`
   )
 }
 
