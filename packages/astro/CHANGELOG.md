@@ -1,5 +1,13 @@
 # @santi020k/lumen-astro
 
+## 1.6.0
+
+### Patch Changes
+
+- [#36](https://github.com/santi020k/lumen/pull/36) [`1c4de1b`](https://github.com/santi020k/lumen/commit/1c4de1bbf7d2414896b04c69f2b6810f10b4a0dd) Thanks [@santi020k](https://github.com/santi020k)! - Keep Kanban pointer interactions scoped to their owning board, initialize dynamically added drag handles, and clear React drag state when a pointer is cancelled.
+- Updated dependencies [[`1c4de1b`](https://github.com/santi020k/lumen/commit/1c4de1bbf7d2414896b04c69f2b6810f10b4a0dd)]:
+  - @santi020k/lumen@1.6.0
+
 ## 1.4.0
 
 ### Minor Changes
