@@ -26,7 +26,7 @@ public struct LumenTabAccessory<Expanded: View, Compact: View>: View {
     }
 
     public var body: some View {
-        #if os(iOS)
+        #if os(iOS) && compiler(>=6.2)
         if #available(iOS 26.0, *) {
             LumenAdaptiveTabAccessory(expanded: expanded, compact: compact)
         } else {
@@ -46,7 +46,7 @@ public extension View {
     func lumenTabBarMinimizeBehavior(
         _ behavior: LumenTabBarMinimizeBehavior
     ) -> some View {
-        #if os(iOS)
+        #if os(iOS) && compiler(>=6.2)
         if #available(iOS 26.0, *) {
             tabBarMinimizeBehavior(behavior.swiftUIValue)
         } else {
@@ -67,6 +67,7 @@ public extension View {
         @ViewBuilder content: () -> Accessory
     ) -> some View {
         #if os(iOS)
+        #if compiler(>=6.2)
         if #available(iOS 26.0, *) {
             if isEnabled {
                 tabViewBottomAccessory {
@@ -85,12 +86,21 @@ public extension View {
             }
         }
         #else
+        safeAreaInset(edge: .bottom, spacing: 0) {
+            if isEnabled {
+                LumenLegacyTabAccessorySurface {
+                    content()
+                }
+            }
+        }
+        #endif
+        #else
         self
         #endif
     }
 }
 
-#if os(iOS)
+#if os(iOS) && compiler(>=6.2)
 @available(iOS 26.0, *)
 private extension LumenTabBarMinimizeBehavior {
     var swiftUIValue: TabBarMinimizeBehavior {
@@ -118,7 +128,9 @@ private struct LumenAdaptiveTabAccessory<Expanded: View, Compact: View>: View {
         }
     }
 }
+#endif
 
+#if os(iOS)
 private struct LumenLegacyTabAccessorySurface<Content: View>: View {
     @Environment(\.lumenTheme) private var theme
 
