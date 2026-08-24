@@ -12,6 +12,7 @@ import {
   formatLumenDiagnostics,
   inspectLumenIntegration
 } from './integration-diagnostics.js'
+import { formatNativeAdoptionAudit, inspectNativeAdoption } from './native-audit.js'
 import {
   addLumenRegistryItem,
   getLumenRegistryEntries,
@@ -44,6 +45,8 @@ const allowDirty = args.includes('--allow-dirty')
 const noVerify = args.includes('--no-verify')
 const reportIndex = args.indexOf('--report')
 const reportPath = reportIndex >= 0 ? args[reportIndex + 1] : undefined
+const manifestIndex = args.indexOf('--manifest')
+const manifestPath = manifestIndex >= 0 ? args[manifestIndex + 1] : undefined
 const frameworkIndex = args.indexOf('--framework')
 const frameworkValue = frameworkIndex >= 0 ? args[frameworkIndex + 1] : undefined
 const json = args.includes('--json')
@@ -218,6 +221,7 @@ const help = [
   '  lumen install          Print install commands',
   '  lumen audit-tokens     Report incompatible semantic color custom properties',
   '  lumen doctor           Inspect styles, adapters, runtime mounts, and selector usage',
+  '  lumen doctor-native    Inspect native versions, package pins, and theme placement',
   '  lumen init             Print canonical framework setup without changing files',
   '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
   '',
@@ -233,6 +237,7 @@ const help = [
   '  --framework <name>     Select astro, react, or elements for lumen init',
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
+  '  --manifest <path>      Use a specific cross-platform release manifest',
   '  --apply                Apply a rollout (requires a target version)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
   '  --exclude <path>       Exclude a repository (repeatable)',
@@ -268,6 +273,14 @@ const run = async () => {
       output = json ? JSON.stringify(report, undefined, 2) : formatLumenDiagnostics(report)
 
       if (!report.healthy) process.exitCode = 1
+
+      break
+    }
+
+    case 'doctor-native': {
+      const report = await inspectNativeAdoption(cwd ?? process.cwd(), manifestPath)
+
+      output = json ? JSON.stringify(report, undefined, 2) : formatNativeAdoptionAudit(report)
 
       break
     }

@@ -846,15 +846,18 @@ const loadNativeSources = async (repoRoot, nativeRegistry) => {
 
   for (const [platform, config] of Object.entries(nativePlatformConfigs)) {
     const adapter = nativeRegistry.adapters[config.adapter]
-    const directory = resolve(repoRoot, adapter.sourceDirectory)
     const files = {}
 
-    for (const fileName of await readdir(directory)) {
-      if (!nativeSourceExtensions[platform].has(extensionOf(fileName))) continue
+    for (const sourceDirectory of [adapter.sourceDirectory, ...(adapter.additionalSourceDirectories ?? [])]) {
+      const directory = resolve(repoRoot, sourceDirectory)
 
-      const absolutePath = join(directory, fileName)
+      for (const fileName of await readdir(directory)) {
+        if (!nativeSourceExtensions[platform].has(extensionOf(fileName))) continue
 
-      files[relative(repoRoot, absolutePath)] = await readFile(absolutePath, 'utf8')
+        const absolutePath = join(directory, fileName)
+
+        files[relative(repoRoot, absolutePath)] = await readFile(absolutePath, 'utf8')
+      }
     }
 
     sources[platform] = files
@@ -991,6 +994,7 @@ const main = async () => {
   const packageJson = JSON.parse(await readFile(resolve(scriptDir, '..', 'package.json'), 'utf8'))
   const registry = await loadRegistry(p)
   const nativeRegistry = await loadNativeRegistry(p)
+  const releaseManifest = JSON.parse(await readFile(p('registry/release-manifest.json'), 'utf8'))
   const names = parseComponentNames(componentsSource)
   const ctxData = await buildContextData(files, registry, names)
 
@@ -1169,6 +1173,7 @@ const main = async () => {
         nativeComponents,
         nativeSources,
         recipes,
+        releaseManifest,
         rules,
         tokens
       })
@@ -1230,12 +1235,13 @@ const main = async () => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 4,
+      schemaVersion: 5,
       serverVersion: packageJson.version
     },
     nativeComponents,
     nativeSources,
     recipes,
+    releaseManifest,
     rules,
     tokens
   }

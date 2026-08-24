@@ -109,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.3.0")
+    implementation("com.santi020k:lumen-compose:0.4.0")
 }
 ```
 
@@ -121,54 +121,76 @@ Applications with an existing Material theme can pass `materialColorScheme`, `ty
 accent, success, and warning semantics, and `ColorScheme.toLumenColorPalette(...)` exposes the
 mapped Lumen values when the application needs them independently.
 
+### Wear OS
+
+Wear OS uses a separate artifact so phone and tablet applications do not acquire wearable-only
+contracts:
+
+```kotlin
+dependencies {
+    implementation("com.santi020k:lumen-compose-wear:0.4.0")
+}
+```
+
+`LumenWearTheme` provides canonical Lumen semantic tokens without replacing the application's Wear
+Material theme. This keeps the first wearable tier compatible with existing Wear Compose Material
+2.5 applications and current Wear Material 3 applications. Wear navigation, rotary input, tiles,
+complications, haptics, synchronization, health behavior, and background work remain application-
+owned.
+
 ## Supported surface
 
-| Contract          | React Native            | SwiftUI                 | Compose                 | Shared behavior                                                           |
-| ----------------- | ----------------------- | ----------------------- | ----------------------- | ------------------------------------------------------------------------- |
-| Theme             | `LumenProvider`         | `.lumenTheme`           | `LumenTheme`            | Light, dark, and semantic tokens                                          |
-| Text              | `LumenText`             | `LumenText`             | `LumenText`             | Body, caption, label, and title roles                                     |
-| Icon              | `LumenIcon`             | `LumenIcon`             | `LumenIcon`             | 16, 20, and 24 unit sizes; decorative by default                          |
-| Icon button       | `LumenIconButton`       | `LumenIconButton`       | `LumenIconButton`       | Required label, shared intents, 44 point mobile or compact Mac target     |
-| Surface           | `LumenSurface`          | `LumenSurface`          | `LumenSurface`          | Semantic surface, padding, and radius roles                               |
-| Button            | `LumenButton`           | `LumenButton`           | `LumenButton`           | Primary, secondary, quiet, danger, loading, disabled                      |
-| Button group      | `LumenButtonGroup`      | `LumenButtonGroup`      | `LumenButtonGroup`      | Horizontal or vertical layout for related actions                         |
-| Text field        | `LumenTextField`        | `LumenTextField`        | `LumenTextField`        | Error and disabled states with native input behavior                      |
-| Textarea          | `LumenTextarea`         | `LumenTextarea`         | `LumenTextarea`         | Multiline native editing with supporting and error states                 |
-| Field group       | `LumenFieldGroup`       | `LumenFieldGroup`       | `LumenFieldGroup`       | Shared label, guidance, required state, and validation message            |
-| Toggle            | `LumenToggle`           | `LumenToggle`           | `LumenToggle`           | Native switch behavior with visible label and disabled state              |
-| Settings row      | `LumenSettingsRow`      | `LumenSettingsRow`      | `LumenSettingsRow`      | Supporting copy, optional graphic, and trailing native control            |
-| Search field      | `LumenSearchField`      | `LumenSearchField`      | `LumenSearchField`      | Native search entry with labeled clear action                             |
-| Checkbox          | `LumenCheckbox`         | `LumenCheckbox`         | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text               |
-| Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`       | `LumenRadioGroup`       | Named single selection with disabled option support                       |
-| Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl` | `LumenSegmentedControl` | Compact single selection from a small peer set                            |
-| Navigation bar    | `LumenNavigationBar`    | `LumenNavigationBar`    | `LumenNavigationBar`    | Controlled app destinations with selected and disabled states             |
-| Chip              | `LumenChip`             | `LumenChip`             | `LumenChip`             | Compact display, selection, and separately labeled removal                |
-| Badge             | `LumenBadge`            | `LumenBadge`            | `LumenBadge`            | Neutral, accent, success, warning, and danger tones                       |
-| Divider           | `LumenDivider`          | `LumenDivider`          | `LumenDivider`          | Semantic line color and decorative semantics                              |
-| Spinner           | `LumenSpinner`          | `LumenSpinner`          | `LumenSpinner`          | Brand color and accessible loading label                                  |
-| Card              | `LumenCard`             | `LumenCard`             | `LumenCard`             | Neutral and semantic surfaces; optional native action                     |
-| Alert             | `LumenAlert`            | `LumenAlert`            | `LumenAlert`            | Default, destructive, success, and warning variants                       |
-| Alert dialog      | `LumenAlertDialog`      | `lumenAlertDialog`      | `LumenAlertDialog`      | Controlled confirmation with destructive, disabled, and loading states    |
-| Toast             | `LumenToast`            | `LumenToast`            | `LumenToast`            | App-controlled transient feedback with optional action and dismissal      |
-| Progress          | `LumenProgress`         | `LumenProgress`         | `LumenProgress`         | Determinate, clamped value and valid maximum                              |
-| Skeleton          | `LumenSkeleton`         | `LumenSkeleton`         | `LumenSkeleton`         | Text, rectangle, or circle loading placeholder; decorative unless labeled |
-| Graphic           | `LumenGraphic`          | `LumenGraphic`          | `LumenGraphic`          | Token-aware glow, grid, or orbit around app-provided artwork              |
-| Backdrop          | `LumenBackdrop`         | `LumenBackdrop`         | `LumenBackdrop`         | Ambient aurora, dots, grid, or rays behind native content                 |
-| Illustration      | `LumenIllustration`     | `LumenIllustration`     | `LumenIllustration`     | Built-in empty, success, error, and offline semantic scenes               |
-| Disclosure        | `LumenDisclosure`       | `LumenDisclosure`       | `LumenDisclosure`       | Controlled expanded state with native trigger and content semantics       |
-| Avatar            | `LumenAvatar`           | `LumenAvatar`           | `LumenAvatar`           | Native image source, fallback, label, and shared sizes                    |
-| Empty state       | `LumenEmptyState`       | `LumenEmptyState`       | `LumenEmptyState`       | Title, supporting copy, optional graphic, and recovery actions            |
-| List row          | `LumenListRow`          | `LumenListRow`          | `LumenListRow`          | Leading identity, flexible content, and trailing actions                  |
-| Banner            | `LumenBanner`           | `LumenBanner`           | `LumenBanner`           | Semantic notice with optional actions and dismissal                       |
-| Stat              | `LumenStat`             | `LumenStat`             | `LumenStat`             | Compact semantic metric with label, value, and detail                     |
-| Section header    | `LumenSectionHeader`    | `LumenSectionHeader`    | `LumenSectionHeader`    | Section identity, optional count, and trailing actions                    |
-| Status bar        | `LumenStatusBar`        | `LumenStatusBar`        | `LumenStatusBar`        | Compact textual status and optional trailing content                      |
-| Picker            | —                       | `LumenPicker`           | `LumenPicker`           | Native single-value selection without a React Native dependency           |
-| Slider            | —                       | `LumenSlider`           | `LumenSlider`           | Native continuous or stepped range input                                  |
-| Gauge             | —                       | `LumenGauge`            | `LumenGauge`            | Clamped circular metric with a formatted accessible value                 |
-| Sheet             | `LumenSheet`            | `lumenSheet`            | `LumenSheet`            | Controlled supplemental surface with native modal dismissal               |
-| Menu              | `LumenMenu`             | `LumenMenu`             | `LumenMenu`             | Anchored actions with disabled and destructive item states                |
-| Share button      | `LumenShareButton`      | `LumenShareButton`      | `LumenShareButton`      | Token-aware action backed by the operating system share surface           |
+| Contract          | React Native            | SwiftUI                  | Compose                 | Shared behavior                                                           |
+| ----------------- | ----------------------- | ------------------------ | ----------------------- | ------------------------------------------------------------------------- |
+| Theme             | `LumenProvider`         | `.lumenTheme`            | `LumenTheme`            | Light, dark, and semantic tokens                                          |
+| Text              | `LumenText`             | `LumenText`              | `LumenText`             | Body, caption, label, and title roles                                     |
+| Icon              | `LumenIcon`             | `LumenIcon`              | `LumenIcon`             | 16, 20, and 24 unit sizes; decorative by default                          |
+| Icon button       | `LumenIconButton`       | `LumenIconButton`        | `LumenIconButton`       | Required label, shared intents, 44 point mobile or compact Mac target     |
+| Surface           | `LumenSurface`          | `LumenSurface`           | `LumenSurface`          | Semantic surface, padding, and radius roles                               |
+| Button            | `LumenButton`           | `LumenButton`            | `LumenButton`           | Primary, secondary, quiet, danger, loading, disabled                      |
+| Button group      | `LumenButtonGroup`      | `LumenButtonGroup`       | `LumenButtonGroup`      | Horizontal or vertical layout for related actions                         |
+| Text field        | `LumenTextField`        | `LumenTextField`         | `LumenTextField`        | Error and disabled states with native input behavior                      |
+| Textarea          | `LumenTextarea`         | `LumenTextarea`          | `LumenTextarea`         | Multiline native editing with supporting and error states                 |
+| Field group       | `LumenFieldGroup`       | `LumenFieldGroup`        | `LumenFieldGroup`       | Shared label, guidance, required state, and validation message            |
+| Toggle            | `LumenToggle`           | `LumenToggle`            | `LumenToggle`           | Native switch behavior with visible label and disabled state              |
+| Settings row      | `LumenSettingsRow`      | `LumenSettingsRow`       | `LumenSettingsRow`      | Supporting copy, optional graphic, and trailing native control            |
+| Search field      | `LumenSearchField`      | `LumenSearchField`       | `LumenSearchField`      | Native search entry with labeled clear action                             |
+| Checkbox          | `LumenCheckbox`         | `LumenCheckbox`          | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text               |
+| Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`        | `LumenRadioGroup`       | Named single selection with disabled option support                       |
+| Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl`  | `LumenSegmentedControl` | Compact single selection from a small peer set                            |
+| Navigation bar    | `LumenNavigationBar`    | `LumenNavigationBar`     | `LumenNavigationBar`    | Controlled destinations, re-selection, badges, and disabled states         |
+| Chip              | `LumenChip`             | `LumenChip`              | `LumenChip`             | Compact display, selection, and separately labeled removal                |
+| Badge             | `LumenBadge`            | `LumenBadge`             | `LumenBadge`            | Neutral, accent, success, warning, and danger tones                       |
+| Divider           | `LumenDivider`          | `LumenDivider`           | `LumenDivider`          | Semantic line color and decorative semantics                              |
+| Spinner           | `LumenSpinner`          | `LumenSpinner`           | `LumenSpinner`          | Brand color and accessible loading label                                  |
+| Card              | `LumenCard`             | `LumenCard`              | `LumenCard`             | Neutral and semantic surfaces; optional native action                     |
+| Alert             | `LumenAlert`            | `LumenAlert`             | `LumenAlert`            | Default, destructive, success, and warning variants                       |
+| Alert dialog      | `LumenAlertDialog`      | `lumenAlertDialog`       | `LumenAlertDialog`      | Controlled confirmation with destructive, disabled, and loading states    |
+| Toast             | `LumenToast`            | `LumenToast`             | `LumenToast`            | App-controlled transient feedback with optional action and dismissal      |
+| Progress          | `LumenProgress`         | `LumenProgress`          | `LumenProgress`         | Determinate, clamped value and valid maximum                              |
+| Skeleton          | `LumenSkeleton`         | `LumenSkeleton`          | `LumenSkeleton`         | Text, rectangle, or circle loading placeholder; decorative unless labeled |
+| Graphic           | `LumenGraphic`          | `LumenGraphic`           | `LumenGraphic`          | Token-aware glow, grid, or orbit around app-provided artwork              |
+| Backdrop          | `LumenBackdrop`         | `LumenBackdrop`          | `LumenBackdrop`         | Ambient aurora, dots, grid, or rays behind native content                 |
+| Illustration      | `LumenIllustration`     | `LumenIllustration`      | `LumenIllustration`     | Built-in empty, success, error, and offline semantic scenes               |
+| Disclosure        | `LumenDisclosure`       | `LumenDisclosure`        | `LumenDisclosure`       | Controlled expanded state with native trigger and content semantics       |
+| Avatar            | `LumenAvatar`           | `LumenAvatar`            | `LumenAvatar`           | Native image source, fallback, label, and shared sizes                    |
+| Empty state       | `LumenEmptyState`       | `LumenEmptyState`        | `LumenEmptyState`       | Title, supporting copy, optional graphic, and recovery actions            |
+| List row          | `LumenListRow`          | `LumenListRow`           | `LumenListRow`          | Leading identity, flexible content, and trailing actions                  |
+| Banner            | `LumenBanner`           | `LumenBanner`            | `LumenBanner`           | Semantic notice with optional actions and dismissal                       |
+| Stat              | `LumenStat`             | `LumenStat`              | `LumenStat`             | Compact semantic metric with label, value, and detail                     |
+| Section header    | `LumenSectionHeader`    | `LumenSectionHeader`     | `LumenSectionHeader`    | Section identity, optional count, and trailing actions                    |
+| Status bar        | `LumenStatusBar`        | `LumenStatusBar`         | `LumenStatusBar`        | Compact textual status and optional trailing content                      |
+| Picker            | —                       | `LumenPicker`            | `LumenPicker`           | Native single-value selection without a React Native dependency           |
+| Slider            | —                       | `LumenSlider`            | `LumenSlider`           | Native continuous or stepped range input                                  |
+| Gauge             | —                       | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                 |
+| Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Controlled supplemental surface with native modal dismissal               |
+| Menu              | `LumenMenu`             | `LumenMenu`              | `LumenMenu`             | Anchored actions with disabled and destructive item states                |
+| Share button      | `LumenShareButton`      | `LumenShareButton`       | `LumenShareButton`      | Token-aware action backed by the operating system share surface           |
+| Wearable action   | —                       | `LumenWatchActionButton` | `LumenWearActionButton` | Round essential action with semantic intent and wearable-safe bounds      |
+| Wearable progress | —                       | `LumenWatchProgressRing` | `LumenWearProgressRing` | Clamped circular progress around application-owned center content         |
+| Wearable status   | —                       | `LumenWatchStatus`       | `LumenWearStatus`       | Compact text-first semantic status                                        |
+| Wearable metric   | —                       | `LumenWatchMetric`       | `LumenWearMetric`       | At-a-glance label, value, and optional detail                             |
+| Wearable list row | —                       | `LumenWatchListRow`      | `LumenWearListRow`      | Compact leading, content, and trailing wearable composition               |
 
 The web-only Card variants `glass` and `unstyled` are deliberately not shared. Blur, material, and
 unstyled layout behavior do not have a stable cross-platform meaning. Native Card interaction is
@@ -179,13 +201,26 @@ enabled by an action or press callback instead of a visual-only `interactive` va
 Each native adapter also provides a small set of controls grounded in its own interaction model.
 They use Lumen tokens and accessibility rules without promising artificial API parity.
 
-| Component                   | Adapter      | Platforms    | Contract                                                               |
-| --------------------------- | ------------ | ------------ | ---------------------------------------------------------------------- |
-| `LumenRefreshControl`       | React Native | iOS, Android | Pull-to-refresh state with semantic native indicator colors            |
-| `LumenDateField`            | SwiftUI      | iOS, macOS   | Native date/time selection with bounds and validation context          |
-| `LumenShortcutRecorder`     | SwiftUI      | macOS        | Keyboard capture with cancel, clear, and application validation states |
-| `LumenSymbolPicker`         | SwiftUI      | macOS        | Searchable categorized SF Symbols selection                            |
-| `LumenFloatingActionButton` | Compose      | Android      | Material floating action with semantic intent and native sizing        |
+| Component                       | Adapter      | Platforms    | Contract                                                                |
+| ------------------------------- | ------------ | ------------ | ----------------------------------------------------------------------- |
+| `LumenRefreshControl`           | React Native | iOS, Android | Pull-to-refresh state with semantic native indicator colors             |
+| `LumenCollapsibleNavigationBar` | React Native | iOS, Android | Threshold-based animated navigation visibility for scroll containers |
+| `LumenNavigationAccessory`      | React Native | iOS, Android | Compact status or actions above bottom navigation                     |
+| `LumenDateField`                | SwiftUI      | iOS, macOS   | Native date/time selection with bounds and validation context           |
+| `LumenLink`                     | SwiftUI      | iOS, macOS   | Token-aware URL action using native SwiftUI link opening                |
+| `lumenTabBarMinimizeBehavior`   | SwiftUI      | iOS          | Native iPhone tab minimization with an iOS 16-compatible fallback       |
+| `LumenTabAccessory`             | SwiftUI      | iOS          | Expanded and compact content for native tab-bar accessory placement     |
+| `LumenShortcutRecorder`         | SwiftUI      | macOS        | Keyboard capture with cancel, clear, and application validation states  |
+| `LumenSymbolPicker`             | SwiftUI      | macOS        | Searchable categorized SF Symbols selection                             |
+| `LumenFloatingActionButton`     | Compose      | Android      | Material floating action with semantic intent and native sizing         |
+| `LumenNavigationBarScrollState` | Compose      | Android      | Nested-scroll visibility behavior for a Material navigation bar         |
+| `LumenNavigationBarAccessory`   | Compose      | Android      | Compact content coordinated with Material bottom navigation             |
+| `LumenAdaptiveNavigationScaffold` | Compose    | Android      | Window- and posture-adaptive Material navigation bar or rail             |
+
+The wearable contracts are available only for SwiftUI watchOS targets and the
+`lumen-compose-wear` artifact. They intentionally do not recreate the phone catalog. Use one
+essential action, short statuses, at-a-glance progress and metrics, and compact rows inside native
+watch scrolling or paging containers.
 
 Picker, slider, and gauge are shared by SwiftUI and Compose because both platforms provide stable,
 dependency-free native controls. React Native applications can pair Lumen tokens with their chosen
@@ -195,6 +230,56 @@ control library rather than making the shared package impose one dependency.
 navigation history, deep links, and restoration in application code. Continue using native routers,
 `NavigationSplitView`, navigation stacks, popovers, and window scenes for hierarchical
 navigation, focus restoration, keyboard routing, and window behavior.
+
+Every adapter supports optional destination badges and an `onReselect` callback. Use re-selection
+for application-owned behavior such as scrolling the active feed to the top or popping its nested
+stack. Dot badges announce an application-provided status; text and count badges retain their full
+spoken value even when the visible count is capped at `99+`.
+
+On iPhone, apply `.lumenTabBarMinimizeBehavior(.onScrollDown)` to a native SwiftUI `TabView` to use
+the system minimizing tab bar on iOS 26 and later. Earlier iOS versions retain their normal tab bar;
+Lumen does not recreate system navigation with a custom overlay. The other policies are
+`.automatic`, `.never`, and `.onScrollUp`.
+
+`lumenTabViewBottomAccessory` uses native tab accessory placement on iOS 26 and a token-aware safe-
+area inset on earlier supported releases. `LumenTabAccessory` switches between expanded and compact
+application content as the native tab bar changes placement.
+
+```swift
+TabView {
+    FeedView().tabItem { Label("Feed", systemImage: "rectangle.stack") }
+    ProfileView().tabItem { Label("Profile", systemImage: "person") }
+}
+.lumenTabBarMinimizeBehavior(.onScrollDown)
+.lumenTabViewBottomAccessory {
+    LumenTabAccessory {
+        UploadStatus(showProgress: true)
+    } compact: {
+        UploadStatus(showProgress: false)
+    }
+}
+```
+
+The application continues to own tab selection, independent navigation paths, scroll position,
+badges, deep links, and the accessory's domain state.
+
+On Android, use `rememberLumenNavigationBarScrollState` and attach
+`Modifier.lumenNavigationBarScrollBehavior(state)` above the scrolling content. Pass the same state
+to `LumenNavigationBar`; it observes nested-scroll deltas without consuming them, then slides the
+Material bar out after forward travel and restores it on reverse travel.
+
+In React Native, `useLumenNavigationBarVisibility` accepts `ScrollView`, `FlatList`, or `SectionList`
+scroll events. Pass its `visible` value to `LumenCollapsibleNavigationBar`. The wrapper animates its
+height and opacity, disables hidden pointer interaction, and removes hidden destinations from the
+accessibility tree while leaving list virtualization and routing application-owned.
+
+`LumenNavigationAccessory` and `LumenNavigationBarAccessory` provide compact status or action
+content for playback, uploads, calls, or recording. Supplying the same visibility state makes the
+accessory leave the layout with navigation. Safe-area ownership and domain state stay in the app.
+
+Android applications can use `LumenAdaptiveNavigationScaffold` to let Material switch between a
+bottom navigation bar and navigation rail as the window size or foldable posture changes. The
+scaffold renders application-owned destination content and never creates a router or back stack.
 
 ### Shared destination navigation
 
@@ -208,6 +293,7 @@ screen through its existing router or navigation stack.
   items={destinations}
   value={destination}
   onValueChange={setDestination}
+  onReselect={scrollDestinationToTop}
 />
 ```
 
@@ -216,9 +302,10 @@ LumenNavigationBar(
     "Primary navigation",
     selection: $destination,
     items: [
-        LumenNavigationItem("Home", value: .home, systemName: "house"),
+        LumenNavigationItem("Home", value: .home, systemName: "house", badge: .count(12)),
         LumenNavigationItem("Search", value: .search, systemName: "magnifyingglass")
-    ]
+    ],
+    onReselect: scrollDestinationToTop
 )
 ```
 
@@ -226,7 +313,8 @@ LumenNavigationBar(
 LumenNavigationBar(
     items = destinations,
     selectedValue = destination,
-    onValueChange = ::setDestination
+    onValueChange = ::setDestination,
+    onReselect = ::scrollDestinationToTop
 )
 ```
 
@@ -278,13 +366,13 @@ indicator. The application owns refreshing state and completion:
 
 ```tsx
 <ScrollView
-  refreshControl={(
+  refreshControl={
     <LumenRefreshControl
       accessibilityLabel="Refresh projects"
       refreshing={refreshing}
       onRefresh={refreshProjects}
     />
-  )}
+  }
 >
   {content}
 </ScrollView>
@@ -309,7 +397,9 @@ Compose applications can use a Material-native floating action while keeping Lum
 LumenFloatingActionButton(
     imageVector = Icons.Default.Add,
     contentDescription = "Create project",
-    onClick = ::createProject
+    onClick = ::createProject,
+    scrollState = navigationScrollState,
+    navigationBehavior = LumenFloatingActionButtonNavigationBehavior.HideWithNavigation
 )
 ```
 
@@ -387,6 +477,36 @@ LumenBanner(
 
 `LumenBanner` is inline presentation, not a live announcement. Applications decide whether a newly
 inserted message needs a platform accessibility announcement.
+
+SwiftUI disclosures accept either the concise title-and-description initializer or a custom label
+view. Use a custom label for application identity, metrics, badges, and independently meaningful
+status content; keep domain actions and process behavior in application code. Presentation-only
+disclosures can own their expansion state with `initiallyExpanded`, while navigation or persisted
+state should continue to pass an explicit binding.
+
+```swift
+LumenDisclosure(isExpanded: $isExpanded) {
+    HStack {
+        LumenIcon(systemName: "app.badge")
+        Text("Background service")
+        Spacer()
+        LumenBadge("Running", tone: .success)
+    }
+} content: {
+    ServiceDetails()
+}
+```
+
+Use `LumenLink` for an Apple URL action that needs Lumen color and focus treatment without replacing
+SwiftUI's URL handling. The application still owns routing and URL policy.
+
+```swift
+LumenLink(
+    "Read privacy policy",
+    destination: privacyPolicyURL,
+    showsExternalIndicator: true
+)
+```
 
 ### Metrics and dense desktop structure
 

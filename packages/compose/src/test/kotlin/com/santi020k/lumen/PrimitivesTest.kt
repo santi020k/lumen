@@ -106,6 +106,82 @@ class PrimitivesTest {
     }
 
     @Test
+    fun navigationSelectionSeparatesChangesFromReselection() {
+        val changes = mutableListOf<String>()
+        val reselectionEvents = mutableListOf<String>()
+
+        dispatchLumenNavigationSelection("search", "home", changes::add, reselectionEvents::add)
+        dispatchLumenNavigationSelection("home", "home", changes::add, reselectionEvents::add)
+
+        assertEquals(listOf("search"), changes)
+        assertEquals(listOf("home"), reselectionEvents)
+    }
+
+    @Test
+    fun navigationBadgesCapVisibleCountsAndRetainAccessibleValues() {
+        assertEquals(LumenNavigationBadge(text = "7", accessibilityLabel = "7 new items"), LumenNavigationBadge.count(7))
+        assertEquals(
+            LumenNavigationBadge(text = "99+", accessibilityLabel = "128 new items"),
+            LumenNavigationBadge.count(128)
+        )
+        assertEquals(LumenNavigationBadge(), LumenNavigationBadge.dot())
+    }
+
+    @Test
+    fun navigationBarScrollStateUsesThresholdAndDirectionChanges() {
+        val state = LumenNavigationBarScrollState(initiallyVisible = true, thresholdPx = 16f)
+
+        state.recordScrollDelta(-8f)
+        assertEquals(true, state.isVisible)
+        state.recordScrollDelta(-8f)
+        assertEquals(false, state.isVisible)
+
+        state.recordScrollDelta(8f)
+        state.recordScrollDelta(-4f)
+        state.recordScrollDelta(12f)
+        assertEquals(false, state.isVisible)
+        state.recordScrollDelta(4f)
+        assertEquals(true, state.isVisible)
+    }
+
+    @Test
+    fun navigationBarScrollStateSupportsExplicitVisibilityAndIgnoresInvalidDeltas() {
+        val state = LumenNavigationBarScrollState(initiallyVisible = false, thresholdPx = 16f)
+
+        state.recordScrollDelta(Float.NaN)
+        assertEquals(false, state.isVisible)
+        state.show()
+        assertEquals(true, state.isVisible)
+        state.hide()
+        assertEquals(false, state.isVisible)
+    }
+
+    @Test
+    fun floatingActionsCanHideOrFollowNavigationVisibility() {
+        assertEquals(
+            false,
+            lumenFloatingActionButtonVisible(
+                LumenFloatingActionButtonNavigationBehavior.HideWithNavigation,
+                navigationVisible = false
+            )
+        )
+        assertEquals(
+            true,
+            lumenFloatingActionButtonVisible(
+                LumenFloatingActionButtonNavigationBehavior.AlwaysVisible,
+                navigationVisible = false
+            )
+        )
+        assertEquals(
+            16.dp,
+            lumenFloatingActionButtonOffset(
+                LumenFloatingActionButtonNavigationBehavior.FollowNavigation,
+                navigationVisible = false
+            )
+        )
+    }
+
+    @Test
     fun sharePayloadsRequireTextOrAContentUri() {
         assertEquals(false, LumenSharePayload().hasContent)
         assertEquals(false, LumenSharePayload(text = "   ").hasContent)

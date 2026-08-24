@@ -12,6 +12,13 @@ const documentationPaths = [
   '../packages/compose/README.md'
 ].map(path => new URL(path, import.meta.url))
 
+const wearableDocumentationPaths = [
+  '../docs/ai-usage.md',
+  '../docs/native-components.md',
+  '../packages/compose/README.md',
+  '../packages/compose/wear/README.md'
+].map(path => new URL(path, import.meta.url))
+
 const gradleProperties = await readFile(gradlePropertiesPath, 'utf8')
 const versionMatch = /^lumenComposeVersion=(\S+)$/mu.exec(gradleProperties)
 
@@ -21,28 +28,39 @@ if (!versionMatch) {
 
 const version = versionMatch[1]
 const coordinatePattern = /com\.santi020k:lumen-compose:[0-9A-Za-z][0-9A-Za-z._-]*/gu
+const wearableCoordinatePattern = /com\.santi020k:lumen-compose-wear:[0-9A-Za-z][0-9A-Za-z._-]*/gu
 const stalePaths = []
 
-for (const path of documentationPaths) {
-  const source = await readFile(path, 'utf8')
-  const coordinates = source.match(coordinatePattern) ?? []
+const synchronize = async (paths, pattern, coordinate) => {
+  for (const path of paths) {
+    const source = await readFile(path, 'utf8')
+    const coordinates = source.match(pattern) ?? []
 
-  if (coordinates.length === 0) {
-    throw new Error(`${path.pathname} must include the Maven Central coordinate.`)
+    if (coordinates.length === 0) {
+      throw new Error(`${path.pathname} must include the Maven Central coordinate.`)
+    }
+
+    const updated = source.replaceAll(pattern, `${coordinate}:${version}`)
+
+    if (updated === source) continue
+
+    if (checkOnly) {
+      stalePaths.push(path.pathname)
+
+      continue
+    }
+
+    await writeFile(path, updated)
   }
-
-  const updated = source.replaceAll(coordinatePattern, `com.santi020k:lumen-compose:${version}`)
-
-  if (updated === source) continue
-
-  if (checkOnly) {
-    stalePaths.push(path.pathname)
-
-    continue
-  }
-
-  await writeFile(path, updated)
 }
+
+await synchronize(documentationPaths, coordinatePattern, 'com.santi020k:lumen-compose')
+
+await synchronize(
+  wearableDocumentationPaths,
+  wearableCoordinatePattern,
+  'com.santi020k:lumen-compose-wear'
+)
 
 if (stalePaths.length > 0) {
   throw new Error(
@@ -50,4 +68,6 @@ if (stalePaths.length > 0) {
   )
 }
 
-console.log(`Compose documentation uses com.santi020k:lumen-compose:${version}.`)
+console.log(
+  `Compose documentation uses com.santi020k:lumen-compose:${version} and com.santi020k:lumen-compose-wear:${version}.`
+)

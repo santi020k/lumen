@@ -164,6 +164,7 @@ public struct LumenMenuItem {
 }
 
 /// A native anchored menu that preserves disabled and destructive action semantics.
+#if !os(watchOS)
 public struct LumenMenu<MenuLabel: View>: View {
     private let items: [LumenMenuItem]
     private let label: MenuLabel
@@ -193,6 +194,7 @@ public struct LumenMenu<MenuLabel: View>: View {
         }
     }
 }
+#endif
 
 /// A Lumen-styled button backed by SwiftUI's native ShareLink presentation.
 public struct LumenShareButton: View {

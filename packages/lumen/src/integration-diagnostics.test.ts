@@ -284,6 +284,77 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test('suggests Lumen primitives for common hand-built behavior without blocking the audit', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-duplication-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'package.json'), '{"name":"site"}\n')
+      await writeFile(
+        join(root, 'src', 'custom-ui.tsx'),
+        `
+          import { Card } from '@santi020k/lumen-react'
+          const theme = localStorage.getItem('theme')
+          document.documentElement.dataset.theme = theme ?? 'light'
+          const onDialogKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Tab') document.querySelector('button')?.focus()
+          }
+          const onMenuKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowDown') document.querySelector('[role="menuitem"]')?.focus()
+          }
+          export const CustomUi = () => <>
+            <details className="account-dropdown"><summary>Account</summary><div role="menu" onKeyDown={onMenuKeyDown} /></details>
+            <div role="dialog" aria-modal="true" onKeyDown={onDialogKeyDown} />
+          </>
+        `
+      )
+      await writeFile(
+        join(root, 'src', 'global.css'), '@import "@santi020k/lumen-react/styles.css";\n'
+      )
+
+      const report = await inspectLumenIntegration(root)
+      const rules = report.findings.map(item => item.rule)
+
+      expect(report.healthy).toBe(true)
+      expect(rules).toEqual(expect.arrayContaining([
+        'hand-built-dialog-focus',
+        'hand-built-dropdown',
+        'hand-built-menu-keyboard',
+        'hand-built-theme-persistence'
+      ]))
+      expect(report.findings.every(item => item.severity === 'advisory')).toBe(true)
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('does not suggest replacements when the matching Lumen primitives are imported', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-primitives-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'package.json'), '{"name":"site"}\n')
+      await writeFile(
+        join(root, 'src', 'page.tsx'),
+        `
+          import { Dialog, DropdownMenu, ThemeToggle } from '@santi020k/lumen-react'
+          const persistedTheme = localStorage.getItem('theme')
+          document.documentElement.dataset.theme = persistedTheme ?? 'light'
+          export const Page = () => <><details className="dropdown" /><div role="dialog" aria-modal="true" onKeyDown={event => event.key === 'Tab' && event.currentTarget.focus()} /><div role="menu" onKeyDown={event => event.key === 'ArrowDown'} /><Dialog /><DropdownMenu /><ThemeToggle /></>
+        `
+      )
+      await writeFile(
+        join(root, 'src', 'global.css'), '@import "@santi020k/lumen-react/styles.css";\n'
+      )
+
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.findings.some(item => item.rule.startsWith('hand-built-'))).toBe(false)
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test('prints deterministic framework and Tailwind setup', () => {
     expect(createLumenSetup('react', true)).toContain('@import "tailwindcss";')
     expect(createLumenSetup('astro')).toContain('<UIPrimitives />')

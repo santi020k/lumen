@@ -60,7 +60,7 @@ export interface PlatformGuide {
 const nativeBetaNote =
   'The native adapter is available for testing and early production adoption, but its public API may evolve as Lumen validates it in real applications. Review release notes when upgrading.'
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.3.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.4.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [

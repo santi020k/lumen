@@ -35,6 +35,8 @@ describe('lumen-mcp data snapshot', () => {
     expect(data.tokens.semantic).toContain('brand')
     expect(data.tokens.chart.series1).toBeDefined()
     expect(data.rules.length).toBeGreaterThan(0)
+    expect(data.releaseManifest.release.version).toMatch(/^\d+\.\d+\.\d+/)
+    expect(data.releaseManifest.release.compose.artifacts).toContain('com.santi020k:lumen-compose')
   })
 
   test('bundles rich metadata and real framework contracts', () => {

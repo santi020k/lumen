@@ -430,12 +430,14 @@ private extension CGRect {
 }
 
 public struct LumenDisclosure<Content: View>: View {
-    @Binding private var isExpanded: Bool
     @Environment(\.lumenTheme) private var theme
+    @State private var internalIsExpanded: Bool
 
     private let content: Content
+    private let customLabel: AnyView?
     private let description: String?
-    private let title: String
+    private let externalIsExpanded: Binding<Bool>?
+    private let title: String?
 
     public init(
         _ title: String,
@@ -443,18 +445,85 @@ public struct LumenDisclosure<Content: View>: View {
         description: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.title = title
-        _isExpanded = isExpanded
-        self.description = description
         self.content = content()
+        self.customLabel = nil
+        self.description = description
+        self.externalIsExpanded = isExpanded
+        _internalIsExpanded = State(initialValue: isExpanded.wrappedValue)
+        self.title = title
+    }
+
+    public init(
+        _ title: String,
+        initiallyExpanded: Bool = false,
+        description: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.content = content()
+        self.customLabel = nil
+        self.description = description
+        self.externalIsExpanded = nil
+        _internalIsExpanded = State(initialValue: initiallyExpanded)
+        self.title = title
+    }
+
+    public init<Label: View>(
+        isExpanded: Binding<Bool>,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.content = content()
+        self.customLabel = AnyView(label())
+        self.description = nil
+        self.externalIsExpanded = isExpanded
+        _internalIsExpanded = State(initialValue: isExpanded.wrappedValue)
+        self.title = nil
+    }
+
+    public init<Label: View>(
+        initiallyExpanded: Bool = false,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.content = content()
+        self.customLabel = AnyView(label())
+        self.description = nil
+        self.externalIsExpanded = nil
+        _internalIsExpanded = State(initialValue: initiallyExpanded)
+        self.title = nil
     }
 
     public var body: some View {
-        DisclosureGroup(isExpanded: $isExpanded) {
+        DisclosureGroup(isExpanded: expansionBinding) {
             content
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, LumenSpacing.md)
         } label: {
+            disclosureLabel
+        }
+        .tint(theme.colors.brandSolid)
+        .padding(.horizontal, LumenSpacing.lg)
+        .padding(.vertical, LumenSpacing.md)
+        .background(theme.colors.surface)
+        .overlay {
+            RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous)
+                .stroke(theme.colors.line, lineWidth: 1)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
+    }
+
+    private var expansionBinding: Binding<Bool> {
+        externalIsExpanded ?? Binding(
+            get: { internalIsExpanded },
+            set: { internalIsExpanded = $0 }
+        )
+    }
+
+    @ViewBuilder
+    private var disclosureLabel: some View {
+        if let customLabel {
+            customLabel
+        } else if let title {
             VStack(alignment: .leading, spacing: LumenSpacing.xs) {
                 Text(title)
                     .font(.callout.weight(.semibold))
@@ -468,15 +537,6 @@ public struct LumenDisclosure<Content: View>: View {
                 }
             }
         }
-        .tint(theme.colors.brandSolid)
-        .padding(.horizontal, LumenSpacing.lg)
-        .padding(.vertical, LumenSpacing.md)
-        .background(theme.colors.surface)
-        .overlay {
-            RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous)
-                .stroke(theme.colors.line, lineWidth: 1)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
     }
 }
 #endif

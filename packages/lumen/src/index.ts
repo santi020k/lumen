@@ -11,6 +11,15 @@ export {
   updateLumenWorkspaceSource
 } from './consumer-rollout.js'
 export {
+  formatNativeAdoptionAudit,
+  inspectNativeAdoption,
+  type NativeAuditFinding,
+  type NativeAuditPlatform,
+  type NativeAuditReport,
+  type NativeAuditSeverity,
+  type NativeResolvedVersion
+} from './native-audit.js'
+export {
   addLumenRegistryItem,
   getLumenRegistryEntries,
   getLumenRegistryItem,

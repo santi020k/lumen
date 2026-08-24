@@ -55,6 +55,7 @@ words:
   - dogfooded
   - Dokka
   - dropzone
+  - drawscope
   - esbuild
   - esac
   - Español
@@ -100,6 +101,8 @@ words:
   - Millis
   - minimatch
   - modelcontextprotocol
+  - nestedscroll
+  - navigationsuite
   - noopener
   - noreferrer
   - nosniff
@@ -173,8 +176,10 @@ words:
   - watermark
   - Watermark
   - WCAG
+  - WebP
   - wordmark
   - workerd
+  - worklet
   - workstream
   - workstreams
   - workspaces

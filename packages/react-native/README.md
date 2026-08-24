@@ -11,6 +11,8 @@ Illustration, and Disclosure implementations.
 The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
 React Native-specific pull-to-refresh indicator using the active semantic theme.
+`useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
+responsive treatment for native lists without introducing an animation or navigation dependency.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
 presentation and operating-system sharing without introducing a separate interaction dependency.
 
@@ -55,15 +57,43 @@ npx expo start
 ```
 
 Use `LumenNavigationBar` for a small set of peer app destinations. The application still owns the
-router, navigation history, and selected screen:
+router, navigation history, and selected screen. Items support dot, text, and capped count badges;
+`onReselect` handles app-owned scroll-to-top, refresh, or nested-stack behavior:
 
 ```tsx
 <LumenNavigationBar
   items={destinations}
   value={destination}
   onValueChange={setDestination}
+  onReselect={scrollDestinationToTop}
 />
 ```
+
+For a scroll-responsive destination bar, pass the controller to any native vertical scroll
+container and render the collapsible wrapper alongside it:
+
+```tsx
+const navigation = useLumenNavigationBarVisibility()
+
+<FlatList
+  data={items}
+  onScroll={navigation.onScroll}
+  scrollEventThrottle={16}
+  renderItem={renderItem}
+/>
+<LumenCollapsibleNavigationBar
+  accessory={<LumenText variant="label">Uploading 3 files</LumenText>}
+  items={destinations}
+  value={destination}
+  visible={navigation.visible}
+  onValueChange={setDestination}
+  onReselect={scrollDestinationToTop}
+/>
+```
+
+The bar hides only after the configured movement threshold, reappears after reverse travel, and is
+always revealed when the list returns to the top. The controller also exposes `show()` and `hide()`
+for application events such as destination changes or completing a refresh.
 
 The package intentionally uses native numeric dimensions and hexadecimal colors instead of CSS
 values. Components use native accessibility roles, states, touch targets, and refs without depending
@@ -75,13 +105,13 @@ Attach the refresh control to a native scroll container without replacing its sc
 
 ```tsx
 <ScrollView
-  refreshControl={(
+  refreshControl={
     <LumenRefreshControl
       accessibilityLabel="Refresh projects"
       refreshing={refreshing}
       onRefresh={refreshProjects}
     />
-  )}
+  }
 >
   {content}
 </ScrollView>

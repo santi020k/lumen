@@ -60,13 +60,29 @@ export {
   resolveLumenMenuPosition
 } from './overlay-recipes.js'
 export {
+  LumenCollapsibleNavigationBar,
+  type LumenCollapsibleNavigationBarProps,
+  LumenNavigationAccessory,
+  type LumenNavigationAccessoryProps,
   LumenNavigationBar,
   type LumenNavigationBarProps,
   type LumenNavigationItem,
   LumenRefreshControl,
   type LumenRefreshControlProps
 } from './platform-components.js'
-export { type LumenRefreshIndicatorTone } from './platform-recipes.js'
+export {
+  type LumenNavigationBarVisibilityController,
+  type LumenNavigationBarVisibilityOptions,
+  useLumenNavigationBarVisibility
+} from './platform-hooks.js'
+export {
+  createLumenNavigationVisibilityState,
+  type LumenNavigationBadge,
+  type LumenNavigationVisibilityState,
+  type LumenRefreshIndicatorTone,
+  resolveLumenNavigationBadge,
+  resolveLumenNavigationVisibility
+} from './platform-recipes.js'
 export {
   LumenBadge,
   type LumenBadgeProps,
@@ -97,10 +113,7 @@ export {
   type LumenTextTone,
   type LumenTextVariant
 } from './primitives.js'
-export {
-  LumenProvider,
-  type LumenProviderProps
-} from './provider.js'
+export { LumenProvider, type LumenProviderProps } from './provider.js'
 export {
   LumenCheckbox,
   type LumenCheckboxProps,
@@ -108,7 +121,8 @@ export {
   type LumenRadioGroupProps,
   LumenSegmentedControl,
   type LumenSegmentedControlProps,
-  type LumenSelectionOption } from './selection-components.js'
+  type LumenSelectionOption
+} from './selection-components.js'
 export {
   LumenAlert,
   LumenAlertDescription,
@@ -164,4 +178,5 @@ export {
   lumenFontWeights,
   lumenRadii,
   type LumenSemanticColor,
-  lumenSpacing } from './tokens.generated.js'
+  lumenSpacing
+} from './tokens.generated.js'

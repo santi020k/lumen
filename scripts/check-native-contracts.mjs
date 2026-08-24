@@ -79,7 +79,12 @@ const sourceByAdapter = Object.fromEntries(await Promise.all(adapterNames.map(as
 
   return [
     adapterName,
-    await readSourceDirectory(join(repositoryRoot, adapter.sourceDirectory))
+    (
+      await Promise.all(
+        [adapter.sourceDirectory, ...(adapter.additionalSourceDirectories ?? [])]
+          .map(directory => readSourceDirectory(join(repositoryRoot, directory)))
+      )
+    ).join('\n')
   ]
 })))
 
@@ -206,7 +211,10 @@ for (const component of registry.platformComponents) {
   if (component.adapter === 'compose') {
     assert.match(
       sourceByAdapter.compose,
-      new RegExp(`(?:^|\\n)(?:@[^\\n]+\\n)*(?:(?:data|enum)\\s+class|class|fun)\\s+${escapedSymbol}\\b`),
+      new RegExp(
+        `(?:^|\\n)(?:@[^\\n]+\\n)*(?:(?:data|enum)\\s+class|class|fun(?:\\s+<[^>]+>)?)`
+          + `\\s+${escapedSymbol}\\b`
+      ),
       `${component.id} claims Compose support, but ${component.symbol} is not public`
     )
   }

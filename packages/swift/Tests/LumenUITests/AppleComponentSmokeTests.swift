@@ -104,10 +104,21 @@ private struct AppleComponentCatalogFixture: View {
                 LumenNavigationBar(
                     selection: $navigationDestination,
                     items: [
-                        LumenNavigationItem("Quiet", value: .quiet, systemName: "speaker.slash"),
+                        LumenNavigationItem(
+                            "Quiet",
+                            value: .quiet,
+                            systemName: "speaker.slash",
+                            badge: .dot()
+                        ),
                         LumenNavigationItem("Balanced", value: .balanced, systemName: "slider.horizontal.3"),
-                        LumenNavigationItem("Performance", value: .performance, systemName: "bolt")
-                    ]
+                        LumenNavigationItem(
+                            "Performance",
+                            value: .performance,
+                            systemName: "bolt",
+                            badge: .count(128)
+                        )
+                    ],
+                    onReselect: { _ in }
                 )
 
                 HStack {
@@ -122,6 +133,31 @@ private struct AppleComponentCatalogFixture: View {
                 ) {
                     Text("Each adapter owns its native rendering.")
                 }
+
+                LumenDisclosure(isExpanded: $isDisclosureExpanded) {
+                    HStack {
+                        LumenIcon(systemName: "app.badge")
+                        VStack(alignment: .leading) {
+                            Text("Rich application status")
+                            Text("Custom identity, metrics, and actions").font(.caption)
+                        }
+                        Spacer()
+                        LumenBadge("Running", tone: .success)
+                    }
+                } content: {
+                    Text("The application retains ownership of its process behavior.")
+                }
+
+                LumenDisclosure("Uncontrolled notes", initiallyExpanded: true) {
+                    Text("Local disclosure state is useful for presentation-only content.")
+                }
+
+                LumenLink(
+                    "Read native guidance",
+                    destination: URL(string: "https://lumen.santi020k.com/docs/swiftui")
+                        ?? URL(fileURLWithPath: "/docs/swiftui"),
+                    showsExternalIndicator: true
+                )
 
                 LumenEmptyState(
                     "Nothing here yet",
@@ -223,8 +259,40 @@ private struct AppleComponentCatalogFixture: View {
     }
 }
 
+private struct AppleTabNavigationFixture: View {
+    var body: some View {
+        TabView {
+            ScrollView {
+                Text("Feed")
+            }
+            .tabItem {
+                Label("Feed", systemImage: "rectangle.stack")
+            }
+
+            Text("Profile")
+                .tabItem {
+                    Label("Profile", systemImage: "person")
+                }
+        }
+        .lumenTabBarMinimizeBehavior(.onScrollDown)
+        .lumenTabViewBottomAccessory {
+            LumenTabAccessory {
+                HStack {
+                    LumenText("Upload in progress", variant: .label)
+                    Spacer()
+                    LumenProgress(value: 64, label: "Upload progress")
+                        .frame(width: 120)
+                }
+            } compact: {
+                LumenBadge("64%", tone: .accent)
+            }
+        }
+    }
+}
+
 @MainActor
 @Test func appleComponentCatalogComposesAsOneLumenSurface() {
     _ = AppleComponentCatalogFixture().body
+    _ = AppleTabNavigationFixture().body
 }
 #endif

@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.3.0")
+    implementation("com.santi020k:lumen-compose:0.4.0")
 }
 ```
 
@@ -91,8 +91,15 @@ Illustration, Disclosure, Gauge, and Avatar.
 presentation and Android share-sheet integration while application state remains host-owned.
 `LumenNavigationBar` provides Material-native destination selection while the application retains
 ownership of its navigation controller, back stack, deep links, and selected screen.
-The Android-specific tier includes `LumenFloatingActionButton`, with Material-native geometry and
-Lumen brand, accent, or danger intents.
+Pass a remembered `LumenNavigationBarScrollState` to the bar and attach
+`lumenNavigationBarScrollBehavior` above a lazy or scrollable child to hide the bar after deliberate
+forward scrolling and reveal it on reverse scrolling. Navigation items support accessible badges
+and `onReselect` for application-owned scroll-to-top or nested-stack behavior.
+`LumenNavigationBarAccessory` adds compact status or actions above bottom navigation, while
+`LumenAdaptiveNavigationScaffold` uses Material's window and posture information to switch between
+a bottom bar and navigation rail. The Android-specific tier also includes
+`LumenFloatingActionButton`, with Material-native geometry, semantic intents, and optional hide or
+follow-navigation behavior.
 The module intentionally uses
 Material 3/Compose APIs and TalkBack semantics rather than translating DOM behavior. Icons accept
 app-provided `ImageVector` values, remain decorative when their content description is omitted, and
@@ -106,6 +113,52 @@ LumenFloatingActionButton(
 )
 ```
 
+```kotlin
+val navigationScrollState = rememberLumenNavigationBarScrollState()
+
+Scaffold(
+    modifier = Modifier.lumenNavigationBarScrollBehavior(navigationScrollState),
+    floatingActionButton = {
+        LumenFloatingActionButton(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Create project",
+            onClick = ::createProject,
+            scrollState = navigationScrollState,
+            navigationBehavior = LumenFloatingActionButtonNavigationBehavior.HideWithNavigation
+        )
+    },
+    bottomBar = {
+        Column {
+            LumenNavigationBarAccessory(scrollState = navigationScrollState) {
+                LumenText("Uploading 3 files", variant = LumenTextVariant.Label)
+            }
+            LumenNavigationBar(
+                items = destinations,
+                selectedValue = destination,
+                onValueChange = ::setDestination,
+                onReselect = ::scrollDestinationToTop,
+                scrollState = navigationScrollState
+            )
+        }
+    }
+) { contentPadding ->
+    LazyColumn(contentPadding = contentPadding) { /* application content */ }
+}
+```
+
+For full-window phone, tablet, foldable, split-screen, and desktop-window layouts:
+
+```kotlin
+LumenAdaptiveNavigationScaffold(
+    items = destinations,
+    selectedValue = destination,
+    onValueChange = ::setDestination,
+    onReselect = ::scrollDestinationToTop
+) {
+    DestinationContent(destination)
+}
+```
+
 EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
 with native Compose slots for graphics, actions, and trailing content.
 
@@ -115,3 +168,9 @@ Use the [native device validation matrix](../../docs/native-device-validation.md
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Android,
 JDK, Gradle, Kotlin, and Compose baselines.
+
+Wear OS applications should use the sibling
+[`lumen-compose-wear`](./wear) artifact (`com.santi020k:lumen-compose-wear:0.4.0`). It provides a
+deliberately small round-screen tier without
+forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
+selected Wear Material version.
