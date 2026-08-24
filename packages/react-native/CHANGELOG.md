@@ -1,5 +1,17 @@
 # @santi020k/lumen-react-native
 
+## 0.5.0
+
+### Minor Changes
+
+- [#36](https://github.com/santi020k/lumen/pull/36) [`1c4de1b`](https://github.com/santi020k/lumen/commit/1c4de1bbf7d2414896b04c69f2b6810f10b4a0dd) Thanks [@santi020k](https://github.com/santi020k)! - Add the complete generated cross-platform Lumen icon catalog with 1,777 Lucide-backed interface
+  icons and 573 namespaced Font Awesome Free brand icons. Expose semantic names through React Native,
+  SwiftUI, and Compose icon and icon-button APIs while preserving custom graphic components, SF
+  Symbols, and `ImageVector` values as native escape hatches. Generated packages retain the Lucide,
+  Feather, and Font Awesome attribution and license notices. Public platform guides and native
+  component references link to the searchable interface and brand catalogs and document each
+  platform's generated name syntax and discovery collection.
+
 ## 0.4.0
 
 ### Minor Changes
