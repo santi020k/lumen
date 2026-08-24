@@ -96,7 +96,7 @@ private struct ApplePlaygroundView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             LumenIconButton(
-                systemName: isDark ? "sun.max" : "moon",
+                name: isDark ? .sun : .moon,
                 label: isDark ? "Use light theme" : "Use dark theme"
             ) {
                 isDark.toggle()
@@ -109,15 +109,16 @@ private struct ApplePlaygroundView: View {
         if matches("Theme", "Text", "Surface", "Icon", "Icon button") {
             PlaygroundSection(
                 "Foundations",
-                description: "Theme, typography, surfaces, and SF Symbols use semantic roles."
+                description: "Theme, typography, surfaces, and shared Lumen icons use semantic roles."
             ) {
                 LumenSurface(tone: .muted, padding: .lg) {
                     VStack(alignment: .leading, spacing: LumenSpacing.sm) {
                         HStack(spacing: LumenSpacing.md) {
-                            LumenIcon(systemName: "sparkles", label: "Lumen")
+                            LumenIcon(name: .star, label: "Lumen")
+                            LumenIcon(name: .brandGithub, label: "GitHub")
                             LumenText("Shared native foundations", variant: .label)
                             Spacer()
-                            LumenIconButton(systemName: "magnifyingglass", label: "Search") {}
+                            LumenIconButton(name: .search, label: "Search") {}
                         }
                         LumenText("Colors, spacing, radii, typography, and motion stay native.", tone: .soft)
                     }

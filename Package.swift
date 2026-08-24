@@ -15,7 +15,10 @@ let package = Package(
     targets: [
         .target(
             name: "LumenUI",
-            path: "packages/swift/Sources/LumenUI"
+            path: "packages/swift/Sources/LumenUI",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "LumenUITests",

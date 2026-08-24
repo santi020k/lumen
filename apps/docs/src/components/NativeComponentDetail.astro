@@ -43,6 +43,36 @@ const platformLabels: Record<NativePlatformId, string> = {
   apple: 'Apple / SwiftUI',
   'react-native': 'React Native'
 }
+
+const isIconComponent = component.slug === 'icon' || component.slug === 'icon-button'
+
+const iconPlatformGuidance: Record<NativePlatformId, {
+  brandName: string
+  customSource: string
+  interfaceName: string
+  nameCollection: string
+}> = {
+  android: {
+    brandName: 'LumenIconName.BrandGithub',
+    customSource: 'imageVector = Icons.Default.Search',
+    interfaceName: 'LumenIconName.Search',
+    nameCollection: 'LumenIconName.entries'
+  },
+  apple: {
+    brandName: '.brandGithub',
+    customSource: 'systemName: "magnifyingglass"',
+    interfaceName: '.search',
+    nameCollection: 'LumenIconName.allCases'
+  },
+  'react-native': {
+    brandName: 'brand:github',
+    customSource: 'icon={ProductMark}',
+    interfaceName: 'search',
+    nameCollection: 'lumenIconNames'
+  }
+}
+
+const iconGuidance = iconPlatformGuidance[guide.id]
 ---
 
 <DocsLayout
@@ -70,6 +100,9 @@ const platformLabels: Record<NativePlatformId, string> = {
       <div class="native-detail-hero__links">
         <Link href="#usage">Usage <Icon decorative name="arrow-down" size="sm" /></Link>
         <Link href="#api">API reference <Icon decorative name="arrow-down" size="sm" /></Link>
+        {isIconComponent && (
+          <Link href="#icon-names">Icon names <Icon decorative name="arrow-down" size="sm" /></Link>
+        )}
       </div>
     </div>
     <Card class="native-detail-hero__meta" variant="muted">
@@ -95,6 +128,45 @@ const platformLabels: Record<NativePlatformId, string> = {
       }]}
     />
   </section>
+
+  {isIconComponent && (
+    <section class="native-detail-section" id="icon-names" aria-labelledby="icon-names-title">
+      <div class="native-detail-heading">
+        <p>{guide.shortLabel} icon catalog</p>
+        <h2 id="icon-names-title">Choose an icon name</h2>
+        <p>
+          Search the visual catalogs, copy the displayed Lumen name, then use the{' '}
+          {guide.shortLabel} spelling below. The package includes both catalogs without another
+          native dependency.
+        </p>
+      </div>
+      <div class="native-detail-icon-resources">
+        <Card as="article" variant="muted">
+          <span><Icon decorative name="shapes" size="sm" /></span>
+          <div>
+            <h3>Interface icons</h3>
+            <p>Use <code>{iconGuidance.interfaceName}</code>. Enumerate every supported name with <code>{iconGuidance.nameCollection}</code>.</p>
+            <Link href="/docs/icons#icon-catalog">Browse all interface icon names</Link>
+          </div>
+        </Card>
+        <Card as="article" variant="muted">
+          <span><Icon decorative name="badge" size="sm" /></span>
+          <div>
+            <h3>Brand icons</h3>
+            <p>Use the platform form <code>{iconGuidance.brandName}</code>. Brand marks retain their Font Awesome attribution and may be protected trademarks.</p>
+            <Link href="/docs/brand-icons#brand-icon-catalog">Browse all brand icon names</Link>
+          </div>
+        </Card>
+        <Card as="article" variant="muted">
+          <span><Icon decorative name="puzzle" size="sm" /></span>
+          <div>
+            <h3>Platform or product artwork</h3>
+            <p>Use <code>{iconGuidance.customSource}</code> when the operating system or your product owns the symbol instead of Lumen.</p>
+          </div>
+        </Card>
+      </div>
+    </section>
+  )}
 
   <section class="native-detail-section" id="api" aria-labelledby="api-title">
     <div class="native-detail-heading">
@@ -283,6 +355,7 @@ const platformLabels: Record<NativePlatformId, string> = {
     display: grid;
     gap: 1.25rem;
     margin-top: 3.5rem;
+    scroll-margin-top: 10rem;
   }
 
   .native-detail-heading h2,
@@ -371,6 +444,50 @@ const platformLabels: Record<NativePlatformId, string> = {
     line-height: 1.65;
   }
 
+  .native-detail-icon-resources {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .native-detail-icon-resources :global(article) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .native-detail-icon-resources article > span {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.65rem;
+    color: hsl(var(--brand));
+    background: hsl(var(--brand-soft));
+  }
+
+  .native-detail-icon-resources article > div {
+    display: grid;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .native-detail-icon-resources h3 {
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .native-detail-icon-resources p {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .native-detail-icon-resources code {
+    overflow-wrap: anywhere;
+  }
+
   :global(.native-detail-availability) {
     display: flex;
     align-items: center;
@@ -427,9 +544,17 @@ const platformLabels: Record<NativePlatformId, string> = {
     .native-detail-notes {
       grid-template-columns: 1fr 1fr;
     }
+
+    .native-detail-icon-resources {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 42rem) {
+    .native-detail-section {
+      scroll-margin-top: 14rem;
+    }
+
     :global(.native-detail-availability) {
       align-items: flex-start;
       flex-direction: column;

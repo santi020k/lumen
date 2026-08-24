@@ -44,6 +44,41 @@ describe('platform documentation', () => {
     }
   })
 
+  test('links every native guide to both searchable icon-name catalogs', () => {
+    for (const guide of productPlatformGuides.filter(
+      candidate => candidate.id !== 'web'
+    )) {
+      expect(guide.relatedLinks).toEqual(expect.arrayContaining([
+        { href: '/docs/icons#icon-catalog', label: 'Interface icon names' },
+        { href: '/docs/brand-icons#brand-icon-catalog', label: 'Brand icon names' }
+      ]))
+    }
+  })
+
+  test('documents shared icon names and native escape hatches per platform', () => {
+    const expectedExamples: Record<NativePlatformId, string[]> = {
+      android: ['LumenIconName.Search', 'LumenIconName.BrandGithub'],
+      apple: ['name: .search', 'name: .brandGithub'],
+      'react-native': ['name="search"', 'name="brand:github"']
+    }
+
+    for (const platform of Object.keys(expectedExamples) as NativePlatformId[]) {
+      const icon = getNativeComponentsForPlatform(platform).find(
+        component => component.slug === 'icon'
+      )
+
+      expect(icon).toBeDefined()
+      expect(icon?.guidance).toContain('platform')
+      expect(icon?.implementations[platform]?.api[0]?.name).toMatch(
+        /name or (icon|imageVector|systemName)/
+      )
+
+      for (const example of expectedExamples[platform]) {
+        expect(icon?.implementations[platform]?.example).toContain(example)
+      }
+    }
+  })
+
   test('lists every documented component available to each native platform', () => {
     for (const platform of [
       'react-native',

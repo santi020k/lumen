@@ -43,7 +43,7 @@
     {
       "id": "icon",
       "tier": "universal",
-      "contract": "Small, medium, and large native glyphs",
+      "contract": "Complete shared Lucide and namespaced brand artwork with native escape hatches at small, medium, and large sizes",
       "accessibility": "Decorative unless explicitly labeled",
       "symbols": {
         "reactNative": "LumenIcon",

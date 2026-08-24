@@ -30,6 +30,27 @@ The generator produces and verifies:
 The check also compares the semantic light and dark colors with `packages/lumen/styles.css`, so a
 web/native color drift fails validation.
 
+`icons/lumen.icons.json` is the canonical cross-platform icon manifest. It includes every canonical
+Lucide interface icon used by the web `Icon` API and every Font Awesome Free brand icon already
+provided by `@santi020k/lumen-icons-brand`. Brand names stay namespaced as `brand:*`. Run the icon
+generator after changing the manifest or upgrading either source package:
+
+```bash
+pnpm run generate:platform-icons
+pnpm run check:platform-icons
+```
+
+The generator creates the React Native name-to-component map, the Swift `LumenIconName` enum and SVG
+asset catalog, and the Compose `LumenIconName` value catalog and VectorDrawable resources. It also
+copies `icons/THIRD_PARTY_NOTICES.md` into every native distribution. Generated sources, resources,
+and notices are committed; validation rejects missing, changed, or stale outputs. Native adapters
+retain their custom component, SF Symbol, and `ImageVector` forms as platform escape hatches.
+
+Lumen's original code remains MIT-licensed. Generated Lucide artwork retains its ISC or
+Feather-derived MIT terms, while Font Awesome Free brand artwork retains CC BY 4.0 attribution.
+Brand marks can also be protected trademarks; inclusion in the catalog does not grant permission to
+use a represented company's mark.
+
 ## Shared contracts, native implementations
 
 The contract shared by a component includes its semantic purpose, variants, sizes, state names,
@@ -84,8 +105,8 @@ Individual features that do not yet meet the adapter's Beta support bar should b
 - React Native, SwiftUI, and Compose expose the complete shared native component tier with native
   rendering, state, and accessibility behavior.
 - Theme, Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider, and Spinner are
-  implemented in all three native adapters. Icon glyph sources stay platform-native while their
-  size, color, intent, and accessibility contracts remain aligned.
+  implemented in all three native adapters. The shared icon catalog renders the same Lumen-managed
+  geometry across platforms while native icon escape hatches remain available.
 - ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup,
   SegmentedControl, NavigationBar, Chip, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
   Illustration, Disclosure,
@@ -105,7 +126,7 @@ Individual features that do not yet meet the adapter's Beta support bar should b
 
 ## Release discipline
 
-Token changes are user-visible changes to every adapter. Update the source once, regenerate all
-outputs, review the platform diffs, add a changeset for affected published packages, and run the
-repository validation commands. Platform packages may release independently when an implementation
-changes without altering the shared contract.
+Token and shared icon changes are user-visible changes to every adapter. Update the relevant source
+once, regenerate all outputs, review the platform diffs, add a changeset for affected published
+packages, and run the repository validation commands. Platform packages may release independently
+when an implementation changes without altering the shared contract.

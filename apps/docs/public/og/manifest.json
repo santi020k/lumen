@@ -1,5 +1,5 @@
 {
-  "generatorVersion": "0.6.0",
+  "generatorVersion": "0.8.0",
   "routes": {
     "/": {
       "alt": "Write it once. Ship it in any framework. — Lumen UI",

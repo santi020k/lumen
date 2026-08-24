@@ -44,6 +44,12 @@ export {
   type LumenToggleProps
 } from './form-components.js'
 export {
+  getLumenIconGraphic,
+  type LumenIconName,
+  lumenIconNames,
+  lumenIcons
+} from './icons.generated.js'
+export {
   LumenAlertDialog,
   type LumenAlertDialogProps,
   LumenMenu,

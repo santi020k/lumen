@@ -65,6 +65,17 @@ import Testing
     #expect(LumenIconButtonMetrics.resolve(.lg, density: .regular).touchTarget == 52)
 }
 
+@Test func sharedIconCatalogHasStableUniqueNames() {
+    let icons = LumenIconName.allCases
+
+    #expect(icons.count == 2_350)
+    #expect(Set(icons.map(\.rawValue)).count == icons.count)
+    #expect(icons.filter { $0.rawValue.hasPrefix("brand:") }.count == 573)
+    #expect(icons.contains(.search))
+    #expect(icons.contains(.settings))
+    #expect(icons.contains(.brandGithub))
+}
+
 @Test func progressValuesAreFiniteAndClamped() {
     #expect(LumenProgressValue.resolve(value: 120, max: 100).value == 100)
     #expect(LumenProgressValue.resolve(value: -10, max: 0) == LumenProgressValue(max: 100, value: 0))

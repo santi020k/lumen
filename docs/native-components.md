@@ -16,7 +16,7 @@ considered supported.
 Install the package and mount one provider near the application root:
 
 ```bash
-pnpm add @santi020k/lumen-react-native
+pnpm add @santi020k/lumen-react-native react-native-svg
 ```
 
 ```tsx
@@ -27,8 +27,8 @@ export function App() {
 }
 ```
 
-Icons accept graphic components with `color`, `size`, and `strokeWidth` props. Lucide React Native
-components satisfy that contract; install its peer requirements only when the app chooses Lucide.
+Shared icons use `name="search"`; applications can instead pass graphic components with `color`,
+`size`, and `strokeWidth` props when a product-specific icon is not in the catalog.
 
 ### SwiftUI
 
@@ -80,7 +80,7 @@ struct SharedProfileActions: View {
     var body: some View {
         HStack {
             LumenButton("Save", action: save)
-            LumenIconButton(systemName: "gearshape", label: "Settings", action: openSettings)
+            LumenIconButton(name: .settings, label: "Settings", action: openSettings)
         }
     }
 }
@@ -109,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.4.0")
+    implementation("com.santi020k:lumen-compose:0.5.0")
 }
 ```
 
@@ -121,6 +121,45 @@ Applications with an existing Material theme can pass `materialColorScheme`, `ty
 accent, success, and warning semantics, and `ColorScheme.toLumenColorPalette(...)` exposes the
 mapped Lumen values when the application needs them independently.
 
+### Cross-platform icon catalog
+
+The native adapters include all 1,777 canonical Lucide interface icons and all 573 namespaced Font
+Awesome Free brand entries used by Lumen on the web. Use a semantic Lumen name when the artwork
+should remain consistent across the product:
+
+```tsx
+<LumenIcon name="search" label="Search" />
+<LumenIconButton name="settings" label="Settings" onPress={openSettings} />
+<LumenIcon name="brand:github" label="GitHub" />
+```
+
+```swift
+LumenIcon(name: .search, label: "Search")
+LumenIconButton(name: .settings, label: "Settings", action: openSettings)
+LumenIcon(name: .brandGithub, label: "GitHub")
+```
+
+```kotlin
+LumenIcon(name = LumenIconName.Search, contentDescription = "Search")
+LumenIcon(name = LumenIconName.BrandGithub, contentDescription = "GitHub")
+LumenIconButton(
+    name = LumenIconName.Settings,
+    contentDescription = "Settings",
+    onClick = ::openSettings
+)
+```
+
+React Native exports `lumenIconNames`; Swift exposes `LumenIconName.allCases`; Compose exposes
+`LumenIconName.entries`. Brand names use `brand:github` in React Native, `.brandGithub` in Swift,
+and `LumenIconName.BrandGithub` in Compose. Continue using the existing custom graphic,
+`systemName`, or `ImageVector` forms for product artwork outside the catalog and for operating-system
+concepts whose native symbol is part of the platform convention. Standalone decorative icons omit
+their label or content description; icon-only controls always require one.
+
+The generated packages include Lucide, Feather, and Font Awesome license notices. Font Awesome
+brand artwork is CC BY 4.0 and may represent protected trademarks; the catalog provides artwork and
+attribution, not permission to use a brand owner's mark.
+
 ### Wear OS
 
 Wear OS uses a separate artifact so phone and tablet applications do not acquire wearable-only
@@ -128,7 +167,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:0.4.0")
+    implementation("com.santi020k:lumen-compose-wear:0.5.0")
 }
 ```
 
@@ -144,7 +183,7 @@ owned.
 | ----------------- | ----------------------- | ------------------------ | ----------------------- | ------------------------------------------------------------------------- |
 | Theme             | `LumenProvider`         | `.lumenTheme`            | `LumenTheme`            | Light, dark, and semantic tokens                                          |
 | Text              | `LumenText`             | `LumenText`              | `LumenText`             | Body, caption, label, and title roles                                     |
-| Icon              | `LumenIcon`             | `LumenIcon`              | `LumenIcon`             | 16, 20, and 24 unit sizes; decorative by default                          |
+| Icon              | `LumenIcon`             | `LumenIcon`              | `LumenIcon`             | Shared names, native escape hatches, 16/20/24 sizes; decorative by default |
 | Icon button       | `LumenIconButton`       | `LumenIconButton`        | `LumenIconButton`       | Required label, shared intents, 44 point mobile or compact Mac target     |
 | Surface           | `LumenSurface`          | `LumenSurface`           | `LumenSurface`          | Semantic surface, padding, and radius roles                               |
 | Button            | `LumenButton`           | `LumenButton`            | `LumenButton`           | Primary, secondary, quiet, danger, loading, disabled                      |
@@ -438,7 +477,7 @@ LumenSlider(
 
 Empty states, list rows, banners, stats, section headers, and status bars share one semantic contract
 across React Native, SwiftUI, and Compose. Their graphic and action slots remain native so each app
-can supply Lucide, SF Symbols, or `ImageVector` content without introducing an icon dependency.
+can supply a shared Lumen icon or a platform-specific graphic, SF Symbol, or `ImageVector`.
 
 `LumenSkeleton` covers loading placeholders without announcing every visual block. Leave it
 unlabeled when the surrounding region already communicates loading, or provide one concise label to

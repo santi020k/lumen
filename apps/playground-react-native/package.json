@@ -21,7 +21,6 @@
     "expo": "catalog:",
     "expo-system-ui": "catalog:",
     "expo-updates": "catalog:",
-    "lucide-react-native": "catalog:",
     "react": "catalog:expo",
     "react-dom": "catalog:expo",
     "react-native": "catalog:expo",

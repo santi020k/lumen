@@ -1,12 +1,11 @@
 ---
-import { Link } from '@santi020k/lumen-astro'
+import { CodeTabs, Link } from '@santi020k/lumen-astro'
 import { renderLumenIconSvg } from '@santi020k/lumen-core'
 import {
   lumenBrandIconNames,
   registerLumenBrandIcons
 } from '@santi020k/lumen-icons-brand'
 
-import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import IconCatalog from '../../components/IconCatalog.astro'
@@ -39,7 +38,15 @@ const featuredIcons = [
   'medium'
 ].map(name => renderLumenIconSvg(`brand:${name}`))
 
-const setupUsage = `import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
+const webSetup = [
+  {
+    code: 'pnpm add @santi020k/lumen-icons-brand',
+    label: 'Install',
+    language: 'bash' as const,
+    value: 'install'
+  },
+  {
+    code: `import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 
 registerLumenBrandIcons()
 
@@ -48,7 +55,46 @@ registerLumenBrandIcons()
 <Icon name="brand:figma" decorative />
 
 // The same registered name works in Elements.
-<lumen-icon name="brand:youtube" label="YouTube"></lumen-icon>`
+<lumen-icon name="brand:youtube" label="YouTube"></lumen-icon>`,
+    label: 'Register and use',
+    language: 'tsx' as const,
+    value: 'usage'
+  }
+]
+
+const nativeUsage = [
+  {
+    code: `import { LumenIcon, lumenIconNames } from '@santi020k/lumen-react-native'
+
+<LumenIcon name="brand:github" label="GitHub" />
+// Filter lumenIconNames for names beginning with "brand:".`,
+    label: 'React Native',
+    language: 'tsx' as const,
+    value: 'react-native'
+  },
+  {
+    code: `import LumenUI
+
+LumenIcon(name: .brandGithub, label: "GitHub")
+// LumenIconName.allCases contains every interface and brand name.`,
+    label: 'SwiftUI',
+    language: 'swift' as const,
+    value: 'swiftui'
+  },
+  {
+    code: `import com.santi020k.lumen.LumenIcon
+import com.santi020k.lumen.LumenIconName
+
+LumenIcon(
+    name = LumenIconName.BrandGithub,
+    contentDescription = "GitHub"
+)
+// LumenIconName.entries contains every interface and brand name.`,
+    label: 'Compose',
+    language: 'kotlin' as const,
+    value: 'compose'
+  }
+]
 ---
 
 <DocsLayout
@@ -81,9 +127,13 @@ registerLumenBrandIcons()
         rel="noopener noreferrer"
         target="_blank"
       >
-        Font Awesome Free
-      </Link>.
-      Follow each trademark owner's usage guidelines.
+        {' Font Awesome Free'}
+      </Link>. The artwork retains
+      <Link
+        href="https://creativecommons.org/licenses/by/4.0/"
+        rel="noopener noreferrer"
+        target="_blank"
+      >{' CC BY 4.0'}</Link>; follow each trademark owner's usage guidelines.
     </p>
 
     <section class="icons-section" aria-labelledby="brand-setup-title">
@@ -95,11 +145,41 @@ registerLumenBrandIcons()
         <p>
           Brand marks retain their recognizable filled geometry instead of being redrawn as Lucide
           outlines. They still inherit Lumen sizing, alignment, current color, and accessible-label
-          behavior.
+          behavior. The optional package registers them for Astro, React, and Web Components;
+          React Native, SwiftUI, and Compose include the same complete namespaced catalog directly.
         </p>
       </div>
 
-      <CodeBlock code={setupUsage} lang="tsx" title="Register the optional package" />
+      <CodeTabs
+        ariaLabel="Install and register web brand icons"
+        items={webSetup}
+        storageKey="lumen-brand-icons-web"
+      />
+    </section>
+
+    <section class="icons-section" aria-labelledby="native-brand-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>Native platforms</p>
+          <h2 id="native-brand-title">Brand names are already included</h2>
+        </div>
+        <p>
+          React Native, SwiftUI, and Compose ship the full catalog inside their platform package.
+          Copy the namespaced name below, then use the generated platform spelling shown here.
+        </p>
+      </div>
+
+      <CodeTabs
+        ariaLabel="Native brand icon examples"
+        items={nativeUsage}
+        storageKey="lumen-brand-icons-native"
+      />
+
+      <nav class="icons-platform-links" aria-label="Native brand icon documentation">
+        <DocsActionLink href="/docs/react-native/components/icon" variant="outline">React Native icons</DocsActionLink>
+        <DocsActionLink href="/docs/apple/components/icon" variant="outline">SwiftUI icons</DocsActionLink>
+        <DocsActionLink href="/docs/android/components/icon" variant="outline">Compose icons</DocsActionLink>
+      </nav>
     </section>
 
     <IconCatalog
@@ -111,6 +191,32 @@ registerLumenBrandIcons()
       searchLabel="Search the brand icon library"
       title="Find a brand icon"
     />
+
+    <section class="icons-section icons-section--license" aria-labelledby="brand-license-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>License and trademarks</p>
+          <h2 id="brand-license-title">Artwork terms stay attached</h2>
+        </div>
+        <p>
+          Lumen code remains MIT-licensed. Font Awesome Free brand artwork remains CC BY 4.0 and
+          is distributed with attribution and modification notices. A catalog entry does not grant
+          permission to use a company's trademark in your product.
+        </p>
+      </div>
+      <div class="icons-license-links">
+        <Link
+          href="https://github.com/santi020k/lumen/blob/main/icons/THIRD_PARTY_NOTICES.md"
+          rel="noopener noreferrer"
+          target="_blank"
+        >Read Lumen's third-party notices</Link>
+        <Link
+          href="https://github.com/FortAwesome/Font-Awesome/blob/7.x/LICENSE.txt"
+          rel="noopener noreferrer"
+          target="_blank"
+        >Read the Font Awesome license</Link>
+      </div>
+    </section>
 
     <section class="icons-section icons-section--brands" aria-labelledby="interface-icons-title">
       <div class="icons-section__heading">
@@ -179,6 +285,20 @@ registerLumenBrandIcons()
 
   .icons-section--brands {
     justify-items: start;
+    padding: 1.4rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.2rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .icons-platform-links,
+  .icons-license-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .icons-section--license {
     padding: 1.4rem;
     border: 1px solid hsl(var(--line));
     border-radius: 1.2rem;

@@ -80,6 +80,18 @@ class PrimitivesTest {
     }
 
     @Test
+    fun sharedIconCatalogHasStableUniqueNames() {
+        val icons = LumenIconName.entries
+
+        assertEquals(2_350, icons.size)
+        assertEquals(icons.size, icons.map { it.rawValue }.toSet().size)
+        assertEquals(573, icons.count { it.rawValue.startsWith("brand:") })
+        assertEquals(true, LumenIconName.Search in icons)
+        assertEquals(true, LumenIconName.Settings in icons)
+        assertEquals(true, LumenIconName.BrandGithub in icons)
+    }
+
+    @Test
     fun floatingActionButtonsUseMaterialMetricsAndSemanticIntents() {
         assertEquals(
             LumenFloatingActionButtonMetrics(40.dp, LumenIconSize.Md),

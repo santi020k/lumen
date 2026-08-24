@@ -9,7 +9,7 @@ accessibility evidence is tracked separately in the
 
 | Adapter | Consumer baseline | Library toolchain | Automated evidence |
 | --- | --- | --- | --- |
-| React Native | React 19.2 or newer and React Native 0.86.2 or newer | TypeScript 6 and Node.js 22.12 or newer | Package build, typecheck, lint, and Vitest suites; Expo playground typecheck and lint |
+| React Native | React 19.2+, React Native 0.86.2+, and React Native SVG 12–15 | TypeScript 6 and Node.js 22.12 or newer | Package build, typecheck, lint, and Vitest suites; Expo playground typecheck and lint |
 | SwiftUI | iOS 16, macOS 13, tvOS 16, and watchOS 9 | Swift tools 6.0 and the current stable Xcode selected by CI | `swift test` on macOS and a generic iOS Simulator build |
 | Jetpack Compose | Android API 23 or newer | JDK 21, Gradle 9.7.1, Android Gradle Plugin 9.3.1, Kotlin Compose plugin 2.4.10, compile SDK 37 | Unit tests, Android lint, release publication verification, Android test APK build, and instrumentation on API 35 |
 | Wear OS Compose | Wear OS API 30 or newer | JDK 21, Gradle 9.7.1, Android Gradle Plugin 9.3.1, Kotlin Compose plugin 2.4.10, compile SDK 37 | Wear artifact unit tests, lint, and Maven publication verification |
@@ -19,8 +19,8 @@ Gradle configuration are authoritative when this document and package metadata d
 
 ## Verification policy
 
-- Pull requests that change native packages, canonical tokens, token generation, or native workflows
-  must run the native contract and platform-token drift checks.
+- Pull requests that change native packages, canonical tokens or icons, their generators, or native
+  workflows must run the native contract and generated platform drift checks.
 - Swift changes must pass macOS tests and compile for a generic iOS Simulator destination.
 - Compose changes must pass unit tests and lint, build the instrumentation APK, verify Maven
   publication metadata, and pass the API 35 emulator accessibility suite.
