@@ -29,7 +29,6 @@ import {
   LumenFieldGroup,
   LumenIcon,
   LumenIconButton,
-  type LumenIconGraphicProps,
   LumenListRow,
   LumenProgress,
   LumenProvider,
@@ -51,12 +50,6 @@ import {
   LumenToggle,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
-import {
-  Check as CheckIcon,
-  Moon as MoonIcon,
-  Search as SearchIcon,
-  Sun as SunIcon
-} from 'lucide-react-native'
 
 type ColorScheme = 'dark' | 'light'
 
@@ -102,26 +95,6 @@ const componentNames = [
   'Section header',
   'Status bar'
 ]
-
-const iconColor = (color: LumenIconGraphicProps['color']): string | undefined => (
-  typeof color === 'string' ? color : undefined
-)
-
-const CheckGraphic = ({ color, size, strokeWidth }: LumenIconGraphicProps): ReactElement => (
-  <CheckIcon color={iconColor(color)} size={size} strokeWidth={strokeWidth} />
-)
-
-const MoonGraphic = ({ color, size, strokeWidth }: LumenIconGraphicProps): ReactElement => (
-  <MoonIcon color={iconColor(color)} size={size} strokeWidth={strokeWidth} />
-)
-
-const SearchGraphic = ({ color, size, strokeWidth }: LumenIconGraphicProps): ReactElement => (
-  <SearchIcon color={iconColor(color)} size={size} strokeWidth={strokeWidth} />
-)
-
-const SunGraphic = ({ color, size, strokeWidth }: LumenIconGraphicProps): ReactElement => (
-  <SunIcon color={iconColor(color)} size={size} strokeWidth={strokeWidth} />
-)
 
 const styles = StyleSheet.create({
   catalogMeta: {
@@ -263,7 +236,7 @@ const Playground = ({
             </LumenText>
           </View>
           <LumenIconButton
-            icon={scheme === 'dark' ? SunGraphic : MoonGraphic}
+            name={scheme === 'dark' ? 'sun' : 'moon'}
             label={`Use ${scheme === 'dark' ? 'light' : 'dark'} theme`}
             onPress={() => {
               onSchemeChange(scheme === 'dark' ? 'light' : 'dark')
@@ -272,7 +245,7 @@ const Playground = ({
         </View>
 
         <LumenSearchField
-          graphic={<LumenIcon decorative icon={SearchGraphic} size="sm" />}
+          graphic={<LumenIcon decorative name="search" size="sm" />}
           onChangeText={setQuery}
           prompt="Search components"
           value={query}
@@ -300,13 +273,14 @@ const Playground = ({
         </Visibility>
 
         <Visibility visible={isAnyVisible('Icon', 'Icon button')}>
-          <ComponentSection description="Application-provided graphics use Lumen sizing and intent." title="Icons">
+          <ComponentSection description="Shared names render the same Lumen artwork on every platform." title="Icons">
             <View style={styles.row}>
-              <LumenIcon icon={SearchGraphic} label="Search" />
-              <LumenIcon icon={CheckGraphic} label="Complete" size="lg" />
+              <LumenIcon label="Search" name="search" />
+              <LumenIcon label="Complete" name="check" size="lg" />
+              <LumenIcon label="GitHub" name="brand:github" size="lg" />
               <LumenIconButton
-                icon={SearchGraphic}
                 label="Search the catalog"
+                name="search"
                 onPress={() => {
                   setQuery('')
                 }}
@@ -415,7 +389,7 @@ const Playground = ({
                 />
               )}
               description="Download stable updates automatically."
-              graphic={<LumenIcon decorative icon={CheckGraphic} size="sm" />}
+              graphic={<LumenIcon decorative name="check" size="sm" />}
               title="Automatic updates"
             />
             <LumenCheckbox
@@ -609,7 +583,7 @@ const Playground = ({
               </LumenButton>
             )}
             description="Try another component name or reset the catalog."
-            graphic={<LumenIcon decorative icon={SearchGraphic} size="lg" />}
+            graphic={<LumenIcon decorative name="search" size="lg" />}
             title="No matching component"
           />
         </Visibility>

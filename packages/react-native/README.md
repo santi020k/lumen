@@ -16,11 +16,11 @@ responsive treatment for native lists without introducing an animation or naviga
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
 presentation and operating-system sharing without introducing a separate interaction dependency.
 
-Install the package in an existing Expo or React Native application:
+Install the package and its SVG peer in an existing Expo or React Native application:
 
 ```bash
-pnpm add @santi020k/lumen-react-native
-# or: npm install @santi020k/lumen-react-native
+pnpm add @santi020k/lumen-react-native react-native-svg
+# or: npm install @santi020k/lumen-react-native react-native-svg
 ```
 
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
@@ -34,7 +34,6 @@ import {
   LumenSurface,
   LumenText
 } from '@santi020k/lumen-react-native'
-import { Search } from 'lucide-react-native'
 
 export function App() {
   return (
@@ -42,7 +41,7 @@ export function App() {
       <LumenSurface>
         <LumenText variant="title">Welcome</LumenText>
         <LumenButton onPress={() => {}}>Continue</LumenButton>
-        <LumenIconButton icon={Search} label="Search" onPress={() => {}} />
+        <LumenIconButton name="search" label="Search" onPress={() => {}} />
       </LumenSurface>
     </LumenProvider>
   )
@@ -97,9 +96,14 @@ for application events such as destination changes or completing a refresh.
 
 The package intentionally uses native numeric dimensions and hexadecimal colors instead of CSS
 values. Components use native accessibility roles, states, touch targets, and refs without depending
-on the DOM or the Lumen web runtime. `LumenIcon` accepts any graphic component with `color`, `size`,
-and `strokeWidth` props; Lucide React Native components work directly. Standalone icons are
-decorative unless given a label, while every `LumenIconButton` requires an accessible label.
+on the DOM or the Lumen web runtime. `LumenIcon` and `LumenIconButton` accept every canonical Lucide
+name, such as `search`, `settings`, and `circle-alert`, plus namespaced Font Awesome Free brands such
+as `brand:github`. These render the same Lumen-managed geometry as the SwiftUI, Compose, and web
+adapters. The exported `lumenIconNames` array contains the complete 2,350-entry native catalog.
+Applications can still pass any graphic component with `color`, `size`, and `strokeWidth` props
+through `icon`; Lucide React Native components work directly. Standalone icons are decorative unless
+given a label, while every `LumenIconButton` requires an accessible label. See
+`THIRD_PARTY_NOTICES.md` for the artwork licenses and brand attribution.
 
 Attach the refresh control to a native scroll container without replacing its scrolling behavior:
 

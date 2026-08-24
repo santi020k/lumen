@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.4.0")
+    implementation("com.santi020k:lumen-compose:0.5.0")
 }
 ```
 
@@ -41,6 +41,7 @@ Sync Gradle and wrap the application content in `LumenTheme`:
 
 ```kotlin
 import com.santi020k.lumen.LumenTheme
+import com.santi020k.lumen.LumenIconName
 import com.santi020k.lumen.LocalLumenTheme
 
 LumenTheme {
@@ -50,7 +51,7 @@ LumenTheme {
             Text("Continue")
         }
         LumenIconButton(
-            imageVector = Icons.Default.Search,
+            name = LumenIconName.Search,
             contentDescription = "Search",
             onClick = ::openSearch
         )
@@ -101,9 +102,13 @@ a bottom bar and navigation rail. The Android-specific tier also includes
 `LumenFloatingActionButton`, with Material-native geometry, semantic intents, and optional hide or
 follow-navigation behavior.
 The module intentionally uses
-Material 3/Compose APIs and TalkBack semantics rather than translating DOM behavior. Icons accept
-app-provided `ImageVector` values, remain decorative when their content description is omitted, and
-require a description inside `LumenIconButton`.
+Material 3/Compose APIs and TalkBack semantics rather than translating DOM behavior. `LumenIconName`
+provides all canonical Lucide interface icons and namespaced Font Awesome Free brands used by web,
+React Native, and SwiftUI; for example, `LumenIconName.Search` and
+`LumenIconName.BrandGithub`. Icons also continue to accept app-provided `ImageVector` values for
+Material or product-specific escape hatches. They remain decorative when their content description
+is omitted and require a description inside `LumenIconButton`. See `THIRD_PARTY_NOTICES.md` for
+artwork licenses, attribution, and the brand-trademark boundary.
 
 ```kotlin
 LumenFloatingActionButton(
@@ -170,7 +175,7 @@ See the [native compatibility matrix](../../docs/native-compatibility.md) for su
 JDK, Gradle, Kotlin, and Compose baselines.
 
 Wear OS applications should use the sibling
-[`lumen-compose-wear`](./wear) artifact (`com.santi020k:lumen-compose-wear:0.4.0`). It provides a
+[`lumen-compose-wear`](./wear) artifact (`com.santi020k:lumen-compose-wear:0.5.0`). It provides a
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.

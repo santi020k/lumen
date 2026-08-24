@@ -1,5 +1,5 @@
 ---
-import { Link } from '@santi020k/lumen-astro'
+import { CodeTabs, Link } from '@santi020k/lumen-astro'
 import { lumenIcons, renderLumenIconSvg } from '@santi020k/lumen-core'
 
 import CodeBlock from '../../components/CodeBlock.astro'
@@ -76,9 +76,43 @@ const elementsUsage = `<lumen-icon name="search" label="Search"></lumen-icon>
 <lumen-icon name="wand-sparkles" decorative></lumen-icon>
 <lumen-icon name="circle-check" label="Synced" size="lg"></lumen-icon>`
 
+const nativeUsage = [
+  {
+    code: `import { LumenIcon, lumenIconNames } from '@santi020k/lumen-react-native'
+
+<LumenIcon name="search" label="Search" />
+// lumenIconNames contains every supported name.`,
+    label: 'React Native',
+    language: 'tsx' as const,
+    value: 'react-native'
+  },
+  {
+    code: `import LumenUI
+
+LumenIcon(name: .search, label: "Search")
+// LumenIconName.allCases contains every supported name.`,
+    label: 'SwiftUI',
+    language: 'swift' as const,
+    value: 'swiftui'
+  },
+  {
+    code: `import com.santi020k.lumen.LumenIcon
+import com.santi020k.lumen.LumenIconName
+
+LumenIcon(
+    name = LumenIconName.Search,
+    contentDescription = "Search"
+)
+// LumenIconName.entries contains every supported name.`,
+    label: 'Compose',
+    language: 'kotlin' as const,
+    value: 'compose'
+  }
+]
+
 const pageDescription =
   `Browse the ${iconCount} Lucide icons available through the Lumen Icon component ` +
-  'across Astro, React, and Elements.'
+  'across web, React Native, SwiftUI, and Compose.'
 ---
 
 <DocsLayout
@@ -87,11 +121,11 @@ const pageDescription =
 >
   <div class="icons-page">
     <DocsPageHero
-      description="Search the complete Lucide set through one accessible component. Kebab-case names and aliases resolve consistently in every Lumen framework target."
+      description="Search the complete Lucide set through one accessible component. Generated names keep the same artwork available across web, React Native, SwiftUI, and Compose."
       eyebrow="Icon library"
       stats={[
         { label: 'Icons', value: iconCount },
-        { label: 'Frameworks', value: 3 },
+        { label: 'Targets', value: 6 },
         { label: 'Component API', value: 1 }
       ]}
       title="A familiar symbol for every action."
@@ -126,6 +160,32 @@ const pageDescription =
         <CodeBlock code={reactUsage} lang="tsx" title="React" />
         <CodeBlock code={elementsUsage} lang="html" title="Elements" />
       </div>
+    </section>
+
+    <section class="icons-section" aria-labelledby="native-usage-title">
+      <div class="icons-section__heading">
+        <div>
+          <p>Native platforms</p>
+          <h2 id="native-usage-title">Use the same catalog natively</h2>
+        </div>
+        <p>
+          Copy a kebab-case name from the catalog below. React Native uses it directly; SwiftUI
+          and Compose expose generated, typed equivalents and collections for programmatic
+          discovery.
+        </p>
+      </div>
+
+      <CodeTabs
+        ariaLabel="Native interface icon examples"
+        items={nativeUsage}
+        storageKey="lumen-interface-icons-native"
+      />
+
+      <nav class="icons-platform-links" aria-label="Native icon component documentation">
+        <DocsActionLink href="/docs/react-native/components/icon" variant="outline">React Native icons</DocsActionLink>
+        <DocsActionLink href="/docs/apple/components/icon" variant="outline">SwiftUI icons</DocsActionLink>
+        <DocsActionLink href="/docs/android/components/icon" variant="outline">Compose icons</DocsActionLink>
+      </nav>
     </section>
 
     <IconCatalog
@@ -205,6 +265,12 @@ const pageDescription =
   .icons-usage-grid {
     display: grid;
     gap: 0.85rem;
+  }
+
+  .icons-platform-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .icons-section--brands {

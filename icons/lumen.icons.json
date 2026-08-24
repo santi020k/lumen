@@ -1,0 +1,20 @@
+{
+  "$schema": "./lumen.icons.schema.json",
+  "schemaVersion": 2,
+  "packs": [
+    {
+      "name": "interface",
+      "source": "lucide",
+      "selection": "all"
+    },
+    {
+      "name": "brand",
+      "source": "font-awesome-free-brands",
+      "prefix": "brand",
+      "selection": "all",
+      "aliases": {
+        "x": "x-twitter"
+      }
+    }
+  ]
+}

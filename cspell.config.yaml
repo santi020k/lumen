@@ -56,6 +56,7 @@ words:
   - Dokka
   - dropzone
   - drawscope
+  - Drawables
   - esbuild
   - esac
   - Español
@@ -79,6 +80,7 @@ words:
   - hono
   - hookform
   - inputmode
+  - imageset
   - jsdom
   - Jetpack
   - knip
@@ -87,6 +89,8 @@ words:
   - lede
   - largecircle
   - linecap
+  - linejoin
+  - VectorPath
   - llms
   - lucide
   - magnifyingglass
@@ -187,6 +191,7 @@ words:
   - xmark
   - xcodegen
   - xcodeproj
+  - xcassets
   - reactnative
   - temurin
   - sdkmanager
@@ -206,6 +211,11 @@ ignorePaths:
   - .astro
   - .turbo
   - packages/mcp/data/**
+  - packages/react-native/src/icons.generated.tsx
+  - packages/swift/Sources/LumenUI/Icons.generated.swift
+  - packages/swift/Sources/LumenUI/Resources/**
+  - packages/compose/src/main/kotlin/com/santi020k/lumen/Icons.generated.kt
+  - packages/compose/src/main/res/drawable/lumen_icon_*.xml
   - packages/compose/gradle.properties
   - packages/compose/gradle/wrapper/**
   - packages/compose/gradlew

@@ -30,6 +30,9 @@ and visual guidance.
   details belong in the matching framework package.
 - Treat `tokens/lumen.tokens.json` as the canonical native foundation source. Run
   `pnpm run generate:platform-tokens` after changing it and commit the generated adapter sources.
+- Treat `icons/lumen.icons.json` as the canonical shared native icon catalog and
+  `icons/THIRD_PARTY_NOTICES.md` as its license source. Run `pnpm run generate:platform-icons` after
+  changing either file and commit the generated native sources, resources, and package notices.
 - Share semantic roles and behavior contracts across native adapters, but use SwiftUI, Compose, and
   React Native conventions instead of reproducing DOM APIs.
 - Treat Astro as the reference surface unless the task explicitly targets another framework.

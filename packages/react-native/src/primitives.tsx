@@ -1,5 +1,6 @@
 import {
   type ComponentType,
+  createElement,
   type ReactElement,
   type ReactNode,
   type Ref
@@ -21,6 +22,10 @@ import {
   type ViewProps
 } from 'react-native'
 
+import {
+  getLumenIconGraphic,
+  type LumenIconName
+} from './icons.generated.js'
 import {
   resolveLumenButtonColors,
   resolveLumenButtonOpacity,
@@ -117,21 +122,38 @@ export interface LumenIconGraphicProps {
 
 export type LumenIconGraphic = ComponentType<LumenIconGraphicProps>
 
-export interface LumenIconProps extends Omit<ViewProps, 'children'> {
+interface LumenIconBaseProps extends Omit<ViewProps, 'children'> {
   color?: ColorValue
   decorative?: boolean
-  icon: LumenIconGraphic
   label?: string
   ref?: Ref<HostInstance>
   size?: LumenIconSize
   strokeWidth?: number
 }
 
+type LumenIconSourceProps =
+  { icon: LumenIconGraphic, name?: never } |
+  { icon?: never, name: LumenIconName }
+
+export type LumenIconProps = LumenIconBaseProps & LumenIconSourceProps
+
+const resolveIconGraphic = (
+  icon: LumenIconGraphic | undefined,
+  name: LumenIconName | undefined
+): LumenIconGraphic => {
+  if (name) return getLumenIconGraphic(name)
+
+  if (icon) return icon
+
+  throw new Error('Lumen icons require either a shared name or a custom graphic component.')
+}
+
 export const LumenIcon = ({
   color,
   decorative,
-  icon: Graphic,
+  icon,
   label,
+  name,
   ref,
   size = 'md',
   strokeWidth = 2,
@@ -141,6 +163,7 @@ export const LumenIcon = ({
   const theme = useLumenTheme()
   const dimension = resolveLumenIconSize(size)
   const isDecorative = decorative ?? !label
+  const graphic = resolveIconGraphic(icon, name)
 
   return (
     <View
@@ -161,17 +184,16 @@ export const LumenIcon = ({
         style
       ]}
     >
-      <Graphic
-        color={color ?? theme.colors.ink}
-        size={dimension}
-        strokeWidth={strokeWidth}
-      />
+      {createElement(graphic, {
+        color: color ?? theme.colors.ink,
+        size: dimension,
+        strokeWidth
+      })}
     </View>
   )
 }
 
-export interface LumenIconButtonProps extends Omit<PressableProps, 'children'> {
-  icon: LumenIconGraphic
+interface LumenIconButtonBaseProps extends Omit<PressableProps, 'children'> {
   intent?: LumenButtonIntent
   label: string
   ref?: Ref<HostInstance>
@@ -179,12 +201,15 @@ export interface LumenIconButtonProps extends Omit<PressableProps, 'children'> {
   strokeWidth?: number
 }
 
+export type LumenIconButtonProps = LumenIconButtonBaseProps & LumenIconSourceProps
+
 export const LumenIconButton = ({
   accessibilityState,
   disabled = false,
   icon,
   intent = 'quiet',
   label,
+  name,
   ref,
   size = 'md',
   strokeWidth = 2,
@@ -194,6 +219,7 @@ export const LumenIconButton = ({
   const theme = useLumenTheme()
   const colors = resolveLumenButtonColors(theme.colors, intent)
   const metrics = resolveLumenIconButtonSize(size)
+  const graphic = resolveIconGraphic(icon, name)
 
   return (
     <Pressable
@@ -221,7 +247,7 @@ export const LumenIconButton = ({
       <LumenIcon
         color={colors.color}
         decorative
-        icon={icon}
+        icon={graphic}
         size={metrics.iconSize}
         strokeWidth={strokeWidth}
       />

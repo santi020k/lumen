@@ -24,7 +24,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -41,12 +42,14 @@
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "react-native": "catalog:",
+    "react-native-svg": "catalog:expo",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": ">=19.2",
-    "react-native": ">=0.86.2"
+    "react-native": ">=0.86.2",
+    "react-native-svg": ">=12 <16"
   },
   "engines": {
     "node": ">=22.12.0"

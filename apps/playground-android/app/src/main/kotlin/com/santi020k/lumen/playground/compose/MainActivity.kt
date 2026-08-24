@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,6 +49,7 @@ import com.santi020k.lumen.LumenFloatingActionButtonSize
 import com.santi020k.lumen.LumenGauge
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
+import com.santi020k.lumen.LumenIconName
 import com.santi020k.lumen.LumenListRow
 import com.santi020k.lumen.LumenMetricTone
 import com.santi020k.lumen.LumenProgress
@@ -216,7 +215,7 @@ private fun PlaygroundContent(
                     prompt = "Search components",
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    LumenIcon(Icons.Default.Search, contentDescription = null)
+                    LumenIcon(LumenIconName.Search, contentDescription = null)
                 }
             }
 
@@ -265,7 +264,7 @@ private fun PlaygroundContent(
                     LumenEmptyState(
                         title = "No matching component",
                         description = "Try another component name or reset the catalog.",
-                        graphic = { LumenIcon(Icons.Default.Search, contentDescription = null) },
+                        graphic = { LumenIcon(LumenIconName.Search, contentDescription = null) },
                         actions = {
                             LumenButton(
                                 onClick = { query = "" },
@@ -326,11 +325,12 @@ private fun FoundationsExample() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    LumenIcon(Icons.Default.Search, contentDescription = "Search")
+                    LumenIcon(LumenIconName.Search, contentDescription = "Search")
+                    LumenIcon(LumenIconName.BrandGithub, contentDescription = "GitHub")
                     LumenText("Shared native foundations", variant = LumenTextVariant.Label)
                 }
                 LumenIconButton(
-                    imageVector = Icons.Default.Check,
+                    name = LumenIconName.Check,
                     contentDescription = "Mark complete",
                     onClick = {}
                 )
@@ -434,7 +434,7 @@ private fun FormsExample(
         LumenSettingsRow(
             title = "Automatic updates",
             description = "Download stable updates automatically.",
-            graphic = { LumenIcon(Icons.Default.Check, contentDescription = null) }
+            graphic = { LumenIcon(LumenIconName.Check, contentDescription = null) }
         ) {
             LumenToggle(
                 label = "Automatic updates",

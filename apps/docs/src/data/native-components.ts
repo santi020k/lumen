@@ -291,20 +291,29 @@ const sharedDefinitions: ComponentDefinition[] = [
     category: 'Data display',
     examples: {
       android: `LumenIcon(
-    imageVector = Icons.Default.Search,
+    name = LumenIconName.Search,
     contentDescription = "Search",
     size = LumenIconSize.Md
+)
+
+LumenIcon(
+    name = LumenIconName.BrandGithub,
+    contentDescription = "GitHub"
 )`,
       apple: `LumenIcon(
-    systemName: "magnifyingglass",
+    name: .search,
     size: .md,
     label: "Search"
-)`,
+)
+
+LumenIcon(name: .brandGithub, label: "GitHub")`,
       'react-native': `<LumenIcon
-  icon={Search}
+  name="search"
   label="Search"
   size="md"
-/>`
+/>
+
+<LumenIcon name="brand:github" label="GitHub" />`
     },
     exports: {
       android: 'LumenIcon',
@@ -312,18 +321,22 @@ const sharedDefinitions: ComponentDefinition[] = [
       'react-native': 'LumenIcon'
     },
     guidance:
-      'Use SF Symbols on Apple, ImageVector values in Compose, and native graphic components in React Native. The application owns icon selection.',
+      'Prefer a generated Lumen name when an interface or brand icon should remain consistent across platforms. Use an SF Symbol, ImageVector, or React Native graphic component when the operating system or product owns the artwork.',
     name: 'Icon',
     properties: [
       property(
-        { android: 'imageVector', apple: 'systemName', 'react-native': 'icon' },
         {
-          android: 'ImageVector',
-          apple: 'SF Symbol name',
-          'react-native': 'LumenIconGraphic'
+          android: 'name or imageVector',
+          apple: 'name or systemName',
+          'react-native': 'name or icon'
         },
-        'Required',
-        'Provides the platform-native icon graphic.'
+        {
+          android: 'LumenIconName or ImageVector',
+          apple: 'LumenIconName or SF Symbol name',
+          'react-native': 'LumenIconName or LumenIconGraphic'
+        },
+        'Exactly one required',
+        'Selects a generated catalog icon or a platform-specific custom graphic.'
       ),
       property(
         {
@@ -350,7 +363,7 @@ const sharedDefinitions: ComponentDefinition[] = [
     ],
     slug: 'icon',
     summary:
-      'Display platform-native icons at shared sizes without forcing one image system across platforms.'
+      'Display the complete shared interface and brand catalog, with platform-native escape hatches.'
   },
   {
     accessibility:
@@ -358,17 +371,17 @@ const sharedDefinitions: ComponentDefinition[] = [
     category: 'Actions',
     examples: {
       android: `LumenIconButton(
-    imageVector = Icons.Default.Settings,
+    name = LumenIconName.Settings,
     contentDescription = "Settings",
     onClick = ::openSettings
 )`,
       apple: `LumenIconButton(
-    systemName: "gearshape",
+    name: .settings,
     label: "Settings",
     action: openSettings
 )`,
       'react-native': `<LumenIconButton
-  icon={Settings}
+  name="settings"
   label="Settings"
   onPress={openSettings}
 />`
@@ -383,10 +396,18 @@ const sharedDefinitions: ComponentDefinition[] = [
     name: 'Icon button',
     properties: [
       property(
-        { android: 'imageVector', apple: 'systemName', 'react-native': 'icon' },
-        'Native icon graphic',
-        'Required',
-        'Provides the platform-native icon.'
+        {
+          android: 'name or imageVector',
+          apple: 'name or systemName',
+          'react-native': 'name or icon'
+        },
+        {
+          android: 'LumenIconName or ImageVector',
+          apple: 'LumenIconName or SF Symbol name',
+          'react-native': 'LumenIconName or LumenIconGraphic'
+        },
+        'Exactly one required',
+        'Selects a generated catalog icon or a platform-specific custom graphic.'
       ),
       property(
         {

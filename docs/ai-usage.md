@@ -32,10 +32,10 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
 | Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `1.2.0`  | `LumenUI`                                    | Not applicable                         |
-| Android / Compose          | Maven Central `com.santi020k:lumen-compose:0.4.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
-| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:0.4.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:0.5.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:0.5.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
-| Optional brand icons       | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
+| Optional web brand icons   | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
 when you need its framework-neutral CLI or registry metadata.
@@ -43,16 +43,16 @@ when you need its framework-neutral CLI or registry metadata.
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
 and apply `.lumenTheme(...)` near the root. For Compose, install
-`com.santi020k:lumen-compose:0.4.0` from Maven Central and wrap content in `LumenTheme`. Native
+`com.santi020k:lumen-compose:0.5.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
-install `com.santi020k:lumen-compose-wear:0.4.0` and wrap wearable content in `LumenWearTheme`
+install `com.santi020k:lumen-compose-wear:0.5.0` and wrap wearable content in `LumenWearTheme`
 inside the application-owned Wear Material theme. Keep complications, tiles, rotary input,
 Always On behavior, haptics, synchronization, navigation, and health or safety logic app-owned.
 
-Brand marks are intentionally excluded from the default Lucide catalog. When a product needs them,
-install and register the optional pack once before rendering a namespaced icon:
+Brand marks are intentionally excluded from the default web Lucide bundle. In Astro, React, or Web
+Components, install and register the optional pack once before rendering a namespaced icon:
 
 ```ts
 import { registerLumenBrandIcons } from "@santi020k/lumen-icons-brand";
@@ -67,7 +67,9 @@ React, or Web Component `Icon` API. The package also provides `brand:x` as an al
 
 Brand marks keep their recognizable filled geometry instead of being redrawn as Lucide outlines.
 They still inherit the same Lumen size, alignment, `currentColor`, and accessible-label behavior as
-the default icon catalog.
+the default icon catalog. React Native, SwiftUI, and Compose already include the corresponding
+complete brand catalog and accept `brand:github`, `.brandGithub`, and
+`LumenIconName.BrandGithub`, respectively, without a separate package.
 
 ## MCP-Assisted Workflow
 
@@ -300,10 +302,11 @@ The shared catalog includes:
   source-specific guidance.
 - Use `Icon name="search"` or any Lucide icon name for standard interface pictograms. Kebab-case
   names and Lucide aliases work. Pair decorative icons with `decorative`, and pass `label` only
-  when the icon carries meaning on its own. Install and register
-  `@santi020k/lumen-icons-brand` for supported brand marks, then use names such as
-  `brand:github`. Render project-specific or unsupported brand SVGs through the default `Icon`
-  slot. Astro reports unknown named icons during development instead of failing silently.
+  when the icon carries meaning on its own. On the web, install and register
+  `@santi020k/lumen-icons-brand` for supported brand marks; native adapters include those names.
+  Then use `brand:github` or the adapter's generated equivalent. Render project-specific or
+  unsupported brand SVGs through the default `Icon` slot. Astro reports unknown named icons during
+  development instead of failing silently.
 - Use `Schedule` with `Agenda`, `Calendar`, and `DatePicker` for booking, CRM, content calendar, and
   event planning screens. Mark slots with `data-ui-schedule-slot` and events with
   `data-ui-schedule-event`; the runtime emits `ui:schedule-change` when a draggable event is moved.

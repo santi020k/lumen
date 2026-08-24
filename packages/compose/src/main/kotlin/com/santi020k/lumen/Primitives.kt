@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -167,6 +168,22 @@ fun LumenIcon(
     )
 }
 
+@Composable
+fun LumenIcon(
+    name: LumenIconName,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    size: LumenIconSize = LumenIconSize.Md,
+    tint: Color = LocalLumenTheme.current.colors.ink
+) {
+    Icon(
+        painter = painterResource(name.resourceId),
+        contentDescription = contentDescription,
+        modifier = modifier.size(size.dimension),
+        tint = tint
+    )
+}
+
 @Immutable
 data class LumenIconButtonMetrics(
     val iconSize: LumenIconSize,
@@ -211,6 +228,43 @@ fun LumenIconButton(
     ) {
         LumenIcon(
             imageVector = imageVector,
+            contentDescription = contentDescription,
+            size = metrics.iconSize,
+            tint = palette.foreground.copy(alpha = if (enabled) 1f else 0.52f)
+        )
+    }
+}
+
+@Composable
+fun LumenIconButton(
+    name: LumenIconName,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    intent: LumenButtonIntent = LumenButtonIntent.Quiet,
+    size: LumenControlSize = LumenControlSize.Md,
+    enabled: Boolean = true
+) {
+    val palette = buttonPalette(LocalLumenTheme.current.colors, intent)
+    val metrics = LumenIconButtonMetrics.resolve(size)
+    val shape = RoundedCornerShape(LumenRadius.Sm)
+
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .size(metrics.touchTarget)
+            .clip(shape)
+            .border(1.dp, palette.border, shape),
+        enabled = enabled,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = palette.background,
+            contentColor = palette.foreground,
+            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContentColor = palette.foreground.copy(alpha = 0.52f)
+        )
+    ) {
+        LumenIcon(
+            name = name,
             contentDescription = contentDescription,
             size = metrics.iconSize,
             tint = palette.foreground.copy(alpha = if (enabled) 1f else 0.52f)

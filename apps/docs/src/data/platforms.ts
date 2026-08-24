@@ -60,7 +60,7 @@ export interface PlatformGuide {
 const nativeBetaNote =
   'The native adapter is available for testing and early production adoption, but its public API may evolve as Lumen validates it in real applications. Review release notes when upgrading.'
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.4.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.5.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -177,7 +177,7 @@ npx react-native start`,
     href: '/docs/react-native',
     id: 'react-native',
     installNote:
-      'Install the package and mount one LumenProvider near the application root. Icons remain application-provided native graphic components.',
+      'Install the package and mount one LumenProvider near the application root. The complete Lumen icon catalog is included; custom native graphic components remain available when product artwork falls outside it.',
     label: 'React Native',
     maturity: 'Beta',
     maturityNote: nativeBetaNote,
@@ -231,6 +231,8 @@ pnpm playground:react-native`,
     ],
     relatedLinks: [
       { href: '/docs/foundations', label: 'Shared foundations' },
+      { href: '/docs/icons#icon-catalog', label: 'Interface icon names' },
+      { href: '/docs/brand-icons#brand-icon-catalog', label: 'Brand icon names' },
       { href: '#playground', label: 'Run the playground' },
       {
         href: 'https://github.com/santi020k/lumen/tree/main/packages/react-native',
@@ -408,6 +410,8 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     ],
     relatedLinks: [
       { href: '/docs/foundations', label: 'Shared foundations' },
+      { href: '/docs/icons#icon-catalog', label: 'Interface icon names' },
+      { href: '/docs/brand-icons#brand-icon-catalog', label: 'Brand icon names' },
       { href: '#playground', label: 'Run the playground' },
       {
         href: 'https://github.com/santi020k/lumen/tree/main/packages/swift',
@@ -560,6 +564,8 @@ pnpm playground:android:build`,
     ],
     relatedLinks: [
       { href: '/docs/foundations', label: 'Shared foundations' },
+      { href: '/docs/icons#icon-catalog', label: 'Interface icon names' },
+      { href: '/docs/brand-icons#brand-icon-catalog', label: 'Brand icon names' },
       { href: '#playground', label: 'Run the playground' },
       {
         href: 'https://github.com/santi020k/lumen/tree/main/packages/compose',

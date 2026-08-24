@@ -52,7 +52,7 @@ struct AppRoot: View {
             LumenText("Welcome", variant: .title)
             LumenButton("Continue", action: continueFlow)
             LumenIconButton(
-                systemName: "magnifyingglass",
+                name: .search,
                 label: "Search",
                 action: openSearch
             )
@@ -92,8 +92,14 @@ expanded/compact content with `.lumenTabViewBottomAccessory` and `LumenTabAccess
 the system tab behavior; earlier supported iOS releases retain the normal tab bar and use a
 token-aware safe-area accessory fallback.
 Components preserve Dynamic Type, SwiftUI environment behavior, and native accessibility instead
-of reproducing DOM behavior. Icons use SF Symbols so rendering follows Apple platform conventions;
-standalone icons are decorative unless labeled, and icon-only buttons require a label.
+of reproducing DOM behavior. `LumenIconName` provides all canonical Lucide interface icons and
+namespaced Font Awesome Free brands used by web, React Native, and Compose. Use
+`LumenIcon(name: .search)`, `LumenIcon(name: .brandGithub)`, or
+`LumenIconButton(name: .settings, ...)` for cross-platform product interfaces. The existing
+`systemName` initializers remain available for platform-specific controls that should follow SF
+Symbols conventions. Standalone icons are decorative unless labeled, and icon-only buttons require
+a label. See `THIRD_PARTY_NOTICES.md` for artwork licenses, attribution, and the brand-trademark
+boundary.
 
 `LumenDisclosure` supports concise text labels and rich application-owned label views, with either
 controlled or presentation-local expansion state. `LumenLink` applies semantic link treatment while
@@ -114,7 +120,7 @@ struct AccountActions: View {
     var body: some View {
         HStack {
             LumenButton("Save", action: save)
-            LumenIconButton(systemName: "gearshape", label: "Settings", action: openSettings)
+            LumenIconButton(name: .settings, label: "Settings", action: openSettings)
         }
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide Icons: ISC License; converted by Lumen. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+        <path
+            android:fillColor="@android:color/transparent"
+            android:pathData="M19 16v-2a2 2 0 0 0-4 0v2"
+            android:strokeColor="#FF000000"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="2" />
+        <path
+            android:fillColor="@android:color/transparent"
+            android:pathData="M9.5 15H7a4 4 0 0 0-4 4v2"
+            android:strokeColor="#FF000000"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="2" />
+        <path
+            android:fillColor="@android:color/transparent"
+            android:pathData="M6 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"
+            android:strokeColor="#FF000000"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="2" />
+        <path
+            android:fillColor="@android:color/transparent"
+            android:pathData="M13.899000000000001 16h6.202a0.899 0.899 0 0 1 0.899 0.899v3.202a0.899 0.899 0 0 1 -0.899 0.899h-6.202a0.899 0.899 0 0 1 -0.899 -0.899v-3.202a0.899 0.899 0 0 1 0.899 -0.899Z"
+            android:strokeColor="#FF000000"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="2" />
+</vector>

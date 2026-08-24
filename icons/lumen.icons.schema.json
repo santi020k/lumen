@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lumen.santi020k.com/schemas/lumen.icons.schema.json",
+  "title": "Lumen cross-platform icon catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "packs"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 2 },
+    "packs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "source", "selection"],
+            "properties": {
+              "name": { "const": "interface" },
+              "source": { "const": "lucide" },
+              "selection": { "const": "all" }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "source", "prefix", "selection", "aliases"],
+            "properties": {
+              "name": { "const": "brand" },
+              "source": { "const": "font-awesome-free-brands" },
+              "prefix": { "const": "brand" },
+              "selection": { "const": "all" },
+              "aliases": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

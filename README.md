@@ -32,8 +32,9 @@ Its packages share tokens, component contracts, styles, and interaction patterns
 framework and platform's native authoring experience.
 
 - **Framework native:** Astro components, React primitives, and standards-based custom elements.
-- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens preserve the
-  same semantic roles without introducing DOM or CSS assumptions.
+- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the
+  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and
+  artwork without introducing DOM or CSS assumptions.
 - **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion
   support are built into the primitives.
 - **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer
@@ -203,7 +204,7 @@ component defaults.
 | [`LumenUI`](./packages/swift) | Swift Package for SwiftUI foundations and native primitives |
 | [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |
 | [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |
-| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for the shared `Icon` API |
+| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |
 | [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
 | [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
 
@@ -268,4 +269,7 @@ campaign measurement, video scripts, and launch copy.
 
 ## License
 
-Lumen is available under the [MIT License](./LICENSE).
+Lumen's original code and artwork are available under the [MIT License](./LICENSE). Generated
+interface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font
+Awesome Free's CC BY 4.0 terms. The native packages include the required attribution and license
+notices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).

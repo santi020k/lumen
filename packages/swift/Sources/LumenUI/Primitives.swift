@@ -168,8 +168,22 @@ public struct LumenIcon: View {
 
     private let color: Color?
     private let label: LocalizedStringKey?
+    private let name: LumenIconName?
     private let size: LumenIconSize
-    private let systemName: String
+    private let systemName: String?
+
+    public init(
+        name: LumenIconName,
+        size: LumenIconSize = .md,
+        color: Color? = nil,
+        label: LocalizedStringKey? = nil
+    ) {
+        self.name = name
+        self.systemName = nil
+        self.size = size
+        self.color = color
+        self.label = label
+    }
 
     public init(
         systemName: String,
@@ -177,6 +191,7 @@ public struct LumenIcon: View {
         color: Color? = nil,
         label: LocalizedStringKey? = nil
     ) {
+        self.name = nil
         self.systemName = systemName
         self.size = size
         self.color = color
@@ -184,12 +199,22 @@ public struct LumenIcon: View {
     }
 
     public var body: some View {
-        Image(systemName: systemName)
-            .font(.system(size: size.dimension, weight: .medium))
+        iconImage
             .foregroundStyle(color ?? theme.colors.ink)
             .frame(width: size.dimension, height: size.dimension)
             .accessibilityHidden(label == nil)
             .accessibilityLabel(label ?? "")
+    }
+
+    @ViewBuilder private var iconImage: some View {
+        if let name {
+            Image(name.assetName, bundle: .module)
+                .resizable()
+                .scaledToFit()
+        } else if let systemName {
+            Image(systemName: systemName)
+                .font(.system(size: size.dimension, weight: .medium))
+        }
     }
 }
 
@@ -266,8 +291,26 @@ public struct LumenIconButton: View {
     private let disabled: Bool
     private let intent: LumenButtonIntent
     private let label: LocalizedStringKey
+    private let name: LumenIconName?
     private let size: LumenControlSize
-    private let systemName: String
+    private let systemName: String?
+
+    public init(
+        name: LumenIconName,
+        label: LocalizedStringKey,
+        intent: LumenButtonIntent = .quiet,
+        size: LumenControlSize = .md,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.name = name
+        self.systemName = nil
+        self.label = label
+        self.intent = intent
+        self.size = size
+        self.disabled = disabled
+        self.action = action
+    }
 
     public init(
         systemName: String,
@@ -277,6 +320,7 @@ public struct LumenIconButton: View {
         disabled: Bool = false,
         action: @escaping () -> Void
     ) {
+        self.name = nil
         self.systemName = systemName
         self.label = label
         self.intent = intent
@@ -289,15 +333,19 @@ public struct LumenIconButton: View {
         let metrics = LumenIconButtonMetrics.resolve(size, density: density)
 
         Button(action: action) {
-            LumenIcon(
-                systemName: systemName,
-                size: metrics.iconSize,
-                color: foregroundColor
-            )
+            icon(size: metrics.iconSize)
         }
         .buttonStyle(LumenIconButtonStyle(intent: intent, size: size))
         .disabled(disabled)
         .accessibilityLabel(label)
+    }
+
+    @ViewBuilder private func icon(size: LumenIconSize) -> some View {
+        if let name {
+            LumenIcon(name: name, size: size, color: foregroundColor)
+        } else if let systemName {
+            LumenIcon(systemName: systemName, size: size, color: foregroundColor)
+        }
     }
 
     private var foregroundColor: Color {

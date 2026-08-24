@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Font Awesome Free Brands: CC BY 4.0; converted by Lumen. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <group
+        android:translateX="96"
+        android:translateY="0">
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M129.5 512l0-166.1-111-297.9 55.8 0 81.8 229.7 94.1-277.7 51.3 0-120.7 347.8 0 164.2-51.3 0z" />
+    </group>
+</vector>
