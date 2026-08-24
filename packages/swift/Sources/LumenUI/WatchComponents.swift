@@ -22,6 +22,10 @@ public struct LumenWatchProgressValue: Equatable, Sendable {
     public var fraction: Double {
         value / maximum
     }
+
+    var accessibilityPercentage: Int {
+        Int(fraction * 100)
+    }
 }
 
 public struct LumenWatchActionMetrics: Equatable, Sendable {
@@ -140,6 +144,8 @@ public struct LumenWatchProgressRing<Content: View>: View {
             }
             content
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityValue(Text("\(progress.accessibilityPercentage) percent"))
     }
 }
 

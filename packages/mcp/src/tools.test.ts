@@ -230,6 +230,16 @@ describe('native component tools', () => {
     expect(compose.text).toContain('import com.santi020k.lumen.LumenSettingsRow')
   })
 
+  test('routes wearable Compose components to the Wear OS artifact', () => {
+    const wearable = resolveNativeComponent('wearable-action')
+
+    expect(wearable?.implementations.compose).toMatchObject({
+      packageName: 'com.santi020k:lumen-compose-wear',
+      sourceFile: 'packages/compose/wear/src/main/kotlin/com/santi020k/lumen/wear/WearComponents.kt'
+    })
+    expect(wearable?.implementations.compose?.install).toContain('project(":wear")')
+  })
+
   test('reports unavailable platform implementations clearly', () => {
     const result = getNativeComponent({ name: 'Symbol picker', platform: 'react-native' })
 

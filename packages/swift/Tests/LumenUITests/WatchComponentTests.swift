@@ -6,6 +6,7 @@ import Testing
     #expect(LumenWatchProgressValue.resolve(12, maximum: 10) == .init(maximum: 10, value: 10))
     #expect(LumenWatchProgressValue.resolve(-2, maximum: 10) == .init(maximum: 10, value: 0))
     #expect(LumenWatchProgressValue.resolve(.nan, maximum: .infinity) == .init(maximum: 1, value: 0))
+    #expect(LumenWatchProgressValue.resolve(2.5, maximum: 10).accessibilityPercentage == 25)
 }
 
 @Test func watchActionMetricsPreserveUsableBounds() {

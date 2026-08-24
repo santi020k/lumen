@@ -835,6 +835,18 @@ const nativeSourceExtensions = {
   swiftui: new Set(['.swift'])
 }
 
+const nativeImplementationOverrides = [
+  {
+    install:
+      'Include packages/compose from a shallow Git checkout pinned to the Lumen release tag, then add implementation(project(":wear")).',
+    packageName: 'com.santi020k:lumen-compose-wear',
+    platform: 'compose',
+    setup:
+      'Wrap wearable content in LumenWearTheme inside the application-owned Wear Material theme.',
+    sourcePrefix: 'packages/compose/wear/'
+  }
+]
+
 const extensionOf = fileName => {
   const index = fileName.lastIndexOf('.')
 
@@ -877,6 +889,28 @@ const findNativeSourceFile = (sources, platform, symbol) => {
 const nativeRegistryEntry = (nativeRegistry, id) => nativeRegistry.components.find(component => component.id === id) ??
   nativeRegistry.platformComponents.find(component => component.id === id)
 
+const buildNativeImplementation = ({ config, implementation, nativeRegistry, platform, sources, symbol }) => {
+  const sourceFile = findNativeSourceFile(sources, platform, symbol)
+
+  const implementationOverride = nativeImplementationOverrides.find(candidate => (
+    candidate.platform === platform && sourceFile.startsWith(candidate.sourcePrefix)
+  ))
+
+  return {
+    api: implementation.api,
+    example: implementation.example,
+    exportName: implementation.exportName,
+    importStatement: config.importStatement(symbol),
+    install: implementationOverride?.install ?? config.install,
+    language: implementation.language,
+    packageName:
+      implementationOverride?.packageName ?? nativeRegistry.adapters[config.adapter].package,
+    setup: implementationOverride?.setup ?? config.setup,
+    sourceFile,
+    symbol
+  }
+}
+
 const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
   const docsData = await loadDocsData(files.nativeDocsSource)
   const sources = await loadNativeSources(repoRoot, nativeRegistry)
@@ -908,18 +942,14 @@ const buildNativeComponents = async (repoRoot, files, nativeRegistry) => {
       if (!symbol)
         throw new Error(`Native registry entry ${doc.slug} is missing a ${platform} symbol.`)
 
-      implementations[platform] = {
-        api: implementation.api,
-        example: implementation.example,
-        exportName: implementation.exportName,
-        importStatement: config.importStatement(symbol),
-        install: config.install,
-        language: implementation.language,
-        packageName: nativeRegistry.adapters[config.adapter].package,
-        setup: config.setup,
-        sourceFile: findNativeSourceFile(sources, platform, symbol),
+      implementations[platform] = buildNativeImplementation({
+        config,
+        implementation,
+        nativeRegistry,
+        platform,
+        sources,
         symbol
-      }
+      })
     }
 
     return {
@@ -1164,6 +1194,8 @@ const main = async () => {
   packageVersions.LumenUI = 'workspace'
 
   packageVersions['com.santi020k:lumen-compose'] = 'workspace'
+
+  packageVersions['com.santi020k:lumen-compose-wear'] = 'workspace'
 
   const catalogHash = createHash('sha256')
     .update(
