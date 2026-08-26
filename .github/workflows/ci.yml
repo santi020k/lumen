@@ -106,6 +106,8 @@ jobs:
         run: node scripts/check-swift-api-baseline.mjs
 
       - name: Regenerate and compare iPhone component captures
+        id: apple-captures
+        continue-on-error: true
         env:
           CI: true
         run: |
@@ -113,6 +115,18 @@ jobs:
           pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \
             --compare --platform=apple --source=default --tolerance=0.12
+
+      - name: Upload Apple capture diagnostics
+        if: steps.apple-captures.outcome == 'failure'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: apple-capture-diagnostics
+          path: apps/playground-apple/Screenshots
+          if-no-files-found: error
+
+      - name: Fail on Apple capture regression
+        if: steps.apple-captures.outcome == 'failure'
+        run: exit 1
 
   native-android:
     name: Compose library
