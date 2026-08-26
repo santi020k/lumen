@@ -215,7 +215,8 @@ jobs:
 
           ./gradlew connectedDebugAndroidTest
           ./gradlew -p ../../apps/playground-android :app:assembleDebug :app:installDebug
-          ../../apps/playground-android/scripts/capture-component-screenshots.sh
+          ../../apps/playground-android/scripts/capture-component-screenshots.sh \
+            ../../apps/playground-android/build/screenshots
           pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \
             --compare --platform=android --source=default --tolerance=0.12
