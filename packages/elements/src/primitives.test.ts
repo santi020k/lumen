@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import type { LumenComboSeries } from '@santi020k/lumen-core'
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { defineLumenElements } from './index.js'
@@ -321,5 +322,84 @@ describe('@santi020k/lumen-elements primitives', () => {
       expect(chart.querySelector('[data-ui-chart-summary]')?.textContent)
         .toBe('No chart data available.')
     }
+  })
+
+  test('renders programmatic combo series and aligns line marks with bar centers', () => {
+    const data = [
+      { x: 'Mon', y: 4 },
+      { x: 'Tue', y: 8 },
+      { x: 'Wed', y: 6 }
+    ]
+
+    const series: readonly LumenComboSeries[] = [
+      { data, id: 'bars', label: 'Bars', mark: 'bar' },
+      { data, id: 'line', label: 'Line', mark: 'line' }
+    ]
+
+    const combo = connect('lumen-combo-chart')
+
+    expect(Reflect.set(combo, 'series', series)).toBe(true)
+
+    const categoryCenters = [...combo.querySelectorAll('.ui-bar-chart__marks rect')]
+      .map(rectangle => Number(
+        (
+          Number(rectangle.getAttribute('x')) +
+          Number(rectangle.getAttribute('width')) / 2
+        ).toFixed(3)
+      ))
+
+    const linePath =
+      combo.querySelector('.ui-line-chart__line')?.getAttribute('d') ?? ''
+
+    const lineXCoordinates = [...linePath.matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+      .map(match => Number(match[1]))
+
+    expect(categoryCenters).toHaveLength(3)
+    expect(lineXCoordinates).toEqual(categoryCenters)
+  })
+
+  test('omits unavailable heatmap cells while preserving semantic table gaps', () => {
+    const data = JSON.stringify([
+      { value: 8, x: 'Mon', y: 'Morning' },
+      { value: null, x: 'Tue', y: 'Morning' }
+    ])
+
+    const heatmap = connect('lumen-heatmap', { data })
+
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+    expect(heatmap.querySelector('details table')?.textContent).toContain('Not available')
+
+    heatmap.setAttribute('show-table', 'false')
+
+    expect(heatmap.querySelector('.ui-chart__data')).toBeNull()
+
+    const missingHeatmap = connect('lumen-heatmap', {
+      data: JSON.stringify([{ value: null, x: 'Mon', y: 'Morning' }])
+    })
+
+    expect(missingHeatmap.querySelector('.ui-chart__empty')?.textContent)
+      .toBe('No chart data available.')
+    expect(missingHeatmap.querySelector('details table')?.textContent)
+      .toContain('Not available')
+  })
+
+  test('renders range values in the default semantic table', () => {
+    const range = connect('lumen-range-chart', {
+      data: JSON.stringify([
+        { high: 12, low: 4, x: 'Mon' },
+        { high: null, low: null, x: 'Tue' }
+      ])
+    })
+
+    const table = range.querySelector('details table')
+
+    expect(table?.textContent).toContain('Mon')
+    expect(table?.textContent).toContain('4')
+    expect(table?.textContent).toContain('12')
+    expect(table?.textContent).toContain('Not available')
+
+    range.setAttribute('show-table', 'false')
+
+    expect(range.querySelector('.ui-chart__data')).toBeNull()
   })
 })

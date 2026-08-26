@@ -177,8 +177,8 @@ attribute form is useful for static HTML and server output.
 ></lumen-line-chart>
 ```
 
-`lumen-sparkline` also accepts comma-separated or JSON `values`. Bar, line, and pie charts include
-a revealable semantic table unless `show-table="false"` is set. `lumen-pie-chart` uses the first
+`lumen-sparkline` also accepts comma-separated or JSON `values`. Every data chart includes a
+revealable semantic table unless `show-table="false"` is set. `lumen-pie-chart` uses the first
 serialized series and defaults to `variant="donut"`.
 
 ## Optimized images

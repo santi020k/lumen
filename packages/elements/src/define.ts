@@ -5512,6 +5512,48 @@ const chartDataTableHtml = (
   ].join('')
 }
 
+const heatmapDataTableHtml = (data: readonly LumenHeatmapDatum[]): string => {
+  const rows = data
+    .map(cell => {
+      const value =
+        cell.label ??
+        (cell.value === null || !Number.isFinite(cell.value) ?
+          'Not available' :
+          String(cell.value))
+
+      return [
+        `<tr><th scope="row">${escapeChartHtml(cell.xLabel ?? cell.x)}</th>`,
+        `<td>${escapeChartHtml(cell.yLabel ?? cell.y)}</td>`,
+        `<td>${escapeChartHtml(value)}</td></tr>`
+      ].join('')
+    })
+    .join('')
+
+  return [
+    '<details class="ui-chart__data"><summary>View chart data</summary>',
+    '<div><table><thead><tr><th scope="col">Column</th>',
+    '<th scope="col">Row</th><th scope="col">Value</th></tr></thead>',
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+const rangeDataTableHtml = (data: readonly LumenRangeDatum[]): string => {
+  const rows = data
+    .map(item => [
+      `<tr><th scope="row">${escapeChartHtml(item.xLabel ?? item.x)}</th>`,
+      `<td>${escapeChartHtml(item.low ?? 'Not available')}</td>`,
+      `<td>${escapeChartHtml(item.high ?? 'Not available')}</td></tr>`
+    ].join(''))
+    .join('')
+
+  return [
+    '<details class="ui-chart__data"><summary>View chart data</summary>',
+    '<div><table><thead><tr><th scope="col">Category</th>',
+    '<th scope="col">Low</th><th scope="col">High</th></tr></thead>',
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
 const chartPercentage = (percentage: number): string => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
   style: 'percent'
@@ -5543,7 +5585,7 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
   }
 
   get series(): readonly LumenChartSeries[] {
-    return this.#series ?? parseChartSeries(this.getAttribute('series'))
+    return this.#series ?? this.parseSeriesAttribute(this.getAttribute('series'))
   }
 
   set series(value: readonly LumenChartSeries[]) {
@@ -5572,6 +5614,10 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
     super.attributeChangedCallback()
 
     if (this.isConnected) this.renderChart()
+  }
+
+  protected parseSeriesAttribute(value: string | null): readonly LumenChartSeries[] {
+    return parseChartSeries(value)
   }
 
   protected abstract renderChart(): void
@@ -6058,7 +6104,15 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
 
 class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = parseComboChartSeries(this.getAttribute('series'))
+    const series = this.series.map(item => {
+      const mark =
+        'mark' in item &&
+        (item.mark === 'area' || item.mark === 'bar' || item.mark === 'line') ?
+          item.mark :
+          'line'
+
+      return { ...item, mark }
+    })
 
     if (!hasLumenChartData(series)) {
       this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
@@ -6084,6 +6138,39 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
     const lines = aligned.filter(item => item.mark !== 'bar')
     const barGeometry = createLumenBarGeometry(bars, { domain, height, width })
 
+    const categoryPositions = new Map(
+      barGeometry.categories.map(category => [
+        `${typeof category.category}:${String(category.category)}`,
+        category.x
+      ])
+    )
+
+    const drawableWidth = width - padding * 2
+
+    const alignComboLineDatum = (datum: LumenChartSeries['data'][number]) => {
+      if (bars.length === 0) return datum
+
+      return {
+        ...datum,
+        x:
+          ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) /
+          drawableWidth
+      }
+    }
+
+    const lineGeometryOptions = {
+      domain,
+      height,
+      padding,
+      width,
+      ...(bars.length === 0 ?
+        {} :
+        {
+          xDomain: { max: 1, min: 0 },
+          xScale: 'linear' as const
+        })
+    }
+
     const barMarks = barGeometry.marks.map(mark => [
       `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}"`,
       ` rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}">`,
@@ -6092,7 +6179,10 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
     ].join('')).join('')
 
     const lineMarks = lines.map((item, index) => {
-      const geometry = createLumenLineGeometry(item.data, { domain, height, padding, width })
+      const geometry = createLumenLineGeometry(
+        item.data.map(alignComboLineDatum), lineGeometryOptions
+      )
+
       const tone = resolveLumenChartTone(item.tone, index + bars.length)
 
       const areas = item.mark === 'area' ?
@@ -6115,6 +6205,10 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
         '',
       chartCaptionHtml(this)
     ].join('')
+  }
+
+  protected override parseSeriesAttribute(value: string | null): readonly LumenComboSeries[] {
+    return parseComboChartSeries(value)
   }
 }
 
@@ -6139,13 +6233,11 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
     const data = parseHeatmapData(this.getAttribute('data'))
     const geometry = createLumenHeatmapGeometry(data)
 
-    if (geometry.cells.length === 0) {
-      this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
+    const availableCells = geometry.cells.filter(
+      cell => cell.value !== null && Number.isFinite(cell.value)
+    )
 
-      return
-    }
-
-    const cells = geometry.cells.map(cell => [
+    const cells = availableCells.map(cell => [
       `<rect height="${Math.max(0, cell.height - 2)}" opacity="${Math.max(0.12, cell.ratio)}"`,
       ` width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}"`,
       ` y="${cell.yCoordinate + 1}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · `,
@@ -6153,9 +6245,19 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
       `${escapeChartHtml(cell.label ?? cell.value ?? 'Not available')}</title></rect>`
     ].join('')).join('')
 
-    const summary = this.getAttribute('summary') ?? `${geometry.cells.length} heatmap cells.`
+    const summary =
+      this.getAttribute('summary') ??
+      `${availableCells.length} available heatmap cells.`
 
-    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p><div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>${chartCaptionHtml(this)}`
+    const plot = availableCells.length === 0 ?
+      '<p class="ui-chart__empty" role="status">No chart data available.</p>' :
+      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+
+    const table = chartBooleanAttribute(this, 'show-table', true) ?
+      heatmapDataTableHtml(data) :
+      ''
+
+    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
   }
 }
 
@@ -6163,12 +6265,6 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
   protected renderChart() {
     const data = parseRangeData(this.getAttribute('data'))
     const geometry = createLumenRangeGeometry(data)
-
-    if (geometry.points.length === 0) {
-      this.innerHTML = '<p class="ui-chart__empty" role="status">No chart data available.</p>'
-
-      return
-    }
 
     const intervals = geometry.points.map(point => [
       `<line class="ui-range-chart__interval" x1="${point.xCoordinate}"`,
@@ -6179,7 +6275,15 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
 
     const summary = this.getAttribute('summary') ?? `${geometry.points.length} available ranges.`
 
-    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p><div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>${chartCaptionHtml(this)}`
+    const plot = geometry.points.length === 0 ?
+      '<p class="ui-chart__empty" role="status">No chart data available.</p>' :
+      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
+
+    const table = chartBooleanAttribute(this, 'show-table', true) ?
+      rangeDataTableHtml(data) :
+      ''
+
+    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
   }
 }
 
