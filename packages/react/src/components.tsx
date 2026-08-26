@@ -3788,7 +3788,12 @@ const MetadataPhoneInput = ({
 
   const phoneValue = value === undefined || value.country.regionCode === initialCountry.regionCode ?
     value ?? internalValue :
-    resolveLumenPhoneNumber(initialCountry, value.nationalNumber, phoneOptions)
+    resolveReactPhoneInputValue(
+      metadataCountries,
+      initialCountry,
+      value.nationalNumber,
+      phoneOptions
+    )
 
   const resolvedOptions = metadataCountries.map(country => ({
     disabled: false,

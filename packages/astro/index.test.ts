@@ -153,6 +153,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(phoneInput).toContain(')) ?? metadataCountries[0] ?? getLumenPhoneCountry')
     expect(runtime).toContain('const detectedCountryIsAllowed = Array.from(countrySelect.options)')
     expect(runtime).toContain('detectedCountryIsAllowed ?')
+    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?')
+    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.slice(1)')
+    expect(runtime).not.toContain('resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)\n\n      const hasInput')
   })
 
   test('normalizes Astro Action field errors for fields and summaries', () => {

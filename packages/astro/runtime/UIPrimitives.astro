@@ -104,7 +104,13 @@ const initPhoneInputs = (scope: ParentNode): void => {
 
       const phoneNumber = detectedCountryIsAllowed ?
         detectedPhoneNumber :
-        resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)
+        resolveLumenPhoneNumber(
+          country,
+          detectedPhoneNumber.nationalNumber.startsWith('+') ?
+            detectedPhoneNumber.nationalNumber.slice(1) :
+            detectedPhoneNumber.nationalNumber,
+          phoneOptions
+        )
 
       const hasInput = phoneNumber.nationalNumber.length > 0
       const invalidMessage = root.dataset.invalidNumberMessage ?? 'Enter a complete phone number.'

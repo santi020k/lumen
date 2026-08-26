@@ -49,5 +49,20 @@ describe('React phone input recipes', () => {
 
     expect(incompleteValue.country).toBe(colombia)
     expect(incompleteValue.nationalNumber).not.toContain('+')
+
+    const france = countries.find(country => country.regionCode === 'FR')
+
+    if (!france) throw new Error('Expected France phone metadata')
+
+    const controlledValue = resolveLumenPhoneNumber(france, '+33 1', { locale: 'en' })
+    const remappedControlledValue = resolveReactPhoneInputValue(
+      [colombia],
+      colombia,
+      controlledValue.nationalNumber,
+      { locale: 'en' }
+    )
+
+    expect(remappedControlledValue.country).toBe(colombia)
+    expect(remappedControlledValue.nationalNumber).not.toContain('+')
   })
 })
