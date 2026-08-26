@@ -80,6 +80,7 @@ import {
 } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
 
+import { formatReactChartTableValue } from './chart-recipes.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -104,7 +105,10 @@ import {
   useTabs,
   useTooltip
 } from './hooks.js'
-import { resolveReactPhoneInputCountry } from './phone-recipes.js'
+import {
+  resolveReactPhoneInputCountry,
+  resolveReactPhoneInputValue
+} from './phone-recipes.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
@@ -1014,10 +1018,7 @@ const ChartDataTable = ({
 
                 return (
                   <td key={item.id}>
-                    {datum?.label ??
-                      (datum?.y === null || datum === undefined ?
-                        'Not available' :
-                        formatValue(datum.y))}
+                    {datum?.label ?? formatReactChartTableValue(datum?.y, formatValue)}
                   </td>
                 )
               })}
@@ -1615,9 +1616,7 @@ export const ScatterChart = ({
                     <td>{point.seriesLabel}</td>
                     <td>{point.label ?? formatValue(point.y ?? 0)}</td>
                     <td>
-                      {point.size === undefined || point.size === null ?
-                        'Not available' :
-                        formatValue(point.size)}
+                      {formatReactChartTableValue(point.size, formatValue)}
                     </td>
                   </tr>
                 ))}
@@ -3819,7 +3818,8 @@ const MetadataPhoneInput = ({
   }
 
   const handleNumberChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    commitValue(resolveLumenPhoneNumber(
+    commitValue(resolveReactPhoneInputValue(
+      metadataCountries,
       phoneValue.country,
       event.currentTarget.value,
       phoneOptions

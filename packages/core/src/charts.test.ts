@@ -340,4 +340,16 @@ describe('Lumen chart helpers', () => {
     expect(range.areaPath.match(/Z/g)).toHaveLength(2)
     expect(range.points).toHaveLength(2)
   })
+
+  test('derives range domains only from complete intervals', () => {
+    const range = createLumenRangeGeometry([
+      { high: 2, low: 1, x: 'Available' },
+      { high: 1000, low: null, x: 'Unavailable' }
+    ], { height: 100, padding: 0, width: 100 })
+
+    expect(range.domain).toEqual({ max: 2, min: 1 })
+    expect(range.points).toHaveLength(1)
+    expect(range.points[0]?.highCoordinate).toBe(0)
+    expect(range.points[0]?.lowCoordinate).toBe(100)
+  })
 })

@@ -2,8 +2,25 @@ import {
   getLumenPhoneCountry,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
-  type LumenPhoneNumber
-} from '@santi020k/lumen-core'
+  type LumenPhoneNumber,
+  resolveLumenPhoneNumber } from '@santi020k/lumen-core'
+
+export const resolveReactPhoneInputValue = (
+  countries: readonly LumenPhoneCountry[],
+  country: LumenPhoneCountry,
+  input: string,
+  options: LumenPhoneCountryOptions
+): LumenPhoneNumber => {
+  const detectedNumber = resolveLumenPhoneNumber(country, input, options)
+
+  const detectedCountryIsAllowed = countries.some(candidate => (
+    candidate.regionCode === detectedNumber.country.regionCode
+  ))
+
+  return detectedCountryIsAllowed ?
+    detectedNumber :
+    resolveLumenPhoneNumber(country, detectedNumber.nationalNumber, options)
+}
 
 export const resolveReactPhoneInputCountry = (
   countries: readonly LumenPhoneCountry[],

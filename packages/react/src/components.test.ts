@@ -708,6 +708,36 @@ describe('@santi020k/lumen-react components', () => {
     expect(tableValues).toEqual(['Not available', 'Not available'])
   })
 
+  test('treats non-finite scatter sizes as unavailable in the disclosure table', () => {
+    const scatter = ScatterChart({
+      formatValue: value => {
+        if (!Number.isFinite(value)) throw new Error('Expected only finite scatter values')
+
+        return String(value)
+      },
+      series: [{
+        data: [
+          { size: Number.NaN, x: 1, y: 4 },
+          { size: Number.POSITIVE_INFINITY, x: 2, y: 8 }
+        ],
+        id: 'downloads',
+        label: 'Downloads'
+      }]
+    }) as ReactElement
+    const tableValues = descendantsOf(scatter)
+      .filter(element => element.type === 'td')
+      .map(element => propsOf(element).children)
+
+    expect(tableValues).toEqual([
+      'Downloads',
+      '4',
+      'Not available',
+      'Downloads',
+      '8',
+      'Not available'
+    ])
+  })
+
   test('keeps repeated scatter coordinates as distinct marks and rows', () => {
     const scatter = ScatterChart({
       series: [{

@@ -1458,7 +1458,15 @@ export const createLumenRangeGeometry = (
     width = 640
   } = options
 
-  const values = data.flatMap(datum => [datum.low, datum.high])
+  const values = data.flatMap(datum => (
+    datum.low !== null &&
+    datum.high !== null &&
+    Number.isFinite(datum.low) &&
+    Number.isFinite(datum.high) ?
+      [datum.low, datum.high] :
+      []
+  ))
+
   const domain = resolveLumenChartDomain(values, requestedDomain, includeZero)
   const segments: LumenRangeGeometryPoint[][] = []
   let currentSegment: LumenRangeGeometryPoint[] = []
