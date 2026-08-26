@@ -556,7 +556,7 @@
       "device": "iPhone simulator",
       "height": 1957,
       "platform": "apple",
-      "sha256": "630ee46046a292a82204415c36920e835c4cd7cbad77d19dea9c12fc92c42802",
+      "sha256": "ae0d2caa8badf2ab1d426119b4ff09471c9acf340051aaf8b19b22dc51e6b999",
       "slug": "alert-dialog",
       "src": "/native-components/apple/alert-dialog.webp",
       "width": 900
