@@ -231,7 +231,7 @@ const referenceY =
                     return (
                       <td>
                         {datum?.label ??
-                          (datum?.y === null || datum === undefined ?
+                          (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
                             'Not available' :
                             formatValue(datum.y))}
                       </td>

@@ -75,7 +75,7 @@ const labelFor = (item: LumenChartSeries, category: number | string) => (
 const formattedValueFor = (item: LumenChartSeries, category: number | string) => {
   const value = valueFor(item, category)
 
-  return value === null ? 'Not available' : formatValue(value)
+  return value === null || !Number.isFinite(value) ? 'Not available' : formatValue(value)
 }
 
 const categoryLabelFor = (category: number | string) => {

@@ -141,6 +141,27 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(range).not.toContain('data.filter(item => item.low !== null')
   })
 
+  test('keeps chart disclosures within finite rendered value domains', async () => {
+    const [bars, combo, line, scatter] = await Promise.all([
+      readFile(new URL('./components/BarChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ComboChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/LineChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ScatterChart.astro', packageRoot), 'utf8')
+    ])
+
+    expect(bars).toContain('value === null || !Number.isFinite(value) ? \'Not available\'')
+
+    for (const chart of [combo, line]) {
+      expect(chart).toContain(
+        'datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y)'
+      )
+    }
+
+    expect(scatter).toContain(
+      'point.size === undefined || point.size === null || !Number.isFinite(point.size)'
+    )
+  })
+
   test('aligns pie summaries and phone defaults with rendered options', async () => {
     const [phoneInput, pie, runtime] = await Promise.all([
       readFile(new URL('./components/PhoneInput.astro', packageRoot), 'utf8'),

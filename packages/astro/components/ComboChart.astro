@@ -111,7 +111,7 @@ d={geometry.path}
 <tr><th scope="row">{String(category)}</th>{series.map(item => {
  const datum = item.data.find(point => point.x === category)
 
- return <td>{datum?.label ?? (datum?.y === null || datum === undefined ? 'Not available' : formatValue(datum.y))}</td>
+ return <td>{datum?.label ?? (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ? 'Not available' : formatValue(datum.y))}</td>
 })}</tr>
 ))}</tbody></table></div></details>
 )}
