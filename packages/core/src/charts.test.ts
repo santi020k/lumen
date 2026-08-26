@@ -237,6 +237,24 @@ describe('Lumen chart helpers', () => {
     expect(temporal.points.map(point => point.xCoordinate)).toEqual([0, 100])
   })
 
+  test('excludes invalid x values from continuous line domains', () => {
+    const linear = createLumenLineGeometry([
+      { x: 0, y: 1 },
+      { x: 1, y: 2 },
+      { x: 'invalid', y: 1000 }
+    ], { includeZero: false, xScale: 'linear' })
+    const temporal = createLumenLineGeometry([
+      { x: '2026-01-01T00:00:00Z', y: 3 },
+      { x: '2026-01-02T00:00:00Z', y: 4 },
+      { x: 'not-a-date', y: -1000 }
+    ], { includeZero: false, xScale: 'time' })
+
+    expect(linear.domain).toEqual({ max: 2, min: 1 })
+    expect(linear.points.map(point => point.y)).toEqual([1, 2])
+    expect(temporal.domain).toEqual({ max: 4, min: 3 })
+    expect(temporal.points.map(point => point.y)).toEqual([3, 4])
+  })
+
   test('validates identifiers, values, sizes, and ordered continuous axes', () => {
     const issues = validateLumenChartSeries([
       {

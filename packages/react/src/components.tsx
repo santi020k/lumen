@@ -3782,7 +3782,12 @@ const MetadataPhoneInput = ({
 
   const [internalValue, setInternalValue] = useState<LumenPhoneNumber>(() => (
     defaultValue ?
-      resolveLumenPhoneNumber(initialCountry, defaultValue, phoneOptions) :
+      resolveReactPhoneInputValue(
+        metadataCountries,
+        initialCountry,
+        defaultValue,
+        phoneOptions
+      ) :
       { country: initialCountry, e164: null, isValid: false, nationalNumber: '' }
   ))
 

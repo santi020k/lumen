@@ -24,6 +24,23 @@ describe('React phone input recipes', () => {
     expect(resolveReactPhoneInputCountry([colombia], 'US', 'en', controlledValue)).toBe(colombia)
   })
 
+  test('prefers exact regions over shared calling codes', () => {
+    const countries = getLumenPhoneCountries({ locale: 'en' })
+    const canada = countries.find(country => country.regionCode === 'CA')
+    const unitedStates = countries.find(country => country.regionCode === 'US')
+
+    if (!canada || !unitedStates) throw new Error('Expected North American phone metadata')
+
+    const canadianValue = resolveLumenPhoneNumber(canada, '6045550123', { locale: 'en' })
+
+    expect(resolveReactPhoneInputCountry(
+      [unitedStates, canada], 'US', 'en', canadianValue
+    )).toBe(canada)
+    expect(resolveReactPhoneInputCountry(
+      [unitedStates, canada], 'CA', 'en', undefined
+    )).toBe(canada)
+  })
+
   test('keeps pasted international numbers inside restricted country options', () => {
     const countries = getLumenPhoneCountries({ locale: 'en' })
     const colombia = countries.find(country => country.regionCode === 'CO')

@@ -683,9 +683,13 @@ export const createLumenLineGeometry = (
     xScale = 'categorical'
   } = options
 
-  const domain = resolveLumenChartDomain(
-    data.map(datum => datum.y), requestedDomain, includeZero
-  )
+  const domainValues = xScale === 'categorical' ?
+    data.map(datum => datum.y) :
+    data
+      .filter(datum => getLumenChartNumericX(datum.x, xScale) !== null)
+      .map(datum => datum.y)
+
+  const domain = resolveLumenChartDomain(domainValues, requestedDomain, includeZero)
 
   const xDomain =
     xScale === 'categorical' ? undefined : getLumenChartXDomain(data, xScale, requestedXDomain)

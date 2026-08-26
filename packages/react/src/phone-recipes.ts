@@ -35,10 +35,12 @@ export const resolveReactPhoneInputCountry = (
   const requestedCountry = value?.country
 
   const country = countries.find(candidate => (
-    candidate.regionCode === requestedCountry?.regionCode ||
+    candidate.regionCode === requestedCountry?.regionCode
+  )) ?? countries.find(candidate => (
     candidate.callingCode === requestedCountry?.callingCode
   )) ?? countries.find(candidate => (
-    candidate.regionCode === defaultCountryValue ||
+    candidate.regionCode === defaultCountryValue
+  )) ?? countries.find(candidate => (
     candidate.callingCode === defaultCountryValue
   )) ?? countries[0] ?? getLumenPhoneCountry('US', { ...(locale === undefined ? {} : { locale }) })
 
