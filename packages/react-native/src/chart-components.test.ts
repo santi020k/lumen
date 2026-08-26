@@ -66,6 +66,7 @@ interface ChartFrameOutputProps {
   onSelectionChange?: unknown
   selectedSeriesId?: unknown
   selectedX?: unknown
+  summary?: string
 }
 
 interface ChartDataOutputProps {
@@ -158,6 +159,25 @@ describe('Lumen React Native chart components', () => {
       .filter(element => propsOf(element).fillOpacity !== undefined)
 
     expect(cells).toHaveLength(1)
+  })
+
+  test('shows the native heatmap empty state when every cell is unavailable', () => {
+    const heatmap = LumenHeatmap({
+      data: [
+        { value: null, x: 'Monday', y: 'Morning' },
+        { value: Number.POSITIVE_INFINITY, x: 'Tuesday', y: 'Morning' }
+      ],
+      label: 'Activity'
+    }) as ReactElement<ChartFrameOutputProps>
+
+    const descendants = descendantsOf(heatmap)
+
+    expect(heatmap.props.summary).toBe('0 available heatmap cells.')
+    expect(descendants.some(element => (
+      propsOf(element).children === 'No chart data available.'
+    ))).toBe(true)
+    expect(descendants.filter(element => propsOf(element).fillOpacity !== undefined))
+      .toHaveLength(0)
   })
 
   test('aligns native combo line points with bar category centers', () => {

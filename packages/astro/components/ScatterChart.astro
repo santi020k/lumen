@@ -6,7 +6,6 @@ import {
   formatLumenChartSummary,
   getLumenChartTicks,
   getLumenChartToneClassName,
-  hasLumenChartData,
   type LumenChartScaleType,
   type LumenChartSeries,
   scaleLumenChartValue } from '@santi020k/lumen-core'
@@ -45,7 +44,7 @@ const {
 } = Astro.props
 
 const geometry = createLumenScatterGeometry(series, { xScale })
-const hasData = hasLumenChartData(series)
+const hasData = geometry.points.length > 0
 const xTicks = getLumenChartTicks(geometry.xDomain)
 const yTicks = getLumenChartTicks(geometry.domain)
 ---

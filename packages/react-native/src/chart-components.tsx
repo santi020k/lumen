@@ -608,32 +608,38 @@ export const LumenHeatmap = ({
   label,
   showData = true,
   style,
-  summary = `${data.length} heatmap cells.`,
+  summary,
   ...props
 }: LumenHeatmapProps): ReactElement => {
   const theme = useLumenTheme()
   const geometry = createLumenHeatmapGeometry(data)
   const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
+  const hasData = availableCells.length > 0
+  const resolvedSummary = summary ?? `${availableCells.length} available heatmap cells.`
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
 
   return (
-    <LumenChartFrame label={label} style={style} summary={summary} {...props}>
-      <ScrollView horizontal>
-        <Svg height={geometry.height} width={geometry.width}>
-          {availableCells.map(cell => (
-            <Rect
-              fill={theme.chartColors.sequentialHigh}
-              fillOpacity={Math.max(0.12, cell.ratio)}
-              height={Math.max(0, cell.height - 2)}
-              key={cell.id ?? `${typeof cell.x}:${String(cell.x)}:${typeof cell.y}:${String(cell.y)}`}
-              rx={3}
-              transform={`translate(${cell.xCoordinate + 1} ${cell.yCoordinate + 1})`}
-              width={Math.max(0, cell.width - 2)}
-            />
-          ))}
-        </Svg>
-      </ScrollView>
+    <LumenChartFrame label={label} style={style} summary={resolvedSummary} {...props}>
+      {hasData ?
+        (
+          <ScrollView horizontal>
+            <Svg height={geometry.height} width={geometry.width}>
+              {availableCells.map(cell => (
+                <Rect
+                  fill={theme.chartColors.sequentialHigh}
+                  fillOpacity={Math.max(0.12, cell.ratio)}
+                  height={Math.max(0, cell.height - 2)}
+                  key={cell.id ?? `${typeof cell.x}:${String(cell.x)}:${typeof cell.y}:${String(cell.y)}`}
+                  rx={3}
+                  transform={`translate(${cell.xCoordinate + 1} ${cell.yCoordinate + 1})`}
+                  width={Math.max(0, cell.width - 2)}
+                />
+              ))}
+            </Svg>
+          </ScrollView>
+        ) :
+        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
       {showData ?
         (
           <LumenChartStructuredDataList rows={data.map(datum => ({

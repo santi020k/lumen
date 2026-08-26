@@ -42,6 +42,7 @@ import {
   type LumenRangeDatum,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
+  type LumenScatterGeometryPoint,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
@@ -5269,6 +5270,70 @@ const chartBooleanAttribute = (
   return element.getAttribute(name) !== 'false'
 }
 
+const parseChartSeriesCandidate = (
+  candidate: unknown,
+  seriesIndex: number
+): LumenChartSeries | undefined => {
+  if (typeof candidate !== 'object' || candidate === null) return undefined
+
+  const record = candidate as Record<string, unknown>
+
+  if (!Array.isArray(record.data)) return undefined
+
+  const data = record.data.flatMap(datum => {
+    if (
+      typeof datum !== 'object' ||
+      datum === null ||
+      !('x' in datum) ||
+      !('y' in datum)
+    ) return []
+
+    const point = datum as Record<string, unknown>
+
+    if (
+      (typeof point.x !== 'string' && typeof point.x !== 'number') ||
+      (point.y !== null &&
+        (typeof point.y !== 'number' || !Number.isFinite(point.y)))
+    ) return []
+
+    return [
+      {
+        ...(typeof point.id === 'string' ? { id: point.id } : {}),
+        ...(typeof point.label === 'string' ? { label: point.label } : {}),
+        ...(typeof point.size === 'number' && Number.isFinite(point.size) ?
+          { size: point.size } :
+          {}),
+        ...(typeof point.tone === 'string' &&
+          lumenChartTones.includes(point.tone as LumenChartTone) ?
+          { tone: point.tone as LumenChartTone } :
+          {}),
+        x: point.x,
+        ...(typeof point.xLabel === 'string' ? { xLabel: point.xLabel } : {}),
+        y: point.y
+      }
+    ]
+  })
+
+  const tone =
+    typeof record.tone === 'string' &&
+    lumenChartTones.includes(record.tone as LumenChartTone) ?
+      (record.tone as LumenChartTone) :
+      undefined
+
+  return {
+    data,
+    id:
+      typeof record.id === 'string' ?
+        record.id :
+        `series-${seriesIndex + 1}`,
+    label:
+      typeof record.label === 'string' ?
+        record.label :
+        `Series ${seriesIndex + 1}`,
+    ...(tone ? { tone } : {})
+  }
+}
+
 const parseChartSeries = (value: string | null): LumenChartSeries[] => {
   if (!value) return []
 
@@ -5277,71 +5342,10 @@ const parseChartSeries = (value: string | null): LumenChartSeries[] => {
 
     if (!Array.isArray(parsed)) return []
 
-    return parsed.flatMap((candidate, seriesIndex) => {
-      if (typeof candidate !== 'object' || candidate === null) return []
+    return parsed.flatMap((candidate: unknown, seriesIndex) => {
+      const series = parseChartSeriesCandidate(candidate, seriesIndex)
 
-      const record = candidate as Record<string, unknown>
-
-      if (!Array.isArray(record.data)) return []
-
-      const candidateData = record.data as unknown[]
-
-      const data = candidateData.flatMap(datum => {
-        if (
-          typeof datum !== 'object' ||
-          datum === null ||
-          !('x' in datum) ||
-          !('y' in datum)
-        )
-          return []
-
-        const point = datum as Record<string, unknown>
-
-        if (
-          (typeof point.x !== 'string' && typeof point.x !== 'number') ||
-          (point.y !== null &&
-            (typeof point.y !== 'number' || !Number.isFinite(point.y)))
-        )
-          return []
-
-        return [
-          {
-            ...(typeof point.id === 'string' ? { id: point.id } : {}),
-            ...(typeof point.label === 'string' ? { label: point.label } : {}),
-            ...(typeof point.size === 'number' && Number.isFinite(point.size) ?
-              { size: point.size } :
-              {}),
-            ...(typeof point.tone === 'string' &&
-              lumenChartTones.includes(point.tone as LumenChartTone) ?
-              { tone: point.tone as LumenChartTone } :
-              {}),
-            x: point.x,
-            ...(typeof point.xLabel === 'string' ? { xLabel: point.xLabel } : {}),
-            y: point.y
-          }
-        ]
-      })
-
-      const tone =
-        typeof record.tone === 'string' &&
-        lumenChartTones.includes(record.tone as LumenChartTone) ?
-          (record.tone as LumenChartTone) :
-          undefined
-
-      return [
-        {
-          data,
-          id:
-            typeof record.id === 'string' ?
-              record.id :
-              `series-${seriesIndex + 1}`,
-          label:
-            typeof record.label === 'string' ?
-              record.label :
-              `Series ${seriesIndex + 1}`,
-          ...(tone ? { tone } : {})
-        }
-      ]
+      return series ? [series] : []
     })
   } catch {
     return []
@@ -5349,17 +5353,17 @@ const parseChartSeries = (value: string | null): LumenChartSeries[] => {
 }
 
 const parseComboChartSeries = (value: string | null): LumenComboSeries[] => {
-  const series = parseChartSeries(value)
-
-  if (!value) return series.map(item => ({ ...item, mark: 'line' }))
+  if (!value) return []
 
   try {
     const parsed: unknown = JSON.parse(value)
 
     if (!Array.isArray(parsed)) return []
 
-    return series.map((item, index) => {
-      const candidate: unknown = parsed[index]
+    return parsed.flatMap((candidate: unknown, seriesIndex) => {
+      const item = parseChartSeriesCandidate(candidate, seriesIndex)
+
+      if (!item) return []
 
       const mark = typeof candidate === 'object' && candidate !== null && 'mark' in candidate &&
         (candidate.mark === 'area' || candidate.mark === 'bar' || candidate.mark === 'line') ?
@@ -5509,6 +5513,29 @@ const chartDataTableHtml = (
     '<details class="ui-chart__data"><summary>View chart data</summary>',
     '<div><table><thead><tr><th scope="col">Category</th>',
     `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+const scatterDataTableHtml = (
+  points: readonly LumenScatterGeometryPoint[],
+  formatCategory: (category: number | string) => string = String,
+  formatValue: (value: number) => string = String
+): string => {
+  const rows = points
+    .map(point => [
+      `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
+      `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
+      `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
+      `<td>${escapeChartHtml(point.size === undefined || point.size === null ? 'Not available' : formatValue(point.size))}</td></tr>`
+    ].join(''))
+    .join('')
+
+  return [
+    '<details class="ui-chart__data"><summary>View chart data</summary>',
+    '<div><table><thead><tr><th scope="col">X</th>',
+    '<th scope="col">Series</th><th scope="col">Value</th>',
+    '<th scope="col">Size</th></tr></thead>',
+    `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
 
@@ -6093,8 +6120,8 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
       `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
-        chartDataTableHtml(
-          getLumenChartCategories(series), series, this.categoryFormatter, this.valueFormatter
+        scatterDataTableHtml(
+          geometry.points, this.categoryFormatter, this.valueFormatter
         ) :
         '',
       chartCaptionHtml(this)

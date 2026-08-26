@@ -120,6 +120,15 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
   })
 
+  test('bases scatter empty state on projected geometry', async () => {
+    const scatter = await readFile(
+      new URL('./components/ScatterChart.astro', packageRoot), 'utf8'
+    )
+
+    expect(scatter).toContain('const hasData = geometry.points.length > 0')
+    expect(scatter).not.toContain('hasLumenChartData')
+  })
+
   test('normalizes Astro Action field errors for fields and summaries', () => {
     expect(
       normalizeAstroActionErrors(

@@ -295,6 +295,8 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
     expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
     expect(scatter.querySelectorAll('.ui-scatter-chart__marks circle')).toHaveLength(2)
+    expect(scatter.querySelector('details table')?.textContent).toContain('Size')
+    expect(scatter.querySelector('details table')?.textContent).toContain('20')
     expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
     expect(range.querySelector('.ui-range-chart__area')).not.toBeNull()
     expect(combo.querySelector('.ui-bar-chart__marks rect')).not.toBeNull()
@@ -356,6 +358,23 @@ describe('@santi020k/lumen-elements primitives', () => {
 
     expect(categoryCenters).toHaveLength(3)
     expect(lineXCoordinates).toEqual(categoryCenters)
+  })
+
+  test('keeps serialized combo marks attached after malformed series', () => {
+    const combo = connect('lumen-combo-chart', {
+      series: JSON.stringify([
+        {},
+        {
+          data: [{ x: 'Mon', y: 4 }],
+          id: 'bars',
+          label: 'Bars',
+          mark: 'bar'
+        }
+      ])
+    })
+
+    expect(combo.querySelectorAll('.ui-bar-chart__marks rect')).toHaveLength(1)
+    expect(combo.querySelector('.ui-line-chart__line')).toBeNull()
   })
 
   test('omits unavailable heatmap cells while preserving semantic table gaps', () => {
