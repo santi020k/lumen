@@ -16,7 +16,7 @@ jobs:
   classify:
     name: Classify pull request
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     outputs:
       native: ${{ steps.paths.outputs.native }}
       compatibility: ${{ steps.paths.outputs.compatibility }}
