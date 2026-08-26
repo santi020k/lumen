@@ -8,6 +8,7 @@ public final class com/santi020k/lumen/AdditionalComponentsKt {
 	public static final fun LumenTextarea (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;ZILandroidx/compose/runtime/Composer;II)V
 	public static final fun LumenToast (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenBannerVariant;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
+
 public final class com/santi020k/lumen/ContentComponentsKt {
 	public static final fun LumenBackdrop (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenBackdropIntensity;Lcom/santi020k/lumen/LumenBackdropTone;Lcom/santi020k/lumen/LumenBackdropVariant;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenDisclosure (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
@@ -3135,3 +3136,4 @@ public final class com/santi020k/lumen/StructuredComponentsKt {
 	public static final fun lumenBannerPalette (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenBannerVariant;)Lcom/santi020k/lumen/LumenBannerPalette;
 	public static final fun lumenMetricColor (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenMetricTone;)J
 }
+
