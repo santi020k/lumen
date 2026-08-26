@@ -52,6 +52,7 @@ import {
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
+  type LumenChartDatum,
   type LumenChartOrientation,
   type LumenChartScaleType,
   type LumenChartSeries,
@@ -1630,15 +1631,16 @@ export const Heatmap = ({
   ...props
 }: HeatmapProps) => {
   const geometry = createLumenHeatmapGeometry(data)
-  const hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))
+  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
+  const hasData = availableCells.length > 0
 
   return (
-    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? `${geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length} available heatmap cells.`} {...props}>
+    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? `${availableCells.length} available heatmap cells.`} {...props}>
       {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-heatmap__cells">
-            {geometry.cells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${String(cell.x)}:${String(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? (cell.value === null ? 'Not available' : formatValue(cell.value))}`}</title></rect>)}
+            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${String(cell.x)}:${String(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
           </g>
         </svg>
       </div>
@@ -1659,7 +1661,7 @@ export const Heatmap = ({
                   <tr key={cell.id ?? `${String(cell.x)}:${String(cell.y)}`}>
                     <th scope="row">{cell.xLabel ?? cell.x}</th>
                     <td>{cell.yLabel ?? cell.y}</td>
-                    <td>{cell.label ?? (cell.value === null ? 'Not available' : formatValue(cell.value))}</td>
+                    <td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? 'Not available' : formatValue(cell.value))}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1771,7 +1773,40 @@ export const ComboChart = ({
   const barSeries = alignedSeries.filter(item => item.mark === 'bar')
   const lineSeries = alignedSeries.filter(item => item.mark !== 'bar')
   const bars = createLumenBarGeometry(barSeries, { domain, height, width })
-  const lines = lineSeries.map(item => createLumenLineGeometry(item.data, { domain, height, padding, width }))
+
+  const categoryPositions = new Map(
+    bars.categories.map(category => [`${typeof category.category}:${String(category.category)}`, category.x])
+  )
+
+  const drawableWidth = width - padding * 2
+
+  const alignComboLineDatum = (datum: LumenChartDatum): LumenChartDatum => {
+    if (barSeries.length === 0) return datum
+
+    return {
+      ...datum,
+      x: ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) / drawableWidth
+    }
+  }
+
+  const lineGeometryOptions = {
+    domain,
+    height,
+    padding,
+    width,
+    ...(barSeries.length === 0 ?
+      {} :
+      {
+        xDomain: { max: 1, min: 0 },
+        xScale: 'linear' as const
+      })
+  }
+
+  const lines = lineSeries.map(item => createLumenLineGeometry(
+    item.data.map(alignComboLineDatum),
+    lineGeometryOptions
+  ))
+
   const hasData = hasLumenChartData(series)
 
   return (

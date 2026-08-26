@@ -1,6 +1,7 @@
 import type {
   ComponentPropsWithoutRef,
-  ReactElement
+  ReactElement,
+  ReactNode
 } from 'react'
 import { isValidElement } from 'react'
 
@@ -99,6 +100,14 @@ import {
 type Props = Record<string, unknown>
 
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
+const descendantsOf = (node: ReactNode): ReactElement[] => {
+  if (Array.isArray(node)) return node.flatMap(descendantsOf)
+  if (!isValidElement(node)) return []
+
+  const element = node as ReactElement
+
+  return [element, ...descendantsOf(propsOf(element).children as ReactNode)]
+}
 const OptimizedImage = (_props: ComponentPropsWithoutRef<'img'> & { preload?: boolean }) => null
 
 describe('@santi020k/lumen-react components', () => {
@@ -646,6 +655,48 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(heatmap).className).toBe('ui-heatmap')
     expect(propsOf(range).className).toBe('ui-range-chart ui-chart-tone--series-1')
     expect(propsOf(combo).className).toBe('ui-combo-chart')
+  })
+
+  test('omits unavailable heatmap cells from the SVG while preserving table gaps', () => {
+    const heatmap = Heatmap({
+      data: [
+        { value: 8, x: 'Mon', y: 'Morning' },
+        { value: null, x: 'Tue', y: 'Morning' },
+        { value: Number.POSITIVE_INFINITY, x: 'Wed', y: 'Morning' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(heatmap)
+    const cells = descendants.filter(element => element.type === 'rect')
+    const tableValues = descendants
+      .filter(element => element.type === 'td')
+      .map(element => propsOf(element).children)
+
+    expect(cells).toHaveLength(1)
+    expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
+  })
+
+  test('aligns combo line points with bar category centers', () => {
+    const data = [
+      { x: 'Mon', y: 4 },
+      { x: 'Tue', y: 8 },
+      { x: 'Wed', y: 6 }
+    ]
+    const combo = ComboChart({
+      series: [
+        { data, id: 'bars', label: 'Bars', mark: 'bar' },
+        { data, id: 'line', label: 'Line', mark: 'line' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(combo)
+    const categoryCenters = descendants
+      .filter(element => element.type === 'rect')
+      .map(element => Number((Number(propsOf(element).x) + Number(propsOf(element).width) / 2).toFixed(3)))
+    const line = descendants.find(element => propsOf(element).className === 'ui-line-chart__line')
+    const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+      .map(match => Number(match[1]))
+
+    expect(categoryCenters).toHaveLength(3)
+    expect(lineXCoordinates).toEqual(categoryCenters)
   })
 
   test('renders the empty state when chart series contain no usable data', () => {
