@@ -116,6 +116,30 @@ the application supplies the active panel, so routing and data ownership stay ou
 </LumenTabs>
 ```
 
+Picker, Slider, and Gauge complete the shared phone control contract without adding another native
+dependency. Picker values remain controlled, Slider supports touch/drag plus screen-reader
+increment and decrement actions, and Gauge normalizes invalid ranges before exposing progress
+semantics:
+
+```tsx
+<LumenPicker
+  label="Deployment region"
+  value={region}
+  options={regionOptions}
+  onValueChange={setRegion}
+/>
+<LumenSlider
+  label="Minimum speed"
+  value={minimumSpeed}
+  min={1_000}
+  max={5_000}
+  step={100}
+  valueLabel={`${minimumSpeed} RPM`}
+  onValueChange={setMinimumSpeed}
+/>
+<LumenGauge label="Platform readiness" value={57} valueLabel="57 shared" tone="success" />
+```
+
 Use `LumenNavigationBar` for a small set of peer app destinations. The application still owns the
 router, navigation history, and selected screen. Items support dot, text, and capped count badges;
 `onReselect` handles app-owned scroll-to-top, refresh, or nested-stack behavior:

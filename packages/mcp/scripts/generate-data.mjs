@@ -869,6 +869,8 @@ const extensionOf = fileName => {
   return index === -1 ? '' : fileName.slice(index)
 }
 
+const escapeRegExp = value => value.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 const loadNativeSources = async (repoRoot, nativeRegistry) => {
   const sources = {}
 
@@ -895,7 +897,23 @@ const loadNativeSources = async (repoRoot, nativeRegistry) => {
 }
 
 const findNativeSourceFile = (sources, platform, symbol) => {
-  const match = Object.entries(sources[platform]).find(([, source]) => source.includes(symbol))
+  const escapedSymbol = escapeRegExp(symbol)
+  let declarationPattern
+
+  if (platform === 'react-native') {
+    declarationPattern = new RegExp(
+      `\\b(?:export\\s+)?(?:class|const|function)\\s+${escapedSymbol}\\b`
+    )
+  } else if (platform === 'swiftui') {
+    declarationPattern = new RegExp(`\\b(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`)
+  } else {
+    declarationPattern = new RegExp(
+      '\\b(?:fun\\s+(?:<[^>]+>\\s*)?|(?:data\\s+|enum\\s+)?class\\s+|object\\s+)' +
+      `${escapedSymbol}\\b`
+    )
+  }
+
+  const match = Object.entries(sources[platform]).find(([, source]) => declarationPattern.test(source))
 
   if (!match) throw new Error(`Missing ${platform} source for native symbol ${symbol}.`)
 

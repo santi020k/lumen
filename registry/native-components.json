@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "adapters": {
     "reactNative": {
       "package": "@santi020k/lumen-react-native",
@@ -563,6 +563,7 @@
       "contract": "Native single-value selection using platform-appropriate menu or picker presentation",
       "accessibility": "Preserves native selection behavior and reports the selected value",
       "symbols": {
+        "reactNative": "LumenPicker",
         "swiftUI": "LumenPicker",
         "compose": "LumenPicker"
       }
@@ -573,6 +574,7 @@
       "contract": "Continuous or stepped range input with visible formatted value context",
       "accessibility": "Preserves native adjustable semantics and reports the formatted current value",
       "symbols": {
+        "reactNative": "LumenSlider",
         "swiftUI": "LumenSlider",
         "compose": "LumenSlider"
       }
@@ -583,6 +585,7 @@
       "contract": "Clamped circular metric with a formatted accessible value",
       "accessibility": "Exposes a label, normalized range, and formatted current value",
       "symbols": {
+        "reactNative": "LumenGauge",
         "swiftUI": "LumenGauge",
         "compose": "LumenGauge"
       }
@@ -645,6 +648,7 @@
     {
       "id": "wearable-action",
       "tier": "shared",
+      "formFactor": "wearable",
       "contract": "At-a-glance round primary action with semantic intent, disabled state, and wearable sizing",
       "accessibility": "Requires a concise action label and preserves native button semantics",
       "symbols": {
@@ -655,6 +659,7 @@
     {
       "id": "wearable-progress",
       "tier": "shared",
+      "formFactor": "wearable",
       "contract": "Clamped circular progress surrounding app-owned wearable content",
       "accessibility": "Exposes a normalized progress range without duplicating inner content",
       "symbols": {
@@ -665,6 +670,7 @@
     {
       "id": "wearable-status",
       "tier": "shared",
+      "formFactor": "wearable",
       "contract": "Compact text-first wearable status using semantic tone",
       "accessibility": "Keeps status meaning in text rather than color alone",
       "symbols": {
@@ -675,6 +681,7 @@
     {
       "id": "wearable-metric",
       "tier": "shared",
+      "formFactor": "wearable",
       "contract": "At-a-glance wearable label, value, and optional detail",
       "accessibility": "Presents the metric as one concise readable unit",
       "symbols": {
@@ -685,6 +692,7 @@
     {
       "id": "wearable-list-row",
       "tier": "shared",
+      "formFactor": "wearable",
       "contract": "Compact wearable row with flexible leading, content, and trailing slots",
       "accessibility": "Preserves child action semantics and readable traversal order",
       "symbols": {

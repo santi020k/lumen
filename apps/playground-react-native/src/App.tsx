@@ -47,6 +47,7 @@ import {
   LumenDivider,
   LumenEmptyState,
   LumenFieldGroup,
+  LumenGauge,
   LumenGraphic,
   LumenHeatmap,
   LumenIcon,
@@ -60,6 +61,7 @@ import {
   LumenNavigationBar,
   LumenPhoneInput,
   type LumenPhoneNumber,
+  LumenPicker,
   LumenPieChart,
   LumenProgress,
   LumenProvider,
@@ -74,6 +76,7 @@ import {
   LumenShareButton,
   LumenSheet,
   LumenSkeleton,
+  LumenSlider,
   LumenSparkline,
   LumenSpinner,
   LumenStat,
@@ -214,6 +217,9 @@ const componentNames = [
   'Stat',
   'Section header',
   'Status bar',
+  'Picker',
+  'Slider',
+  'Gauge',
   'Alert dialog',
   'Sheet',
   'Menu',
@@ -757,6 +763,8 @@ const Playground = ({
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [profile, setProfile] = useState('balanced')
+  const [region, setRegion] = useState('americas')
+  const [minimumSpeed, setMinimumSpeed] = useState(2_400)
   const [density, setDensity] = useState('comfortable')
   const [detailsExpanded, setDetailsExpanded] = useState(true)
   const [showBanner, setShowBanner] = useState(true)
@@ -923,6 +931,8 @@ const Playground = ({
             'Date field',
             'Date range field',
             'Phone input',
+            'Picker',
+            'Slider',
             'Checkbox',
             'Radio group',
             'Segmented control',
@@ -970,6 +980,29 @@ const Playground = ({
               onValueChange={setPhoneNumber}
               value={phoneNumber}
             />
+            <View testID="component-picker">
+              <LumenPicker
+                label="Deployment region"
+                onValueChange={setRegion}
+                options={[
+                  { label: 'Americas', value: 'americas' },
+                  { label: 'Europe', value: 'europe' },
+                  { disabled: true, label: 'Asia Pacific (coming soon)', value: 'asia-pacific' }
+                ]}
+                value={region}
+              />
+            </View>
+            <View testID="component-slider">
+              <LumenSlider
+                label="Minimum speed"
+                max={5_000}
+                min={1_000}
+                onValueChange={setMinimumSpeed}
+                step={100}
+                value={minimumSpeed}
+                valueLabel={`${minimumSpeed} RPM`}
+              />
+            </View>
             <LumenFieldGroup
               description="These controls retain independent focus and labels."
               label="Publication checks"
@@ -1186,7 +1219,7 @@ const Playground = ({
         </Visibility>
 
         <Visibility
-          visible={isAnyVisible('Avatar', 'List row', 'Stat', 'Section header')}
+          visible={isAnyVisible('Avatar', 'List row', 'Stat', 'Section header', 'Gauge')}
         >
           <ComponentSection description="Identity, metrics, and structured rows compose into product content." title="Data display">
             <LumenSectionHeader
@@ -1220,6 +1253,14 @@ const Playground = ({
                 tone="success"
                 value="Passing"
               />
+              <View style={styles.statItem} testID="component-gauge">
+                <LumenGauge
+                  label="Platform readiness"
+                  tone="success"
+                  value={57}
+                  valueLabel="57 shared"
+                />
+              </View>
             </View>
             <LumenCard variant={saved ? 'success' : 'muted'}>
               <LumenListRow

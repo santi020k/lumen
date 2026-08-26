@@ -1137,6 +1137,38 @@
       "pathname": "/docs/react-native/components/settings-row",
       "title": "Settings row"
     },
+    "/docs/react-native/components/picker": {
+      "alt": "Picker — Lumen UI",
+      "description": "Choose one controlled value through native or accessible menu presentation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/picker",
+      "title": "Picker"
+    },
+    "/docs/react-native/components/slider": {
+      "alt": "Slider — Lumen UI",
+      "description": "Adjust a continuous or stepped numeric value with a visible formatted label.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/slider",
+      "title": "Slider"
+    },
     "/docs/react-native/components/search-field": {
       "alt": "Search field — Lumen UI",
       "description": "Filter native content with a density-aware search field and clear action.",
@@ -1312,6 +1344,22 @@
       ],
       "pathname": "/docs/react-native/components/stat",
       "title": "Stat"
+    },
+    "/docs/react-native/components/gauge": {
+      "alt": "Gauge — Lumen UI",
+      "description": "Show a normalized circular native metric with a formatted accessible value.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--gauge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--gauge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/gauge",
+      "title": "Gauge"
     },
     "/docs/react-native/components/section-header": {
       "alt": "Section header — Lumen UI",
@@ -2067,7 +2115,7 @@
     },
     "/docs/apple/components/picker": {
       "alt": "Picker — Lumen UI",
-      "description": "Choose one value through native SwiftUI or Material selection presentation.",
+      "description": "Choose one controlled value through native or accessible menu presentation.",
       "images": [
         {
           "format": "webp",
@@ -2275,7 +2323,7 @@
     },
     "/docs/apple/components/gauge": {
       "alt": "Gauge — Lumen UI",
-      "description": "Show a normalized circular SwiftUI or Material metric with a formatted accessible value.",
+      "description": "Show a normalized circular native metric with a formatted accessible value.",
       "images": [
         {
           "format": "webp",
@@ -3155,7 +3203,7 @@
     },
     "/docs/android/components/picker": {
       "alt": "Picker — Lumen UI",
-      "description": "Choose one value through native SwiftUI or Material selection presentation.",
+      "description": "Choose one controlled value through native or accessible menu presentation.",
       "images": [
         {
           "format": "webp",
@@ -3363,7 +3411,7 @@
     },
     "/docs/android/components/gauge": {
       "alt": "Gauge — Lumen UI",
-      "description": "Show a normalized circular SwiftUI or Material metric with a formatted accessible value.",
+      "description": "Show a normalized circular native metric with a formatted accessible value.",
       "images": [
         {
           "format": "webp",

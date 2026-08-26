@@ -240,6 +240,15 @@ export {
   lumenSpacing
 } from './tokens.generated.js'
 export {
+  LumenGauge,
+  type LumenGaugeProps,
+  LumenPicker,
+  type LumenPickerOption,
+  type LumenPickerProps,
+  LumenSlider,
+  type LumenSliderProps
+} from './value-components.js'
+export {
   createEmptyLumenPhoneNumber,
   getLumenPhoneCountries,
   getLumenPhoneCountry,

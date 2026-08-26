@@ -1724,44 +1724,67 @@ const additionalDefinitions: ComponentDefinition[] = [
       apple: `LumenPicker("Profile", selection: $profile, style: .segmented) {
     Text("Quiet").tag(Profile.quiet)
     Text("Balanced").tag(Profile.balanced)
-}`
+}`,
+      'react-native': `<LumenPicker
+  label="Profile"
+  value={profile}
+  options={profileOptions}
+  onValueChange={setProfile}
+/>`
     },
-    exports: { android: 'LumenPicker', apple: 'LumenPicker' },
+    exports: {
+      android: 'LumenPicker',
+      apple: 'LumenPicker',
+      'react-native': 'LumenPicker'
+    },
     guidance:
       'Use native menu or picker presentation for a compact single choice. Use Segmented control when a small peer set should remain visible.',
     name: 'Picker',
     properties: [
       property(
-        { android: 'value', apple: 'selection' },
-        { android: 'T', apple: 'Binding<SelectionValue>' },
+        { android: 'value', apple: 'selection', 'react-native': 'value' },
+        {
+          android: 'T',
+          apple: 'Binding<SelectionValue>',
+          'react-native': 'Value extends string | number'
+        },
         'Required',
         'Stores the selected value.'
       ),
       property(
-        { android: 'options', apple: 'content' },
+        { android: 'options', apple: 'content', 'react-native': 'options' },
         {
           android: 'List<LumenPickerOption<T>>',
-          apple: '@ViewBuilder () -> Content'
+          apple: '@ViewBuilder () -> Content',
+          'react-native': 'readonly LumenPickerOption<Value>[]'
         },
         'Required',
         'Provides labeled native options.'
       ),
       property(
-        { android: 'onValueChange', apple: 'Binding setter' },
-        '(T) -> Unit',
+        { android: 'onValueChange', apple: 'Binding setter', 'react-native': 'onValueChange' },
+        {
+          android: '(T) -> Unit',
+          apple: 'Binding setter',
+          'react-native': '(value: Value) => void'
+        },
         'Required',
         'Updates the selected value.'
       ),
       property(
-        { android: 'enabled', apple: 'style' },
-        { android: 'Boolean', apple: 'automatic · menu · segmented' },
-        { android: 'true', apple: 'automatic' },
+        { android: 'enabled', apple: 'style', 'react-native': 'enabled' },
+        {
+          android: 'Boolean',
+          apple: 'automatic · menu · segmented',
+          'react-native': 'boolean'
+        },
+        { android: 'true', apple: 'automatic', 'react-native': 'true' },
         'Controls native availability or presentation.'
       )
     ],
     slug: 'picker',
     summary:
-      'Choose one value through native SwiftUI or Material selection presentation.'
+      'Choose one controlled value through native or accessible menu presentation.'
   },
   {
     accessibility:
@@ -1782,38 +1805,52 @@ const additionalDefinitions: ComponentDefinition[] = [
     in: 1_000...5_000,
     step: 100,
     valueLabel: "\\(Int(minimumSpeed)) RPM"
-)`
+)`,
+      'react-native': `<LumenSlider
+  label="Minimum speed"
+  value={minimumSpeed}
+  min={1_000}
+  max={5_000}
+  step={100}
+  valueLabel={String(minimumSpeed) + ' RPM'}
+  onValueChange={setMinimumSpeed}
+/>`
     },
-    exports: { android: 'LumenSlider', apple: 'LumenSlider' },
+    exports: {
+      android: 'LumenSlider',
+      apple: 'LumenSlider',
+      'react-native': 'LumenSlider'
+    },
     guidance:
       'Use for an approximate or continuously adjustable numeric value. Prefer TextField or Picker when exact entry is more important.',
     name: 'Slider',
     properties: [
       property(
         'value',
-        { android: 'Float', apple: 'Binding<Double>' },
+        { android: 'Float', apple: 'Binding<Double>', 'react-native': 'number' },
         'Required',
         'Stores the current numeric value.'
       ),
       property(
-        { android: 'valueRange', apple: 'bounds' },
+        { android: 'valueRange', apple: 'bounds', 'react-native': 'min / max' },
         {
           android: 'ClosedFloatingPointRange<Float>',
-          apple: 'ClosedRange<Double>'
+          apple: 'ClosedRange<Double>',
+          'react-native': 'number'
         },
         'Required',
         'Defines the valid range.'
       ),
       property(
-        { android: 'steps', apple: 'step' },
-        { android: 'Int', apple: 'Double?' },
-        { android: '0', apple: 'nil' },
+        { android: 'steps', apple: 'step', 'react-native': 'step' },
+        { android: 'Int', apple: 'Double?', 'react-native': 'number' },
+        { android: '0', apple: 'nil', 'react-native': '1% of range' },
         'Adds valid stepped increments when positive and finite.'
       ),
       property(
         'valueLabel',
-        'String?',
-        'nil',
+        { android: 'String', apple: 'String?', 'react-native': 'string' },
+        { android: 'value.toString()', apple: 'nil', 'react-native': 'String(value)' },
         'Shows a formatted current value.'
       )
     ],
@@ -2720,34 +2757,44 @@ const [phone, setPhone] = useState(() =>
     valueLabel: "Fair",
     systemName: "thermometer.medium",
     tone: .warning
-)`
+)`,
+      'react-native': `<LumenGauge
+  label="Thermal pressure"
+  value={48}
+  valueLabel="Fair"
+  tone="warning"
+/>`
     },
-    exports: { android: 'LumenGauge', apple: 'LumenGauge' },
+    exports: {
+      android: 'LumenGauge',
+      apple: 'LumenGauge',
+      'react-native': 'LumenGauge'
+    },
     guidance:
       'Use for a current bounded metric, not task completion. Use Progress when the value represents work moving toward completion.',
     name: 'Gauge',
     properties: [
       property(
         'label',
-        { android: 'String', apple: 'LocalizedStringKey' },
+        { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' },
         'Required',
         'Names the bounded metric.'
       ),
       property(
         'value',
-        { android: 'Float', apple: 'Double' },
+        { android: 'Float', apple: 'Double', 'react-native': 'number' },
         'Required',
         'Provides the current value.'
       ),
       property(
         'max',
-        { android: 'Float', apple: 'Double' },
+        { android: 'Float', apple: 'Double', 'react-native': 'number' },
         '100',
         'Provides the positive maximum.'
       ),
       property(
         'valueLabel',
-        'String',
+        { android: 'String', apple: 'String', 'react-native': 'string' },
         'Required',
         'Provides the visible and accessible formatted value.'
       ),
@@ -2760,7 +2807,7 @@ const [phone, setPhone] = useState(() =>
     ],
     slug: 'gauge',
     summary:
-      'Show a normalized circular SwiftUI or Material metric with a formatted accessible value.'
+      'Show a normalized circular native metric with a formatted accessible value.'
   },
   {
     accessibility:

@@ -35,6 +35,12 @@ try {
       await page.getByLabel('Component actions').click()
     }
 
+    const focusedExample = page.getByTestId(`component-${component.slug}`)
+
+    if (await focusedExample.count() === 1) {
+      await focusedExample.scrollIntoViewIfNeeded()
+    }
+
     await page.screenshot({
       fullPage: true,
       path: join(outputDirectory, `${component.slug}.png`)

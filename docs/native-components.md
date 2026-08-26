@@ -242,9 +242,9 @@ owned.
 | Stat              | `LumenStat`             | `LumenStat`              | `LumenStat`             | Compact semantic metric with label, value, and detail                     |
 | Section header    | `LumenSectionHeader`    | `LumenSectionHeader`     | `LumenSectionHeader`    | Section identity, optional count, and trailing actions                    |
 | Status bar        | `LumenStatusBar`        | `LumenStatusBar`         | `LumenStatusBar`        | Compact textual status and optional trailing content                      |
-| Picker            | —                       | `LumenPicker`            | `LumenPicker`           | Native single-value selection without a React Native dependency           |
-| Slider            | —                       | `LumenSlider`            | `LumenSlider`           | Native continuous or stepped range input                                  |
-| Gauge             | —                       | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                 |
+| Picker            | `LumenPicker`           | `LumenPicker`            | `LumenPicker`           | Controlled single-value selection with native or accessible menu presentation |
+| Slider            | `LumenSlider`           | `LumenSlider`            | `LumenSlider`           | Native or dependency-free continuous and stepped range input              |
+| Gauge             | `LumenGauge`            | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                 |
 | Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Controlled supplemental surface with native modal dismissal               |
 | Menu              | `LumenMenu`             | `LumenMenu`              | `LumenMenu`             | Anchored actions with disabled and destructive item states                |
 | Share button      | `LumenShareButton`      | `LumenShareButton`       | `LumenShareButton`      | Token-aware action backed by the operating system share surface           |
@@ -288,15 +288,20 @@ They use Lumen tokens and accessibility rules without promising artificial API p
 | `LumenNavigationBarAccessory`   | Compose      | Android      | Compact content coordinated with Material bottom navigation             |
 | `LumenAdaptiveNavigationScaffold` | Compose    | Android      | Window- and posture-adaptive Material navigation bar or rail             |
 
+The versioned native contract registry requires every non-wearable shared component to expose a
+public React Native, SwiftUI, and Compose implementation. Wearable entries carry an explicit
+`formFactor: "wearable"` exception, and the contract check requires those entries in SwiftUI and
+Compose while keeping them out of the React Native phone surface.
+
 The wearable contracts are available only for SwiftUI watchOS targets and the
 `lumen-compose-wear` artifact. They intentionally do not recreate the phone catalog. Use one
 essential action, short statuses, at-a-glance progress and metrics, and compact rows inside native
 watch scrolling or paging containers.
 
-Picker, slider, gauge, date field, and date range field are shared by SwiftUI and Compose because
-both platforms provide stable, dependency-free native controls. React Native applications can pair
-Lumen tokens with their chosen control library rather than making the shared package impose one
-dependency.
+Picker, slider, gauge, date field, and date range field now share one controlled contract across
+React Native, SwiftUI, and Compose. SwiftUI and Compose use their native controls. React Native uses
+dependency-free accessible menu, adjustable, and progress semantics so applications do not need a
+second control package for the common contract.
 
 `LumenNavigationBar` covers a small set of peer app destinations while leaving the selected screen,
 navigation history, deep links, and restoration in application code. Continue using native routers,
