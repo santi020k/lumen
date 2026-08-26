@@ -84,7 +84,11 @@ export default {
 
     if (url.pathname !== '/mcp') return jsonResponse({ error: 'Not found.' }, 404)
 
-    const { success } = await environment.LUMEN_MCP_RATE_LIMITER.limit({ key: 'public-mcp' })
+    const clientAddress = request.headers.get('cf-connecting-ip') ?? 'unknown'
+
+    const { success } = await environment.LUMEN_MCP_RATE_LIMITER.limit({
+      key: `public-mcp:${clientAddress}`
+    })
 
     if (!success) {
       return jsonResponse(
