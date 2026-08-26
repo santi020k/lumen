@@ -64,7 +64,7 @@ jobs:
           else
             echo "mcp=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/docs/|packages/|tests/a11y/|tests/visual/|playwright(\.[^/]*)?\.config\.ts$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/docs/|apps/playground-react-native/|packages/|tests/a11y/|tests/visual/|playwright(\.[^/]*)?\.config\.ts$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
             echo "playwright=true" >> "$GITHUB_OUTPUT"
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
