@@ -113,6 +113,66 @@ import Testing
     _ = LumenComboChart(label: "Combo", series: [series], selection: selection)
 }
 
+@Test func heatmapsOmitUnavailableMarksWhileKeepingSourceDataReadable() {
+    let data = [
+        LumenHeatmapDatum(id: "finite", column: "Mon", row: "AM", value: 8),
+        LumenHeatmapDatum(id: "missing", column: "Tue", row: "AM", value: nil),
+        LumenHeatmapDatum(id: "infinite", column: "Wed", row: "AM", value: .infinity)
+    ]
+
+    #expect(lumenAvailableHeatmapData(data).map(\.id) == ["finite"])
+}
+
+@Test func lineAndRangeChartsSplitAtMissingCategories() {
+    let categories: [LumenChartX] = [.category("Monday"), .category("Tuesday"), .category("Wednesday")]
+    let series = LumenChartSeries(
+        id: "temperature",
+        label: "Temperature",
+        data: [
+            LumenChartDatum(id: "mon", x: categories[0], y: 4),
+            LumenChartDatum(id: "tue", x: categories[1], y: nil),
+            LumenChartDatum(id: "wed", x: categories[2], y: 8)
+        ]
+    )
+    let ranges = [
+        LumenRangeDatum(id: "mon", x: categories[0], low: 2, high: 6),
+        LumenRangeDatum(id: "tue", x: categories[1], low: nil, high: 7),
+        LumenRangeDatum(id: "wed", x: categories[2], low: 5, high: 10)
+    ]
+
+    #expect(
+        lumenSegmentedLineData(series: series, categories: categories).map(\.segmentID)
+            == ["temperature:0", "temperature:1"]
+    )
+    #expect(lumenSegmentedRangeData(ranges).map(\.segmentID) == ["range:0", "range:1"])
+}
+
+@Test func chartCategoriesAlignSparseSeriesByIdentity() {
+    let january = LumenChartX.category("January")
+    let february = LumenChartX.category("February")
+    let revenue = LumenChartSeries(
+        id: "revenue",
+        label: "Revenue",
+        data: [
+            LumenChartDatum(id: "jan", x: january, y: 10),
+            LumenChartDatum(id: "feb", x: february, y: 20)
+        ],
+        mark: .bar
+    )
+    let margin = LumenChartSeries(
+        id: "margin",
+        label: "Margin",
+        data: [LumenChartDatum(id: "feb-margin", x: february, y: 5)],
+        mark: .line
+    )
+
+    #expect(lumenChartCategories([revenue, margin]) == [january, february])
+    #expect(
+        lumenSegmentedLineData(series: margin, categories: [january, february]).map(\.point.id)
+            == ["feb-margin"]
+    )
+}
+
 @Test func buttonMetricsAdaptToDesktopAndMobileInputs() {
     #expect(LumenButtonMetrics.resolve(.sm, density: .compact).minHeight == 28)
     #expect(LumenButtonMetrics.resolve(.md, density: .compact).minHeight == 32)

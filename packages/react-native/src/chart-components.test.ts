@@ -75,7 +75,18 @@ interface ChartDataOutputProps {
   selectedX?: number | string
 }
 
+type Props = Record<string, unknown>
+
 const isReactNodeList = (value: ReactNode): value is ReactNode[] => Array.isArray(value)
+const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
+const descendantsOf = (node: ReactNode): ReactElement[] => {
+  if (Array.isArray(node)) return node.flatMap(descendantsOf)
+  if (!isValidElement(node)) return []
+
+  const element = node as ReactElement
+
+  return [element, ...descendantsOf(propsOf(element).children as ReactNode)]
+}
 
 const dataOutput = (element: ReactElement<ChartFrameOutputProps>): ChartDataOutputProps => {
   if (!isReactNodeList(element.props.children)) {
@@ -132,5 +143,50 @@ describe('Lumen React Native chart components', () => {
 
     expect(dataOutput(heatmap).rows?.[0]?.label).toBe('Monday, Morning: Not available')
     expect(dataOutput(range).rows?.[0]?.label).toBe('Monday: Not available to 18')
+  })
+
+  test('omits unavailable heatmap cells from native SVG marks', () => {
+    const heatmap = LumenHeatmap({
+      data: [
+        { value: 8, x: 'Monday', y: 'Morning' },
+        { value: null, x: 'Tuesday', y: 'Morning' },
+        { value: Number.POSITIVE_INFINITY, x: 'Wednesday', y: 'Morning' }
+      ],
+      label: 'Activity'
+    }) as ReactElement<ChartFrameOutputProps>
+    const cells = descendantsOf(heatmap)
+      .filter(element => propsOf(element).fillOpacity !== undefined)
+
+    expect(cells).toHaveLength(1)
+  })
+
+  test('aligns native combo line points with bar category centers', () => {
+    const data = [
+      { x: 'Mon', y: 4 },
+      { x: 'Tue', y: 8 },
+      { x: 'Wed', y: 6 }
+    ]
+    const combo = LumenComboChart({
+      label: 'Activity',
+      series: [
+        { data, id: 'bars', label: 'Bars', mark: 'bar' },
+        { data, id: 'line', label: 'Line', mark: 'line' }
+      ]
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(combo)
+    const categoryCenters = descendants
+      .filter(element => propsOf(element).rx === 4)
+      .map(element => {
+        const transform = String(propsOf(element).transform)
+        const x = Number(/translate\(([-\d.]+)/u.exec(transform)?.[1])
+
+        return Number((x + Number(propsOf(element).width) / 2).toFixed(3))
+      })
+    const line = descendants.find(element => propsOf(element).fill === 'none')
+    const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+      .map(match => Number(match[1]))
+
+    expect(categoryCenters).toHaveLength(3)
+    expect(lineXCoordinates).toEqual(categoryCenters)
   })
 })

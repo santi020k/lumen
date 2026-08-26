@@ -124,6 +124,74 @@ public struct LumenHeatmapDatum: Identifiable, Sendable {
     }
 }
 
+func lumenAvailableHeatmapData(_ data: [LumenHeatmapDatum]) -> [LumenHeatmapDatum] {
+    data.filter { datum in datum.value?.isFinite == true }
+}
+
+struct LumenLineSegmentDatum: Identifiable {
+    let point: LumenChartDatum
+    let segmentID: String
+
+    var id: String { "\(segmentID):\(point.id)" }
+}
+
+struct LumenRangeSegmentDatum: Identifiable {
+    let point: LumenRangeDatum
+    let segmentID: String
+
+    var id: String { "\(segmentID):\(point.id)" }
+}
+
+func lumenChartCategories(_ series: [LumenChartSeries]) -> [LumenChartX] {
+    series.reduce(into: []) { categories, item in
+        item.data.forEach { datum in
+            if !categories.contains(datum.x) {
+                categories.append(datum.x)
+            }
+        }
+    }
+}
+
+func lumenSegmentedLineData(
+    series: LumenChartSeries,
+    categories: [LumenChartX]
+) -> [LumenLineSegmentDatum] {
+    var segmentIndex = 0
+    var result: [LumenLineSegmentDatum] = []
+
+    for category in categories {
+        guard
+            let point = series.data.first(where: { datum in datum.x == category }),
+            point.y?.isFinite == true
+        else {
+            segmentIndex += 1
+            continue
+        }
+
+        result.append(
+            LumenLineSegmentDatum(point: point, segmentID: "\(series.id):\(segmentIndex)")
+        )
+    }
+
+    return result
+}
+
+func lumenSegmentedRangeData(_ data: [LumenRangeDatum]) -> [LumenRangeSegmentDatum] {
+    var segmentIndex = 0
+    var result: [LumenRangeSegmentDatum] = []
+
+    for point in data {
+        guard point.low?.isFinite == true, point.high?.isFinite == true else {
+            segmentIndex += 1
+            continue
+        }
+
+        result.append(LumenRangeSegmentDatum(point: point, segmentID: "range:\(segmentIndex)"))
+    }
+
+    return result
+}
+
 public struct LumenChartSummary: Equatable, Sendable {
     public let availablePointCount: Int
     public let maximum: Double?
@@ -207,29 +275,54 @@ private func lumenLineMark(
     point: LumenChartDatum,
     series: LumenChartSeries,
     color: Color,
-    area: Bool
+    area: Bool,
+    segmentID: String
 ) -> some ChartContent {
     if let value = point.y, value.isFinite {
         switch point.x {
         case .category(let x):
-            LineMark(x: .value("Category", x), y: .value(series.label, value))
+            LineMark(
+                x: .value("Category", x),
+                y: .value(series.label, value),
+                series: .value("Segment", segmentID)
+            )
                 .foregroundStyle(color)
             if area {
-                AreaMark(x: .value("Category", x), y: .value(series.label, value))
+                AreaMark(
+                    x: .value("Category", x),
+                    y: .value(series.label, value),
+                    series: .value("Segment", segmentID)
+                )
                     .foregroundStyle(color.opacity(LumenChartMetrics.areaOpacity))
             }
         case .number(let x):
-            LineMark(x: .value("X", x), y: .value(series.label, value))
+            LineMark(
+                x: .value("X", x),
+                y: .value(series.label, value),
+                series: .value("Segment", segmentID)
+            )
                 .foregroundStyle(color)
             if area {
-                AreaMark(x: .value("X", x), y: .value(series.label, value))
+                AreaMark(
+                    x: .value("X", x),
+                    y: .value(series.label, value),
+                    series: .value("Segment", segmentID)
+                )
                     .foregroundStyle(color.opacity(LumenChartMetrics.areaOpacity))
             }
         case .time(let x):
-            LineMark(x: .value("Time", x), y: .value(series.label, value))
+            LineMark(
+                x: .value("Time", x),
+                y: .value(series.label, value),
+                series: .value("Segment", segmentID)
+            )
                 .foregroundStyle(color)
             if area {
-                AreaMark(x: .value("Time", x), y: .value(series.label, value))
+                AreaMark(
+                    x: .value("Time", x),
+                    y: .value(series.label, value),
+                    series: .value("Segment", segmentID)
+                )
                     .foregroundStyle(color.opacity(LumenChartMetrics.areaOpacity))
             }
         }
@@ -441,6 +534,8 @@ public struct LumenLineChart: View {
     }
 
     public var body: some View {
+        let categories = lumenChartCategories(series)
+
         LumenChartFrame(
             label: label,
             heading: heading,
@@ -451,8 +546,14 @@ public struct LumenLineChart: View {
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
 
-                    ForEach(item.data) { point in
-                        lumenLineMark(point: point, series: item, color: color, area: area)
+                    ForEach(lumenSegmentedLineData(series: item, categories: categories)) { segmented in
+                        lumenLineMark(
+                            point: segmented.point,
+                            series: item,
+                            color: color,
+                            area: area,
+                            segmentID: segmented.segmentID
+                        )
                     }
                 }
             }
@@ -628,29 +729,36 @@ public struct LumenRangeChart: View {
     }
 
     public var body: some View {
+        let segmentedData = lumenSegmentedRangeData(data)
+
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            Chart(data) { point in
+            Chart(segmentedData) { segmented in
+                let point = segmented.point
+
                 if let low = point.low, let high = point.high, low.isFinite, high.isFinite {
                     switch point.x {
                     case .category(let x):
                         AreaMark(
                             x: .value("Category", x),
                             yStart: .value("Low", low),
-                            yEnd: .value("High", high)
+                            yEnd: .value("High", high),
+                            series: .value("Segment", segmented.segmentID)
                         )
                         .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
                     case .number(let x):
                         AreaMark(
                             x: .value("X", x),
                             yStart: .value("Low", low),
-                            yEnd: .value("High", high)
+                            yEnd: .value("High", high),
+                            series: .value("Segment", segmented.segmentID)
                         )
                         .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
                     case .time(let x):
                         AreaMark(
                             x: .value("Time", x),
                             yStart: .value("Low", low),
-                            yEnd: .value("High", high)
+                            yEnd: .value("High", high),
+                            series: .value("Segment", segmented.segmentID)
                         )
                         .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
                     }
@@ -837,12 +945,13 @@ public struct LumenHeatmap: View {
     }
 
     public var body: some View {
-        let values = data.compactMap(\.value).filter(\.isFinite)
+        let availableData = lumenAvailableHeatmapData(data)
+        let values = availableData.compactMap(\.value)
         let minimum = values.min() ?? 0
         let maximum = values.max() ?? 1
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            Chart(data) { datum in
+            Chart(availableData) { datum in
                 RectangleMark(
                     x: .value("Column", datum.column),
                     y: .value("Row", datum.row)
@@ -879,22 +988,6 @@ private func lumenHeatmapOpacity(value: Double?, minimum: Double, maximum: Doubl
     return max(0.12, min(1, (value - minimum) / (maximum - minimum)))
 }
 
-@ChartContentBuilder
-private func lumenComboMark(
-    point: LumenChartDatum,
-    series: LumenChartSeries,
-    color: Color
-) -> some ChartContent {
-    switch series.mark {
-    case .area:
-        lumenLineMark(point: point, series: series, color: color, area: true)
-    case .bar:
-        lumenBarMark(point: point, series: series, color: color, stacking: .unstacked)
-    case .line:
-        lumenLineMark(point: point, series: series, color: color, area: false)
-    }
-}
-
 public struct LumenComboChart: View {
     @Environment(\.lumenTheme) private var theme
 
@@ -919,13 +1012,43 @@ public struct LumenComboChart: View {
     }
 
     public var body: some View {
+        let categories = lumenChartCategories(series)
+
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
             Chart {
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
 
-                    ForEach(item.data) { point in
-                        lumenComboMark(point: point, series: item, color: color)
+                    switch item.mark {
+                    case .bar:
+                        ForEach(item.data) { point in
+                            lumenBarMark(
+                                point: point,
+                                series: item,
+                                color: color,
+                                stacking: .unstacked
+                            )
+                        }
+                    case .area:
+                        ForEach(lumenSegmentedLineData(series: item, categories: categories)) { segmented in
+                            lumenLineMark(
+                                point: segmented.point,
+                                series: item,
+                                color: color,
+                                area: true,
+                                segmentID: segmented.segmentID
+                            )
+                        }
+                    case .line:
+                        ForEach(lumenSegmentedLineData(series: item, categories: categories)) { segmented in
+                            lumenLineMark(
+                                point: segmented.point,
+                                series: item,
+                                color: color,
+                                area: false,
+                                segmentID: segmented.segmentID
+                            )
+                        }
                     }
                 }
             }

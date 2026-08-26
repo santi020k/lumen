@@ -23,6 +23,7 @@ import {
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
+  type LumenChartDatum,
   type LumenChartSeries,
   type LumenChartTone,
   type LumenComboSeries,
@@ -612,6 +613,7 @@ export const LumenHeatmap = ({
 }: LumenHeatmapProps): ReactElement => {
   const theme = useLumenTheme()
   const geometry = createLumenHeatmapGeometry(data)
+  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
 
@@ -619,7 +621,7 @@ export const LumenHeatmap = ({
     <LumenChartFrame label={label} style={style} summary={summary} {...props}>
       <ScrollView horizontal>
         <Svg height={geometry.height} width={geometry.width}>
-          {geometry.cells.map(cell => (
+          {availableCells.map(cell => (
             <Rect
               fill={theme.chartColors.sequentialHigh}
               fillOpacity={Math.max(0.12, cell.ratio)}
@@ -746,6 +748,35 @@ export const LumenComboChart = ({
   const barSeries = aligned.filter(item => item.mark === 'bar')
   const lineSeries = aligned.filter(item => item.mark !== 'bar')
   const bars = createLumenBarGeometry(barSeries, { domain, height, width })
+
+  const categoryPositions = new Map(
+    bars.categories.map(category => [`${typeof category.category}:${String(category.category)}`, category.x])
+  )
+
+  const drawableWidth = width - padding * 2
+
+  const alignComboLineDatum = (datum: LumenChartDatum): LumenChartDatum => {
+    if (barSeries.length === 0) return datum
+
+    return {
+      ...datum,
+      x: ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) / drawableWidth
+    }
+  }
+
+  const lineGeometryOptions = {
+    domain,
+    height,
+    padding,
+    width,
+    ...(barSeries.length === 0 ?
+      {} :
+      {
+        xDomain: { max: 1, min: 0 },
+        xScale: 'linear' as const
+      })
+  }
+
   const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter)
 
   return (
@@ -765,12 +796,10 @@ export const LumenComboChart = ({
                 />
               ))}
               {lineSeries.map((item, index) => {
-                const geometry = createLumenLineGeometry(item.data, {
-                  domain,
-                  height,
-                  padding,
-                  width
-                })
+                const geometry = createLumenLineGeometry(
+                  item.data.map(alignComboLineDatum),
+                  lineGeometryOptions
+                )
 
                 const color = lumenChartToneColor(
                   resolveLumenChartTone(item.tone, index + barSeries.length), theme

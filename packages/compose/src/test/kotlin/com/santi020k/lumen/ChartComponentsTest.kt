@@ -58,4 +58,76 @@ class ChartComponentsTest {
         assertEquals(-8.0, summary.maximum)
         assertEquals("No chart data available.", empty.spokenDescription)
     }
+
+    @Test
+    fun chartCategoriesAndValuesAlignByIdentityInsteadOfSeriesPosition() {
+        val january = LumenChartX.Category("January")
+        val february = LumenChartX.Category("February")
+        val revenue = LumenChartSeries(
+            id = "revenue",
+            label = "Revenue",
+            data = listOf(
+                LumenChartDatum("jan-revenue", january, 10.0),
+                LumenChartDatum("feb-revenue", february, 20.0)
+            ),
+            mark = LumenComboMark.Bar
+        )
+        val margin = LumenChartSeries(
+            id = "margin",
+            label = "Margin",
+            data = listOf(LumenChartDatum("feb-margin", february, 5.0)),
+            mark = LumenComboMark.Bar
+        )
+        val categories = lumenChartCategories(listOf(revenue, margin))
+
+        assertEquals(listOf(january, february), categories)
+        assertEquals(null, lumenChartValue(margin, january))
+        assertEquals(5.0, lumenChartValue(margin, february))
+    }
+
+    @Test
+    fun lineAndRangeGeometrySplitAtMissingObservations() {
+        val categories = listOf("Monday", "Tuesday", "Wednesday").map(LumenChartX::Category)
+        val series = LumenChartSeries(
+            id = "temperature",
+            label = "Temperature",
+            data = listOf(
+                LumenChartDatum("mon", categories[0], 4.0),
+                LumenChartDatum("tue", categories[1], null),
+                LumenChartDatum("wed", categories[2], 8.0)
+            )
+        )
+        val ranges = listOf(
+            LumenRangeDatum("mon", categories[0], 2.0, 6.0),
+            LumenRangeDatum("tue", categories[1], null, 7.0),
+            LumenRangeDatum("wed", categories[2], 5.0, 10.0)
+        )
+
+        assertEquals(
+            listOf(listOf(0), listOf(2)),
+            lumenLineValueSegments(series, categories).map { segment ->
+                segment.map(LumenIndexedChartValue::categoryIndex)
+            }
+        )
+        assertEquals(
+            listOf(listOf(0), listOf(2)),
+            lumenRangeValueSegments(ranges).map { segment ->
+                segment.map(LumenIndexedRangeValue::categoryIndex)
+            }
+        )
+    }
+
+    @Test
+    fun heatmapsOmitUnavailableCellsAndComboPositionsUseBandCenters() {
+        val heatmap = listOf(
+            LumenHeatmapDatum("finite", "Mon", "AM", 8.0),
+            LumenHeatmapDatum("missing", "Tue", "AM", null),
+            LumenHeatmapDatum("infinite", "Wed", "AM", Double.POSITIVE_INFINITY)
+        )
+
+        assertEquals(listOf("finite"), lumenAvailableHeatmapData(heatmap).map(LumenHeatmapDatum::id))
+        assertEquals(1f / 6f, lumenChartCategoryPosition(0, 3, centerInBand = true))
+        assertEquals(0.5f, lumenChartCategoryPosition(1, 3, centerInBand = true))
+        assertEquals(5f / 6f, lumenChartCategoryPosition(2, 3, centerInBand = true))
+    }
 }

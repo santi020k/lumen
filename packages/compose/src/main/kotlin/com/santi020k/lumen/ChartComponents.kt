@@ -159,6 +159,83 @@ data class LumenChartSummary(
 
 private data class LumenChartDomain(val minimum: Double, val maximum: Double)
 
+internal data class LumenIndexedChartValue(val categoryIndex: Int, val value: Double)
+
+internal data class LumenIndexedRangeValue(
+    val categoryIndex: Int,
+    val low: Double,
+    val high: Double
+)
+
+internal fun lumenChartCategories(series: List<LumenChartSeries>): List<LumenChartX> = buildList {
+    series.forEach { item ->
+        item.data.forEach { datum ->
+            if (datum.x !in this) add(datum.x)
+        }
+    }
+}
+
+internal fun lumenChartValue(series: LumenChartSeries, category: LumenChartX): Double? =
+    series.data.firstOrNull { datum -> datum.x == category }?.y?.takeIf(Double::isFinite)
+
+internal fun lumenLineValueSegments(
+    series: LumenChartSeries,
+    categories: List<LumenChartX>
+): List<List<LumenIndexedChartValue>> {
+    val segments = mutableListOf<List<LumenIndexedChartValue>>()
+    var current = mutableListOf<LumenIndexedChartValue>()
+
+    categories.forEachIndexed { categoryIndex, category ->
+        val value = lumenChartValue(series, category)
+
+        if (value == null) {
+            if (current.isNotEmpty()) segments.add(current)
+            current = mutableListOf()
+        } else {
+            current.add(LumenIndexedChartValue(categoryIndex, value))
+        }
+    }
+
+    if (current.isNotEmpty()) segments.add(current)
+
+    return segments
+}
+
+internal fun lumenRangeValueSegments(data: List<LumenRangeDatum>): List<List<LumenIndexedRangeValue>> {
+    val segments = mutableListOf<List<LumenIndexedRangeValue>>()
+    var current = mutableListOf<LumenIndexedRangeValue>()
+
+    data.forEachIndexed { categoryIndex, datum ->
+        val low = datum.low?.takeIf(Double::isFinite)
+        val high = datum.high?.takeIf(Double::isFinite)
+
+        if (low == null || high == null) {
+            if (current.isNotEmpty()) segments.add(current)
+            current = mutableListOf()
+        } else {
+            current.add(LumenIndexedRangeValue(categoryIndex, low, high))
+        }
+    }
+
+    if (current.isNotEmpty()) segments.add(current)
+
+    return segments
+}
+
+internal fun lumenAvailableHeatmapData(data: List<LumenHeatmapDatum>): List<LumenHeatmapDatum> =
+    data.filter { datum -> datum.value?.isFinite() == true }
+
+internal fun lumenChartCategoryPosition(
+    categoryIndex: Int,
+    categoryCount: Int,
+    centerInBand: Boolean
+): Float {
+    if (categoryCount <= 0) return 0f
+    if (centerInBand) return (categoryIndex + 0.5f) / categoryCount
+
+    return categoryIndex.toFloat() / max(1, categoryCount - 1).toFloat()
+}
+
 private fun lumenChartDomain(values: List<Double?>, includeZero: Boolean = false): LumenChartDomain {
     val available = values.mapNotNull { it?.takeIf(Double::isFinite) }
 
@@ -359,43 +436,48 @@ private fun DrawScope.drawLumenLineSeries(
     domain: LumenChartDomain,
     color: Color,
     area: Boolean,
-    padding: Float
+    padding: Float,
+    categories: List<LumenChartX> = lumenChartCategories(listOf(series)),
+    centerInBands: Boolean = false
 ) {
-    val available = series.data.mapIndexedNotNull { index, datum ->
-        val value = datum.y?.takeIf(Double::isFinite) ?: return@mapIndexedNotNull null
-        val denominator = max(1, series.data.lastIndex)
-        val x = padding + (index.toFloat() / denominator.toFloat()) * (size.width - padding * 2)
-        val y = lumenChartScale(value, domain, size.height - padding, padding)
+    val plotWidth = size.width - padding * 2
 
-        Offset(x, y)
-    }
+    lumenLineValueSegments(series, categories).forEach { segment ->
+        val available = segment.map { point ->
+            val x = padding + lumenChartCategoryPosition(
+                point.categoryIndex,
+                categories.size,
+                centerInBands
+            ) * plotWidth
+            val y = lumenChartScale(point.value, domain, size.height - padding, padding)
 
-    if (available.isEmpty()) return
-
-    val path = Path().apply {
-        moveTo(available.first().x, available.first().y)
-        available.drop(1).forEach { lineTo(it.x, it.y) }
-    }
-
-    if (area) {
-        val areaPath = Path().apply {
-            addPath(path)
-            lineTo(available.last().x, size.height - padding)
-            lineTo(available.first().x, size.height - padding)
-            close()
+            Offset(x, y)
+        }
+        val path = Path().apply {
+            moveTo(available.first().x, available.first().y)
+            available.drop(1).forEach { lineTo(it.x, it.y) }
         }
 
-        drawPath(areaPath, color.copy(alpha = LumenChartMetrics.AreaOpacity))
-    }
+        if (area) {
+            val areaPath = Path().apply {
+                addPath(path)
+                lineTo(available.last().x, size.height - padding)
+                lineTo(available.first().x, size.height - padding)
+                close()
+            }
 
-    drawPath(
-        path,
-        color,
-        style = Stroke(
-            width = LumenChartMetrics.SeriesStrokeWidth.toPx(),
-            cap = StrokeCap.Round
+            drawPath(areaPath, color.copy(alpha = LumenChartMetrics.AreaOpacity))
+        }
+
+        drawPath(
+            path,
+            color,
+            style = Stroke(
+                width = LumenChartMetrics.SeriesStrokeWidth.toPx(),
+                cap = StrokeCap.Round
+            )
         )
-    )
+    }
 }
 
 @Composable
@@ -442,6 +524,7 @@ fun LumenLineChart(
 ) {
     val theme = LocalLumenTheme.current
     val domain = lumenChartDomain(series.flatMap { item -> item.data.map { it.y } })
+    val categories = lumenChartCategories(series)
 
     LumenChartFrame(label, summary, modifier, heading, description) {
         Canvas(
@@ -459,7 +542,8 @@ fun LumenLineChart(
                     domain,
                     theme.chartColor(resolvedLumenChartTone(item.tone, index)),
                     area || item.mark == LumenComboMark.Area,
-                    padding
+                    padding,
+                    categories
                 )
             }
         }
@@ -478,20 +562,24 @@ private fun DrawScope.drawLumenBars(
     domain: LumenChartDomain,
     theme: LumenThemeValues,
     layout: LumenBarChartLayout,
-    padding: Float
+    padding: Float,
+    categories: List<LumenChartX> = lumenChartCategories(series)
 ) {
-    val categoryCount = series.maxOfOrNull { it.data.size } ?: return
+    val categoryCount = categories.size
+
+    if (categoryCount == 0) return
+
     val plotWidth = size.width - padding * 2
-    val categoryWidth = plotWidth / max(1, categoryCount)
+    val categoryWidth = plotWidth / categoryCount
     val barWidth = categoryWidth * 0.72f / if (layout == LumenBarChartLayout.Grouped) max(1, series.size) else 1
     val baseline = lumenChartScale(0.0, domain, size.height - padding, padding)
 
-    repeat(categoryCount) { categoryIndex ->
+    categories.forEachIndexed { categoryIndex, category ->
         var positive = 0.0
         var negative = 0.0
 
         series.forEachIndexed { seriesIndex, item ->
-            val value = item.data.getOrNull(categoryIndex)?.y?.takeIf(Double::isFinite) ?: 0.0
+            val value = lumenChartValue(item, category) ?: return@forEachIndexed
             val startValue = if (layout == LumenBarChartLayout.Stacked) {
                 if (value >= 0) positive else negative
             } else {
@@ -504,7 +592,10 @@ private fun DrawScope.drawLumenBars(
                 baseline
             }
             val end = lumenChartScale(endValue, domain, size.height - padding, padding)
-            val x = padding + categoryIndex * categoryWidth + categoryWidth * 0.14f +
+            val categoryCenter = padding +
+                lumenChartCategoryPosition(categoryIndex, categoryCount, centerInBand = true) * plotWidth
+            val categoryStart = categoryCenter - categoryWidth / 2
+            val x = categoryStart + categoryWidth * 0.14f +
                 if (layout == LumenBarChartLayout.Grouped) seriesIndex * barWidth else 0f
 
             drawRect(
@@ -681,19 +772,17 @@ fun LumenRangeChart(
         Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
             val denominator = max(1, data.lastIndex)
-            val available = data.mapIndexedNotNull { index, datum ->
-                val low = datum.low?.takeIf(Double::isFinite) ?: return@mapIndexedNotNull null
-                val high = datum.high?.takeIf(Double::isFinite) ?: return@mapIndexedNotNull null
-                val x = padding + index.toFloat() / denominator.toFloat() * (size.width - padding * 2)
+            lumenRangeValueSegments(data).forEach { segment ->
+                val available = segment.map { point ->
+                    val x = padding + point.categoryIndex.toFloat() / denominator.toFloat() *
+                        (size.width - padding * 2)
 
-                Triple(
-                    x,
-                    lumenChartScale(low, domain, size.height - padding, padding),
-                    lumenChartScale(high, domain, size.height - padding, padding)
-                )
-            }
-
-            if (available.isNotEmpty()) {
+                    Triple(
+                        x,
+                        lumenChartScale(point.low, domain, size.height - padding, padding),
+                        lumenChartScale(point.high, domain, size.height - padding, padding)
+                    )
+                }
                 val path = Path().apply {
                     moveTo(available.first().first, available.first().third)
                     available.drop(1).forEach { lineTo(it.first, it.third) }
@@ -736,18 +825,19 @@ fun LumenHeatmap(
     val columns = data.map { it.column }.distinct()
     val rows = data.map { it.row }.distinct()
     val domain = lumenChartDomain(data.map { it.value })
+    val availableData = lumenAvailableHeatmapData(data)
 
     LumenChartFrame(label, summary, modifier) {
         Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val cellWidth = size.width / max(1, columns.size)
             val cellHeight = size.height / max(1, rows.size)
 
-            data.forEach { datum ->
+            availableData.forEach { datum ->
                 val column = columns.indexOf(datum.column)
                 val row = rows.indexOf(datum.row)
-                val ratio = datum.value?.takeIf(Double::isFinite)?.let {
+                val ratio = datum.value?.let {
                     lumenChartScale(it, domain, 0.12f, 1f)
-                } ?: 0.12f
+                } ?: return@forEach
 
                 if (column >= 0 && row >= 0) {
                     drawRect(
@@ -789,20 +879,23 @@ fun LumenComboChart(
     val barSeries = series.filter { it.mark == LumenComboMark.Bar }
     val theme = LocalLumenTheme.current
     val domain = lumenChartDomain(series.flatMap { item -> item.data.map { it.y } }, includeZero = true)
+    val categories = lumenChartCategories(series)
 
     LumenChartFrame(label, summary, modifier) {
         Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
 
             drawLumenChartGrid(domain, padding, theme.chartColors.grid)
-            drawLumenBars(barSeries, domain, theme, LumenBarChartLayout.Grouped, padding)
+            drawLumenBars(barSeries, domain, theme, LumenBarChartLayout.Grouped, padding, categories)
             lineSeries.forEachIndexed { index, item ->
                 drawLumenLineSeries(
                     item,
                     domain,
                     theme.chartColor(resolvedLumenChartTone(item.tone, index + barSeries.size)),
                     item.mark == LumenComboMark.Area,
-                    padding
+                    padding,
+                    categories,
+                    centerInBands = barSeries.isNotEmpty()
                 )
             }
         }
