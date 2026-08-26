@@ -573,7 +573,7 @@ public struct LumenLineChart: View {
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series, includeSize: true)
+                LumenChartDataList(selection: selection, series: series)
             }
         }
     }
@@ -712,7 +712,7 @@ public struct LumenScatterChart: View {
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series)
+                LumenChartDataList(selection: selection, series: series, includeSize: true)
             }
         }
     }
@@ -808,12 +808,16 @@ private struct LumenPieSlice: Identifiable {
     let value: Double
 }
 
-private func lumenPieSlices(series: LumenChartSeries) -> [LumenPieSlice] {
-    let available = series.data.filter { datum in
+func lumenAvailablePieData(_ data: [LumenChartDatum]) -> [LumenChartDatum] {
+    data.filter { datum in
         guard let value = datum.y else { return false }
 
         return value.isFinite && value > 0
     }
+}
+
+private func lumenPieSlices(series: LumenChartSeries) -> [LumenPieSlice] {
+    let available = lumenAvailablePieData(series.data)
     let total = available.compactMap(\.y).reduce(0, +)
     var angle = -90.0
 
@@ -907,33 +911,44 @@ public struct LumenPieChart: View {
         self.variant = variant
         self.showData = showData
         self.selection = selection
-        self.summary = summary ?? LumenChartSummary.resolve(series: [series]).spokenDescription
+        let availableSeries = LumenChartSeries(
+            id: series.id,
+            label: series.label,
+            data: lumenAvailablePieData(series.data),
+            tone: series.tone
+        )
+        self.summary = summary ?? LumenChartSummary.resolve(series: [availableSeries]).spokenDescription
     }
 
     public var body: some View {
         let slices = lumenPieSlices(series: series)
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            Canvas { context, size in
-                let center = CGPoint(x: size.width / 2, y: size.height / 2)
-                let outerRadius = max(0, min(size.width, size.height) / 2 - LumenSpacing.sm)
-                let innerRadius = variant == .donut ? outerRadius * 0.58 : 0
+            if slices.isEmpty {
+                Text("No chart data available.")
+                    .foregroundStyle(theme.colors.inkMuted)
+            } else {
+                Canvas { context, size in
+                    let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                    let outerRadius = max(0, min(size.width, size.height) / 2 - LumenSpacing.sm)
+                    let innerRadius = variant == .donut ? outerRadius * 0.58 : 0
 
-                for slice in slices {
-                    let path = lumenPiePath(
-                        center: center,
-                        outerRadius: outerRadius,
-                        innerRadius: innerRadius,
-                        startAngle: slice.startAngle,
-                        endAngle: slice.endAngle
-                    )
+                    for slice in slices {
+                        let path = lumenPiePath(
+                            center: center,
+                            outerRadius: outerRadius,
+                            innerRadius: innerRadius,
+                            startAngle: slice.startAngle,
+                            endAngle: slice.endAngle
+                        )
 
-                    context.fill(path, with: .color(theme.chartColor(slice.tone)))
-                    context.stroke(path, with: .color(theme.colors.surface), lineWidth: 2)
+                        context.fill(path, with: .color(theme.chartColor(slice.tone)))
+                        context.stroke(path, with: .color(theme.colors.surface), lineWidth: 2)
+                    }
                 }
+                .frame(minHeight: 240)
+                .aspectRatio(1, contentMode: .fit)
             }
-            .frame(minHeight: 240)
-            .aspectRatio(1, contentMode: .fit)
 
             if showData {
                 LumenChartDataList(selection: selection, series: [series])
@@ -953,7 +968,7 @@ public struct LumenHeatmap: View {
     public init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, showData: Bool = true) {
         self.label = label
         self.data = data
-        self.summary = summary ?? "\(data.count) heatmap cells."
+        self.summary = summary ?? "\(lumenAvailableHeatmapData(data).count) heatmap cells."
         self.showData = showData
     }
 
@@ -964,20 +979,25 @@ public struct LumenHeatmap: View {
         let maximum = values.max() ?? 1
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            Chart(availableData) { datum in
-                RectangleMark(
-                    x: .value("Column", datum.column),
-                    y: .value("Row", datum.row)
-                )
-                .foregroundStyle(
-                    theme.chartColors.sequentialHigh.opacity(
-                        lumenHeatmapOpacity(value: datum.value, minimum: minimum, maximum: maximum)
+            if availableData.isEmpty {
+                Text("No chart data available.")
+                    .foregroundStyle(theme.colors.inkMuted)
+            } else {
+                Chart(availableData) { datum in
+                    RectangleMark(
+                        x: .value("Column", datum.column),
+                        y: .value("Row", datum.row)
                     )
-                )
-                .accessibilityLabel(datum.label ?? "\(datum.column), \(datum.row)")
-                .accessibilityValue(datum.value?.formatted() ?? "Not available")
+                    .foregroundStyle(
+                        theme.chartColors.sequentialHigh.opacity(
+                            lumenHeatmapOpacity(value: datum.value, minimum: minimum, maximum: maximum)
+                        )
+                    )
+                    .accessibilityLabel(datum.label ?? "\(datum.column), \(datum.row)")
+                    .accessibilityValue(datum.value?.formatted() ?? "Not available")
+                }
+                .frame(minHeight: 220)
             }
-            .frame(minHeight: 220)
 
             if showData {
                 LumenStructuredChartDataList(rows: data.map { datum in

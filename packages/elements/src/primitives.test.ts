@@ -250,7 +250,8 @@ describe('@santi020k/lumen-elements primitives', () => {
       series: JSON.stringify([{
         data: [
           { label: 'Astro', tone: 'brand', x: 'astro', y: 8 },
-          { label: 'React', x: 'react', y: 4 }
+          { label: 'React', x: 'react', y: 4 },
+          { label: 'Unavailable', x: 'unavailable', y: -2 }
         ],
         id: 'share',
         label: 'Downloads'
@@ -289,6 +290,8 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(line.querySelector('.ui-line-chart__line')).not.toBeNull()
     expect(line.querySelector('.ui-chart__reference')).not.toBeNull()
     expect(pie.querySelectorAll('.ui-pie-chart__slices path')).toHaveLength(2)
+    expect(pie.querySelector('[data-ui-chart-summary]')?.textContent)
+      .toContain('1 series, 2 points')
     expect(pie.querySelector('.ui-pie-chart__center')?.textContent).toBe('12Total')
     expect(pie.querySelector('details table')?.textContent).toContain('67%')
     expect(sparkline.getAttribute('role')).toBe('img')

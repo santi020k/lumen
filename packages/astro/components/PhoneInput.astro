@@ -69,7 +69,7 @@ const normalizedCountries: NormalizedCountryOption[] = usesMetadata ?
 
 const selectedCountry = metadataCountries.find(country => (
   country.regionCode === countryValue || country.callingCode === countryValue
-)) ?? getLumenPhoneCountry('US', phoneOptions) ?? metadataCountries[0]
+)) ?? metadataCountries[0] ?? getLumenPhoneCountry('US', phoneOptions)
 
 const phoneValue = selectedCountry && value ? resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) : null
 const selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue

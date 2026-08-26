@@ -6028,6 +6028,12 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const variant = this.getAttribute('variant') === 'pie' ? 'pie' : 'donut'
     const geometry = createLumenPieGeometry(series.data, { variant })
+
+    const renderedSeries = {
+      ...series,
+      data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
+    }
+
     const showLegend = chartBooleanAttribute(this, 'show-legend', true)
     const showTable = chartBooleanAttribute(this, 'show-table', true)
 
@@ -6066,7 +6072,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     this.innerHTML = [
       chartHeaderHtml(this),
-      chartSummaryHtml(this, [series]),
+      chartSummaryHtml(this, [renderedSeries]),
       legend,
       '<div class="ui-chart__plot ui-pie-chart__plot">',
       '<svg aria-hidden="true" preserveAspectRatio="xMidYMid meet"',

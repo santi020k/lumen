@@ -743,6 +743,19 @@ describe('@santi020k/lumen-react components', () => {
     }
   })
 
+  test('summarizes only rendered pie slices', () => {
+    const pie = PieChart({
+      series: {
+        data: [{ x: 'Available', y: 8 }, { x: 'Zero', y: 0 }, { x: 'Negative', y: -2 }],
+        id: 'share',
+        label: 'Share'
+      }
+    }) as ReactElement
+
+    expect(propsOf(pie).summary).toContain('1 point')
+    expect(propsOf(pie).summary).toContain('8 to 8')
+  })
+
   test('sets text direction default', () => {
     expect(propsOf(Direction({}) as ReactElement).dir).toBe('ltr')
     expect(propsOf(Direction({ dir: 'rtl' }) as ReactElement).dir).toBe('rtl')

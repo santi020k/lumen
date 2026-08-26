@@ -510,7 +510,13 @@ export const LumenPieChart = ({
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const geometry = createLumenPieGeometry(series.data, { size: 320, variant })
-  const resolvedSummary = summary ?? formatLumenChartSummary([series], valueFormatter)
+
+  const renderedSeries = {
+    ...series,
+    data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
+  }
+
+  const resolvedSummary = summary ?? formatLumenChartSummary([renderedSeries], valueFormatter)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>

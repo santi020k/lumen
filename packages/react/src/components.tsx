@@ -1452,6 +1452,12 @@ export const PieChart = ({
 }: PieChartProps) => {
   const geometry = createLumenPieGeometry(series.data, { variant })
   const hasData = hasLumenPieData(series.data)
+
+  const renderedSeries = {
+    ...series,
+    data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
+  }
+
   const hasCenterLabel = centerLabel !== null && centerLabel !== undefined
   const hasCenterValue = centerValue !== null && centerValue !== undefined
 
@@ -1460,7 +1466,7 @@ export const PieChart = ({
       className={composeClassName(
         'ui-pie-chart', getLumenPieChartVariantClassName(variant), className
       )}
-      summary={summary ?? formatLumenChartSummary([series], valueFormatter)}
+      summary={summary ?? formatLumenChartSummary([renderedSeries], valueFormatter)}
       {...props}
     >
       {showLegend && hasData && (

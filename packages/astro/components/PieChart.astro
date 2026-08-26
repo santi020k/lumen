@@ -43,13 +43,20 @@ const {
   showLegend = true,
   showTable = true,
   valueFormatter = String,
-  summary = formatLumenChartSummary([series], valueFormatter),
+  summary: summaryProp,
   variant = 'donut',
   ...rest
 } = Astro.props
 
 const geometry = createLumenPieGeometry(series.data, { variant })
 const hasData = hasLumenPieData(series.data)
+
+const renderedSeries = {
+  ...series,
+  data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
+}
+
+const summary = summaryProp ?? formatLumenChartSummary([renderedSeries], valueFormatter)
 
 const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,

@@ -138,6 +138,17 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(range).not.toContain('data.filter(item => item.low !== null')
   })
 
+  test('aligns pie summaries and phone defaults with rendered options', async () => {
+    const [phoneInput, pie] = await Promise.all([
+      readFile(new URL('./components/PhoneInput.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8')
+    ])
+
+    expect(pie).toContain('data: series.data.filter(datum => datum.y !== null')
+    expect(pie).toContain('formatLumenChartSummary([renderedSeries]')
+    expect(phoneInput).toContain(')) ?? metadataCountries[0] ?? getLumenPhoneCountry')
+  })
+
   test('normalizes Astro Action field errors for fields and summaries', () => {
     expect(
       normalizeAstroActionErrors(

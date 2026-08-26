@@ -123,6 +123,17 @@ import Testing
     #expect(lumenAvailableHeatmapData(data).map(\.id) == ["finite"])
 }
 
+@Test func pieChartsOmitNonPositiveAndUnavailableSlices() {
+    let data = [
+        LumenChartDatum(id: "positive", x: .category("Positive"), y: 8),
+        LumenChartDatum(id: "zero", x: .category("Zero"), y: 0),
+        LumenChartDatum(id: "negative", x: .category("Negative"), y: -2),
+        LumenChartDatum(id: "missing", x: .category("Missing"), y: nil)
+    ]
+
+    #expect(lumenAvailablePieData(data).map(\.id) == ["positive"])
+}
+
 @Test func scatterDataLabelsExposeBubbleSize() {
     let series = LumenChartSeries(id: "quality", label: "Quality", data: [])
     let datum = LumenChartDatum(id: "aug", x: .number(1), y: 98, size: 64)

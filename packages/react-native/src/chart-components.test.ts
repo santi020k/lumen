@@ -10,6 +10,7 @@ import {
   LumenBarChart,
   LumenComboChart,
   LumenHeatmap,
+  LumenPieChart,
   LumenRangeChart,
   LumenScatterChart
 } from './chart-components.js'
@@ -182,6 +183,20 @@ describe('Lumen React Native chart components', () => {
     ))).toBe(true)
     expect(descendants.filter(element => propsOf(element).fillOpacity !== undefined))
       .toHaveLength(0)
+  })
+
+  test('summarizes only rendered pie slices', () => {
+    const pie = LumenPieChart({
+      label: 'Share',
+      series: {
+        data: [{ x: 'Available', y: 8 }, { x: 'Zero', y: 0 }, { x: 'Negative', y: -2 }],
+        id: 'share',
+        label: 'Share'
+      }
+    }) as ReactElement<ChartFrameOutputProps>
+
+    expect(pie.props.summary).toContain('1 point')
+    expect(pie.props.summary).toContain('8 to 8')
   })
 
   test('exposes scatter bubble sizes and omits points with invalid coordinates', () => {
