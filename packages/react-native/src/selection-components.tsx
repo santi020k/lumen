@@ -323,6 +323,7 @@ export const LumenTabs = ({
     <View ref={ref} {...props} style={[{ gap: theme.spacing.md }, style]}>
       <View
         accessibilityLabel={label}
+        accessibilityRole="tablist"
         style={{
           borderBottomColor: theme.colors.line,
           borderBottomWidth: 1,
