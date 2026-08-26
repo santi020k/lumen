@@ -363,6 +363,44 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(lineXCoordinates).toEqual(categoryCenters)
   })
 
+  test('keeps programmatic chart disclosures aligned with finite rendered values', () => {
+    const valueFormatter = vi.fn((value: number) => `${value} units`)
+    const bars = connect('lumen-bar-chart')
+
+    expect(Reflect.set(bars, 'series', [{
+      data: [{ x: 'Mon', y: 4 }, { x: 'Tue', y: Number.NaN }],
+      id: 'downloads',
+      label: 'Downloads'
+    }])).toBe(true)
+    expect(Reflect.set(bars, 'valueFormatter', valueFormatter)).toBe(true)
+
+    expect(bars.querySelector('details table')?.textContent).toContain('Not available')
+    expect(valueFormatter).toHaveBeenCalledWith(4)
+    expect(valueFormatter).not.toHaveBeenCalledWith(Number.NaN)
+
+    valueFormatter.mockClear()
+
+    const scatter = connect('lumen-scatter-chart')
+
+    expect(Reflect.set(scatter, 'series', [{
+      data: [
+        { size: 12, x: 1, y: 4 },
+        { size: Number.POSITIVE_INFINITY, x: 2, y: 8 },
+        { x: Number.NaN, y: 100 }
+      ],
+      id: 'relationship',
+      label: 'Relationship'
+    }])).toBe(true)
+    expect(Reflect.set(scatter, 'valueFormatter', valueFormatter)).toBe(true)
+
+    expect(scatter.querySelectorAll('.ui-scatter-chart__marks circle')).toHaveLength(2)
+    expect(scatter.querySelector('[data-ui-chart-summary]')?.textContent)
+      .toContain('1 series, 2 points. Values range from 4 to 8.')
+    expect(scatter.querySelector('details table')?.textContent).toContain('Not available')
+    expect(valueFormatter).not.toHaveBeenCalledWith(Number.POSITIVE_INFINITY)
+    expect(valueFormatter).not.toHaveBeenCalledWith(100)
+  })
+
   test('keeps serialized combo marks attached after malformed series', () => {
     const combo = connect('lumen-combo-chart', {
       series: JSON.stringify([

@@ -5491,7 +5491,7 @@ const chartDataTableHtml = (
 
           const value =
             datum?.label ??
-            (datum?.y === null || datum === undefined ?
+            (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
               'Not available' :
               formatValue(datum.y))
 
@@ -5526,7 +5526,7 @@ const scatterDataTableHtml = (
       `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
       `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
       `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
-      `<td>${escapeChartHtml(point.size === undefined || point.size === null ? 'Not available' : formatValue(point.size))}</td></tr>`
+      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? 'Not available' : formatValue(point.size))}</td></tr>`
     ].join(''))
     .join('')
 
@@ -6106,6 +6106,11 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
     const series = this.series
     const geometry = createLumenScatterGeometry(series)
 
+    const renderedSeries = series.map(item => ({
+      ...item,
+      data: geometry.points.filter(point => point.seriesId === item.id)
+    })).filter(item => item.data.length > 0)
+
     if (geometry.points.length === 0) {
       this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
 
@@ -6121,7 +6126,7 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     this.innerHTML = [
       chartHeaderHtml(this),
-      chartSummaryHtml(this, series),
+      chartSummaryHtml(this, renderedSeries),
       chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series) : '',
       `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
       `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
