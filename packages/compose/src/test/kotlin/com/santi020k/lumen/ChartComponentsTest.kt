@@ -126,6 +126,8 @@ class ChartComponentsTest {
         )
 
         assertEquals(listOf("finite"), lumenAvailableHeatmapData(heatmap).map(LumenHeatmapDatum::id))
+        assertEquals("1 heatmap cell.", lumenHeatmapSummary(heatmap))
+        assertEquals("No chart data available.", lumenHeatmapSummary(heatmap.drop(1)))
         assertEquals(1f / 6f, lumenChartCategoryPosition(0, 3, centerInBand = true))
         assertEquals(0.5f, lumenChartCategoryPosition(1, 3, centerInBand = true))
         assertEquals(5f / 6f, lumenChartCategoryPosition(2, 3, centerInBand = true))
@@ -141,5 +143,27 @@ class ChartComponentsTest {
         val datum = LumenChartDatum("aug", LumenChartX.Number(1.0), 98.0, size = 64.0)
 
         assertEquals("1.0, Quality: 98.0, Size: 64.0", lumenChartDataLabel(series, datum, includeSize = true))
+    }
+
+    @Test
+    fun pieAndRangeSummariesCountOnlyAvailableMarks() {
+        val pie = LumenChartSeries(
+            id = "share",
+            label = "Share",
+            data = listOf(
+                LumenChartDatum("positive", LumenChartX.Category("Positive"), 8.0),
+                LumenChartDatum("zero", LumenChartX.Category("Zero"), 0.0),
+                LumenChartDatum("negative", LumenChartX.Category("Negative"), -2.0)
+            )
+        )
+        val ranges = listOf(
+            LumenRangeDatum("available", LumenChartX.Category("Available"), 2.0, 8.0),
+            LumenRangeDatum("missing", LumenChartX.Category("Missing"), null, 4.0)
+        )
+
+        assertEquals(listOf("positive"), lumenAvailablePieData(pie.data).map(LumenChartDatum::id))
+        assertTrue(lumenPieSummary(pie).contains("1 point"))
+        assertEquals("1 range.", lumenRangeSummary(ranges))
+        assertEquals("No chart data available.", lumenRangeSummary(ranges.drop(1)))
     }
 }

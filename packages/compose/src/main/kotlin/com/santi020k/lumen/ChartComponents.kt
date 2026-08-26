@@ -225,6 +225,28 @@ internal fun lumenRangeValueSegments(data: List<LumenRangeDatum>): List<List<Lum
 internal fun lumenAvailableHeatmapData(data: List<LumenHeatmapDatum>): List<LumenHeatmapDatum> =
     data.filter { datum -> datum.value?.isFinite() == true }
 
+internal fun lumenAvailablePieData(data: List<LumenChartDatum>): List<LumenChartDatum> =
+    data.filter { datum -> datum.y?.let { value -> value.isFinite() && value > 0 } == true }
+
+internal fun lumenPieSummary(series: LumenChartSeries): String =
+    LumenChartSummary.resolve(listOf(series.copy(data = lumenAvailablePieData(series.data)))).spokenDescription
+
+internal fun lumenRangeSummary(data: List<LumenRangeDatum>): String {
+    val count = lumenRangeValueSegments(data).sumOf(List<LumenIndexedRangeValue>::size)
+
+    return if (count == 0) "No chart data available." else "$count ${if (count == 1) "range" else "ranges"}."
+}
+
+internal fun lumenHeatmapSummary(data: List<LumenHeatmapDatum>): String {
+    val count = lumenAvailableHeatmapData(data).size
+
+    return if (count == 0) {
+        "No chart data available."
+    } else {
+        "$count ${if (count == 1) "heatmap cell" else "heatmap cells"}."
+    }
+}
+
 internal fun lumenChartCategoryPosition(
     categoryIndex: Int,
     categoryCount: Int,
@@ -560,7 +582,7 @@ fun LumenLineChart(
             }
         }
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange, includeSize = true)
+        if (showData) LumenChartDataList(series, selection, onSelectionChange)
     }
 }
 
@@ -666,56 +688,56 @@ fun LumenPieChart(
     label: String,
     modifier: Modifier = Modifier,
     variant: LumenPieChartVariant = LumenPieChartVariant.Donut,
-    summary: String = LumenChartSummary.resolve(listOf(series)).spokenDescription,
+    summary: String = lumenPieSummary(series),
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
 ) {
     val theme = LocalLumenTheme.current
-    val available = series.data.mapNotNull { datum ->
-        val value = datum.y?.takeIf { it.isFinite() && it > 0 } ?: return@mapNotNull null
-
-        datum to value
-    }
+    val available = lumenAvailablePieData(series.data).map { datum -> datum to (datum.y ?: 0.0) }
     val total = available.sumOf { it.second }
 
     LumenChartFrame(label, summary, modifier) {
-        Canvas(
-            Modifier
-                .fillMaxWidth()
-                .height(240.dp)
-                .clearAndSetSemantics { contentDescription = "$label. $summary" }
-        ) {
-            var startAngle = -90f
-            val strokeWidth = min(size.width, size.height) * 0.21f
-            val inset = if (variant == LumenPieChartVariant.Donut) strokeWidth / 2 else 0f
-            val chartSize = Size(size.width - inset * 2, size.height - inset * 2)
+        if (available.isEmpty()) {
+            Text("No chart data available.", color = theme.colors.inkMuted)
+        } else {
+            Canvas(
+                Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .clearAndSetSemantics { contentDescription = "$label. $summary" }
+            ) {
+                var startAngle = -90f
+                val strokeWidth = min(size.width, size.height) * 0.21f
+                val inset = if (variant == LumenPieChartVariant.Donut) strokeWidth / 2 else 0f
+                val chartSize = Size(size.width - inset * 2, size.height - inset * 2)
 
-            available.forEachIndexed { index, (datum, value) ->
-                val sweep = if (total == 0.0) 0f else (value / total * 360).toFloat()
-                val color = theme.chartColor(resolvedLumenChartTone(series.tone, index))
+                available.forEachIndexed { index, (_, value) ->
+                    val sweep = if (total == 0.0) 0f else (value / total * 360).toFloat()
+                    val color = theme.chartColor(resolvedLumenChartTone(series.tone, index))
 
-                if (variant == LumenPieChartVariant.Donut) {
-                    drawArc(
-                        color = color,
-                        startAngle = startAngle,
-                        sweepAngle = sweep,
-                        useCenter = false,
-                        topLeft = Offset(inset, inset),
-                        size = chartSize,
-                        style = Stroke(width = strokeWidth)
-                    )
-                } else {
-                    drawArc(
-                        color = color,
-                        startAngle = startAngle,
-                        sweepAngle = sweep,
-                        useCenter = true,
-                        size = size
-                    )
+                    if (variant == LumenPieChartVariant.Donut) {
+                        drawArc(
+                            color = color,
+                            startAngle = startAngle,
+                            sweepAngle = sweep,
+                            useCenter = false,
+                            topLeft = Offset(inset, inset),
+                            size = chartSize,
+                            style = Stroke(width = strokeWidth)
+                        )
+                    } else {
+                        drawArc(
+                            color = color,
+                            startAngle = startAngle,
+                            sweepAngle = sweep,
+                            useCenter = true,
+                            size = size
+                        )
+                    }
+
+                    startAngle += sweep
                 }
-
-                startAngle += sweep
             }
         }
 
@@ -764,7 +786,7 @@ fun LumenScatterChart(
             }
         }
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange)
+        if (showData) LumenChartDataList(series, selection, onSelectionChange, includeSize = true)
     }
 }
 
@@ -773,18 +795,21 @@ fun LumenRangeChart(
     data: List<LumenRangeDatum>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = "${data.size} ranges.",
+    summary: String = lumenRangeSummary(data),
     tone: LumenChartTone = LumenChartTone.Series1,
     showData: Boolean = true
 ) {
     val theme = LocalLumenTheme.current
     val domain = lumenChartDomain(data.flatMap { listOf(it.low, it.high) })
+    val segments = lumenRangeValueSegments(data)
 
     LumenChartFrame(label, summary, modifier) {
-        Canvas(Modifier.fillMaxWidth().height(240.dp)) {
+        if (segments.isEmpty()) {
+            Text("No chart data available.", color = theme.colors.inkMuted)
+        } else Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
             val denominator = max(1, data.lastIndex)
-            lumenRangeValueSegments(data).forEach { segment ->
+            segments.forEach { segment ->
                 val available = segment.map { point ->
                     val x = padding + point.categoryIndex.toFloat() / denominator.toFloat() *
                         (size.width - padding * 2)
@@ -830,7 +855,7 @@ fun LumenHeatmap(
     data: List<LumenHeatmapDatum>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = "${data.size} heatmap cells.",
+    summary: String = lumenHeatmapSummary(data),
     showData: Boolean = true
 ) {
     val theme = LocalLumenTheme.current
@@ -840,7 +865,9 @@ fun LumenHeatmap(
     val availableData = lumenAvailableHeatmapData(data)
 
     LumenChartFrame(label, summary, modifier) {
-        Canvas(Modifier.fillMaxWidth().height(240.dp)) {
+        if (availableData.isEmpty()) {
+            Text("No chart data available.", color = theme.colors.inkMuted)
+        } else Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val cellWidth = size.width / max(1, columns.size)
             val cellHeight = size.height / max(1, rows.size)
 
