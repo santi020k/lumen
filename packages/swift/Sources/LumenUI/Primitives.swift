@@ -472,8 +472,12 @@ public struct LumenButton<Label: View>: View {
         Button(action: action) {
             HStack(spacing: LumenSpacing.sm) {
                 if loading {
+#if os(tvOS)
+                    ProgressView()
+#else
                     ProgressView()
                         .controlSize(.small)
+#endif
                 }
                 label
             }

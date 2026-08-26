@@ -19,8 +19,12 @@ private struct LumenAlertDialogModifier: ViewModifier {
             Button(role: confirmRole, action: onConfirm) {
                 HStack(spacing: LumenSpacing.sm) {
                     if confirmLoading {
+#if os(tvOS)
+                        ProgressView()
+#else
                         ProgressView()
                             .controlSize(.small)
+#endif
                     }
                     Text(confirmLabel)
                 }
