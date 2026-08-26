@@ -694,7 +694,12 @@ describe('@santi020k/lumen-react components', () => {
 
   test('treats non-finite range bounds as unavailable in the disclosure table', () => {
     const range = RangeChart({
-      data: [{ high: Number.POSITIVE_INFINITY, low: Number.NaN, x: 'Mon' }]
+      data: [{ high: Number.POSITIVE_INFINITY, low: Number.NaN, x: 'Mon' }],
+      formatValue: value => {
+        if (!Number.isFinite(value)) throw new Error('Expected only finite range values')
+
+        return String(value)
+      }
     }) as ReactElement
     const tableValues = descendantsOf(range)
       .filter(element => element.type === 'td')
