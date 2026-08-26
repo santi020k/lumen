@@ -130,6 +130,11 @@ try {
 
     run('git', ['tag', candidateLabel], candidateDirectory)
 
+    // SwiftPM performs a local clone for file URLs. Pack the disposable
+    // repository first so concurrent object discovery cannot race with Git's
+    // loose-object directory creation on current macOS runners.
+    run('git', ['repack', '-a', '-d'], candidateDirectory)
+
     candidateRevision = run('git', ['rev-parse', 'HEAD'], candidateDirectory).trim()
 
     candidateUrl = pathToFileURL(candidateDirectory).href
