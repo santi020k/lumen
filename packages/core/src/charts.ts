@@ -1305,12 +1305,16 @@ export const createLumenScatterGeometry = (
 
   const data = series.flatMap(item => item.data)
 
+  const projectedData = data.filter(datum => (
+    getLumenChartNumericX(datum.x, xScale) !== null && isAvailableLumenChartY(datum.y)
+  ))
+
   const domain = resolveLumenChartDomain(
-    data.map(datum => datum.y), requestedDomain, false
+    projectedData.map(datum => datum.y), requestedDomain, false
   )
 
-  const xDomain = getLumenChartXDomain(data, xScale, requestedXDomain)
-  const sizes = data.map(datum => datum.size ?? null)
+  const xDomain = getLumenChartXDomain(projectedData, xScale, requestedXDomain)
+  const sizes = projectedData.map(datum => datum.size ?? null)
   const sizeDomain = getLumenChartDomain(sizes, false)
   const minimumRadius = Math.max(1, requestedMinimumRadius)
   const maximumRadius = Math.max(minimumRadius, requestedMaximumRadius)

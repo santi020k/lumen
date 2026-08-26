@@ -711,7 +711,13 @@ export const LumenRangeChart = ({
   const theme = useLumenTheme()
   const geometry = createLumenRangeGeometry(data)
   const hasData = geometry.points.length > 0
-  const resolvedSummary = summary ?? `${geometry.points.length} ranges.`
+
+  const resolvedSummary = summary ?? (
+    geometry.points.length === 0 ?
+      'No chart data available.' :
+      `${geometry.points.length} ${geometry.points.length === 1 ? 'range' : 'ranges'}.`
+  )
+
   const color = lumenChartToneColor(resolveLumenChartTone(tone), theme)
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)

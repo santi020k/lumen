@@ -23,7 +23,13 @@ const width = 640
 const height = 320
 const padding = 44
 const geometry = createLumenRangeGeometry(data, { height, padding, width })
-const summary = summaryProp ?? `${geometry.points.length} available ranges.`
+
+const summary = summaryProp ?? (
+  geometry.points.length === 0 ?
+    'No chart data available.' :
+    `${geometry.points.length} available ranges.`
+)
+
 const ticks = getLumenChartTicks(geometry.domain)
 ---
 

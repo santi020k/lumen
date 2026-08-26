@@ -192,6 +192,10 @@ func lumenSegmentedRangeData(_ data: [LumenRangeDatum]) -> [LumenRangeSegmentDat
     return result
 }
 
+func lumenAvailableRangeData(_ data: [LumenRangeDatum]) -> [LumenRangeDatum] {
+    data.filter { datum in datum.low?.isFinite == true && datum.high?.isFinite == true }
+}
+
 public struct LumenChartSummary: Equatable, Sendable {
     public let availablePointCount: Int
     public let maximum: Double?
@@ -736,7 +740,10 @@ public struct LumenRangeChart: View {
     ) {
         self.label = label
         self.data = data
-        self.summary = summary ?? "\(data.count) ranges."
+        let availableRangeCount = lumenAvailableRangeData(data).count
+        self.summary = summary ?? (
+            availableRangeCount == 0 ? "No chart data available." : "\(availableRangeCount) ranges."
+        )
         self.tone = tone
         self.showData = showData
     }
@@ -745,39 +752,44 @@ public struct LumenRangeChart: View {
         let segmentedData = lumenSegmentedRangeData(data)
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            Chart(segmentedData) { segmented in
-                let point = segmented.point
+            if segmentedData.isEmpty {
+                Text("No chart data available.")
+                    .foregroundStyle(theme.colors.inkMuted)
+            } else {
+                Chart(segmentedData) { segmented in
+                    let point = segmented.point
 
-                if let low = point.low, let high = point.high, low.isFinite, high.isFinite {
-                    switch point.x {
-                    case .category(let x):
-                        AreaMark(
-                            x: .value("Category", x),
-                            yStart: .value("Low", low),
-                            yEnd: .value("High", high),
-                            series: .value("Segment", segmented.segmentID)
-                        )
-                        .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
-                    case .number(let x):
-                        AreaMark(
-                            x: .value("X", x),
-                            yStart: .value("Low", low),
-                            yEnd: .value("High", high),
-                            series: .value("Segment", segmented.segmentID)
-                        )
-                        .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
-                    case .time(let x):
-                        AreaMark(
-                            x: .value("Time", x),
-                            yStart: .value("Low", low),
-                            yEnd: .value("High", high),
-                            series: .value("Segment", segmented.segmentID)
-                        )
-                        .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
+                    if let low = point.low, let high = point.high, low.isFinite, high.isFinite {
+                        switch point.x {
+                        case .category(let x):
+                            AreaMark(
+                                x: .value("Category", x),
+                                yStart: .value("Low", low),
+                                yEnd: .value("High", high),
+                                series: .value("Segment", segmented.segmentID)
+                            )
+                            .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
+                        case .number(let x):
+                            AreaMark(
+                                x: .value("X", x),
+                                yStart: .value("Low", low),
+                                yEnd: .value("High", high),
+                                series: .value("Segment", segmented.segmentID)
+                            )
+                            .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
+                        case .time(let x):
+                            AreaMark(
+                                x: .value("Time", x),
+                                yStart: .value("Low", low),
+                                yEnd: .value("High", high),
+                                series: .value("Segment", segmented.segmentID)
+                            )
+                            .foregroundStyle(theme.chartColor(tone).opacity(LumenChartMetrics.areaOpacity))
+                        }
                     }
                 }
+                .frame(minHeight: 220)
             }
-            .frame(minHeight: 220)
 
             if showData {
                 LumenStructuredChartDataList(rows: data.map { datum in

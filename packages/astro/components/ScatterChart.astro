@@ -38,13 +38,20 @@ const {
   series,
   showLegend = series.length > 1,
   showTable = true,
-  summary = formatLumenChartSummary(series, formatValue),
+  summary: summaryProp,
   xScale = 'linear',
   ...rest
 } = Astro.props
 
 const geometry = createLumenScatterGeometry(series, { xScale })
+
+const projectedSeries = series.map(item => ({
+  ...item,
+  data: geometry.points.filter(point => point.seriesId === item.id)
+})).filter(item => item.data.length > 0)
+
 const hasData = geometry.points.length > 0
+const summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue)
 const xTicks = getLumenChartTicks(geometry.xDomain)
 const yTicks = getLumenChartTicks(geometry.domain)
 ---

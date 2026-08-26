@@ -229,7 +229,7 @@ describe('Lumen React Native chart components', () => {
     }) as ReactElement<ChartFrameOutputProps>
 
     expect(scatter.props.summary).toBe('No chart data available.')
-    expect(range.props.summary).toBe('0 ranges.')
+    expect(range.props.summary).toBe('No chart data available.')
     for (const chart of [scatter, range]) {
       expect(descendantsOf(chart).some(element => (
         propsOf(element).children === 'No chart data available.'

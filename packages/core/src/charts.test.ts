@@ -317,6 +317,18 @@ describe('Lumen chart helpers', () => {
     expect(range.points).toHaveLength(2)
   })
 
+  test('derives scatter domains only from points that can be drawn', () => {
+    const scatter = createLumenScatterGeometry([{
+      data: [{ x: 0, y: 1 }, { x: 'invalid', y: 1000 }],
+      id: 'points',
+      label: 'Points'
+    }], { height: 100, padding: 0, width: 100 })
+
+    expect(scatter.points).toHaveLength(1)
+    expect(scatter.domain).toEqual({ max: 1.1, min: 0.9 })
+    expect(scatter.points[0]?.yCoordinate).toBeCloseTo(50)
+  })
+
   test('splits range bands around missing intervals', () => {
     const range = createLumenRangeGeometry([
       { high: 8, low: 2, x: 'Mon' },

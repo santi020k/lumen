@@ -675,6 +675,34 @@ describe('@santi020k/lumen-react components', () => {
     expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
   })
 
+  test('preserves heatmap coordinate types in fallback keys', () => {
+    const heatmap = Heatmap({
+      data: [
+        { value: 4, x: 1, y: 'row' },
+        { value: 8, x: '1', y: 'row' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(heatmap)
+    const cellKeys = descendants.filter(element => element.type === 'rect').map(element => element.key)
+    const rowKeys = descendants
+      .filter(element => element.type === 'tr' && element.key !== null)
+      .map(element => element.key)
+
+    expect(new Set(cellKeys).size).toBe(2)
+    expect(new Set(rowKeys).size).toBe(2)
+  })
+
+  test('treats non-finite range bounds as unavailable in the disclosure table', () => {
+    const range = RangeChart({
+      data: [{ high: Number.POSITIVE_INFINITY, low: Number.NaN, x: 'Mon' }]
+    }) as ReactElement
+    const tableValues = descendantsOf(range)
+      .filter(element => element.type === 'td')
+      .map(element => propsOf(element).children)
+
+    expect(tableValues).toEqual(['Not available', 'Not available'])
+  })
+
   test('keeps repeated scatter coordinates as distinct marks and rows', () => {
     const scatter = ScatterChart({
       series: [{
@@ -693,6 +721,18 @@ describe('@santi020k/lumen-react components', () => {
 
     expect(new Set(circleKeys).size).toBe(2)
     expect(new Set(rowKeys).size).toBe(2)
+  })
+
+  test('summarizes only scatter points that can be drawn', () => {
+    const scatter = ScatterChart({
+      series: [{
+        data: [{ x: 0, y: 1 }, { x: 'invalid', y: 1000 }],
+        id: 'downloads',
+        label: 'Downloads'
+      }]
+    }) as ReactElement
+
+    expect(propsOf(scatter).summary).toBe('1 series, 1 point. Values range from 1 to 1.')
   })
 
   test('aligns combo line points with bar category centers', () => {

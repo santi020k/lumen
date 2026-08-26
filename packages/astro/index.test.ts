@@ -126,6 +126,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
 
     expect(scatter).toContain('const hasData = geometry.points.length > 0')
+    expect(scatter).toContain('formatLumenChartSummary(projectedSeries, formatValue)')
+    expect(scatter).toContain('data: geometry.points.filter(point => point.seriesId === item.id)')
+    expect(scatter).toContain('filter(item => item.data.length > 0)')
     expect(scatter).not.toContain('hasLumenChartData')
   })
 

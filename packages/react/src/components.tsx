@@ -125,6 +125,8 @@ type CodeVariant = 'block' | 'inline'
 
 type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
+const getChartCategoryKey = (value: number | string): string => `${typeof value}:${String(value)}`
+
 export type DataTableCell =
   | boolean |
   null |
@@ -998,7 +1000,7 @@ const ChartDataTable = ({
         </thead>
         <tbody>
           {categories.map(category => (
-            <tr key={`${typeof category}:${String(category)}`}>
+            <tr key={getChartCategoryKey(category)}>
               <th scope="row">
                 {series
                   .flatMap(item => item.data)
@@ -1191,7 +1193,7 @@ export const BarChart = ({
                 dominantBaseline={
                   orientation === 'horizontal' ? 'middle' : undefined
                 }
-                key={`${typeof category.label}:${String(category.label)}`}
+                key={getChartCategoryKey(category.label)}
                 textAnchor={orientation === 'horizontal' ? 'end' : 'middle'}
                 x={category.x}
                 y={category.y}
@@ -1205,7 +1207,7 @@ export const BarChart = ({
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
                 height={mark.height}
-                key={`${mark.seriesId}:${typeof mark.category}:${String(mark.category)}`}
+                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
                 rx="4"
                 width={mark.width}
                 x={mark.x}
@@ -1354,7 +1356,7 @@ export const LineChart = ({
 
               return (
                 <text
-                  key={`${typeof category}:${String(category)}`}
+                  key={getChartCategoryKey(category)}
                   textAnchor="middle"
                   x={x}
                   y={height - 14}
@@ -1402,7 +1404,7 @@ export const LineChart = ({
                         className="ui-line-chart__point"
                         cx={point.xCoordinate}
                         cy={point.yCoordinate}
-                        key={`${typeof point.x}:${String(point.x)}`}
+                        key={getChartCategoryKey(point.x)}
                         r="3"
                       >
                         <title>
@@ -1570,17 +1572,23 @@ export const ScatterChart = ({
   ...props
 }: ScatterChartProps) => {
   const geometry = createLumenScatterGeometry(series, { xScale })
+
+  const renderedSeries = series.map(item => ({
+    ...item,
+    data: geometry.points.filter(point => point.seriesId === item.id)
+  })).filter(item => item.data.length > 0)
+
   const hasData = geometry.points.length > 0
 
   return (
-    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue)} {...props}>
+    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue)} {...props}>
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-scatter-chart__marks">
             {geometry.points.map((point, pointIndex) => (
-              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${typeof point.x}:${String(point.x)}:${pointIndex}`}`} r={point.radius}>
+              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
                 <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>
               </circle>
             ))}
@@ -1602,7 +1610,7 @@ export const ScatterChart = ({
               </thead>
               <tbody>
                 {geometry.points.map((point, pointIndex) => (
-                  <tr key={`${point.seriesId}:${point.id ?? `${typeof point.x}:${String(point.x)}:${pointIndex}`}`}>
+                  <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>
                     <th scope="row">{point.xLabel ?? point.x}</th>
                     <td>{point.seriesLabel}</td>
                     <td>{point.label ?? formatValue(point.y ?? 0)}</td>
@@ -1646,7 +1654,7 @@ export const Heatmap = ({
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-heatmap__cells">
-            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${String(cell.x)}:${String(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
+            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
           </g>
         </svg>
       </div>
@@ -1664,7 +1672,7 @@ export const Heatmap = ({
               </thead>
               <tbody>
                 {data.map(cell => (
-                  <tr key={cell.id ?? `${String(cell.x)}:${String(cell.y)}`}>
+                  <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>
                     <th scope="row">{cell.xLabel ?? cell.x}</th>
                     <td>{cell.yLabel ?? cell.y}</td>
                     <td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? 'Not available' : formatValue(cell.value))}</td>
@@ -1701,7 +1709,7 @@ export const RangeChart = ({
   const geometry = createLumenRangeGeometry(data, { height, padding, width })
 
   return (
-    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? `${geometry.points.length} available ranges.`} {...props}>
+    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? (geometry.points.length === 0 ? 'No chart data available.' : `${geometry.points.length} available ranges.`)} {...props}>
       {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">No chart data available.</p>}
       <div className="ui-chart__plot" hidden={geometry.points.length === 0}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
@@ -1736,8 +1744,8 @@ export const RangeChart = ({
                 {data.map(item => (
                   <tr key={item.id ?? String(item.x)}>
                     <th scope="row">{item.xLabel ?? item.x}</th>
-                    <td>{item.low === null ? 'Not available' : formatValue(item.low)}</td>
-                    <td>{item.high === null ? 'Not available' : formatValue(item.high)}</td>
+                    <td>{item.low === null || !Number.isFinite(item.low) ? 'Not available' : formatValue(item.low)}</td>
+                    <td>{item.high === null || !Number.isFinite(item.high) ? 'Not available' : formatValue(item.high)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1781,7 +1789,7 @@ export const ComboChart = ({
   const bars = createLumenBarGeometry(barSeries, { domain, height, width })
 
   const categoryPositions = new Map(
-    bars.categories.map(category => [`${typeof category.category}:${String(category.category)}`, category.x])
+    bars.categories.map(category => [getChartCategoryKey(category.category), category.x])
   )
 
   const drawableWidth = width - padding * 2
@@ -1821,7 +1829,7 @@ export const ComboChart = ({
       {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
-          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${typeof mark.category}:${String(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
+          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
           {lines.map((geometry, index) => {
             const item = lineSeries[index]
 

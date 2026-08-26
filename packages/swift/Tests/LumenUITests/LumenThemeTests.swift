@@ -165,6 +165,16 @@ import Testing
     #expect(lumenSegmentedRangeData(ranges).map(\.segmentID) == ["range:0", "range:1"])
 }
 
+@Test func rangeChartsExcludeMissingAndNonFiniteIntervals() {
+    let ranges = [
+        LumenRangeDatum(id: "finite", x: .category("Monday"), low: 2, high: 6),
+        LumenRangeDatum(id: "missing", x: .category("Tuesday"), low: nil, high: 7),
+        LumenRangeDatum(id: "infinite", x: .category("Wednesday"), low: 5, high: .infinity)
+    ]
+
+    #expect(lumenAvailableRangeData(ranges).map(\.id) == ["finite"])
+}
+
 @Test func chartCategoriesAlignSparseSeriesByIdentity() {
     let january = LumenChartX.category("January")
     let february = LumenChartX.category("February")
