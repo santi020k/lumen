@@ -15,26 +15,42 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: amannn/action-semantic-pull-request@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          types: |
-            feat
-            fix
-            docs
-            style
-            chore
-            refactor
-            perf
-            test
-            ci
-            build
-            revert
-          requireScope: false
-          subjectPattern: ^(?![A-Z]).+$
-          subjectPatternError: >
-            The subject must start with a lowercase letter.
-            Example: "feat: add repository-aware prompts"
-          ignoreLabels: |
-            autorelease: pending
+      - name: Validate Conventional Commit title
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { readFileSync } = require('node:fs')
+
+          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
+          const labels = event.pull_request.labels.map(label => label.name)
+
+          if (labels.includes('autorelease: pending')) process.exit(0)
+
+          const title = event.pull_request.title
+          const allowedTypes = [
+            'build',
+            'chore',
+            'ci',
+            'docs',
+            'feat',
+            'fix',
+            'perf',
+            'refactor',
+            'revert',
+            'style',
+            'test'
+          ].join('|')
+          const match = new RegExp(`^(?:${allowedTypes})(?:\\([^)]+\\))?!?: (.+)$`).exec(title)
+
+          if (!match) {
+            console.error('PR title must use an allowed Conventional Commit type and optional scope.')
+            console.error('Example: "feat: add repository-aware prompts"')
+            process.exit(1)
+          }
+
+          if (/^[A-Z]/.test(match[1])) {
+            console.error('The subject must start with a lowercase letter.')
+            console.error('Example: "feat: add repository-aware prompts"')
+            process.exit(1)
+          }
+          NODE
