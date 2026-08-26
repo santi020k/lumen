@@ -100,7 +100,7 @@ beforeEach(() => {
 afterEach(() => {
   document.documentElement.lang = 'en'
 
-  localStorage.clear()
+  window.localStorage.clear()
 
   vi.useRealTimers()
   vi.unstubAllGlobals()
@@ -207,7 +207,7 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('coordinates uncontrolled language state, persistence, labels, and events', () => {
-    localStorage.clear()
+    window.localStorage.clear()
 
     document.documentElement.lang = 'en'
 
@@ -229,7 +229,7 @@ describe('@santi020k/lumen-elements', () => {
     toggle.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
     expect(document.documentElement.lang).toBe('es')
-    expect(localStorage.getItem('test-language')).toBe('es')
+    expect(window.localStorage.getItem('test-language')).toBe('es')
     expect(changes).toEqual([{ previousValue: 'en', value: 'es' }])
   })
 
