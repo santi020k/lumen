@@ -69,17 +69,17 @@ const isAtLeast = (version, minimum) => {
 
 const versions = {
   Compose: {
-    minimumStable: [1, 0, 0],
+    minimumStable: [2, 0, 0],
     raw: composeVersion,
     ...parseVersion('Compose', composeVersion)
   },
   'React Native': {
-    minimumStable: [1, 0, 0],
+    minimumStable: [2, 0, 0],
     raw: reactNativeVersion,
     ...parseVersion('React Native', reactNativeVersion)
   },
   SwiftUI: {
-    minimumStable: [1, 7, 0],
+    minimumStable: [2, 0, 0],
     raw: swiftVersion,
     ...parseVersion('SwiftUI', swiftVersion)
   }
@@ -98,10 +98,16 @@ if (stableAdapters.length === 0) {
   process.exit(0)
 }
 
+assert.equal(
+  stableAdapters.length,
+  Object.keys(versions).length,
+  `Lumen 2 must launch every native adapter together; ready: ${stableAdapters.join(', ')}`
+)
+
 process.stdout.write(`Native stable readiness is required for ${stableAdapters.join(' and ')}.\n`)
 
 for (const check of [
-  { ledger: soakLedger, script: 'check-native-prerelease-soak.mjs' },
+  { ledger: soakLedger, script: 'check-native-stability-soak.mjs' },
   { ledger: deviceLedger, script: 'check-native-device-evidence.mjs' }
 ]) {
   const arguments_ = [

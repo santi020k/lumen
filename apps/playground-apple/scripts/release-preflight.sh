@@ -46,6 +46,8 @@ if [[ "$(plutil -extract ITSAppUsesNonExemptEncryption raw "$apple_root/Supporti
     exit 1
 fi
 
+swift test --package-path "$apple_root"
+
 xcodebuild \
     -project "$project" \
     -scheme LumenApplePlayground \

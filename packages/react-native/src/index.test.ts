@@ -4,7 +4,8 @@ import { lumenIconNames } from './icons.generated.js'
 import {
   createLumenTheme,
   lumenDarkTheme,
-  lumenLightTheme
+  lumenLightTheme,
+  type LumenTheme
 } from './theme.js'
 import { lumenChartColorTokens, lumenColorTokens } from './tokens.generated.js'
 
@@ -40,6 +41,28 @@ describe('Lumen React Native foundations', () => {
     expect(theme.spacing.lg).toBe(16)
     expect(theme.radii.md).toBe(10)
     expect(theme.durations.standard).toBe(160)
+  })
+
+  test('accepts application-defined semantic color palettes', () => {
+    const baseTheme = createLumenTheme('light')
+    const productTheme: LumenTheme = {
+      ...baseTheme,
+      chartColors: {
+        ...baseTheme.chartColors,
+        series1: '#5709CE'
+      },
+      colors: {
+        ...baseTheme.colors,
+        brand: '#0369A0',
+        brandSolid: '#035C8C'
+      }
+    }
+
+    expect(productTheme.chartColors.series1).toBe('#5709CE')
+    expect(productTheme.colors.brand).toBe('#0369A0')
+    expect(productTheme.colors.brandSolid).toBe('#035C8C')
+    expect(baseTheme.chartColors.series1).toBe(lumenChartColorTokens.light.series1)
+    expect(baseTheme.colors.brand).toBe(lumenColorTokens.light.brand)
   })
 
   test('exposes the complete unique interface and brand icon catalog', () => {

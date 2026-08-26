@@ -15,7 +15,7 @@ A qualifying consumer must:
 - exercise supported components in real product flows;
 - pass its normal build and affected test or validation commands;
 - record installation, theming, accessibility, and integration findings; and
-- complete a verified upgrade between two native prerelease iterations.
+- complete a verified upgrade between two native stability iterations.
 
 The product owner must confirm active application status. Local source presence or a successful
 build does not by itself establish that the application is active or shipped.
@@ -72,7 +72,7 @@ ranges. Direct lint, typecheck, and all-platform Expo export passed without a so
 install reported unrelated existing ESLint and TypeScript tooling peer warnings, but no Lumen peer
 warning.
 
-The release-candidate guard also packs the local React Native package, installs the tarball without
+The package-candidate guard also packs the local React Native package, installs the tarball without
 legacy peer resolution into a clean temporary consumer at the supported Expo peer versions, verifies
 the published files and peer metadata, and compiles representative component usage under strict
 TypeScript. Separate native guards install the same packed artifact in a clean Expo 57 consumer,
@@ -114,7 +114,7 @@ uses `LumenWearTheme`, `LumenWearActionButton`, `LumenWearProgressRing`, `LumenW
 
 That exercised Wear subset is the Supported pre-1.0 contract. The unexercised metric and list-row
 compositions remain visibly Experimental, while implementation-only sizing, progress, and color
-helpers have been removed from the public ABI before the release-candidate soak.
+helpers have been removed from the public ABI before the stability soak.
 
 No compatibility wrapper was required. Product navigation, state, localization, persistence,
 connectivity, and Material or SwiftUI application themes remain application-owned. Compose and Wear
@@ -122,7 +122,7 @@ also passed a disposable 0.4.0 to 0.5.0 upgrade: dependency insight selected bot
 variants and unchanged consumer source passed `testDebugUnitTest assembleDebug`. The verified copy
 was discarded rather than overwriting the application's in-progress 0.4.0 integration.
 
-The release-candidate workflow now publishes both local candidate AARs to a temporary Maven
+The package-candidate workflow now publishes both local candidate AARs to a temporary Maven
 repository and builds separate phone and watch APK consumers from those coordinates. The phone
 consumer additionally inspects its resolved runtime graph and fails if it acquires
 `lumen-compose-wear`. This proves artifact metadata, the transitive Wear-to-foundation dependency,

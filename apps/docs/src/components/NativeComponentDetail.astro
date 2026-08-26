@@ -19,6 +19,8 @@ import {
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import NativeLivePreview from './NativeLivePreview.astro'
+
 interface Props {
   component: NativeComponentDoc
   guide: PlatformGuide & { id: NativePlatformId }
@@ -47,6 +49,9 @@ const platformLabels: Record<NativePlatformId, string> = {
 }
 
 const isIconComponent = component.slug === 'icon' || component.slug === 'icon-button'
+
+const hasLivePreview = guide.id === 'react-native' &&
+  component.implementations['react-native'] !== undefined
 
 const iconPlatformGuidance: Record<NativePlatformId, {
   brandName: string
@@ -124,22 +129,48 @@ const iconGuidance = iconPlatformGuidance[guide.id]
       <p>{component.guidance}</p>
     </div>
     <div class="native-detail-usage">
-      <figure class="native-detail-capture">
-        <div class="native-detail-capture__viewport">
-          <img
-            alt={capture.alt}
-            decoding="async"
-            height={capture.height}
-            loading="eager"
-            src={capture.src}
-            width={capture.width}
-          />
+      {hasLivePreview && (
+        <div class="native-detail-live-preview">
+          <NativeLivePreview component={component} guide={guide} />
+          <details class="native-detail-capture-evidence">
+            <summary>View verified {guide.shortLabel} runtime capture</summary>
+            <figure class="native-detail-capture">
+              <div class="native-detail-capture__viewport">
+                <img
+                  alt={capture.alt}
+                  decoding="async"
+                  height={capture.height}
+                  loading="lazy"
+                  src={capture.src}
+                  width={capture.width}
+                />
+              </div>
+              <figcaption>
+                <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+                <small>{capture.device}</small>
+              </figcaption>
+            </figure>
+          </details>
         </div>
-        <figcaption>
-          <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
-          <small>{capture.device}</small>
-        </figcaption>
-      </figure>
+      )}
+      {!hasLivePreview && (
+        <figure class="native-detail-capture">
+          <div class="native-detail-capture__viewport">
+            <img
+              alt={capture.alt}
+              decoding="async"
+              height={capture.height}
+              loading="eager"
+              src={capture.src}
+              width={capture.width}
+            />
+          </div>
+          <figcaption>
+            <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+            <small>{capture.device}</small>
+          </figcaption>
+        </figure>
+      )}
       <CodeTabs
         ariaLabel={`${component.name} ${guide.shortLabel} example`}
         items={[{
@@ -393,6 +424,30 @@ const iconGuidance = iconPlatformGuidance[guide.id]
     border: 1px solid hsl(var(--line));
     border-radius: 1rem;
     background: hsl(var(--surface));
+  }
+
+  .native-detail-live-preview {
+    min-width: 0;
+  }
+
+  .native-detail-capture-evidence {
+    margin-top: 0.75rem;
+  }
+
+  .native-detail-capture-evidence > summary {
+    width: fit-content;
+    color: hsl(var(--ink-soft));
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .native-detail-capture-evidence > summary:hover {
+    color: hsl(var(--brand));
+  }
+
+  .native-detail-capture-evidence .native-detail-capture {
+    margin-top: 0.75rem;
   }
 
   .native-detail-capture__viewport {

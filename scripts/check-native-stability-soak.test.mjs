@@ -6,18 +6,18 @@ import { resolve } from 'node:path'
 import test from 'node:test'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
-const checkerPath = resolve(repositoryRoot, 'scripts', 'check-native-prerelease-soak.mjs')
-const sourceLedgerPath = resolve(repositoryRoot, 'registry', 'native-prerelease-soak.json')
+const checkerPath = resolve(repositoryRoot, 'scripts', 'check-native-stability-soak.mjs')
+const sourceLedgerPath = resolve(repositoryRoot, 'registry', 'native-stability-soak.json')
 
 const createIteration = (ledger, index) => ({
-  id: `native-rc.${index}`,
+  id: `native-soak.${index}`,
   date: `2026-09-0${index + 1}`,
   revision: `${index + 1}`.repeat(40),
   versions: {
-    compose: `1.0.0-rc.${index}`,
-    reactNative: `1.0.0-rc.${index}`,
-    swift: `1.7.0-rc.${index}`,
-    wear: `1.0.0-rc.${index}`
+    compose: `0.${index + 5}.0`,
+    reactNative: `0.${index + 5}.0`,
+    swift: `1.${index + 6}.0`,
+    wear: `0.${index + 5}.0`
   },
   baselines: Object.fromEntries(
     Object.entries(ledger.baselines).map(([adapter, baseline]) => [adapter, baseline.sha256])
@@ -56,12 +56,12 @@ const runLedger = async (mutate, checkerArguments = []) => {
   }
 }
 
-test('accepts two chronological public release-candidate iterations', async () => {
+test('accepts two chronological ordinary-release stability iterations', async () => {
   const result = await runLedger(() => {})
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /Validated 2\/2 native prerelease soak iterations/)
+  assert.match(result.stdout, /Validated 2\/2 native stability soak iterations/)
 })
 
 test('requires both iterations in readiness mode', async () => {
@@ -71,7 +71,7 @@ test('requires both iterations in readiness mode', async () => {
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /Native prerelease soak is incomplete: 1 iteration\(s\) remain/)
+  assert.match(result.stderr, /Native stability soak is incomplete: 1 iteration\(s\) remain/)
 })
 
 test('rejects a consumer record without an immutable HTTPS URL', async () => {
@@ -94,12 +94,32 @@ test('rejects a release verification URL outside the repository workflow', async
   assert.match(result.stderr, /successful published-native verification workflow URL/)
 })
 
-test('rejects a version that does not match the iteration RC sequence', async () => {
+test('rejects an iteration that does not upgrade every adapter', async () => {
   const result = await runLedger(ledger => {
-    ledger.iterations[1].versions.compose = '1.0.0-rc.0'
+    ledger.iterations[1].versions.compose = '0.5.0'
   })
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /must record its exact rc\.1 semantic version/)
+  assert.match(result.stderr, /must be newer than the previous stability iteration/)
+})
+
+test('rejects prerelease versions', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[0].versions.reactNative = '1.0.0-rc.0'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must record an ordinary semantic release/)
+})
+
+test('rejects version 2 because it is the graduation release, not soak evidence', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[1].versions.swift = '2.0.0'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must remain on its pre-2\.0 release line/)
 })

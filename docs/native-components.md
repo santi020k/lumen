@@ -184,7 +184,7 @@ complications, haptics, synchronization, health behavior, and background work re
 owned.
 
 `LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`, and
-`LumenWearStatus` are Supported during the native release-candidate soak. `LumenWearMetric` and
+`LumenWearStatus` are Supported during the native stability soak. `LumenWearMetric` and
 `LumenWearListRow` remain Experimental and require
 `@OptIn(ExperimentalLumenWearApi::class)` at the narrowest calling scope.
 
@@ -207,7 +207,6 @@ owned.
 | Search field      | `LumenSearchField`      | `LumenSearchField`       | `LumenSearchField`      | Native search entry with labeled clear action                             |
 | Date field        | `LumenDateField`        | `LumenDateField`         | `LumenDateField`        | Native date selection with bounds and validation context                  |
 | Date range field  | `LumenDateRangeField`   | `LumenDateRangeField`    | `LumenDateRangeField`   | Inclusive native range selection with coordinated start and end values    |
-| Phone input       | `LumenPhoneInput`       | `LumenPhoneInput`        | `LumenPhoneInput`       | Country metadata, formatting, validation, and E.164 output                |
 | Checkbox          | `LumenCheckbox`         | `LumenCheckbox`          | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text               |
 | Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`        | `LumenRadioGroup`       | Named single selection with disabled option support                       |
 | Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl`  | `LumenSegmentedControl` | Compact single selection from a small peer set                            |
@@ -252,12 +251,22 @@ owned.
 | Wearable action   | —                       | `LumenWatchActionButton` | `LumenWearActionButton` | Round essential action with semantic intent and wearable-safe bounds      |
 | Wearable progress | —                       | `LumenWatchProgressRing` | `LumenWearProgressRing` | Clamped circular progress around application-owned center content         |
 | Wearable status   | —                       | `LumenWatchStatus`       | `LumenWearStatus`       | Compact text-first semantic status                                        |
-| Wearable metric   | —                       | `LumenWatchMetric`       | `LumenWearMetric`       | At-a-glance label, value, and optional detail                             |
-| Wearable list row | —                       | `LumenWatchListRow`      | `LumenWearListRow`      | Compact leading, content, and trailing wearable composition               |
 
 The web-only Card variants `glass` and `unstyled` are deliberately not shared. Blur, material, and
 unstyled layout behavior do not have a stable cross-platform meaning. Native Card interaction is
 enabled by an action or press callback instead of a visual-only `interactive` variant.
+
+### Experimental shared surface
+
+These contracts are available for evaluation but are not part of the supported Lumen 2 surface.
+Their source annotations and generated documentation remain authoritative until the contract-freeze
+gate promotes or removes them.
+
+| Contract          | React Native      | SwiftUI            | Compose                | Current maturity |
+| ----------------- | ----------------- | ------------------ | ---------------------- | ---------------- |
+| Phone input       | `LumenPhoneInput` | `LumenPhoneInput`  | `LumenPhoneInput`      | Experimental on every adapter |
+| Wearable metric   | —                 | `LumenWatchMetric` | `LumenWearMetric`      | Compose Experimental |
+| Wearable list row | —                 | `LumenWatchListRow` | `LumenWearListRow`     | Compose Experimental |
 
 ## Platform-specific components
 

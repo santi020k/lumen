@@ -1,0 +1,76 @@
+---
+import { Card } from '@santi020k/lumen-astro'
+
+import type { NativeComponentDoc, NativePlatformId } from '../data/native-components'
+import type { PlatformGuide } from '../data/platforms'
+
+interface Props {
+  component?: NativeComponentDoc
+  guide: PlatformGuide & { id: NativePlatformId }
+}
+
+const { component, guide } = Astro.props
+const reactNativeImplementation = component?.implementations['react-native']
+
+const canRender = guide.id === 'react-native' &&
+  (component === undefined || reactNativeImplementation !== undefined)
+
+const search = new URLSearchParams({ embed: 'true', scheme: 'light', theme: 'lumen' })
+
+if (component) search.set('component', component.name)
+
+const source = `/native-previews/react-native-live/index.html?${search.toString()}`
+const title = component ? `${component.name} interactive preview` : `${guide.shortLabel} interactive component gallery`
+---
+
+{canRender && (
+  <Card class="native-live-preview" variant="muted">
+    <div class="native-live-preview__canvas">
+      <iframe
+        allow="clipboard-read; clipboard-write"
+        loading="lazy"
+        sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts"
+        src={source}
+        title={title}
+      ></iframe>
+    </div>
+  </Card>
+)}
+
+<style>
+  :global(.native-live-preview) {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .native-live-preview__canvas {
+    display: grid;
+    place-items: center;
+    min-height: 38rem;
+    padding: clamp(0.75rem, 2.5vw, 1.5rem);
+    background:
+      radial-gradient(circle at 50% 0%, hsl(var(--brand) / 0.12), transparent 42%),
+      hsl(var(--surface-strong));
+  }
+
+  .native-live-preview__canvas iframe {
+    width: min(100%, 30rem);
+    height: 42rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.5rem;
+    background: hsl(var(--canvas));
+    box-shadow: 0 1.5rem 4rem hsl(var(--ink) / 0.16);
+  }
+
+  @media (max-width: 38rem) {
+    .native-live-preview__canvas {
+      min-height: 34rem;
+      padding: 0.5rem;
+    }
+
+    .native-live-preview__canvas iframe {
+      height: 38rem;
+      border-radius: 1rem;
+    }
+  }
+</style>

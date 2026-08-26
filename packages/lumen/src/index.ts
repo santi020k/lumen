@@ -210,3 +210,13 @@ export {
   auditLumenTokenCss,
   type LumenTokenAuditFinding
 } from './token-audit.js'
+export {
+  formatLumenV2Migration,
+  type LumenV2MigrationFinding,
+  type LumenV2MigrationKind,
+  type LumenV2MigrationOptions,
+  type LumenV2MigrationReport,
+  type LumenV2SourceMigration,
+  migrateLumenV2,
+  migrateLumenV2Source
+} from './v2-migration.js'

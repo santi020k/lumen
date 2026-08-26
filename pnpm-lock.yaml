@@ -383,6 +383,9 @@ importers:
       '@astrojs/ts-plugin':
         specifier: 'catalog:'
         version: 1.10.11
+      '@santi020k/lumen-playground-react-native':
+        specifier: workspace:*
+        version: link:../playground-react-native
       '@santi020k/og':
         specifier: 'catalog:'
         version: 1.1.1(@types/node@26.2.0)

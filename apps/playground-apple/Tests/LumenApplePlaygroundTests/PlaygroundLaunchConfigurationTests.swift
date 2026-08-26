@@ -1,5 +1,22 @@
 @testable import LumenApplePlayground
+import LumenUI
 import Testing
+
+@Test("theme presets preserve brand and appearance choices")
+func themePresets() {
+    let lumenLight = PlaygroundThemePreset.lumen.theme(for: .light)
+    let lumenDark = PlaygroundThemePreset.lumen.theme(for: .dark)
+
+    #expect(PlaygroundThemePreset.allCases.map(\.title) == ["Lumen", "santi020k"])
+    #expect(lumenLight.scheme == .light)
+    #expect(lumenLight.colors.brand == LumenColors.light.brand)
+    #expect(lumenLight.colors.canvas == LumenColors.light.canvas)
+    #expect(lumenDark.scheme == .dark)
+    #expect(lumenDark.colors.brand == LumenColors.dark.brand)
+    #expect(lumenDark.colors.canvas == LumenColors.dark.canvas)
+    #expect(PlaygroundThemePreset.santi020k.theme(for: .light).scheme == .light)
+    #expect(PlaygroundThemePreset.santi020k.theme(for: .dark).scheme == .dark)
+}
 
 @Suite("Playground launch configuration")
 struct PlaygroundLaunchConfigurationTests {

@@ -45,6 +45,7 @@ lumen audit-tokens ./src
 lumen doctor --json
 lumen doctor-native --json
 lumen init --framework astro --tailwind
+lumen migrate v2 --dry-run
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
@@ -78,6 +79,28 @@ codemod availability.
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
 are incompatible with Lumen's HSL-channel token format and exits non-zero when it finds conflicts.
+
+## Lumen v2 migration preview
+
+Run `lumen migrate v2 [--cwd <path>]` to preview the candidate v2 source migrations. Previewing is
+the safe default; `--dry-run` makes that intent explicit, and `--json` emits a machine-readable
+report. The migrator currently:
+
+- moves `UIPrimitives` from the `@santi020k/lumen-astro` root barrel to the default export from
+  `@santi020k/lumen-astro/runtime`, including mixed and aliased named imports;
+- renames literal `sm`, `default`, and `lg` visual `size` aliases to `visualSize` on imported Astro
+  `Input` and `NativeSelect` components, and to `visual-size` on `lumen-input` and
+  `lumen-native-select` elements; and
+- preserves numeric native `size` values while reporting dynamic, conflicting, and otherwise
+  ambiguous values for manual review.
+
+After reviewing the report and committing a recoverable baseline, write the deterministic changes:
+
+```bash
+lumen migrate v2 --apply
+```
+
+The transform is idempotent. Re-running it after a successful apply produces no further changes.
 
 ## Coordinated consumer rollout
 

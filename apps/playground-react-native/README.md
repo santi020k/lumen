@@ -3,8 +3,8 @@
 <!-- cspell:words screencap simctl -->
 
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
-web, iOS, and Android with a focused Home, searchable Components, and About experience; system,
-light, and dark themes; and interactive component states.
+web, iOS, and Android with a focused Home, searchable Components, and About experience; Lumen and
+santi020k theme presets; system, light, and dark appearances; and interactive component states.
 
 Install the repository dependencies once from the repository root:
 

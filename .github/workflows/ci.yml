@@ -69,7 +69,7 @@ jobs:
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/playground-(android|apple)/|packages/(compose|react-native|swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-prerelease-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-prerelease-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/playground-(android|apple)/|packages/(compose|react-native|swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
             echo "native=true" >> "$GITHUB_OUTPUT"
           else
             echo "native=false" >> "$GITHUB_OUTPUT"

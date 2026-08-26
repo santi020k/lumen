@@ -115,9 +115,10 @@ Individual features that do not yet meet the adapter's Beta support bar should b
   Illustration, Image, Disclosure,
   Avatar, EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
   adapters with shared semantic contracts.
-- PhoneInput is available in React Native, SwiftUI on iOS and macOS, and Compose with a shared
-  country, national-number, validity, and E.164 contract. It is intentionally absent on wearable
-  and television surfaces.
+- Experimental PhoneInput contracts are available in React Native, SwiftUI on iOS and macOS, and
+  Compose with shared country, national-number, validity, and E.164 semantics. They are not part of
+  the supported Lumen 2 surface yet and remain intentionally absent on wearable and television
+  surfaces.
 - Picker, Slider, Gauge, DateField, and DateRangeField are available in SwiftUI and Compose, where
   stable dependency-free native controls exist. The platform tier includes RefreshControl for
   React Native, FloatingActionButton for Compose, and ShortcutRecorder

@@ -26,10 +26,10 @@ the same way as handwritten exports; their generator remains the editing source 
 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
-| React Native | 153 exports from `packages/react-native/src/index.ts` | 153 Supported; 0 Experimental; 0 Deprecated | `pnpm run check:native-api-baseline` compares the TypeScript entrypoint with `registry/native-api-baseline.json` | Review defaults and cross-adapter state semantics, then retain the approved baseline across two prerelease iterations |
-| SwiftUI | Reviewed symbol graphs: 2,810 macOS, 2,787 iOS, 2,660 tvOS, and 2,680 watchOS symbols | Every recorded symbol Supported; 0 Experimental; 0 Deprecated; 0 Unclassified | `pnpm run check:swift-api-baseline` rebuilds and compares every declared platform; CI also runs `swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI` | Review shared defaults and state semantics, then retain the approved baseline across two prerelease iterations |
-| Compose | 70 public ABI blocks and 2,928 public members in `packages/compose/api/lumen-compose.api` | Entire approved dump Supported; 0 Experimental; 0 Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump | Review shared defaults and state semantics, then retain the approved dump across two prerelease iterations |
-| Wear OS | 8 classified declarations in `packages/compose/wear/api/wear.api` | 5 Supported; 3 Experimental; 0 Deprecated; 3 implementation helpers made Internal | Root `./gradlew apiCheck` compares the separate artifact dump; `pnpm run check:wear-api-classification` enforces classifications and source opt-ins | Confirm active-product and physical-watch behavior, then retain the approved dump across two prerelease iterations |
+| React Native | 208 exports from `packages/react-native/src/index.ts` | 199 Supported; 9 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares the TypeScript entrypoint with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
+| SwiftUI | Reviewed symbol graphs: 2,990 macOS, 2,967 iOS, 2,811 tvOS, and 2,831 watchOS symbols | Every recorded symbol Supported; 0 Experimental; 0 Deprecated; 0 Unclassified | `pnpm run check:swift-api-baseline` rebuilds and compares every declared platform; CI also runs `swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI` | Retain the approved baseline across two ordinary stability iterations |
+| Compose | 70 public ABI blocks and 2,928 public members in `packages/compose/api/lumen-compose.api` | Supported surface plus the phone contract behind `ExperimentalLumenPhoneApi`; 0 Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump | Add declaration-level machine-readable maturity classifications, then retain the approved baseline across two ordinary stability iterations |
+| Wear OS | 8 classified declarations in `packages/compose/wear/api/wear.api` | 5 Supported; 3 Experimental; 0 Deprecated; 3 implementation helpers made Internal | Root `./gradlew apiCheck` compares the separate artifact dump; `pnpm run check:wear-api-classification` enforces classifications and source opt-ins | Confirm active-product and physical-watch behavior, then retain the approved dump across two ordinary stability iterations |
 
 ## React Native baseline rules
 
@@ -44,9 +44,10 @@ new symbol can be published without an explicit classification.
 ## Compose and Wear OS baseline rules
 
 The reviewed `.api` files are the declaration-level inventory for the two Kotlin artifacts. The
-phone and tablet dump is Supported. ContracTrack exercises the Wear theme, tone, action, progress,
-and status APIs, while the clean artifact consumer verifies that subset in isolation; those five
-declarations are Supported. The
+unannotated phone and tablet declarations are Supported; `LumenPhoneInput` and its related country,
+number, resolution, and opt-in contracts remain Experimental behind `ExperimentalLumenPhoneApi`.
+ContracTrack exercises the Wear theme, tone, action, progress, and status APIs, while the clean
+artifact consumer verifies that subset in isolation; those five declarations are Supported. The
 metric and list-row evaluation APIs remain Experimental behind `ExperimentalLumenWearApi`; the
 annotation itself is also classified Experimental. Sizing, progress-normalization, and color
 helpers are Internal and absent from the public ABI.
@@ -84,12 +85,12 @@ The native contract-freeze gate remains In progress until:
   supported declaration and documented platform boundary;
 - all intentional Beta breakages have migration notes;
 - Experimental APIs are visibly labeled in source and documentation; and
-- the approved baselines remain free of unapproved breakage through two consecutive prerelease
-  iterations.
+- the approved baselines remain free of unapproved breakage through two consecutive ordinary
+  stability iterations.
 
-The machine-readable soak record is `registry/native-prerelease-soak.json`.
-`pnpm run check:native-prerelease-soak` verifies that its recorded hashes still match every reviewed
-API baseline and the Wear classification registry. `pnpm run check:native-prerelease-readiness`
+The machine-readable soak record is `registry/native-stability-soak.json`.
+`pnpm run check:native-stability-soak` verifies that its recorded hashes still match every reviewed
+API baseline and the Wear classification registry. `pnpm run check:native-stability-readiness`
 remains failing until two chronological
 release iterations record their full revision, native artifact versions, baseline hashes, and
 immutable release and active-consumer evidence URLs.

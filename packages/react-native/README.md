@@ -37,11 +37,13 @@ React 19.2 and React Native 0.86.2 or newer are application-provided peer depend
 
 ```ts
 import {
+  createLumenTheme,
   LumenButton,
   LumenIconButton,
   LumenProvider,
   LumenSurface,
-  LumenText
+  LumenText,
+  type LumenTheme
 } from '@santi020k/lumen-react-native'
 
 export function App() {
@@ -62,6 +64,28 @@ Start the application with its normal Expo or React Native command:
 ```bash
 npx expo start
 # or: npx react-native start
+```
+
+Applications can pass a custom color theme to `LumenProvider`. Start from
+`createLumenTheme(scheme)`, copy its `colors` or `chartColors`, and replace semantic roles such as
+`brand`, `brandSolid`, and `brandSoft`; components continue to consume the same named color contract
+without casts. `LumenColorPalette` and `LumenChartColorPalette` are available when a product keeps
+its palettes in separate modules. Pass either `theme` or `scheme`; when both are present, the
+explicit `theme` wins.
+
+```tsx
+const baseTheme = createLumenTheme('light')
+const productTheme: LumenTheme = {
+  ...baseTheme,
+  colors: {
+    ...baseTheme.colors,
+    brand: '#620AE6',
+    brandSolid: '#5709CE',
+    brandSoft: '#EEE7F9'
+  }
+}
+
+<LumenProvider theme={productTheme}>{children}</LumenProvider>
 ```
 
 Date values remain controlled by the application. `LumenDateField` opens the system picker, while

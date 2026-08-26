@@ -25,12 +25,16 @@ The version in `packages/compose/gradle.properties` is canonical. `pnpm sync:com
 updates every public installation example, and `pnpm check:compose-version` prevents release or
 documentation checks from passing with stale coordinates.
 
-The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Check
-both release artifacts before opening a change:
+The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Run the
+local release gate for both artifacts before opening a change:
 
 ```bash
-./gradlew apiCheck
+./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
 ```
+
+`assembleDebugAndroidTest` compiles the phone and Wear accessibility suites without claiming device
+evidence. Run `./gradlew connectedDebugAndroidTest` only with suitable Android and Wear OS targets
+connected; record physical-device results through the repository's native validation process.
 
 Run `./gradlew apiDump` only after reviewing an intentional public API change and updating its
 documentation, tests, classification, and migration notes. The root tasks include the separate Wear

@@ -8,7 +8,7 @@ import test from 'node:test'
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const checkerPath = resolve(repositoryRoot, 'scripts', 'check-native-stable-readiness.mjs')
 const deviceLedgerPath = resolve(repositoryRoot, 'registry', 'native-device-evidence.json')
-const soakLedgerPath = resolve(repositoryRoot, 'registry', 'native-prerelease-soak.json')
+const soakLedgerPath = resolve(repositoryRoot, 'registry', 'native-stability-soak.json')
 
 const runChecker = arguments_ => spawnSync(process.execPath, [checkerPath, ...arguments_], {
   cwd: repositoryRoot,
@@ -16,14 +16,14 @@ const runChecker = arguments_ => spawnSync(process.execPath, [checkerPath, ...ar
 })
 
 const createSoakIteration = (ledger, index) => ({
-  id: `native-rc.${index}`,
+  id: `native-soak.${index}`,
   date: `2026-09-0${index + 1}`,
   revision: `${index + 1}`.repeat(40),
   versions: {
-    compose: `1.0.0-rc.${index}`,
-    reactNative: `1.0.0-rc.${index}`,
-    swift: `1.7.0-rc.${index}`,
-    wear: `1.0.0-rc.${index}`
+    compose: `0.${index + 5}.0`,
+    reactNative: `0.${index + 5}.0`,
+    swift: `1.${index + 6}.0`,
+    wear: `0.${index + 5}.0`
   },
   baselines: Object.fromEntries(
     Object.entries(ledger.baselines).map(([adapter, baseline]) => [adapter, baseline.sha256])
@@ -104,9 +104,9 @@ test('does not require stable evidence for the current Beta adapters', () => {
 
 test('does not treat release candidates as stable releases', () => {
   const result = runChecker([
-    '--compose-version', '1.0.0-rc.1',
-    '--react-native-version', '1.0.0-rc.1',
-    '--swift-version', '1.7.0-rc.1'
+    '--compose-version', '2.0.0-rc.1',
+    '--react-native-version', '2.0.0-rc.1',
+    '--swift-version', '2.0.0-rc.1'
   ])
 
   assert.equal(result.status, 0, result.stderr)
@@ -115,33 +115,45 @@ test('does not treat release candidates as stable releases', () => {
 })
 
 for (const release of [
-  { adapter: 'Compose', arguments: ['--compose-version', '1.0.0'] },
-  { adapter: 'React Native', arguments: ['--react-native-version', '1.0.0'] },
-  { adapter: 'SwiftUI', arguments: ['--swift-version', '1.7.0'] }
+  { adapter: 'Compose', arguments: ['--compose-version', '2.0.0'] },
+  { adapter: 'React Native', arguments: ['--react-native-version', '2.0.0'] },
+  { adapter: 'SwiftUI', arguments: ['--swift-version', '2.0.0'] }
 ]) {
-  test(`blocks ${release.adapter} stable publication while evidence is incomplete`, () => {
+  test(`rejects an uncoordinated ${release.adapter} version 2 launch`, () => {
     const result = runChecker(release.arguments)
 
     assert.equal(result.status, 1)
 
-    assert.match(result.stdout, new RegExp(`Native stable readiness is required for ${release.adapter}`))
-
-    assert.match(result.stderr, /Native prerelease soak is incomplete/)
+    assert.match(result.stderr, /Lumen 2 must launch every native adapter together/)
   })
 }
 
+test('blocks a coordinated version 2 launch while evidence is incomplete', () => {
+  const result = runChecker([
+    '--compose-version', '2.0.0',
+    '--react-native-version', '2.0.0',
+    '--swift-version', '2.0.0'
+  ])
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stdout, /Native stable readiness is required for Compose 2\.0\.0/)
+
+  assert.match(result.stderr, /Native stability soak is incomplete/)
+})
+
 test('allows a coordinated stable release after both evidence ledgers are complete', async () => {
   const result = await withCompleteLedgers(ledgers => runChecker([
-    '--compose-version', '1.0.0',
-    '--react-native-version', '1.0.0',
-    '--swift-version', '1.7.0',
+    '--compose-version', '2.0.0',
+    '--react-native-version', '2.0.0',
+    '--swift-version', '2.0.0',
     '--soak-ledger', ledgers.soakLedger,
     '--device-ledger', ledgers.deviceLedger
   ]))
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /Validated 2\/2 native prerelease soak iterations/)
+  assert.match(result.stdout, /Validated 2\/2 native stability soak iterations/)
 
   assert.match(result.stdout, /14 native physical-device passes; 0 remain incomplete/)
 

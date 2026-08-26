@@ -65,6 +65,6 @@ The semantic disposition is accepted as the review baseline. Native contract fre
 
 1. migration notes for any further Beta correction;
 2. an immutable Swift patch release containing the target-availability correction;
-3. two consecutive prerelease iterations with unchanged Supported baselines; and
+3. two consecutive ordinary-release stability iterations with unchanged Supported baselines; and
 4. consumer and physical-device evidence showing that the documented behavior holds in product
    flows.

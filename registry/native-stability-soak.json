@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "requiredIterations": 2,
   "baselines": {
     "reactNative": {
       "path": "registry/native-api-baseline.json",
-      "sha256": "40d52a062e73cfd8bf4bd240b74574de0025dfc86b84f222ba092178878f1268"
+      "sha256": "be3073e687ba6401e4fcf14ae22b745101503e7ba02d876b8a491199a8ca5721"
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",

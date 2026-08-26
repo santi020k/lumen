@@ -8,8 +8,11 @@ import {
   Linking,
   Platform,
   ScrollView,
+  type StyleProp,
   StyleSheet,
-  View
+  useColorScheme,
+  View,
+  type ViewStyle
 } from 'react-native'
 import {
   SafeAreaProvider,
@@ -18,6 +21,7 @@ import {
 
 import {
   createEmptyLumenPhoneNumber,
+  createLumenTheme,
   getLumenIconGraphic,
   getLumenPhoneCountry,
   LumenAlert,
@@ -79,6 +83,7 @@ import {
   LumenText,
   LumenTextarea,
   LumenTextField,
+  type LumenTheme,
   LumenToast,
   LumenToggle,
   useLumenTheme
@@ -88,6 +93,69 @@ import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 type AppDestination = 'about' | 'components' | 'home'
 
 type ColorScheme = 'dark' | 'light' | 'system'
+
+type ThemePreset = 'lumen' | 'santi020k'
+
+const resolvePlaygroundScheme = (
+  preference: ColorScheme,
+  systemScheme: ReturnType<typeof useColorScheme>
+): 'dark' | 'light' => {
+  if (preference === 'dark' || preference === 'light') return preference
+
+  return systemScheme === 'dark' ? 'dark' : 'light'
+}
+
+const santi020kColorPalettes: Record<'dark' | 'light', LumenTheme['colors']> = {
+  light: {
+    canvas: '#FAF9FB',
+    surface: '#FFFFFF',
+    surfaceMuted: '#F5F3F7',
+    surfaceStrong: '#E5E2E9',
+    line: '#D6D0DC',
+    ink: '#332E38',
+    inkSoft: '#5B5463',
+    inkMuted: '#47434C',
+    brand: '#620AE6',
+    brandSolid: '#5709CE',
+    brandSoft: '#EEE7F9',
+    onBrand: '#FFFFFF',
+    accent: '#7D29FA',
+    success: '#16A249',
+    warning: '#F59F0A',
+    danger: '#EF4343',
+    onDanger: '#000000'
+  },
+  dark: {
+    canvas: '#110C1D',
+    surface: '#1C1528',
+    surfaceMuted: '#231D30',
+    surfaceStrong: '#322B40',
+    line: '#494158',
+    ink: '#DFDDE3',
+    inkSoft: '#B6B2BD',
+    inkMuted: '#8D8896',
+    brand: '#A56EF7',
+    brandSolid: '#6F16F3',
+    brandSoft: '#2A1943',
+    onBrand: '#FFFFFF',
+    accent: '#9F64F7',
+    success: '#21C45D',
+    warning: '#F6A823',
+    danger: '#F15B5B',
+    onDanger: '#110C1D'
+  }
+}
+
+const createPlaygroundTheme = (preset: ThemePreset, scheme: 'dark' | 'light'): LumenTheme => {
+  const theme = createLumenTheme(scheme)
+
+  if (preset === 'lumen') return theme
+
+  return {
+    ...theme,
+    colors: santi020kColorPalettes[scheme]
+  }
+}
 
 interface ComponentSectionProps {
   children: ReactNode
@@ -179,10 +247,35 @@ const demoNavigationItems = [
   { disabled: true, icon: settingsIcon, label: 'Settings', value: 'settings' }
 ] as const
 
-const getInitialComponentQuery = (): string => {
+const getWebQueryParameter = (name: string): string => {
   if (Platform.OS !== 'web' || typeof globalThis.location === 'undefined') return ''
 
-  return new URLSearchParams(globalThis.location.search).get('component') ?? ''
+  return new URLSearchParams(globalThis.location.search).get(name) ?? ''
+}
+
+const getInitialComponentQuery = (): string => getWebQueryParameter('component')
+const isEmbeddedPreview = (): boolean => getWebQueryParameter('embed') === 'true'
+
+const getInitialColorScheme = (): ColorScheme => {
+  const scheme = getWebQueryParameter('scheme')
+
+  return scheme === 'dark' || scheme === 'light' || scheme === 'system' ? scheme : 'system'
+}
+
+const getInitialThemePreset = (): ThemePreset => (
+  getWebQueryParameter('theme') === 'santi020k' ? 'santi020k' : 'lumen'
+)
+
+const getInitialDestination = (): AppDestination => (
+  isEmbeddedPreview() || getInitialComponentQuery() ? 'components' : 'home'
+)
+
+const getVisibleComponentNames = (query: string, embedded: boolean): string[] => {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  return componentNames.filter(name => embedded && normalizedQuery.length > 0 ?
+    name.toLowerCase() === normalizedQuery :
+    name.toLowerCase().includes(normalizedQuery))
 }
 
 const openExternalURL = (url: string): void => {
@@ -211,6 +304,10 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 48,
     width: '100%'
+  },
+  embeddedContent: {
+    padding: 16,
+    paddingBottom: 16
   },
   examples: {
     display: 'flex'
@@ -289,6 +386,10 @@ const Visibility = ({ children, visible }: { children: ReactNode, visible: boole
   visible ? children : null
 )
 
+const getPlaygroundContentStyle = (embedded: boolean): StyleProp<ViewStyle> => (
+  embedded ? [styles.content, styles.embeddedContent] : styles.content
+)
+
 const ComponentSection = ({
   children,
   description,
@@ -328,6 +429,10 @@ const isAppDestination = (value: string): value is AppDestination => (
 
 const isColorScheme = (value: string): value is ColorScheme => (
   value === 'dark' || value === 'light' || value === 'system'
+)
+
+const isThemePreset = (value: string): value is ThemePreset => (
+  value === 'lumen' || value === 'santi020k'
 )
 
 const HomeScreen = ({
@@ -421,10 +526,14 @@ const HomeScreen = ({
 
 const AboutScreen = ({
   onSchemeChange,
-  scheme
+  onThemePresetChange,
+  scheme,
+  themePreset
 }: {
   onSchemeChange: (scheme: ColorScheme) => void
+  onThemePresetChange: (preset: ThemePreset) => void
   scheme: ColorScheme
+  themePreset: ThemePreset
 }): ReactElement => (
   <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
     <ScrollView contentContainerStyle={styles.content}>
@@ -440,6 +549,17 @@ const AboutScreen = ({
         <LumenSectionHeader
           subtitle="Follow the device or choose a fixed playground theme."
           title="Appearance"
+        />
+        <LumenSegmentedControl
+          label="Playground theme"
+          onValueChange={value => {
+            if (isThemePreset(value)) onThemePresetChange(value)
+          }}
+          options={[
+            { label: 'Lumen', value: 'lumen' },
+            { label: 'santi020k', value: 'santi020k' }
+          ]}
+          value={themePreset}
         />
         <LumenSegmentedControl
           label="Playground appearance"
@@ -618,6 +738,7 @@ const Playground = ({
   const theme = useLumenTheme()
   const themeToggle = getThemeToggleState(theme.scheme)
   const initialComponent = getInitialComponentQuery()
+  const embedded = isEmbeddedPreview()
   const [email, setEmail] = useState('hello@lumen.dev')
   const [notes, setNotes] = useState('Native components now share one documented contract.')
   const [releaseDate, setReleaseDate] = useState<Date | null>(() => new Date(2026, 8, 15))
@@ -649,9 +770,10 @@ const Playground = ({
   const [navigationVisible, setNavigationVisible] = useState(true)
   const [lastAction, setLastAction] = useState('No overlay action yet')
 
-  const visibleNames = useMemo(() => componentNames.filter(name => (
-    name.toLowerCase().includes(query.trim().toLowerCase())
-  )), [query])
+  const visibleNames = useMemo(
+    () => getVisibleComponentNames(query, embedded),
+    [embedded, query]
+  )
 
   const isVisible = (name: string) => visibleNames.includes(name)
   const isAnyVisible = (...names: string[]) => names.some(isVisible)
@@ -659,7 +781,7 @@ const Playground = ({
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={getPlaygroundContentStyle(embedded)}
         keyboardShouldPersistTaps="handled"
         refreshControl={(
           <LumenRefreshControl
@@ -675,38 +797,42 @@ const Playground = ({
           />
         )}
       >
-        <View style={styles.hero}>
-          <View style={styles.heroCopy}>
-            <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
-            <LumenText variant="title">Lumen Playground</LumenText>
-            <LumenText tone="soft">
-              Explore every public primitive with real React Native state and behavior.
-            </LumenText>
-          </View>
-          <LumenIconButton
-            name={themeToggle.icon}
-            label={themeToggle.label}
-            onPress={() => {
-              onSchemeChange(themeToggle.scheme)
-            }}
-          />
-        </View>
+        <Visibility visible={!embedded}>
+          <>
+            <View style={styles.hero}>
+              <View style={styles.heroCopy}>
+                <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
+                <LumenText variant="title">Lumen Playground</LumenText>
+                <LumenText tone="soft">
+                  Explore every public primitive with real React Native state and behavior.
+                </LumenText>
+              </View>
+              <LumenIconButton
+                name={themeToggle.icon}
+                label={themeToggle.label}
+                onPress={() => {
+                  onSchemeChange(themeToggle.scheme)
+                }}
+              />
+            </View>
 
-        <LumenSearchField
-          graphic={<LumenIcon decorative name="search" size="sm" />}
-          onChangeText={setQuery}
-          prompt="Search components"
-          value={query}
-        />
+            <LumenSearchField
+              graphic={<LumenIcon decorative name="search" size="sm" />}
+              onChangeText={setQuery}
+              prompt="Search components"
+              value={query}
+            />
 
-        <View style={styles.catalogMeta}>
-          <LumenText variant="label">
-            {visibleNames.length}
-            {' '}
-            components
-          </LumenText>
-          <LumenText tone="muted" variant="caption">Interactive web · iOS · Android</LumenText>
-        </View>
+            <View style={styles.catalogMeta}>
+              <LumenText variant="label">
+                {visibleNames.length}
+                {' '}
+                components
+              </LumenText>
+              <LumenText tone="muted" variant="caption">Interactive web · iOS · Android</LumenText>
+            </View>
+          </>
+        </Visibility>
 
         <Visibility visible={isAnyVisible('Theme', 'Text', 'Surface')}>
           <ComponentSection
@@ -739,7 +865,7 @@ const Playground = ({
 
         <Visibility visible={isAnyVisible('Button', 'Button group', 'Chip')}>
           <ComponentSection description="Press each intent and inspect disabled and loading states." title="Buttons">
-            <LumenButtonGroup>
+            <LumenButtonGroup style={styles.row}>
               <LumenButton onPress={() => {
                 setSaved(true)
               }}
@@ -1272,17 +1398,19 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <LumenStatusBar
-          message={`Built with @santi020k/lumen-react-native · ${theme.scheme} theme`}
-          tone="success"
-          trailing={(
-            <LumenText tone="muted" variant="caption">
-              {componentNames.length}
-              {' '}
-              shared
-            </LumenText>
-          )}
-        />
+        <Visibility visible={!embedded}>
+          <LumenStatusBar
+            message={`Built with @santi020k/lumen-react-native · ${theme.scheme} theme`}
+            tone="success"
+            trailing={(
+              <LumenText tone="muted" variant="caption">
+                {componentNames.length}
+                {' '}
+                shared
+              </LumenText>
+            )}
+          />
+        </Visibility>
       </ScrollView>
     </LumenSurface>
   )
@@ -1290,16 +1418,18 @@ const Playground = ({
 
 const AppShell = ({
   onSchemeChange,
-  scheme
+  onThemePresetChange,
+  scheme,
+  themePreset
 }: {
   onSchemeChange: (scheme: ColorScheme) => void
+  onThemePresetChange: (preset: ThemePreset) => void
   scheme: ColorScheme
+  themePreset: ThemePreset
 }): ReactElement => {
   const theme = useLumenTheme()
-
-  const [destination, setDestination] = useState<AppDestination>(() => (
-    getInitialComponentQuery() ? 'components' : 'home'
-  ))
+  const embedded = isEmbeddedPreview()
+  const [destination, setDestination] = useState<AppDestination>(getInitialDestination)
 
   return (
     <>
@@ -1324,18 +1454,25 @@ const AppShell = ({
               <Playground onSchemeChange={onSchemeChange} />
             )}
             {destination === 'about' && (
-              <AboutScreen onSchemeChange={onSchemeChange} scheme={scheme} />
+              <AboutScreen
+                onSchemeChange={onSchemeChange}
+                onThemePresetChange={onThemePresetChange}
+                scheme={scheme}
+                themePreset={themePreset}
+              />
             )}
           </View>
-          <LumenNavigationBar
-            accessibilityLabel="Playground navigation"
-            items={appNavigationItems}
-            onValueChange={value => {
-              if (isAppDestination(value)) setDestination(value)
-            }}
-            style={styles.appNavigation}
-            value={destination}
-          />
+          {!embedded && (
+            <LumenNavigationBar
+              accessibilityLabel="Playground navigation"
+              items={appNavigationItems}
+              onValueChange={value => {
+                if (isAppDestination(value)) setDestination(value)
+              }}
+              style={styles.appNavigation}
+              value={destination}
+            />
+          )}
         </LumenSurface>
       </SafeAreaView>
     </>
@@ -1343,12 +1480,25 @@ const AppShell = ({
 }
 
 const App = (): ReactElement => {
-  const [scheme, setScheme] = useState<ColorScheme>('system')
+  const [scheme, setScheme] = useState<ColorScheme>(getInitialColorScheme)
+  const [themePreset, setThemePreset] = useState<ThemePreset>(getInitialThemePreset)
+  const systemScheme = useColorScheme()
+  const resolvedScheme = resolvePlaygroundScheme(scheme, systemScheme)
+
+  const theme = useMemo(
+    () => createPlaygroundTheme(themePreset, resolvedScheme),
+    [resolvedScheme, themePreset]
+  )
 
   return (
     <SafeAreaProvider>
-      <LumenProvider scheme={scheme}>
-        <AppShell onSchemeChange={setScheme} scheme={scheme} />
+      <LumenProvider theme={theme}>
+        <AppShell
+          onSchemeChange={setScheme}
+          onThemePresetChange={setThemePreset}
+          scheme={scheme}
+          themePreset={themePreset}
+        />
       </LumenProvider>
     </SafeAreaProvider>
   )

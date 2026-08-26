@@ -6,6 +6,7 @@ struct PlaygroundSettingsView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var themePreference: PlaygroundThemePreference
+    @Binding var themePreset: PlaygroundThemePreset
     @State private var showThemeFeedback = false
 
     var body: some View {
@@ -32,12 +33,20 @@ struct PlaygroundSettingsView: View {
             description: "Choose a theme and preview the semantic surface hierarchy immediately."
         ) {
             VStack(alignment: .leading, spacing: LumenSpacing.md) {
-                LumenPicker("Theme", selection: $themePreference, style: .segmented) {
+                LumenPicker("Theme", selection: $themePreset, style: .segmented) {
+                    ForEach(PlaygroundThemePreset.allCases) { preset in
+                        Text(preset.title).tag(preset)
+                    }
+                }
+                LumenPicker("Appearance", selection: $themePreference, style: .segmented) {
                     ForEach(PlaygroundThemePreference.allCases) { preference in
                         Text(preference.title).tag(preference)
                     }
                 }
                 .onChange(of: themePreference) { _ in
+                    showThemeFeedback = true
+                }
+                .onChange(of: themePreset) { _ in
                     showThemeFeedback = true
                 }
                 themePreview
@@ -60,13 +69,13 @@ struct PlaygroundSettingsView: View {
                     VStack(alignment: .leading, spacing: LumenSpacing.xs) {
                         LumenText("Theme preview", variant: .label)
                         LumenText(
-                            "Semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
+                            "\(themePreset.title) semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
                             variant: .caption,
                             tone: .muted
                         )
                     }
                     Spacer()
-                    LumenBadge(LocalizedStringKey(themePreference.title), tone: .accent)
+                    LumenBadge("\(themePreset.title) · \(themePreference.title)", tone: .accent)
                 }
                 HStack(spacing: LumenSpacing.sm) {
                     previewSurface("Canvas", tone: .canvas)

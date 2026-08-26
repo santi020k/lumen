@@ -5,11 +5,14 @@
   "description": "Documentation website for Lumen UI.",
   "type": "module",
   "scripts": {
+    "predev": "pnpm --filter @santi020k/lumen-playground-react-native run build && pnpm run prepare:native-live-previews",
     "dev": "astro dev",
+    "prebuild": "pnpm --filter @santi020k/lumen-playground-react-native run build && pnpm run prepare:native-live-previews",
     "build": "santi-og generate --config scripts/generate-og-images.mjs && astro build",
     "postbuild": "santi-og audit",
     "generate:og": "santi-og generate --config scripts/generate-og-images.mjs",
     "generate:og:force": "santi-og generate --config scripts/generate-og-images.mjs --force",
+    "prepare:native-live-previews": "node scripts/prepare-native-live-previews.mjs",
     "sync:native-captures": "node --experimental-strip-types scripts/sync-native-component-captures.mjs",
     "check:native-captures": "node --experimental-strip-types scripts/sync-native-component-captures.mjs --check",
     "check:og": "santi-og check --config scripts/generate-og-images.mjs",
@@ -40,6 +43,7 @@
     "@astrojs/check": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
     "@santi020k/og": "catalog:",
+    "@santi020k/lumen-playground-react-native": "workspace:*",
     "sharp": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

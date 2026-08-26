@@ -20,6 +20,7 @@
       ],
       "ignoreDependencies": [
         "@santi020k/lumen",
+        "@santi020k/lumen-playground-react-native",
         "tailwindcss"
       ],
       "project": [

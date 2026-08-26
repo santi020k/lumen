@@ -11,7 +11,8 @@ primary destinations are Home, Examples, Components, and Settings:
   including loading, empty, error, success, disabled, validation, and destructive states.
 - Components adds product-intent category discovery to the searchable catalog while preserving the
   deterministic launch filters used by screenshot automation.
-- Settings covers semantic theme preview and feedback, current Apple accessibility preferences,
+- Settings covers Lumen and santi020k semantic theme presets, system/light/dark appearance,
+  theme preview and feedback, current Apple accessibility preferences,
   platform and version details, documentation, privacy, and support.
 
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press
@@ -29,7 +30,9 @@ archiving for TestFlight. Update `project.yml` and regenerate the Xcode project 
 project structure changes.
 
 App Store archives are built and signed by Xcode Cloud. Run the local preflight with
-`pnpm playground:apple:release-preflight`, then launch a build from the GitHub Actions workflow
+`pnpm playground:apple:release-preflight`; it checks the release metadata, runs the playground's
+Swift tests, and produces an unsigned Release build for the iOS Simulator. Then launch a build from
+the GitHub Actions workflow
 **Launch Apple playground release**. The workflow creates a `playground-ios-v<version>-r<run>` tag;
 the tag starts Xcode Cloud, which assigns its build number and uploads the archive to App Store
 Connect without exposing Apple signing credentials to GitHub.

@@ -130,7 +130,9 @@ import com.santi020k.lumen.LumenTextField
 import com.santi020k.lumen.LumenTextarea
 import com.santi020k.lumen.LumenTextTone
 import com.santi020k.lumen.LumenTextVariant
+import com.santi020k.lumen.LumenColorPalette
 import com.santi020k.lumen.LumenTheme
+import com.santi020k.lumen.LumenThemeValues
 import com.santi020k.lumen.LumenToggle
 import com.santi020k.lumen.LumenToast
 import com.santi020k.lumen.lumenNavigationBarScrollBehavior
@@ -158,6 +160,63 @@ private data class PlaygroundSection(
     val names: Set<String>,
     val title: String
 )
+
+internal enum class PlaygroundThemePreset(val label: String) {
+    Lumen("Lumen"),
+    Santi020k("santi020k");
+
+    fun values(darkTheme: Boolean): LumenThemeValues = LumenThemeValues(
+        colors = when {
+            this == Santi020k && darkTheme -> santi020kDark
+            this == Santi020k -> santi020kLight
+            darkTheme -> com.santi020k.lumen.LumenColors.Dark
+            else -> lumenLight
+        },
+        isDark = darkTheme
+    )
+
+    private companion object {
+        val lumenLight = palette(
+            0xFFF9FAFB, 0xFFFFFFFF, 0xFFEFF2F5, 0xFFDBE0E6, 0xFFCFD5DD,
+            0xFF161D27, 0xFF4D5766, 0xFF737D8C, 0xFF0369A0, 0xFF035C8C,
+            0xFFDEF0F8, 0xFF13967E, 0xFF16A249, 0xFFF59F0A, 0xFFEF4343, 0xFF000000
+        )
+        val santi020kLight = palette(
+            0xFFFAF9FB, 0xFFFFFFFF, 0xFFF5F3F7, 0xFFE5E2E9, 0xFFD6D0DC,
+            0xFF332E38, 0xFF5B5463, 0xFF47434C, 0xFF620AE6, 0xFF5709CE,
+            0xFFEEE7F9, 0xFF7D29FA, 0xFF16A249, 0xFFF59F0A, 0xFFEF4343, 0xFF000000
+        )
+        val santi020kDark = palette(
+            0xFF110C1D, 0xFF1C1528, 0xFF231D30, 0xFF322B40, 0xFF494158,
+            0xFFDFDDE3, 0xFFB6B2BD, 0xFF8D8896, 0xFFA56EF7, 0xFF6F16F3,
+            0xFF2A1943, 0xFF9F64F7, 0xFF21C45D, 0xFFF6A823, 0xFFF15B5B, 0xFF110C1D
+        )
+
+        fun palette(
+            canvas: Long, surface: Long, surfaceMuted: Long, surfaceStrong: Long, line: Long,
+            ink: Long, inkSoft: Long, inkMuted: Long, brand: Long, brandSolid: Long,
+            brandSoft: Long, accent: Long, success: Long, warning: Long, danger: Long, onDanger: Long
+        ) = LumenColorPalette(
+            canvas = androidx.compose.ui.graphics.Color(canvas),
+            surface = androidx.compose.ui.graphics.Color(surface),
+            surfaceMuted = androidx.compose.ui.graphics.Color(surfaceMuted),
+            surfaceStrong = androidx.compose.ui.graphics.Color(surfaceStrong),
+            line = androidx.compose.ui.graphics.Color(line),
+            ink = androidx.compose.ui.graphics.Color(ink),
+            inkSoft = androidx.compose.ui.graphics.Color(inkSoft),
+            inkMuted = androidx.compose.ui.graphics.Color(inkMuted),
+            brand = androidx.compose.ui.graphics.Color(brand),
+            brandSolid = androidx.compose.ui.graphics.Color(brandSolid),
+            brandSoft = androidx.compose.ui.graphics.Color(brandSoft),
+            onBrand = androidx.compose.ui.graphics.Color.White,
+            accent = androidx.compose.ui.graphics.Color(accent),
+            success = androidx.compose.ui.graphics.Color(success),
+            warning = androidx.compose.ui.graphics.Color(warning),
+            danger = androidx.compose.ui.graphics.Color(danger),
+            onDanger = androidx.compose.ui.graphics.Color(onDanger)
+        )
+    }
+}
 
 private val sections = listOf(
     PlaygroundSection(
@@ -239,8 +298,9 @@ private val sections = listOf(
 @Composable
 private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: Boolean) {
     var darkTheme by remember(initialDarkTheme) { mutableStateOf(initialDarkTheme) }
+    var themePreset by remember { mutableStateOf(PlaygroundThemePreset.Lumen) }
 
-    LumenTheme(darkTheme = darkTheme) {
+    LumenTheme(darkTheme = darkTheme, values = themePreset.values(darkTheme)) {
         if (initialComponent.isNotBlank()) {
             PlaygroundContent(
                 darkTheme = darkTheme,
@@ -251,6 +311,8 @@ private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: B
         } else {
             LumenReferenceApplication(
                 darkTheme = darkTheme,
+                themePreset = themePreset,
+                onThemePresetChange = { themePreset = it },
                 onToggleTheme = { darkTheme = !darkTheme },
                 catalog = sections.map { section ->
                     CatalogCategorySummary(section.title, section.names.size)

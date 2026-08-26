@@ -61,6 +61,8 @@ import com.santi020k.lumen.LumenIllustrationVariant
 import com.santi020k.lumen.LumenListRow
 import com.santi020k.lumen.LumenMetricTone
 import com.santi020k.lumen.LumenNavigationItem
+import com.santi020k.lumen.LumenPicker
+import com.santi020k.lumen.LumenPickerOption
 import com.santi020k.lumen.LumenProgress
 import com.santi020k.lumen.LumenSectionHeader
 import com.santi020k.lumen.LumenSegmentedControl
@@ -91,6 +93,8 @@ private enum class ExampleState { Loading, Empty, Error, Success }
 @Composable
 internal fun LumenReferenceApplication(
     darkTheme: Boolean,
+    themePreset: PlaygroundThemePreset,
+    onThemePresetChange: (PlaygroundThemePreset) -> Unit,
     onToggleTheme: () -> Unit,
     catalog: List<CatalogCategorySummary>,
     components: @Composable () -> Unit
@@ -118,7 +122,12 @@ internal fun LumenReferenceApplication(
             )
             PlaygroundDestination.Examples -> ExamplesScreen(catalog)
             PlaygroundDestination.Components -> components()
-            PlaygroundDestination.Settings -> SettingsScreen(darkTheme, onToggleTheme)
+            PlaygroundDestination.Settings -> SettingsScreen(
+                darkTheme,
+                themePreset,
+                onThemePresetChange,
+                onToggleTheme
+            )
         }
     }
 }
@@ -654,7 +663,12 @@ private fun ProfilePattern(
 }
 
 @Composable
-private fun SettingsScreen(darkTheme: Boolean, onToggleTheme: () -> Unit) {
+private fun SettingsScreen(
+    darkTheme: Boolean,
+    themePreset: PlaygroundThemePreset,
+    onThemePresetChange: (PlaygroundThemePreset) -> Unit,
+    onToggleTheme: () -> Unit
+) {
     var reduceMotion by remember { mutableStateOf(false) }
     var showHints by remember { mutableStateOf(true) }
     var status by remember { mutableStateOf("Preferences are local to this session") }
@@ -663,7 +677,9 @@ private fun SettingsScreen(darkTheme: Boolean, onToggleTheme: () -> Unit) {
         item {
             DestinationHeader("Local", "Settings", "Preview theme, accessibility context, and application details.")
         }
-        item { ThemePreview(darkTheme, onToggleTheme) { status = it } }
+        item {
+            ThemePreview(darkTheme, themePreset, onThemePresetChange, onToggleTheme) { status = it }
+        }
         item {
             if (wide) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
@@ -702,36 +718,62 @@ private fun SettingsScreen(darkTheme: Boolean, onToggleTheme: () -> Unit) {
 }
 
 @Composable
-private fun ThemePreview(darkTheme: Boolean, onToggleTheme: () -> Unit, onStatus: (String) -> Unit) {
+private fun ThemePreview(
+    darkTheme: Boolean,
+    themePreset: PlaygroundThemePreset,
+    onThemePresetChange: (PlaygroundThemePreset) -> Unit,
+    onToggleTheme: () -> Unit,
+    onStatus: (String) -> Unit
+) {
     LumenSurface(
         modifier = Modifier.fillMaxWidth(),
         tone = LumenSurfaceTone.Muted,
         padding = LumenSurfacePadding.Lg
     ) {
-        Row(
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            LumenGraphic(
-                modifier = Modifier.size(64.dp),
-                size = LumenGraphicSize.Sm,
-                tone = if (darkTheme) LumenGraphicTone.Accent else LumenGraphicTone.Brand,
-                variant = LumenGraphicVariant.Glow,
-                label = if (darkTheme) "Dark theme preview" else "Light theme preview"
-            ) { LumenIcon(LumenIconName.Sparkles, contentDescription = null) }
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                LumenText(if (darkTheme) "Dark theme" else "Light theme", variant = LumenTextVariant.Label)
-                LumenText(
-                    "Canvas, surface, ink, and brand roles update together.",
-                    variant = LumenTextVariant.Caption,
-                    tone = LumenTextTone.Muted
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LumenGraphic(
+                    modifier = Modifier.size(64.dp),
+                    size = LumenGraphicSize.Sm,
+                    tone = if (darkTheme) LumenGraphicTone.Accent else LumenGraphicTone.Brand,
+                    variant = LumenGraphicVariant.Glow,
+                    label = if (darkTheme) "Dark theme preview" else "Light theme preview"
+                ) { LumenIcon(LumenIconName.Sparkles, contentDescription = null) }
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LumenText(
+                        "${themePreset.label} · ${if (darkTheme) "Dark" else "Light"}",
+                        variant = LumenTextVariant.Label
+                    )
+                    LumenText(
+                        "Canvas, surface, ink, and brand roles update together.",
+                        variant = LumenTextVariant.Caption,
+                        tone = LumenTextTone.Muted
+                    )
+                }
             }
+            LumenPicker(
+                label = "Theme",
+                value = themePreset.name,
+                options = PlaygroundThemePreset.entries.map { preset ->
+                    LumenPickerOption(preset.name, preset.label)
+                },
+                onValueChange = { value ->
+                    PlaygroundThemePreset.entries.firstOrNull { it.name == value }?.let { preset ->
+                        onThemePresetChange(preset)
+                        onStatus("${preset.label} theme applied")
+                    }
+                }
+            )
             LumenToggle(
                 label = "Dark theme",
                 checked = darkTheme,
-                showLabel = false,
                 onCheckedChange = {
                     onToggleTheme()
                     onStatus(if (darkTheme) "Light theme applied" else "Dark theme applied")

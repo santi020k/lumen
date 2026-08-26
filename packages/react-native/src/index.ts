@@ -210,6 +210,8 @@ export {
 } from './structured-recipes.js'
 export {
   createLumenTheme,
+  type LumenChartColorPalette,
+  type LumenColorPalette,
   lumenDarkTheme,
   lumenLightTheme,
   type LumenTheme

@@ -14,7 +14,7 @@ assert.ok(
 
 const ledgerPath = ledgerArgument
   ? resolve(repositoryRoot, ledgerArgument)
-  : resolve(repositoryRoot, 'registry', 'native-prerelease-soak.json')
+  : resolve(repositoryRoot, 'registry', 'native-stability-soak.json')
 
 const ledger = JSON.parse(
   await readFile(ledgerPath, 'utf8')
@@ -36,7 +36,7 @@ const hashFile = async path => {
   return createHash('sha256').update(contents).digest('hex')
 }
 
-assert.equal(ledger.schemaVersion, 2, 'Unsupported native prerelease soak schema')
+assert.equal(ledger.schemaVersion, 1, 'Unsupported native stability soak schema')
 
 assert.equal(ledger.requiredIterations, 2, 'Native stability requires exactly two soak iterations')
 
@@ -75,14 +75,42 @@ assert.ok(
 
 const iterationIds = new Set()
 let previousDate = ''
+let previousVersions
+
+const parseVersion = (iterationId, adapter, version) => {
+  assert.equal(typeof version, 'string', `${iterationId}.${adapter} version must be a string`)
+
+  const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(version)
+
+  assert.ok(
+    match,
+    `${iterationId}.${adapter} must record an ordinary semantic release without a prerelease suffix`
+  )
+
+  const parsed = match.slice(1).map(Number)
+
+  assert.ok(parsed[0] < 2, `${iterationId}.${adapter} must remain on its pre-2.0 release line`)
+
+  return parsed
+}
+
+const isNewer = (current, previous) => {
+  for (const [index, value] of current.entries()) {
+    if (value > previous[index]) return true
+
+    if (value < previous[index]) return false
+  }
+
+  return false
+}
 
 for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
   assert.equal(typeof iteration.id, 'string', 'Each soak iteration requires an id')
 
   assert.equal(
     iteration.id,
-    `native-rc.${iterationIndex}`,
-    `Soak iteration ${iterationIndex + 1} must use its release-candidate sequence id`
+    `native-soak.${iterationIndex}`,
+    `Soak iteration ${iterationIndex + 1} must use its stability sequence id`
   )
 
   assert.ok(!iterationIds.has(iteration.id), `Duplicate soak iteration: ${iteration.id}`)
@@ -109,15 +137,21 @@ for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
     `${iteration.id} must record every released native version`
   )
 
-  for (const [adapter, version] of Object.entries(iteration.versions)) {
-    assert.equal(typeof version, 'string', `${iteration.id}.${adapter} version must be a string`)
+  const parsedVersions = Object.fromEntries(
+    Object.entries(iteration.versions)
+      .map(([adapter, version]) => [adapter, parseVersion(iteration.id, adapter, version)])
+  )
 
-    assert.match(
-      version,
-      new RegExp(`^\\d+\\.\\d+\\.\\d+-rc\\.${iterationIndex}$`),
-      `${iteration.id}.${adapter} must record its exact rc.${iterationIndex} semantic version`
-    )
+  if (previousVersions) {
+    for (const [adapter, version] of Object.entries(parsedVersions)) {
+      assert.ok(
+        isNewer(version, previousVersions[adapter]),
+        `${iteration.id}.${adapter} must be newer than the previous stability iteration`
+      )
+    }
   }
+
+  previousVersions = parsedVersions
 
   assert.deepEqual(
     iteration.baselines,
@@ -175,13 +209,13 @@ const remainingIterations = Math.max(0, ledger.requiredIterations - ledger.itera
 
 if (requireComplete && remainingIterations > 0) {
   process.stderr.write(
-    `Native prerelease soak is incomplete: ${remainingIterations} iteration(s) remain.\n`
+    `Native stability soak is incomplete: ${remainingIterations} iteration(s) remain.\n`
   )
 
   process.exitCode = 1
 }
 
 process.stdout.write(
-  `Validated ${ledger.iterations.length}/${ledger.requiredIterations} native prerelease soak `
+  `Validated ${ledger.iterations.length}/${ledger.requiredIterations} native stability soak `
     + `iterations against ${Object.keys(expectedBaselines).length} reviewed API baselines.\n`
 )

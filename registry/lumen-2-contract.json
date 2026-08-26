@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "targetVersion": "2.0.0",
+  "policy": {
+    "compatibility": "Every breaking change requires observed evidence, a replacement, an automated or documented migration, and consumer validation.",
+    "nativeGraduation": "Every public package and native adapter graduates together only after the readiness ledger is complete.",
+    "nonGoal": "Do not manufacture web breakage to justify the coordinated major release."
+  },
+  "changes": [
+    {
+      "id": "astro-runtime-subpath",
+      "status": "candidate",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-astro"
+      ],
+      "currentContract": "UIPrimitives is exported from the Astro root barrel, so an otherwise static root import can pull the progressive-enhancement runtime into the emitted module graph.",
+      "replacement": "Import UIPrimitives as the default export from @santi020k/lumen-astro/runtime; keep static components as named root imports or direct component imports.",
+      "migration": "The Lumen v2 migrator splits UIPrimitives from mixed Astro imports and rewrites it to the runtime subpath. The transform must be idempotent and support dry-run output.",
+      "evidence": [
+        "docs/import-and-icon-performance.md",
+        "packages/astro/index.ts",
+        "packages/astro/package.json"
+      ],
+      "docs": [
+        "README.md",
+        "docs/ai-usage.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm run measure:imports",
+        "pnpm run check:consumer-packages",
+        "pnpm --filter @santi020k/lumen-astro test"
+      ]
+    },
+    {
+      "id": "visual-size-alias-removal",
+      "status": "candidate",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-elements"
+      ],
+      "currentContract": "Astro and Elements still accept size=sm|default|lg as a pre-1.0 visual alias on Input and NativeSelect, colliding with the native numeric size attribute.",
+      "replacement": "Use visualSize in Astro and visual-size in Elements for visual sizing; reserve size for the native numeric attribute.",
+      "migration": "The Lumen v2 migrator rewrites only literal sm, default, and lg values on Lumen Input and NativeSelect usage. Dynamic values require a diagnostic and manual review.",
+      "evidence": [
+        "docs/ai-usage.md",
+        "docs/lumen-improvements-from-sibling-usage.md",
+        "packages/astro/components/Input.astro",
+        "packages/astro/components/NativeSelect.astro",
+        "packages/elements/src/define.ts"
+      ],
+      "docs": [
+        "docs/ai-usage.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-astro test",
+        "pnpm --filter @santi020k/lumen-elements test",
+        "pnpm run check:consumer-packages"
+      ]
+    },
+    {
+      "id": "sonner-alias-removal",
+      "status": "candidate",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen-core"
+      ],
+      "currentContract": "Sonner remains a public component name and adapter export even though Toast is the intentional documented notification entry point and Sonner has no public component guide.",
+      "replacement": "Use Toast and the framework-specific toast controller or provider. Keep the notification viewport as an implementation detail of the Toast contract.",
+      "migration": "The Lumen v2 migrator replaces direct Sonner imports and markup only when it can preserve placement and maximum-count configuration; custom child content requires manual review.",
+      "evidence": [
+        "apps/docs/src/data/docs.test.ts",
+        "packages/astro/components/Sonner.astro",
+        "packages/core/src/components.ts",
+        "packages/react/src/components.tsx",
+        "packages/elements/src/define.ts"
+      ],
+      "docs": [
+        "docs/ai-usage.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-astro test",
+        "pnpm --filter @santi020k/lumen-react test",
+        "pnpm --filter @santi020k/lumen-elements test",
+        "pnpm run check:consumer-packages"
+      ]
+    }
+  ],
+  "investigations": [
+    {
+      "id": "react-server-client-boundaries",
+      "status": "deferred",
+      "decisionGate": "Measure React Server Component and bundle behavior, add a compatible server-safe entrypoint in 1.x, and validate both production-shaped Next.js consumers before deciding whether the v2 root changes."
+    },
+    {
+      "id": "elements-granular-registration",
+      "status": "deferred",
+      "decisionGate": "Add granular registration compatibly, measure output, and gather a real Elements consumer before deprecating full-catalog registration."
+    },
+    {
+      "id": "umbrella-core-reexports",
+      "status": "deferred",
+      "decisionGate": "Create the web API baseline and complete a consumer import audit before removing umbrella reexports in favor of explicit core subpaths."
+    }
+  ]
+}

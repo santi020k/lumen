@@ -45,6 +45,11 @@ decisions live in `registry/wear-api-classification.json` at the repository root
 `./gradlew apiCheck` from the parent `packages/compose` directory to check both artifacts, then run
 `pnpm run check:wear-api-classification` from the repository root.
 
+The Wear artifact also has device-side accessibility contract tests for the Supported theme,
+action, progress, and status surface. `./gradlew :wear:assembleDebugAndroidTest` compiles that suite;
+`./gradlew :wear:connectedDebugAndroidTest` runs it against a connected Wear OS target. Automated
+checks complement, but do not replace, TalkBack and round-screen validation on physical hardware.
+
 The `apps/playground-android/wear` consumer demonstrates every public API on a round display. With
 that debug application installed on a Wear emulator, run
 `apps/playground-android/scripts/capture-component-screenshots.sh` from the repository root. The

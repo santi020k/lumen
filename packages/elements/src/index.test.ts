@@ -53,6 +53,27 @@ const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
   )
 }
 
+const createMemoryStorage = (): Storage => {
+  const entries = new Map<string, string>()
+
+  return {
+    get length() {
+      return entries.size
+    },
+    clear: () => {
+      entries.clear()
+    },
+    getItem: key => entries.get(key) ?? null,
+    key: index => [...entries.keys()][index] ?? null,
+    removeItem: key => {
+      entries.delete(key)
+    },
+    setItem: (key, value) => {
+      entries.set(key, value)
+    }
+  }
+}
+
 const createDragEvent = (
   type: string,
   dataTransfer: Pick<DataTransfer, 'getData' | 'setData'>
@@ -84,6 +105,11 @@ const replaceElementFromPoint = (
 }
 
 beforeAll(() => {
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    value: createMemoryStorage()
+  })
+
   Object.defineProperty(HTMLElement.prototype, 'checkVisibility', {
     configurable: true,
     value: () => true
