@@ -111,6 +111,7 @@ const LumenChartFrame = ({
 interface LumenChartDataListProps {
   formatCategory: (value: number | string) => string
   formatValue: (value: number) => string
+  includeSize?: boolean
   onSelect?: (seriesId: string, x: number | string) => void
   selectedSeriesId?: string
   selectedX?: number | string
@@ -121,7 +122,8 @@ const chartDatumLabel = (
   item: LumenChartSeries,
   datum: LumenChartSeries['data'][number],
   formatCategory: (value: number | string) => string,
-  formatValue: (value: number) => string
+  formatValue: (value: number) => string,
+  includeSize = false
 ): string => {
   const category = datum.xLabel ?? formatCategory(datum.x)
 
@@ -129,12 +131,17 @@ const chartDatumLabel = (
     datum.y === null || !Number.isFinite(datum.y) ? 'Not available' : formatValue(datum.y)
   )
 
-  return `${category}, ${item.label}: ${value}`
+  const size = datum.size === null || datum.size === undefined || !Number.isFinite(datum.size) ?
+    'Not available' :
+    formatValue(datum.size)
+
+  return `${category}, ${item.label}: ${value}${includeSize ? `, Size: ${size}` : ''}`
 }
 
 const LumenChartDataList = ({
   formatCategory,
   formatValue,
+  includeSize = false,
   onSelect,
   selectedSeriesId,
   selectedX,
@@ -146,7 +153,7 @@ const LumenChartDataList = ({
     <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
       <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>Chart data</Text>
       {series.flatMap(item => item.data.map(datum => {
-        const label = chartDatumLabel(item, datum, formatCategory, formatValue)
+        const label = chartDatumLabel(item, datum, formatCategory, formatValue, includeSize)
         const selected = selectedSeriesId === item.id && selectedX === datum.x
         const key = `${item.id}:${typeof datum.x}:${String(datum.x)}`
 
@@ -559,29 +566,46 @@ export const LumenScatterChart = ({
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const geometry = createLumenScatterGeometry(series)
-  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter)
+
+  const renderedSeries = series.map(item => ({
+    ...item,
+    data: item.data.filter(datum => geometry.points.some(point => (
+      point.seriesId === item.id &&
+      point.id === datum.id &&
+      point.x === datum.x &&
+      point.y === datum.y
+    )))
+  })).filter(item => item.data.length > 0)
+
+  const hasData = geometry.points.length > 0
+  const resolvedSummary = summary ?? formatLumenChartSummary(renderedSeries, valueFormatter)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
-      <ScrollView horizontal>
-        <Svg height={geometry.height} width={geometry.width}>
-          {geometry.points.map(point => (
-            <Circle
-              cx={point.xCoordinate}
-              cy={point.yCoordinate}
-              fill={lumenChartToneColor(point.tone, theme)}
-              key={`${point.seriesId}:${typeof point.x}:${String(point.x)}`}
-              r={point.radius}
-            />
-          ))}
-        </Svg>
-      </ScrollView>
-      {showData ?
+      {hasData ?
+        (
+          <ScrollView horizontal>
+            <Svg height={geometry.height} width={geometry.width}>
+              {geometry.points.map(point => (
+                <Circle
+                  cx={point.xCoordinate}
+                  cy={point.yCoordinate}
+                  fill={lumenChartToneColor(point.tone, theme)}
+                  key={`${point.seriesId}:${typeof point.x}:${String(point.x)}`}
+                  r={point.radius}
+                />
+              ))}
+            </Svg>
+          </ScrollView>
+        ) :
+        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+      {showData && hasData ?
         (
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
-            series={series}
+            includeSize
+            series={renderedSeries}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
             {...(selectedX === undefined ? {} : { selectedX })}
@@ -674,29 +698,35 @@ export const LumenRangeChart = ({
   label,
   showData = true,
   style,
-  summary = `${data.length} ranges.`,
+  summary,
   tone,
   ...props
 }: LumenRangeChartProps): ReactElement => {
   const theme = useLumenTheme()
   const geometry = createLumenRangeGeometry(data)
+  const hasData = geometry.points.length > 0
+  const resolvedSummary = summary ?? `${geometry.points.length} ranges.`
   const color = lumenChartToneColor(resolveLumenChartTone(tone), theme)
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
 
   return (
-    <LumenChartFrame label={label} style={style} summary={summary} {...props}>
-      <ScrollView horizontal>
-        <Svg height={320} viewBox="0 0 640 320" width={640}>
-          <Path
-            d={geometry.areaPath}
-            fill={color}
-            fillOpacity={lumenChartOpacities.area}
-            stroke={color}
-            strokeWidth={lumenChartStrokeWidths.series}
-          />
-        </Svg>
-      </ScrollView>
+    <LumenChartFrame label={label} style={style} summary={resolvedSummary} {...props}>
+      {hasData ?
+        (
+          <ScrollView horizontal>
+            <Svg height={320} viewBox="0 0 640 320" width={640}>
+              <Path
+                d={geometry.areaPath}
+                fill={color}
+                fillOpacity={lumenChartOpacities.area}
+                stroke={color}
+                strokeWidth={lumenChartStrokeWidths.series}
+              />
+            </Svg>
+          </ScrollView>
+        ) :
+        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
       {showData ?
         (
           <LumenChartStructuredDataList rows={data.map(datum => ({

@@ -355,7 +355,8 @@ private fun LumenChartFrame(
 private fun LumenChartDataList(
     series: List<LumenChartSeries>,
     selection: LumenChartSelection?,
-    onSelectionChange: ((LumenChartSelection) -> Unit)?
+    onSelectionChange: ((LumenChartSelection) -> Unit)?,
+    includeSize: Boolean = false
 ) {
     val colors = LocalLumenTheme.current.colors
 
@@ -370,8 +371,7 @@ private fun LumenChartDataList(
 
         for (item in series) {
             for (datum in item.data) {
-                val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: "Not available"
-                val label = "${datum.x.label}, ${item.label}: ${datum.label ?: value}"
+                val label = lumenChartDataLabel(item, datum, includeSize)
                 val next = LumenChartSelection(item.id, datum.x)
 
                 if (onSelectionChange == null || datum.y?.isFinite() != true) {
@@ -390,6 +390,18 @@ private fun LumenChartDataList(
             }
         }
     }
+}
+
+internal fun lumenChartDataLabel(
+    series: LumenChartSeries,
+    datum: LumenChartDatum,
+    includeSize: Boolean = false
+): String {
+    val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: "Not available"
+    val base = "${datum.x.label}, ${series.label}: ${datum.label ?: value}"
+    val size = datum.size?.takeIf(Double::isFinite)?.toString() ?: "Not available"
+
+    return if (includeSize) "$base, Size: $size" else base
 }
 
 private data class LumenStructuredChartDataRow(val id: String, val label: String)
@@ -548,7 +560,7 @@ fun LumenLineChart(
             }
         }
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange)
+        if (showData) LumenChartDataList(series, selection, onSelectionChange, includeSize = true)
     }
 }
 

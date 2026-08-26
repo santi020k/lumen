@@ -123,6 +123,13 @@ import Testing
     #expect(lumenAvailableHeatmapData(data).map(\.id) == ["finite"])
 }
 
+@Test func scatterDataLabelsExposeBubbleSize() {
+    let series = LumenChartSeries(id: "quality", label: "Quality", data: [])
+    let datum = LumenChartDatum(id: "aug", x: .number(1), y: 98, size: 64)
+
+    #expect(lumenChartDataLabel(series: series, datum: datum, includeSize: true).contains("Size: 64"))
+}
+
 @Test func lineAndRangeChartsSplitAtMissingCategories() {
     let categories: [LumenChartX] = [.category("Monday"), .category("Tuesday"), .category("Wednesday")]
     let series = LumenChartSeries(

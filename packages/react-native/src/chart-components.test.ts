@@ -70,10 +70,12 @@ interface ChartFrameOutputProps {
 }
 
 interface ChartDataOutputProps {
+  includeSize?: boolean
   onSelect?: unknown
   rows?: readonly { id: string, label: string }[]
   selectedSeriesId?: string
   selectedX?: number | string
+  series?: readonly { data: readonly { id?: string }[] }[]
 }
 
 type Props = Record<string, unknown>
@@ -110,13 +112,14 @@ describe('Lumen React Native chart components', () => {
     ['combo', LumenComboChart]
   ] as const)('keeps controlled %s selection on fallback controls', (_name, Chart) => {
     const onSelectionChange = vi.fn()
+    const x = _name === 'scatter' ? 8 : 'August'
     const element = Chart({
       label: 'Quality',
       onSelectionChange,
       selectedSeriesId: 'quality',
-      selectedX: 'August',
+      selectedX: x,
       series: [{
-        data: [{ x: 'August', y: 98 }],
+        data: [{ x, y: 98 }],
         id: 'quality',
         label: 'Quality',
         mark: 'line'
@@ -129,7 +132,7 @@ describe('Lumen React Native chart components', () => {
     expect(element.props.selectedX).toBeUndefined()
     expect(fallback.onSelect).toBe(onSelectionChange)
     expect(fallback.selectedSeriesId).toBe('quality')
-    expect(fallback.selectedX).toBe('August')
+    expect(fallback.selectedX).toBe(x)
   })
 
   test('exposes missing heatmap and range values through readable rows', () => {
@@ -178,6 +181,44 @@ describe('Lumen React Native chart components', () => {
     ))).toBe(true)
     expect(descendants.filter(element => propsOf(element).fillOpacity !== undefined))
       .toHaveLength(0)
+  })
+
+  test('exposes scatter bubble sizes and omits points with invalid coordinates', () => {
+    const scatter = LumenScatterChart({
+      label: 'Quality',
+      series: [{
+        data: [
+          { id: 'valid', size: 64, x: 1, y: 98 },
+          { id: 'invalid', size: 36, x: 'January', y: 95 }
+        ],
+        id: 'quality',
+        label: 'Quality'
+      }]
+    }) as ReactElement<ChartFrameOutputProps>
+    const fallback = dataOutput(scatter)
+
+    expect(scatter.props.summary).toContain('1 point')
+    expect(fallback.includeSize).toBe(true)
+    expect(fallback.series?.[0]?.data.map(datum => datum.id)).toEqual(['valid'])
+  })
+
+  test('shows empty states for invalid scatter coordinates and unavailable ranges', () => {
+    const scatter = LumenScatterChart({
+      label: 'Quality',
+      series: [{ data: [{ x: 'January', y: 95 }], id: 'quality', label: 'Quality' }]
+    }) as ReactElement<ChartFrameOutputProps>
+    const range = LumenRangeChart({
+      data: [{ high: 18, low: null, x: 'Monday' }],
+      label: 'Forecast'
+    }) as ReactElement<ChartFrameOutputProps>
+
+    expect(scatter.props.summary).toBe('No chart data available.')
+    expect(range.props.summary).toBe('0 ranges.')
+    for (const chart of [scatter, range]) {
+      expect(descendantsOf(chart).some(element => (
+        propsOf(element).children === 'No chart data available.'
+      ))).toBe(true)
+    }
   })
 
   test('aligns native combo line points with bar category centers', () => {

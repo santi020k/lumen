@@ -362,13 +362,14 @@ private struct LumenChartDataList: View {
 
     let selection: Binding<LumenChartSelection?>?
     let series: [LumenChartSeries]
+    var includeSize = false
 
     @ViewBuilder
     private var dataRows: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             ForEach(series) { item in
                 ForEach(item.data) { datum in
-                    let label = "\(datum.x.label), \(item.label): \(datum.y?.formatted() ?? "Not available")"
+                    let label = lumenChartDataLabel(series: item, datum: datum, includeSize: includeSize)
 
                     if let selection, datum.y?.isFinite == true {
                         Button(label) {
@@ -408,6 +409,18 @@ private struct LumenChartDataList: View {
         .tint(theme.colors.brand)
         #endif
     }
+}
+
+func lumenChartDataLabel(
+    series: LumenChartSeries,
+    datum: LumenChartDatum,
+    includeSize: Bool = false
+) -> String {
+    let value = datum.label ?? datum.y.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
+    let base = "\(datum.x.label), \(series.label): \(value)"
+    let size = datum.size.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
+
+    return includeSize ? "\(base), Size: \(size)" : base
 }
 
 private struct LumenChartDataRow: Identifiable {
@@ -560,7 +573,7 @@ public struct LumenLineChart: View {
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series)
+                LumenChartDataList(selection: selection, series: series, includeSize: true)
             }
         }
     }

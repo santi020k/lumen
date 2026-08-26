@@ -130,4 +130,16 @@ class ChartComponentsTest {
         assertEquals(0.5f, lumenChartCategoryPosition(1, 3, centerInBand = true))
         assertEquals(5f / 6f, lumenChartCategoryPosition(2, 3, centerInBand = true))
     }
+
+    @Test
+    fun scatterDataLabelsExposeBubbleSize() {
+        val series = LumenChartSeries(
+            id = "quality",
+            label = "Quality",
+            data = emptyList()
+        )
+        val datum = LumenChartDatum("aug", LumenChartX.Number(1.0), 98.0, size = 64.0)
+
+        assertEquals("1.0, Quality: 98.0, Size: 64.0", lumenChartDataLabel(series, datum, includeSize = true))
+    }
 }
