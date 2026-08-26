@@ -7,6 +7,7 @@ import {
 import { describe, expect, test, vi } from 'vitest'
 
 import {
+  LumenBarChart,
   LumenComboChart,
   LumenHeatmap,
   LumenRangeChart,
@@ -219,6 +220,23 @@ describe('Lumen React Native chart components', () => {
         propsOf(element).children === 'No chart data available.'
       ))).toBe(true)
     }
+  })
+
+  test('omits non-finite native bar marks', () => {
+    const bars = LumenBarChart({
+      label: 'Quality',
+      series: [{
+        data: [
+          { x: 'Finite', y: 98 },
+          { x: 'NaN', y: Number.NaN },
+          { x: 'Infinite', y: Number.POSITIVE_INFINITY }
+        ],
+        id: 'quality',
+        label: 'Quality'
+      }]
+    }) as ReactElement<ChartFrameOutputProps>
+
+    expect(descendantsOf(bars).filter(element => propsOf(element).rx === 4)).toHaveLength(1)
   })
 
   test('aligns native combo line points with bar category centers', () => {

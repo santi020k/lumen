@@ -675,6 +675,26 @@ describe('@santi020k/lumen-react components', () => {
     expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
   })
 
+  test('keeps repeated scatter coordinates as distinct marks and rows', () => {
+    const scatter = ScatterChart({
+      series: [{
+        data: [{ x: 1, y: 4 }, { x: 1, y: 8 }],
+        id: 'downloads',
+        label: 'Downloads'
+      }]
+    }) as ReactElement
+    const descendants = descendantsOf(scatter)
+    const circleKeys = descendants
+      .filter(element => element.type === 'circle')
+      .map(element => element.key)
+    const rowKeys = descendants
+      .filter(element => element.type === 'tr' && element.key !== null)
+      .map(element => element.key)
+
+    expect(new Set(circleKeys).size).toBe(2)
+    expect(new Set(rowKeys).size).toBe(2)
+  })
+
   test('aligns combo line points with bar category centers', () => {
     const data = [
       { x: 'Mon', y: 4 },

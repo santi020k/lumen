@@ -762,7 +762,11 @@ export const alignLumenChartSeries = (
 const getDatumValue = (
   series: ReadonlyMap<string, LumenChartDatum>,
   category: number | string
-): number => series.get(lumenChartCategoryKey(category))?.y ?? 0
+): number => {
+  const value = series.get(lumenChartCategoryKey(category))?.y
+
+  return value !== null && value !== undefined && Number.isFinite(value) ? value : 0
+}
 
 const getStackedDomain = (
   series: readonly LumenChartSeries[],
@@ -874,7 +878,10 @@ export const createLumenBarGeometry = (
 
       if (!indexed) continue
 
-      const value = getDatumValue(indexed, category)
+      const value = indexed.get(lumenChartCategoryKey(category))?.y
+
+      if (value === null || value === undefined || !Number.isFinite(value)) continue
+
       const tone = resolveLumenChartTone(item.tone, seriesIndex)
 
       if (orientation === 'horizontal') {

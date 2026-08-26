@@ -1573,8 +1573,8 @@ export const ScatterChart = ({
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-scatter-chart__marks">
-            {geometry.points.map(point => (
-              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? String(point.x)}`} r={point.radius}>
+            {geometry.points.map((point, pointIndex) => (
+              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${typeof point.x}:${String(point.x)}:${pointIndex}`}`} r={point.radius}>
                 <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>
               </circle>
             ))}
@@ -1595,8 +1595,8 @@ export const ScatterChart = ({
                 </tr>
               </thead>
               <tbody>
-                {geometry.points.map(point => (
-                  <tr key={`${point.seriesId}:${point.id ?? String(point.x)}`}>
+                {geometry.points.map((point, pointIndex) => (
+                  <tr key={`${point.seriesId}:${point.id ?? `${typeof point.x}:${String(point.x)}:${pointIndex}`}`}>
                     <th scope="row">{point.xLabel ?? point.x}</th>
                     <td>{point.seriesLabel}</td>
                     <td>{point.label ?? formatValue(point.y ?? 0)}</td>

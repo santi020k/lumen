@@ -206,6 +206,21 @@ describe('Lumen chart helpers', () => {
     expect(stacked.marks[1]?.x).toBeGreaterThan(stacked.marks[0]?.x ?? 0)
   })
 
+  test('omits unavailable values from bar geometry', () => {
+    const geometry = createLumenBarGeometry([{
+      data: [
+        { x: 'Finite', y: 8 },
+        { x: 'Missing', y: null },
+        { x: 'NaN', y: Number.NaN },
+        { x: 'Infinite', y: Number.POSITIVE_INFINITY }
+      ],
+      id: 'values',
+      label: 'Values'
+    }])
+
+    expect(geometry.marks.map(mark => mark.category)).toEqual(['Finite'])
+  })
+
   test('uses numeric and temporal x values instead of index spacing', () => {
     const linear = createLumenLineGeometry([
       { x: 0, y: 2 },
