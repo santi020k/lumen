@@ -301,4 +301,16 @@ describe('Lumen chart helpers', () => {
     expect(range.areaPath).toContain('Z')
     expect(range.points).toHaveLength(2)
   })
+
+  test('splits range bands around missing intervals', () => {
+    const range = createLumenRangeGeometry([
+      { high: 8, low: 2, x: 'Mon' },
+      { high: null, low: null, x: 'Tue' },
+      { high: 10, low: 4, x: 'Wed' }
+    ], { height: 100, padding: 0, width: 100 })
+
+    expect(range.areaPath.match(/M /g)).toHaveLength(2)
+    expect(range.areaPath.match(/Z/g)).toHaveLength(2)
+    expect(range.points).toHaveLength(2)
+  })
 })

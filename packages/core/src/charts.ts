@@ -1449,26 +1449,42 @@ export const createLumenRangeGeometry = (
 
   const values = data.flatMap(datum => [datum.low, datum.high])
   const domain = resolveLumenChartDomain(values, requestedDomain, includeZero)
+  const segments: LumenRangeGeometryPoint[][] = []
+  let currentSegment: LumenRangeGeometryPoint[] = []
 
-  const points = data.flatMap((datum, index) => {
+  for (const [index, datum] of data.entries()) {
     const point = createLumenRangePoint(
       datum, index, data.length, width, height, padding, domain
     )
 
-    return point ? [point] : []
-  })
+    if (!point) {
+      if (currentSegment.length > 0) segments.push(currentSegment)
 
-  const upper = points.map(
-    (point, index) => `${index === 0 ? 'M' : 'L'} ${point.xCoordinate.toFixed(3)} ${point.highCoordinate.toFixed(3)}`
-  )
+      currentSegment = []
 
-  const lower = [...points].reverse().map(
-    point => `L ${point.xCoordinate.toFixed(3)} ${point.lowCoordinate.toFixed(3)}`
-  )
+      continue
+    }
+
+    currentSegment.push(point)
+  }
+
+  if (currentSegment.length > 0) segments.push(currentSegment)
+
+  const areaPath = segments.map(segment => {
+    const upper = segment.map(
+      (point, index) => `${index === 0 ? 'M' : 'L'} ${point.xCoordinate.toFixed(3)} ${point.highCoordinate.toFixed(3)}`
+    )
+
+    const lower = [...segment].reverse().map(
+      point => `L ${point.xCoordinate.toFixed(3)} ${point.lowCoordinate.toFixed(3)}`
+    )
+
+    return [...upper, ...lower, 'Z'].join(' ')
+  }).join(' ')
 
   return {
-    areaPath: points.length === 0 ? '' : [...upper, ...lower, 'Z'].join(' '),
+    areaPath,
     domain,
-    points
+    points: segments.flat()
   }
 }

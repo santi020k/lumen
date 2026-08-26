@@ -10,6 +10,7 @@ import {
   getLumenChartDomain,
   getLumenChartToneClassName,
   hasLumenChartData,
+  type LumenChartDatum,
   type LumenComboSeries,
   resolveLumenChartTone } from '@santi020k/lumen-core'
 
@@ -43,7 +44,40 @@ const domain = getLumenChartDomain(alignedSeries.flatMap(item => item.data.map(d
 const barSeries = alignedSeries.filter(item => item.mark === 'bar')
 const lineSeries = alignedSeries.filter(item => item.mark !== 'bar')
 const bars = createLumenBarGeometry(barSeries, { domain, height, width })
-const lines = lineSeries.map(item => createLumenLineGeometry(item.data, { domain, height, padding, width }))
+
+const categoryPositions = new Map(
+  bars.categories.map(category => [`${typeof category.category}:${String(category.category)}`, category.x])
+)
+
+const drawableWidth = width - padding * 2
+
+const alignComboLineDatum = (datum: LumenChartDatum): LumenChartDatum => {
+  if (barSeries.length === 0) return datum
+
+  return {
+    ...datum,
+    x: ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) / drawableWidth
+  }
+}
+
+const lineGeometryOptions = {
+  domain,
+  height,
+  padding,
+  width,
+  ...(barSeries.length === 0 ?
+    {} :
+    {
+      xDomain: { max: 1, min: 0 },
+      xScale: 'linear' as const
+    })
+}
+
+const lines = lineSeries.map(item => createLumenLineGeometry(
+  item.data.map(alignComboLineDatum),
+  lineGeometryOptions
+))
+
 const hasData = hasLumenChartData(series)
 ---
 

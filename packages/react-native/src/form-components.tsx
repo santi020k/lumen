@@ -1,5 +1,7 @@
 import {
+  type ChangeEvent,
   type ComponentType,
+  createElement,
   type ReactElement,
   type ReactNode,
   type Ref,
@@ -28,7 +30,9 @@ import {
 
 import {
   clampLumenDate,
+  formatLumenDateInputValue,
   type LumenDateRangeValue,
+  parseLumenDateInputValue,
   resolveLumenDateBounds,
   resolveLumenDatePickerValue,
   resolveLumenDateRangeEndChange,
@@ -102,10 +106,44 @@ const DateSupportingText = ({ description, errorMessage }: DateSupportingTextPro
 
 interface NativeDatePickerDisclosureProps extends NativeDatePickerProps {
   expanded: boolean
+  label: string
+  onDateChange: (date: Date) => void
+  webValue: Date | null
 }
 
-const NativeDatePickerDisclosure = ({ expanded, ...props }: NativeDatePickerDisclosureProps): ReactElement | null => {
-  if (!expanded || Platform.OS === 'android' || Platform.OS === 'web') return null
+const NativeDatePickerDisclosure = ({
+  expanded,
+  label,
+  onDateChange,
+  webValue,
+  ...props
+}: NativeDatePickerDisclosureProps): ReactElement | null => {
+  if (!expanded || Platform.OS === 'android') return null
+
+  if (Platform.OS === 'web') {
+    return createElement('input', {
+      'aria-label': label,
+      disabled: props.disabled,
+      max: props.maximumDate ? formatLumenDateInputValue(props.maximumDate) : undefined,
+      min: props.minimumDate ? formatLumenDateInputValue(props.minimumDate) : undefined,
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        const date = parseLumenDateInputValue(event.currentTarget.value)
+
+        if (date) onDateChange(date)
+      },
+      style: {
+        accentColor: props.accentColor,
+        border: '1px solid currentColor',
+        borderRadius: 6,
+        colorScheme: props.themeVariant,
+        font: 'inherit',
+        minHeight: 44,
+        padding: '0 12px'
+      },
+      type: 'date',
+      value: webValue ? formatLumenDateInputValue(webValue) : ''
+    })
+  }
 
   return <NativeDatePicker {...props} />
 }
@@ -216,10 +254,15 @@ export const LumenDateField = ({
         disabled={!enabled}
         display={Platform.OS === 'ios' ? 'inline' : 'default'}
         expanded={expanded}
+        label={label}
         mode="date"
+        onDateChange={selectedDate => {
+          onValueChange(clampLumenDate(selectedDate, minimumDate, maximumDate))
+        }}
         onValueChange={commitValue}
         themeVariant={theme.scheme}
         value={pickerValue}
+        webValue={value}
       />
       <DateSupportingText
         {...(description ? { description } : {})}

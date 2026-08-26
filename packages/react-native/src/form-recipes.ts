@@ -22,6 +22,29 @@ const normalizeLumenDate = (value: Date): Date => (
   isValidDate(value) ? new Date(value.getFullYear(), value.getMonth(), value.getDate()) : new Date(0)
 )
 
+const padLumenDatePart = (value: number): string => String(value).padStart(2, '0')
+
+export const formatLumenDateInputValue = (value: Date): string => {
+  const normalized = normalizeLumenDate(value)
+
+  return `${normalized.getFullYear()}-${padLumenDatePart(normalized.getMonth() + 1)}-${padLumenDatePart(normalized.getDate())}`
+}
+
+export const parseLumenDateInputValue = (value: string): Date | null => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+
+  if (!match) return null
+
+  const year = Number(match[1])
+  const month = Number(match[2]) - 1
+  const day = Number(match[3])
+  const date = new Date(year, month, day)
+
+  if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) return null
+
+  return date
+}
+
 export interface LumenDateBounds {
   maximumDate?: Date
   minimumDate?: Date

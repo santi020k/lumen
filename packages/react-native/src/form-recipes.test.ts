@@ -2,6 +2,8 @@ import { describe, expect, test } from 'vitest'
 
 import {
   clampLumenDate,
+  formatLumenDateInputValue,
+  parseLumenDateInputValue,
   resolveLumenDateBounds,
   resolveLumenDatePickerValue,
   resolveLumenDateRangeEndChange,
@@ -47,5 +49,12 @@ describe('Lumen React Native form component recipes', () => {
       start: new Date(2026, 7, 15)
     })
     expect(resolveLumenDateRangeEndChange(movedStart, new Date(2026, 7, 8))).toEqual(movedStart)
+  })
+
+  test('round-trips valid browser date input without timezone conversion', () => {
+    expect(formatLumenDateInputValue(new Date(2026, 7, 26, 23, 45))).toBe('2026-08-26')
+    expect(parseLumenDateInputValue('2026-08-26')).toEqual(new Date(2026, 7, 26))
+    expect(parseLumenDateInputValue('2026-02-30')).toBeNull()
+    expect(parseLumenDateInputValue('08/26/2026')).toBeNull()
   })
 })
