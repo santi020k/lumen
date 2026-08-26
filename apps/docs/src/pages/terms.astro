@@ -1,0 +1,55 @@
+---
+import { Link } from '@santi020k/lumen-astro'
+
+import LegalPage from '../components/LegalPage.astro'
+---
+
+<LegalPage
+  description="The terms that apply when using Lumen's playgrounds, public documentation, and MCP service."
+  eyebrow="Legal"
+  title="Terms of service"
+  updatedAt="August 24, 2026"
+>
+  <h2>Using the service</h2>
+  <p>
+    You may use the Lumen Playground applications, website, and public MCP service to evaluate,
+    learn, and build with Lumen UI. You are responsible for confirming that Lumen components and
+    generated code are appropriate for your application, platform, users, and legal obligations.
+  </p>
+
+  <h2>Acceptable use</h2>
+  <p>You must not:</p>
+  <ul>
+    <li>attempt to disrupt, overload, bypass limits, or probe the service without authorization;</li>
+    <li>send secrets, credentials, private source code, or unnecessary personal information;</li>
+    <li>misrepresent Lumen responses or branding as a guarantee, certification, or endorsement; or</li>
+    <li>use the service in violation of applicable law or third-party rights.</li>
+  </ul>
+
+  <h2>Open-source packages</h2>
+  <p>
+    Lumen's source code and packages are licensed under the terms identified in the repository and
+    package notices. Those licenses govern copying, modification, and distribution of the code.
+    Third-party artwork and dependencies retain their respective license terms.
+  </p>
+
+  <h2>Availability and changes</h2>
+  <p>
+    The hosted MCP service may be changed, rate-limited, suspended, or discontinued. Tool metadata
+    and package contracts can evolve through published versions. Review release notes before relying
+    on a new version in production.
+  </p>
+
+  <h2>No warranty</h2>
+  <p>
+    The website, MCP service, documentation, and open-source software are provided as available,
+    without warranties or guarantees. To the extent permitted by law, the publisher is not liable
+    for indirect, incidental, special, consequential, or lost-profit damages arising from their use.
+  </p>
+
+  <h2>Support</h2>
+  <p>
+    Questions about these terms or the service can be submitted through the
+    <Link href="/support">Lumen support page</Link>.
+  </p>
+</LegalPage>

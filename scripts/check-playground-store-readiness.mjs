@@ -1,0 +1,301 @@
+import assert from "node:assert/strict";
+import { readFile, stat } from "node:fs/promises";
+import { join, resolve } from "node:path";
+
+// cspell:words appiconset
+
+const repositoryRoot = resolve(import.meta.dirname, "..");
+
+const appleStore = join(
+  repositoryRoot,
+  "apps",
+  "playground-apple",
+  "Store",
+  "en-US",
+);
+
+const androidStore = join(
+  repositoryRoot,
+  "apps",
+  "playground-android",
+  "Store",
+);
+
+const readStoreText = async (path, maximumLength, label) => {
+  const value = (await readFile(path, "utf8")).trim();
+
+  assert.ok(value.length > 0, `${label} must not be empty`);
+
+  assert.ok(
+    value.length <= maximumLength,
+    `${label} exceeds ${maximumLength} characters`,
+  );
+
+  return value;
+};
+
+const assertFile = async (path) => {
+  const file = await stat(path);
+
+  assert.ok(file.isFile(), `${path} must be a file`);
+
+  assert.ok(file.size > 0, `${path} must not be empty`);
+};
+
+const assertPng = async (path, width, height, colorType = 2) => {
+  const png = await readFile(path);
+  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+
+  assert.deepEqual(png.subarray(0, 8), signature, `${path} must be a PNG`);
+
+  assert.equal(png.readUInt32BE(16), width, `${path} has the wrong width`);
+
+  assert.equal(png.readUInt32BE(20), height, `${path} has the wrong height`);
+
+  assert.equal(png[25], colorType, `${path} has the wrong PNG color type`);
+};
+
+const appleName = await readStoreText(
+  join(appleStore, "name.txt"),
+  30,
+  "Apple name",
+);
+
+const appleSubtitle = await readStoreText(
+  join(appleStore, "subtitle.txt"),
+  30,
+  "Apple subtitle",
+);
+
+const applePromotionalText = await readStoreText(
+  join(appleStore, "promotional-text.txt"),
+  170,
+  "Apple promotional text",
+);
+
+const appleDescription = await readStoreText(
+  join(appleStore, "description.txt"),
+  4_000,
+  "Apple description",
+);
+
+const appleKeywords = await readStoreText(
+  join(appleStore, "keywords.txt"),
+  100,
+  "Apple keywords",
+);
+
+assert.equal(appleName, "Lumen Playground");
+
+assert.ok(appleSubtitle.includes("Lumen"));
+
+assert.ok(applePromotionalText.includes("SwiftUI"));
+
+assert.ok(appleDescription.includes("without an account"));
+
+assert.ok(
+  Buffer.byteLength(appleKeywords, "utf8") <= 100,
+  "Apple keywords exceed 100 bytes",
+);
+
+const androidEnglishStore = join(androidStore, "en-US");
+
+const androidTitle = await readStoreText(
+  join(androidEnglishStore, "title.txt"),
+  30,
+  "Google Play title",
+);
+
+const androidShortDescription = await readStoreText(
+  join(androidEnglishStore, "short-description.txt"),
+  80,
+  "Google Play short description",
+);
+
+const androidDescription = await readStoreText(
+  join(androidEnglishStore, "full-description.txt"),
+  4_000,
+  "Google Play full description",
+);
+
+assert.equal(androidTitle, "Lumen Playground");
+
+assert.ok(androidShortDescription.includes("Compose"));
+
+assert.ok(androidDescription.includes("without an account"));
+
+const expectedURLs = new Map([
+  [join(appleStore, "support-url.txt"), "https://lumen.santi020k.com/support"],
+  [join(appleStore, "privacy-url.txt"), "https://lumen.santi020k.com/privacy"],
+  [
+    join(appleStore, "marketing-url.txt"),
+    "https://lumen.santi020k.com/docs/apple/playground",
+  ],
+  [
+    join(androidEnglishStore, "support-url.txt"),
+    "https://lumen.santi020k.com/support",
+  ],
+  [
+    join(androidEnglishStore, "privacy-url.txt"),
+    "https://lumen.santi020k.com/privacy",
+  ],
+]);
+
+for (const [path, expected] of expectedURLs) {
+  assert.equal(
+    (await readFile(path, "utf8")).trim(),
+    expected,
+    `${path} is stale`,
+  );
+}
+
+const appleIcon = join(
+  repositoryRoot,
+  "apps",
+  "playground-apple",
+  "Supporting",
+  "Assets.xcassets",
+  "AppIcon.appiconset",
+  "AppIcon-1024.png",
+);
+
+await assertPng(appleIcon, 1024, 1024);
+
+await assertPng(join(androidStore, "icon-512.png"), 512, 512);
+
+await assertPng(join(androidStore, "feature-graphic.png"), 1024, 500);
+
+await assertPng(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Store",
+    "Screenshots",
+    "iphone-catalog-light.png",
+  ),
+  1242,
+  2688,
+  2,
+);
+
+await assertPng(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Store",
+    "Screenshots",
+    "iphone-catalog-dark.png",
+  ),
+  1242,
+  2688,
+  2,
+);
+
+await assertPng(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Store",
+    "Screenshots",
+    "ipad-catalog-light.png",
+  ),
+  2048,
+  2732,
+  2,
+);
+
+await assertPng(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Store",
+    "Screenshots",
+    "ipad-catalog-dark.png",
+  ),
+  2048,
+  2732,
+  2,
+);
+
+await assertPng(
+  join(androidStore, "Screenshots", "phone-catalog-light.png"),
+  1080,
+  1920,
+  2,
+);
+
+await assertPng(
+  join(androidStore, "Screenshots", "phone-catalog-dark.png"),
+  1080,
+  1920,
+  2,
+);
+
+const appleInfo = await readFile(
+  join(repositoryRoot, "apps", "playground-apple", "Supporting", "Info.plist"),
+  "utf8",
+);
+
+assert.ok(
+  appleInfo.includes("$(MARKETING_VERSION)"),
+  "Apple marketing version is not configurable",
+);
+
+assert.ok(
+  appleInfo.includes("$(CURRENT_PROJECT_VERSION)"),
+  "Apple build number is not configurable",
+);
+
+assert.match(
+  appleInfo,
+  /<key>ITSAppUsesNonExemptEncryption<\/key>\s*<false\/>/u,
+  "Apple export-compliance declaration must remain false",
+);
+
+const androidManifest = await readFile(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-android",
+    "app",
+    "src",
+    "main",
+    "AndroidManifest.xml",
+  ),
+  "utf8",
+);
+
+assert.ok(
+  !androidManifest.includes("<uses-permission"),
+  "Android app requests a permission",
+);
+
+assert.ok(
+  androidManifest.includes('android:allowBackup="false"'),
+  "Android backup must stay disabled",
+);
+
+const privacyPage = await readFile(
+  join(repositoryRoot, "apps", "docs", "src", "pages", "privacy.astro"),
+  "utf8",
+);
+
+assert.ok(privacyPage.includes("native Lumen Playground applications"));
+
+assert.ok(privacyPage.includes("do not require an"));
+
+assert.ok(privacyPage.includes("or collect, retain, or share personal data"));
+
+await Promise.all([
+  assertFile(join(appleStore, "review-notes.txt")),
+  assertFile(join(androidStore, "data-safety.md")),
+  assertFile(join(repositoryRoot, "docs", "playground-publication.md")),
+]);
+
+process.stdout.write(
+  "lumen-playground: store assets and declarations are internally consistent\n",
+);

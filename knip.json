@@ -3,6 +3,8 @@
   "workspaces": {
     ".": {
       "ignoreBinaries": [
+        "infisical",
+        "pod",
         "quality",
         "swift"
       ],
@@ -23,14 +25,6 @@
       "project": [
         "src/**/*.{astro,ts}",
         "scripts/**/*.{js,mjs}"
-      ]
-    },
-    "apps/playground-react-native": {
-      "ignoreBinaries": [
-        "eas"
-      ],
-      "ignoreDependencies": [
-        "eas-cli"
       ]
     },
     "packages/astro": {
@@ -59,6 +53,14 @@
       ],
       "project": [
         "bin/*.mjs",
+        "src/**/*.ts"
+      ]
+    },
+    "packages/mcp": {
+      "entry": [
+        "src/cloudflare-worker.ts"
+      ],
+      "project": [
         "src/**/*.ts"
       ]
     },

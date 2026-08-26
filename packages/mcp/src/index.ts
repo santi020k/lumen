@@ -27,13 +27,132 @@ export interface LumenMcpHttpOptions {
   allowedHosts?: string[] | undefined
   endpoint?: string | undefined
   host?: string | undefined
+  onError?: ((error: unknown) => void) | undefined
+  openAiChallenge?: string | undefined
   port?: number | undefined
+  rateLimit?: LumenMcpRateLimit | false | undefined
+  trustProxy?: boolean | undefined
+}
+
+export interface LumenMcpRateLimit {
+  maxRequests: number
+  windowMs: number
 }
 
 export interface LumenMcpHttpServer {
   close: () => Promise<void>
   httpServer: HttpServer
   url: URL
+}
+
+interface RateLimitEntry {
+  count: number
+  resetAt: number
+}
+
+interface RateLimiter {
+  close: () => void
+  middleware: (
+    request: ExpressRequest,
+    response: ExpressResponse,
+    next: () => void
+  ) => void
+}
+
+const defaultRateLimit = {
+  maxRequests: 120,
+  windowMs: 60_000
+} as const
+
+const maxTrackedRateLimitClients = 10_000
+
+const passThroughRateLimiter: RateLimiter = {
+  close: () => undefined,
+  middleware: (_request, _response, next) => {
+    next()
+  }
+}
+
+const validatePositiveInteger = (value: number, name: string): void => {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`${name} must be a positive integer.`)
+  }
+}
+
+const resolveRateLimit = (
+  rateLimit: LumenMcpHttpOptions['rateLimit']
+): LumenMcpRateLimit | false => {
+  if (rateLimit === false) return false
+
+  const resolved = rateLimit ?? defaultRateLimit
+
+  validatePositiveInteger(resolved.maxRequests, 'rateLimit.maxRequests')
+
+  validatePositiveInteger(resolved.windowMs, 'rateLimit.windowMs')
+
+  return resolved
+}
+
+const validateOpenAiChallenge = (challenge: string | undefined): void => {
+  if (challenge === undefined) return
+
+  if (challenge.trim() === '' || challenge.includes('\n') || challenge.includes('\r')) {
+    throw new Error('openAiChallenge must be a non-empty single-line token.')
+  }
+}
+
+const createRateLimiter = (rateLimit: LumenMcpRateLimit | false): RateLimiter => {
+  if (!rateLimit) return passThroughRateLimiter
+
+  const entries = new Map<string, RateLimitEntry>()
+
+  const cleanup = setInterval(() => {
+    const now = Date.now()
+
+    for (const [key, entry] of entries) {
+      if (entry.resetAt <= now) entries.delete(key)
+    }
+  }, rateLimit.windowMs)
+
+  cleanup.unref()
+
+  return {
+    close: () => {
+      clearInterval(cleanup)
+    },
+    middleware: (request, response, next) => {
+      const now = Date.now()
+      const key = request.ip ?? request.socket.remoteAddress ?? 'unknown'
+      const current = entries.get(key)
+
+      if (!current && entries.size >= maxTrackedRateLimitClients) {
+        response.setHeader('retry-after', String(Math.ceil(rateLimit.windowMs / 1000)))
+
+        response.status(429).json({ error: 'Too many MCP requests. Try again later.' })
+
+        return
+      }
+
+      const entry = !current || current.resetAt <= now ?
+        { count: 1, resetAt: now + rateLimit.windowMs } :
+        { ...current, count: current.count + 1 }
+
+      entries.set(key, entry)
+
+      if (entry.count <= rateLimit.maxRequests) {
+        next()
+
+        return
+      }
+
+      response.setHeader(
+        'retry-after',
+        String(Math.max(1, Math.ceil((entry.resetAt - now) / 1000)))
+      )
+
+      response.status(429).json({ error: 'Too many MCP requests. Try again later.' })
+    }
+  }
 }
 
 const toWebRequest = (request: ExpressRequest, host: string, options: LumenMcpHttpOptions): Request => {
@@ -85,58 +204,92 @@ const streamResponse = async (webResponse: Response, response: ExpressResponse) 
   if (!response.writableEnded) response.end()
 }
 
+const handleMcpRequest = async (
+  request: ExpressRequest,
+  response: ExpressResponse,
+  host: string,
+  options: LumenMcpHttpOptions,
+  activeServers: Set<ReturnType<typeof createLumenServer>>
+): Promise<void> => {
+  const mcpServer = createLumenServer()
+
+  const transport = new WebStandardStreamableHTTPServerTransport({
+    enableJsonResponse: true
+  })
+
+  activeServers.add(mcpServer)
+
+  try {
+    await mcpServer.connect(transport)
+
+    const webRequest = toWebRequest(request, host, options)
+
+    const webResponse = await transport.handleRequest(webRequest, {
+      parsedBody: request.body
+    })
+
+    await streamResponse(webResponse, response)
+  } catch (error) {
+    options.onError?.(error)
+
+    if (response.headersSent) throw error
+
+    response.statusCode = 500
+
+    response.setHeader('content-type', 'application/json')
+
+    response.end(JSON.stringify({ error: 'Lumen MCP HTTP request failed.' }))
+  } finally {
+    if (mcpServer.isConnected()) await mcpServer.close()
+
+    activeServers.delete(mcpServer)
+  }
+}
+
 /** Start a self-hostable Streamable HTTP transport. Defaults to loopback for safety. */
 export const startLumenMcpHttp = async (
   options: LumenMcpHttpOptions = {}
 ): Promise<LumenMcpHttpServer> => {
   const host = options.host ?? '127.0.0.1'
   const endpoint = options.endpoint ?? '/mcp'
+  const rateLimit = resolveRateLimit(options.rateLimit)
+
+  validateOpenAiChallenge(options.openAiChallenge)
 
   const app = createMcpExpressApp({
     host,
     ...(options.allowedHosts ? { allowedHosts: options.allowedHosts } : {})
   })
 
-  const activeServers = new Set<ReturnType<typeof createLumenServer>>()
+  app.set('trust proxy', options.trustProxy ?? false)
 
-  app.all(endpoint, async (
+  app.use((_request: ExpressRequest, response: ExpressResponse, next: () => void) => {
+    response.setHeader('cache-control', 'no-store')
+
+    response.setHeader('referrer-policy', 'no-referrer')
+
+    response.setHeader('x-content-type-options', 'nosniff')
+
+    next()
+  })
+
+  const activeServers = new Set<ReturnType<typeof createLumenServer>>()
+  const rateLimiter = createRateLimiter(rateLimit)
+
+  if (options.openAiChallenge !== undefined) {
+    app.get('/.well-known/openai-apps-challenge', (
+      _request: ExpressRequest,
+      response: ExpressResponse
+    ) => {
+      response.type('text/plain').send(options.openAiChallenge)
+    })
+  }
+
+  app.all(endpoint, rateLimiter.middleware, async (
     request: ExpressRequest,
     response: ExpressResponse
   ) => {
-    const mcpServer = createLumenServer()
-
-    const transport = new WebStandardStreamableHTTPServerTransport({
-      enableJsonResponse: true
-    })
-
-    activeServers.add(mcpServer)
-
-    try {
-      await mcpServer.connect(transport)
-
-      const webRequest = toWebRequest(request, host, options)
-
-      const webResponse = await transport.handleRequest(webRequest, {
-        parsedBody: request.body
-      })
-
-      await streamResponse(webResponse, response)
-    } catch (error) {
-      if (response.headersSent) throw error
-
-      response.statusCode = 500
-
-      response.setHeader('content-type', 'application/json')
-
-      response.end(JSON.stringify({
-        error: 'Lumen MCP HTTP request failed.',
-        message: String(error)
-      }))
-    } finally {
-      if (mcpServer.isConnected()) await mcpServer.close()
-
-      activeServers.delete(mcpServer)
-    }
+    await handleMcpRequest(request, response, host, options, activeServers)
   })
 
   app.get('/health', (_request: ExpressRequest, response: ExpressResponse) => {
@@ -167,6 +320,8 @@ export const startLumenMcpHttp = async (
 
   return {
     close: async () => {
+      rateLimiter.close()
+
       await Promise.all(
         [...activeServers].map(async server => {
           if (server.isConnected()) await server.close()

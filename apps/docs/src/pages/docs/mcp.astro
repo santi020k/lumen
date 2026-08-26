@@ -10,6 +10,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
 const packageName = '@santi020k/lumen-mcp'
 const npmUrl = 'https://www.npmjs.com/package/@santi020k/lumen-mcp'
 const readmeUrl = 'https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md'
+const pluginUrl = 'https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui'
 
 const tools = [
   [
@@ -129,7 +130,8 @@ const genericConfig = `{
 
 const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 # MCP endpoint: http://127.0.0.1:3000/mcp
-# Health check: http://127.0.0.1:3000/health`
+# Health check: http://127.0.0.1:3000/health
+# Default limit: 120 requests per minute`
 ---
 
 <DocsLayout
@@ -260,10 +262,30 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
             <span>local or self-hosted</span>
           </div>
           <pre><code>{httpCommand}</code></pre>
-          <p>Public deployments must add TLS, authentication, rate limiting, and an allowed-host configuration.</p>
+          <p>
+            The transport includes safe response headers and bounded request rates. Public hosting
+            must terminate TLS, set the exact allowed host, and configure authentication if the
+            deployed data requires it.
+          </p>
         </Card>
       </div>
     </section>
+
+    <Card as="section" class="mcp-file-card" aria-labelledby="plugin-title" glass="subtle">
+      <div>
+        <Badge>Codex and ChatGPT plugin</Badge>
+        <h2 id="plugin-title">Skill plus live catalog</h2>
+        <p>
+          The repository packages the Lumen workflow skill with the MCP server in the standard
+          plugin structure. Public directory submission requires a stable hosted endpoint and
+          OpenAI review; local users can inspect and test the package today.
+        </p>
+      </div>
+      <code>plugins/lumen-ui</code>
+      <DocsActionLink href={pluginUrl} target="_blank" rel="noopener noreferrer">
+        Inspect the plugin
+      </DocsActionLink>
+    </Card>
 
     <section class="mcp-section" aria-labelledby="resources-title">
       <div class="mcp-section__heading">

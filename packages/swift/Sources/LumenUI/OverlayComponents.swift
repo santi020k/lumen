@@ -165,6 +165,7 @@ public struct LumenMenuItem {
 
 /// A native anchored menu that preserves disabled and destructive action semantics.
 #if !os(watchOS)
+@available(tvOS 17.0, *)
 public struct LumenMenu<MenuLabel: View>: View {
     private let items: [LumenMenuItem]
     private let label: MenuLabel
@@ -197,6 +198,7 @@ public struct LumenMenu<MenuLabel: View>: View {
 #endif
 
 /// A Lumen-styled button backed by SwiftUI's native ShareLink presentation.
+#if !os(tvOS)
 public struct LumenShareButton: View {
     private let shareLink: AnyView
 
@@ -253,3 +255,4 @@ public struct LumenShareButton: View {
         shareLink
     }
 }
+#endif

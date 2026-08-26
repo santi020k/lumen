@@ -1,5 +1,7 @@
 # Lumen UI for Jetpack Compose
 
+<!-- cspell:words screencap -->
+
 > **Beta:** This package is ready for testing and early production adoption. Its public API may
 > evolve as it is validated in real applications; review release notes when upgrading.
 
@@ -22,6 +24,21 @@ dependencies {
 The version in `packages/compose/gradle.properties` is canonical. `pnpm sync:compose-version`
 updates every public installation example, and `pnpm check:compose-version` prevents release or
 documentation checks from passing with stale coordinates.
+
+The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Check
+both release artifacts before opening a change:
+
+```bash
+./gradlew apiCheck
+```
+
+Run `./gradlew apiDump` only after reviewing an intentional public API change and updating its
+documentation, tests, classification, and migration notes. The root tasks include the separate Wear
+artifact automatically.
+
+CI also publishes both candidate artifacts to the build-local Maven staging repository and builds
+the phone and Wear playground APKs from those coordinates. The phone consumer verifies that its
+runtime graph does not include `lumen-compose-wear`.
 
 A maintainer can build a signed Central Portal bundle with:
 
@@ -85,7 +102,7 @@ remain distinct from its primary and secondary colors. Applications with complet
 can pass `LumenThemeValues` instead.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Chip, Picker,
+FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker,
 Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
 Illustration, Disclosure, Gauge, and Avatar.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` add Material-native controlled
@@ -166,6 +183,28 @@ LumenAdaptiveNavigationScaffold(
 
 EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
 with native Compose slots for graphics, actions, and trailing content.
+
+## Complete gallery and screenshots
+
+`apps/playground-android` is the executable reference for every public Compose component. It covers
+controlled success, error, disabled, loading, destructive, overlay, sharing, navigation, and empty
+states rather than rendering a static style sheet. The same project contains the separate Wear OS
+consumer so phone applications can verify that they do not acquire wearable dependencies.
+
+After installing the debug application on an API 37 phone emulator, filter directly to a component
+state and capture it with:
+
+```bash
+adb shell am start -W \
+  -n com.santi020k.lumen.playground.compose/.MainActivity \
+  --es component '"Alert dialog"'
+adb exec-out screencap -p > alert-dialog.png
+```
+
+Use `apps/playground-android/scripts/capture-component-screenshots.sh` to capture every public phone
+or Wear component on the currently connected target. The generated PNGs live beneath the
+playground's ignored `build/screenshots` directory and are verification evidence, not package
+assets.
 
 See the [native component reference](../../docs/native-components.md) for installation, the complete
 API matrix, native image mapping, and accessibility requirements.

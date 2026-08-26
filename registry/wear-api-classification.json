@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "supported": [
+    "LumenWearActionButton",
+    "LumenWearProgressRing",
+    "LumenWearStatus",
+    "LumenWearTheme",
+    "LumenWearTone"
+  ],
+  "experimental": [
+    "ExperimentalLumenWearApi",
+    "LumenWearListRow",
+    "LumenWearMetric"
+  ],
+  "internal": [
+    "LumenWearActionMetrics",
+    "lumenWearColor",
+    "LumenWearProgressValue"
+  ]
+}

@@ -26,7 +26,6 @@ const LumenAArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50,7 +49,6 @@ const LumenAArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -74,7 +72,6 @@ const LumenALargeSmallIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -98,7 +95,6 @@ const LumenAccessibilityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -123,7 +119,6 @@ const LumenActivityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -144,7 +139,6 @@ const LumenAdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -168,7 +162,6 @@ const LumenAirVentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -192,7 +185,6 @@ const LumenAirplayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -214,7 +206,6 @@ const LumenAlarmClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -240,7 +231,6 @@ const LumenAlarmClockCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -266,7 +256,6 @@ const LumenAlarmClockMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -292,7 +281,6 @@ const LumenAlarmClockOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -318,7 +306,6 @@ const LumenAlarmClockPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -345,7 +332,6 @@ const LumenAlarmSmokeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -370,7 +356,6 @@ const LumenAlbumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -392,7 +377,6 @@ const LumenAlignCenterHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -417,7 +401,6 @@ const LumenAlignCenterVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -442,7 +425,6 @@ const LumenAlignEndHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -465,7 +447,6 @@ const LumenAlignEndVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -488,7 +469,6 @@ const LumenAlignHorizontalDistributeCenterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -514,7 +494,6 @@ const LumenAlignHorizontalDistributeEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -538,7 +517,6 @@ const LumenAlignHorizontalDistributeStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -562,7 +540,6 @@ const LumenAlignHorizontalJustifyCenterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -585,7 +562,6 @@ const LumenAlignHorizontalJustifyEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -608,7 +584,6 @@ const LumenAlignHorizontalJustifyStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -631,7 +606,6 @@ const LumenAlignHorizontalSpaceAroundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -654,7 +628,6 @@ const LumenAlignHorizontalSpaceBetweenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -678,7 +651,6 @@ const LumenAlignStartHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -701,7 +673,6 @@ const LumenAlignStartVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -724,7 +695,6 @@ const LumenAlignVerticalDistributeCenterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -750,7 +720,6 @@ const LumenAlignVerticalDistributeEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -774,7 +743,6 @@ const LumenAlignVerticalDistributeStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -798,7 +766,6 @@ const LumenAlignVerticalJustifyCenterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -821,7 +788,6 @@ const LumenAlignVerticalJustifyEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -844,7 +810,6 @@ const LumenAlignVerticalJustifyStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -867,7 +832,6 @@ const LumenAlignVerticalSpaceAroundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -890,7 +854,6 @@ const LumenAlignVerticalSpaceBetweenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -914,7 +877,6 @@ const LumenAmbulanceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -941,7 +903,6 @@ const LumenAmpersandIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -963,7 +924,6 @@ const LumenAmpersandsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -985,7 +945,6 @@ const LumenAmphoraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1011,7 +970,6 @@ const LumenAnchorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1035,7 +993,6 @@ const LumenAngleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1057,7 +1014,6 @@ const LumenAntennaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1083,7 +1039,6 @@ const LumenAnvilIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1108,7 +1063,6 @@ const LumenApertureIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1135,7 +1089,6 @@ const LumenAppWindowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1159,7 +1112,6 @@ const LumenAppWindowMacIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1183,7 +1135,6 @@ const LumenAppleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1205,7 +1156,6 @@ const LumenArchiveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1228,7 +1178,6 @@ const LumenArchiveRestoreIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1253,7 +1202,6 @@ const LumenArchiveXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1277,7 +1225,6 @@ const LumenArmchairIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1301,7 +1248,6 @@ const LumenArrowBigDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1322,7 +1268,6 @@ const LumenArrowBigDownDashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1344,7 +1289,6 @@ const LumenArrowBigLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1365,7 +1309,6 @@ const LumenArrowBigLeftDashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1387,7 +1330,6 @@ const LumenArrowBigRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1408,7 +1350,6 @@ const LumenArrowBigRightDashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1430,7 +1371,6 @@ const LumenArrowBigUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1451,7 +1391,6 @@ const LumenArrowBigUpDashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1473,7 +1412,6 @@ const LumenArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1495,7 +1433,6 @@ const LumenArrowDown01IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1520,7 +1457,6 @@ const LumenArrowDown10IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1545,7 +1481,6 @@ const LumenArrowDownAZIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1570,7 +1505,6 @@ const LumenArrowDownFromLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1593,7 +1527,6 @@ const LumenArrowDownLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1615,7 +1548,6 @@ const LumenArrowDownNarrowWideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1640,7 +1572,6 @@ const LumenArrowDownRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1662,7 +1593,6 @@ const LumenArrowDownToDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1685,7 +1615,6 @@ const LumenArrowDownToLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1708,7 +1637,6 @@ const LumenArrowDownUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1732,7 +1660,6 @@ const LumenArrowDownWideNarrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1757,7 +1684,6 @@ const LumenArrowDownZAIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1782,7 +1708,6 @@ const LumenArrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1804,7 +1729,6 @@ const LumenArrowLeftFromLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1827,7 +1751,6 @@ const LumenArrowLeftRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1851,7 +1774,6 @@ const LumenArrowLeftToLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1874,7 +1796,6 @@ const LumenArrowRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1896,7 +1817,6 @@ const LumenArrowRightFromLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1919,7 +1839,6 @@ const LumenArrowRightLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1943,7 +1862,6 @@ const LumenArrowRightToLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1966,7 +1884,6 @@ const LumenArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -1988,7 +1905,6 @@ const LumenArrowUp01IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2013,7 +1929,6 @@ const LumenArrowUp10IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2038,7 +1953,6 @@ const LumenArrowUpAZIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2063,7 +1977,6 @@ const LumenArrowUpDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2087,7 +2000,6 @@ const LumenArrowUpFromDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2110,7 +2022,6 @@ const LumenArrowUpFromLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2133,7 +2044,6 @@ const LumenArrowUpLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2155,7 +2065,6 @@ const LumenArrowUpNarrowWideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2180,7 +2089,6 @@ const LumenArrowUpRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2202,7 +2110,6 @@ const LumenArrowUpToLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2225,7 +2132,6 @@ const LumenArrowUpWideNarrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2250,7 +2156,6 @@ const LumenArrowUpZAIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2275,7 +2180,6 @@ const LumenArrowsUpFromLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2300,7 +2204,6 @@ const LumenAsteriskIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2323,7 +2226,6 @@ const LumenAstroidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2344,7 +2246,6 @@ const LumenAtSignIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2366,7 +2267,6 @@ const LumenAtomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2389,7 +2289,6 @@ const LumenAudioLinesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2415,7 +2314,6 @@ const LumenAudioLinesOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2444,7 +2342,6 @@ const LumenAudioLinesXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2472,7 +2369,6 @@ const LumenAudioWaveformIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2493,7 +2389,6 @@ const LumenAwardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2515,7 +2410,6 @@ const LumenAxeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2537,7 +2431,6 @@ const LumenAxis3dIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2561,7 +2454,6 @@ const LumenBabyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2585,7 +2477,6 @@ const LumenBackpackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2610,7 +2501,6 @@ const LumenBadgeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2631,7 +2521,6 @@ const LumenBadgeAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2654,7 +2543,6 @@ const LumenBadgeCentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2677,7 +2565,6 @@ const LumenBadgeCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2699,7 +2586,6 @@ const LumenBadgeDollarSignIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2722,7 +2608,6 @@ const LumenBadgeEuroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2745,7 +2630,6 @@ const LumenBadgeIndianRupeeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2769,7 +2653,6 @@ const LumenBadgeInfoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2792,7 +2675,6 @@ const LumenBadgeJapaneseYenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2817,7 +2699,6 @@ const LumenBadgeMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2839,7 +2720,6 @@ const LumenBadgePercentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2863,7 +2743,6 @@ const LumenBadgePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2886,7 +2765,6 @@ const LumenBadgePoundSterlingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2910,7 +2788,6 @@ const LumenBadgeQuestionMarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2933,7 +2810,6 @@ const LumenBadgeRussianRubleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2956,7 +2832,6 @@ const LumenBadgeSwissFrancIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -2980,7 +2855,6 @@ const LumenBadgeTurkishLiraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3003,7 +2877,6 @@ const LumenBadgeXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3026,7 +2899,6 @@ const LumenBaggageClaimIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3051,7 +2923,6 @@ const LumenBalloonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3074,7 +2945,6 @@ const LumenBanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3096,7 +2966,6 @@ const LumenBananaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3118,7 +2987,6 @@ const LumenBandageIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3145,7 +3013,6 @@ const LumenBanknoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3168,7 +3035,6 @@ const LumenBanknoteArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3194,7 +3060,6 @@ const LumenBanknoteArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3220,7 +3085,6 @@ const LumenBanknoteCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3245,7 +3109,6 @@ const LumenBanknoteXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3271,7 +3134,6 @@ const LumenBarcodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3296,7 +3158,6 @@ const LumenBarrelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3321,7 +3182,6 @@ const LumenBaselineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3344,7 +3204,6 @@ const LumenBathIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3369,7 +3228,6 @@ const LumenBatteryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3391,7 +3249,6 @@ const LumenBatteryChargingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3415,7 +3272,6 @@ const LumenBatteryFullIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3440,7 +3296,6 @@ const LumenBatteryLowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3463,7 +3318,6 @@ const LumenBatteryMediumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3487,7 +3341,6 @@ const LumenBatteryPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3512,7 +3365,6 @@ const LumenBatteryWarningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3537,7 +3389,6 @@ const LumenBeakerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3560,7 +3411,6 @@ const LumenBeanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3582,7 +3432,6 @@ const LumenBeanOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3606,7 +3455,6 @@ const LumenBedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3630,7 +3478,6 @@ const LumenBedDoubleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3654,7 +3501,6 @@ const LumenBedSingleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3677,7 +3523,6 @@ const LumenBeefIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3700,7 +3545,6 @@ const LumenBeefOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3726,7 +3570,6 @@ const LumenBeerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3751,7 +3594,6 @@ const LumenBeerOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3779,7 +3621,6 @@ const LumenBellIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3801,7 +3642,6 @@ const LumenBellCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3825,7 +3665,6 @@ const LumenBellDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3848,7 +3687,6 @@ const LumenBellElectricIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3874,7 +3712,6 @@ const LumenBellMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3897,7 +3734,6 @@ const LumenBellOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3921,7 +3757,6 @@ const LumenBellPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3945,7 +3780,6 @@ const LumenBellRingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3969,7 +3803,6 @@ const LumenBetweenHorizontalEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -3992,7 +3825,6 @@ const LumenBetweenHorizontalStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4015,7 +3847,6 @@ const LumenBetweenVerticalEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4038,7 +3869,6 @@ const LumenBetweenVerticalStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4061,7 +3891,6 @@ const LumenBicepsFlexedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4084,7 +3913,6 @@ const LumenBikeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4108,7 +3936,6 @@ const LumenBinaryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4134,7 +3961,6 @@ const LumenBinocularsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4160,7 +3986,6 @@ const LumenBiohazardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4190,7 +4015,6 @@ const LumenBirdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4216,7 +4040,6 @@ const LumenBirdhouseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4242,7 +4065,6 @@ const LumenBitcoinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4263,7 +4085,6 @@ const LumenBlendIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4285,7 +4106,6 @@ const LumenBlenderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4311,7 +4131,6 @@ const LumenBlindsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4338,7 +4157,6 @@ const LumenBlocksIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4360,7 +4178,6 @@ const LumenBluetoothIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4381,7 +4198,6 @@ const LumenBluetoothConnectedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4404,7 +4220,6 @@ const LumenBluetoothOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4427,7 +4242,6 @@ const LumenBluetoothSearchingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4450,7 +4264,6 @@ const LumenBoldIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4471,7 +4284,6 @@ const LumenBoltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4493,7 +4305,6 @@ const LumenBombIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4516,7 +4327,6 @@ const LumenBoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4537,7 +4347,6 @@ const LumenBoneFractureIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4563,7 +4372,6 @@ const LumenBookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4584,7 +4392,6 @@ const LumenBookAIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4607,7 +4414,6 @@ const LumenBookAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4630,7 +4436,6 @@ const LumenBookAudioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4654,7 +4459,6 @@ const LumenBookCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4676,7 +4480,6 @@ const LumenBookCopyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4699,7 +4502,6 @@ const LumenBookDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4730,7 +4532,6 @@ const LumenBookDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4753,7 +4554,6 @@ const LumenBookHeadphonesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4777,7 +4577,6 @@ const LumenBookHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4799,7 +4598,6 @@ const LumenBookImageIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4822,7 +4620,6 @@ const LumenBookKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4847,7 +4644,6 @@ const LumenBookLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4871,7 +4667,6 @@ const LumenBookMarkedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4893,7 +4688,6 @@ const LumenBookMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4915,7 +4709,6 @@ const LumenBookOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4937,7 +4730,6 @@ const LumenBookOpenCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4960,7 +4752,6 @@ const LumenBookOpenTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -4986,7 +4777,6 @@ const LumenBookPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5009,7 +4799,6 @@ const LumenBookSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5033,7 +4822,6 @@ const LumenBookTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5056,7 +4844,6 @@ const LumenBookTypeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5080,7 +4867,6 @@ const LumenBookUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5103,7 +4889,6 @@ const LumenBookUp2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5128,7 +4913,6 @@ const LumenBookUserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5151,7 +4935,6 @@ const LumenBookXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5174,7 +4957,6 @@ const LumenBookmarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5195,7 +4977,6 @@ const LumenBookmarkCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5217,7 +4998,6 @@ const LumenBookmarkMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5239,7 +5019,6 @@ const LumenBookmarkOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5262,7 +5041,6 @@ const LumenBookmarkPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5285,7 +5063,6 @@ const LumenBookmarkXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5308,7 +5085,6 @@ const LumenBoomBoxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5335,7 +5111,6 @@ const LumenBotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5361,7 +5136,6 @@ const LumenBotMessageSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5387,7 +5161,6 @@ const LumenBotOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5414,7 +5187,6 @@ const LumenBottleWineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5436,7 +5208,6 @@ const LumenBowArrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5461,7 +5232,6 @@ const LumenBoxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5484,7 +5254,6 @@ const LumenBoxesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5516,7 +5285,6 @@ const LumenBracesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5538,7 +5306,6 @@ const LumenBracketsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5560,7 +5327,6 @@ const LumenBrainIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5588,7 +5354,6 @@ const LumenBrainCircuitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5621,7 +5386,6 @@ const LumenBrainCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -5656,7 +5420,6 @@ const LumenBrand42GroupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5677,7 +5440,6 @@ const LumenBrand500pxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5698,7 +5460,6 @@ const LumenBrandA11yProjectIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5719,7 +5480,6 @@ const LumenBrandAccessibleIconIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5740,7 +5500,6 @@ const LumenBrandAccusoftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5761,7 +5520,6 @@ const LumenBrandAdnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5782,7 +5540,6 @@ const LumenBrandAdversalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5803,7 +5560,6 @@ const LumenBrandAffiliatethemeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5824,7 +5580,6 @@ const LumenBrandAirbnbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5845,7 +5600,6 @@ const LumenBrandAlgoliaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5866,7 +5620,6 @@ const LumenBrandAlipayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5887,7 +5640,6 @@ const LumenBrandAmazonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5908,7 +5660,6 @@ const LumenBrandAmazonPayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5929,7 +5680,6 @@ const LumenBrandAmiliaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5950,7 +5700,6 @@ const LumenBrandAndroidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5971,7 +5720,6 @@ const LumenBrandAngellistIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -5992,7 +5740,6 @@ const LumenBrandAngrycreativeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6013,7 +5760,6 @@ const LumenBrandAngularIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6034,7 +5780,6 @@ const LumenBrandAppStoreIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6055,7 +5800,6 @@ const LumenBrandAppStoreIosIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6076,7 +5820,6 @@ const LumenBrandApperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6097,7 +5840,6 @@ const LumenBrandAppleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6118,7 +5860,6 @@ const LumenBrandApplePayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6139,7 +5880,6 @@ const LumenBrandArchLinuxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6160,7 +5900,6 @@ const LumenBrandArtstationIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6181,7 +5920,6 @@ const LumenBrandAsymmetrikIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6202,7 +5940,6 @@ const LumenBrandAtlassianIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6223,7 +5960,6 @@ const LumenBrandAudibleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6244,7 +5980,6 @@ const LumenBrandAutoprefixerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6265,7 +6000,6 @@ const LumenBrandAvianexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6286,7 +6020,6 @@ const LumenBrandAviatoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6307,7 +6040,6 @@ const LumenBrandAwsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6328,7 +6060,6 @@ const LumenBrandBandcampIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6349,7 +6080,6 @@ const LumenBrandBattleNetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6370,7 +6100,6 @@ const LumenBrandBehanceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6391,7 +6120,6 @@ const LumenBrandBilibiliIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6412,7 +6140,6 @@ const LumenBrandBimobjectIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6433,7 +6160,6 @@ const LumenBrandBitbucketIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6454,7 +6180,6 @@ const LumenBrandBitcoinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6475,7 +6200,6 @@ const LumenBrandBityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6496,7 +6220,6 @@ const LumenBrandBlackTieIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6517,7 +6240,6 @@ const LumenBrandBlackberryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6538,7 +6260,6 @@ const LumenBrandBloggerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6559,7 +6280,6 @@ const LumenBrandBloggerBIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6580,7 +6300,6 @@ const LumenBrandBlueskyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6601,7 +6320,6 @@ const LumenBrandBluetoothIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6622,7 +6340,6 @@ const LumenBrandBluetoothBIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6643,7 +6360,6 @@ const LumenBrandBoardGameGeekIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6664,7 +6380,6 @@ const LumenBrandBootstrapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6685,7 +6400,6 @@ const LumenBrandBotsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6706,7 +6420,6 @@ const LumenBrandBraveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6727,7 +6440,6 @@ const LumenBrandBraveReverseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6748,7 +6460,6 @@ const LumenBrandBtcIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6769,7 +6480,6 @@ const LumenBrandBufferIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6790,7 +6500,6 @@ const LumenBrandBuildAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6811,7 +6520,6 @@ const LumenBrandBuromobelexperteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6832,7 +6540,6 @@ const LumenBrandBuyNLargeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6853,7 +6560,6 @@ const LumenBrandBuyselladsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6874,7 +6580,6 @@ const LumenBrandCanadianMapleLeafIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6895,7 +6600,6 @@ const LumenBrandCashAppIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6916,7 +6620,6 @@ const LumenBrandCcAmazonPayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6937,7 +6640,6 @@ const LumenBrandCcAmexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6958,7 +6660,6 @@ const LumenBrandCcApplePayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -6979,7 +6680,6 @@ const LumenBrandCcDinersClubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7000,7 +6700,6 @@ const LumenBrandCcDiscoverIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7021,7 +6720,6 @@ const LumenBrandCcJcbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7042,7 +6740,6 @@ const LumenBrandCcMastercardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7063,7 +6760,6 @@ const LumenBrandCcPaypalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7084,7 +6780,6 @@ const LumenBrandCcStripeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7105,7 +6800,6 @@ const LumenBrandCcVisaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7126,7 +6820,6 @@ const LumenBrandCentercodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7147,7 +6840,6 @@ const LumenBrandCentosIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7168,7 +6860,6 @@ const LumenBrandChromeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7189,7 +6880,6 @@ const LumenBrandChromecastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7210,7 +6900,6 @@ const LumenBrandCircleZulipIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7231,7 +6920,6 @@ const LumenBrandClaudeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7252,7 +6940,6 @@ const LumenBrandCloudflareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7273,7 +6960,6 @@ const LumenBrandCloudscaleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7294,7 +6980,6 @@ const LumenBrandCloudsmithIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7315,7 +7000,6 @@ const LumenBrandCloudversifyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7336,7 +7020,6 @@ const LumenBrandCmplidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7357,7 +7040,6 @@ const LumenBrandCodebergIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7378,7 +7060,6 @@ const LumenBrandCodepenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7399,7 +7080,6 @@ const LumenBrandCodiepieIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7420,7 +7100,6 @@ const LumenBrandConfluenceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7441,7 +7120,6 @@ const LumenBrandConnectdevelopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7462,7 +7140,6 @@ const LumenBrandContaoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7483,7 +7160,6 @@ const LumenBrandCopilotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7504,7 +7180,6 @@ const LumenBrandCottonBureauIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7525,7 +7200,6 @@ const LumenBrandCpanelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7546,7 +7220,6 @@ const LumenBrandCreativeCommonsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7567,7 +7240,6 @@ const LumenBrandCreativeCommonsByIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7588,7 +7260,6 @@ const LumenBrandCreativeCommonsNcIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7609,7 +7280,6 @@ const LumenBrandCreativeCommonsNcEuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7630,7 +7300,6 @@ const LumenBrandCreativeCommonsNcJpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7651,7 +7320,6 @@ const LumenBrandCreativeCommonsNdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7672,7 +7340,6 @@ const LumenBrandCreativeCommonsPdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7693,7 +7360,6 @@ const LumenBrandCreativeCommonsPdAltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7714,7 +7380,6 @@ const LumenBrandCreativeCommonsRemixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7735,7 +7400,6 @@ const LumenBrandCreativeCommonsSaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7756,7 +7420,6 @@ const LumenBrandCreativeCommonsSamplingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7777,7 +7440,6 @@ const LumenBrandCreativeCommonsSamplingPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7798,7 +7460,6 @@ const LumenBrandCreativeCommonsShareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7819,7 +7480,6 @@ const LumenBrandCreativeCommonsZeroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7840,7 +7500,6 @@ const LumenBrandCriticalRoleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7861,7 +7520,6 @@ const LumenBrandCssIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7882,7 +7540,6 @@ const LumenBrandCss3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7903,7 +7560,6 @@ const LumenBrandCss3AltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7924,7 +7580,6 @@ const LumenBrandCuttlefishIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7945,7 +7600,6 @@ const LumenBrandDAndDIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7966,7 +7620,6 @@ const LumenBrandDAndDBeyondIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -7987,7 +7640,6 @@ const LumenBrandDailymotionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8008,7 +7660,6 @@ const LumenBrandDartLangIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8029,7 +7680,6 @@ const LumenBrandDashcubeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8050,7 +7700,6 @@ const LumenBrandDebianIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8071,7 +7720,6 @@ const LumenBrandDeezerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8092,7 +7740,6 @@ const LumenBrandDeliciousIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8113,7 +7760,6 @@ const LumenBrandDeploydogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8134,7 +7780,6 @@ const LumenBrandDeskproIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8155,7 +7800,6 @@ const LumenBrandDevIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8176,7 +7820,6 @@ const LumenBrandDeviantartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8197,7 +7840,6 @@ const LumenBrandDevpostIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8218,7 +7860,6 @@ const LumenBrandDhlIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8239,7 +7880,6 @@ const LumenBrandDiasporaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8260,7 +7900,6 @@ const LumenBrandDiggIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8281,7 +7920,6 @@ const LumenBrandDigitalOceanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8302,7 +7940,6 @@ const LumenBrandDiscordIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8323,7 +7960,6 @@ const LumenBrandDiscourseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8344,7 +7980,6 @@ const LumenBrandDisqusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8365,7 +8000,6 @@ const LumenBrandDochubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8386,7 +8020,6 @@ const LumenBrandDockerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8407,7 +8040,6 @@ const LumenBrandDolibarrIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8428,7 +8060,6 @@ const LumenBrandDraft2digitalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8449,7 +8080,6 @@ const LumenBrandDribbbleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8470,7 +8100,6 @@ const LumenBrandDropboxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8491,7 +8120,6 @@ const LumenBrandDrupalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8512,7 +8140,6 @@ const LumenBrandDuolingoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8533,7 +8160,6 @@ const LumenBrandDyalogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8554,7 +8180,6 @@ const LumenBrandEarlybirdsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8575,7 +8200,6 @@ const LumenBrandEbayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8596,7 +8220,6 @@ const LumenBrandEdgeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8617,7 +8240,6 @@ const LumenBrandEdgeLegacyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8638,7 +8260,6 @@ const LumenBrandElementorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8659,7 +8280,6 @@ const LumenBrandEleventyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8680,7 +8300,6 @@ const LumenBrandElloIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8701,7 +8320,6 @@ const LumenBrandEmberIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8722,7 +8340,6 @@ const LumenBrandEmpireIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8743,7 +8360,6 @@ const LumenBrandEnviraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8764,7 +8380,6 @@ const LumenBrandErlangIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8785,7 +8400,6 @@ const LumenBrandEthereumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8806,7 +8420,6 @@ const LumenBrandEtsyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8827,7 +8440,6 @@ const LumenBrandEvernoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8848,7 +8460,6 @@ const LumenBrandExpeditedsslIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8869,7 +8480,6 @@ const LumenBrandFacebookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8890,7 +8500,6 @@ const LumenBrandFacebookFIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8911,7 +8520,6 @@ const LumenBrandFacebookMessengerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8932,7 +8540,6 @@ const LumenBrandFantasyFlightGamesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8953,7 +8560,6 @@ const LumenBrandFedexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8974,7 +8580,6 @@ const LumenBrandFediverseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -8995,7 +8600,6 @@ const LumenBrandFedoraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9016,7 +8620,6 @@ const LumenBrandFigmaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9037,7 +8640,6 @@ const LumenBrandFilesPinwheelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9058,7 +8660,6 @@ const LumenBrandFirefoxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9079,7 +8680,6 @@ const LumenBrandFirefoxBrowserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9100,7 +8700,6 @@ const LumenBrandFirstOrderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9121,7 +8720,6 @@ const LumenBrandFirstOrderAltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9142,7 +8740,6 @@ const LumenBrandFirstdraftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9163,7 +8760,6 @@ const LumenBrandFlickrIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9184,7 +8780,6 @@ const LumenBrandFlipboardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9205,7 +8800,6 @@ const LumenBrandFlutterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9226,7 +8820,6 @@ const LumenBrandFlyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9247,7 +8840,6 @@ const LumenBrandFontAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9268,7 +8860,6 @@ const LumenBrandFonticonsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9289,7 +8880,6 @@ const LumenBrandFonticonsFiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9310,7 +8900,6 @@ const LumenBrandForgejoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9331,7 +8920,6 @@ const LumenBrandFortAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9352,7 +8940,6 @@ const LumenBrandFortAwesomeAltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9373,7 +8960,6 @@ const LumenBrandForumbeeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9394,7 +8980,6 @@ const LumenBrandFoursquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9415,7 +9000,6 @@ const LumenBrandFreeCodeCampIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9436,7 +9020,6 @@ const LumenBrandFreebsdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9457,7 +9040,6 @@ const LumenBrandFulcrumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9478,7 +9060,6 @@ const LumenBrandGalacticRepublicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9499,7 +9080,6 @@ const LumenBrandGalacticSenateIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9520,7 +9100,6 @@ const LumenBrandGetPocketIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9541,7 +9120,6 @@ const LumenBrandGgIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9562,7 +9140,6 @@ const LumenBrandGgCircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9583,7 +9160,6 @@ const LumenBrandGitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9604,7 +9180,6 @@ const LumenBrandGitAltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9625,7 +9200,6 @@ const LumenBrandGiteeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9646,7 +9220,6 @@ const LumenBrandGithubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9667,7 +9240,6 @@ const LumenBrandGithubAltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9688,7 +9260,6 @@ const LumenBrandGitkrakenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9709,7 +9280,6 @@ const LumenBrandGitlabIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9730,7 +9300,6 @@ const LumenBrandGitterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9751,7 +9320,6 @@ const LumenBrandGlideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9772,7 +9340,6 @@ const LumenBrandGlideGIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9793,7 +9360,6 @@ const LumenBrandGlobaleaksIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9814,7 +9380,6 @@ const LumenBrandGoforeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9835,7 +9400,6 @@ const LumenBrandGolangIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9856,7 +9420,6 @@ const LumenBrandGoodreadsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9877,7 +9440,6 @@ const LumenBrandGoodreadsGIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9898,7 +9460,6 @@ const LumenBrandGoogleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9919,7 +9480,6 @@ const LumenBrandGoogleDriveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9940,7 +9500,6 @@ const LumenBrandGooglePayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9961,7 +9520,6 @@ const LumenBrandGooglePlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -9982,7 +9540,6 @@ const LumenBrandGooglePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10003,7 +9560,6 @@ const LumenBrandGooglePlusGIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10024,7 +9580,6 @@ const LumenBrandGoogleScholarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10045,7 +9600,6 @@ const LumenBrandGoogleWalletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10066,7 +9620,6 @@ const LumenBrandGratipayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10087,7 +9640,6 @@ const LumenBrandGravIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10108,7 +9660,6 @@ const LumenBrandGripfireIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10129,7 +9680,6 @@ const LumenBrandGruntIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10150,7 +9700,6 @@ const LumenBrandGuildedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10171,7 +9720,6 @@ const LumenBrandGulpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10192,7 +9740,6 @@ const LumenBrandHackerNewsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10213,7 +9760,6 @@ const LumenBrandHackerrankIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10234,7 +9780,6 @@ const LumenBrandHashnodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10255,7 +9800,6 @@ const LumenBrandHipsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10276,7 +9820,6 @@ const LumenBrandHireAHelperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10297,7 +9840,6 @@ const LumenBrandHiveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10318,7 +9860,6 @@ const LumenBrandHooliIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10339,7 +9880,6 @@ const LumenBrandHornbillIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10360,7 +9900,6 @@ const LumenBrandHotjarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10381,7 +9920,6 @@ const LumenBrandHouzzIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10402,7 +9940,6 @@ const LumenBrandHtml5IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10423,7 +9960,6 @@ const LumenBrandHubspotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10444,7 +9980,6 @@ const LumenBrandHuggingFaceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10465,7 +10000,6 @@ const LumenBrandIdealIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10486,7 +10020,6 @@ const LumenBrandImdbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10507,7 +10040,6 @@ const LumenBrandInstagramIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10528,7 +10060,6 @@ const LumenBrandInstalodIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10549,7 +10080,6 @@ const LumenBrandIntercomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10570,7 +10100,6 @@ const LumenBrandInternetArchiveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10591,7 +10120,6 @@ const LumenBrandInternetExplorerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10612,7 +10140,6 @@ const LumenBrandInvisionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10633,7 +10160,6 @@ const LumenBrandIoxhostIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10654,7 +10180,6 @@ const LumenBrandItchIoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10675,7 +10200,6 @@ const LumenBrandItunesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10696,7 +10220,6 @@ const LumenBrandItunesNoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10717,7 +10240,6 @@ const LumenBrandJavaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10738,7 +10260,6 @@ const LumenBrandJediOrderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10759,7 +10280,6 @@ const LumenBrandJenkinsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10780,7 +10300,6 @@ const LumenBrandJiraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10801,7 +10320,6 @@ const LumenBrandJogetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10822,7 +10340,6 @@ const LumenBrandJoomlaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10843,7 +10360,6 @@ const LumenBrandJsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10864,7 +10380,6 @@ const LumenBrandJsfiddleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10885,7 +10400,6 @@ const LumenBrandJuliaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10906,7 +10420,6 @@ const LumenBrandJxlIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10927,7 +10440,6 @@ const LumenBrandKaggleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10948,7 +10460,6 @@ const LumenBrandKakaoTalkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10969,7 +10480,6 @@ const LumenBrandKeybaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -10990,7 +10500,6 @@ const LumenBrandKeycdnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11011,7 +10520,6 @@ const LumenBrandKickstarterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11032,7 +10540,6 @@ const LumenBrandKickstarterKIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11053,7 +10560,6 @@ const LumenBrandKoFiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11074,7 +10580,6 @@ const LumenBrandKorvueIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11095,7 +10600,6 @@ const LumenBrandKubernetesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11116,7 +10620,6 @@ const LumenBrandLaravelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11137,7 +10640,6 @@ const LumenBrandLastfmIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11158,7 +10660,6 @@ const LumenBrandLeanpubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11179,7 +10680,6 @@ const LumenBrandLeetcodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11200,7 +10700,6 @@ const LumenBrandLessIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11221,7 +10720,6 @@ const LumenBrandLetsEncryptIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11242,7 +10740,6 @@ const LumenBrandLetterboxdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11263,7 +10760,6 @@ const LumenBrandLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11284,7 +10780,6 @@ const LumenBrandLinkedinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11305,7 +10800,6 @@ const LumenBrandLinkedinInIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11326,7 +10820,6 @@ const LumenBrandLinktreeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11347,7 +10840,6 @@ const LumenBrandLinodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11368,7 +10860,6 @@ const LumenBrandLinuxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11389,7 +10880,6 @@ const LumenBrandLumonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11410,7 +10900,6 @@ const LumenBrandLumonDropIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11431,7 +10920,6 @@ const LumenBrandLyftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11452,7 +10940,6 @@ const LumenBrandMagentoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11473,7 +10960,6 @@ const LumenBrandMailchimpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11494,7 +10980,6 @@ const LumenBrandMandalorianIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11515,7 +11000,6 @@ const LumenBrandMarkdownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11536,7 +11020,6 @@ const LumenBrandMastodonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11557,7 +11040,6 @@ const LumenBrandMatrixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11578,7 +11060,6 @@ const LumenBrandMattermostIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11599,7 +11080,6 @@ const LumenBrandMaxcdnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11620,7 +11100,6 @@ const LumenBrandMdbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11641,7 +11120,6 @@ const LumenBrandMedappsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11662,7 +11140,6 @@ const LumenBrandMediumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11683,7 +11160,6 @@ const LumenBrandMedrtIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11704,7 +11180,6 @@ const LumenBrandMeetupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11725,7 +11200,6 @@ const LumenBrandMegaportIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11746,7 +11220,6 @@ const LumenBrandMendeleyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11767,7 +11240,6 @@ const LumenBrandMetaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11788,7 +11260,6 @@ const LumenBrandMicroblogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11809,7 +11280,6 @@ const LumenBrandMicrosoftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11830,7 +11300,6 @@ const LumenBrandMintbitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11851,7 +11320,6 @@ const LumenBrandMixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11872,7 +11340,6 @@ const LumenBrandMixcloudIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11893,7 +11360,6 @@ const LumenBrandMixerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11914,7 +11380,6 @@ const LumenBrandMizuniIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11935,7 +11400,6 @@ const LumenBrandModxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11956,7 +11420,6 @@ const LumenBrandMoneroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11977,7 +11440,6 @@ const LumenBrandNapsterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -11998,7 +11460,6 @@ const LumenBrandNeosIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12019,7 +11480,6 @@ const LumenBrandNextcloudIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12040,7 +11500,6 @@ const LumenBrandNfcDirectionalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12061,7 +11520,6 @@ const LumenBrandNfcSymbolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12082,7 +11540,6 @@ const LumenBrandNimblrIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12103,7 +11560,6 @@ const LumenBrandNodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12124,7 +11580,6 @@ const LumenBrandNodeJsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12145,7 +11600,6 @@ const LumenBrandNotionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12166,7 +11620,6 @@ const LumenBrandNpmIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12187,7 +11640,6 @@ const LumenBrandNs8IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12208,7 +11660,6 @@ const LumenBrandNutritionixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12229,7 +11680,6 @@ const LumenBrandObsStudioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12250,7 +11700,6 @@ const LumenBrandObsidianIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12271,7 +11720,6 @@ const LumenBrandOctopusDeployIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12292,7 +11740,6 @@ const LumenBrandOdnoklassnikiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12313,7 +11760,6 @@ const LumenBrandOdyseeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12334,7 +11780,6 @@ const LumenBrandOldRepublicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12355,7 +11800,6 @@ const LumenBrandOpenaiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12376,7 +11820,6 @@ const LumenBrandOpencartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12397,7 +11840,6 @@ const LumenBrandOpenidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12418,7 +11860,6 @@ const LumenBrandOpenstreetmapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12439,7 +11880,6 @@ const LumenBrandOpensuseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12460,7 +11900,6 @@ const LumenBrandOperaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12481,7 +11920,6 @@ const LumenBrandOptinMonsterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12502,7 +11940,6 @@ const LumenBrandOrcidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12523,7 +11960,6 @@ const LumenBrandOsiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12544,7 +11980,6 @@ const LumenBrandPadletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12565,7 +12000,6 @@ const LumenBrandPage4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12586,7 +12020,6 @@ const LumenBrandPagelinesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12607,7 +12040,6 @@ const LumenBrandPalfedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12628,7 +12060,6 @@ const LumenBrandPandoraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12649,7 +12080,6 @@ const LumenBrandPatreonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12670,7 +12100,6 @@ const LumenBrandPaypalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12691,7 +12120,6 @@ const LumenBrandPerbyteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12712,7 +12140,6 @@ const LumenBrandPeriscopeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12733,7 +12160,6 @@ const LumenBrandPhabricatorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12754,7 +12180,6 @@ const LumenBrandPhoenixFrameworkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12775,7 +12200,6 @@ const LumenBrandPhoenixSquadronIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12796,7 +12220,6 @@ const LumenBrandPhpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12817,7 +12240,6 @@ const LumenBrandPiedPiperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12838,7 +12260,6 @@ const LumenBrandPiedPiperAltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12859,7 +12280,6 @@ const LumenBrandPiedPiperHatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12880,7 +12300,6 @@ const LumenBrandPiedPiperPpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12901,7 +12320,6 @@ const LumenBrandPinterestIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12922,7 +12340,6 @@ const LumenBrandPinterestPIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12943,7 +12360,6 @@ const LumenBrandPixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12964,7 +12380,6 @@ const LumenBrandPixelfedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -12985,7 +12400,6 @@ const LumenBrandPixivIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13006,7 +12420,6 @@ const LumenBrandPlaystationIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13027,7 +12440,6 @@ const LumenBrandPostgresqlIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13048,7 +12460,6 @@ const LumenBrandProductHuntIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13069,7 +12480,6 @@ const LumenBrandPushedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13090,7 +12500,6 @@ const LumenBrandPythonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13111,7 +12520,6 @@ const LumenBrandQqIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13132,7 +12540,6 @@ const LumenBrandQuinscapeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13153,7 +12560,6 @@ const LumenBrandQuoraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13174,7 +12580,6 @@ const LumenBrandRProjectIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13195,7 +12600,6 @@ const LumenBrandRaspberryPiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13216,7 +12620,6 @@ const LumenBrandRavelryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13237,7 +12640,6 @@ const LumenBrandReactIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13258,7 +12660,6 @@ const LumenBrandReacteuropeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13279,7 +12680,6 @@ const LumenBrandReadmeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13300,7 +12700,6 @@ const LumenBrandRebelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13321,7 +12720,6 @@ const LumenBrandRedRiverIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13342,7 +12740,6 @@ const LumenBrandRedditIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13363,7 +12760,6 @@ const LumenBrandRedditAlienIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13384,7 +12780,6 @@ const LumenBrandRedhatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13405,7 +12800,6 @@ const LumenBrandRenrenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13426,7 +12820,6 @@ const LumenBrandReplydIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13447,7 +12840,6 @@ const LumenBrandResearchgateIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13468,7 +12860,6 @@ const LumenBrandResolvingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13489,7 +12880,6 @@ const LumenBrandRevIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13510,7 +12900,6 @@ const LumenBrandRobloxCreatorStudioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13531,7 +12920,6 @@ const LumenBrandRocketchatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13552,7 +12940,6 @@ const LumenBrandRockrmsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13573,7 +12960,6 @@ const LumenBrandRorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13594,7 +12980,6 @@ const LumenBrandRustIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13615,7 +13000,6 @@ const LumenBrandSafariIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13636,7 +13020,6 @@ const LumenBrandSalesforceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13657,7 +13040,6 @@ const LumenBrandSassIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13678,7 +13060,6 @@ const LumenBrandScalewayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13699,7 +13080,6 @@ const LumenBrandSchlixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13720,7 +13100,6 @@ const LumenBrandScreenpalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13741,7 +13120,6 @@ const LumenBrandScribdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13762,7 +13140,6 @@ const LumenBrandSearchenginIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13783,7 +13160,6 @@ const LumenBrandSellcastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13804,7 +13180,6 @@ const LumenBrandSellsyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13825,7 +13200,6 @@ const LumenBrandServicestackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13846,7 +13220,6 @@ const LumenBrandShirtsinbulkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13867,7 +13240,6 @@ const LumenBrandShoelaceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13888,7 +13260,6 @@ const LumenBrandShopifyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13909,7 +13280,6 @@ const LumenBrandShopwareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13930,7 +13300,6 @@ const LumenBrandSignalMessengerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13951,7 +13320,6 @@ const LumenBrandSimplybuiltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13972,7 +13340,6 @@ const LumenBrandSistrixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -13993,7 +13360,6 @@ const LumenBrandSithIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14014,7 +13380,6 @@ const LumenBrandSitroxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14035,7 +13400,6 @@ const LumenBrandSketchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14056,7 +13420,6 @@ const LumenBrandSkyatlasIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14077,7 +13440,6 @@ const LumenBrandSkypeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14098,7 +13460,6 @@ const LumenBrandSlackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14119,7 +13480,6 @@ const LumenBrandSlideshareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14140,7 +13500,6 @@ const LumenBrandSnapchatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14161,7 +13520,6 @@ const LumenBrandSolanaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14182,7 +13540,6 @@ const LumenBrandSoundcloudIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14203,7 +13560,6 @@ const LumenBrandSourcetreeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14224,7 +13580,6 @@ const LumenBrandSpaceAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14245,7 +13600,6 @@ const LumenBrandSpeakapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14266,7 +13620,6 @@ const LumenBrandSpeakerDeckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14287,7 +13640,6 @@ const LumenBrandSpotifyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14308,7 +13660,6 @@ const LumenBrandSquareBehanceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14329,7 +13680,6 @@ const LumenBrandSquareBlueskyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14350,7 +13700,6 @@ const LumenBrandSquareBuildAwesomeStrokeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14371,7 +13720,6 @@ const LumenBrandSquareDeskproIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14392,7 +13740,6 @@ const LumenBrandSquareDribbbleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14413,7 +13760,6 @@ const LumenBrandSquareFacebookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14434,7 +13780,6 @@ const LumenBrandSquareFigmaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14455,7 +13800,6 @@ const LumenBrandSquareFontAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14476,7 +13820,6 @@ const LumenBrandSquareFontAwesomeStrokeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14497,7 +13840,6 @@ const LumenBrandSquareGitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14518,7 +13860,6 @@ const LumenBrandSquareGithubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14539,7 +13880,6 @@ const LumenBrandSquareGitlabIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14560,7 +13900,6 @@ const LumenBrandSquareGooglePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14581,7 +13920,6 @@ const LumenBrandSquareHackerNewsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14602,7 +13940,6 @@ const LumenBrandSquareInstagramIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14623,7 +13960,6 @@ const LumenBrandSquareJsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14644,7 +13980,6 @@ const LumenBrandSquareLastfmIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14665,7 +14000,6 @@ const LumenBrandSquareLetterboxdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14686,7 +14020,6 @@ const LumenBrandSquareLinkedinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14707,7 +14040,6 @@ const LumenBrandSquareOdnoklassnikiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14728,7 +14060,6 @@ const LumenBrandSquarePiedPiperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14749,7 +14080,6 @@ const LumenBrandSquarePinterestIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14770,7 +14100,6 @@ const LumenBrandSquareRedditIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14791,7 +14120,6 @@ const LumenBrandSquareSnapchatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14812,7 +14140,6 @@ const LumenBrandSquareSteamIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14833,7 +14160,6 @@ const LumenBrandSquareThreadsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14854,7 +14180,6 @@ const LumenBrandSquareTumblrIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14875,7 +14200,6 @@ const LumenBrandSquareTwitterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14896,7 +14220,6 @@ const LumenBrandSquareUpworkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14917,7 +14240,6 @@ const LumenBrandSquareViadeoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14938,7 +14260,6 @@ const LumenBrandSquareVimeoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14959,7 +14280,6 @@ const LumenBrandSquareWebAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -14980,7 +14300,6 @@ const LumenBrandSquareWebAwesomeStrokeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15001,7 +14320,6 @@ const LumenBrandSquareWhatsappIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15022,7 +14340,6 @@ const LumenBrandSquareXTwitterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15043,7 +14360,6 @@ const LumenBrandSquareXingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15064,7 +14380,6 @@ const LumenBrandSquareYoutubeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15085,7 +14400,6 @@ const LumenBrandSquarespaceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15106,7 +14420,6 @@ const LumenBrandStackExchangeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15127,7 +14440,6 @@ const LumenBrandStackOverflowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15148,7 +14460,6 @@ const LumenBrandStackpathIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15169,7 +14480,6 @@ const LumenBrandStaylinkedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15190,7 +14500,6 @@ const LumenBrandSteamIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15211,7 +14520,6 @@ const LumenBrandSteamSymbolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15232,7 +14540,6 @@ const LumenBrandStickerMuleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15253,7 +14560,6 @@ const LumenBrandStorybookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15274,7 +14580,6 @@ const LumenBrandStravaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15295,7 +14600,6 @@ const LumenBrandStripeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15316,7 +14620,6 @@ const LumenBrandStripeSIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15337,7 +14640,6 @@ const LumenBrandStubberIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15358,7 +14660,6 @@ const LumenBrandStudiovinariIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15379,7 +14680,6 @@ const LumenBrandStumbleuponIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15400,7 +14700,6 @@ const LumenBrandStumbleuponCircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15421,7 +14720,6 @@ const LumenBrandSubstackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15442,7 +14740,6 @@ const LumenBrandSuperpowersIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15463,7 +14760,6 @@ const LumenBrandSuppleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15484,7 +14780,6 @@ const LumenBrandSupportnowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15505,7 +14800,6 @@ const LumenBrandSuseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15526,7 +14820,6 @@ const LumenBrandSvelteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15547,7 +14840,6 @@ const LumenBrandSwiftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15568,7 +14860,6 @@ const LumenBrandSymfonyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15589,7 +14880,6 @@ const LumenBrandSymfonycastsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15610,7 +14900,6 @@ const LumenBrandTailwindCssIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15631,7 +14920,6 @@ const LumenBrandTeamspeakIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15652,7 +14940,6 @@ const LumenBrandTelegramIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15673,7 +14960,6 @@ const LumenBrandTencentWeiboIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15694,7 +14980,6 @@ const LumenBrandTeslaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15715,7 +15000,6 @@ const LumenBrandTexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15736,7 +15020,6 @@ const LumenBrandTheRedYetiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15757,7 +15040,6 @@ const LumenBrandThemecoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15778,7 +15060,6 @@ const LumenBrandThemeisleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15799,7 +15080,6 @@ const LumenBrandThinkPeaksIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15820,7 +15100,6 @@ const LumenBrandThreadsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15841,7 +15120,6 @@ const LumenBrandThreemaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15862,7 +15140,6 @@ const LumenBrandTidalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15883,7 +15160,6 @@ const LumenBrandTiktokIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15904,7 +15180,6 @@ const LumenBrandTorBrowserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15925,7 +15200,6 @@ const LumenBrandTradeFederationIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15946,7 +15220,6 @@ const LumenBrandTrelloIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15967,7 +15240,6 @@ const LumenBrandTumblrIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -15988,7 +15260,6 @@ const LumenBrandTwitchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16009,7 +15280,6 @@ const LumenBrandTwitterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16030,7 +15300,6 @@ const LumenBrandTypescriptIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16051,7 +15320,6 @@ const LumenBrandTypo3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16072,7 +15340,6 @@ const LumenBrandUberIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16093,7 +15360,6 @@ const LumenBrandUbuntuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16114,7 +15380,6 @@ const LumenBrandUikitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16135,7 +15400,6 @@ const LumenBrandUltralyticsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16156,7 +15420,6 @@ const LumenBrandUltralyticsHubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16177,7 +15440,6 @@ const LumenBrandUltralyticsYoloIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16198,7 +15460,6 @@ const LumenBrandUmbracoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16219,7 +15480,6 @@ const LumenBrandUnchartedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16240,7 +15500,6 @@ const LumenBrandUniregistryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16261,7 +15520,6 @@ const LumenBrandUnisonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16282,7 +15540,6 @@ const LumenBrandUnityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16303,7 +15560,6 @@ const LumenBrandUnrealEngineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16324,7 +15580,6 @@ const LumenBrandUnsplashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16345,7 +15600,6 @@ const LumenBrandUntappdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16366,7 +15620,6 @@ const LumenBrandUpsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16387,7 +15640,6 @@ const LumenBrandUpworkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16408,7 +15660,6 @@ const LumenBrandUsbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16429,7 +15680,6 @@ const LumenBrandUspsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16450,7 +15700,6 @@ const LumenBrandUssunnahIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16471,7 +15720,6 @@ const LumenBrandVaadinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16492,7 +15740,6 @@ const LumenBrandVenmoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16513,7 +15760,6 @@ const LumenBrandVenmoVIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16534,7 +15780,6 @@ const LumenBrandViacoinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16555,7 +15800,6 @@ const LumenBrandViadeoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16576,7 +15820,6 @@ const LumenBrandViberIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16597,7 +15840,6 @@ const LumenBrandVimIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16618,7 +15860,6 @@ const LumenBrandVimeoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16639,7 +15880,6 @@ const LumenBrandVimeoVIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16660,7 +15900,6 @@ const LumenBrandVineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16681,7 +15920,6 @@ const LumenBrandVisualStudioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16702,7 +15940,6 @@ const LumenBrandVkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16723,7 +15960,6 @@ const LumenBrandVnvIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16744,7 +15980,6 @@ const LumenBrandVscoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16765,7 +16000,6 @@ const LumenBrandVuejsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16786,7 +16020,6 @@ const LumenBrandW3cIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16807,7 +16040,6 @@ const LumenBrandWatchmanMonitoringIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16828,7 +16060,6 @@ const LumenBrandWazeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16849,7 +16080,6 @@ const LumenBrandWebAwesomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16870,7 +16100,6 @@ const LumenBrandWebflowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16891,7 +16120,6 @@ const LumenBrandWeeblyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16912,7 +16140,6 @@ const LumenBrandWeiboIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16933,7 +16160,6 @@ const LumenBrandWeixinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16954,7 +16180,6 @@ const LumenBrandWhatsappIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16975,7 +16200,6 @@ const LumenBrandWhmcsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -16996,7 +16220,6 @@ const LumenBrandWikipediaWIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17017,7 +16240,6 @@ const LumenBrandWindowsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17038,7 +16260,6 @@ const LumenBrandWirsindhandwerkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17059,7 +16280,6 @@ const LumenBrandWixIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17080,7 +16300,6 @@ const LumenBrandWizardsOfTheCoastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17101,7 +16320,6 @@ const LumenBrandWoduIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17122,7 +16340,6 @@ const LumenBrandWolfPackBattalionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17143,7 +16360,6 @@ const LumenBrandWordpressIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17164,7 +16380,6 @@ const LumenBrandWordpressSimpleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17185,7 +16400,6 @@ const LumenBrandWpbeginnerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17206,7 +16420,6 @@ const LumenBrandWpexplorerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17227,7 +16440,6 @@ const LumenBrandWpformsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17248,7 +16460,6 @@ const LumenBrandWpressrIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17269,7 +16480,6 @@ const LumenBrandXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17290,7 +16500,6 @@ const LumenBrandXTwitterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17311,7 +16520,6 @@ const LumenBrandXboxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17332,7 +16540,6 @@ const LumenBrandXingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17353,7 +16560,6 @@ const LumenBrandXmppIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17374,7 +16580,6 @@ const LumenBrandXrpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17395,7 +16600,6 @@ const LumenBrandXrplIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17416,7 +16620,6 @@ const LumenBrandYCombinatorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17437,7 +16640,6 @@ const LumenBrandYahooIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17458,7 +16660,6 @@ const LumenBrandYammerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17479,7 +16680,6 @@ const LumenBrandYandexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17500,7 +16700,6 @@ const LumenBrandYandexInternationalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17521,7 +16720,6 @@ const LumenBrandYarnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17542,7 +16740,6 @@ const LumenBrandYelpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17563,7 +16760,6 @@ const LumenBrandYoastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17584,7 +16780,6 @@ const LumenBrandYoutubeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17605,7 +16800,6 @@ const LumenBrandYoutubeShortsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17626,7 +16820,6 @@ const LumenBrandZhihuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17647,7 +16840,6 @@ const LumenBrandZoomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17668,7 +16860,6 @@ const LumenBrandZulipIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={color}
     focusable={false}
     height={size}
@@ -17689,7 +16880,6 @@ const LumenBrickWallIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17717,7 +16907,6 @@ const LumenBrickWallFireIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17744,7 +16933,6 @@ const LumenBrickWallShieldIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17772,7 +16960,6 @@ const LumenBriefcaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17794,7 +16981,6 @@ const LumenBriefcaseBusinessIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17818,7 +17004,6 @@ const LumenBriefcaseConveyorBeltIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17845,7 +17030,6 @@ const LumenBriefcaseMedicalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17871,7 +17055,6 @@ const LumenBringToFrontIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17894,7 +17077,6 @@ const LumenBroccoliIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17918,7 +17100,6 @@ const LumenBroomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17942,7 +17123,6 @@ const LumenBroomSparklesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17972,7 +17152,6 @@ const LumenBrushIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -17995,7 +17174,6 @@ const LumenBrushCleaningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18019,7 +17197,6 @@ const LumenBubblesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18043,7 +17220,6 @@ const LumenBugIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18074,7 +17250,6 @@ const LumenBugOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18106,7 +17281,6 @@ const LumenBugPlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18135,7 +17309,6 @@ const LumenBuildingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18166,7 +17339,6 @@ const LumenBuilding2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18191,7 +17363,6 @@ const LumenBusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18218,7 +17389,6 @@ const LumenBusFrontIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18247,7 +17417,6 @@ const LumenCableIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18274,7 +17443,6 @@ const LumenCableCarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18302,7 +17470,6 @@ const LumenCakeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18331,7 +17498,6 @@ const LumenCakeSliceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18355,7 +17521,6 @@ const LumenCalculatorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18385,7 +17550,6 @@ const LumenCalendarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18409,7 +17573,6 @@ const LumenCalendar1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18434,7 +17597,6 @@ const LumenCalendarArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18460,7 +17622,6 @@ const LumenCalendarArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18486,7 +17647,6 @@ const LumenCalendarCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18511,7 +17671,6 @@ const LumenCalendarCheck2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18542,7 +17701,6 @@ const LumenCalendarClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18568,7 +17726,6 @@ const LumenCalendarCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18601,7 +17758,6 @@ const LumenCalendarDaysIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18631,7 +17787,6 @@ const LumenCalendarFoldIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18655,7 +17810,6 @@ const LumenCalendarHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18680,7 +17834,6 @@ const LumenCalendarMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18705,7 +17858,6 @@ const LumenCalendarMinus2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18730,7 +17882,6 @@ const LumenCalendarOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18756,7 +17907,6 @@ const LumenCalendarPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18782,7 +17932,6 @@ const LumenCalendarPlus2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18808,7 +17957,6 @@ const LumenCalendarRangeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18836,7 +17984,6 @@ const LumenCalendarSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18862,7 +18009,6 @@ const LumenCalendarSyncIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18890,7 +18036,6 @@ const LumenCalendarXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18916,7 +18061,6 @@ const LumenCalendarX2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18942,7 +18086,6 @@ const LumenCalendarsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18968,7 +18111,6 @@ const LumenCameraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -18990,7 +18132,6 @@ const LumenCameraOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19014,7 +18155,6 @@ const LumenCandyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19039,7 +18179,6 @@ const LumenCandyCaneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19064,7 +18203,6 @@ const LumenCandyOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19091,7 +18229,6 @@ const LumenCannabisIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19113,7 +18250,6 @@ const LumenCannabisOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19139,7 +18275,6 @@ const LumenCaptionsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19161,7 +18296,6 @@ const LumenCaptionsOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19187,7 +18321,6 @@ const LumenCarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19211,7 +18344,6 @@ const LumenCarBatteryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19237,7 +18369,6 @@ const LumenCarFrontIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19263,7 +18394,6 @@ const LumenCarTaxiFrontIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19290,7 +18420,6 @@ const LumenCaravanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19314,7 +18443,6 @@ const LumenCardSimIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19338,7 +18466,6 @@ const LumenCarrotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19361,7 +18488,6 @@ const LumenCaseLowerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19385,7 +18511,6 @@ const LumenCaseSensitiveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19409,7 +18534,6 @@ const LumenCaseUpperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19432,7 +18556,6 @@ const LumenCassetteTapeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19457,7 +18580,6 @@ const LumenCastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19481,7 +18603,6 @@ const LumenCastleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19509,7 +18630,6 @@ const LumenCatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19533,7 +18653,6 @@ const LumenCctvIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19558,7 +18677,6 @@ const LumenCctvOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19584,7 +18702,6 @@ const LumenChartAreaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19606,7 +18723,6 @@ const LumenChartBarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19630,7 +18746,6 @@ const LumenChartBarBigIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19653,7 +18768,6 @@ const LumenChartBarDecreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19677,7 +18791,6 @@ const LumenChartBarIncreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19701,7 +18814,6 @@ const LumenChartBarStackedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19726,7 +18838,6 @@ const LumenChartCandlestickIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19753,7 +18864,6 @@ const LumenChartColumnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19777,7 +18887,6 @@ const LumenChartColumnBigIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19800,7 +18909,6 @@ const LumenChartColumnDecreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19824,7 +18932,6 @@ const LumenChartColumnIncreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19848,7 +18955,6 @@ const LumenChartColumnStackedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19873,7 +18979,6 @@ const LumenChartGanttIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19897,7 +19002,6 @@ const LumenChartLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19919,7 +19023,6 @@ const LumenChartNetworkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19946,7 +19049,6 @@ const LumenChartNoAxesColumnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19969,7 +19071,6 @@ const LumenChartNoAxesColumnDecreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -19992,7 +19093,6 @@ const LumenChartNoAxesColumnIncreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20015,7 +19115,6 @@ const LumenChartNoAxesCombinedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20041,7 +19140,6 @@ const LumenChartNoAxesGanttIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20064,7 +19162,6 @@ const LumenChartPieIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20086,7 +19183,6 @@ const LumenChartScatterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20112,7 +19208,6 @@ const LumenChartSplineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20134,7 +19229,6 @@ const LumenCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20155,7 +19249,6 @@ const LumenCheckCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20177,7 +19270,6 @@ const LumenCheckLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20200,7 +19292,6 @@ const LumenChefHatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20222,7 +19313,6 @@ const LumenCherryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20246,7 +19336,6 @@ const LumenChessBishopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20270,7 +19359,6 @@ const LumenChessKingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20294,7 +19382,6 @@ const LumenChessKnightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20319,7 +19406,6 @@ const LumenChessPawnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20344,7 +19430,6 @@ const LumenChessQueenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20372,7 +19457,6 @@ const LumenChessRookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20399,7 +19483,6 @@ const LumenChevronDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20420,7 +19503,6 @@ const LumenChevronFirstIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20442,7 +19524,6 @@ const LumenChevronLastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20464,7 +19545,6 @@ const LumenChevronLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20485,7 +19565,6 @@ const LumenChevronRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20506,7 +19585,6 @@ const LumenChevronUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20527,7 +19605,6 @@ const LumenChevronsDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20549,7 +19626,6 @@ const LumenChevronsDownUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20571,7 +19647,6 @@ const LumenChevronsLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20593,7 +19668,6 @@ const LumenChevronsLeftRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20615,7 +19689,6 @@ const LumenChevronsLeftRightEllipsisIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20640,7 +19713,6 @@ const LumenChevronsRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20662,7 +19734,6 @@ const LumenChevronsRightLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20684,7 +19755,6 @@ const LumenChevronsUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20706,7 +19776,6 @@ const LumenChevronsUpDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20728,7 +19797,6 @@ const LumenChurchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20753,7 +19821,6 @@ const LumenCigaretteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20778,7 +19845,6 @@ const LumenCigaretteOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20804,7 +19870,6 @@ const LumenCircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20825,7 +19890,6 @@ const LumenCircleAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20848,7 +19912,6 @@ const LumenCircleArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20871,7 +19934,6 @@ const LumenCircleArrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20894,7 +19956,6 @@ const LumenCircleArrowOutDownLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20917,7 +19978,6 @@ const LumenCircleArrowOutDownRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20940,7 +20000,6 @@ const LumenCircleArrowOutUpLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20963,7 +20022,6 @@ const LumenCircleArrowOutUpRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -20986,7 +20044,6 @@ const LumenCircleArrowRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21009,7 +20066,6 @@ const LumenCircleArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21032,7 +20088,6 @@ const LumenCircleCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21054,7 +20109,6 @@ const LumenCircleCheckBigIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21076,7 +20130,6 @@ const LumenCircleChevronDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21098,7 +20151,6 @@ const LumenCircleChevronLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21120,7 +20172,6 @@ const LumenCircleChevronRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21142,7 +20193,6 @@ const LumenCircleChevronUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21164,7 +20214,6 @@ const LumenCircleDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21192,7 +20241,6 @@ const LumenCircleDivideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21216,7 +20264,6 @@ const LumenCircleDollarSignIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21239,7 +20286,6 @@ const LumenCircleDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21261,7 +20307,6 @@ const LumenCircleDotDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21290,7 +20335,6 @@ const LumenCircleEllipsisIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21314,7 +20358,6 @@ const LumenCircleEqualIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21337,7 +20380,6 @@ const LumenCircleEuroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21360,7 +20402,6 @@ const LumenCircleFadingArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21387,7 +20428,6 @@ const LumenCircleFadingPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21414,7 +20454,6 @@ const LumenCircleGaugeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21437,7 +20476,6 @@ const LumenCircleMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21459,7 +20497,6 @@ const LumenCircleOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21482,7 +20519,6 @@ const LumenCircleParkingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21504,7 +20540,6 @@ const LumenCircleParkingOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21530,7 +20565,6 @@ const LumenCirclePauseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21553,7 +20587,6 @@ const LumenCirclePercentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21577,7 +20610,6 @@ const LumenCirclePileIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21603,7 +20635,6 @@ const LumenCirclePlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21625,7 +20656,6 @@ const LumenCirclePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21648,7 +20678,6 @@ const LumenCirclePoundSterlingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21672,7 +20701,6 @@ const LumenCirclePowerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21695,7 +20723,6 @@ const LumenCircleQuestionMarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21718,7 +20745,6 @@ const LumenCircleSlashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21740,7 +20766,6 @@ const LumenCircleSlash2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21762,7 +20787,6 @@ const LumenCircleSmallIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21783,7 +20807,6 @@ const LumenCircleStarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21805,7 +20828,6 @@ const LumenCircleStopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21827,7 +20849,6 @@ const LumenCircleUserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21850,7 +20871,6 @@ const LumenCircleUserRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21873,7 +20893,6 @@ const LumenCircleXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21896,7 +20915,6 @@ const LumenCircuitBoardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21921,7 +20939,6 @@ const LumenCitrusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21945,7 +20962,6 @@ const LumenClapperboardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21969,7 +20985,6 @@ const LumenClipboardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -21991,7 +21006,6 @@ const LumenClipboardCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22014,7 +21028,6 @@ const LumenClipboardClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22039,7 +21052,6 @@ const LumenClipboardCopyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22064,7 +21076,6 @@ const LumenClipboardListIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22090,7 +21101,6 @@ const LumenClipboardMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22113,7 +21123,6 @@ const LumenClipboardPasteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22138,7 +21147,6 @@ const LumenClipboardPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22162,7 +21170,6 @@ const LumenClipboardPenLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22187,7 +21194,6 @@ const LumenClipboardPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22211,7 +21217,6 @@ const LumenClipboardTypeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22236,7 +21241,6 @@ const LumenClipboardXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22260,7 +21264,6 @@ const LumenClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22282,7 +21285,6 @@ const LumenClock1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22304,7 +21306,6 @@ const LumenClock10IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22326,7 +21327,6 @@ const LumenClock11IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22348,7 +21348,6 @@ const LumenClock12IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22370,7 +21369,6 @@ const LumenClock2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22392,7 +21390,6 @@ const LumenClock3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22414,7 +21411,6 @@ const LumenClock4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22436,7 +21432,6 @@ const LumenClock5IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22458,7 +21453,6 @@ const LumenClock6IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22480,7 +21474,6 @@ const LumenClock7IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22502,7 +21495,6 @@ const LumenClock8IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22524,7 +21516,6 @@ const LumenClock9IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22546,7 +21537,6 @@ const LumenClockAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22570,7 +21560,6 @@ const LumenClockArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22594,7 +21583,6 @@ const LumenClockArrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22618,7 +21606,6 @@ const LumenClockArrowRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22642,7 +21629,6 @@ const LumenClockArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22666,7 +21652,6 @@ const LumenClockCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22689,7 +21674,6 @@ const LumenClockFadingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22715,7 +21699,6 @@ const LumenClockPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22739,7 +21722,6 @@ const LumenClosedCaptionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22762,7 +21744,6 @@ const LumenCloudIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22783,7 +21764,6 @@ const LumenCloudAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22806,7 +21786,6 @@ const LumenCloudBackupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22829,7 +21808,6 @@ const LumenCloudCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22851,7 +21829,6 @@ const LumenCloudCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22880,7 +21857,6 @@ const LumenCloudDownloadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22903,7 +21879,6 @@ const LumenCloudDrizzleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22930,7 +21905,6 @@ const LumenCloudFogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22953,7 +21927,6 @@ const LumenCloudHailIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -22980,7 +21953,6 @@ const LumenCloudLightningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23002,7 +21974,6 @@ const LumenCloudMoonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23024,7 +21995,6 @@ const LumenCloudMoonRainIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23048,7 +22018,6 @@ const LumenCloudOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23071,7 +22040,6 @@ const LumenCloudRainIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23095,7 +22063,6 @@ const LumenCloudRainWindIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23119,7 +22086,6 @@ const LumenCloudSnowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23146,7 +22112,6 @@ const LumenCloudSunIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23172,7 +22137,6 @@ const LumenCloudSunRainIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23200,7 +22164,6 @@ const LumenCloudSyncIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23225,7 +22188,6 @@ const LumenCloudUploadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23248,7 +22210,6 @@ const LumenCloudyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23270,7 +22231,6 @@ const LumenCloverIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23293,7 +22253,6 @@ const LumenClubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23315,7 +22274,6 @@ const LumenCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23337,7 +22295,6 @@ const LumenCodeXmlIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23360,7 +22317,6 @@ const LumenCoffeeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23384,7 +22340,6 @@ const LumenCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23418,7 +22373,6 @@ const LumenCoinsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23442,7 +22396,6 @@ const LumenColumns2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23464,7 +22417,6 @@ const LumenColumns3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23487,7 +22439,6 @@ const LumenColumns3CogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23519,7 +22470,6 @@ const LumenColumns4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23543,7 +22493,6 @@ const LumenCombineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23569,7 +22518,6 @@ const LumenCommandIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23590,7 +22538,6 @@ const LumenCompassIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23612,7 +22559,6 @@ const LumenComponentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23636,7 +22582,6 @@ const LumenComputerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23660,7 +22605,6 @@ const LumenConciergeBellIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23684,7 +22628,6 @@ const LumenConeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23706,7 +22649,6 @@ const LumenConstructionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23734,7 +22676,6 @@ const LumenContactIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23759,7 +22700,6 @@ const LumenContactRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23784,7 +22724,6 @@ const LumenContainerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23809,7 +22748,6 @@ const LumenContrastIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23831,7 +22769,6 @@ const LumenCookieIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23857,7 +22794,6 @@ const LumenCookingPotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23881,7 +22817,6 @@ const LumenCopyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23903,7 +22838,6 @@ const LumenCopyCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23926,7 +22860,6 @@ const LumenCopyMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23949,7 +22882,6 @@ const LumenCopyPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23973,7 +22905,6 @@ const LumenCopySlashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -23996,7 +22927,6 @@ const LumenCopyXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24020,7 +22950,6 @@ const LumenCopyleftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24042,7 +22971,6 @@ const LumenCopyrightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24064,7 +22992,6 @@ const LumenCornerDownLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24086,7 +23013,6 @@ const LumenCornerDownRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24108,7 +23034,6 @@ const LumenCornerLeftDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24130,7 +23055,6 @@ const LumenCornerLeftUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24152,7 +23076,6 @@ const LumenCornerRightDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24174,7 +23097,6 @@ const LumenCornerRightUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24196,7 +23118,6 @@ const LumenCornerUpLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24218,7 +23139,6 @@ const LumenCornerUpRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24240,7 +23160,6 @@ const LumenCpuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24274,7 +23193,6 @@ const LumenCreativeCommonsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24297,7 +23215,6 @@ const LumenCreditCardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24319,7 +23236,6 @@ const LumenCroissantIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24344,7 +23260,6 @@ const LumenCropIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24366,7 +23281,6 @@ const LumenCrossIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24387,7 +23301,6 @@ const LumenCrosshairIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24412,7 +23325,6 @@ const LumenCrownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24434,7 +23346,6 @@ const LumenCuboidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24457,7 +23368,6 @@ const LumenCupSodaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24481,7 +23391,6 @@ const LumenCurrencyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24506,7 +23415,6 @@ const LumenCylinderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24528,7 +23436,6 @@ const LumenDamIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24555,7 +23462,6 @@ const LumenDatabaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24578,7 +23484,6 @@ const LumenDatabaseArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24604,7 +23509,6 @@ const LumenDatabaseArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24630,7 +23534,6 @@ const LumenDatabaseBackupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24656,7 +23559,6 @@ const LumenDatabaseCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24681,7 +23583,6 @@ const LumenDatabaseMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24706,7 +23607,6 @@ const LumenDatabasePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24732,7 +23632,6 @@ const LumenDatabaseSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24758,7 +23657,6 @@ const LumenDatabaseXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24785,7 +23683,6 @@ const LumenDatabaseZapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24810,7 +23707,6 @@ const LumenDecimalsArrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24834,7 +23730,6 @@ const LumenDecimalsArrowRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24859,7 +23754,6 @@ const LumenDeleteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24882,7 +23776,6 @@ const LumenDessertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24905,7 +23798,6 @@ const LumenDiameterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24930,7 +23822,6 @@ const LumenDiamondIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24951,7 +23842,6 @@ const LumenDiamondMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24973,7 +23863,6 @@ const LumenDiamondPercentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -24997,7 +23886,6 @@ const LumenDiamondPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25020,7 +23908,6 @@ const LumenDice1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25042,7 +23929,6 @@ const LumenDice2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25065,7 +23951,6 @@ const LumenDice3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25089,7 +23974,6 @@ const LumenDice4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25114,7 +23998,6 @@ const LumenDice5IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25140,7 +24023,6 @@ const LumenDice6IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25167,7 +24049,6 @@ const LumenDicesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25193,7 +24074,6 @@ const LumenDiffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25216,7 +24096,6 @@ const LumenDiscIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25238,7 +24117,6 @@ const LumenDisc2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25261,7 +24139,6 @@ const LumenDisc3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25285,7 +24162,6 @@ const LumenDiscAlbumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25308,7 +24184,6 @@ const LumenDivideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25331,7 +24206,6 @@ const LumenDnaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25362,7 +24236,6 @@ const LumenDnaOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25392,7 +24265,6 @@ const LumenDockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25415,7 +24287,6 @@ const LumenDogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25440,7 +24311,6 @@ const LumenDollarSignIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25462,7 +24332,6 @@ const LumenDonutIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25484,7 +24353,6 @@ const LumenDoorClosedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25507,7 +24375,6 @@ const LumenDoorClosedLockedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25532,7 +24399,6 @@ const LumenDoorOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25557,7 +24423,6 @@ const LumenDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25578,7 +24443,6 @@ const LumenDownloadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25601,7 +24465,6 @@ const LumenDraftingCompassIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25626,7 +24489,6 @@ const LumenDramaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25654,7 +24516,6 @@ const LumenDrillIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25680,7 +24541,6 @@ const LumenDroneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25709,7 +24569,6 @@ const LumenDropletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25730,7 +24589,6 @@ const LumenDropletOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25753,7 +24611,6 @@ const LumenDropletsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25775,7 +24632,6 @@ const LumenDrumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25802,7 +24658,6 @@ const LumenDrumstickIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25824,7 +24679,6 @@ const LumenDumbbellIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25849,7 +24703,6 @@ const LumenEarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25871,7 +24724,6 @@ const LumenEarOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25896,7 +24748,6 @@ const LumenEarthIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25920,7 +24771,6 @@ const LumenEarthLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25946,7 +24796,6 @@ const LumenEclipseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25968,7 +24817,6 @@ const LumenEggIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -25989,7 +24837,6 @@ const LumenEggFriedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26011,7 +24858,6 @@ const LumenEggOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26034,7 +24880,6 @@ const LumenEjectIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26056,7 +24901,6 @@ const LumenEllipseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26077,7 +24921,6 @@ const LumenEllipsisIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26100,7 +24943,6 @@ const LumenEllipsisVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26123,7 +24965,6 @@ const LumenEqualIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26145,7 +24986,6 @@ const LumenEqualApproximatelyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26167,7 +25007,6 @@ const LumenEqualNotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26190,7 +25029,6 @@ const LumenEraserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26212,7 +25050,6 @@ const LumenEthernetPortIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26237,7 +25074,6 @@ const LumenEuroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26260,7 +25096,6 @@ const LumenEvChargerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26285,7 +25120,6 @@ const LumenExpandIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26313,7 +25147,6 @@ const LumenExternalLinkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26336,7 +25169,6 @@ const LumenEyeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26358,7 +25190,6 @@ const LumenEyeClosedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26383,7 +25214,6 @@ const LumenEyeDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26412,7 +25242,6 @@ const LumenEyeOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26436,7 +25265,6 @@ const LumenFaceAngryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26462,7 +25290,6 @@ const LumenFaceExpressionlessIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26486,7 +25313,6 @@ const LumenFaceGrinningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26510,7 +25336,6 @@ const LumenFaceNeutralIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26534,7 +25359,6 @@ const LumenFaceSlightlyFrowningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26558,7 +25382,6 @@ const LumenFaceSlightlySmilingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26582,7 +25405,6 @@ const LumenFaceSlightlySmilingPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26608,7 +25430,6 @@ const LumenFactoryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26632,7 +25453,6 @@ const LumenFanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26654,7 +25474,6 @@ const LumenFastForwardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26676,7 +25495,6 @@ const LumenFeatherIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26699,7 +25517,6 @@ const LumenFenceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26726,7 +25543,6 @@ const LumenFerrisWheelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26755,7 +25571,6 @@ const LumenFileIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26777,7 +25592,6 @@ const LumenFileArchiveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26803,7 +25617,6 @@ const LumenFileAxis3dIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26827,7 +25640,6 @@ const LumenFileBadgeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26851,7 +25663,6 @@ const LumenFileBoxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26876,7 +25687,6 @@ const LumenFileBracesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26900,7 +25710,6 @@ const LumenFileBracesCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26924,7 +25733,6 @@ const LumenFileChartColumnIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26949,7 +25757,6 @@ const LumenFileChartColumnIncreasingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26974,7 +25781,6 @@ const LumenFileChartLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -26997,7 +25803,6 @@ const LumenFileChartPieIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27021,7 +25826,6 @@ const LumenFileCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27044,7 +25848,6 @@ const LumenFileCheckCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27067,7 +25870,6 @@ const LumenFileClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27091,7 +25893,6 @@ const LumenFileCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27115,7 +25916,6 @@ const LumenFileCodeCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27139,7 +25939,6 @@ const LumenFileCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27171,7 +25970,6 @@ const LumenFileDiffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27195,7 +25993,6 @@ const LumenFileDigitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27220,7 +26017,6 @@ const LumenFileDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27244,7 +26040,6 @@ const LumenFileExclamationPointIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27267,7 +26062,6 @@ const LumenFileHeadphoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27290,7 +26084,6 @@ const LumenFileHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27313,7 +26106,6 @@ const LumenFileImageIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27337,7 +26129,6 @@ const LumenFileInputIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27361,7 +26152,6 @@ const LumenFileKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27386,7 +26176,6 @@ const LumenFileLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27410,7 +26199,6 @@ const LumenFileMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27433,7 +26221,6 @@ const LumenFileMinusCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27456,7 +26243,6 @@ const LumenFileMusicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27480,7 +26266,6 @@ const LumenFileOutputIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27504,7 +26289,6 @@ const LumenFilePenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27527,7 +26311,6 @@ const LumenFilePenLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27551,7 +26334,6 @@ const LumenFilePlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27574,7 +26356,6 @@ const LumenFilePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27598,7 +26379,6 @@ const LumenFilePlusCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27622,7 +26402,6 @@ const LumenFileQuestionMarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27645,7 +26424,6 @@ const LumenFileScanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27671,7 +26449,6 @@ const LumenFileSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27695,7 +26472,6 @@ const LumenFileSearchCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27719,7 +26495,6 @@ const LumenFileSignalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27744,7 +26519,6 @@ const LumenFileSlidersIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27770,7 +26544,6 @@ const LumenFileSpreadsheetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27796,7 +26569,6 @@ const LumenFileStackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27819,7 +26591,6 @@ const LumenFileSymlinkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27842,7 +26613,6 @@ const LumenFileTerminalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27866,7 +26636,6 @@ const LumenFileTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27891,7 +26660,6 @@ const LumenFileTypeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27916,7 +26684,6 @@ const LumenFileTypeCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27941,7 +26708,6 @@ const LumenFileUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27965,7 +26731,6 @@ const LumenFileUserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -27989,7 +26754,6 @@ const LumenFileVideoCameraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28013,7 +26777,6 @@ const LumenFileVolumeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28037,7 +26800,6 @@ const LumenFileXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28061,7 +26823,6 @@ const LumenFileXCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28085,7 +26846,6 @@ const LumenFilesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28108,7 +26868,6 @@ const LumenFilmIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28136,7 +26895,6 @@ const LumenFingerprintPatternIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28165,7 +26923,6 @@ const LumenFireExtinguisherIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28191,7 +26948,6 @@ const LumenFishIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28217,7 +26973,6 @@ const LumenFishOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28240,7 +26995,6 @@ const LumenFishSymbolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28261,7 +27015,6 @@ const LumenFishingHookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28284,7 +27037,6 @@ const LumenFishingRodIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28307,7 +27059,6 @@ const LumenFlagIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28328,7 +27079,6 @@ const LumenFlagOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28352,7 +27102,6 @@ const LumenFlagTriangleLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28373,7 +27122,6 @@ const LumenFlagTriangleRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28394,7 +27142,6 @@ const LumenFlameIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28415,7 +27162,6 @@ const LumenFlameKindlingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28438,7 +27184,6 @@ const LumenFlashlightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28461,7 +27206,6 @@ const LumenFlashlightOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28486,7 +27230,6 @@ const LumenFlaskConicalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28509,7 +27252,6 @@ const LumenFlaskConicalOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28535,7 +27277,6 @@ const LumenFlaskRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28558,7 +27299,6 @@ const LumenFlipHorizontal2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28584,7 +27324,6 @@ const LumenFlipVertical2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28610,7 +27349,6 @@ const LumenFlowerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28640,7 +27378,6 @@ const LumenFlower2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28665,7 +27402,6 @@ const LumenFocusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28690,7 +27426,6 @@ const LumenFoldHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28718,7 +27453,6 @@ const LumenFoldVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28746,7 +27480,6 @@ const LumenFolderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28767,7 +27500,6 @@ const LumenFolderArchiveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28791,7 +27523,6 @@ const LumenFolderBookmarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28813,7 +27544,6 @@ const LumenFolderCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28835,7 +27565,6 @@ const LumenFolderClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28858,7 +27587,6 @@ const LumenFolderClosedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28880,7 +27608,6 @@ const LumenFolderCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28903,7 +27630,6 @@ const LumenFolderCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28933,7 +27659,6 @@ const LumenFolderDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28955,7 +27680,6 @@ const LumenFolderDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -28978,7 +27702,6 @@ const LumenFolderGitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29002,7 +27725,6 @@ const LumenFolderGit2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29026,7 +27748,6 @@ const LumenFolderHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29048,7 +27769,6 @@ const LumenFolderInputIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29071,7 +27791,6 @@ const LumenFolderKanbanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29095,7 +27814,6 @@ const LumenFolderKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29119,7 +27837,6 @@ const LumenFolderLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29142,7 +27859,6 @@ const LumenFolderMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29164,7 +27880,6 @@ const LumenFolderOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29185,7 +27900,6 @@ const LumenFolderOpenDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29207,7 +27921,6 @@ const LumenFolderOutputIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29230,7 +27943,6 @@ const LumenFolderPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29252,7 +27964,6 @@ const LumenFolderPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29275,7 +27986,6 @@ const LumenFolderRootIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29298,7 +28008,6 @@ const LumenFolderSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29321,7 +28030,6 @@ const LumenFolderSearch2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29344,7 +28052,6 @@ const LumenFolderSymlinkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29366,7 +28073,6 @@ const LumenFolderSyncIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29391,7 +28097,6 @@ const LumenFolderTreeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29415,7 +28120,6 @@ const LumenFolderUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29438,7 +28142,6 @@ const LumenFolderXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29461,7 +28164,6 @@ const LumenFoldersIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29483,7 +28185,6 @@ const LumenFootprintsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29507,7 +28208,6 @@ const LumenForkliftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29534,7 +28234,6 @@ const LumenFormIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29558,7 +28257,6 @@ const LumenForwardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29580,7 +28278,6 @@ const LumenFrameIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29604,7 +28301,6 @@ const LumenFuelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29628,7 +28324,6 @@ const LumenFullscreenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29653,7 +28348,6 @@ const LumenFunnelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29674,7 +28368,6 @@ const LumenFunnelPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29697,7 +28390,6 @@ const LumenFunnelXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29720,7 +28412,6 @@ const LumenGalleryHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29743,7 +28434,6 @@ const LumenGalleryHorizontalEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29766,7 +28456,6 @@ const LumenGalleryThumbnailsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29791,7 +28480,6 @@ const LumenGalleryVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29814,7 +28502,6 @@ const LumenGalleryVerticalEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29837,7 +28524,6 @@ const LumenGamepadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29862,7 +28548,6 @@ const LumenGamepad2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29887,7 +28572,6 @@ const LumenGamepadDirectionalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29911,7 +28595,6 @@ const LumenGaugeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29933,7 +28616,6 @@ const LumenGavelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29958,7 +28640,6 @@ const LumenGemIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -29981,7 +28662,6 @@ const LumenGeorgianLariIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30005,7 +28685,6 @@ const LumenGhostIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30028,7 +28707,6 @@ const LumenGiftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30052,7 +28730,6 @@ const LumenGitBranchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30075,7 +28752,6 @@ const LumenGitBranchMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30099,7 +28775,6 @@ const LumenGitBranchPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30125,7 +28800,6 @@ const LumenGitCommitHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30148,7 +28822,6 @@ const LumenGitCommitVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30171,7 +28844,6 @@ const LumenGitCompareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30195,7 +28867,6 @@ const LumenGitCompareArrowsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30221,7 +28892,6 @@ const LumenGitForkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30246,7 +28916,6 @@ const LumenGitGraphIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30272,7 +28941,6 @@ const LumenGitMergeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30295,7 +28963,6 @@ const LumenGitMergeConflictIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30320,7 +28987,6 @@ const LumenGitPullRequestIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30344,7 +29010,6 @@ const LumenGitPullRequestArrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30369,7 +29034,6 @@ const LumenGitPullRequestClosedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30395,7 +29059,6 @@ const LumenGitPullRequestCreateIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30420,7 +29083,6 @@ const LumenGitPullRequestCreateArrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30446,7 +29108,6 @@ const LumenGitPullRequestDraftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30471,7 +29132,6 @@ const LumenGlassWaterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30493,7 +29153,6 @@ const LumenGlassesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30518,7 +29177,6 @@ const LumenGlobeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30541,7 +29199,6 @@ const LumenGlobeCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30563,7 +29220,6 @@ const LumenGlobeLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30587,7 +29243,6 @@ const LumenGlobeOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30614,7 +29269,6 @@ const LumenGlobeXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30637,7 +29291,6 @@ const LumenGoalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30660,7 +29313,6 @@ const LumenGpuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30685,7 +29337,6 @@ const LumenGraduationCapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30708,7 +29359,6 @@ const LumenGrapeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30737,7 +29387,6 @@ const LumenGrid2x2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30760,7 +29409,6 @@ const LumenGrid2x2CheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30782,7 +29430,6 @@ const LumenGrid2x2PlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30805,7 +29452,6 @@ const LumenGrid2x2XIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30828,7 +29474,6 @@ const LumenGrid3x2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30852,7 +29497,6 @@ const LumenGrid3x3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30877,7 +29521,6 @@ const LumenGripIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30906,7 +29549,6 @@ const LumenGripHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30932,7 +29574,6 @@ const LumenGripVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30958,7 +29599,6 @@ const LumenGroupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -30984,7 +29624,6 @@ const LumenGuitarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31008,7 +29647,6 @@ const LumenHamIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31032,7 +29670,6 @@ const LumenHamburgerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31056,7 +29693,6 @@ const LumenHammerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31079,7 +29715,6 @@ const LumenHandIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31103,7 +29738,6 @@ const LumenHandCoinsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31128,7 +29762,6 @@ const LumenHandFistIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31152,7 +29785,6 @@ const LumenHandGrabIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31177,7 +29809,6 @@ const LumenHandHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31201,7 +29832,6 @@ const LumenHandHelpingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31224,7 +29854,6 @@ const LumenHandMetalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31248,7 +29877,6 @@ const LumenHandPlatterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31274,7 +29902,6 @@ const LumenHandbagIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31296,7 +29923,6 @@ const LumenHandshakeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31321,7 +29947,6 @@ const LumenHardDriveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31345,7 +29970,6 @@ const LumenHardDriveDownloadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31370,7 +29994,6 @@ const LumenHardDriveUploadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31395,7 +30018,6 @@ const LumenHardHatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31419,7 +30041,6 @@ const LumenHashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31443,7 +30064,6 @@ const LumenHatGlassesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31468,7 +30088,6 @@ const LumenHazeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31496,7 +30115,6 @@ const LumenHdIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31521,7 +30139,6 @@ const LumenHdmiPortIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31543,7 +30160,6 @@ const LumenHeadingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31566,7 +30182,6 @@ const LumenHeading1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31590,7 +30205,6 @@ const LumenHeading2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31614,7 +30228,6 @@ const LumenHeading3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31639,7 +30252,6 @@ const LumenHeading4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31664,7 +30276,6 @@ const LumenHeading5IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31689,7 +30300,6 @@ const LumenHeading6IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31714,7 +30324,6 @@ const LumenHeadphoneOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31739,7 +30348,6 @@ const LumenHeadphonesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31760,7 +30368,6 @@ const LumenHeadsetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31782,7 +30389,6 @@ const LumenHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31803,7 +30409,6 @@ const LumenHeartCrackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31825,7 +30430,6 @@ const LumenHeartHandshakeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31846,7 +30450,6 @@ const LumenHeartMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31868,7 +30471,6 @@ const LumenHeartOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31891,7 +30493,6 @@ const LumenHeartPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31914,7 +30515,6 @@ const LumenHeartPulseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31936,7 +30536,6 @@ const LumenHeartXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31959,7 +30558,6 @@ const LumenHeaterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -31989,7 +30587,6 @@ const LumenHelicopterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32017,7 +30614,6 @@ const LumenHexagonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32038,7 +30634,6 @@ const LumenHighlighterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32060,7 +30655,6 @@ const LumenHopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32088,7 +30682,6 @@ const LumenHopOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32117,7 +30710,6 @@ const LumenHospitalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32142,7 +30734,6 @@ const LumenHotelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32172,7 +30763,6 @@ const LumenHourglassIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32196,7 +30786,6 @@ const LumenHouseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32218,7 +30807,6 @@ const LumenHouseHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32240,7 +30828,6 @@ const LumenHousePlugIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32264,7 +30851,6 @@ const LumenHousePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32288,7 +30874,6 @@ const LumenHouseWifiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32312,7 +30897,6 @@ const LumenIceCreamBowlIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32335,7 +30919,6 @@ const LumenIceCreamConeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32358,7 +30941,6 @@ const LumenIdCardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32383,7 +30965,6 @@ const LumenIdCardLanyardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32408,7 +30989,6 @@ const LumenImageIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32431,7 +31011,6 @@ const LumenImageDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32455,7 +31034,6 @@ const LumenImageMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32479,7 +31057,6 @@ const LumenImageOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32505,7 +31082,6 @@ const LumenImagePlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32529,7 +31105,6 @@ const LumenImagePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32554,7 +31129,6 @@ const LumenImageUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32578,7 +31152,6 @@ const LumenImageUpscaleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32606,7 +31179,6 @@ const LumenImagesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32630,7 +31202,6 @@ const LumenImportIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32653,7 +31224,6 @@ const LumenInboxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32675,7 +31245,6 @@ const LumenIndianRupeeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32700,7 +31269,6 @@ const LumenInfinityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32721,7 +31289,6 @@ const LumenInfoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32744,7 +31311,6 @@ const LumenInspectionPanelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32769,7 +31335,6 @@ const LumenItalicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32792,7 +31357,6 @@ const LumenIterationCcwIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32814,7 +31378,6 @@ const LumenIterationCwIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32836,7 +31399,6 @@ const LumenJapaneseYenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32859,7 +31421,6 @@ const LumenJoystickIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32883,7 +31444,6 @@ const LumenKanbanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32906,7 +31466,6 @@ const LumenKayakIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32930,7 +31489,6 @@ const LumenKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32953,7 +31511,6 @@ const LumenKeyRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32975,7 +31532,6 @@ const LumenKeySquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -32998,7 +31554,6 @@ const LumenKeyboardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33027,7 +31582,6 @@ const LumenKeyboardMusicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33056,7 +31610,6 @@ const LumenKeyboardOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33086,7 +31639,6 @@ const LumenLampIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33109,7 +31661,6 @@ const LumenLampCeilingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33132,7 +31683,6 @@ const LumenLampDeskIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33156,7 +31706,6 @@ const LumenLampFloorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33179,7 +31728,6 @@ const LumenLampWallDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33202,7 +31750,6 @@ const LumenLampWallUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33225,7 +31772,6 @@ const LumenLandPlotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33249,7 +31795,6 @@ const LumenLandmarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33275,7 +31820,6 @@ const LumenLanguagesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33301,7 +31845,6 @@ const LumenLaptopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33323,7 +31866,6 @@ const LumenLaptopMinimalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33345,7 +31887,6 @@ const LumenLaptopMinimalCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33368,7 +31909,6 @@ const LumenLassoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33391,7 +31931,6 @@ const LumenLassoSelectIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33416,7 +31955,6 @@ const LumenLayerArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33440,7 +31978,6 @@ const LumenLayerArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33463,7 +32000,6 @@ const LumenLayersIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33486,7 +32022,6 @@ const LumenLayers2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33508,7 +32043,6 @@ const LumenLayersArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33533,7 +32067,6 @@ const LumenLayersArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33557,7 +32090,6 @@ const LumenLayersMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33582,7 +32114,6 @@ const LumenLayersPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33607,7 +32138,6 @@ const LumenLayoutDashboardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33631,7 +32161,6 @@ const LumenLayoutFreeformIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33654,7 +32183,6 @@ const LumenLayoutGridIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33678,7 +32206,6 @@ const LumenLayoutListIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33704,7 +32231,6 @@ const LumenLayoutPanelLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33727,7 +32253,6 @@ const LumenLayoutPanelTopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33750,7 +32275,6 @@ const LumenLayoutTemplateIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33773,7 +32297,6 @@ const LumenLeafIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33795,7 +32318,6 @@ const LumenLeafyGreenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33817,7 +32339,6 @@ const LumenLecternIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33840,7 +32361,6 @@ const LumenLensConcaveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33861,7 +32381,6 @@ const LumenLensConvexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33882,7 +32401,6 @@ const LumenLibraryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33906,7 +32424,6 @@ const LumenLibraryBigIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33929,7 +32446,6 @@ const LumenLifeBuoyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33955,7 +32471,6 @@ const LumenLigatureIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -33980,7 +32495,6 @@ const LumenLightbulbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34003,7 +32517,6 @@ const LumenLightbulbOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34028,7 +32541,6 @@ const LumenLineDotRightHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34050,7 +32562,6 @@ const LumenLineSquiggleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34071,7 +32582,6 @@ const LumenLineStyleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34097,7 +32607,6 @@ const LumenLinkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34119,7 +32628,6 @@ const LumenLink2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34142,7 +32650,6 @@ const LumenLink2OffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34166,7 +32673,6 @@ const LumenListIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34192,7 +32698,6 @@ const LumenListCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34216,7 +32721,6 @@ const LumenListChecksIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34241,7 +32745,6 @@ const LumenListChevronsDownUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34266,7 +32769,6 @@ const LumenListChevronsUpDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34291,7 +32793,6 @@ const LumenListClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34316,7 +32817,6 @@ const LumenListCollapseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34341,7 +32841,6 @@ const LumenListEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34366,7 +32865,6 @@ const LumenListFilterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34389,7 +32887,6 @@ const LumenListFilterPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34414,7 +32911,6 @@ const LumenListIndentDecreaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34438,7 +32934,6 @@ const LumenListIndentIncreaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34462,7 +32957,6 @@ const LumenListMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34486,7 +32980,6 @@ const LumenListMusicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34511,7 +33004,6 @@ const LumenListOrderedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34537,7 +33029,6 @@ const LumenListPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34562,7 +33053,6 @@ const LumenListRestartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34587,7 +33077,6 @@ const LumenListSortAscendingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34610,7 +33099,6 @@ const LumenListSortDescendingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34633,7 +33121,6 @@ const LumenListStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34658,7 +33145,6 @@ const LumenListTodoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34683,7 +33169,6 @@ const LumenListTreeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34708,7 +33193,6 @@ const LumenListVideoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34732,7 +33216,6 @@ const LumenListXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34757,7 +33240,6 @@ const LumenLoaderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34785,7 +33267,6 @@ const LumenLoaderCircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34806,7 +33287,6 @@ const LumenLoaderPinwheelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34830,7 +33310,6 @@ const LumenLocateIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34855,7 +33334,6 @@ const LumenLocateFixedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34881,7 +33359,6 @@ const LumenLocateOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34908,7 +33385,6 @@ const LumenLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34930,7 +33406,6 @@ const LumenLockKeyholeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34953,7 +33428,6 @@ const LumenLockKeyholeOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34976,7 +33450,6 @@ const LumenLockOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -34998,7 +33471,6 @@ const LumenLogInIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35021,7 +33493,6 @@ const LumenLogOutIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35044,7 +33515,6 @@ const LumenLogsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35073,7 +33543,6 @@ const LumenLollipopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35096,7 +33565,6 @@ const LumenLuggageIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35121,7 +33589,6 @@ const LumenMagnetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35144,7 +33611,6 @@ const LumenMailIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35166,7 +33632,6 @@ const LumenMailBadgeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35190,7 +33655,6 @@ const LumenMailCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35213,7 +33677,6 @@ const LumenMailClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35238,7 +33701,6 @@ const LumenMailMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35261,7 +33723,6 @@ const LumenMailOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35283,7 +33744,6 @@ const LumenMailPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35307,7 +33767,6 @@ const LumenMailQuestionMarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35331,7 +33790,6 @@ const LumenMailSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35356,7 +33814,6 @@ const LumenMailWarningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35380,7 +33837,6 @@ const LumenMailXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35404,7 +33860,6 @@ const LumenMailboxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35428,7 +33883,6 @@ const LumenMailsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35451,7 +33905,6 @@ const LumenMapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35474,7 +33927,6 @@ const LumenMapMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35498,7 +33950,6 @@ const LumenMapPinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35520,7 +33971,6 @@ const LumenMapPinCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35543,7 +33993,6 @@ const LumenMapPinCheckInsideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35565,7 +34014,6 @@ const LumenMapPinHouseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35589,7 +34037,6 @@ const LumenMapPinMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35612,7 +34059,6 @@ const LumenMapPinMinusInsideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35634,7 +34080,6 @@ const LumenMapPinOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35659,7 +34104,6 @@ const LumenMapPinPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35682,7 +34126,6 @@ const LumenMapPinPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35706,7 +34149,6 @@ const LumenMapPinPlusInsideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35729,7 +34171,6 @@ const LumenMapPinSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35753,7 +34194,6 @@ const LumenMapPinXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35777,7 +34217,6 @@ const LumenMapPinXInsideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35800,7 +34239,6 @@ const LumenMapPinnedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35823,7 +34261,6 @@ const LumenMapPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35848,7 +34285,6 @@ const LumenMarsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35871,7 +34307,6 @@ const LumenMarsStrokeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35895,7 +34330,6 @@ const LumenMartiniIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35918,7 +34352,6 @@ const LumenMaximizeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35942,7 +34375,6 @@ const LumenMaximize2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35966,7 +34398,6 @@ const LumenMedalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -35992,7 +34423,6 @@ const LumenMegaphoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36015,7 +34445,6 @@ const LumenMegaphoneOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36040,7 +34469,6 @@ const LumenMemoryStickIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36071,7 +34499,6 @@ const LumenMenuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36094,7 +34521,6 @@ const LumenMergeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36117,7 +34543,6 @@ const LumenMessageCircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36138,7 +34563,6 @@ const LumenMessageCircleCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36160,7 +34584,6 @@ const LumenMessageCircleCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36183,7 +34606,6 @@ const LumenMessageCircleDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36211,7 +34633,6 @@ const LumenMessageCircleHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36233,7 +34654,6 @@ const LumenMessageCircleMoreIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36257,7 +34677,6 @@ const LumenMessageCircleOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36280,7 +34699,6 @@ const LumenMessageCirclePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36303,7 +34721,6 @@ const LumenMessageCircleQuestionMarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36326,7 +34743,6 @@ const LumenMessageCircleReplyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36349,7 +34765,6 @@ const LumenMessageCircleWarningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36372,7 +34787,6 @@ const LumenMessageCircleXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36395,7 +34809,6 @@ const LumenMessageSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36416,7 +34829,6 @@ const LumenMessageSquareCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36438,7 +34850,6 @@ const LumenMessageSquareCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36461,7 +34872,6 @@ const LumenMessageSquareDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36491,7 +34901,6 @@ const LumenMessageSquareDiffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36515,7 +34924,6 @@ const LumenMessageSquareDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36537,7 +34945,6 @@ const LumenMessageSquareHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36559,7 +34966,6 @@ const LumenMessageSquareLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36582,7 +34988,6 @@ const LumenMessageSquareMoreIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36606,7 +35011,6 @@ const LumenMessageSquareOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36629,7 +35033,6 @@ const LumenMessageSquarePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36652,7 +35055,6 @@ const LumenMessageSquareQuoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36675,7 +35077,6 @@ const LumenMessageSquareReplyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36698,7 +35099,6 @@ const LumenMessageSquareShareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36721,7 +35121,6 @@ const LumenMessageSquareTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36745,7 +35144,6 @@ const LumenMessageSquareWarningIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36768,7 +35166,6 @@ const LumenMessageSquareXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36791,7 +35188,6 @@ const LumenMessagesSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36813,7 +35209,6 @@ const LumenMetronomeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36837,7 +35232,6 @@ const LumenMicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36860,7 +35254,6 @@ const LumenMicAudioLinesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36889,7 +35282,6 @@ const LumenMicOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36915,7 +35307,6 @@ const LumenMicSignalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36942,7 +35333,6 @@ const LumenMicVocalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36965,7 +35355,6 @@ const LumenMicrochipIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -36995,7 +35384,6 @@ const LumenMicroscopeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37021,7 +35409,6 @@ const LumenMicrowaveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37046,7 +35433,6 @@ const LumenMidiPortIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37073,7 +35459,6 @@ const LumenMilestoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37096,7 +35481,6 @@ const LumenMilkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37119,7 +35503,6 @@ const LumenMilkOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37143,7 +35526,6 @@ const LumenMinimizeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37167,7 +35549,6 @@ const LumenMinimize2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37191,7 +35572,6 @@ const LumenMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37212,7 +35592,6 @@ const LumenMirrorRectangularIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37235,7 +35614,6 @@ const LumenMirrorRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37260,7 +35638,6 @@ const LumenMonitorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37283,7 +35660,6 @@ const LumenMonitorCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37307,7 +35683,6 @@ const LumenMonitorCloudIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37331,7 +35706,6 @@ const LumenMonitorCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37363,7 +35737,6 @@ const LumenMonitorDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37387,7 +35760,6 @@ const LumenMonitorDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37412,7 +35784,6 @@ const LumenMonitorOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37437,7 +35808,6 @@ const LumenMonitorPauseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37462,7 +35832,6 @@ const LumenMonitorPlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37486,7 +35855,6 @@ const LumenMonitorSmartphoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37510,7 +35878,6 @@ const LumenMonitorSpeakerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37535,7 +35902,6 @@ const LumenMonitorStopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37559,7 +35925,6 @@ const LumenMonitorUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37584,7 +35949,6 @@ const LumenMonitorXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37609,7 +35973,6 @@ const LumenMoonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37630,7 +35993,6 @@ const LumenMoonStarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37653,7 +36015,6 @@ const LumenMopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37676,7 +36037,6 @@ const LumenMopSparklesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37706,7 +36066,6 @@ const LumenMosqueIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37732,7 +36091,6 @@ const LumenMotorbikeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37757,7 +36115,6 @@ const LumenMountainIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37778,7 +36135,6 @@ const LumenMountainSnowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37800,7 +36156,6 @@ const LumenMouseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37822,7 +36177,6 @@ const LumenMouseLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37845,7 +36199,6 @@ const LumenMouseOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37869,7 +36222,6 @@ const LumenMousePointerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37891,7 +36243,6 @@ const LumenMousePointer2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37912,7 +36263,6 @@ const LumenMousePointer2OffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37935,7 +36285,6 @@ const LumenMousePointerBanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37958,7 +36307,6 @@ const LumenMousePointerClickIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -37983,7 +36331,6 @@ const LumenMouseRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38006,7 +36353,6 @@ const LumenMoveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38032,7 +36378,6 @@ const LumenMove3dIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38056,7 +36401,6 @@ const LumenMoveDiagonalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38079,7 +36423,6 @@ const LumenMoveDiagonal2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38102,7 +36445,6 @@ const LumenMoveDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38124,7 +36466,6 @@ const LumenMoveDownLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38146,7 +36487,6 @@ const LumenMoveDownRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38168,7 +36508,6 @@ const LumenMoveHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38191,7 +36530,6 @@ const LumenMoveLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38213,7 +36551,6 @@ const LumenMoveRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38235,7 +36572,6 @@ const LumenMoveUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38257,7 +36593,6 @@ const LumenMoveUpLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38279,7 +36614,6 @@ const LumenMoveUpRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38301,7 +36635,6 @@ const LumenMoveVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38324,7 +36657,6 @@ const LumenMusicIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38347,7 +36679,6 @@ const LumenMusic2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38369,7 +36700,6 @@ const LumenMusic3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38391,7 +36721,6 @@ const LumenMusic4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38415,7 +36744,6 @@ const LumenNavigationIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38436,7 +36764,6 @@ const LumenNavigation2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38457,7 +36784,6 @@ const LumenNavigation2OffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38480,7 +36806,6 @@ const LumenNavigationOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38503,7 +36828,6 @@ const LumenNetworkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38528,7 +36852,6 @@ const LumenNewspaperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38552,7 +36875,6 @@ const LumenNfcIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38576,7 +36898,6 @@ const LumenNonBinaryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38600,7 +36921,6 @@ const LumenNotebookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38626,7 +36946,6 @@ const LumenNotebookPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38652,7 +36971,6 @@ const LumenNotebookTabsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38681,7 +36999,6 @@ const LumenNotebookTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38709,7 +37026,6 @@ const LumenNotepadTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38736,7 +37052,6 @@ const LumenNotepadTextDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38769,7 +37084,6 @@ const LumenNutIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38792,7 +37106,6 @@ const LumenNutOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38817,7 +37130,6 @@ const LumenOctagonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38838,7 +37150,6 @@ const LumenOctagonAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38861,7 +37172,6 @@ const LumenOctagonMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38883,7 +37193,6 @@ const LumenOctagonPauseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38906,7 +37215,6 @@ const LumenOctagonXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38929,7 +37237,6 @@ const LumenOmegaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38950,7 +37257,6 @@ const LumenOptionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38972,7 +37278,6 @@ const LumenOrbitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -38997,7 +37302,6 @@ const LumenOrigamiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39020,7 +37324,6 @@ const LumenPackageIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39044,7 +37347,6 @@ const LumenPackage2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39067,7 +37369,6 @@ const LumenPackageCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39092,7 +37393,6 @@ const LumenPackageMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39117,7 +37417,6 @@ const LumenPackageOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39141,7 +37440,6 @@ const LumenPackagePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39167,7 +37465,6 @@ const LumenPackageSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39193,7 +37490,6 @@ const LumenPackageXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39219,7 +37515,6 @@ const LumenPaintBucketIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39243,7 +37538,6 @@ const LumenPaintRollerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39266,7 +37560,6 @@ const LumenPaintbrushIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39289,7 +37582,6 @@ const LumenPaintbrushVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39313,7 +37605,6 @@ const LumenPaletteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39338,7 +37629,6 @@ const LumenPandaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39364,7 +37654,6 @@ const LumenPanelBottomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39386,7 +37675,6 @@ const LumenPanelBottomCloseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39409,7 +37697,6 @@ const LumenPanelBottomDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39434,7 +37721,6 @@ const LumenPanelBottomOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39457,7 +37743,6 @@ const LumenPanelLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39479,7 +37764,6 @@ const LumenPanelLeftCloseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39502,7 +37786,6 @@ const LumenPanelLeftDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39527,7 +37810,6 @@ const LumenPanelLeftOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39550,7 +37832,6 @@ const LumenPanelLeftRightDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39579,7 +37860,6 @@ const LumenPanelRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39601,7 +37881,6 @@ const LumenPanelRightCloseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39624,7 +37903,6 @@ const LumenPanelRightDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39649,7 +37927,6 @@ const LumenPanelRightOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39672,7 +37949,6 @@ const LumenPanelTopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39694,7 +37970,6 @@ const LumenPanelTopBottomDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39723,7 +37998,6 @@ const LumenPanelTopCloseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39746,7 +38020,6 @@ const LumenPanelTopDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39771,7 +38044,6 @@ const LumenPanelTopOpenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39794,7 +38066,6 @@ const LumenPanelsLeftBottomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39817,7 +38088,6 @@ const LumenPanelsRightBottomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39840,7 +38110,6 @@ const LumenPanelsTopLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39863,7 +38132,6 @@ const LumenPaperBagIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39885,7 +38153,6 @@ const LumenPaperclipIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39906,7 +38173,6 @@ const LumenParasolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39929,7 +38195,6 @@ const LumenParenthesesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39951,7 +38216,6 @@ const LumenParkingMeterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -39976,7 +38240,6 @@ const LumenPartyPopperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40005,7 +38268,6 @@ const LumenPauseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40027,7 +38289,6 @@ const LumenPawPrintIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40051,7 +38312,6 @@ const LumenPcCaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40075,7 +38335,6 @@ const LumenPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40096,7 +38355,6 @@ const LumenPenLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40118,7 +38376,6 @@ const LumenPenOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40141,7 +38398,6 @@ const LumenPenToolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40165,7 +38421,6 @@ const LumenPencilIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40187,7 +38442,6 @@ const LumenPencilLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40210,7 +38464,6 @@ const LumenPencilOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40234,7 +38487,6 @@ const LumenPencilRulerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40260,7 +38512,6 @@ const LumenPencilSparklesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40288,7 +38539,6 @@ const LumenPentagonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40309,7 +38559,6 @@ const LumenPercentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40332,7 +38581,6 @@ const LumenPersonStandingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40356,7 +38604,6 @@ const LumenPhiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40378,7 +38625,6 @@ const LumenPhilippinePesoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40401,7 +38647,6 @@ const LumenPhoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40422,7 +38667,6 @@ const LumenPhoneCallIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40445,7 +38689,6 @@ const LumenPhoneForwardedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40468,7 +38711,6 @@ const LumenPhoneIncomingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40491,7 +38733,6 @@ const LumenPhoneMissedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40514,7 +38755,6 @@ const LumenPhoneOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40537,7 +38777,6 @@ const LumenPhoneOutgoingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40560,7 +38799,6 @@ const LumenPiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40583,7 +38821,6 @@ const LumenPianoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40609,7 +38846,6 @@ const LumenPickaxeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40633,7 +38869,6 @@ const LumenPictureInPictureIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40658,7 +38893,6 @@ const LumenPictureInPicture2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40680,7 +38914,6 @@ const LumenPiggyBankIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40703,7 +38936,6 @@ const LumenPilcrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40726,7 +38958,6 @@ const LumenPilcrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40751,7 +38982,6 @@ const LumenPilcrowRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40776,7 +39006,6 @@ const LumenPillIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40798,7 +39027,6 @@ const LumenPillBottleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40821,7 +39049,6 @@ const LumenPinIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40843,7 +39070,6 @@ const LumenPinOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40867,7 +39093,6 @@ const LumenPipetteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40890,7 +39115,6 @@ const LumenPizzaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40915,7 +39139,6 @@ const LumenPlaneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40936,7 +39159,6 @@ const LumenPlaneLandingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40958,7 +39180,6 @@ const LumenPlaneTakeoffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -40980,7 +39201,6 @@ const LumenPlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41001,7 +39221,6 @@ const LumenPlayOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41024,7 +39243,6 @@ const LumenPlugIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41048,7 +39266,6 @@ const LumenPlug2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41073,7 +39290,6 @@ const LumenPlugZapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41098,7 +39314,6 @@ const LumenPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41120,7 +39335,6 @@ const LumenPocketKnifeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41145,7 +39359,6 @@ const LumenPodiumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41168,7 +39381,6 @@ const LumenPointerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41193,7 +39405,6 @@ const LumenPointerOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41219,7 +39430,6 @@ const LumenPopcornIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41243,7 +39453,6 @@ const LumenPopsicleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41265,7 +39474,6 @@ const LumenPoundSterlingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41289,7 +39497,6 @@ const LumenPowerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41311,7 +39518,6 @@ const LumenPowerOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41335,7 +39541,6 @@ const LumenPresentationIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41358,7 +39563,6 @@ const LumenPrinterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41381,7 +39585,6 @@ const LumenPrinterCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41405,7 +39608,6 @@ const LumenPrinterXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41430,7 +39632,6 @@ const LumenProjectorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41456,7 +39657,6 @@ const LumenProportionsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41479,7 +39679,6 @@ const LumenPuzzleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41500,7 +39699,6 @@ const LumenPyramidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41522,7 +39720,6 @@ const LumenQrCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41554,7 +39751,6 @@ const LumenQuoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41576,7 +39772,6 @@ const LumenRabbitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41601,7 +39796,6 @@ const LumenRadarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41629,7 +39823,6 @@ const LumenRadiationIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41653,7 +39846,6 @@ const LumenRadicalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41674,7 +39866,6 @@ const LumenRadioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41699,7 +39890,6 @@ const LumenRadioOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41725,7 +39915,6 @@ const LumenRadioReceiverIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41749,7 +39938,6 @@ const LumenRadioTowerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41776,7 +39964,6 @@ const LumenRadiusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41800,7 +39987,6 @@ const LumenRainbowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41823,7 +40009,6 @@ const LumenRatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41848,7 +40033,6 @@ const LumenRatioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41870,7 +40054,6 @@ const LumenReceiptIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41893,7 +40076,6 @@ const LumenReceiptCentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41916,7 +40098,6 @@ const LumenReceiptEuroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41939,7 +40120,6 @@ const LumenReceiptIndianRupeeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41963,7 +40143,6 @@ const LumenReceiptJapaneseYenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -41988,7 +40167,6 @@ const LumenReceiptPoundSterlingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42012,7 +40190,6 @@ const LumenReceiptRussianRubleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42035,7 +40212,6 @@ const LumenReceiptSwissFrancIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42059,7 +40235,6 @@ const LumenReceiptTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42083,7 +40258,6 @@ const LumenReceiptTurkishLiraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42106,7 +40280,6 @@ const LumenRectangleCircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42128,7 +40301,6 @@ const LumenRectangleEllipsisIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42152,7 +40324,6 @@ const LumenRectangleGogglesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42173,7 +40344,6 @@ const LumenRectangleHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42194,7 +40364,6 @@ const LumenRectangleVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42215,7 +40384,6 @@ const LumenRecycleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42241,7 +40409,6 @@ const LumenRedoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42263,7 +40430,6 @@ const LumenRedo2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42285,7 +40451,6 @@ const LumenRedoDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42308,7 +40473,6 @@ const LumenRefreshCcwIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42332,7 +40496,6 @@ const LumenRefreshCcwDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42357,7 +40520,6 @@ const LumenRefreshCwIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42381,7 +40543,6 @@ const LumenRefreshCwOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42408,7 +40569,6 @@ const LumenRefrigeratorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42431,7 +40591,6 @@ const LumenRegexIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42455,7 +40614,6 @@ const LumenRemoveFormattingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42480,7 +40638,6 @@ const LumenRepeatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42504,7 +40661,6 @@ const LumenRepeat1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42529,7 +40685,6 @@ const LumenRepeat2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42553,7 +40708,6 @@ const LumenRepeatOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42580,7 +40734,6 @@ const LumenReplaceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42607,7 +40760,6 @@ const LumenReplaceAllIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42636,7 +40788,6 @@ const LumenReplyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42658,7 +40809,6 @@ const LumenReplyAllIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42681,7 +40831,6 @@ const LumenRewindIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42703,7 +40852,6 @@ const LumenRibbonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42728,7 +40876,6 @@ const LumenRoadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42752,7 +40899,6 @@ const LumenRocketIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42776,7 +40922,6 @@ const LumenRockingChairIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42800,7 +40945,6 @@ const LumenRollerCoasterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42827,7 +40971,6 @@ const LumenRoseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42852,7 +40995,6 @@ const LumenRotate3dIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42875,7 +41017,6 @@ const LumenRotateCcwIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42897,7 +41038,6 @@ const LumenRotateCcwClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42920,7 +41060,6 @@ const LumenRotateCcwKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42945,7 +41084,6 @@ const LumenRotateCcwSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42968,7 +41106,6 @@ const LumenRotateCwIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -42990,7 +41127,6 @@ const LumenRotateCwFadingClockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43020,7 +41156,6 @@ const LumenRotateCwSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43043,7 +41178,6 @@ const LumenRouteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43066,7 +41200,6 @@ const LumenRouteOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43093,7 +41226,6 @@ const LumenRouterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43119,7 +41251,6 @@ const LumenRows2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43141,7 +41272,6 @@ const LumenRows3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43164,7 +41294,6 @@ const LumenRows4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43188,7 +41317,6 @@ const LumenRssIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43211,7 +41339,6 @@ const LumenRulerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43236,7 +41363,6 @@ const LumenRulerDimensionLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43264,7 +41390,6 @@ const LumenRussianRubleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43286,7 +41411,6 @@ const LumenSailboatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43309,7 +41433,6 @@ const LumenSaladIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43334,7 +41457,6 @@ const LumenSandwichIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43359,7 +41481,6 @@ const LumenSatelliteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43384,7 +41505,6 @@ const LumenSatelliteDishIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43408,7 +41528,6 @@ const LumenSaudiRiyalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43432,7 +41551,6 @@ const LumenSaveIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43455,7 +41573,6 @@ const LumenSaveAllIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43479,7 +41596,6 @@ const LumenSaveCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43503,7 +41619,6 @@ const LumenSaveOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43530,7 +41645,6 @@ const LumenSavePenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43554,7 +41668,6 @@ const LumenSavePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43579,7 +41692,6 @@ const LumenScaleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43604,7 +41716,6 @@ const LumenScale3dIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43628,7 +41739,6 @@ const LumenScalingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43652,7 +41762,6 @@ const LumenScanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43676,7 +41785,6 @@ const LumenScanBarcodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43703,7 +41811,6 @@ const LumenScanBoxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43730,7 +41837,6 @@ const LumenScanEyeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43756,7 +41862,6 @@ const LumenScanFaceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43783,7 +41888,6 @@ const LumenScanHeartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43808,7 +41912,6 @@ const LumenScanLineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43833,7 +41936,6 @@ const LumenScanQrCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43861,7 +41963,6 @@ const LumenScanSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43887,7 +41988,6 @@ const LumenScanSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43912,7 +42012,6 @@ const LumenScanTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43939,7 +42038,6 @@ const LumenSchoolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43965,7 +42063,6 @@ const LumenScissorsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -43990,7 +42087,6 @@ const LumenScissorsLineDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44017,7 +42113,6 @@ const LumenScooterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44041,7 +42136,6 @@ const LumenScreenShareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44066,7 +42160,6 @@ const LumenScreenShareOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44091,7 +42184,6 @@ const LumenScrollIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44113,7 +42205,6 @@ const LumenScrollTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44137,7 +42228,6 @@ const LumenSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44159,7 +42249,6 @@ const LumenSearchAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44183,7 +42272,6 @@ const LumenSearchCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44206,7 +42294,6 @@ const LumenSearchCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44230,7 +42317,6 @@ const LumenSearchSlashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44253,7 +42339,6 @@ const LumenSearchXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44277,7 +42362,6 @@ const LumenSectionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44299,7 +42383,6 @@ const LumenSendIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44321,7 +42404,6 @@ const LumenSendHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44343,7 +42425,6 @@ const LumenSendToBackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44367,7 +42448,6 @@ const LumenSeparatorHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44390,7 +42470,6 @@ const LumenSeparatorVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44413,7 +42492,6 @@ const LumenServerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44437,7 +42515,6 @@ const LumenServerCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44469,7 +42546,6 @@ const LumenServerCrashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44494,7 +42570,6 @@ const LumenServerOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44520,7 +42595,6 @@ const LumenServerPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44546,7 +42620,6 @@ const LumenSettingsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44568,7 +42641,6 @@ const LumenSettings2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44592,7 +42664,6 @@ const LumenShapesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44615,7 +42686,6 @@ const LumenShareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44638,7 +42708,6 @@ const LumenShare2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44663,7 +42732,6 @@ const LumenSheetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44688,7 +42756,6 @@ const LumenShellIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44709,7 +42776,6 @@ const LumenShelvingUnitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44736,7 +42802,6 @@ const LumenShieldIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44757,7 +42822,6 @@ const LumenShieldAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44780,7 +42844,6 @@ const LumenShieldBanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44802,7 +42865,6 @@ const LumenShieldCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44824,7 +42886,6 @@ const LumenShieldCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44854,7 +42915,6 @@ const LumenShieldCogCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44884,7 +42944,6 @@ const LumenShieldEllipsisIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44908,7 +42967,6 @@ const LumenShieldHalfIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44930,7 +42988,6 @@ const LumenShieldKeyholeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44953,7 +43010,6 @@ const LumenShieldLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44976,7 +43032,6 @@ const LumenShieldMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -44998,7 +43053,6 @@ const LumenShieldOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45021,7 +43075,6 @@ const LumenShieldPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45044,7 +43097,6 @@ const LumenShieldQuestionMarkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45067,7 +43119,6 @@ const LumenShieldUserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45090,7 +43141,6 @@ const LumenShieldXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45113,7 +43163,6 @@ const LumenShipIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45138,7 +43187,6 @@ const LumenShipWheelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45168,7 +43216,6 @@ const LumenShirtIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45189,7 +43236,6 @@ const LumenShoppingBagIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45212,7 +43258,6 @@ const LumenShoppingBasketIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45239,7 +43284,6 @@ const LumenShoppingCartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45262,7 +43306,6 @@ const LumenShovelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45285,7 +43328,6 @@ const LumenShowerHeadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45315,7 +43357,6 @@ const LumenShredderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45342,7 +43383,6 @@ const LumenShrimpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45367,7 +43407,6 @@ const LumenShrinkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45391,7 +43430,6 @@ const LumenShrubIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45414,7 +43452,6 @@ const LumenShuffleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45439,7 +43476,6 @@ const LumenSigmaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45460,7 +43496,6 @@ const LumenSignalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45485,7 +43520,6 @@ const LumenSignalHighIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45509,7 +43543,6 @@ const LumenSignalLowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45531,7 +43564,6 @@ const LumenSignalMediumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45554,7 +43586,6 @@ const LumenSignalZeroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45575,7 +43606,6 @@ const LumenSignatureIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45597,7 +43627,6 @@ const LumenSignpostIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45620,7 +43649,6 @@ const LumenSignpostBigIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45644,7 +43672,6 @@ const LumenSirenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45672,7 +43699,6 @@ const LumenSkipBackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45694,7 +43720,6 @@ const LumenSkipForwardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45716,7 +43741,6 @@ const LumenSkullIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45740,7 +43764,6 @@ const LumenSlashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45761,7 +43784,6 @@ const LumenSliceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45782,7 +43804,6 @@ const LumenSlidersHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45811,7 +43832,6 @@ const LumenSlidersVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45840,7 +43860,6 @@ const LumenSmartphoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45862,7 +43881,6 @@ const LumenSmartphoneChargingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45884,7 +43902,6 @@ const LumenSmartphoneNfcIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45908,7 +43925,6 @@ const LumenSnailIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45933,7 +43949,6 @@ const LumenSnowflakeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45965,7 +43980,6 @@ const LumenSoapDispenserDropletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -45989,7 +44003,6 @@ const LumenSofaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46014,7 +44027,6 @@ const LumenSolarPanelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46041,7 +44053,6 @@ const LumenSoupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46067,7 +44078,6 @@ const LumenSpaceIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46088,7 +44098,6 @@ const LumenSpadeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46110,7 +44119,6 @@ const LumenSparkleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46131,7 +44139,6 @@ const LumenSparklesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46155,7 +44162,6 @@ const LumenSpeakerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46179,7 +44185,6 @@ const LumenSpeechIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46202,7 +44207,6 @@ const LumenSpellCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46225,7 +44229,6 @@ const LumenSpellCheck2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46248,7 +44251,6 @@ const LumenSplineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46271,7 +44273,6 @@ const LumenSplinePointerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46295,7 +44296,6 @@ const LumenSplitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46319,7 +44319,6 @@ const LumenSpoolIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46341,7 +44340,6 @@ const LumenSportShoeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46364,7 +44362,6 @@ const LumenSpotlightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46389,7 +44386,6 @@ const LumenSprayCanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46419,7 +44415,6 @@ const LumenSproutIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46442,7 +44437,6 @@ const LumenSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46463,7 +44457,6 @@ const LumenSquareActivityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46485,7 +44478,6 @@ const LumenSquareArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46508,7 +44500,6 @@ const LumenSquareArrowDownLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46531,7 +44522,6 @@ const LumenSquareArrowDownRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46554,7 +44544,6 @@ const LumenSquareArrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46577,7 +44566,6 @@ const LumenSquareArrowOutDownLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46600,7 +44588,6 @@ const LumenSquareArrowOutDownRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46623,7 +44610,6 @@ const LumenSquareArrowOutUpLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46646,7 +44632,6 @@ const LumenSquareArrowOutUpRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46669,7 +44654,6 @@ const LumenSquareArrowRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46692,7 +44676,6 @@ const LumenSquareArrowRightEnterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46715,7 +44698,6 @@ const LumenSquareArrowRightExitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46738,7 +44720,6 @@ const LumenSquareArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46761,7 +44742,6 @@ const LumenSquareArrowUpLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46784,7 +44764,6 @@ const LumenSquareArrowUpRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46807,7 +44786,6 @@ const LumenSquareAsteriskIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46831,7 +44809,6 @@ const LumenSquareBottomDashedScissorsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46859,7 +44836,6 @@ const LumenSquareCenterlineDashedHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46885,7 +44861,6 @@ const LumenSquareCenterlineDashedVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46911,7 +44886,6 @@ const LumenSquareChartGanttIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46935,7 +44909,6 @@ const LumenSquareCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46957,7 +44930,6 @@ const LumenSquareCheckBigIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -46979,7 +44951,6 @@ const LumenSquareChevronDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47001,7 +44972,6 @@ const LumenSquareChevronLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47023,7 +44993,6 @@ const LumenSquareChevronRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47045,7 +45014,6 @@ const LumenSquareChevronUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47067,7 +45035,6 @@ const LumenSquareCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47090,7 +45057,6 @@ const LumenSquareDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47122,7 +45088,6 @@ const LumenSquareDashedBottomIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47145,7 +45110,6 @@ const LumenSquareDashedBottomCodeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47170,7 +45134,6 @@ const LumenSquareDashedKanbanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47205,7 +45168,6 @@ const LumenSquareDashedMousePointerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47235,7 +45197,6 @@ const LumenSquareDashedTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47270,7 +45231,6 @@ const LumenSquareDashedTopSolidIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47299,7 +45259,6 @@ const LumenSquareDimensionsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47322,7 +45281,6 @@ const LumenSquareDivideIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47346,7 +45304,6 @@ const LumenSquareDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47368,7 +45325,6 @@ const LumenSquareEqualIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47391,7 +45347,6 @@ const LumenSquareFunctionIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47414,7 +45369,6 @@ const LumenSquareKanbanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47438,7 +45392,6 @@ const LumenSquareLibraryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47462,7 +45415,6 @@ const LumenSquareMIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47484,7 +45436,6 @@ const LumenSquareMenuIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47508,7 +45459,6 @@ const LumenSquareMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47530,7 +45480,6 @@ const LumenSquareMousePointerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47552,7 +45501,6 @@ const LumenSquareOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47575,7 +45523,6 @@ const LumenSquareParkingIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47597,7 +45544,6 @@ const LumenSquareParkingOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47622,7 +45568,6 @@ const LumenSquarePauseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47645,7 +45590,6 @@ const LumenSquarePenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47667,7 +45611,6 @@ const LumenSquarePercentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47691,7 +45634,6 @@ const LumenSquarePiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47715,7 +45657,6 @@ const LumenSquarePilcrowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47739,7 +45680,6 @@ const LumenSquarePlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47761,7 +45701,6 @@ const LumenSquarePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47784,7 +45723,6 @@ const LumenSquarePowerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47807,7 +45745,6 @@ const LumenSquareRadicalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47829,7 +45766,6 @@ const LumenSquareRoundCornerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47851,7 +45787,6 @@ const LumenSquareScissorsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47877,7 +45812,6 @@ const LumenSquareSigmaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47899,7 +45833,6 @@ const LumenSquareSlashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47921,7 +45854,6 @@ const LumenSquareSplitHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47944,7 +45876,6 @@ const LumenSquareSplitVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47967,7 +45898,6 @@ const LumenSquareSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -47989,7 +45919,6 @@ const LumenSquareStackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48012,7 +45941,6 @@ const LumenSquareStarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48034,7 +45962,6 @@ const LumenSquareStopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48056,7 +45983,6 @@ const LumenSquareTerminalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48079,7 +46005,6 @@ const LumenSquareTextIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48103,7 +46028,6 @@ const LumenSquareUserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48126,7 +46050,6 @@ const LumenSquareUserRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48149,7 +46072,6 @@ const LumenSquareXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48172,7 +46094,6 @@ const LumenSquaresExcludeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48194,7 +46115,6 @@ const LumenSquaresIntersectIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48225,7 +46145,6 @@ const LumenSquaresSubtractIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48251,7 +46170,6 @@ const LumenSquaresUniteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48272,7 +46190,6 @@ const LumenSquircleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48293,7 +46210,6 @@ const LumenSquircleDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48321,7 +46237,6 @@ const LumenSquirrelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48345,7 +46260,6 @@ const LumenStampIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48368,7 +46282,6 @@ const LumenStarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48389,7 +46302,6 @@ const LumenStarCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48411,7 +46323,6 @@ const LumenStarHalfIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48432,7 +46343,6 @@ const LumenStarMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48454,7 +46364,6 @@ const LumenStarOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48477,7 +46386,6 @@ const LumenStarPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48500,7 +46408,6 @@ const LumenStarXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48523,7 +46430,6 @@ const LumenStepBackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48545,7 +46451,6 @@ const LumenStepForwardIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48567,7 +46472,6 @@ const LumenStethoscopeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48592,7 +46496,6 @@ const LumenStickerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48617,7 +46520,6 @@ const LumenStickyNoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48639,7 +46541,6 @@ const LumenStickyNoteCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48662,7 +46563,6 @@ const LumenStickyNoteMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48685,7 +46585,6 @@ const LumenStickyNoteOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48709,7 +46608,6 @@ const LumenStickyNotePlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48733,7 +46631,6 @@ const LumenStickyNoteXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48757,7 +46654,6 @@ const LumenStickyNotesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48781,7 +46677,6 @@ const LumenStoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48804,7 +46699,6 @@ const LumenStoreIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48827,7 +46721,6 @@ const LumenStretchHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48849,7 +46742,6 @@ const LumenStretchVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48871,7 +46763,6 @@ const LumenStrikethroughIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48894,7 +46785,6 @@ const LumenSubscriptIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48917,7 +46807,6 @@ const LumenSummaryIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48942,7 +46831,6 @@ const LumenSunIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -48971,7 +46859,6 @@ const LumenSunDimIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49000,7 +46887,6 @@ const LumenSunMediumIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49029,7 +46915,6 @@ const LumenSunMoonIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49054,7 +46939,6 @@ const LumenSunSnowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49085,7 +46969,6 @@ const LumenSunriseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49113,7 +46996,6 @@ const LumenSunsetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49141,7 +47023,6 @@ const LumenSuperscriptIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49164,7 +47045,6 @@ const LumenSwatchBookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49188,7 +47068,6 @@ const LumenSwissFrancIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49211,7 +47090,6 @@ const LumenSwitchCameraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49236,7 +47114,6 @@ const LumenSwordIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49260,7 +47137,6 @@ const LumenSwordsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49288,7 +47164,6 @@ const LumenSyringeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49314,7 +47189,6 @@ const LumenTableIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49338,7 +47212,6 @@ const LumenTable2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49359,7 +47232,6 @@ const LumenTableCellsMergeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49384,7 +47256,6 @@ const LumenTableCellsSplitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49408,7 +47279,6 @@ const LumenTableColumnsSplitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49439,7 +47309,6 @@ const LumenTableOfContentsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49465,7 +47334,6 @@ const LumenTablePropertiesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49489,7 +47357,6 @@ const LumenTableRowsSplitIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49520,7 +47387,6 @@ const LumenTabletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49542,7 +47408,6 @@ const LumenTabletSmartphoneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49565,7 +47430,6 @@ const LumenTabletsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49589,7 +47453,6 @@ const LumenTagIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49611,7 +47474,6 @@ const LumenTagPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49635,7 +47497,6 @@ const LumenTagXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49659,7 +47520,6 @@ const LumenTagsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49682,7 +47542,6 @@ const LumenTally1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49703,7 +47562,6 @@ const LumenTally2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49725,7 +47583,6 @@ const LumenTally3IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49748,7 +47605,6 @@ const LumenTally4IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49772,7 +47628,6 @@ const LumenTally5IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49797,7 +47652,6 @@ const LumenTangentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49821,7 +47675,6 @@ const LumenTargetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49844,7 +47697,6 @@ const LumenTelescopeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49871,7 +47723,6 @@ const LumenTentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49895,7 +47746,6 @@ const LumenTentTreeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49922,7 +47772,6 @@ const LumenTerminalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49944,7 +47793,6 @@ const LumenTestTubeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49967,7 +47815,6 @@ const LumenTestTubeDiagonalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -49990,7 +47837,6 @@ const LumenTestTubesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50016,7 +47862,6 @@ const LumenTextAlignCenterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50039,7 +47884,6 @@ const LumenTextAlignEndIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50062,7 +47906,6 @@ const LumenTextAlignJustifyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50085,7 +47928,6 @@ const LumenTextAlignStartIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50108,7 +47950,6 @@ const LumenTextCursorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50131,7 +47972,6 @@ const LumenTextCursorInputIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50156,7 +47996,6 @@ const LumenTextInitialIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50181,7 +48020,6 @@ const LumenTextQuoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50205,7 +48043,6 @@ const LumenTextSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50230,7 +48067,6 @@ const LumenTextWrapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50254,7 +48090,6 @@ const LumenTheaterIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50283,7 +48118,6 @@ const LumenThermometerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50304,7 +48138,6 @@ const LumenThermometerSnowflakeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50332,7 +48165,6 @@ const LumenThermometerSunIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50358,7 +48190,6 @@ const LumenThumbsDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50380,7 +48211,6 @@ const LumenThumbsUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50402,7 +48232,6 @@ const LumenTicketIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50426,7 +48255,6 @@ const LumenTicketCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50448,7 +48276,6 @@ const LumenTicketMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50470,7 +48297,6 @@ const LumenTicketPercentIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50494,7 +48320,6 @@ const LumenTicketPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50517,7 +48342,6 @@ const LumenTicketSlashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50539,7 +48363,6 @@ const LumenTicketXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50562,7 +48385,6 @@ const LumenTicketsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50587,7 +48409,6 @@ const LumenTicketsPlaneIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50614,7 +48435,6 @@ const LumenTimelineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50642,7 +48462,6 @@ const LumenTimerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50665,7 +48484,6 @@ const LumenTimerOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50690,7 +48508,6 @@ const LumenTimerResetIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50714,7 +48531,6 @@ const LumenToggleLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50736,7 +48552,6 @@ const LumenToggleRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50758,7 +48573,6 @@ const LumenToiletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50780,7 +48594,6 @@ const LumenToolCaseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50804,7 +48617,6 @@ const LumenToolboxIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50829,7 +48641,6 @@ const LumenTornadoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50854,7 +48665,6 @@ const LumenTorusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50876,7 +48686,6 @@ const LumenTouchpadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50899,7 +48708,6 @@ const LumenTouchpadOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50925,7 +48733,6 @@ const LumenTowelRackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50948,7 +48755,6 @@ const LumenTowerControlIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50975,7 +48781,6 @@ const LumenToyBrickIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -50998,7 +48803,6 @@ const LumenTractorIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51027,7 +48831,6 @@ const LumenTrafficConeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51051,7 +48854,6 @@ const LumenTrainFrontIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51077,7 +48879,6 @@ const LumenTrainFrontTunnelIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51104,7 +48905,6 @@ const LumenTrainTrackIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51131,7 +48931,6 @@ const LumenTramFrontIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51158,7 +48957,6 @@ const LumenTransgenderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51186,7 +48984,6 @@ const LumenTrashIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51209,7 +49006,6 @@ const LumenTrash2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51234,7 +49030,6 @@ const LumenTreeDeciduousIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51256,7 +49051,6 @@ const LumenTreePalmIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51280,7 +49074,6 @@ const LumenTreePineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51302,7 +49095,6 @@ const LumenTreesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51326,7 +49118,6 @@ const LumenTrendingDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51348,7 +49139,6 @@ const LumenTrendingUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51370,7 +49160,6 @@ const LumenTrendingUpDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51394,7 +49183,6 @@ const LumenTriangleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51415,7 +49203,6 @@ const LumenTriangleAlertIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51438,7 +49225,6 @@ const LumenTriangleDashedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51467,7 +49253,6 @@ const LumenTriangleRightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51488,7 +49273,6 @@ const LumenTrophyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51514,7 +49298,6 @@ const LumenTruckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51539,7 +49322,6 @@ const LumenTruckElectricIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51566,7 +49348,6 @@ const LumenTurkishLiraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51589,7 +49370,6 @@ const LumenTurntableIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51613,7 +49393,6 @@ const LumenTurtleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51637,7 +49416,6 @@ const LumenTvIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51659,7 +49437,6 @@ const LumenTvMinimalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51681,7 +49458,6 @@ const LumenTvMinimalPlayIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51704,7 +49480,6 @@ const LumenTypeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51727,7 +49502,6 @@ const LumenTypeOutlineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51748,7 +49522,6 @@ const LumenUmbrellaIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51771,7 +49544,6 @@ const LumenUmbrellaOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51796,7 +49568,6 @@ const LumenUnderlineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51818,7 +49589,6 @@ const LumenUndoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51840,7 +49610,6 @@ const LumenUndo2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51862,7 +49631,6 @@ const LumenUndoDotIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51885,7 +49653,6 @@ const LumenUnfoldHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51913,7 +49680,6 @@ const LumenUnfoldVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51941,7 +49707,6 @@ const LumenUngroupIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51963,7 +49728,6 @@ const LumenUniversityIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -51990,7 +49754,6 @@ const LumenUnlinkIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52016,7 +49779,6 @@ const LumenUnlink2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52037,7 +49799,6 @@ const LumenUnplugIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52063,7 +49824,6 @@ const LumenUploadIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52086,7 +49846,6 @@ const LumenUsbIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52113,7 +49872,6 @@ const LumenUsbCPortIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52135,7 +49893,6 @@ const LumenUserIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52157,7 +49914,6 @@ const LumenUserCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52180,7 +49936,6 @@ const LumenUserCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52211,7 +49966,6 @@ const LumenUserKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52236,7 +49990,6 @@ const LumenUserLockIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52260,7 +50013,6 @@ const LumenUserMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52283,7 +50035,6 @@ const LumenUserPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52306,7 +50057,6 @@ const LumenUserPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52330,7 +50080,6 @@ const LumenUserRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52352,7 +50101,6 @@ const LumenUserRoundArrowLeftIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52376,7 +50124,6 @@ const LumenUserRoundCheckIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52399,7 +50146,6 @@ const LumenUserRoundCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52430,7 +50176,6 @@ const LumenUserRoundKeyIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52455,7 +50200,6 @@ const LumenUserRoundMinusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52478,7 +50222,6 @@ const LumenUserRoundPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52501,7 +50244,6 @@ const LumenUserRoundPlusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52525,7 +50267,6 @@ const LumenUserRoundSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52549,7 +50290,6 @@ const LumenUserRoundXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52573,7 +50313,6 @@ const LumenUserSearchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52597,7 +50336,6 @@ const LumenUserShieldIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52620,7 +50358,6 @@ const LumenUserStarIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52643,7 +50380,6 @@ const LumenUserXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52667,7 +50403,6 @@ const LumenUsersIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52691,7 +50426,6 @@ const LumenUsersRoundIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52714,7 +50448,6 @@ const LumenUtensilsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52737,7 +50470,6 @@ const LumenUtensilsCrossedIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52761,7 +50493,6 @@ const LumenUtilityPoleIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52788,7 +50519,6 @@ const LumenVanIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52813,7 +50543,6 @@ const LumenVariableIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52837,7 +50566,6 @@ const LumenVaultIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52867,7 +50595,6 @@ const LumenVectorSquareIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52895,7 +50622,6 @@ const LumenVeganIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52918,7 +50644,6 @@ const LumenVenetianMaskIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52941,7 +50666,6 @@ const LumenVenusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52964,7 +50688,6 @@ const LumenVenusAndMarsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -52989,7 +50712,6 @@ const LumenVibrateIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53012,7 +50734,6 @@ const LumenVibrateOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53037,7 +50758,6 @@ const LumenVideoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53059,7 +50779,6 @@ const LumenVideoOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53082,7 +50801,6 @@ const LumenVideotapeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53107,7 +50825,6 @@ const LumenViewIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53131,7 +50848,6 @@ const LumenVoicemailIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53154,7 +50870,6 @@ const LumenVolleyballIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53180,7 +50895,6 @@ const LumenVolumeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53201,7 +50915,6 @@ const LumenVolume1IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53223,7 +50936,6 @@ const LumenVolume2IconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53246,7 +50958,6 @@ const LumenVolumeOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53271,7 +50982,6 @@ const LumenVolumeXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53294,7 +51004,6 @@ const LumenVoteIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53317,7 +51026,6 @@ const LumenWalletIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53339,7 +51047,6 @@ const LumenWalletCardsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53362,7 +51069,6 @@ const LumenWalletMinimalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53384,7 +51090,6 @@ const LumenWallpaperIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53409,7 +51114,6 @@ const LumenWandIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53438,7 +51142,6 @@ const LumenWandSparklesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53466,7 +51169,6 @@ const LumenWarehouseIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53490,7 +51192,6 @@ const LumenWashingMachineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53515,7 +51216,6 @@ const LumenWatchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53539,7 +51239,6 @@ const LumenWavesArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53563,7 +51262,6 @@ const LumenWavesArrowUpIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53587,7 +51285,6 @@ const LumenWavesHorizontalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53610,7 +51307,6 @@ const LumenWavesLadderIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53635,7 +51331,6 @@ const LumenWavesVerticalIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53658,7 +51353,6 @@ const LumenWaypointsIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53685,7 +51379,6 @@ const LumenWebcamIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53709,7 +51402,6 @@ const LumenWebcamOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53736,7 +51428,6 @@ const LumenWebhookIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53759,7 +51450,6 @@ const LumenWebhookOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53786,7 +51476,6 @@ const LumenWeightIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53808,7 +51497,6 @@ const LumenWeightTildeIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53831,7 +51519,6 @@ const LumenWheatIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53859,7 +51546,6 @@ const LumenWheatOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53889,7 +51575,6 @@ const LumenWholeWordIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53914,7 +51599,6 @@ const LumenWifiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53938,7 +51622,6 @@ const LumenWifiCogIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53970,7 +51653,6 @@ const LumenWifiHighIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -53993,7 +51675,6 @@ const LumenWifiLowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54015,7 +51696,6 @@ const LumenWifiOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54042,7 +51722,6 @@ const LumenWifiPenIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54066,7 +51745,6 @@ const LumenWifiSyncIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54093,7 +51771,6 @@ const LumenWifiZeroIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54114,7 +51791,6 @@ const LumenWindIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54137,7 +51813,6 @@ const LumenWindArrowDownIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54161,7 +51836,6 @@ const LumenWineIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54185,7 +51859,6 @@ const LumenWineOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54210,7 +51883,6 @@ const LumenWorkflowIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54233,7 +51905,6 @@ const LumenWormIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54256,7 +51927,6 @@ const LumenWrenchIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54277,7 +51947,6 @@ const LumenWrenchOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54300,7 +51969,6 @@ const LumenXIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54322,7 +51990,6 @@ const LumenXLineTopIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54345,7 +52012,6 @@ const LumenZapIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54366,7 +52032,6 @@ const LumenZapOffIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54390,7 +52055,6 @@ const LumenZodiacAquariusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54412,7 +52076,6 @@ const LumenZodiacAriesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54434,7 +52097,6 @@ const LumenZodiacCancerIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54458,7 +52120,6 @@ const LumenZodiacCapricornIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54481,7 +52142,6 @@ const LumenZodiacGeminiIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54505,7 +52165,6 @@ const LumenZodiacLeoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54527,7 +52186,6 @@ const LumenZodiacLibraIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54549,7 +52207,6 @@ const LumenZodiacOphiuchusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54571,7 +52228,6 @@ const LumenZodiacPiscesIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54594,7 +52250,6 @@ const LumenZodiacSagittariusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54617,7 +52272,6 @@ const LumenZodiacScorpioIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54641,7 +52295,6 @@ const LumenZodiacTaurusIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54663,7 +52316,6 @@ const LumenZodiacVirgoIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54687,7 +52339,6 @@ const LumenZoomInIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}
@@ -54711,7 +52362,6 @@ const LumenZoomOutIconGraphic = ({
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={'none'}
     focusable={false}
     height={size}

@@ -1,0 +1,104 @@
+---
+import { Badge, Card } from '@santi020k/lumen-astro'
+
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+interface Props {
+  description: string
+  eyebrow: string
+  title: string
+  updatedAt: string
+}
+
+const { description, eyebrow, title, updatedAt } = Astro.props
+---
+
+<BaseLayout {description} title={`${title} — Lumen UI`}>
+  <main class="legal-page">
+    <header class="legal-page__header">
+      <Badge variant="outline">{eyebrow}</Badge>
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <small>Last updated {updatedAt}</small>
+    </header>
+
+    <Card as="article" class="legal-page__content" variant="muted">
+      <slot />
+    </Card>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    width: min(100% - 2.5rem, 58rem);
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+
+  .legal-page__header {
+    max-width: 46rem;
+  }
+
+  .legal-page__header h1 {
+    margin-top: 1rem;
+    color: hsl(var(--ink));
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .legal-page__header p {
+    margin-top: 1.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .legal-page__header small {
+    display: block;
+    margin-top: 0.85rem;
+    color: hsl(var(--ink-muted));
+  }
+
+  :global(.legal-page__content.ui-card) {
+    margin-top: 2.5rem;
+    padding: clamp(1.4rem, 4vw, 2.5rem);
+  }
+
+  :global(.legal-page__content h2) {
+    margin-top: 2.2rem;
+    color: hsl(var(--ink));
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.legal-page__content h2:first-child) {
+    margin-top: 0;
+  }
+
+  :global(.legal-page__content p),
+  :global(.legal-page__content li) {
+    color: hsl(var(--ink-soft));
+    line-height: 1.75;
+  }
+
+  :global(.legal-page__content p),
+  :global(.legal-page__content ul) {
+    margin-top: 0.8rem;
+  }
+
+  :global(.legal-page__content ul) {
+    padding-left: 1.25rem;
+  }
+
+  :global(.legal-page__content li + li) {
+    margin-top: 0.45rem;
+  }
+
+  :global(.legal-page__content a) {
+    color: hsl(var(--brand));
+    font-weight: 700;
+  }
+</style>

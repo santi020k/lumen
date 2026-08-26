@@ -3,10 +3,19 @@
 > **Beta:** This package is ready for testing and early production adoption. Its public API may
 > evolve as it is validated in real applications; review release notes when upgrading.
 
+Maintainers can verify the exact packed package contents, peer installation, and strict external
+TypeScript consumption from the repository root with `pnpm run check:react-native-package`.
+Release canaries additionally generate clean Expo native projects from that tarball and require
+real debug binaries with `pnpm run check:react-native-native-package:android` and
+`pnpm run check:react-native-native-package:ios`. The iOS command requires CocoaPods.
+After publication, repeat the native proof against the exact npm artifact with
+`pnpm run check:react-native-native-release:android -- --version <version>` and
+`pnpm run check:react-native-native-release:ios -- --version <version>`.
+
 React Native foundations and primitives for Lumen UI. The package exposes canonical light and dark
 themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField,
 Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
-SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Skeleton, Graphic, Backdrop,
+SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
 Illustration, and Disclosure implementations.
 The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
@@ -53,6 +62,20 @@ Start the application with its normal Expo or React Native command:
 ```bash
 npx expo start
 # or: npx react-native start
+```
+
+Use `LumenTabs` when a small peer set changes content in place. The value remains controlled and
+the application supplies the active panel, so routing and data ownership stay outside the component:
+
+```tsx
+<LumenTabs
+  label="Workspace views"
+  options={workspaceTabs}
+  value={activeTab}
+  onValueChange={setActiveTab}
+>
+  <WorkspaceTabPanel value={activeTab} />
+</LumenTabs>
 ```
 
 Use `LumenNavigationBar` for a small set of peer app destinations. The application still owns the

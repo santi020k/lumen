@@ -174,4 +174,69 @@ public struct LumenSegmentedControl<Value: Hashable>: View {
         }
     }
 }
+
+public struct LumenTabs<Value: Hashable, Content: View>: View {
+    @Binding private var selection: Value
+    @Environment(\.lumenTheme) private var theme
+
+    private let content: (Value) -> Content
+    private let label: String
+    private let options: [LumenSelectionOption<Value>]
+
+    public init(
+        _ label: String,
+        selection: Binding<Value>,
+        options: [LumenSelectionOption<Value>],
+        @ViewBuilder content: @escaping (Value) -> Content
+    ) {
+        self.label = label
+        _selection = selection
+        self.options = options
+        self.content = content
+    }
+
+    public var body: some View {
+        VStack(alignment: .leading, spacing: LumenSpacing.md) {
+            HStack(spacing: LumenSpacing.xs) {
+                ForEach(options) { option in
+                    let isSelected = selection == option.id
+
+                    Button { selection = option.id } label: {
+                        Text(option.title)
+                            .font(.callout.weight(isSelected ? .bold : .semibold))
+                            .foregroundStyle(isSelected ? theme.colors.brand : theme.colors.inkSoft)
+                            .frame(minHeight: 44)
+                            .padding(.horizontal, LumenSpacing.md)
+                            .overlay(alignment: .bottom) {
+                                Rectangle()
+                                    .fill(isSelected ? theme.colors.brandSolid : .clear)
+                                    .frame(height: 2)
+                            }
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(option.isDisabled)
+                    .opacity(option.isDisabled ? 0.52 : 1)
+                    .accessibilityLabel(Text(option.title))
+                    .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
+                }
+                Spacer(minLength: 0)
+            }
+            .overlay(alignment: .bottom) {
+                Rectangle().fill(theme.colors.line).frame(height: 1)
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(Text(label))
+
+            content(selection)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(Text("\(selectedTitle) tab panel"))
+        }
+    }
+
+    private var selectedTitle: String {
+        options.first(where: { $0.id == selection })?.title ?? String(describing: selection)
+    }
+}
 #endif

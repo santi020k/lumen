@@ -5,6 +5,14 @@ representative physical devices. Unit tests and simulator builds protect API and
 but they do not prove screen-reader announcements, focus order, touch ergonomics, text scaling, or
 reduced-motion behavior on hardware.
 
+The machine-readable source of truth is `registry/native-device-evidence.json`. Every partial or
+complete pass records the actual device model, exact OS version, date, tester, and revision. A
+complete pass additionally requires a full 40-character revision and an immutable HTTPS issue,
+pull request, or recording URL; local notes alone cannot satisfy release readiness. Run
+`pnpm run check:native-device-evidence` to validate its structure. Release readiness additionally
+requires `pnpm run check:native-device-readiness`, which fails until both minimum and current passes
+are complete for every adapter and platform.
+
 ## Automated gates
 
 Run the following before starting a manual device pass:
@@ -14,7 +22,8 @@ pnpm --filter @santi020k/lumen-react-native run build
 pnpm --filter @santi020k/lumen-react-native run typecheck
 pnpm --filter @santi020k/lumen-react-native run test
 swift test
-(cd packages/compose && ./gradlew test lint assembleDebugAndroidTest)
+pnpm run check:swift-api-baseline
+(cd packages/compose && ./gradlew test lint apiCheck assembleDebugAndroidTest)
 (cd packages/compose && ./gradlew :wear:testDebugUnitTest :wear:lintDebug)
 ```
 

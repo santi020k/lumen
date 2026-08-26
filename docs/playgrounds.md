@@ -2,11 +2,15 @@
 
 Lumen includes one searchable component gallery for each native adapter. Use these apps to evaluate
 the real components, capture documentation screenshots, and prepare distributable marketing builds.
-Each gallery covers all 33 contracts shared by every native adapter, including semantic Card
+Each gallery covers all 42 contracts shared by every native adapter, including semantic Card
 variants, multiline and grouped forms, chips, action groups, transient feedback, metrics, rows,
 empty states, and light/dark theme behavior. Compose and Apple additionally exercise Picker, Slider,
 and Gauge. The galleries also demonstrate React Native pull-to-refresh, the Compose floating action
 button, the Apple date field, and two intentionally macOS-specific controls.
+
+The native Apple and Android galleries are also prepared as one public **Lumen Playground** product.
+See [Publishing Lumen Playground](playground-publication.md) for listing copy, shared assets,
+privacy declarations, signed release candidates, staged testing, and production gates.
 
 ## First-time repository setup
 
@@ -46,6 +50,12 @@ To start the browser target directly, run:
 
 ```bash
 pnpm playground:react-native:web
+```
+
+With that server running, capture every documented React Native component from another terminal:
+
+```bash
+pnpm playground:react-native:capture
 ```
 
 Create a static web export with:
@@ -208,3 +218,16 @@ but Android emulator and iOS simulator captures remain the source of truth for n
 
 Per-component documentation should pair a native capture with its platform code example. Avoid
 cropping away focus, loading, error, or disabled state when that state is the subject of the page.
+
+After capturing all three adapters, optimize the PNG sources into the checked-in WebP gallery and
+refresh its integrity manifest:
+
+```bash
+pnpm run sync:native-captures
+pnpm run check:native-captures
+```
+
+The PR workflow regenerates the React Native, iPhone, and Android phone captures on their matching
+runners and compares normalized output with the committed gallery. macOS, watchOS, and Wear OS
+captures remain represented in the manifest and are checked for coverage; regenerate those
+specialized targets with their package scripts when their implementations change.

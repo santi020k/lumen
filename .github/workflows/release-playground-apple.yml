@@ -1,0 +1,81 @@
+name: Launch Apple playground release
+
+# cspell:ignore pipefail
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: App Store marketing version, for example 1.0.0
+        required: true
+        type: string
+
+concurrency:
+  group: lumen-playground-app-store-release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  launch:
+    name: Create Xcode Cloud release tag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: app-store
+      url: https://appstoreconnect.apple.com/apps/6805250815
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Verify release request
+        id: release
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error title=Invalid version::Use a version such as 1.0 or 1.0.0."
+            exit 1
+          fi
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "::error title=Invalid release branch::Launch App Store releases from main, not $GITHUB_REF_NAME."
+            exit 1
+          fi
+
+          release_tag="playground-ios-v${RELEASE_VERSION}-r${GITHUB_RUN_NUMBER}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$release_tag" >/dev/null 2>&1; then
+            echo "::error title=Release already exists::$release_tag already exists and release tags are immutable."
+            exit 1
+          fi
+
+          echo "tag=$release_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Launch Xcode Cloud release
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --annotate "$RELEASE_TAG" --message "Launch Lumen Playground $RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
+
+      - name: Write release summary
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          {
+            echo "## Apple playground release launched"
+            echo
+            echo "Created \`$RELEASE_TAG\` at \`$GITHUB_SHA\`."
+            echo "The Xcode Cloud App Store Release workflow will archive, sign, and upload this tag to App Store Connect."
+          } >> "$GITHUB_STEP_SUMMARY"

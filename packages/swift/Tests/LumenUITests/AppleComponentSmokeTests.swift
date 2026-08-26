@@ -101,6 +101,16 @@ private struct AppleComponentCatalogFixture: View {
                     }
                 )
 
+                LumenTabs(
+                    "Workspace views",
+                    selection: $selection,
+                    options: FixtureProfile.allCases.map {
+                        LumenSelectionOption($0.rawValue.capitalized, value: $0)
+                    }
+                ) { selected in
+                    LumenText(LocalizedStringKey(selected.rawValue.capitalized))
+                }
+
                 LumenNavigationBar(
                     selection: $navigationDestination,
                     items: [
@@ -151,6 +161,20 @@ private struct AppleComponentCatalogFixture: View {
                 LumenDisclosure("Uncontrolled notes", initiallyExpanded: true) {
                     Text("Local disclosure state is useful for presentation-only content.")
                 }
+
+                LumenBackdrop(intensity: .subtle, tone: .accent, variant: .grid) {
+                    HStack {
+                        LumenGraphic(label: "Component orbit", size: .sm, variant: .orbit) {
+                            LumenIcon(name: .sparkles, size: .lg)
+                        }
+                        LumenIllustration(
+                            variant: .success,
+                            size: .sm,
+                            label: "Successful native build"
+                        )
+                    }
+                }
+                .frame(height: 180)
 
                 LumenLink(
                     "Read native guidance",

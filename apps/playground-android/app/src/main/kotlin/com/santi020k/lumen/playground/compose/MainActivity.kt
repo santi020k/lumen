@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -15,6 +17,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,8 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.santi020k.lumen.LumenAlert
+import com.santi020k.lumen.LumenAlertDialog
+import com.santi020k.lumen.LumenAdaptiveNavigationScaffold
 import com.santi020k.lumen.LumenAlertVariant
 import com.santi020k.lumen.LumenAvatar
 import com.santi020k.lumen.LumenAvatarSize
@@ -32,6 +40,10 @@ import com.santi020k.lumen.LumenBadge
 import com.santi020k.lumen.LumenBadgeTone
 import com.santi020k.lumen.LumenBanner
 import com.santi020k.lumen.LumenBannerVariant
+import com.santi020k.lumen.LumenBackdrop
+import com.santi020k.lumen.LumenBackdropIntensity
+import com.santi020k.lumen.LumenBackdropTone
+import com.santi020k.lumen.LumenBackdropVariant
 import com.santi020k.lumen.LumenButton
 import com.santi020k.lumen.LumenButtonGroup
 import com.santi020k.lumen.LumenButtonIntent
@@ -47,11 +59,24 @@ import com.santi020k.lumen.LumenFloatingActionButton
 import com.santi020k.lumen.LumenFloatingActionButtonIntent
 import com.santi020k.lumen.LumenFloatingActionButtonSize
 import com.santi020k.lumen.LumenGauge
+import com.santi020k.lumen.LumenGraphic
+import com.santi020k.lumen.LumenGraphicSize
+import com.santi020k.lumen.LumenGraphicTone
+import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
 import com.santi020k.lumen.LumenIconName
+import com.santi020k.lumen.LumenIllustration
+import com.santi020k.lumen.LumenIllustrationSize
+import com.santi020k.lumen.LumenIllustrationVariant
 import com.santi020k.lumen.LumenListRow
 import com.santi020k.lumen.LumenMetricTone
+import com.santi020k.lumen.LumenMenu
+import com.santi020k.lumen.LumenMenuItem
+import com.santi020k.lumen.LumenNavigationBadge
+import com.santi020k.lumen.LumenNavigationBar
+import com.santi020k.lumen.LumenNavigationBarAccessory
+import com.santi020k.lumen.LumenNavigationItem
 import com.santi020k.lumen.LumenProgress
 import com.santi020k.lumen.LumenPicker
 import com.santi020k.lumen.LumenPickerOption
@@ -59,6 +84,9 @@ import com.santi020k.lumen.LumenRadioGroup
 import com.santi020k.lumen.LumenSearchField
 import com.santi020k.lumen.LumenSectionHeader
 import com.santi020k.lumen.LumenSettingsRow
+import com.santi020k.lumen.LumenShareButton
+import com.santi020k.lumen.LumenSharePayload
+import com.santi020k.lumen.LumenSheet
 import com.santi020k.lumen.LumenSegmentedControl
 import com.santi020k.lumen.LumenSelectionOption
 import com.santi020k.lumen.LumenSkeleton
@@ -71,6 +99,7 @@ import com.santi020k.lumen.LumenSurface
 import com.santi020k.lumen.LumenSurfacePadding
 import com.santi020k.lumen.LumenSurfaceRadius
 import com.santi020k.lumen.LumenSurfaceTone
+import com.santi020k.lumen.LumenTabs
 import com.santi020k.lumen.LumenText
 import com.santi020k.lumen.LumenTextField
 import com.santi020k.lumen.LumenTextarea
@@ -79,11 +108,23 @@ import com.santi020k.lumen.LumenTextVariant
 import com.santi020k.lumen.LumenTheme
 import com.santi020k.lumen.LumenToggle
 import com.santi020k.lumen.LumenToast
+import com.santi020k.lumen.lumenNavigationBarScrollBehavior
+import com.santi020k.lumen.rememberLumenNavigationBarScrollState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { LumenAndroidPlayground() }
+        setContent {
+            LumenAndroidPlayground(
+                initialDarkTheme = intent.getBooleanExtra(DARK_THEME_EXTRA, false),
+                initialComponent = intent.getStringExtra(COMPONENT_EXTRA).orEmpty()
+            )
+        }
+    }
+
+    private companion object {
+        const val COMPONENT_EXTRA = "component"
+        const val DARK_THEME_EXTRA = "darkTheme"
     }
 }
 
@@ -117,6 +158,7 @@ private val sections = listOf(
             "Checkbox",
             "Radio group",
             "Segmented control",
+            "Tabs",
             "Picker",
             "Slider"
         )
@@ -132,19 +174,40 @@ private val sections = listOf(
         names = setOf("Skeleton", "Disclosure")
     ),
     PlaygroundSection(
+        title = "Visual content",
+        description = "Graphics, backdrops, and illustrations use semantic tokens and optional labels.",
+        names = setOf("Graphic", "Backdrop", "Illustration")
+    ),
+    PlaygroundSection(
         title = "Data display",
         description = "Cards, avatars, metrics, headers, and rows compose into product content.",
         names = setOf("Card", "Avatar", "Empty state", "List row", "Stat", "Gauge", "Section header")
+    ),
+    PlaygroundSection(
+        title = "Overlays and sharing",
+        description = "Controlled Material overlays and Android sharing keep application state host-owned.",
+        names = setOf("Alert dialog", "Sheet", "Menu", "Share button")
+    ),
+    PlaygroundSection(
+        title = "Navigation",
+        description = "Bottom and adaptive navigation expose controlled selection, badges, and re-selection.",
+        names = setOf(
+            "Navigation bar",
+            "Navigation bar scroll behavior",
+            "Navigation bar accessory",
+            "Adaptive navigation scaffold"
+        )
     )
 )
 
 @Composable
-private fun LumenAndroidPlayground() {
-    var darkTheme by remember { mutableStateOf(false) }
+private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: Boolean) {
+    var darkTheme by remember(initialDarkTheme) { mutableStateOf(initialDarkTheme) }
 
     LumenTheme(darkTheme = darkTheme) {
         PlaygroundContent(
             darkTheme = darkTheme,
+            initialComponent = initialComponent,
             onToggleTheme = { darkTheme = !darkTheme }
         )
     }
@@ -153,6 +216,7 @@ private fun LumenAndroidPlayground() {
 @Composable
 private fun PlaygroundContent(
     darkTheme: Boolean,
+    initialComponent: String,
     onToggleTheme: () -> Unit
 ) {
     var email by remember { mutableStateOf("hello@lumen.dev") }
@@ -161,7 +225,7 @@ private fun PlaygroundContent(
     var profile by remember { mutableStateOf("balanced") }
     var density by remember { mutableStateOf("comfortable") }
     var disclosureExpanded by remember { mutableStateOf(true) }
-    var query by remember { mutableStateOf("") }
+    var query by remember(initialComponent) { mutableStateOf(initialComponent) }
     var saved by remember { mutableStateOf(false) }
     var showBanner by remember { mutableStateOf(true) }
     val visibleSections = sections.filter { section ->
@@ -196,7 +260,7 @@ private fun PlaygroundContent(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         LumenBadge("Jetpack Compose", tone = LumenBadgeTone.Success)
-                        LumenText("Lumen Android Playground", variant = LumenTextVariant.Title)
+                        LumenText("Lumen Playground", variant = LumenTextVariant.Title)
                         LumenText(
                             "Explore every public Compose primitive with real Android state.",
                             tone = LumenTextTone.Soft
@@ -254,7 +318,10 @@ private fun PlaygroundContent(
                             expanded = disclosureExpanded,
                             onExpandedChange = { disclosureExpanded = it }
                         )
+                        "Visual content" -> VisualContentExample()
                         "Data display" -> DataExample(saved = saved, onToggleSaved = { saved = !saved })
+                        "Overlays and sharing" -> OverlayExample(initialComponent)
+                        "Navigation" -> NavigationExample(initialComponent)
                     }
                 }
             }
@@ -277,9 +344,15 @@ private fun PlaygroundContent(
                 }
             }
 
+            if (query.isBlank()) {
+                item {
+                    AboutPlayground()
+                }
+            }
+
             item {
                 LumenStatusBar(
-                    message = "Powered by the local lumen-compose module",
+                    message = "Built with lumen-compose",
                     tone = LumenMetricTone.Success,
                     trailing = {
                         LumenText(
@@ -289,6 +362,51 @@ private fun PlaygroundContent(
                         )
                     }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AboutPlayground() {
+    val uriHandler = LocalUriHandler.current
+
+    LumenCard(modifier = Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            LumenText("About Lumen Playground", variant = LumenTextVariant.Label)
+            LumenText(
+                "A living, offline catalog for evaluating Lumen's native Compose components.",
+                variant = LumenTextVariant.Caption,
+                tone = LumenTextTone.Muted
+            )
+            LumenDivider()
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LumenBadge("Version ${BuildConfig.VERSION_NAME}", tone = LumenBadgeTone.Accent)
+                LumenBadge("No data collection", tone = LumenBadgeTone.Success)
+            }
+            LumenText(
+                "Search the complete catalog, exercise interactive states, and compare light and dark themes without creating an account.",
+                tone = LumenTextTone.Soft
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                LumenButton(
+                    onClick = { uriHandler.openUri("https://lumen.santi020k.com/docs/android") },
+                    intent = LumenButtonIntent.Secondary
+                ) {
+                    Text("Documentation")
+                }
+                LumenButton(
+                    onClick = { uriHandler.openUri("https://lumen.santi020k.com/support") },
+                    intent = LumenButtonIntent.Secondary
+                ) {
+                    Text("Support")
+                }
+                LumenButton(
+                    onClick = { uriHandler.openUri("https://lumen.santi020k.com/privacy") },
+                    intent = LumenButtonIntent.Secondary
+                ) {
+                    Text("Privacy")
+                }
             }
         }
     }
@@ -392,6 +510,7 @@ private fun FormsExample(
     var notes by remember { mutableStateOf("Native components now share one documented contract.") }
     var pickerProfile by remember { mutableStateOf("balanced") }
     var sliderValue by remember { mutableStateOf(72f) }
+    var activeTab by remember { mutableStateOf("overview") }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         LumenTextField(
@@ -426,18 +545,18 @@ private fun FormsExample(
             modifier = Modifier.fillMaxWidth()
         )
         LumenToggle(
-            label = "Release notifications",
-            description = "Receive component release notes.",
+            label = "Demo notification preference",
+            description = "Example state only. The playground does not register for notifications.",
             checked = notificationsEnabled,
             onCheckedChange = onNotificationsChange
         )
         LumenSettingsRow(
-            title = "Automatic updates",
-            description = "Download stable updates automatically.",
+            title = "Demo automatic updates",
+            description = "Example state only. The playground does not download updates.",
             graphic = { LumenIcon(LumenIconName.Check, contentDescription = null) }
         ) {
             LumenToggle(
-                label = "Automatic updates",
+                label = "Demo automatic updates",
                 checked = notificationsEnabled,
                 showLabel = false,
                 onCheckedChange = onNotificationsChange
@@ -469,6 +588,27 @@ private fun FormsExample(
             value = density,
             onValueChange = onDensityChange
         )
+        LumenTabs(
+            label = "Workspace views",
+            options = listOf(
+                LumenSelectionOption("overview", "Overview"),
+                LumenSelectionOption("activity", "Activity"),
+                LumenSelectionOption("billing", "Billing", enabled = false)
+            ),
+            value = activeTab,
+            onValueChange = { activeTab = it }
+        ) { selected ->
+            LumenSurface(tone = LumenSurfaceTone.Muted, padding = LumenSurfacePadding.Md) {
+                LumenText(
+                    if (selected == "overview") {
+                        "Workspace health is ready."
+                    } else {
+                        "Three components updated today."
+                    },
+                    variant = LumenTextVariant.Label
+                )
+            }
+        }
         LumenPicker(
             label = "Profile",
             value = pickerProfile,
@@ -519,6 +659,229 @@ private fun ContentStatesExample(expanded: Boolean, onExpandedChange: (Boolean) 
 }
 
 @Composable
+private fun VisualContentExample() {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        LumenGraphic(
+            size = LumenGraphicSize.Sm,
+            tone = LumenGraphicTone.Accent,
+            variant = LumenGraphicVariant.Orbit,
+            label = "Orbit graphic surrounding the Lumen mark",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            LumenIcon(LumenIconName.Sparkles, contentDescription = null)
+        }
+        LumenBackdrop(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(176.dp),
+            variant = LumenBackdropVariant.Aurora,
+            tone = LumenBackdropTone.Brand,
+            intensity = LumenBackdropIntensity.Medium
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                LumenBadge("Semantic backdrop", tone = LumenBadgeTone.Accent)
+                LumenText("Application content stays interactive", variant = LumenTextVariant.Label)
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            LumenIllustration(
+                variant = LumenIllustrationVariant.Empty,
+                size = LumenIllustrationSize.Sm,
+                label = "Empty state illustration"
+            )
+            LumenIllustration(
+                variant = LumenIllustrationVariant.Success,
+                size = LumenIllustrationSize.Sm,
+                label = "Success illustration"
+            )
+            LumenIllustration(
+                variant = LumenIllustrationVariant.Offline,
+                size = LumenIllustrationSize.Sm,
+                label = "Offline illustration"
+            )
+        }
+    }
+}
+
+@Composable
+private fun OverlayExample(initialComponent: String) {
+    var showDialog by remember(initialComponent) {
+        mutableStateOf(initialComponent.equals("Alert dialog", ignoreCase = true))
+    }
+    var showSheet by remember(initialComponent) {
+        mutableStateOf(initialComponent.equals("Sheet", ignoreCase = true))
+    }
+    var showMenu by remember(initialComponent) {
+        mutableStateOf(initialComponent.equals("Menu", ignoreCase = true))
+    }
+    var lastAction by remember { mutableStateOf("No overlay action selected") }
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        LumenButtonGroup {
+            LumenButton(onClick = { showDialog = true }, intent = LumenButtonIntent.Danger) {
+                Text("Delete dialog")
+            }
+            LumenButton(onClick = { showSheet = true }, intent = LumenButtonIntent.Secondary) {
+                Text("Open sheet")
+            }
+        }
+        Box {
+            LumenIconButton(
+                name = LumenIconName.EllipsisVertical,
+                contentDescription = "Workspace actions",
+                onClick = { showMenu = true }
+            )
+            LumenMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false },
+                items = listOf(
+                    LumenMenuItem("Duplicate", leadingIcon = Icons.Default.Add) {
+                        lastAction = "Workspace duplicated"
+                    },
+                    LumenMenuItem("Archive", enabled = false) {},
+                    LumenMenuItem("Delete", destructive = true) {
+                        lastAction = "Workspace deleted"
+                    }
+                )
+            )
+        }
+        LumenShareButton(
+            payload = LumenSharePayload(
+                text = "Explore Lumen UI for Jetpack Compose",
+                subject = "Lumen Compose"
+            ),
+            chooserTitle = "Share Lumen Compose",
+            label = "Share component gallery"
+        )
+        LumenText(lastAction, variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)
+    }
+
+    LumenAlertDialog(
+        visible = showDialog,
+        title = "Delete workspace?",
+        description = "This controlled example requires explicit confirmation.",
+        confirmLabel = "Delete",
+        destructive = true,
+        onConfirm = {
+            lastAction = "Workspace deleted"
+            showDialog = false
+        },
+        onDismiss = { showDialog = false }
+    )
+    LumenSheet(
+        visible = showSheet,
+        title = "Publish component",
+        description = "Review the native release before publishing.",
+        onDismiss = { showSheet = false },
+        actions = {
+            LumenButton(onClick = { showSheet = false }) { Text("Done") }
+        }
+    ) {
+        LumenStatusBar(
+            message = "Accessibility and API checks passed",
+            tone = LumenMetricTone.Success
+        )
+    }
+}
+
+@Composable
+private fun NavigationExample(initialComponent: String) {
+    var destination by remember { mutableStateOf("home") }
+    var reselectionCount by remember { mutableStateOf(0) }
+    val scrollState = rememberLumenNavigationBarScrollState()
+    val items = remember {
+        listOf(
+            LumenNavigationItem(
+                value = "home",
+                label = "Home",
+                icon = Icons.Default.Home
+            ),
+            LumenNavigationItem(
+                value = "search",
+                label = "Search",
+                icon = Icons.Default.Search,
+                badge = LumenNavigationBadge.count(7)
+            ),
+            LumenNavigationItem(
+                value = "settings",
+                label = "Settings",
+                icon = Icons.Default.Settings,
+                badge = LumenNavigationBadge.dot("Settings require attention")
+            )
+        )
+    }
+
+    Column(
+        modifier = Modifier.lumenNavigationBarScrollBehavior(scrollState),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        LumenNavigationBarAccessory {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LumenText("Uploading component screenshots", variant = LumenTextVariant.Label)
+                LumenBadge("3", tone = LumenBadgeTone.Accent)
+            }
+        }
+        LumenNavigationBar(
+            items = items,
+            selectedValue = destination,
+            onValueChange = { destination = it },
+            onReselect = { reselectionCount += 1 },
+            scrollState = scrollState
+        )
+        if (initialComponent.equals("Navigation bar scroll behavior", ignoreCase = true)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LumenButton(
+                    onClick = scrollState::hide,
+                    intent = LumenButtonIntent.Secondary
+                ) {
+                    Text("Hide on scroll")
+                }
+                LumenButton(
+                    onClick = scrollState::show,
+                    intent = LumenButtonIntent.Secondary
+                ) {
+                    Text("Show on scroll")
+                }
+            }
+        }
+        LumenText(
+            "Selected: $destination · reselected $reselectionCount times",
+            variant = LumenTextVariant.Caption,
+            tone = LumenTextTone.Muted
+        )
+        LumenAdaptiveNavigationScaffold(
+            items = items,
+            selectedValue = destination,
+            onValueChange = { destination = it },
+            onReselect = { reselectionCount += 1 },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(280.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                LumenEmptyState(
+                    title = "Adaptive $destination destination",
+                    description = "Resize the window to switch between Material bar and rail."
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun FeedbackExample(
     showBanner: Boolean,
     onBannerVisibilityChange: (Boolean) -> Unit
@@ -562,6 +925,10 @@ private fun FeedbackExample(
                 onDismiss = { showToast = false }
             )
         }
+        LumenStatusBar(
+            message = "All Android verification gates passed",
+            tone = LumenMetricTone.Success
+        )
     }
 }
 
@@ -630,5 +997,20 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
                 }
             }
         }
+        LumenEmptyState(
+            title = "No pending reviews",
+            description = "Every Compose component has an owner and verification state.",
+            graphic = {
+                LumenIllustration(
+                    variant = LumenIllustrationVariant.Success,
+                    size = LumenIllustrationSize.Sm
+                )
+            },
+            actions = {
+                LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
+                    Text("View release")
+                }
+            }
+        )
     }
 }

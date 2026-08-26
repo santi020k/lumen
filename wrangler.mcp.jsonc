@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lumen-mcp",
+  "main": "packages/mcp/src/cloudflare-worker.ts",
+  "compatibility_date": "2026-08-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "mcp.lumen.santi020k.com",
+      "custom_domain": true
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "LUMEN_MCP_RATE_LIMITER",
+      "namespace_id": "2026082401",
+      "simple": {
+        "limit": 120,
+        "period": 60
+      }
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

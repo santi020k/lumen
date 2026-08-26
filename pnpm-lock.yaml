@@ -85,8 +85,8 @@ catalogs:
       specifier: ^3.1.1
       version: 3.1.1
     '@santi020k/og':
-      specifier: 0.8.0
-      version: 0.8.0
+      specifier: 1.0.0
+      version: 1.0.0
     '@santi020k/theme':
       specifier: ^1.3.0
       version: 1.3.0
@@ -373,7 +373,7 @@ importers:
         version: 1.10.11
       '@santi020k/og':
         specifier: 'catalog:'
-        version: 0.8.0(@types/node@26.2.0)
+        version: 1.0.0(@types/node@26.2.0)
       sharp:
         specifier: 'catalog:'
         version: 0.35.3(@types/node@26.2.0)
@@ -386,6 +386,9 @@ importers:
 
   apps/next-smoke:
     dependencies:
+      '@santi020k/lumen-elements':
+        specifier: workspace:^
+        version: link:../../packages/elements
       '@santi020k/lumen-react':
         specifier: workspace:^
         version: link:../../packages/react
@@ -4705,8 +4708,8 @@ packages:
     peerDependencies:
       eslint: ^10.0.0
 
-  '@santi020k/og@0.8.0':
-    resolution: {integrity: sha512-3jaeuLqaQAVlQi2dGnXGVmpKWnuvTARV137vNMF50LtqQFkp8KCSz66GvcKqU1hsi1kxg0G1OmZwNpA6NihDjQ==}
+  '@santi020k/og@1.0.0':
+    resolution: {integrity: sha512-wQ2a6ff7QmvJW801DdoIamoSuj0CaMKs2Ybn/MscfLAcaLBrkcyJWHOsol+7MlC1ONNU/onNLwPccpzCgk9lqw==}
     engines: {node: '>=22.18.0'}
     hasBin: true
 
@@ -4860,9 +4863,6 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
-
-  '@swc/helpers@0.5.15':
-    resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -10522,8 +10522,8 @@ packages:
   satori-html@0.3.2:
     resolution: {integrity: sha512-wjTh14iqADFKDK80e51/98MplTGfxz2RmIzh0GqShlf4a67+BooLywF17TvJPD6phO0Hxm7Mf1N5LtRYvdkYRA==}
 
-  satori@0.33.3:
-    resolution: {integrity: sha512-9dOJkLzIsBqEfaJZxn/u7dBtUcm6+rcNQ6qEWo600Ar50Cudq9mTzyW6fCiasbdV1N+dKuUAWGo+KzGOdS7+qg==}
+  satori@0.33.4:
+    resolution: {integrity: sha512-dCnaW6D/tkCJxG5UvpZPWnnvfTdGTVVSAq1tzH6xC5MeOhAeeswRcSq5zT7C6lRCdTGow9PRGus7PCzdp5JJYw==}
     engines: {node: '>=16'}
 
   satteri@0.10.5:
@@ -11257,9 +11257,6 @@ packages:
 
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
-
-  ultrahtml@1.6.0:
-    resolution: {integrity: sha512-R9fBn90VTJrqqLDwyMph+HGne8eqY1iPfYhPzZrvKpIfwkWZbcYlfpsb8B9dTvBfpy1/hqAD7Wi8EKfP9e8zdw==}
 
   ultrahtml@1.7.0:
     resolution: {integrity: sha512-2xRd0VHoAQE4M+vF/DvFFB7pUV0ZxTW1TLi7lHQWnF/Sb5TPeEUV/l+hxcNnGO00ZXGnR0voCMmYRKQf+rvJ2g==}
@@ -16403,15 +16400,15 @@ snapshots:
       - supports-color
     optional: true
 
-  '@santi020k/og@0.8.0(@types/node@26.2.0)':
+  '@santi020k/og@1.0.0(@types/node@26.2.0)':
     dependencies:
       '@fontsource-variable/inter': 5.3.0
       '@resvg/resvg-js': 2.6.2
       fontkit: 2.0.4
-      satori: 0.33.3
+      satori: 0.33.4
       satori-html: 0.3.2
       sharp: 0.35.3(@types/node@26.2.0)
-      yaml: 2.8.3
+      yaml: 2.9.0
     transitivePeerDependencies:
       - '@types/node'
 
@@ -16574,10 +16571,6 @@ snapshots:
       espree: 10.4.0
       estraverse: 5.3.0
       picomatch: 4.0.5
-
-  '@swc/helpers@0.5.15':
-    dependencies:
-      tslib: 2.8.1
 
   '@swc/helpers@0.5.23':
     dependencies:
@@ -20274,7 +20267,7 @@ snapshots:
 
   fontkit@2.0.4:
     dependencies:
-      '@swc/helpers': 0.5.15
+      '@swc/helpers': 0.5.23
       brotli: 1.3.3
       clone: 2.1.2
       dfa: 1.2.0
@@ -23759,9 +23752,9 @@ snapshots:
 
   satori-html@0.3.2:
     dependencies:
-      ultrahtml: 1.6.0
+      ultrahtml: 1.7.0
 
-  satori@0.33.3:
+  satori@0.33.4:
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
       css-background-parser: 0.1.0
@@ -24652,8 +24645,6 @@ snapshots:
   ua-parser-js@1.0.41: {}
 
   ufo@1.6.4: {}
-
-  ultrahtml@1.6.0: {}
 
   ultrahtml@1.7.0: {}
 

@@ -1,0 +1,3 @@
+Lumen Playground is an interactive developer reference catalog. It requires no account or special review access and its complete functionality is available offline.
+
+The controls labeled as demonstrations intentionally exercise component states; they do not register for notifications, download updates, submit form content, or persist personal information. Documentation, Support, and Privacy open public HTTPS pages in the system browser.

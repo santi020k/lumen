@@ -18,7 +18,8 @@
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --app-font-brand: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --lumen-logo-accent: 174 76% 28%;
+  --lumen-logo-mark: 222 47% 11%;
+  --lumen-logo-on-mark: 210 40% 98%;
   --lumen-logo-dot: 38 92% 50%;
 }
 
@@ -66,7 +67,6 @@
   --success: 142 71% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
-  --lumen-logo-accent: 174 76% 56%;
   --glass-bg: 260 22% 12% / 0.78;
   --glass-bg-subtle: 260 22% 12% / 0.64;
   --glass-bg-strong: 260 22% 12% / 0.9;
@@ -130,7 +130,6 @@
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
-  --lumen-logo-accent: 174 76% 56%;
 }
 
 @theme {
@@ -204,34 +203,15 @@ body {
   color: hsl(var(--ink));
 }
 
-.lumen-logo > svg {
+.lumen-logo > svg:first-child {
   overflow: visible;
   filter: drop-shadow(0 0.45rem 0.95rem hsl(var(--ink) / 0.12));
 }
 
 .lumen-logo__wordmark {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.25rem;
-  min-width: 0;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.lumen-logo__name {
-  color: hsl(var(--ink));
-  font-family: var(--app-font-brand);
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: 0;
-}
-
-.lumen-logo__ui {
-  color: hsl(var(--lumen-logo-accent));
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  flex: none;
+  height: 1.125rem;
+  width: auto;
 }
 
 @property --border-angle {

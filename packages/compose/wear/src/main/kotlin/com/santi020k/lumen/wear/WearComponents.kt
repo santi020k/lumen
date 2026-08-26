@@ -47,7 +47,15 @@ enum class LumenWearTone {
     Warning
 }
 
-data class LumenWearProgressValue(
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "This Lumen Wear API is experimental and may change before the stable release."
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION)
+annotation class ExperimentalLumenWearApi
+
+internal data class LumenWearProgressValue(
     val maximum: Float,
     val value: Float
 ) {
@@ -63,7 +71,7 @@ data class LumenWearProgressValue(
     }
 }
 
-data class LumenWearActionMetrics(
+internal data class LumenWearActionMetrics(
     val dimension: Dp,
     val ringWidth: Dp
 ) {
@@ -84,7 +92,7 @@ data class LumenWearActionMetrics(
     }
 }
 
-fun lumenWearColor(palette: LumenColorPalette, tone: LumenWearTone): Color = when (tone) {
+internal fun lumenWearColor(palette: LumenColorPalette, tone: LumenWearTone): Color = when (tone) {
     LumenWearTone.Accent -> palette.accent
     LumenWearTone.Brand -> palette.brandSolid
     LumenWearTone.Danger -> palette.danger
@@ -207,6 +215,7 @@ fun LumenWearStatus(
     }
 }
 
+@ExperimentalLumenWearApi
 @Composable
 fun LumenWearMetric(
     label: String,
@@ -238,6 +247,7 @@ fun LumenWearMetric(
     }
 }
 
+@ExperimentalLumenWearApi
 @Composable
 fun LumenWearListRow(
     modifier: Modifier = Modifier,

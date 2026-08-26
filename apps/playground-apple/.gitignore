@@ -1,2 +1,7 @@
+# cspell:words xcuserdata xcuserstate
+
 .build/
 DerivedData/
+Screenshots/
+**/xcuserdata/
+*.xcuserstate

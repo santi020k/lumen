@@ -312,7 +312,6 @@ export const LumenCollapsibleNavigationBar = ({
     <Animated.View
       accessibilityElementsHidden={!visible}
       importantForAccessibility={visible ? 'auto' : 'no-hide-descendants'}
-      pointerEvents={visible ? 'auto' : 'none'}
       style={[
         containerStyle,
         {
@@ -321,7 +320,8 @@ export const LumenCollapsibleNavigationBar = ({
             outputRange: [0, accessory ? 112 : 64]
           }),
           opacity: progress,
-          overflow: 'hidden'
+          overflow: 'hidden',
+          pointerEvents: visible ? 'auto' : 'none'
         }
       ]}
     >

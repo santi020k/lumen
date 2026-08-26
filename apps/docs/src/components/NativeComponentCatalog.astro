@@ -93,7 +93,12 @@ const categories = nativeComponentCategories.filter(category => (
               >
                 <div class="native-component-card__top">
                   <span><Icon decorative name="box" size="sm" /></span>
-                  <Badge variant="outline">{component.implementations[guide.id]?.exportName}</Badge>
+                  <div>
+                    {component.implementations[guide.id]?.maturity === 'Experimental' && (
+                      <Badge variant="destructive">Experimental</Badge>
+                    )}
+                    <Badge variant="outline">{component.implementations[guide.id]?.exportName}</Badge>
+                  </div>
                 </div>
                 <div>
                   <h3>
@@ -319,6 +324,13 @@ const categories = nativeComponentCategories.filter(category => (
     border-radius: 0.7rem;
     color: hsl(var(--brand));
     background: hsl(var(--brand-soft));
+  }
+
+  .native-component-card__top > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
   }
 
   .native-component-card h3 {

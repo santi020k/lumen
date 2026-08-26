@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "requiredIterations": 2,
+  "baselines": {
+    "reactNative": {
+      "path": "registry/native-api-baseline.json",
+      "sha256": "63f471d741b5f8451e436fd98917e3adf4b0b6c85d08e315ffaa4b28ca41e496"
+    },
+    "swiftUI": {
+      "path": "registry/swift-api-baseline.json",
+      "sha256": "83bd14b120f99366946d1784fd02ece68887a755344ed8bd91d5eb405cfa92d8"
+    },
+    "compose": {
+      "path": "packages/compose/api/lumen-compose.api",
+      "sha256": "eb8add824e9c4d75d371bb1f02949a4662b88c5f057d5c6c1d257d0195565189"
+    },
+    "wear": {
+      "path": "packages/compose/wear/api/wear.api",
+      "sha256": "e3d6691d6e603e927495d68be8f566766bc9aaa9f5d9a575a0cf5bafa5b976c5"
+    },
+    "wearClassification": {
+      "path": "registry/wear-api-classification.json",
+      "sha256": "c139f632577733550e6b688a4d03694541c045850892d55215c7b59d55ac382b"
+    }
+  },
+  "iterations": []
+}

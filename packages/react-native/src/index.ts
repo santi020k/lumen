@@ -127,8 +127,9 @@ export {
   type LumenRadioGroupProps,
   LumenSegmentedControl,
   type LumenSegmentedControlProps,
-  type LumenSelectionOption
-} from './selection-components.js'
+  type LumenSelectionOption,
+  LumenTabs,
+  type LumenTabsProps } from './selection-components.js'
 export {
   LumenAlert,
   LumenAlertDescription,

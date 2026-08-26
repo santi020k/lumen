@@ -22,6 +22,7 @@ interface NativeComponentImplementation {
   example: string
   exportName: string
   language: 'kotlin' | 'swift' | 'tsx'
+  maturity: 'Experimental' | 'Supported'
   platform: NativePlatformId
 }
 
@@ -52,6 +53,7 @@ interface ComponentDefinition {
   examples: Partial<Record<NativePlatformId, string>>
   exports: Partial<Record<NativePlatformId, string>>
   guidance: string
+  maturity?: Partial<Record<NativePlatformId, 'Experimental' | 'Supported'>>
   name: string
   properties: ComponentProperty[]
   slug: string
@@ -100,6 +102,7 @@ const createComponent = (
       example,
       exportName,
       language: platformLanguages[platform],
+      maturity: definition.maturity?.[platform] ?? 'Supported',
       platform
     }
   }
@@ -2004,6 +2007,81 @@ const additionalDefinitions: ComponentDefinition[] = [
   },
   {
     accessibility:
+      'Every tab exposes selected and disabled state, the tab list has a readable name, and the active panel is announced when selection changes.',
+    category: 'Navigation',
+    examples: {
+      android: `LumenTabs(
+    label = "Workspace views",
+    options = workspaceTabs,
+    value = activeTab,
+    onValueChange = ::setActiveTab
+) { selected ->
+    WorkspaceTabPanel(selected)
+}`,
+      apple: `LumenTabs(
+    "Workspace views",
+    selection: $activeTab,
+    options: workspaceTabs
+) { selected in
+    WorkspaceTabPanel(selected)
+}`,
+      'react-native': `<LumenTabs
+  label="Workspace views"
+  options={workspaceTabs}
+  value={activeTab}
+  onValueChange={setActiveTab}
+>
+  <WorkspaceTabPanel value={activeTab} />
+</LumenTabs>`
+    },
+    exports: {
+      android: 'LumenTabs',
+      apple: 'LumenTabs',
+      'react-native': 'LumenTabs'
+    },
+    guidance:
+      'Use for two to five peer content views whose panel changes in place. Keep URL history and nested destination navigation in the application router; use Navigation bar for top-level app destinations.',
+    name: 'Tabs',
+    properties: [
+      property('label', 'String', 'Required', 'Names the tab list for assistive technology.'),
+      property(
+        'options',
+        {
+          android: 'List<LumenSelectionOption>',
+          apple: '[LumenSelectionOption<Value>]',
+          'react-native': 'readonly LumenSelectionOption[]'
+        },
+        'Required',
+        'Provides stable tab values, short labels, and optional disabled state.'
+      ),
+      property(
+        { android: 'value', apple: 'selection', 'react-native': 'value' },
+        { android: 'String', apple: 'Binding<Value>', 'react-native': 'string' },
+        'Required',
+        'Stores the active tab.'
+      ),
+      property(
+        'onValueChange',
+        {
+          android: '(String) -> Unit',
+          apple: 'Binding setter',
+          'react-native': '(string) => void'
+        },
+        'Required',
+        'Updates controlled tab selection.'
+      ),
+      property(
+        { android: 'content', apple: 'content', 'react-native': 'children' },
+        'Native content view',
+        'Required',
+        'Renders the active panel while Lumen owns the tab list and panel relationship.'
+      )
+    ],
+    slug: 'tabs',
+    summary: 'Switch a controlled native content panel from an accessible tab list.'
+  },
+  {
+    accessibility:
       'The group has a readable navigation label and every destination exposes selected and disabled state through native tab semantics.',
     category: 'Navigation',
     examples: {
@@ -3825,13 +3903,17 @@ Scaffold(
       'Combines label, value, and optional detail into one concise readable metric.',
     category: 'Data display',
     examples: {
-      android:
-        'LumenWearMetric(label = "Duration", value = elapsed, tone = LumenWearTone.Brand)',
+      android: `@OptIn(ExperimentalLumenWearApi::class)
+@Composable
+fun DurationMetric(elapsed: String) {
+    LumenWearMetric(label = "Duration", value = elapsed, tone = LumenWearTone.Brand)
+}`,
       apple: 'LumenWatchMetric("Duration", value: elapsed, tone: .brand)'
     },
     exports: { android: 'LumenWearMetric', apple: 'LumenWatchMetric' },
     guidance:
       'Use for one high-priority value with a short label. Avoid dashboard grids that overload small round screens.',
+    maturity: { android: 'Experimental' },
     name: 'Wearable metric',
     properties: [
       property(
@@ -3863,12 +3945,17 @@ Scaffold(
       'Preserves child actions and content in native traversal order without collapsing distinct controls.',
     category: 'Layout',
     examples: {
-      android: 'LumenWearListRow { TimerHistoryLabel() }',
+      android: `@OptIn(ExperimentalLumenWearApi::class)
+@Composable
+fun TimerHistoryRow() {
+    LumenWearListRow { TimerHistoryLabel() }
+}`,
       apple: 'LumenWatchListRow { TimerHistoryLabel() }'
     },
     exports: { android: 'LumenWearListRow', apple: 'LumenWatchListRow' },
     guidance:
       'Use inside native wearable scrolling containers. Keep list state, selection, navigation, and rotary input in the application.',
+    maturity: { android: 'Experimental' },
     name: 'Wearable list row',
     properties: [
       property(

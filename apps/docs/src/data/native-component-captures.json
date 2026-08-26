@@ -1,0 +1,1555 @@
+{
+  "schemaVersion": 1,
+  "captures": [
+    {
+      "alt": "Adaptive navigation scaffold rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "fa289f679afa1de6c23b617bef997bfc6687ec156e78f28fe644435e982f3333",
+      "slug": "adaptive-navigation-scaffold",
+      "src": "/native-components/android/adaptive-navigation-scaffold.webp",
+      "width": 900
+    },
+    {
+      "alt": "Alert rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "2be172613c42432ac78e7e781040acbcdba79d95a498c0163bfd289bfc67c981",
+      "slug": "alert",
+      "src": "/native-components/android/alert.webp",
+      "width": 900
+    },
+    {
+      "alt": "Alert dialog rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "1bf4856099d0fbeb6946ad5f939774d505438535fc195bd951ba31ca37b96523",
+      "slug": "alert-dialog",
+      "src": "/native-components/android/alert-dialog.webp",
+      "width": 900
+    },
+    {
+      "alt": "Avatar rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "b940c8d9e5d3dce3d57906d670747c033c468dcb809adec84c020eb905cc9d8f",
+      "slug": "avatar",
+      "src": "/native-components/android/avatar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Backdrop rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "0e83275aca90ffd63ecc60e354eb109afcd08bbbee08677ee49294d6e9c9b845",
+      "slug": "backdrop",
+      "src": "/native-components/android/backdrop.webp",
+      "width": 900
+    },
+    {
+      "alt": "Badge rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "99ce4ba91d07208a51a7ad1bbae9e13ba4eab9c0eb781b2497c7d2c8890ca5af",
+      "slug": "badge",
+      "src": "/native-components/android/badge.webp",
+      "width": 900
+    },
+    {
+      "alt": "Banner rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "c616bd5fde7bfc3d250a27cb822c60221eaac8334c423209980221b78ee0851f",
+      "slug": "banner",
+      "src": "/native-components/android/banner.webp",
+      "width": 900
+    },
+    {
+      "alt": "Button rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "566b6b7d2da18a8ac7838db3c3b6ef1423fb38bda4b40a2d10eefe3248662bb1",
+      "slug": "button",
+      "src": "/native-components/android/button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Button group rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "566b6b7d2da18a8ac7838db3c3b6ef1423fb38bda4b40a2d10eefe3248662bb1",
+      "slug": "button-group",
+      "src": "/native-components/android/button-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Card rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "83f3378796d3965b3863a06e93e058bdbc61f37cfc479f83901b0c239306f3f9",
+      "slug": "card",
+      "src": "/native-components/android/card.webp",
+      "width": 900
+    },
+    {
+      "alt": "Checkbox rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "a216ed41ed51a2f53cfac271d91d6c5fc6af506304b5d50ece8b34b052346276",
+      "slug": "checkbox",
+      "src": "/native-components/android/checkbox.webp",
+      "width": 900
+    },
+    {
+      "alt": "Chip rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "b376b36ddd042a3b517c87ea5ca1dafbd61335779d0c3ae1c02106b92306aa4f",
+      "slug": "chip",
+      "src": "/native-components/android/chip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Disclosure rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "209d43a19708aff4537ec3fedd17ad1eab7c5426473e8086704dc404fe56ce69",
+      "slug": "disclosure",
+      "src": "/native-components/android/disclosure.webp",
+      "width": 900
+    },
+    {
+      "alt": "Divider rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "3977accd49b7d901895b99b7f432a7a7ebe952eabba3f7b4c861cb3746427dcd",
+      "slug": "divider",
+      "src": "/native-components/android/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Empty state rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "83f3378796d3965b3863a06e93e058bdbc61f37cfc479f83901b0c239306f3f9",
+      "slug": "empty-state",
+      "src": "/native-components/android/empty-state.webp",
+      "width": 900
+    },
+    {
+      "alt": "Field group rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "92362cba25b1b477e286a1489420f7a232d21532d3744fedaafa0927f833c950",
+      "slug": "field-group",
+      "src": "/native-components/android/field-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Floating action button rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "0908ebf1d839ea0981c6901b7fe560092bad4700c8160ee9ce809001bd2cc102",
+      "slug": "floating-action-button",
+      "src": "/native-components/android/floating-action-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Gauge rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "88c5b8375a4cb30a0f5e99b1e0f2117c7c52f18fa8686f5735892e8323afae8c",
+      "slug": "gauge",
+      "src": "/native-components/android/gauge.webp",
+      "width": 900
+    },
+    {
+      "alt": "Graphic rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "0bb3ef3d9afffc7b7733a844ddcdf9f75997591a4375e69cde2f77ea3df12b70",
+      "slug": "graphic",
+      "src": "/native-components/android/graphic.webp",
+      "width": 900
+    },
+    {
+      "alt": "Icon rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "6f8a9d44aa1e08a6d66a736aa01e2c910eb4d7d01992fb8a4cfb71caa3a513f8",
+      "slug": "icon",
+      "src": "/native-components/android/icon.webp",
+      "width": 900
+    },
+    {
+      "alt": "Icon button rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "6f8a9d44aa1e08a6d66a736aa01e2c910eb4d7d01992fb8a4cfb71caa3a513f8",
+      "slug": "icon-button",
+      "src": "/native-components/android/icon-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Illustration rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "0e83275aca90ffd63ecc60e354eb109afcd08bbbee08677ee49294d6e9c9b845",
+      "slug": "illustration",
+      "src": "/native-components/android/illustration.webp",
+      "width": 900
+    },
+    {
+      "alt": "List row rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "b75fdc32a14d2fb5f6ff08586b6d12059c463e394e47d86c4e27c1f5bed76b82",
+      "slug": "list-row",
+      "src": "/native-components/android/list-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Menu rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "9d7024513a0f4615dc542153288a320d2f27f4f5323a0d1be0e2ba4acd761097",
+      "slug": "menu",
+      "src": "/native-components/android/menu.webp",
+      "width": 900
+    },
+    {
+      "alt": "Navigation bar rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "ee17e05662ab9e0a80cd48493ce89faa0f699d92bc69ee2d05181902f3c60144",
+      "slug": "navigation-bar",
+      "src": "/native-components/android/navigation-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Navigation bar accessory rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "ee17e05662ab9e0a80cd48493ce89faa0f699d92bc69ee2d05181902f3c60144",
+      "slug": "navigation-bar-accessory",
+      "src": "/native-components/android/navigation-bar-accessory.webp",
+      "width": 900
+    },
+    {
+      "alt": "Navigation bar scroll behavior rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "2be1e3776b3b574aee53afc067e2bad99e684cd8b1c455cfdd620a6faa183784",
+      "slug": "navigation-bar-scroll-behavior",
+      "src": "/native-components/android/navigation-bar-scroll-behavior.webp",
+      "width": 900
+    },
+    {
+      "alt": "Picker rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "ed4f3a8d78bf1207aad3d32aa800701345323a7910a45776a42ebb116527c9b1",
+      "slug": "picker",
+      "src": "/native-components/android/picker.webp",
+      "width": 900
+    },
+    {
+      "alt": "Progress rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "b36054205dc3cae85ebab14610eacc048c906dad8f03dfb0e31516acf55ba309",
+      "slug": "progress",
+      "src": "/native-components/android/progress.webp",
+      "width": 900
+    },
+    {
+      "alt": "Radio group rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "a216ed41ed51a2f53cfac271d91d6c5fc6af506304b5d50ece8b34b052346276",
+      "slug": "radio-group",
+      "src": "/native-components/android/radio-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Search field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "2810091ebeb213e2119242874c5408b4e592b841c622ba1ec16f2e55220d5eb2",
+      "slug": "search-field",
+      "src": "/native-components/android/search-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Section header rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "51a06114eaa5f49d4ec38b202fd87e5d0c717aa66b944d871dd16efb37b30939",
+      "slug": "section-header",
+      "src": "/native-components/android/section-header.webp",
+      "width": 900
+    },
+    {
+      "alt": "Segmented control rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "a216ed41ed51a2f53cfac271d91d6c5fc6af506304b5d50ece8b34b052346276",
+      "slug": "segmented-control",
+      "src": "/native-components/android/segmented-control.webp",
+      "width": 900
+    },
+    {
+      "alt": "Settings row rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "ff6995b9f66d9119f2e76ed7b65c88d741b2c995a46df94be87471dc2ad3644b",
+      "slug": "settings-row",
+      "src": "/native-components/android/settings-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Share button rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "fe03c57e6823aabd23a2707b31f67c7b2e1112fe653e76bd751798f05acf8e2c",
+      "slug": "share-button",
+      "src": "/native-components/android/share-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Sheet rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "4dd804299f9b1707b321ec5a0df8703e80270548f074f32782f547b49b353df1",
+      "slug": "sheet",
+      "src": "/native-components/android/sheet.webp",
+      "width": 900
+    },
+    {
+      "alt": "Skeleton rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "2a2435fd5173c60ff2f61993665faf61d8e24081a4716dfde601cd5200bbfd10",
+      "slug": "skeleton",
+      "src": "/native-components/android/skeleton.webp",
+      "width": 900
+    },
+    {
+      "alt": "Slider rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "ed4f3a8d78bf1207aad3d32aa800701345323a7910a45776a42ebb116527c9b1",
+      "slug": "slider",
+      "src": "/native-components/android/slider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Spinner rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "5769b778466553bafa53d9604488367155d3de26fa932934e9f9869afe853f96",
+      "slug": "spinner",
+      "src": "/native-components/android/spinner.webp",
+      "width": 900
+    },
+    {
+      "alt": "Stat rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "6a587754ffe95023a928d6f7bbccf9b52a532d55828e895c641ce6348c352c3c",
+      "slug": "stat",
+      "src": "/native-components/android/stat.webp",
+      "width": 900
+    },
+    {
+      "alt": "Status bar rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "c616bd5fde7bfc3d250a27cb822c60221eaac8334c423209980221b78ee0851f",
+      "slug": "status-bar",
+      "src": "/native-components/android/status-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Surface rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "f7320b5150d0795b29f0c76b1467770daa8ded46745a442f2feeda9b35784c4f",
+      "slug": "surface",
+      "src": "/native-components/android/surface.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tabs rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "d522552bcf948d153328571534b5a2c398fed4f6898e7015eadda25d07f0ee61",
+      "slug": "tabs",
+      "src": "/native-components/android/tabs.webp",
+      "width": 900
+    },
+    {
+      "alt": "Text rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "1d825311fc8ffd688e52386049ae9ce697862d9279f73de7e8b7c940fc439e27",
+      "slug": "text",
+      "src": "/native-components/android/text.webp",
+      "width": 900
+    },
+    {
+      "alt": "Text field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "2b623ef008b5af9ac809731359662a3f72488ed74072f414bb56582b94789321",
+      "slug": "text-field",
+      "src": "/native-components/android/text-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Textarea rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "ceaa692564cc529dbabf6f9aa0b7dcc6632e7e106160d897fcb9b504a2e117f4",
+      "slug": "textarea",
+      "src": "/native-components/android/textarea.webp",
+      "width": 900
+    },
+    {
+      "alt": "Theme rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "acb777a9e518e54641b291f194cd7b1c0a8bf098e8ff41b0aa1987d188c22533",
+      "slug": "theme",
+      "src": "/native-components/android/theme.webp",
+      "width": 900
+    },
+    {
+      "alt": "Toast rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "c616bd5fde7bfc3d250a27cb822c60221eaac8334c423209980221b78ee0851f",
+      "slug": "toast",
+      "src": "/native-components/android/toast.webp",
+      "width": 900
+    },
+    {
+      "alt": "Toggle rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "c1cfd615043a7d4f098d7726695eed6a1007553b9edb719439640205ef90ac3a",
+      "slug": "toggle",
+      "src": "/native-components/android/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Wearable action rendered in the Wear OS emulator Lumen playground",
+      "device": "Wear OS emulator",
+      "height": 454,
+      "platform": "android",
+      "sha256": "a6edec63130b23512b8ac561a77b76974506590374a178c807fb835876b6a2ab",
+      "slug": "wearable-action",
+      "src": "/native-components/android/wearable-action.webp",
+      "width": 454
+    },
+    {
+      "alt": "Wearable list row rendered in the Wear OS emulator Lumen playground",
+      "device": "Wear OS emulator",
+      "height": 454,
+      "platform": "android",
+      "sha256": "a70691286bc588873bc58472d159c458618e6c5f95ce29930e92cc3a51116748",
+      "slug": "wearable-list-row",
+      "src": "/native-components/android/wearable-list-row.webp",
+      "width": 454
+    },
+    {
+      "alt": "Wearable metric rendered in the Wear OS emulator Lumen playground",
+      "device": "Wear OS emulator",
+      "height": 454,
+      "platform": "android",
+      "sha256": "95d0d1d584f167f8fde1b4ff73f95db59a0074d51515ea88f669141ccbd27ce2",
+      "slug": "wearable-metric",
+      "src": "/native-components/android/wearable-metric.webp",
+      "width": 454
+    },
+    {
+      "alt": "Wearable progress rendered in the Wear OS emulator Lumen playground",
+      "device": "Wear OS emulator",
+      "height": 454,
+      "platform": "android",
+      "sha256": "1009caccabee5b58fa968c5f54496a8f76511dc420b80007ce3caf74905a53b6",
+      "slug": "wearable-progress",
+      "src": "/native-components/android/wearable-progress.webp",
+      "width": 454
+    },
+    {
+      "alt": "Wearable status rendered in the Wear OS emulator Lumen playground",
+      "device": "Wear OS emulator",
+      "height": 454,
+      "platform": "android",
+      "sha256": "d32b7a67ce1faddd4ed056ea3707e0538172cd02dd5f41d8197c6c14e9aa815b",
+      "slug": "wearable-status",
+      "src": "/native-components/android/wearable-status.webp",
+      "width": 454
+    },
+    {
+      "alt": "Alert rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "01b4d2bae75378223c974f47df77a6147f863f5473856d4069a079bbc9f407d3",
+      "slug": "alert",
+      "src": "/native-components/apple/alert.webp",
+      "width": 900
+    },
+    {
+      "alt": "Alert dialog rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "630ee46046a292a82204415c36920e835c4cd7cbad77d19dea9c12fc92c42802",
+      "slug": "alert-dialog",
+      "src": "/native-components/apple/alert-dialog.webp",
+      "width": 900
+    },
+    {
+      "alt": "Avatar rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e570de50c92a42b25963621a03258b1cc60c0c0684fbbc2fc87303f3d1bee116",
+      "slug": "avatar",
+      "src": "/native-components/apple/avatar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Backdrop rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "dd10c5135b40852f7ef0d1e4d685a52c4abcece01ce6f2f85ae58f4a19f28e1e",
+      "slug": "backdrop",
+      "src": "/native-components/apple/backdrop.webp",
+      "width": 900
+    },
+    {
+      "alt": "Badge rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "1d8ff160e6fd7c9272ef47fe0f98da408ac0583f94bbb2050db163c906f644d1",
+      "slug": "badge",
+      "src": "/native-components/apple/badge.webp",
+      "width": 900
+    },
+    {
+      "alt": "Banner rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "6c4f10c455c31fa45ef49fbea35ecb86b2882f6c25037f6a059cce3469b7bd54",
+      "slug": "banner",
+      "src": "/native-components/apple/banner.webp",
+      "width": 900
+    },
+    {
+      "alt": "Button rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "43411c6c800a8dd4bba72703139028b19852ee442bca68c73ee095162c4a5c76",
+      "slug": "button",
+      "src": "/native-components/apple/button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Button group rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a99a199102297c748a4010b3d8c16880d9658094bf786fb517b59b294a06be07",
+      "slug": "button-group",
+      "src": "/native-components/apple/button-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Card rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "4edfb8f726fb8840a4f5f2b628d94a82e6c0ab7de9f30edefbbf4a80d4ae7bdf",
+      "slug": "card",
+      "src": "/native-components/apple/card.webp",
+      "width": 900
+    },
+    {
+      "alt": "Checkbox rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "777eeeed933b1bcb8f768e8cdfc0b7ead6cfd44082ba3e87ffd590cdf4f2fef9",
+      "slug": "checkbox",
+      "src": "/native-components/apple/checkbox.webp",
+      "width": 900
+    },
+    {
+      "alt": "Chip rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "0455cfc8b3127c54e58eec2b5bd96c95c18501135b7a4077b0cd1b43bab6749d",
+      "slug": "chip",
+      "src": "/native-components/apple/chip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Date field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "0a72f37715249a639db5ddf88608adfeedb78c80706f46604a6be2e59acfb0e2",
+      "slug": "date-field",
+      "src": "/native-components/apple/date-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Disclosure rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "1b55be21c1e2ee159cdc0fb22d317ad65701c58532ac5e340c0657ba6fb02a5b",
+      "slug": "disclosure",
+      "src": "/native-components/apple/disclosure.webp",
+      "width": 900
+    },
+    {
+      "alt": "Divider rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "627a552eef9efe6204b114b7f75b223559244e5a79fb93fddf85f5ac434cfe70",
+      "slug": "divider",
+      "src": "/native-components/apple/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Empty state rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "ecae37d70e0eae88e517ee3e9185173af61aef3982a80f5cdb50014e4928d3d9",
+      "slug": "empty-state",
+      "src": "/native-components/apple/empty-state.webp",
+      "width": 900
+    },
+    {
+      "alt": "Field group rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "8e47f886193c0f474df41cf145ffd9721903832205f36e719e22cca19098a54b",
+      "slug": "field-group",
+      "src": "/native-components/apple/field-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Gauge rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e91354d76b1bb29697d6c30c1bfe9989509e060c6cd3e5ee753a9a95086a9c19",
+      "slug": "gauge",
+      "src": "/native-components/apple/gauge.webp",
+      "width": 900
+    },
+    {
+      "alt": "Graphic rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "fe8987a6ea697a2de59ac6889537dc532dd4b40c69a60fe3e74f2e034049eb27",
+      "slug": "graphic",
+      "src": "/native-components/apple/graphic.webp",
+      "width": 900
+    },
+    {
+      "alt": "Icon rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "925b4f95840f597ba7cc6029a6be4cc7243e3a021efbfab38de16497b4d3a457",
+      "slug": "icon",
+      "src": "/native-components/apple/icon.webp",
+      "width": 900
+    },
+    {
+      "alt": "Icon button rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a3995f1637a04eca8bf8704fa5b5276f03b4a7257b140ca38686a1bf4badd5fe",
+      "slug": "icon-button",
+      "src": "/native-components/apple/icon-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Illustration rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "9e46ae5a8363b30daf8d4859f4b4de7e7ff31f868ff9d0120560f53e1c145c7e",
+      "slug": "illustration",
+      "src": "/native-components/apple/illustration.webp",
+      "width": 900
+    },
+    {
+      "alt": "Link rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "6c40bc8eabe222a77f01e1de6dfa5ee7d8d477fa09d710763af9a141879cd837",
+      "slug": "link",
+      "src": "/native-components/apple/link.webp",
+      "width": 900
+    },
+    {
+      "alt": "List row rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "024f046ddd59a85e9a73d12403bb85fef608e732123eeb4eecc4265dd97786ca",
+      "slug": "list-row",
+      "src": "/native-components/apple/list-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Menu rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "714560c099894c4a31a1c58e24bdf71ec518407e9e275867a4e24b012800179f",
+      "slug": "menu",
+      "src": "/native-components/apple/menu.webp",
+      "width": 900
+    },
+    {
+      "alt": "Navigation bar rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "b633fa6f3b2e22db93eb56c4695347e00d8a8356eaf6a7e4caadac90873defb9",
+      "slug": "navigation-bar",
+      "src": "/native-components/apple/navigation-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Picker rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "3f17ea30ca0e5d39532310028b29376f7cc10f82f591615be5a7c6ce71642684",
+      "slug": "picker",
+      "src": "/native-components/apple/picker.webp",
+      "width": 900
+    },
+    {
+      "alt": "Progress rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "3871300fff5284b6cbe32621addcccd1ae4b325d5427f5a7042193f8685dd6fc",
+      "slug": "progress",
+      "src": "/native-components/apple/progress.webp",
+      "width": 900
+    },
+    {
+      "alt": "Radio group rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "4f12dc810d6e8269f1ac37160c63f4e289d08dd40aba97a6b99f7685e7582c49",
+      "slug": "radio-group",
+      "src": "/native-components/apple/radio-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Search field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "397e64cabee872543518fd5a3ad270ba8d4087ff237b64ec514693865976e8cb",
+      "slug": "search-field",
+      "src": "/native-components/apple/search-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Section header rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "6a5306898cd8a2e80ce0eb21b25cead3318e86abee163d64daf1f9bcd5a586b9",
+      "slug": "section-header",
+      "src": "/native-components/apple/section-header.webp",
+      "width": 900
+    },
+    {
+      "alt": "Segmented control rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "0242488f566b283b6d68b06f2390072f32773d863ab29ff5aff76388fda6140b",
+      "slug": "segmented-control",
+      "src": "/native-components/apple/segmented-control.webp",
+      "width": 900
+    },
+    {
+      "alt": "Settings row rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a1085c23038cb1951f982cbc9ab6fc0345e8ad4a282a0b264559075c7d7b2456",
+      "slug": "settings-row",
+      "src": "/native-components/apple/settings-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Share button rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "df5572ece2d3169a3b890662ec9fff5e169cde0673663c4b1309ffe070e9bf0f",
+      "slug": "share-button",
+      "src": "/native-components/apple/share-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Sheet rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "688c57053892ee61b9a044740419c1b402ded4e4aeb81b3abe8077fe5042405b",
+      "slug": "sheet",
+      "src": "/native-components/apple/sheet.webp",
+      "width": 900
+    },
+    {
+      "alt": "Shortcut recorder rendered in the macOS Lumen playground",
+      "device": "macOS",
+      "height": 664,
+      "platform": "apple",
+      "sha256": "8cd6544b2486d56a5b499f218e5e528df6678b1ddc1cb69675e5ef12f3da66db",
+      "slug": "shortcut-recorder",
+      "src": "/native-components/apple/shortcut-recorder.webp",
+      "width": 900
+    },
+    {
+      "alt": "Skeleton rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "46aba162ad54bdcca8d6cd90bb1632283fdc635ee910fdf2cecdd88c6d1c7235",
+      "slug": "skeleton",
+      "src": "/native-components/apple/skeleton.webp",
+      "width": 900
+    },
+    {
+      "alt": "Slider rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "419f1dacc752e47518ac411593154c561c6e2a89225b4f6d920def7854326fa6",
+      "slug": "slider",
+      "src": "/native-components/apple/slider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Spinner rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "2b4e90ebebe30ed6ee18b50b9ee8c08bb1f90641e57f293d4ac017256490116e",
+      "slug": "spinner",
+      "src": "/native-components/apple/spinner.webp",
+      "width": 900
+    },
+    {
+      "alt": "Stat rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "b8b1bb7183824d7975ff3ebd2298811b3b0853f359d63330fe0be2e6c4b85796",
+      "slug": "stat",
+      "src": "/native-components/apple/stat.webp",
+      "width": 900
+    },
+    {
+      "alt": "Status bar rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "83ff730314e712fb24d8a571d2c5fdb5a6dcdd4f4d5480e224f47fe1b4797a9d",
+      "slug": "status-bar",
+      "src": "/native-components/apple/status-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Surface rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "84ec58eab266b4e7cfde5ad39d39b6bfdc1c1f5edbd96c8f589e67a27c0f8885",
+      "slug": "surface",
+      "src": "/native-components/apple/surface.webp",
+      "width": 900
+    },
+    {
+      "alt": "Symbol picker rendered in the macOS Lumen playground",
+      "device": "macOS",
+      "height": 664,
+      "platform": "apple",
+      "sha256": "a58a3c778300ab5686f21d0172a0a6e5ca397959ae68cc0b64b0bc6de1ecedad",
+      "slug": "symbol-picker",
+      "src": "/native-components/apple/symbol-picker.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tab accessory rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "eb642c73451e27fd6c72c1396a26a235a68519c7f3543a4961d768d58493e62f",
+      "slug": "tab-accessory",
+      "src": "/native-components/apple/tab-accessory.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tab bar minimization rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "d26958743d040a4bcb1a770a0d5817c4c6f4eb36136d219556b7f2eeb7453fc2",
+      "slug": "tab-bar-minimization",
+      "src": "/native-components/apple/tab-bar-minimization.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tabs rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "3a90d41deb4ae4f264e3ead23adcfe8d5729b56b3bc88abdd9b8bd0da743a9c5",
+      "slug": "tabs",
+      "src": "/native-components/apple/tabs.webp",
+      "width": 900
+    },
+    {
+      "alt": "Text rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "1d535038a1446b6ea776b3bcb2e14c37c19c84a868ccf9075f09d32a25506f4c",
+      "slug": "text",
+      "src": "/native-components/apple/text.webp",
+      "width": 900
+    },
+    {
+      "alt": "Text field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "1dd6aa35dc02114c26371aa6b6119b136043cce7c8442eb31098bb9c7a7ebc83",
+      "slug": "text-field",
+      "src": "/native-components/apple/text-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Textarea rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a654a2b27f4f70702b4961e5e5427c2b4f0c9d701f4046b086fe2372ddc46cf4",
+      "slug": "textarea",
+      "src": "/native-components/apple/textarea.webp",
+      "width": 900
+    },
+    {
+      "alt": "Theme rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "b5f3ebbeb9206873eeb5ad090651bf46667cfd6a5e515d115f8f245bd9154380",
+      "slug": "theme",
+      "src": "/native-components/apple/theme.webp",
+      "width": 900
+    },
+    {
+      "alt": "Toast rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "75b6af6c6fac4aa9244d7e7c51f38bfc8d0855a5edc8528444550e3723294f06",
+      "slug": "toast",
+      "src": "/native-components/apple/toast.webp",
+      "width": 900
+    },
+    {
+      "alt": "Toggle rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "07a4c9847c839ec965996adad34991b79d52d3d0c420a2bb30223f740b307a67",
+      "slug": "toggle",
+      "src": "/native-components/apple/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Wearable action rendered in the watchOS simulator Lumen playground",
+      "device": "watchOS simulator",
+      "height": 496,
+      "platform": "apple",
+      "sha256": "9df2dad62e48a6bb9f9fbe85d5190db74db44daf94b7cc47e81273fb3dcbea08",
+      "slug": "wearable-action",
+      "src": "/native-components/apple/wearable-action.webp",
+      "width": 416
+    },
+    {
+      "alt": "Wearable list row rendered in the watchOS simulator Lumen playground",
+      "device": "watchOS simulator",
+      "height": 496,
+      "platform": "apple",
+      "sha256": "1f9ea35e08773dd479bba698a19d81f1224d8b47a528b4754abefae8cb0b0638",
+      "slug": "wearable-list-row",
+      "src": "/native-components/apple/wearable-list-row.webp",
+      "width": 416
+    },
+    {
+      "alt": "Wearable metric rendered in the watchOS simulator Lumen playground",
+      "device": "watchOS simulator",
+      "height": 496,
+      "platform": "apple",
+      "sha256": "2b000f9974e08d99489a92853f5de801a796c2c38636ff8af7a451cb430f671b",
+      "slug": "wearable-metric",
+      "src": "/native-components/apple/wearable-metric.webp",
+      "width": 416
+    },
+    {
+      "alt": "Wearable progress rendered in the watchOS simulator Lumen playground",
+      "device": "watchOS simulator",
+      "height": 496,
+      "platform": "apple",
+      "sha256": "68d6528f6514bd31479aecf61299fc7ad2f655e30fc274b894a1443c1befc52c",
+      "slug": "wearable-progress",
+      "src": "/native-components/apple/wearable-progress.webp",
+      "width": 416
+    },
+    {
+      "alt": "Wearable status rendered in the watchOS simulator Lumen playground",
+      "device": "watchOS simulator",
+      "height": 496,
+      "platform": "apple",
+      "sha256": "cdc95af53aefc0d2c7889351bf6fae557e6db021e09b360d724e0b1799bb0c7e",
+      "slug": "wearable-status",
+      "src": "/native-components/apple/wearable-status.webp",
+      "width": 416
+    },
+    {
+      "alt": "Alert rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "50c461a19ba803ba60243dd5b7e029f68689d3eaa89889388d63f02926ece4ff",
+      "slug": "alert",
+      "src": "/native-components/react-native/alert.webp",
+      "width": 900
+    },
+    {
+      "alt": "Alert dialog rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "9aac11fc8dd80097acf9c5f74ae0e4f37a17b80d12b7090c1421670f187626f2",
+      "slug": "alert-dialog",
+      "src": "/native-components/react-native/alert-dialog.webp",
+      "width": 900
+    },
+    {
+      "alt": "Avatar rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "5f2b40be065ab55f0b6480d6d61478529caec6865bec7e8851b1ba4d435aed9b",
+      "slug": "avatar",
+      "src": "/native-components/react-native/avatar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Backdrop rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "237e60add1b9f582b3ac755c17a1a1c0ae34c1e3d18d2ed9877ff09622c72279",
+      "slug": "backdrop",
+      "src": "/native-components/react-native/backdrop.webp",
+      "width": 900
+    },
+    {
+      "alt": "Badge rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "edaa020f869dfe07be8d179dc2fc90be137c1a154e0cd86730d78095fc322596",
+      "slug": "badge",
+      "src": "/native-components/react-native/badge.webp",
+      "width": 900
+    },
+    {
+      "alt": "Banner rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "7e988ae92e895c14cef5e667c96ab0b7b500bfbc70a1a289464d9e367686e4b7",
+      "slug": "banner",
+      "src": "/native-components/react-native/banner.webp",
+      "width": 900
+    },
+    {
+      "alt": "Button rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "98fddb7378bc1a97696547726b03f8403abc81f9d88d02eba1e655e45b086eaa",
+      "slug": "button",
+      "src": "/native-components/react-native/button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Button group rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "dcd50abb1ac5904cc059f93416a6d03daeff42a68e1a8cfc294a09ecd75e110a",
+      "slug": "button-group",
+      "src": "/native-components/react-native/button-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Card rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "3043cac0c91e6d4107d1449896e161e6bf693e78d1fa4e4d7fb59951db0a9667",
+      "slug": "card",
+      "src": "/native-components/react-native/card.webp",
+      "width": 900
+    },
+    {
+      "alt": "Checkbox rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "151330aee9bca8a55104f6f0bbf9e201d294bfdaf99eb1a64aa289392d0b31f0",
+      "slug": "checkbox",
+      "src": "/native-components/react-native/checkbox.webp",
+      "width": 900
+    },
+    {
+      "alt": "Chip rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "f89f74f9e1d7bd2fc682466859a911a36501877db70c18357553f7cb6f7fdad7",
+      "slug": "chip",
+      "src": "/native-components/react-native/chip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Collapsible navigation bar rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "13f65ec21f62126fd3d394c556888340d7857dfca55dd0bfcebbd9b429296ee4",
+      "slug": "collapsible-navigation-bar",
+      "src": "/native-components/react-native/collapsible-navigation-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Disclosure rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "ef6911931946ee4a253723935baeca4219aa13b67ef1763e7593c48ef20a5d5c",
+      "slug": "disclosure",
+      "src": "/native-components/react-native/disclosure.webp",
+      "width": 900
+    },
+    {
+      "alt": "Divider rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "7cd2ed6ec602774639aa445f94015b4a4d97e4d06f0318b69748336a042a786f",
+      "slug": "divider",
+      "src": "/native-components/react-native/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Empty state rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "d01489199dfe05502af4f21e0c14371f4d40c4f5c6fc29d5608ba733a96dc3df",
+      "slug": "empty-state",
+      "src": "/native-components/react-native/empty-state.webp",
+      "width": 900
+    },
+    {
+      "alt": "Field group rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "af881189d2aab6e47a36e4d7758583a78d88cc8e5fe53a9b234af5de92a93ffc",
+      "slug": "field-group",
+      "src": "/native-components/react-native/field-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Graphic rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "51939c698e8a3b58766d1bff9e24dd84a7a235b5b34d0a52a444af11974ca38b",
+      "slug": "graphic",
+      "src": "/native-components/react-native/graphic.webp",
+      "width": 900
+    },
+    {
+      "alt": "Icon rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "09779430669df869fc30f2665f65b5b66d1f68d628c0095ee7811c59a68d50b5",
+      "slug": "icon",
+      "src": "/native-components/react-native/icon.webp",
+      "width": 900
+    },
+    {
+      "alt": "Icon button rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "73f5a7bca598d8f5ccddb7f59a2f4d5b09d14195f68d5da09ffb508199e9737a",
+      "slug": "icon-button",
+      "src": "/native-components/react-native/icon-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Illustration rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "47a0d7a8216c9960f56969f9515f8cbebbae077d7d692f2ea1b78588b0de1721",
+      "slug": "illustration",
+      "src": "/native-components/react-native/illustration.webp",
+      "width": 900
+    },
+    {
+      "alt": "List row rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "30e7236e1906785f2601fe0e79e24715c03daff849dd58a7c0667403ebc5312d",
+      "slug": "list-row",
+      "src": "/native-components/react-native/list-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Menu rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "27aa02406e54eb30bd22169823e1e30189aebc439d03300eb94afecaf877dc30",
+      "slug": "menu",
+      "src": "/native-components/react-native/menu.webp",
+      "width": 900
+    },
+    {
+      "alt": "Navigation accessory rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "52e9be5f6275c84945869ee44459e529066103ec70ffaa6b27b4bce8be9dd935",
+      "slug": "navigation-accessory",
+      "src": "/native-components/react-native/navigation-accessory.webp",
+      "width": 900
+    },
+    {
+      "alt": "Navigation bar rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "bd0780f4f40fd083eb59e200b7e888e54141a9017f6367f4e6bdf85295b118c1",
+      "slug": "navigation-bar",
+      "src": "/native-components/react-native/navigation-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Progress rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "225d2ab85dabdf5a8f6311e6259c2d60f2a6d067ae854a5113f47bac9ce7381c",
+      "slug": "progress",
+      "src": "/native-components/react-native/progress.webp",
+      "width": 900
+    },
+    {
+      "alt": "Radio group rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2a1cc2dc56fe59f6a54ea04e9c0a6652d05c50de99d81589819226e0ed282877",
+      "slug": "radio-group",
+      "src": "/native-components/react-native/radio-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Refresh control rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "b1d672e4c3313b24394172441f456465520dc340d03e9043dc5c36eb7682e707",
+      "slug": "refresh-control",
+      "src": "/native-components/react-native/refresh-control.webp",
+      "width": 900
+    },
+    {
+      "alt": "Search field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "484e934dd73fa691805fe1184d9d961ffbb67331dd722508da0448becca0aad7",
+      "slug": "search-field",
+      "src": "/native-components/react-native/search-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Section header rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "237aa8c124a28ffb255a36e6589f17d0de1df64760dac6f04c703d5ffc9f855e",
+      "slug": "section-header",
+      "src": "/native-components/react-native/section-header.webp",
+      "width": 900
+    },
+    {
+      "alt": "Segmented control rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "07e51bac3ba1e094068e2aa6cc5b66b239a38001878eb1363e5f7fea2a4283e5",
+      "slug": "segmented-control",
+      "src": "/native-components/react-native/segmented-control.webp",
+      "width": 900
+    },
+    {
+      "alt": "Settings row rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "006c35827265ee0e89e36191998093617727e180f0f5894fba802cfd6257bace",
+      "slug": "settings-row",
+      "src": "/native-components/react-native/settings-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Share button rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "865c09f98b40ea859f890e3c5eaa2cdc8de867ea812e1558c3a09e1d5b19ea62",
+      "slug": "share-button",
+      "src": "/native-components/react-native/share-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Sheet rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "0c4412c63ddbbb0a14dbba25c17f844f329dd15ed86130972cdda2e1b489b9e6",
+      "slug": "sheet",
+      "src": "/native-components/react-native/sheet.webp",
+      "width": 900
+    },
+    {
+      "alt": "Skeleton rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "6ec5a504f8e7e6100e24f6a6fcbc14ce84833d5a3081f32df642ce21a6d6ac10",
+      "slug": "skeleton",
+      "src": "/native-components/react-native/skeleton.webp",
+      "width": 900
+    },
+    {
+      "alt": "Spinner rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "fd3ae223c6af367b72e3694faa1882e4bd45003618085ea383e9123b587f049a",
+      "slug": "spinner",
+      "src": "/native-components/react-native/spinner.webp",
+      "width": 900
+    },
+    {
+      "alt": "Stat rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "07b9fffe1922ac8cdb4baf3ae8ba60b1aa8c438bb31e04783ada87c5d1cc10ff",
+      "slug": "stat",
+      "src": "/native-components/react-native/stat.webp",
+      "width": 900
+    },
+    {
+      "alt": "Status bar rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "eafaa8c9f1b20d28f804fdca093274b55d87dc7cc4e998dc66b9cd349ab28117",
+      "slug": "status-bar",
+      "src": "/native-components/react-native/status-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Surface rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "cd8c50c0d64b46420223e4d1ccd102f0b607684b14bc4a18f146226576aad875",
+      "slug": "surface",
+      "src": "/native-components/react-native/surface.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tabs rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "de398e6382713716d036871d7cd73a74e4736784e6aba095a6c38669cacacaed",
+      "slug": "tabs",
+      "src": "/native-components/react-native/tabs.webp",
+      "width": 900
+    },
+    {
+      "alt": "Text rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "4878c8747ca7f6c33c27fd93a99c9cb94f69fffe2e8b0f22520bff3b56570ea9",
+      "slug": "text",
+      "src": "/native-components/react-native/text.webp",
+      "width": 900
+    },
+    {
+      "alt": "Text field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2ec671455a111758eb846b3f64631071f29d600e19509e21e62cc14b7f8519c2",
+      "slug": "text-field",
+      "src": "/native-components/react-native/text-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Textarea rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "90cfd97f7627fa589b578d99d910e6937aae8225160c5c981eefac0e86618b2d",
+      "slug": "textarea",
+      "src": "/native-components/react-native/textarea.webp",
+      "width": 900
+    },
+    {
+      "alt": "Theme rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "e0cb0f19675d259e5377db3fdc25011846247252fedb90f4b23c73f5efc25a02",
+      "slug": "theme",
+      "src": "/native-components/react-native/theme.webp",
+      "width": 900
+    },
+    {
+      "alt": "Toast rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "fba3d351e84a0cf7648e6acb8c1e06ba6ae47c86eb9aa3fd067644de0bf6a3e1",
+      "slug": "toast",
+      "src": "/native-components/react-native/toast.webp",
+      "width": 900
+    },
+    {
+      "alt": "Toggle rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "380fee0cef5300452ca5ed418045c43c4918e1d7c433d2ca4fa64c11d1059afc",
+      "slug": "toggle",
+      "src": "/native-components/react-native/toggle.webp",
+      "width": 900
+    }
+  ]
+}

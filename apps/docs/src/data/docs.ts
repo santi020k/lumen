@@ -677,7 +677,7 @@ import '@santi020k/lumen-astro/styles.css'
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
       'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
-      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useResizable, useThemeBuilder, useToast, and useTooltip for behavior-heavy primitives.',
+      'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useKanban, useResizable, useThemeBuilder, useThemeToggle, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
     code: `import '@santi020k/lumen-react/styles.css'
@@ -3217,7 +3217,7 @@ export const componentDocs: ComponentDoc[] = (
       'Image',
       'Data display',
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
-      '<Image alt="Lumen UI logo" invertOnDark layout="fixed" src="/logo.svg" />'
+      '<Image alt="Lumen UI logo" layout="fixed" src="/logo.svg" />'
     ],
     [
       'Illustration',
@@ -4659,6 +4659,58 @@ export function WeekView() {
 }`
   },
   {
+    name: 'useKanban',
+    description:
+      'Provides controlled Kanban move requests and accessible props for boards, columns, items, and dedicated drag handles across keyboard, mouse, and touch input.',
+    options: [
+      hookApiRow(
+        'onMoveRequest', '(detail: LumenKanbanMoveDetail) => void', '-', 'Receives an accepted move request; the application remains responsible for updating and persisting item ownership.'
+      )
+    ],
+    controller: [
+      hookApiRow(
+        'rootProps', 'LumenProps<"section">', '-', 'Spread onto the Kanban board root.'
+      ),
+      hookApiRow(
+        'getColumnProps', '(column, props?) => LumenProps<"section">', '-', 'Returns drop-target props for a named column.'
+      ),
+      hookApiRow(
+        'getItemProps', '(itemId, props?) => LumenProps<"article">', '-', 'Returns identity props for a controlled item.'
+      ),
+      hookApiRow(
+        'getHandleProps', '(itemId, props?) => LumenProps<"button">', '-', 'Returns keyboard, pointer, and drag props for an item move handle.'
+      ),
+      hookApiRow(
+        'requestMove', '(detail: LumenKanbanMoveDetail) => boolean', '-', 'Dispatches a cancelable ui:kanban-move-request event and reports whether it was accepted.'
+      ),
+      hookApiRow(
+        'rootRef', 'RefObject<HTMLElement | null>', '-', 'Ref for the board element used to resolve items and destinations.'
+      )
+    ],
+    code: `import { Button, Card, KanbanBoard, KanbanColumn, useKanban } from '@santi020k/lumen-react'
+
+export function EditorialBoard() {
+  const kanban = useKanban({
+    onMoveRequest: ({ itemId, toColumn }) =>
+      console.log(\`Move \${itemId} to \${toColumn}\`)
+  })
+
+  return (
+    <KanbanBoard {...kanban.rootProps} aria-label="Editorial workflow">
+      <KanbanColumn {...kanban.getColumnProps('planned')}>
+        <Card as="article" {...kanban.getItemProps('draft')}>
+          <Button {...kanban.getHandleProps('draft')} aria-label="Move Draft article">
+            Move
+          </Button>
+          <strong>Draft article</strong>
+        </Card>
+      </KanbanColumn>
+      <KanbanColumn {...kanban.getColumnProps('published')} />
+    </KanbanBoard>
+  )
+}`
+  },
+  {
     name: 'useResizable',
     description:
       'Provides pane sizing props and separator handle props for horizontal or vertical resizable groups.',
@@ -4827,6 +4879,41 @@ export function CustomThemeBuilder() {
         </Card>
       </div>
     </ThemeBuilder>
+  )
+}`
+  },
+  {
+    name: 'useThemeToggle',
+    description:
+      'Synchronizes a light or dark theme with the document, local storage, and the shared theme-change event, with an optional pointer-origin transition that respects reduced motion.',
+    options: [
+      hookApiRow(
+        'defaultTheme', 'string', '"light"', 'Theme used when browser state is unavailable or has no saved value.'
+      )
+    ],
+    controller: [
+      hookApiRow(
+        'theme', 'string', '-', 'Current theme value.'
+      ),
+      hookApiRow(
+        'setTheme', 'Dispatch<SetStateAction<string>>', '-', 'Sets the current theme directly.'
+      ),
+      hookApiRow(
+        'toggleTheme', '(event?: MouseEvent<HTMLButtonElement>) => void', '-', 'Switches between light and dark and optionally starts the transition from the invoking button.'
+      )
+    ],
+    code: `import { ThemeToggle, useThemeToggle } from '@santi020k/lumen-react'
+
+export function ThemeControl() {
+  const { theme, toggleTheme } = useThemeToggle()
+
+  return (
+    <ThemeToggle
+      aria-label={\`Switch to \${theme === 'dark' ? 'light' : 'dark'} theme\`}
+      onClick={toggleTheme}
+    >
+      {theme === 'dark' ? 'Light' : 'Dark'}
+    </ThemeToggle>
   )
 }`
   }

@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 2,
+  "adapters": [
+    {
+      "id": "react-native-ios",
+      "adapter": "React Native",
+      "platform": "iOS",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "Oldest supported iPhone and iOS",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current iPhone and iOS",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "react-native-android",
+      "adapter": "React Native",
+      "platform": "Android",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "API 23-class Android device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current Android device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "swiftui-ios",
+      "adapter": "SwiftUI",
+      "platform": "iOS",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "iOS 16 physical device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current iPhone and iOS",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "swiftui-macos",
+      "adapter": "SwiftUI",
+      "platform": "macOS",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "macOS 13 physical Mac",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "partial",
+        "targetDescription": "MacBook Pro physical host on macOS 27.0",
+        "environment": {
+          "device": "MacBook Pro (Mac17,9, Apple M5 Pro)",
+          "osVersion": "macOS 27.0 (26A5416b)"
+        },
+        "date": "2026-08-21",
+        "revision": "128c97a",
+        "tester": "Codex automated accessibility inspection",
+        "evidence": [
+          "docs/native-device-validation.md#swiftui-on-macos"
+        ],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": true,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "swiftui-watchos",
+      "adapter": "SwiftUI",
+      "platform": "watchOS",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "watchOS 9 physical Apple Watch",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current Apple Watch and watchOS",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "compose-android",
+      "adapter": "Compose",
+      "platform": "Android",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "API 23-class Android device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current Android device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "compose-wear",
+      "adapter": "Compose",
+      "platform": "Wear OS",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "API 30-class physical Wear OS watch",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current physical Wear OS watch",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    }
+  ]
+}

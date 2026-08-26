@@ -43,15 +43,16 @@ more personal violet expression.
 
 ## Logo
 
-Use the Lumen mark as a lowercase `lu` monogram with one warm point of light, paired with `lumen ui`
-when the brand needs to be explicit. In tight spaces, the mark can stand alone with an accessible
-label.
+Use the Lumen mark as a lowercase `lu` monogram with one warm point of light. Pair the contained
+mark directly with the `lumen ui` wordmark when the brand needs to be explicit; do not add a divider
+or repeat the monogram as text. In tight spaces, the mark can stand alone with an accessible label.
 
-Do not redraw the mark from memory. Use the existing implementation in
-`apps/docs/src/components/LumenLogo.astro` or exported assets when they exist.
+Do not redraw the mark from memory or substitute live text. Use the path-based implementation in
+`apps/docs/src/components/LumenLogo.astro` or the exported `logo.svg`, `icon.svg`, and favicon assets.
 
-Pair the mark with a restrained serif wordmark and keep product UI copy in the app sans face. The
-contrast should feel editorial and intentional, not decorative.
+Pair the mark with the restrained serif wordmark and keep product UI copy in the app sans face. The
+smaller `ui` suffix is a quiet descriptor, not a separate accent. The contrast should feel editorial
+and intentional, not decorative.
 
 ## Interface Principles
 

@@ -1,5 +1,5 @@
 {
-  "generatorVersion": "0.8.0",
+  "generatorVersion": "1.0.0",
   "routes": {
     "/": {
       "alt": "Write it once. Ship it in any framework. — Lumen UI",
@@ -192,6 +192,2966 @@
       ],
       "pathname": "/docs/theme-playground",
       "title": "Build a theme from semantic roles."
+    },
+    "/changelog": {
+      "alt": "Changelog — Lumen UI",
+      "description": "Follow Lumen UI releases, fixes, and platform updates.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "changelog.webp",
+          "primary": true,
+          "url": "/og/pages/changelog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/changelog",
+      "title": "Changelog"
+    },
+    "/privacy": {
+      "alt": "Privacy — Lumen UI",
+      "description": "Learn how the Lumen UI website handles data and protects visitor privacy.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "privacy.webp",
+          "primary": true,
+          "url": "/og/pages/privacy.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/privacy",
+      "title": "Privacy"
+    },
+    "/support": {
+      "alt": "Support — Lumen UI",
+      "description": "Get help with Lumen UI components, integrations, and product workflows.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "support.webp",
+          "primary": true,
+          "url": "/og/pages/support.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/support",
+      "title": "Support"
+    },
+    "/terms": {
+      "alt": "Terms — Lumen UI",
+      "description": "Review the terms that apply when using the Lumen UI website and resources.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "terms.webp",
+          "primary": true,
+          "url": "/og/pages/terms.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/terms",
+      "title": "Terms"
+    },
+    "/docs/brand-icons": {
+      "alt": "Brand icons — Lumen UI",
+      "description": "Use the shared brand icon catalog across supported Lumen platforms.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--brand-icons.webp",
+          "primary": true,
+          "url": "/og/pages/docs--brand-icons.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/brand-icons",
+      "title": "Brand icons"
+    },
+    "/docs/forms": {
+      "alt": "Forms — Lumen UI",
+      "description": "Build accessible forms with Lumen components and framework integrations.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--forms.webp",
+          "primary": true,
+          "url": "/og/pages/docs--forms.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/forms",
+      "title": "Forms"
+    },
+    "/docs/forms/astro-actions": {
+      "alt": "Astro Actions — Lumen UI",
+      "description": "Connect Lumen form components to type-safe Astro Actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--forms--astro-actions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--forms--astro-actions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/forms/astro-actions",
+      "title": "Astro Actions"
+    },
+    "/docs/forms/elements": {
+      "alt": "Web Component forms — Lumen UI",
+      "description": "Build standards-based forms with Lumen custom elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--forms--elements.webp",
+          "primary": true,
+          "url": "/og/pages/docs--forms--elements.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/forms/elements",
+      "title": "Web Component forms"
+    },
+    "/docs/forms/react-hook-form": {
+      "alt": "React Hook Form — Lumen UI",
+      "description": "Connect Lumen React components to React Hook Form.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--forms--react-hook-form.webp",
+          "primary": true,
+          "url": "/og/pages/docs--forms--react-hook-form.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/forms/react-hook-form",
+      "title": "React Hook Form"
+    },
+    "/docs/foundations": {
+      "alt": "Foundations — Lumen UI",
+      "description": "Apply Lumen semantic tokens, typography, spacing, and themes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--foundations.webp",
+          "primary": true,
+          "url": "/og/pages/docs--foundations.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/foundations",
+      "title": "Foundations"
+    },
+    "/docs/frameworks/astro": {
+      "alt": "Astro — Lumen UI",
+      "description": "Use the complete Lumen component catalog in Astro applications.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--astro.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--astro.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/astro",
+      "title": "Astro"
+    },
+    "/docs/frameworks/elements": {
+      "alt": "Web Components — Lumen UI",
+      "description": "Use Lumen custom elements in standards-based applications.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--elements.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--elements.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/elements",
+      "title": "Web Components"
+    },
+    "/docs/frameworks/react": {
+      "alt": "React — Lumen UI",
+      "description": "Use Lumen primitives and hooks in React applications.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react",
+      "title": "React"
+    },
+    "/docs/icons": {
+      "alt": "Icons — Lumen UI",
+      "description": "Use accessible Lumen icons across product interfaces.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--icons.webp",
+          "primary": true,
+          "url": "/og/pages/docs--icons.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/icons",
+      "title": "Icons"
+    },
+    "/docs/web": {
+      "alt": "Web platforms — Lumen UI",
+      "description": "Use one semantic Lumen contract across Astro, React, and Web Components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web",
+      "title": "Web platforms"
+    },
+    "/docs/web/playground": {
+      "alt": "Web playground — Lumen UI",
+      "description": "Explore Lumen web components and themes in a live playground.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/playground",
+      "title": "Web playground"
+    },
+    "/docs/apple": {
+      "alt": "Apple platforms — Lumen UI",
+      "description": "Build native Apple interfaces with Lumen SwiftUI components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple",
+      "title": "Apple platforms"
+    },
+    "/docs/apple/playground": {
+      "alt": "Apple playground — Lumen UI",
+      "description": "Explore Lumen SwiftUI components in a native playground.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/playground",
+      "title": "Apple playground"
+    },
+    "/docs/android": {
+      "alt": "Android — Lumen UI",
+      "description": "Build native Android interfaces with Lumen Compose components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android",
+      "title": "Android"
+    },
+    "/docs/android/playground": {
+      "alt": "Android playground — Lumen UI",
+      "description": "Explore Lumen Compose components in a native playground.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/playground",
+      "title": "Android playground"
+    },
+    "/docs/react-native": {
+      "alt": "React Native — Lumen UI",
+      "description": "Build native mobile interfaces with Lumen React Native components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native",
+      "title": "React Native"
+    },
+    "/docs/react-native/playground": {
+      "alt": "React Native playground — Lumen UI",
+      "description": "Explore Lumen React Native components in a native playground.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/playground",
+      "title": "React Native playground"
+    },
+    "/templates/analytics-dashboard": {
+      "alt": "Analytics Dashboard — Lumen UI",
+      "description": "Start from a complete, accessible Lumen product template.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "templates--analytics-dashboard.webp",
+          "primary": true,
+          "url": "/og/pages/templates--analytics-dashboard.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/templates/analytics-dashboard",
+      "title": "Analytics Dashboard"
+    },
+    "/templates/auth-onboarding": {
+      "alt": "Auth Onboarding — Lumen UI",
+      "description": "Start from a complete, accessible Lumen product template.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "templates--auth-onboarding.webp",
+          "primary": true,
+          "url": "/og/pages/templates--auth-onboarding.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/templates/auth-onboarding",
+      "title": "Auth Onboarding"
+    },
+    "/templates/commerce-dashboard": {
+      "alt": "Commerce Dashboard — Lumen UI",
+      "description": "Start from a complete, accessible Lumen product template.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "templates--commerce-dashboard.webp",
+          "primary": true,
+          "url": "/og/pages/templates--commerce-dashboard.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/templates/commerce-dashboard",
+      "title": "Commerce Dashboard"
+    },
+    "/templates/project-workspace": {
+      "alt": "Project Workspace — Lumen UI",
+      "description": "Start from a complete, accessible Lumen product template.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "templates--project-workspace.webp",
+          "primary": true,
+          "url": "/og/pages/templates--project-workspace.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/templates/project-workspace",
+      "title": "Project Workspace"
+    },
+    "/templates/saas-admin": {
+      "alt": "Saas Admin — Lumen UI",
+      "description": "Start from a complete, accessible Lumen product template.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "templates--saas-admin.webp",
+          "primary": true,
+          "url": "/og/pages/templates--saas-admin.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/templates/saas-admin",
+      "title": "Saas Admin"
+    },
+    "/docs/react-native/components": {
+      "alt": "react-native components — Lumen UI",
+      "description": "Browse Lumen components for react-native.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components",
+      "title": "react-native components"
+    },
+    "/docs/react-native/components/theme": {
+      "alt": "Theme — Lumen UI",
+      "description": "Provide generated semantic colors, spacing, radii, typography, motion, and elevation to native components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--theme.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--theme.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/theme",
+      "title": "Theme"
+    },
+    "/docs/react-native/components/text": {
+      "alt": "Text — Lumen UI",
+      "description": "Render native text with shared typography variants and semantic color tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--text.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--text.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/text",
+      "title": "Text"
+    },
+    "/docs/react-native/components/surface": {
+      "alt": "Surface — Lumen UI",
+      "description": "Compose content on semantic native backgrounds with shared padding and radius roles.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--surface.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--surface.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/surface",
+      "title": "Surface"
+    },
+    "/docs/react-native/components/icon": {
+      "alt": "Icon — Lumen UI",
+      "description": "Display the complete shared interface and brand catalog, with platform-native escape hatches.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/icon",
+      "title": "Icon"
+    },
+    "/docs/react-native/components/icon-button": {
+      "alt": "Icon button — Lumen UI",
+      "description": "Trigger a native action with a required accessible label and platform icon.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--icon-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--icon-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/icon-button",
+      "title": "Icon button"
+    },
+    "/docs/react-native/components/button": {
+      "alt": "Button — Lumen UI",
+      "description": "Run native actions with shared intent, size, loading, and disabled contracts.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/button",
+      "title": "Button"
+    },
+    "/docs/react-native/components/text-field": {
+      "alt": "Text field — Lumen UI",
+      "description": "Collect a single line of text using each platform’s native input and focus behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--text-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--text-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/text-field",
+      "title": "Text field"
+    },
+    "/docs/react-native/components/badge": {
+      "alt": "Badge — Lumen UI",
+      "description": "Display compact native status and classification labels using semantic tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/badge",
+      "title": "Badge"
+    },
+    "/docs/react-native/components/divider": {
+      "alt": "Divider — Lumen UI",
+      "description": "Separate related native content with the shared semantic line role.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--divider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--divider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/divider",
+      "title": "Divider"
+    },
+    "/docs/react-native/components/spinner": {
+      "alt": "Spinner — Lumen UI",
+      "description": "Communicate an indeterminate native loading state with a semantic brand treatment.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--spinner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--spinner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/spinner",
+      "title": "Spinner"
+    },
+    "/docs/react-native/components/card": {
+      "alt": "Card — Lumen UI",
+      "description": "Group related native content on a bordered semantic surface with optional card-level action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--card.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--card.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/card",
+      "title": "Card"
+    },
+    "/docs/react-native/components/alert": {
+      "alt": "Alert — Lumen UI",
+      "description": "Present inline native feedback using shared neutral, destructive, success, and warning treatments.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--alert.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--alert.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/alert",
+      "title": "Alert"
+    },
+    "/docs/react-native/components/progress": {
+      "alt": "Progress — Lumen UI",
+      "description": "Show normalized determinate progress with native accessibility semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/progress",
+      "title": "Progress"
+    },
+    "/docs/react-native/components/skeleton": {
+      "alt": "Skeleton — Lumen UI",
+      "description": "Represent loading text, rectangles, and circles with quiet semantic placeholders.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--skeleton.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--skeleton.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/skeleton",
+      "title": "Skeleton"
+    },
+    "/docs/react-native/components/disclosure": {
+      "alt": "Disclosure — Lumen UI",
+      "description": "Reveal optional native content through a controlled, accessible disclosure trigger.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--disclosure.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--disclosure.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/disclosure",
+      "title": "Disclosure"
+    },
+    "/docs/react-native/components/avatar": {
+      "alt": "Avatar — Lumen UI",
+      "description": "Display a native image or fallback identity at shared avatar sizes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--avatar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--avatar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/avatar",
+      "title": "Avatar"
+    },
+    "/docs/react-native/components/textarea": {
+      "alt": "Textarea — Lumen UI",
+      "description": "Capture multiline native text with shared labeling, supporting copy, and error treatment.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--textarea.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--textarea.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/textarea",
+      "title": "Textarea"
+    },
+    "/docs/react-native/components/field-group": {
+      "alt": "Field group — Lumen UI",
+      "description": "Compose related native controls under one label, description, required state, and validation message.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--field-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--field-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/field-group",
+      "title": "Field group"
+    },
+    "/docs/react-native/components/chip": {
+      "alt": "Chip — Lumen UI",
+      "description": "Represent compact selected, actionable, or removable values with native interaction semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--chip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--chip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/chip",
+      "title": "Chip"
+    },
+    "/docs/react-native/components/button-group": {
+      "alt": "Button group — Lumen UI",
+      "description": "Lay out a small set of related native actions horizontally or vertically.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--button-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--button-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/button-group",
+      "title": "Button group"
+    },
+    "/docs/react-native/components/toast": {
+      "alt": "Toast — Lumen UI",
+      "description": "Present app-controlled transient native feedback with semantic tone and optional actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--toast.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--toast.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/toast",
+      "title": "Toast"
+    },
+    "/docs/react-native/components/toggle": {
+      "alt": "Toggle — Lumen UI",
+      "description": "Present a labeled native switch with Lumen brand tint.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/toggle",
+      "title": "Toggle"
+    },
+    "/docs/react-native/components/settings-row": {
+      "alt": "Settings row — Lumen UI",
+      "description": "Align a setting title and explanation with an optional graphic and trailing native control.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--settings-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--settings-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/settings-row",
+      "title": "Settings row"
+    },
+    "/docs/react-native/components/search-field": {
+      "alt": "Search field — Lumen UI",
+      "description": "Filter native content with a density-aware search field and clear action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--search-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--search-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/search-field",
+      "title": "Search field"
+    },
+    "/docs/react-native/components/checkbox": {
+      "alt": "Checkbox — Lumen UI",
+      "description": "Capture a controlled Boolean choice with a generous native target and supporting text.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--checkbox.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--checkbox.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/checkbox",
+      "title": "Checkbox"
+    },
+    "/docs/react-native/components/radio-group": {
+      "alt": "Radio group — Lumen UI",
+      "description": "Choose one value from a visible, labeled group of native radio options.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--radio-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--radio-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/radio-group",
+      "title": "Radio group"
+    },
+    "/docs/react-native/components/segmented-control": {
+      "alt": "Segmented control — Lumen UI",
+      "description": "Choose one value from a compact row of short peer options.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--segmented-control.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--segmented-control.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/segmented-control",
+      "title": "Segmented control"
+    },
+    "/docs/react-native/components/tabs": {
+      "alt": "Tabs — Lumen UI",
+      "description": "Switch a controlled native content panel from an accessible tab list.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--tabs.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--tabs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/tabs",
+      "title": "Tabs"
+    },
+    "/docs/react-native/components/navigation-bar": {
+      "alt": "Navigation bar — Lumen UI",
+      "description": "Select among peer application destinations with native visuals and controlled state.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--navigation-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--navigation-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/navigation-bar",
+      "title": "Navigation bar"
+    },
+    "/docs/react-native/components/empty-state": {
+      "alt": "Empty state — Lumen UI",
+      "description": "Explain missing content with supporting copy, an optional graphic, and a recovery action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--empty-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--empty-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/empty-state",
+      "title": "Empty state"
+    },
+    "/docs/react-native/components/list-row": {
+      "alt": "List row — Lumen UI",
+      "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--list-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--list-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/list-row",
+      "title": "List row"
+    },
+    "/docs/react-native/components/banner": {
+      "alt": "Banner — Lumen UI",
+      "description": "Present a structured semantic notice with optional actions and dismissal.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--banner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--banner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/banner",
+      "title": "Banner"
+    },
+    "/docs/react-native/components/stat": {
+      "alt": "Stat — Lumen UI",
+      "description": "Display a compact product metric with semantic tone and optional supporting context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--stat.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--stat.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/stat",
+      "title": "Stat"
+    },
+    "/docs/react-native/components/section-header": {
+      "alt": "Section header — Lumen UI",
+      "description": "Identify a native section with optional supporting copy, count, and trailing actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--section-header.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--section-header.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/section-header",
+      "title": "Section header"
+    },
+    "/docs/react-native/components/status-bar": {
+      "alt": "Status bar — Lumen UI",
+      "description": "Present compact textual application status with optional trailing content.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--status-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--status-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/status-bar",
+      "title": "Status bar"
+    },
+    "/docs/react-native/components/collapsible-navigation-bar": {
+      "alt": "Collapsible navigation bar — Lumen UI",
+      "description": "Animate a React Native destination bar in response to native vertical scroll travel.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--collapsible-navigation-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--collapsible-navigation-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/collapsible-navigation-bar",
+      "title": "Collapsible navigation bar"
+    },
+    "/docs/react-native/components/navigation-accessory": {
+      "alt": "Navigation accessory — Lumen UI",
+      "description": "Place compact application status or actions above React Native bottom navigation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--navigation-accessory.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--navigation-accessory.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/navigation-accessory",
+      "title": "Navigation accessory"
+    },
+    "/docs/react-native/components/refresh-control": {
+      "alt": "Refresh control — Lumen UI",
+      "description": "Apply Lumen semantic colors to React Native pull-to-refresh behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--refresh-control.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--refresh-control.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/refresh-control",
+      "title": "Refresh control"
+    },
+    "/docs/react-native/components/graphic": {
+      "alt": "Graphic — Lumen UI",
+      "description": "Frame application-provided artwork with token-aware glow, grid, or orbit decoration.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--graphic.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--graphic.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/graphic",
+      "title": "Graphic"
+    },
+    "/docs/react-native/components/backdrop": {
+      "alt": "Backdrop — Lumen UI",
+      "description": "Place a token-aware ambient pattern behind native application content.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--backdrop.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--backdrop.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/backdrop",
+      "title": "Backdrop"
+    },
+    "/docs/react-native/components/illustration": {
+      "alt": "Illustration — Lumen UI",
+      "description": "Render a built-in empty, success, error, or offline semantic scene.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--illustration.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--illustration.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/illustration",
+      "title": "Illustration"
+    },
+    "/docs/react-native/components/alert-dialog": {
+      "alt": "Alert dialog — Lumen UI",
+      "description": "Request a controlled native confirmation with explicit cancel and confirm states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--alert-dialog.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--alert-dialog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/alert-dialog",
+      "title": "Alert dialog"
+    },
+    "/docs/react-native/components/sheet": {
+      "alt": "Sheet — Lumen UI",
+      "description": "Present supplemental application content in a controlled native sheet.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--sheet.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--sheet.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/sheet",
+      "title": "Sheet"
+    },
+    "/docs/react-native/components/menu": {
+      "alt": "Menu — Lumen UI",
+      "description": "Present a native anchored action menu with shared item-state semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/menu",
+      "title": "Menu"
+    },
+    "/docs/react-native/components/share-button": {
+      "alt": "Share button — Lumen UI",
+      "description": "Open the operating system share surface from a token-aware native action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--share-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--share-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/share-button",
+      "title": "Share button"
+    },
+    "/docs/apple/components": {
+      "alt": "apple components — Lumen UI",
+      "description": "Browse Lumen components for apple.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components",
+      "title": "apple components"
+    },
+    "/docs/apple/components/theme": {
+      "alt": "Theme — Lumen UI",
+      "description": "Provide generated semantic colors, spacing, radii, typography, motion, and elevation to native components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--theme.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--theme.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/theme",
+      "title": "Theme"
+    },
+    "/docs/apple/components/text": {
+      "alt": "Text — Lumen UI",
+      "description": "Render native text with shared typography variants and semantic color tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--text.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--text.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/text",
+      "title": "Text"
+    },
+    "/docs/apple/components/surface": {
+      "alt": "Surface — Lumen UI",
+      "description": "Compose content on semantic native backgrounds with shared padding and radius roles.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--surface.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--surface.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/surface",
+      "title": "Surface"
+    },
+    "/docs/apple/components/icon": {
+      "alt": "Icon — Lumen UI",
+      "description": "Display the complete shared interface and brand catalog, with platform-native escape hatches.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/icon",
+      "title": "Icon"
+    },
+    "/docs/apple/components/icon-button": {
+      "alt": "Icon button — Lumen UI",
+      "description": "Trigger a native action with a required accessible label and platform icon.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--icon-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--icon-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/icon-button",
+      "title": "Icon button"
+    },
+    "/docs/apple/components/button": {
+      "alt": "Button — Lumen UI",
+      "description": "Run native actions with shared intent, size, loading, and disabled contracts.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/button",
+      "title": "Button"
+    },
+    "/docs/apple/components/text-field": {
+      "alt": "Text field — Lumen UI",
+      "description": "Collect a single line of text using each platform’s native input and focus behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--text-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--text-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/text-field",
+      "title": "Text field"
+    },
+    "/docs/apple/components/badge": {
+      "alt": "Badge — Lumen UI",
+      "description": "Display compact native status and classification labels using semantic tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/badge",
+      "title": "Badge"
+    },
+    "/docs/apple/components/divider": {
+      "alt": "Divider — Lumen UI",
+      "description": "Separate related native content with the shared semantic line role.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--divider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--divider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/divider",
+      "title": "Divider"
+    },
+    "/docs/apple/components/spinner": {
+      "alt": "Spinner — Lumen UI",
+      "description": "Communicate an indeterminate native loading state with a semantic brand treatment.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--spinner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--spinner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/spinner",
+      "title": "Spinner"
+    },
+    "/docs/apple/components/card": {
+      "alt": "Card — Lumen UI",
+      "description": "Group related native content on a bordered semantic surface with optional card-level action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--card.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--card.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/card",
+      "title": "Card"
+    },
+    "/docs/apple/components/alert": {
+      "alt": "Alert — Lumen UI",
+      "description": "Present inline native feedback using shared neutral, destructive, success, and warning treatments.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--alert.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--alert.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/alert",
+      "title": "Alert"
+    },
+    "/docs/apple/components/progress": {
+      "alt": "Progress — Lumen UI",
+      "description": "Show normalized determinate progress with native accessibility semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/progress",
+      "title": "Progress"
+    },
+    "/docs/apple/components/skeleton": {
+      "alt": "Skeleton — Lumen UI",
+      "description": "Represent loading text, rectangles, and circles with quiet semantic placeholders.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--skeleton.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--skeleton.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/skeleton",
+      "title": "Skeleton"
+    },
+    "/docs/apple/components/disclosure": {
+      "alt": "Disclosure — Lumen UI",
+      "description": "Reveal optional native content through a controlled, accessible disclosure trigger.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--disclosure.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--disclosure.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/disclosure",
+      "title": "Disclosure"
+    },
+    "/docs/apple/components/avatar": {
+      "alt": "Avatar — Lumen UI",
+      "description": "Display a native image or fallback identity at shared avatar sizes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--avatar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--avatar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/avatar",
+      "title": "Avatar"
+    },
+    "/docs/apple/components/textarea": {
+      "alt": "Textarea — Lumen UI",
+      "description": "Capture multiline native text with shared labeling, supporting copy, and error treatment.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--textarea.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--textarea.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/textarea",
+      "title": "Textarea"
+    },
+    "/docs/apple/components/field-group": {
+      "alt": "Field group — Lumen UI",
+      "description": "Compose related native controls under one label, description, required state, and validation message.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--field-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--field-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/field-group",
+      "title": "Field group"
+    },
+    "/docs/apple/components/chip": {
+      "alt": "Chip — Lumen UI",
+      "description": "Represent compact selected, actionable, or removable values with native interaction semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--chip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--chip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/chip",
+      "title": "Chip"
+    },
+    "/docs/apple/components/button-group": {
+      "alt": "Button group — Lumen UI",
+      "description": "Lay out a small set of related native actions horizontally or vertically.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--button-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--button-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/button-group",
+      "title": "Button group"
+    },
+    "/docs/apple/components/toast": {
+      "alt": "Toast — Lumen UI",
+      "description": "Present app-controlled transient native feedback with semantic tone and optional actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--toast.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--toast.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/toast",
+      "title": "Toast"
+    },
+    "/docs/apple/components/toggle": {
+      "alt": "Toggle — Lumen UI",
+      "description": "Present a labeled native switch with Lumen brand tint.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/toggle",
+      "title": "Toggle"
+    },
+    "/docs/apple/components/settings-row": {
+      "alt": "Settings row — Lumen UI",
+      "description": "Align a setting title and explanation with an optional graphic and trailing native control.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--settings-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--settings-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/settings-row",
+      "title": "Settings row"
+    },
+    "/docs/apple/components/picker": {
+      "alt": "Picker — Lumen UI",
+      "description": "Choose one value through native SwiftUI or Material selection presentation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/picker",
+      "title": "Picker"
+    },
+    "/docs/apple/components/slider": {
+      "alt": "Slider — Lumen UI",
+      "description": "Adjust a continuous or stepped numeric value with a visible formatted label.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/slider",
+      "title": "Slider"
+    },
+    "/docs/apple/components/search-field": {
+      "alt": "Search field — Lumen UI",
+      "description": "Filter native content with a density-aware search field and clear action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--search-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--search-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/search-field",
+      "title": "Search field"
+    },
+    "/docs/apple/components/checkbox": {
+      "alt": "Checkbox — Lumen UI",
+      "description": "Capture a controlled Boolean choice with a generous native target and supporting text.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--checkbox.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--checkbox.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/checkbox",
+      "title": "Checkbox"
+    },
+    "/docs/apple/components/radio-group": {
+      "alt": "Radio group — Lumen UI",
+      "description": "Choose one value from a visible, labeled group of native radio options.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--radio-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--radio-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/radio-group",
+      "title": "Radio group"
+    },
+    "/docs/apple/components/segmented-control": {
+      "alt": "Segmented control — Lumen UI",
+      "description": "Choose one value from a compact row of short peer options.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--segmented-control.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--segmented-control.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/segmented-control",
+      "title": "Segmented control"
+    },
+    "/docs/apple/components/tabs": {
+      "alt": "Tabs — Lumen UI",
+      "description": "Switch a controlled native content panel from an accessible tab list.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tabs.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tabs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tabs",
+      "title": "Tabs"
+    },
+    "/docs/apple/components/navigation-bar": {
+      "alt": "Navigation bar — Lumen UI",
+      "description": "Select among peer application destinations with native visuals and controlled state.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--navigation-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--navigation-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/navigation-bar",
+      "title": "Navigation bar"
+    },
+    "/docs/apple/components/empty-state": {
+      "alt": "Empty state — Lumen UI",
+      "description": "Explain missing content with supporting copy, an optional graphic, and a recovery action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--empty-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--empty-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/empty-state",
+      "title": "Empty state"
+    },
+    "/docs/apple/components/list-row": {
+      "alt": "List row — Lumen UI",
+      "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--list-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--list-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/list-row",
+      "title": "List row"
+    },
+    "/docs/apple/components/banner": {
+      "alt": "Banner — Lumen UI",
+      "description": "Present a structured semantic notice with optional actions and dismissal.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--banner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--banner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/banner",
+      "title": "Banner"
+    },
+    "/docs/apple/components/stat": {
+      "alt": "Stat — Lumen UI",
+      "description": "Display a compact product metric with semantic tone and optional supporting context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--stat.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--stat.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/stat",
+      "title": "Stat"
+    },
+    "/docs/apple/components/gauge": {
+      "alt": "Gauge — Lumen UI",
+      "description": "Show a normalized circular SwiftUI or Material metric with a formatted accessible value.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--gauge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--gauge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/gauge",
+      "title": "Gauge"
+    },
+    "/docs/apple/components/section-header": {
+      "alt": "Section header — Lumen UI",
+      "description": "Identify a native section with optional supporting copy, count, and trailing actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--section-header.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--section-header.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/section-header",
+      "title": "Section header"
+    },
+    "/docs/apple/components/status-bar": {
+      "alt": "Status bar — Lumen UI",
+      "description": "Present compact textual application status with optional trailing content.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--status-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--status-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/status-bar",
+      "title": "Status bar"
+    },
+    "/docs/apple/components/date-field": {
+      "alt": "Date field — Lumen UI",
+      "description": "Select an Apple-native date or time with bounds and validation context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--date-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--date-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/date-field",
+      "title": "Date field"
+    },
+    "/docs/apple/components/link": {
+      "alt": "Link — Lumen UI",
+      "description": "Open an Apple URL using native SwiftUI behavior and Lumen semantic styling.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--link.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--link.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/link",
+      "title": "Link"
+    },
+    "/docs/apple/components/tab-bar-minimization": {
+      "alt": "Tab bar minimization — Lumen UI",
+      "description": "Let an iPhone native tab bar minimize and expand in response to scrolling.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tab-bar-minimization.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tab-bar-minimization.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tab-bar-minimization",
+      "title": "Tab bar minimization"
+    },
+    "/docs/apple/components/tab-accessory": {
+      "alt": "Tab accessory — Lumen UI",
+      "description": "Adapt application-owned accessory content to expanded and inline tab-bar placement.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tab-accessory.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tab-accessory.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tab-accessory",
+      "title": "Tab accessory"
+    },
+    "/docs/apple/components/shortcut-recorder": {
+      "alt": "Shortcut recorder — Lumen UI",
+      "description": "Capture, validate, change, and clear native macOS keyboard shortcuts.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--shortcut-recorder.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--shortcut-recorder.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/shortcut-recorder",
+      "title": "Shortcut recorder"
+    },
+    "/docs/apple/components/symbol-picker": {
+      "alt": "Symbol picker — Lumen UI",
+      "description": "Search and choose from labeled, categorized SF Symbols in a native macOS picker.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--symbol-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--symbol-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/symbol-picker",
+      "title": "Symbol picker"
+    },
+    "/docs/apple/components/graphic": {
+      "alt": "Graphic — Lumen UI",
+      "description": "Frame application-provided artwork with token-aware glow, grid, or orbit decoration.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--graphic.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--graphic.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/graphic",
+      "title": "Graphic"
+    },
+    "/docs/apple/components/backdrop": {
+      "alt": "Backdrop — Lumen UI",
+      "description": "Place a token-aware ambient pattern behind native application content.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--backdrop.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--backdrop.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/backdrop",
+      "title": "Backdrop"
+    },
+    "/docs/apple/components/illustration": {
+      "alt": "Illustration — Lumen UI",
+      "description": "Render a built-in empty, success, error, or offline semantic scene.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--illustration.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--illustration.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/illustration",
+      "title": "Illustration"
+    },
+    "/docs/apple/components/alert-dialog": {
+      "alt": "Alert dialog — Lumen UI",
+      "description": "Request a controlled native confirmation with explicit cancel and confirm states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--alert-dialog.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--alert-dialog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/alert-dialog",
+      "title": "Alert dialog"
+    },
+    "/docs/apple/components/sheet": {
+      "alt": "Sheet — Lumen UI",
+      "description": "Present supplemental application content in a controlled native sheet.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--sheet.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--sheet.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/sheet",
+      "title": "Sheet"
+    },
+    "/docs/apple/components/menu": {
+      "alt": "Menu — Lumen UI",
+      "description": "Present a native anchored action menu with shared item-state semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/menu",
+      "title": "Menu"
+    },
+    "/docs/apple/components/share-button": {
+      "alt": "Share button — Lumen UI",
+      "description": "Open the operating system share surface from a token-aware native action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--share-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--share-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/share-button",
+      "title": "Share button"
+    },
+    "/docs/apple/components/wearable-action": {
+      "alt": "Wearable action — Lumen UI",
+      "description": "Present one at-a-glance, round primary action on watchOS or Wear OS.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--wearable-action.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--wearable-action.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/wearable-action",
+      "title": "Wearable action"
+    },
+    "/docs/apple/components/wearable-progress": {
+      "alt": "Wearable progress — Lumen UI",
+      "description": "Surround wearable content with clamped semantic circular progress.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--wearable-progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--wearable-progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/wearable-progress",
+      "title": "Wearable progress"
+    },
+    "/docs/apple/components/wearable-status": {
+      "alt": "Wearable status — Lumen UI",
+      "description": "Show a compact, text-first semantic status on the wrist.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--wearable-status.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--wearable-status.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/wearable-status",
+      "title": "Wearable status"
+    },
+    "/docs/apple/components/wearable-metric": {
+      "alt": "Wearable metric — Lumen UI",
+      "description": "Present one at-a-glance wearable label, value, and optional detail.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--wearable-metric.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--wearable-metric.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/wearable-metric",
+      "title": "Wearable metric"
+    },
+    "/docs/apple/components/wearable-list-row": {
+      "alt": "Wearable list row — Lumen UI",
+      "description": "Compose a compact wearable row with flexible content slots.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--wearable-list-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--wearable-list-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/wearable-list-row",
+      "title": "Wearable list row"
+    },
+    "/docs/android/components": {
+      "alt": "android components — Lumen UI",
+      "description": "Browse Lumen components for android.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components",
+      "title": "android components"
+    },
+    "/docs/android/components/theme": {
+      "alt": "Theme — Lumen UI",
+      "description": "Provide generated semantic colors, spacing, radii, typography, motion, and elevation to native components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--theme.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--theme.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/theme",
+      "title": "Theme"
+    },
+    "/docs/android/components/text": {
+      "alt": "Text — Lumen UI",
+      "description": "Render native text with shared typography variants and semantic color tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--text.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--text.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/text",
+      "title": "Text"
+    },
+    "/docs/android/components/surface": {
+      "alt": "Surface — Lumen UI",
+      "description": "Compose content on semantic native backgrounds with shared padding and radius roles.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--surface.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--surface.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/surface",
+      "title": "Surface"
+    },
+    "/docs/android/components/icon": {
+      "alt": "Icon — Lumen UI",
+      "description": "Display the complete shared interface and brand catalog, with platform-native escape hatches.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/icon",
+      "title": "Icon"
+    },
+    "/docs/android/components/icon-button": {
+      "alt": "Icon button — Lumen UI",
+      "description": "Trigger a native action with a required accessible label and platform icon.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--icon-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--icon-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/icon-button",
+      "title": "Icon button"
+    },
+    "/docs/android/components/button": {
+      "alt": "Button — Lumen UI",
+      "description": "Run native actions with shared intent, size, loading, and disabled contracts.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/button",
+      "title": "Button"
+    },
+    "/docs/android/components/text-field": {
+      "alt": "Text field — Lumen UI",
+      "description": "Collect a single line of text using each platform’s native input and focus behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--text-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--text-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/text-field",
+      "title": "Text field"
+    },
+    "/docs/android/components/badge": {
+      "alt": "Badge — Lumen UI",
+      "description": "Display compact native status and classification labels using semantic tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/badge",
+      "title": "Badge"
+    },
+    "/docs/android/components/divider": {
+      "alt": "Divider — Lumen UI",
+      "description": "Separate related native content with the shared semantic line role.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--divider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--divider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/divider",
+      "title": "Divider"
+    },
+    "/docs/android/components/spinner": {
+      "alt": "Spinner — Lumen UI",
+      "description": "Communicate an indeterminate native loading state with a semantic brand treatment.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--spinner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--spinner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/spinner",
+      "title": "Spinner"
+    },
+    "/docs/android/components/card": {
+      "alt": "Card — Lumen UI",
+      "description": "Group related native content on a bordered semantic surface with optional card-level action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--card.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--card.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/card",
+      "title": "Card"
+    },
+    "/docs/android/components/alert": {
+      "alt": "Alert — Lumen UI",
+      "description": "Present inline native feedback using shared neutral, destructive, success, and warning treatments.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--alert.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--alert.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/alert",
+      "title": "Alert"
+    },
+    "/docs/android/components/progress": {
+      "alt": "Progress — Lumen UI",
+      "description": "Show normalized determinate progress with native accessibility semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/progress",
+      "title": "Progress"
+    },
+    "/docs/android/components/skeleton": {
+      "alt": "Skeleton — Lumen UI",
+      "description": "Represent loading text, rectangles, and circles with quiet semantic placeholders.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--skeleton.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--skeleton.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/skeleton",
+      "title": "Skeleton"
+    },
+    "/docs/android/components/disclosure": {
+      "alt": "Disclosure — Lumen UI",
+      "description": "Reveal optional native content through a controlled, accessible disclosure trigger.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--disclosure.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--disclosure.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/disclosure",
+      "title": "Disclosure"
+    },
+    "/docs/android/components/avatar": {
+      "alt": "Avatar — Lumen UI",
+      "description": "Display a native image or fallback identity at shared avatar sizes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--avatar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--avatar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/avatar",
+      "title": "Avatar"
+    },
+    "/docs/android/components/textarea": {
+      "alt": "Textarea — Lumen UI",
+      "description": "Capture multiline native text with shared labeling, supporting copy, and error treatment.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--textarea.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--textarea.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/textarea",
+      "title": "Textarea"
+    },
+    "/docs/android/components/field-group": {
+      "alt": "Field group — Lumen UI",
+      "description": "Compose related native controls under one label, description, required state, and validation message.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--field-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--field-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/field-group",
+      "title": "Field group"
+    },
+    "/docs/android/components/chip": {
+      "alt": "Chip — Lumen UI",
+      "description": "Represent compact selected, actionable, or removable values with native interaction semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--chip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--chip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/chip",
+      "title": "Chip"
+    },
+    "/docs/android/components/button-group": {
+      "alt": "Button group — Lumen UI",
+      "description": "Lay out a small set of related native actions horizontally or vertically.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--button-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--button-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/button-group",
+      "title": "Button group"
+    },
+    "/docs/android/components/toast": {
+      "alt": "Toast — Lumen UI",
+      "description": "Present app-controlled transient native feedback with semantic tone and optional actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--toast.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--toast.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/toast",
+      "title": "Toast"
+    },
+    "/docs/android/components/toggle": {
+      "alt": "Toggle — Lumen UI",
+      "description": "Present a labeled native switch with Lumen brand tint.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/toggle",
+      "title": "Toggle"
+    },
+    "/docs/android/components/settings-row": {
+      "alt": "Settings row — Lumen UI",
+      "description": "Align a setting title and explanation with an optional graphic and trailing native control.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--settings-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--settings-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/settings-row",
+      "title": "Settings row"
+    },
+    "/docs/android/components/picker": {
+      "alt": "Picker — Lumen UI",
+      "description": "Choose one value through native SwiftUI or Material selection presentation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/picker",
+      "title": "Picker"
+    },
+    "/docs/android/components/slider": {
+      "alt": "Slider — Lumen UI",
+      "description": "Adjust a continuous or stepped numeric value with a visible formatted label.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/slider",
+      "title": "Slider"
+    },
+    "/docs/android/components/search-field": {
+      "alt": "Search field — Lumen UI",
+      "description": "Filter native content with a density-aware search field and clear action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--search-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--search-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/search-field",
+      "title": "Search field"
+    },
+    "/docs/android/components/checkbox": {
+      "alt": "Checkbox — Lumen UI",
+      "description": "Capture a controlled Boolean choice with a generous native target and supporting text.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--checkbox.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--checkbox.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/checkbox",
+      "title": "Checkbox"
+    },
+    "/docs/android/components/radio-group": {
+      "alt": "Radio group — Lumen UI",
+      "description": "Choose one value from a visible, labeled group of native radio options.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--radio-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--radio-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/radio-group",
+      "title": "Radio group"
+    },
+    "/docs/android/components/segmented-control": {
+      "alt": "Segmented control — Lumen UI",
+      "description": "Choose one value from a compact row of short peer options.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--segmented-control.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--segmented-control.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/segmented-control",
+      "title": "Segmented control"
+    },
+    "/docs/android/components/tabs": {
+      "alt": "Tabs — Lumen UI",
+      "description": "Switch a controlled native content panel from an accessible tab list.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--tabs.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--tabs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/tabs",
+      "title": "Tabs"
+    },
+    "/docs/android/components/navigation-bar": {
+      "alt": "Navigation bar — Lumen UI",
+      "description": "Select among peer application destinations with native visuals and controlled state.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--navigation-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--navigation-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/navigation-bar",
+      "title": "Navigation bar"
+    },
+    "/docs/android/components/empty-state": {
+      "alt": "Empty state — Lumen UI",
+      "description": "Explain missing content with supporting copy, an optional graphic, and a recovery action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--empty-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--empty-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/empty-state",
+      "title": "Empty state"
+    },
+    "/docs/android/components/list-row": {
+      "alt": "List row — Lumen UI",
+      "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--list-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--list-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/list-row",
+      "title": "List row"
+    },
+    "/docs/android/components/banner": {
+      "alt": "Banner — Lumen UI",
+      "description": "Present a structured semantic notice with optional actions and dismissal.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--banner.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--banner.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/banner",
+      "title": "Banner"
+    },
+    "/docs/android/components/stat": {
+      "alt": "Stat — Lumen UI",
+      "description": "Display a compact product metric with semantic tone and optional supporting context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--stat.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--stat.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/stat",
+      "title": "Stat"
+    },
+    "/docs/android/components/gauge": {
+      "alt": "Gauge — Lumen UI",
+      "description": "Show a normalized circular SwiftUI or Material metric with a formatted accessible value.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--gauge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--gauge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/gauge",
+      "title": "Gauge"
+    },
+    "/docs/android/components/section-header": {
+      "alt": "Section header — Lumen UI",
+      "description": "Identify a native section with optional supporting copy, count, and trailing actions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--section-header.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--section-header.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/section-header",
+      "title": "Section header"
+    },
+    "/docs/android/components/status-bar": {
+      "alt": "Status bar — Lumen UI",
+      "description": "Present compact textual application status with optional trailing content.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--status-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--status-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/status-bar",
+      "title": "Status bar"
+    },
+    "/docs/android/components/navigation-bar-scroll-behavior": {
+      "alt": "Navigation bar scroll behavior — Lumen UI",
+      "description": "Coordinate Material bottom navigation visibility through the Compose nested-scroll chain.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--navigation-bar-scroll-behavior.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--navigation-bar-scroll-behavior.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/navigation-bar-scroll-behavior",
+      "title": "Navigation bar scroll behavior"
+    },
+    "/docs/android/components/navigation-bar-accessory": {
+      "alt": "Navigation bar accessory — Lumen UI",
+      "description": "Place compact application status or actions above Material bottom navigation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--navigation-bar-accessory.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--navigation-bar-accessory.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/navigation-bar-accessory",
+      "title": "Navigation bar accessory"
+    },
+    "/docs/android/components/adaptive-navigation-scaffold": {
+      "alt": "Adaptive navigation scaffold — Lumen UI",
+      "description": "Adapt Material primary navigation between bottom bar and rail as the window changes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--adaptive-navigation-scaffold.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--adaptive-navigation-scaffold.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/adaptive-navigation-scaffold",
+      "title": "Adaptive navigation scaffold"
+    },
+    "/docs/android/components/floating-action-button": {
+      "alt": "Floating action button — Lumen UI",
+      "description": "Present a prominent Material-native action using Lumen semantic intent.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--floating-action-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--floating-action-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/floating-action-button",
+      "title": "Floating action button"
+    },
+    "/docs/android/components/graphic": {
+      "alt": "Graphic — Lumen UI",
+      "description": "Frame application-provided artwork with token-aware glow, grid, or orbit decoration.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--graphic.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--graphic.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/graphic",
+      "title": "Graphic"
+    },
+    "/docs/android/components/backdrop": {
+      "alt": "Backdrop — Lumen UI",
+      "description": "Place a token-aware ambient pattern behind native application content.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--backdrop.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--backdrop.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/backdrop",
+      "title": "Backdrop"
+    },
+    "/docs/android/components/illustration": {
+      "alt": "Illustration — Lumen UI",
+      "description": "Render a built-in empty, success, error, or offline semantic scene.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--illustration.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--illustration.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/illustration",
+      "title": "Illustration"
+    },
+    "/docs/android/components/alert-dialog": {
+      "alt": "Alert dialog — Lumen UI",
+      "description": "Request a controlled native confirmation with explicit cancel and confirm states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--alert-dialog.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--alert-dialog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/alert-dialog",
+      "title": "Alert dialog"
+    },
+    "/docs/android/components/sheet": {
+      "alt": "Sheet — Lumen UI",
+      "description": "Present supplemental application content in a controlled native sheet.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--sheet.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--sheet.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/sheet",
+      "title": "Sheet"
+    },
+    "/docs/android/components/menu": {
+      "alt": "Menu — Lumen UI",
+      "description": "Present a native anchored action menu with shared item-state semantics.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/menu",
+      "title": "Menu"
+    },
+    "/docs/android/components/share-button": {
+      "alt": "Share button — Lumen UI",
+      "description": "Open the operating system share surface from a token-aware native action.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--share-button.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--share-button.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/share-button",
+      "title": "Share button"
+    },
+    "/docs/android/components/wearable-action": {
+      "alt": "Wearable action — Lumen UI",
+      "description": "Present one at-a-glance, round primary action on watchOS or Wear OS.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--wearable-action.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--wearable-action.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/wearable-action",
+      "title": "Wearable action"
+    },
+    "/docs/android/components/wearable-progress": {
+      "alt": "Wearable progress — Lumen UI",
+      "description": "Surround wearable content with clamped semantic circular progress.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--wearable-progress.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--wearable-progress.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/wearable-progress",
+      "title": "Wearable progress"
+    },
+    "/docs/android/components/wearable-status": {
+      "alt": "Wearable status — Lumen UI",
+      "description": "Show a compact, text-first semantic status on the wrist.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--wearable-status.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--wearable-status.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/wearable-status",
+      "title": "Wearable status"
+    },
+    "/docs/android/components/wearable-metric": {
+      "alt": "Wearable metric — Lumen UI",
+      "description": "Present one at-a-glance wearable label, value, and optional detail.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--wearable-metric.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--wearable-metric.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/wearable-metric",
+      "title": "Wearable metric"
+    },
+    "/docs/android/components/wearable-list-row": {
+      "alt": "Wearable list row — Lumen UI",
+      "description": "Compose a compact wearable row with flexible content slots.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--wearable-list-row.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--wearable-list-row.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/wearable-list-row",
+      "title": "Wearable list row"
     },
     "/docs/components/accordion": {
       "alt": "Accordion — Lumen UI",

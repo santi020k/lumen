@@ -24,6 +24,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -225,6 +226,82 @@ fun LumenSegmentedControl(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun LumenTabs(
+    label: String,
+    options: List<LumenSelectionOption>,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (String) -> Unit
+) {
+    val colors = LocalLumenTheme.current.colors
+    val selectedLabel = options.firstOrNull { it.value == value }?.label ?: value
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    drawLine(
+                        color = colors.line,
+                        start = androidx.compose.ui.geometry.Offset(0f, size.height),
+                        end = androidx.compose.ui.geometry.Offset(size.width, size.height),
+                        strokeWidth = 1.dp.toPx()
+                    )
+                }
+                .selectableGroup()
+                .semantics { contentDescription = label },
+            horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Xs),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            options.forEach { option ->
+                val selected = option.value == value
+
+                Box(
+                    modifier = Modifier
+                        .heightIn(min = 44.dp)
+                        .drawBehind {
+                            if (selected) {
+                                drawLine(
+                                    color = colors.brandSolid,
+                                    start = androidx.compose.ui.geometry.Offset(0f, size.height),
+                                    end = androidx.compose.ui.geometry.Offset(size.width, size.height),
+                                    strokeWidth = 2.dp.toPx()
+                                )
+                            }
+                        }
+                        .selectable(
+                            selected = selected,
+                            enabled = option.enabled,
+                            role = Role.Tab,
+                            onClick = { onValueChange(option.value) }
+                        )
+                        .padding(horizontal = LumenSpacing.Md, vertical = LumenSpacing.Sm),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = option.label,
+                        color = if (selected) colors.brand else colors.inkSoft,
+                        fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { contentDescription = "$selectedLabel tab panel" }
+        ) {
+            content(value)
         }
     }
 }

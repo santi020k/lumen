@@ -903,6 +903,7 @@ const buildNativeImplementation = ({ config, implementation, nativeRegistry, pla
     importStatement: config.importStatement(symbol),
     install: implementationOverride?.install ?? config.install,
     language: implementation.language,
+    maturity: implementation.maturity,
     packageName:
       implementationOverride?.packageName ?? nativeRegistry.adapters[config.adapter].package,
     setup: implementationOverride?.setup ?? config.setup,

@@ -34,6 +34,8 @@ words:
   - checkmark
   - circlepath
   - cmdline
+  - cocoapods
+  - COCOAPODS
   - commitizen
   - commitlint
   - commitprompt
@@ -80,6 +82,7 @@ words:
   - hono
   - hookform
   - inputmode
+  - iphonesimulator
   - imageset
   - jsdom
   - Jetpack
@@ -91,7 +94,9 @@ words:
   - linecap
   - linejoin
   - VectorPath
+  - xcworkspace
   - llms
+  - kotlinx
   - lucide
   - magnifyingglass
   - macwindow
@@ -117,6 +122,7 @@ words:
   - popconfirm
   - Popconfirm
   - postlens
+  - Plumen
   - Pressable
   - Proguard
   - preheading
@@ -146,7 +152,9 @@ words:
   - stylesheet
   - stylelintcache
   - subnavigation
+  - swiftmodule
   - swiftshader
+  - symbolgraph
   - swrow
   - textareas
   - toolbar
@@ -162,6 +170,7 @@ words:
   - tsel
   - ttoggle
   - turborepo
+  - tvos
   - undici
   - unlayered
   - unrs
@@ -188,11 +197,15 @@ words:
   - workstreams
   - workspaces
   - workscene
+  - watchos
+  - watchsimulator
   - xmark
+  - xcrun
   - xcodegen
   - xcodeproj
   - xcassets
   - reactnative
+  - ratelimits
   - temurin
   - sdkmanager
   - gradlew
@@ -201,6 +214,7 @@ words:
   - ededed
   - eeef
   - fbca
+  - appletvsimulator
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
@@ -216,6 +230,9 @@ ignorePaths:
   - packages/swift/Sources/LumenUI/Resources/**
   - packages/compose/src/main/kotlin/com/santi020k/lumen/Icons.generated.kt
   - packages/compose/src/main/res/drawable/lumen_icon_*.xml
+  - packages/compose/api/**
+  - packages/compose/wear/api/**
+  - registry/swift-api-baseline.json
   - packages/compose/gradle.properties
   - packages/compose/gradle/wrapper/**
   - packages/compose/gradlew

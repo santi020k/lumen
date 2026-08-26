@@ -133,9 +133,28 @@ npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 It binds to `127.0.0.1:3000` by default and exposes MCP at
 `http://127.0.0.1:3000/mcp` plus a health check at `/health`. Configure it with
 `LUMEN_MCP_HOST`, `LUMEN_MCP_PORT`, and a comma-separated
-`LUMEN_MCP_ALLOWED_HOSTS`. Binding to a public interface requires the
-deployment's authentication, TLS, rate limiting, and host allowlist; the
-package does not provide those infrastructure controls.
+`LUMEN_MCP_ALLOWED_HOSTS`. The transport applies safe response headers and a
+fixed-window request limit of 120 requests per minute by default.
+
+Public deployments can also set:
+
+- `LUMEN_MCP_OPENAI_CHALLENGE` to serve the exact single-line verification token at
+  `/.well-known/openai-apps-challenge`.
+- `LUMEN_MCP_RATE_LIMIT_MAX` and `LUMEN_MCP_RATE_LIMIT_WINDOW_MS` to tune positive integer rate
+  limits.
+- `LUMEN_MCP_TRUST_PROXY=true` only behind a controlled proxy that sanitizes forwarded headers.
+
+The process listens over HTTP. Public hosting must terminate TLS, configure the exact allowed host,
+and add authentication when the deployed data or operating model requires it. The public Lumen
+catalog does not require user authentication.
+
+## OpenAI plugin package
+
+The repository includes a submission-ready plugin package in [`plugins/lumen-ui`](../../plugins/lumen-ui).
+It combines the portable `lumen-ui` skill with this MCP server for local Codex and ChatGPT testing.
+The public Plugins Directory submission uses a hosted Streamable HTTP endpoint; see the
+[submission checklist](../../docs/openai-plugin-submission.md) for deployment requirements, listing
+copy, annotation justifications, and reviewer test cases.
 
 ## Recommended agent workflow
 

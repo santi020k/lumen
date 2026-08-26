@@ -77,6 +77,9 @@ surface; React and Web Components expose the same class and data contracts.
 
 ## Next
 
+- Execute the [Lumen 2 readiness plan](lumen-2-readiness.md): stabilize and graduate the native
+  adapters, prove their real-app and physical-device support, then approve only the breaking web and
+  umbrella changes that justify a version 2 release.
 - Continue moving independent Astro behaviors behind selector-gated controller chunks while
   preserving the single `UIPrimitives` mounting API.
 - Ratchet coverage thresholds upward as focused React hook and interaction tests land.

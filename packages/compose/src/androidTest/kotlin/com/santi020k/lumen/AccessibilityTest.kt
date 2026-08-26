@@ -147,4 +147,29 @@ class AccessibilityTest {
             .assertIsSelected()
             .assertHasClickAction()
     }
+
+    @Test
+    fun tabsExposeSelectionAndTheActivePanel() {
+        composeRule.setContent {
+            LumenTheme {
+                LumenTabs(
+                    label = "Workspace views",
+                    options = listOf(
+                        LumenSelectionOption("overview", "Overview"),
+                        LumenSelectionOption("activity", "Activity")
+                    ),
+                    value = "overview",
+                    onValueChange = {}
+                ) {
+                    LumenText("Workspace health is ready")
+                }
+            }
+        }
+
+        composeRule.onNodeWithText("Overview")
+            .assertIsSelected()
+            .assertHasClickAction()
+        composeRule.onNodeWithContentDescription("Overview tab panel").assertExists()
+        composeRule.onNodeWithText("Workspace health is ready").assertExists()
+    }
 }

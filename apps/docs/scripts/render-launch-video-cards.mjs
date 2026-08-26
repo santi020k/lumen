@@ -106,6 +106,10 @@ const renderLines = (lines, { fontSize, fontWeight, lineHeight, y }) => lines
   `)
   .join('')
 
+const logoDataUrl = `data:image/svg+xml;base64,${(
+  await fs.readFile(new URL('../public/logo.svg', import.meta.url))
+).toString('base64')}`
+
 const renderVerticalCard = ({ description, title, type }) => {
   const titleLines = wrapText(title, 20)
   const descriptionLines = wrapText(description, 38)
@@ -139,13 +143,8 @@ const renderVerticalCard = ({ description, title, type }) => {
       <rect width="1080" height="1920" fill="url(#teal)" />
       <rect x="72" y="72" width="936" height="5" fill="url(#accent)" />
 
-      <rect x="72" y="116" width="116" height="116" rx="30"
-        fill="rgba(255,255,255,0.78)" stroke="rgba(17,12,29,0.12)" />
-      <text x="130" y="202" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif"
-        font-size="78" font-weight="900" text-anchor="middle">L</text>
-      <text x="220" y="164" fill="#110c1d" font-family="Montserrat, Arial, sans-serif"
-        font-size="42" font-weight="900">Lumen UI</text>
-      <text x="220" y="208" fill="rgba(17,12,29,0.56)" font-family="Montserrat, Arial, sans-serif"
+      <image href="${logoDataUrl}" x="72" y="116" width="450" height="116" />
+      <text x="202" y="252" fill="rgba(17,12,29,0.56)" font-family="Montserrat, Arial, sans-serif"
         font-size="20" font-weight="900" letter-spacing="2">LUMEN.SANTI020K.COM</text>
 
       <rect x="72" y="360" width="420" height="64" rx="32"

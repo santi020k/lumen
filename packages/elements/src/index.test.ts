@@ -17,6 +17,7 @@ import {
   vi
 } from 'vitest'
 
+import * as lumenElements from './index.js'
 import {
   defineLumenElements,
   enhanceLumenCalendars,
@@ -114,6 +115,12 @@ describe('@santi020k/lumen-elements', () => {
     }
   })
 
+  test('exports a constructor for every shared catalog name', () => {
+    for (const componentName of lumenComponentNames) {
+      expect(lumenElements).toHaveProperty(`Lumen${componentName}Element`)
+    }
+  })
+
   test('registers custom elements once', () => {
     defineLumenElements(customElements)
     defineLumenElements(customElements)
@@ -124,6 +131,29 @@ describe('@santi020k/lumen-elements', () => {
     expect(customElements.get('lumen-graphic')).toBe(LumenGraphicElement)
     expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
     expect(customElements.get('lumen-illustration')).toBe(LumenIllustrationElement)
+  })
+
+  test('registers the complete catalog independently in each supplied registry', () => {
+    const createRegistry = () => {
+      const constructors = new Map<string, CustomElementConstructor>()
+
+      return {
+        define: (name: string, constructor: CustomElementConstructor) => {
+          constructors.set(name, constructor)
+        },
+        get: (name: string) => constructors.get(name)
+      }
+    }
+    const firstRegistry = createRegistry()
+    const secondRegistry = createRegistry()
+
+    defineLumenElements(firstRegistry)
+    defineLumenElements(secondRegistry)
+
+    for (const [tagName, element] of lumenElementDefinitions) {
+      expect(firstRegistry.get(tagName)).toBe(element)
+      expect(secondRegistry.get(tagName)).toBe(element)
+    }
   })
 
   test('keeps graphics decorative until they receive a label', () => {

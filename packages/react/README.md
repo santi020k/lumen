@@ -290,11 +290,11 @@ React is Lumen's visual adapter layer plus headless behavior hooks. The componen
 `ui-*` classes and `data-ui-*` attributes as Astro, while hooks such as `useDialog`, `usePopover`,
 `useDropdownMenu`, `useContextMenu`, `useTabs`, `useSelect`, `useFormValidation`, `useCalendar`,
 `useInputOTP`, `useDateRangePicker`, `useRichTextEditor`, `useSchedule`, `useThemeBuilder`,
-`useResizable`, `useToast`, and
-`useTooltip` track the Astro runtime's ARIA, keyboard, Escape, dismissal, context menu, form
+`useKanban`, `useResizable`, `useThemeToggle`, `useToast`, and `useTooltip` track the Astro runtime's
+ARIA, keyboard, Escape, dismissal, context menu, form
 validation, calendar grids, OTP segmentation, date range syncing, rich text command, schedule
-drag/drop, theme export, resizable pane sizing, and toast controller semantics for React
-applications.
+drag/drop, controlled Kanban move requests, theme export and switching, resizable pane sizing, and
+toast controller semantics for React applications.
 `useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data

@@ -207,8 +207,7 @@ export const LumenBackdrop = ({
       <View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        pointerEvents="none"
-        style={{ bottom: 0, left: 0, opacity, position: 'absolute', right: 0, top: 0 }}
+        style={{ bottom: 0, left: 0, opacity, pointerEvents: 'none', position: 'absolute', right: 0, top: 0 }}
       >
         {variant === 'aurora' ?
           (

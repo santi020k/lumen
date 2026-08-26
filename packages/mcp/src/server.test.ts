@@ -93,6 +93,7 @@ describe('Lumen MCP protocol server', () => {
       for (const tool of response.tools) {
         expect(tool.outputSchema).toBeDefined()
         expect(tool.annotations).toMatchObject({
+          destructiveHint: false,
           idempotentHint: true,
           openWorldHint: false,
           readOnlyHint: true
