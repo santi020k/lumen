@@ -88,8 +88,8 @@ catalogs:
       specifier: ^3.1.1
       version: 3.1.1
     '@santi020k/og':
-      specifier: 1.0.0
-      version: 1.0.0
+      specifier: 1.1.1
+      version: 1.1.1
     '@santi020k/theme':
       specifier: ^1.3.0
       version: 1.3.0
@@ -385,7 +385,7 @@ importers:
         version: 1.10.11
       '@santi020k/og':
         specifier: 'catalog:'
-        version: 1.0.0(@types/node@26.2.0)
+        version: 1.1.1(@types/node@26.2.0)
       sharp:
         specifier: 'catalog:'
         version: 0.35.3(@types/node@26.2.0)
@@ -4597,8 +4597,8 @@ packages:
     peerDependencies:
       eslint: ^10.0.0
 
-  '@santi020k/og@1.0.0':
-    resolution: {integrity: sha512-wQ2a6ff7QmvJW801DdoIamoSuj0CaMKs2Ybn/MscfLAcaLBrkcyJWHOsol+7MlC1ONNU/onNLwPccpzCgk9lqw==}
+  '@santi020k/og@1.1.1':
+    resolution: {integrity: sha512-9v+5oC6qgmNQb9S5gR1xQeB9DqaXDRTxrZ7Miakdc4kf1IXOEKCkO4MmZzyBN+INuEwnfU5/ViWu5uyZzZqCMw==}
     engines: {node: '>=22.18.0'}
     hasBin: true
 
@@ -15432,7 +15432,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@santi020k/og@1.0.0(@types/node@26.2.0)':
+  '@santi020k/og@1.1.1(@types/node@26.2.0)':
     dependencies:
       '@fontsource-variable/inter': 5.3.0
       '@resvg/resvg-js': 2.6.2
