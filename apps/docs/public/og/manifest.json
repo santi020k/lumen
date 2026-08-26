@@ -1,41 +1,9 @@
 {
   "generatorVersion": "1.1.1",
   "routes": {
-    "/": {
-      "alt": "Write it once. Ship it in any framework. — Lumen UI",
-      "description": "A multi-framework primitive UI system with 159 components for Astro, React, and Web Components.",
-      "images": [
-        {
-          "format": "webp",
-          "height": 630,
-          "output": "index.webp",
-          "primary": true,
-          "url": "/og/pages/index.webp",
-          "width": 1200
-        }
-      ],
-      "pathname": "/",
-      "title": "Write it once. Ship it in any framework."
-    },
-    "/docs": {
-      "alt": "One primitive system, three framework targets. — Lumen UI",
-      "description": "Install Lumen UI and use one semantic component contract across every target.",
-      "images": [
-        {
-          "format": "webp",
-          "height": 630,
-          "output": "docs.webp",
-          "primary": true,
-          "url": "/og/pages/docs.webp",
-          "width": 1200
-        }
-      ],
-      "pathname": "/docs",
-      "title": "One primitive system, three framework targets."
-    },
     "/docs/components": {
-      "alt": "Components — Lumen UI",
-      "description": "Browse 159 primitives with live previews for Astro, React, and Elements.",
+      "alt": "Components - Lumen UI — Lumen UI",
+      "description": "Browse all Lumen UI components with live previews and usage examples for Astro, React, and Elements.",
       "images": [
         {
           "format": "webp",
@@ -47,7 +15,39 @@
         }
       ],
       "pathname": "/docs/components",
-      "title": "Components"
+      "title": "Components - Lumen UI"
+    },
+    "/docs": {
+      "alt": "Documentation - Lumen UI — Lumen UI",
+      "description": "Choose the Lumen UI documentation for Web, React Native, Apple platforms, or Android, and explore their shared foundations.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs.webp",
+          "primary": true,
+          "url": "/og/pages/docs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs",
+      "title": "Documentation - Lumen UI"
+    },
+    "/": {
+      "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
+      "description": "Lumen is a crafted multi-framework UI system with 159 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "index.webp",
+          "primary": true,
+          "url": "/og/pages/index.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/",
+      "title": "Lumen UI — Crafted primitives for web and native platforms"
     },
     "/templates": {
       "alt": "Product-ready templates. Free and open source. — Lumen UI",
