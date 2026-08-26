@@ -1,7 +1,8 @@
 # Lumen 2 contract proposal
 
-**Status:** Draft  
-**Target:** `2.0.0`  
+**Status:** Draft
+
+**Target:** `2.0.0`
 **Machine-readable source:** [`registry/lumen-2-contract.json`](../registry/lumen-2-contract.json)
 
 This proposal turns the [Lumen 2 readiness program](lumen-2-readiness.md) into an explicit public
