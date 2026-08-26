@@ -152,10 +152,10 @@ const LumenChartDataList = ({
   return (
     <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
       <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>Chart data</Text>
-      {series.flatMap(item => item.data.map(datum => {
+      {series.flatMap(item => item.data.map((datum, datumIndex) => {
         const label = chartDatumLabel(item, datum, formatCategory, formatValue, includeSize)
         const selected = selectedSeriesId === item.id && selectedX === datum.x
-        const key = `${item.id}:${typeof datum.x}:${String(datum.x)}`
+        const key = `${item.id}:${datum.id ?? `${typeof datum.x}:${String(datum.x)}:${datumIndex}`}`
 
         if (!onSelect || datum.y === null || !Number.isFinite(datum.y)) {
           return (
@@ -586,12 +586,12 @@ export const LumenScatterChart = ({
         (
           <ScrollView horizontal>
             <Svg height={geometry.height} width={geometry.width}>
-              {geometry.points.map(point => (
+              {geometry.points.map((point, pointIndex) => (
                 <Circle
                   cx={point.xCoordinate}
                   cy={point.yCoordinate}
                   fill={lumenChartToneColor(point.tone, theme)}
-                  key={`${point.seriesId}:${typeof point.x}:${String(point.x)}`}
+                  key={`${point.seriesId}:${point.id ?? `${typeof point.x}:${String(point.x)}:${pointIndex}`}`}
                   r={point.radius}
                 />
               ))}

@@ -18,11 +18,12 @@ interface Props extends HTMLAttributes<'figure'> {
   tone?: LumenChartTone
 }
 
-const { caption, class: classProp = '', className = '', data, description, formatValue = String, heading, showTable = true, summary = `${data.filter(item => item.low !== null && item.high !== null).length} available ranges.`, tone = 'series-1', ...rest } = Astro.props
+const { caption, class: classProp = '', className = '', data, description, formatValue = String, heading, showTable = true, summary: summaryProp, tone = 'series-1', ...rest } = Astro.props
 const width = 640
 const height = 320
 const padding = 44
 const geometry = createLumenRangeGeometry(data, { height, padding, width })
+const summary = summaryProp ?? `${geometry.points.length} available ranges.`
 const ticks = getLumenChartTicks(geometry.domain)
 ---
 
@@ -47,5 +48,5 @@ y1={point.highCoordinate}
 y2={point.lowCoordinate}
 ><title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title></line>
 ))}</svg></div>
-  {showTable && <details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th><th scope="col">Low</th><th scope="col">High</th></tr></thead><tbody>{data.map(item => <tr><th scope="row">{item.xLabel ?? item.x}</th><td>{item.low === null ? 'Not available' : formatValue(item.low)}</td><td>{item.high === null ? 'Not available' : formatValue(item.high)}</td></tr>)}</tbody></table></div></details>}
+  {showTable && <details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th><th scope="col">Low</th><th scope="col">High</th></tr></thead><tbody>{data.map(item => <tr><th scope="row">{item.xLabel ?? item.x}</th><td>{item.low === null || !Number.isFinite(item.low) ? 'Not available' : formatValue(item.low)}</td><td>{item.high === null || !Number.isFinite(item.high) ? 'Not available' : formatValue(item.high)}</td></tr>)}</tbody></table></div></details>}
 </Chart>

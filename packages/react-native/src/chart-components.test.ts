@@ -239,6 +239,22 @@ describe('Lumen React Native chart components', () => {
     expect(descendantsOf(bars).filter(element => propsOf(element).rx === 4)).toHaveLength(1)
   })
 
+  test('keeps repeated native scatter coordinates as distinct marks', () => {
+    const scatter = LumenScatterChart({
+      label: 'Quality',
+      series: [{
+        data: [{ x: 1, y: 95 }, { x: 1, y: 98 }],
+        id: 'quality',
+        label: 'Quality'
+      }]
+    }) as ReactElement<ChartFrameOutputProps>
+    const keys = descendantsOf(scatter)
+      .filter(element => propsOf(element).r !== undefined)
+      .map(element => element.key)
+
+    expect(new Set(keys).size).toBe(2)
+  })
+
   test('aligns native combo line points with bar category centers', () => {
     const data = [
       { x: 'Mon', y: 4 },

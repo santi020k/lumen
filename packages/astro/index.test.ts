@@ -129,6 +129,15 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(scatter).not.toContain('hasLumenChartData')
   })
 
+  test('bases range summaries on available chart geometry', async () => {
+    const range = await readFile(
+      new URL('./components/RangeChart.astro', packageRoot), 'utf8'
+    )
+
+    expect(range).toContain('`${geometry.points.length} available ranges.`')
+    expect(range).not.toContain('data.filter(item => item.low !== null')
+  })
+
   test('normalizes Astro Action field errors for fields and summaries', () => {
     expect(
       normalizeAstroActionErrors(

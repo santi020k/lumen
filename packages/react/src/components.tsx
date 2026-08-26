@@ -47,7 +47,6 @@ import {
   getLumenChartToneClassName,
   getLumenIcon,
   getLumenPhoneCountries,
-  getLumenPhoneCountry,
   getLumenPieChartVariantClassName,
   hasLumenChartData,
   hasLumenPieData,
@@ -105,6 +104,7 @@ import {
   useTabs,
   useTooltip
 } from './hooks.js'
+import { resolveReactPhoneInputCountry } from './phone-recipes.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
@@ -3700,22 +3700,6 @@ const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
   return { inputClass: undefined, selectClass: undefined }
 }
 
-const resolvePhoneInputCountry = (
-  countries: readonly LumenPhoneCountry[],
-  defaultCountryValue: string,
-  locale: LumenPhoneCountryOptions['locale'],
-  value: LumenPhoneNumber | undefined
-): LumenPhoneCountry => {
-  const country = value?.country ?? countries.find(candidate => (
-    candidate.regionCode === defaultCountryValue ||
-    candidate.callingCode === defaultCountryValue
-  )) ?? getLumenPhoneCountry('US', { ...(locale === undefined ? {} : { locale }) }) ?? countries[0]
-
-  if (!country) throw new Error('PhoneInput requires at least one supported country.')
-
-  return country
-}
-
 interface ResolvedMetadataPhoneInputProps extends Omit<PhoneInputProps, 'countries'> {
   countryLabel: string
   countryName: string
@@ -3779,7 +3763,7 @@ const MetadataPhoneInput = ({
   )
 
   const initialCountry = useMemo(
-    () => resolvePhoneInputCountry(metadataCountries, defaultCountryValue, locale, value),
+    () => resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, value),
     [defaultCountryValue, locale, metadataCountries, value]
   )
 
