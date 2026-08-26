@@ -2,7 +2,17 @@
 
 <!-- cspell:words screencapture simctl UDID -->
 
-A searchable SwiftUI gallery for the shared and Apple-specific `LumenUI` components.
+A SwiftUI reference application for the shared and Apple-specific `LumenUI` components. Its four
+primary destinations are Home, Examples, Components, and Settings:
+
+- Home is a component-release workspace with factual catalog readiness, quick actions, featured
+  workflows, and category distribution.
+- Examples provides interactive release, catalog-health, and contributor-profile patterns,
+  including loading, empty, error, success, disabled, validation, and destructive states.
+- Components adds product-intent category discovery to the searchable catalog while preserving the
+  deterministic launch filters used by screenshot automation.
+- Settings covers semantic theme preview and feedback, current Apple accessibility preferences,
+  platform and version details, documentation, privacy, and support.
 
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press
 `Command-R`. Simulator builds do not require an Apple Developer account.
@@ -31,6 +41,9 @@ device, signing, and TestFlight workflow.
 
 Every catalog entry accepts a launch filter so visual evidence is deterministic. In Xcode, add
 `--component` and a component name such as `Navigation bar` to the scheme's launch arguments.
+Filtered launches open Components directly rather than the four-destination application shell.
+For deterministic full-page verification, pass `--destination` with `home`, `examples`,
+`components`, or `settings`; `--component` continues to take precedence when both are supplied.
 
 To build the iOS playground, boot the first available iPhone simulator, and capture one PNG for
 each component usage:

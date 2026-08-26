@@ -47,6 +47,69 @@
       "on-danger": { "$description": "Readable foreground placed on a solid danger fill.", "$extensions": { "com.santi020k.lumen": { "cssValue": "224 24% 8%" } }, "$value": "#101219" }
     }
   },
+  "visualization": {
+    "color": {
+      "light": {
+        "$type": "color",
+        "axis": { "$description": "Axes and chart labels.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--ink-muted)" } }, "$value": "#6C7889" },
+        "grid": { "$description": "Non-data chart grid lines.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--line)" } }, "$value": "#D7DAE0" },
+        "reference": { "$description": "Reference lines, targets, and thresholds.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--ink-soft)" } }, "$value": "#454F5F" },
+        "selection": { "$description": "Selected chart marks and focus indicators.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--brand)" } }, "$value": "#2463EB" },
+        "tooltip-background": { "$description": "Chart tooltip surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--ink)" } }, "$value": "#0F1729" },
+        "tooltip-foreground": { "$description": "Readable content on chart tooltips.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--surface)" } }, "$value": "#FFFFFF" },
+        "sequential-low": { "$description": "Low endpoint of a sequential data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "218 100% 97%" } }, "$value": "#F0F5FF" },
+        "sequential-mid": { "$description": "Middle value of a sequential data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "221 83% 67%" } }, "$value": "#6590F1" },
+        "sequential-high": { "$description": "High endpoint of a sequential data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "221 83% 40%" } }, "$value": "#114BBA" },
+        "diverging-negative": { "$description": "Negative endpoint of a diverging data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 84% 60%" } }, "$value": "#EF4343" },
+        "diverging-mid": { "$description": "Neutral midpoint of a diverging data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "220 13% 91%" } }, "$value": "#E5E7EB" },
+        "diverging-positive": { "$description": "Positive endpoint of a diverging data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "221 83% 53%" } }, "$value": "#2463EB" },
+        "series-1": { "$description": "First categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "221 83% 53%" } }, "$value": "#2463EB" },
+        "series-2": { "$description": "Second categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "168 76% 36%" } }, "$value": "#16A286" },
+        "series-3": { "$description": "Third categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "280 72% 56%" } }, "$value": "#A43FDF" },
+        "series-4": { "$description": "Fourth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "25 95% 53%" } }, "$value": "#FA6A14" },
+        "series-5": { "$description": "Fifth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "340 82% 55%" } }, "$value": "#E73270" },
+        "series-6": { "$description": "Sixth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "190 82% 42%" } }, "$value": "#13A3C3" },
+        "series-7": { "$description": "Seventh categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "52 92% 45%" } }, "$value": "#DCBD09" },
+        "series-8": { "$description": "Eighth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "215 16% 47%" } }, "$value": "#657187" }
+      },
+      "dark": {
+        "$type": "color",
+        "axis": { "$description": "Axes and chart labels.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--ink-muted)" } }, "$value": "#949CA8" },
+        "grid": { "$description": "Non-data chart grid lines.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--line)" } }, "$value": "#393F4C" },
+        "reference": { "$description": "Reference lines, targets, and thresholds.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--ink-soft)" } }, "$value": "#BCC3CD" },
+        "selection": { "$description": "Selected chart marks and focus indicators.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--brand)" } }, "$value": "#29B4F5" },
+        "tooltip-background": { "$description": "Chart tooltip surface.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--ink)" } }, "$value": "#F3F5F7" },
+        "tooltip-foreground": { "$description": "Readable content on chart tooltips.", "$extensions": { "com.santi020k.lumen": { "cssValue": "var(--canvas)" } }, "$value": "#101219" },
+        "sequential-low": { "$description": "Low endpoint of a sequential data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 84% 16%" } }, "$value": "#07354B" },
+        "sequential-mid": { "$description": "Middle value of a sequential data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 72% 42%" } }, "$value": "#1E8BB8" },
+        "sequential-high": { "$description": "High endpoint of a sequential data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 91% 66%" } }, "$value": "#5CC7F7" },
+        "diverging-negative": { "$description": "Negative endpoint of a diverging data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "0 84% 65%" } }, "$value": "#F15B5B" },
+        "diverging-mid": { "$description": "Neutral midpoint of a diverging data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "222 14% 22%" } }, "$value": "#303540" },
+        "diverging-positive": { "$description": "Positive endpoint of a diverging data scale.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 91% 56%" } }, "$value": "#29B4F5" },
+        "series-1": { "$description": "First categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "199 91% 56%" } }, "$value": "#29B4F5" },
+        "series-2": { "$description": "Second categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "166 76% 43%" } }, "$value": "#1AC19A" },
+        "series-3": { "$description": "Third categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "285 82% 72%" } }, "$value": "#CE81ED" },
+        "series-4": { "$description": "Fourth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "31 96% 62%" } }, "$value": "#FD9A3F" },
+        "series-5": { "$description": "Fifth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "342 88% 68%" } }, "$value": "#F26A94" },
+        "series-6": { "$description": "Sixth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "188 86% 54%" } }, "$value": "#2DC9E7" },
+        "series-7": { "$description": "Seventh categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "52 94% 58%" } }, "$value": "#F7D832" },
+        "series-8": { "$description": "Eighth categorical data series.", "$extensions": { "com.santi020k.lumen": { "cssValue": "215 18% 68%" } }, "$value": "#A2AABD" }
+      }
+    },
+    "stroke-width": {
+      "$type": "dimension",
+      "grid": { "$value": { "unit": "px", "value": 1 } },
+      "reference": { "$value": { "unit": "px", "value": 1 } },
+      "series": { "$value": { "unit": "px", "value": 2 } },
+      "selected": { "$value": { "unit": "px", "value": 3 } }
+    },
+    "opacity": {
+      "$type": "number",
+      "area": { "$value": 0.18 },
+      "grid": { "$value": 0.45 },
+      "muted": { "$value": 0.35 }
+    }
+  },
   "space": {
     "$type": "dimension",
     "zero": { "$value": { "unit": "px", "value": 0 } },
@@ -85,6 +148,30 @@
       "medium": { "$value": 500 },
       "semibold": { "$value": 600 },
       "bold": { "$value": 700 }
+    }
+  },
+  "graphics": {
+    "frame-size": {
+      "$type": "dimension",
+      "sm": { "$value": { "unit": "px", "value": 160 } },
+      "md": { "$value": { "unit": "px", "value": 240 } },
+      "lg": { "$value": { "unit": "px", "value": 320 } }
+    },
+    "illustration-size": {
+      "$type": "dimension",
+      "sm": { "$value": { "unit": "px", "value": 96 } },
+      "md": { "$value": { "unit": "px", "value": 128 } },
+      "lg": { "$value": { "unit": "px", "value": 176 } }
+    },
+    "stroke-width": {
+      "$type": "dimension",
+      "standard": { "$value": { "unit": "px", "value": 3 } }
+    },
+    "opacity": {
+      "$type": "number",
+      "wash": { "$value": 0.1 },
+      "grid": { "$value": 0.18 },
+      "orbit": { "$value": 0.24 }
     }
   },
   "motion": {

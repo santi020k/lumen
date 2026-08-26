@@ -101,6 +101,131 @@ public enum LumenColors {
     )
 }
 
+public struct LumenChartColorPalette: Sendable {
+    public let axis: Color
+    public let grid: Color
+    public let reference: Color
+    public let selection: Color
+    public let tooltipBackground: Color
+    public let tooltipForeground: Color
+    public let sequentialLow: Color
+    public let sequentialMid: Color
+    public let sequentialHigh: Color
+    public let divergingNegative: Color
+    public let divergingMid: Color
+    public let divergingPositive: Color
+    public let series1: Color
+    public let series2: Color
+    public let series3: Color
+    public let series4: Color
+    public let series5: Color
+    public let series6: Color
+    public let series7: Color
+    public let series8: Color
+
+    public init(
+        axis: Color,
+        grid: Color,
+        reference: Color,
+        selection: Color,
+        tooltipBackground: Color,
+        tooltipForeground: Color,
+        sequentialLow: Color,
+        sequentialMid: Color,
+        sequentialHigh: Color,
+        divergingNegative: Color,
+        divergingMid: Color,
+        divergingPositive: Color,
+        series1: Color,
+        series2: Color,
+        series3: Color,
+        series4: Color,
+        series5: Color,
+        series6: Color,
+        series7: Color,
+        series8: Color
+    ) {
+        self.axis = axis
+        self.grid = grid
+        self.reference = reference
+        self.selection = selection
+        self.tooltipBackground = tooltipBackground
+        self.tooltipForeground = tooltipForeground
+        self.sequentialLow = sequentialLow
+        self.sequentialMid = sequentialMid
+        self.sequentialHigh = sequentialHigh
+        self.divergingNegative = divergingNegative
+        self.divergingMid = divergingMid
+        self.divergingPositive = divergingPositive
+        self.series1 = series1
+        self.series2 = series2
+        self.series3 = series3
+        self.series4 = series4
+        self.series5 = series5
+        self.series6 = series6
+        self.series7 = series7
+        self.series8 = series8
+    }
+}
+
+public enum LumenChartColors {
+    public static let light = LumenChartColorPalette(
+        axis: Color(red: 0.423529, green: 0.470588, blue: 0.537255),
+        grid: Color(red: 0.843137, green: 0.854902, blue: 0.878431),
+        reference: Color(red: 0.270588, green: 0.309804, blue: 0.372549),
+        selection: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
+        tooltipBackground: Color(red: 0.058824, green: 0.090196, blue: 0.160784),
+        tooltipForeground: Color(red: 1.000000, green: 1.000000, blue: 1.000000),
+        sequentialLow: Color(red: 0.941176, green: 0.960784, blue: 1.000000),
+        sequentialMid: Color(red: 0.396078, green: 0.564706, blue: 0.945098),
+        sequentialHigh: Color(red: 0.066667, green: 0.294118, blue: 0.729412),
+        divergingNegative: Color(red: 0.937255, green: 0.262745, blue: 0.262745),
+        divergingMid: Color(red: 0.898039, green: 0.905882, blue: 0.921569),
+        divergingPositive: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
+        series1: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
+        series2: Color(red: 0.086275, green: 0.635294, blue: 0.525490),
+        series3: Color(red: 0.643137, green: 0.247059, blue: 0.874510),
+        series4: Color(red: 0.980392, green: 0.415686, blue: 0.078431),
+        series5: Color(red: 0.905882, green: 0.196078, blue: 0.439216),
+        series6: Color(red: 0.074510, green: 0.639216, blue: 0.764706),
+        series7: Color(red: 0.862745, green: 0.741176, blue: 0.035294),
+        series8: Color(red: 0.396078, green: 0.443137, blue: 0.529412)
+    )
+
+    public static let dark = LumenChartColorPalette(
+        axis: Color(red: 0.580392, green: 0.611765, blue: 0.658824),
+        grid: Color(red: 0.223529, green: 0.247059, blue: 0.298039),
+        reference: Color(red: 0.737255, green: 0.764706, blue: 0.803922),
+        selection: Color(red: 0.160784, green: 0.705882, blue: 0.960784),
+        tooltipBackground: Color(red: 0.952941, green: 0.960784, blue: 0.968627),
+        tooltipForeground: Color(red: 0.062745, green: 0.070588, blue: 0.098039),
+        sequentialLow: Color(red: 0.027451, green: 0.207843, blue: 0.294118),
+        sequentialMid: Color(red: 0.117647, green: 0.545098, blue: 0.721569),
+        sequentialHigh: Color(red: 0.360784, green: 0.780392, blue: 0.968627),
+        divergingNegative: Color(red: 0.945098, green: 0.356863, blue: 0.356863),
+        divergingMid: Color(red: 0.188235, green: 0.207843, blue: 0.250980),
+        divergingPositive: Color(red: 0.160784, green: 0.705882, blue: 0.960784),
+        series1: Color(red: 0.160784, green: 0.705882, blue: 0.960784),
+        series2: Color(red: 0.101961, green: 0.756863, blue: 0.603922),
+        series3: Color(red: 0.807843, green: 0.505882, blue: 0.929412),
+        series4: Color(red: 0.992157, green: 0.603922, blue: 0.247059),
+        series5: Color(red: 0.949020, green: 0.415686, blue: 0.580392),
+        series6: Color(red: 0.176471, green: 0.788235, blue: 0.905882),
+        series7: Color(red: 0.968627, green: 0.847059, blue: 0.196078),
+        series8: Color(red: 0.635294, green: 0.666667, blue: 0.741176)
+    )
+}
+
+public enum LumenChartMetrics {
+    public static let gridStrokeWidth: CGFloat = 1
+    public static let referenceStrokeWidth: CGFloat = 1
+    public static let seriesStrokeWidth: CGFloat = 2
+    public static let selectedStrokeWidth: CGFloat = 3
+    public static let areaOpacity: Double = 0.18
+    public static let gridOpacity: Double = 0.45
+    public static let mutedOpacity: Double = 0.35
+}
+
 public enum LumenSpacing {
     public static let zero: CGFloat = 0
     public static let xs: CGFloat = 4
@@ -158,4 +283,17 @@ public enum LumenElevation {
     public static let resting: CGFloat = 1
     public static let raised: CGFloat = 3
     public static let overlay: CGFloat = 6
+}
+
+public enum LumenGraphics {
+    public static let smFrameSize: CGFloat = 160
+    public static let mdFrameSize: CGFloat = 240
+    public static let lgFrameSize: CGFloat = 320
+    public static let smIllustrationSize: CGFloat = 96
+    public static let mdIllustrationSize: CGFloat = 128
+    public static let lgIllustrationSize: CGFloat = 176
+    public static let standardStrokeWidth: CGFloat = 3
+    public static let washOpacity: Double = 0.1
+    public static let gridOpacity: Double = 0.18
+    public static let orbitOpacity: Double = 0.24
 }

@@ -10,25 +10,32 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 type Props = (LocalImageProps | RemoteImageProps) & {
   class?: string | null
   className?: string
+  fit?: 'contain' | 'cover'
   invertOnDark?: boolean
+  radius?: 'full' | 'lg' | 'md' | 'none' | 'sm'
 }
 
 const {
   class: classProp = '',
   className = '',
+  fit = 'cover',
   invertOnDark = false,
   loading = 'lazy',
+  radius = 'lg',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-image',
-  invertOnDark && 'ui-image--invert-dark'
+  invertOnDark && 'ui-image--invert-dark',
+  `ui-image--fit-${fit}`,
+  `ui-image--radius-${radius}`
 ], classProp, className)
 ---
 
 <AstroImage
   loading={loading}
   class:list={classList}
+  fit={fit}
   {...passthrough}
 />

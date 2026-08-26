@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
+		3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
+		59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
 		5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
 		A27610862D252E7C15973614 /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 35416C9E579CDA363A493B7B /* LumenUI */; };
 		D2F4C18E705C065824038B2A /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 92444F6FFAE06F3DC42DB84A /* LumenUI */; };
 		DB50ECBEE184BDB2D1838CE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
@@ -16,10 +20,14 @@
 
 /* Begin PBXFileReference section */
 		5128309A5EE62A8C5B16E7CD /* lumen */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lumen; path = ../..; sourceTree = SOURCE_ROOT; };
+		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
 		63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DE2955684DB72950680BA1F /* LumenApplePlayground.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LumenApplePlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundExamplesView.swift; sourceTree = "<group>"; };
 		A74CE400BC46C61E435CCDCB /* LumenWatchPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenWatchPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundSettingsView.swift; sourceTree = "<group>"; };
+		B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundHomeView.swift; sourceTree = "<group>"; };
 		EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenApplePlaygroundApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,6 +100,10 @@
 			isa = PBXGroup;
 			children = (
 				EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */,
+				A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */,
+				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
+				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
+				581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */,
 			);
 			name = LumenApplePlayground;
 			path = Sources/LumenApplePlayground;
@@ -196,6 +208,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */,
+				59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */,
+				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
+				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
+				014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

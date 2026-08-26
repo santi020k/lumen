@@ -1,0 +1,18 @@
+---
+import { RangeChart } from '@santi020k/lumen-astro'
+
+const data = [
+  { high: 28, low: 17, x: 'Mon' },
+  { high: 31, low: 19, x: 'Tue' },
+  { high: 27, low: 16, x: 'Wed' },
+  { high: 34, low: 21, x: 'Thu' },
+  { high: 30, low: 18, x: 'Fri' }
+]
+---
+
+<RangeChart
+  aria-label="Daily forecast temperature range"
+  caption="Expected daily low and high temperatures in degrees Celsius."
+  {data}
+  heading="Weekly forecast"
+/>

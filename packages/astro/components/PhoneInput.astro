@@ -1,7 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import {
+  getLumenPhoneCountries,
+  getLumenPhoneCountry,
+  type LumenPhoneCountry,
+  type LumenPhoneCountryOptions,
+  resolveLumenAstroProps,
+  resolveLumenPhoneNumber
+} from '@santi020k/lumen-core'
 
 interface CountryOption {
   disabled?: boolean
@@ -11,13 +18,20 @@ interface CountryOption {
 
 type Country = CountryOption | string
 
+interface NormalizedCountryOption extends CountryOption {
+  regionCode?: string
+}
+
 interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
   class?: string | null
   className?: string
   countries?: Country[]
+  countryOptions?: readonly LumenPhoneCountry[]
   countryLabel?: string
   countryName?: string
   countryValue?: string
+  invalidNumberMessage?: string
+  locale?: LumenPhoneCountryOptions['locale']
   name?: string
   placeholder?: string
   size?: 'default' | 'lg' | 'sm'
@@ -28,9 +42,12 @@ const {
   class: classProp = '',
   className = '',
   countries = [],
+  countryOptions,
   countryLabel = 'Country code',
   countryName = 'country',
-  countryValue,
+  countryValue = 'US',
+  invalidNumberMessage = 'Enter a complete phone number.',
+  locale,
   name = 'phone',
   placeholder = 'Phone number',
   size = 'default',
@@ -38,8 +55,25 @@ const {
   ...rest
 } = Astro.props
 
-const normalizedCountries = countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)
-const hasCountryValue = countryValue !== undefined
+const phoneOptions = locale === undefined ? {} : { locale }
+const metadataCountries = countryOptions ?? getLumenPhoneCountries(phoneOptions)
+const usesMetadata = countries.length === 0
+
+const normalizedCountries: NormalizedCountryOption[] = usesMetadata ?
+  metadataCountries.map(country => ({
+  label: country.pickerLabel,
+  regionCode: country.regionCode,
+  value: country.regionCode
+  })) :
+  countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)
+
+const selectedCountry = metadataCountries.find(country => (
+  country.regionCode === countryValue || country.callingCode === countryValue
+)) ?? getLumenPhoneCountry('US', phoneOptions) ?? metadataCountries[0]
+
+const phoneValue = selectedCountry && value ? resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) : null
+const selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue
+const renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-phone-input',
@@ -47,7 +81,14 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<div class:list={classList} {...passthrough}>
+<div
+  class:list={classList}
+  data-e164={phoneValue?.e164}
+  data-invalid-number-message={invalidNumberMessage}
+  data-ui-phone-input={usesMetadata ? '' : undefined}
+  data-valid={phoneValue ? String(phoneValue.isValid) : undefined}
+  {...passthrough}
+>
   <select
     aria-label={countryLabel}
     class:list={[
@@ -61,7 +102,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     {normalizedCountries.map(country => (
       <option
         disabled={country.disabled}
-        selected={hasCountryValue && country.value === countryValue}
+        data-region={country.regionCode}
+        selected={country.value === selectedCountryValue}
         value={country.value}
       >{country.label}
       </option>
@@ -79,6 +121,6 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     name={name}
     placeholder={placeholder}
     type="tel"
-    value={value}
+    value={renderedValue}
   />
 </div>

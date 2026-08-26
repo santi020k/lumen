@@ -28,9 +28,10 @@ surface; React and Web Components expose the same class and data contracts.
   and Elements recipes with shared token-based styling.
 - Scheduling surfaces: `Schedule` and `Agenda`.
 - Advanced data surfaces: `DataTable`, `Tree`, `TreeGrid`, and `VirtualList`.
-- Data visualization: shared chart types, scales, ticks, line/area, grouped/stacked bar, and
-  pie/donut geometry; tokenized `Chart`, `Sparkline`, `BarChart`, `LineChart`, and `PieChart`
-  surfaces; revealable data tables; and Astro, React, and Elements parity without a charting
+- Data visualization: shared categorical, numeric, and time scales; line/area, grouped/stacked bar,
+  pie/donut, scatter/bubble, heatmap, range, and combo geometry; deterministic reduction and live
+  windows; generated visualization tokens; accessible summaries and fallback data; and web,
+  React Native, SwiftUI, and Compose surfaces without a required charting
   runtime dependency. See
   [Observatory's consumer implementation learnings](consumer-chart-implementation-learnings.md)
   for product-level feedback and possible follow-up improvements.

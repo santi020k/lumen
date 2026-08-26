@@ -54,31 +54,48 @@ const tokenValue = (token, path) => {
   return token.$value
 }
 
-const colorEntries = (source, scheme) =>
+const colorEntriesAt = (group, path) =>
   tokenEntries(
-    requiredRecord(requiredRecord(source.color, 'color')[scheme], `color.${scheme}`),
-    `color.${scheme}`
+    requiredRecord(group, path),
+    path
   ).map(([name, token]) => {
-    const extensions = requiredRecord(token.$extensions, `color.${scheme}.${name}.$extensions`)
+    const tokenPath = `${path}.${name}`
+    const extensions = requiredRecord(token.$extensions, `${tokenPath}.$extensions`)
 
     const lumen = requiredRecord(
       extensions[lumenExtension],
-      `color.${scheme}.${name}.$extensions.${lumenExtension}`
+      `${tokenPath}.$extensions.${lumenExtension}`
     )
 
     return {
       css: requiredString(
         lumen.cssValue,
-        `color.${scheme}.${name}.$extensions.${lumenExtension}.cssValue`
+        `${tokenPath}.$extensions.${lumenExtension}.cssValue`
       ),
-      description: requiredString(token.$description, `color.${scheme}.${name}.$description`),
+      description: requiredString(token.$description, `${tokenPath}.$description`),
       hex: requiredString(
-        tokenValue(token, `color.${scheme}.${name}`),
-        `color.${scheme}.${name}.$value`
+        tokenValue(token, tokenPath),
+        `${tokenPath}.$value`
       ),
       name
     }
   })
+
+const colorEntries = (source, scheme) => colorEntriesAt(
+  requiredRecord(requiredRecord(source.color, 'color')[scheme], `color.${scheme}`),
+  `color.${scheme}`
+)
+
+const visualizationColorEntries = (source, scheme) => colorEntriesAt(
+  requiredRecord(
+    requiredRecord(
+      requiredRecord(source.visualization, 'visualization').color,
+      'visualization.color'
+    )[scheme],
+    `visualization.color.${scheme}`
+  ),
+  `visualization.color.${scheme}`
+)
 
 const dimensionEntries = (source, groupName) =>
   tokenEntries(source[groupName], groupName).map(([name, token]) => {
@@ -104,16 +121,49 @@ const nestedEntries = (source, parent, group) =>
     `${parent}.${group}`
   )
 
+const nestedDimensionEntries = (source, parent, group) =>
+  nestedEntries(source, parent, group).map(([name, token]) => {
+    const value = requiredRecord(
+      tokenValue(token, `${parent}.${group}.${name}`),
+      `${parent}.${group}.${name}.$value`
+    )
+
+    if (value.unit !== 'px') {
+      throw new TypeError(`Only px dimensions are supported at ${parent}.${group}.${name}.`)
+    }
+
+    return {
+      name,
+      value: requiredNumber(value.value, `${parent}.${group}.${name}.$value.value`)
+    }
+  })
+
 const readSource = async () => {
   const source = JSON.parse(await readFile(sourcePath, 'utf8'))
   const light = colorEntries(source, 'light')
   const dark = colorEntries(source, 'dark')
+  const chartLight = visualizationColorEntries(source, 'light')
+  const chartDark = visualizationColorEntries(source, 'dark')
 
   if (light.map(token => token.name).join() !== dark.map(token => token.name).join()) {
     throw new Error('Light and dark color token names must match and retain the same order.')
   }
 
+  if (chartLight.map(token => token.name).join() !== chartDark.map(token => token.name).join()) {
+    throw new Error('Light and dark chart color token names must match and retain the same order.')
+  }
+
   return {
+    chartDark,
+    chartLight,
+    chartOpacities: nestedEntries(source, 'visualization', 'opacity').map(([name, token]) => ({
+      name,
+      value: requiredNumber(
+        tokenValue(token, `visualization.opacity.${name}`),
+        `visualization.opacity.${name}.$value`
+      )
+    })),
+    chartStrokeWidths: nestedDimensionEntries(source, 'visualization', 'stroke-width'),
     dark,
     durations: nestedEntries(source, 'motion', 'duration').map(([name, token]) => {
       const value = requiredRecord(
@@ -179,6 +229,13 @@ const readSource = async () => {
         `typography.font-weight.${name}.$value`
       )
     })),
+    graphicFrameSizes: nestedDimensionEntries(source, 'graphics', 'frame-size'),
+    graphicIllustrationSizes: nestedDimensionEntries(source, 'graphics', 'illustration-size'),
+    graphicOpacities: nestedEntries(source, 'graphics', 'opacity').map(([name, token]) => ({
+      name,
+      value: requiredNumber(tokenValue(token, `graphics.opacity.${name}`), `graphics.opacity.${name}.$value`)
+    })),
+    graphicStrokeWidths: nestedDimensionEntries(source, 'graphics', 'stroke-width'),
     light,
     radii: dimensionEntries(source, 'radius'),
     spacing: dimensionEntries(source, 'space')
@@ -213,6 +270,32 @@ ${tsObject(tokens.dark, token => JSON.stringify(token.css), '    ')}
   }
 } as const
 
+export const lumenChartColorTokens = {
+  light: {
+${tsObject(tokens.chartLight, token => JSON.stringify(token.hex), '    ')}
+  },
+  dark: {
+${tsObject(tokens.chartDark, token => JSON.stringify(token.hex), '    ')}
+  }
+} as const
+
+export const lumenChartCssColorTokens = {
+  light: {
+${tsObject(tokens.chartLight, token => JSON.stringify(token.css), '    ')}
+  },
+  dark: {
+${tsObject(tokens.chartDark, token => JSON.stringify(token.css), '    ')}
+  }
+} as const
+
+export const lumenChartStrokeWidths = {
+${tsObject(tokens.chartStrokeWidths, token => String(token.value))}
+} as const
+
+export const lumenChartOpacities = {
+${tsObject(tokens.chartOpacities, token => String(token.value))}
+} as const
+
 export const lumenSpacing = {
 ${tsObject(tokens.spacing, token => String(token.value))}
 } as const
@@ -245,7 +328,24 @@ export const lumenElevation = {
 ${tsObject(tokens.elevation, token => String(token.value))}
 } as const
 
+export const lumenGraphicFrameSizes = {
+${tsObject(tokens.graphicFrameSizes, token => String(token.value))}
+} as const
+
+export const lumenIllustrationSizes = {
+${tsObject(tokens.graphicIllustrationSizes, token => String(token.value))}
+} as const
+
+export const lumenGraphicStrokeWidths = {
+${tsObject(tokens.graphicStrokeWidths, token => String(token.value))}
+} as const
+
+export const lumenGraphicOpacities = {
+${tsObject(tokens.graphicOpacities, token => String(token.value))}
+} as const
+
 export type LumenColorScheme = keyof typeof lumenColorTokens
+export type LumenChartColor = keyof typeof lumenChartColorTokens.light
 export type LumenSemanticColor = keyof typeof lumenColorTokens.light
 `
 
@@ -294,6 +394,40 @@ ${tokens.dark
     )
 }
 
+public struct LumenChartColorPalette: Sendable {
+${tokens.chartLight.map(token => `    public let ${toCamelCase(token.name)}: Color`).join('\n')}
+
+    public init(
+${tokens.chartLight
+  .map(token => `        ${toCamelCase(token.name)}: Color,`)
+  .join('\n')
+  .replace(/,$/, '')}
+    ) {
+${tokens.chartLight.map(token => `        self.${toCamelCase(token.name)} = ${toCamelCase(token.name)}`).join('\n')}
+    }
+}
+
+public enum LumenChartColors {
+    public static let light = LumenChartColorPalette(
+${tokens.chartLight
+  .map(token => `        ${toCamelCase(token.name)}: Color(${swiftColorArguments(token.hex)}),`)
+  .join('\n')
+  .replace(/,$/, '')}
+    )
+
+    public static let dark = LumenChartColorPalette(
+${tokens.chartDark
+  .map(token => `        ${toCamelCase(token.name)}: Color(${swiftColorArguments(token.hex)}),`)
+  .join('\n')
+  .replace(/,$/, '')}
+    )
+}
+
+public enum LumenChartMetrics {
+${tokens.chartStrokeWidths.map(token => `    public static let ${toCamelCase(token.name)}StrokeWidth: CGFloat = ${token.value}`).join('\n')}
+${tokens.chartOpacities.map(token => `    public static let ${toCamelCase(token.name)}Opacity: Double = ${token.value}`).join('\n')}
+}
+
 public enum LumenSpacing {
 ${tokens.spacing.map(token => `    public static let ${toNativeCamelCase(token.name)}: CGFloat = ${token.value}`).join('\n')}
 }
@@ -328,6 +462,13 @@ ${tokens.easings.map(token => `    public static let ${toCamelCase(token.name)}E
 
 public enum LumenElevation {
 ${tokens.elevation.map(token => `    public static let ${toCamelCase(token.name)}: CGFloat = ${token.value}`).join('\n')}
+}
+
+public enum LumenGraphics {
+${tokens.graphicFrameSizes.map(token => `    public static let ${toCamelCase(token.name)}FrameSize: CGFloat = ${token.value}`).join('\n')}
+${tokens.graphicIllustrationSizes.map(token => `    public static let ${toCamelCase(token.name)}IllustrationSize: CGFloat = ${token.value}`).join('\n')}
+${tokens.graphicStrokeWidths.map(token => `    public static let ${toCamelCase(token.name)}StrokeWidth: CGFloat = ${token.value}`).join('\n')}
+${tokens.graphicOpacities.map(token => `    public static let ${toCamelCase(token.name)}Opacity: Double = ${token.value}`).join('\n')}
 }
 `
 
@@ -366,6 +507,35 @@ ${tokens.dark
     )
 }
 
+@Immutable
+data class LumenChartColorPalette(
+${tokens.chartLight
+  .map(token => `    val ${toCamelCase(token.name)}: Color,`)
+  .join('\n')
+  .replace(/,$/, '')}
+)
+
+object LumenChartColors {
+    val Light = LumenChartColorPalette(
+${tokens.chartLight
+  .map(token => `        ${toCamelCase(token.name)} = ${kotlinColor(token.hex)},`)
+  .join('\n')
+  .replace(/,$/, '')}
+    )
+
+    val Dark = LumenChartColorPalette(
+${tokens.chartDark
+  .map(token => `        ${toCamelCase(token.name)} = ${kotlinColor(token.hex)},`)
+  .join('\n')
+  .replace(/,$/, '')}
+    )
+}
+
+object LumenChartMetrics {
+${tokens.chartStrokeWidths.map(token => `    val ${toPascalCase(token.name)}StrokeWidth = ${kotlinFloat(token.value)}.dp`).join('\n')}
+${tokens.chartOpacities.map(token => `    const val ${toPascalCase(token.name)}Opacity = ${kotlinFloat(token.value)}`).join('\n')}
+}
+
 object LumenSpacing {
 ${tokens.spacing.map(token => `    val ${toNativePascalCase(token.name)} = ${kotlinFloat(token.value)}.dp`).join('\n')}
 }
@@ -395,6 +565,13 @@ ${tokens.easings.map(token => `    val ${toPascalCase(token.name)}Easing = Lumen
 object LumenElevation {
 ${tokens.elevation.map(token => `    val ${toPascalCase(token.name)} = ${kotlinFloat(token.value)}.dp`).join('\n')}
 }
+
+object LumenGraphics {
+${tokens.graphicFrameSizes.map(token => `    val ${toPascalCase(token.name)}FrameSize = ${kotlinFloat(token.value)}.dp`).join('\n')}
+${tokens.graphicIllustrationSizes.map(token => `    val ${toPascalCase(token.name)}IllustrationSize = ${kotlinFloat(token.value)}.dp`).join('\n')}
+${tokens.graphicStrokeWidths.map(token => `    val ${toPascalCase(token.name)}StrokeWidth = ${kotlinFloat(token.value)}.dp`).join('\n')}
+${tokens.graphicOpacities.map(token => `    const val ${toPascalCase(token.name)}Opacity = ${kotlinFloat(token.value)}`).join('\n')}
+}
 `
 
 const assertStylesMatch = async tokens => {
@@ -421,6 +598,16 @@ const assertStylesMatch = async tokens => {
     for (const color of colors) {
       if (!block.includes(`--${color.name}: ${color.css};`)) {
         throw new Error(`CSS token --${color.name} does not match the canonical ${scheme} value.`)
+      }
+    }
+
+    const chartColors = scheme === 'light' ? tokens.chartLight : tokens.chartDark
+
+    for (const color of chartColors) {
+      if (!block.includes(`--chart-${color.name}: ${color.css};`)) {
+        throw new Error(
+          `CSS token --chart-${color.name} does not match the canonical ${scheme} value.`
+        )
       }
     }
   }

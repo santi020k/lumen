@@ -1,0 +1,84 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  alignLumenChartSeries,
+  createLumenBarGeometry,
+  createLumenLineGeometry,
+  formatLumenChartSummary,
+  getLumenChartCategories,
+  getLumenChartDomain,
+  getLumenChartToneClassName,
+  hasLumenChartData,
+  type LumenComboSeries,
+  resolveLumenChartTone } from '@santi020k/lumen-core'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  caption?: string
+  class?: string | null
+  className?: string
+  description?: string
+  formatValue?: (value: number) => string
+  heading?: string
+  series: readonly LumenComboSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+  summary?: string
+}
+
+const { caption, class: classProp = '', className = '', description, formatValue = String, heading, series, showLegend = true, showTable = true, summary = formatLumenChartSummary(series, formatValue), ...rest } = Astro.props
+const width = 640
+const height = 320
+const padding = 44
+const categories = getLumenChartCategories(series)
+
+const alignedSeries = series.map(item => ({
+  ...item,
+  data: alignLumenChartSeries(item, categories).data
+}))
+
+const domain = getLumenChartDomain(alignedSeries.flatMap(item => item.data.map(datum => datum.y)))
+const barSeries = alignedSeries.filter(item => item.mark === 'bar')
+const lineSeries = alignedSeries.filter(item => item.mark !== 'bar')
+const bars = createLumenBarGeometry(barSeries, { domain, height, width })
+const lines = lineSeries.map(item => createLumenLineGeometry(item.data, { domain, height, padding, width }))
+const hasData = hasLumenChartData(series)
+---
+
+<Chart class:list={['ui-combo-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
+  {showLegend && hasData && <ul class="ui-chart__legend" aria-label="Chart legend">{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
+  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
+    ui-bar-chart__marks
+  "
+                                                                                                           >{bars.marks.map(mark => <rect class={getLumenChartToneClassName(mark.tone)} height={mark.height} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>{lines.map((geometry, index) => {
+ const item = lineSeries[index]
+
+ if (!item) return null
+
+ const tone = resolveLumenChartTone(item.tone, index + barSeries.length)
+
+ return (
+<g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>{item.mark === 'area' && geometry.areaPaths.map(path => (
+<path
+class="ui-line-chart__area"
+d={path}
+/>
+)) }<path
+class="ui-line-chart__line"
+d={geometry.path}
+    /></g>
+)
+})}</svg></div>
+  {showTable && hasData && (
+<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th>{series.map(item => <th scope="col">{item.label}</th>)}</tr></thead><tbody>{categories.map(category => (
+<tr><th scope="row">{String(category)}</th>{series.map(item => {
+ const datum = item.data.find(point => point.x === category)
+
+ return <td>{datum?.label ?? (datum?.y === null || datum === undefined ? 'Not available' : formatValue(datum.y))}</td>
+})}</tr>
+))}</tbody></table></div></details>
+)}
+</Chart>

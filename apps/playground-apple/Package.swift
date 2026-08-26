@@ -13,6 +13,10 @@ let package = Package(
             dependencies: [
                 .product(name: "LumenUI", package: "lumen")
             ]
+        ),
+        .testTarget(
+            name: "LumenApplePlaygroundTests",
+            dependencies: ["LumenApplePlayground"]
         )
     ]
 )

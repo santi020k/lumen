@@ -3,10 +3,24 @@ package com.santi020k.lumen
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import java.util.Locale
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class PrimitivesTest {
+    @Test
+    fun dateFieldsClampBoundsAndFormatUtcDates() {
+        assertEquals(1_000L, clampLumenDateMillis(500L, 1_000L, 2_000L))
+        assertEquals(2_000L, clampLumenDateMillis(2_500L, 1_000L, 2_000L))
+        assertEquals(1_500L, clampLumenDateMillis(1_500L, 1_000L, 2_000L))
+        assertEquals("Jan 1, 1970", formatLumenDateMillis(0L, Locale.US))
+        assertEquals(null, formatLumenDateMillis(null, Locale.US))
+        assertThrows(IllegalArgumentException::class.java) {
+            validateLumenDateBounds(2_000L, 1_000L)
+        }
+    }
+
     @Test
     fun foundationMotionAndElevationMatchCanonicalTokens() {
         assertEquals(160, LumenMotion.StandardDurationMillis)
@@ -237,6 +251,23 @@ class PrimitivesTest {
                 LumenIllustrationVariant.Success
             )
         )
+    }
+
+    @Test
+    fun imagePresentationUsesSharedFitAndRadiusContracts() {
+        assertEquals(listOf(LumenImageFit.Contain, LumenImageFit.Cover), LumenImageFit.entries)
+        assertEquals(
+            listOf(
+                LumenImageRadius.Full,
+                LumenImageRadius.Lg,
+                LumenImageRadius.Md,
+                LumenImageRadius.None,
+                LumenImageRadius.Sm
+            ),
+            LumenImageRadius.entries
+        )
+        assertEquals(3.dp, LumenGraphics.StandardStrokeWidth)
+        assertEquals(0.1f, LumenGraphics.WashOpacity)
     }
 
     @Test

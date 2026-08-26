@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'astro/types'
 
 import {
   createLumenPieGeometry,
+  formatLumenChartSummary,
   getLumenChartToneClassName,
   getLumenPieChartVariantClassName,
   hasLumenPieData,
@@ -24,6 +25,7 @@ interface Props extends HTMLAttributes<'figure'> {
   series: LumenChartSeries
   showLegend?: boolean
   showTable?: boolean
+  summary?: string
   valueFormatter?: (value: number) => string
   variant?: LumenPieChartVariant
 }
@@ -41,6 +43,7 @@ const {
   showLegend = true,
   showTable = true,
   valueFormatter = String,
+  summary = formatLumenChartSummary([series], valueFormatter),
   variant = 'donut',
   ...rest
 } = Astro.props
@@ -60,6 +63,7 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
   {description}
   {glass}
   {heading}
+  {summary}
   {...rest}
 >
   {

@@ -8,6 +8,8 @@ words:
   - affordances
   - browsable
   - targetable
+  - textformat
+  - trianglepath
   - affix
   - Affix
   - Amina
@@ -30,6 +32,7 @@ words:
   - cascader
   - Cascader
   - cascaders
+  - catamphetamine
   - Chakra
   - checkmark
   - circlepath
@@ -48,6 +51,7 @@ words:
   - Cowork
   - datalist
   - datatable
+  - datetimepicker
   - describedby
   - descriptions
   - Descriptions
@@ -70,10 +74,12 @@ words:
   - gearshape
   - geolocation
   - getprop
+  - googlecode
   - glassmorphism
   - gitlink
   - gradientdivider
   - GradientDivider
+  - Guidolim
   - hashkey
   - haspopup
   - hcol
@@ -88,9 +94,12 @@ words:
   - Jetpack
   - knip
   - labelledby
+  - lefthalf
   - laptopcomputer
   - lede
   - largecircle
+  - libphonenumber
+  - phonenumberkit
   - linecap
   - linejoin
   - VectorPath
@@ -100,6 +109,7 @@ words:
   - lucide
   - magnifyingglass
   - macwindow
+  - Marmelstein
   - Lumen
   - maxlength
   - memudo
@@ -111,6 +121,9 @@ words:
   - minimatch
   - modelcontextprotocol
   - nestedscroll
+  - nonfinite
+  - Nonfinite
+  - xyaxis
   - navigationsuite
   - noopener
   - noreferrer
@@ -119,6 +132,7 @@ words:
   - npx
   - nums
   - overscan
+  - phonenumbers
   - popconfirm
   - Popconfirm
   - postlens

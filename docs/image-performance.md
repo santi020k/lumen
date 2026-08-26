@@ -5,6 +5,11 @@ Next.js, another framework, your CMS, or your image CDN, and apply Lumen at the 
 `img`. This avoids duplicate transformations and preserves the framework's build-time analysis,
 responsive sources, cache behavior, and preload decisions.
 
+Across web and native adapters, the shared presentation contract includes `contain` or `cover`
+fitting and semantic `none`, `sm`, `md`, `lg`, or `full` radii. Native `LumenImage` implementations
+also accept an optional positive aspect ratio and an accessible label; omit the label only for
+decorative imagery.
+
 ## Shared rules
 
 - Always provide useful `alt` text, or `alt=""` for a decorative image.

@@ -1,0 +1,19 @@
+---
+import { Heatmap } from '@santi020k/lumen-astro'
+
+const data = [
+  { value: 18, x: 'Morning', y: 'Monday' },
+  { value: 42, x: 'Afternoon', y: 'Monday' },
+  { value: 27, x: 'Morning', y: 'Tuesday' },
+  { value: 64, x: 'Afternoon', y: 'Tuesday' },
+  { value: 36, x: 'Morning', y: 'Wednesday' },
+  { value: 78, x: 'Afternoon', y: 'Wednesday' }
+]
+---
+
+<Heatmap
+  aria-label="Workspace activity by weekday and time of day"
+  caption="Darker cells represent more active sessions."
+  {data}
+  heading="Workspace activity"
+/>

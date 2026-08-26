@@ -90,7 +90,7 @@ The same sync reconciles the current public APIs for existing assets: `Stat` exp
 `Accent`, `Bare`, and `Glass`; `Chart` exposes `Presentation=Default|Bare`; `BarChart` adds the same
 presentation axis; and `LineChart` exposes `Markers=None|Auto|All` plus
 `Presentation=Default|Bare`. Earlier working-file additions remain `Sparkline`, `BarChart`,
-`LineChart`, `PieChart`, and `ScrollProgress`, plus 16 `color/chart/*` variables. Treat the 123-asset
+`LineChart`, `PieChart`, and `ScrollProgress`, plus 20 `color/chart/*` variables. Treat the 123-asset
 figures above as the historical published baseline until the updated library is published through
 the Figma UI.
 

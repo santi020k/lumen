@@ -1,3 +1,5 @@
+import { lumenGraphicFrameSizes, lumenIllustrationSizes } from './tokens.generated.js'
+
 export interface LumenDisclosureState {
   contentVisible: boolean
   disabled: boolean
@@ -20,9 +22,9 @@ export const resolveLumenSkeletonHeight = (height: number): number => (
 export type LumenGraphicSize = 'lg' | 'md' | 'sm'
 
 export const resolveLumenGraphicSize = (size: LumenGraphicSize): number => ({
-  lg: 320,
-  md: 240,
-  sm: 160
+  lg: lumenGraphicFrameSizes.lg,
+  md: lumenGraphicFrameSizes.md,
+  sm: lumenGraphicFrameSizes.sm
 })[size]
 
 export type LumenBackdropIntensity = 'medium' | 'strong' | 'subtle'
@@ -35,4 +37,8 @@ export type LumenIllustrationSize = 'lg' | 'md' | 'sm'
 
 export const resolveLumenIllustrationSize = (
   size: LumenIllustrationSize
-): number => ({ lg: 176, md: 128, sm: 96 })[size]
+): number => ({
+  lg: lumenIllustrationSizes.lg,
+  md: lumenIllustrationSizes.md,
+  sm: lumenIllustrationSizes.sm
+})[size]

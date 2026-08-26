@@ -1,4 +1,5 @@
 import {
+  lumenChartColorTokens,
   type LumenColorScheme,
   lumenColorTokens,
   lumenDurations,
@@ -10,6 +11,7 @@ import {
   lumenSpacing } from './tokens.generated.js'
 
 export interface LumenTheme {
+  chartColors: typeof lumenChartColorTokens.light | typeof lumenChartColorTokens.dark
   colors: typeof lumenColorTokens.light | typeof lumenColorTokens.dark
   durations: typeof lumenDurations
   elevation: typeof lumenElevation
@@ -22,6 +24,7 @@ export interface LumenTheme {
 }
 
 export const createLumenTheme = (scheme: LumenColorScheme): LumenTheme => ({
+  chartColors: lumenChartColorTokens[scheme],
   colors: lumenColorTokens[scheme],
   durations: lumenDurations,
   elevation: lumenElevation,

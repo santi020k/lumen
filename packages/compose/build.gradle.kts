@@ -114,6 +114,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
+    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.37")
     androidTestImplementation(composeBom)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4-accessibility")

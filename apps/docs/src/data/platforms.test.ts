@@ -92,9 +92,9 @@ describe('platform documentation', () => {
       )
     }
 
-    expect(getPlatformGuide('react-native').components).toHaveLength(45)
-    expect(getPlatformGuide('android').components).toHaveLength(54)
-    expect(getPlatformGuide('apple').components).toHaveLength(56)
+    expect(getPlatformGuide('react-native').components).toHaveLength(57)
+    expect(getPlatformGuide('android').components).toHaveLength(66)
+    expect(getPlatformGuide('apple').components).toHaveLength(67)
   })
 
   test('maps new and legacy web routes to the correct contextual navigation', () => {

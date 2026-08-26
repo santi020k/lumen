@@ -56,6 +56,9 @@ components=(
     "Toggle"
     "Settings row"
     "Search field"
+    "Phone input"
+    "Date field"
+    "Date range field"
     "Checkbox"
     "Radio group"
     "Segmented control"
@@ -75,6 +78,15 @@ components=(
     "Graphic"
     "Backdrop"
     "Illustration"
+    "Image"
+    "Sparkline"
+    "Line chart"
+    "Bar chart"
+    "Pie chart"
+    "Scatter chart"
+    "Heatmap"
+    "Range chart"
+    "Combo chart"
     "Card"
     "Avatar"
     "Empty state"
@@ -91,6 +103,10 @@ components=(
     "Navigation bar accessory"
     "Adaptive navigation scaffold"
 )
+
+if (( $# > 1 )); then
+    components=("${@:2}")
+fi
 
 for component in "${components[@]}"; do
     filename="$(printf '%s' "$component" | tr '[:upper:] ' '[:lower:]-')"
@@ -109,6 +125,8 @@ for component in "${components[@]}"; do
         "Disclosure") scroll_count=1 ;;
         "Backdrop") scroll_count=1 ;;
         "Illustration") scroll_count=2 ;;
+        "Image") scroll_count=2 ;;
+        "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Heatmap"|"Range chart"|"Combo chart") scroll_count=2 ;;
         "Card"|"Avatar"|"List row") scroll_count=1 ;;
         "Empty state") scroll_count=3 ;;
         "Adaptive navigation scaffold") scroll_count=2 ;;
