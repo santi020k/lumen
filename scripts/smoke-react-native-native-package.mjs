@@ -139,7 +139,7 @@ try {
 
     packageSource = 'Published'
   } else {
-    run('pnpm', ['--filter', '@santi020k/lumen-react-native', 'run', 'build'])
+    run('pnpm', ['--filter', '@santi020k/lumen-react-native...', 'run', 'build'])
 
     run('pnpm', ['pack', '--pack-destination', archiveDirectory], packageDirectory)
 
