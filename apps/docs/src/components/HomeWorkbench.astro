@@ -15,6 +15,8 @@ import {
   Switch
 } from '@santi020k/lumen-astro'
 
+import { documentedComponentCount } from '../data/site-metadata.ts'
+
 import LumenLogo from './LumenLogo.astro'
 
 const navigation = [
@@ -65,15 +67,15 @@ const activity = [
       <Alert class="home-workbench__upgrade" variant="success">
         <Icon name="sparkles" size="sm" />
         <strong>All systems ready</strong>
-        <p>150 primitives synced.</p>
+        <p>{documentedComponentCount} primitives synced.</p>
       </Alert>
     </aside>
 
     <section class="home-workbench__main" aria-labelledby="workbench-title">
       <div class="home-workbench__heading">
         <div>
-          <p>Thursday, July 23</p>
-          <h2 id="workbench-title">Good morning, Santi.</h2>
+          <p>Example product workspace</p>
+          <h2 id="workbench-title">Welcome back, Santi.</h2>
         </div>
         <div class="home-workbench__heading-actions">
           <Button variant="outline">

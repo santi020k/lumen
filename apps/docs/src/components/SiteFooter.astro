@@ -8,10 +8,10 @@ import {
   Marker,
   Separator
 } from '@santi020k/lumen-astro'
-import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import type { DocsPlatformId } from '../data/platforms'
 import { platformGuides } from '../data/platforms'
+import { documentedComponentCount } from '../data/site-metadata'
 
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
@@ -72,7 +72,7 @@ const footerGroups = [
 ] as const
 
 const currentYear = new Date().getFullYear()
-const componentCount = lumenComponentNames.length
+const componentCount = documentedComponentCount
 
 const webInstallers = [
   {
@@ -250,7 +250,7 @@ const footerPlatforms = platformGuides.map(guide => ({
         </Link>.
       </p>
       <p class="docs-site-footer__status">
-        <Marker variant="success">Stable</Marker>
+        <Marker variant="success">Web stable · Native beta</Marker>
         Accessible by default
       </p>
     </div>

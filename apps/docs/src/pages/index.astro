@@ -27,7 +27,6 @@ import {
   Switch,
   Tabs
 } from '@santi020k/lumen-astro'
-import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
 import GitHubIcon from '../components/GitHubIcon.astro'
@@ -35,9 +34,10 @@ import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
 import type { DocsPlatformId } from '../data/platforms'
 import { productPlatformGuides } from '../data/platforms'
+import { documentedComponentCount, primaryPageMetadata } from '../data/site-metadata'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
-const componentCount = lumenComponentNames.length
+const componentCount = documentedComponentCount
 const aiSkillInstallCommand = 'npx skills add santi020k/lumen --skill lumen-ui'
 
 const installerIcons = {
@@ -190,14 +190,11 @@ const useCases: readonly UseCase[] = [
   }
 ]
 
-const pageDescription =
-  `Lumen is a crafted multi-framework UI system with ${componentCount} accessible primitives ` +
-  'for Web, React Native, Apple platforms, and Android.'
 ---
 
 <BaseLayout
-  description={pageDescription}
-  title="Lumen UI — Crafted primitives for web and native platforms"
+  description={primaryPageMetadata.home.description}
+  title={primaryPageMetadata.home.title}
 >
   <main class="home">
     <section class="home-hero">
@@ -570,7 +567,7 @@ const pageDescription =
         <div class="home-section__head home-section__head--split">
           <div>
             <Eyebrow>Built for every surface</Eyebrow>
-            <h2 id="platforms-title">One design language.<br />Four native destinations.</h2>
+            <h2 id="platforms-title">One design language.<br />Web and three native platforms.</h2>
           </div>
           <div class="home-section__aside">
             <p>

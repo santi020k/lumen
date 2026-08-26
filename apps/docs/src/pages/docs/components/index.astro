@@ -19,6 +19,7 @@ import {
   componentCollections,
   componentDocs
 } from '../../../data/docs'
+import { primaryPageMetadata } from '../../../data/site-metadata'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { toSlug } from '../../../lib/routes'
 
@@ -45,8 +46,8 @@ const glassCount = componentDocs.filter(component => component.glass).length
 ---
 
 <DocsLayout
-  description="Browse all Lumen UI components with live previews and usage examples for Astro, React, and Elements."
-  title="Components - Lumen UI"
+  description={primaryPageMetadata.components.description}
+  title={primaryPageMetadata.components.title}
 >
   <div class="components-page">
     <header class="components-hero">

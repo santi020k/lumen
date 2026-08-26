@@ -79,11 +79,8 @@ const organizationId = new URL('/#organization', Astro.site)
 const websiteId = new URL('/#website', Astro.site)
 const softwareId = new URL('/#software', Astro.site)
 const pageId = new URL(`${Astro.url.pathname}#webpage`, Astro.site)
-
-const getCanonicalItemUrl = (href: string): URL => new URL(
-  href === '/' || href.endsWith('/') ? href : `${href}/`,
-  Astro.site
-)
+const creatorId = 'https://santi020k.com/#person'
+const getCanonicalItemUrl = (href: string): URL => new URL(href, Astro.site)
 
 const organization = organizationSchema({ id: organizationId.href, name: 'Lumen UI', url: siteUrl }, {
   sameAs: [
@@ -99,10 +96,17 @@ const website = webSiteSchema({
   url: siteUrl
 })
 
+const creator = defineSchema({
+  '@id': creatorId,
+  '@type': 'Person',
+  name: 'Santiago Molina',
+  url: 'https://santi020k.com'
+})
+
 const software = defineSchema({
   '@id': softwareId.href,
   '@type': 'SoftwareSourceCode',
-  author: defineSchema({ '@id': organizationId.href, '@type': 'Organization' }),
+  author: defineSchema({ '@id': creatorId, '@type': 'Person' }),
   codeRepository: 'https://github.com/santi020k/lumen',
   description: 'An open-source UI system for accessible web and native product interfaces.',
   isAccessibleForFree: true,
@@ -141,7 +145,14 @@ breadcrumbSchema(
 ) :
 undefined
 
-const structuredData = composeJsonLd(organization, website, software, pageStructuredData, breadcrumbStructuredData)
+const structuredData = composeJsonLd(
+  organization,
+  website,
+  creator,
+  software,
+  pageStructuredData,
+  breadcrumbStructuredData
+)
 ---
 
 <html lang="en">
