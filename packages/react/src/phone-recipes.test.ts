@@ -39,5 +39,15 @@ describe('React phone input recipes', () => {
 
     expect(value.country).toBe(colombia)
     expect(value.nationalNumber).toContain('212')
+
+    const incompleteValue = resolveReactPhoneInputValue(
+      [colombia],
+      colombia,
+      '+33 1',
+      { locale: 'en' }
+    )
+
+    expect(incompleteValue.country).toBe(colombia)
+    expect(incompleteValue.nationalNumber).not.toContain('+')
   })
 })

@@ -17,9 +17,13 @@ export const resolveReactPhoneInputValue = (
     candidate.regionCode === detectedNumber.country.regionCode
   ))
 
-  return detectedCountryIsAllowed ?
-    detectedNumber :
-    resolveLumenPhoneNumber(country, detectedNumber.nationalNumber, options)
+  if (detectedCountryIsAllowed) return detectedNumber
+
+  const allowedCountryInput = detectedNumber.nationalNumber.startsWith('+') ?
+    detectedNumber.nationalNumber.slice(1) :
+    detectedNumber.nationalNumber
+
+  return resolveLumenPhoneNumber(country, allowedCountryInput, options)
 }
 
 export const resolveReactPhoneInputCountry = (
