@@ -28,12 +28,6 @@ import { LumenIcon } from './primitives.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
-export type {
-  LumenPhoneCountry,
-  LumenPhoneCountryOptions,
-  LumenPhoneNumber
-} from '@santi020k/lumen-core'
-
 export interface LumenPhoneInputProps extends Omit<ViewProps, 'children'> {
   countries?: readonly LumenPhoneCountry[]
   countryPickerTitle?: string
