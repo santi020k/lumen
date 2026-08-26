@@ -40,6 +40,14 @@ independently from the document registry.
 </lumen-card>
 ```
 
+`lumen-phone-input` can generate its complete country and telephone controls. It exposes `value`,
+`valid`, and `e164`, and emits `ui:phone-change` with the normalized phone model. Country names and
+calling codes remain visible so the flag is never the only identifier.
+
+```html
+<lumen-phone-input country="CO" locale="en-US" name="hospitalPhone"></lumen-phone-input>
+```
+
 ## Language selection
 
 `lumen-language-toggle` cycles through an ordered JSON `locales` list and generates visible

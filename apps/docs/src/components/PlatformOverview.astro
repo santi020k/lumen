@@ -6,7 +6,8 @@ import {
   CodeTabs,
   Icon,
   Link,
-  Marker
+  Marker,
+  QRCode
 } from '@santi020k/lumen-astro'
 
 import type { PlatformGuide } from '../data/platforms'
@@ -154,6 +155,42 @@ const nativeGuideLinks = hasNativeCatalog ?
         <h2 id="playground-title">Run the {guide.shortLabel} playground</h2>
         <p>{guide.playgroundNote}</p>
       </div>
+      {guide.playgroundLaunch && (
+        <Card as="section" class="platform-playground-launch" variant="muted" aria-labelledby="playground-launch-title">
+          <div class="platform-playground-launch__copy">
+            <div class="platform-playground-launch__badges">
+              <Badge variant="outline">Expo Go</Badge>
+              {guide.playgroundLaunch.compatibilityNote && <Badge variant="warning">SDK compatibility required</Badge>}
+            </div>
+            <h3 id="playground-launch-title">Open the live React Native playground</h3>
+            <p>
+              Install Expo Go, then scan the QR code with your device or open the link directly.
+              It loads the latest published Lumen playground without cloning the repository.
+            </p>
+            {guide.playgroundLaunch.compatibilityNote && (
+              <p class="platform-playground-launch__compatibility">
+                {guide.playgroundLaunch.compatibilityNote}
+              </p>
+            )}
+            <ButtonLink
+              href={guide.playgroundLaunch.url}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Open in Expo Go
+            </ButtonLink>
+          </div>
+          <div class="platform-playground-launch__visual">
+            <QRCode
+              aria-label="Scan to open the Lumen React Native playground in Expo Go"
+              class="platform-playground-launch__qr"
+              size={176}
+              value={guide.playgroundLaunch.url}
+            />
+            <span>Scan with Expo Go</span>
+          </div>
+        </Card>
+      )}
       <CodeTabs
         ariaLabel={`${guide.label} playground commands`}
         items={guide.playgroundCommands}
@@ -301,6 +338,56 @@ const nativeGuideLinks = hasNativeCatalog ?
     display: grid;
     align-content: center;
     gap: 1.25rem;
+  }
+
+  .platform-playground-launch {
+    display: grid;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .platform-playground-launch__copy {
+    display: grid;
+    justify-items: start;
+    gap: 0.75rem;
+  }
+
+  .platform-playground-launch__copy h3,
+  .platform-playground-launch__copy p {
+    margin: 0;
+  }
+
+  .platform-playground-launch__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .platform-playground-launch__compatibility {
+    color: hsl(var(--warning));
+    font-size: 0.875rem;
+  }
+
+  .platform-playground-launch__visual {
+    display: grid;
+    justify-self: center;
+    justify-items: center;
+    gap: 0.5rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  :global(.platform-playground-launch__qr .ui-qr-code__value) {
+    display: none;
+  }
+
+  @media (min-width: 44rem) {
+    .platform-playground-launch {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
   }
 
   .platform-hero__eyebrow,

@@ -37,7 +37,11 @@
     "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
     "clean": "rm -rf dist coverage"
   },
+  "dependencies": {
+    "@santi020k/lumen-core": "workspace:^"
+  },
   "devDependencies": {
+    "@react-native-community/datetimepicker": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
@@ -47,6 +51,7 @@
     "vitest": "catalog:"
   },
   "peerDependencies": {
+    "@react-native-community/datetimepicker": ">=9.1 <10",
     "react": ">=19.2",
     "react-native": ">=0.86.2",
     "react-native-svg": ">=12 <16"

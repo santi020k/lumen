@@ -12,6 +12,7 @@ const publicRoot = join(docsRoot, 'public', 'native-components')
 const manifestPath = join(docsRoot, 'src', 'data', 'native-component-captures.json')
 const checkOnly = process.argv.includes('--check')
 const compareOnly = process.argv.includes('--compare')
+const chartsOnly = process.argv.includes('--charts')
 const platformArgument = process.argv.find(argument => argument.startsWith('--platform='))
 const sourceArgument = process.argv.find(argument => argument.startsWith('--source='))
 const toleranceArgument = process.argv.find(argument => argument.startsWith('--tolerance='))
@@ -20,7 +21,20 @@ const selectedSource = sourceArgument?.slice('--source='.length)
 const visualTolerance = toleranceArgument ? Number(toleranceArgument.slice('--tolerance='.length)) : undefined
 const knownPlatforms = ['react-native', 'apple', 'android']
 
+const chartSlugs = new Set([
+  'sparkline',
+  'line-chart',
+  'bar-chart',
+  'pie-chart',
+  'scatter-chart',
+  'heatmap',
+  'range-chart',
+  'combo-chart'
+])
+
 if (checkOnly && compareOnly) throw new Error('Choose either --check or --compare.')
+
+if (checkOnly && chartsOnly) throw new Error('--charts is available only when syncing or comparing.')
 
 if (selectedPlatform && !knownPlatforms.includes(selectedPlatform)) {
   throw new Error(`Unsupported native capture platform: ${selectedPlatform}`)
@@ -182,6 +196,8 @@ if (checkOnly) {
     throw new Error('The native component capture manifest does not match the documented catalog.')
   }
 
+  const chartCaptureDigests = new Map()
+
   for (const capture of manifest.captures) {
     const outputPath = join(docsRoot, 'public', capture.src)
     const contents = await readFile(outputPath)
@@ -194,6 +210,20 @@ if (checkOnly) {
 
     if (metadata.width !== capture.width || metadata.height !== capture.height) {
       throw new Error(`Native capture dimensions are stale: ${relative(repositoryRoot, outputPath)}`)
+    }
+
+    if (chartSlugs.has(capture.slug)) {
+      const digestKey = `${capture.platform}:${digest}`
+      const duplicateSlug = chartCaptureDigests.get(digestKey)
+
+      if (duplicateSlug) {
+        throw new Error(
+          `Native chart captures must be visually distinct: ${capture.platform}:${duplicateSlug} ` +
+          `and ${capture.platform}:${capture.slug}`
+        )
+      }
+
+      chartCaptureDigests.set(digestKey, capture.slug)
     }
   }
 
@@ -215,7 +245,11 @@ if (checkOnly) {
   checkedCount = manifest.captures.length
 }
 
-const captureEntries = []
+const existingManifest = chartsOnly && !compareOnly ?
+  JSON.parse(await readFile(manifestPath, 'utf8')) :
+  undefined
+
+const captureEntries = existingManifest?.captures.filter(capture => !chartSlugs.has(capture.slug)) ?? []
 const missing = []
 const comparedManifest = compareOnly ? JSON.parse(await readFile(manifestPath, 'utf8')) : undefined
 
@@ -229,6 +263,8 @@ if (!checkOnly) for (const platform of knownPlatforms) {
   if (selectedPlatform && platform !== selectedPlatform) continue
 
   for (const component of getNativeComponentsForPlatform(platform)) {
+    if (chartsOnly && !chartSlugs.has(component.slug)) continue
+
     if (selectedSource === 'default' && !isDefaultSource(platform, component.slug)) continue
 
     const source = sourceFor(platform, component.slug)

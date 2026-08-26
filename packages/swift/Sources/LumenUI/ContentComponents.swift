@@ -66,9 +66,9 @@ public enum LumenGraphicSize: Sendable {
 
     var dimension: CGFloat {
         switch self {
-        case .lg: 320
-        case .md: 240
-        case .sm: 160
+        case .lg: LumenGraphics.lgFrameSize
+        case .md: LumenGraphics.mdFrameSize
+        case .sm: LumenGraphics.smFrameSize
         }
     }
 }
@@ -316,9 +316,9 @@ public enum LumenIllustrationSize: Sendable {
 
     var dimension: CGFloat {
         switch self {
-        case .lg: 176
-        case .md: 128
-        case .sm: 96
+        case .lg: LumenGraphics.lgIllustrationSize
+        case .md: LumenGraphics.mdIllustrationSize
+        case .sm: LumenGraphics.smIllustrationSize
         }
     }
 }
@@ -360,11 +360,11 @@ public struct LumenIllustration: View {
     public var body: some View {
         Canvas { context, canvasSize in
             let scale = min(canvasSize.width, canvasSize.height) / 120
-            let lineWidth = max(2, 2.5 * scale)
+            let lineWidth = max(2, LumenGraphics.standardStrokeWidth * scale)
             let bounds = CGRect(origin: .zero, size: canvasSize)
             context.fill(
                 Path(ellipseIn: bounds.insetBy(dx: 11 * scale, dy: 11 * scale)),
-                with: .color(color.opacity(0.1))
+                with: .color(color.opacity(LumenGraphics.washOpacity))
             )
             drawArtwork(context: &context, scale: scale, lineWidth: lineWidth)
         }
@@ -390,42 +390,68 @@ public struct LumenIllustration: View {
     }
 
     private func drawArtwork(context: inout GraphicsContext, scale: CGFloat, lineWidth: CGFloat) {
-        switch variant {
-        case .empty:
-            var tray = Path(roundedRect: CGRect(x: 29, y: 43, width: 62, height: 40).scaled(by: scale), cornerRadius: 8 * scale)
-            tray.move(to: CGPoint(x: 40 * scale, y: 60 * scale))
-            tray.addLine(to: CGPoint(x: 80 * scale, y: 60 * scale))
-            context.stroke(tray, with: .color(color), lineWidth: lineWidth)
-        case .error, .success:
+        let style = StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
+
+        for element in lumenIllustrationArtwork(for: variant) {
             context.stroke(
-                Path(ellipseIn: CGRect(x: 30, y: 30, width: 60, height: 60).scaled(by: scale)),
+                illustrationPath(for: element, scale: scale),
                 with: .color(color),
-                lineWidth: lineWidth
+                style: style
             )
-            var symbol = Path()
-            if variant == .success {
-                symbol.move(to: CGPoint(x: 44 * scale, y: 61 * scale))
-                symbol.addLine(to: CGPoint(x: 55 * scale, y: 72 * scale))
-                symbol.addLine(to: CGPoint(x: 77 * scale, y: 48 * scale))
-            } else {
-                symbol.move(to: CGPoint(x: 47 * scale, y: 47 * scale))
-                symbol.addLine(to: CGPoint(x: 73 * scale, y: 73 * scale))
-                symbol.move(to: CGPoint(x: 73 * scale, y: 47 * scale))
-                symbol.addLine(to: CGPoint(x: 47 * scale, y: 73 * scale))
-            }
-            context.stroke(symbol, with: .color(color), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-        case .offline:
-            var cloud = Path(roundedRect: CGRect(x: 24, y: 45, width: 72, height: 35).scaled(by: scale), cornerRadius: 18 * scale)
-            cloud.move(to: CGPoint(x: 30 * scale, y: 30 * scale))
-            cloud.addLine(to: CGPoint(x: 90 * scale, y: 90 * scale))
-            context.stroke(cloud, with: .color(color), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
         }
     }
-}
 
-private extension CGRect {
-    func scaled(by scale: CGFloat) -> CGRect {
-        CGRect(x: origin.x * scale, y: origin.y * scale, width: width * scale, height: height * scale)
+    private func illustrationPath(
+        for element: LumenIllustrationElement,
+        scale: CGFloat
+    ) -> Path {
+        switch element {
+        case let .circle(cx, cy, radius):
+            Path(
+                ellipseIn: CGRect(
+                    x: (cx - radius) * scale,
+                    y: (cy - radius) * scale,
+                    width: radius * 2 * scale,
+                    height: radius * 2 * scale
+                )
+            )
+        case let .roundedRect(x, y, width, height, radius):
+            Path(
+                roundedRect: CGRect(
+                    x: x * scale,
+                    y: y * scale,
+                    width: width * scale,
+                    height: height * scale
+                ),
+                cornerRadius: radius * scale
+            )
+        case let .line(points):
+            pointPath(points, scale: scale, closesPath: false)
+        case let .polygon(points):
+            pointPath(points, scale: scale, closesPath: true)
+        case let .polyline(points):
+            pointPath(points, scale: scale, closesPath: false)
+        }
+    }
+
+    private func pointPath(
+        _ points: [CGFloat],
+        scale: CGFloat,
+        closesPath: Bool
+    ) -> Path {
+        var path = Path()
+
+        guard points.count >= 4 else { return path }
+
+        path.move(to: CGPoint(x: points[0] * scale, y: points[1] * scale))
+
+        for index in stride(from: 2, to: points.count, by: 2) {
+            path.addLine(to: CGPoint(x: points[index] * scale, y: points[index + 1] * scale))
+        }
+
+        if closesPath { path.closeSubpath() }
+
+        return path
     }
 }
 

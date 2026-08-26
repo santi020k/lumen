@@ -2,10 +2,16 @@
 
 <!-- cspell:words screencap -->
 
-A searchable Jetpack Compose gallery for every public component in `lumen-compose`, plus a focused
-Wear application that compiles the separate `lumen-compose-wear` artifact.
+A polished Jetpack Compose reference application for `lumen-compose`, plus a focused Wear
+application that compiles the separate `lumen-compose-wear` artifact. The phone experience has four
+adaptive destinations: Home, complete Examples, the searchable Components catalog, and Settings.
+Home presents the checked-in component and category totals as a release workspace. Examples includes
+interactive release-readiness, catalog-health, and profile patterns with representative product
+states. Normal Components launches add category discovery, while Settings groups theme,
+accessibility, platform, privacy, and support information. Wide windows use paired panes alongside
+the adaptive navigation rail instead of stretching the phone layout.
 
-The phone gallery includes the complete basic and complex catalog: foundations, actions, forms,
+The Components destination preserves the complete basic and complex catalog: foundations, actions, forms,
 feedback, visual content, structured data, controlled overlays, Android sharing, bottom
 navigation, navigation accessories, and adaptive navigation. The Wear gallery renders every API
 in its intentionally smaller package, including the explicitly experimental metric and list-row
@@ -48,9 +54,11 @@ per connected target), then capture deterministic component states with:
 The script writes one phone PNG per public component and a Wear catalog PNG beneath
 `build/screenshots`. It starts the phone activity with the `component` intent extra, which filters
 the gallery to the relevant section and opens the alert dialog, sheet, or menu when that overlay is
-the requested capture. The output is temporary verification evidence and is intentionally kept out
-of source control. Run `pnpm run sync:native-captures` from the repository root after both device
-sets are current to update the optimized documentation gallery and integrity manifest.
+the requested capture. Component-intent launches render the catalog directly so reference-app
+navigation does not alter deterministic documentation captures. The output is temporary
+verification evidence and is intentionally kept out of source control. Run
+`pnpm run sync:native-captures` from the repository root after both device sets are current to update
+the optimized documentation gallery and integrity manifest.
 
 To capture one state manually:
 

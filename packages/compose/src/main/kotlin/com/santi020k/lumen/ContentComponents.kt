@@ -29,6 +29,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -98,9 +99,9 @@ fun LumenSkeleton(
 }
 
 enum class LumenGraphicSize(val dimension: Dp) {
-    Sm(160.dp),
-    Md(240.dp),
-    Lg(320.dp)
+    Sm(LumenGraphics.SmFrameSize),
+    Md(LumenGraphics.MdFrameSize),
+    Lg(LumenGraphics.LgFrameSize)
 }
 
 enum class LumenGraphicTone {
@@ -291,9 +292,9 @@ fun LumenBackdrop(
 }
 
 enum class LumenIllustrationSize(val dimension: Dp) {
-    Sm(96.dp),
-    Md(128.dp),
-    Lg(176.dp)
+    Sm(LumenGraphics.SmIllustrationSize),
+    Md(LumenGraphics.MdIllustrationSize),
+    Lg(LumenGraphics.LgIllustrationSize)
 }
 
 enum class LumenIllustrationTone {
@@ -344,43 +345,64 @@ fun LumenIllustration(
 
     Canvas(modifier = modifier.size(size.dimension).then(semanticsModifier)) {
         val scale = this.size.minDimension / 120f
-        val strokeWidth = maxOf(2.dp.toPx(), 2.5f * scale)
+        val strokeWidth = maxOf(2.dp.toPx(), LumenGraphics.StandardStrokeWidth.toPx() * scale)
         val stroke = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
-        drawCircle(color.copy(alpha = 0.1f), radius = this.size.minDimension * 0.41f)
+        drawCircle(
+            color.copy(alpha = LumenGraphics.WashOpacity),
+            radius = this.size.minDimension * 0.41f
+        )
 
-        when (variant) {
-            LumenIllustrationVariant.Empty -> {
-                drawRoundRect(
+        for (element in lumenIllustrationArtwork.getValue(variant)) {
+            when (element) {
+                is LumenIllustrationElement.Circle -> drawCircle(
                     color = color,
-                    topLeft = Offset(29f * scale, 43f * scale),
-                    size = Size(62f * scale, 40f * scale),
-                    cornerRadius = CornerRadius(8f * scale),
+                    radius = element.radius * scale,
+                    center = Offset(element.cx * scale, element.cy * scale),
                     style = stroke
                 )
-                drawLine(color, Offset(40f * scale, 60f * scale), Offset(80f * scale, 60f * scale), strokeWidth)
-            }
-            LumenIllustrationVariant.Error, LumenIllustrationVariant.Success -> {
-                drawCircle(color, radius = 30f * scale, style = stroke)
-                if (variant == LumenIllustrationVariant.Success) {
-                    drawLine(color, Offset(44f * scale, 61f * scale), Offset(55f * scale, 72f * scale), strokeWidth, StrokeCap.Round)
-                    drawLine(color, Offset(55f * scale, 72f * scale), Offset(77f * scale, 48f * scale), strokeWidth, StrokeCap.Round)
-                } else {
-                    drawLine(color, Offset(47f * scale, 47f * scale), Offset(73f * scale, 73f * scale), strokeWidth, StrokeCap.Round)
-                    drawLine(color, Offset(73f * scale, 47f * scale), Offset(47f * scale, 73f * scale), strokeWidth, StrokeCap.Round)
-                }
-            }
-            LumenIllustrationVariant.Offline -> {
-                drawRoundRect(
+                is LumenIllustrationElement.RoundedRect -> drawRoundRect(
                     color = color,
-                    topLeft = Offset(24f * scale, 45f * scale),
-                    size = Size(72f * scale, 35f * scale),
-                    cornerRadius = CornerRadius(18f * scale),
+                    topLeft = Offset(element.x * scale, element.y * scale),
+                    size = Size(element.width * scale, element.height * scale),
+                    cornerRadius = CornerRadius(element.radius * scale),
                     style = stroke
                 )
-                drawLine(color, Offset(30f * scale, 30f * scale), Offset(90f * scale, 90f * scale), strokeWidth, StrokeCap.Round)
+                is LumenIllustrationElement.Line -> drawLine(
+                    color = color,
+                    start = Offset(element.points[0] * scale, element.points[1] * scale),
+                    end = Offset(element.points[2] * scale, element.points[3] * scale),
+                    strokeWidth = strokeWidth,
+                    cap = StrokeCap.Round
+                )
+                is LumenIllustrationElement.Polygon -> drawPath(
+                    path = illustrationPointPath(element.points, scale, closesPath = true),
+                    color = color,
+                    style = stroke
+                )
+                is LumenIllustrationElement.Polyline -> drawPath(
+                    path = illustrationPointPath(element.points, scale, closesPath = false),
+                    color = color,
+                    style = stroke
+                )
             }
         }
     }
+}
+
+private fun illustrationPointPath(
+    points: List<Float>,
+    scale: Float,
+    closesPath: Boolean
+): Path = Path().apply {
+    if (points.size < 4) return@apply
+
+    moveTo(points[0] * scale, points[1] * scale)
+
+    for (index in 2 until points.size step 2) {
+        lineTo(points[index] * scale, points[index + 1] * scale)
+    }
+
+    if (closesPath) close()
 }
 
 @Composable

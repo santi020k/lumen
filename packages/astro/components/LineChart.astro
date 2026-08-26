@@ -4,6 +4,7 @@ import type { HTMLAttributes } from 'astro/types'
 import {
   alignLumenChartSeries,
   createLumenLineGeometry,
+  formatLumenChartSummary,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
@@ -33,6 +34,7 @@ interface Props extends HTMLAttributes<'figure'> {
   series: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
+  summary?: string
 }
 
 const {
@@ -51,6 +53,7 @@ const {
   series,
   showLegend = series.length > 1,
   showTable = true,
+  summary = formatLumenChartSummary(series, formatValue),
   ...rest
 } = Astro.props
 
@@ -99,6 +102,7 @@ const referenceY =
   {description}
   {glass}
   {heading}
+  {summary}
   {...rest}
 >
   {

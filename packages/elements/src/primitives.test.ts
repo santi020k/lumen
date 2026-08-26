@@ -44,9 +44,18 @@ describe('@santi020k/lumen-elements primitives', () => {
   })
 
   test('opts monochrome images into dark-theme inversion', () => {
-    expect(classesOf(connect('lumen-image'))).toEqual(['ui-image'])
+    expect(classesOf(connect('lumen-image'))).toEqual([
+      'ui-image',
+      'ui-image--fit-cover',
+      'ui-image--radius-lg'
+    ].sort())
     expect(classesOf(connect('lumen-image', { 'invert-on-dark': '' })))
-      .toEqual(['ui-image', 'ui-image--invert-dark'].sort())
+      .toEqual([
+        'ui-image',
+        'ui-image--fit-cover',
+        'ui-image--invert-dark',
+        'ui-image--radius-lg'
+      ].sort())
   })
 
   test('omits marker modifier for the default variant', () => {
@@ -90,6 +99,30 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(toggle.getAttribute('role')).toBe('switch')
     expect(slider.getAttribute('type')).toBe('range')
     expect(textarea.getAttribute('rows')).toBe('4')
+  })
+
+  test('builds and validates an international phone control from country metadata', () => {
+    const phone = connect('lumen-phone-input', {
+      country: 'CO',
+      locale: 'en-US',
+      value: '6015550123'
+    })
+    const country = phone.querySelector<HTMLSelectElement>('.ui-phone-input__country')
+    const number = phone.querySelector<HTMLInputElement>('.ui-phone-input__number')
+
+    expect(country?.options.length).toBeGreaterThan(200)
+    expect(country?.value).toBe('CO')
+    expect(number?.value.replaceAll(/\D/g, '')).toBe('6015550123')
+    expect(phone.dataset.e164).toBe('+576015550123')
+    expect(phone.dataset.valid).toBe('true')
+
+    if (!number) throw new Error('Expected generated phone input')
+
+    number.value = '+1 212 555 0123'
+    number.dispatchEvent(new Event('input', { bubbles: true }))
+
+    expect(country?.value).toBe('US')
+    expect(phone.dataset.e164).toBe('+12125550123')
   })
 
   test('sets landmark and role defaults', () => {
@@ -226,11 +259,32 @@ describe('@santi020k/lumen-elements primitives', () => {
       label: 'Downloads increased from 4 to 8',
       values: '4,8'
     })
+    const scatter = connect('lumen-scatter-chart', {
+      series: JSON.stringify([{
+        data: [{ size: 12, x: 1, y: 4 }, { size: 20, x: 2, y: 8 }],
+        id: 'relationship',
+        label: 'Relationship'
+      }])
+    })
+    const heatmap = connect('lumen-heatmap', {
+      data: JSON.stringify([{ value: 8, x: 'Mon', y: 'Morning' }])
+    })
+    const range = connect('lumen-range-chart', {
+      data: JSON.stringify([{ high: 12, low: 4, x: 'Mon' }])
+    })
+    const combo = connect('lumen-combo-chart', {
+      series: JSON.stringify([
+        { data: [{ x: 'Mon', y: 4 }, { x: 'Tue', y: 8 }], id: 'bars', label: 'Bars', mark: 'bar' },
+        { data: [{ x: 'Mon', y: 6 }, { x: 'Tue', y: 10 }], id: 'line', label: 'Line', mark: 'line' }
+      ])
+    })
 
     expect(bars.getAttribute('role')).toBe('figure')
     expect(bars.querySelectorAll('rect')).toHaveLength(2)
     expect(bars.querySelector('h3')?.textContent).toBe('Package downloads')
     expect(bars.querySelector('details table')?.textContent).toContain('8 downloads')
+    expect(bars.querySelector('[data-ui-chart-summary]')?.textContent)
+      .toContain('1 series, 2 points')
     expect(line.querySelector('.ui-line-chart__line')).not.toBeNull()
     expect(line.querySelector('.ui-chart__reference')).not.toBeNull()
     expect(pie.querySelectorAll('.ui-pie-chart__slices path')).toHaveLength(2)
@@ -239,6 +293,11 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(sparkline.getAttribute('role')).toBe('img')
     expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
     expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
+    expect(scatter.querySelectorAll('.ui-scatter-chart__marks circle')).toHaveLength(2)
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+    expect(range.querySelector('.ui-range-chart__area')).not.toBeNull()
+    expect(combo.querySelector('.ui-bar-chart__marks rect')).not.toBeNull()
+    expect(combo.querySelector('.ui-line-chart__line')).not.toBeNull()
   })
 
   test('renders the empty state when chart series contain no usable data', () => {
@@ -259,6 +318,8 @@ describe('@santi020k/lumen-elements primitives', () => {
         .toBe('No chart data available.')
       expect(chart.querySelector('.ui-chart__plot')).toBeNull()
       expect(chart.querySelector('.ui-chart__data')).toBeNull()
+      expect(chart.querySelector('[data-ui-chart-summary]')?.textContent)
+        .toBe('No chart data available.')
     }
   })
 })

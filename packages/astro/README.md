@@ -60,6 +60,15 @@ incremental migrations, but new code should keep native behavior and visual styl
 <NativeSelect size={8} visualSize="lg" />
 ```
 
+`PhoneInput` generates localized country names, supplementary flags, and calling codes when custom
+`countries` are not provided. Mount `UIPrimitives` once to enable as-you-type formatting,
+metadata-backed validation, automatic country detection for pasted international numbers, and the
+`ui:phone-change` event with a `LumenPhoneNumber` detail.
+
+```astro
+<PhoneInput countryValue="CO" locale="en-US" name="hospitalPhone" />
+```
+
 ## Compound interactive components
 
 Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the
@@ -216,7 +225,9 @@ non-code content `Code` semantics.
 ## Data visualization
 
 Use `Sparkline` beside a metric, `BarChart` for categorical comparison, `LineChart` for ordered
-trends, and `PieChart` for a small part-to-whole breakdown. The chart components accept
+trends, `PieChart` for a small part-to-whole breakdown, `ScatterChart` for numeric relationships,
+`Heatmap` for a matrix, `RangeChart` for intervals, and `ComboChart` for a shared-domain mix of bars,
+lines, and areas. The chart components accept
 already-aggregated series, use Lumen data-color tokens, and include a revealable semantic data
 table by default.
 
@@ -236,6 +247,10 @@ const series = [{
 
 `PieChart` accepts one `LumenChartSeries`; its data points become slices. It defaults to
 `variant="donut"` and also supports `variant="pie"`.
+
+Every chart includes a factual screen-reader summary by default and accepts `summary` for more
+useful domain context. See [data visualization](../../docs/data-visualization.md) for selection,
+missing-data, live-data, and accessibility guidance.
 
 Lucide intentionally excludes brand marks. For GitHub and other project-specific icons, put the
 SVG in the default slot instead of passing an unsupported `name`; Astro warns about unknown named

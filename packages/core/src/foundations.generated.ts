@@ -82,6 +82,113 @@ export const lumenCssColorTokens = {
   }
 } as const
 
+export const lumenChartColorTokens = {
+  light: {
+    axis: "#6C7889",
+    grid: "#D7DAE0",
+    reference: "#454F5F",
+    selection: "#2463EB",
+    tooltipBackground: "#0F1729",
+    tooltipForeground: "#FFFFFF",
+    sequentialLow: "#F0F5FF",
+    sequentialMid: "#6590F1",
+    sequentialHigh: "#114BBA",
+    divergingNegative: "#EF4343",
+    divergingMid: "#E5E7EB",
+    divergingPositive: "#2463EB",
+    series1: "#2463EB",
+    series2: "#16A286",
+    series3: "#A43FDF",
+    series4: "#FA6A14",
+    series5: "#E73270",
+    series6: "#13A3C3",
+    series7: "#DCBD09",
+    series8: "#657187"
+  },
+  dark: {
+    axis: "#949CA8",
+    grid: "#393F4C",
+    reference: "#BCC3CD",
+    selection: "#29B4F5",
+    tooltipBackground: "#F3F5F7",
+    tooltipForeground: "#101219",
+    sequentialLow: "#07354B",
+    sequentialMid: "#1E8BB8",
+    sequentialHigh: "#5CC7F7",
+    divergingNegative: "#F15B5B",
+    divergingMid: "#303540",
+    divergingPositive: "#29B4F5",
+    series1: "#29B4F5",
+    series2: "#1AC19A",
+    series3: "#CE81ED",
+    series4: "#FD9A3F",
+    series5: "#F26A94",
+    series6: "#2DC9E7",
+    series7: "#F7D832",
+    series8: "#A2AABD"
+  }
+} as const
+
+export const lumenChartCssColorTokens = {
+  light: {
+    axis: "var(--ink-muted)",
+    grid: "var(--line)",
+    reference: "var(--ink-soft)",
+    selection: "var(--brand)",
+    tooltipBackground: "var(--ink)",
+    tooltipForeground: "var(--surface)",
+    sequentialLow: "218 100% 97%",
+    sequentialMid: "221 83% 67%",
+    sequentialHigh: "221 83% 40%",
+    divergingNegative: "0 84% 60%",
+    divergingMid: "220 13% 91%",
+    divergingPositive: "221 83% 53%",
+    series1: "221 83% 53%",
+    series2: "168 76% 36%",
+    series3: "280 72% 56%",
+    series4: "25 95% 53%",
+    series5: "340 82% 55%",
+    series6: "190 82% 42%",
+    series7: "52 92% 45%",
+    series8: "215 16% 47%"
+  },
+  dark: {
+    axis: "var(--ink-muted)",
+    grid: "var(--line)",
+    reference: "var(--ink-soft)",
+    selection: "var(--brand)",
+    tooltipBackground: "var(--ink)",
+    tooltipForeground: "var(--canvas)",
+    sequentialLow: "199 84% 16%",
+    sequentialMid: "199 72% 42%",
+    sequentialHigh: "199 91% 66%",
+    divergingNegative: "0 84% 65%",
+    divergingMid: "222 14% 22%",
+    divergingPositive: "199 91% 56%",
+    series1: "199 91% 56%",
+    series2: "166 76% 43%",
+    series3: "285 82% 72%",
+    series4: "31 96% 62%",
+    series5: "342 88% 68%",
+    series6: "188 86% 54%",
+    series7: "52 94% 58%",
+    series8: "215 18% 68%"
+  }
+} as const
+
+export const lumenChartStrokeWidths = {
+  grid: 1,
+  reference: 1,
+  series: 2,
+  selected: 3
+} as const
+
+export const lumenChartOpacities = {
+  area: 0.18,
+  grid: 0.45,
+  muted: 0.35
+} as const
+
 export const lumenSpacing = {
   zero: 0,
   xs: 4,
@@ -137,5 +244,28 @@ export const lumenElevation = {
   overlay: 6
 } as const
 
+export const lumenGraphicFrameSizes = {
+  sm: 160,
+  md: 240,
+  lg: 320
+} as const
+
+export const lumenIllustrationSizes = {
+  sm: 96,
+  md: 128,
+  lg: 176
+} as const
+
+export const lumenGraphicStrokeWidths = {
+  standard: 3
+} as const
+
+export const lumenGraphicOpacities = {
+  wash: 0.1,
+  grid: 0.18,
+  orbit: 0.24
+} as const
+
 export type LumenColorScheme = keyof typeof lumenColorTokens
+export type LumenChartColor = keyof typeof lumenChartColorTokens.light
 export type LumenSemanticColor = keyof typeof lumenColorTokens.light

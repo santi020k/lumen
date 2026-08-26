@@ -15,7 +15,7 @@ After publication, repeat the native proof against the exact npm artifact with
 React Native foundations and primitives for Lumen UI. The package exposes canonical light and dark
 themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField,
 Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
-SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
+SettingsRow, SearchField, DateField, DateRangeField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
 Illustration, and Disclosure implementations.
 The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
@@ -25,11 +25,11 @@ responsive treatment for native lists without introducing an animation or naviga
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
 presentation and operating-system sharing without introducing a separate interaction dependency.
 
-Install the package and its SVG peer in an existing Expo or React Native application:
+Install the package and its native picker and SVG peers in an existing Expo or React Native application:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg
-# or: npm install @santi020k/lumen-react-native react-native-svg
+pnpm add @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
+# or: npm install @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
 ```
 
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
@@ -62,6 +62,20 @@ Start the application with its normal Expo or React Native command:
 ```bash
 npx expo start
 # or: npx react-native start
+```
+
+Date values remain controlled by the application. `LumenDateField` opens the system picker, while
+`LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start:
+
+```tsx
+const [range, setRange] = useState<LumenDateRangeValue>({ start: null, end: null })
+
+<LumenDateRangeField
+  label="Reporting period"
+  value={range}
+  onValueChange={setRange}
+  minimumDate={new Date()}
+/>
 ```
 
 Use `LumenTabs` when a small peer set changes content in place. The value remains controlled and
@@ -128,6 +142,28 @@ through `icon`; Lucide React Native components work directly. Standalone icons a
 given a label, while every `LumenIconButton` requires an accessible label. See
 `THIRD_PARTY_NOTICES.md` for the artwork licenses and brand attribution.
 
+Use `LumenPhoneInput` when an application needs a localized country picker and a validated E.164
+result:
+
+```tsx
+const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
+if (!colombia) throw new Error('Missing Colombia metadata')
+
+const [phone, setPhone] = useState(() => createEmptyLumenPhoneNumber(colombia))
+
+<LumenPhoneInput
+  label="Hospital or OB phone number"
+  value={phone}
+  onValueChange={setPhone}
+/>
+```
+
+Persist or dial `phone.e164` only when `phone.isValid` is true.
+
+Use `LumenImage` for native image sources that need shared contain or cover fitting, an optional
+aspect ratio, semantic corner radius, and decorative-or-labeled accessibility behavior. React
+Native remains responsible for decoding, caching, and network delivery.
+
 Attach the refresh control to a native scroll container without replacing its scrolling behavior:
 
 ```tsx
@@ -149,3 +185,11 @@ state contracts, image-source mapping, and accessibility requirements.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for React and React Native
 baselines, and use the [native device validation matrix](../../docs/native-device-validation.md) for
 VoiceOver and TalkBack evidence.
+
+## Data visualization
+
+`LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
+`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use shared geometry and generated chart
+tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
+readable fallback list; selection remains controlled by the application. See the shared
+[data-visualization guide](../../docs/data-visualization.md).

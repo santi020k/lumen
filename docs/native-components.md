@@ -16,7 +16,7 @@ considered supported.
 Install the package and mount one provider near the application root:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg
+pnpm add @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
 ```
 
 ```tsx
@@ -205,6 +205,9 @@ owned.
 | Toggle            | `LumenToggle`           | `LumenToggle`            | `LumenToggle`           | Native switch behavior with visible label and disabled state              |
 | Settings row      | `LumenSettingsRow`      | `LumenSettingsRow`       | `LumenSettingsRow`      | Supporting copy, optional graphic, and trailing native control            |
 | Search field      | `LumenSearchField`      | `LumenSearchField`       | `LumenSearchField`      | Native search entry with labeled clear action                             |
+| Date field        | `LumenDateField`        | `LumenDateField`         | `LumenDateField`        | Native date selection with bounds and validation context                  |
+| Date range field  | `LumenDateRangeField`   | `LumenDateRangeField`    | `LumenDateRangeField`   | Inclusive native range selection with coordinated start and end values    |
+| Phone input       | `LumenPhoneInput`       | `LumenPhoneInput`        | `LumenPhoneInput`       | Country metadata, formatting, validation, and E.164 output                |
 | Checkbox          | `LumenCheckbox`         | `LumenCheckbox`          | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text               |
 | Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`        | `LumenRadioGroup`       | Named single selection with disabled option support                       |
 | Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl`  | `LumenSegmentedControl` | Compact single selection from a small peer set                            |
@@ -223,6 +226,15 @@ owned.
 | Graphic           | `LumenGraphic`          | `LumenGraphic`           | `LumenGraphic`          | Token-aware glow, grid, or orbit around app-provided artwork              |
 | Backdrop          | `LumenBackdrop`         | `LumenBackdrop`          | `LumenBackdrop`         | Ambient aurora, dots, grid, or rays behind native content                 |
 | Illustration      | `LumenIllustration`     | `LumenIllustration`      | `LumenIllustration`     | Built-in empty, success, error, and offline semantic scenes               |
+| Image             | `LumenImage`            | `LumenImage`             | `LumenImage`            | Native source/content, contain or cover fit, aspect ratio, radius, and label |
+| Sparkline         | `LumenSparkline`        | `LumenSparkline`         | `LumenSparkline`        | Compact labeled trend line with optional area fill                         |
+| Line chart        | `LumenLineChart`        | `LumenLineChart`         | `LumenLineChart`        | Multi-series line or area plot with summary and fallback data              |
+| Bar chart         | `LumenBarChart`         | `LumenBarChart`          | `LumenBarChart`         | Grouped or stacked categorical magnitude comparison                       |
+| Pie chart         | `LumenPieChart`         | `LumenPieChart`          | `LumenPieChart`         | Small positive part-to-whole pie or donut                                  |
+| Scatter chart     | `LumenScatterChart`     | `LumenScatterChart`      | `LumenScatterChart`     | Numeric scatter or bubble relationship                                     |
+| Heatmap           | `LumenHeatmap`          | `LumenHeatmap`           | `LumenHeatmap`          | Matrix encoded with the canonical sequential scale                        |
+| Range chart       | `LumenRangeChart`       | `LumenRangeChart`        | `LumenRangeChart`       | Ordered low-to-high interval band                                          |
+| Combo chart       | `LumenComboChart`       | `LumenComboChart`        | `LumenComboChart`       | Bar, line, and area series on one shared domain                            |
 | Disclosure        | `LumenDisclosure`       | `LumenDisclosure`        | `LumenDisclosure`       | Controlled expanded state with native trigger and content semantics       |
 | Avatar            | `LumenAvatar`           | `LumenAvatar`            | `LumenAvatar`           | Native image source, fallback, label, and shared sizes                    |
 | Empty state       | `LumenEmptyState`       | `LumenEmptyState`        | `LumenEmptyState`       | Title, supporting copy, optional graphic, and recovery actions            |
@@ -257,7 +269,6 @@ They use Lumen tokens and accessibility rules without promising artificial API p
 | `LumenRefreshControl`           | React Native | iOS, Android | Pull-to-refresh state with semantic native indicator colors             |
 | `LumenCollapsibleNavigationBar` | React Native | iOS, Android | Threshold-based animated navigation visibility for scroll containers |
 | `LumenNavigationAccessory`      | React Native | iOS, Android | Compact status or actions above bottom navigation                     |
-| `LumenDateField`                | SwiftUI      | iOS, macOS   | Native date/time selection with bounds and validation context           |
 | `LumenLink`                     | SwiftUI      | iOS, macOS   | Token-aware URL action using native SwiftUI link opening                |
 | `lumenTabBarMinimizeBehavior`   | SwiftUI      | iOS          | Native iPhone tab minimization with an iOS 16-compatible fallback       |
 | `LumenTabAccessory`             | SwiftUI      | iOS          | Expanded and compact content for native tab-bar accessory placement     |
@@ -273,9 +284,10 @@ The wearable contracts are available only for SwiftUI watchOS targets and the
 essential action, short statuses, at-a-glance progress and metrics, and compact rows inside native
 watch scrolling or paging containers.
 
-Picker, slider, and gauge are shared by SwiftUI and Compose because both platforms provide stable,
-dependency-free native controls. React Native applications can pair Lumen tokens with their chosen
-control library rather than making the shared package impose one dependency.
+Picker, slider, gauge, date field, and date range field are shared by SwiftUI and Compose because
+both platforms provide stable, dependency-free native controls. React Native applications can pair
+Lumen tokens with their chosen control library rather than making the shared package impose one
+dependency.
 
 `LumenNavigationBar` covers a small set of peer app destinations while leaving the selected screen,
 navigation history, deep links, and restoration in application code. Continue using native routers,
@@ -441,6 +453,95 @@ LumenDateField(
     description: "Choose when this version becomes available."
 )
 ```
+
+Use `LumenDateRangeField` for an inclusive Apple range. If a new start moves beyond the current end,
+the end advances to the same value so the controlled range remains valid:
+
+```swift
+LumenDateRangeField(
+    "Release window",
+    start: $releaseStart,
+    end: $releaseEnd,
+    bounds: .from(.now),
+    description: "Choose when this release is available."
+)
+```
+
+Compose exposes the same concepts through Material 3 calendar dialogs. Values use UTC milliseconds,
+matching Material's date picker state contract:
+
+```kotlin
+LumenDateField(
+    label = "Release date",
+    value = releaseDateMillis,
+    onValueChange = { releaseDateMillis = it },
+    minDateMillis = todayUtcMillis
+)
+
+LumenDateRangeField(
+    label = "Release window",
+    value = releaseRange,
+    onValueChange = { releaseRange = it },
+    minDateMillis = todayUtcMillis
+)
+```
+
+Every phone-capable native adapter exposes the same metadata-backed model: a localized country,
+editable national number, validity, and optional E.164 result. Flags supplement the visible country
+name and calling code; they are never the only country identifier.
+
+React Native:
+
+```tsx
+const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
+if (!colombia) throw new Error('Missing Colombia metadata')
+
+const [phone, setPhone] = useState(() => createEmptyLumenPhoneNumber(colombia))
+
+<LumenPhoneInput
+  label="Hospital or OB phone number"
+  value={phone}
+  onValueChange={setPhone}
+/>
+```
+
+SwiftUI on iOS and macOS:
+
+```swift
+@State private var phone = LumenPhoneNumber.empty(
+    country: LumenPhoneCountry(regionCode: "CO", callingCode: "+57", displayName: "Colombia")
+)
+
+LumenPhoneInput(
+    "Hospital or OB phone number",
+    value: $phone,
+    description: "Include the complete area or mobile number."
+)
+```
+
+Compose:
+
+```kotlin
+@OptIn(ExperimentalLumenPhoneApi::class)
+@Composable
+fun CareTeamPhoneField() {
+    val defaultCountry = remember {
+        requireNotNull(LumenPhoneCountries.forRegion("CO"))
+    }
+    var phone by remember { mutableStateOf(LumenPhoneNumber.empty(defaultCountry)) }
+
+    LumenPhoneInput(
+        label = "Hospital or OB phone number",
+        value = phone,
+        onValueChange = { phone = it },
+        description = "Include the complete area or mobile number."
+    )
+}
+```
+
+Persist or dial `phone.e164` only when `phone.isValid` is true. Applications remain responsible for
+localized labels and for deciding when validation feedback should be shown. Phone input remains
+unavailable on watchOS, Wear OS, and tvOS because long-form phone entry is unsuitable there.
 
 Compose applications can use a Material-native floating action while keeping Lumen semantic intent:
 

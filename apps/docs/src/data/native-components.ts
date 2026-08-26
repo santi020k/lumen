@@ -118,7 +118,123 @@ const createComponent = (
   }
 }
 
+const chartDefinition = (
+  name: string,
+  slug: string,
+  dataName: 'data' | 'series' | 'values',
+  dataExample: string,
+  summary: string,
+  accessibility: string
+): ComponentDefinition => {
+  const symbol = `Lumen${name
+    .split(' ')
+    .map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join('')}`
+
+  return {
+    accessibility,
+    category: 'Data display',
+    examples: {
+      android: `${symbol}(\n    ${dataName} = ${dataExample},\n    label = "Quarterly revenue"\n)`,
+      apple: `${symbol}(\n    label: "Quarterly revenue",\n    ${dataName}: ${dataExample}\n)`,
+      'react-native': `<${symbol}\n  ${dataName}={${dataExample}}\n  label="Quarterly revenue"\n/>`
+    },
+    exports: {
+      android: symbol,
+      apple: symbol,
+      'react-native': symbol
+    },
+    guidance:
+      'Use canonical visualization tokens and keep the application data model explicit. Provide a concise factual label, and retain the readable native fallback supplied by the component.',
+    name,
+    properties: [
+      property(
+        'label',
+        'String',
+        'Required',
+        'Provides the concise accessible name for the visualization.'
+      ),
+      property(
+        dataName,
+        'Typed native chart data',
+        'Required',
+        'Supplies finite values and stable identifiers through the shared chart contract.'
+      )
+    ],
+    slug,
+    summary
+  }
+}
+
+const chartDefinitions: ComponentDefinition[] = [
+  chartDefinition(
+    'Sparkline',
+    'sparkline',
+    'values',
+    '[12, 18, 15, 24]',
+    'Render a compact tokenized trend line with optional area fill.',
+    'Presents one concise image label without exposing decorative marks.'
+  ),
+  chartDefinition(
+    'Line chart',
+    'line-chart',
+    'series',
+    'revenueSeries',
+    'Compare one or more categorical, numeric, or temporal line series.',
+    'Provides a factual summary and navigable fallback data while decorative marks remain hidden.'
+  ),
+  chartDefinition(
+    'Bar chart',
+    'bar-chart',
+    'series',
+    'revenueSeries',
+    'Compare grouped or stacked categorical magnitudes.',
+    'Provides a factual summary and navigable fallback data while decorative marks remain hidden.'
+  ),
+  chartDefinition(
+    'Pie chart',
+    'pie-chart',
+    'series',
+    'revenueSeries',
+    'Show a small positive part-to-whole breakdown as a pie or donut.',
+    'Provides a factual summary and navigable fallback data while decorative marks remain hidden.'
+  ),
+  chartDefinition(
+    'Scatter chart',
+    'scatter-chart',
+    'series',
+    'relationshipSeries',
+    'Plot numeric scatter and bubble relationships with semantic series tones.',
+    'Provides a factual summary and readable fallback data while decorative marks remain hidden.'
+  ),
+  chartDefinition(
+    'Heatmap',
+    'heatmap',
+    'data',
+    'activityCells',
+    'Encode a two-dimensional matrix with the canonical sequential scale.',
+    'Presents a concise summary while applications retain labels for every cell.'
+  ),
+  chartDefinition(
+    'Range chart',
+    'range-chart',
+    'data',
+    'forecastRanges',
+    'Render ordered low-to-high intervals as a tokenized range band.',
+    'Presents a concise summary while applications retain low and high values.'
+  ),
+  chartDefinition(
+    'Combo chart',
+    'combo-chart',
+    'series',
+    'mixedSeries',
+    'Combine bar, line, and area series on one shared value domain.',
+    'Provides a factual summary and readable fallback data while decorative marks remain hidden.'
+  )
+]
+
 const sharedDefinitions: ComponentDefinition[] = [
+  ...chartDefinitions,
   {
     accessibility:
       'The active color scheme follows the platform environment unless the application chooses an explicit light or dark mode.',
@@ -1776,6 +1892,113 @@ const additionalDefinitions: ComponentDefinition[] = [
   },
   {
     accessibility:
+      'The country selector announces the localized country name and calling code. Flags supplement visible text and are never the only country identifier.',
+    category: 'Forms',
+    examples: {
+      android: `@OptIn(ExperimentalLumenPhoneApi::class)
+@Composable
+fun CareTeamPhoneField() {
+    val defaultCountry = remember {
+        requireNotNull(LumenPhoneCountries.forRegion("CO"))
+    }
+    var phone by remember {
+        mutableStateOf(LumenPhoneNumber.empty(defaultCountry))
+    }
+
+    LumenPhoneInput(
+        label = "Hospital or OB phone number",
+        value = phone,
+        onValueChange = { phone = it }
+    )
+}`,
+      apple: `@State private var phone = LumenPhoneNumber.empty(
+    country: LumenPhoneCountry(
+        regionCode: "CO",
+        callingCode: "+57",
+        displayName: "Colombia"
+    )
+)
+
+LumenPhoneInput(
+    "Hospital or OB phone number",
+    value: $phone
+)`,
+      'react-native': `const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
+if (!colombia) throw new Error('Missing Colombia metadata')
+
+const [phone, setPhone] = useState(() =>
+  createEmptyLumenPhoneNumber(colombia)
+)
+
+<LumenPhoneInput
+  label="Hospital or OB phone number"
+  value={phone}
+  onValueChange={setPhone}
+/>`
+    },
+    exports: {
+      android: 'LumenPhoneInput',
+      apple: 'LumenPhoneInput',
+      'react-native': 'LumenPhoneInput'
+    },
+    guidance:
+      'Use for international phone entry that needs discoverable country selection and a validated E.164 result. Persist or dial e164 only when isValid is true.',
+    maturity: {
+      android: 'Experimental',
+      apple: 'Experimental',
+      'react-native': 'Experimental'
+    },
+    name: 'Phone input',
+    properties: [
+      property(
+        'value / onValueChange',
+        'LumenPhoneNumber / callback',
+        'Required',
+        'Controls the country, editable national number, validity, and normalized E.164 result.'
+      ),
+      property(
+        'countries',
+        'Platform country collection',
+        'Generated metadata',
+        'Populates the searchable country picker.'
+      ),
+      property(
+        'locale',
+        'Platform locale',
+        'Current locale',
+        'Localizes generated country names and international paste resolution.'
+      ),
+      property(
+        'description / errorMessage',
+        'String?',
+        'null',
+        'Provides supporting text or an application-owned validation message.'
+      ),
+      property(
+        'invalidNumberMessage',
+        'String',
+        'Enter a complete phone number.',
+        'Localizes metadata-backed invalid-number feedback.'
+      ),
+      property(
+        'showValidationError',
+        'Boolean',
+        'true',
+        'Lets the application defer invalid-number feedback until its chosen interaction boundary.'
+      ),
+      property(
+        'enabled / required',
+        'Boolean',
+        'true / false',
+        'Controls native disabled and required presentation.'
+      )
+    ],
+    slug: 'phone-input',
+    summary:
+      'Enter an international phone number with searchable countries, calling codes, formatting, validation, and E.164 output.'
+  },
+  {
+    accessibility:
       'The full labeled row is a native checkbox target and exposes checked and disabled state without duplicating the visual indicator.',
     category: 'Forms',
     examples: {
@@ -2966,47 +3189,142 @@ Scaffold(
     components: .dateAndTime,
     bounds: .from(.now),
     description: "Choose when this version becomes available."
-)`
+)`,
+      android: `LumenDateField(
+    label = "Release date",
+    value = releaseDateMillis,
+    onValueChange = { releaseDateMillis = it },
+    minDateMillis = todayUtcMillis,
+    description = "Choose when this version becomes available."
+)`,
+      'react-native': `<LumenDateField
+  label="Release date"
+  value={releaseDate}
+  onValueChange={setReleaseDate}
+  minimumDate={new Date()}
+  description="Choose when this version becomes available."
+/>`
     },
-    exports: { apple: 'LumenDateField' },
+    exports: {
+      android: 'LumenDateField',
+      apple: 'LumenDateField',
+      'react-native': 'LumenDateField'
+    },
     guidance:
-      'Use for Apple date or time input that needs Lumen supporting and validation context. Keep calendar and locale behavior native.',
+      'Use for native date input that needs Lumen supporting and validation context. SwiftUI also supports time and combined date-time input.',
     name: 'Date field',
     properties: [
       property(
-        'title',
-        'LocalizedStringKey',
+        { android: 'label', apple: 'title', 'react-native': 'label' },
+        { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' },
         'Required',
         'Labels the native date picker.'
       ),
       property(
-        'selection',
-        'Binding<Date>',
+        { android: 'value / onValueChange', apple: 'selection', 'react-native': 'value / onValueChange' },
+        { android: 'Long? / (Long) -> Unit', apple: 'Binding<Date>', 'react-native': 'Date | null / callback' },
         'Required',
         'Stores the selected native date value.'
       ),
       property(
-        'components',
-        'date · dateAndTime · time',
-        'date',
+        { apple: 'components' },
+        { apple: 'date · dateAndTime · time' },
+        { apple: 'date' },
         'Chooses the visible date and time parts.'
       ),
       property(
-        'bounds',
-        'unbounded · closed · from · through',
-        'unbounded',
+        { android: 'minDateMillis / maxDateMillis', apple: 'bounds', 'react-native': 'minimumDate / maximumDate' },
+        {
+          android: 'Long?',
+          apple: 'unbounded · closed · from · through',
+          'react-native': 'Date?'
+        },
+        { android: 'null', apple: 'unbounded', 'react-native': 'undefined' },
         'Constrains selection using native picker bounds.'
       ),
       property(
         'description / errorMessage',
-        'LocalizedStringKey?',
-        'nil',
+        { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string?' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
         'Shows supporting text or a semantic danger validation message.'
       )
     ],
     slug: 'date-field',
     summary:
-      'Select an Apple-native date or time with bounds and validation context.'
+      'Select a native date with bounds and validation context.'
+  },
+  {
+    accessibility:
+      'The range and each native control remain labeled, and selection prevents an end date from preceding its start.',
+    category: 'Forms',
+    examples: {
+      apple: `LumenDateRangeField(
+    "Release window",
+    start: $releaseStart,
+    end: $releaseEnd,
+    bounds: .from(.now),
+    description: "Choose when this release is available."
+)`,
+      android: `LumenDateRangeField(
+    label = "Release window",
+    value = releaseRange,
+    onValueChange = { releaseRange = it },
+    minDateMillis = todayUtcMillis,
+    description = "Choose when this release is available."
+)`,
+      'react-native': `<LumenDateRangeField
+  label="Release window"
+  value={releaseRange}
+  onValueChange={setReleaseRange}
+  minimumDate={new Date()}
+  description="Choose when this release is available."
+/>`
+    },
+    exports: {
+      android: 'LumenDateRangeField',
+      apple: 'LumenDateRangeField',
+      'react-native': 'LumenDateRangeField'
+    },
+    guidance:
+      'Use for an inclusive native date range. Keep values controlled and provide product-specific validation copy when additional rules apply.',
+    name: 'Date range field',
+    properties: [
+      property(
+        { android: 'label', apple: 'title', 'react-native': 'label' },
+        { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' },
+        'Required',
+        'Labels the inclusive date range.'
+      ),
+      property(
+        { android: 'value / onValueChange', apple: 'start / end', 'react-native': 'value / onValueChange' },
+        {
+          android: 'LumenDateRangeSelection / callback',
+          apple: 'Binding<Date> pair',
+          'react-native': 'LumenDateRangeValue / callback'
+        },
+        'Required',
+        'Stores the controlled start and end values.'
+      ),
+      property(
+        { android: 'minDateMillis / maxDateMillis', apple: 'bounds', 'react-native': 'minimumDate / maximumDate' },
+        {
+          android: 'Long?',
+          apple: 'unbounded · closed · from · through',
+          'react-native': 'Date?'
+        },
+        { android: 'null', apple: 'unbounded', 'react-native': 'undefined' },
+        'Constrains both dates using the native picker contract.'
+      ),
+      property(
+        'description / errorMessage',
+        { android: 'String?', apple: 'LocalizedStringKey?', 'react-native': 'string?' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Shows supporting text or a semantic danger validation message.'
+      )
+    ],
+    slug: 'date-range-field',
+    summary:
+      'Select an inclusive native date range with coordinated bounds and validation context.'
   },
   {
     accessibility:
@@ -3456,6 +3774,75 @@ Scaffold(
     slug: 'illustration',
     summary:
       'Render a built-in empty, success, error, or offline semantic scene.'
+  },
+  {
+    accessibility:
+      'Images are decorative when their label is absent; a label exposes the complete image as one native accessibility element.',
+    category: 'Data display',
+    examples: {
+      android: `LumenImage(
+    painter = painterResource(R.drawable.mountain_valley),
+    label = "Mountain valley at sunrise",
+    aspectRatio = 16f / 9f,
+    fit = LumenImageFit.Cover
+)`,
+      apple: `LumenImage(
+    aspectRatio: 16 / 9,
+    fit: .cover,
+    label: "Mountain valley at sunrise"
+) {
+    Image("mountain-valley").resizable()
+}`,
+      'react-native': `<LumenImage
+  aspectRatio={16 / 9}
+  fit="cover"
+  label="Mountain valley at sunrise"
+  source={{ uri: imageUrl }}
+/>`
+    },
+    exports: {
+      android: 'LumenImage',
+      apple: 'LumenImage',
+      'react-native': 'LumenImage'
+    },
+    guidance:
+      'Use for product imagery that needs shared fitting, aspect ratio, radius, and labeling. Keep decoding, caching, network policy, placeholders, retries, and optimizer behavior in the application or platform loader.',
+    name: 'Image',
+    properties: [
+      property(
+        { android: 'painter', apple: 'content', 'react-native': 'source' },
+        'Native image source or content',
+        'Required',
+        'Supplies image pixels through the platform-native delivery path.'
+      ),
+      property(
+        'fit',
+        { android: 'Contain · Cover', apple: 'contain · cover', 'react-native': 'contain · cover' },
+        'cover',
+        'Controls how the image fits its available bounds.'
+      ),
+      property(
+        'aspectRatio',
+        { android: 'Float?', apple: 'CGFloat?', 'react-native': 'number' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Reserves a positive finite width-to-height ratio when provided.'
+      ),
+      property(
+        'radius',
+        { android: 'None · Sm · Md · Lg · Full', apple: 'none · sm · md · lg · full', 'react-native': 'none · sm · md · lg · full' },
+        'lg',
+        'Clips the image with a shared semantic corner radius.'
+      ),
+      property(
+        'label',
+        { android: 'String?', apple: 'String?', 'react-native': 'string' },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Names meaningful imagery; omit only for decorative images.'
+      )
+    ],
+    slug: 'image',
+    summary:
+      'Present native images with shared fit, ratio, radius, and accessibility behavior.'
   },
   {
     accessibility:

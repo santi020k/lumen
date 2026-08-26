@@ -63,6 +63,19 @@ const series: LumenChartSeries = {
 createLumenLineGeometry(series.data)
 ```
 
+## Phone Helpers
+
+`@santi020k/lumen-core/phone` provides localized country metadata, supplementary flag labels,
+as-you-type formatting, validation, pasted international-number detection, and E.164 output for the
+web and React Native adapters.
+
+```ts
+const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
+if (!colombia) throw new Error('Missing Colombia metadata')
+
+const phone = resolveLumenPhoneNumber(colombia, '6015550123')
+```
+
 It also exports the Lucide-backed icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
 `renderLumenIconSvg` so framework adapters can render icons by name.
 

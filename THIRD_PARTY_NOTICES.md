@@ -2,6 +2,34 @@
 
 Lumen uses the Lucide icon library. The following notices are reproduced from Lucide's license.
 
+The Compose phone-number component uses Google libphonenumber under the Apache License 2.0.
+The web and React Native phone-number components use libphonenumber-js under the MIT License. The
+SwiftUI component uses PhoneNumberKit under the MIT License.
+
+## libphonenumber-js
+
+Copyright (c) 2016 @catamphetamine <purecatamphetamine@gmail.com>
+
+Licensed under the MIT License.
+
+## PhoneNumberKit
+
+Copyright (c) 2018 Roy Marmelstein
+Copyright (c) 2026 Bruno Guidolim and contributors
+
+Licensed under the MIT License.
+
+## Google libphonenumber
+
+Copyright (C) 2011 The Libphonenumber Authors
+
+Licensed under the Apache License, Version 2.0. You may obtain a copy at
+<https://www.apache.org/licenses/LICENSE-2.0>.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License
+is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing permissions and limitations.
+
 ## Lucide Icons
 
 ISC License

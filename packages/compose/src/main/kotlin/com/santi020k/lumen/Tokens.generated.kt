@@ -69,6 +69,88 @@ object LumenColors {
     )
 }
 
+@Immutable
+data class LumenChartColorPalette(
+    val axis: Color,
+    val grid: Color,
+    val reference: Color,
+    val selection: Color,
+    val tooltipBackground: Color,
+    val tooltipForeground: Color,
+    val sequentialLow: Color,
+    val sequentialMid: Color,
+    val sequentialHigh: Color,
+    val divergingNegative: Color,
+    val divergingMid: Color,
+    val divergingPositive: Color,
+    val series1: Color,
+    val series2: Color,
+    val series3: Color,
+    val series4: Color,
+    val series5: Color,
+    val series6: Color,
+    val series7: Color,
+    val series8: Color
+)
+
+object LumenChartColors {
+    val Light = LumenChartColorPalette(
+        axis = Color(0xFF6C7889),
+        grid = Color(0xFFD7DAE0),
+        reference = Color(0xFF454F5F),
+        selection = Color(0xFF2463EB),
+        tooltipBackground = Color(0xFF0F1729),
+        tooltipForeground = Color(0xFFFFFFFF),
+        sequentialLow = Color(0xFFF0F5FF),
+        sequentialMid = Color(0xFF6590F1),
+        sequentialHigh = Color(0xFF114BBA),
+        divergingNegative = Color(0xFFEF4343),
+        divergingMid = Color(0xFFE5E7EB),
+        divergingPositive = Color(0xFF2463EB),
+        series1 = Color(0xFF2463EB),
+        series2 = Color(0xFF16A286),
+        series3 = Color(0xFFA43FDF),
+        series4 = Color(0xFFFA6A14),
+        series5 = Color(0xFFE73270),
+        series6 = Color(0xFF13A3C3),
+        series7 = Color(0xFFDCBD09),
+        series8 = Color(0xFF657187)
+    )
+
+    val Dark = LumenChartColorPalette(
+        axis = Color(0xFF949CA8),
+        grid = Color(0xFF393F4C),
+        reference = Color(0xFFBCC3CD),
+        selection = Color(0xFF29B4F5),
+        tooltipBackground = Color(0xFFF3F5F7),
+        tooltipForeground = Color(0xFF101219),
+        sequentialLow = Color(0xFF07354B),
+        sequentialMid = Color(0xFF1E8BB8),
+        sequentialHigh = Color(0xFF5CC7F7),
+        divergingNegative = Color(0xFFF15B5B),
+        divergingMid = Color(0xFF303540),
+        divergingPositive = Color(0xFF29B4F5),
+        series1 = Color(0xFF29B4F5),
+        series2 = Color(0xFF1AC19A),
+        series3 = Color(0xFFCE81ED),
+        series4 = Color(0xFFFD9A3F),
+        series5 = Color(0xFFF26A94),
+        series6 = Color(0xFF2DC9E7),
+        series7 = Color(0xFFF7D832),
+        series8 = Color(0xFFA2AABD)
+    )
+}
+
+object LumenChartMetrics {
+    val GridStrokeWidth = 1f.dp
+    val ReferenceStrokeWidth = 1f.dp
+    val SeriesStrokeWidth = 2f.dp
+    val SelectedStrokeWidth = 3f.dp
+    const val AreaOpacity = 0.18f
+    const val GridOpacity = 0.45f
+    const val MutedOpacity = 0.35f
+}
+
 object LumenSpacing {
     val Zero = 0f.dp
     val Xs = 4f.dp
@@ -120,4 +202,17 @@ object LumenElevation {
     val Resting = 1f.dp
     val Raised = 3f.dp
     val Overlay = 6f.dp
+}
+
+object LumenGraphics {
+    val SmFrameSize = 160f.dp
+    val MdFrameSize = 240f.dp
+    val LgFrameSize = 320f.dp
+    val SmIllustrationSize = 96f.dp
+    val MdIllustrationSize = 128f.dp
+    val LgIllustrationSize = 176f.dp
+    val StandardStrokeWidth = 3f.dp
+    const val WashOpacity = 0.1f
+    const val GridOpacity = 0.18f
+    const val OrbitOpacity = 0.24f
 }

@@ -1,7 +1,10 @@
 # Native playgrounds
 
-Lumen includes one searchable component gallery for each native adapter. Use these apps to evaluate
-the real components, capture documentation screenshots, and prepare distributable marketing builds.
+Lumen includes a native playground for each adapter. Use these apps to evaluate the real components,
+capture documentation screenshots, and prepare distributable marketing builds. The Apple and Android
+playgrounds are organized as polished reference applications with Home, Examples, Components, and
+Settings. Their Components destinations retain the searchable deterministic catalogs used by capture
+scripts, while normal launches add category discovery, interactive patterns, and adaptive layouts.
 Each gallery covers all 42 contracts shared by every native adapter, including semantic Card
 variants, multiline and grouped forms, chips, action groups, transient feedback, metrics, rows,
 empty states, and light/dark theme behavior. Compose and Apple additionally exercise Picker, Slider,
@@ -66,16 +69,40 @@ pnpm --filter @santi020k/lumen-playground-react-native run build
 
 The static site is written to `apps/playground-react-native/dist`.
 
-### Create an APK or store build
+### Open or publish the Expo Go playground
 
-Remote builds use Expo Application Services. Install the EAS command-line tool if it is not
-available, then authenticate and connect this app to an EAS project:
+The public React Native playground is distributed through Expo Go instead of the App Store or
+Google Play. Open this stable link on a device with Expo Go installed; it always resolves to the
+latest update on the `expo-go` branch:
+
+```text
+exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357
+```
+
+The playground currently targets Expo SDK 57. Expo Go must support the same SDK to load it. As of
+August 2026, the public Expo Go store client targets SDK 54, so this link is not yet a reliable
+general-public installation path. Wait for SDK 57 support or create and validate a deliberately
+separate SDK 54 compatibility app before promoting it broadly.
+
+After validating a new playground version, publish it from an authenticated Expo session:
 
 ```bash
-pnpm add --global eas-cli
+pnpm --filter @santi020k/lumen-playground-react-native run publish:expo-go -- --message "Describe the update"
+```
+
+The project is owned by the `santi020k` Expo account. Keep `runtimeVersion`, `updates.url`, and the
+EAS project identifier in `app.json`; the Expo Go launch link depends on that project and branch.
+Run the app's `generate:assets` script whenever the shared Lumen playground icon artwork changes.
+
+### Create an APK or store build
+
+Remote builds use Expo Application Services. The package scripts run the repository's verified EAS
+CLI version without installing it into the Expo app. Authenticate and connect the app once:
+
+```bash
 cd apps/playground-react-native
-eas login
-eas init
+pnpm dlx eas-cli@22.4.0 login
+pnpm dlx eas-cli@22.4.0 init
 ```
 
 After `eas init`, keep the generated EAS project identifier in `app.json`. Build a directly
@@ -161,8 +188,12 @@ Commit both `project.yml` and the generated Xcode project when its structure cha
 4. Create or start an Android emulator, or connect a device with USB debugging enabled.
 5. Select the `app` run configuration and press Run.
 
-The playground references `packages/compose` as a local Gradle module, so no Maven installation is
-required inside this repository.
+The phone playground opens as an adaptive reference application with Home, Examples, Components,
+and Settings destinations. Components retains the searchable catalog used by documentation capture
+automation; launches with the `component` intent extra continue to open that filtered catalog
+directly. Normal launches add category filters, three interactive example patterns, and responsive
+two-pane layouts beside the tablet navigation rail. The playground references `packages/compose` as
+a local Gradle module, so no Maven installation is required inside this repository.
 
 ### Build and install the debug APK
 

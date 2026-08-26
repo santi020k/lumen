@@ -14,6 +14,11 @@ interface PlatformPrinciple {
   title: string
 }
 
+interface PlatformPlaygroundLaunch {
+  compatibilityNote?: string
+  url: string
+}
+
 interface PlatformLink {
   href: string
   label: string
@@ -44,6 +49,7 @@ export interface PlatformGuide {
   maturityNote?: string
   packageName: string
   playgroundCommands?: PlatformCodeExample[]
+  playgroundLaunch?: PlatformPlaygroundLaunch
   playgroundNote?: string
   prerequisites?: string[]
   principles: PlatformPrinciple[]
@@ -205,8 +211,12 @@ pnpm playground:react-native`,
         value: 'apk'
       }
     ],
+    playgroundLaunch: {
+      compatibilityNote: 'Requires an Expo Go client with Expo SDK 57 support. The public store client currently targets SDK 54.',
+      url: 'exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357'
+    },
     playgroundNote:
-      'The Expo gallery is the quickest way to inspect every React Native component. Scan the terminal QR code with Expo Go, press i for the iOS simulator, press a for Android, or launch the web target.',
+      'Open the published gallery directly in Expo Go, or run it locally to inspect every React Native component. The stable QR code always loads the latest update from the expo-go branch.',
     prerequisites: [
       'Node.js 22.12 or newer and pnpm',
       'React 19.2 and React Native 0.86.2 or newer',
@@ -257,7 +267,7 @@ pnpm playground:react-native`,
       }
     ],
     shippingNotes: [
-      'Run eas login and eas init once before the first remote Expo build.',
+      'Run the pinned EAS CLI login and init commands once before the first remote Expo build.',
       'The preview EAS profile produces an installable Android APK.',
       'Production Android and iOS builds require store credentials and signing configured in EAS.'
     ],

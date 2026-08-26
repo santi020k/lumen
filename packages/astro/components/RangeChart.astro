@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenRangeGeometry, getLumenChartTicks, getLumenChartToneClassName, type LumenChartTone, type LumenRangeDatum, scaleLumenChartValue } from '@santi020k/lumen-core'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  caption?: string
+  class?: string | null
+  className?: string
+  data: readonly LumenRangeDatum[]
+  description?: string
+  formatValue?: (value: number) => string
+  heading?: string
+  showTable?: boolean
+  summary?: string
+  tone?: LumenChartTone
+}
+
+const { caption, class: classProp = '', className = '', data, description, formatValue = String, heading, showTable = true, summary = `${data.filter(item => item.low !== null && item.high !== null).length} available ranges.`, tone = 'series-1', ...rest } = Astro.props
+const width = 640
+const height = 320
+const padding = 44
+const geometry = createLumenRangeGeometry(data, { height, padding, width })
+const ticks = getLumenChartTicks(geometry.domain)
+---
+
+<Chart class:list={['ui-range-chart', getLumenChartToneClassName(tone), classProp, className]} {caption} {description} {heading} {summary} {...rest}>
+  {geometry.points.length === 0 && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  <div class="ui-chart__plot" hidden={geometry.points.length === 0}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
+    ui-chart__grid
+  "
+                                                                                                                               >{ticks.map(tick => {
+ const y = scaleLumenChartValue(tick, geometry.domain, height - padding, padding)
+
+ return <><line x1={padding} x2={width - padding} y1={y} y2={y}/><text x={padding - 8} y={y}>{formatValue(tick)}</text></>
+})}</g><path
+class="ui-range-chart__area"
+d={geometry.areaPath}
+       />{geometry.points.map(point => (
+<line
+class="ui-range-chart__interval"
+x1={point.xCoordinate}
+x2={point.xCoordinate}
+y1={point.highCoordinate}
+y2={point.lowCoordinate}
+><title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title></line>
+))}</svg></div>
+  {showTable && <details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th><th scope="col">Low</th><th scope="col">High</th></tr></thead><tbody>{data.map(item => <tr><th scope="row">{item.xLabel ?? item.x}</th><td>{item.low === null ? 'Not available' : formatValue(item.low)}</td><td>{item.high === null ? 'Not available' : formatValue(item.high)}</td></tr>)}</tbody></table></div></details>}
+</Chart>

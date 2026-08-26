@@ -151,6 +151,39 @@
       }
     },
     {
+      "id": "date-field",
+      "tier": "shared",
+      "contract": "Native date selection with controlled values, bounds, supporting text, and validation messaging",
+      "accessibility": "Keeps the native picker label and interaction while presenting supporting or validation context",
+      "symbols": {
+        "reactNative": "LumenDateField",
+        "swiftUI": "LumenDateField",
+        "compose": "LumenDateField"
+      }
+    },
+    {
+      "id": "date-range-field",
+      "tier": "shared",
+      "contract": "Inclusive native start and end date selection with bounds and coordinated range validation",
+      "accessibility": "Labels the range and native date controls while preventing an end date before the start date",
+      "symbols": {
+        "reactNative": "LumenDateRangeField",
+        "swiftUI": "LumenDateRangeField",
+        "compose": "LumenDateRangeField"
+      }
+    },
+    {
+      "id": "phone-input",
+      "tier": "shared",
+      "contract": "Searchable localized country selection with calling codes, as-you-type formatting, metadata-backed validation, and E.164 output",
+      "accessibility": "Names the country selector and phone editor while keeping country names and calling codes visible alongside supplementary flags",
+      "symbols": {
+        "reactNative": "LumenPhoneInput",
+        "swiftUI": "LumenPhoneInput",
+        "compose": "LumenPhoneInput"
+      }
+    },
+    {
       "id": "checkbox",
       "tier": "shared",
       "contract": "Controlled Boolean selection with visible label and optional supporting text",
@@ -335,6 +368,105 @@
         "reactNative": "LumenIllustration",
         "swiftUI": "LumenIllustration",
         "compose": "LumenIllustration"
+      }
+    },
+    {
+      "id": "image",
+      "tier": "shared",
+      "contract": "Native image source or content with shared contain and cover fitting, aspect ratio, radius, and labeling",
+      "accessibility": "Decorative by default or exposed as one labeled image",
+      "symbols": {
+        "reactNative": "LumenImage",
+        "swiftUI": "LumenImage",
+        "compose": "LumenImage"
+      }
+    },
+    {
+      "id": "sparkline",
+      "tier": "shared",
+      "contract": "Compact tokenized trend line with optional area fill",
+      "accessibility": "Presents one concise image label without exposing decorative marks",
+      "symbols": {
+        "reactNative": "LumenSparkline",
+        "swiftUI": "LumenSparkline",
+        "compose": "LumenSparkline"
+      }
+    },
+    {
+      "id": "line-chart",
+      "tier": "shared",
+      "contract": "Multi-series categorical, numeric, or temporal line and area visualization",
+      "accessibility": "Provides a factual summary and navigable fallback data while decorative marks remain hidden",
+      "symbols": {
+        "reactNative": "LumenLineChart",
+        "swiftUI": "LumenLineChart",
+        "compose": "LumenLineChart"
+      }
+    },
+    {
+      "id": "bar-chart",
+      "tier": "shared",
+      "contract": "Grouped or stacked categorical magnitude comparison",
+      "accessibility": "Provides a factual summary and navigable fallback data while decorative marks remain hidden",
+      "symbols": {
+        "reactNative": "LumenBarChart",
+        "swiftUI": "LumenBarChart",
+        "compose": "LumenBarChart"
+      }
+    },
+    {
+      "id": "pie-chart",
+      "tier": "shared",
+      "contract": "Small positive part-to-whole breakdown as a pie or donut",
+      "accessibility": "Provides a factual summary and navigable fallback data while decorative marks remain hidden",
+      "symbols": {
+        "reactNative": "LumenPieChart",
+        "swiftUI": "LumenPieChart",
+        "compose": "LumenPieChart"
+      }
+    },
+    {
+      "id": "scatter-chart",
+      "tier": "shared",
+      "contract": "Numeric scatter and bubble relationships with tokenized series tones",
+      "accessibility": "Provides a factual summary and readable fallback data while decorative marks remain hidden",
+      "symbols": {
+        "reactNative": "LumenScatterChart",
+        "swiftUI": "LumenScatterChart",
+        "compose": "LumenScatterChart"
+      }
+    },
+    {
+      "id": "heatmap",
+      "tier": "shared",
+      "contract": "Two-dimensional matrix encoded with a canonical sequential color scale",
+      "accessibility": "Presents a concise summary while applications retain labels for every cell",
+      "symbols": {
+        "reactNative": "LumenHeatmap",
+        "swiftUI": "LumenHeatmap",
+        "compose": "LumenHeatmap"
+      }
+    },
+    {
+      "id": "range-chart",
+      "tier": "shared",
+      "contract": "Ordered low-to-high intervals rendered as a tokenized range band",
+      "accessibility": "Presents a concise summary while applications retain low and high values",
+      "symbols": {
+        "reactNative": "LumenRangeChart",
+        "swiftUI": "LumenRangeChart",
+        "compose": "LumenRangeChart"
+      }
+    },
+    {
+      "id": "combo-chart",
+      "tier": "shared",
+      "contract": "Mixed bar, line, and area series on one shared value domain",
+      "accessibility": "Provides a factual summary and readable fallback data while decorative marks remain hidden",
+      "symbols": {
+        "reactNative": "LumenComboChart",
+        "swiftUI": "LumenComboChart",
+        "compose": "LumenComboChart"
       }
     },
     {
@@ -577,14 +709,6 @@
       "contract": "Searchable and categorized SF Symbols selection",
       "accessibility": "Labels every symbol and exposes selected state",
       "symbol": "LumenSymbolPicker"
-    },
-    {
-      "id": "date-field",
-      "adapter": "swiftUI",
-      "platforms": ["iOS", "macOS"],
-      "contract": "Native date and time selection with bounds, supporting text, and validation messaging",
-      "accessibility": "Keeps the native adjustable picker label and presents supporting or validation context",
-      "symbol": "LumenDateField"
     },
     {
       "id": "link",

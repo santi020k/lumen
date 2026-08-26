@@ -99,6 +99,10 @@ export const lumenRegistry = {
         'BarChart',
         'LineChart',
         'PieChart',
+        'ScatterChart',
+        'Heatmap',
+        'RangeChart',
+        'ComboChart',
         'Stat',
         'Meter'
       ]
@@ -1364,7 +1368,7 @@ export const lumenRegistry = {
     {
       name: 'PhoneInput',
       type: 'component',
-      description: 'Pairs a country dial-code select with a telephone number input.',
+      description: 'Combines localized country metadata, calling codes, formatting, validation, and E.164 output.',
       category: 'Forms',
       files: [
         'packages/astro/components/PhoneInput.astro',
@@ -1373,7 +1377,8 @@ export const lumenRegistry = {
       dependencies: [
         'Input',
         'NativeSelect',
-        'styles'
+        'styles',
+        'runtime'
       ]
     },
     {
@@ -2335,6 +2340,70 @@ export const lumenRegistry = {
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ScatterChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows numeric scatter and bubble relationships with accessible fallback data.',
+      files: [
+        'packages/astro/components/ScatterChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'Heatmap',
+      type: 'component',
+      category: 'Data display',
+      description: 'Encodes a labeled matrix with the canonical sequential visualization scale.',
+      files: [
+        'packages/astro/components/Heatmap.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'RangeChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows ordered low-to-high intervals as a tokenized range band.',
+      files: [
+        'packages/astro/components/RangeChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'ComboChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Mixes bars, lines, and areas on one meaningful shared value domain.',
+      files: [
+        'packages/astro/components/ComboChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/components.tsx'
+      ],
+      dependencies: [
+        'Chart',
         'styles'
       ]
     },

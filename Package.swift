@@ -12,9 +12,18 @@ let package = Package(
     products: [
         .library(name: "LumenUI", targets: ["LumenUI"])
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/PhoneNumberKit/PhoneNumberKit.git",
+            from: "5.0.7"
+        )
+    ],
     targets: [
         .target(
             name: "LumenUI",
+            dependencies: [
+                .product(name: "PhoneNumberKit", package: "PhoneNumberKit")
+            ],
             path: "packages/swift/Sources/LumenUI",
             resources: [
                 .process("Resources")

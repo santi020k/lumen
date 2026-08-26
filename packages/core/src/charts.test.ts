@@ -1,20 +1,64 @@
 import { describe, expect, test } from 'vitest'
 
+import chartConformance from '../../../charts/lumen.chart-conformance.json' with { type: 'json' }
+
 import {
   alignLumenChartSeries,
+  appendLumenChartDatum,
   createLumenBarGeometry,
+  createLumenHeatmapGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeGeometry,
+  createLumenScatterGeometry,
+  downsampleLumenChartData,
+  formatLumenChartSummary,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
   hasLumenChartData,
   hasLumenPieData,
   resolveLumenChartTone,
-  scaleLumenChartValue
+  scaleLumenChartValue,
+  validateLumenChartSeries
 } from './charts.js'
 
 describe('Lumen chart helpers', () => {
+  test('matches the shared cross-platform conformance fixtures', () => {
+    const categorical = createLumenLineGeometry(chartConformance.line.categorical.data)
+    const linear = createLumenLineGeometry(chartConformance.line.linear.data, {
+      height: 100,
+      padding: 0,
+      width: 100,
+      xScale: 'linear'
+    })
+    const stacked = createLumenBarGeometry(chartConformance.stackedBar.series, {
+      layout: 'stacked'
+    })
+    const heatmap = createLumenHeatmapGeometry(chartConformance.heatmap.data)
+
+    expect(categorical.domain).toEqual(chartConformance.line.categorical.expected.domain)
+    expect(categorical.points).toHaveLength(
+      chartConformance.line.categorical.expected.pointCount
+    )
+    expect(categorical.areaPaths).toHaveLength(
+      chartConformance.line.categorical.expected.segmentCount
+    )
+    expect(linear.xDomain).toEqual(chartConformance.line.linear.expected.xDomain)
+    expect(linear.points.map(point => point.xCoordinate)).toEqual(
+      chartConformance.line.linear.expected.xCoordinates
+    )
+    expect(stacked.domain).toEqual(chartConformance.stackedBar.expected.domain)
+    expect(stacked.marks).toHaveLength(chartConformance.stackedBar.expected.markCount)
+    expect(heatmap.cells).toHaveLength(chartConformance.heatmap.expected.cellCount)
+    expect(heatmap.xCategories).toHaveLength(
+      chartConformance.heatmap.expected.xCategoryCount
+    )
+    expect(heatmap.yCategories).toHaveLength(
+      chartConformance.heatmap.expected.yCategoryCount
+    )
+  })
+
   test('detects usable chart data across empty and missing-value series', () => {
     expect(hasLumenChartData([])).toBe(false)
     expect(hasLumenChartData([{
@@ -160,5 +204,101 @@ describe('Lumen chart helpers', () => {
     expect(stacked.domain.max).toBe(28)
     expect(stacked.marks[0]?.width).toBeGreaterThan(0)
     expect(stacked.marks[1]?.x).toBeGreaterThan(stacked.marks[0]?.x ?? 0)
+  })
+
+  test('uses numeric and temporal x values instead of index spacing', () => {
+    const linear = createLumenLineGeometry([
+      { x: 0, y: 2 },
+      { x: 10, y: 4 },
+      { x: 100, y: 8 }
+    ], { height: 100, padding: 0, width: 100, xScale: 'linear' })
+    const temporal = createLumenLineGeometry([
+      { x: '2026-01-01T00:00:00Z', y: 1 },
+      { x: '2026-01-03T00:00:00Z', y: 2 }
+    ], { height: 100, padding: 0, width: 100, xScale: 'time' })
+
+    expect(linear.points.map(point => point.xCoordinate)).toEqual([0, 10, 100])
+    expect(linear.xDomain).toEqual({ max: 100, min: 0 })
+    expect(temporal.points.map(point => point.xCoordinate)).toEqual([0, 100])
+  })
+
+  test('validates identifiers, values, sizes, and ordered continuous axes', () => {
+    const issues = validateLumenChartSeries([
+      {
+        data: [
+          { id: 'point', size: -1, x: 2, y: Number.NaN },
+          { id: 'point', x: 1, y: 4 }
+        ],
+        id: 'series',
+        label: 'First'
+      },
+      { data: [], id: 'series', label: 'Second' }
+    ], 'linear')
+
+    expect(issues.map(issue => issue.code)).toEqual([
+      'invalid-y',
+      'invalid-size',
+      'duplicate-datum-id',
+      'unsorted-x',
+      'duplicate-series-id'
+    ])
+  })
+
+  test('summarizes available and missing values without subjective language', () => {
+    const series = [{
+      data: [{ x: 'A', y: 2 }, { x: 'B', y: null }, { x: 'C', y: 8 }],
+      id: 'views',
+      label: 'Views'
+    }]
+
+    expect(formatLumenChartSummary(series)).toBe(
+      '1 series, 2 points. Values range from 2 to 8. 1 missing value.'
+    )
+  })
+
+  test('reduces large datasets while preserving endpoints and missing gaps', () => {
+    const data = Array.from({ length: 100 }, (_, index) => ({
+      x: index,
+      y: index === 50 ? null : Math.sin(index)
+    }))
+    const sampled = downsampleLumenChartData(data, 12)
+
+    expect(sampled).toHaveLength(12)
+    expect(sampled[0]).toEqual(data[0])
+    expect(sampled.at(-1)).toEqual(data.at(-1))
+    expect(sampled.some(datum => datum.y === null)).toBe(true)
+  })
+
+  test('keeps a bounded real-time series window', () => {
+    const next = appendLumenChartDatum({
+      data: [{ x: 1, y: 1 }, { x: 2, y: 2 }],
+      id: 'live',
+      label: 'Live'
+    }, { x: 3, y: 3 }, 2)
+
+    expect(next.data).toEqual([{ x: 2, y: 2 }, { x: 3, y: 3 }])
+  })
+
+  test('builds scatter, bubble, heatmap, and range geometry', () => {
+    const scatter = createLumenScatterGeometry([{
+      data: [{ size: 1, x: 0, y: 2 }, { size: 9, x: 10, y: 8 }],
+      id: 'points',
+      label: 'Points'
+    }], { height: 100, padding: 0, width: 100 })
+    const heatmap = createLumenHeatmapGeometry([
+      { value: 1, x: 'Mon', y: 'AM' },
+      { value: 3, x: 'Tue', y: 'PM' }
+    ], 100, 100)
+    const range = createLumenRangeGeometry([
+      { high: 8, low: 2, x: 'Mon' },
+      { high: 10, low: 4, x: 'Tue' }
+    ], { height: 100, padding: 0, width: 100 })
+
+    expect(scatter.points).toHaveLength(2)
+    expect(scatter.points[1]?.radius).toBeGreaterThan(scatter.points[0]?.radius ?? 0)
+    expect(heatmap.cells).toHaveLength(2)
+    expect(heatmap.xCategories).toEqual(['Mon', 'Tue'])
+    expect(range.areaPath).toContain('Z')
+    expect(range.points).toHaveLength(2)
   })
 })

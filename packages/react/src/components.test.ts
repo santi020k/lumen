@@ -36,6 +36,7 @@ import {
   Checkbox,
   Collapsible,
   ColorPicker,
+  ComboChart,
   Command,
   ContextMenu,
   ContextNavigation,
@@ -43,6 +44,7 @@ import {
   Drawer,
   Empty,
   Graphic,
+  Heatmap,
   HoverCard,
   Icon,
   Illustration,
@@ -65,6 +67,8 @@ import {
   Pill,
   Progress,
   RadioGroup,
+  RangeChart,
+  ScatterChart,
   ScrollArea,
   SearchField,
   Separator,
@@ -189,11 +193,25 @@ describe('@santi020k/lumen-react components', () => {
 
     expect(nativeImage.type).toBe('img')
     expect(propsOf(nativeImage).loading).toBe('lazy')
-    expect(propsOf(nativeImage).className).toBe('ui-image ui-image--invert-dark')
+    expect(propsOf(nativeImage).className).toBe(
+      'ui-image ui-image--invert-dark ui-image--fit-cover ui-image--radius-lg'
+    )
     expect(optimizedImage.type).toBe(OptimizedImage)
-    expect(propsOf(optimizedImage).className).toBe('ui-image')
+    expect(propsOf(optimizedImage).className).toBe(
+      'ui-image ui-image--fit-cover ui-image--radius-lg'
+    )
     expect(propsOf(optimizedImage).loading).toBeUndefined()
     expect(propsOf(optimizedImage).preload).toBe(true)
+
+    const contained = Image({
+      alt: 'Diagram',
+      fit: 'contain',
+      radius: 'sm',
+      src: '/diagram.svg'
+    }) as ReactElement
+
+    expect(propsOf(contained).className).toContain('ui-image--fit-contain')
+    expect(propsOf(contained).className).toContain('ui-image--radius-sm')
   })
 
   test('wraps arbitrary logo artwork without imposing SVG content', () => {
@@ -600,6 +618,18 @@ describe('@santi020k/lumen-react components', () => {
       label: 'Downloads increased from 4 to 8',
       values: [4, 8]
     }) as ReactElement
+    const scatter = ScatterChart({
+      series: [{ data: [{ size: 12, x: 1, y: 4 }, { size: 20, x: 2, y: 8 }], id: 'downloads', label: 'Downloads' }]
+    }) as ReactElement
+    const heatmap = Heatmap({
+      data: [{ value: 8, x: 'Mon', y: 'Morning' }]
+    }) as ReactElement
+    const range = RangeChart({
+      data: [{ high: 12, low: 4, x: 'Mon' }]
+    }) as ReactElement
+    const combo = ComboChart({
+      series: [{ data: series[0]?.data ?? [], id: 'downloads', label: 'Downloads', mark: 'line' }]
+    }) as ReactElement
 
     expect(bars.type).toBe(Chart)
     expect(propsOf(bars).className).toBe('ui-bar-chart')
@@ -612,6 +642,10 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(sparkline).role).toBe('img')
     expect(propsOf(sparkline)['aria-label']).toBe('Downloads increased from 4 to 8')
     expect(propsOf(sparkline).className).toBe('ui-sparkline ui-chart-tone--series-1')
+    expect(propsOf(scatter).className).toBe('ui-scatter-chart')
+    expect(propsOf(heatmap).className).toBe('ui-heatmap')
+    expect(propsOf(range).className).toBe('ui-range-chart ui-chart-tone--series-1')
+    expect(propsOf(combo).className).toBe('ui-combo-chart')
   })
 
   test('renders the empty state when chart series contain no usable data', () => {

@@ -6,7 +6,7 @@ import {
   lumenDarkTheme,
   lumenLightTheme
 } from './theme.js'
-import { lumenColorTokens } from './tokens.generated.js'
+import { lumenChartColorTokens, lumenColorTokens } from './tokens.generated.js'
 
 vi.mock('react-native-svg', () => ({
   Circle: () => null,
@@ -26,6 +26,11 @@ describe('Lumen React Native foundations', () => {
     )
     expect(lumenLightTheme.colors.brand).toBe('#2463EB')
     expect(lumenDarkTheme.colors.brand).toBe('#29B4F5')
+    expect(Object.keys(lumenChartColorTokens.light)).toEqual(
+      Object.keys(lumenChartColorTokens.dark)
+    )
+    expect(lumenLightTheme.chartColors.series1).toBe('#2463EB')
+    expect(lumenDarkTheme.chartColors.series1).toBe('#29B4F5')
   })
 
   test('creates a complete theme for the requested scheme', () => {

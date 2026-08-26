@@ -1,0 +1,22 @@
+---
+import { ScatterChart } from '@santi020k/lumen-astro'
+
+const series = [
+  {
+    data: [
+      { label: 'Starter teams', size: 18, x: 12, y: 24 },
+      { label: 'Growing teams', size: 32, x: 38, y: 57 },
+      { label: 'Scaled teams', size: 46, x: 72, y: 84 }
+    ],
+    id: 'conversion',
+    label: 'Conversion'
+  }
+]
+---
+
+<ScatterChart
+  aria-label="Conversion by product engagement"
+  caption="Bubble size represents active team count."
+  heading="Engagement and conversion"
+  {series}
+/>

@@ -46,6 +46,73 @@ import Testing
     #expect(LumenElevation.overlay == 6)
 }
 
+@Test func chartFoundationsMatchSharedLightAndDarkTokens() {
+    #expect(LumenChartColors.light.series1 == LumenColors.light.brand)
+    #expect(LumenChartColors.dark.series1 == LumenColors.dark.brand)
+    #expect(LumenChartMetrics.seriesStrokeWidth == 2)
+    #expect(LumenChartMetrics.areaOpacity == 0.18)
+}
+
+@Test func chartSummariesReportAvailableAndMissingValues() {
+    let series = LumenChartSeries(
+        id: "views",
+        label: "Views",
+        data: [
+            LumenChartDatum(id: "a", x: .category("A"), y: 2),
+            LumenChartDatum(id: "b", x: .category("B"), y: nil),
+            LumenChartDatum(id: "c", x: .category("C"), y: 8)
+        ]
+    )
+    let summary = LumenChartSummary.resolve(series: [series])
+
+    #expect(summary.availablePointCount == 2)
+    #expect(summary.missingPointCount == 1)
+    #expect(summary.minimum == 2)
+    #expect(summary.maximum == 8)
+    #expect(summary.spokenDescription.contains("1 missing value"))
+}
+
+@Test func chartSummariesTreatNonfiniteAndEmptyValuesAsMissing() {
+    let nonfinite = LumenChartSeries(
+        id: "quality",
+        label: "Quality",
+        data: [
+            LumenChartDatum(id: "negative", x: .number(-1), y: -8),
+            LumenChartDatum(id: "nan", x: .number(0), y: .nan),
+            LumenChartDatum(id: "infinite", x: .number(1), y: .infinity)
+        ]
+    )
+    let summary = LumenChartSummary.resolve(series: [nonfinite])
+    let empty = LumenChartSummary.resolve(series: [])
+
+    #expect(summary.availablePointCount == 1)
+    #expect(summary.missingPointCount == 2)
+    #expect(summary.minimum == -8)
+    #expect(summary.maximum == -8)
+    #expect(empty.spokenDescription == "No chart data available.")
+}
+
+@MainActor
+@Test func everyChartAcceptsMissingDataAndReadableFallbackConfiguration() {
+    let series = LumenChartSeries(
+        id: "values",
+        label: "Values",
+        data: [LumenChartDatum(id: "missing", x: .category("Missing"), y: nil)]
+    )
+    let range = [LumenRangeDatum(id: "range", x: .category("Today"), low: nil, high: 10)]
+    let heatmap = [LumenHeatmapDatum(id: "cell", column: "Mon", row: "AM", value: nil)]
+    let selection = Binding<LumenChartSelection?>.constant(nil)
+
+    _ = LumenSparkline(label: "Trend", values: [])
+    _ = LumenLineChart(label: "Line", series: [series], selection: selection)
+    _ = LumenBarChart(label: "Bar", series: [series], selection: selection)
+    _ = LumenPieChart(label: "Pie", series: series, selection: selection)
+    _ = LumenScatterChart(label: "Scatter", series: [series], selection: selection)
+    _ = LumenRangeChart(label: "Range", data: range, showData: true)
+    _ = LumenHeatmap(label: "Heatmap", data: heatmap, showData: true)
+    _ = LumenComboChart(label: "Combo", series: [series], selection: selection)
+}
+
 @Test func buttonMetricsAdaptToDesktopAndMobileInputs() {
     #expect(LumenButtonMetrics.resolve(.sm, density: .compact).minHeight == 28)
     #expect(LumenButtonMetrics.resolve(.md, density: .compact).minHeight == 32)
@@ -132,6 +199,16 @@ import Testing
     #expect(LumenIllustrationSize.lg.dimension == 176)
 }
 
+@Test func imagePresentationUsesSharedFitAndRadiusContracts() {
+    #expect(LumenImageFit.contain.contentMode == .fit)
+    #expect(LumenImageFit.cover.contentMode == .fill)
+    #expect(LumenImageRadius.none.value == 0)
+    #expect(LumenImageRadius.sm.value == LumenRadius.sm)
+    #expect(LumenImageRadius.md.value == LumenRadius.md)
+    #expect(LumenImageRadius.lg.value == LumenRadius.lg)
+    #expect(LumenImageRadius.full.value == LumenRadius.full)
+}
+
 #if os(iOS) || os(macOS)
 @Test func sliderConfigurationRejectsInvalidSteps() {
     let bounds = 0.0...100.0
@@ -153,6 +230,25 @@ import Testing
     #expect(LumenDateFieldBounds.from(lowerBound).clamped(before) == lowerBound)
     #expect(LumenDateFieldBounds.through(upperBound).clamped(after) == upperBound)
     #expect(LumenDateFieldBounds.unbounded.clamped(after) == after)
+}
+
+@Test func dateRangesClampBothValuesAndPreventAnEndBeforeTheStart() {
+    let lowerBound = Date(timeIntervalSince1970: 1_000)
+    let upperBound = Date(timeIntervalSince1970: 2_000)
+    let reversed = resolveLumenDateRange(
+        start: Date(timeIntervalSince1970: 1_750),
+        end: Date(timeIntervalSince1970: 1_500),
+        bounds: .closed(lowerBound...upperBound)
+    )
+    let outside = resolveLumenDateRange(
+        start: Date(timeIntervalSince1970: 500),
+        end: Date(timeIntervalSince1970: 2_500),
+        bounds: .closed(lowerBound...upperBound)
+    )
+
+    #expect(reversed.start == reversed.end)
+    #expect(outside.start == lowerBound)
+    #expect(outside.end == upperBound)
 }
 #endif
 

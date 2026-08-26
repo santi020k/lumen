@@ -1,0 +1,36 @@
+---
+import { ComboChart } from '@santi020k/lumen-astro'
+import type { LumenComboSeries } from '@santi020k/lumen-core'
+
+const series = [
+  {
+    data: [
+      { x: 'Q1', y: 128 },
+      { x: 'Q2', y: 154 },
+      { x: 'Q3', y: 183 },
+      { x: 'Q4', y: 216 }
+    ],
+    id: 'revenue',
+    label: 'Revenue',
+    mark: 'bar'
+  },
+  {
+    data: [
+      { x: 'Q1', y: 42 },
+      { x: 'Q2', y: 49 },
+      { x: 'Q3', y: 61 },
+      { x: 'Q4', y: 74 }
+    ],
+    id: 'margin',
+    label: 'Margin',
+    mark: 'line'
+  }
+] satisfies readonly LumenComboSeries[]
+---
+
+<ComboChart
+  aria-label="Quarterly revenue and margin"
+  caption="Revenue is shown as bars and margin as a line."
+  heading="Business performance"
+  {series}
+/>

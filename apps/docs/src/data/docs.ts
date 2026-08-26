@@ -570,7 +570,7 @@ export const componentCollections: ComponentCollection[] = [
   {
     title: 'Data visualization',
     description:
-      'Match compact metrics, custom plots, categorical comparisons, ordered trends, and part-to-whole breakdowns to the question.',
+      'Match compact metrics, custom plots, categorical comparisons, ordered trends, relationships, matrices, ranges, mixed marks, and part-to-whole breakdowns to the question.',
     names: [
       'Stat',
       'Meter',
@@ -578,7 +578,11 @@ export const componentCollections: ComponentCollection[] = [
       'Chart',
       'BarChart',
       'LineChart',
-      'PieChart'
+      'PieChart',
+      'ScatterChart',
+      'Heatmap',
+      'RangeChart',
+      'ComboChart'
     ]
   },
   {
@@ -1501,6 +1505,20 @@ const apiReferenceByComponent = {
     ),
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
   ],
+  ComboChart: [
+    apiRow(
+      'series', 'LumenComboSeries[]', '[]', 'Combines bar and line series over one ordered category domain.'
+    ),
+    apiRow(
+      'formatValue', '(value: number) => string', 'String', 'Formats visible values and the accessible summary without changing source data.'
+    ),
+    apiRow(
+      'showLegend', 'boolean', 'true', 'Shows the color-independent series key.'
+    ),
+    apiRow(
+      'showTable', 'boolean', 'true', 'Provides a revealable semantic table containing every plotted value.'
+    )
+  ],
   Command: [
     apiRow(
       'data-ui-command-item', 'boolean attribute', '-', 'Marks filterable command items for the runtime.'
@@ -1619,6 +1637,17 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'label', 'string', '-', 'Exposes the complete composition as one named image; without it the graphic is decorative.'
+    )
+  ],
+  Heatmap: [
+    apiRow(
+      'data', 'LumenHeatmapDatum[]', '[]', 'Provides labelled row, column, and intensity values for the heatmap cells.'
+    ),
+    apiRow(
+      'formatValue', '(value: number) => string', 'String', 'Formats finite cell values in titles and the accessible data table.'
+    ),
+    apiRow(
+      'showTable', 'boolean', 'true', 'Provides a revealable semantic table for every heatmap cell.'
     )
   ],
   HoverCard: [disclosureTriggerApiRow],
@@ -1884,7 +1913,10 @@ const apiReferenceByComponent = {
   ],
   PhoneInput: [
     apiRow(
-      'countries', 'Array<string | { label, value, disabled? }>', '[]', 'Populates the country dial-code select options.'
+      'countries', 'Array<string | { label, value, disabled? }>', 'International metadata', 'Overrides the generated country choices for legacy or specialized forms.'
+    ),
+    apiRow(
+      'countryOptions', 'LumenPhoneCountry[]', 'Generated metadata', 'Overrides localized country metadata while retaining formatting and E.164 behavior.'
     ),
     apiRow(
       'countryName', 'string', '"country"', 'Sets the name of the country dial-code select.'
@@ -1893,13 +1925,19 @@ const apiReferenceByComponent = {
       'countryLabel', 'string', '"Country code"', 'Sets the accessible label for the dial-code select.'
     ),
     apiRow(
-      'countryValue', 'string', '-', 'Selects the initial dial code by value.'
+      'countryValue', 'ISO region or calling code', '"US"', 'Selects the initial country by region or calling code.'
+    ),
+    apiRow(
+      'locale', 'string | string[]', 'Runtime locale', 'Localizes generated country names.'
     ),
     apiRow(
       'name', 'string', '"phone"', 'Sets the name of the telephone number input.'
     ),
     apiRow(
       'placeholder', 'string', '"Phone number"', 'Sets the placeholder for the number input.'
+    ),
+    apiRow(
+      'value / onValueChange', 'LumenPhoneNumber / callback', 'Uncontrolled', 'Controls formatted national input and exposes validity plus E.164 in React.'
     ),
     apiRow(
       'size', '"default" | "sm" | "lg"', '"default"', 'Controls the height and font size of both controls.'
@@ -1959,6 +1997,20 @@ const apiReferenceByComponent = {
       'aria-label, aria-labelledby', 'string', '-', 'Names the radio group when no visible legend is supplied.'
     )
   ],
+  RangeChart: [
+    apiRow(
+      'data', 'LumenRangeDatum[]', '[]', 'Provides ordered low and high values for each interval.'
+    ),
+    apiRow(
+      'formatValue', '(value: number) => string', 'String', 'Formats interval endpoints in titles and the accessible data table.'
+    ),
+    apiRow(
+      'tone', 'LumenChartTone', '"series-1"', 'Selects the tokenized chart tone for intervals and the range area.'
+    ),
+    apiRow(
+      'showTable', 'boolean', 'true', 'Provides a revealable semantic table containing every range.'
+    )
+  ],
   Resizable: [
     apiRow(
       'defaultSizes', 'number[]', '-', 'Sets initial pane sizes as percentages, serialized for the runtime.'
@@ -1982,6 +2034,23 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'data-ui-schedule-slot', 'boolean attribute', '-', 'Marks a drop target and exposes its slot value to the schedule change event.'
+    )
+  ],
+  ScatterChart: [
+    apiRow(
+      'series', 'LumenChartSeries[]', '[]', 'Provides x/y points with optional labels and bubble sizes.'
+    ),
+    apiRow(
+      'xScale', '"linear" | "time" | "log"', '"linear"', 'Selects the numeric x-axis scale used to position points.'
+    ),
+    apiRow(
+      'formatValue', '(value: number) => string', 'String', 'Formats point values and bubble sizes in titles and the accessible table.'
+    ),
+    apiRow(
+      'showLegend', 'boolean', 'true for multiple series', 'Shows the color-independent series key.'
+    ),
+    apiRow(
+      'showTable', 'boolean', 'true', 'Provides a revealable semantic table containing every point.'
     )
   ],
   ScrollArea: [
@@ -3348,8 +3417,8 @@ export const componentDocs: ComponentDoc[] = (
     [
       'PhoneInput',
       'Forms',
-      'Pairs a country dial-code select with a telephone number input.',
-      '<PhoneInput name="phone" countryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />'
+      'Combines localized country metadata, calling codes, formatting, validation, and E.164 output.',
+      '<PhoneInput name="phone" countryValue="CO" locale="en-US" placeholder="Phone number" />'
     ],
     [
       'PieChart',
@@ -3800,6 +3869,30 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Arranges content in fixed or responsive tokenized columns.',
       '<Grid columns="auto"><Card>Analytics</Card><Card>Commerce</Card></Grid>'
+    ],
+    [
+      'ScatterChart',
+      'Data display',
+      'Shows numeric relationships and bubble magnitude across one or more series.',
+      '<ScatterChart aria-label="Conversion by engagement" series={[{ id: "conversion", label: "Conversion", data: [{ x: 12, y: 24, size: 18 }, { x: 38, y: 57, size: 32 }] }]} />'
+    ],
+    [
+      'Heatmap',
+      'Data display',
+      'Encodes a labelled matrix with a sequential visualization scale.',
+      '<Heatmap aria-label="Activity by weekday and hour" data={[{ x: "Morning", y: "Monday", value: 18 }, { x: "Afternoon", y: "Monday", value: 42 }]} />'
+    ],
+    [
+      'RangeChart',
+      'Data display',
+      'Shows ordered low-to-high intervals as a tokenized range band.',
+      '<RangeChart aria-label="Weekly forecast range" data={[{ x: "Mon", low: 17, high: 28 }, { x: "Tue", low: 19, high: 31 }]} />'
+    ],
+    [
+      'ComboChart',
+      'Data display',
+      'Combines bars, lines, and areas on one meaningful shared value domain.',
+      '<ComboChart aria-label="Revenue and margin by quarter" series={[{ id: "revenue", label: "Revenue", mark: "bar", data: [{ x: "Q1", y: 128 }] }, { id: "margin", label: "Margin", mark: "line", data: [{ x: "Q1", y: 42 }] }]} />'
     ],
     [
       'VisuallyHidden',

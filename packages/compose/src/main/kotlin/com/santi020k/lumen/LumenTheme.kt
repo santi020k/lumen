@@ -16,7 +16,8 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 data class LumenThemeValues(
     val colors: LumenColorPalette,
-    val isDark: Boolean
+    val isDark: Boolean,
+    val chartColors: LumenChartColorPalette = if (isDark) LumenChartColors.Dark else LumenChartColors.Light
 )
 
 @Immutable

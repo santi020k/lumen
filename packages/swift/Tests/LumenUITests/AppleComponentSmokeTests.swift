@@ -16,6 +16,7 @@ private struct AppleComponentCatalogFixture: View {
     @State private var isReviewed = false
     @State private var isSheetPresented = false
     @State private var releaseDate = Date()
+    @State private var releaseEndDate = Date().addingTimeInterval(86_400)
     @State private var navigationDestination = FixtureProfile.balanced
     @State private var notes = "Native release notes"
     @State private var profile = FixtureProfile.balanced
@@ -59,6 +60,13 @@ private struct AppleComponentCatalogFixture: View {
                     "Release date",
                     selection: $releaseDate,
                     description: "Choose when this native component ships."
+                )
+
+                LumenDateRangeField(
+                    "Release window",
+                    start: $releaseDate,
+                    end: $releaseEndDate,
+                    description: "Choose the inclusive native release window."
                 )
 
                 LumenSearchField("Search components", text: $query)
@@ -172,6 +180,16 @@ private struct AppleComponentCatalogFixture: View {
                             size: .sm,
                             label: "Successful native build"
                         )
+                        LumenImage(
+                            aspectRatio: 1,
+                            fit: .contain,
+                            radius: .md,
+                            label: "Photo placeholder"
+                        ) {
+                            Image(systemName: "photo")
+                                .resizable()
+                        }
+                        .frame(width: 72)
                     }
                 }
                 .frame(height: 180)

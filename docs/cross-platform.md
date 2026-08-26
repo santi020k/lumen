@@ -70,8 +70,8 @@ Native adapters must not depend on the DOM, CSS class names, the Astro runtime, 
 | Universal foundations | Kept synchronized across every adapter | Colors, spacing, radius, typography, motion, elevation |
 | Universal primitives | Native implementation planned for every adapter | Theme, Text, Icon, Button, IconButton, Surface, TextField, Badge, Divider, Spinner |
 | Shared where appropriate | Added when the interaction maps cleanly | Cards, alerts, toast feedback, chips, field composition, progress, avatars, disclosure controls |
-| Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, date fields, shortcut recording, SF Symbols selection |
-| Platform-specific | Uses platform conventions and does not promise API parity | Pull-to-refresh controls, floating actions, date fields, gestures |
+| Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, shortcut recording, SF Symbols selection |
+| Platform-specific | Uses platform conventions and does not promise API parity | Pull-to-refresh controls, floating actions, gestures |
 
 The web catalog remains the reference for design intent, not a requirement that all 150 components
 be ported. A native component is considered supported only after its public contract, accessibility
@@ -112,13 +112,16 @@ Individual features that do not yet meet the adapter's Beta support bar should b
   geometry across platforms while native icon escape hatches remain available.
 - ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup,
   SegmentedControl, NavigationBar, Chip, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
-  Illustration, Disclosure,
+  Illustration, Image, Disclosure,
   Avatar, EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
   adapters with shared semantic contracts.
-- Picker, Slider, and Gauge are available in SwiftUI and Compose, where stable dependency-free
-  native controls exist. The platform tier includes RefreshControl for React Native,
-  FloatingActionButton for Compose, DateField for Apple platforms, and ShortcutRecorder and
-  SymbolPicker on macOS.
+- PhoneInput is available in React Native, SwiftUI on iOS and macOS, and Compose with a shared
+  country, national-number, validity, and E.164 contract. It is intentionally absent on wearable
+  and television surfaces.
+- Picker, Slider, Gauge, DateField, and DateRangeField are available in SwiftUI and Compose, where
+  stable dependency-free native controls exist. The platform tier includes RefreshControl for
+  React Native, FloatingActionButton for Compose, and ShortcutRecorder
+  and SymbolPicker on macOS.
 - NavigationBar provides controlled peer-destination selection. Navigation stacks, history, deep
   links, window scenes, sheets, popovers, and system menus remain application-owned.
 - The executable checks and manual hardware matrix live in

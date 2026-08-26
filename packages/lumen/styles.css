@@ -33,6 +33,8 @@
   --chart-diverging-negative: 0 84% 60%;
   --chart-diverging-positive: 221 83% 53%;
   --chart-grid: var(--line);
+  --chart-reference: var(--ink-soft);
+  --chart-selection: var(--brand);
   --chart-sequential-high: 221 83% 40%;
   --chart-sequential-low: 218 100% 97%;
   --chart-sequential-mid: 221 83% 67%;
@@ -44,6 +46,8 @@
   --chart-series-6: 190 82% 42%;
   --chart-series-7: 52 92% 45%;
   --chart-series-8: 215 16% 47%;
+  --chart-tooltip-background: var(--ink);
+  --chart-tooltip-foreground: var(--surface);
   --ui-on-danger: var(--on-danger);
   --ui-radius: 0.625rem;
   --ui-radius-sm: 0.375rem;
@@ -100,6 +104,8 @@
   --chart-diverging-negative: 0 84% 65%;
   --chart-diverging-positive: 199 91% 56%;
   --chart-grid: var(--line);
+  --chart-reference: var(--ink-soft);
+  --chart-selection: var(--brand);
   --chart-sequential-high: 199 91% 66%;
   --chart-sequential-low: 199 84% 16%;
   --chart-sequential-mid: 199 72% 42%;
@@ -111,6 +117,8 @@
   --chart-series-6: 188 86% 54%;
   --chart-series-7: 52 94% 58%;
   --chart-series-8: 215 18% 68%;
+  --chart-tooltip-background: var(--ink);
+  --chart-tooltip-foreground: var(--canvas);
   --ui-on-danger: var(--canvas);
   --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
   --ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
@@ -966,6 +974,14 @@
   object-fit: cover;
 }
 
+.ui-image--fit-contain { object-fit: contain; }
+.ui-image--fit-cover { object-fit: cover; }
+.ui-image--radius-none { border-radius: 0; }
+.ui-image--radius-sm { border-radius: var(--ui-radius-sm); }
+.ui-image--radius-md { border-radius: var(--ui-radius-md); }
+.ui-image--radius-lg { border-radius: var(--ui-radius-lg); }
+.ui-image--radius-full { border-radius: 9999px; }
+
 :where([data-theme="dark"], [data-theme$="-dark"], .dark) .ui-image--invert-dark {
   filter: invert(1) hue-rotate(180deg);
 }
@@ -1778,6 +1794,10 @@
   border: 0;
   border-radius: 0;
   box-shadow: none;
+}
+.ui-phone-input[data-invalid="true"],
+.ui-phone-input:has(.ui-phone-input__number[aria-invalid="true"]) {
+  border-color: hsl(var(--danger));
 }
 
 .ui-checkbox {
@@ -4034,6 +4054,29 @@
 
 .ui-bar-chart__marks rect {
   fill: var(--ui-chart-color);
+}
+
+.ui-scatter-chart__marks circle {
+  fill: color-mix(in srgb, var(--ui-chart-color) 72%, transparent);
+  stroke: var(--ui-chart-color);
+  stroke-width: var(--chart-stroke-selected, 3px);
+}
+
+.ui-heatmap__cells rect {
+  fill: hsl(var(--chart-sequential-high));
+  stroke: hsl(var(--canvas));
+  stroke-width: 1px;
+}
+
+.ui-range-chart__area {
+  fill: color-mix(in srgb, var(--ui-chart-color) 18%, transparent);
+  stroke: var(--ui-chart-color);
+  stroke-width: var(--chart-stroke-series, 2px);
+}
+
+.ui-range-chart__interval {
+  stroke: var(--ui-chart-color);
+  stroke-width: var(--chart-stroke-reference, 2px);
 }
 
 .ui-pie-chart__plot {

@@ -1,0 +1,40 @@
+{
+  "$schema": "./lumen.graphics.schema.json",
+  "schemaVersion": 1,
+  "illustrations": [
+    {
+      "name": "empty",
+      "semanticTone": "brand",
+      "elements": [
+        { "kind": "polygon", "points": [32, 48, 88, 48, 81, 83, 39, 83] },
+        { "kind": "polyline", "points": [43, 48, 49, 36, 71, 36, 77, 48] },
+        { "kind": "line", "points": [47, 66, 73, 66] }
+      ]
+    },
+    {
+      "name": "success",
+      "semanticTone": "success",
+      "elements": [
+        { "kind": "circle", "cx": 60, "cy": 60, "r": 28 },
+        { "kind": "polyline", "points": [45, 60, 55, 70, 76, 47] }
+      ]
+    },
+    {
+      "name": "error",
+      "semanticTone": "danger",
+      "elements": [
+        { "kind": "circle", "cx": 60, "cy": 60, "r": 28 },
+        { "kind": "line", "points": [49, 49, 71, 71] },
+        { "kind": "line", "points": [71, 49, 49, 71] }
+      ]
+    },
+    {
+      "name": "offline",
+      "semanticTone": "ink-muted",
+      "elements": [
+        { "kind": "rounded-rect", "x": 24, "y": 45, "width": 72, "height": 35, "radius": 18 },
+        { "kind": "line", "points": [30, 30, 90, 90] }
+      ]
+    }
+  ]
+}

@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -28,8 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import com.santi020k.lumen.ExperimentalLumenPhoneApi
 import com.santi020k.lumen.LumenAlert
 import com.santi020k.lumen.LumenAlertDialog
 import com.santi020k.lumen.LumenAdaptiveNavigationScaffold
@@ -47,10 +51,19 @@ import com.santi020k.lumen.LumenBackdropVariant
 import com.santi020k.lumen.LumenButton
 import com.santi020k.lumen.LumenButtonGroup
 import com.santi020k.lumen.LumenButtonIntent
+import com.santi020k.lumen.LumenBarChart
 import com.santi020k.lumen.LumenCard
 import com.santi020k.lumen.LumenCardVariant
 import com.santi020k.lumen.LumenCheckbox
 import com.santi020k.lumen.LumenChip
+import com.santi020k.lumen.LumenChartDatum
+import com.santi020k.lumen.LumenChartSeries
+import com.santi020k.lumen.LumenChartX
+import com.santi020k.lumen.LumenComboChart
+import com.santi020k.lumen.LumenComboMark
+import com.santi020k.lumen.LumenDateField
+import com.santi020k.lumen.LumenDateRangeField
+import com.santi020k.lumen.LumenDateRangeSelection
 import com.santi020k.lumen.LumenDivider
 import com.santi020k.lumen.LumenDisclosure
 import com.santi020k.lumen.LumenEmptyState
@@ -63,13 +76,17 @@ import com.santi020k.lumen.LumenGraphic
 import com.santi020k.lumen.LumenGraphicSize
 import com.santi020k.lumen.LumenGraphicTone
 import com.santi020k.lumen.LumenGraphicVariant
+import com.santi020k.lumen.LumenHeatmap
+import com.santi020k.lumen.LumenHeatmapDatum
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
 import com.santi020k.lumen.LumenIconName
+import com.santi020k.lumen.LumenImage
 import com.santi020k.lumen.LumenIllustration
 import com.santi020k.lumen.LumenIllustrationSize
 import com.santi020k.lumen.LumenIllustrationVariant
 import com.santi020k.lumen.LumenListRow
+import com.santi020k.lumen.LumenLineChart
 import com.santi020k.lumen.LumenMetricTone
 import com.santi020k.lumen.LumenMenu
 import com.santi020k.lumen.LumenMenuItem
@@ -80,8 +97,15 @@ import com.santi020k.lumen.LumenNavigationItem
 import com.santi020k.lumen.LumenProgress
 import com.santi020k.lumen.LumenPicker
 import com.santi020k.lumen.LumenPickerOption
+import com.santi020k.lumen.LumenPhoneCountries
+import com.santi020k.lumen.LumenPhoneInput
+import com.santi020k.lumen.LumenPhoneNumber
+import com.santi020k.lumen.LumenPieChart
 import com.santi020k.lumen.LumenRadioGroup
+import com.santi020k.lumen.LumenRangeChart
+import com.santi020k.lumen.LumenRangeDatum
 import com.santi020k.lumen.LumenSearchField
+import com.santi020k.lumen.LumenScatterChart
 import com.santi020k.lumen.LumenSectionHeader
 import com.santi020k.lumen.LumenSettingsRow
 import com.santi020k.lumen.LumenShareButton
@@ -92,6 +116,7 @@ import com.santi020k.lumen.LumenSelectionOption
 import com.santi020k.lumen.LumenSkeleton
 import com.santi020k.lumen.LumenSkeletonShape
 import com.santi020k.lumen.LumenSpinner
+import com.santi020k.lumen.LumenSparkline
 import com.santi020k.lumen.LumenSlider
 import com.santi020k.lumen.LumenStat
 import com.santi020k.lumen.LumenStatusBar
@@ -155,6 +180,9 @@ private val sections = listOf(
             "Toggle",
             "Settings row",
             "Search field",
+            "Phone input",
+            "Date field",
+            "Date range field",
             "Checkbox",
             "Radio group",
             "Segmented control",
@@ -176,12 +204,20 @@ private val sections = listOf(
     PlaygroundSection(
         title = "Visual content",
         description = "Graphics, backdrops, and illustrations use semantic tokens and optional labels.",
-        names = setOf("Graphic", "Backdrop", "Illustration")
+        names = setOf("Graphic", "Backdrop", "Illustration", "Image")
     ),
     PlaygroundSection(
         title = "Data display",
         description = "Cards, avatars, metrics, headers, and rows compose into product content.",
         names = setOf("Card", "Avatar", "Empty state", "List row", "Stat", "Gauge", "Section header")
+    ),
+    PlaygroundSection(
+        title = "Data visualization",
+        description = "Tokenized plots include a factual accessibility summary and readable fallback data.",
+        names = setOf(
+            "Sparkline", "Line chart", "Bar chart", "Pie chart",
+            "Scatter chart", "Heatmap", "Range chart", "Combo chart"
+        )
     ),
     PlaygroundSection(
         title = "Overlays and sharing",
@@ -205,11 +241,30 @@ private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: B
     var darkTheme by remember(initialDarkTheme) { mutableStateOf(initialDarkTheme) }
 
     LumenTheme(darkTheme = darkTheme) {
-        PlaygroundContent(
-            darkTheme = darkTheme,
-            initialComponent = initialComponent,
-            onToggleTheme = { darkTheme = !darkTheme }
-        )
+        if (initialComponent.isNotBlank()) {
+            PlaygroundContent(
+                darkTheme = darkTheme,
+                initialComponent = initialComponent,
+                enhancedDiscovery = false,
+                onToggleTheme = { darkTheme = !darkTheme }
+            )
+        } else {
+            LumenReferenceApplication(
+                darkTheme = darkTheme,
+                onToggleTheme = { darkTheme = !darkTheme },
+                catalog = sections.map { section ->
+                    CatalogCategorySummary(section.title, section.names.size)
+                },
+                components = {
+                    PlaygroundContent(
+                        darkTheme = darkTheme,
+                        initialComponent = "",
+                        enhancedDiscovery = true,
+                        onToggleTheme = { darkTheme = !darkTheme }
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -217,6 +272,7 @@ private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: B
 private fun PlaygroundContent(
     darkTheme: Boolean,
     initialComponent: String,
+    enhancedDiscovery: Boolean,
     onToggleTheme: () -> Unit
 ) {
     var email by remember { mutableStateOf("hello@lumen.dev") }
@@ -228,12 +284,16 @@ private fun PlaygroundContent(
     var query by remember(initialComponent) { mutableStateOf(initialComponent) }
     var saved by remember { mutableStateOf(false) }
     var showBanner by remember { mutableStateOf(true) }
-    val visibleSections = sections.filter { section ->
-        query.isBlank() || section.names.any { it.contains(query, ignoreCase = true) }
+    var selectedCategory by remember(enhancedDiscovery) {
+        mutableStateOf(if (enhancedDiscovery) sections.first().title else ALL_CATEGORIES)
     }
-    val visibleCount = sections
-        .flatMap { it.names }
-        .count { query.isBlank() || it.contains(query, ignoreCase = true) }
+    val visibleSections = sections.filter { section ->
+        (selectedCategory == ALL_CATEGORIES || section.title == selectedCategory) &&
+            (query.isBlank() || section.names.any { it.contains(query, ignoreCase = true) })
+    }
+    val visibleCount = visibleSections.sumOf { section ->
+        section.names.count { query.isBlank() || it.contains(query, ignoreCase = true) }
+    }
 
     LumenSurface(
         modifier = Modifier
@@ -250,36 +310,41 @@ private fun PlaygroundContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        LumenBadge("Jetpack Compose", tone = LumenBadgeTone.Success)
-                        LumenText("Lumen Playground", variant = LumenTextVariant.Title)
-                        LumenText(
-                            "Explore every public Compose primitive with real Android state.",
-                            tone = LumenTextTone.Soft
-                        )
-                    }
-                    LumenButton(onClick = onToggleTheme, intent = LumenButtonIntent.Secondary) {
-                        Text(if (darkTheme) "Light" else "Dark")
-                    }
+                if (enhancedDiscovery) {
+                    CatalogHeader(darkTheme = darkTheme, onToggleTheme = onToggleTheme)
+                } else {
+                    CaptureCatalogHeader(darkTheme = darkTheme, onToggleTheme = onToggleTheme)
                 }
             }
 
             item {
                 LumenSearchField(
                     value = query,
-                    onValueChange = { query = it },
+                    onValueChange = { value ->
+                        query = value
+                        if (enhancedDiscovery && value.isNotBlank()) selectedCategory = ALL_CATEGORIES
+                    },
                     prompt = "Search components",
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     LumenIcon(LumenIconName.Search, contentDescription = null)
+                }
+            }
+
+            if (enhancedDiscovery) {
+                item {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(listOf(ALL_CATEGORIES) + sections.map { it.title }) { category ->
+                            LumenChip(
+                                label = category,
+                                selected = category == selectedCategory,
+                                onClick = {
+                                    selectedCategory = category
+                                    query = ""
+                                }
+                            )
+                        }
+                    }
                 }
             }
 
@@ -289,7 +354,11 @@ private fun PlaygroundContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     LumenText("$visibleCount components", variant = LumenTextVariant.Label)
-                    LumenText("Android · Compose", variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)
+                    LumenText(
+                        if (enhancedDiscovery) "$selectedCategory · Android" else "Android · Compose",
+                        variant = LumenTextVariant.Caption,
+                        tone = LumenTextTone.Muted
+                    )
                 }
             }
 
@@ -320,6 +389,11 @@ private fun PlaygroundContent(
                         )
                         "Visual content" -> VisualContentExample()
                         "Data display" -> DataExample(saved = saved, onToggleSaved = { saved = !saved })
+                        "Data visualization" -> ChartExample(
+                            section.names.filterTo(mutableSetOf()) { name ->
+                                query.isBlank() || name.contains(query, ignoreCase = true)
+                            }
+                        )
                         "Overlays and sharing" -> OverlayExample(initialComponent)
                         "Navigation" -> NavigationExample(initialComponent)
                     }
@@ -363,6 +437,65 @@ private fun PlaygroundContent(
                     }
                 )
             }
+        }
+    }
+}
+
+private const val ALL_CATEGORIES = "All"
+
+@Composable
+private fun CatalogHeader(darkTheme: Boolean, onToggleTheme: () -> Unit) {
+    LumenSurface(
+        modifier = Modifier.fillMaxWidth(),
+        tone = LumenSurfaceTone.Muted,
+        padding = LumenSurfacePadding.Lg
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LumenGraphic(
+                modifier = Modifier.size(64.dp),
+                size = LumenGraphicSize.Sm,
+                tone = LumenGraphicTone.Brand,
+                variant = LumenGraphicVariant.Grid,
+                label = "Lumen component catalog"
+            ) {
+                LumenIcon(LumenIconName.Search, contentDescription = null)
+            }
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                LumenText("Component catalog", variant = LumenTextVariant.Title)
+                LumenText(
+                    "Search every public primitive or focus the catalog by category.",
+                    variant = LumenTextVariant.Caption,
+                    tone = LumenTextTone.Muted
+                )
+            }
+            LumenButton(onClick = onToggleTheme, intent = LumenButtonIntent.Secondary) {
+                Text(if (darkTheme) "Light" else "Dark")
+            }
+        }
+    }
+}
+
+@Composable
+private fun CaptureCatalogHeader(darkTheme: Boolean, onToggleTheme: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LumenBadge("Jetpack Compose", tone = LumenBadgeTone.Success)
+            LumenText("Lumen Playground", variant = LumenTextVariant.Title)
+            LumenText(
+                "Explore every public Compose primitive with real Android state.",
+                tone = LumenTextTone.Soft
+            )
+        }
+        LumenButton(onClick = onToggleTheme, intent = LumenButtonIntent.Secondary) {
+            Text(if (darkTheme) "Light" else "Dark")
         }
     }
 }
@@ -494,6 +627,7 @@ private fun ActionsExample() {
     }
 }
 
+@OptIn(ExperimentalLumenPhoneApi::class)
 @Composable
 private fun FormsExample(
     email: String,
@@ -511,6 +645,16 @@ private fun FormsExample(
     var pickerProfile by remember { mutableStateOf("balanced") }
     var sliderValue by remember { mutableStateOf(72f) }
     var activeTab by remember { mutableStateOf("overview") }
+    var releaseDateMillis by remember { mutableStateOf<Long?>(null) }
+    var releaseRange by remember {
+        mutableStateOf(LumenDateRangeSelection(startDateMillis = null, endDateMillis = null))
+    }
+    val defaultPhoneCountry = remember {
+        requireNotNull(LumenPhoneCountries.forRegion("CO"))
+    }
+    var careTeamPhone by remember {
+        mutableStateOf(LumenPhoneNumber.empty(defaultPhoneCountry))
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         LumenTextField(
@@ -518,6 +662,12 @@ private fun FormsExample(
             onValueChange = onEmailChange,
             label = "Email address",
             modifier = Modifier.fillMaxWidth()
+        )
+        LumenPhoneInput(
+            value = careTeamPhone,
+            onValueChange = { careTeamPhone = it },
+            label = "Care team phone number",
+            description = careTeamPhone.e164 ?: "Choose a country and enter the complete number."
         )
         LumenTextarea(
             value = notes,
@@ -543,6 +693,18 @@ private fun FormsExample(
             error = true,
             errorMessage = "Use letters, numbers, and hyphens.",
             modifier = Modifier.fillMaxWidth()
+        )
+        LumenDateField(
+            label = "Release date",
+            value = releaseDateMillis,
+            onValueChange = { releaseDateMillis = it },
+            description = "Choose when this component becomes available."
+        )
+        LumenDateRangeField(
+            label = "Release window",
+            value = releaseRange,
+            onValueChange = { releaseRange = it },
+            description = "Choose the inclusive availability window."
         )
         LumenToggle(
             label = "Demo notification preference",
@@ -709,6 +871,12 @@ private fun VisualContentExample() {
                 label = "Offline illustration"
             )
         }
+        LumenImage(
+            painter = rememberVectorPainter(Icons.Default.Home),
+            label = "Lumen image placeholder",
+            aspectRatio = 16f / 9f,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -1011,6 +1179,126 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
                     Text("View release")
                 }
             }
+        )
+    }
+}
+
+@Composable
+private fun ChartExample(visibleNames: Set<String>) {
+    if ("Sparkline" in visibleNames) {
+        LumenSparkline(values = listOf(12.0, 18.0, 16.0, 27.0, 35.0), label = "Weekly adoption trend")
+    }
+    if ("Line chart" in visibleNames) {
+        LumenLineChart(
+            label = "Weekly adoption chart",
+            heading = "Weekly adoption",
+            area = true,
+            series = listOf(
+                LumenChartSeries(
+                    id = "adoption",
+                    label = "Projects",
+                    data = listOf(
+                        LumenChartDatum("mon", LumenChartX.Category("Mon"), 18.0),
+                        LumenChartDatum("tue", LumenChartX.Category("Tue"), 26.0),
+                        LumenChartDatum("wed", LumenChartX.Category("Wed"), null),
+                        LumenChartDatum("thu", LumenChartX.Category("Thu"), 41.0),
+                        LumenChartDatum("fri", LumenChartX.Category("Fri"), 53.0)
+                    )
+                )
+            )
+        )
+    }
+    if ("Bar chart" in visibleNames) {
+        LumenBarChart(
+            label = "Components by platform",
+            series = listOf(
+                LumenChartSeries(
+                    "components",
+                    "Components",
+                    listOf(
+                        LumenChartDatum("web", LumenChartX.Category("Web"), 82.0),
+                        LumenChartDatum("ios", LumenChartX.Category("iOS"), 61.0),
+                        LumenChartDatum("android", LumenChartX.Category("Android"), 58.0)
+                    )
+                )
+            )
+        )
+    }
+    if ("Pie chart" in visibleNames) {
+        LumenPieChart(
+            label = "Issue status distribution",
+            series = LumenChartSeries(
+                "issues",
+                "Issues",
+                listOf(
+                    LumenChartDatum("complete", LumenChartX.Category("Complete"), 68.0),
+                    LumenChartDatum("active", LumenChartX.Category("Active"), 22.0),
+                    LumenChartDatum("blocked", LumenChartX.Category("Blocked"), 10.0)
+                )
+            )
+        )
+    }
+    if ("Scatter chart" in visibleNames) {
+        LumenScatterChart(
+            label = "Bundle size and render time",
+            series = listOf(
+                LumenChartSeries(
+                    "releases",
+                    "Releases",
+                    listOf(
+                        LumenChartDatum("one", LumenChartX.Number(12.0), 28.0, size = 12.0),
+                        LumenChartDatum("two", LumenChartX.Number(20.0), 41.0, size = 20.0),
+                        LumenChartDatum("three", LumenChartX.Number(31.0), 54.0, size = 28.0)
+                    )
+                )
+            )
+        )
+    }
+    if ("Heatmap" in visibleNames) {
+        LumenHeatmap(
+            label = "Activity by day and period",
+            data = listOf(
+                LumenHeatmapDatum("mon-am", "Mon", "Morning", 18.0),
+                LumenHeatmapDatum("tue-am", "Tue", "Morning", 32.0),
+                LumenHeatmapDatum("mon-pm", "Mon", "Evening", 47.0),
+                LumenHeatmapDatum("tue-pm", "Tue", "Evening", null)
+            )
+        )
+    }
+    if ("Range chart" in visibleNames) {
+        LumenRangeChart(
+            label = "Daily forecast range",
+            data = listOf(
+                LumenRangeDatum("mon", LumenChartX.Category("Mon"), 16.0, 28.0),
+                LumenRangeDatum("tue", LumenChartX.Category("Tue"), 21.0, 35.0),
+                LumenRangeDatum("wed", LumenChartX.Category("Wed"), 27.0, 42.0)
+            )
+        )
+    }
+    if ("Combo chart" in visibleNames) {
+        LumenComboChart(
+            label = "Deployments and reliability",
+            series = listOf(
+                LumenChartSeries(
+                    "deployments",
+                    "Deployments",
+                    listOf(
+                        LumenChartDatum("dep-apr", LumenChartX.Category("Apr"), 24.0),
+                        LumenChartDatum("dep-may", LumenChartX.Category("May"), 31.0),
+                        LumenChartDatum("dep-jun", LumenChartX.Category("Jun"), 38.0)
+                    ),
+                    mark = LumenComboMark.Bar
+                ),
+                LumenChartSeries(
+                    "reliability",
+                    "Reliability",
+                    listOf(
+                        LumenChartDatum("rel-apr", LumenChartX.Category("Apr"), 94.0),
+                        LumenChartDatum("rel-may", LumenChartX.Category("May"), 97.0),
+                        LumenChartDatum("rel-jun", LumenChartX.Category("Jun"), 99.0)
+                    )
+                )
+            )
         )
     }
 }

@@ -3,7 +3,7 @@
   "routes": {
     "/": {
       "alt": "Write it once. Ship it in any framework. — Lumen UI",
-      "description": "A multi-framework primitive UI system with 155 components for Astro, React, and Web Components.",
+      "description": "A multi-framework primitive UI system with 159 components for Astro, React, and Web Components.",
       "images": [
         {
           "format": "webp",
@@ -35,7 +35,7 @@
     },
     "/docs/components": {
       "alt": "Components — Lumen UI",
-      "description": "Browse 155 primitives with live previews for Astro, React, and Elements.",
+      "description": "Browse 159 primitives with live previews for Astro, React, and Elements.",
       "images": [
         {
           "format": "webp",
@@ -641,6 +641,134 @@
       "pathname": "/docs/react-native/components",
       "title": "react-native components"
     },
+    "/docs/react-native/components/sparkline": {
+      "alt": "Sparkline — Lumen UI",
+      "description": "Render a compact tokenized trend line with optional area fill.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--sparkline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--sparkline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/sparkline",
+      "title": "Sparkline"
+    },
+    "/docs/react-native/components/line-chart": {
+      "alt": "Line chart — Lumen UI",
+      "description": "Compare one or more categorical, numeric, or temporal line series.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--line-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--line-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/line-chart",
+      "title": "Line chart"
+    },
+    "/docs/react-native/components/bar-chart": {
+      "alt": "Bar chart — Lumen UI",
+      "description": "Compare grouped or stacked categorical magnitudes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--bar-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--bar-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/bar-chart",
+      "title": "Bar chart"
+    },
+    "/docs/react-native/components/pie-chart": {
+      "alt": "Pie chart — Lumen UI",
+      "description": "Show a small positive part-to-whole breakdown as a pie or donut.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--pie-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--pie-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/pie-chart",
+      "title": "Pie chart"
+    },
+    "/docs/react-native/components/scatter-chart": {
+      "alt": "Scatter chart — Lumen UI",
+      "description": "Plot numeric scatter and bubble relationships with semantic series tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--scatter-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--scatter-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/scatter-chart",
+      "title": "Scatter chart"
+    },
+    "/docs/react-native/components/heatmap": {
+      "alt": "Heatmap — Lumen UI",
+      "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/heatmap",
+      "title": "Heatmap"
+    },
+    "/docs/react-native/components/range-chart": {
+      "alt": "Range chart — Lumen UI",
+      "description": "Render ordered low-to-high intervals as a tokenized range band.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--range-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--range-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/range-chart",
+      "title": "Range chart"
+    },
+    "/docs/react-native/components/combo-chart": {
+      "alt": "Combo chart — Lumen UI",
+      "description": "Combine bar, line, and area series on one shared value domain.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--combo-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--combo-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/combo-chart",
+      "title": "Combo chart"
+    },
     "/docs/react-native/components/theme": {
       "alt": "Theme — Lumen UI",
       "description": "Provide generated semantic colors, spacing, radii, typography, motion, and elevation to native components.",
@@ -1025,6 +1153,22 @@
       "pathname": "/docs/react-native/components/search-field",
       "title": "Search field"
     },
+    "/docs/react-native/components/phone-input": {
+      "alt": "Phone input — Lumen UI",
+      "description": "Enter an international phone number with searchable countries, calling codes, formatting, validation, and E.164 output.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--phone-input.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--phone-input.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/phone-input",
+      "title": "Phone input"
+    },
     "/docs/react-native/components/checkbox": {
       "alt": "Checkbox — Lumen UI",
       "description": "Capture a controlled Boolean choice with a generous native target and supporting text.",
@@ -1249,6 +1393,38 @@
       "pathname": "/docs/react-native/components/refresh-control",
       "title": "Refresh control"
     },
+    "/docs/react-native/components/date-field": {
+      "alt": "Date field — Lumen UI",
+      "description": "Select a native date with bounds and validation context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--date-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--date-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/date-field",
+      "title": "Date field"
+    },
+    "/docs/react-native/components/date-range-field": {
+      "alt": "Date range field — Lumen UI",
+      "description": "Select an inclusive native date range with coordinated bounds and validation context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--date-range-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--date-range-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/date-range-field",
+      "title": "Date range field"
+    },
     "/docs/react-native/components/graphic": {
       "alt": "Graphic — Lumen UI",
       "description": "Frame application-provided artwork with token-aware glow, grid, or orbit decoration.",
@@ -1296,6 +1472,22 @@
       ],
       "pathname": "/docs/react-native/components/illustration",
       "title": "Illustration"
+    },
+    "/docs/react-native/components/image": {
+      "alt": "Image — Lumen UI",
+      "description": "Present native images with shared fit, ratio, radius, and accessibility behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--image.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--image.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/image",
+      "title": "Image"
     },
     "/docs/react-native/components/alert-dialog": {
       "alt": "Alert dialog — Lumen UI",
@@ -1376,6 +1568,134 @@
       ],
       "pathname": "/docs/apple/components",
       "title": "apple components"
+    },
+    "/docs/apple/components/sparkline": {
+      "alt": "Sparkline — Lumen UI",
+      "description": "Render a compact tokenized trend line with optional area fill.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--sparkline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--sparkline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/sparkline",
+      "title": "Sparkline"
+    },
+    "/docs/apple/components/line-chart": {
+      "alt": "Line chart — Lumen UI",
+      "description": "Compare one or more categorical, numeric, or temporal line series.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--line-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--line-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/line-chart",
+      "title": "Line chart"
+    },
+    "/docs/apple/components/bar-chart": {
+      "alt": "Bar chart — Lumen UI",
+      "description": "Compare grouped or stacked categorical magnitudes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--bar-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--bar-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/bar-chart",
+      "title": "Bar chart"
+    },
+    "/docs/apple/components/pie-chart": {
+      "alt": "Pie chart — Lumen UI",
+      "description": "Show a small positive part-to-whole breakdown as a pie or donut.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--pie-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--pie-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/pie-chart",
+      "title": "Pie chart"
+    },
+    "/docs/apple/components/scatter-chart": {
+      "alt": "Scatter chart — Lumen UI",
+      "description": "Plot numeric scatter and bubble relationships with semantic series tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--scatter-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--scatter-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/scatter-chart",
+      "title": "Scatter chart"
+    },
+    "/docs/apple/components/heatmap": {
+      "alt": "Heatmap — Lumen UI",
+      "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/heatmap",
+      "title": "Heatmap"
+    },
+    "/docs/apple/components/range-chart": {
+      "alt": "Range chart — Lumen UI",
+      "description": "Render ordered low-to-high intervals as a tokenized range band.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--range-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--range-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/range-chart",
+      "title": "Range chart"
+    },
+    "/docs/apple/components/combo-chart": {
+      "alt": "Combo chart — Lumen UI",
+      "description": "Combine bar, line, and area series on one shared value domain.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--combo-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--combo-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/combo-chart",
+      "title": "Combo chart"
     },
     "/docs/apple/components/theme": {
       "alt": "Theme — Lumen UI",
@@ -1793,6 +2113,22 @@
       "pathname": "/docs/apple/components/search-field",
       "title": "Search field"
     },
+    "/docs/apple/components/phone-input": {
+      "alt": "Phone input — Lumen UI",
+      "description": "Enter an international phone number with searchable countries, calling codes, formatting, validation, and E.164 output.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--phone-input.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--phone-input.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/phone-input",
+      "title": "Phone input"
+    },
     "/docs/apple/components/checkbox": {
       "alt": "Checkbox — Lumen UI",
       "description": "Capture a controlled Boolean choice with a generous native target and supporting text.",
@@ -1987,7 +2323,7 @@
     },
     "/docs/apple/components/date-field": {
       "alt": "Date field — Lumen UI",
-      "description": "Select an Apple-native date or time with bounds and validation context.",
+      "description": "Select a native date with bounds and validation context.",
       "images": [
         {
           "format": "webp",
@@ -2000,6 +2336,22 @@
       ],
       "pathname": "/docs/apple/components/date-field",
       "title": "Date field"
+    },
+    "/docs/apple/components/date-range-field": {
+      "alt": "Date range field — Lumen UI",
+      "description": "Select an inclusive native date range with coordinated bounds and validation context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--date-range-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--date-range-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/date-range-field",
+      "title": "Date range field"
     },
     "/docs/apple/components/link": {
       "alt": "Link — Lumen UI",
@@ -2128,6 +2480,22 @@
       ],
       "pathname": "/docs/apple/components/illustration",
       "title": "Illustration"
+    },
+    "/docs/apple/components/image": {
+      "alt": "Image — Lumen UI",
+      "description": "Present native images with shared fit, ratio, radius, and accessibility behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--image.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--image.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/image",
+      "title": "Image"
     },
     "/docs/apple/components/alert-dialog": {
       "alt": "Alert dialog — Lumen UI",
@@ -2288,6 +2656,134 @@
       ],
       "pathname": "/docs/android/components",
       "title": "android components"
+    },
+    "/docs/android/components/sparkline": {
+      "alt": "Sparkline — Lumen UI",
+      "description": "Render a compact tokenized trend line with optional area fill.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--sparkline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--sparkline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/sparkline",
+      "title": "Sparkline"
+    },
+    "/docs/android/components/line-chart": {
+      "alt": "Line chart — Lumen UI",
+      "description": "Compare one or more categorical, numeric, or temporal line series.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--line-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--line-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/line-chart",
+      "title": "Line chart"
+    },
+    "/docs/android/components/bar-chart": {
+      "alt": "Bar chart — Lumen UI",
+      "description": "Compare grouped or stacked categorical magnitudes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--bar-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--bar-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/bar-chart",
+      "title": "Bar chart"
+    },
+    "/docs/android/components/pie-chart": {
+      "alt": "Pie chart — Lumen UI",
+      "description": "Show a small positive part-to-whole breakdown as a pie or donut.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--pie-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--pie-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/pie-chart",
+      "title": "Pie chart"
+    },
+    "/docs/android/components/scatter-chart": {
+      "alt": "Scatter chart — Lumen UI",
+      "description": "Plot numeric scatter and bubble relationships with semantic series tones.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--scatter-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--scatter-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/scatter-chart",
+      "title": "Scatter chart"
+    },
+    "/docs/android/components/heatmap": {
+      "alt": "Heatmap — Lumen UI",
+      "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/heatmap",
+      "title": "Heatmap"
+    },
+    "/docs/android/components/range-chart": {
+      "alt": "Range chart — Lumen UI",
+      "description": "Render ordered low-to-high intervals as a tokenized range band.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--range-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--range-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/range-chart",
+      "title": "Range chart"
+    },
+    "/docs/android/components/combo-chart": {
+      "alt": "Combo chart — Lumen UI",
+      "description": "Combine bar, line, and area series on one shared value domain.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--combo-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--combo-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/combo-chart",
+      "title": "Combo chart"
     },
     "/docs/android/components/theme": {
       "alt": "Theme — Lumen UI",
@@ -2705,6 +3201,22 @@
       "pathname": "/docs/android/components/search-field",
       "title": "Search field"
     },
+    "/docs/android/components/phone-input": {
+      "alt": "Phone input — Lumen UI",
+      "description": "Enter an international phone number with searchable countries, calling codes, formatting, validation, and E.164 output.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--phone-input.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--phone-input.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/phone-input",
+      "title": "Phone input"
+    },
     "/docs/android/components/checkbox": {
       "alt": "Checkbox — Lumen UI",
       "description": "Capture a controlled Boolean choice with a generous native target and supporting text.",
@@ -2945,6 +3457,38 @@
       "pathname": "/docs/android/components/adaptive-navigation-scaffold",
       "title": "Adaptive navigation scaffold"
     },
+    "/docs/android/components/date-field": {
+      "alt": "Date field — Lumen UI",
+      "description": "Select a native date with bounds and validation context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--date-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--date-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/date-field",
+      "title": "Date field"
+    },
+    "/docs/android/components/date-range-field": {
+      "alt": "Date range field — Lumen UI",
+      "description": "Select an inclusive native date range with coordinated bounds and validation context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--date-range-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--date-range-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/date-range-field",
+      "title": "Date range field"
+    },
     "/docs/android/components/floating-action-button": {
       "alt": "Floating action button — Lumen UI",
       "description": "Present a prominent Material-native action using Lumen semantic intent.",
@@ -3008,6 +3552,22 @@
       ],
       "pathname": "/docs/android/components/illustration",
       "title": "Illustration"
+    },
+    "/docs/android/components/image": {
+      "alt": "Image — Lumen UI",
+      "description": "Present native images with shared fit, ratio, radius, and accessibility behavior.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--image.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--image.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/image",
+      "title": "Image"
     },
     "/docs/android/components/alert-dialog": {
       "alt": "Alert dialog — Lumen UI",
@@ -4403,7 +4963,7 @@
     },
     "/docs/components/phone-input": {
       "alt": "PhoneInput — Lumen UI",
-      "description": "Pairs a country dial-code select with a telephone number input. Usage examples for Astro, React, and Elements.",
+      "description": "Combines localized country metadata, calling codes, formatting, validation, and E.164 output. Usage examples for Astro, React, and Elements.",
       "images": [
         {
           "format": "webp",
@@ -5616,6 +6176,70 @@
       ],
       "pathname": "/docs/components/grid",
       "title": "Grid"
+    },
+    "/docs/components/scatter-chart": {
+      "alt": "ScatterChart — Lumen UI",
+      "description": "Shows numeric relationships and bubble magnitude across one or more series. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--scatter-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--scatter-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/scatter-chart",
+      "title": "ScatterChart"
+    },
+    "/docs/components/heatmap": {
+      "alt": "Heatmap — Lumen UI",
+      "description": "Encodes a labelled matrix with a sequential visualization scale. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/heatmap",
+      "title": "Heatmap"
+    },
+    "/docs/components/range-chart": {
+      "alt": "RangeChart — Lumen UI",
+      "description": "Shows ordered low-to-high intervals as a tokenized range band. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--range-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--range-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/range-chart",
+      "title": "RangeChart"
+    },
+    "/docs/components/combo-chart": {
+      "alt": "ComboChart — Lumen UI",
+      "description": "Combines bars, lines, and areas on one meaningful shared value domain. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--combo-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--combo-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/combo-chart",
+      "title": "ComboChart"
     },
     "/docs/components/visually-hidden": {
       "alt": "VisuallyHidden — Lumen UI",

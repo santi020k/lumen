@@ -8,6 +8,7 @@ import {
   View,
   type ViewProps
 } from 'react-native'
+import { Circle, Line, Polygon, Polyline, Rect, Svg } from 'react-native-svg'
 
 import {
   type LumenBackdropIntensity,
@@ -18,8 +19,13 @@ import {
   resolveLumenGraphicSize,
   resolveLumenIllustrationSize,
   resolveLumenSkeletonHeight } from './content-recipes.js'
+import {
+  type LumenIllustrationElement,
+  lumenIllustrations
+} from './illustrations.generated.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
+import { lumenGraphicOpacities, lumenGraphicStrokeWidths } from './tokens.generated.js'
 
 export type LumenSkeletonShape = 'circle' | 'rectangle' | 'text'
 
@@ -280,77 +286,65 @@ export interface LumenIllustrationProps extends ViewProps {
   variant?: LumenIllustrationVariant
 }
 
-interface LumenIllustrationArtworkProps {
-  color: string
-  dimension: number
-  strokeWidth: number
-  variant: LumenIllustrationVariant
+const illustrationPoints = (points: readonly number[]): string => {
+  const pairs: string[] = []
+
+  for (let index = 0; index < points.length; index += 2) {
+    pairs.push(`${String(points[index])},${String(points[index + 1])}`)
+  }
+
+  return pairs.join(' ')
 }
 
-const LumenIllustrationArtwork = ({
-  color,
-  dimension,
-  strokeWidth,
-  variant
-}: LumenIllustrationArtworkProps): ReactElement | null => {
-  const line = (width: number, rotation: string, left: number, top: number): ReactElement => (
-    <View
-      style={{
-        backgroundColor: color,
-        borderRadius: strokeWidth,
-        height: strokeWidth,
-        left,
-        position: 'absolute',
-        top,
-        transform: [{ rotate: rotation }],
-        width
-      }}
-    />
-  )
+const renderIllustrationElement = (
+  element: LumenIllustrationElement,
+  color: string,
+  index: number,
+  strokeWidth: number
+): ReactElement => {
+  const shared = {
+    fill: 'none',
+    stroke: color,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    strokeWidth
+  }
 
-  if (variant === 'empty') {
+  if (element.kind === 'circle') {
+    return <Circle key={index} {...shared} cx={element.cx} cy={element.cy} r={element.r} />
+  }
+
+  if (element.kind === 'rounded-rect') {
     return (
-      <View
-        style={{
-          borderColor: color,
-          borderRadius: dimension * 0.08,
-          borderWidth: strokeWidth,
-          height: dimension * 0.34,
-          marginTop: dimension * 0.14,
-          width: dimension * 0.52
-        }}
-      >
-        <View style={{ backgroundColor: color, height: strokeWidth, left: '18%', opacity: 0.7, position: 'absolute', top: '38%', width: '64%' }} />
-      </View>
+      <Rect
+        key={index}
+        {...shared}
+        height={element.height}
+        rx={element.radius}
+        transform={`translate(${element.x} ${element.y})`}
+        width={element.width}
+      />
     )
   }
 
-  if (variant === 'offline') {
+  const points = illustrationPoints(element.points)
+
+  if (element.kind === 'line') {
     return (
-      <View style={{ height: dimension * 0.52, position: 'relative', width: dimension * 0.64 }}>
-        <View style={{ borderColor: color, borderRadius: dimension, borderWidth: strokeWidth, bottom: dimension * 0.08, height: dimension * 0.32, position: 'absolute', width: '100%' }} />
-        {line(dimension * 0.72, '45deg', -dimension * 0.04, dimension * 0.24)}
-      </View>
+      <Line
+        key={index}
+        {...shared}
+        x1={element.points[0]}
+        x2={element.points[2]}
+        y1={element.points[1]}
+        y2={element.points[3]}
+      />
     )
   }
 
-  return (
-    <View style={{ borderColor: color, borderRadius: dimension, borderWidth: strokeWidth, height: dimension * 0.52, position: 'relative', width: dimension * 0.52 }}>
-      {variant === 'success' ?
-        (
-          <>
-            {line(dimension * 0.16, '45deg', dimension * 0.1, dimension * 0.25)}
-            {line(dimension * 0.26, '-45deg', dimension * 0.19, dimension * 0.21)}
-          </>
-        ) :
-        (
-          <>
-            {line(dimension * 0.28, '45deg', dimension * 0.11, dimension * 0.25)}
-            {line(dimension * 0.28, '-45deg', dimension * 0.11, dimension * 0.25)}
-          </>
-        )}
-    </View>
-  )
+  return element.kind === 'polygon' ?
+    <Polygon key={index} {...shared} points={points} /> :
+    <Polyline key={index} {...shared} points={points} />
 }
 
 export const LumenIllustration = ({
@@ -380,7 +374,8 @@ export const LumenIllustration = ({
       neutral: theme.colors.inkMuted
     }[tone]
 
-  const strokeWidth = Math.max(2, dimension / 48)
+  const strokeWidth = lumenGraphicStrokeWidths.standard
+  const artwork = lumenIllustrations[variant]
 
   return (
     <View
@@ -393,8 +388,16 @@ export const LumenIllustration = ({
       importantForAccessibility={label ? 'yes' : 'no-hide-descendants'}
       style={[{ alignItems: 'center', height: dimension, justifyContent: 'center', position: 'relative', width: dimension }, style]}
     >
-      <View style={{ backgroundColor: color, borderRadius: dimension, height: '82%', opacity: 0.1, position: 'absolute', width: '82%' }} />
-      <LumenIllustrationArtwork color={color} dimension={dimension} strokeWidth={strokeWidth} variant={variant} />
+      <Svg height={dimension} viewBox="0 0 120 120" width={dimension}>
+        <Circle
+          cx="60"
+          cy="60"
+          fill={color}
+          fillOpacity={lumenGraphicOpacities.wash}
+          r="48"
+        />
+        {artwork.elements.map((element, index) => renderIllustrationElement(element, color, index, strokeWidth))}
+      </Svg>
     </View>
   )
 }
