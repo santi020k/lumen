@@ -22,7 +22,9 @@ your preferred delivery path, or override `--ui-font` in application CSS.
 
 ## Usage
 
-Register the elements once, then use `lumen-*` tags anywhere HTML is valid.
+Register the elements once per custom-element registry, then use `lumen-*` tags anywhere HTML is
+valid. Repeated calls are idempotent, and an explicitly supplied scoped registry is populated
+independently from the document registry.
 
 ```html
 <script type="module">

@@ -95,6 +95,9 @@ A native adapter graduates from Beta after it has:
 - component contracts that remain stable across multiple releases; and
 - a documented deprecation policy for future API changes.
 
+The measurable graduation gates, release sequence, and stable compatibility policy are tracked in
+[Lumen 2 readiness](lumen-2-readiness.md).
+
 Individual features that do not yet meet the adapter's Beta support bar should be labeled
 **Experimental** and must not be presented as part of the supported component surface.
 

@@ -12,6 +12,7 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@santi020k/lumen-elements": "workspace:^",
     "@santi020k/lumen-react": "workspace:^",
     "next": "catalog:",
     "react": "catalog:",

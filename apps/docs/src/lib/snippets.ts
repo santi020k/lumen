@@ -146,9 +146,8 @@ export const Example = () => (
     alt="Lumen UI logo"
     as={NextImage}
     height={80}
-    invertOnDark
     src="/logo.svg"
-    width={318}
+    width={310}
   />
 )
 `
@@ -173,19 +172,15 @@ const elementsOverrides: Record<string, string> = {
 const accent = "hsl(var(--accent))";</code></pre>
 </lumen-code>
 `,
-  Image: `<picture>
-  <source srcset="/logo.avif" type="image/avif" />
-  <source srcset="/logo.webp" type="image/webp" />
-  <img
-    alt="Lumen UI logo"
-    class="ui-image ui-image--invert-dark"
-    decoding="async"
-    height="80"
-    loading="lazy"
-    src="/logo.svg"
-    width="318"
-  />
-</picture>
+  Image: `<img
+  alt="Lumen UI logo"
+  class="ui-image"
+  decoding="async"
+  height="80"
+  loading="lazy"
+  src="/logo.svg"
+  width="310"
+/>
 `,
   ScrollCue: `${elementsHeader}
 

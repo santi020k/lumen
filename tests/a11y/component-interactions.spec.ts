@@ -793,6 +793,148 @@ behaviorTest(['Toolbar'], 'Toolbar provides roving keyboard focus to its control
   await expect(buttons.nth(1)).toBeFocused()
 })
 
+behaviorTest(['AnimatedNumber'], 'AnimatedNumber settles on its accessible value with reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await openPreview(page, 'animated-number')
+
+  const number = page.locator('.component-doc-preview [data-ui-animated-number]').first()
+  const output = number.locator('[data-ui-animated-number-output]')
+  const accessibleValue = number.locator('.ui-sr-only')
+
+  await expect(number).toHaveAttribute('data-ui-bound', 'true')
+  await expect(output).toHaveText(await accessibleValue.textContent() ?? '')
+})
+
+behaviorTest(['CopyButton'], 'CopyButton copies its target and exposes completion state', async ({ page }) => {
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
+  await openPreview(page, 'copy-button')
+
+  const button = page.locator('.component-doc-preview [data-ui-copy-button]').first()
+
+  await button.click()
+
+  await expect(button).toHaveAttribute('data-state', 'copied')
+  await expect(button).toHaveAttribute('aria-label', 'Copied to clipboard')
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText()))
+    .toContain('Join the Lumen workspace')
+})
+
+behaviorTest(['Form'], 'Form blocks invalid submission and focuses the first invalid control', async ({ page }) => {
+  await openPreview(page, 'form')
+
+  const preview = page.locator('.component-doc-preview')
+  const form = preview.locator('[data-ui-form]')
+  const name = preview.getByLabel('Workspace name')
+
+  await preview.getByRole('button', { name: 'Save workspace' }).click()
+
+  await expect(form).toHaveAttribute('data-ui-form-bound', 'true')
+  await expect(form).toHaveAttribute('data-status', 'error')
+  await expect(name).toBeFocused()
+})
+
+behaviorTest(['KanbanBoard'], 'KanbanBoard requests keyboard movement between columns', async ({ page }) => {
+  await openPreview(page, 'kanban-board')
+
+  const preview = page.locator('.component-doc-preview')
+  const board = preview.locator('[data-ui-kanban]')
+  const handle = preview.getByRole('button', { name: 'Move Release notes' })
+
+  await expect(board).toHaveAttribute('data-ui-kanban-bound', 'true')
+  await handle.focus()
+  await handle.press('ArrowRight')
+
+  await expect(board.locator('[data-ui-kanban-live]'))
+    .toHaveText('Move requested to In progress.')
+})
+
+behaviorTest(['LanguageToggle'], 'LanguageToggle changes and persists the active locale', async ({ page }) => {
+  await openPreview(page, 'language-toggle')
+
+  const toggle = page.locator('.component-doc-preview [data-ui-language-toggle]')
+
+  await expect(toggle).toHaveAttribute('data-ui-bound', 'true')
+  await expect(toggle).toHaveAttribute('data-ui-language-value', 'en')
+  await toggle.click()
+
+  await expect(toggle).toHaveAttribute('data-ui-language-value', 'es')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('site-language'))).toBe('es')
+})
+
+behaviorTest(['ListBox'], 'ListBox exposes and commits its enhanced multiple selection', async ({ page }) => {
+  await openPreview(page, 'list-box')
+
+  const preview = page.locator('.component-doc-preview')
+  const root = preview.locator('[data-ui-list-box]')
+  const native = root.locator('[data-ui-list-box-native]')
+  const luca = root.locator('[data-ui-list-box-option][data-value="luca"]')
+
+  await expect(root).toHaveAttribute('data-ui-list-box-bound', 'true')
+  await expect(native).toHaveAttribute('data-ui-list-box-enhanced', 'true')
+  await luca.click()
+
+  await expect(luca).toHaveAttribute('aria-selected', 'true')
+  await expect(native.locator('option[value="luca"]')).toHaveJSProperty('selected', true)
+})
+
+behaviorTest(['PasswordField'], 'PasswordField toggles visibility and restores input focus', async ({ page }) => {
+  await openPreview(page, 'password-field')
+
+  const preview = page.locator('.component-doc-preview')
+  const input = preview.getByRole('textbox', { name: 'Password' })
+  const toggle = preview.locator('[data-ui-password-toggle]')
+
+  await expect(input).toHaveAttribute('type', 'password')
+  await toggle.click()
+
+  await expect(input).toHaveAttribute('type', 'text')
+  await expect(input).toBeFocused()
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+})
+
+behaviorTest(['Progress'], 'Progress synchronizes its visual and ARIA values from runtime events', async ({ page }) => {
+  await openPreview(page, 'progress')
+
+  const progress = page.locator('.component-doc-preview [data-ui-progress]').first()
+
+  await expect(progress).toHaveAttribute('data-ui-progress-bound', 'true')
+  await progress.evaluate(element => {
+    element.dispatchEvent(new CustomEvent('ui:progress-change', {
+      detail: { max: 80, value: 40 }
+    }))
+  })
+
+  await expect(progress).toHaveAttribute('aria-valuemax', '80')
+  await expect(progress).toHaveAttribute('aria-valuenow', '40')
+  await expect(progress.locator('[data-slot="progress-indicator"]')).toHaveAttribute('style', 'width: 50%;')
+})
+
+behaviorTest(['RevealGroup'], 'RevealGroup reveals all children immediately with reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await openPreview(page, 'reveal-group')
+
+  const group = page.locator('.component-doc-preview [data-ui-reveal-group]')
+
+  await expect(group).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+  await expect(group).toHaveClass(/is-revealed/)
+  await expect(group.locator(':scope > *').nth(2)).toHaveCSS('--ui-reveal-index', '2')
+})
+
+behaviorTest(['ScrollProgress'], 'ScrollProgress tracks document reading position', async ({ page }) => {
+  await openPreview(page, 'scroll-progress')
+
+  const progress = page.locator('.component-doc-preview [data-ui-scroll-progress]')
+
+  await expect(page.locator('html')).toHaveAttribute('data-ui-scroll-progress-bound', 'true')
+  await page.evaluate(() => {
+    window.scrollTo(0, document.documentElement.scrollHeight)
+  })
+
+  await expect.poll(async () => Number(await progress.getAttribute('aria-valuenow')))
+    .toBeGreaterThan(0)
+})
+
 test('runtime behavior registry is completely represented', () => {
   expect([...registeredBehaviorComponents].sort())
     .toEqual([...runtimeBehaviorComponentNames].sort())

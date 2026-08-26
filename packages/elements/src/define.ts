@@ -100,7 +100,6 @@ interface LumenElementConfig {
   tagName: string
 }
 
-const registry = new Set<string>()
 const appliedClassNames = new WeakMap<HTMLElement, string[]>()
 
 const focusableSelector = [
@@ -10046,17 +10045,16 @@ export const enhanceLumenElements = (scope: ParentNode = document): void => {
 
 export const defineLumenElements = (
   customElementsRegistry:
-    CustomElementRegistry | undefined = typeof customElements === 'undefined' ?
-      undefined :
-      customElements
+    Pick<CustomElementRegistry, 'define' | 'get'> | undefined =
+      typeof customElements === 'undefined' ?
+        undefined :
+        customElements
 ) => {
   if (!customElementsRegistry) return
 
   for (const [name, element] of elementDefinitions) {
-    if (!registry.has(name) && !customElementsRegistry.get(name)) {
+    if (!customElementsRegistry.get(name)) {
       customElementsRegistry.define(name, element)
-
-      registry.add(name)
     }
   }
 
@@ -10220,3 +10218,30 @@ export const LumenListBoxElement = elementClasses.ListBox
 export const LumenPasswordFieldElement = elementClasses.PasswordField
 export const LumenStackElement = elementClasses.Stack
 export const LumenVisuallyHiddenElement = elementClasses.VisuallyHidden
+export const LumenBackToTopElement = elementClasses.BackToTop
+export const LumenCalloutElement = elementClasses.Callout
+export const LumenEyebrowElement = elementClasses.Eyebrow
+export const LumenFloatingBadgeElement = elementClasses.FloatingBadge
+export const LumenFormattedDateElement = elementClasses.FormattedDate
+export const LumenImageElement = elementClasses.Image
+export const LumenLinkElement = elementClasses.Link
+export const LumenPillElement = elementClasses.Pill
+export const LumenProseElement = elementClasses.Prose
+export const LumenSkipLinkElement = elementClasses.SkipLink
+export const LumenThemeToggleElement = elementClasses.ThemeToggle
+export const LumenStepperElement = elementClasses.Stepper
+export const LumenFileUploadElement = elementClasses.FileUpload
+export const LumenTourElement = elementClasses.Tour
+export const LumenAnchorElement = elementClasses.Anchor
+export const LumenSegmentedElement = elementClasses.Segmented
+export const LumenToolbarElement = elementClasses.Toolbar
+export const LumenDescriptionsElement = elementClasses.Descriptions
+export const LumenPopconfirmElement = elementClasses.Popconfirm
+export const LumenTransferElement = elementClasses.Transfer
+export const LumenCascaderElement = elementClasses.Cascader
+export const LumenTreeSelectElement = elementClasses.TreeSelect
+export const LumenMentionsElement = elementClasses.Mentions
+export const LumenQRCodeElement = elementClasses.QRCode
+export const LumenWatermarkElement = elementClasses.Watermark
+export const LumenAffixElement = elementClasses.Affix
+export const LumenSpeedDialElement = elementClasses.SpeedDial

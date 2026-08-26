@@ -7,9 +7,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "santi-og generate --config scripts/generate-og-images.mjs && astro build",
+    "postbuild": "santi-og audit",
     "generate:og": "santi-og generate --config scripts/generate-og-images.mjs",
     "generate:og:force": "santi-og generate --config scripts/generate-og-images.mjs --force",
+    "sync:native-captures": "node --experimental-strip-types scripts/sync-native-component-captures.mjs",
+    "check:native-captures": "node --experimental-strip-types scripts/sync-native-component-captures.mjs --check",
     "check:og": "santi-og check --config scripts/generate-og-images.mjs",
+    "audit:seo": "santi-og audit",
     "preview": "astro preview",
     "check": "astro check",
     "typecheck": "astro check",

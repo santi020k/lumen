@@ -1,4 +1,10 @@
+import { readFile } from 'node:fs/promises'
+
 import sharp from 'sharp'
+
+const logoDataUrl = `data:image/svg+xml;base64,${(
+  await readFile(new URL('../public/logo.svg', import.meta.url))
+).toString('base64')}`
 
 const homeBadge = {
   background: 'rgba(167,139,250,0.16)',
@@ -129,13 +135,8 @@ const renderCard = ({ description, title, type }) => {
       <rect width="1200" height="630" fill="url(#teal)" />
       <rect x="64" y="58" width="1072" height="3" fill="url(#accent)" />
 
-      <rect x="64" y="72" width="82" height="82" rx="22"
-        fill="rgba(255,255,255,0.76)" stroke="rgba(17,12,29,0.12)" />
-      <text x="104" y="135" fill="#7c3aed" font-family="Montserrat, Arial, sans-serif"
-        font-size="58" font-weight="900" text-anchor="middle">L</text>
-      <text x="164" y="109" fill="#110c1d" font-family="Montserrat, Arial, sans-serif"
-        font-size="28" font-weight="900">Lumen UI</text>
-      <text x="164" y="138" fill="rgba(17,12,29,0.56)" font-family="Montserrat, Arial, sans-serif"
+      <image href="${logoDataUrl}" x="64" y="72" width="310" height="80" />
+      <text x="154" y="160" fill="rgba(17,12,29,0.56)" font-family="Montserrat, Arial, sans-serif"
         font-size="15" font-weight="900" letter-spacing="2">LUMEN.SANTI020K.COM</text>
 
       <rect x="912" y="88" width="224" height="44" rx="22" fill="${badge.background}" stroke="${badge.border}" />

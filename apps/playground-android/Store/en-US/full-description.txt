@@ -1,0 +1,12 @@
+Lumen Playground is the living Jetpack Compose catalog for Lumen UI, a cross-platform primitive design system.
+
+Search the public component library, exercise real Android controls, and compare Lumen's semantic light and dark themes directly on your phone or tablet. Every example is built with the same lumen-compose package available to application developers.
+
+Explore:
+• Foundations, actions, forms, feedback, data display, navigation, and native presentations
+• Interactive loading, disabled, selected, validation, overlay, and empty states
+• Native TalkBack semantics, focus behavior, text scaling, and Android conventions
+• Shared Lumen icons, colors, spacing, typography, and visual treatments
+• Direct links to implementation documentation and public support
+
+The catalog works without an account and does not include advertising, analytics, tracking, or data collection.

@@ -75,6 +75,12 @@ same on iOS and macOS; control metrics automatically use regular touch density o
 pointer density on Mac. A shared feature view can therefore be compiled into both applications
 without platform conditionals.
 
+Platform-native availability still applies outside iOS and macOS. `LumenTextarea` and
+`LumenShareButton` are unavailable on tvOS because SwiftUI does not provide their underlying text
+editor and share surfaces there. `LumenMenu` requires tvOS 17 or newer. Wearable components are
+watchOS-only, and non-wearable controls that are unavailable on watchOS are excluded from that
+target.
+
 ```swift
 struct SharedProfileActions: View {
     var body: some View {
@@ -177,6 +183,11 @@ Material theme. This keeps the first wearable tier compatible with existing Wear
 complications, haptics, synchronization, health behavior, and background work remain application-
 owned.
 
+`LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`, and
+`LumenWearStatus` are Supported during the native release-candidate soak. `LumenWearMetric` and
+`LumenWearListRow` remain Experimental and require
+`@OptIn(ExperimentalLumenWearApi::class)` at the narrowest calling scope.
+
 ## Supported surface
 
 | Contract          | React Native            | SwiftUI                  | Compose                 | Shared behavior                                                           |
@@ -197,6 +208,7 @@ owned.
 | Checkbox          | `LumenCheckbox`         | `LumenCheckbox`          | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text               |
 | Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`        | `LumenRadioGroup`       | Named single selection with disabled option support                       |
 | Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl`  | `LumenSegmentedControl` | Compact single selection from a small peer set                            |
+| Tabs              | `LumenTabs`             | `LumenTabs`              | `LumenTabs`             | Named tab list with controlled selection and an active content panel      |
 | Navigation bar    | `LumenNavigationBar`    | `LumenNavigationBar`     | `LumenNavigationBar`    | Controlled destinations, re-selection, badges, and disabled states         |
 | Chip              | `LumenChip`             | `LumenChip`              | `LumenChip`             | Compact display, selection, and separately labeled removal                |
 | Badge             | `LumenBadge`            | `LumenBadge`             | `LumenBadge`            | Neutral, accent, success, warning, and danger tones                       |

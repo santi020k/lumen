@@ -5,6 +5,7 @@ import {
   useState
 } from 'react'
 import {
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -12,10 +13,13 @@ import {
 } from 'react-native'
 
 import {
+  getLumenIconGraphic,
   LumenAlert,
   LumenAlertDescription,
+  LumenAlertDialog,
   LumenAlertTitle,
   LumenAvatar,
+  LumenBackdrop,
   LumenBadge,
   LumenBanner,
   LumenButton,
@@ -23,13 +27,19 @@ import {
   LumenCard,
   LumenCheckbox,
   LumenChip,
+  LumenCollapsibleNavigationBar,
   LumenDisclosure,
   LumenDivider,
   LumenEmptyState,
   LumenFieldGroup,
+  LumenGraphic,
   LumenIcon,
   LumenIconButton,
+  LumenIllustration,
   LumenListRow,
+  LumenMenu,
+  LumenNavigationAccessory,
+  LumenNavigationBar,
   LumenProgress,
   LumenProvider,
   LumenRadioGroup,
@@ -38,11 +48,14 @@ import {
   LumenSectionHeader,
   LumenSegmentedControl,
   LumenSettingsRow,
+  LumenShareButton,
+  LumenSheet,
   LumenSkeleton,
   LumenSpinner,
   LumenStat,
   LumenStatusBar,
   LumenSurface,
+  LumenTabs,
   LumenText,
   LumenTextarea,
   LumenTextField,
@@ -76,6 +89,7 @@ const componentNames = [
   'Checkbox',
   'Radio group',
   'Segmented control',
+  'Tabs',
   'Chip',
   'Badge',
   'Divider',
@@ -86,6 +100,9 @@ const componentNames = [
   'Progress',
   'Refresh control',
   'Skeleton',
+  'Graphic',
+  'Backdrop',
+  'Illustration',
   'Disclosure',
   'Avatar',
   'Empty state',
@@ -93,8 +110,35 @@ const componentNames = [
   'Banner',
   'Stat',
   'Section header',
-  'Status bar'
+  'Status bar',
+  'Alert dialog',
+  'Sheet',
+  'Menu',
+  'Share button',
+  'Navigation bar',
+  'Navigation accessory',
+  'Collapsible navigation bar'
 ]
+
+const componentIcon = getLumenIconGraphic('blocks')
+const settingsIcon = getLumenIconGraphic('settings')
+const updatesIcon = getLumenIconGraphic('bell')
+
+const navigationItems = [
+  { badge: 3, icon: componentIcon, label: 'Components', value: 'components' },
+  { badge: true, icon: updatesIcon, label: 'Updates', value: 'updates' },
+  { disabled: true, icon: settingsIcon, label: 'Settings', value: 'settings' }
+] as const
+
+const getInitialComponentQuery = (): string => {
+  if (Platform.OS !== 'web' || typeof globalThis.location === 'undefined') return ''
+
+  return new URLSearchParams(globalThis.location.search).get('component') ?? ''
+}
+
+const openExternalURL = (url: string): void => {
+  Linking.openURL(url).catch(() => undefined)
+}
 
 const styles = StyleSheet.create({
   catalogMeta: {
@@ -148,6 +192,17 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: '100%'
   },
+  visualCard: {
+    alignItems: 'center',
+    flex: 1,
+    minWidth: 220,
+    overflow: 'hidden'
+  },
+  visualGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12
+  },
   section: {
     gap: 16
   },
@@ -179,6 +234,64 @@ const ComponentSection = ({
   )
 }
 
+const AboutPlayground = (): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <ComponentSection
+      description="A living catalog for evaluating Lumen's React Native components on native devices and the web."
+      title="About Lumen Playground"
+    >
+      <View style={{ alignItems: 'flex-start', gap: theme.spacing.sm }}>
+        <LumenBadge tone="success">No data collection</LumenBadge>
+        <LumenText tone="soft">
+          Search the complete catalog, exercise interactive states, and compare light and dark
+          {' '}
+          themes without creating an account.
+        </LumenText>
+        <LumenButton
+          intent="secondary"
+          onPress={() => {
+            openExternalURL('https://lumen.santi020k.com/docs/react-native')
+          }}
+        >
+          Documentation
+        </LumenButton>
+        <LumenButton
+          intent="secondary"
+          onPress={() => {
+            openExternalURL('https://lumen.santi020k.com/support')
+          }}
+        >
+          Support
+        </LumenButton>
+        <LumenButton
+          intent="secondary"
+          onPress={() => {
+            openExternalURL('https://lumen.santi020k.com/privacy')
+          }}
+        >
+          Privacy
+        </LumenButton>
+      </View>
+    </ComponentSection>
+  )
+}
+
+const getThemeToggleState = (scheme: ColorScheme): {
+  icon: 'moon' | 'sun'
+  label: string
+  scheme: ColorScheme
+} => {
+  const nextScheme = scheme === 'dark' ? 'light' : 'dark'
+
+  return {
+    icon: nextScheme === 'dark' ? 'moon' : 'sun',
+    label: `Use ${nextScheme} theme`,
+    scheme: nextScheme
+  }
+}
+
 const Playground = ({
   onSchemeChange,
   scheme
@@ -187,9 +300,11 @@ const Playground = ({
   scheme: ColorScheme
 }): ReactElement => {
   const theme = useLumenTheme()
+  const themeToggle = getThemeToggleState(scheme)
+  const initialComponent = getInitialComponentQuery()
   const [email, setEmail] = useState('hello@lumen.dev')
   const [notes, setNotes] = useState('Native components now share one documented contract.')
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialComponent)
   const [saved, setSaved] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [termsAccepted, setTermsAccepted] = useState(false)
@@ -200,6 +315,12 @@ const Playground = ({
   const [showToast, setShowToast] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [designSelected, setDesignSelected] = useState(true)
+  const [dialogVisible, setDialogVisible] = useState(initialComponent === 'Alert dialog')
+  const [sheetVisible, setSheetVisible] = useState(initialComponent === 'Sheet')
+  const [activeTab, setActiveTab] = useState('overview')
+  const [navigationValue, setNavigationValue] = useState('components')
+  const [navigationVisible, setNavigationVisible] = useState(true)
+  const [lastAction, setLastAction] = useState('No overlay action yet')
 
   const visibleNames = useMemo(() => componentNames.filter(name => (
     name.toLowerCase().includes(query.trim().toLowerCase())
@@ -230,16 +351,16 @@ const Playground = ({
         <View style={styles.hero}>
           <View style={styles.heroCopy}>
             <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
-            <LumenText variant="title">Lumen React Native Playground</LumenText>
+            <LumenText variant="title">Lumen Playground</LumenText>
             <LumenText tone="soft">
               Explore every public primitive with real React Native state and behavior.
             </LumenText>
           </View>
           <LumenIconButton
-            name={scheme === 'dark' ? 'sun' : 'moon'}
-            label={`Use ${scheme === 'dark' ? 'light' : 'dark'} theme`}
+            name={themeToggle.icon}
+            label={themeToggle.label}
             onPress={() => {
-              onSchemeChange(scheme === 'dark' ? 'light' : 'dark')
+              onSchemeChange(themeToggle.scheme)
             }}
           />
         </View>
@@ -339,7 +460,8 @@ const Playground = ({
             'Search field',
             'Checkbox',
             'Radio group',
-            'Segmented control'
+            'Segmented control',
+            'Tabs'
           )}
         >
           <ComponentSection description="Edit controls to exercise native focus, switch, and clear behavior." title="Forms">
@@ -374,23 +496,23 @@ const Playground = ({
               />
             </LumenFieldGroup>
             <LumenToggle
-              description="Receive component release notes."
-              label="Release notifications"
+              description="Example state only. The playground does not register for notifications."
+              label="Demo notification preference"
               onValueChange={setNotificationsEnabled}
               value={notificationsEnabled}
             />
             <LumenSettingsRow
               control={(
                 <LumenToggle
-                  label="Automatic updates"
+                  label="Demo automatic updates"
                   onValueChange={setNotificationsEnabled}
                   showLabel={false}
                   value={notificationsEnabled}
                 />
               )}
-              description="Download stable updates automatically."
+              description="Example state only. The playground does not download updates."
               graphic={<LumenIcon decorative name="check" size="sm" />}
-              title="Automatic updates"
+              title="Demo automatic updates"
             />
             <LumenCheckbox
               checked={termsAccepted}
@@ -418,6 +540,24 @@ const Playground = ({
               ]}
               value={density}
             />
+            <Visibility visible={isVisible('Tabs')}>
+              <LumenTabs
+                label="Workspace views"
+                onValueChange={setActiveTab}
+                options={[
+                  { label: 'Overview', value: 'overview' },
+                  { label: 'Activity', value: 'activity' },
+                  { disabled: true, label: 'Billing', value: 'billing' }
+                ]}
+                value={activeTab}
+              >
+                <LumenSurface padding="md" tone="muted">
+                  <LumenText variant="label">
+                    {activeTab === 'overview' ? 'Workspace health is ready.' : 'Three components updated today.'}
+                  </LumenText>
+                </LumenSurface>
+              </LumenTabs>
+            </Visibility>
           </ComponentSection>
         </Visibility>
 
@@ -522,6 +662,36 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
+        <Visibility visible={isAnyVisible('Graphic', 'Backdrop', 'Illustration')}>
+          <ComponentSection
+            description="Token-aware decorative foundations and semantic empty, success, error, and offline artwork."
+            title="Visual content"
+          >
+            <View style={styles.visualGrid}>
+              <LumenCard style={styles.visualCard}>
+                <LumenGraphic label="Orbit graphic with a package icon" size="sm" tone="brand" variant="orbit">
+                  <LumenIcon decorative name="package" size="lg" />
+                </LumenGraphic>
+                <LumenText variant="label">Graphic</LumenText>
+              </LumenCard>
+              <LumenCard style={styles.visualCard}>
+                <LumenBackdrop intensity="strong" style={{ width: '100%' }} tone="accent" variant="dots">
+                  <View style={{ alignItems: 'center', gap: theme.spacing.sm, padding: theme.spacing.xl }}>
+                    <LumenIcon decorative name="sparkles" size="lg" />
+                    <LumenText variant="label">Backdrop</LumenText>
+                  </View>
+                </LumenBackdrop>
+              </LumenCard>
+            </View>
+            <View style={styles.row}>
+              <LumenIllustration label="Empty inbox" size="sm" variant="empty" />
+              <LumenIllustration label="Successful operation" size="sm" variant="success" />
+              <LumenIllustration label="Operation failed" size="sm" variant="error" />
+              <LumenIllustration label="Device is offline" size="sm" variant="offline" />
+            </View>
+          </ComponentSection>
+        </Visibility>
+
         <Visibility
           visible={isAnyVisible('Avatar', 'List row', 'Stat', 'Section header')}
         >
@@ -588,8 +758,159 @@ const Playground = ({
           />
         </Visibility>
 
+        <Visibility visible={isAnyVisible('Alert dialog', 'Sheet', 'Menu', 'Share button')}>
+          <ComponentSection
+            description="Controlled modal surfaces, anchored actions, and the operating-system share sheet."
+            title="Overlays and system actions"
+          >
+            <View style={styles.row}>
+              <LumenButton
+                onPress={() => {
+                  setDialogVisible(true)
+                }}
+              >
+                Open alert dialog
+              </LumenButton>
+              <LumenButton
+                intent="secondary"
+                onPress={() => {
+                  setSheetVisible(true)
+                }}
+              >
+                Open sheet
+              </LumenButton>
+              <LumenMenu
+                accessibilityLabel="Component actions"
+                items={[
+                  {
+                    label: 'Duplicate example',
+                    onPress: () => {
+                      setLastAction('Duplicated the example')
+                    }
+                  },
+                  {
+                    disabled: true,
+                    label: 'Archive example',
+                    onPress: () => {
+                      setLastAction('Archived the example')
+                    }
+                  },
+                  {
+                    destructive: true,
+                    label: 'Delete example',
+                    onPress: () => {
+                      setLastAction('Deleted the example')
+                    }
+                  }
+                ]}
+                trigger={<LumenIcon name="ellipsis" size="md" />}
+              />
+              <LumenShareButton
+                content={{ message: 'Explore Lumen UI at https://lumen.santi020k.com' }}
+                label="Share Lumen"
+                onError={() => {
+                  setLastAction('Sharing is unavailable on this target')
+                }}
+                onShared={() => {
+                  setLastAction('Opened the system share flow')
+                }}
+              />
+            </View>
+            <LumenText tone="muted" variant="caption">{lastAction}</LumenText>
+          </ComponentSection>
+          <LumenAlertDialog
+            confirmLabel="Delete example"
+            description="This gallery keeps the operation local so the destructive flow is safe to test."
+            destructive
+            onConfirm={() => {
+              setDialogVisible(false)
+
+              setLastAction('Confirmed the destructive dialog')
+            }}
+            onDismiss={() => {
+              setDialogVisible(false)
+            }}
+            title="Delete this example?"
+            visible={dialogVisible}
+          />
+          <LumenSheet
+            actions={(
+              <LumenButton
+                onPress={() => {
+                  setSheetVisible(false)
+
+                  setLastAction('Saved sheet settings')
+                }}
+              >
+                Save settings
+              </LumenButton>
+            )}
+            description="A native modal surface for focused supplemental work."
+            onDismiss={() => {
+              setSheetVisible(false)
+            }}
+            title="Component settings"
+            visible={sheetVisible}
+          >
+            <LumenToggle
+              description="Show experimental examples in this local gallery."
+              label="Experimental examples"
+              onValueChange={setNotificationsEnabled}
+              value={notificationsEnabled}
+            />
+          </LumenSheet>
+        </Visibility>
+
+        <Visibility
+          visible={isAnyVisible(
+            'Navigation bar',
+            'Navigation accessory',
+            'Collapsible navigation bar'
+          )}
+        >
+          <ComponentSection
+            description="Controlled destinations, compact accessories, and optional animated visibility for scrolling layouts."
+            title="Native navigation"
+          >
+            <LumenNavigationBar
+              items={navigationItems}
+              onReselect={value => {
+                setLastAction(`Reselected ${value}`)
+              }}
+              onValueChange={setNavigationValue}
+              value={navigationValue}
+            />
+            <LumenNavigationAccessory>
+              <LumenText variant="label">3 components updated</LumenText>
+            </LumenNavigationAccessory>
+            <LumenCollapsibleNavigationBar
+              accessory={<LumenText variant="caption">Gallery sync complete</LumenText>}
+              items={navigationItems}
+              onReselect={value => {
+                setLastAction(`Reselected ${value}`)
+              }}
+              onValueChange={setNavigationValue}
+              value={navigationValue}
+              visible={navigationVisible}
+            />
+            <LumenButton
+              intent="secondary"
+              onPress={() => {
+                setNavigationVisible(previous => !previous)
+              }}
+              size="sm"
+            >
+              {navigationVisible ? 'Hide navigation' : 'Show navigation'}
+            </LumenButton>
+          </ComponentSection>
+        </Visibility>
+
+        <Visibility visible={query.trim().length === 0}>
+          <AboutPlayground />
+        </Visibility>
+
         <LumenStatusBar
-          message={`Powered by @santi020k/lumen-react-native · ${theme.scheme} theme`}
+          message={`Built with @santi020k/lumen-react-native · ${theme.scheme} theme`}
           tone="success"
           trailing={(
             <LumenText tone="muted" variant="caption">

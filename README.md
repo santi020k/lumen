@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="./apps/docs/public/logo.svg" alt="Lumen UI" width="239" height="60">
+    <img src="./apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
   </a>
 </p>
 
@@ -234,6 +234,8 @@ Additional machine-readable surfaces include:
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.
+- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with the
+  [public submission checklist](./docs/openai-plugin-submission.md).
 - [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,
   and component-parity policy.
 - [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the

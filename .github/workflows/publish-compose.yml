@@ -62,6 +62,12 @@ jobs:
       - name: Validate documentation version
         run: node scripts/sync-compose-version.mjs --check
 
+      - name: Validate Wear API classifications
+        run: node scripts/check-wear-api-classification.mjs
+
+      - name: Enforce native stable release gates
+        run: node scripts/check-native-stable-readiness.mjs
+
       - name: Validate publication credentials
         run: |
           for variable_name in \
@@ -90,7 +96,7 @@ jobs:
 
       - name: Build Central Portal bundle
         working-directory: packages/compose
-        run: ./gradlew clean test lint centralPortalBundle
+        run: ./gradlew clean test lint apiCheck centralPortalBundle
 
       - name: Upload to Maven Central
         id: upload

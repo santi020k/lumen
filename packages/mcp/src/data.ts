@@ -136,6 +136,7 @@ export interface LumenNativeImplementationSnapshot {
   importStatement: string
   install: string
   language: 'kotlin' | 'swift' | 'tsx'
+  maturity: 'Experimental' | 'Supported'
   packageName: string
   setup: string
   sourceFile: string
@@ -193,12 +194,17 @@ export interface LumenRecipeSnapshot {
   type: string
 }
 
-const dataUrl = new URL('../data/lumen-data.json', import.meta.url)
 let cached: LumenData | undefined
+
+/** Supply the generated snapshot in runtimes that cannot read package files, such as Workers. */
+export const setLumenData = (data: LumenData): void => {
+  cached = data
+}
 
 export const loadLumenData = (): LumenData => {
   if (cached) return cached
 
+  const dataUrl = new URL('../data/lumen-data.json', import.meta.url)
   const readFsFile = Reflect.get(fs, 'readFileSync')
   const raw = readFsFile(fileURLToPath(dataUrl), 'utf8')
 

@@ -52,4 +52,19 @@ import { Button, Form } from '@santi020k/lumen-astro'
     expect(elements).toContain('<lumen-button type="submit">Save changes</lumen-button>')
     expect(elements).not.toContain('<lumen-form')
   })
+
+  test('uses the canonical vector logo dimensions in framework examples', () => {
+    const snippets = buildSnippets('Image', '<img src="/logo.svg" alt="Lumen UI logo" />')
+    const react = snippets[1]?.code
+    const elements = snippets[2]?.code
+
+    expect(react).toContain('src="/logo.svg"')
+    expect(react).toContain('width={310}')
+    expect(react).not.toContain('invertOnDark')
+    expect(elements).toContain('src="/logo.svg"')
+    expect(elements).toContain('width="310"')
+    expect(elements).not.toContain('ui-image--invert-dark')
+    expect(elements).not.toContain('/logo.avif')
+    expect(elements).not.toContain('/logo.webp')
+  })
 })

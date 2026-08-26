@@ -9,6 +9,7 @@
     "build:android:apk": "eas build --platform android --profile preview",
     "build:android:store": "eas build --platform android --profile production",
     "build:ios": "eas build --platform ios --profile production",
+    "capture:components": "node --experimental-strip-types scripts/capture-component-screenshots.mjs",
     "dev": "expo start",
     "ios": "expo start --ios",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",

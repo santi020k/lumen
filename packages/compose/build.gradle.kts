@@ -1,9 +1,12 @@
+import kotlinx.validation.KotlinApiBuildTask
+import kotlinx.validation.KotlinApiCompareTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.Zip
 
 plugins {
     id("com.android.library")
     id("maven-publish")
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.18.1"
     id("org.jetbrains.dokka-javadoc") version "2.2.0"
     id("org.jetbrains.kotlin.plugin.compose")
     id("signing")
@@ -12,6 +15,69 @@ plugins {
 group = "com.santi020k"
 val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion").get()
 version = lumenComposeVersion
+
+apiValidation {
+    ignoredClasses.addAll(
+        listOf(
+            "com.santi020k.lumen.ComposableSingletons\$OverlayComponentsKt",
+            "com.santi020k.lumen.R",
+            "com.santi020k.lumen.R\$drawable",
+            "com.santi020k.lumen.wear.R"
+        )
+    )
+}
+
+fun Project.configureBinaryApiValidation() {
+    pluginManager.withPlugin("com.android.library") {
+        dependencies.add("bcv-rt-jvm-cp", "org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.10")
+
+        val generatedApi = layout.buildDirectory.file("api/${project.name}.api")
+        val referenceApi = layout.projectDirectory.file("api/${project.name}.api")
+        val releaseClasses = layout.buildDirectory.file(
+            "intermediates/compile_library_classes_jar/release/" +
+                "bundleLibCompileToJarRelease/classes.jar"
+        )
+        val buildApi = tasks.register<KotlinApiBuildTask>("buildKotlinApi") {
+            dependsOn("bundleLibCompileToJarRelease")
+            inputJar.set(releaseClasses)
+            outputApiFile.set(generatedApi)
+            runtimeClasspath.from(configurations.named("bcv-rt-jvm-cp-resolver"))
+        }
+        val checkApi = tasks.register<KotlinApiCompareTask>("apiCheck") {
+            dependsOn(buildApi)
+            generatedApiFile.set(generatedApi)
+            projectApiFile.set(referenceApi)
+        }
+
+        tasks.register("apiDump") {
+            dependsOn(buildApi)
+            outputs.file(referenceApi)
+
+            doLast {
+                generatedApi.get().asFile.copyTo(referenceApi.asFile, overwrite = true)
+            }
+        }
+        tasks.named("check") {
+            dependsOn(checkApi)
+        }
+    }
+}
+
+configureBinaryApiValidation()
+
+if (project == rootProject) {
+    project(":wear") {
+        configureBinaryApiValidation()
+    }
+
+    tasks.named("apiCheck") {
+        dependsOn(":wear:apiCheck")
+    }
+
+    tasks.named("apiDump") {
+        dependsOn(":wear:apiDump")
+    }
+}
 
 android {
     namespace = "com.santi020k.lumen"

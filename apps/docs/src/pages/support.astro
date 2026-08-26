@@ -1,0 +1,48 @@
+---
+import { ButtonLink, Link } from '@santi020k/lumen-astro'
+
+import LegalPage from '../components/LegalPage.astro'
+---
+
+<LegalPage
+  description="Get help with Lumen packages, Playground apps, documentation, the agent skill, or the MCP server."
+  eyebrow="Project"
+  title="Support"
+  updatedAt="August 24, 2026"
+>
+  <h2>Public support</h2>
+  <p>
+    Use GitHub Issues for reproducible bugs, Playground problems, documentation gaps, feature
+    requests, and MCP connection problems. Include the affected app or package version, client,
+    framework or platform, expected result, and the smallest safe reproduction you can share.
+  </p>
+  <p>
+    <ButtonLink href="https://github.com/santi020k/lumen/issues/new/choose" newTab showArrow>
+      Open a support request
+    </ButtonLink>
+  </p>
+
+  <h2>Security reports</h2>
+  <p>
+    Do not disclose a suspected vulnerability or sensitive information in a public issue. Use
+    <Link href="https://github.com/santi020k/lumen/security/advisories/new" newTab>
+      GitHub's private vulnerability reporting flow
+    </Link>
+    so maintainers can investigate before public disclosure.
+  </p>
+
+  <h2>Before reporting an MCP problem</h2>
+  <ul>
+    <li>Call <code>lumen_get_meta</code> and record the package and schema versions.</li>
+    <li>Call <code>lumen_diagnose</code> and confirm the bundled snapshot is healthy.</li>
+    <li>Confirm whether the issue affects stdio, Streamable HTTP, or both.</li>
+    <li>Remove tokens, private prompts, repository content, and personal information from logs.</li>
+  </ul>
+
+  <h2>Response expectations</h2>
+  <p>
+    Lumen is maintained as an open-source project. Support is best-effort and no response time is
+    guaranteed. Clear reproductions and respectful, focused reports are the fastest path to a useful
+    answer.
+  </p>
+</LegalPage>

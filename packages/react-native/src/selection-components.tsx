@@ -1,5 +1,6 @@
 import {
   type ReactElement,
+  type ReactNode,
   type Ref
 } from 'react'
 import {
@@ -291,6 +292,87 @@ export const LumenSegmentedControl = ({
             </Pressable>
           )
         })}
+      </View>
+    </View>
+  )
+}
+
+export interface LumenTabsProps extends Omit<ViewProps, 'children'> {
+  children: ReactNode
+  label: string
+  onValueChange: (value: string) => void
+  options: readonly LumenSelectionOption[]
+  ref?: Ref<HostInstance>
+  value: string
+}
+
+export const LumenTabs = ({
+  children,
+  label,
+  onValueChange,
+  options,
+  ref,
+  style,
+  value,
+  ...props
+}: LumenTabsProps): ReactElement => {
+  const theme = useLumenTheme()
+  const selectedOption = options.find(option => option.value === value)
+
+  return (
+    <View ref={ref} {...props} style={[{ gap: theme.spacing.md }, style]}>
+      <View
+        accessibilityLabel={label}
+        accessibilityRole="tablist"
+        style={{
+          borderBottomColor: theme.colors.line,
+          borderBottomWidth: 1,
+          flexDirection: 'row',
+          gap: theme.spacing.xs
+        }}
+      >
+        {options.map(option => {
+          const selected = option.value === value
+          const state = resolveLumenSelectionState(selected, option.disabled ?? false)
+
+          return (
+            <Pressable
+              key={option.value}
+              accessibilityRole="tab"
+              accessibilityState={{ disabled: state.disabled, selected }}
+              disabled={state.disabled}
+              onPress={() => {
+                onValueChange(option.value)
+              }}
+              style={({ pressed }) => ({
+                borderBottomColor: selected ? theme.colors.brandSolid : 'transparent',
+                borderBottomWidth: 2,
+                minHeight: 44,
+                opacity: state.opacity * resolveLumenButtonOpacity(state.disabled, pressed),
+                paddingHorizontal: theme.spacing.md,
+                paddingVertical: theme.spacing.sm
+              })}
+            >
+              <Text
+                style={{
+                  color: selected ? theme.colors.brand : theme.colors.inkSoft,
+                  fontSize: theme.fontSizes.sm,
+                  fontWeight: String(
+                    selected ? theme.fontWeights.bold : theme.fontWeights.semibold
+                  ) as TextStyle['fontWeight']
+                }}
+              >
+                {option.label}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
+      <View
+        accessibilityLabel={`${selectedOption?.label ?? value} tab panel`}
+        accessibilityLiveRegion="polite"
+      >
+        {children}
       </View>
     </View>
   )

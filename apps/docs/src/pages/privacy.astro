@@ -1,0 +1,70 @@
+---
+import { Link } from '@santi020k/lumen-astro'
+
+import LegalPage from '../components/LegalPage.astro'
+---
+
+<LegalPage
+  description="How the Lumen website, playground apps, packages, and public MCP server handle information."
+  eyebrow="Legal"
+  title="Privacy policy"
+  updatedAt="August 25, 2026"
+>
+  <h2>Scope</h2>
+  <p>
+    This policy covers the Lumen UI documentation website, native Lumen Playground applications,
+    published packages, and the public Lumen MCP server published by Santiago Molina. Lumen is an
+    open-source design system and does not require a user account.
+  </p>
+
+  <h2>Playground applications</h2>
+  <p>
+    The Lumen Playground applications are offline component catalogs. They do not require an
+    account, display advertising, include analytics or tracking SDKs, request sensitive device
+    permissions, or collect, retain, or share personal data. Interactive form values, appearance
+    choices, and demonstration settings remain on the device only for the current app session.
+    Opening documentation, support, or privacy links leaves the app and uses the selected browser,
+    whose provider may process requests under its own privacy policy.
+  </p>
+
+  <h2>Information processed by the MCP server</h2>
+  <p>
+    MCP requests can include a component name, framework or platform selection, catalog manifest,
+    and natural-language search query. The server uses that input only to return public Lumen
+    documentation, source contracts, recipes, tokens, and rules. The application does not use MCP
+    requests for advertising, profiling, or model training.
+  </p>
+
+  <h2>Operational data</h2>
+  <p>
+    Hosting and security infrastructure may process limited technical data such as an IP address,
+    timestamp, requested path, response status, and user agent to deliver the service, enforce rate
+    limits, investigate abuse, and maintain reliability. Lumen does not intentionally request or
+    store account credentials, repository contents, authorization tokens, or personal profile data.
+  </p>
+
+  <h2>Storage and sharing</h2>
+  <p>
+    The MCP application does not persist tool arguments or responses. Operational logs, if produced
+    by the hosting infrastructure, are retained only as long as needed for security and reliability.
+    Lumen does not sell personal information. Technical data may be processed by infrastructure
+    providers only to host, secure, and operate the service or when required by law.
+  </p>
+
+  <h2>Your choices</h2>
+  <p>
+    You can use the published npm package over stdio instead of the hosted MCP endpoint. You may
+    also stop using or disable the plugin at any time. For a privacy question, open a
+    <Link href="https://github.com/santi020k/lumen/issues/new/choose" newTab>
+      Lumen support request
+    </Link>
+    without including sensitive information; a maintainer can arrange a private follow-up when
+    necessary.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    Material changes will be published on this page with a new update date. The current policy is
+    available at this URL for app-store, plugin-review, and user reference.
+  </p>
+</LegalPage>

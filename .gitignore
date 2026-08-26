@@ -1,3 +1,5 @@
+# cspell:words swiftpm
+
 # Dependencies installed by Node.js package managers.
 node_modules/
 
@@ -15,6 +17,7 @@ out/
 .cache/
 .gradle/
 .build/
+.swiftpm/
 *.tsbuildinfo
 
 # Tool-specific caches.

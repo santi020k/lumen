@@ -19,6 +19,7 @@ import {
 } from './tools.js'
 
 const readOnlyAnnotations = {
+  destructiveHint: false,
   idempotentHint: true,
   openWorldHint: false,
   readOnlyHint: true

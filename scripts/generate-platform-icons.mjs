@@ -331,13 +331,12 @@ const generateReactNative = icons => {
     const componentName = `Lumen${toPascalCase(icon.publicName)}IconGraphic`
     const viewport = iconViewport(icon)
 
-    return `const ${componentName} = ({
+  return `const ${componentName} = ({
   color = 'currentColor',
   size = 24,
   strokeWidth = 2
 }: LumenIconGraphicProps): ReactElement => (
   <Svg
-    accessible={false}
     fill={${icon.style === 'fill' ? 'color' : "'none'"}}
     focusable={false}
     height={size}

@@ -8,8 +8,19 @@ on:
       - "apps/playground-android/**"
       - "apps/playground-apple/**"
       - "packages/**"
+      - "registry/native-device-evidence.json"
+      - "registry/native-prerelease-soak.json"
+      - "registry/swift-api-baseline.json"
+      - "registry/wear-api-classification.json"
       - "registry/release-manifest.json"
+      - "scripts/check-swift-api-baseline.mjs"
+      - "scripts/check-wear-api-classification.mjs"
+      - "scripts/check-native-device-evidence.mjs"
+      - "scripts/check-native-prerelease-soak.mjs"
+      - "scripts/check-native-stable-readiness.mjs"
       - "scripts/generate-release-manifest.mjs"
+      - "scripts/smoke-react-native-native-package.mjs"
+      - "scripts/smoke-swift-package-candidate.mjs"
   workflow_dispatch: {}
 
 permissions:
@@ -35,22 +46,43 @@ jobs:
       - run: pnpm run check:release-manifest
       - run: pnpm run build
       - run: pnpm run check:consumer-packages
+      - run: pnpm run check:react-native-package
 
   swift:
     name: Swift package consumer
-    runs-on: macos-15
-    timeout-minutes: 20
+    runs-on: macos-26
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
+        with:
+          cache: pnpm
+          node-version: 22.x
+      - run: pnpm install --frozen-lockfile
       - run: swift test
+      - run: swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI
+      - name: Check every target-specific Swift public API
+        run: node scripts/check-swift-api-baseline.mjs
       - run: swift build --package-path apps/playground-apple
+      - name: Resolve a clean consumer from a tagged Swift package candidate
+        run: pnpm run check:swift-package-candidate
+      - name: Build a native iOS consumer from the packed React Native package
+        run: pnpm run check:react-native-native-package:ios
 
   compose:
     name: Compose source and app consumer
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
+        with:
+          cache: pnpm
+          node-version: 22.x
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
@@ -61,6 +93,13 @@ jobs:
           "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
             "platforms;android-37.0" \
             "build-tools;36.0.0"
-      - run: ./gradlew test lint verifyMavenPublication
+      - run: pnpm install --frozen-lockfile
+      - run: ./gradlew test lint apiCheck verifyMavenPublication
         working-directory: packages/compose
-      - run: ./packages/compose/gradlew -p apps/playground-android assembleDebug
+      - run: node scripts/check-wear-api-classification.mjs
+      - run: >-
+          ./packages/compose/gradlew -p apps/playground-android
+          -PlumenComposeRepository=../../packages/compose/build/central-staging
+          assembleDebug :app:verifyLumenArtifactIsolation
+      - name: Build a native Android consumer from the packed React Native package
+        run: pnpm run check:react-native-native-package:android

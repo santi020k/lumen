@@ -78,7 +78,7 @@ public struct LumenFieldGroup<Content: View>: View {
     }
 }
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
 public struct LumenTextarea: View {
     @Binding private var text: String
     @Environment(\.isEnabled) private var isEnabled

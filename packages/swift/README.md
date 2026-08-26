@@ -6,6 +6,12 @@
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
 
+Maintainers can prove semantic-tag resolution, clean consumer builds for every declared Apple
+platform, resource availability, and license-notice presence from a disposable candidate repository
+with `pnpm run check:swift-package-candidate` at the repository root. A public release still requires
+rerunning the same consumer proof against the final immutable repository tag with
+`pnpm run check:swift-package-release -- --version <version>`.
+
 In Xcode, choose **File → Add Package Dependencies**, paste
 `https://github.com/santi020k/lumen`, and use **Exact Version** `1.2.0` for a reproducible production
 build. Choose **Up to Next Major Version** from `1.2.0` when the application intentionally accepts
@@ -76,7 +82,7 @@ settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`,
 changes remain application-owned while Lumen components read the supplied palette.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Chip, Picker, Slider, DateField, Link,
+FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker, Slider, DateField, Link,
 SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Graphic,
 Backdrop, Illustration, Disclosure, EmptyState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
@@ -168,3 +174,14 @@ state contracts, native image mapping, and accessibility requirements.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Apple OS,
 Swift, and Xcode baselines, and use the
 [native device validation matrix](../../docs/native-device-validation.md) for VoiceOver evidence.
+
+From the repository root, check the reviewed public API for every declared Apple platform with:
+
+```bash
+pnpm run check:swift-api-baseline
+```
+
+After an intentional API change, run `pnpm run generate:swift-api-baseline`, review the normalized
+declaration diff, and move every new entry from `unclassified` into `supported`, `experimental`, or
+`deprecated`. The checker also builds macOS, iOS, tvOS, and watchOS, so platform-conditional source
+cannot bypass the inventory.

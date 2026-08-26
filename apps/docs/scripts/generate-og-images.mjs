@@ -6,6 +6,7 @@ import { definePageMetadata } from '@santi020k/og/metadata'
 import { definePresetConfig } from '@santi020k/og/presets'
 
 import { componentDocs } from '../src/data/docs.ts'
+import { getNativeComponentsForPlatform } from '../src/data/native-components.ts'
 import { toSlug } from '../src/lib/routes.ts'
 
 const directory = path.dirname(fileURLToPath(import.meta.url))
@@ -18,6 +19,47 @@ const page = (pathname, title, description, badge) => definePageMetadata({
   pathname,
   title
 })
+
+const supportingPages = [
+  ['/changelog', 'Changelog', 'Follow Lumen UI releases, fixes, and platform updates.', 'Releases'],
+  ['/privacy', 'Privacy', 'Learn how the Lumen UI website handles data and protects visitor privacy.', 'Legal'],
+  ['/support', 'Support', 'Get help with Lumen UI components, integrations, and product workflows.', 'Support'],
+  ['/terms', 'Terms', 'Review the terms that apply when using the Lumen UI website and resources.', 'Legal'],
+  ['/docs/brand-icons', 'Brand icons', 'Use the shared brand icon catalog across supported Lumen platforms.', 'Icons'],
+  ['/docs/forms', 'Forms', 'Build accessible forms with Lumen components and framework integrations.', 'Forms'],
+  ['/docs/forms/astro-actions', 'Astro Actions', 'Connect Lumen form components to type-safe Astro Actions.', 'Forms'],
+  ['/docs/forms/elements', 'Web Component forms', 'Build standards-based forms with Lumen custom elements.', 'Forms'],
+  ['/docs/forms/react-hook-form', 'React Hook Form', 'Connect Lumen React components to React Hook Form.', 'Forms'],
+  ['/docs/foundations', 'Foundations', 'Apply Lumen semantic tokens, typography, spacing, and themes.', 'Foundations'],
+  ['/docs/frameworks/astro', 'Astro', 'Use the complete Lumen component catalog in Astro applications.', 'Framework'],
+  ['/docs/frameworks/elements', 'Web Components', 'Use Lumen custom elements in standards-based applications.', 'Framework'],
+  ['/docs/frameworks/react', 'React', 'Use Lumen primitives and hooks in React applications.', 'Framework'],
+  ['/docs/icons', 'Icons', 'Use accessible Lumen icons across product interfaces.', 'Icons'],
+  ['/docs/web', 'Web platforms', 'Use one semantic Lumen contract across Astro, React, and Web Components.', 'Platform'],
+  ['/docs/web/playground', 'Web playground', 'Explore Lumen web components and themes in a live playground.', 'Playground'],
+  ['/docs/apple', 'Apple platforms', 'Build native Apple interfaces with Lumen SwiftUI components.', 'Platform'],
+  ['/docs/apple/playground', 'Apple playground', 'Explore Lumen SwiftUI components in a native playground.', 'Playground'],
+  ['/docs/android', 'Android', 'Build native Android interfaces with Lumen Compose components.', 'Platform'],
+  ['/docs/android/playground', 'Android playground', 'Explore Lumen Compose components in a native playground.', 'Playground'],
+  ['/docs/react-native', 'React Native', 'Build native mobile interfaces with Lumen React Native components.', 'Platform'],
+  ['/docs/react-native/playground', 'React Native playground', 'Explore Lumen React Native components in a native playground.', 'Playground'],
+  ...['analytics-dashboard', 'auth-onboarding', 'commerce-dashboard', 'project-workspace', 'saas-admin'].map(slug => [
+    `/templates/${slug}`,
+    slug.split('-').map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(' '),
+    'Start from a complete, accessible Lumen product template.',
+    'Template'
+  ])
+]
+
+const nativePages = (['react-native', 'apple', 'android']).flatMap(platform => [
+  page(`/docs/${platform}/components`, `${platform} components`, `Browse Lumen components for ${platform}.`, 'Components'),
+  ...getNativeComponentsForPlatform(platform).map(component => page(
+    `/docs/${platform}/components/${component.slug}`,
+    component.name,
+    component.summary,
+    component.category
+  ))
+])
 
 const pages = [
   page('/', 'Write it once. Ship it in any framework.', `A multi-framework primitive UI system with ${componentDocs.length} components for Astro, React, and Web Components.`, 'Home'),
@@ -32,6 +74,8 @@ const pages = [
   page('/docs/mcp', 'Real component contracts for AI agents.', 'Connect agents to structured components, tokens, recipes, and usage rules.', 'MCP server'),
   page('/docs/figma', 'One product language from design to code.', 'Use semantic variables, component variants, and Code Connect mappings.', 'Figma'),
   page('/docs/theme-playground', 'Build a theme from semantic roles.', 'Tune color roles, preview accessible components, and export the resulting CSS.', 'Theme playground'),
+  ...supportingPages.map(([pathname, title, description, badge]) => page(pathname, title, description, badge)),
+  ...nativePages,
   ...componentDocs.map(component => page(
     `/docs/components/${toSlug(component.name)}`,
     component.name,
@@ -60,7 +104,11 @@ export default definePresetConfig({
   outputDirectory: 'public/og/pages',
   routeManifest: { file: 'public/og/manifest.json', publicPath: '/og/pages' },
   preset: {
-    brand: { domain: 'lumen.santi020k.com', name: 'Lumen UI' },
+    brand: {
+      domain: 'lumen.santi020k.com',
+      logo: 'public/icon.svg',
+      name: 'Lumen UI'
+    },
     theme: { accent: '#945df4', background: '#0d0718', panel: '#1c1528' },
     variant: 'docs'
   },

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lumen": {
+      "command": "npx",
+      "args": ["-y", "@santi020k/lumen-mcp@latest"]
+    }
+  }
+}

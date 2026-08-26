@@ -157,8 +157,9 @@ describe('component docs snippets', () => {
 
     expect(imageExample).toContain('src="/logo.svg"')
     expect(imageExample).toContain('alt="Lumen UI logo"')
-    expect(imageExample).toContain('invertOnDark')
+    expect(imageExample).not.toContain('invertOnDark')
     expect(imageExample).toContain('layout="fixed"')
+    expect(imageExample).toContain('width="310"')
     expect(linkExample).toContain('href="/docs"')
     expect(skipLinkExample).toContain('href="#skip-link-demo-target"')
     expect(skipLinkExample).toContain('id="skip-link-demo-target"')
@@ -168,6 +169,26 @@ describe('component docs snippets', () => {
     expect(componentDocs.find(component => component.name === 'SkipLink')?.guidance?.distinction)
       .toContain('main content target')
     expect(formattedDateExample).toContain('datetime="2026-07-23"')
+  })
+
+  test('keeps the canonical logo path-based and consistent across surfaces', () => {
+    const logoSources = [
+      'favicon.svg',
+      'icon.svg',
+      'logo.svg'
+    ].map(fileName => readFileSync(join(publicDirectory, fileName), 'utf8'))
+    const componentSource = readFileSync(
+      join(dataDirectory, '..', 'components', 'LumenLogo.astro'),
+      'utf8'
+    )
+    const monogramPath = 'M305 0L21 0L21 38Q54 38'
+
+    for (const source of [...logoSources, componentSource]) {
+      expect(source).toContain(monogramPath)
+      expect(source).toContain('cx="50.5"')
+      expect(source).not.toContain('<text')
+      expect(source).not.toContain('font-family=')
+    }
   })
 
   test('keeps Toast as the single documented notification entry point', () => {

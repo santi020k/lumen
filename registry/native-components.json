@@ -184,6 +184,17 @@
       }
     },
     {
+      "id": "tabs",
+      "tier": "shared",
+      "contract": "Controlled tab selection with a named tab list and active native content panel",
+      "accessibility": "Exposes selected and disabled tab states and names the active panel",
+      "symbols": {
+        "reactNative": "LumenTabs",
+        "swiftUI": "LumenTabs",
+        "compose": "LumenTabs"
+      }
+    },
+    {
       "id": "chip",
       "tier": "shared",
       "contract": "Compact display, selection, and removal with semantic selected and disabled states",

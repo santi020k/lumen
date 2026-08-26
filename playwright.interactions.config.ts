@@ -3,23 +3,43 @@ import { defineConfig, devices } from '@playwright/test'
 const port = process.env.LUMEN_INTERACTIONS_PORT ?? '4324'
 const baseURL = `http://127.0.0.1:${port}`
 
+const requestedBrowsers = process.env.LUMEN_INTERACTION_BROWSERS
+  ?.split(',')
+  .map(browser => browser.trim())
+  .filter(Boolean)
+
+const browserNames = requestedBrowsers ?? (
+  process.platform === 'darwin' && !process.env.CI
+    ? ['chromium', 'webkit']
+    : ['chromium', 'firefox', 'webkit']
+)
+
+const browserDevices = {
+  chromium: devices['Desktop Chrome'],
+  firefox: devices['Desktop Firefox'],
+  webkit: devices['Desktop Safari']
+} as const
+
+const projects = browserNames.map(name => {
+  if (!(name in browserDevices)) {
+    throw new Error(`Unsupported LUMEN_INTERACTION_BROWSERS entry: ${name}`)
+  }
+
+  const browserName = name as keyof typeof browserDevices
+
+  return {
+    name: browserName,
+    use: {
+      ...browserDevices[browserName],
+      launchOptions: { timeout: 15_000 }
+    }
+  }
+})
+
 export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   fullyParallel: true,
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
-    }
-  ],
+  projects,
   grep: /\b(?:Calendar navigates|CodeTabs switches|Combobox filters|DataTable sorts|Dialog opens|Mentions filters|Resizable changes|Select commits|Tabs switches|Tooltip opens)/,
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
