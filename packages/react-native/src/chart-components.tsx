@@ -462,7 +462,7 @@ export const LumenBarChart = ({
                 <Rect
                   fill={lumenChartToneColor(mark.tone, theme)}
                   height={mark.height}
-                  key={`${mark.seriesId}:${String(mark.category)}`}
+                  key={`${mark.seriesId}:${typeof mark.category}:${String(mark.category)}`}
                   rx={4}
                   transform={`translate(${mark.x} ${mark.y})`}
                   width={mark.width}
@@ -831,7 +831,7 @@ export const LumenComboChart = ({
                 <Rect
                   fill={lumenChartToneColor(mark.tone, theme)}
                   height={mark.height}
-                  key={`${mark.seriesId}:${String(mark.category)}`}
+                  key={`${mark.seriesId}:${typeof mark.category}:${String(mark.category)}`}
                   rx={4}
                   transform={`translate(${mark.x} ${mark.y})`}
                   width={mark.width}

@@ -1205,7 +1205,7 @@ export const BarChart = ({
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
                 height={mark.height}
-                key={`${mark.seriesId}:${String(mark.category)}`}
+                key={`${mark.seriesId}:${typeof mark.category}:${String(mark.category)}`}
                 rx="4"
                 width={mark.width}
                 x={mark.x}
@@ -1821,7 +1821,7 @@ export const ComboChart = ({
       {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
-          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${String(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
+          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${typeof mark.category}:${String(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
           {lines.map((geometry, index) => {
             const item = lineSeries[index]
 
@@ -3779,7 +3779,9 @@ const MetadataPhoneInput = ({
       { country: initialCountry, e164: null, isValid: false, nationalNumber: '' }
   ))
 
-  const phoneValue = value ?? internalValue
+  const phoneValue = value === undefined || value.country.regionCode === initialCountry.regionCode ?
+    value ?? internalValue :
+    resolveLumenPhoneNumber(initialCountry, value.nationalNumber, phoneOptions)
 
   const resolvedOptions = metadataCountries.map(country => ({
     disabled: false,

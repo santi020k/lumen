@@ -96,7 +96,16 @@ const initPhoneInputs = (scope: ParentNode): void => {
 
       if (!country) return
 
-      const phoneNumber = resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)
+      const detectedPhoneNumber = resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)
+
+      const detectedCountryIsAllowed = Array.from(countrySelect.options).some(option => (
+        option.value === detectedPhoneNumber.country.regionCode
+      ))
+
+      const phoneNumber = detectedCountryIsAllowed ?
+        detectedPhoneNumber :
+        resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)
+
       const hasInput = phoneNumber.nationalNumber.length > 0
       const invalidMessage = root.dataset.invalidNumberMessage ?? 'Enter a complete phone number.'
 
