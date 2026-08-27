@@ -24,7 +24,7 @@
     "lint:spell": "cspell \"**\" --gitignore --cache --show-suggestions --show-context",
     "lint:knip": "knip",
     "check:publish-dry-run": "node scripts/check-publish-dry-run.mjs",
-    "check:security": "pnpm audit --prod --audit-level moderate",
+    "check:security": "node --test scripts/check-image-size-security.test.mjs && pnpm audit --prod --audit-level moderate",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "check:web-api-baseline": "node scripts/check-web-api-baseline.mjs",
     "test:web-api-baseline": "node --test scripts/check-web-api-baseline.test.mjs",

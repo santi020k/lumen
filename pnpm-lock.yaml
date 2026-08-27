@@ -249,6 +249,11 @@ overrides:
   uuid@<11.1.1: 11.1.1
   yaml@>=2.0.0 <2.8.3: 2.8.3
 
+patchedDependencies:
+  image-size@1.2.1:
+    hash: 573a2535795eab4e3adef4ca500561c08935de5ee11e9f8de16a0e5d52c0fe0d
+    path: patches/image-size@1.2.1.patch
+
 importers:
 
   .:
@@ -19613,7 +19618,7 @@ snapshots:
 
   ignore@7.0.6: {}
 
-  image-size@1.2.1:
+  image-size@1.2.1(patch_hash=573a2535795eab4e3adef4ca500561c08935de5ee11e9f8de16a0e5d52c0fe0d):
     dependencies:
       queue: 6.0.2
 
@@ -20819,7 +20824,7 @@ snapshots:
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
       hermes-parser: 0.36.1
-      image-size: 1.2.1
+      image-size: 1.2.1(patch_hash=573a2535795eab4e3adef4ca500561c08935de5ee11e9f8de16a0e5d52c0fe0d)
       invariant: 2.2.4
       jest-worker: 29.7.0
       jsc-safe-url: 0.2.4
