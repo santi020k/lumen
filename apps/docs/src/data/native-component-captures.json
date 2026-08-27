@@ -1366,7 +1366,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "c6317125f20895b9c06c11b4e82e7c7cea2e10424dbbc291caeab36bb8f73255",
+      "sha256": "3a9dbd1fb2ee40e44bdad458d80c9fdbae9d99783b903845f77b69042f9341f0",
       "slug": "alert-dialog",
       "src": "/native-components/react-native/alert-dialog.webp",
       "width": 900
@@ -1656,7 +1656,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "2359b4775dfa3223a8cce4a56ac8ceb5b2dcb332e8b4ad8e6e7b7f43c65f6be2",
+      "sha256": "5af610035013e48a25b76385f03ebdcebf009ef42319dcabb8699ccec9b70ea5",
       "slug": "menu",
       "src": "/native-components/react-native/menu.webp",
       "width": 900
@@ -1816,7 +1816,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "0a1dc2723425c8ef724c9d76cff4960d1db29fcfe8a1cd14249a83d6e2f0216a",
+      "sha256": "75c9b85cbb68ad13c0fe61a2803eb8bdfc68a66f324b6af803084521e750ee01",
       "slug": "sheet",
       "src": "/native-components/react-native/sheet.webp",
       "width": 900
