@@ -77,7 +77,7 @@ interface ChartDataOutputProps {
   rows?: readonly { id: string, label: string }[]
   selectedSeriesId?: string
   selectedX?: number | string
-  series?: readonly { data: readonly { id?: string }[] }[]
+  series?: readonly { data: readonly { id?: string, x?: number | string }[] }[]
 }
 
 type Props = Record<string, unknown>
@@ -212,6 +212,7 @@ describe('Lumen React Native chart components', () => {
 
     expect(pie.props.summary).toContain('1 point')
     expect(pie.props.summary).toContain('8 to 8')
+    expect(dataOutput(pie).series?.[0]?.data.map(datum => datum.x)).toEqual(['Available'])
   })
 
   test('exposes scatter bubble sizes and omits points with invalid coordinates', () => {

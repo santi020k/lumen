@@ -951,7 +951,13 @@ public struct LumenPieChart: View {
     }
 
     public var body: some View {
-        let slices = lumenPieSlices(series: series)
+        let availableSeries = LumenChartSeries(
+            id: series.id,
+            label: series.label,
+            data: lumenAvailablePieData(series.data),
+            tone: series.tone
+        )
+        let slices = lumenPieSlices(series: availableSeries)
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
             if slices.isEmpty {
@@ -981,7 +987,7 @@ public struct LumenPieChart: View {
             }
 
             if showData {
-                LumenChartDataList(selection: selection, series: [series])
+                LumenChartDataList(selection: selection, series: [availableSeries])
             }
         }
     }
