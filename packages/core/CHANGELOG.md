@@ -1,5 +1,35 @@
 # @santi020k/lumen-core
 
+## 1.7.0-rc.0
+
+### Minor Changes
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add a canonical generated illustration catalog, shared graphics tokens, and cross-platform image
+  presentation contracts with native React Native, SwiftUI, and Jetpack Compose implementations.
+  Web images also gain shared contain or cover fitting and semantic corner-radius options.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Expand Lumen data visualization with generated cross-platform chart tokens, numeric and time
+  scales, validation, summaries, downsampling and live-window helpers, conformance fixtures, and
+  accessible scatter, bubble, heatmap, range, and combo renderers. Add native chart families for
+  React Native, SwiftUI, and Compose, plus semantic summaries and fallback data across adapters.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add cross-platform phone input contracts for web, React Native, SwiftUI, and Jetpack Compose with
+  localized country metadata, supplementary flags, calling codes, as-you-type formatting,
+  metadata-backed validation, and E.164 output.
+
+### Patch Changes
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Deliver native date selections through the platform picker's supported event contract, keep
+  invalid controlled dates from reaching formatters, and ignore invalid optional date bounds. Keep
+  restricted phone inputs within their
+  configured country allow-list across native adapters, including externally supplied values, and
+  exclude invalid scatter coordinates, non-finite numeric categories, and negative bubble sizes from
+  rendered charts and disclosures. Keep pie disclosures aligned with positive rendered slices and
+  exclude incomplete ranges from Compose chart domains.
+  Preserve typed range categories in React fallback keys, and generate Swift-safe illustration case
+  identifiers from kebab-case catalog names.
+  Allow SwiftUI consumers to derive a product palette by overriding only selected semantic colors.
+
 ## 1.4.0
 
 ### Minor Changes
