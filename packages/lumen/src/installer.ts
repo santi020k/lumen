@@ -1,5 +1,5 @@
-import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, join, relative, sep } from 'node:path'
+import { access, lstat, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import {
@@ -8,6 +8,7 @@ import {
   type LumenRegistryEntry,
   type LumenRegistryFile
 } from './registry.js'
+import { assertSafeRegistryFilePath } from './registry-path.js'
 
 interface LumenRecipeFile {
   path: string
@@ -230,6 +231,45 @@ const writeInstallFile = async (target: string, source: string, dryRun: boolean 
   await writeFile(target, source, 'utf8')
 }
 
+const assertNoSymlinkSegments = async (cwd: string, path: string): Promise<void> => {
+  let current = resolve(cwd)
+
+  for (const segment of path.split('/')) {
+    current = join(current, segment)
+
+    try {
+      const details = await lstat(current)
+
+      if (details.isSymbolicLink()) {
+        throw new Error(`Refusing to write through a symbolic link: ${path}`)
+      }
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return
+
+      throw error
+    }
+  }
+}
+
+const validateInstallFiles = async (
+  files: LumenRecipeFile[],
+  cwd: string
+): Promise<void> => {
+  const paths = new Set<string>()
+
+  for (const file of files) {
+    assertSafeRegistryFilePath(file.path)
+
+    if (paths.has(file.path)) {
+      throw new Error(`Duplicate Lumen registry file path: ${file.path}`)
+    }
+
+    paths.add(file.path)
+
+    await assertNoSymlinkSegments(cwd, file.path)
+  }
+}
+
 type InstallFileOutcome = 'added' | 'merged' | 'skipped'
 
 const installRegistryFile = async (
@@ -267,6 +307,8 @@ export const addLumenRegistryItem = async (name: string, options: LumenAddOption
   if (!files.length) {
     throw new Error(`Registry item cannot be installed yet: ${name}`)
   }
+
+  await validateInstallFiles(files, cwd)
 
   const added: string[] = []
   const conflict = getConflictMode(options)

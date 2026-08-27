@@ -84,6 +84,7 @@ Before opening the portal, verify:
 
 ```bash
 curl --fail --silent https://mcp.lumen.santi020k.com/health
+curl --fail --silent https://mcp.lumen.santi020k.com/ready
 curl --fail --silent https://mcp.lumen.santi020k.com/.well-known/openai-apps-challenge
 ```
 

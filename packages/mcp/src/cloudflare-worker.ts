@@ -11,13 +11,14 @@ interface RateLimitBinding {
 
 interface WorkerEnvironment {
   LUMEN_MCP_OPENAI_CHALLENGE?: string | undefined
-  LUMEN_MCP_RATE_LIMITER: RateLimitBinding
+  LUMEN_MCP_RATE_LIMITER?: RateLimitBinding | undefined
 }
 
 const safeHeaders = {
   'cache-control': 'no-store',
   'referrer-policy': 'no-referrer',
-  'x-content-type-options': 'nosniff'
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'DENY'
 } as const
 
 const jsonResponse = (
@@ -47,7 +48,9 @@ const withSafeHeaders = (response: Response): Response => {
   })
 }
 
-setLumenData(snapshot as LumenData)
+const lumenData = snapshot as LumenData
+
+setLumenData(lumenData)
 
 const handleMcpRequest = async (request: Request): Promise<Response> => {
   const server = createLumenServer()
@@ -64,39 +67,74 @@ const handleMcpRequest = async (request: Request): Promise<Response> => {
   }
 }
 
-export default {
-  async fetch(request: Request, environment: WorkerEnvironment): Promise<Response> {
-    const url = new URL(request.url)
+const applyRateLimit = async (
+  environment: WorkerEnvironment,
+  clientAddress: string
+): Promise<Response | null> => {
+  const limiter = environment.LUMEN_MCP_RATE_LIMITER
 
-    if (url.pathname === '/health' && request.method === 'GET') {
-      return jsonResponse({ status: 'ok' })
-    }
+  if (!limiter) {
+    return jsonResponse({ error: 'Lumen MCP rate limiting is unavailable.' }, 503)
+  }
 
-    if (url.pathname === '/.well-known/openai-apps-challenge' && request.method === 'GET') {
-      const challenge = environment.LUMEN_MCP_OPENAI_CHALLENGE
-
-      if (!challenge) return jsonResponse({ error: 'Verification is not configured.' }, 404)
-
-      return new Response(challenge, {
-        headers: { 'content-type': 'text/plain; charset=utf-8', ...safeHeaders }
-      })
-    }
-
-    if (url.pathname !== '/mcp') return jsonResponse({ error: 'Not found.' }, 404)
-
-    const clientAddress = request.headers.get('cf-connecting-ip') ?? 'unknown'
-
-    const { success } = await environment.LUMEN_MCP_RATE_LIMITER.limit({
+  try {
+    const { success } = await limiter.limit({
       key: `public-mcp:${clientAddress}`
     })
 
-    if (!success) {
-      return jsonResponse(
+    return success ?
+      null :
+      jsonResponse(
         { error: 'Too many MCP requests. Try again later.' },
         429,
         { 'retry-after': '60' }
       )
-    }
+  } catch {
+    return jsonResponse({ error: 'Lumen MCP rate limiting is unavailable.' }, 503)
+  }
+}
+
+const handleUtilityRequest = (
+  request: Request,
+  environment: WorkerEnvironment,
+  url: URL
+): Response | null => {
+  if (request.method !== 'GET') return null
+
+  if (url.pathname === '/health') return jsonResponse({ status: 'ok' })
+
+  if (url.pathname === '/ready') {
+    return jsonResponse({
+      catalogHash: lumenData.meta.catalogHash,
+      serverVersion: lumenData.meta.serverVersion,
+      status: 'ready'
+    })
+  }
+
+  if (url.pathname !== '/.well-known/openai-apps-challenge') return null
+
+  const challenge = environment.LUMEN_MCP_OPENAI_CHALLENGE
+
+  if (!challenge) return jsonResponse({ error: 'Verification is not configured.' }, 404)
+
+  return new Response(challenge, {
+    headers: { 'content-type': 'text/plain; charset=utf-8', ...safeHeaders }
+  })
+}
+
+export default {
+  async fetch(request: Request, environment: WorkerEnvironment): Promise<Response> {
+    const url = new URL(request.url)
+    const utilityResponse = handleUtilityRequest(request, environment, url)
+
+    if (utilityResponse) return utilityResponse
+
+    if (url.pathname !== '/mcp') return jsonResponse({ error: 'Not found.' }, 404)
+
+    const clientAddress = request.headers.get('cf-connecting-ip') ?? 'unknown'
+    const rateLimitResponse = await applyRateLimit(environment, clientAddress)
+
+    if (rateLimitResponse) return rateLimitResponse
 
     return handleMcpRequest(request)
   }

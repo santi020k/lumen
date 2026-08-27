@@ -32,6 +32,7 @@ export interface LumenRegistry {
 
 export interface LumenRegistryLoadOptions {
   headers?: Record<string, string>
+  maxBytes?: number
   timeoutMs?: number
   token?: string
 }

@@ -6,6 +6,7 @@ import {
   mkdtemp,
   readFile,
   rm,
+  symlink,
   writeFile
 } from 'node:fs/promises'
 import {
@@ -397,6 +398,66 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test('rejects external registry paths that escape the consumer root before writing', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-escape-'))
+    const outsidePath = join(cwd, '..', 'lumen-registry-escape.txt')
+
+    try {
+      await expect(addLumenRegistryItem('unsafe', {
+        cwd,
+        registry: {
+          description: 'Unsafe registry',
+          items: [{
+            files: [
+              { path: 'src/lumen/safe.astro', source: '<p>Safe</p>' },
+              { path: '../lumen-registry-escape.txt', source: 'escaped' }
+            ],
+            name: 'unsafe',
+            type: 'recipe'
+          }],
+          name: 'unsafe',
+          packages: ['@santi020k/lumen-astro'],
+          version: 1
+        }
+      })).rejects.toThrow('Unsafe Lumen registry file path')
+
+      expect(existsSync(join(cwd, 'src/lumen/safe.astro'))).toBe(false)
+      expect(existsSync(outsidePath)).toBe(false)
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+      await rm(outsidePath, { force: true })
+    }
+  })
+
+  test('rejects registry writes through symbolic-link path segments', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-link-'))
+    const outside = await mkdtemp(join(tmpdir(), 'lumen-external-target-'))
+
+    try {
+      await symlink(outside, join(cwd, 'linked'))
+
+      await expect(addLumenRegistryItem('unsafe-link', {
+        cwd,
+        registry: {
+          description: 'Unsafe registry',
+          items: [{
+            files: [{ path: 'linked/escape.astro', source: '<p>Escaped</p>' }],
+            name: 'unsafe-link',
+            type: 'recipe'
+          }],
+          name: 'unsafe',
+          packages: ['@santi020k/lumen-astro'],
+          version: 1
+        }
+      })).rejects.toThrow('Refusing to write through a symbolic link')
+
+      expect(existsSync(join(outside, 'escape.astro'))).toBe(false)
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+      await rm(outside, { force: true, recursive: true })
+    }
+  })
+
   test('merges registry recipes with existing files', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-merge-'))
 
@@ -468,5 +529,46 @@ describe('@santi020k/lumen umbrella package', () => {
     expect(loaded.name).toBe('private')
     expect(loaded.components?.[0]?.name).toBe('PrivateButton')
     expect(loaded.items[0]?.name).toBe('private')
+  })
+
+  test('bounds remote registry responses and validates load limits', async () => {
+    const fetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('x'.repeat(64))
+    )
+
+    await expect(loadLumenRegistry('https://registry.example/large.json', {
+      maxBytes: 32
+    })).rejects.toThrow('exceeds the 32 byte limit')
+
+    await expect(loadLumenRegistry('https://registry.example/large.json', {
+      maxBytes: 0
+    })).rejects.toThrow('maxBytes must be a positive integer')
+
+    expect(fetch).toHaveBeenCalledOnce()
+  })
+
+  test('rejects unsafe inline paths while loading a registry manifest', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-registry-invalid-'))
+    const registryPath = join(cwd, 'registry.json')
+
+    try {
+      await writeFile(registryPath, JSON.stringify({
+        description: 'Unsafe registry',
+        items: [{
+          files: [{ path: '../../outside.ts', source: 'unsafe' }],
+          name: 'unsafe',
+          type: 'recipe'
+        }],
+        name: 'unsafe',
+        packages: ['@santi020k/lumen'],
+        version: 1
+      }))
+
+      await expect(loadLumenRegistry(registryPath)).rejects.toThrow(
+        'Invalid Lumen registry manifest'
+      )
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
   })
 })

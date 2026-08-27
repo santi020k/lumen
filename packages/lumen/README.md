@@ -57,6 +57,11 @@ Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin
 `commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,
 `dashboard-shell`, and `validated-form`.
 
+External registry manifests are treated as untrusted input. Inline recipe files must use unique,
+relative forward-slash paths and cannot traverse outside the selected `--cwd` or write through a
+symbolic-link path segment. `loadLumenRegistry` bounds local and remote manifests to 5 MiB by
+default; programmatic consumers can set `maxBytes` and `timeoutMs` for tighter deployment limits.
+
 Run `lumen doctor` to check adapter/style agreement, duplicate stylesheet entrypoints, Tailwind
 layer order, Astro runtime mounts, and fragile internal selector dependencies. In a workspace,
 diagnostics are scoped to the nearest package boundary, generated build trees are ignored, and

@@ -1420,6 +1420,35 @@
       "deprecated": [],
       "unclassified": []
     },
+    "iconsBrand": {
+      "entrypoint": "packages/icons-brand/src/index.ts",
+      "packageExports": {
+        ".": {
+          "import": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "packageJson": "packages/icons-brand/package.json",
+      "packageName": "@santi020k/lumen-icons-brand",
+      "symbols": [
+        "LumenBrandIconName",
+        "lumenBrandIconNames",
+        "lumenBrandIconPrefix",
+        "lumenBrandIcons",
+        "registerLumenBrandIcons"
+      ],
+      "supported": [
+        "LumenBrandIconName",
+        "lumenBrandIconNames",
+        "lumenBrandIconPrefix",
+        "lumenBrandIcons",
+        "registerLumenBrandIcons"
+      ],
+      "experimental": [],
+      "deprecated": [],
+      "unclassified": []
+    },
     "lumen": {
       "entrypoint": "packages/lumen/src/index.ts",
       "packageExports": {
@@ -1853,6 +1882,91 @@
         "migrateLumenV2",
         "migrateLumenV2Source"
       ],
+      "deprecated": [],
+      "unclassified": []
+    },
+    "mcp": {
+      "entrypoint": "packages/mcp/src/index.ts",
+      "packageExports": {
+        ".": {
+          "import": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        },
+        "./package.json": "./package.json",
+        "./tools": {
+          "import": "./dist/tools.js",
+          "types": "./dist/tools.d.ts"
+        }
+      },
+      "packageJson": "packages/mcp/package.json",
+      "packageName": "@santi020k/lumen-mcp",
+      "symbols": [
+        "CatalogChanges",
+        "ComponentDetailLevel",
+        "ComponentSummary",
+        "FrameworkFilter",
+        "LumenData",
+        "LumenMcpHttpOptions",
+        "LumenMcpHttpServer",
+        "LumenMcpRateLimit",
+        "LumenToolResult",
+        "NativeComponentSummary",
+        "NativePlatformFilter",
+        "SearchResult",
+        "createLumenServer",
+        "diagnose",
+        "diffCatalog",
+        "getCatalogManifest",
+        "getComponent",
+        "getMeta",
+        "getNativeComponent",
+        "getRecipe",
+        "getRules",
+        "getTokens",
+        "listComponents",
+        "listNativeComponents",
+        "loadLumenData",
+        "resolveComponent",
+        "resolveNativeComponent",
+        "resolveRecipe",
+        "search",
+        "startLumenMcp",
+        "startLumenMcpHttp"
+      ],
+      "supported": [
+        "CatalogChanges",
+        "ComponentDetailLevel",
+        "ComponentSummary",
+        "FrameworkFilter",
+        "LumenData",
+        "LumenMcpHttpOptions",
+        "LumenMcpHttpServer",
+        "LumenMcpRateLimit",
+        "LumenToolResult",
+        "NativeComponentSummary",
+        "NativePlatformFilter",
+        "SearchResult",
+        "createLumenServer",
+        "diagnose",
+        "diffCatalog",
+        "getCatalogManifest",
+        "getComponent",
+        "getMeta",
+        "getNativeComponent",
+        "getRecipe",
+        "getRules",
+        "getTokens",
+        "listComponents",
+        "listNativeComponents",
+        "loadLumenData",
+        "resolveComponent",
+        "resolveNativeComponent",
+        "resolveRecipe",
+        "search",
+        "startLumenMcp",
+        "startLumenMcpHttp"
+      ],
+      "experimental": [],
       "deprecated": [],
       "unclassified": []
     },
@@ -2742,6 +2856,49 @@
         "useThemeToggle",
         "useToast",
         "useTooltip"
+      ],
+      "experimental": [],
+      "deprecated": [],
+      "unclassified": []
+    },
+    "reactHookForm": {
+      "entrypoint": "packages/react-hook-form/src/index.ts",
+      "packageExports": {
+        ".": {
+          "import": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "packageJson": "packages/react-hook-form/package.json",
+      "packageName": "@santi020k/lumen-react-hook-form",
+      "symbols": [
+        "LumenDatePickerController",
+        "LumenDatePickerControllerProps",
+        "LumenFieldStateInput",
+        "LumenInputOTPController",
+        "LumenInputOTPControllerProps",
+        "LumenListBoxController",
+        "LumenListBoxControllerOptions",
+        "LumenListBoxControllerProps",
+        "LumenManagedFieldState",
+        "LumenSelectController",
+        "LumenSelectControllerProps",
+        "getLumenManagedFieldState"
+      ],
+      "supported": [
+        "LumenDatePickerController",
+        "LumenDatePickerControllerProps",
+        "LumenFieldStateInput",
+        "LumenInputOTPController",
+        "LumenInputOTPControllerProps",
+        "LumenListBoxController",
+        "LumenListBoxControllerOptions",
+        "LumenListBoxControllerProps",
+        "LumenManagedFieldState",
+        "LumenSelectController",
+        "LumenSelectControllerProps",
+        "getLumenManagedFieldState"
       ],
       "experimental": [],
       "deprecated": [],

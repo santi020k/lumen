@@ -16,6 +16,10 @@ const defaultPackages = {
     entrypoint: 'packages/core/src/index.ts',
     packageJson: 'packages/core/package.json'
   },
+  iconsBrand: {
+    entrypoint: 'packages/icons-brand/src/index.ts',
+    packageJson: 'packages/icons-brand/package.json'
+  },
   elements: {
     entrypoint: 'packages/elements/src/index.ts',
     packageJson: 'packages/elements/package.json'
@@ -24,9 +28,17 @@ const defaultPackages = {
     entrypoint: 'packages/lumen/src/index.ts',
     packageJson: 'packages/lumen/package.json'
   },
+  mcp: {
+    entrypoint: 'packages/mcp/src/index.ts',
+    packageJson: 'packages/mcp/package.json'
+  },
   react: {
     entrypoint: 'packages/react/src/index.ts',
     packageJson: 'packages/react/package.json'
+  },
+  reactHookForm: {
+    entrypoint: 'packages/react-hook-form/src/index.ts',
+    packageJson: 'packages/react-hook-form/package.json'
   }
 }
 

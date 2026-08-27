@@ -479,7 +479,10 @@ lumen init --framework astro --tailwind
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
 or `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,
 `--target react`, and `--target elements`; external registry inline files keep their authored paths
-and sources.
+and sources. Those paths must be unique, relative forward-slash paths: the installer rejects
+absolute paths, parent traversal, and symbolic-link path segments before writing any file. Registry
+manifests are limited to 5 MiB by default; programmatic `loadLumenRegistry` callers can lower the
+limit with `maxBytes` and control remote request time with `timeoutMs`.
 
 Before inventing a wrapper or custom class pattern, check the component source in
 `packages/astro/components`. Astro is the reference implementation for props, class names, data

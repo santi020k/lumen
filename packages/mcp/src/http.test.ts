@@ -13,13 +13,19 @@ describe('Lumen MCP Streamable HTTP transport', () => {
     try {
       await client.connect(transport as Parameters<typeof client.connect>[0])
 
-      const [tools, health] = await Promise.all([
+      const [tools, health, readiness] = await Promise.all([
         client.listTools(),
-        fetch(new URL('/health', running.url))
+        fetch(new URL('/health', running.url)),
+        fetch(new URL('/ready', running.url))
       ])
 
       expect(tools.tools.map(tool => tool.name)).toContain('lumen_diagnose')
       expect(await health.json()).toEqual({ status: 'ok' })
+      const readinessText = await readiness.text()
+
+      expect(readinessText).toMatch(/"catalogHash":"[a-f0-9]{64}"/u)
+      expect(readinessText).toMatch(/"serverVersion":"[^"]+"/u)
+      expect(readinessText).toContain('"status":"ready"')
     } finally {
       await client.close()
       await running.close()
@@ -69,5 +75,29 @@ describe('Lumen MCP Streamable HTTP transport', () => {
       openAiChallenge: 'unsafe\ntoken',
       port: 0
     })).rejects.toThrow('openAiChallenge must be a non-empty single-line token.')
+  })
+
+  test('returns bounded JSON errors for malformed HTTP bodies', async () => {
+    const errors: unknown[] = []
+    const running = await startLumenMcpHttp({
+      onError: error => errors.push(error),
+      port: 0
+    })
+
+    try {
+      const response = await fetch(running.url, {
+        body: '{',
+        headers: { 'content-type': 'application/json' },
+        method: 'POST'
+      })
+
+      expect(response.status).toBe(400)
+      expect(response.headers.get('content-type')).toMatch(/^application\/json/u)
+      expect(response.headers.get('x-frame-options')).toBe('DENY')
+      expect(await response.json()).toEqual({ error: 'Invalid Lumen MCP HTTP request.' })
+      expect(errors).toHaveLength(1)
+    } finally {
+      await running.close()
+    }
   })
 })
