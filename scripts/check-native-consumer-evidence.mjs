@@ -145,6 +145,24 @@ const validateConsumer = (entry) => {
     assert.equal(typeof completed, 'boolean', `${label}.checks.${check} must be Boolean`)
   }
 
+  if (entry.checks.build) {
+    assert.ok(
+      entry.minimumOperatingSystems.length > 0,
+      `${label} built consumer evidence requires minimum operating-system targets`
+    )
+
+    assert.equal(
+      typeof entry.toolchain,
+      'string',
+      `${label} built consumer evidence requires a toolchain`
+    )
+
+    assert.ok(
+      entry.toolchain.trim().length > 0,
+      `${label} built consumer evidence requires a toolchain`
+    )
+  }
+
   const completedChecks = Object.values(entry.checks).filter(Boolean).length
 
   if (entry.status === 'pending') {
@@ -159,15 +177,6 @@ const validateConsumer = (entry) => {
     assert.equal(completedChecks, expectedChecks.length, `${label} complete evidence has unchecked items`)
 
     assert.equal(entry.blockingIssues.length, 0, `${label} complete evidence has blocking issues`)
-
-    assert.ok(
-      entry.minimumOperatingSystems.length > 0,
-      `${label} complete evidence requires minimum operating-system targets`
-    )
-
-    assert.equal(typeof entry.toolchain, 'string', `${label} complete evidence requires a toolchain`)
-
-    assert.ok(entry.toolchain.trim().length > 0, `${label} complete evidence requires a toolchain`)
 
     assert.equal(typeof entry.consumer.owner, 'string', `${label} complete evidence requires an owner`)
 

@@ -10,8 +10,8 @@
         "owner": null,
         "repository": null
       },
-      "minimumOperatingSystems": [],
-      "toolchain": "Expo 57, React Native 0.86.2, and pnpm 10.34.3",
+      "minimumOperatingSystems": ["Android API 24", "iOS 16.4"],
+      "toolchain": "Node.js 22.19 or newer, pnpm 10.34.3, Expo 57, React Native 0.86.2, React 19.2.3, and TypeScript 6.0.3",
       "platforms": ["Android", "iOS"],
       "supportedComponents": [
         "LumenButton",
@@ -30,11 +30,11 @@
         "accessibility": false,
         "activeProduct": false,
         "build": true,
-        "icons": false,
+        "icons": true,
         "installation": true,
         "integration": true,
         "signedArtifact": false,
-        "stateManagement": false,
+        "stateManagement": true,
         "theming": true,
         "upgrade": true
       },
@@ -43,7 +43,7 @@
       "blockingIssues": [
         "Product owner confirmation is required.",
         "A signed native application build and accessibility pass are required.",
-        "Minimum OS targets, icon integration, and state-management ownership require a qualifying record."
+        "An immutable consumer repository record is unavailable because the local repository has no configured origin remote."
       ]
     },
     {
@@ -53,10 +53,10 @@
       "consumer": {
         "name": "ContracTrack",
         "owner": null,
-        "repository": null
+        "repository": "https://github.com/santi020k/betweencontractions.git"
       },
-      "minimumOperatingSystems": [],
-      "toolchain": null,
+      "minimumOperatingSystems": ["iOS 17.0", "macOS 14.0", "watchOS 10.0"],
+      "toolchain": "Swift 5.9 or newer with Xcode 26 and an XcodeGen-generated project",
       "platforms": ["iOS", "macOS", "watchOS"],
       "supportedComponents": [
         "LumenGraphic",
@@ -86,8 +86,8 @@
       "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
       "blockingIssues": [
         "Product owner confirmation is required.",
-        "Signed physical-device application evidence is required.",
-        "Minimum OS targets and the exact build toolchain require a qualifying record."
+        "Signed physical-device application evidence and accessibility review are required.",
+        "The successful upgrade remains in uncommitted consumer changes and is not immutable qualification evidence."
       ]
     },
     {
@@ -97,10 +97,10 @@
       "consumer": {
         "name": "ContracTrack Android",
         "owner": null,
-        "repository": null
+        "repository": "https://github.com/santi020k/betweencontractions.git"
       },
-      "minimumOperatingSystems": [],
-      "toolchain": "JDK 21 and the consumer repository Gradle wrapper",
+      "minimumOperatingSystems": ["Android API 29"],
+      "toolchain": "Temurin JDK 21, Gradle 9.7.0, Android Gradle Plugin 9.3.1, Kotlin 2.4.10, and JVM 11 bytecode",
       "platforms": ["Android"],
       "supportedComponents": [
         "LumenNavigationBar",
@@ -116,7 +116,7 @@
         "accessibility": false,
         "activeProduct": false,
         "build": true,
-        "icons": false,
+        "icons": true,
         "installation": true,
         "integration": true,
         "signedArtifact": false,
@@ -128,8 +128,8 @@
       "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
       "blockingIssues": [
         "Product owner confirmation is required.",
-        "Signed physical-device application evidence is required.",
-        "Minimum OS targets and icon integration require a qualifying record."
+        "Signed physical-device application evidence and accessibility review are required.",
+        "The successful upgrade remains in uncommitted consumer changes and is not immutable qualification evidence."
       ]
     },
     {
@@ -139,10 +139,10 @@
       "consumer": {
         "name": "ContracTrack Wear",
         "owner": null,
-        "repository": null
+        "repository": "https://github.com/santi020k/betweencontractions.git"
       },
-      "minimumOperatingSystems": [],
-      "toolchain": "JDK 21 and the consumer repository Gradle wrapper",
+      "minimumOperatingSystems": ["Wear OS API 30"],
+      "toolchain": "Temurin JDK 21, Gradle 9.7.0, Android Gradle Plugin 9.3.1, Kotlin 2.4.10, and JVM 11 bytecode",
       "platforms": ["Wear OS"],
       "supportedComponents": [
         "LumenWearActionButton",
@@ -159,7 +159,7 @@
         "accessibility": false,
         "activeProduct": false,
         "build": true,
-        "icons": false,
+        "icons": true,
         "installation": true,
         "integration": true,
         "signedArtifact": false,
@@ -171,8 +171,8 @@
       "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
       "blockingIssues": [
         "Product owner confirmation is required.",
-        "Signed physical-watch application evidence is required.",
-        "Minimum OS targets and icon integration require a qualifying record."
+        "Signed physical-watch application evidence and accessibility review are required.",
+        "The successful upgrade remains in uncommitted consumer changes and is not immutable qualification evidence."
       ]
     }
   ]

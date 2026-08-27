@@ -105,6 +105,20 @@ The two release commands also pass against the public `0.5.0` npm artifact, prod
 Android debug APK and unsigned iOS Simulator application without a workspace package substitution.
 The local candidate commands pass with the expanded value-control fixture on both platforms.
 
+A configuration audit on 2026-08-27 also closed the record's operating-system, icon, and
+state-ownership gaps. Roadscore declares Node.js 22.19 or newer and pnpm 10.34.3, with Expo 57,
+React Native 0.86.2, React 19.2.3, and TypeScript 6.0.3. Its app configuration does not override the
+native deployment targets; clean Expo native project generation from that configuration produced iOS 16.4 and
+Android API 24 minimums with Android compile and target SDK 36. The same configuration includes an
+iOS icon catalog and Android foreground, background, monochrome, and adaptive icon assets.
+
+Product navigation stays in Expo Router, while the application owns game state and persistence
+through a typed Zustand store backed by AsyncStorage. `LumenProvider` remains the presentation
+boundary and does not own navigation, persistence, or product lifecycle. These facts complete the
+technical icon and state-management checks. Active-product confirmation, an accessibility review,
+a signed EAS application, and an immutable repository record remain outstanding; the local
+Roadscore repository has no configured origin remote.
+
 ### ContracTrack native consumers
 
 Validated on 2026-08-24 at repository revision
@@ -133,6 +147,19 @@ connectivity, and Material or SwiftUI application themes remain application-owne
 also passed a disposable 0.4.0 to 0.5.0 upgrade: dependency insight selected both 0.5.0 release
 variants and unchanged consumer source passed `testDebugUnitTest assembleDebug`. The verified copy
 was discarded rather than overwriting the application's in-progress 0.4.0 integration.
+
+The exact consumer revision records iOS 17.0, macOS 14.0, and watchOS 10.0 deployment targets in
+its XcodeGen project, with Swift 5.9 or newer and Xcode 26 as the documented Apple toolchain. The
+Android phone uses API 29 and the separate Wear application uses API 30; both use the Gradle 9.7.0
+wrapper, Android Gradle Plugin 9.3.1, Kotlin 2.4.10, Temurin JDK 21 in CI, and JVM 11 bytecode.
+
+Icon integration is application-owned and exercised rather than delegated to Lumen: Apple targets
+compile their AppIcon catalogs and pass SF Symbols through Lumen wearable components; the Compose
+phone passes Material `ImageVector` values through `LumenNavigationItem`; and the separate Wear APK
+provides its own adaptive launcher icon. This closes the minimum-OS, toolchain, and icon review for
+all three ContracTrack adapter records. Owner confirmation, accessibility and physical-device
+review, signed application artifacts, and an immutable commit containing the successful Lumen
+upgrades still remain.
 
 The package-candidate workflow now publishes both local candidate AARs to a temporary Maven
 repository and builds separate phone and watch APK consumers from those coordinates. The phone

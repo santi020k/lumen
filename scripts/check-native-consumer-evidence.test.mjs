@@ -116,14 +116,28 @@ test('rejects complete evidence without an owner', async () => {
   assert.match(result.stderr, /complete evidence requires an owner/)
 })
 
-test('rejects complete evidence without minimum OS targets', async () => {
+test('rejects built partial evidence without minimum OS targets', async () => {
   const result = await runLedger(ledger => {
+    ledger.adapters[0].status = 'partial'
+
     ledger.adapters[0].minimumOperatingSystems = []
   })
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /complete evidence requires minimum operating-system targets/)
+  assert.match(result.stderr, /built consumer evidence requires minimum operating-system targets/)
+})
+
+test('rejects built partial evidence without an exact toolchain', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].status = 'partial'
+
+    ledger.adapters[0].toolchain = null
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /built consumer evidence requires a toolchain/)
 })
 
 test('rejects complete evidence that is not an HTTPS record', async () => {
