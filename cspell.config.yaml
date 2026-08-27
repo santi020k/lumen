@@ -139,6 +139,7 @@ words:
   - nums
   - overscan
   - phonenumbers
+  - pipefail
   - popconfirm
   - Popconfirm
   - postlens
