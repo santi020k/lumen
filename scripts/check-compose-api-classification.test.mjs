@@ -14,22 +14,46 @@ const sourceClassificationPath = resolve(
   'compose-api-classification.json'
 )
 
-const runClassification = async mutate => {
+const sourcePhonePath = resolve(
+  repositoryRoot,
+  'packages',
+  'compose',
+  'src',
+  'main',
+  'kotlin',
+  'com',
+  'santi020k',
+  'lumen',
+  'PhoneComponents.kt'
+)
+
+const runClassification = async (mutate, mutateSource) => {
   const temporaryDirectory = await mkdtemp(resolve(tmpdir(), 'lumen-compose-classification-'))
 
   try {
     const classification = JSON.parse(await readFile(sourceClassificationPath, 'utf8'))
+    const source = await readFile(sourcePhonePath, 'utf8')
 
     mutate(classification)
 
     const classificationPath = resolve(temporaryDirectory, 'classification.json')
+    const phoneSourcePath = resolve(temporaryDirectory, 'PhoneComponents.kt')
 
-    await writeFile(classificationPath, `${JSON.stringify(classification, null, 2)}\n`)
+    await Promise.all([
+      writeFile(classificationPath, `${JSON.stringify(classification, null, 2)}\n`),
+      writeFile(phoneSourcePath, mutateSource ? mutateSource(source) : source)
+    ])
 
     return spawnSync(
       process.execPath,
-      [checkerPath, '--classification', classificationPath],
-      { cwd: repositoryRoot, encoding: 'utf8' }
+      [
+        checkerPath,
+        '--classification',
+        classificationPath,
+        '--phone-source',
+        phoneSourcePath
+      ],
+      { cwd: repositoryRoot, encoding: 'utf8', timeout: 2_000 }
     )
   } finally {
     await rm(temporaryDirectory, { force: true, recursive: true })
@@ -77,4 +101,20 @@ test('rejects duplicate maturity classifications', async () => {
   assert.equal(result.status, 1)
 
   assert.match(result.stderr, /appears in more than one classification/)
+})
+
+test('classifies long annotation sequences without catastrophic backtracking', async () => {
+  const annotations = '@A() '.repeat(20_000)
+
+  const result = await runClassification(
+    () => {},
+    source => source.replace(
+      '@ExperimentalLumenPhoneApi\ndata class LumenPhoneCountry',
+      `@ExperimentalLumenPhoneApi\n${annotations}data class LumenPhoneCountry`
+    )
+  )
+
+  assert.equal(result.signal, null, 'classification timed out')
+
+  assert.equal(result.status, 0, result.stderr)
 })
