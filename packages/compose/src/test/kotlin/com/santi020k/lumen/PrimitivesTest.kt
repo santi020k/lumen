@@ -10,6 +10,13 @@ import org.junit.Test
 
 class PrimitivesTest {
     @Test
+    fun validationMessagesImplyInvalidFieldState() {
+        assertEquals(false, resolveLumenFieldError(error = false, errorMessage = null))
+        assertEquals(true, resolveLumenFieldError(error = true, errorMessage = null))
+        assertEquals(true, resolveLumenFieldError(error = false, errorMessage = "Required"))
+    }
+
+    @Test
     fun dateFieldsClampBoundsAndFormatUtcDates() {
         assertEquals(1_000L, clampLumenDateMillis(500L, 1_000L, 2_000L))
         assertEquals(2_000L, clampLumenDateMillis(2_500L, 1_000L, 2_000L))

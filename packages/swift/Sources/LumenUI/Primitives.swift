@@ -543,6 +543,11 @@ public struct LumenTextField: View {
     }
 
     public var body: some View {
+        let validationMessage = LumenValidationState.message(
+            error: error,
+            errorMessage: errorMessage
+        )
+
         TextField(title, text: $text)
             .textFieldStyle(.plain)
             .font(size == .lg ? .body : .callout)
@@ -552,11 +557,12 @@ public struct LumenTextField: View {
             .background(theme.colors.surface)
             .overlay {
                 RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
-                    .stroke(error ? theme.colors.danger : theme.colors.line, lineWidth: 1)
+                    .stroke(validationMessage == nil ? theme.colors.line : theme.colors.danger, lineWidth: 1)
             }
             .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
             .opacity(isEnabled ? 1 : 0.52)
-            .accessibilityValue(error ? errorMessage ?? "Invalid value" : text)
+            .lumenAccessibilityHint(validationMessage)
+            .accessibilityValue(Text(verbatim: text))
     }
 }
 

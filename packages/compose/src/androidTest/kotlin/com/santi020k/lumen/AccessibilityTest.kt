@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -19,6 +21,7 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.accessibility.enableAccessibilityChecks
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.tryPerformAccessibilityChecks
@@ -89,6 +92,29 @@ class AccessibilityTest {
         composeRule.onNodeWithText("Continue")
             .assertHasClickAction()
             .assertIsEnabled()
+    }
+
+    @Test
+    fun textFieldErrorMessageExposesInvalidSemantics() {
+        composeRule.setContent {
+            LumenTheme {
+                LumenTextField(
+                    value = "Draft",
+                    onValueChange = {},
+                    label = "Project name",
+                    modifier = Modifier.testTag("project-name"),
+                    errorMessage = "Project name is required"
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("project-name")
+            .assert(
+                SemanticsMatcher.expectValue(
+                    SemanticsProperties.Error,
+                    "Project name is required"
+                )
+            )
     }
 
     @Test

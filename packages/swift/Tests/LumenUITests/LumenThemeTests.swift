@@ -42,6 +42,14 @@ import Testing
     #expect(LumenElevation.overlay == 6)
 }
 
+@Test func validationMessagesImplyInvalidStateWithoutReplacingFieldValues() {
+    #expect(!LumenValidationState.isInvalid(error: false, errorMessage: nil))
+    #expect(LumenValidationState.isInvalid(error: true, errorMessage: nil))
+    #expect(LumenValidationState.isInvalid(error: false, errorMessage: "Required"))
+    #expect(LumenValidationState.message(error: true, errorMessage: nil) == "Invalid value")
+    #expect(LumenValidationState.message(error: false, errorMessage: "Required") == "Required")
+}
+
 @Test func chartFoundationsMatchSharedLightAndDarkTokens() {
     #expect(LumenChartColors.light.series1 == LumenColors.light.brand)
     #expect(LumenChartColors.dark.series1 == LumenColors.dark.brand)
