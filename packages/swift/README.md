@@ -73,12 +73,13 @@ product palettes. If a stored System/Light/Dark preference is application-owned,
 semantic values without forcing SwiftUI's appearance:
 
 ```swift
-let productPalette = LumenColorPalette.light.overriding(
+let baseTheme = LumenTheme.light
+let productPalette = baseTheme.colors.overriding(
     brand: Color("BrandAccent"),
     brandSoft: Color("BrandAccentSoft"),
     accent: Color("BrandAccent")
 )
-let productTheme = LumenTheme(colors: productPalette)
+let productTheme = LumenTheme(colors: productPalette, scheme: baseTheme.scheme)
 
 AppRoot()
     .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
