@@ -297,7 +297,9 @@ The shared catalog includes:
   feedback. Use `FieldError` and `ErrorSummary` for validation, `Alert` for persistent inline
   problems, `Toast` for brief non-blocking failures, and `ErrorState` only when a page or region
   cannot show its primary content. Keep exception capture, logging, retry policy, and safe message
-  mapping in application code.
+  mapping in application code. For React Native, SwiftUI, and Compose, follow the guide's native API
+  mapping and announcement rules; do not invent a cross-platform error manager inside the component
+  layer.
 
 - Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,
   `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with
