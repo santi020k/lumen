@@ -6,6 +6,8 @@ import { describe, expect, test } from 'vitest'
 
 import { migrateLumenV2, migrateLumenV2Source } from './v2-migration.js'
 
+// cspell:words swiftpm
+
 const readMigrationFixture = async (
   framework: 'astro' | 'elements',
   name: 'expected' | 'source'
@@ -335,7 +337,14 @@ import { Button, LumenDateRangeField } from '@santi020k/lumen-react-native'
   test('discovers nested sources, defaults to dry-run, and applies only when requested', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-v2-migration-'))
     const nestedFile = join(root, 'src', 'nested', 'form.astro')
-    const ignoredFile = join(root, 'node_modules', 'fixture', 'form.astro')
+    const ignoredFiles = [
+      join(root, '.build', 'checkouts', 'lumen', 'form.astro'),
+      join(root, '.swiftpm', 'checkouts', 'lumen', 'form.astro'),
+      join(root, 'DerivedData', 'SourcePackages', 'checkouts', 'lumen', 'form.astro'),
+      join(root, 'node_modules', 'fixture', 'form.astro'),
+      join(root, 'Pods', 'fixture', 'form.astro'),
+      join(root, 'vendor', 'fixture', 'form.astro')
+    ]
     const source = `---
 import { Input } from '@santi020k/lumen-astro'
 ---
@@ -344,9 +353,12 @@ import { Input } from '@santi020k/lumen-astro'
 
     try {
       await mkdir(join(root, 'src', 'nested'), { recursive: true })
-      await mkdir(join(root, 'node_modules', 'fixture'), { recursive: true })
       await writeFile(nestedFile, source)
-      await writeFile(ignoredFile, source)
+
+      for (const ignoredFile of ignoredFiles) {
+        await mkdir(join(ignoredFile, '..'), { recursive: true })
+        await writeFile(ignoredFile, source)
+      }
 
       const dryRun = await migrateLumenV2({ cwd: root })
 
@@ -361,7 +373,11 @@ import { Input } from '@santi020k/lumen-astro'
       await expect(readFile(nestedFile, 'utf8')).resolves.toContain(
         '<Input visualSize="sm" />'
       )
-      await expect(readFile(ignoredFile, 'utf8')).resolves.toBe(source)
+      await Promise.all(
+        ignoredFiles.map(ignoredFile => expect(
+          readFile(ignoredFile, 'utf8')
+        ).resolves.toBe(source))
+      )
 
       const repeated = await migrateLumenV2({ apply: true, cwd: root })
 

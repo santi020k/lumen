@@ -1,6 +1,8 @@
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { extname, relative, resolve } from 'node:path'
 
+// cspell:words swiftpm
+
 const ASTRO_PACKAGE = '@santi020k/lumen-astro'
 const ASTRO_RUNTIME_PACKAGE = '@santi020k/lumen-astro/runtime'
 const REACT_PACKAGE = '@santi020k/lumen-react'
@@ -19,13 +21,23 @@ const SOURCE_EXTENSIONS = new Set([
 
 const IGNORED_DIRECTORIES = new Set([
   '.astro',
+  '.build',
+  '.cache',
+  '.expo',
   '.git',
   '.next',
   '.output',
+  '.swiftpm',
+  '.turbo',
+  '.vercel',
+  '.wrangler',
+  'DerivedData',
+  'Pods',
   'build',
   'coverage',
   'dist',
-  'node_modules'
+  'node_modules',
+  'vendor'
 ])
 
 const VISUAL_SIZE_ALIASES = new Set(['default', 'lg', 'sm'])
