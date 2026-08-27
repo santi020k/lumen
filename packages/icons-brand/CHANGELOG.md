@@ -1,5 +1,12 @@
 # @santi020k/lumen-icons-brand
 
+## 1.0.3-rc.0
+
+### Patch Changes
+
+- Updated dependencies [[`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92)]:
+  - @santi020k/lumen-core@1.7.0-rc.0
+
 ## 1.0.2
 
 ### Patch Changes
