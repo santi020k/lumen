@@ -99,8 +99,10 @@ SharedProfileActions().lumenControlDensity(.regular)
 ```
 
 Applications can initialize `LumenColorPalette` and `LumenTheme` from product-owned light and dark
-palettes. Use `.lumenTheme(productTheme, enforceColorScheme: false)` when the application's stored
-System/Light/Dark preference owns the preferred appearance. Apply the modifier to every independent
+palettes. Use `LumenColors.light.overriding(...)` or `LumenColors.dark.overriding(...)` to replace
+only the semantic colors a product owns. Use
+`.lumenTheme(productTheme, enforceColorScheme: false, applyTint: false)` when the application's
+stored appearance and native tint remain application-owned. Apply the modifier to every independent
 window, settings, menu-bar, widget, and preview scene that renders Lumen content.
 
 ### Jetpack Compose
@@ -771,7 +773,7 @@ View:
 SwiftUI and Compose propagate their foreground or content color through the native environment:
 
 ```swift
-LumenCard(variant: .muted) {
+LumenCard(variant: .muted, padding: .lg, radius: .size2xl) {
     VStack(alignment: .leading, spacing: LumenSpacing.lg) {
         LumenAvatar(fallback: "SM", label: "Santiago Molina")
         LumenAlert(variant: .success) {
@@ -781,6 +783,10 @@ LumenCard(variant: .muted) {
     }
 }
 ```
+
+SwiftUI surfaces and cards accept the shared `.sm`, `.md`, `.lg`, `.xl`, `.size2xl`, and `.size3xl`
+radius roles. Status bars pair every semantic tone with a visible icon by default; supply
+`systemName` only when a product needs a more specific symbol.
 
 ```kotlin
 LumenCard(variant = LumenCardVariant.Muted) {

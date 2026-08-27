@@ -14,14 +14,20 @@ public struct LumenCard<Content: View>: View {
 
     private let action: (() -> Void)?
     private let content: Content
+    private let padding: LumenSurfacePadding
+    private let radius: LumenSurfaceRadius
     private let variant: LumenCardVariant
 
     public init(
         variant: LumenCardVariant = .default,
+        padding: LumenSurfacePadding = .xl,
+        radius: LumenSurfaceRadius = .lg,
         action: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.variant = variant
+        self.padding = padding
+        self.radius = radius
         self.action = action
         self.content = content()
     }
@@ -42,13 +48,13 @@ public struct LumenCard<Content: View>: View {
     private var cardSurface: some View {
         content
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(LumenSpacing.xl)
+            .padding(padding.value)
             .background(backgroundColor)
             .overlay {
-                RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous)
+                RoundedRectangle(cornerRadius: radius.value, style: .continuous)
                     .stroke(borderColor, lineWidth: 1)
             }
-            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: radius.value, style: .continuous))
     }
 
     private var accentColor: Color? {

@@ -65,6 +65,7 @@ public enum LumenSurfacePadding: Sendable {
     case md
     case none
     case sm
+    case xl
 
     var value: CGFloat {
         switch self {
@@ -72,22 +73,29 @@ public enum LumenSurfacePadding: Sendable {
         case .md: LumenSpacing.md
         case .none: 0
         case .sm: LumenSpacing.sm
+        case .xl: LumenSpacing.xl
         }
     }
 }
 
 public enum LumenSurfaceRadius: Sendable {
+    case size2xl
+    case size3xl
     case lg
     case md
     case none
     case sm
+    case xl
 
     var value: CGFloat {
         switch self {
+        case .size2xl: LumenRadius.size2xl
+        case .size3xl: LumenRadius.size3xl
         case .lg: LumenRadius.lg
         case .md: LumenRadius.md
         case .none: 0
         case .sm: LumenRadius.sm
+        case .xl: LumenRadius.xl
         }
     }
 }

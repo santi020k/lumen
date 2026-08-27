@@ -9,28 +9,18 @@ import Testing
 
 @Test func productPalettesAndAppearanceOwnershipRemainApplicationControlled() {
     let defaults = LumenColors.light
-    let productPalette = LumenColorPalette(
-        canvas: defaults.canvas,
-        surface: defaults.surface,
-        surfaceMuted: defaults.surfaceMuted,
-        surfaceStrong: defaults.surfaceStrong,
-        line: defaults.line,
-        ink: defaults.ink,
-        inkSoft: defaults.inkSoft,
-        inkMuted: defaults.inkMuted,
+    let productPalette = defaults.overriding(
         brand: .red,
-        brandSolid: defaults.brandSolid,
-        brandSoft: defaults.brandSoft,
-        onBrand: defaults.onBrand,
-        accent: defaults.accent,
-        success: defaults.success,
-        warning: defaults.warning,
-        danger: defaults.danger,
-        onDanger: defaults.onDanger
+        brandSolid: .purple,
+        brandSoft: .pink
     )
     let productTheme = LumenTheme(colors: productPalette, scheme: .light)
 
     #expect(productTheme.colors.brand == .red)
+    #expect(productTheme.colors.brandSolid == .purple)
+    #expect(productTheme.colors.brandSoft == .pink)
+    #expect(productTheme.colors.canvas == defaults.canvas)
+    #expect(productTheme.colors.danger == defaults.danger)
     #expect(productTheme.resolvedPreferredColorScheme(enforceColorScheme: true) == .light)
     #expect(productTheme.resolvedPreferredColorScheme(enforceColorScheme: false) == nil)
 }
@@ -38,6 +28,12 @@ import Testing
 @Test func foundationDimensionsUseNativePoints() {
     #expect(LumenSpacing.lg == 16)
     #expect(LumenRadius.md == 10)
+    #expect(LumenRadius.xl == 16)
+    #expect(LumenRadius.size2xl == 20)
+    #expect(LumenRadius.size3xl == 24)
+    #expect(LumenSurfacePadding.xl.value == LumenSpacing.xl)
+    #expect(LumenSurfaceRadius.size2xl.value == LumenRadius.size2xl)
+    #expect(LumenSurfaceRadius.size3xl.value == LumenRadius.size3xl)
     #expect(LumenMotion.standardDuration == 0.16)
     #expect(LumenMotion.standardEasing == LumenCubicBezier(x1: 0.32, y1: 0.72, x2: 0, y2: 1))
     #expect(LumenMotion.emphasizedEasing == LumenCubicBezier(x1: 0.22, y1: 1, x2: 0.36, y2: 1))
@@ -208,6 +204,14 @@ import Testing
     #expect(LumenButtonMetrics.resolve(.sm, density: .regular).minHeight == 36)
     #expect(LumenButtonMetrics.resolve(.md, density: .regular).minHeight == 44)
     #expect(LumenButtonMetrics.resolve(.lg, density: .regular).minHeight == 52)
+}
+
+@MainActor
+@Test func cardsAndStatusBarsAcceptProductSurfaceConfiguration() {
+    _ = LumenCard(padding: .lg, radius: .size2xl) {
+        Text("Product card")
+    }
+    _ = LumenStatusBar("Ready", tone: .success, systemName: "checkmark.seal.fill")
 }
 
 @Test func iconMetricsStayConsistentAndAccessible() {

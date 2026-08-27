@@ -431,25 +431,29 @@ public struct LumenStatusBar<Trailing: View>: View {
     @Environment(\.lumenTheme) private var theme
 
     private let message: LocalizedStringKey
+    private let systemName: String?
     private let tone: LumenMetricTone
     private let trailing: Trailing
 
     public init(
         _ message: LocalizedStringKey,
         tone: LumenMetricTone = .neutral,
+        systemName: String? = nil,
         @ViewBuilder trailing: () -> Trailing
     ) {
         self.message = message
         self.tone = tone
+        self.systemName = systemName
         self.trailing = trailing()
     }
 
     public var body: some View {
         HStack(spacing: LumenSpacing.sm) {
-            Circle()
-                .fill(metricColor(tone, theme: theme))
-                .frame(width: 7, height: 7)
-                .accessibilityHidden(true)
+            LumenIcon(
+                systemName: systemName ?? defaultSystemName,
+                size: .sm,
+                color: metricColor(tone, theme: theme)
+            )
 
             Text(message)
                 .lineLimit(1)
@@ -465,11 +469,25 @@ public struct LumenStatusBar<Trailing: View>: View {
         .background(theme.colors.surfaceMuted)
         .accessibilityElement(children: .contain)
     }
+
+    private var defaultSystemName: String {
+        switch tone {
+        case .accent, .brand: "info.circle.fill"
+        case .danger: "xmark.octagon.fill"
+        case .neutral: "circle.fill"
+        case .success: "checkmark.circle.fill"
+        case .warning: "exclamationmark.triangle.fill"
+        }
+    }
 }
 
 public extension LumenStatusBar where Trailing == EmptyView {
-    init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral) {
-        self.init(message, tone: tone) {
+    init(
+        _ message: LocalizedStringKey,
+        tone: LumenMetricTone = .neutral,
+        systemName: String? = nil
+    ) {
+        self.init(message, tone: tone, systemName: systemName) {
             EmptyView()
         }
     }

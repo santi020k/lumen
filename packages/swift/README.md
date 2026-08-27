@@ -73,13 +73,29 @@ product palettes. If a stored System/Light/Dark preference is application-owned,
 semantic values without forcing SwiftUI's appearance:
 
 ```swift
+let productPalette = LumenColors.light.overriding(
+    brand: productAccent,
+    brandSolid: productAccent,
+    brandSoft: productAccent.opacity(0.14)
+)
+let productTheme = LumenTheme(colors: productPalette, scheme: .light)
+
 AppRoot()
-    .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
+    .lumenTheme(
+        productTheme,
+        enforceColorScheme: selectedAppearance != .system,
+        applyTint: !applicationOwnsTint
+    )
 ```
 
 Apply the modifier to every independent scene that presents Lumen content, including macOS window,
 settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`, system appearance
-changes remain application-owned while Lumen components read the supplied palette.
+changes remain application-owned while Lumen components read the supplied palette. With
+`applyTint: false`, Lumen does not replace an application-owned native tint.
+
+`LumenSurface` and `LumenCard` expose semantic padding and radius options. The larger `.xl`,
+`.size2xl`, and `.size3xl` radii support app-owned mobile cards and media surfaces without literal
+corner values.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
 FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker, Slider,
