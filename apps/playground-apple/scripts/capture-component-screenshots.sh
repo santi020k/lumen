@@ -53,7 +53,7 @@ xcrun simctl install "${device_id}" "${app_path}"
 for component in "${components[@]}"; do
   slug="$(printf '%s' "${component}" | tr '[:upper:] ' '[:lower:]-')"
   xcrun simctl terminate "${device_id}" "${bundle_id}" 2>/dev/null || true
-  xcrun simctl launch "${device_id}" "${bundle_id}" --component "${component}"
+  xcrun simctl launch "${device_id}" "${bundle_id}" --dark --component "${component}"
   # Allow SwiftUI layout and the generated icon asset catalog to settle before capture.
   sleep 2
   xcrun simctl io "${device_id}" screenshot "${output_dir}/${slug}.png"
