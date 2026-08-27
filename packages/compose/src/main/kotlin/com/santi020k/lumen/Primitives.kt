@@ -86,14 +86,18 @@ enum class LumenSurfacePadding(val value: Dp) {
     None(0.dp),
     Sm(LumenSpacing.Sm),
     Md(LumenSpacing.Md),
-    Lg(LumenSpacing.Lg)
+    Lg(LumenSpacing.Lg),
+    Xl(LumenSpacing.Xl)
 }
 
 enum class LumenSurfaceRadius(val value: Dp) {
     None(0.dp),
     Sm(LumenRadius.Sm),
     Md(LumenRadius.Md),
-    Lg(LumenRadius.Lg)
+    Lg(LumenRadius.Lg),
+    Xl(LumenRadius.Xl),
+    Size2xl(LumenRadius.Size2xl),
+    Size3xl(LumenRadius.Size3xl)
 }
 
 enum class LumenSurfaceTone {

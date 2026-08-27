@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -68,6 +67,14 @@ fun lumenMetricColor(colors: LumenColorPalette, tone: LumenMetricTone): Color = 
     LumenMetricTone.Neutral -> colors.inkMuted
     LumenMetricTone.Success -> colors.success
     LumenMetricTone.Warning -> colors.warning
+}
+
+internal fun lumenStatusBarIconName(tone: LumenMetricTone): LumenIconName = when (tone) {
+    LumenMetricTone.Accent, LumenMetricTone.Brand -> LumenIconName.Info
+    LumenMetricTone.Danger -> LumenIconName.OctagonX
+    LumenMetricTone.Neutral -> LumenIconName.Circle
+    LumenMetricTone.Success -> LumenIconName.CircleCheck
+    LumenMetricTone.Warning -> LumenIconName.TriangleAlert
 }
 
 fun lumenBannerPalette(
@@ -327,6 +334,7 @@ fun LumenStatusBar(
     message: String,
     modifier: Modifier = Modifier,
     tone: LumenMetricTone = LumenMetricTone.Neutral,
+    iconName: LumenIconName? = null,
     trailing: (@Composable () -> Unit)? = null
 ) {
     val colors = LocalLumenTheme.current.colors
@@ -340,11 +348,10 @@ fun LumenStatusBar(
         horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(
-            modifier = Modifier
-                .size(7.dp)
-                .clip(CircleShape)
-                .background(lumenMetricColor(colors, tone))
+        LumenIcon(
+            name = iconName ?: lumenStatusBarIconName(tone),
+            size = LumenIconSize.Sm,
+            tint = lumenMetricColor(colors, tone)
         )
         Text(
             text = message,

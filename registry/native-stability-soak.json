@@ -12,7 +12,7 @@
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
-      "sha256": "3c635cbf18b5a8cbc0784d71602c52563db35320357506b51af2b1ed1c7a1d77"
+      "sha256": "c2e177ee040d0c03ba14cc2c38ad43400691922519f41fa9bf5e596804f857c0"
     },
     "wear": {
       "path": "packages/compose/wear/api/wear.api",

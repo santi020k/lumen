@@ -3282,7 +3282,10 @@ public final class com/santi020k/lumen/LumenRadius {
 	public final fun getFull-D9Ej5fM ()F
 	public final fun getLg-D9Ej5fM ()F
 	public final fun getMd-D9Ej5fM ()F
+	public final fun getSize2xl-D9Ej5fM ()F
+	public final fun getSize3xl-D9Ej5fM ()F
 	public final fun getSm-D9Ej5fM ()F
+	public final fun getXl-D9Ej5fM ()F
 }
 
 public final class com/santi020k/lumen/LumenRangeDatum {
@@ -3390,6 +3393,7 @@ public final class com/santi020k/lumen/LumenSurfacePadding : java/lang/Enum {
 	public static final field Md Lcom/santi020k/lumen/LumenSurfacePadding;
 	public static final field None Lcom/santi020k/lumen/LumenSurfacePadding;
 	public static final field Sm Lcom/santi020k/lumen/LumenSurfacePadding;
+	public static final field Xl Lcom/santi020k/lumen/LumenSurfacePadding;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getValue-D9Ej5fM ()F
 	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenSurfacePadding;
@@ -3400,7 +3404,10 @@ public final class com/santi020k/lumen/LumenSurfaceRadius : java/lang/Enum {
 	public static final field Lg Lcom/santi020k/lumen/LumenSurfaceRadius;
 	public static final field Md Lcom/santi020k/lumen/LumenSurfaceRadius;
 	public static final field None Lcom/santi020k/lumen/LumenSurfaceRadius;
+	public static final field Size2xl Lcom/santi020k/lumen/LumenSurfaceRadius;
+	public static final field Size3xl Lcom/santi020k/lumen/LumenSurfaceRadius;
 	public static final field Sm Lcom/santi020k/lumen/LumenSurfaceRadius;
+	public static final field Xl Lcom/santi020k/lumen/LumenSurfaceRadius;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getValue-D9Ej5fM ()F
 	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenSurfaceRadius;
@@ -3529,7 +3536,7 @@ public final class com/santi020k/lumen/SelectionComponentsKt {
 public final class com/santi020k/lumen/SharedComponentsKt {
 	public static final fun LumenAlert (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenAlertVariant;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenAvatar (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/String;Lcom/santi020k/lumen/LumenAvatarSize;Ljava/lang/String;Landroidx/compose/runtime/Composer;II)V
-	public static final fun LumenCard (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenCardVariant;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenCard (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenCardVariant;Lcom/santi020k/lumen/LumenSurfacePadding;Lcom/santi020k/lumen/LumenSurfaceRadius;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenProgress (FLandroidx/compose/ui/Modifier;FLjava/lang/String;Landroidx/compose/runtime/Composer;II)V
 	public static final fun lumenCardPalette (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenCardVariant;)Lcom/santi020k/lumen/LumenCardPalette;
 }
@@ -3540,7 +3547,7 @@ public final class com/santi020k/lumen/StructuredComponentsKt {
 	public static final fun LumenListRow (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenSectionHeader (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenStat (Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenMetricTone;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
-	public static final fun LumenStatusBar (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenMetricTone;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenStatusBar-BR_IRG0 (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenMetricTone;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun lumenBannerPalette (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenBannerVariant;)Lcom/santi020k/lumen/LumenBannerPalette;
 	public static final fun lumenMetricColor (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenMetricTone;)J
 }
