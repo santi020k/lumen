@@ -76,9 +76,12 @@ The package-candidate guard also packs the local React Native package, installs 
 legacy peer resolution into a clean temporary consumer at the supported Expo peer versions, verifies
 the published files and peer metadata, and compiles representative component usage under strict
 TypeScript. Separate native guards install the same packed artifact in a clean Expo 57 consumer,
-generate native projects, and require an Android debug APK and an unsigned iOS Simulator application
-from Gradle and Xcode respectively. This closes the React Native artifact-distribution gate. A signed
-Roadscore EAS build remains real-product evidence rather than package-shape evidence.
+exercise controlled Picker and Slider state plus Gauge output, generate native projects, and require
+an Android debug APK and an unsigned iOS Simulator application from Gradle and Xcode respectively.
+The public-release guard preserves the historical fixture for 0.5.x, before those controls entered
+the React Native package, and enables the expanded fixture for 0.6.0 and newer. This closes the React
+Native artifact-distribution gate. A signed Roadscore EAS build remains real-product evidence rather
+than package-shape evidence.
 
 Evidence:
 
@@ -92,6 +95,7 @@ pnpm run check:react-native-native-release:ios -- --version 0.5.0
 
 The two release commands also pass against the public `0.5.0` npm artifact, producing a clean
 Android debug APK and unsigned iOS Simulator application without a workspace package substitution.
+The local candidate commands pass with the expanded value-control fixture on both platforms.
 
 ### ContracTrack native consumers
 

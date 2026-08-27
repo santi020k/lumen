@@ -110,19 +110,22 @@ Individual features that do not yet meet the adapter's Beta support bar should b
 - Theme, Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider, and Spinner are
   implemented in all three native adapters. The shared icon catalog renders the same Lumen-managed
   geometry across platforms while native icon escape hatches remain available.
-- ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup,
-  SegmentedControl, NavigationBar, Chip, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
-  Illustration, Image, Disclosure,
-  Avatar, EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
-  adapters with shared semantic contracts.
+- ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField,
+  Picker, Slider, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Card, Alert, Toast, Progress,
+  Skeleton, Graphic, Backdrop, Illustration, Image, Sparkline, LineChart, BarChart, PieChart,
+  ScatterChart, Heatmap, RangeChart, ComboChart, Disclosure, Avatar, EmptyState, ListRow, Banner,
+  Stat, SectionHeader, StatusBar, Gauge, AlertDialog, Sheet, Menu, ShareButton, and NavigationBar are
+  also implemented in all three native adapters with shared semantic contracts.
 - Experimental PhoneInput contracts are available in React Native, SwiftUI on iOS and macOS, and
   Compose with shared country, national-number, validity, and E.164 semantics. They are not part of
   the supported Lumen 2 surface yet and remain intentionally absent on wearable and television
   surfaces.
-- Picker, Slider, Gauge, DateField, and DateRangeField are available in SwiftUI and Compose, where
-  stable dependency-free native controls exist. The platform tier includes RefreshControl for
-  React Native, FloatingActionButton for Compose, and ShortcutRecorder
-  and SymbolPicker on macOS.
+- Picker, Slider, Gauge, DateField, and DateRangeField share controlled contracts across React
+  Native, SwiftUI, and Compose. The Apple and Android adapters use platform-native controls; React
+  Native provides dependency-free accessible semantics. The platform tier includes RefreshControl,
+  CollapsibleNavigationBar, and NavigationAccessory for React Native; FloatingActionButton,
+  NavigationBarAccessory, and AdaptiveNavigationScaffold for Compose; and ShortcutRecorder,
+  SymbolPicker, TabAccessory, and TabBarMinimization for Apple platforms.
 - NavigationBar provides controlled peer-destination selection. Navigation stacks, history, deep
   links, window scenes, sheets, popovers, and system menus remain application-owned.
 - The executable checks and manual hardware matrix live in

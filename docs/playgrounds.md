@@ -8,9 +8,10 @@ scripts, while normal launches add category discovery, interactive patterns, and
 Each gallery is generated from the current shared and platform-specific contract registry rather
 than a hand-maintained component total. The galleries cover semantic Card variants, multiline and
 grouped forms, chips, action groups, transient feedback, metrics, rows, empty states, and light/dark
-theme behavior. Compose and Apple additionally exercise Picker, Slider, and Gauge. The galleries
-also demonstrate React Native pull-to-refresh, the Compose floating action button, the Apple date
-field, and two intentionally macOS-specific controls.
+theme behavior. Every phone gallery exercises Picker, Slider, Gauge, DateField, and DateRangeField
+through its platform implementation. The galleries also demonstrate React Native pull-to-refresh,
+the Compose floating action button and adaptive navigation scaffold, Apple tab accessories, and two
+intentionally macOS-specific controls.
 
 The native Apple and Android galleries are also prepared as one public **Lumen Playground** product.
 See [Publishing Lumen Playground](playground-publication.md) for listing copy, shared assets,
@@ -28,7 +29,9 @@ pnpm install
 ```
 
 Use Node.js 22.19 or newer. The Apple playground additionally needs macOS and Xcode. The Android
-playground needs Android Studio, Android SDK 37, and JDK 17 or newer.
+playground needs Android Studio, Android SDK 37, and JDK 21. The packed React Native Android smoke
+test also supports Android Studio's newer bundled JDK by enabling the native access required by
+Expo's CMake configuration step.
 
 Choose one platform below after the installation completes. You do not need an Expo, Apple
 Developer, or Google Play account to run the local galleries.

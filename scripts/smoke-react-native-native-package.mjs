@@ -37,6 +37,15 @@ if (releaseVersion) {
   )
 }
 
+const [releaseMajor = 0, releaseMinor = 0] = releaseVersion
+  ? releaseVersion.split('.').map(Number)
+  : []
+
+// These controls enter the public React Native line in the pending 0.6.0 minor.
+const supportsSharedValueControls = releaseVersion === undefined
+  || releaseMajor > 0
+  || releaseMinor >= 6
+
 if (requestedPlatform === 'ios') {
   assert.equal(process.platform, 'darwin', 'The iOS native package smoke test requires macOS')
 }
@@ -46,6 +55,27 @@ const commandEnvironment = {
   CI: '1',
   COCOAPODS_DISABLE_STATS: 'true',
   NODE_ENV: 'production'
+}
+
+if (requestedPlatform === 'android') {
+  const javaExecutable = commandEnvironment.JAVA_HOME
+    ? join(commandEnvironment.JAVA_HOME, 'bin', 'java')
+    : 'java'
+
+  const javaProbe = spawnSync(javaExecutable, ['-version'], {
+    encoding: 'utf8',
+    env: commandEnvironment,
+    stdio: 'pipe'
+  })
+
+  const javaVersion = /version "(\d+)/.exec(`${javaProbe.stdout}${javaProbe.stderr}`)?.[1]
+
+  if (javaProbe.status === 0 && javaVersion && Number(javaVersion) >= 24) {
+    commandEnvironment.JAVA_TOOL_OPTIONS = [
+      commandEnvironment.JAVA_TOOL_OPTIONS,
+      '--enable-native-access=ALL-UNNAMED'
+    ].filter(Boolean).join(' ')
+  }
 }
 
 const run = (command, arguments_, cwd = repositoryRoot) => {
@@ -229,13 +259,54 @@ registerRootComponent(App)
 
   await mkdir(join(consumerDirectory, 'src'), { recursive: true })
 
+  const valueControlImports = supportsSharedValueControls
+    ? `  LumenGauge,
+  LumenPicker,
+  LumenSlider,
+`
+    : ''
+
+  const valueControlState = supportsSharedValueControls
+    ? `  const [region, setRegion] = useState('americas')
+  const [minimumSpeed, setMinimumSpeed] = useState(2_400)
+`
+    : ''
+
+  const valueControlMarkup = supportsSharedValueControls
+    ? `        <LumenPicker
+          label="Deployment region"
+          value={region}
+          options={[
+            { label: 'Americas', value: 'americas' },
+            { label: 'Europe', value: 'europe' }
+          ]}
+          onValueChange={setRegion}
+        />
+        <LumenSlider
+          label="Minimum speed"
+          value={minimumSpeed}
+          min={1_000}
+          max={5_000}
+          step={100}
+          valueLabel={\`\${minimumSpeed} RPM\`}
+          onValueChange={setMinimumSpeed}
+        />
+        <LumenGauge
+          label="Platform readiness"
+          value={57}
+          valueLabel="57 shared"
+          tone="success"
+        />
+`
+    : ''
+
   await writeFile(
     join(consumerDirectory, 'src', 'App.tsx'),
     `import { type ReactElement, useState } from 'react'
 
 import {
   LumenButton,
-  LumenProvider,
+${valueControlImports}  LumenProvider,
   LumenSurface,
   LumenText,
   LumenTextField,
@@ -245,6 +316,7 @@ import {
 export default function App(): ReactElement {
   const [enabled, setEnabled] = useState(false)
   const [name, setName] = useState('')
+${valueControlState}
 
   return (
     <LumenProvider scheme="light">
@@ -257,7 +329,7 @@ export default function App(): ReactElement {
           onChangeText={setName}
         />
         <LumenToggle label="Enabled" value={enabled} onValueChange={setEnabled} />
-        <LumenButton onPress={() => setEnabled(true)}>Continue</LumenButton>
+${valueControlMarkup}        <LumenButton onPress={() => setEnabled(true)}>Continue</LumenButton>
       </LumenSurface>
     </LumenProvider>
   )
