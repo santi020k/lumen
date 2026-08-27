@@ -31,8 +31,51 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  classify:
+    name: Classify release surfaces
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      compose: ${{ steps.paths.outputs.compose }}
+      swift: ${{ steps.paths.outputs.swift }}
+      web: ${{ steps.paths.outputs.web }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Classify changed paths
+        id: paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            printf 'web=true\nswift=true\ncompose=true\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          if grep -Eq '^(packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|apps/(docs|next-smoke|playground-react-native|templates)/|registry/release-manifest\.json$|scripts/(generate-release-manifest|smoke-consumer-packages|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+            echo "web=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "web=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(Package\.swift$|packages/(swift|tokens)/|apps/playground-apple/|tokens/|registry/(native-device-evidence|native-stability-soak|swift-api-baseline|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+            echo "swift=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "swift=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(packages/(compose|tokens)/|apps/playground-android/|tokens/|registry/(native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+            echo "compose=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "compose=false" >> "$GITHUB_OUTPUT"
+          fi
+
   web:
     name: Packed npm consumer
+    needs: classify
+    if: needs.classify.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -50,6 +93,8 @@ jobs:
 
   swift:
     name: Swift package consumer
+    needs: classify
+    if: needs.classify.outputs.swift == 'true'
     runs-on: macos-26
     timeout-minutes: 35
     steps:
@@ -74,6 +119,8 @@ jobs:
 
   compose:
     name: Compose source and app consumer
+    needs: classify
+    if: needs.classify.outputs.compose == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

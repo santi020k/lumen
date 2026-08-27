@@ -18,10 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      native: ${{ steps.paths.outputs.native }}
+      apple: ${{ steps.paths.outputs.apple }}
+      android: ${{ steps.paths.outputs.android }}
       compatibility: ${{ steps.paths.outputs.compatibility }}
+      dependencies: ${{ steps.paths.outputs.dependencies }}
       mcp: ${{ steps.paths.outputs.mcp }}
+      native-contracts: ${{ steps.paths.outputs.native-contracts }}
       playwright: ${{ steps.paths.outputs.playwright }}
+      react-native-captures: ${{ steps.paths.outputs.react-native-captures }}
       release-pr: ${{ steps.release.outputs.value }}
       skip-changelog: ${{ steps.release.outputs.skip-changelog }}
     steps:
@@ -47,38 +51,58 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect Playwright-related changes
+      - name: Classify changed paths
         id: paths
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
-          if grep -Eq '^(apps/next-smoke/|apps/templates/|packages/|registry/|scripts/|eslint\.config\.js$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig[^/]*\.json$|turbo\.json$|vitest\.config\.ts$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/(next-smoke|templates)/|packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|registry/|scripts/(check-bundle-size|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|sync-registry|validate-registry)\.mjs$|eslint\.config\.js$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig[^/]*\.json$|turbo\.json$|vitest\.config\.ts$)' <<< "$changed_files"; then
             echo "compatibility=true" >> "$GITHUB_OUTPUT"
           else
             echo "compatibility=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(packages/(core|lumen|mcp)/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig[^/]*\.json$|turbo\.json$|vitest\.config\.ts$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(astro|core|elements|lumen|mcp|react|tokens)/|tokens/|registry/lumen\.registry\.json$|llms\.txt$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig[^/]*\.json$|turbo\.json$|vitest\.config\.ts$)' <<< "$changed_files"; then
             echo "mcp=true" >> "$GITHUB_OUTPUT"
           else
             echo "mcp=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/docs/|apps/playground-react-native/|packages/|tests/a11y/|tests/visual/|playwright(\.[^/]*)?\.config\.ts$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/(docs|templates)/|packages/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)/|tests/a11y/|tests/visual/|playwright(\.[^/]*)?\.config\.ts$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
             echo "playwright=true" >> "$GITHUB_OUTPUT"
           else
             echo "playwright=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/playground-(android|apple)/|packages/(compose|react-native|swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
-            echo "native=true" >> "$GITHUB_OUTPUT"
+          if grep -Eq '^(apps/playground-react-native/|packages/(core|react-native|tokens)/|tokens/|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/generate-platform-tokens\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+            echo "react-native-captures=true" >> "$GITHUB_OUTPUT"
           else
-            echo "native=false" >> "$GITHUB_OUTPUT"
+            echo "react-native-captures=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(apps/playground-(android|apple|react-native)/|packages/(compose|core|react-native|swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+            echo "native-contracts=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "native-contracts=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(apps/playground-apple/|packages/(swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+            echo "apple=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "apple=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(apps/playground-android/|packages/(compose|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-native-api-baseline|generate-platform-tokens)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+            echo "android=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "android=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '^(package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|apps/[^/]+/package\.json$|packages/[^/]+/package\.json$)' <<< "$changed_files"; then
+            echo "dependencies=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dependencies=false" >> "$GITHUB_OUTPUT"
           fi
 
   native-apple:
     name: SwiftUI package
     needs: classify
-    if: needs.classify.outputs.native == 'true'
+    if: needs.classify.outputs.apple == 'true'
     runs-on: macos-15
     timeout-minutes: 45
     steps:
@@ -131,7 +155,7 @@ jobs:
   native-android:
     name: Compose library
     needs: classify
-    if: needs.classify.outputs.native == 'true'
+    if: needs.classify.outputs.android == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -262,6 +286,31 @@ jobs:
       - name: Run cross-browser interaction contracts
         run: pnpm run test:interactions
 
+  react-native-captures:
+    name: React Native captures
+    needs: classify
+    if: >-
+      ${{
+        needs.classify.outputs.release-pr != 'true' &&
+        needs.classify.outputs.react-native-captures == 'true'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Regenerate and compare React Native component captures
         run: |
           pnpm --filter @santi020k/lumen-react-native run build
@@ -362,6 +411,8 @@ jobs:
       SYNCKIT_TIMEOUT: 120000
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+      TURBO_SCM_HEAD: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
@@ -390,36 +441,66 @@ jobs:
 
       - name: Run CI checks
         if: needs.classify.outputs.release-pr != 'true'
-        run: pnpm exec turbo run build typecheck lint test
+        run: pnpm exec turbo run build typecheck lint test --affected
 
       - name: Assert the generated MCP snapshot is committed
-        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
+        if: >-
+          ${{
+            needs.classify.outputs.release-pr != 'true' &&
+            needs.classify.outputs.mcp == 'true' &&
+            matrix.node-version == '22.x'
+          }}
         run: git diff --exit-code -- packages/mcp/data/lumen-data.json
 
       - name: Run MCP quality evaluations
-        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
+        if: >-
+          ${{
+            needs.classify.outputs.release-pr != 'true' &&
+            needs.classify.outputs.mcp == 'true' &&
+            matrix.node-version == '22.x'
+          }}
         run: pnpm run check:mcp-evaluation
 
       - name: Install Playwright Chromium
-        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
+        if: >-
+          ${{
+            needs.classify.outputs.release-pr != 'true' &&
+            needs.classify.outputs.playwright == 'true' &&
+            matrix.node-version == '22.x'
+          }}
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run accessibility checks
-        if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
+        if: >-
+          ${{
+            needs.classify.outputs.release-pr != 'true' &&
+            needs.classify.outputs.playwright == 'true' &&
+            matrix.node-version == '22.x'
+          }}
         run: pnpm run test:a11y
 
       - name: Repository checks
         if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'
         run: |
-          pnpm exec turbo run //#lint:repo //#lint:spell //#lint:knip //#check:registry
-          pnpm run check:bundle-size
-          pnpm run check:framework-contracts
-          pnpm run check:native-contracts
-          pnpm run check:native-captures
-          pnpm run check:platform-tokens
-          pnpm run check:security
-          pnpm run check:publish-dry-run
-          pnpm run check:consumer-packages
+          node scripts/check-affected-files.mjs
+
+          if [[ "${{ needs.classify.outputs.compatibility }}" == "true" ]]; then
+            pnpm exec turbo run //#lint:knip //#check:registry
+            pnpm run check:bundle-size
+            pnpm run check:framework-contracts
+            pnpm run check:publish-dry-run
+            pnpm run check:consumer-packages
+          fi
+
+          if [[ "${{ needs.classify.outputs.native-contracts }}" == "true" ]]; then
+            pnpm run check:native-contracts
+            pnpm run check:native-captures
+            pnpm run check:platform-tokens
+          fi
+
+          if [[ "${{ needs.classify.outputs.dependencies }}" == "true" ]]; then
+            pnpm run check:security
+          fi
 
       - name: Validate release packages
         if: needs.classify.outputs.release-pr == 'true'

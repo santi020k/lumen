@@ -28,6 +28,7 @@ The docs app is the fastest way to inspect components while working.
 Common commands:
 
 ```bash
+pnpm run check:affected
 pnpm run build
 pnpm run typecheck
 pnpm run test
@@ -35,7 +36,16 @@ pnpm run lint
 pnpm run validate
 ```
 
-Use `pnpm run validate` for broad changes, release work, and final confidence before publishing.
+Use `pnpm run check:affected` for the normal development loop. It compares the current branch with
+`origin/main`, runs build, typecheck, lint, and tests only for changed packages and their downstream
+consumers, then checks changed repository-level files. The pre-push hook uses the same command.
+
+Set `TURBO_SCM_BASE` and, when needed, `TURBO_SCM_HEAD` to compare another range. Use the individual
+`build:affected`, `typecheck:affected`, `test:affected`, and `lint:affected` commands when iterating
+on one kind of check.
+
+Use `pnpm run validate` for broad cross-package changes, release work, and final confidence before
+publishing. It intentionally remains exhaustive.
 
 ## Release Notes
 

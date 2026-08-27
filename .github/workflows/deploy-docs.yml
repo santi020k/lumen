@@ -5,7 +5,15 @@ on:
     branches: [main]
     paths:
       - "apps/docs/**"
-      - "packages/**"
+      - "apps/playground-react-native/**"
+      - "packages/astro/**"
+      - "packages/core/**"
+      - "packages/elements/**"
+      - "packages/icons-brand/**"
+      - "packages/lumen/**"
+      - "packages/react-native/**"
+      - "packages/templates/**"
+      - "packages/tokens/**"
       - ".github/workflows/deploy-docs.yml"
       - "package.json"
       - "pnpm-lock.yaml"
