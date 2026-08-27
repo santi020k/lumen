@@ -17,7 +17,7 @@ themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup
 Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
 SettingsRow, SearchField, DateField, DateRangeField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
 Illustration, and Disclosure implementations.
-The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
+The structured tier also includes EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
 React Native-specific pull-to-refresh indicator using the active semantic theme.
 `useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-

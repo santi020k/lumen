@@ -14,6 +14,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.accessibility.enableAccessibilityChecks
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
@@ -88,6 +89,37 @@ class AccessibilityTest {
         composeRule.onNodeWithText("Continue")
             .assertHasClickAction()
             .assertIsEnabled()
+    }
+
+    @Test
+    fun alertDialogDisablesConfirmAndKeepsCancelReachableWhileLoading() {
+        composeRule.setContent {
+            LumenTheme {
+                LumenAlertDialog(
+                    visible = true,
+                    title = "Delete project",
+                    description = "This cannot be undone.",
+                    confirmLabel = "Delete",
+                    confirmLoading = true,
+                    onConfirm = {},
+                    onDismiss = {}
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("Delete project").assertExists()
+        composeRule.onNodeWithText("This cannot be undone.").assertExists()
+        composeRule.onNodeWithText("Delete")
+            .assertIsNotEnabled()
+            .assert(
+                SemanticsMatcher.expectValue(
+                    SemanticsProperties.StateDescription,
+                    "Loading"
+                )
+            )
+        composeRule.onNodeWithText("Cancel")
+            .assertIsEnabled()
+            .assertHasClickAction()
     }
 
     @Test

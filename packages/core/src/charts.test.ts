@@ -347,6 +347,22 @@ describe('Lumen chart helpers', () => {
     expect(scatter.points[0]?.yCoordinate).toBeCloseTo(50)
   })
 
+  test('excludes negative bubble sizes from radius scaling', () => {
+    const scatter = createLumenScatterGeometry([{
+      data: [
+        { id: 'invalid', size: -1_000, x: 0, y: 1 },
+        { id: 'small', size: 1, x: 1, y: 2 },
+        { id: 'large', size: 2, x: 2, y: 3 }
+      ],
+      id: 'points',
+      label: 'Points'
+    }], { maximumRadius: 18, minimumRadius: 4 })
+
+    expect(scatter.points.find(point => point.id === 'invalid')?.radius).toBe(4)
+    expect(scatter.points.find(point => point.id === 'small')?.radius).toBe(4)
+    expect(scatter.points.find(point => point.id === 'large')?.radius).toBe(18)
+  })
+
   test('splits range bands around missing intervals', () => {
     const range = createLumenRangeGeometry([
       { high: 8, low: 2, x: 'Mon' },

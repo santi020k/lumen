@@ -67,6 +67,8 @@ import com.santi020k.lumen.LumenDateRangeSelection
 import com.santi020k.lumen.LumenDivider
 import com.santi020k.lumen.LumenDisclosure
 import com.santi020k.lumen.LumenEmptyState
+import com.santi020k.lumen.LumenErrorState
+import com.santi020k.lumen.LumenErrorStateKind
 import com.santi020k.lumen.LumenFieldGroup
 import com.santi020k.lumen.LumenFloatingActionButton
 import com.santi020k.lumen.LumenFloatingActionButtonIntent
@@ -263,7 +265,9 @@ private val sections = listOf(
     PlaygroundSection(
         title = "Data display",
         description = "Cards, avatars, metrics, headers, and rows compose into product content.",
-        names = setOf("Card", "Avatar", "Empty state", "List row", "Stat", "Gauge", "Section header")
+        names = setOf(
+            "Card", "Avatar", "Empty state", "Error state", "List row", "Stat", "Gauge", "Section header"
+        )
     ),
     PlaygroundSection(
         title = "Data visualization",
@@ -1234,6 +1238,17 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
             actions = {
                 LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
                     Text("View release")
+                }
+            }
+        )
+        LumenErrorState(
+            title = "Could not load projects",
+            description = "Check your connection and try again.",
+            kind = LumenErrorStateKind.Offline,
+            reference = "REQ-4F82",
+            actions = {
+                LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
+                    Text("Try again")
                 }
             }
         )

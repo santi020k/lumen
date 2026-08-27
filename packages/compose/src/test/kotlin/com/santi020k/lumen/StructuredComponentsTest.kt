@@ -1,10 +1,24 @@
 package com.santi020k.lumen
 
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class StructuredComponentsTest {
+    @Test
+    fun errorStateAnnouncementsMapToNativeLiveRegions() {
+        assertEquals(
+            LiveRegionMode.Assertive,
+            lumenErrorStateLiveRegion(LumenErrorStateAnnouncement.Assertive)
+        )
+        assertEquals(null, lumenErrorStateLiveRegion(LumenErrorStateAnnouncement.Off))
+        assertEquals(
+            LiveRegionMode.Polite,
+            lumenErrorStateLiveRegion(LumenErrorStateAnnouncement.Polite)
+        )
+    }
+
     @Test
     fun statusBarTonesMapToVisibleSemanticIcons() {
         assertEquals(LumenIconName.Info, lumenStatusBarIconName(LumenMetricTone.Accent))

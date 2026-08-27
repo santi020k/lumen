@@ -8,12 +8,17 @@ import {
   type ViewProps
 } from 'react-native'
 
+import { LumenIllustration } from './content-components.js'
 import { type LumenIconName } from './icons.generated.js'
 import { LumenBadge, LumenIcon } from './primitives.js'
 import {
   type LumenBannerVariant,
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
   type LumenMetricTone,
   resolveLumenBannerColors,
+  resolveLumenErrorStateLiveRegion,
   resolveLumenMetricColor,
   resolveLumenStatusBarIconName
 } from './structured-recipes.js'
@@ -102,6 +107,142 @@ export const LumenEmptyState = ({
           null}
         {children}
       </View>
+      {actions ? <View style={{ alignItems: 'center' }}>{actions}</View> : null}
+    </View>
+  )
+}
+
+export interface LumenErrorStateProps extends ViewProps {
+  actions?: ReactNode
+  announcement?: LumenErrorStateAnnouncement
+  description?: string
+  graphic?: ReactNode
+  kind?: LumenErrorStateKind
+  layout?: LumenErrorStateLayout
+  reference?: string
+  referenceLabel?: string
+  ref?: Ref<HostInstance>
+  title: string
+}
+
+const LumenErrorStateGraphic = ({
+  compact,
+  graphic,
+  kind
+}: {
+  compact: boolean
+  graphic: ReactNode | undefined
+  kind: LumenErrorStateKind
+}): ReactNode => {
+  if (graphic !== undefined) return graphic
+
+  return <LumenIllustration size={compact ? 'sm' : 'md'} variant={kind} />
+}
+
+const LumenErrorStateCopy = ({
+  description,
+  reference,
+  referenceLabel,
+  title
+}: {
+  description: string | undefined
+  reference: string | undefined
+  referenceLabel: string
+  title: string
+}): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <View style={{ alignItems: 'center', gap: theme.spacing.sm }}>
+      <Text
+        accessibilityRole="header"
+        style={{
+          color: theme.colors.ink,
+          fontSize: theme.fontSizes.lg,
+          fontWeight: String(
+            theme.fontWeights.semibold
+          ) as TextStyle['fontWeight'],
+          textAlign: 'center'
+        }}
+      >
+        {title}
+      </Text>
+      {description ?
+        (
+          <Text
+            style={{
+              color: theme.colors.inkMuted,
+              fontSize: theme.fontSizes.sm,
+              lineHeight: 20,
+              textAlign: 'center'
+            }}
+          >
+            {description}
+          </Text>
+        ) :
+        null}
+      {reference ?
+        (
+          <Text
+            selectable
+            style={{
+              color: theme.colors.inkSoft,
+              fontFamily: 'monospace',
+              fontSize: theme.fontSizes.xs,
+              textAlign: 'center'
+            }}
+          >
+            {`${referenceLabel}: ${reference}`}
+          </Text>
+        ) :
+        null}
+    </View>
+  )
+}
+
+export const LumenErrorState = ({
+  actions,
+  announcement = 'polite',
+  description,
+  graphic,
+  kind = 'error',
+  layout = 'default',
+  reference,
+  referenceLabel = 'Reference',
+  ref,
+  style,
+  title,
+  ...props
+}: LumenErrorStateProps): ReactElement => {
+  const theme = useLumenTheme()
+  const compact = layout === 'compact'
+
+  return (
+    <View
+      ref={ref}
+      {...props}
+      accessibilityLiveRegion={resolveLumenErrorStateLiveRegion(announcement)}
+      accessibilityRole="summary"
+      style={[
+        {
+          alignItems: 'center',
+          flexGrow: layout === 'page' ? 1 : 0,
+          gap: compact ? theme.spacing.md : theme.spacing.lg,
+          justifyContent: 'center',
+          maxWidth: 520,
+          padding: compact ? theme.spacing.lg : theme.spacing.xl,
+          width: '100%'
+        },
+        style
+      ]}
+    >
+      <LumenErrorStateGraphic compact={compact} graphic={graphic} kind={kind} />
+      <LumenErrorStateCopy
+        description={description}
+        reference={reference}
+        referenceLabel={referenceLabel}
+        title={title}
+      />
       {actions ? <View style={{ alignItems: 'center' }}>{actions}</View> : null}
     </View>
   )

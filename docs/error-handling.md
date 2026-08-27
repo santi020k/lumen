@@ -99,8 +99,42 @@ semantics. Label the region with the visible heading and use the documented `dat
 ## Native applications
 
 Use `LumenAlert` or `LumenBanner` when content remains available. For a blocking collection or page
-failure, compose the platform-native error/offline `LumenIllustration`, a heading, supporting text,
-and Lumen actions in the same centered state layout used by `LumenEmptyState`. Keep retry behavior
-and accessibility announcements in SwiftUI, Compose, or React Native application state. A dedicated
-native `LumenErrorState` should be introduced only after maintained consumers establish a shared
-native contract rather than copying the web API mechanically.
+failure, use the platform-native `LumenErrorState`. It provides error and offline illustrations,
+compact/default/page layouts, safe support references, and native recovery-action slots while the
+application owns retry, cancellation, caching, and stale-data policy.
+
+```tsx
+<LumenErrorState
+  kind="offline"
+  title="Could not load projects"
+  description="Check your connection and try again."
+  reference="REQ-4F82"
+  actions={<LumenButton onPress={retry}>Try again</LumenButton>}
+/>
+```
+
+```swift
+LumenErrorState(
+    "Could not load projects",
+    description: "Check your connection and try again.",
+    kind: .offline,
+    reference: "REQ-4F82"
+) {
+    LumenButton("Try again", action: retry)
+}
+```
+
+```kotlin
+LumenErrorState(
+    title = "Could not load projects",
+    description = "Check your connection and try again.",
+    kind = LumenErrorStateKind.Offline,
+    reference = "REQ-4F82",
+    actions = { LumenButton(onClick = ::retry) { Text("Try again") } }
+)
+```
+
+React Native and Compose default to a polite live region and allow assertive or disabled
+announcements. SwiftUI applications should post one platform accessibility announcement when they
+replace existing content with the error state; the component does not repeatedly announce during
+ordinary view updates on the supported iOS 16 and macOS 13 baseline.

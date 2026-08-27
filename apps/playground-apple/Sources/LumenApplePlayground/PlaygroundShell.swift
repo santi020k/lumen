@@ -128,7 +128,7 @@ enum PlaygroundCatalog {
         "Textarea", "Field group", "Phone input", "Chip", "Badge", "Link",
         "Divider", "Spinner", "Card", "Alert", "Alert dialog", "Progress", "Skeleton", "Disclosure", "Avatar",
         "Toggle", "Settings row", "Checkbox", "Radio group", "Segmented control", "Tabs",
-        "Picker", "Slider", "Date field", "Date range field", "Search field", "Empty state", "List row", "Banner", "Toast", "Stat", "Gauge",
+        "Picker", "Slider", "Date field", "Date range field", "Search field", "Empty state", "Error state", "List row", "Banner", "Toast", "Stat", "Gauge",
         "Section header", "Status bar", "Graphic", "Backdrop", "Illustration", "Image", "Navigation bar",
         "Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart",
         "Sheet", "Menu", "Share button", "Tab bar minimization", "Tab accessory",
@@ -151,7 +151,7 @@ enum PlaygroundCatalog {
             .forms
         case "Badge", "Divider", "Spinner", "Alert", "Alert dialog", "Progress", "Skeleton", "Banner", "Toast":
             .feedback
-        case "Card", "Disclosure", "Avatar", "Empty state", "List row", "Stat", "Gauge", "Section header",
+        case "Card", "Disclosure", "Avatar", "Empty state", "Error state", "List row", "Stat", "Gauge", "Section header",
              "Status bar", "Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap",
              "Range chart", "Combo chart":
             .content

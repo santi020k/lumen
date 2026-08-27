@@ -239,6 +239,7 @@ owned.
 | Disclosure        | `LumenDisclosure`       | `LumenDisclosure`        | `LumenDisclosure`       | Controlled expanded state with native trigger and content semantics           |
 | Avatar            | `LumenAvatar`           | `LumenAvatar`            | `LumenAvatar`           | Native image source, fallback, label, and shared sizes                        |
 | Empty state       | `LumenEmptyState`       | `LumenEmptyState`        | `LumenEmptyState`       | Title, supporting copy, optional graphic, and recovery actions                |
+| Error state       | `LumenErrorState`       | `LumenErrorState`        | `LumenErrorState`       | Error/offline context, safe reference, layouts, and recovery actions           |
 | List row          | `LumenListRow`          | `LumenListRow`           | `LumenListRow`          | Leading identity, flexible content, and trailing actions                      |
 | Banner            | `LumenBanner`           | `LumenBanner`            | `LumenBanner`           | Semantic notice with optional actions and dismissal                           |
 | Stat              | `LumenStat`             | `LumenStat`              | `LumenStat`             | Compact semantic metric with label, value, and detail                         |
@@ -604,7 +605,7 @@ LumenSlider(
 
 ### Shared empty, row, and feedback states
 
-Empty states, list rows, banners, stats, section headers, and status bars share one semantic contract
+Empty states, error states, list rows, banners, stats, section headers, and status bars share one semantic contract
 across React Native, SwiftUI, and Compose. Their graphic and action slots remain native so each app
 can supply a shared Lumen icon or a platform-specific graphic, SF Symbol, or `ImageVector`.
 Status bars pair every tone with a distinct decorative icon so status is not communicated by color
@@ -623,6 +624,15 @@ LumenEmptyState(
     description: "Create a workspace to organize the windows on this Mac."
 ) {
     LumenButton("Create Workspace", action: createWorkspace)
+}
+
+LumenErrorState(
+    "Could not load workspaces",
+    description: "Check your connection and try again.",
+    kind: .offline,
+    reference: "REQ-4F82"
+) {
+    LumenButton("Try again", action: retry)
 }
 
 LumenListRow {

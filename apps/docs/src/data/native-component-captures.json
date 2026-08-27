@@ -192,6 +192,16 @@
       "width": 900
     },
     {
+      "alt": "Error state rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "70b6a151a3ced971c6ba7f6c64332fa070e949785e32142cb7a3a04de7966cd3",
+      "slug": "error-state",
+      "src": "/native-components/android/error-state.webp",
+      "width": 900
+    },
+    {
       "alt": "Field group rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -839,6 +849,16 @@
       "sha256": "ecae37d70e0eae88e517ee3e9185173af61aef3982a80f5cdb50014e4928d3d9",
       "slug": "empty-state",
       "src": "/native-components/apple/empty-state.webp",
+      "width": 900
+    },
+    {
+      "alt": "Error state rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "d9aa2afa77e120ba36f9b7531eef45000f3e4f940575d3733da445a0b8fb7b5b",
+      "slug": "error-state",
+      "src": "/native-components/apple/error-state.webp",
       "width": 900
     },
     {
@@ -1519,6 +1539,16 @@
       "sha256": "63cbca85181471d85299d0336801e36c9c27fde4d2c2b4ca117aac380fe6abf9",
       "slug": "empty-state",
       "src": "/native-components/react-native/empty-state.webp",
+      "width": 900
+    },
+    {
+      "alt": "Error state rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "f472f744b6601bf4022b838bdb13c5b41e977c0ba5066d0046c577e3b2d59878",
+      "slug": "error-state",
+      "src": "/native-components/react-native/error-state.webp",
       "width": 900
     },
     {

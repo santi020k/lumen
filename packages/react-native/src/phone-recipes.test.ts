@@ -1,7 +1,10 @@
 import { getLumenPhoneCountry } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
-import { resolveLumenPhoneInputValue } from './phone-recipes.js'
+import {
+  resolveLumenPhoneControlledValue,
+  resolveLumenPhoneInputValue
+} from './phone-recipes.js'
 
 describe('Lumen React Native phone recipes', () => {
   test('keeps pasted international numbers within the allowed country list', () => {
@@ -22,5 +25,30 @@ describe('Lumen React Native phone recipes', () => {
 
     expect(value.country.regionCode).toBe('US')
     expect(value.country.regionCode).not.toBe(unitedKingdom.regionCode)
+  })
+
+  test('constrains externally controlled values before display', () => {
+    const colombia = getLumenPhoneCountry('CO')
+    const unitedStates = getLumenPhoneCountry('US')
+
+    expect(colombia).toBeDefined()
+    expect(unitedStates).toBeDefined()
+
+    if (!colombia || !unitedStates) return
+
+    const externalValue = resolveLumenPhoneInputValue(
+      [unitedStates],
+      unitedStates,
+      '2125550123',
+      {}
+    )
+    const constrainedValue = resolveLumenPhoneControlledValue(
+      [colombia],
+      externalValue,
+      {}
+    )
+
+    expect(constrainedValue.country.regionCode).toBe('CO')
+    expect(constrainedValue.nationalNumber).toContain('212')
   })
 })

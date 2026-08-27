@@ -4,6 +4,7 @@
 '@santi020k/lumen-core': minor
 '@santi020k/lumen-elements': minor
 '@santi020k/lumen-react': minor
+'@santi020k/lumen-react-native': minor
 ---
 
 Add a shared ErrorState contract and accessible recovery surface for unavailable regions and pages,

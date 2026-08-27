@@ -1271,7 +1271,7 @@ const createLumenScatterPoint = (
   if (numericX === null || !isAvailableLumenChartY(datum.y)) return null
 
   const radius =
-    datum.size === null || datum.size === undefined || !Number.isFinite(datum.size) ?
+    datum.size === null || datum.size === undefined || !Number.isFinite(datum.size) || datum.size < 0 ?
       context.minimumRadius :
       scaleLumenChartValue(
         datum.size, context.sizeDomain, context.minimumRadius, context.maximumRadius
@@ -1318,7 +1318,11 @@ export const createLumenScatterGeometry = (
   )
 
   const xDomain = getLumenChartXDomain(projectedData, xScale, requestedXDomain)
-  const sizes = projectedData.map(datum => datum.size ?? null)
+
+  const sizes = projectedData.map(datum => (
+    datum.size !== undefined && datum.size !== null && datum.size >= 0 ? datum.size : null
+  ))
+
   const sizeDomain = getLumenChartDomain(sizes, false)
   const minimumRadius = Math.max(1, requestedMinimumRadius)
   const maximumRadius = Math.max(minimumRadius, requestedMaximumRadius)

@@ -191,7 +191,7 @@ LumenAdaptiveNavigationScaffold(
 }
 ```
 
-EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
+EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
 with native Compose slots for graphics, actions, and trailing content.
 `LumenCard` accepts shared `padding` and `radius` roles while preserving its extra-large/large
 defaults. `LumenStatusBar` uses a distinct decorative icon for every tone and accepts `iconName`

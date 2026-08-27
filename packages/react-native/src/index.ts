@@ -195,6 +195,8 @@ export {
   type LumenBannerProps,
   LumenEmptyState,
   type LumenEmptyStateProps,
+  LumenErrorState,
+  type LumenErrorStateProps,
   LumenListRow,
   type LumenListRowProps,
   LumenSectionHeader,
@@ -206,6 +208,9 @@ export {
 } from './structured-components.js'
 export {
   type LumenBannerVariant,
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
   type LumenMetricTone
 } from './structured-recipes.js'
 export {

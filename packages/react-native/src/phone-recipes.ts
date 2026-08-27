@@ -25,3 +25,17 @@ export const resolveLumenPhoneInputValue = (
 
   return resolveLumenPhoneNumber(country, allowedCountryInput, options)
 }
+
+export const resolveLumenPhoneControlledValue = (
+  countries: readonly LumenPhoneCountry[],
+  value: LumenPhoneNumber,
+  options: LumenPhoneCountryOptions
+): LumenPhoneNumber => {
+  if (countries.some(country => country.regionCode === value.country.regionCode)) return value
+
+  const fallbackCountry = countries[0]
+
+  return fallbackCountry ?
+    resolveLumenPhoneInputValue(countries, fallbackCountry, value.nationalNumber, options) :
+    value
+}

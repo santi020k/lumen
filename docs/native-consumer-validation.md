@@ -46,7 +46,7 @@ replaces product-local presentation with additional public Lumen components.
 
 The frozen lockfile resolves `@santi020k/lumen-react-native@0.4.0`. The application exercises
 `LumenProvider`, `LumenSurface`, `LumenText`, `LumenButton`, `LumenCard`, `LumenTextField`,
-`LumenTextarea`, `LumenToggle`, `LumenSegmentedControl`, `LumenBadge`, `LumenEmptyState`,
+`LumenTextarea`, `LumenToggle`, `LumenSegmentedControl`, `LumenBadge`, `LumenEmptyState`, `LumenErrorState`,
 `LumenListRow`, `LumenSectionHeader`, and `LumenStat` across home, setup, play, prompt, and result
 flows.
 

@@ -1297,6 +1297,22 @@
       "pathname": "/docs/react-native/components/empty-state",
       "title": "Empty state"
     },
+    "/docs/react-native/components/error-state": {
+      "alt": "Error state — Lumen UI",
+      "description": "Explain an unavailable region or page and offer application-owned recovery.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/error-state",
+      "title": "Error state"
+    },
     "/docs/react-native/components/list-row": {
       "alt": "List row — Lumen UI",
       "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
@@ -2272,6 +2288,22 @@
       ],
       "pathname": "/docs/apple/components/empty-state",
       "title": "Empty state"
+    },
+    "/docs/apple/components/error-state": {
+      "alt": "Error state — Lumen UI",
+      "description": "Explain an unavailable region or page and offer application-owned recovery.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/error-state",
+      "title": "Error state"
     },
     "/docs/apple/components/list-row": {
       "alt": "List row — Lumen UI",
@@ -3360,6 +3392,22 @@
       ],
       "pathname": "/docs/android/components/empty-state",
       "title": "Empty state"
+    },
+    "/docs/android/components/error-state": {
+      "alt": "Error state — Lumen UI",
+      "description": "Explain an unavailable region or page and offer application-owned recovery.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/error-state",
+      "title": "Error state"
     },
     "/docs/android/components/list-row": {
       "alt": "List row — Lumen UI",

@@ -521,6 +521,32 @@ public final class com/santi020k/lumen/LumenElevation {
 	public final fun getResting-D9Ej5fM ()F
 }
 
+public final class com/santi020k/lumen/LumenErrorStateAnnouncement : java/lang/Enum {
+	public static final field Assertive Lcom/santi020k/lumen/LumenErrorStateAnnouncement;
+	public static final field Off Lcom/santi020k/lumen/LumenErrorStateAnnouncement;
+	public static final field Polite Lcom/santi020k/lumen/LumenErrorStateAnnouncement;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenErrorStateAnnouncement;
+	public static fun values ()[Lcom/santi020k/lumen/LumenErrorStateAnnouncement;
+}
+
+public final class com/santi020k/lumen/LumenErrorStateKind : java/lang/Enum {
+	public static final field Error Lcom/santi020k/lumen/LumenErrorStateKind;
+	public static final field Offline Lcom/santi020k/lumen/LumenErrorStateKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenErrorStateKind;
+	public static fun values ()[Lcom/santi020k/lumen/LumenErrorStateKind;
+}
+
+public final class com/santi020k/lumen/LumenErrorStateLayout : java/lang/Enum {
+	public static final field Compact Lcom/santi020k/lumen/LumenErrorStateLayout;
+	public static final field Default Lcom/santi020k/lumen/LumenErrorStateLayout;
+	public static final field Page Lcom/santi020k/lumen/LumenErrorStateLayout;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenErrorStateLayout;
+	public static fun values ()[Lcom/santi020k/lumen/LumenErrorStateLayout;
+}
+
 public final class com/santi020k/lumen/LumenFloatingActionButtonIntent : java/lang/Enum {
 	public static final field Accent Lcom/santi020k/lumen/LumenFloatingActionButtonIntent;
 	public static final field Brand Lcom/santi020k/lumen/LumenFloatingActionButtonIntent;
@@ -3544,6 +3570,7 @@ public final class com/santi020k/lumen/SharedComponentsKt {
 public final class com/santi020k/lumen/StructuredComponentsKt {
 	public static final fun LumenBanner (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenBannerVariant;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenEmptyState (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenErrorState (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenErrorStateKind;Lcom/santi020k/lumen/LumenErrorStateLayout;Lcom/santi020k/lumen/LumenErrorStateAnnouncement;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenListRow (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenSectionHeader (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenStat (Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenMetricTone;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V

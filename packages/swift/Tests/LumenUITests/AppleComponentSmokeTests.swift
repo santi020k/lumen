@@ -209,6 +209,15 @@ private struct AppleComponentCatalogFixture: View {
                     LumenButton("Create", action: {})
                 }
 
+                LumenErrorState(
+                    "Could not load projects",
+                    description: "Check your connection and try again.",
+                    kind: .offline,
+                    reference: "REQ-7F2A"
+                ) {
+                    LumenButton("Try again", action: {})
+                }
+
                 LumenListRow {
                     LumenIcon(systemName: "folder")
                 } content: {

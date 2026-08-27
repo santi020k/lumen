@@ -2510,6 +2510,98 @@ const [phone, setPhone] = useState(() =>
   },
   {
     accessibility:
+      'The title is a heading, recovery actions retain native focus order, and React Native and Compose expose configurable live-region behavior.',
+    category: 'Feedback',
+    examples: {
+      android: `LumenErrorState(
+    title = "Could not load projects",
+    description = "Check your connection and try again.",
+    kind = LumenErrorStateKind.Offline,
+    reference = "REQ-4F82",
+    actions = { LumenButton(onClick = ::retry) { Text("Try again") } }
+)`,
+      apple: `LumenErrorState(
+    "Could not load projects",
+    description: "Check your connection and try again.",
+    kind: .offline,
+    reference: "REQ-4F82"
+) {
+    LumenButton("Try again", action: retry)
+}`,
+      'react-native': `<LumenErrorState
+  kind="offline"
+  title="Could not load projects"
+  description="Check your connection and try again."
+  reference="REQ-4F82"
+  actions={<LumenButton onPress={retry}>Try again</LumenButton>}
+/>`
+    },
+    exports: {
+      android: 'LumenErrorState',
+      apple: 'LumenErrorState',
+      'react-native': 'LumenErrorState'
+    },
+    guidance:
+      'Use when a region or page cannot show its primary content. Keep retry and request policy in application state; use Banner when existing content remains useful.',
+    name: 'Error state',
+    properties: [
+      property(
+        'title',
+        {
+          android: 'String',
+          apple: 'LocalizedStringKey',
+          'react-native': 'string'
+        },
+        'Required',
+        'Names the unavailable content or failed operation.'
+      ),
+      property(
+        'kind',
+        {
+          android: 'LumenErrorStateKind',
+          apple: 'LumenErrorStateKind',
+          'react-native': 'error | offline'
+        },
+        'error',
+        'Selects error or offline context and its default illustration.'
+      ),
+      property(
+        'layout',
+        {
+          android: 'LumenErrorStateLayout',
+          apple: 'LumenErrorStateLayout',
+          'react-native': 'compact | default | page'
+        },
+        'default',
+        'Adapts spacing and whether the state fills its available page height.'
+      ),
+      property(
+        'reference',
+        {
+          android: 'String?',
+          apple: 'String?',
+          'react-native': 'string'
+        },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Shows a safe support reference without exposing technical details.'
+      ),
+      property(
+        'actions',
+        {
+          android: '(@Composable () -> Unit)?',
+          apple: '@ViewBuilder () -> Actions',
+          'react-native': 'ReactNode'
+        },
+        { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' },
+        'Provides application-owned recovery actions.'
+      )
+    ],
+    slug: 'error-state',
+    summary:
+      'Explain an unavailable region or page and offer application-owned recovery.'
+  },
+  {
+    accessibility:
       'Leading identity, main content, and trailing actions remain contained while interactive descendants keep their own semantics.',
     category: 'Layout',
     examples: {

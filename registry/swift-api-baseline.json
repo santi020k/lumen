@@ -218,6 +218,50 @@
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenErrorState"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\", @ViewBuilder graphic: () -> Graphic, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:graphic:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV_11description4kind6layout9reference0H5Label7graphic7actionsACyxq_G05SwiftB018LocalizedStringKeyV_ANSgAA0acD4KindOAA0acD6LayoutOSSSgANxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenErrorState",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateVA2A0A12IllustrationVRsz05SwiftB09EmptyViewVRs_rlE_11description4kind6layout9reference0L5LabelACyAeHGAF18LocalizedStringKeyV_APSgAA0acD4KindOAA0acD6LayoutOSSSgAPtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\", @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateVA2A0A12IllustrationVRszrlE_11description4kind6layout9reference0I5Label7actionsACyAEq_G05SwiftB018LocalizedStringKeyV_AOSgAA0acD4KindOAA0acD6LayoutOSSSgAOq_yXEtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenFieldGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -2328,6 +2372,32 @@
           "precise": "s:7LumenUI0A14DateRangeFieldV4bodyQrvp"
         },
         {
+          "declaration": "enum LumenErrorStateKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateKind"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO5erroryA2CmF"
+        },
+        {
+          "declaration": "case offline",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "offline"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO7offlineyA2CmF"
+        },
+        {
           "declaration": "enum LumenGraphicVariant",
           "kind": "swift.enum",
           "path": [
@@ -2731,6 +2801,41 @@
             "title"
           ],
           "precise": "s:7LumenUI0A15SelectionOptionV5titleSSvp"
+        },
+        {
+          "declaration": "enum LumenErrorStateLayout",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateLayout"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO"
+        },
+        {
+          "declaration": "case page",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "page"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO4pageyA2CmF"
+        },
+        {
+          "declaration": "case compact",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "compact"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7compactyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7defaultyA2CmF"
         },
         {
           "declaration": "enum LumenIllustrationSize",
@@ -27141,6 +27246,50 @@
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenErrorState"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\", @ViewBuilder graphic: () -> Graphic, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:graphic:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV_11description4kind6layout9reference0H5Label7graphic7actionsACyxq_G05SwiftB018LocalizedStringKeyV_ANSgAA0acD4KindOAA0acD6LayoutOSSSgANxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenErrorState",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateVA2A0A12IllustrationVRsz05SwiftB09EmptyViewVRs_rlE_11description4kind6layout9reference0L5LabelACyAeHGAF18LocalizedStringKeyV_APSgAA0acD4KindOAA0acD6LayoutOSSSgAPtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\", @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateVA2A0A12IllustrationVRszrlE_11description4kind6layout9reference0I5Label7actionsACyAEq_G05SwiftB018LocalizedStringKeyV_AOSgAA0acD4KindOAA0acD6LayoutOSSSgAOq_yXEtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenFieldGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -29163,6 +29312,32 @@
           "precise": "s:7LumenUI0A14DateRangeFieldV4bodyQrvp"
         },
         {
+          "declaration": "enum LumenErrorStateKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateKind"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO5erroryA2CmF"
+        },
+        {
+          "declaration": "case offline",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "offline"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO7offlineyA2CmF"
+        },
+        {
           "declaration": "enum LumenGraphicVariant",
           "kind": "swift.enum",
           "path": [
@@ -29566,6 +29741,41 @@
             "title"
           ],
           "precise": "s:7LumenUI0A15SelectionOptionV5titleSSvp"
+        },
+        {
+          "declaration": "enum LumenErrorStateLayout",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateLayout"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO"
+        },
+        {
+          "declaration": "case page",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "page"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO4pageyA2CmF"
+        },
+        {
+          "declaration": "case compact",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "compact"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7compactyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7defaultyA2CmF"
         },
         {
           "declaration": "enum LumenIllustrationSize",
@@ -53809,6 +54019,32 @@
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenErrorState"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\", @ViewBuilder graphic: () -> Graphic, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:graphic:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV_11description4kind6layout9reference0H5Label7graphic7actionsACyxq_G05SwiftB018LocalizedStringKeyV_ANSgAA0acD4KindOAA0acD6LayoutOSSSgANxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenErrorState",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenFieldGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -55458,6 +55694,32 @@
           "precise": "s:7LumenUI0A14ControlDensityO7regularyA2CmF"
         },
         {
+          "declaration": "enum LumenErrorStateKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateKind"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO5erroryA2CmF"
+        },
+        {
+          "declaration": "case offline",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "offline"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO7offlineyA2CmF"
+        },
+        {
           "declaration": "struct LumenNavigationItem<Value> where Value : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -55676,6 +55938,41 @@
             "donut"
           ],
           "precise": "s:7LumenUI0A15PieChartVariantO5donutyA2CmF"
+        },
+        {
+          "declaration": "enum LumenErrorStateLayout",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateLayout"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO"
+        },
+        {
+          "declaration": "case page",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "page"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO4pageyA2CmF"
+        },
+        {
+          "declaration": "case compact",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "compact"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7compactyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7defaultyA2CmF"
         },
         {
           "declaration": "struct LumenChartColorPalette",
@@ -79159,6 +79456,32 @@
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenErrorState"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, description: LocalizedStringKey? = nil, kind: LumenErrorStateKind = .error, layout: LumenErrorStateLayout = .default, reference: String? = nil, referenceLabel: LocalizedStringKey = \"Reference\", @ViewBuilder graphic: () -> Graphic, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenErrorState",
+            "init(_:description:kind:layout:reference:referenceLabel:graphic:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV_11description4kind6layout9reference0H5Label7graphic7actionsACyxq_G05SwiftB018LocalizedStringKeyV_ANSgAA0acD4KindOAA0acD6LayoutOSSSgANxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenErrorState",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10ErrorStateV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenFieldGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -80963,6 +81286,32 @@
           "precise": "s:7LumenUI0A14ControlDensityO7regularyA2CmF"
         },
         {
+          "declaration": "enum LumenErrorStateKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateKind"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO5erroryA2CmF"
+        },
+        {
+          "declaration": "case offline",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateKind",
+            "offline"
+          ],
+          "precise": "s:7LumenUI0A14ErrorStateKindO7offlineyA2CmF"
+        },
+        {
           "declaration": "struct LumenNavigationItem<Value> where Value : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -81181,6 +81530,41 @@
             "donut"
           ],
           "precise": "s:7LumenUI0A15PieChartVariantO5donutyA2CmF"
+        },
+        {
+          "declaration": "enum LumenErrorStateLayout",
+          "kind": "swift.enum",
+          "path": [
+            "LumenErrorStateLayout"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO"
+        },
+        {
+          "declaration": "case page",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "page"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO4pageyA2CmF"
+        },
+        {
+          "declaration": "case compact",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "compact"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7compactyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenErrorStateLayout",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A16ErrorStateLayoutO7defaultyA2CmF"
         },
         {
           "declaration": "struct LumenChartColorPalette",

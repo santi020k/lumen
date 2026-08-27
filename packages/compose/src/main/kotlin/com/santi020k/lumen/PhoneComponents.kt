@@ -160,6 +160,25 @@ fun resolveLumenPhoneNumber(
 }
 
 @OptIn(ExperimentalLumenPhoneApi::class)
+internal fun resolveLumenPhoneInputValue(
+    countries: List<LumenPhoneCountry>,
+    country: LumenPhoneCountry,
+    input: String,
+    locale: Locale = Locale.getDefault()
+): LumenPhoneNumber {
+    val resolved = resolveLumenPhoneNumber(country, input, locale)
+    val allowedRegionCodes = countries.mapTo(mutableSetOf(), LumenPhoneCountry::regionCode)
+    val normalizedInput = input.trim().filterIndexed { index, character ->
+        character.isDigit() || (character == '+' && index == 0)
+    }
+    if (!normalizedInput.startsWith('+') || resolved.country.regionCode in allowedRegionCodes) {
+        return resolved
+    }
+
+    return resolveLumenPhoneNumber(country, resolved.nationalNumber, locale)
+}
+
+@OptIn(ExperimentalLumenPhoneApi::class)
 private fun formatLumenPhoneInput(
     country: LumenPhoneCountry,
     input: String,
@@ -249,7 +268,14 @@ fun LumenPhoneInput(
             OutlinedTextField(
                 value = value.nationalNumber,
                 onValueChange = { input ->
-                    onValueChange(resolveLumenPhoneNumber(value.country, input, locale))
+                    onValueChange(
+                        resolveLumenPhoneInputValue(
+                            availableCountries,
+                            value.country,
+                            input,
+                            locale
+                        )
+                    )
                 },
                 modifier = Modifier.weight(1f),
                 enabled = enabled,

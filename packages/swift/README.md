@@ -101,7 +101,7 @@ The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, Te
 FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker, Slider,
 DateField, DateRangeField, PhoneInput, Link,
 SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Graphic,
-Backdrop, Illustration, Image, Disclosure, EmptyState,
+Backdrop, Illustration, Image, Disclosure, EmptyState, ErrorState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
 ShortcutRecorder and searchable SF Symbols picker.
 Native presentation is available through `.lumenAlertDialog`, `.lumenSheet`, `LumenMenu`, and

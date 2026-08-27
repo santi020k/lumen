@@ -1,8 +1,10 @@
 import { describe, expect, test } from 'vitest'
 
 import {
+  type LumenErrorStateAnnouncement,
   type LumenMetricTone,
   resolveLumenBannerColors,
+  resolveLumenErrorStateLiveRegion,
   resolveLumenMetricColor,
   resolveLumenStatusBarIconName
 } from './structured-recipes.js'
@@ -51,5 +53,15 @@ describe('Lumen React Native structured component recipes', () => {
     ['warning', 'triangle-alert']
   ])('maps the %s tone to a visible semantic icon', (tone, expected) => {
     expect(resolveLumenStatusBarIconName(tone)).toBe(expected)
+  })
+
+  test.each<
+    [LumenErrorStateAnnouncement, ReturnType<typeof resolveLumenErrorStateLiveRegion>]
+  >([
+    ['assertive', 'assertive'],
+    ['off', 'none'],
+    ['polite', 'polite']
+  ])('maps the %s announcement to a native live region', (value, expected) => {
+    expect(resolveLumenErrorStateLiveRegion(value)).toBe(expected)
   })
 })

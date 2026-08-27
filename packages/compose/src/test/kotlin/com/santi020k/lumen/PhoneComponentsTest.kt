@@ -50,6 +50,20 @@ class PhoneComponentsTest {
     }
 
     @Test
+    fun restrictedInputPreservesItsConfiguredCountryAllowList() {
+        val number = resolveLumenPhoneInputValue(
+            countries = listOf(colombia),
+            country = colombia,
+            input = "+1 212 555 0123",
+            locale = Locale.US
+        )
+
+        assertEquals("CO", number.country.regionCode)
+        assertNull(number.e164)
+        assertEquals("2125550123", number.nationalNumber.filter(Char::isDigit))
+    }
+
+    @Test
     fun unsupportedRegionDoesNotCreateCountryMetadata() {
         assertNull(LumenPhoneCountries.forRegion("ZZ", Locale.US))
     }

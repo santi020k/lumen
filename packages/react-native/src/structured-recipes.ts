@@ -7,6 +7,14 @@ export type LumenBannerVariant =
 export type LumenMetricTone =
   'accent' | 'brand' | 'danger' | 'neutral' | 'success' | 'warning'
 
+export type LumenErrorStateAnnouncement = 'assertive' | 'off' | 'polite'
+export type LumenErrorStateKind = 'error' | 'offline'
+export type LumenErrorStateLayout = 'compact' | 'default' | 'page'
+
+export const resolveLumenErrorStateLiveRegion = (
+  announcement: LumenErrorStateAnnouncement
+): 'assertive' | 'none' | 'polite' => announcement === 'off' ? 'none' : announcement
+
 export const resolveLumenMetricColor = (
   colors: LumenTheme['colors'],
   tone: LumenMetricTone

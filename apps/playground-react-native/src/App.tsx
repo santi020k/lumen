@@ -46,6 +46,7 @@ import {
   LumenDisclosure,
   LumenDivider,
   LumenEmptyState,
+  LumenErrorState,
   LumenFieldGroup,
   LumenGauge,
   LumenGraphic,
@@ -212,6 +213,7 @@ const componentNames = [
   'Disclosure',
   'Avatar',
   'Empty state',
+  'Error state',
   'List row',
   'Banner',
   'Stat',
@@ -1178,6 +1180,30 @@ const Playground = ({
             >
               <LumenText tone="soft">Each adapter owns its native rendering and focus behavior.</LumenText>
             </LumenDisclosure>
+          </ComponentSection>
+        </Visibility>
+
+        <Visibility visible={isVisible('Error state')}>
+          <ComponentSection
+            description="A recoverable offline state with an application-owned action and safe support reference."
+            title="Error state"
+          >
+            <LumenErrorState
+              actions={(
+                <LumenButton
+                  intent="secondary"
+                  onPress={() => {
+                    setQuery('')
+                  }}
+                >
+                  Try again
+                </LumenButton>
+              )}
+              description="Check your connection and try again."
+              kind="offline"
+              reference="REQ-4F82"
+              title="Could not load projects"
+            />
           </ComponentSection>
         </Visibility>
 

@@ -90,6 +90,7 @@ components=(
     "Card"
     "Avatar"
     "Empty state"
+    "Error state"
     "List row"
     "Stat"
     "Gauge"
@@ -129,11 +130,13 @@ for component in "${components[@]}"; do
         "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Heatmap"|"Range chart"|"Combo chart") scroll_count=2 ;;
         "Card"|"Avatar"|"List row") scroll_count=1 ;;
         "Empty state") scroll_count=3 ;;
+        "Error state") scroll_count=4 ;;
+        "Error state") scroll_count=5 ;;
         "Adaptive navigation scaffold") scroll_count=2 ;;
     esac
 
     $adb shell am force-stop com.santi020k.lumen.playground.compose
-    $adb shell am start -W -n "$phone_activity" --es component "\"$component\"" >/dev/null
+    $adb shell am start -W -n "$phone_activity" --es component "$component" >/dev/null
     for ((index = 0; index < scroll_count; index += 1)); do
         $adb shell input swipe 540 1500 540 650 250
         sleep 0.3

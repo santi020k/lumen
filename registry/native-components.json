@@ -503,6 +503,17 @@
       }
     },
     {
+      "id": "error-state",
+      "tier": "shared",
+      "contract": "Error or offline context with layouts, safe reference, and recovery actions",
+      "accessibility": "Preserves heading and action order with platform-native announcement ownership",
+      "symbols": {
+        "reactNative": "LumenErrorState",
+        "swiftUI": "LumenErrorState",
+        "compose": "LumenErrorState"
+      }
+    },
+    {
       "id": "list-row",
       "tier": "shared",
       "contract": "Leading identity, flexible content, and trailing actions",

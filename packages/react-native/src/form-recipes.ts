@@ -16,11 +16,19 @@ export interface LumenDateRangeValue {
   start: Date | null
 }
 
-const isValidDate = (value: Date): boolean => !Number.isNaN(value.getTime())
+export const isValidLumenDate = (value: Date | null): value is Date => (
+  value !== null && Number.isFinite(value.getTime())
+)
 
 const normalizeLumenDate = (value: Date): Date => (
-  isValidDate(value) ? new Date(value.getFullYear(), value.getMonth(), value.getDate()) : new Date(0)
+  isValidLumenDate(value) ? new Date(value.getFullYear(), value.getMonth(), value.getDate()) : new Date(0)
 )
+
+export const formatLumenDateDisplayValue = (
+  value: Date | null,
+  placeholder: string,
+  formatter: (date: Date) => string
+): string => isValidLumenDate(value) ? formatter(value) : placeholder
 
 const padLumenDatePart = (value: number): string => String(value).padStart(2, '0')
 
@@ -91,7 +99,7 @@ export const resolveLumenDatePickerValue = (
   minimumDate?: Date,
   maximumDate?: Date,
   fallback = new Date()
-): Date => clampLumenDate(value ?? fallback, minimumDate, maximumDate)
+): Date => clampLumenDate(isValidLumenDate(value) ? value : fallback, minimumDate, maximumDate)
 
 export const resolveLumenDateRangeEndMinimum = (
   start: Date | null,
