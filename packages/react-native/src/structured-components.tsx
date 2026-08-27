@@ -1,8 +1,4 @@
-import {
-  type ReactElement,
-  type ReactNode,
-  type Ref
-} from 'react'
+import { type ReactElement, type ReactNode, type Ref } from 'react'
 import {
   type HostInstance,
   Pressable,
@@ -82,7 +78,9 @@ export const LumenEmptyState = ({
           style={{
             color: theme.colors.ink,
             fontSize: theme.fontSizes.lg,
-            fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight'],
+            fontWeight: String(
+              theme.fontWeights.semibold
+            ) as TextStyle['fontWeight'],
             textAlign: 'center'
           }}
         >
@@ -202,14 +200,21 @@ export const LumenBanner = ({
           style={{
             color: theme.colors.ink,
             fontSize: theme.fontSizes.sm,
-            fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+            fontWeight: String(
+              theme.fontWeights.semibold
+            ) as TextStyle['fontWeight']
           }}
         >
           {title}
         </Text>
         {description ?
           (
-            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>
+            <Text
+              style={{
+                color: theme.colors.inkSoft,
+                fontSize: theme.fontSizes.xs
+              }}
+            >
               {description}
             </Text>
           ) :
@@ -223,13 +228,18 @@ export const LumenBanner = ({
             accessibilityRole="button"
             hitSlop={8}
             onPress={onDismiss}
-            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, padding: theme.spacing.sm })}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.7 : 1,
+              padding: theme.spacing.sm
+            })}
           >
             <Text
               style={{
                 color: colors.accentColor,
                 fontSize: theme.fontSizes.xs,
-                fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+                fontWeight: String(
+                  theme.fontWeights.semibold
+                ) as TextStyle['fontWeight']
               }}
             >
               {dismissLabel}
@@ -297,13 +307,21 @@ export const LumenStat = ({
         style={{
           color: theme.colors.inkSoft,
           fontSize: theme.fontSizes.xs,
-          fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+          fontWeight: String(
+            theme.fontWeights.semibold
+          ) as TextStyle['fontWeight']
         }}
       >
         {label}
       </Text>
       {detail ?
-        <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{detail}</Text> :
+        (
+          <Text
+            style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}
+          >
+            {detail}
+          </Text>
+        ) :
         null}
     </View>
   )
@@ -333,18 +351,30 @@ export const LumenSectionHeader = ({
       ref={ref}
       {...props}
       style={[
-        { alignItems: 'flex-start', flexDirection: 'row', gap: theme.spacing.md },
+        {
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+          gap: theme.spacing.md
+        },
         style
       ]}
     >
       <View style={{ flex: 1, gap: theme.spacing.xs }}>
-        <View style={{ alignItems: 'center', flexDirection: 'row', gap: theme.spacing.sm }}>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            gap: theme.spacing.sm
+          }}
+        >
           <Text
             accessibilityRole="header"
             style={{
               color: theme.colors.ink,
               fontSize: theme.fontSizes.md,
-              fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+              fontWeight: String(
+                theme.fontWeights.semibold
+              ) as TextStyle['fontWeight']
             }}
           >
             {title}
@@ -352,7 +382,16 @@ export const LumenSectionHeader = ({
           {count ? <LumenBadge>{count}</LumenBadge> : null}
         </View>
         {subtitle ?
-          <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{subtitle}</Text> :
+          (
+            <Text
+              style={{
+                color: theme.colors.inkMuted,
+                fontSize: theme.fontSizes.xs
+              }}
+            >
+              {subtitle}
+            </Text>
+          ) :
           null}
       </View>
       {actions}
@@ -401,7 +440,14 @@ export const LumenStatusBar = ({
         name={iconName ?? resolveLumenStatusBarIconName(tone)}
         size="sm"
       />
-      <Text numberOfLines={1} style={{ color: theme.colors.inkSoft, flex: 1, fontSize: theme.fontSizes.xs }}>
+      <Text
+        numberOfLines={1}
+        style={{
+          color: theme.colors.inkSoft,
+          flex: 1,
+          fontSize: theme.fontSizes.xs
+        }}
+      >
         {message}
       </Text>
       {trailing}

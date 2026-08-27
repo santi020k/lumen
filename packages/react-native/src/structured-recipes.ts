@@ -2,19 +2,10 @@ import type { LumenIconName } from './icons.generated.js'
 import type { LumenTheme } from './theme.js'
 
 export type LumenBannerVariant =
-  | 'accent' |
-  'default' |
-  'destructive' |
-  'success' |
-  'warning'
+  'accent' | 'default' | 'destructive' | 'success' | 'warning'
 
 export type LumenMetricTone =
-  | 'accent' |
-  'brand' |
-  'danger' |
-  'neutral' |
-  'success' |
-  'warning'
+  'accent' | 'brand' | 'danger' | 'neutral' | 'success' | 'warning'
 
 export const resolveLumenMetricColor = (
   colors: LumenTheme['colors'],
@@ -33,7 +24,9 @@ export const resolveLumenMetricColor = (
   return colors.inkMuted
 }
 
-export const resolveLumenStatusBarIconName = (tone: LumenMetricTone): LumenIconName => {
+export const resolveLumenStatusBarIconName = (
+  tone: LumenMetricTone
+): LumenIconName => {
   if (tone === 'accent' || tone === 'brand') return 'info'
 
   if (tone === 'danger') return 'octagon-x'
@@ -45,7 +38,9 @@ export const resolveLumenStatusBarIconName = (tone: LumenMetricTone): LumenIconN
   return 'circle'
 }
 
-const resolveLumenBannerTone = (variant: LumenBannerVariant): LumenMetricTone => {
+const resolveLumenBannerTone = (
+  variant: LumenBannerVariant
+): LumenMetricTone => {
   if (variant === 'default') return 'brand'
 
   if (variant === 'destructive') return 'danger'
@@ -62,7 +57,8 @@ export const resolveLumenBannerColors = (
 
   return {
     accentColor,
-    backgroundColor: variant === 'default' ? colors.surface : `${accentColor}14`,
+    backgroundColor:
+      variant === 'default' ? colors.surface : `${accentColor}14`,
     borderColor: variant === 'default' ? colors.line : `${accentColor}52`
   }
 }

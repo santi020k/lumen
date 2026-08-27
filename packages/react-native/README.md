@@ -24,6 +24,9 @@ React Native-specific pull-to-refresh indicator using the active semantic theme.
 responsive treatment for native lists without introducing an animation or navigation dependency.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
 presentation and operating-system sharing without introducing a separate interaction dependency.
+Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
+Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
+a more specific symbol, so visual status is not conveyed by color alone.
 
 Install the package and its native picker and SVG peers in an existing Expo or React Native application:
 
