@@ -319,7 +319,7 @@ jobs:
 
       - name: Regenerate and compare React Native component captures
         run: |
-          pnpm --filter @santi020k/lumen-react-native run build
+          pnpm --filter @santi020k/lumen-react-native... run build
           CI=1 pnpm --filter @santi020k/lumen-playground-react-native exec \
             expo start --web --port 8081 > "$RUNNER_TEMP/lumen-expo.log" 2>&1 &
           expo_pid=$!
