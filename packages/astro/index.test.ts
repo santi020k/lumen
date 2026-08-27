@@ -662,6 +662,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-scroll-reveal.is-revealed')
     expect(styles).toContain('.ui-sr-only')
     expect(styles).toContain('[data-theme$="-dark"]')
+    expect(styles).toContain('[data-theme="lumen-light"]')
+    expect(styles).toContain('--brand: 201 96% 32%')
   })
 
   test('ships Select as a progressively enhanced listbox distinct from NativeSelect', async () => {
@@ -995,8 +997,9 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships mature toast runtime API, ARIA, and placement styles', async () => {
-    const [toast, sonner, runtime, styles] = await Promise.all([
+    const [toast, toastViewport, sonner, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ToastViewport.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
@@ -1004,8 +1007,10 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(toast).toContain('data-ui-toast')
     expect(toast).toContain('variant === \'destructive\' ? \'alert\' : \'status\'')
-    expect(sonner).toContain('placement?:')
-    expect(sonner).toContain('maxCount?: number')
+    expect(toastViewport).toContain('placement?:')
+    expect(toastViewport).toContain('maxCount?: number')
+    expect(toastViewport).toContain('data-ui-sonner')
+    expect(sonner).toContain('@deprecated Use ToastViewport')
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')

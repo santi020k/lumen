@@ -141,6 +141,7 @@ const example = '<Input size="sm" />'
   test('does not treat TypeScript strings as Astro imports or Elements markup', () => {
     const source = `const fixture = \`<lumen-input size="sm"></lumen-input>\`
 const importExample = "import { UIPrimitives } from '@santi020k/lumen-astro'"
+const sonnerExample = "import { Sonner } from '@santi020k/lumen-react'"
 `
 
     expect(migrateLumenV2Source(source, 'src/fixture.ts')).toEqual({
@@ -148,6 +149,72 @@ const importExample = "import { UIPrimitives } from '@santi020k/lumen-astro'"
       manualReview: [],
       source
     })
+  })
+
+  test('migrates Astro and React Sonner imports without changing local component names', () => {
+    const astro = migrateLumenV2Source(`---
+import { Sonner, type SonnerProps, Toast } from '@santi020k/lumen-astro'
+---
+<Sonner placement="top-right" maxCount={5}>
+  <Toast>Saved</Toast>
+</Sonner>
+`, 'src/layout.astro')
+    const react = migrateLumenV2Source(`import {
+  Sonner as Notifications,
+  type SonnerProps,
+  Toast
+} from '@santi020k/lumen-react'
+
+export const App = (props: SonnerProps) => <Notifications {...props}><Toast>Saved</Toast></Notifications>
+`, 'src/app.tsx')
+
+    expect(astro.source).toContain(
+      'import { ToastViewport as Sonner, type ToastViewportProps as SonnerProps, Toast } from \'@santi020k/lumen-astro\''
+    )
+    expect(astro.source).toContain('<Sonner placement="top-right" maxCount={5}>')
+    expect(react.source).toContain('ToastViewport as Notifications')
+    expect(react.source).toContain('type ToastViewportProps as SonnerProps')
+    expect(react.source).toContain('<Notifications {...props}>')
+    expect([...astro.changes, ...react.changes].every(
+      change => change.kind === 'sonner-alias-removal'
+    )).toBe(true)
+    expect(migrateLumenV2Source(react.source, 'src/app.tsx')).toEqual({
+      changes: [],
+      manualReview: [],
+      source: react.source
+    })
+  })
+
+  test('renames Sonner custom elements while preserving viewport configuration and children', () => {
+    const result = migrateLumenV2Source(`<lumen-sonner data-placement="top-right" data-ui-toast-max="5">
+  <lumen-toast>Saved</lumen-toast>
+</lumen-sonner>
+<!-- <lumen-sonner></lumen-sonner> -->
+<script>const example = '<lumen-sonner></lumen-sonner>'</script>
+`, 'index.html')
+
+    expect(result.source).toContain(
+      '<lumen-toast-viewport data-placement="top-right" data-ui-toast-max="5">'
+    )
+    expect(result.source).toContain('</lumen-toast-viewport>')
+    expect(result.source).toContain('<!-- <lumen-sonner></lumen-sonner> -->')
+    expect(result.source).toContain('const example = \'<lumen-sonner></lumen-sonner>\'')
+    expect(result.changes).toHaveLength(2)
+    expect(result.manualReview).toEqual([])
+  })
+
+  test('reports commented Sonner imports for manual review', () => {
+    const source = `---
+import { Sonner /* configured viewport */ } from '@santi020k/lumen-astro'
+---
+`
+    const result = migrateLumenV2Source(source, 'src/layout.astro')
+
+    expect(result.source).toBe(source)
+    expect(result.changes).toEqual([])
+    expect(result.manualReview).toEqual([
+      expect.objectContaining({ kind: 'sonner-alias-removal' })
+    ])
   })
 
   test('discovers nested sources, defaults to dry-run, and applies only when requested', async () => {

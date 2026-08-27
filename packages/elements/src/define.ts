@@ -1005,6 +1005,11 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-toast'
   },
+  ToastViewport: {
+    baseClassName: 'ui-sonner ui-toast-viewport',
+    defaults: { 'data-ui-sonner': '' },
+    tagName: 'lumen-toast-viewport'
+  },
   Toggle: {
     baseClassName: 'ui-toggle',
     defaults: {
@@ -4343,7 +4348,7 @@ const normalizeToastViewport = (
   viewport: HTMLElement,
   placement?: string
 ): void => {
-  viewport.classList.add('ui-sonner')
+  viewport.classList.add('ui-sonner', 'ui-toast-viewport')
 
   viewport.dataset.uiSonner = ''
 
@@ -4388,10 +4393,15 @@ const getToastViewport = (
     return existing
   }
 
-  const tagName =
-    typeof customElements !== 'undefined' && customElements.get('lumen-sonner') ?
-      'lumen-sonner' :
-      'div'
+  let tagName = 'div'
+
+  if (typeof customElements !== 'undefined') {
+    if (customElements.get('lumen-toast-viewport')) {
+      tagName = 'lumen-toast-viewport'
+    } else if (customElements.get('lumen-sonner')) {
+      tagName = 'lumen-sonner'
+    }
+  }
 
   const viewport = document.createElement(tagName)
 
@@ -10519,6 +10529,7 @@ const behaviorElementClasses: Partial<
   ThemeBuilder: LumenThemeBuilderBehaviorElement,
   ThemeToggle: LumenThemeToggleBehaviorElement,
   Toast: LumenToastBehaviorElement,
+  ToastViewport: LumenSonnerBehaviorElement,
   TimeField: LumenScalarFormControlElement,
   Tour: LumenTourBehaviorElement,
   Transfer: LumenTransferBehaviorElement,
@@ -10742,6 +10753,7 @@ export const LumenSheetElement = elementClasses.Sheet
 export const LumenSidebarElement = elementClasses.Sidebar
 export const LumenSkeletonElement = elementClasses.Skeleton
 export const LumenSliderElement = elementClasses.Slider
+/** @deprecated Use LumenToastViewportElement. */
 export const LumenSonnerElement = elementClasses.Sonner
 export const LumenSparklineElement = elementClasses.Sparkline
 export const LumenSpinnerElement = elementClasses.Spinner
@@ -10753,6 +10765,7 @@ export const LumenTextareaElement = elementClasses.Textarea
 export const LumenThemeBuilderElement = elementClasses.ThemeBuilder
 export const LumenTimeFieldElement = elementClasses.TimeField
 export const LumenToastElement = elementClasses.Toast
+export const LumenToastViewportElement = elementClasses.ToastViewport
 export const LumenToggleElement = elementClasses.Toggle
 export const LumenToggleGroupElement = elementClasses.ToggleGroup
 export const LumenTooltipElement = elementClasses.Tooltip

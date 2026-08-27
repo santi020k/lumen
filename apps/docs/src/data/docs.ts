@@ -2152,6 +2152,14 @@ const apiReferenceByComponent = {
       'maxCount', 'number', '3', 'Limits the number of simultaneously visible runtime toasts.'
     )
   ],
+  ToastViewport: [
+    apiRow(
+      'placement', '"bottom-center" | "bottom-left" | "bottom-right" | "top-center" | "top-left" | "top-right"', '"bottom-right"', 'Positions the notification viewport.'
+    ),
+    apiRow(
+      'maxCount', 'number', '3', 'Limits the number of simultaneously visible runtime toasts.'
+    )
+  ],
   Sparkline: [
     apiRow(
       'values', 'number[]', 'required', 'Provides ordered values for the compact trend.'
@@ -2918,6 +2926,11 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     distinction:
       'Use Alert when the message must remain in the page. The toast runtime creates its notification viewport automatically when needed.'
   },
+  ToastViewport: {
+    when: 'Use when an application needs an explicit toast viewport with a stable placement or stack limit.',
+    distinction:
+      'Use Toast for an individual notification and ToastProvider in React for application-managed notifications. The runtime creates a default viewport automatically when explicit configuration is unnecessary.'
+  },
   Toggle: {
     when: 'Use for a control that keeps an active state, such as pin, mute, or formatting.',
     distinction:
@@ -3600,6 +3613,12 @@ export const componentDocs: ComponentDoc[] = (
       'Feedback',
       'Displays temporary feedback for background actions.',
       '<Toast><strong>Saved</strong><p>Your changes are live.</p></Toast>'
+    ],
+    [
+      'ToastViewport',
+      'Feedback',
+      'Configures where transient toast notifications are announced and stacked.',
+      '<ToastViewport placement="top-right" maxCount={5} />'
     ],
     [
       'Toggle',

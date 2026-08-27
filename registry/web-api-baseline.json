@@ -180,6 +180,7 @@
         "Timeline",
         "TimelineItem",
         "Toast",
+        "ToastViewport",
         "Toggle",
         "ToggleGroup",
         "Toolbar",
@@ -331,7 +332,6 @@
         "Skeleton",
         "SkipLink",
         "Slider",
-        "Sonner",
         "Sparkline",
         "SpeedDial",
         "Spinner",
@@ -357,6 +357,7 @@
         "Timeline",
         "TimelineItem",
         "Toast",
+        "ToastViewport",
         "Toggle",
         "ToggleGroup",
         "Toolbar",
@@ -375,7 +376,9 @@
         "normalizeAstroActionErrors"
       ],
       "experimental": [],
-      "deprecated": [],
+      "deprecated": [
+        "Sonner"
+      ],
       "unclassified": []
     },
     "core": {
@@ -1168,6 +1171,7 @@
         "LumenTimelineElement",
         "LumenToast",
         "LumenToastElement",
+        "LumenToastViewportElement",
         "LumenToggleElement",
         "LumenToggleGroupElement",
         "LumenToolbarElement",
@@ -1327,7 +1331,6 @@
         "LumenSkeletonElement",
         "LumenSkipLinkElement",
         "LumenSliderElement",
-        "LumenSonnerElement",
         "LumenSparklineElement",
         "LumenSpeedDialElement",
         "LumenSpinnerElement",
@@ -1350,6 +1353,7 @@
         "LumenTimelineElement",
         "LumenToast",
         "LumenToastElement",
+        "LumenToastViewportElement",
         "LumenToggleElement",
         "LumenToggleGroupElement",
         "LumenToolbarElement",
@@ -1383,7 +1387,9 @@
         "lumenElementDefinitions"
       ],
       "experimental": [],
-      "deprecated": [],
+      "deprecated": [
+        "LumenSonnerElement"
+      ],
       "unclassified": []
     },
     "lumen": {
@@ -2211,6 +2217,8 @@
         "ToastProvider",
         "ToastProviderProps",
         "ToastRecord",
+        "ToastViewport",
+        "ToastViewportProps",
         "Toggle",
         "ToggleGroup",
         "ToggleGroupProps",
@@ -2575,8 +2583,6 @@
         "SkipLinkProps",
         "Slider",
         "SliderProps",
-        "Sonner",
-        "SonnerProps",
         "Sparkline",
         "SparklineProps",
         "SpeedDial",
@@ -2642,6 +2648,8 @@
         "ToastProvider",
         "ToastProviderProps",
         "ToastRecord",
+        "ToastViewport",
+        "ToastViewportProps",
         "Toggle",
         "ToggleGroup",
         "ToggleGroupProps",
@@ -2697,7 +2705,10 @@
         "useTooltip"
       ],
       "experimental": [],
-      "deprecated": [],
+      "deprecated": [
+        "Sonner",
+        "SonnerProps"
+      ],
       "unclassified": []
     }
   }

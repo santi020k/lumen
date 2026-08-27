@@ -63,14 +63,18 @@ and uses `visualSize` in Astro or `visual-size` in Elements.
 Only literal Lumen component attributes can be rewritten automatically. Dynamic values must produce
 a diagnostic because their intent cannot be inferred safely.
 
-### Retire the duplicate `Sonner` entry point
+### Rename the `Sonner` viewport contract
 
-`Toast` is already the single documented notification contract, while `Sonner` remains in public
-adapter barrels and the component-name registry without its own guide. Lumen 2 removes the duplicate
-entry point and keeps the notification viewport behind `Toast` and each framework's public toast
-controller or provider. The 1.x line must deprecate direct Sonner use first. Automated migration is
-safe only when placement and maximum-count configuration map directly; custom child content requires
-manual review.
+`Sonner` is not a duplicate of `Toast`: it is the configurable notification viewport that owns
+placement, stack limits, live-region semantics, and optional static children. Its library-specific
+name obscures that role and makes a lossy `Sonner` to `Toast` replacement tempting. The compatible
+1.x path therefore adds `ToastViewport` across Astro, React, and Elements while retaining `Sonner`
+as a deprecated alias. Lumen 2 removes only the old name.
+
+The v2 migrator rewrites `Sonner` and `SonnerProps` imports to `ToastViewport` and
+`ToastViewportProps` while preserving local aliases, so existing JSX and Astro markup keeps its
+configuration and children. It renames `lumen-sonner` to `lumen-toast-viewport` directly. Imports
+with comments or syntax that cannot be reconstructed safely remain explicit manual-review findings.
 
 ## Contract investigations
 

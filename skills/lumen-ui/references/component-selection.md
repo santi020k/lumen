@@ -18,7 +18,7 @@ in that adapter and prefer its native state, navigation, icon, and accessibility
 | Boolean or mode choice | `Checkbox`, `Switch`, `Toggle`, `ToggleGroup`, `RadioGroup` |
 | Compact metadata or status | `Badge`, `Marker`, `Pill`, `TagGroup` |
 | Inline guidance or feedback | `Alert`, `Callout`, `Note`, `Progress`, `ScrollProgress`, `Spinner`, `Skeleton` |
-| Transient feedback | `Sonner`, `Toast` |
+| Transient feedback | `Toast`, `ToastViewport` |
 | Blocking decision | `Dialog`, `AlertDialog` |
 | Supplemental side surface | `Drawer`, `Sheet` |
 | Anchored supplemental content | `Popover`, `HoverCard`, `Tooltip` |

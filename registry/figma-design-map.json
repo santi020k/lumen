@@ -58,7 +58,7 @@
     { "pattern": "progress bar", "components": ["Progress"] },
     { "pattern": "loading placeholder blocks", "components": ["Skeleton", "Spinner"] },
     { "pattern": "inline notification banner", "components": ["Alert"] },
-    { "pattern": "transient corner notification", "components": ["Toast", "Sonner"] },
+    { "pattern": "transient corner notification", "components": ["Toast", "ToastViewport"] },
     { "pattern": "date picking interface", "components": ["DatePicker", "DateRangePicker", "Calendar"] },
     { "pattern": "time input", "components": ["TimeField"] },
     { "pattern": "numeric stepper input", "components": ["NumberField"] },

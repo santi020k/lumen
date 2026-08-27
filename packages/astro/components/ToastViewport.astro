@@ -21,11 +21,10 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-sonner'
+  'ui-sonner ui-toast-viewport'
 ], classProp, className)
 ---
 
-<!-- @deprecated Use ToastViewport. Sonner remains as a 1.x compatibility alias. -->
 <div
   aria-atomic={ariaAtomic}
   aria-live={ariaLive}

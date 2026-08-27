@@ -72,15 +72,17 @@
         "@santi020k/lumen-elements",
         "@santi020k/lumen-core"
       ],
-      "currentContract": "Sonner remains a public component name and adapter export even though Toast is the intentional documented notification entry point and Sonner has no public component guide.",
-      "replacement": "Use Toast and the framework-specific toast controller or provider. Keep the notification viewport as an implementation detail of the Toast contract.",
-      "migration": "The Lumen v2 migrator replaces direct Sonner imports and markup only when it can preserve placement and maximum-count configuration; custom child content requires manual review.",
+      "currentContract": "Sonner is the public configurable toast viewport across Astro, React, and Elements, but its library-specific name obscures that distinct role and is easy to confuse with the Toast item contract.",
+      "replacement": "Use ToastViewport for explicit placement and stack configuration, Toast for individual notifications, and the framework-specific toast controller or provider for programmatic notification state. Sonner remains a deprecated 1.x compatibility alias before removal in v2.",
+      "migration": "The Lumen v2 migrator rewrites Sonner and SonnerProps imports to ToastViewport and ToastViewportProps while preserving local aliases, and renames lumen-sonner markup to lumen-toast-viewport without changing placement, maximum-count configuration, or children. Ambiguous imports require manual review.",
       "evidence": [
         "apps/docs/src/data/docs.test.ts",
         "packages/astro/components/Sonner.astro",
+        "packages/astro/components/ToastViewport.astro",
         "packages/core/src/components.ts",
         "packages/react/src/components.tsx",
-        "packages/elements/src/define.ts"
+        "packages/elements/src/define.ts",
+        "packages/lumen/src/v2-migration.ts"
       ],
       "docs": [
         "docs/ai-usage.md",
@@ -90,6 +92,7 @@
         "pnpm --filter @santi020k/lumen-astro test",
         "pnpm --filter @santi020k/lumen-react test",
         "pnpm --filter @santi020k/lumen-elements test",
+        "pnpm --filter @santi020k/lumen test",
         "pnpm run check:consumer-packages"
       ]
     }

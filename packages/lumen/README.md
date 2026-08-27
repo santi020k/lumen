@@ -91,6 +91,9 @@ report. The migrator currently:
 - renames literal `sm`, `default`, and `lg` visual `size` aliases to `visualSize` on imported Astro
   `Input` and `NativeSelect` components, and to `visual-size` on `lumen-input` and
   `lumen-native-select` elements; and
+- rewrites `Sonner` and `SonnerProps` imports to the precise `ToastViewport` contract while
+  preserving local aliases, and renames `lumen-sonner` to `lumen-toast-viewport` without changing
+  placement, stack limits, or children; and
 - preserves numeric native `size` values while reporting dynamic, conflicting, and otherwise
   ambiguous values for manual review.
 

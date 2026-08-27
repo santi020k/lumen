@@ -49,6 +49,17 @@ import { UIPrimitives } from '@santi020k/lumen-astro'
 </html>
 ```
 
+The dedicated runtime entry point is available in Lumen 1.x and becomes the required import in
+Lumen 2. Adopt it before the major upgrade while leaving static components on the root entry point:
+
+```astro
+---
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+
+<UIPrimitives />
+```
+
 ## 2. Replacing Components Incrementally
 
 Because Lumen uses standalone CSS and standard semantic markup, you can migrate one component at a time without breaking your existing system.
@@ -80,6 +91,27 @@ Lumen 1.0 removes the compatibility aliases that were deprecated during the pre-
 DataTable emits only the canonical event name with `{ values: string[] }` detail. Run
 `lumen doctor <path>` before upgrading to find either removed contract and receive its exact
 replacement.
+
+### Preparing for version 2
+
+Use the v2 migration preview before changing package versions:
+
+```bash
+lumen migrate-v2 ./src --dry-run
+```
+
+The migration currently covers the accepted breaking-contract candidates:
+
+| Lumen 1.x contract | Lumen 2 contract |
+| --- | --- |
+| Named `UIPrimitives` import from `@santi020k/lumen-astro` | Default import from `@santi020k/lumen-astro/runtime` |
+| Literal visual `size` aliases on `Input` and `NativeSelect` | `visualSize` in Astro or `visual-size` in Elements |
+| `Sonner` / `SonnerProps` | `ToastViewport` / `ToastViewportProps` |
+| `<lumen-sonner>` | `<lumen-toast-viewport>` |
+
+The Sonner rename preserves placement, maximum-count configuration, and children because
+`ToastViewport` is the same viewport contract under a precise public name. Ambiguous imports and
+dynamic visual-size values remain manual-review findings instead of being rewritten speculatively.
 
 ## 4. Migrating from `private-website`
 

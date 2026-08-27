@@ -8,6 +8,7 @@ import { isValidElement } from 'react'
 import { registerLumenIconPack } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
+import * as LumenReact from './index.js'
 import {
   Accordion,
   Agenda,
@@ -77,7 +78,6 @@ import {
   Sidebar,
   Skeleton,
   Slider,
-  Sonner,
   Sparkline,
   Spinner,
   Stat,
@@ -92,6 +92,7 @@ import {
   ThemeBuilder,
   TimeField,
   Toast,
+  ToastViewport,
   Toggle,
   ToggleGroup,
   Typography
@@ -502,7 +503,12 @@ describe('@santi020k/lumen-react components', () => {
   test('marks marker variants and runtime data hooks', () => {
     expect(propsOf(Marker({}) as ReactElement).className).toBe('ui-marker')
     expect(propsOf(Marker({ variant: 'success' }) as ReactElement).className).toBe('ui-marker ui-marker--success')
-    expect(propsOf(Sonner({}) as ReactElement)['data-ui-sonner']).toBe(true)
+    const viewport = propsOf(ToastViewport({ placement: 'top-right' }) as ReactElement)
+
+    expect(viewport['data-ui-sonner']).toBe(true)
+    expect(viewport['data-placement']).toBe('top-right')
+    expect(viewport['data-ui-toast-max']).toBe(3)
+    expect(Reflect.get(LumenReact, 'Sonner')).toBe(ToastViewport)
     expect(propsOf(ThemeBuilder({}) as ReactElement)['data-ui-theme-builder']).toBe(true)
   })
 

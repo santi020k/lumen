@@ -1821,6 +1821,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'ToastViewport',
+      type: 'component',
+      description: 'Provides the configurable viewport for transient toast notifications.',
+      category: 'Feedback',
+      files: [
+        'packages/astro/components/ToastViewport.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
       name: 'Toggle',
       type: 'component',
       description: 'Represents an on/off action.',

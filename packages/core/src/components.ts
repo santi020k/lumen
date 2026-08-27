@@ -109,6 +109,7 @@ export const lumenComponentNames = [
   'ThemeToggle',
   'TimeField',
   'Toast',
+  'ToastViewport',
   'Toggle',
   'ToggleGroup',
   'Tooltip',
@@ -318,6 +319,7 @@ export const lumenComponentBehavior = {
   TimeField: { astro: 'none', elements: 'registered-element', react: 'component' },
   Timeline: { astro: 'none', elements: 'registered-element', react: 'component' },
   Toast: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
+  ToastViewport: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Toggle: {
     astro: 'ui-primitives',
     astroRuntimeBypass: 'controlled',

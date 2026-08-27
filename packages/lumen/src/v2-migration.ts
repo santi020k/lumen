@@ -3,7 +3,8 @@ import { extname, relative, resolve } from 'node:path'
 
 const ASTRO_PACKAGE = '@santi020k/lumen-astro'
 const ASTRO_RUNTIME_PACKAGE = '@santi020k/lumen-astro/runtime'
-const SOURCE_EXTENSIONS = new Set(['.astro', '.htm', '.html'])
+const REACT_PACKAGE = '@santi020k/lumen-react'
+const SOURCE_EXTENSIONS = new Set(['.astro', '.htm', '.html', '.js', '.jsx', '.ts', '.tsx'])
 
 const IGNORED_DIRECTORIES = new Set([
   '.astro',
@@ -18,7 +19,10 @@ const IGNORED_DIRECTORIES = new Set([
 
 const VISUAL_SIZE_ALIASES = new Set(['default', 'lg', 'sm'])
 
-export type LumenV2MigrationKind = 'astro-runtime-subpath' | 'visual-size-alias-removal'
+export type LumenV2MigrationKind =
+  | 'astro-runtime-subpath' |
+  'sonner-alias-removal' |
+  'visual-size-alias-removal'
 
 export interface LumenV2MigrationFinding {
   column: number
@@ -112,6 +116,10 @@ const isImportContext = (source: string, importStart: number, fromStart: number,
   if (!hasKeywordBoundary(source, importStart, 'import')) return false
 
   if (!hasKeywordBoundary(source, fromStart, 'from')) return false
+
+  const lineStart = source.lastIndexOf('\n', importStart) + 1
+
+  if (source.slice(lineStart, importStart).trim() !== '') return false
 
   const clause = source.slice(importStart + 'import'.length, fromStart)
 
@@ -676,20 +684,187 @@ const migrateVisualSizes = (
   return { changes, manualReview, source: applyEdits(source, edits) }
 }
 
+const formatNamedImport = (item: NamedImport, imported: string): string => {
+  const prefix = item.typeOnly ? 'type ' : ''
+  const alias = item.local === imported ? '' : ` as ${item.local}`
+
+  return `${prefix}${imported}${alias}`
+}
+
+const getSonnerReplacement = (imported: string): string | undefined => {
+  if (imported === 'Sonner') return 'ToastViewport'
+
+  if (imported === 'SonnerProps') return 'ToastViewportProps'
+
+  return undefined
+}
+
+const createNamedImportReplacement = (
+  statement: ImportStatement,
+  named: ParsedNamedImports
+): string => {
+  const prefix = statement.clause.slice(0, named.open).trim().replace(/,$/u, '').trim()
+  const suffix = statement.clause.slice(named.close + 1).trim()
+
+  const imports = named.imports.map(item => formatNamedImport(
+    item,
+    getSonnerReplacement(item.imported) ?? item.imported
+  ))
+
+  const separator = prefix && imports.length ? ', ' : ' '
+  const clause = [prefix, `{ ${imports.join(', ')} }`, suffix].filter(Boolean).join(separator)
+
+  return formatImport(clause, statement)
+}
+
+const migrateSonnerImports = (
+  source: string,
+  file: string
+): Pick<LumenV2SourceMigration, 'changes' | 'manualReview' | 'source'> => {
+  const changes: LumenV2MigrationFinding[] = []
+  const manualReview: LumenV2MigrationFinding[] = []
+  const edits: SourceEdit[] = []
+
+  for (const packageName of [ASTRO_PACKAGE, REACT_PACKAGE]) {
+    for (const statement of findImportStatements(source, packageName)) {
+      const named = parseNamedImports(statement.clause)
+      const mentionsSonner = statement.clause.includes('Sonner')
+
+      if (!mentionsSonner) continue
+
+      const replacements = named?.imports.flatMap(item => {
+        const replacement = getSonnerReplacement(item.imported)
+
+        return replacement ? [{ item, replacement }] : []
+      }) ?? []
+
+      if (!named?.complete) {
+        manualReview.push(createFinding(
+          source,
+          file,
+          statement.start,
+          'sonner-alias-removal',
+          'Sonner is part of an import that cannot be rewritten safely.'
+        ))
+
+        continue
+      }
+
+      if (replacements.length === 0) continue
+
+      edits.push({
+        end: statement.end,
+        replacement: createNamedImportReplacement(statement, named),
+        start: statement.start
+      })
+
+      for (const { item, replacement } of replacements) {
+        changes.push(createFinding(
+          source,
+          file,
+          statement.start,
+          'sonner-alias-removal',
+          `Replace ${item.imported} with ${replacement} while preserving the local name ${item.local}.`
+        ))
+      }
+    }
+  }
+
+  return { changes, manualReview, source: applyEdits(source, edits) }
+}
+
+const getRawElementEnd = (source: string, tagName: string, start: number): number => {
+  if (tagName !== 'script' && tagName !== 'style') return start
+
+  const closing = source.toLowerCase().indexOf(`</${tagName}`, start)
+
+  return closing < 0 ? source.length : closing
+}
+
+const migrateSonnerElements = (
+  source: string,
+  file: string
+): Pick<LumenV2SourceMigration, 'changes' | 'manualReview' | 'source'> => {
+  const changes: LumenV2MigrationFinding[] = []
+  const edits: SourceEdit[] = []
+  let cursor = getMarkupStart(source, file)
+
+  while (cursor < source.length) {
+    const tagStart = source.indexOf('<', cursor)
+
+    if (tagStart < 0) break
+
+    const closing = source[tagStart + 1] === '/'
+    const nameStart = tagStart + (closing ? 2 : 1)
+
+    if (source.startsWith('!--', tagStart + 1)) {
+      const commentEnd = source.indexOf('-->', tagStart + 4)
+
+      cursor = commentEnd < 0 ? source.length : commentEnd + 3
+
+      continue
+    }
+
+    const nameEnd = getTagNameEnd(source, nameStart)
+    const tagName = source.slice(nameStart, nameEnd)
+    const rawElementEnd = closing ? nameEnd : getRawElementEnd(source, tagName.toLowerCase(), nameEnd)
+
+    if (rawElementEnd !== nameEnd) {
+      cursor = rawElementEnd
+
+      continue
+    }
+
+    if (tagName === 'lumen-sonner') {
+      edits.push({ end: nameEnd, replacement: 'lumen-toast-viewport', start: nameStart })
+
+      changes.push(createFinding(
+        source,
+        file,
+        nameStart,
+        'sonner-alias-removal',
+        'Rename lumen-sonner to lumen-toast-viewport.'
+      ))
+    }
+
+    cursor = nameEnd || nameStart
+  }
+
+  return { changes, manualReview: [], source: applyEdits(source, edits) }
+}
+
 export const migrateLumenV2Source = (source: string, file = '<source>'): LumenV2SourceMigration => {
   const astro = file.endsWith('.astro')
   const markup = astro || file.endsWith('.htm') || file.endsWith('.html')
   const astroComponents = astro ? collectAstroComponentNames(source) : new Map<string, 'Input' | 'NativeSelect'>()
   const runtime = astro ? migrateRuntimeImports(source, file) : { changes: [], manualReview: [], source }
+  const sonnerImports = migrateSonnerImports(runtime.source, file)
 
-  if (!markup) return runtime
+  if (!markup) {
+    return {
+      changes: [...runtime.changes, ...sonnerImports.changes],
+      manualReview: [...runtime.manualReview, ...sonnerImports.manualReview],
+      source: sonnerImports.source
+    }
+  }
 
-  const visualSizes = migrateVisualSizes(runtime.source, file, astroComponents)
+  const visualSizes = migrateVisualSizes(sonnerImports.source, file, astroComponents)
+  const sonnerElements = migrateSonnerElements(visualSizes.source, file)
 
   return {
-    changes: [...runtime.changes, ...visualSizes.changes],
-    manualReview: [...runtime.manualReview, ...visualSizes.manualReview],
-    source: visualSizes.source
+    changes: [
+      ...runtime.changes,
+      ...sonnerImports.changes,
+      ...visualSizes.changes,
+      ...sonnerElements.changes
+    ],
+    manualReview: [
+      ...runtime.manualReview,
+      ...sonnerImports.manualReview,
+      ...visualSizes.manualReview,
+      ...sonnerElements.manualReview
+    ],
+    source: sonnerElements.source
   }
 }
 

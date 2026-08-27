@@ -92,6 +92,7 @@ import {
   type SelectOptions,
   type TabsController,
   type TabsOptions,
+  type ToastPlacement,
   type TooltipController,
   type TooltipOptions,
   useCalendar,
@@ -4948,14 +4949,37 @@ export const Slider = ({
   />
 )
 
-export type SonnerProps = ComponentPropsWithoutRef<'div'>
-export const Sonner = ({ className, ...props }: SonnerProps) => (
+export interface ToastViewportProps extends ComponentPropsWithoutRef<'div'> {
+  maxCount?: number
+  placement?: ToastPlacement
+}
+
+export const ToastViewport = ({
+  'aria-atomic': ariaAtomic = 'false',
+  'aria-label': ariaLabel = 'Notifications',
+  'aria-live': ariaLive = 'polite',
+  className,
+  maxCount = 3,
+  placement = 'bottom-right',
+  ...props
+}: ToastViewportProps) => (
   <div
-    className={composeClassName('ui-sonner', className)}
+    aria-atomic={ariaAtomic}
+    aria-label={ariaLabel}
+    aria-live={ariaLive}
+    className={composeClassName('ui-sonner ui-toast-viewport', className)}
+    data-placement={placement}
     data-ui-sonner
+    data-ui-toast-max={maxCount}
     {...props}
   />
 )
+
+/** @deprecated Use ToastViewport. Sonner remains as a 1.x compatibility alias. */
+export type SonnerProps = ToastViewportProps
+
+/** @deprecated Use ToastViewport. Sonner remains as a 1.x compatibility alias. */
+export const Sonner = ToastViewport
 
 export type SwitchProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
 export const Switch = ({

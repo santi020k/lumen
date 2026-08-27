@@ -1892,7 +1892,7 @@ describe('@santi020k/lumen-elements', () => {
     vi.useFakeTimers()
 
     document.body.innerHTML =
-      '<lumen-sonner data-placement="top-right" data-ui-toast-max="2"></lumen-sonner>'
+      '<lumen-toast-viewport data-placement="top-right" data-ui-toast-max="2"></lumen-toast-viewport>'
 
     const actionEvents: CustomEvent<{ id: string, value?: unknown }>[] = []
     document.body.addEventListener('ui:toast-action', event => {

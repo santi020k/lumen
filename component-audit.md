@@ -77,7 +77,7 @@ Legend — **Comp**: component implementation. **Ex**: main example vs the "all 
 | Menubar | ✅ | ✅ | Roving focus runtime. |
 | Tooltip | ✅ | ✅ | Runtime handles hover/focus popover behavior, Escape dismissal, and trigger `aria-describedby` wiring. |
 | Toast | ✅ | ✅ | Example covers success and warning programmatic toasts, placement, update, dismiss, action, and static fallback. |
-| Sonner | ✅ | ✅ | `ui:toast` event demo with script; Toast example now covers multi-placement Sonner usage too. |
+| ToastViewport | ✅ | ✅ | `ui:toast` event demo with script; Toast examples cover explicit multi-placement viewport usage. |
 
 ### Layout & structure
 

@@ -1,0 +1,24 @@
+---
+import {
+  Toast,
+  ToastViewport
+} from '@santi020k/lumen-astro'
+---
+
+<div style="min-height: 12rem; position: relative;">
+  <ToastViewport
+    aria-label="Example notifications"
+    maxCount={2}
+    placement="top-right"
+    style="position: absolute;"
+  >
+    <Toast variant="success">
+      <strong>Changes saved</strong>
+      <p>The explicit viewport keeps this notification in the top-right stack.</p>
+    </Toast>
+    <Toast>
+      <strong>Preview ready</strong>
+      <p>At most two notifications are shown in this example.</p>
+    </Toast>
+  </ToastViewport>
+</div>
