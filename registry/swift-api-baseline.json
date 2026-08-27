@@ -1517,6 +1517,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -28332,6 +28341,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -54606,6 +54624,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -79966,6 +79993,15 @@
             "brandSolid"
           ],
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
+        },
+        {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
         },
         {
           "declaration": "let surfaceMuted: Color",
