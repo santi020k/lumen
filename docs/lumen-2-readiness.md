@@ -211,7 +211,8 @@ The release baseline was verified on 2026-08-24:
 - all ten npm packages in `registry/release-manifest.json` resolve at their expected versions;
 - `com.santi020k:lumen-compose:0.5.0` and `com.santi020k:lumen-compose-wear:0.5.0` resolve from Maven
   Central;
-- `pnpm run check:release-manifest` and `pnpm run check:compose-version` pass; and
+- `pnpm run check:release-manifest`, `pnpm run check:swift-version`, and
+  `pnpm run check:compose-version` pass; and
 - Swift Package Manager builds the current package and its `v1.6.0` API baseline with no detected
   breaking changes.
 

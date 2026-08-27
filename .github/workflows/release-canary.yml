@@ -7,6 +7,10 @@ on:
       - "Package.swift"
       - "apps/playground-android/**"
       - "apps/playground-apple/**"
+      - "apps/docs/src/data/platforms.ts"
+      - "docs/ai-usage.md"
+      - "docs/native-components.md"
+      - "docs/playgrounds.md"
       - "packages/**"
       - "registry/native-device-evidence.json"
       - "registry/native-consumer-evidence.json"
@@ -23,6 +27,8 @@ on:
       - "scripts/check-native-stability-soak.mjs"
       - "scripts/check-native-stable-readiness.mjs"
       - "scripts/generate-release-manifest.mjs"
+      - "scripts/sync-swift-version.mjs"
+      - "scripts/sync-swift-version.test.mjs"
       - "scripts/smoke-react-native-native-package.mjs"
       - "scripts/smoke-swift-package-candidate.mjs"
   workflow_dispatch: {}
@@ -65,7 +71,7 @@ jobs:
           else
             echo "web=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(Package\.swift$|packages/(swift|tokens)/|apps/playground-apple/|tokens/|registry/(native-device-evidence|native-stability-soak|swift-api-baseline|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(Package\.swift$|packages/(swift|tokens)/|apps/playground-apple/|apps/docs/src/data/platforms\.ts$|docs/(ai-usage|native-components|playgrounds)\.md$|tokens/|registry/(native-device-evidence|native-stability-soak|swift-api-baseline|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-swift-version(\.test)?)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
             echo "swift=true" >> "$GITHUB_OUTPUT"
           else
             echo "swift=false" >> "$GITHUB_OUTPUT"
@@ -111,6 +117,7 @@ jobs:
           cache: pnpm
           node-version: 22.x
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run check:swift-version && pnpm run test:swift-version
       - run: swift test
       - run: pnpm run check:swift-source-compatibility
       - name: Check every target-specific Swift public API

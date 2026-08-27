@@ -83,4 +83,4 @@ All work merges into `main`; contributors do not create or merge a separate rele
 
 The feature pull request runs the complete validation suite. The automated release pull request runs
 only package build and publish dry-run checks because its generated changes are limited to versions,
-changelogs, the lockfile, and the MCP snapshot.
+changelogs, synchronized installation guidance, the lockfile, and the MCP snapshot.

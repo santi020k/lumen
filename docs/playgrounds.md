@@ -132,7 +132,7 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `1.2.0`. Use Up to Next Major Version from `1.2.0` only when the
+3. Choose Exact Version and enter `1.7.0-rc.0`. Use Up to Next Major Version from `1.7.0-rc.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.

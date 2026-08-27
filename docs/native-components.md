@@ -47,8 +47,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `1.2.0` for a reproducible
-production build. Use **Up to Next Major Version** from `1.2.0` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `1.7.0-rc.0` for a reproducible
+production build. Use **Up to Next Major Version** from `1.7.0-rc.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -59,12 +59,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "1.2.0"
+        exact: "1.7.0-rc.0"
     )
 ]
 ```
 
-Use `from: "1.2.0"` instead of `exact: "1.2.0"` for a compatible-version policy. Commit
+Use `from: "1.7.0-rc.0"` instead of `exact: "1.7.0-rc.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.

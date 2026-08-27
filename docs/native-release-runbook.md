@@ -39,6 +39,7 @@ the public tag passed the clean macOS, iOS, tvOS, and watchOS consumer check on 
 pnpm exec changeset status
 pnpm run check:swift-package-candidate
 pnpm run check:release-manifest
+pnpm run check:swift-version
 pnpm run validate
 pnpm run check:swift-package-release -- --version 1.7.0-rc.0
 ```
@@ -141,7 +142,8 @@ matrix are complete:
 2. add reviewed major Changesets entries for every public npm package;
 3. set React Native, Compose, and Wear to `2.0.0`;
 4. set the umbrella package to `2.0.0`, which produces the Swift `v2.0.0` repository tag;
-5. regenerate the release manifest, MCP snapshot, registry, platform outputs, and lockfile;
+5. regenerate the release manifest, synchronized platform installation guidance, MCP snapshot,
+   registry, platform outputs, and lockfile;
 6. remove every native Beta label in the same release revision; and
 7. run the complete release, consumer, compatibility, accessibility, and distribution gates.
 
