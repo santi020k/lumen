@@ -14,6 +14,15 @@ const appleStore = join(
   "en-US",
 );
 
+const macAppleStore = join(
+  repositoryRoot,
+  "apps",
+  "playground-apple",
+  "Store",
+  "macOS",
+  "en-US",
+);
+
 const androidStore = join(
   repositoryRoot,
   "apps",
@@ -98,6 +107,49 @@ assert.ok(
   "Apple keywords exceed 100 bytes",
 );
 
+const macAppleName = await readStoreText(
+  join(macAppleStore, "name.txt"),
+  30,
+  "Mac Apple name",
+);
+
+const macAppleSubtitle = await readStoreText(
+  join(macAppleStore, "subtitle.txt"),
+  30,
+  "Mac Apple subtitle",
+);
+
+const macApplePromotionalText = await readStoreText(
+  join(macAppleStore, "promotional-text.txt"),
+  170,
+  "Mac Apple promotional text",
+);
+
+const macAppleDescription = await readStoreText(
+  join(macAppleStore, "description.txt"),
+  4_000,
+  "Mac Apple description",
+);
+
+const macAppleKeywords = await readStoreText(
+  join(macAppleStore, "keywords.txt"),
+  100,
+  "Mac Apple keywords",
+);
+
+assert.equal(macAppleName, "Lumen Playground");
+
+assert.ok(macAppleSubtitle.includes("Lumen"));
+
+assert.ok(macApplePromotionalText.includes("macOS"));
+
+assert.ok(macAppleDescription.includes("without an account"));
+
+assert.ok(
+  Buffer.byteLength(macAppleKeywords, "utf8") <= 100,
+  "Mac Apple keywords exceed 100 bytes",
+);
+
 const androidEnglishStore = join(androidStore, "en-US");
 
 const androidTitle = await readStoreText(
@@ -139,6 +191,18 @@ const expectedURLs = new Map([
     join(androidEnglishStore, "privacy-url.txt"),
     "https://lumen.santi020k.com/privacy",
   ],
+  [
+    join(macAppleStore, "support-url.txt"),
+    "https://lumen.santi020k.com/support",
+  ],
+  [
+    join(macAppleStore, "privacy-url.txt"),
+    "https://lumen.santi020k.com/privacy",
+  ],
+  [
+    join(macAppleStore, "marketing-url.txt"),
+    "https://lumen.santi020k.com/docs/apple/playground",
+  ],
 ]);
 
 for (const [path, expected] of expectedURLs) {
@@ -161,6 +225,21 @@ const appleIcon = join(
 
 await assertPng(appleIcon, 1024, 1024);
 
+for (const [filename, size] of [
+  ["AppIcon-Mac-16.png", 16],
+  ["AppIcon-Mac-16@2x.png", 32],
+  ["AppIcon-Mac-32.png", 32],
+  ["AppIcon-Mac-32@2x.png", 64],
+  ["AppIcon-Mac-128.png", 128],
+  ["AppIcon-Mac-128@2x.png", 256],
+  ["AppIcon-Mac-256.png", 256],
+  ["AppIcon-Mac-256@2x.png", 512],
+  ["AppIcon-Mac-512.png", 512],
+  ["AppIcon-Mac-512@2x.png", 1024],
+]) {
+  await assertPng(join(repositoryRoot, "apps", "playground-apple", "Supporting", "Assets.xcassets", "AppIcon.appiconset", filename), size, size);
+}
+
 await assertPng(join(androidStore, "icon-512.png"), 512, 512);
 
 await assertPng(join(androidStore, "feature-graphic.png"), 1024, 500);
@@ -176,6 +255,36 @@ await assertPng(
   ),
   1242,
   2688,
+  2,
+);
+
+await assertPng(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Store",
+    "macOS",
+    "Screenshots",
+    "mac-catalog-light.png",
+  ),
+  1280,
+  800,
+  2,
+);
+
+await assertPng(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Store",
+    "macOS",
+    "Screenshots",
+    "mac-catalog-dark.png",
+  ),
+  1280,
+  800,
   2,
 );
 
@@ -240,6 +349,16 @@ const appleInfo = await readFile(
   "utf8",
 );
 
+const macAppleInfo = await readFile(
+  join(repositoryRoot, "apps", "playground-apple", "Supporting", "MacInfo.plist"),
+  "utf8",
+);
+
+const macAppleEntitlements = await readFile(
+  join(repositoryRoot, "apps", "playground-apple", "Supporting", "LumenMacPlayground.entitlements"),
+  "utf8",
+);
+
 assert.ok(
   appleInfo.includes("$(MARKETING_VERSION)"),
   "Apple marketing version is not configurable",
@@ -254,6 +373,23 @@ assert.match(
   appleInfo,
   /<key>ITSAppUsesNonExemptEncryption<\/key>\s*<false\/>/u,
   "Apple export-compliance declaration must remain false",
+);
+
+assert.match(
+  macAppleInfo,
+  /<key>ITSAppUsesNonExemptEncryption<\/key>\s*<false\/>/u,
+  "Mac export-compliance declaration must remain false",
+);
+
+assert.ok(
+  macAppleInfo.includes("public.app-category.developer-tools"),
+  "Mac app must use the Developer Tools category",
+);
+
+assert.match(
+  macAppleEntitlements,
+  /<key>com.apple.security.app-sandbox<\/key>\s*<true\/>/u,
+  "Mac App Store target must remain sandboxed",
 );
 
 const androidManifest = await readFile(
@@ -292,6 +428,7 @@ assert.ok(privacyPage.includes("or collect, retain, or share personal data"));
 
 await Promise.all([
   assertFile(join(appleStore, "review-notes.txt")),
+  assertFile(join(macAppleStore, "review-notes.txt")),
   assertFile(join(androidStore, "data-safety.md")),
   assertFile(join(repositoryRoot, "docs", "playground-publication.md")),
 ]);

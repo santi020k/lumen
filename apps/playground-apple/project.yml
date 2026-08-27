@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.santi020k.lumen
   deploymentTarget:
     iOS: "16.0"
+    macOS: "13.0"
 packages:
   LumenUI:
     path: ../..
@@ -40,6 +41,42 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
+  LumenMacPlayground:
+    type: application
+    platform: macOS
+    sources:
+      - Sources/LumenApplePlayground
+      - Supporting/Assets.xcassets
+    dependencies:
+      - package: LumenUI
+        product: LumenUI
+    entitlements:
+      path: Supporting/LumenMacPlayground.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+        CURRENT_PROJECT_VERSION: 1
+        DEVELOPMENT_TEAM: BY4995HQ3J
+        ENABLE_HARDENED_RUNTIME: YES
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: 1.0.0
+        PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple
+        PRODUCT_NAME: Lumen Playground
+        SWIFT_VERSION: 6.0
+        VERSIONING_SYSTEM: apple-generic
+    info:
+      path: Supporting/MacInfo.plist
+      properties:
+        CFBundleDisplayName: Lumen Playground
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.developer-tools
+        NSHighResolutionCapable: true
+        NSHumanReadableCopyright: Copyright © 2026 Santiago Molina. All rights reserved.
   LumenWatchPlayground:
     type: application
     platform: watchOS
@@ -67,6 +104,14 @@ schemes:
     build:
       targets:
         LumenApplePlayground: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  LumenMacPlayground:
+    build:
+      targets:
+        LumenMacPlayground: all
     run:
       config: Debug
     archive:

@@ -1,0 +1,13 @@
+Lumen Playground is the living SwiftUI catalog for Lumen UI, a cross-platform primitive design system.
+
+Search the public component library, exercise real native controls, and compare Lumen's semantic light and dark themes directly on your Mac. Every example is built with the same LumenUI package available to application developers.
+
+Explore:
+• Foundations, actions, forms, feedback, data display, navigation, and native presentations
+• Mac-specific utilities including shortcut recording and SF Symbol selection
+• Interactive loading, disabled, selected, validation, overlay, and empty states
+• Native VoiceOver semantics, keyboard focus behavior, contrast, and reduced-motion support
+• Shared Lumen icons, colors, spacing, typography, and visual treatments
+• Direct links to implementation documentation and public support
+
+The complete catalog works without an account or network connection and does not include advertising, analytics, tracking, or data collection.
