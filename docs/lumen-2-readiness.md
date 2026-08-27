@@ -195,7 +195,7 @@ proves every exit condition above.
 | Clean release baseline | Complete (2026-08-24) | [Release 1.6 baseline evidence](#release-16-baseline-evidence) |
 | Native contract freeze | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger |
 | Real consumer validation | 4/4 technical records Partial | [Native consumer validation](native-consumer-validation.md) and `registry/native-consumer-evidence.json`: active-product confirmation, signed artifacts, accessibility evidence, and immutable qualifying records remain |
-| Physical-device validation | Incomplete | Completed native device matrix with evidence links |
+| Physical-device validation | Incomplete | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced |
 | Distribution validation | Complete (2026-08-27) | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks |
 | Coordinated Lumen 2 release | Blocked by prior gates | Every public package and platform at `2.0.0`, documentation, and migration notes |
 | Version 2 contract approval | Draft; 3/3 investigations resolved | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage |

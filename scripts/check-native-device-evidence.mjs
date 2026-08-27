@@ -21,15 +21,45 @@ const evidence = JSON.parse(
 
 const requireComplete = process.argv.includes('--require-complete')
 
-const expectedAdapterIds = [
-  'compose-android',
-  'compose-wear',
-  'react-native-android',
-  'react-native-ios',
-  'swiftui-ios',
-  'swiftui-macos',
-  'swiftui-watchos'
-]
+const expectedAdapters = {
+  'compose-android': {
+    adapter: 'Compose',
+    minimumOperatingSystem: 'Android API 23',
+    platform: 'Android'
+  },
+  'compose-wear': {
+    adapter: 'Compose',
+    minimumOperatingSystem: 'Wear OS API 30',
+    platform: 'Wear OS'
+  },
+  'react-native-android': {
+    adapter: 'React Native',
+    minimumOperatingSystem: 'Android API 24',
+    platform: 'Android'
+  },
+  'react-native-ios': {
+    adapter: 'React Native',
+    minimumOperatingSystem: 'iOS 15.1',
+    platform: 'iOS'
+  },
+  'swiftui-ios': {
+    adapter: 'SwiftUI',
+    minimumOperatingSystem: 'iOS 16',
+    platform: 'iOS'
+  },
+  'swiftui-macos': {
+    adapter: 'SwiftUI',
+    minimumOperatingSystem: 'macOS 13',
+    platform: 'macOS'
+  },
+  'swiftui-watchos': {
+    adapter: 'SwiftUI',
+    minimumOperatingSystem: 'watchOS 9',
+    platform: 'watchOS'
+  }
+}
+
+const expectedAdapterIds = Object.keys(expectedAdapters)
 
 const expectedChecks = [
   'alternateInput',
@@ -148,12 +178,16 @@ const validatePass = (pass, label) => {
     assert.equal(completedChecks, expectedChecks.length, `${label} complete pass has unchecked items`)
 
     assert.equal(pass.blockingIssues.length, 0, `${label} complete pass has blocking issues`)
+  } else if (pass.status === 'partial') {
+    assert.ok(pass.blockingIssues.length > 0, `${label} partial pass requires blocking issues`)
+
+    incompletePasses.push(label)
   } else {
     incompletePasses.push(label)
   }
 }
 
-assert.equal(evidence.schemaVersion, 2, 'Unsupported native device evidence schema')
+assert.equal(evidence.schemaVersion, 3, 'Unsupported native device evidence schema')
 
 assert.ok(Array.isArray(evidence.adapters), 'Native device adapters must be an array')
 
@@ -164,9 +198,22 @@ assert.deepEqual(
 )
 
 for (const adapter of evidence.adapters) {
-  assert.equal(typeof adapter.adapter, 'string', `${adapter.id} requires an adapter name`)
+  const expectedAdapter = expectedAdapters[adapter.id]
 
-  assert.equal(typeof adapter.platform, 'string', `${adapter.id} requires a platform name`)
+  assert.equal(adapter.adapter, expectedAdapter.adapter, `${adapter.id} has an unexpected adapter name`)
+
+  assert.equal(adapter.platform, expectedAdapter.platform, `${adapter.id} has an unexpected platform name`)
+
+  assert.equal(
+    adapter.minimumOperatingSystem,
+    expectedAdapter.minimumOperatingSystem,
+    `${adapter.id} minimum operating system must match the supported package baseline`
+  )
+
+  assert.ok(
+    adapter.minimum.targetDescription.includes(adapter.minimumOperatingSystem),
+    `${adapter.id}.minimum target must name the supported package baseline`
+  )
 
   validatePass(adapter.minimum, `${adapter.id}.minimum`)
 

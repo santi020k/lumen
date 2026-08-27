@@ -13,6 +13,11 @@ pull request, or recording URL; local notes alone cannot satisfy release readine
 requires `pnpm run check:native-device-readiness`, which fails until both minimum and current passes
 are complete for every adapter and platform.
 
+Each adapter also records its exact minimum operating system. The validator freezes these values to
+the package support declarations: React Native 0.86.2 uses iOS 15.1 and Android API 24, SwiftUI uses
+iOS 16, macOS 13, and watchOS 9, Compose uses Android API 23, and Wear uses API 30. A Partial result
+must list the checks or evidence that still block completion.
+
 ## Automated gates
 
 Run the following before starting a manual device pass:
@@ -43,13 +48,13 @@ Do not replace a physical-device result with a simulator or emulator result.
 
 | Adapter | Minimum pass | Current pass | Assistive technology | Evidence |
 | --- | --- | --- | --- | --- |
-| React Native on iOS | Oldest supported iPhone and iOS | Current iPhone and iOS | VoiceOver, Larger Text, Reduce Motion, Increase Contrast | Pending |
-| React Native on Android | API 23-class device | Current Android device | TalkBack, font size and display size, remove animations, high contrast | Pending |
+| React Native on iOS | iOS 15.1 physical iPhone | Current iPhone and iOS | VoiceOver, Larger Text, Reduce Motion, Increase Contrast | Pending |
+| React Native on Android | Android API 24 physical device | Current Android device | TalkBack, font size and display size, remove animations, high contrast | Pending |
 | SwiftUI on iOS | iOS 16 device | Current iPhone and iOS | VoiceOver, Dynamic Type, Reduce Motion, Increase Contrast | Pending |
 | SwiftUI on macOS | macOS 13 Mac | Current macOS Mac | VoiceOver, Full Keyboard Access, Reduce Motion, Increase Contrast | Partial hardware pass recorded below |
 | SwiftUI on watchOS | watchOS 9 Apple Watch | Current Apple Watch and watchOS | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, Always On | Pending |
-| Compose on Android | API 23-class device | Current Android device | TalkBack, font size and display size, remove animations, high contrast | Pending |
-| Compose on Wear OS | API 30-class watch | Current Wear OS watch | TalkBack, font scaling, remove animations, round-screen clipping, rotary input | Pending |
+| Compose on Android | Android API 23 physical device | Current Android device | TalkBack, font size and display size, remove animations, high contrast | Pending |
+| Compose on Wear OS | Wear OS API 30 physical watch | Current Wear OS watch | TalkBack, font scaling, remove animations, round-screen clipping, rotary input | Pending |
 
 ## Component pass
 

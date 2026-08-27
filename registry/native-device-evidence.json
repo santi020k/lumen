@@ -1,13 +1,14 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "adapters": [
     {
       "id": "react-native-ios",
       "adapter": "React Native",
       "platform": "iOS",
+      "minimumOperatingSystem": "iOS 15.1",
       "minimum": {
         "status": "pending",
-        "targetDescription": "Oldest supported iPhone and iOS",
+        "targetDescription": "iOS 15.1 physical iPhone",
         "environment": null,
         "date": null,
         "revision": null,
@@ -48,9 +49,10 @@
       "id": "react-native-android",
       "adapter": "React Native",
       "platform": "Android",
+      "minimumOperatingSystem": "Android API 24",
       "minimum": {
         "status": "pending",
-        "targetDescription": "API 23-class Android device",
+        "targetDescription": "Android API 24 physical device",
         "environment": null,
         "date": null,
         "revision": null,
@@ -91,6 +93,7 @@
       "id": "swiftui-ios",
       "adapter": "SwiftUI",
       "platform": "iOS",
+      "minimumOperatingSystem": "iOS 16",
       "minimum": {
         "status": "pending",
         "targetDescription": "iOS 16 physical device",
@@ -134,6 +137,7 @@
       "id": "swiftui-macos",
       "adapter": "SwiftUI",
       "platform": "macOS",
+      "minimumOperatingSystem": "macOS 13",
       "minimum": {
         "status": "pending",
         "targetDescription": "macOS 13 physical Mac",
@@ -175,13 +179,17 @@
           "responsiveLayout": false,
           "stateAndAnnouncements": false
         },
-        "blockingIssues": []
+        "blockingIssues": [
+          "A human-assisted auditory VoiceOver pass remains required.",
+          "Maximum text scale, reduced motion, increased contrast, responsive layout, and state-announcement checks remain required."
+        ]
       }
     },
     {
       "id": "swiftui-watchos",
       "adapter": "SwiftUI",
       "platform": "watchOS",
+      "minimumOperatingSystem": "watchOS 9",
       "minimum": {
         "status": "pending",
         "targetDescription": "watchOS 9 physical Apple Watch",
@@ -225,9 +233,10 @@
       "id": "compose-android",
       "adapter": "Compose",
       "platform": "Android",
+      "minimumOperatingSystem": "Android API 23",
       "minimum": {
         "status": "pending",
-        "targetDescription": "API 23-class Android device",
+        "targetDescription": "Android API 23 physical device",
         "environment": null,
         "date": null,
         "revision": null,
@@ -268,9 +277,10 @@
       "id": "compose-wear",
       "adapter": "Compose",
       "platform": "Wear OS",
+      "minimumOperatingSystem": "Wear OS API 30",
       "minimum": {
         "status": "pending",
-        "targetDescription": "API 30-class physical Wear OS watch",
+        "targetDescription": "Wear OS API 30 physical watch",
         "environment": null,
         "date": null,
         "revision": null,

@@ -109,3 +109,35 @@ test('rejects complete evidence that is not an immutable HTTPS URL', async () =>
 
   assert.match(result.stderr, /complete evidence must be an HTTPS URL/)
 })
+
+test('rejects a minimum operating system that differs from the supported package baseline', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters.find(adapter => adapter.id === 'react-native-android').minimumOperatingSystem = 'Android API 23'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /minimum operating system must match the supported package baseline/)
+})
+
+test('rejects a minimum device target that omits its supported package baseline', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.targetDescription = 'Old phone'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /minimum target must name the supported package baseline/)
+})
+
+test('rejects a partial pass without explicit blocking issues', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.status = 'partial'
+
+    ledger.adapters[0].minimum.blockingIssues = []
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /partial pass requires blocking issues/)
+})
