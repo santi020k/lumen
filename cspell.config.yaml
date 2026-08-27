@@ -1,6 +1,7 @@
 version: "0.2"
 language: en
 words:
+  - APPL
   - swiftui
   - aaronmgz
   - activedescendant
@@ -90,6 +91,7 @@ words:
   - inputmode
   - iphonesimulator
   - imageset
+  - pipefail
   - jsdom
   - Jetpack
   - knip

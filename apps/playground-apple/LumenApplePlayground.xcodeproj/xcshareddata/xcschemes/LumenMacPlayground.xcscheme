@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AABF2EC4C9D4597976C5AC7B"
-               BuildableName = "LumenWatchPlayground.app"
-               BlueprintName = "LumenWatchPlayground"
+               BlueprintIdentifier = "A1744112F1B4A2ED319D9D98"
+               BuildableName = "LumenMacPlayground.app"
+               BlueprintName = "LumenMacPlayground"
                ReferencedContainer = "container:LumenApplePlayground.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AABF2EC4C9D4597976C5AC7B"
-            BuildableName = "LumenWatchPlayground.app"
-            BlueprintName = "LumenWatchPlayground"
+            BlueprintIdentifier = "A1744112F1B4A2ED319D9D98"
+            BuildableName = "LumenMacPlayground.app"
+            BlueprintName = "LumenMacPlayground"
             ReferencedContainer = "container:LumenApplePlayground.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AABF2EC4C9D4597976C5AC7B"
-            BuildableName = "LumenWatchPlayground.app"
-            BlueprintName = "LumenWatchPlayground"
+            BlueprintIdentifier = "A1744112F1B4A2ED319D9D98"
+            BuildableName = "LumenMacPlayground.app"
+            BlueprintName = "LumenMacPlayground"
             ReferencedContainer = "container:LumenApplePlayground.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AABF2EC4C9D4597976C5AC7B"
-            BuildableName = "LumenWatchPlayground.app"
-            BlueprintName = "LumenWatchPlayground"
+            BlueprintIdentifier = "A1744112F1B4A2ED319D9D98"
+            BuildableName = "LumenMacPlayground.app"
+            BlueprintName = "LumenMacPlayground"
             ReferencedContainer = "container:LumenApplePlayground.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -157,6 +157,11 @@ pnpm playground:apple:build
 swift run --package-path apps/playground-apple LumenApplePlayground
 ```
 
+To exercise the distributable application target, open
+`apps/playground-apple/LumenApplePlayground.xcodeproj`, select `LumenMacPlayground`, choose **My Mac**,
+and press Run. This target shares the gallery implementation with the package executable and adds
+the App Sandbox bundle used for TestFlight and Mac App Store archives.
+
 ### Install on a device or publish to TestFlight
 
 For a physical device or TestFlight build:

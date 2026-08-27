@@ -1,9 +1,9 @@
 # Publishing Lumen Playground
 
-Lumen Playground is a public, offline developer reference for Lumen UI. The iOS listing ships the
-SwiftUI gallery, the Android listing ships the Compose gallery, and the React Native gallery remains
-the browser and Expo demonstration. All surfaces use the same name, icon, positioning, support URL,
-and privacy policy while proving the package native to their platform.
+Lumen Playground is a public, offline developer reference for Lumen UI. The iOS and macOS listings
+ship the SwiftUI gallery, the Android listing ships the Compose gallery, and the React Native gallery
+remains the browser and Expo demonstration. All surfaces use the same name, icon, positioning,
+support URL, and privacy policy while proving the package native to their platform.
 
 ## Product contract
 
@@ -25,9 +25,10 @@ and privacy policy while proving the package native to their platform.
 - **Apple marketing URL:** `https://lumen.santi020k.com/docs/apple/playground`
 - **Android website:** `https://lumen.santi020k.com/docs/android/playground`
 
-Editable English listing copy lives in `apps/playground-apple/Store/en-US` and
-`apps/playground-android/Store/en-US`. The Android data declaration lives beside its listing copy.
-Keep screenshots and submitted metadata accurate for the exact binary under review.
+Editable English listing copy lives in `apps/playground-apple/Store/en-US`,
+`apps/playground-apple/Store/macOS/en-US`, and `apps/playground-android/Store/en-US`. The Android data
+declaration lives beside its listing copy. Keep screenshots and submitted metadata accurate for the
+exact binary under review.
 
 ## Generate icons
 
@@ -73,12 +74,15 @@ the shorter `playground:android:bundle` command intentionally remains available 
 release checks only.
 
 For Apple distribution, run `pnpm playground:apple:release-preflight`, then manually dispatch the
-GitHub Actions workflow **Launch Apple playground release** from `main` with the App Store marketing
-version. The workflow creates an immutable `playground-ios-v<version>-r<run>` tag. Repeated attempts
-for the same marketing version receive distinct tags, while Xcode Cloud supplies the monotonically
-increasing `CI_BUILD_NUMBER`. Because App Store Connect already received build `1` of version
-`1.0.0` before Xcode Cloud was enabled, the cloud script offsets that counter by one: the first
-cloud build uploads as build `2`, the next as build `3`, and so on.
+matching GitHub Actions workflow from `main` with the App Store marketing version:
+
+- **Launch Apple playground release** creates `playground-ios-v<version>-r<run>` for iOS.
+- **Launch Mac playground release** creates `playground-macos-v<version>-r<run>` for macOS.
+
+Repeated attempts for the same marketing version receive distinct tags, while Xcode Cloud supplies
+the monotonically increasing `CI_BUILD_NUMBER`. Because App Store Connect already received iOS build
+`1` of version `1.0.0` before Xcode Cloud was enabled, the cloud script offsets only the iOS counter
+by one. The macOS workflow uses its own Xcode Cloud build counter directly.
 
 Create an Xcode Cloud workflow named **App Store Release** for
 `apps/playground-apple/LumenApplePlayground.xcodeproj` and the shared
@@ -91,6 +95,20 @@ Create an Xcode Cloud workflow named **App Store Release** for
 - Signing: automatic signing for team `BY4995HQ3J`.
 - Post-actions: none. TestFlight groups, App Review submission, and customer release remain explicit
   App Store Connect steps.
+
+Create a second Xcode Cloud workflow named **Mac App Store Release** for the same project and the
+shared `LumenMacPlayground` scheme:
+
+- Start condition: tag changes matching `playground-macos-v*`.
+- Environment: the latest Apple-supported Xcode release and compatible macOS image.
+- Action: archive the macOS app with App Store Connect distribution preparation enabled.
+- Signing: automatic signing for team `BY4995HQ3J`; the target uses App Sandbox and hardened runtime.
+- Post-actions: none. TestFlight, App Review submission, and customer release remain explicit App
+  Store Connect steps.
+
+Add macOS to the existing App Store Connect record so iOS and macOS share the Apple ID, SKU, bundle
+ID `com.santi020k.lumen.playground.apple`, and universal-purchase identity. Do not create a separate
+Mac application record.
 
 Xcode Cloud automatically runs `apps/playground-apple/ci_scripts/ci_post_clone.sh`. For release
 tags, the script derives `MARKETING_VERSION` from the tag and uses Xcode Cloud's positive integer
@@ -108,9 +126,10 @@ state.
 1. Run the repository's native build, typecheck, lint, test, API, and release-candidate checks.
 2. Complete the relevant physical-device accessibility matrix in `docs/native-device-validation.md`
    for minimum and current supported devices. Resolve blocking findings before public release.
-3. Capture current phone and tablet screenshots from the exact release candidate in both light and
-   dark appearances. Export store PNGs without an alpha channel, as required by App Store Connect.
-   Do not use the React Native web render as native store evidence.
+3. Capture current phone, tablet, and Mac screenshots from the exact release candidate in both light
+   and dark appearances. Export store PNGs without an alpha channel, as required by App Store
+   Connect. Mac screenshots use an accepted 16:10 size. Do not use the React Native web render as
+   native store evidence.
 4. Verify that privacy URLs are live, the in-app links work, no unexpected permissions appear in
    the final manifests, and store privacy answers match every bundled SDK.
 5. Distribute the exact candidate through TestFlight and Google Play closed testing. Exercise

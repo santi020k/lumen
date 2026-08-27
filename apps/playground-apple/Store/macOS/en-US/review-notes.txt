@@ -1,0 +1,5 @@
+Lumen Playground is an interactive macOS developer reference catalog. It requires no account, network connection, or special review access, and its complete functionality is available offline.
+
+The controls labeled as demonstrations intentionally exercise component states; they do not register for notifications, download updates, submit form content, or persist personal information. Documentation, Support, and Privacy open public HTTPS pages in the system browser.
+
+The application uses App Sandbox and requests no additional sandbox capabilities or protected-resource permissions.
