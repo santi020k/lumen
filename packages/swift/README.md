@@ -73,12 +73,13 @@ product palettes. If a stored System/Light/Dark preference is application-owned,
 semantic values without forcing SwiftUI's appearance:
 
 ```swift
-let productPalette = LumenColors.light.overriding(
-    brand: productAccent,
-    brandSolid: productAccent,
-    brandSoft: productAccent.opacity(0.14)
+let baseTheme = LumenTheme.light
+let productPalette = baseTheme.colors.overriding(
+    brand: Color("BrandAccent"),
+    brandSoft: Color("BrandAccentSoft"),
+    accent: Color("BrandAccent")
 )
-let productTheme = LumenTheme(colors: productPalette, scheme: .light)
+let productTheme = LumenTheme(colors: productPalette, scheme: baseTheme.scheme)
 
 AppRoot()
     .lumenTheme(
@@ -87,6 +88,10 @@ AppRoot()
         applyTint: !applicationOwnsTint
     )
 ```
+
+Use `overriding(...)` for additive product customization: omitted semantic colors continue to use
+the selected Lumen light or dark palette. Construct `LumenColorPalette` directly only when the
+application intentionally owns every semantic color.
 
 Apply the modifier to every independent scene that presents Lumen content, including macOS window,
 settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`, system appearance
