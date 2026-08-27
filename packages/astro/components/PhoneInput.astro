@@ -6,6 +6,7 @@ import {
   getLumenPhoneCountry,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
+  type LumenPhoneNumber,
   resolveLumenAstroProps,
   resolveLumenPhoneNumber
 } from '@santi020k/lumen-core'
@@ -71,7 +72,27 @@ const selectedCountry = metadataCountries.find(country => (
   country.regionCode === countryValue || country.callingCode === countryValue
 )) ?? metadataCountries[0] ?? getLumenPhoneCountry('US', phoneOptions)
 
-const phoneValue = selectedCountry && value ? resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) : null
+const detectedPhoneValue = selectedCountry && value ?
+  resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) :
+  null
+
+const normalizePhoneValue = (detectedValue: LumenPhoneNumber | null): LumenPhoneNumber | null => {
+  if (!detectedValue || !selectedCountry) return detectedValue
+
+  const detectedCountryIsAllowed = metadataCountries.some(country => (
+    country.regionCode === detectedValue.country.regionCode
+  ))
+
+  if (detectedCountryIsAllowed) return detectedValue
+
+  const allowedCountryValue = detectedValue.nationalNumber.startsWith('+') ?
+    detectedValue.nationalNumber.slice(1) :
+    detectedValue.nationalNumber
+
+  return resolveLumenPhoneNumber(selectedCountry, allowedCountryValue, phoneOptions)
+}
+
+const phoneValue = normalizePhoneValue(detectedPhoneValue)
 const selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue
 const renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value
 

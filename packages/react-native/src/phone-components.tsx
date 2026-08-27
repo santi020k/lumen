@@ -17,13 +17,13 @@ import {
   getLumenPhoneCountries,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
-  type LumenPhoneNumber,
-  resolveLumenPhoneNumber
+  type LumenPhoneNumber
 } from '@santi020k/lumen-core'
 
 import { LumenFieldGroup } from './additional-components.js'
 import { LumenSearchField } from './form-components.js'
 import { LumenSheet } from './overlay-components.js'
+import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenIcon } from './primitives.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
@@ -209,7 +209,8 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
   }
 
   const selectCountry = (country: LumenPhoneCountry): void => {
-    props.onValueChange(resolveLumenPhoneNumber(
+    props.onValueChange(resolveLumenPhoneInputValue(
+      availableCountries,
       country,
       props.value.nationalNumber,
       phoneOptions
@@ -280,7 +281,8 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
             editable={enabled}
             keyboardType="phone-pad"
             onChangeText={input => {
-              props.onValueChange(resolveLumenPhoneNumber(
+              props.onValueChange(resolveLumenPhoneInputValue(
+                availableCountries,
                 value.country,
                 input,
                 phoneOptions

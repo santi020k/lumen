@@ -53,7 +53,7 @@ interface NativeDatePickerProps {
   maximumDate?: Date
   minimumDate?: Date
   mode: 'date'
-  onValueChange: (event: DateTimePickerChangeEvent, date: Date) => void
+  onChange: (event: DateTimePickerChangeEvent, date?: Date) => void
   themeVariant: 'dark' | 'light'
   value: Date
 }
@@ -181,7 +181,9 @@ export const LumenDateField = ({
   const displayValue = formatLumenDate(value, placeholder, formatValue)
   const pickerBounds = resolveLumenDateBounds(minimumDate, maximumDate)
 
-  const commitValue = (_event: DateTimePickerChangeEvent, selectedDate: Date): void => {
+  const commitValue = (_event: DateTimePickerChangeEvent, selectedDate?: Date): void => {
+    if (!selectedDate) return
+
     onValueChange(clampLumenDate(selectedDate, minimumDate, maximumDate))
   }
 
@@ -192,7 +194,7 @@ export const LumenDateField = ({
       DateTimePickerAndroid.open({
         ...pickerBounds,
         mode: 'date',
-        onValueChange: commitValue,
+        onChange: commitValue,
         value: pickerValue
       })
 
@@ -259,7 +261,7 @@ export const LumenDateField = ({
         onDateChange={selectedDate => {
           onValueChange(clampLumenDate(selectedDate, minimumDate, maximumDate))
         }}
-        onValueChange={commitValue}
+        onChange={commitValue}
         themeVariant={theme.scheme}
         value={pickerValue}
         webValue={value}
