@@ -208,7 +208,7 @@ the public 1.5.0 tag. Simulator framework diagnostics were noisy but did not pro
 failure, and no Lumen-specific integration finding required a workaround. This establishes
 technical consumer compatibility, not a 1.4.0 to 1.5.0 upgrade or physical-device qualification.
 
-### Swift package candidate distribution
+### Swift package distribution
 
 The current Swift source passes a clean semantic-tag simulation independent of the workspace build.
 The verifier copies only the package manifest, Swift package sources, resources, license, and notices
@@ -221,13 +221,16 @@ and the consumer must build for macOS, iOS, tvOS, and watchOS.
 pnpm run check:swift-package-candidate
 ```
 
-This proves the corrected source is ready for semantic-tag distribution without creating external
-state. It does not repair or replace `v1.6.0`, and it does not substitute for resolving the eventual
-public corrective tag with:
+The published immutable corrective tag was then verified directly from GitHub:
 
 ```bash
-pnpm run check:swift-package-release -- --version <version>
+pnpm run check:swift-package-release -- --version 1.7.0-rc.0
 ```
+
+The tag resolves to `63abc0443f8e9f72dc8a010b4c5f89d3ee34c576`. Its clean consumer verifies
+the resolved revision, notices, resource catalog, and builds for macOS, iOS, tvOS, and watchOS. This
+completes the Swift artifact-distribution gate without repairing or replacing `v1.6.0`. The
+prerelease does not count as an ordinary stability-soak iteration.
 
 ## Next validation passes
 
@@ -235,9 +238,6 @@ pnpm run check:swift-package-release -- --version <version>
    signed-build evidence separately from these simulator and bundle checks.
 2. Run a signed Roadscore EAS build so Expo bundles are backed by native iOS and Android artifacts.
 3. Capture ContracTrack phone and watch hardware evidence at the validated artifact versions.
-4. Publish the target-availability patch under a new immutable semantic tag, then resolve that tag
-   in clean Swift Package Manager and Xcode consumers for every declared Apple platform. Do not
-   reuse or move `v1.6.0`.
-5. Convert the successful Coolstead technical upgrade into immutable consumer evidence and record
+4. Convert the successful Coolstead technical upgrade into immutable consumer evidence and record
    its installed behavior on representative Mac hardware; use Workscene if a second independent
    macOS consumer is needed.

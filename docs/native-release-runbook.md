@@ -31,17 +31,20 @@ Publish fixes and compatible improvements through the normal Changesets and Comp
 The repository tag, npm package family, Swift package reference, Compose artifacts, changelogs, and
 release manifest must describe the same intended source revision.
 
-The published `v1.6.0` Swift package has incorrect tvOS availability boundaries. Publish the
-existing source correction through the next ordinary immutable `1.x` repository tag, then verify
-that public tag without moving or replacing `v1.6.0`:
+The published `v1.6.0` Swift package has incorrect tvOS availability boundaries. The existing tag
+was not moved or replaced. The source correction is published in immutable tag `v1.7.0-rc.0`, and
+the public tag passed the clean macOS, iOS, tvOS, and watchOS consumer check on 2026-08-27:
 
 ```bash
 pnpm exec changeset status
 pnpm run check:swift-package-candidate
 pnpm run check:release-manifest
 pnpm run validate
-pnpm run check:swift-package-release -- --version <published-version>
+pnpm run check:swift-package-release -- --version 1.7.0-rc.0
 ```
+
+The prerelease tag completes the corrective Swift distribution proof, but it is not an ordinary
+published release and therefore does not count as a stability-soak iteration.
 
 ## 2. Freeze the supported native contracts
 

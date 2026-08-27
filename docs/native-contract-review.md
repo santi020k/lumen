@@ -56,8 +56,9 @@ Availability is part of the supported contract, not an implementation detail:
   and symbol selection remain SwiftUI-only.
 
 The target-specific Swift symbol baseline and the separate Compose/Wear binary dumps enforce these
-boundaries. The published `v1.6.0` Swift tag predates the corrected tvOS guards and therefore cannot
-satisfy the clean tagged-consumer gate; the correction requires a new immutable patch tag.
+boundaries. The published `v1.6.0` Swift tag predates the corrected tvOS guards and cannot satisfy
+the clean tagged-consumer gate. Immutable prerelease tag `v1.7.0-rc.0` contains the correction and
+passed the clean macOS, iOS, tvOS, and watchOS consumer check on 2026-08-27.
 
 The Swift surface-scale expansion is the only reviewed source break from `v1.6.0`: exhaustive
 switches must account for the new semantic padding and radius cases. Published Card, StatusBar, and
@@ -69,7 +70,6 @@ outside the reviewed Lumen 2 contract.
 The semantic disposition is accepted as the review baseline. Native contract freeze still requires:
 
 1. migration notes for any further Beta correction;
-2. an immutable Swift patch release containing the target-availability correction;
-3. two consecutive ordinary-release stability iterations with unchanged Supported baselines; and
-4. consumer and physical-device evidence showing that the documented behavior holds in product
+2. two consecutive ordinary-release stability iterations with unchanged Supported baselines; and
+3. consumer and physical-device evidence showing that the documented behavior holds in product
    flows.

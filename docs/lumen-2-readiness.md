@@ -196,7 +196,7 @@ proves every exit condition above.
 | Native contract freeze | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger |
 | Real consumer validation | 4/4 technical records Partial | [Native consumer validation](native-consumer-validation.md) and `registry/native-consumer-evidence.json`: active-product confirmation, signed artifacts, accessibility evidence, and immutable qualifying records remain |
 | Physical-device validation | Incomplete | Completed native device matrix with evidence links |
-| Distribution validation | Partial | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and a disposable tagged Swift candidate across every Apple platform pass; the corrected public immutable Swift tag remains |
+| Distribution validation | Complete (2026-08-27) | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks |
 | Coordinated Lumen 2 release | Blocked by prior gates | Every public package and platform at `2.0.0`, documentation, and migration notes |
 | Version 2 contract approval | Draft; 3/3 investigations resolved | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage |
 
@@ -217,12 +217,11 @@ The release baseline was verified on 2026-08-24:
 
 Target-specific candidate validation found that the published `v1.6.0` Swift package cannot build
 all declared platforms: tvOS exposes APIs whose underlying SwiftUI types are unavailable there. The
-current source corrects those availability boundaries, but the clean tagged-consumer requirement
-remains blocked until that patch is published under a new immutable semantic tag. The existing tag
-must not be moved.
+existing tag was not moved. The correction was subsequently published in the immutable semantic
+prerelease tag `v1.7.0-rc.0`, which resolves to `63abc0443f8e9f72dc8a010b4c5f89d3ee34c576`.
 
-`pnpm run check:swift-package-candidate` copies the current candidate into a disposable Git
-repository, creates a semantic prerelease tag, resolves that exact tag from an independent SwiftPM
-consumer, verifies its revision, notices, and resource catalog, and builds macOS, iOS, tvOS, and
-watchOS. After publishing the corrective tag, rerun the same proof against GitHub with
-`pnpm run check:swift-package-release -- --version <version>`.
+`pnpm run check:swift-package-release -- --version 1.7.0-rc.0` resolved that exact public GitHub tag
+from an independent SwiftPM consumer, verified its peeled revision, notices, and resource catalog,
+and built macOS, iOS, tvOS, and watchOS on 2026-08-27. This completes the Swift artifact-distribution
+proof. Because it is a prerelease, it does not count as either required ordinary stability-soak
+iteration.
