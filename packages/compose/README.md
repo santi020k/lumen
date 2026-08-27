@@ -2,8 +2,8 @@
 
 <!-- cspell:words screencap -->
 
-> **Beta:** This package is ready for testing and early production adoption. Its public API may
-> evolve as it is validated in real applications; review release notes when upgrading.
+> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
+> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
 
 This Android library provides native Compose foundations and primitives generated from Lumen's
 canonical design tokens. It follows the same semantic color roles, spacing, radii, typography, and
@@ -124,7 +124,7 @@ a bottom bar and navigation rail. The Android-specific tier also includes
 `LumenFloatingActionButton`, with Material-native geometry, semantic intents, and optional hide or
 follow-navigation behavior.
 
-`LumenPhoneInput` is experimental and uses Google libphonenumber metadata to provide a searchable,
+`LumenPhoneInput` is supported and uses Google libphonenumber metadata to provide a searchable,
 localized country picker, calling codes, as-you-type formatting, validation, and normalized E.164
 output. Country flags supplement the visible country name and calling code; they are never the only
 country identifier.

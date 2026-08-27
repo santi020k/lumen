@@ -14,6 +14,15 @@ enum LumenValidationState {
 
 extension View {
     @ViewBuilder
+    func lumenAccessibilityHint(_ hint: LumenTextContent?) -> some View {
+        if let hint {
+            accessibilityHint(hint.text)
+        } else {
+            self
+        }
+    }
+
+    @ViewBuilder
     func lumenAccessibilityHint(_ hint: LocalizedStringKey?) -> some View {
         if let hint {
             accessibilityHint(hint)

@@ -83,3 +83,17 @@ struct PlaygroundCatalogTests {
         #expect(PlaygroundComponentCategory.content.contains("Line chart"))
     }
 }
+
+@Test("runtime locale copy covers visible, validation, and action text in English and Spanish")
+func runtimeLocaleCopy() {
+    let english = PlaygroundRuntimeLocale.english.copy
+    let spanish = PlaygroundRuntimeLocale.spanish.copy
+
+    #expect(english != spanish)
+    #expect(english.fieldLabel == "Release note")
+    #expect(spanish.fieldLabel == "Nota de la versión")
+    #expect(!english.validation.isEmpty)
+    #expect(!spanish.validation.isEmpty)
+    #expect(!english.action.isEmpty)
+    #expect(!spanish.action.isEmpty)
+}

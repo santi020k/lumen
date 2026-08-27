@@ -181,7 +181,8 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('aligns pie summaries and phone defaults with rendered options', async () => {
-    const [phoneInput, pie, runtime] = await Promise.all([
+    const [phoneController, phoneInput, pie, runtime] = await Promise.all([
+      readFile(new URL('./runtime/controllers/phone-input.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/PhoneInput.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
@@ -192,11 +193,16 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(phoneInput).toContain(')) ?? metadataCountries[0] ?? getLumenPhoneCountry')
     expect(phoneInput).toContain('const detectedCountryIsAllowed = metadataCountries.some')
     expect(phoneInput).toContain('if (detectedCountryIsAllowed) return detectedValue')
-    expect(runtime).toContain('const detectedCountryIsAllowed = Array.from(countrySelect.options)')
-    expect(runtime).toContain('detectedCountryIsAllowed ?')
-    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?')
-    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.slice(1)')
-    expect(runtime).not.toContain('resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)\n\n      const hasInput')
+    expect(phoneController).toContain(
+      'const detectedCountryIsAllowed = Array.from(countrySelect.options)'
+    )
+    expect(phoneController).toContain('detectedCountryIsAllowed ?')
+    expect(phoneController).toContain(
+      'detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?'
+    )
+    expect(phoneController).toContain('detectedPhoneNumber.nationalNumber.slice(1)')
+    expect(runtime).toContain('import(\'./controllers/phone-input.js\')')
+    expect(runtime).not.toContain('resolveLumenPhoneNumber')
   })
 
   test('normalizes Astro Action field errors for fields and summaries', () => {

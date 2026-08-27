@@ -45,8 +45,6 @@ export interface PlatformGuide {
   id: DocsPlatformId
   installNote: string
   label: string
-  maturity?: 'Beta'
-  maturityNote?: string
   packageName: string
   playgroundCommands?: PlatformCodeExample[]
   playgroundLaunch?: PlatformPlaygroundLaunch
@@ -63,10 +61,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const nativeBetaNote =
-  'The native adapter is available for testing and early production adoption, but its public API may evolve as Lumen validates it in real applications. Review release notes when upgrading.'
-
 const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.5.0'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:0.5.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -132,16 +128,23 @@ export const platformGuides: PlatformGuide[] = [
   {
     codeExamples: [
       {
-        code: 'pnpm add @santi020k/lumen-react-native',
+        code: 'pnpm add @santi020k/lumen-react-native react-native-svg',
         label: 'pnpm',
         language: 'bash',
         value: 'pnpm'
       },
       {
-        code: 'npm install @santi020k/lumen-react-native',
+        code: 'npm install @santi020k/lumen-react-native react-native-svg',
         label: 'npm',
         language: 'bash',
         value: 'npm'
+      },
+      {
+        code: `# Optional: only when importing from @santi020k/lumen-react-native/datetime
+pnpm add @react-native-community/datetimepicker`,
+        label: 'Date & time',
+        language: 'bash',
+        value: 'datetime'
       },
       {
         code: `import {
@@ -183,26 +186,24 @@ npx react-native start`,
     href: '/docs/react-native',
     id: 'react-native',
     installNote:
-      'Install the package and mount one LumenProvider near the application root. The complete Lumen icon catalog is included; custom native graphic components remain available when product artwork falls outside it.',
+      'Install Lumen with its required react-native-svg peer, then mount one LumenProvider near the application root. Add @react-native-community/datetimepicker only when using the optional /datetime entrypoint.',
     label: 'React Native',
-    maturity: 'Beta',
-    maturityNote: nativeBetaNote,
     packageName: '@santi020k/lumen-react-native',
     playgroundCommands: [
-      {
-        code: `git clone https://github.com/santi020k/lumen.git
-cd lumen
-pnpm install
-pnpm playground:react-native`,
-        label: 'Expo',
-        language: 'bash',
-        value: 'expo'
-      },
       {
         code: 'pnpm playground:react-native:web',
         label: 'Web',
         language: 'bash',
         value: 'web'
+      },
+      {
+        code: `git clone https://github.com/santi020k/lumen.git
+cd lumen
+pnpm install
+pnpm playground:react-native`,
+        label: 'Local Expo',
+        language: 'bash',
+        value: 'expo'
       },
       {
         code: 'pnpm --filter @santi020k/lumen-playground-react-native run build:android:apk',
@@ -211,14 +212,11 @@ pnpm playground:react-native`,
         value: 'apk'
       }
     ],
-    playgroundLaunch: {
-      compatibilityNote: 'Requires an Expo Go client with Expo SDK 57 support. The public store client currently targets SDK 54.',
-      url: 'exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357'
-    },
     playgroundNote:
-      'Open the published gallery directly in Expo Go, or run it locally to inspect every React Native component. The stable QR code always loads the latest update from the expo-go branch.',
+      'Use the browser preview for the quickest public tour. Clone the repository for Expo, simulators, emulators, or physical-device validation; the local path avoids advertising an Expo Go QR code that the current public client cannot open.',
     prerequisites: [
-      'Node.js 22.12 or newer and pnpm',
+      'Node.js 22.12 or newer for consumer applications',
+      'Node.js 22.19 or newer and pnpm for the Lumen repository playground',
       'React 19.2 and React Native 0.86.2 or newer',
       'Expo Go, Xcode, or Android Studio for a native runtime'
     ],
@@ -253,7 +251,7 @@ pnpm playground:react-native`,
     setupSteps: [
       {
         description:
-          'Run the install command from an existing Expo or React Native application. React and React Native remain peer dependencies supplied by your app.',
+          'Run the install command from an existing Expo or React Native application. React and React Native remain peer dependencies supplied by your app; react-native-svg is installed alongside Lumen.',
         title: 'Install the native package'
       },
       {
@@ -374,10 +372,8 @@ struct ExampleApp: App {
     href: '/docs/apple',
     id: 'apple',
     installNote:
-      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 1.7.0-rc.0 for production, and attach the LumenUI product to your application target.',
+      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 1.7.0-rc.0 for reproducible builds, and attach the LumenUI product to your application target.',
     label: 'Apple / SwiftUI',
-    maturity: 'Beta',
-    maturityNote: nativeBetaNote,
     packageName: 'LumenUI',
     playgroundCommands: [
       {
@@ -399,13 +395,13 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     playgroundNote:
       'The Apple gallery runs as an iOS app from Xcode and as a macOS Swift Package executable. Choose an iPhone simulator and press Run; signing is not required for the simulator.',
     prerequisites: [
-      'macOS with Xcode 16 or newer and the iOS 16 or newer SDK',
+      'macOS with Xcode 16 or newer and the SDK for the Apple platform you target',
       'An existing SwiftUI application targeting a supported Apple platform',
       'An Apple Developer account only for physical-device or TestFlight distribution'
     ],
     principles: [
       {
-        description: 'The package supports iOS 16, macOS 13, tvOS 16, and watchOS 9 or newer.',
+        description: 'The package supports iOS 16, macOS 13, tvOS 16, visionOS 1, and watchOS 9 or newer.',
         title: 'Apple platform coverage'
       },
       {
@@ -432,7 +428,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     setupSteps: [
       {
         description:
-          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 1.7.0-rc.0 for production. Use a compatible-version rule only when the application accepts compatible updates.',
+          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 1.7.0-rc.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
         title: 'Add the Swift package'
       },
       {
@@ -507,6 +503,19 @@ dependencies {
         value: 'install'
       },
       {
+        code: `// wear/build.gradle.kts
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("${lumenComposeWearCoordinate}")
+}`,
+        label: 'Wear OS',
+        language: 'kotlin',
+        value: 'wear'
+      },
+      {
         code: `import com.santi020k.lumen.LumenTheme
 
 LumenTheme {
@@ -523,16 +532,14 @@ LumenTheme {
       }
     ],
     componentNote:
-      'Compose implements the shared native tier using Kotlin and Material 3 conventions rather than translating web markup.',
+      'Compose implements the shared native tier using Kotlin and Material 3 conventions. Watch-only primitives ship separately so phone and tablet applications do not acquire Wear dependencies.',
     components: nativeComponentNames('android'),
     eyebrow: 'Android platform',
     href: '/docs/android',
     id: 'android',
     installNote:
-      `Install ${lumenComposeCoordinate} from Maven Central and wrap application content in LumenTheme.`,
+      `Install ${lumenComposeCoordinate} for Android apps. Add ${lumenComposeWearCoordinate} only to a Wear OS module, then wrap content in the appropriate Lumen theme.`,
     label: 'Android / Compose',
-    maturity: 'Beta',
-    maturityNote: nativeBetaNote,
     packageName: 'com.santi020k:lumen-compose',
     playgroundCommands: [
       {
@@ -553,7 +560,7 @@ pnpm playground:android:build`,
     playgroundNote:
       'Open the Android playground directory in Android Studio, let Gradle sync, select an emulator or connected device, and press Run. The command-line build writes a directly installable debug APK under the app build directory.',
     prerequisites: [
-      'Android Studio with JDK 17 or newer',
+      'Android Studio with JDK 21 or newer',
       'Android SDK 37 and an emulator or USB-debuggable device',
       'Maven Central enabled in the application repositories'
     ],
@@ -587,6 +594,10 @@ pnpm playground:android:build`,
       {
         description: `Add implementation("${lumenComposeCoordinate}") to the application module.`,
         title: 'Install from Maven Central'
+      },
+      {
+        description: `For a watch target, add implementation("${lumenComposeWearCoordinate}") to the Wear module. Keep it out of phone and tablet modules that do not render Wear UI.`,
+        title: 'Add the Wear artifact when needed'
       },
       {
         description:

@@ -8,7 +8,8 @@
   "type": "module",
   "sideEffects": [
     "./layers.css",
-    "./styles.css"
+    "./styles.css",
+    "./styles/critical.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -23,6 +24,7 @@
       "import": "./dist/server.js"
     },
     "./styles.css": "./styles.css",
+    "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
     "./package.json": "./package.json"
   },
@@ -31,6 +33,7 @@
     "dist",
     "layers.css",
     "styles.css",
+    "styles",
     "README.md",
     "LICENSE"
   ],

@@ -29,9 +29,6 @@ public final class com/santi020k/lumen/ContentComponentsKt {
 	public static final fun resolveLumenSkeletonHeight-0680j_4 (F)F
 }
 
-public abstract interface annotation class com/santi020k/lumen/ExperimentalLumenPhoneApi : java/lang/annotation/Annotation {
-}
-
 public final class com/santi020k/lumen/FormComponentsKt {
 	public static final fun LumenDateField (Ljava/lang/String;Ljava/lang/Long;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLandroidx/compose/runtime/Composer;III)V
 	public static final fun LumenDateRangeField (Ljava/lang/String;Lcom/santi020k/lumen/LumenDateRangeSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLandroidx/compose/runtime/Composer;III)V

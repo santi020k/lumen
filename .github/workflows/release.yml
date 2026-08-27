@@ -41,8 +41,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify approved Lumen 2 candidate
+        run: node scripts/check-approved-release-revision.mjs
+
+      - name: Verify graduated Lumen 2 release
+        run: node scripts/check-graduated-release-revision.mjs
+
       - name: Validate release packages
-        run: pnpm run check:release-manifest && pnpm run check:react-native-peer-docs && pnpm run test:react-native-peer-docs && pnpm run check:swift-version && pnpm run check:native-consumer-evidence && pnpm run check:native-stable-readiness && pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
+        run: >-
+          pnpm run check:release-manifest &&
+          node scripts/check-lumen-2-contract.mjs &&
+          pnpm run check:react-native-peer-docs &&
+          pnpm run test:react-native-peer-docs &&
+          pnpm run check:swift-version &&
+          pnpm run check:native-consumer-evidence &&
+          pnpm run check:native-stable-readiness &&
+          pnpm run build &&
+          pnpm run check:security &&
+          pnpm run check:publish-dry-run
 
       - name: Create release pull request or publish
         id: changesets

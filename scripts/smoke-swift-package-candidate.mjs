@@ -80,7 +80,8 @@ const consumerDirectory = join(temporaryRoot, 'consumer')
 try {
   await Promise.all([
     mkdir(join(candidateDirectory, 'packages'), { recursive: true }),
-    mkdir(join(consumerDirectory, 'Sources', 'SwiftTaggedConsumer'), { recursive: true })
+    mkdir(join(consumerDirectory, 'Sources', 'SwiftTaggedConsumer'), { recursive: true }),
+    mkdir(join(consumerDirectory, 'Sources', 'SwiftWidgetTaggedConsumer'), { recursive: true })
   ])
 
   let candidateLabel
@@ -105,6 +106,14 @@ try {
       cp(
         join(repositoryRoot, 'packages', 'swift'),
         join(candidateDirectory, 'packages', 'swift'),
+        {
+          filter: source => !source.split('/').includes('.build'),
+          recursive: true
+        }
+      ),
+      cp(
+        join(repositoryRoot, 'packages', 'swift-widget'),
+        join(candidateDirectory, 'packages', 'swift-widget'),
         {
           filter: source => !source.split('/').includes('.build'),
           recursive: true
@@ -151,6 +160,7 @@ let package = Package(
         .iOS(.v16),
         .macOS(.v13),
         .tvOS(.v16),
+        .visionOS(.v1),
         .watchOS(.v9)
     ],
     dependencies: [
@@ -162,9 +172,41 @@ let package = Package(
             dependencies: [
                 .product(name: "LumenUI", package: "lumen")
             ]
+        ),
+        .executableTarget(
+            name: "SwiftWidgetTaggedConsumer",
+            dependencies: [
+                .product(name: "LumenWidgetUI", package: "lumen")
+            ]
         )
     ]
 )
+`
+  )
+
+  await writeFile(
+    join(
+      consumerDirectory,
+      'Sources',
+      'SwiftWidgetTaggedConsumer',
+      'SwiftWidgetTaggedConsumer.swift'
+    ),
+    `import LumenWidgetUI
+import SwiftUI
+import WidgetKit
+
+@main
+struct SwiftWidgetTaggedConsumer: App {
+    var body: some Scene {
+        WindowGroup {
+            LumenWidgetCompactStat(
+                label: .verbatim("Duration"),
+                value: .verbatim("01:15"),
+                iconSystemName: "timer"
+            )
+        }
+    }
+}
 `
   )
 
@@ -214,6 +256,17 @@ struct SwiftTaggedConsumer: App {
     access(join(checkoutDirectory, 'THIRD_PARTY_NOTICES.md')),
     access(join(checkoutDirectory, 'packages', 'swift', 'LICENSE')),
     access(join(checkoutDirectory, 'packages', 'swift', 'THIRD_PARTY_NOTICES.md')),
+    access(join(checkoutDirectory, 'packages', 'swift-widget', 'README.md')),
+    access(
+      join(
+        checkoutDirectory,
+        'packages',
+        'swift-widget',
+        'Sources',
+        'LumenWidgetUI',
+        'WidgetComponents.swift'
+      )
+    ),
     access(
       join(
         checkoutDirectory,
@@ -233,6 +286,7 @@ struct SwiftTaggedConsumer: App {
   const destinations = [
     ['iOS', 'generic/platform=iOS Simulator'],
     ['tvOS', 'generic/platform=tvOS Simulator'],
+    ['visionOS', 'generic/platform=visionOS Simulator'],
     ['watchOS', 'generic/platform=watchOS Simulator']
   ]
 
@@ -253,9 +307,32 @@ struct SwiftTaggedConsumer: App {
     )
   }
 
+  const widgetDestinations = [
+    ['iOS', 'generic/platform=iOS Simulator'],
+    ['watchOS', 'generic/platform=watchOS Simulator']
+  ]
+
+  for (const [platform, destination] of widgetDestinations) {
+    run(
+      'xcodebuild',
+      [
+        '-scheme',
+        'SwiftWidgetTaggedConsumer',
+        '-destination',
+        destination,
+        '-derivedDataPath',
+        join(temporaryRoot, `DerivedData-Widget-${platform}`),
+        'CODE_SIGNING_ALLOWED=NO',
+        'build'
+      ],
+      consumerDirectory
+    )
+  }
+
   process.stdout.write(
     `Resolved Swift candidate ${candidateLabel} at ${candidateRevision.slice(0, 12)} and `
-      + 'built its clean consumer for macOS, iOS, tvOS, and watchOS with notices and resources.\n'
+      + 'built LumenUI for macOS, iOS, tvOS, visionOS, and watchOS plus LumenWidgetUI for '
+      + 'macOS, iOS, and watchOS with notices and resources.\n'
   )
 } finally {
   await rm(temporaryRoot, { force: true, recursive: true })

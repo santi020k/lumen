@@ -284,6 +284,8 @@ const run = async () => {
 
       output = json ? JSON.stringify(report, undefined, 2) : formatNativeAdoptionAudit(report)
 
+      if (!report.healthy) process.exitCode = 1
+
       break
     }
 

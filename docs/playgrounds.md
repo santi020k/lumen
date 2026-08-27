@@ -1,10 +1,12 @@
 # Native playgrounds
 
 Lumen includes a native playground for each adapter. Use these apps to evaluate the real components,
-capture documentation screenshots, and prepare distributable marketing builds. The Apple and Android
-playgrounds are organized as polished reference applications with Home, Examples, Components, and
-Settings. Their Components destinations retain the searchable deterministic catalogs used by capture
-scripts, while normal launches add category discovery, interactive patterns, and adaptive layouts.
+capture documentation screenshots, and prepare distributable marketing builds. The React Native,
+Apple, and Android playgrounds are organized as polished reference applications with Home, Examples,
+Components, and Settings. Their Components destinations retain the searchable deterministic catalogs
+used by capture scripts, while normal launches add category discovery, focused component views,
+interactive patterns, and adaptive layouts. React Native Settings also reports live screen-reader,
+reduced-motion, and font-scale context and provides an English/Spanish validation example.
 Each gallery is generated from the current shared and platform-specific contract registry rather
 than a hand-maintained component total. The galleries cover semantic Card variants, multiline and
 grouped forms, chips, action groups, transient feedback, metrics, rows, empty states, and light/dark

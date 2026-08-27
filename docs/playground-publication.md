@@ -89,8 +89,10 @@ Create an Xcode Cloud workflow named **App Store Release** for
 `LumenApplePlayground` scheme with these settings:
 
 - Start condition: tag changes matching `playground-ios-v*`.
-- Environment: the latest Apple-supported Xcode release or release candidate and its compatible
-  macOS image. Update the workflow when App Store submission requirements move to a newer SDK.
+- Environment: stable Xcode 26 with the iOS 26 SDK and a stable compatible macOS image. Do not use
+  a beta macOS or future Xcode beta: App Store Connect rejects binaries produced with unsupported
+  build provenance. Update the repository toolchain check and workflow together when Apple moves
+  submissions to a newer SDK.
 - Action: archive the iOS app with App Store Connect distribution preparation enabled.
 - Signing: automatic signing for team `BY4995HQ3J`.
 - Post-actions: none. TestFlight groups, App Review submission, and customer release remain explicit
@@ -100,7 +102,8 @@ Create a second Xcode Cloud workflow named **Mac App Store Release** for the sam
 shared `LumenMacPlayground` scheme:
 
 - Start condition: tag changes matching `playground-macos-v*`.
-- Environment: the latest Apple-supported Xcode release and compatible macOS image.
+- Environment: stable Xcode 26 and a stable compatible macOS image. Keep the environment aligned
+  with the repository toolchain check.
 - Action: archive the macOS app with App Store Connect distribution preparation enabled.
 - Signing: automatic signing for team `BY4995HQ3J`; the target uses App Sandbox and hardened runtime.
 - Post-actions: none. TestFlight, App Review submission, and customer release remain explicit App
@@ -113,9 +116,10 @@ Mac application record.
 Xcode Cloud automatically runs `apps/playground-apple/ci_scripts/ci_post_clone.sh`. For release
 tags, the script derives `MARKETING_VERSION` from the tag and uses Xcode Cloud's positive integer
 `CI_BUILD_NUMBER` plus the documented one-build migration offset for `CURRENT_PROJECT_VERSION`.
-Other Xcode Cloud workflows retain the committed development versions. GitHub holds no Apple
-certificates, provisioning profiles, or App Store Connect keys; the `app-store` GitHub environment
-is only an approval boundary for creating the tag.
+Before changing versions, it verifies that the build uses stable Xcode 26, the iOS 26 SDK, and a
+non-beta macOS image. Other Xcode Cloud workflows retain the committed development versions. GitHub
+holds no Apple certificates, provisioning profiles, or App Store Connect keys; the `app-store`
+GitHub environment is only an approval boundary for creating the tag.
 
 The app declares that it uses no non-exempt encryption; re-audit that declaration if a future
 dependency adds cryptography. Signing identity and App Store Connect access remain account-owned
@@ -138,6 +142,6 @@ state.
 6. Submit to production only with explicit authorization from the account owner. Record the store
    version, build number, immutable revision, review result, and rollout state.
 
-The current Beta maturity of the native packages must remain visible in documentation and release
-notes. The store application itself should be described as a reference catalog, not as a beta,
+The supported Lumen 2 contract and remaining release-evidence gates must stay visible in documentation
+and release notes. The store application itself should be described as a reference catalog,
 trial, certification, or guarantee of application suitability.

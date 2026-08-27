@@ -17,6 +17,9 @@ targets:
     dependencies:
       - package: LumenUI
         product: LumenUI
+      - target: LumenWidgetPlayground
+        embed: true
+        codeSign: true
     settings:
       base:
         CURRENT_PROJECT_VERSION: 1
@@ -77,6 +80,34 @@ targets:
         LSApplicationCategoryType: public.app-category.developer-tools
         NSHighResolutionCapable: true
         NSHumanReadableCopyright: Copyright © 2026 Santiago Molina. All rights reserved.
+
+  LumenWidgetPlayground:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Sources/LumenWidgetPlayground
+    dependencies:
+      - package: LumenUI
+        product: LumenWidgetUI
+    info:
+      path: Supporting/WidgetInfo.plist
+      properties:
+        CFBundleDisplayName: Lumen Widget
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        CURRENT_PROJECT_VERSION: 1
+        DEVELOPMENT_TEAM: BY4995HQ3J
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: 1.0.0
+        PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple.widget
+        SWIFT_VERSION: 6.0
+        TARGETED_DEVICE_FAMILY: "1,2"
   LumenWatchPlayground:
     type: application
     platform: watchOS

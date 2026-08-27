@@ -366,9 +366,15 @@ importers:
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@santi020k/lumen-elements':
+        specifier: workspace:^
+        version: link:../../packages/elements
       '@santi020k/lumen-icons-brand':
         specifier: workspace:^
         version: link:../../packages/icons-brand
+      '@santi020k/lumen-react':
+        specifier: workspace:^
+        version: link:../../packages/react
       '@santi020k/lumen-templates':
         specifier: workspace:*
         version: link:../../packages/templates
@@ -381,6 +387,12 @@ importers:
       astro:
         specifier: 'catalog:'
         version: 7.2.6(@astrojs/markdown-remark@7.2.4)(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(@types/node@26.2.0)(jiti@2.7.0)(terser@5.50.0)(yaml@2.8.3)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.8
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.8(react@19.2.8)
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
@@ -397,6 +409,12 @@ importers:
       '@santi020k/og':
         specifier: 'catalog:'
         version: 1.1.1(@types/node@26.2.0)
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.5(@types/react@19.2.18)
       sharp:
         specifier: 'catalog:'
         version: 0.35.3(@types/node@26.2.0)
@@ -489,6 +507,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(jsdom@29.1.1)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.8.3))
 
   apps/templates:
     dependencies:

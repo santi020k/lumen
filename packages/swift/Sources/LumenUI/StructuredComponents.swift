@@ -134,7 +134,7 @@ public struct LumenErrorState<Graphic: View, Actions: View>: View {
                     }
                     .font(.caption.monospaced())
                     .foregroundStyle(theme.colors.inkSoft)
-                    #if os(iOS) || os(macOS)
+                    #if os(iOS) || os(macOS) || os(visionOS)
                     .textSelection(.enabled)
                     #endif
                 }
@@ -150,7 +150,7 @@ public struct LumenErrorState<Graphic: View, Actions: View>: View {
     }
 }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 public extension LumenErrorState where Graphic == LumenIllustration {
     init(
         _ title: LocalizedStringKey,

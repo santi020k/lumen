@@ -8,6 +8,7 @@
   "type": "module",
   "sideEffects": [
     "./styles/lumen.css",
+    "./styles/critical.css",
     "./styles.css"
   ],
   "types": "./index.ts",
@@ -24,6 +25,7 @@
     "./runtime": "./runtime/UIPrimitives.astro",
     "./layers.css": "./styles/layers.css",
     "./styles.css": "./styles/lumen.css",
+    "./styles/critical.css": "./styles/critical.css",
     "./package.json": "./package.json"
   },
   "files": [

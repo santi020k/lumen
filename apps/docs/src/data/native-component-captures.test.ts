@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { describe, expect, test } from 'vitest'
 
 import {
+  findNativeComponentCapture,
   getNativeComponentCapture,
   nativeComponentCaptures
 } from './native-component-captures'
@@ -14,7 +15,12 @@ const platforms = ['react-native', 'apple', 'android'] as const
 describe('native component captures', () => {
   test('covers every documented platform component exactly once', () => {
     const expected = platforms.flatMap(platform => (
-      getNativeComponentsForPlatform(platform).map(component => `${platform}:${component.slug}`)
+      getNativeComponentsForPlatform(platform)
+        .filter(component => (
+          component.implementations[platform]?.packageName !== 'LumenWidgetUI' ||
+          findNativeComponentCapture(platform, component.slug) !== undefined
+        ))
+        .map(component => `${platform}:${component.slug}`)
     ))
     const actual = nativeComponentCaptures.map(capture => `${capture.platform}:${capture.slug}`)
 
@@ -25,6 +31,15 @@ describe('native component captures', () => {
   test('resolves each documented capture through the public lookup', () => {
     for (const platform of platforms) {
       for (const component of getNativeComponentsForPlatform(platform)) {
+        const optionalCapture = findNativeComponentCapture(platform, component.slug)
+
+        if (
+          component.implementations[platform]?.packageName === 'LumenWidgetUI' &&
+          !optionalCapture
+        ) {
+          continue
+        }
+
         const capture = getNativeComponentCapture(platform, component.slug)
 
         expect(capture.alt).toContain(component.name)

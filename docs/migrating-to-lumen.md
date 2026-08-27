@@ -97,7 +97,7 @@ replacement.
 Use the v2 migration preview before changing package versions:
 
 ```bash
-lumen migrate-v2 ./src --dry-run
+lumen migrate v2 --cwd ./src --dry-run
 ```
 
 The migration currently covers the accepted breaking-contract candidates:

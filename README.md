@@ -162,9 +162,9 @@ and component contract; repository contributors can also use the
 [cross-platform architecture](./docs/cross-platform.md) and
 [native component reference](./docs/native-components.md).
 
-> **Native platform status: Beta.** The shared token foundation is stable, while the React Native,
-> SwiftUI, and Compose component APIs are being validated through real applications and may evolve.
-> Review release notes when upgrading and share platform-specific feedback.
+> **Native platform status: Supported for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS
+> now use the frozen supported contract planned for version 2. Publication, physical-device, and
+> consumer-soak evidence remain release gates; review release notes when upgrading.
 
 ## Native playgrounds
 
@@ -205,7 +205,8 @@ component defaults.
 | [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
 | [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |
 | [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |
-| [`LumenUI`](./packages/swift) | Swift Package for SwiftUI foundations and native primitives |
+| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |
+| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |
 | [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |
 | [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |
 | [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |

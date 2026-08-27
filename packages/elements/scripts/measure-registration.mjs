@@ -13,6 +13,9 @@ defineLumenBadge()
 defineLumenButton()
 defineLumenCard()
 `,
+  foundations: `import { defineLumenFoundations } from './dist/components/foundations.js'
+defineLumenFoundations()
+`,
   selected: `import { defineLumenElements } from './dist/define.js'
 defineLumenElements(['Badge', 'Button', 'Card'])
 `

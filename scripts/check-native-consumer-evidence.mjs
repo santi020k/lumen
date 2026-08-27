@@ -27,7 +27,7 @@ const ledgerPath = ledgerArgument
 
 const ledger = JSON.parse(await readFile(ledgerPath, 'utf8'))
 const requireComplete = process.argv.includes('--require-complete')
-const expectedAdapterIds = ['compose', 'react-native', 'swiftui', 'wear']
+const expectedAdapterIds = ['compose', 'react-native', 'swift-widget', 'swiftui', 'wear']
 
 const expectedChecks = [
   'accessibility',
@@ -78,6 +78,22 @@ const isNewerVersion = (current, previous) => {
   return false
 }
 
+const validateUpgrade = (entry, label) => {
+  assert.ok(
+    isRecord(entry.upgrade) || (entry.status === 'pending' && entry.upgrade === null),
+    `${label}.upgrade must be an object, or null while evidence is pending`
+  )
+
+  if (!entry.upgrade) return
+
+  const fromVersion = parseOrdinaryVersion(entry.upgrade.fromVersion, `${label}.upgrade.fromVersion`)
+  const toVersion = parseOrdinaryVersion(entry.upgrade.toVersion, `${label}.upgrade.toVersion`)
+
+  assert.ok(isNewerVersion(toVersion, fromVersion), `${label} must record a real version upgrade`)
+
+  assert.match(entry.upgrade.revision, /^[\da-f]{40}$/i, `${label} requires a full consumer revision`)
+}
+
 const validateConsumer = (entry) => {
   const label = entry.id
 
@@ -124,14 +140,7 @@ const validateConsumer = (entry) => {
 
   assert.ok(entry.supportedComponents.length > 0, `${label} requires supported component usage`)
 
-  assert.ok(isRecord(entry.upgrade), `${label}.upgrade must be an object`)
-
-  const fromVersion = parseOrdinaryVersion(entry.upgrade.fromVersion, `${label}.upgrade.fromVersion`)
-  const toVersion = parseOrdinaryVersion(entry.upgrade.toVersion, `${label}.upgrade.toVersion`)
-
-  assert.ok(isNewerVersion(toVersion, fromVersion), `${label} must record a real version upgrade`)
-
-  assert.match(entry.upgrade.revision, /^[\da-f]{40}$/i, `${label} requires a full consumer revision`)
+  validateUpgrade(entry, label)
 
   assert.ok(isRecord(entry.checks), `${label}.checks must be an object`)
 
@@ -174,6 +183,8 @@ const validateConsumer = (entry) => {
   }
 
   if (entry.status === 'complete') {
+    assert.ok(entry.upgrade, `${label} complete evidence requires an upgrade`)
+
     assert.equal(completedChecks, expectedChecks.length, `${label} complete evidence has unchecked items`)
 
     assert.equal(entry.blockingIssues.length, 0, `${label} complete evidence has blocking issues`)
@@ -232,12 +243,15 @@ if (requireComplete && incompleteAdapters.length === 0) {
   const versionKeys = {
     compose: 'compose',
     'react-native': 'reactNative',
+    'swift-widget': 'swift',
     swiftui: 'swift',
     wear: 'wear'
   }
 
   for (const entry of ledger.adapters) {
     const versionKey = versionKeys[entry.id]
+
+    assert.ok(entry.upgrade, `${entry.id} complete evidence requires an upgrade`)
 
     assert.equal(
       entry.upgrade.fromVersion,

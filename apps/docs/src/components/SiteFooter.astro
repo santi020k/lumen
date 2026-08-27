@@ -108,6 +108,8 @@ const footerPlatforms = platformGuides.map(guide => ({
   ...guide,
   ...platformPresentation[guide.id]
 }))
+
+const productPlatformCount = platformGuides.filter(guide => guide.id !== 'foundations').length
 ---
 
 <footer class="docs-site-footer">
@@ -156,7 +158,7 @@ const footerPlatforms = platformGuides.map(guide => ({
             <span>Choose a platform</span>
             <p>Native behavior, one semantic foundation.</p>
           </div>
-          <Badge variant="outline">{footerPlatforms.length} surfaces</Badge>
+          <Badge variant="outline">{productPlatformCount} platforms + foundations</Badge>
         </div>
 
         <div class="docs-site-footer__platforms">
@@ -175,7 +177,7 @@ const footerPlatforms = platformGuides.map(guide => ({
                 <span class="docs-site-footer__platform-meta">
                   <small>{platform.runtime}</small>
                   <span class="docs-site-footer__platform-status">
-                    {platform.maturity ?? platform.status}
+                    {platform.status}
                   </span>
                 </span>
               </span>
@@ -250,7 +252,7 @@ const footerPlatforms = platformGuides.map(guide => ({
         </Link>.
       </p>
       <p class="docs-site-footer__status">
-        <Marker variant="success">Web stable · Native beta</Marker>
+        <Marker variant="success">Web + native platforms</Marker>
         Accessible by default
       </p>
     </div>

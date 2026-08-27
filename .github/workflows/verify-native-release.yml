@@ -108,12 +108,8 @@ jobs:
             "@santi020k/lumen-react-native@$REACT_NATIVE_VERSION" version)"
           [[ "$registry_react_native" == "$REACT_NATIVE_VERSION" ]]
 
-          maven_root="https://repo.maven.apache.org/maven2/com/santi020k"
-          for artifact in lumen-compose lumen-compose-wear; do
-            artifact_root="$maven_root/$artifact/$COMPOSE_VERSION/$artifact-$COMPOSE_VERSION"
-            curl --fail --silent --show-error --head "$artifact_root.pom" >/dev/null
-            curl --fail --silent --show-error --head "$artifact_root.aar" >/dev/null
-          done
+          node scripts/check-maven-release-artifacts.mjs \
+            --version "$COMPOSE_VERSION"
 
           {
             echo "All native release coordinates resolve from revision \`$EXPECTED_REVISION\`."
@@ -150,10 +146,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build the exact public npm artifact for Android
         env:
+          EXPECTED_REVISION: ${{ inputs.revision }}
           REACT_NATIVE_VERSION: ${{ inputs.react-native-version }}
         run: >-
           pnpm run check:react-native-native-release:android --
           --version "$REACT_NATIVE_VERSION"
+          --revision "$EXPECTED_REVISION"
 
   react-native-ios:
     name: Published React Native iOS consumer
@@ -174,10 +172,12 @@ jobs:
         run: pod --version
       - name: Build the exact public npm artifact for iOS
         env:
+          EXPECTED_REVISION: ${{ inputs.revision }}
           REACT_NATIVE_VERSION: ${{ inputs.react-native-version }}
         run: >-
           pnpm run check:react-native-native-release:ios --
           --version "$REACT_NATIVE_VERSION"
+          --revision "$EXPECTED_REVISION"
 
   swift:
     name: Published Swift package consumers

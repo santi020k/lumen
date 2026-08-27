@@ -5,12 +5,10 @@
 import {
   Alert,
   AnimatedNumber,
-  Avatar,
   Badge,
   Button,
   ButtonGroup,
   ButtonLink,
-  Calendar,
   Card,
   Checkbox,
   Eyebrow,
@@ -20,7 +18,6 @@ import {
   Input,
   Label,
   Marker,
-  Progress,
   RevealGroup,
   ScrollReveal,
   Stat,
@@ -28,8 +25,6 @@ import {
   Tabs
 } from '@santi020k/lumen-astro'
 
-import FrameworkSetupTabs from '../components/FrameworkSetupTabs.astro'
-import GitHubIcon from '../components/GitHubIcon.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
 import type { DocsPlatformId } from '../data/platforms'
@@ -94,7 +89,7 @@ const principles = [
   {
     description: 'One semantic token and component contract keeps web and native products recognizably aligned.',
     icon: 'layers-3',
-    metric: '4 surfaces',
+    metric: '4 platforms',
     title: 'Change platforms, not your design language.'
   },
   {
@@ -153,15 +148,6 @@ const useCases: readonly UseCase[] = [
     stack: 'Astro · TypeScript'
   },
   {
-    category: 'Developer tooling',
-    description: 'A DX-first ESLint toolkit with strong defaults for JavaScript and TypeScript teams, presented through focused, approachable documentation.',
-    desktop: { height: 900, src: '/use-cases/eslint-config-desktop-live.jpg', width: 1440 },
-    href: 'https://eslint.santi020k.com',
-    mobile: { height: 844, src: '/use-cases/eslint-config-mobile-live.jpg', width: 390 },
-    name: 'eslint-config-basic',
-    stack: 'Astro · ESLint'
-  },
-  {
     category: 'iOS photo studio',
     description: 'An iPhone-first visual content studio with a cinematic product story for private, on-device photo selection, enhancement, and composition.',
     desktop: { height: 900, src: '/use-cases/postlens-desktop-live.jpg', width: 1440 },
@@ -169,15 +155,6 @@ const useCases: readonly UseCase[] = [
     mobile: { height: 844, src: '/use-cases/postlens-mobile-live.jpg', width: 390 },
     name: 'PostLens',
     stack: 'Astro · SwiftUI'
-  },
-  {
-    category: 'Editor intelligence',
-    description: 'A VS Code extension and documentation experience that makes dependency updates, workspace catalogs, and security signals easier to act on.',
-    desktop: { height: 900, src: '/use-cases/dep-beacon-desktop-live.jpg', width: 1440 },
-    href: 'https://beacon.santi020k.com',
-    mobile: { height: 844, src: '/use-cases/dep-beacon-mobile-live.jpg', width: 390 },
-    name: 'Dep Beacon',
-    stack: 'Astro · VS Code'
   },
   {
     category: 'macOS utility',
@@ -209,7 +186,7 @@ const useCases: readonly UseCase[] = [
           people <em>want</em> to use.
         </h1>
         <p class="home-hero__lede">
-          A complete UI foundation for Web, React Native, Apple platforms, and Android.
+          A cross-platform UI system for Web, React Native, Apple platforms, and Android.
           Accessible by default, beautifully tokenized, and native to every environment.
         </p>
         <div class="home-hero__actions">
@@ -273,7 +250,7 @@ const useCases: readonly UseCase[] = [
           <Stat label="components">
             <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
           </Stat>
-          <Stat label="platform surfaces">
+          <Stat label="product platforms">
             <span class="ui-stat-value"><AnimatedNumber value={4} /></span>
           </Stat>
           <Stat label="runtime lock-in">
@@ -284,6 +261,76 @@ const useCases: readonly UseCase[] = [
           {categories.map(category => <Badge variant="outline">{category}</Badge>)}
         </div>
       </div>
+    </section>
+
+    <section class="home-section home-container home-platforms" aria-labelledby="platforms-title">
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-section__head--split">
+          <div>
+            <Eyebrow>Built for every surface</Eyebrow>
+            <h2 id="platforms-title">One design language.<br />Web and three native platforms.</h2>
+          </div>
+          <div class="home-section__aside">
+            <p>
+              Share semantic color, type, spacing, motion, and component intent—then let each
+              platform render and behave the way its users expect.
+            </p>
+            <Marker variant="success">Native adapters are supported for Lumen 2</Marker>
+            <ButtonLink href="/docs/foundations" showArrow variant="inline">
+              Explore shared foundations
+            </ButtonLink>
+          </div>
+        </div>
+      </ScrollReveal>
+
+      <RevealGroup class="home-platforms__grid" stagger={70}>
+        {platformShowcase.map((platform, index) => (
+          <Card
+            as="article"
+            class:list={[
+              'home-platform',
+              { 'home-platform--web': platform.id === 'web' }
+            ]}
+          >
+            <div class="home-platform__visual">
+              {platform.preview ?
+(
+                <Image
+                  alt={`${platform.label} Lumen component gallery`}
+                  height={platform.id === 'apple' ? 1440 : 1920}
+                  src={platform.preview}
+                  width={platform.id === 'apple' ? 1640 : 1080}
+                />
+              ) :
+(
+                <div class="home-platform__web-canvas" aria-hidden="true">
+                  <span><Icon decorative name="asterisk" size="sm" />Astro</span>
+                  <span><Icon decorative name="atom" size="sm" />React</span>
+                  <span><Icon decorative name="blocks" size="sm" />Elements</span>
+                  <div>
+                    <i></i><i></i><i></i>
+                  </div>
+                </div>
+              )}
+              <span class="home-platform__number" aria-hidden="true">0{index + 1}</span>
+            </div>
+            <div class="home-platform__body">
+              <div class="home-platform__meta">
+                <span><Icon decorative name={platform.icon} size="sm" />{platform.runtime}</span>
+                <div>
+                  <Marker variant="success">{platform.status}</Marker>
+                </div>
+              </div>
+              <h3>{platform.label}</h3>
+              <p>{platform.summary}</p>
+              <code>{platform.packageName}</code>
+              <ButtonLink href={platform.href} showArrow variant="inline">
+                Build for {platform.shortLabel}
+              </ButtonLink>
+            </div>
+          </Card>
+        ))}
+      </RevealGroup>
     </section>
 
     <section class="home-section home-container" aria-labelledby="components-title">
@@ -344,18 +391,6 @@ const useCases: readonly UseCase[] = [
           </div>
         </Card>
 
-        <Card class="home-specimen home-specimen--calendar">
-          <div class="home-specimen__label">
-            <span>Date & time</span>
-            <Badge variant="outline">Keyboard ready</Badge>
-          </div>
-          <Calendar
-            aria-label="Choose a launch date"
-            month="2026-07"
-            value="2026-07-23"
-          />
-        </Card>
-
         <Card class="home-specimen home-specimen--feedback">
           <div class="home-specimen__label">
             <span>Feedback</span>
@@ -376,26 +411,6 @@ const useCases: readonly UseCase[] = [
                 <p>Accent text needs a darker surface.</p>
               </div>
             </Alert>
-          </div>
-        </Card>
-
-        <Card class="home-specimen home-specimen--identity">
-          <div class="home-specimen__label">
-            <span>People & progress</span>
-            <Marker>In review</Marker>
-          </div>
-          <div class="home-specimen__identity">
-            <div class="home-specimen__avatar-stack">
-              <Avatar fallback="SA" />
-              <Avatar fallback="AK" />
-              <Avatar fallback="JM" />
-              <Avatar fallback="+6" />
-            </div>
-            <div>
-              <span>Design system rollout</span>
-              <strong>82%</strong>
-            </div>
-            <Progress aria-label="Design system rollout" value={82} />
           </div>
         </Card>
 
@@ -425,7 +440,7 @@ const useCases: readonly UseCase[] = [
           </div>
           <div class="home-section__aside">
             <p>
-              One shared foundation, five unmistakable identities. Explore real Lumen products
+              One shared foundation, three unmistakable identities. Explore real Lumen products
               across desktop and mobile—not component demos, but finished experiences.
             </p>
           </div>
@@ -562,118 +577,6 @@ const useCases: readonly UseCase[] = [
       </ScrollReveal>
     </section>
 
-    <section class="home-section home-container home-platforms" aria-labelledby="platforms-title">
-      <ScrollReveal animation="slide-up">
-        <div class="home-section__head home-section__head--split">
-          <div>
-            <Eyebrow>Built for every surface</Eyebrow>
-            <h2 id="platforms-title">One design language.<br />Web and three native platforms.</h2>
-          </div>
-          <div class="home-section__aside">
-            <p>
-              Share semantic color, type, spacing, motion, and component intent—then let each
-              platform render and behave the way its users expect.
-            </p>
-            <ButtonLink href="/docs/foundations" showArrow variant="inline">
-              Explore shared foundations
-            </ButtonLink>
-          </div>
-        </div>
-      </ScrollReveal>
-
-      <RevealGroup class="home-platforms__grid" stagger={70}>
-        {platformShowcase.map((platform, index) => (
-          <Card
-            as="article"
-            class:list={[
-            'home-platform',
-            { 'home-platform--web': platform.id === 'web' }
-            ]}
-          >
-            <div class="home-platform__visual">
-              {platform.preview ?
-(
-                <Image
-                  alt={`${platform.label} Lumen component gallery`}
-                  height={platform.id === 'apple' ? 1440 : 1920}
-                  src={platform.preview}
-                  width={platform.id === 'apple' ? 1640 : 1080}
-                />
-              ) :
-(
-                <div class="home-platform__web-canvas" aria-hidden="true">
-                  <span><Icon decorative name="asterisk" size="sm" />Astro</span>
-                  <span><Icon decorative name="atom" size="sm" />React</span>
-                  <span><Icon decorative name="blocks" size="sm" />Elements</span>
-                  <div>
-                    <i></i><i></i><i></i>
-                  </div>
-                </div>
-              )}
-              <span class="home-platform__number" aria-hidden="true">0{index + 1}</span>
-            </div>
-            <div class="home-platform__body">
-              <div class="home-platform__meta">
-                <span><Icon decorative name={platform.icon} size="sm" />{platform.runtime}</span>
-                <div>
-                  <Marker variant="success">{platform.status}</Marker>
-                  {platform.maturity && <Marker variant="warning">{platform.maturity}</Marker>}
-                </div>
-              </div>
-              <h3>{platform.label}</h3>
-              <p>{platform.summary}</p>
-              <code>{platform.packageName}</code>
-              <ButtonLink href={platform.href} showArrow variant="inline">
-                Build for {platform.shortLabel}
-              </ButtonLink>
-            </div>
-          </Card>
-        ))}
-      </RevealGroup>
-
-      <div class="home-web-setup" aria-labelledby="web-setup-title">
-        <div class="home-web-setup__head">
-          <div>
-            <Badge variant="outline">Full web catalog</Badge>
-            <h3 id="web-setup-title">Choose your web adapter.</h3>
-          </div>
-          <p>
-            Astro, React, and standards-based custom elements expose the complete primitive
-            catalog through one visual and behavioral contract.
-          </p>
-        </div>
-        <div class="home-framework">
-          <FrameworkSetupTabs setups={frameworkSetups} />
-        </div>
-      </div>
-    </section>
-
-    <section class="home-container">
-      <ScrollReveal animation="scale">
-        <Card as="section" class="home-cta">
-          <div class="home-cta__orb" aria-hidden="true"></div>
-          <Eyebrow>Build something considered</Eyebrow>
-          <h2>Your product deserves<br />better defaults.</h2>
-          <p>
-            Start with Lumen’s accessible primitives, then make the system unmistakably yours.
-          </p>
-          <div class="home-cta__actions">
-            <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
-              Read the docs
-            </ButtonLink>
-            <ButtonLink
-              class="home-button-lg"
-              href="https://github.com/santi020k/lumen"
-              newTab
-              variant="secondary"
-            >
-              <GitHubIcon />
-              View on GitHub
-            </ButtonLink>
-          </div>
-        </Card>
-      </ScrollReveal>
-    </section>
   </main>
 </BaseLayout>
 
@@ -800,8 +703,7 @@ const useCases: readonly UseCase[] = [
     line-height: 1.7;
   }
 
-  .home-hero__actions,
-  .home-cta__actions {
+  .home-hero__actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -1003,8 +905,7 @@ const useCases: readonly UseCase[] = [
     gap: 3rem;
   }
 
-  .home-section__head h2,
-  .home-cta h2 {
+  .home-section__head h2 {
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), "Montserrat", sans-serif;
@@ -1047,9 +948,7 @@ const useCases: readonly UseCase[] = [
 
   .home-specimen--actions { grid-column: span 7; }
   .home-specimen--form { grid-column: span 5; }
-  .home-specimen--calendar { grid-column: span 5; }
   .home-specimen--feedback { grid-column: span 7; }
-  .home-specimen--identity { grid-column: span 7; }
   .home-specimen--tokens { grid-column: span 5; }
 
   .home-specimen__label {
@@ -1103,13 +1002,6 @@ const useCases: readonly UseCase[] = [
     width: 100%;
   }
 
-  .home-specimen--calendar :global(.ui-calendar) {
-    margin: auto;
-    border: 0;
-    box-shadow: none;
-    transform: scale(.9);
-  }
-
   .home-specimen__alerts {
     display: grid;
     gap: .75rem;
@@ -1129,42 +1021,6 @@ const useCases: readonly UseCase[] = [
   .home-specimen__alerts p {
     margin: .2rem 0 0;
     font-size: .72rem;
-  }
-
-  .home-specimen__identity {
-    display: grid;
-    gap: 1rem;
-    margin: auto 0;
-    border-radius: 1rem;
-    background: hsl(var(--surface-muted) / .5);
-    padding: 1.2rem;
-  }
-
-  .home-specimen__avatar-stack {
-    display: flex;
-    padding-left: .65rem;
-  }
-
-  .home-specimen__avatar-stack :global(.ui-avatar) {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-left: -.65rem;
-    border: 3px solid hsl(var(--surface));
-    background: hsl(var(--brand-soft));
-    color: hsl(var(--brand));
-    font-size: .68rem;
-  }
-
-  .home-specimen__identity > div:nth-child(2) {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    color: hsl(var(--ink-soft));
-    font-size: .78rem;
-  }
-
-  .home-specimen__identity strong {
-    color: hsl(var(--ink));
   }
 
   .home-specimen__swatches {
@@ -1813,97 +1669,6 @@ const useCases: readonly UseCase[] = [
     padding-top: 1.35rem;
   }
 
-  .home-web-setup {
-    margin-top: 1rem;
-    border: 1px solid hsl(var(--line) / .78);
-    border-radius: 1.35rem;
-    background:
-      radial-gradient(circle at 8% 0%, hsl(var(--brand) / .12), transparent 28%),
-      hsl(var(--surface-muted) / .42);
-    padding: clamp(1.25rem, 4vw, 2.5rem);
-  }
-
-  .home-web-setup__head {
-    display: grid;
-    grid-template-columns: minmax(0, .85fr) minmax(20rem, 1.15fr);
-    align-items: end;
-    gap: 2rem;
-  }
-
-  .home-web-setup__head h3 {
-    margin: .85rem 0 0;
-    color: hsl(var(--ink));
-    font-family: var(--app-font-display), sans-serif;
-    font-size: clamp(1.45rem, 3vw, 2rem);
-    letter-spacing: -.02em;
-    line-height: 1.1;
-  }
-
-  .home-web-setup__head > p {
-    max-width: 38rem;
-    margin: 0;
-    color: hsl(var(--ink-soft));
-    font-size: .84rem;
-    line-height: 1.65;
-  }
-
-  .home-web-setup .home-framework {
-    margin-top: 1.5rem;
-    background: hsl(var(--surface));
-  }
-
-  .home-framework {
-    margin-top: 3rem;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: 1.3rem;
-    background: hsl(var(--surface));
-    box-shadow: 0 22px 60px -42px hsl(var(--ink) / .4);
-    padding: clamp(1rem, 3vw, 2rem);
-  }
-
-  .home-cta {
-    position: relative;
-    display: flex;
-    margin-top: clamp(6rem, 11vw, 10rem);
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    border-color: hsl(var(--brand) / .22);
-    background:
-      linear-gradient(145deg, hsl(var(--brand-soft) / .7), hsl(var(--surface)));
-    box-shadow: none;
-    text-align: center;
-    padding: clamp(3rem, 8vw, 6rem) 1.5rem;
-  }
-
-  .home-cta__orb {
-    position: absolute;
-    top: -9rem;
-    left: 50%;
-    z-index: 0;
-    width: 27rem;
-    height: 17rem;
-    border-radius: 50%;
-    background: hsl(var(--brand) / .2);
-    filter: blur(55px);
-    transform: translateX(-50%);
-  }
-
-  .home-cta > *:not(.home-cta__orb) {
-    position: relative;
-  }
-
-  .home-cta h2 {
-    margin-top: 1rem;
-  }
-
-  .home-cta > p {
-    max-width: 38rem;
-    margin: 1.25rem 0 0;
-    color: hsl(var(--ink-soft));
-    line-height: 1.7;
-  }
-
   @media (max-width: 960px) {
     .home-proof__inner {
       grid-template-columns: 1fr auto;
@@ -1945,11 +1710,6 @@ const useCases: readonly UseCase[] = [
       max-width: 42rem;
     }
 
-    .home-web-setup__head {
-      grid-template-columns: 1fr;
-      align-items: start;
-      gap: 1rem;
-    }
   }
 
   @media (max-width: 720px) {
@@ -2077,29 +1837,18 @@ const useCases: readonly UseCase[] = [
       min-height: 20rem;
     }
 
-    .home-web-setup {
-      border-radius: 1rem;
-      padding: 1rem;
-    }
-
-    .home-web-setup .home-framework {
-      margin-top: 1rem;
-    }
-
     .home-specimen__swatches span::before {
       height: 4rem;
     }
   }
 
   @media (max-width: 440px) {
-    .home-hero__actions,
-    .home-cta__actions {
+    .home-hero__actions {
       width: 100%;
       flex-direction: column;
     }
 
-    .home-hero__actions :global(.ui-button-link),
-    .home-cta__actions :global(.ui-button-link) {
+    .home-hero__actions :global(.ui-button-link) {
       width: 100%;
     }
 

@@ -1,7 +1,7 @@
 # @santi020k/lumen-react-native
 
-> **Beta:** This package is ready for testing and early production adoption. Its public API may
-> evolve as it is validated in real applications; review release notes when upgrading.
+> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
+> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
 
 Maintainers can verify the exact packed package contents, peer installation, and strict external
 TypeScript consumption from the repository root with `pnpm run check:react-native-package`.

@@ -10,7 +10,7 @@ import {
   Table
 } from '@santi020k/lumen-astro'
 
-import { getNativeComponentCapture } from '../data/native-component-captures'
+import { findNativeComponentCapture } from '../data/native-component-captures'
 import {
   getNativeComponentsForPlatform,
   type NativeComponentDoc,
@@ -28,7 +28,7 @@ interface Props {
 
 const { component, guide } = Astro.props
 const implementation = component.implementations[guide.id]
-const capture = getNativeComponentCapture(guide.id, component.slug)
+const capture = findNativeComponentCapture(guide.id, component.slug)
 
 if (!implementation) {
   throw new Error(`${component.name} is not available for ${guide.label}`)
@@ -80,6 +80,7 @@ const iconPlatformGuidance: Record<NativePlatformId, {
 }
 
 const iconGuidance = iconPlatformGuidance[guide.id]
+const appleAvailability = implementation.appleAvailability
 ---
 
 <DocsLayout
@@ -100,7 +101,6 @@ const iconGuidance = iconPlatformGuidance[guide.id]
       <div class="native-detail-hero__badges">
         <Badge variant="secondary">{component.category}</Badge>
         <Badge variant="outline">{guide.shortLabel}</Badge>
-        {guide.maturity && <Badge variant="warning">{guide.maturity}</Badge>}
         {implementation.maturity === 'Experimental' && (
           <Badge variant="destructive">Experimental API</Badge>
         )}
@@ -119,8 +119,27 @@ const iconGuidance = iconPlatformGuidance[guide.id]
       <span>Public API</span>
       <code>{implementation.exportName}</code>
       <small>{platformLabels[guide.id]}</small>
+      {implementation.packageName && <small>Swift product: {implementation.packageName}</small>}
     </Card>
   </header>
+
+  {appleAvailability && (
+    <Card as="section" class="native-detail-apple" variant="muted" aria-labelledby="apple-availability-title">
+      <div>
+        <p>Apple availability</p>
+        <h2 id="apple-availability-title">Supported native targets</h2>
+        <p>
+          Import <code>{implementation.packageName}</code> in the target that uses this component.
+          iPad support follows the iOS package baseline and uses native iPad layout behavior.
+        </p>
+      </div>
+      <div class="native-detail-apple__targets">
+        {appleAvailability.map(target => (
+          <Badge variant="outline">{target.label} · {target.minimumVersion}</Badge>
+        ))}
+      </div>
+    </Card>
+  )}
 
   <section class="native-detail-section" id="usage" aria-labelledby="usage-title">
     <div class="native-detail-heading">
@@ -132,28 +151,30 @@ const iconGuidance = iconPlatformGuidance[guide.id]
       {hasLivePreview && (
         <div class="native-detail-live-preview">
           <NativeLivePreview component={component} guide={guide} />
-          <details class="native-detail-capture-evidence">
-            <summary>View verified {guide.shortLabel} runtime capture</summary>
-            <figure class="native-detail-capture">
-              <div class="native-detail-capture__viewport">
-                <img
-                  alt={capture.alt}
-                  decoding="async"
-                  height={capture.height}
-                  loading="lazy"
-                  src={capture.src}
-                  width={capture.width}
-                />
-              </div>
-              <figcaption>
-                <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
-                <small>{capture.device}</small>
-              </figcaption>
-            </figure>
-          </details>
+          {capture && (
+            <details class="native-detail-capture-evidence">
+              <summary>View verified {guide.shortLabel} runtime capture</summary>
+              <figure class="native-detail-capture">
+                <div class="native-detail-capture__viewport">
+                  <img
+                    alt={capture.alt}
+                    decoding="async"
+                    height={capture.height}
+                    loading="lazy"
+                    src={capture.src}
+                    width={capture.width}
+                  />
+                </div>
+                <figcaption>
+                  <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+                  <small>{capture.device}</small>
+                </figcaption>
+              </figure>
+            </details>
+          )}
         </div>
       )}
-      {!hasLivePreview && (
+      {!hasLivePreview && capture && (
         <figure class="native-detail-capture">
           <div class="native-detail-capture__viewport">
             <img
@@ -170,6 +191,18 @@ const iconGuidance = iconPlatformGuidance[guide.id]
             <small>{capture.device}</small>
           </figcaption>
         </figure>
+      )}
+      {!hasLivePreview && !capture && (
+        <Card class="native-detail-capture-pending" variant="muted">
+          <Icon decorative name="monitor" size="sm" />
+          <div>
+            <strong>Focused package reference</strong>
+            <p>
+              This API ships in <code>{implementation.packageName}</code>. No application-playground
+              capture is published for this extension-only product yet.
+            </p>
+          </div>
+        </Card>
       )}
       <CodeTabs
         ariaLabel={`${component.name} ${guide.shortLabel} example`}
@@ -344,6 +377,7 @@ const iconGuidance = iconPlatformGuidance[guide.id]
 
   .native-detail-hero__badges,
   .native-detail-hero__links,
+  .native-detail-apple__targets,
   .native-detail-availability > div:last-child {
     display: flex;
     flex-wrap: wrap;
@@ -412,6 +446,38 @@ const iconGuidance = iconPlatformGuidance[guide.id]
     scroll-margin-top: 10rem;
   }
 
+  :global(.native-detail-apple) {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .native-detail-apple > div:first-child {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .native-detail-apple > div:first-child > p:first-child {
+    color: hsl(var(--brand));
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .native-detail-apple h2 {
+    color: hsl(var(--ink));
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+
+  .native-detail-apple > div:first-child > p:last-child {
+    max-width: 50rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
   .native-detail-usage {
     display: grid;
     gap: 1rem;
@@ -424,6 +490,27 @@ const iconGuidance = iconPlatformGuidance[guide.id]
     border: 1px solid hsl(var(--line));
     border-radius: 1rem;
     background: hsl(var(--surface));
+  }
+
+  :global(.native-detail-capture-pending) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.25rem;
+    color: hsl(var(--ink-soft));
+  }
+
+  .native-detail-capture-pending > :global(svg) {
+    color: hsl(var(--brand));
+  }
+
+  .native-detail-capture-pending strong {
+    color: hsl(var(--ink));
+  }
+
+  .native-detail-capture-pending p {
+    margin-top: 0.35rem;
+    line-height: 1.6;
   }
 
   .native-detail-live-preview {

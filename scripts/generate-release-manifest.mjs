@@ -40,6 +40,31 @@ const umbrellaVersion = packages['@santi020k/lumen']?.version
 
 if (!umbrellaVersion) throw new Error('Unable to resolve the @santi020k/lumen release version.')
 
+const releaseMajor = Number.parseInt(umbrellaVersion, 10)
+
+const defaultMigration = {
+  codemod: null,
+  deprecatedExports: [],
+  removedExports: [],
+  runtime: {
+    astro: 'Mount UIPrimitives once when an imported component declares the ui-primitives runtime.',
+    elements: 'Call defineLumenElements once before rendering lumen-* elements.',
+    react: 'Use the public React behavior hooks for behavior-heavy primitives.'
+  }
+}
+
+let migration = defaultMigration
+
+if (releaseMajor === 2) {
+  const contract = await readJson(join(repositoryRoot, 'registry', 'lumen-2-contract.json'))
+
+  if (!contract.releaseMigration) {
+    throw new Error('The Lumen 2 contract must define releaseMigration before generating a version 2 manifest.')
+  }
+
+  migration = contract.releaseMigration
+}
+
 const gradleProperties = await readFile(join(repositoryRoot, 'packages', 'compose', 'gradle.properties'), 'utf8')
 const composeVersion = /^lumenComposeVersion=(.+)$/m.exec(gradleProperties)?.[1]
 
@@ -66,19 +91,15 @@ const manifest = {
     version: umbrellaVersion
   },
   migration: {
-    codemod: null,
+    codemod: migration.codemod,
     css: {
       astro: '@santi020k/lumen-astro/styles.css',
       elements: '@santi020k/lumen-elements/styles.css',
       react: '@santi020k/lumen-react/styles.css'
     },
-    deprecatedExports: [],
-    removedExports: [],
-    runtime: {
-      astro: 'Mount UIPrimitives once when an imported component declares the ui-primitives runtime.',
-      elements: 'Call defineLumenElements once before rendering lumen-* elements.',
-      react: 'Use the public React behavior hooks for behavior-heavy primitives.'
-    }
+    deprecatedExports: migration.deprecatedExports,
+    removedExports: migration.removedExports,
+    runtime: migration.runtime
   }
 }
 

@@ -10,3 +10,6 @@ accessibility role. Run rendered TSX component behavior tests in the standard Re
 suite so these semantics remain covered in CI. Announce validation context from React Native date,
 phone, and multiline controls without dropping consumer accessibility props, and keep SwiftUI
 textarea values distinct from their validation hints.
+Dismiss React Native date, generic, and phone-country pickers when their controls become disabled,
+keep them closed after re-enabling until the next user action, and disable generic pickers with no
+available options.

@@ -340,7 +340,7 @@ import Testing
     #expect(LumenImageRadius.full.value == LumenRadius.full)
 }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 @Test func sliderConfigurationRejectsInvalidSteps() {
     let bounds = 0.0...100.0
 

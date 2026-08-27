@@ -4,27 +4,31 @@
   "baselines": {
     "reactNative": {
       "path": "registry/native-api-baseline.json",
-      "sha256": "91c84dab127ca7628e8ae30281dcd04c0f855f53cd4552f6d82598617d0235fa"
+      "sha256": "9f64a0ce3dba98edcf7716ea5ee02c2d92e36e7c4b1cf02abd4ddb4ac5c0b904"
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",
-      "sha256": "36b46c541ce2445004d18769fe5463893e3207cc6a62ac500a3da728fd02e763"
+      "sha256": "82905a4f3854aacfd6f93664e5b8a4c84dd18d0408ab6acdc787228745f13a48"
+    },
+    "swiftWidget": {
+      "path": "registry/swift-widget-api-baseline.json",
+      "sha256": "fcb0bc6015d1044d3f0c3d155f99b58e6a58acc906fb55b02bc190b25caebdbe"
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
-      "sha256": "fdcf3b2204ab5cb2ebbb658fc05780666271c65cad3bd657e829a1d423e0771c"
+      "sha256": "f038e883b732f82d29de7270245b22054478d554d85f92af51d61f76669a49d7"
     },
     "composeClassification": {
       "path": "registry/compose-api-classification.json",
-      "sha256": "1c6a8453390e8b5419f9a2e96b9d5a99927c73118f718663e5d81307f384506e"
+      "sha256": "0eb2fe098caefd50564a03d967404ca14716ab76d166f647027f7624d4f8338c"
     },
     "wear": {
       "path": "packages/compose/wear/api/wear.api",
-      "sha256": "e3d6691d6e603e927495d68be8f566766bc9aaa9f5d9a575a0cf5bafa5b976c5"
+      "sha256": "9db7ecb2c00943a53b81f7872d091db8f13261d6d9347c7b648d18cc13a9919b"
     },
     "wearClassification": {
       "path": "registry/wear-api-classification.json",
-      "sha256": "c139f632577733550e6b688a4d03694541c045850892d55215c7b59d55ac382b"
+      "sha256": "12a324da782c208d3b8135d1ed74eb2f6e0f8e038ccb724908a23624d0231049"
     }
   },
   "iterations": []

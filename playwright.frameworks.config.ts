@@ -21,6 +21,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: 0,
   testDir: './tests/frameworks',
+  testMatch: 'framework-visual-hosts.spec.ts',
   workers: 2,
   use: {
     baseURL

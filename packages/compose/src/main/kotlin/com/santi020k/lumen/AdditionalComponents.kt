@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -258,11 +259,16 @@ fun <T> LumenPicker(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val selectedLabel = options.firstOrNull { it.value == value }?.label ?: value.toString()
+    val controlEnabled = enabled && options.isNotEmpty()
+
+    LaunchedEffect(controlEnabled) {
+        if (!controlEnabled) expanded = false
+    }
 
     Box(modifier = modifier) {
         Button(
             onClick = { expanded = true },
-            enabled = enabled,
+            enabled = controlEnabled,
             modifier = Modifier.semantics {
                 contentDescription = label
                 stateDescription = selectedLabel
@@ -270,11 +276,11 @@ fun <T> LumenPicker(
         ) {
             Text(selectedLabel)
         }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(expanded = expanded && controlEnabled, onDismissRequest = { expanded = false }) {
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.label) },
-                    enabled = option.enabled,
+                    enabled = controlEnabled && option.enabled,
                     onClick = {
                         onValueChange(option.value)
                         expanded = false

@@ -859,9 +859,11 @@ const loadWorkspaceFiles = async p => ({
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
   elementsSource: [
     await readIfExists(p('packages/elements/src/define.ts')),
+    await readIfExists(p('packages/elements/src/components/foundations.ts')),
     await readIfExists(p('packages/elements/src/components/badge.ts')),
     await readIfExists(p('packages/elements/src/components/button.ts')),
-    await readIfExists(p('packages/elements/src/components/card.ts'))
+    await readIfExists(p('packages/elements/src/components/card.ts')),
+    await readIfExists(p('packages/elements/src/components/foundations.ts'))
   ].join('\n'),
   reactSource: [
     await readIfExists(p('packages/react/src/components.tsx')),
@@ -926,6 +928,16 @@ const nativeImplementationOverrides = [
     setup:
       'Wrap wearable content in LumenWearTheme inside the application-owned Wear Material theme.',
     sourcePrefix: 'packages/compose/wear/'
+  },
+  {
+    importStatement: 'import LumenWidgetUI',
+    install:
+      'Add https://github.com/santi020k/lumen with Swift Package Manager and link the focused LumenWidgetUI product to the widget extension target.',
+    packageName: 'LumenWidgetUI',
+    platform: 'swiftui',
+    setup:
+      'Use LumenWidgetUI inside a WidgetKit extension. Keep timelines, App Intents, deep links, widget families, and container backgrounds application-owned.',
+    sourcePrefix: 'packages/swift-widget/'
   }
 ]
 
@@ -1000,7 +1012,7 @@ const buildNativeImplementation = ({ config, implementation, nativeRegistry, pla
     api: implementation.api,
     example: implementation.example,
     exportName: implementation.exportName,
-    importStatement: config.importStatement(symbol),
+    importStatement: implementationOverride?.importStatement ?? config.importStatement(symbol),
     install: implementationOverride?.install ?? config.install,
     language: implementation.language,
     maturity: implementation.maturity,

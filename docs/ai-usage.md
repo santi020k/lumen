@@ -209,10 +209,11 @@ The React package entry is a client boundary. In Next.js, it can be imported by 
 without evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen
 subtree becomes a Client Component boundary. Vite and other client-rendered React applications use
 the same entry without additional setup.
-For stateless `Badge`, `Input`, `Label`, `Progress`, `Skeleton`, `Spinner`, and `Textarea` usage in
-a React Server Component, import from `@santi020k/lumen-react/server`. That entrypoint contains the
-implementations directly and avoids creating a client boundary. Keep event handlers, hooks, and
-interactive primitives on the package root inside a Client Component.
+For stateless Badge, Card composition, layout, form-label, progress, loading, typography, and
+visually-hidden usage in a React Server Component, import from
+`@santi020k/lumen-react/server`. That entrypoint contains the implementations directly and avoids
+creating a client boundary. Keep event handlers, hooks, and interactive primitives on the package
+root inside a Client Component.
 `Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.
 `Button asChild` composes the button contract onto one child element. Across adapters, native
 numeric `size` remains available on `Input` and `NativeSelect`; use `visualSize` in Astro and React,
@@ -273,6 +274,11 @@ For a surface that uses only Badge, Button, and Card, import
 `defineLumenBadge`, `defineLumenButton`, and `defineLumenCard` functions. Those implementation-level
 entrypoints avoid the complete catalog bundle. Continue using `defineLumenElements` for any
 component without a granular entrypoint.
+
+For a foundation-only custom-element surface, import `defineLumenFoundations` from
+`@santi020k/lumen-elements/components/foundations`. It registers Card compound parts, Container,
+Direction, Grid, Label, Separator, Skeleton, Spinner, Stack, Typography, and VisuallyHidden without
+pulling the complete catalog implementation.
 
 Put input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in
 `FormData`, validity, disabled state, focus, and reset through form-associated custom-element
@@ -475,6 +481,12 @@ lumen doctor --json
 lumen doctor-native --json
 lumen init --framework astro --tailwind
 ```
+
+`lumen doctor-native` emits the same adoption inventory and Android toolchain preflight in readable
+text or JSON. Treat direct-primitive matches as review suggestions, not rewrite instructions: first
+confirm whether a surface is product-owned and whether the public Lumen contract preserves its
+behavior. A failed JDK, SDK, platform-package, or required-NDK preflight should be fixed before
+starting Gradle so native compilation does not obscure the setup problem.
 
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
 or `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,

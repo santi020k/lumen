@@ -67,7 +67,7 @@ test('accepts a complete physical-device matrix in readiness mode', async () => 
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /14 native physical-device evidence slots; 0 remain incomplete/)
+  assert.match(result.stdout, /22 native physical-device evidence slots; 0 remain incomplete/)
 })
 
 test('rejects a complete pass without an actual device environment', async () => {
@@ -128,6 +128,16 @@ test('rejects a minimum device target that omits its supported package baseline'
   assert.equal(result.status, 1)
 
   assert.match(result.stderr, /minimum target must name the supported package baseline/)
+})
+
+test('rejects a matrix that omits WidgetKit physical-device coverage', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters = ledger.adapters.filter(adapter => adapter.id !== 'swift-widget-watchos')
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must cover every required adapter and platform/)
 })
 
 test('rejects a partial pass without explicit blocking issues', async () => {

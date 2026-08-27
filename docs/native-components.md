@@ -5,9 +5,9 @@ each platform's rendering, image, focus, and accessibility systems. This referen
 the supported component surface, platform mappings, and the checks required for a component to be
 considered supported.
 
-> **Beta:** Native component APIs are ready for testing and early production adoption, but may
-> evolve as they are validated in real applications. The shared token foundation is stable. Review
-> release notes when upgrading; features below the Beta support bar are labeled Experimental.
+> **Supported for Lumen 2:** The native component APIs below are part of the frozen version 2
+> contract. Current artifacts remain release candidates until publication, physical-device, and
+> consumer-soak gates are complete.
 
 ## Install and consume
 
@@ -84,16 +84,25 @@ struct ExampleApp: App {
 }
 ```
 
-The package supports iOS 16, macOS 13, tvOS 16, and watchOS 9 or newer. Its component APIs are the
-same on iOS and macOS; control metrics automatically use regular touch density on mobile and compact
-pointer density on Mac. A shared feature view can therefore be compiled into both applications
-without platform conditionals.
+The package supports iOS 16, macOS 13, tvOS 16, visionOS 1, and watchOS 9 or newer. The complete
+phone, tablet, Mac, and spatial control tier is available on visionOS where the same native SwiftUI
+types exist; control metrics remain regular outside pointer-first macOS. A shared feature view can
+therefore compile across those application targets without platform conditionals.
 
-Platform-native availability still applies outside iOS and macOS. `LumenTextarea` and
+Use `LumenTextContent.localized(_:)` for `LocalizedStringKey` or `LocalizedStringResource` copy and
+`LumenTextContent.verbatim(_:)` for application-resolved runtime strings. The focused contract is
+available on common text, badge, spinner, text-button, text-field, textarea, and field-group
+boundaries so labels, descriptions, validation messages, accessibility text, and actions retain
+their intended localization semantics. Translation storage and live locale selection stay in the
+application; the Apple playground Settings screen includes an English/Spanish state-driven example.
+
+Platform-native availability still applies outside iOS, macOS, and visionOS. `LumenTextarea` and
 `LumenShareButton` are unavailable on tvOS because SwiftUI does not provide their underlying text
 editor and share surfaces there. `LumenMenu` requires tvOS 17 or newer. Wearable components are
 watchOS-only, and non-wearable controls that are unavailable on watchOS are excluded from that
-target.
+target. `LumenWidgetUI` does not claim visionOS support in Lumen 2 because its rendering-mode
+contract requires visionOS 26; application widgets remain supported on iOS, iPadOS, macOS, and
+watchOS.
 
 ```swift
 struct SharedProfileActions: View {
@@ -199,10 +208,8 @@ Material theme. This keeps the first wearable tier compatible with existing Wear
 complications, haptics, synchronization, health behavior, and background work remain application-
 owned.
 
-`LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`, and
-`LumenWearStatus` are Supported during the native stability soak. `LumenWearMetric` and
-`LumenWearListRow` remain Experimental and require
-`@OptIn(ExperimentalLumenWearApi::class)` at the narrowest calling scope.
+`LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`,
+`LumenWearStatus`, `LumenWearMetric`, and `LumenWearListRow` are Supported for Lumen 2.
 
 ## Supported surface
 
@@ -273,17 +280,16 @@ The web-only Card variants `glass` and `unstyled` are deliberately not shared. B
 unstyled layout behavior do not have a stable cross-platform meaning. Native Card interaction is
 enabled by an action or press callback instead of a visual-only `interactive` variant.
 
-### Experimental shared surface
+### Newly supported Lumen 2 surface
 
-These contracts are available for evaluation but are not part of the supported Lumen 2 surface.
-Their source annotations and generated documentation remain authoritative until the contract-freeze
-gate promotes or removes them.
+These contracts graduated into the supported Lumen 2 surface. They use the same compatibility,
+documentation, and migration policy as the rest of the supported native catalog.
 
-| Contract          | React Native      | SwiftUI             | Compose            | Current maturity              |
-| ----------------- | ----------------- | ------------------- | ------------------ | ----------------------------- |
-| Phone input       | `LumenPhoneInput` | `LumenPhoneInput`   | `LumenPhoneInput`  | Experimental on every adapter |
-| Wearable metric   | —                 | `LumenWatchMetric`  | `LumenWearMetric`  | Compose Experimental          |
-| Wearable list row | —                 | `LumenWatchListRow` | `LumenWearListRow` | Compose Experimental          |
+| Contract          | React Native      | SwiftUI             | Compose            | Current maturity |
+| ----------------- | ----------------- | ------------------- | ------------------ | ---------------- |
+| Phone input       | `LumenPhoneInput` | `LumenPhoneInput`   | `LumenPhoneInput`  | Supported        |
+| Wearable metric   | —                 | `LumenWatchMetric`  | `LumenWearMetric`  | Supported        |
+| Wearable list row | —                 | `LumenWatchListRow` | `LumenWearListRow` | Supported        |
 
 ## Platform-specific components
 
@@ -295,15 +301,22 @@ They use Lumen tokens and accessibility rules without promising artificial API p
 | `LumenRefreshControl`             | React Native | iOS, Android | Pull-to-refresh state with semantic native indicator colors            |
 | `LumenCollapsibleNavigationBar`   | React Native | iOS, Android | Threshold-based animated navigation visibility for scroll containers   |
 | `LumenNavigationAccessory`        | React Native | iOS, Android | Compact status or actions above bottom navigation                      |
-| `LumenLink`                       | SwiftUI      | iOS, macOS   | Token-aware URL action using native SwiftUI link opening               |
+| `LumenLink`                       | SwiftUI      | iOS, macOS, visionOS | Token-aware URL action using native SwiftUI link opening          |
 | `lumenTabBarMinimizeBehavior`     | SwiftUI      | iOS          | Native iPhone tab minimization with an iOS 16-compatible fallback      |
 | `LumenTabAccessory`               | SwiftUI      | iOS          | Expanded and compact content for native tab-bar accessory placement    |
 | `LumenShortcutRecorder`           | SwiftUI      | macOS        | Keyboard capture with cancel, clear, and application validation states |
 | `LumenSymbolPicker`               | SwiftUI      | macOS        | Searchable categorized SF Symbols selection                            |
+| `LumenWidgetText`                 | WidgetKit    | iOS, macOS, watchOS | Semantic localized or verbatim widget text with Dynamic Type     |
+| `LumenWidgetIcon`                 | WidgetKit    | iOS, macOS, watchOS | Rendering-mode-aware SF Symbol treatment                         |
+| `LumenWidgetBadge`                | WidgetKit    | iOS, macOS, watchOS | Compact semantic status badge with increased-contrast treatment  |
+| `LumenWidgetCompactStat`          | WidgetKit    | iOS, macOS, watchOS | Compact label and metric composition                             |
 | `LumenFloatingActionButton`       | Compose      | Android      | Material floating action with semantic intent and native sizing        |
 | `LumenNavigationBarScrollState`   | Compose      | Android      | Nested-scroll visibility behavior for a Material navigation bar        |
 | `LumenNavigationBarAccessory`     | Compose      | Android      | Compact content coordinated with Material bottom navigation            |
 | `LumenAdaptiveNavigationScaffold` | Compose      | Android      | Window- and posture-adaptive Material navigation bar or rail           |
+
+The WidgetKit-specific contracts ship in the separate `LumenWidgetUI` product so widget extensions
+do not link the complete `LumenUI` catalog. See [WidgetKit foundations](widgetkit-foundations.md).
 
 The versioned native contract registry requires every non-wearable shared component to expose a
 public React Native, SwiftUI, and Compose implementation. Wearable entries carry an explicit
@@ -319,6 +332,11 @@ Picker, slider, gauge, date field, and date range field now share one controlled
 React Native, SwiftUI, and Compose. SwiftUI and Compose use their native controls. React Native uses
 dependency-free accessible menu, adjustable, and progress semantics so applications do not need a
 second control package for the common contract.
+
+Empty picker collections are disabled. If a picker, date field, date range field, or phone-country
+selector becomes disabled while its adapter-owned selection UI is open, that UI closes and stays
+closed after re-enabling until the user explicitly opens it again. This prevents stale selection
+callbacks from escaping a disabled control.
 
 ### React Native behavior hooks
 
@@ -568,7 +586,6 @@ LumenPhoneInput(
 Compose:
 
 ```kotlin
-@OptIn(ExperimentalLumenPhoneApi::class)
 @Composable
 fun CareTeamPhoneField() {
     val defaultCountry = remember {

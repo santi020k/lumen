@@ -7,7 +7,6 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-@OptIn(ExperimentalLumenPhoneApi::class)
 class PhoneComponentsTest {
     private val colombia = requireNotNull(LumenPhoneCountries.forRegion("CO", Locale.US))
 

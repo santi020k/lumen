@@ -523,7 +523,7 @@ body {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 840px) {
   .docs-site-header {
     padding-inline: 0.75rem;
   }

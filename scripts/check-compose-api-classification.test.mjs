@@ -65,7 +65,7 @@ test('accepts the reviewed Compose API maturity classification', async () => {
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /Validated 146 Supported, 6 Experimental/)
+  assert.match(result.stdout, /Validated 151 Supported, 0 Experimental/)
 })
 
 test('rejects an unclassified Compose declaration', async () => {
@@ -78,19 +78,15 @@ test('rejects an unclassified Compose declaration', async () => {
   assert.match(result.stderr, /public ABI and maturity classifications differ/)
 })
 
-test('rejects a phone API classified as Supported while its source remains Experimental', async () => {
-  const result = await runClassification(classification => {
-    classification.experimental = classification.experimental.filter(
-      identifier => identifier !== 'LumenPhoneInput'
-    )
-
-    classification.supported = [...classification.supported, 'LumenPhoneInput']
-      .sort((left, right) => left.localeCompare(right))
-  })
+test('rejects the obsolete experimental phone opt-in after graduation', async () => {
+  const result = await runClassification(
+    () => {},
+    source => `${source}\nannotation class ExperimentalLumenPhoneApi\n`
+  )
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /Every Experimental Compose declaration must be visibly annotated/)
+  assert.match(result.stderr, /obsolete experimental phone opt-in/)
 })
 
 test('rejects duplicate maturity classifications', async () => {
@@ -101,20 +97,4 @@ test('rejects duplicate maturity classifications', async () => {
   assert.equal(result.status, 1)
 
   assert.match(result.stderr, /appears in more than one classification/)
-})
-
-test('classifies long annotation sequences without catastrophic backtracking', async () => {
-  const annotations = '@A() '.repeat(20_000)
-
-  const result = await runClassification(
-    () => {},
-    source => source.replace(
-      '@ExperimentalLumenPhoneApi\ndata class LumenPhoneCountry',
-      `@ExperimentalLumenPhoneApi\n${annotations}data class LumenPhoneCountry`
-    )
-  )
-
-  assert.equal(result.signal, null, 'classification timed out')
-
-  assert.equal(result.status, 0, result.stderr)
 })

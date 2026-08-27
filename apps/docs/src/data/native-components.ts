@@ -8,7 +8,22 @@ export type NativeComponentCategory =
   'Foundations' |
   'Layout' |
   'Navigation' |
+  'WidgetKit' |
   'macOS utilities'
+
+type AppleEcosystemTargetId =
+  | 'ios' |
+  'ipad' |
+  'macos' |
+  'tvos' |
+  'visionos' |
+  'watchos'
+
+interface AppleEcosystemTarget {
+  id: AppleEcosystemTargetId
+  label: string
+  minimumVersion: string
+}
 
 interface NativeApiRow {
   defaultValue: string
@@ -19,10 +34,12 @@ interface NativeApiRow {
 
 interface NativeComponentImplementation {
   api: NativeApiRow[]
+  appleAvailability?: AppleEcosystemTarget[]
   example: string
   exportName: string
   language: 'kotlin' | 'swift' | 'tsx'
   maturity: 'Experimental' | 'Supported'
+  packageName?: 'LumenUI' | 'LumenWidgetUI'
   platform: NativePlatformId
 }
 
@@ -69,6 +86,111 @@ const platformLanguages: Record<
   'react-native': 'tsx'
 }
 
+const appleEcosystemTargets: Record<
+  AppleEcosystemTargetId,
+  AppleEcosystemTarget
+> = {
+  ios: { id: 'ios', label: 'iPhone', minimumVersion: 'iOS 16+' },
+  ipad: { id: 'ipad', label: 'iPad', minimumVersion: 'iPadOS 16+' },
+  macos: { id: 'macos', label: 'Mac', minimumVersion: 'macOS 13+' },
+  tvos: { id: 'tvos', label: 'Apple TV', minimumVersion: 'tvOS 16+' },
+  visionos: { id: 'visionos', label: 'Apple Vision', minimumVersion: 'visionOS 1+' },
+  watchos: { id: 'watchos', label: 'Apple Watch', minimumVersion: 'watchOS 9+' }
+}
+
+const appleApplicationTargets = [
+  appleEcosystemTargets.ios,
+  appleEcosystemTargets.ipad,
+  appleEcosystemTargets.macos,
+  appleEcosystemTargets.tvos,
+  appleEcosystemTargets.visionos,
+  appleEcosystemTargets.watchos
+]
+
+const applePhoneTabletAndMacTargets = [
+  appleEcosystemTargets.ios,
+  appleEcosystemTargets.ipad,
+  appleEcosystemTargets.macos,
+  appleEcosystemTargets.visionos
+]
+
+const applePhoneAndTabletTargets = [
+  appleEcosystemTargets.ios,
+  appleEcosystemTargets.ipad
+]
+
+const applePhoneTabletAndMacOnlySlugs = new Set([
+  'backdrop',
+  'checkbox',
+  'date-field',
+  'date-range-field',
+  'disclosure',
+  'graphic',
+  'illustration',
+  'link',
+  'phone-input',
+  'picker',
+  'radio-group',
+  'search-field',
+  'segmented-control',
+  'settings-row',
+  'skeleton',
+  'slider',
+  'tabs',
+  'textarea',
+  'toggle'
+])
+
+const appleWidgetSlugs = new Set([
+  'widget-badge',
+  'widget-compact-stat',
+  'widget-icon',
+  'widget-text'
+])
+
+const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
+  if (slug === 'shortcut-recorder' || slug === 'symbol-picker') {
+    return [appleEcosystemTargets.macos]
+  }
+
+  if (slug.startsWith('wearable-')) {
+    return [appleEcosystemTargets.watchos]
+  }
+
+  if (appleWidgetSlugs.has(slug)) {
+    return [
+      appleEcosystemTargets.ios,
+      appleEcosystemTargets.ipad,
+      appleEcosystemTargets.macos,
+      appleEcosystemTargets.watchos
+    ]
+  }
+
+  if (slug === 'tab-accessory' || slug === 'tab-bar-minimization') {
+    return applePhoneAndTabletTargets
+  }
+
+  if (applePhoneTabletAndMacOnlySlugs.has(slug)) {
+    return applePhoneTabletAndMacTargets
+  }
+
+  if (slug === 'menu') {
+    return [
+      ...applePhoneTabletAndMacTargets,
+      { ...appleEcosystemTargets.tvos, minimumVersion: 'tvOS 17+' }
+    ]
+  }
+
+  if (slug === 'share-button') {
+    return [
+      ...applePhoneTabletAndMacTargets,
+      appleEcosystemTargets.watchos
+    ]
+  }
+
+  return appleApplicationTargets
+}
+
 const platformValue = (
   value: PlatformValue,
   platform: NativePlatformId
@@ -92,6 +214,22 @@ const createComponent = (
 
     if (!example || !exportName) continue
 
+    let appleFields: Required<Pick<
+      NativeComponentImplementation,
+      'appleAvailability' | 'packageName'
+    >> | Record<string, never> = {}
+
+    if (platform === 'apple') {
+      const packageName = appleWidgetSlugs.has(definition.slug) ?
+        'LumenWidgetUI' :
+        'LumenUI'
+
+      appleFields = {
+        appleAvailability: getAppleAvailability(definition.slug),
+        packageName
+      }
+    }
+
     implementations[platform] = {
       api: definition.properties.map(item => ({
         defaultValue: platformValue(item.defaultValue, platform),
@@ -99,6 +237,7 @@ const createComponent = (
         name: platformValue(item.name, platform),
         values: platformValue(item.values, platform)
       })),
+      ...appleFields,
       example,
       exportName,
       language: platformLanguages[platform],
@@ -1932,8 +2071,7 @@ const additionalDefinitions: ComponentDefinition[] = [
       'The country selector announces the localized country name and calling code. Flags supplement visible text and are never the only country identifier.',
     category: 'Forms',
     examples: {
-      android: `@OptIn(ExperimentalLumenPhoneApi::class)
-@Composable
+      android: `@Composable
 fun CareTeamPhoneField() {
     val defaultCountry = remember {
         requireNotNull(LumenPhoneCountries.forRegion("CO"))
@@ -1981,9 +2119,9 @@ const [phone, setPhone] = useState(() =>
     guidance:
       'Use for international phone entry that needs discoverable country selection and a validated E.164 result. Persist or dial e164 only when isValid is true.',
     maturity: {
-      android: 'Experimental',
-      apple: 'Experimental',
-      'react-native': 'Experimental'
+      android: 'Supported',
+      apple: 'Supported',
+      'react-native': 'Supported'
     },
     name: 'Phone input',
     properties: [
@@ -3532,6 +3670,100 @@ Scaffold(
   },
   {
     accessibility:
+      'Localized or verbatim content preserves native Dynamic Type and adapts semantic tone to WidgetKit rendering modes.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetText(
+    .verbatim(statusTitle),
+    style: .title,
+    tone: .accent
+)`
+    },
+    exports: { apple: 'LumenWidgetText' },
+    guidance:
+      'Use in WidgetKit extensions that need semantic text without linking the complete LumenUI catalog. Keep family-specific layout in the widget.',
+    name: 'Widget text',
+    properties: [
+      property('content', 'LumenWidgetTextContent', 'Required', 'Preserves localized or verbatim text.'),
+      property('style', 'body · caption · label · metric · title', 'body', 'Uses a native semantic font.'),
+      property('tone', 'primary · secondary · accent · success · warning · danger', 'primary', 'Adapts color to the WidgetKit rendering mode.')
+    ],
+    slug: 'widget-text',
+    summary: 'Render focused WidgetKit text with native scaling and semantic rendering-mode color.'
+  },
+  {
+    accessibility:
+      'The SF Symbol is decorative without a label and exposes the supplied accessible name when it conveys meaning.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetIcon(
+    systemName: "timer",
+    label: .verbatim("Active timer"),
+    tone: .accent
+)`
+    },
+    exports: { apple: 'LumenWidgetIcon' },
+    guidance:
+      'Use for compact WidgetKit SF Symbols. Keep product artwork and asset catalogs in the application.',
+    name: 'Widget icon',
+    properties: [
+      property('systemName', 'String', 'Required', 'Selects an application-approved SF Symbol.'),
+      property('label', 'LumenWidgetTextContent?', 'nil', 'Names a meaningful icon.'),
+      property('tone', 'LumenWidgetTone', 'accent', 'Adapts the symbol across rendering modes.'),
+      property('size', 'CGFloat', '18', 'Sets the compact symbol dimension.')
+    ],
+    slug: 'widget-icon',
+    summary: 'Render a labeled or decorative WidgetKit SF Symbol with semantic tone.'
+  },
+  {
+    accessibility:
+      'Icon and text combine into one concise status, while increased contrast strengthens the visible outline.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetBadge(
+    .verbatim("Ready"),
+    iconSystemName: "checkmark.circle.fill",
+    tone: .success
+)`
+    },
+    exports: { apple: 'LumenWidgetBadge' },
+    guidance:
+      'Use for short WidgetKit status. Keep actions as native Button or App Intent interactions outside the badge.',
+    name: 'Widget badge',
+    properties: [
+      property('label', 'LumenWidgetTextContent', 'Required', 'Provides the compact status text.'),
+      property('iconSystemName', 'String?', 'nil', 'Adds a decorative SF Symbol.'),
+      property('tone', 'LumenWidgetTone', 'accent', 'Selects the semantic status treatment.')
+    ],
+    slug: 'widget-badge',
+    summary: 'Present a compact rendering-mode-aware WidgetKit status badge.'
+  },
+  {
+    accessibility:
+      'Label and value combine as one readable metric while native semantic fonts preserve accessibility text scaling.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetCompactStat(
+    label: .verbatim("Duration"),
+    value: .verbatim("01:15"),
+    iconSystemName: "timer"
+)`
+    },
+    exports: { apple: 'LumenWidgetCompactStat' },
+    guidance:
+      'Use for one compact label and value pair. Keep charts, timelines, and domain formatting application-owned.',
+    name: 'Widget compact stat',
+    properties: [
+      property('label', 'LumenWidgetTextContent', 'Required', 'Names the metric.'),
+      property('value', 'LumenWidgetTextContent', 'Required', 'Provides the formatted metric value.'),
+      property('iconSystemName', 'String?', 'nil', 'Adds a decorative semantic symbol.'),
+      property('tone', 'LumenWidgetTone', 'accent', 'Selects the value tone.')
+    ],
+    slug: 'widget-compact-stat',
+    summary: 'Compose a compact WidgetKit label and value with optional semantic icon.'
+  },
+  {
+    accessibility:
       'SwiftUI preserves the native link role, visible label, keyboard focus, disabled state, and URL-opening behavior.',
     category: 'Actions',
     examples: {
@@ -4429,8 +4661,7 @@ Scaffold(
       'Combines label, value, and optional detail into one concise readable metric.',
     category: 'Data display',
     examples: {
-      android: `@OptIn(ExperimentalLumenWearApi::class)
-@Composable
+      android: `@Composable
 fun DurationMetric(elapsed: String) {
     LumenWearMetric(label = "Duration", value = elapsed, tone = LumenWearTone.Brand)
 }`,
@@ -4439,7 +4670,7 @@ fun DurationMetric(elapsed: String) {
     exports: { android: 'LumenWearMetric', apple: 'LumenWatchMetric' },
     guidance:
       'Use for one high-priority value with a short label. Avoid dashboard grids that overload small round screens.',
-    maturity: { android: 'Experimental' },
+    maturity: { android: 'Supported' },
     name: 'Wearable metric',
     properties: [
       property(
@@ -4471,8 +4702,7 @@ fun DurationMetric(elapsed: String) {
       'Preserves child actions and content in native traversal order without collapsing distinct controls.',
     category: 'Layout',
     examples: {
-      android: `@OptIn(ExperimentalLumenWearApi::class)
-@Composable
+      android: `@Composable
 fun TimerHistoryRow() {
     LumenWearListRow { TimerHistoryLabel() }
 }`,
@@ -4481,7 +4711,7 @@ fun TimerHistoryRow() {
     exports: { android: 'LumenWearListRow', apple: 'LumenWatchListRow' },
     guidance:
       'Use inside native wearable scrolling containers. Keep list state, selection, navigation, and rotary input in the application.',
-    maturity: { android: 'Experimental' },
+    maturity: { android: 'Supported' },
     name: 'Wearable list row',
     properties: [
       property(
@@ -4521,6 +4751,7 @@ export const nativeComponentCategories: NativeComponentCategory[] = [
   'Navigation',
   'Data display',
   'Feedback',
+  'WidgetKit',
   'macOS utilities'
 ]
 

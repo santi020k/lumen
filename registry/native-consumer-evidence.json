@@ -7,7 +7,7 @@
       "status": "partial",
       "consumer": {
         "name": "Roadscore mobile",
-        "owner": null,
+        "owner": "Santiago Molina",
         "repository": null
       },
       "minimumOperatingSystems": ["Android API 24", "iOS 16.4"],
@@ -28,7 +28,7 @@
       },
       "checks": {
         "accessibility": false,
-        "activeProduct": false,
+        "activeProduct": true,
         "build": true,
         "icons": true,
         "installation": true,
@@ -41,7 +41,6 @@
       "compatibilityWorkarounds": [],
       "evidence": ["docs/native-consumer-validation.md#roadscore-react-native-040"],
       "blockingIssues": [
-        "Product owner confirmation is required.",
         "A signed native application build and accessibility pass are required.",
         "An immutable consumer repository record is unavailable because the local repository has no configured origin remote."
       ]
@@ -52,7 +51,7 @@
       "status": "partial",
       "consumer": {
         "name": "ContracTrack",
-        "owner": null,
+        "owner": "Santiago Molina",
         "repository": "https://github.com/santi020k/betweencontractions.git"
       },
       "minimumOperatingSystems": ["iOS 17.0", "macOS 14.0", "watchOS 10.0"],
@@ -68,26 +67,28 @@
       "upgrade": {
         "fromVersion": "1.4.0",
         "toVersion": "1.5.0",
-        "revision": "7327aaa8f68b88bb98fa29487c469170866b258d"
+        "revision": "510d76df032e103f6b1f99614597d5f2f57ed64b"
       },
       "checks": {
         "accessibility": false,
-        "activeProduct": false,
+        "activeProduct": true,
         "build": true,
         "icons": true,
         "installation": true,
         "integration": true,
-        "signedArtifact": false,
+        "signedArtifact": true,
         "stateManagement": true,
         "theming": true,
         "upgrade": true
       },
       "compatibilityWorkarounds": [],
-      "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
+      "evidence": [
+        "docs/native-consumer-validation.md#contractrack-native-consumers",
+        "https://github.com/santi020k/betweencontractions/commit/510d76df032e103f6b1f99614597d5f2f57ed64b",
+        "https://github.com/santi020k/betweencontractions/blob/c4b24b776de36aaa38e815a92ca9fd580f817a61/docs/RELEASE_CHECKLIST.md"
+      ],
       "blockingIssues": [
-        "Product owner confirmation is required.",
-        "Signed physical-device application evidence and accessibility review are required.",
-        "The successful upgrade remains in uncommitted consumer changes and is not immutable qualification evidence."
+        "Physical-device application evidence and accessibility review are required."
       ]
     },
     {
@@ -96,7 +97,7 @@
       "status": "partial",
       "consumer": {
         "name": "ContracTrack Android",
-        "owner": null,
+        "owner": "Santiago Molina",
         "repository": "https://github.com/santi020k/betweencontractions.git"
       },
       "minimumOperatingSystems": ["Android API 29"],
@@ -114,22 +115,63 @@
       },
       "checks": {
         "accessibility": false,
-        "activeProduct": false,
+        "activeProduct": true,
         "build": true,
         "icons": true,
         "installation": true,
         "integration": true,
-        "signedArtifact": false,
+        "signedArtifact": true,
         "stateManagement": true,
         "theming": true,
         "upgrade": true
       },
       "compatibilityWorkarounds": [],
-      "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
+      "evidence": [
+        "docs/native-consumer-validation.md#contractrack-native-consumers",
+        "https://github.com/santi020k/betweencontractions/blob/c4b24b776de36aaa38e815a92ca9fd580f817a61/docs/RELEASE_CHECKLIST.md"
+      ],
       "blockingIssues": [
-        "Product owner confirmation is required.",
-        "Signed physical-device application evidence and accessibility review are required.",
+        "Physical-device application evidence and accessibility review are required.",
         "The successful upgrade remains in uncommitted consumer changes and is not immutable qualification evidence."
+      ]
+    },
+    {
+      "id": "swift-widget",
+      "adapter": "WidgetKit",
+      "status": "pending",
+      "consumer": {
+        "name": "ContracTrack widgets",
+        "owner": "Santiago Molina",
+        "repository": "https://github.com/santi020k/betweencontractions.git"
+      },
+      "minimumOperatingSystems": ["iOS 16", "macOS 13", "watchOS 9"],
+      "toolchain": "Swift tools 6.0 and the current stable Xcode selected by CI",
+      "platforms": ["iOS", "macOS", "watchOS"],
+      "supportedComponents": [
+        "LumenWidgetBadge",
+        "LumenWidgetCompactStat",
+        "LumenWidgetIcon",
+        "LumenWidgetText"
+      ],
+      "upgrade": null,
+      "checks": {
+        "accessibility": false,
+        "activeProduct": false,
+        "build": false,
+        "icons": false,
+        "installation": false,
+        "integration": false,
+        "signedArtifact": false,
+        "stateManagement": false,
+        "theming": false,
+        "upgrade": false
+      },
+      "compatibilityWorkarounds": [],
+      "evidence": [],
+      "blockingIssues": [
+        "Adopt LumenWidgetUI in the active ContracTrack widget extensions from an ordinary published Swift tag.",
+        "Record an immutable upgrade between both stability iterations.",
+        "Signed physical-device WidgetKit accessibility evidence is required on iOS, macOS, and watchOS."
       ]
     },
     {
@@ -138,7 +180,7 @@
       "status": "partial",
       "consumer": {
         "name": "ContracTrack Wear",
-        "owner": null,
+        "owner": "Santiago Molina",
         "repository": "https://github.com/santi020k/betweencontractions.git"
       },
       "minimumOperatingSystems": ["Wear OS API 30"],
@@ -157,7 +199,7 @@
       },
       "checks": {
         "accessibility": false,
-        "activeProduct": false,
+        "activeProduct": true,
         "build": true,
         "icons": true,
         "installation": true,
@@ -170,7 +212,6 @@
       "compatibilityWorkarounds": [],
       "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
       "blockingIssues": [
-        "Product owner confirmation is required.",
         "Signed physical-watch application evidence and accessibility review are required.",
         "The successful upgrade remains in uncommitted consumer changes and is not immutable qualification evidence."
       ]

@@ -34,6 +34,8 @@ jobs:
       MAVEN_SIGNING_PASSWORD: ${{ secrets.MAVEN_SIGNING_PASSWORD }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Resolve and validate version
         env:
@@ -59,6 +61,21 @@ jobs:
           echo "LUMEN_COMPOSE_VERSION=$LUMEN_COMPOSE_VERSION" >> "$GITHUB_ENV"
           echo "PUBLISHING_TYPE=$PUBLISHING_TYPE" >> "$GITHUB_ENV"
 
+      - name: Verify coordinated Lumen 2 revision
+        run: >-
+          node scripts/check-coordinated-release-revision.mjs
+          --version "$LUMEN_COMPOSE_VERSION"
+          --candidate-ref "$GITHUB_SHA"
+
+      - name: Verify approved Lumen 2 candidate
+        run: >-
+          node scripts/check-approved-release-revision.mjs
+          --version "$LUMEN_COMPOSE_VERSION"
+          --candidate-ref "$GITHUB_SHA"
+
+      - name: Verify graduated Lumen 2 release
+        run: node scripts/check-graduated-release-revision.mjs
+
       - name: Validate documentation version
         run: node scripts/sync-compose-version.mjs --check
 
@@ -74,6 +91,9 @@ jobs:
         run: >-
           node scripts/check-native-consumer-evidence.mjs &&
           node --test scripts/check-native-consumer-evidence.test.mjs
+
+      - name: Validate Lumen 2 contract
+        run: node scripts/check-lumen-2-contract.mjs
 
       - name: Enforce native stable release gates
         run: node scripts/check-native-stable-readiness.mjs

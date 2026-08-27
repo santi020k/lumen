@@ -78,12 +78,12 @@ jobs:
           else
             echo "react-native-captures=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/playground-(android|apple|react-native)/|packages/(compose|core|react-native|swift|tokens)/|tokens/|registry/(compose-api-classification|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-compose-api-classification|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/playground-(android|apple|react-native)/|packages/(compose|core|react-native|swift|swift-widget|tokens)/|tokens/|registry/(compose-api-classification|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-compose-api-classification|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
             echo "native-contracts=true" >> "$GITHUB_OUTPUT"
           else
             echo "native-contracts=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/playground-apple/|packages/(swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/playground-apple/|packages/(swift|swift-widget|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/ci\.yml$)' <<< "$changed_files"; then
             echo "apple=true" >> "$GITHUB_OUTPUT"
           else
             echo "apple=false" >> "$GITHUB_OUTPUT"
@@ -130,7 +130,7 @@ jobs:
         run: pnpm run check:swift-source-compatibility
 
       - name: Check every target-specific Swift public API
-        run: node scripts/check-swift-api-baseline.mjs
+        run: pnpm run check:swift-api-baseline
 
       - name: Regenerate and compare iPhone component captures
         id: apple-captures
@@ -290,7 +290,10 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Run cross-browser interaction contracts
-        run: pnpm run test:interactions
+        run: pnpm run test:interactions && pnpm run test:framework-conformance
+
+      - name: Enforce web unit coverage
+        run: pnpm run test:web-coverage
 
   react-native-captures:
     name: React Native captures

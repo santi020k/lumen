@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - ".github/workflows/release-canary.yml"
+      - ".github/workflows/release.yml"
+      - ".github/workflows/publish-compose.yml"
+      - ".github/workflows/verify-native-release.yml"
       - "Package.swift"
       - "apps/playground-android/**"
       - "apps/playground-apple/**"
@@ -18,22 +21,46 @@ on:
       - "registry/native-device-evidence.json"
       - "registry/native-consumer-evidence.json"
       - "registry/native-stability-soak.json"
+      - "registry/native-api-baseline.json"
       - "registry/compose-api-classification.json"
+      - "registry/lumen-2-contract.json"
+      - "registry/web-api-baseline.json"
       - "registry/swift-api-baseline.json"
+      - "registry/swift-widget-api-baseline.json"
       - "registry/wear-api-classification.json"
       - "registry/release-manifest.json"
       - "scripts/check-swift-api-baseline.mjs"
       - "scripts/check-compose-api-classification.mjs"
+      - "scripts/check-approved-release-revision.mjs"
+      - "scripts/check-approved-release-revision.test.mjs"
+      - "scripts/check-coordinated-release-revision.mjs"
+      - "scripts/check-coordinated-release-revision.test.mjs"
+      - "scripts/check-graduated-release-revision.mjs"
+      - "scripts/check-graduated-release-revision.test.mjs"
       - "scripts/check-wear-api-classification.mjs"
       - "scripts/check-native-device-evidence.mjs"
+      - "scripts/check-native-device-evidence.test.mjs"
       - "scripts/check-native-consumer-evidence.mjs"
+      - "scripts/check-native-consumer-evidence.test.mjs"
       - "scripts/check-native-stability-soak.mjs"
+      - "scripts/check-native-stability-soak.test.mjs"
+      - "scripts/check-native-api-baseline.mjs"
       - "scripts/check-native-stable-readiness.mjs"
+      - "scripts/check-native-stable-readiness.test.mjs"
+      - "scripts/check-lumen-2-contract.mjs"
+      - "scripts/check-maven-release-artifacts.mjs"
+      - "scripts/check-maven-release-artifacts.test.mjs"
+      - "scripts/check-npm-release-provenance.mjs"
+      - "scripts/check-npm-release-provenance.test.mjs"
+      - "scripts/check-v2-release-workflows.test.mjs"
+      - "scripts/check-web-api-baseline.mjs"
+      - "scripts/check-web-api-baseline.test.mjs"
       - "scripts/check-playground-eas-version.mjs"
       - "scripts/check-playground-eas-version.test.mjs"
       - "scripts/check-react-native-peer-docs.mjs"
       - "scripts/check-react-native-peer-docs.test.mjs"
       - "scripts/generate-release-manifest.mjs"
+      - "scripts/generate-release-manifest.test.mjs"
       - "scripts/sync-swift-version.mjs"
       - "scripts/sync-swift-version.test.mjs"
       - "scripts/smoke-react-native-native-package.mjs"
@@ -73,17 +100,17 @@ jobs:
           fi
 
           changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
-          if grep -Eq '^(packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|apps/(docs|next-smoke|playground-react-native|templates)/|docs/(native-compatibility|native-device-validation|playgrounds)\.md$|registry/release-manifest\.json$|scripts/(check-playground-eas-version(\.test)?|check-react-native-peer-docs(\.test)?|generate-release-manifest|smoke-consumer-packages|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|apps/(docs|next-smoke|playground-react-native|templates)/|docs/(native-compatibility|native-device-validation|playgrounds)\.md$|registry/(compose-api-classification|lumen-2-contract|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline)\.json$|scripts/(check-approved-release-revision(\.test)?|check-coordinated-release-revision(\.test)?|check-graduated-release-revision(\.test)?|check-lumen-2-contract|check-maven-release-artifacts(\.test)?|check-npm-release-provenance(\.test)?|check-native-consumer-evidence(\.test)?|check-native-device-evidence(\.test)?|check-native-stability-soak(\.test)?|check-native-stable-readiness(\.test)?|check-playground-eas-version(\.test)?|check-react-native-peer-docs(\.test)?|check-v2-release-workflows\.test|check-web-api-baseline(\.test)?|generate-release-manifest(\.test)?|smoke-consumer-packages|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/(publish-compose|release|release-canary|verify-native-release)\.yml$)' <<< "$changed_files"; then
             echo "web=true" >> "$GITHUB_OUTPUT"
           else
             echo "web=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(Package\.swift$|packages/(swift|tokens)/|apps/playground-apple/|apps/docs/src/data/platforms\.ts$|docs/(ai-usage|native-components|playgrounds)\.md$|tokens/|registry/(native-device-evidence|native-stability-soak|swift-api-baseline|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-swift-version(\.test)?)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(Package\.swift$|packages/(swift|swift-widget|tokens)/|apps/playground-apple/|apps/docs/src/data/platforms\.ts$|docs/(ai-usage|native-components|playgrounds)\.md$|tokens/|registry/(native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-swift-version(\.test)?)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(release-canary|verify-native-release)\.yml$)' <<< "$changed_files"; then
             echo "swift=true" >> "$GITHUB_OUTPUT"
           else
             echo "swift=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(packages/(compose|tokens)/|apps/playground-android/|tokens/|registry/(compose-api-classification|native-consumer-evidence|native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$|scripts/(check-compose-api-classification|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(compose|tokens)/|apps/playground-android/|tokens/|registry/(compose-api-classification|native-consumer-evidence|native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$|scripts/(check-approved-release-revision(\.test)?|check-compose-api-classification|check-coordinated-release-revision(\.test)?|check-graduated-release-revision(\.test)?|check-maven-release-artifacts(\.test)?|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(release-canary|verify-native-release)\.yml$)' <<< "$changed_files"; then
             echo "compose=true" >> "$GITHUB_OUTPUT"
           else
             echo "compose=false" >> "$GITHUB_OUTPUT"
@@ -97,6 +124,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
         with:
@@ -104,6 +133,26 @@ jobs:
           node-version: 22.x
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check:release-manifest
+      - run: node --test scripts/generate-release-manifest.test.mjs
+      - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline
+      - name: Enforce the Lumen 2 contract and native stable release gates
+        run: >-
+          pnpm run check:lumen-2-contract &&
+          pnpm run check:native-stability-soak &&
+          pnpm run test:native-stability-soak &&
+          pnpm run check:native-consumer-evidence &&
+          pnpm run test:native-consumer-evidence &&
+          pnpm run check:native-device-evidence &&
+          pnpm run test:native-device-evidence &&
+          pnpm run check:native-stable-readiness &&
+          pnpm run test:native-stable-readiness &&
+          pnpm run test:approved-release-revision &&
+          pnpm run test:coordinated-release-revision &&
+          pnpm run check:graduated-release-revision &&
+          pnpm run test:graduated-release-revision &&
+          pnpm run test:maven-release-artifacts &&
+          pnpm run test:npm-release-provenance &&
+          pnpm run test:v2-release-workflows
       - run: pnpm run check:playground-eas-version && pnpm run test:playground-eas-version
       - run: pnpm run check:react-native-peer-docs && pnpm run test:react-native-peer-docs
       - run: pnpm run build
@@ -130,7 +179,7 @@ jobs:
       - run: swift test
       - run: pnpm run check:swift-source-compatibility
       - name: Check every target-specific Swift public API
-        run: node scripts/check-swift-api-baseline.mjs
+        run: pnpm run check:swift-api-baseline
       - run: swift build --package-path apps/playground-apple
       - name: Resolve a clean consumer from a tagged Swift package candidate
         run: pnpm run check:swift-package-candidate

@@ -13,15 +13,30 @@ import {
   LumenCardElement
 } from './components/card.js'
 import {
+  defineLumenFoundations,
+  LumenCardContentElement,
+  LumenContainerElement,
+  LumenGridElement,
+  LumenStackElement,
+  LumenVisuallyHiddenElement
+} from './components/foundations.js'
+import {
   LumenBadgeElement as CatalogBadgeElement,
   LumenButtonElement as CatalogButtonElement,
+  LumenCardContentElement as CatalogCardContentElement,
   LumenCardElement as CatalogCardElement,
-  LumenElement } from './define.js'
+  LumenContainerElement as CatalogContainerElement,
+  LumenElement,
+  LumenGridElement as CatalogGridElement,
+  LumenStackElement as CatalogStackElement,
+  LumenVisuallyHiddenElement as CatalogVisuallyHiddenElement
+} from './define.js'
 
 beforeAll(() => {
   defineLumenBadge()
   defineLumenButton()
   defineLumenCard()
+  defineLumenFoundations()
 })
 
 describe('granular element entrypoints', () => {
@@ -29,6 +44,11 @@ describe('granular element entrypoints', () => {
     expect(LumenBadgeElement).toBe(CatalogBadgeElement)
     expect(LumenButtonElement).toBe(CatalogButtonElement)
     expect(LumenCardElement).toBe(CatalogCardElement)
+    expect(LumenCardContentElement).toBe(CatalogCardContentElement)
+    expect(LumenContainerElement).toBe(CatalogContainerElement)
+    expect(LumenGridElement).toBe(CatalogGridElement)
+    expect(LumenStackElement).toBe(CatalogStackElement)
+    expect(LumenVisuallyHiddenElement).toBe(CatalogVisuallyHiddenElement)
   })
 
   test('register independently and remain idempotent', () => {
@@ -44,13 +64,29 @@ describe('granular element entrypoints', () => {
     defineLumenButton(registry)
     defineLumenCard(registry)
     defineLumenCard(registry)
+    defineLumenFoundations(registry)
 
     expect([...constructors.keys()]).toEqual([
       'lumen-badge',
       'lumen-button',
-      'lumen-card'
+      'lumen-card',
+      'lumen-card-content',
+      'lumen-card-description',
+      'lumen-card-footer',
+      'lumen-card-header',
+      'lumen-card-title',
+      'lumen-container',
+      'lumen-direction',
+      'lumen-grid',
+      'lumen-label',
+      'lumen-separator',
+      'lumen-skeleton',
+      'lumen-spinner',
+      'lumen-stack',
+      'lumen-typography',
+      'lumen-visually-hidden'
     ])
-    expect(registry.define).toHaveBeenCalledTimes(3)
+    expect(registry.define).toHaveBeenCalledTimes(18)
   })
 
   test('applies defaults and responds to styling attributes', () => {

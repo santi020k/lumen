@@ -1,10 +1,15 @@
 # LumenUI for SwiftUI
 
-> **Beta:** This package is ready for testing and early production adoption. Its public API may
-> evolve as it is validated in real applications; review release notes when upgrading.
+> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current package
+> reference remains a release candidate until publication, physical-device, and consumer-soak gates complete.
 
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
+
+Widget extensions that only need semantic presentation should link the separate `LumenWidgetUI`
+product documented in [`packages/swift-widget`](../swift-widget). It avoids linking the complete
+application component catalog and keeps timelines, App Intents, deep links, and backgrounds owned
+by the widget target.
 
 Maintainers can prove semantic-tag resolution, clean consumer builds for every declared Apple
 platform, resource availability, and license-notice presence from a disposable candidate repository
@@ -78,6 +83,31 @@ struct AppRoot: View {
     }
 }
 ```
+
+## Runtime and localized text
+
+String literals in existing component initializers continue to use SwiftUI's native localization
+key behavior. When copy is chosen at runtime, use `LumenTextContent` to state whether SwiftUI should
+resolve a localization key or resource, or render an application-resolved string verbatim:
+
+```swift
+LumenText(.localized(LocalizedStringResource("welcome.title")), variant: .title)
+LumenText(.verbatim(profile.displayName))
+
+LumenTextarea(
+    .verbatim(copy.noteLabel),
+    text: $note,
+    description: .verbatim(copy.noteGuidance),
+    errorMessage: note.isEmpty ? .verbatim(copy.noteRequired) : nil
+)
+
+LumenButton(.verbatim(copy.saveAction), action: save)
+```
+
+`LumenText`, `LumenBadge`, `LumenSpinner`, text buttons, `LumenTextField`, `LumenTextarea`, and
+`LumenFieldGroup` accept the contract where runtime bridges are commonly needed. Locale selection,
+translation dictionaries, and persistence remain application-owned; changing the SwiftUI locale
+environment or application copy state updates mounted views normally.
 
 Applications can construct `LumenColorPalette` directly when they already own light and dark
 product palettes. If a stored System/Light/Dark preference is application-owned, inject the chosen
@@ -181,9 +211,10 @@ watchOS targets use a focused at-a-glance tier instead of the full phone catalog
 Always On policy, complications, WidgetKit timelines, notifications, haptics, synchronization, and
 health or safety decisions in the application.
 
-The same component APIs work in iOS and macOS targets. Lumen automatically uses touch-friendly
-control dimensions on iPhone and iPad, and compact pointer-friendly dimensions on Mac. Shared views
-normally need no platform checks:
+The same component APIs work in iOS, macOS, and visionOS targets. Lumen automatically uses
+touch-friendly dimensions on iPhone and iPad, compact pointer-friendly dimensions on Mac, and
+regular native SwiftUI dimensions for spatial interfaces. Shared views normally need no platform
+checks:
 
 ```swift
 @State private var phone = LumenPhoneNumber.empty(
@@ -194,7 +225,7 @@ LumenPhoneInput("Hospital or OB phone number", value: $phone)
 ```
 
 The phone component uses localized country metadata, as-you-type formatting, and exposes E.164 only
-for valid numbers. It is available on iOS and macOS, not watchOS or tvOS.
+for valid numbers. It is available on iOS, macOS, and visionOS, not watchOS or tvOS.
 
 ```swift
 struct AccountActions: View {
@@ -276,5 +307,5 @@ pnpm run check:swift-api-baseline
 
 After an intentional API change, run `pnpm run generate:swift-api-baseline`, review the normalized
 declaration diff, and move every new entry from `unclassified` into `supported`, `experimental`, or
-`deprecated`. The checker also builds macOS, iOS, tvOS, and watchOS, so platform-conditional source
+`deprecated`. The checker also builds macOS, iOS, tvOS, visionOS, and watchOS, so platform-conditional source
 cannot bypass the inventory.

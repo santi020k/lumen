@@ -18,11 +18,16 @@ const captureByKey = new Map(
   captures.map(capture => [`${capture.platform}:${capture.slug}`, capture] as const)
 )
 
+export const findNativeComponentCapture = (
+  platform: NativePlatformId,
+  slug: string
+): NativeComponentCapture | undefined => captureByKey.get(`${platform}:${slug}`)
+
 export const getNativeComponentCapture = (
   platform: NativePlatformId,
   slug: string
 ): NativeComponentCapture => {
-  const capture = captureByKey.get(`${platform}:${slug}`)
+  const capture = findNativeComponentCapture(platform, slug)
 
   if (!capture) {
     throw new Error(`Missing native component capture for ${platform}/${slug}`)

@@ -17,7 +17,6 @@ import {
   exportThemeFigmaVariables,
   formatLumenLanguageLabel,
   getLumenLocalePair,
-  getLumenPhoneCountry,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
   type LumenLocaleOption,
@@ -27,7 +26,6 @@ import {
   type LumenThemeTokens,
   lumenTokenNames,
   normalizeLumenLocales,
-  resolveLumenPhoneNumber,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
 /* eslint-disable complexity */
@@ -74,74 +72,6 @@ const formControlSelector = [
   'select',
   'textarea'
 ].join(',')
-
-const phoneInputSelector = '[data-ui-phone-input]'
-
-const initPhoneInputs = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>(phoneInputSelector)) {
-    if (root.dataset.uiPhoneBound === 'true') continue
-
-    const countrySelect = root.querySelector<HTMLSelectElement>('.ui-phone-input__country')
-    const numberInput = root.querySelector<HTMLInputElement>('.ui-phone-input__number')
-
-    if (!countrySelect || !numberInput) continue
-
-    root.dataset.uiPhoneBound = 'true'
-
-    const locale = root.lang || document.documentElement.lang || undefined
-    const phoneOptions = locale ? { locale } : {}
-
-    const commit = (): void => {
-      const selectedOption = countrySelect.selectedOptions[0]
-      const regionCode = selectedOption?.dataset.region ?? countrySelect.value
-      const country = getLumenPhoneCountry(regionCode, phoneOptions)
-
-      if (!country) return
-
-      const detectedPhoneNumber = resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)
-
-      const detectedCountryIsAllowed = Array.from(countrySelect.options).some(option => (
-        option.value === detectedPhoneNumber.country.regionCode
-      ))
-
-      const phoneNumber = detectedCountryIsAllowed ?
-        detectedPhoneNumber :
-        resolveLumenPhoneNumber(
-          country,
-          detectedPhoneNumber.nationalNumber.startsWith('+') ?
-            detectedPhoneNumber.nationalNumber.slice(1) :
-            detectedPhoneNumber.nationalNumber,
-          phoneOptions
-        )
-
-      const hasInput = phoneNumber.nationalNumber.length > 0
-      const invalidMessage = root.dataset.invalidNumberMessage ?? 'Enter a complete phone number.'
-
-      numberInput.value = phoneNumber.nationalNumber
-
-      countrySelect.value = phoneNumber.country.regionCode
-
-      numberInput.setCustomValidity(hasInput && !phoneNumber.isValid ? invalidMessage : '')
-
-      numberInput.setAttribute('aria-invalid', String(hasInput && !phoneNumber.isValid))
-
-      root.dataset.e164 = phoneNumber.e164 ?? ''
-
-      root.dataset.valid = String(phoneNumber.isValid)
-
-      root.dispatchEvent(new CustomEvent('ui:phone-change', {
-        bubbles: true,
-        detail: phoneNumber
-      }))
-    }
-
-    countrySelect.addEventListener('change', commit)
-
-    numberInput.addEventListener('input', commit)
-
-    if (numberInput.value) commit()
-  }
-}
 
 const validityMessageAttributes = [
   ['valueMissing', 'data-error-required'],
@@ -5639,25 +5569,31 @@ const initTreeSelects = (scope: ParentNode): void => {
 }
 
 const initOptionalControllers = (scope: ParentNode): void => {
-  if (!scope.querySelector(
-    '[data-ui-back-to-top], [data-ui-scroll-reveal], [data-ui-reveal-group], [data-ui-animated-number]'
-  )) return
-
-  import('./controllers/motion.js')
-    .then(({ initMotionControllers }) => initMotionControllers(scope))
-    .catch(error => {
-      window.setTimeout(() => {
-        throw error
-      })
+  const reportError = (error: unknown): void => {
+    window.setTimeout(() => {
+      throw error
     })
+  }
+
+  if (scope.querySelector(
+    '[data-ui-back-to-top], [data-ui-scroll-reveal], [data-ui-reveal-group], [data-ui-animated-number]'
+  )) {
+    import('./controllers/motion.js')
+      .then(({ initMotionControllers }) => initMotionControllers(scope))
+      .catch(reportError)
+  }
+
+  if (scope.querySelector('[data-ui-phone-input]')) {
+    import('./controllers/phone-input.js')
+      .then(({ initPhoneInputControllers }) => initPhoneInputControllers(scope))
+      .catch(reportError)
+  }
 }
 
 const initUiPrimitives = (scope: ParentNode = document): void => {
   initDialogs(scope)
 
   initFields(scope)
-
-  initPhoneInputs(scope)
 
   initForms(scope)
 

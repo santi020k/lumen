@@ -28,6 +28,7 @@ const createIteration = (ledger, index) => ({
       compose: `https://github.com/example/compose/releases/${index + 1}`,
       reactNative: `https://github.com/example/react-native/releases/${index + 1}`,
       swiftUI: `https://github.com/example/swift/releases/${index + 1}`,
+      swiftWidget: `https://github.com/example/swift-widget/releases/${index + 1}`,
       wear: `https://github.com/example/wear/releases/${index + 1}`
     }
   }
@@ -82,6 +83,26 @@ test('rejects a consumer record without an immutable HTTPS URL', async () => {
   assert.equal(result.status, 1)
 
   assert.match(result.stderr, /requires an immutable HTTPS consumer evidence URL/)
+})
+
+test('rejects a soak ledger that omits the WidgetKit API baseline', async () => {
+  const result = await runLedger(ledger => {
+    delete ledger.baselines.swiftWidget
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /Soak ledger must cover every native API baseline/)
+})
+
+test('rejects an iteration without WidgetKit consumer evidence', async () => {
+  const result = await runLedger(ledger => {
+    delete ledger.iterations[0].evidence.consumerValidation.swiftWidget
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must record every real-consumer validation surface/)
 })
 
 test('rejects a release verification URL outside the repository workflow', async () => {

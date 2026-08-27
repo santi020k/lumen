@@ -52,7 +52,7 @@ const resolveControlOpacity = (enabled: boolean, pressed: boolean): number => {
   return pressed ? 0.82 : 1
 }
 
-export const LumenPicker = <Value extends number | string,>({
+const LumenPickerControl = <Value extends number | string,>({
   enabled = true,
   label,
   onValueChange,
@@ -64,9 +64,10 @@ export const LumenPicker = <Value extends number | string,>({
 }: LumenPickerProps<Value>): ReactElement => {
   const theme = useLumenTheme()
   const [expanded, setExpanded] = useState(false)
+  const controlEnabled = enabled && options.length > 0
   const selected = options.find(option => option.value === value)
   const selectedLabel = selected?.label ?? String(value)
-  const menuVisible = enabled && expanded
+  const menuVisible = controlEnabled && expanded
 
   return (
     <View ref={ref} {...props} style={[{ gap: theme.spacing.xs }, style]}>
@@ -82,9 +83,9 @@ export const LumenPicker = <Value extends number | string,>({
       <Pressable
         accessibilityLabel={label}
         accessibilityRole="combobox"
-        accessibilityState={{ disabled: !enabled, expanded: menuVisible }}
+        accessibilityState={{ disabled: !controlEnabled, expanded: menuVisible }}
         accessibilityValue={{ text: selectedLabel }}
-        disabled={!enabled}
+        disabled={!controlEnabled}
         onPress={() => {
           setExpanded(current => !current)
         }}
@@ -97,7 +98,7 @@ export const LumenPicker = <Value extends number | string,>({
           flexDirection: 'row',
           justifyContent: 'space-between',
           minHeight: 44,
-          opacity: resolveControlOpacity(enabled, pressed),
+          opacity: resolveControlOpacity(controlEnabled, pressed),
           paddingHorizontal: theme.spacing.md,
           paddingVertical: theme.spacing.sm
         })}
@@ -158,6 +159,15 @@ export const LumenPicker = <Value extends number | string,>({
     </View>
   )
 }
+
+export const LumenPicker = <Value extends number | string,>(
+  props: LumenPickerProps<Value>
+): ReactElement => (
+  <LumenPickerControl
+    key={String((props.enabled ?? true) && props.options.length > 0)}
+    {...props}
+  />
+)
 
 export interface LumenSliderProps extends Omit<ViewProps, 'children'> {
   enabled?: boolean

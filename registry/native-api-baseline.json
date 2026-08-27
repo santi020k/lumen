@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "adapters": {
     "reactNative": {
-      "maturity": "beta",
+      "maturity": "stable",
       "entrypoint": "packages/react-native/src/index.ts",
       "supported": [
         "LumenAlert",
@@ -120,6 +120,11 @@
         "LumenNavigationBarVisibilityOptions",
         "LumenNavigationItem",
         "LumenNavigationVisibilityState",
+        "LumenPhoneCountry",
+        "LumenPhoneCountryOptions",
+        "LumenPhoneInput",
+        "LumenPhoneInputProps",
+        "LumenPhoneNumber",
         "LumenPicker",
         "LumenPickerOption",
         "LumenPickerProps",
@@ -197,9 +202,12 @@
         "LumenToastRecord",
         "LumenToggle",
         "LumenToggleProps",
+        "createEmptyLumenPhoneNumber",
         "createLumenNavigationVisibilityState",
         "createLumenTheme",
         "getLumenIconGraphic",
+        "getLumenPhoneCountries",
+        "getLumenPhoneCountry",
         "lumenChartColorTokens",
         "lumenChartCssColorTokens",
         "lumenChartOpacities",
@@ -224,6 +232,7 @@
         "resolveLumenMenuPosition",
         "resolveLumenNavigationBadge",
         "resolveLumenNavigationVisibility",
+        "resolveLumenPhoneNumber",
         "useDialog",
         "useDisclosure",
         "useLanguageToggle",
@@ -234,21 +243,11 @@
         "useThemeToggle",
         "useToast"
       ],
-      "experimental": [
-        "LumenPhoneCountry",
-        "LumenPhoneCountryOptions",
-        "LumenPhoneInput",
-        "LumenPhoneInputProps",
-        "LumenPhoneNumber",
-        "createEmptyLumenPhoneNumber",
-        "getLumenPhoneCountries",
-        "getLumenPhoneCountry",
-        "resolveLumenPhoneNumber"
-      ],
+      "experimental": [],
       "deprecated": [],
       "subpaths": {
         "./datetime": {
-          "maturity": "beta",
+          "maturity": "stable",
           "entrypoint": "packages/react-native/src/datetime.ts",
           "supported": [
             "LumenDateField",

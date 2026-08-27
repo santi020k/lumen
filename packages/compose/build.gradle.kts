@@ -167,7 +167,8 @@ publishing {
                 scm {
                     connection.set("scm:git:https://github.com/santi020k/lumen.git")
                     developerConnection.set("scm:git:ssh://git@github.com/santi020k/lumen.git")
-                    url.set("https://github.com/santi020k/lumen")
+                    tag.set("compose-v$lumenComposeVersion")
+                    url.set("https://github.com/santi020k/lumen/tree/compose-v$lumenComposeVersion")
                 }
             }
         }
@@ -220,6 +221,14 @@ tasks.register("verifyMavenPublication") {
         listOf("<name>", "<description>", "<licenses>", "<developers>", "<scm>").forEach { element ->
             require(element in pom) { "Maven publication POM is missing $element metadata." }
         }
+        val expectedScmTag = "compose-v$lumenComposeVersion"
+
+        require("<tag>$expectedScmTag</tag>" in pom) {
+            "Maven publication POM is not bound to $expectedScmTag."
+        }
+        require("<url>https://github.com/santi020k/lumen/tree/$expectedScmTag</url>" in pom) {
+            "Maven publication POM does not browse the immutable release tag."
+        }
 
         val wearPrefix = "lumen-compose-wear-$lumenComposeVersion"
         val wearDirectory = layout.buildDirectory
@@ -236,6 +245,15 @@ tasks.register("verifyMavenPublication") {
 
         require(missingWearArtifacts.isEmpty()) {
             "Lumen Wear publication is missing: ${missingWearArtifacts.joinToString()}"
+        }
+
+        val wearPom = wearDirectory.resolve("$wearPrefix.pom").readText()
+
+        require("<tag>$expectedScmTag</tag>" in wearPom) {
+            "Lumen Wear publication POM is not bound to $expectedScmTag."
+        }
+        require("<url>https://github.com/santi020k/lumen/tree/$expectedScmTag</url>" in wearPom) {
+            "Lumen Wear publication POM does not browse the immutable release tag."
         }
     }
 }

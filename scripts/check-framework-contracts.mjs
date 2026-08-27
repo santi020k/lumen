@@ -23,7 +23,8 @@ const [
   Promise.all([
     'badge',
     'button',
-    'card'
+    'card',
+    'foundations'
   ].map(name => readFile(
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'

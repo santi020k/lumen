@@ -16,7 +16,12 @@ primary destinations are Home, Examples, Components, and Settings:
   platform and version details, documentation, privacy, and support.
 
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press
-`Command-R`. Simulator builds do not require an Apple Developer account.
+`Command-R`. Simulator builds do not require an Apple Developer account. The iOS application embeds
+the `LumenWidgetPlayground` extension, a small WidgetKit host for the public `LumenWidgetUI` product.
+After installing the application, add **Lumen Widget** from the Home Screen or Lock Screen widget
+gallery to verify full-color, accented, increased-contrast, and accessibility-text rendering on the
+actual device. The widget keeps its timeline, supported families, and container background in the
+playground rather than moving product policy into Lumen.
 
 Run the macOS gallery from the repository root as a Swift Package executable:
 

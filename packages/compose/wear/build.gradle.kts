@@ -7,7 +7,8 @@ plugins {
 }
 
 group = "com.santi020k"
-version = providers.gradleProperty("lumenComposeVersion").get()
+val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion").get()
+version = lumenComposeVersion
 
 android {
     namespace = "com.santi020k.lumen.wear"
@@ -94,7 +95,8 @@ publishing {
                 scm {
                     connection.set("scm:git:https://github.com/santi020k/lumen.git")
                     developerConnection.set("scm:git:ssh://git@github.com/santi020k/lumen.git")
-                    url.set("https://github.com/santi020k/lumen")
+                    tag.set("compose-v$lumenComposeVersion")
+                    url.set("https://github.com/santi020k/lumen/tree/compose-v$lumenComposeVersion")
                 }
             }
         }

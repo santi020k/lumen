@@ -1,5 +1,6 @@
 import { act, type ReactElement } from 'react'
 
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { getLumenPhoneCountry } from '@santi020k/lumen-core'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
@@ -12,8 +13,11 @@ import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
+import { LumenPicker } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
+
+const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 
 vi.mock('react-native', async () => {
   const { createElement } = await import('react')
@@ -25,7 +29,7 @@ vi.mock('react-native', async () => {
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
     Modal: hostComponent('Modal'),
-    Platform: { OS: 'ios' },
+    Platform: nativePlatform,
     Pressable: hostComponent('Pressable'),
     Share: { share: () => Promise.resolve({ action: 'sharedAction' }) },
     Switch: hostComponent('Switch'),
@@ -44,7 +48,7 @@ vi.mock('@react-native-community/datetimepicker', async () => {
   )
 
   return {
-    DateTimePickerAndroid: { open: vi.fn() },
+    DateTimePickerAndroid: { dismiss: vi.fn(), open: vi.fn() },
     default: NativeDatePicker
   }
 })
@@ -115,6 +119,18 @@ const findByAccessibilityLabel = (root: Root, label: string): TestInstance => {
   const match = matches[0]
 
   if (!match) throw new Error(`Expected one accessibility node labeled ${label}.`)
+
+  return match
+}
+
+const findHostComponent = (root: Root, type: string): TestInstance => {
+  const matches = root.container.queryAll(instance => instance.type === type)
+
+  expect(matches).toHaveLength(1)
+
+  const match = matches[0]
+
+  if (!match) throw new Error(`Expected one ${type} host component.`)
 
   return match
 }
@@ -320,6 +336,228 @@ describe('Lumen React Native component behavior', () => {
       disabled: true,
       expanded: false
     })
+  })
+
+  test('generic picker disables empty options and does not reopen after disabling', async () => {
+    const onValueChange = vi.fn<(value: string) => void>()
+    const root = await renderNative(
+      <LumenPicker
+        label="Workspace"
+        onValueChange={onValueChange}
+        options={[]}
+        value="none"
+      />
+    )
+    let trigger = findByAccessibilityLabel(root, 'Workspace')
+
+    expect(readProp(trigger, 'disabled')).toBe(true)
+    expect(readProp(trigger, 'accessibilityState')).toEqual({
+      disabled: true,
+      expanded: false
+    })
+
+    await act(async () => {
+      root.render(
+        <LumenProvider scheme="light">
+          <LumenPicker
+            label="Workspace"
+            onValueChange={onValueChange}
+            options={[{ label: 'Design', value: 'design' }]}
+            value="design"
+          />
+        </LumenProvider>
+      )
+      await Promise.resolve()
+    })
+
+    trigger = findByAccessibilityLabel(root, 'Workspace')
+
+    await act(async () => {
+      callAction(readProp(trigger, 'onPress'), 'Picker is missing its native press action.')
+      await Promise.resolve()
+    })
+
+    expect(findByAccessibilityRole(root, 'menu')).toBeDefined()
+
+    await act(async () => {
+      root.render(
+        <LumenProvider scheme="light">
+          <LumenPicker
+            enabled={false}
+            label="Workspace"
+            onValueChange={onValueChange}
+            options={[{ label: 'Design', value: 'design' }]}
+            value="design"
+          />
+        </LumenProvider>
+      )
+      await Promise.resolve()
+    })
+
+    expect(root.container.queryAll(
+      instance => readProp(instance, 'accessibilityRole') === 'menu'
+    )).toHaveLength(0)
+
+    await act(async () => {
+      root.render(
+        <LumenProvider scheme="light">
+          <LumenPicker
+            label="Workspace"
+            onValueChange={onValueChange}
+            options={[{ label: 'Design', value: 'design' }]}
+            value="design"
+          />
+        </LumenProvider>
+      )
+      await Promise.resolve()
+    })
+
+    expect(root.container.queryAll(
+      instance => readProp(instance, 'accessibilityRole') === 'menu'
+    )).toHaveLength(0)
+  })
+
+  test('date picker does not reopen after the field is disabled and re-enabled', async () => {
+    const root = await renderNative(
+      <LumenDateField label="Birthday" onValueChange={() => {}} value={null} />
+    )
+    const trigger = findByAccessibilityLabel(root, 'Birthday, Select a date')
+
+    await act(async () => {
+      callAction(readProp(trigger, 'onPress'), 'Date field is missing its native press action.')
+      await Promise.resolve()
+    })
+
+    expect(findHostComponent(root, 'NativeDatePicker')).toBeDefined()
+
+    await act(async () => {
+      root.render(
+        <LumenProvider scheme="light">
+          <LumenDateField enabled={false} label="Birthday" onValueChange={() => {}} value={null} />
+        </LumenProvider>
+      )
+      await Promise.resolve()
+    })
+
+    expect(root.container.queryAll(instance => instance.type === 'NativeDatePicker')).toHaveLength(0)
+
+    await act(async () => {
+      root.render(
+        <LumenProvider scheme="light">
+          <LumenDateField label="Birthday" onValueChange={() => {}} value={null} />
+        </LumenProvider>
+      )
+      await Promise.resolve()
+    })
+
+    expect(root.container.queryAll(instance => instance.type === 'NativeDatePicker')).toHaveLength(0)
+  })
+
+  test('disabling an Android date field dismisses its imperative native dialog', async () => {
+    nativePlatform.OS = 'android'
+
+    try {
+      const root = await renderNative(
+        <LumenDateField label="Birthday" onValueChange={() => {}} value={null} />
+      )
+      const trigger = findByAccessibilityLabel(root, 'Birthday, Select a date')
+
+      await act(async () => {
+        callAction(readProp(trigger, 'onPress'), 'Date field is missing its native press action.')
+        await Promise.resolve()
+      })
+
+      expect(DateTimePickerAndroid.open).toHaveBeenCalledOnce()
+
+      await act(async () => {
+        root.render(
+          <LumenProvider scheme="light">
+            <LumenDateField enabled={false} label="Birthday" onValueChange={() => {}} value={null} />
+          </LumenProvider>
+        )
+        await Promise.resolve()
+      })
+
+      expect(DateTimePickerAndroid.dismiss).toHaveBeenCalledWith('date')
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test('phone picker closes and clears its query when the input becomes disabled', async () => {
+    const country = getLumenPhoneCountry('US')
+
+    expect(country).toBeDefined()
+
+    if (!country) return
+
+    const value = resolveLumenPhoneInputValue([country], country, '', {})
+    const renderPhone = (enabled: boolean): ReactElement => (
+      <LumenProvider scheme="light">
+        <LumenPhoneInput
+          countries={[country]}
+          enabled={enabled}
+          label="Phone"
+          onValueChange={() => {}}
+          value={value}
+        />
+      </LumenProvider>
+    )
+    const root = await renderNative(
+      <LumenPhoneInput
+        countries={[country]}
+        label="Phone"
+        onValueChange={() => {}}
+        value={value}
+      />
+    )
+    const selector = findByAccessibilityLabel(root, 'Country code, United States, +1')
+
+    await act(async () => {
+      callAction(readProp(selector, 'onPress'), 'Country selector is missing its native press action.')
+      await Promise.resolve()
+    })
+
+    expect(readProp(findHostComponent(root, 'Modal'), 'visible')).toBe(true)
+    expect(readProp(findByAccessibilityLabel(root, 'Search countries'), 'editable')).toBe(true)
+
+    await act(async () => {
+      const onChangeText = readProp(findByAccessibilityLabel(root, 'Search countries'), 'onChangeText')
+
+      if (typeof onChangeText !== 'function') throw new Error('Country search is missing its change action.')
+
+      Reflect.apply(onChangeText, undefined, ['united'])
+      await Promise.resolve()
+    })
+
+    await act(async () => {
+      root.render(renderPhone(false))
+      await Promise.resolve()
+    })
+
+    expect(readProp(findHostComponent(root, 'Modal'), 'visible')).toBe(false)
+    expect(readProp(findByAccessibilityLabel(root, 'Country code, United States, +1'), 'accessibilityState'))
+      .toEqual({ disabled: true, expanded: false })
+
+    await act(async () => {
+      root.render(renderPhone(true))
+      await Promise.resolve()
+    })
+
+    expect(readProp(findByAccessibilityLabel(root, 'Country code, United States, +1'), 'accessibilityState'))
+      .toEqual({ disabled: false, expanded: false })
+
+    const reopenedSelector = findByAccessibilityLabel(root, 'Country code, United States, +1')
+
+    await act(async () => {
+      callAction(
+        readProp(reopenedSelector, 'onPress'),
+        'Re-enabled country selector is missing its native press action.'
+      )
+      await Promise.resolve()
+    })
+
+    expect(readProp(findByAccessibilityLabel(root, 'Search countries'), 'value')).toBe('')
   })
 
   test('chip removal exposes the independent action disabled state', async () => {

@@ -27,6 +27,7 @@ const expectedBaselines = {
   composeClassification: 'registry/compose-api-classification.json',
   reactNative: 'registry/native-api-baseline.json',
   swiftUI: 'registry/swift-api-baseline.json',
+  swiftWidget: 'registry/swift-widget-api-baseline.json',
   wear: 'packages/compose/wear/api/wear.api',
   wearClassification: 'registry/wear-api-classification.json'
 }
@@ -187,7 +188,7 @@ for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
 
   assert.deepEqual(
     Object.keys(iteration.evidence.consumerValidation).sort(),
-    ['compose', 'reactNative', 'swiftUI', 'wear'],
+    ['compose', 'reactNative', 'swiftUI', 'swiftWidget', 'wear'],
     `${iteration.id} must record every real-consumer validation surface`
   )
 

@@ -72,6 +72,38 @@ import {
   lumenCardElementConfig
 } from './components/card.js'
 import {
+  LumenCardContentElement as GranularLumenCardContentElement,
+  lumenCardContentElementConfig,
+  LumenCardDescriptionElement as GranularLumenCardDescriptionElement,
+  lumenCardDescriptionElementConfig,
+  LumenCardFooterElement as GranularLumenCardFooterElement,
+  lumenCardFooterElementConfig,
+  LumenCardHeaderElement as GranularLumenCardHeaderElement,
+  lumenCardHeaderElementConfig,
+  LumenCardTitleElement as GranularLumenCardTitleElement,
+  lumenCardTitleElementConfig,
+  LumenContainerElement as GranularLumenContainerElement,
+  lumenContainerElementConfig,
+  LumenDirectionElement as GranularLumenDirectionElement,
+  lumenDirectionElementConfig,
+  LumenGridElement as GranularLumenGridElement,
+  lumenGridElementConfig,
+  LumenLabelElement as GranularLumenLabelElement,
+  lumenLabelElementConfig,
+  LumenSeparatorElement as GranularLumenSeparatorElement,
+  lumenSeparatorElementConfig,
+  LumenSkeletonElement as GranularLumenSkeletonElement,
+  lumenSkeletonElementConfig,
+  LumenSpinnerElement as GranularLumenSpinnerElement,
+  lumenSpinnerElementConfig,
+  LumenStackElement as GranularLumenStackElement,
+  lumenStackElementConfig,
+  LumenTypographyElement as GranularLumenTypographyElement,
+  lumenTypographyElementConfig,
+  LumenVisuallyHiddenElement as GranularLumenVisuallyHiddenElement,
+  lumenVisuallyHiddenElementConfig
+} from './components/foundations.js'
+import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
   type LumenElementConfig,
@@ -321,31 +353,11 @@ const elementConfigs = {
   },
   Callout: { baseClassName: 'ui-callout', tagName: 'lumen-callout' },
   Card: lumenCardElementConfig,
-  CardContent: {
-    baseClassName: 'ui-card__content',
-    defaults: { 'data-slot': 'card-content' },
-    tagName: 'lumen-card-content'
-  },
-  CardDescription: {
-    baseClassName: 'ui-card__description',
-    defaults: { 'data-slot': 'card-description' },
-    tagName: 'lumen-card-description'
-  },
-  CardFooter: {
-    baseClassName: 'ui-card__footer',
-    defaults: { 'data-slot': 'card-footer' },
-    tagName: 'lumen-card-footer'
-  },
-  CardHeader: {
-    baseClassName: 'ui-card__header',
-    defaults: { 'data-slot': 'card-header' },
-    tagName: 'lumen-card-header'
-  },
-  CardTitle: {
-    baseClassName: 'ui-card__title',
-    defaults: { 'data-slot': 'card-title' },
-    tagName: 'lumen-card-title'
-  },
+  CardContent: lumenCardContentElementConfig,
+  CardDescription: lumenCardDescriptionElementConfig,
+  CardFooter: lumenCardFooterElementConfig,
+  CardHeader: lumenCardHeaderElementConfig,
+  CardTitle: lumenCardTitleElementConfig,
   Carousel: {
     attributeClasses: glassAttributeClasses('ui-carousel--glass'),
     baseClassName: 'ui-carousel',
@@ -418,19 +430,7 @@ const elementConfigs = {
     defaults: { 'data-ui-combobox': '' },
     tagName: 'lumen-combobox'
   },
-  Container: {
-    attributeClasses: {
-      size: {
-        full: 'ui-container--full',
-        lg: 'ui-container--lg',
-        md: 'ui-container--md',
-        sm: 'ui-container--sm'
-      }
-    },
-    baseClassName: 'ui-container',
-    defaults: { 'data-ui-container': '', size: 'lg' },
-    tagName: 'lumen-container'
-  },
+  Container: lumenContainerElementConfig,
   CopyButton: {
     baseClassName: 'ui-button ui-button--outline ui-copy-button',
     defaults: {
@@ -503,11 +503,7 @@ const elementConfigs = {
     defaults: { 'data-ui-dialog': '', layout: 'centered' },
     tagName: 'lumen-dialog'
   },
-  Direction: {
-    baseClassName: 'ui-direction',
-    defaults: { dir: 'ltr' },
-    tagName: 'lumen-direction'
-  },
+  Direction: lumenDirectionElementConfig,
   Drawer: {
     attributeClasses: {
       glass: {
@@ -591,29 +587,7 @@ const elementConfigs = {
     baseClassName: 'ui-formatted-date',
     tagName: 'lumen-formatted-date'
   },
-  Grid: {
-    attributeClasses: {
-      columns: {
-        1: 'ui-grid--columns-1',
-        2: 'ui-grid--columns-2',
-        3: 'ui-grid--columns-3',
-        4: 'ui-grid--columns-4',
-        6: 'ui-grid--columns-6',
-        12: 'ui-grid--columns-12',
-        auto: 'ui-grid--columns-auto'
-      },
-      gap: {
-        lg: 'ui-grid--gap-lg',
-        md: 'ui-grid--gap-md',
-        none: 'ui-grid--gap-none',
-        sm: 'ui-grid--gap-sm',
-        xl: 'ui-grid--gap-xl'
-      }
-    },
-    baseClassName: 'ui-grid',
-    defaults: { 'data-ui-grid': '', columns: 'auto', gap: 'md' },
-    tagName: 'lumen-grid'
-  },
+  Grid: lumenGridElementConfig,
   HoverCard: {
     attributeClasses: {
       glass: {
@@ -701,7 +675,7 @@ const elementConfigs = {
     tagName: 'lumen-kanban-column'
   },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
-  Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
+  Label: lumenLabelElementConfig,
   Link: {
     attributeClasses: { variant: { inherit: 'ui-link--inherit' } },
     baseClassName: 'ui-link',
@@ -917,17 +891,7 @@ const elementConfigs = {
     baseClassName: 'ui-select',
     tagName: 'lumen-select'
   },
-  Separator: {
-    attributeClasses: {
-      orientation: {
-        horizontal: 'ui-separator--horizontal',
-        vertical: 'ui-separator--vertical'
-      }
-    },
-    baseClassName: 'ui-separator',
-    defaults: { orientation: 'horizontal' },
-    tagName: 'lumen-separator'
-  },
+  Separator: lumenSeparatorElementConfig,
   Sheet: {
     attributeClasses: {
       glass: {
@@ -953,7 +917,7 @@ const elementConfigs = {
     defaults: { 'data-slot': 'sidebar' },
     tagName: 'lumen-sidebar'
   },
-  Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
+  Skeleton: lumenSkeletonElementConfig,
   SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' },
   Slider: {
     baseClassName: 'ui-slider',
@@ -961,7 +925,7 @@ const elementConfigs = {
     tagName: 'lumen-slider'
   },
   Sparkline: { baseClassName: 'ui-sparkline', tagName: 'lumen-sparkline' },
-  Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
+  Spinner: lumenSpinnerElementConfig,
   Switch: {
     baseClassName: 'ui-switch',
     defaults: { role: 'switch', type: 'checkbox' },
@@ -1054,18 +1018,14 @@ const elementConfigs = {
     defaults: { role: 'treegrid' },
     tagName: 'lumen-tree-grid'
   },
-  Typography: { baseClassName: 'ui-typography', tagName: 'lumen-typography' },
+  Typography: lumenTypographyElementConfig,
   VirtualList: {
     attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
     baseClassName: 'ui-virtual-list',
     defaults: { 'data-ui-virtual-list': '' },
     tagName: 'lumen-virtual-list'
   },
-  VisuallyHidden: {
-    baseClassName: 'ui-visually-hidden',
-    defaults: { 'data-ui-visually-hidden': '' },
-    tagName: 'lumen-visually-hidden'
-  },
+  VisuallyHidden: lumenVisuallyHiddenElementConfig,
   LanguageToggle: {
     baseClassName: 'ui-language-toggle',
     defaults: { 'data-ui-language-toggle': '' },
@@ -1178,24 +1138,7 @@ const elementConfigs = {
     defaults: { 'data-slot': 'stat-value' },
     tagName: 'lumen-stat-value'
   },
-  Stack: {
-    attributeClasses: {
-      direction: {
-        horizontal: 'ui-stack--horizontal',
-        vertical: 'ui-stack--vertical'
-      },
-      gap: {
-        lg: 'ui-stack--gap-lg',
-        md: 'ui-stack--gap-md',
-        none: 'ui-stack--gap-none',
-        sm: 'ui-stack--gap-sm',
-        xl: 'ui-stack--gap-xl'
-      }
-    },
-    baseClassName: 'ui-stack',
-    defaults: { 'data-ui-stack': '', direction: 'vertical', gap: 'md' },
-    tagName: 'lumen-stack'
-  },
+  Stack: lumenStackElementConfig,
   Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
   Note: {
     attributeClasses: {
@@ -10573,7 +10516,22 @@ const granularElementClasses: Partial<
 > = {
   Badge: GranularLumenBadgeElement,
   Button: GranularLumenButtonElement,
-  Card: GranularLumenCardElement
+  Card: GranularLumenCardElement,
+  CardContent: GranularLumenCardContentElement,
+  CardDescription: GranularLumenCardDescriptionElement,
+  CardFooter: GranularLumenCardFooterElement,
+  CardHeader: GranularLumenCardHeaderElement,
+  CardTitle: GranularLumenCardTitleElement,
+  Container: GranularLumenContainerElement,
+  Direction: GranularLumenDirectionElement,
+  Grid: GranularLumenGridElement,
+  Label: GranularLumenLabelElement,
+  Separator: GranularLumenSeparatorElement,
+  Skeleton: GranularLumenSkeletonElement,
+  Spinner: GranularLumenSpinnerElement,
+  Stack: GranularLumenStackElement,
+  Typography: GranularLumenTypographyElement,
+  VisuallyHidden: GranularLumenVisuallyHiddenElement
 }
 
 const elementClasses = Object.fromEntries(

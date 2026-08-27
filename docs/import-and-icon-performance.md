@@ -79,3 +79,25 @@ for the same components in this fixture. A clean application built from the pack
 imports these entrypoints through Astro and renders all three tags. Keep complete-catalog
 registration supported for the rest of the catalog and expand granular coverage only with the same
 constructor-identity, package-consumer, and measurement evidence.
+
+## August 27, 2026 foundation delivery expansion
+
+The React server entrypoint now owns 22 server-safe component and type exports, including compound
+Card composition and the layout/accessibility foundations. The package root reuses those exact
+implementations. The same Next.js measurement remains at 566,254 bytes of emitted static output for
+the server-entry scenario, versus 1,500,057 bytes for the complete client root in this run.
+
+Elements now exposes a grouped `components/foundations` implementation entrypoint for fifteen
+stateless components. The repeatable registration measurement reports 6,050 minified bytes and
+2,209 gzip bytes for the complete foundation group, while complete-catalog registration remains
+1,037,391 minified bytes and 247,678 gzip bytes.
+
+Astro now selector-loads phone normalization separately from the shared runtime. The base
+`UIPrimitives` source decreased from 163.2 KiB raw and 32.3 KiB gzip to 161.1 KiB raw and 31.8 KiB
+gzip; pages without PhoneInput do not load its controller chunk.
+
+The generated critical CSS entry is 50,116 raw bytes versus 170,526 bytes for the full standalone
+catalog, a 70.6% reduction. It retains the canonical token/base layers plus the essential forms,
+feedback, tabs, dialogs, calendar, and data-table selectors. Identical exports ship from the
+umbrella, Astro, React, and Elements packages, and `pnpm run check:critical-web-css` rejects stale or
+accidentally expanded generated output.

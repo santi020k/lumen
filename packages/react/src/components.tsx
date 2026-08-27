@@ -123,18 +123,44 @@ import {
 export {
   Badge,
   type BadgeProps,
+  Card,
+  CardContent,
+  type CardContentProps,
+  CardDescription,
+  type CardDescriptionProps,
+  CardFooter,
+  type CardFooterProps,
+  CardHeader,
+  type CardHeaderProps,
+  type CardProps,
+  CardTitle,
+  type CardTitleProps,
+  Container,
+  type ContainerProps,
+  Direction,
+  type DirectionProps,
+  Grid,
+  type GridProps,
   Input,
   type InputProps,
   Label,
   type LabelProps,
   Progress,
   type ProgressProps,
+  Separator,
+  type SeparatorProps,
   Skeleton,
   type SkeletonProps,
   Spinner,
   type SpinnerProps,
+  Stack,
+  type StackProps,
   Textarea,
-  type TextareaProps
+  type TextareaProps,
+  Typography,
+  type TypographyProps,
+  VisuallyHidden,
+  type VisuallyHiddenProps
 } from './server-components.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
@@ -145,8 +171,6 @@ type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
 
 type ButtonVariant =
   'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
-
-type CardVariant = 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
@@ -377,6 +401,25 @@ const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
     return undefined
 
   return String(cell.sortValue)
+}
+
+const compareDataTableCells = (
+  left: DataTableCell,
+  right: DataTableCell,
+  sortType: DataTableColumn['sort']
+): number => {
+  const leftValue = getDataTableSortValue(left) ?? formatDataTableCell(left)
+  const rightValue = getDataTableSortValue(right) ?? formatDataTableCell(right)
+
+  if (sortType === 'number') {
+    return Number(leftValue.replaceAll(',', '')) -
+      Number(rightValue.replaceAll(',', ''))
+  }
+
+  return leftValue.localeCompare(rightValue, undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  })
 }
 
 const getDataTableRowValue = (
@@ -798,103 +841,6 @@ export const Calendar = ({
     </div>
   )
 }
-
-export type CardProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T> & {
-    'data-variant'?: CardVariant
-    glass?: LumenGlassProp
-    variant?: CardVariant
-  }
-
-export const Card = <T extends ElementType = 'div'>({
-  as,
-  className,
-  glass = false,
-  variant = 'default',
-  ...props
-}: CardProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    className={composeClassName(
-      variant === 'muted' && 'ui-card--muted', variant === 'interactive' && 'ui-card--interactive', variant === 'unstyled' && 'ui-card--unstyled', (glass || variant === 'glass') &&
-      composeClassName('ui-card--glass', glassIntensityClass(glass)), className
-    )}
-    data-slot="card"
-    data-variant={variant}
-    {...props}
-    uiClassName="ui-card"
-  />
-)
-
-export type CardHeaderProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardHeader = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardHeaderProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-header"
-    {...props}
-    uiClassName="ui-card__header"
-  />
-)
-
-export type CardTitleProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardTitle = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardTitleProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-title"
-    {...props}
-    uiClassName="ui-card__title"
-  />
-)
-
-export type CardDescriptionProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardDescription = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardDescriptionProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-description"
-    {...props}
-    uiClassName="ui-card__description"
-  />
-)
-
-export type CardContentProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardContent = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardContentProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-content"
-    {...props}
-    uiClassName="ui-card__content"
-  />
-)
-
-export type CardFooterProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardFooter = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardFooterProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-footer"
-    {...props}
-    uiClassName="ui-card__footer"
-  />
-)
 
 export interface CarouselProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
@@ -2363,61 +2309,112 @@ export const DataTable = ({
   rows = emptyDataTableRows,
   selectable = false,
   ...props
-}: DataTableProps) => (
-  <div
-    className={composeClassName(
-      'ui-data-table', glassClass('ui-data-table', glass), className
-    )}
-    data-ui-datatable
-    data-ui-datatable-name={name}
-    data-ui-datatable-selectable={selectable ? 'true' : undefined}
-    data-ui-glass-track={glass ? true : undefined}
-    {...props}
-  >
-    {columns.length > 0 ?
-      (
-        <table>
-          <thead>
-            <tr>
-              {columns.map(column => (
-                <th
-                  data-ui-datatable-sort-type={column.sort}
-                  data-ui-datatable-sortable={
-                    column.sortable ? 'true' : undefined
-                  }
-                  key={column.key}
-                  scope="col"
-                >
-                  {column.header ?? column.label ?? column.key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr
-                data-ui-datatable-row
-                data-value={getDataTableRowValue(row, rowIndex)}
-                key={getDataTableRowValue(row, rowIndex)}
-              >
-                {columns.map(column => (
-                  <td
-                    data-sort-value={getDataTableSortValue(row[column.key])}
-                    key={column.key}
-                  >
-                    {formatDataTableCell(row[column.key])}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) :
-      (
-        children
+}: DataTableProps) => {
+  const [sort, setSort] = useState<{
+    direction: 'ascending' | 'descending'
+    key: string
+  } | null>(null)
+
+  const sortedRows = useMemo(() => {
+    if (!sort) return rows
+
+    const column = columns.find(candidate => candidate.key === sort.key)
+
+    if (!column) return rows
+
+    const direction = sort.direction === 'ascending' ? 1 : -1
+
+    return [...rows].sort((left, right) => compareDataTableCells(
+      left[column.key], right[column.key], column.sort
+    ) * direction)
+  }, [columns, rows, sort])
+
+  const toggleSort = (column: DataTableColumn): void => {
+    setSort(current => ({
+      direction:
+        current?.key === column.key && current.direction === 'ascending' ?
+          'descending' :
+          'ascending',
+      key: column.key
+    }))
+  }
+
+  return (
+    <div
+      className={composeClassName(
+        'ui-data-table', glassClass('ui-data-table', glass), className
       )}
-  </div>
-)
+      data-ui-datatable
+      data-ui-datatable-name={name}
+      data-ui-datatable-selectable={selectable ? 'true' : undefined}
+      data-ui-glass-track={glass ? true : undefined}
+      {...props}
+    >
+      {columns.length > 0 ?
+        (
+          <table>
+            <thead>
+              <tr>
+                {columns.map(column => {
+                  const direction = sort?.key === column.key ?
+                    sort.direction :
+                    undefined
+
+                  const label = column.header ?? column.label ?? column.key
+
+                  return (
+                    <th
+                      aria-sort={direction ?? (column.sortable ? 'none' : undefined)}
+                      data-ui-datatable-sort-type={column.sort}
+                      data-ui-datatable-sortable={
+                        column.sortable ? 'true' : undefined
+                      }
+                      key={column.key}
+                      scope="col"
+                    >
+                      {column.sortable ?
+                        (
+                          <button
+                            className="ui-data-table__sort"
+                            data-ui-datatable-sort
+                            onClick={() => {
+                              toggleSort(column)
+                            }}
+                            type="button"
+                          >
+                            {label}
+                          </button>
+                        ) :
+                        label}
+                    </th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {sortedRows.map((row, rowIndex) => (
+                <tr
+                  data-ui-datatable-row
+                  data-value={getDataTableRowValue(row, rowIndex)}
+                  key={getDataTableRowValue(row, rowIndex)}
+                >
+                  {columns.map(column => (
+                    <td
+                      data-sort-value={getDataTableSortValue(row[column.key])}
+                      key={column.key}
+                    >
+                      {formatDataTableCell(row[column.key])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) :
+        children}
+    </div>
+  )
+}
 
 export type DatePickerProps = Omit<
   ComponentPropsWithoutRef<'input'>,
@@ -2758,118 +2755,6 @@ export const Dialog = ({
     />
   )
 }
-
-export type DirectionProps = ComponentPropsWithoutRef<'div'>
-export const Direction = ({
-  className,
-  dir = 'ltr',
-  ...props
-}: DirectionProps) => (
-  <div
-    className={composeClassName('ui-direction', className)}
-    dir={dir}
-    {...props}
-  />
-)
-
-export interface ContainerProps extends ComponentPropsWithRef<'div'> {
-  as?: ElementType
-  size?: 'full' | 'lg' | 'md' | 'sm'
-}
-
-export const Container = ({
-  as = 'div',
-  className,
-  size = 'lg',
-  ...props
-}: ContainerProps) => createElement(as, {
-  className: composeClassName(
-    'ui-container', `ui-container--${size}`, className
-  ),
-  'data-size': size,
-  'data-ui-container': true,
-  ...props
-})
-
-export interface GridProps extends ComponentPropsWithRef<'div'> {
-  as?: ElementType
-  columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
-  minItemWidth?: string
-}
-
-type LumenCSSProperties = CSSProperties &
-  Record<`--ui-${string}`, number | string | undefined>
-
-export const Grid = ({
-  as = 'div',
-  className,
-  columns = 'auto',
-  gap = 'md',
-  minItemWidth,
-  style,
-  ...props
-}: GridProps) => {
-  const gridStyle: LumenCSSProperties = {
-    ...style,
-    '--ui-grid-min': minItemWidth
-  }
-
-  return createElement(as, {
-    className: composeClassName(
-      'ui-grid', `ui-grid--columns-${columns}`, `ui-grid--gap-${gap}`, className
-    ),
-    'data-columns': columns,
-    'data-ui-grid': true,
-    style: gridStyle,
-    ...props
-  })
-}
-
-export interface StackProps extends ComponentPropsWithRef<'div'> {
-  align?: 'center' | 'end' | 'start' | 'stretch'
-  as?: ElementType
-  direction?: Orientation
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
-  justify?: 'between' | 'center' | 'end' | 'start'
-  wrap?: boolean
-}
-
-export const Stack = ({
-  align = 'stretch',
-  as = 'div',
-  className,
-  direction = 'vertical',
-  gap = 'md',
-  justify = 'start',
-  wrap = false,
-  ...props
-}: StackProps) => createElement(as, {
-  className: composeClassName(
-    'ui-stack', `ui-stack--${direction}`, `ui-stack--gap-${gap}`, `ui-stack--align-${align}`, `ui-stack--justify-${justify}`, wrap && 'ui-stack--wrap', className
-  ),
-  'data-direction': direction,
-  'data-ui-stack': true,
-  ...props
-})
-
-export interface VisuallyHiddenProps extends ComponentPropsWithRef<'span'> {
-  focusable?: boolean
-}
-
-export const VisuallyHidden = ({
-  className,
-  focusable = false,
-  ...props
-}: VisuallyHiddenProps) => (
-  <span
-    className={composeClassName(
-      'ui-visually-hidden', focusable && 'ui-visually-hidden--focusable', className
-    )}
-    data-ui-visually-hidden
-    {...props}
-  />
-)
 
 export interface DrawerProps
   extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
@@ -5135,25 +5020,6 @@ export const ListBox = (inputProps: ListBoxProps) => {
   )
 }
 
-export interface SeparatorProps extends ComponentPropsWithRef<'hr'> {
-  orientation?: Orientation
-}
-
-export const Separator = ({
-  className,
-  orientation = 'horizontal',
-  ...props
-}: SeparatorProps) => (
-  <hr
-    aria-orientation={orientation}
-    className={composeClassName(
-      'ui-separator', `ui-separator--${orientation}`, className
-    )}
-    data-orientation={orientation}
-    {...props}
-  />
-)
-
 export interface SheetProps
   extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
@@ -5629,11 +5495,6 @@ export const TreeGrid = ({
     role={role}
     {...props}
   />
-)
-
-export type TypographyProps = ComponentPropsWithoutRef<'div'>
-export const Typography = ({ className, ...props }: TypographyProps) => (
-  <div className={composeClassName('ui-typography', className)} {...props} />
 )
 
 export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {

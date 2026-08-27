@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, extname, isAbsolute, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -6,6 +8,32 @@ import { pathToFileURL } from 'node:url'
 import ts from 'typescript'
 
 const classifications = ['supported', 'experimental', 'deprecated']
+
+export const checkComponentCatalogFreshness = repositoryRoot => {
+  const generatorPath = resolve(
+    repositoryRoot,
+    'packages',
+    'mcp',
+    'scripts',
+    'generate-data.mjs'
+  )
+
+  const result = spawnSync(process.execPath, [generatorPath, '--check'], {
+    cwd: repositoryRoot,
+    encoding: 'utf8'
+  })
+
+  if (result.error) throw result.error
+
+  if (result.status !== 0) {
+    const diagnostic = [result.stderr, result.stdout].filter(Boolean).join('\n').trim()
+
+    throw new Error(
+      'Web API component catalog freshness check failed. '
+        + `Regenerate the MCP snapshot before reviewing the baseline.${diagnostic ? `\n${diagnostic}` : ''}`
+    )
+  }
+}
 
 const defaultPackages = {
   astro: {
@@ -66,6 +94,72 @@ const sortJson = value => {
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([key, child]) => [key, sortJson(child)])
   )
+}
+
+const collectStylingHooks = frameworkDetails => {
+  const hooks = new Set()
+
+  for (const details of Object.values(frameworkDetails ?? {})) {
+    for (const match of (details.source ?? '').matchAll(/(?:data-ui-[a-z0-9-]+|ui-[a-z0-9_-]+)/gu)) {
+      hooks.add(match[0])
+    }
+  }
+
+  return [...hooks].sort()
+}
+
+const withDefault = (value, fallback) => value === undefined ? fallback : value
+
+const normalizeFrameworkDetail = details => sortJson({
+  attributes: withDefault(details.attributes, []),
+  available: withDefault(details.available, false),
+  behavior: withDefault(details.behavior, null),
+  importStatement: withDefault(details.importStatement, null),
+  packageName: withDefault(details.packageName, null),
+  props: withDefault(details.props, []),
+  propsExtends: withDefault(details.propsExtends, null),
+  registration: withDefault(details.registration, null),
+  styleImport: withDefault(details.styleImport, null),
+  tagName: withDefault(details.tagName, null)
+})
+
+const normalizeFrameworkDetails = frameworkDetails => Object.fromEntries(
+  Object.entries(frameworkDetails ?? {})
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([framework, details]) => [framework, normalizeFrameworkDetail(details)])
+)
+
+const collectComponentContracts = async catalogPath => {
+  if (!catalogPath) return {}
+
+  const catalog = JSON.parse(await readFile(catalogPath, 'utf8'))
+
+  assert.ok(Array.isArray(catalog.components), 'Component contract catalog must contain a components array')
+
+  const contracts = new Map()
+
+  for (const component of catalog.components) {
+    assert.equal(typeof component.name, 'string', 'Component contract is missing a name')
+
+    assert.ok(!contracts.has(component.name), `Component contract catalog duplicates ${component.name}`)
+
+    const contract = sortJson({
+      apiReference: component.apiReference ?? [],
+      behavior: component.behavior ?? {},
+      dependencies: component.dependencies ?? [],
+      frameworkDetails: normalizeFrameworkDetails(component.frameworkDetails),
+      props: component.props ?? [],
+      propsExtends: component.propsExtends ?? null,
+      runtimeEvents: component.runtimeEvents ?? [],
+      stylingHooks: collectStylingHooks(component.frameworkDetails)
+    })
+
+    const fingerprint = createHash('sha256').update(JSON.stringify(contract)).digest('hex')
+
+    contracts.set(component.name, fingerprint)
+  }
+
+  return Object.fromEntries([...contracts].sort(([left], [right]) => left.localeCompare(right)))
 }
 
 const localModuleCandidates = modulePath => {
@@ -319,7 +413,7 @@ const validatePackageDefinition = (packageKey, packageDefinition) => {
   return classified.sort()
 }
 
-export const collectWebApiSnapshot = async ({ packages = defaultPackages, repositoryRoot }) => {
+export const collectWebApiSnapshot = async ({ catalogPath, packages = defaultPackages, repositoryRoot }) => {
   const manifests = new Map()
 
   for (const [packageKey, paths] of Object.entries(packages)) {
@@ -349,11 +443,16 @@ export const collectWebApiSnapshot = async ({ packages = defaultPackages, reposi
     }
   }
 
-  return { packages: snapshotPackages, schemaVersion: 1 }
+  return {
+    componentContracts: await collectComponentContracts(catalogPath),
+    packages: snapshotPackages,
+    schemaVersion: 2
+  }
 }
 
 const toUpdatedBaseline = (snapshot, previousBaseline) => ({
-  schemaVersion: 1,
+  componentContracts: snapshot.componentContracts,
+  schemaVersion: 2,
   packages: Object.fromEntries(Object.entries(snapshot.packages).map(([packageKey, current]) => {
     const previous = previousBaseline?.packages?.[packageKey]
     const previousClassifications = new Map()
@@ -382,8 +481,8 @@ const toUpdatedBaseline = (snapshot, previousBaseline) => ({
   }))
 })
 
-export const checkWebApiBaseline = async ({ baselinePath, packages = defaultPackages, repositoryRoot, update = false }) => {
-  const snapshot = await collectWebApiSnapshot({ packages, repositoryRoot })
+export const checkWebApiBaseline = async ({ baselinePath, catalogPath, packages = defaultPackages, repositoryRoot, update = false }) => {
+  const snapshot = await collectWebApiSnapshot({ catalogPath, packages, repositoryRoot })
   let baseline = null
 
   try {
@@ -402,7 +501,13 @@ export const checkWebApiBaseline = async ({ baselinePath, packages = defaultPack
 
   assert.ok(baseline, `Missing web API baseline at ${baselinePath}`)
 
-  assert.equal(baseline.schemaVersion, 1, 'Unsupported web API baseline schema version')
+  assert.equal(baseline.schemaVersion, 2, 'Unsupported web API baseline schema version')
+
+  assert.deepEqual(
+    baseline.componentContracts,
+    snapshot.componentContracts,
+    'Web component props, attributes, runtime behavior, events, or styling hooks changed; review and update the schema-2 baseline'
+  )
 
   assert.deepEqual(Object.keys(baseline.packages), Object.keys(packages).sort(), 'Web API baseline package set changed')
 
@@ -447,7 +552,11 @@ export const runCli = async (arguments_ = process.argv.slice(2)) => {
   const options = parseCliArguments(arguments_)
   const repositoryRoot = resolve(options.repositoryRoot ?? import.meta.dirname, options.repositoryRoot ? '.' : '..')
   const baselinePath = resolve(options.baselinePath ?? resolve(repositoryRoot, 'registry/web-api-baseline.json'))
-  const baseline = await checkWebApiBaseline({ baselinePath, repositoryRoot, update: options.update })
+  const catalogPath = resolve(repositoryRoot, 'packages/mcp/data/lumen-data.json')
+
+  checkComponentCatalogFreshness(repositoryRoot)
+
+  const baseline = await checkWebApiBaseline({ baselinePath, catalogPath, repositoryRoot, update: options.update })
 
   const symbolCount = Object.values(baseline.packages).reduce(
     (total, packageDefinition) => total + classifications.reduce(
@@ -457,7 +566,11 @@ export const runCli = async (arguments_ = process.argv.slice(2)) => {
     0
   )
 
-  process.stdout.write(`${options.update ? 'Updated' : 'Checked'} ${symbolCount} root exports across ${Object.keys(baseline.packages).length} web packages.\n`)
+  process.stdout.write(
+    `${options.update ? 'Updated' : 'Checked'} ${symbolCount} root exports across `
+      + `${Object.keys(baseline.packages).length} web packages and `
+      + `${Object.keys(baseline.componentContracts).length} component contracts.\n`
+  )
 }
 
 const isMainModule = process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url

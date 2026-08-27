@@ -961,7 +961,7 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders data display runtime contracts', () => {
-    const table = DataTable({
+    const table = withHookDispatcher(() => DataTable({
       columns: [
         { key: 'name', sortable: true },
         { key: 'count', sort: 'number', sortable: true }
@@ -972,7 +972,7 @@ describe('@santi020k/lumen-react', () => {
         { count: { sortValue: 1, value: '1' }, id: 'alpha', name: 'Alpha' }
       ],
       selectable: true
-    }) as ReactElement
+    })) as ReactElement
     const tableProps = table.props as Record<string, unknown> & {
       children: ReactElement<Record<string, unknown>>
     }
@@ -1006,6 +1006,11 @@ describe('@santi020k/lumen-react', () => {
     expect(tableProps['data-ui-datatable-name']).toBe('rows')
     expect(tableProps['data-ui-datatable-selectable']).toBe('true')
     expect(headers[0]?.props['data-ui-datatable-sortable']).toBe('true')
+    const firstSortButton = headers[0]?.props.children as ReactElement<{
+      className?: string
+    }>
+
+    expect(firstSortButton.props.className).toBe('ui-data-table__sort')
     expect(headers[1]?.props['data-ui-datatable-sort-type']).toBe('number')
     expect(rows[0]?.props['data-value']).toBe('beta')
     expect(firstRowCells[1]?.props['data-sort-value']).toBe('2')

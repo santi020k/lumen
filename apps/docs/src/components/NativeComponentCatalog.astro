@@ -23,6 +23,7 @@ interface Props {
 
 const { guide } = Astro.props
 const components = getNativeComponentsForPlatform(guide.id)
+const isAppleCatalog = guide.id === 'apple'
 
 const categories = nativeComponentCategories.filter(category => (
   components.some(component => component.category === category)
@@ -37,7 +38,6 @@ const categories = nativeComponentCategories.filter(category => (
     <div>
       <div class="native-catalog-hero__badges">
         <Badge variant="secondary">{guide.shortLabel} reference</Badge>
-        {guide.maturity && <Badge variant="warning">{guide.maturity}</Badge>}
       </div>
       <h1>Native components</h1>
       <p>
@@ -51,6 +51,28 @@ const categories = nativeComponentCategories.filter(category => (
       <small>{categories.length} categories</small>
     </Card>
   </header>
+
+  {isAppleCatalog && (
+    <Card as="section" class="native-apple-guide" variant="muted" aria-labelledby="apple-ecosystem-title">
+      <div>
+        <p>Apple ecosystem</p>
+        <h2 id="apple-ecosystem-title">Availability follows the native target</h2>
+        <p>
+          Component badges show the Apple operating systems each API supports. Add the
+          <code>LumenUI</code> product to app targets; widget extensions use the focused
+          <code>LumenWidgetUI</code> product instead.
+        </p>
+      </div>
+      <div class="native-apple-guide__targets" aria-label="Apple deployment targets">
+        <Badge variant="outline">iOS 16+</Badge>
+        <Badge variant="outline">iPadOS 16+</Badge>
+        <Badge variant="outline">macOS 13+</Badge>
+        <Badge variant="outline">tvOS 16+</Badge>
+        <Badge variant="outline">visionOS 1+</Badge>
+        <Badge variant="outline">watchOS 9+</Badge>
+      </div>
+    </Card>
+  )}
 
   <section class="native-catalog-tools" aria-labelledby="native-catalog-title">
     <div>
@@ -83,21 +105,28 @@ const categories = nativeComponentCategories.filter(category => (
             <Badge variant="outline">{categoryComponents.length}</Badge>
           </div>
           <div class="native-component-grid">
-            {categoryComponents.map(component => (
-              <Card
-                as="article"
-                class="native-component-card"
-                data-native-component
-                data-search-value={`${component.name} ${component.summary} ${component.category}`.toLowerCase()}
-                variant="muted"
-              >
+            {categoryComponents.map(component => {
+              const implementation = component.implementations[guide.id]
+
+              const availabilitySearchValue = implementation?.appleAvailability
+                ?.map(target => `${target.label} ${target.minimumVersion}`)
+                .join(' ') ?? ''
+
+              return (
+                <Card
+                  as="article"
+                  class="native-component-card"
+                  data-native-component
+                  data-search-value={`${component.name} ${component.summary} ${component.category} ${availabilitySearchValue}`.toLowerCase()}
+                  variant="muted"
+                >
                 <div class="native-component-card__top">
                   <span><Icon decorative name="box" size="sm" /></span>
                   <div>
-                    {component.implementations[guide.id]?.maturity === 'Experimental' && (
+                    {implementation?.maturity === 'Experimental' && (
                       <Badge variant="destructive">Experimental</Badge>
                     )}
-                    <Badge variant="outline">{component.implementations[guide.id]?.exportName}</Badge>
+                    <Badge variant="outline">{implementation?.exportName}</Badge>
                   </div>
                 </div>
                 <div>
@@ -107,12 +136,20 @@ const categories = nativeComponentCategories.filter(category => (
                     </Link>
                   </h3>
                   <p>{component.summary}</p>
+                  {implementation?.appleAvailability && (
+                    <div class="native-component-card__availability" aria-label="Apple availability">
+                      {implementation.appleAvailability.map(target => (
+                        <span title={target.minimumVersion}>{target.label}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <Link href={`${guide.href}/components/${component.slug}`}>
                   View reference <Icon decorative name="arrow-right" size="sm" />
                 </Link>
-              </Card>
-            ))}
+                </Card>
+              )
+            })}
           </div>
         </section>
       )
@@ -219,6 +256,44 @@ const categories = nativeComponentCategories.filter(category => (
     justify-content: space-between;
     gap: 1.5rem;
     margin-top: 3.5rem;
+  }
+
+  :global(.native-apple-guide) {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .native-apple-guide > div:first-child {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .native-apple-guide > div:first-child > p:first-child {
+    color: hsl(var(--brand));
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .native-apple-guide h2 {
+    color: hsl(var(--ink));
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+
+  .native-apple-guide > div:first-child > p:last-child {
+    max-width: 50rem;
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
+  .native-apple-guide__targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .native-catalog-tools > div {
@@ -343,6 +418,23 @@ const categories = nativeComponentCategories.filter(category => (
   .native-component-card p {
     font-size: 0.875rem;
     line-height: 1.65;
+  }
+
+  .native-component-card__availability {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.85rem;
+  }
+
+  .native-component-card__availability span {
+    padding: 0.2rem 0.45rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 999px;
+    color: hsl(var(--ink-muted));
+    font-size: 0.68rem;
+    font-weight: 800;
+    background: hsl(var(--surface));
   }
 
   .native-component-card > :global(a) {

@@ -73,9 +73,13 @@ Use `--json` for CI and rollout automation. `lumen init --framework <astro|react
 
 Run `lumen doctor-native` in an Apple or Android consumer to report the resolved Swift package
 tag/revision or Compose artifact version, compare it with Lumen's bundled cross-platform release
-manifest, and audit public theme placement. Findings are suggestions or warnings: the command does
-not classify application-owned navigation or controls as migration failures. Pass `--manifest`
-to audit against a prerelease manifest and `--json` for CI.
+manifest, and audit public theme placement. It also groups likely direct SwiftUI and Compose
+primitives that have public Lumen equivalents; these remain non-authoritative suggestions and do
+not classify application-owned navigation or controls as failures. Android consumers receive a
+read-only preflight for the documented JDK, SDK, platform packages, optional NDK requirement, and
+compatible Gradle/AGP/Kotlin baseline before native compilation begins. Missing required toolchain
+pieces are failures, optional evidence and migration candidates are warnings or suggestions. Pass
+`--manifest` to audit against a prerelease manifest and `--json` for CI.
 
 The same machine-readable metadata is published as
 `@santi020k/lumen/release-manifest.json`. It records every npm package version and peer range, the

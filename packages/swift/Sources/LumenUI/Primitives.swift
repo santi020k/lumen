@@ -19,12 +19,22 @@ public enum LumenTextVariant: Sendable {
 public struct LumenText: View {
     @Environment(\.lumenTheme) private var theme
 
-    private let content: LocalizedStringKey
+    private let content: LumenTextContent
     private let tone: LumenTextTone
     private let variant: LumenTextVariant
 
     public init(
         _ content: LocalizedStringKey,
+        variant: LumenTextVariant = .body,
+        tone: LumenTextTone = .default
+    ) {
+        self.content = .localized(content)
+        self.variant = variant
+        self.tone = tone
+    }
+
+    public init(
+        _ content: LumenTextContent,
         variant: LumenTextVariant = .body,
         tone: LumenTextTone = .default
     ) {
@@ -34,7 +44,7 @@ public struct LumenText: View {
     }
 
     public var body: some View {
-        Text(content)
+        content.text
             .font(font)
             .foregroundStyle(foregroundColor)
     }
@@ -515,6 +525,25 @@ public extension LumenButton where Label == Text {
             Text(title)
         }
     }
+
+    init(
+        _ title: LumenTextContent,
+        intent: LumenButtonIntent = .primary,
+        size: LumenControlSize = .md,
+        loading: Bool = false,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            intent: intent,
+            size: size,
+            loading: loading,
+            disabled: disabled,
+            action: action
+        ) {
+            title.text
+        }
+    }
 }
 
 public struct LumenTextField: View {
@@ -524,9 +553,9 @@ public struct LumenTextField: View {
     @Environment(\.lumenTheme) private var theme
 
     private let error: Bool
-    private let errorMessage: String?
+    private let errorMessage: LumenTextContent?
     private let size: LumenControlSize
-    private let title: String
+    private let title: LumenTextContent
 
     public init(
         _ title: String,
@@ -534,6 +563,20 @@ public struct LumenTextField: View {
         size: LumenControlSize = .md,
         error: Bool = false,
         errorMessage: String? = nil
+    ) {
+        self.title = .verbatim(title)
+        _text = text
+        self.size = size
+        self.error = error
+        self.errorMessage = errorMessage.map(LumenTextContent.verbatim)
+    }
+
+    public init(
+        _ title: LumenTextContent,
+        text: Binding<String>,
+        size: LumenControlSize = .md,
+        error: Bool = false,
+        errorMessage: LumenTextContent? = nil
     ) {
         self.title = title
         _text = text
@@ -543,12 +586,13 @@ public struct LumenTextField: View {
     }
 
     public var body: some View {
-        let validationMessage = LumenValidationState.message(
-            error: error,
-            errorMessage: errorMessage
-        )
+        let validationMessage = error || errorMessage != nil
+            ? errorMessage ?? .localized(LocalizedStringKey("Invalid value"))
+            : nil
 
-        TextField(title, text: $text)
+        TextField(text: $text) {
+            title.text
+        }
             .textFieldStyle(.plain)
             .font(size == .lg ? .body : .callout)
             .foregroundStyle(theme.colors.ink)
@@ -577,11 +621,19 @@ public enum LumenBadgeTone: Sendable {
 public struct LumenBadge: View {
     @Environment(\.lumenTheme) private var theme
 
-    private let content: LocalizedStringKey
+    private let content: LumenTextContent
     private let tone: LumenBadgeTone
 
     public init(
         _ content: LocalizedStringKey,
+        tone: LumenBadgeTone = .neutral
+    ) {
+        self.content = .localized(content)
+        self.tone = tone
+    }
+
+    public init(
+        _ content: LumenTextContent,
         tone: LumenBadgeTone = .neutral
     ) {
         self.content = content
@@ -589,7 +641,7 @@ public struct LumenBadge: View {
     }
 
     public var body: some View {
-        Text(content)
+        content.text
             .font(.caption.weight(.semibold))
             .foregroundStyle(foregroundColor)
             .padding(.horizontal, LumenSpacing.sm)
@@ -629,15 +681,19 @@ public struct LumenDivider: View {
 public struct LumenSpinner: View {
     @Environment(\.lumenTheme) private var theme
 
-    private let label: LocalizedStringKey
+    private let label: LumenTextContent
 
     public init(_ label: LocalizedStringKey = "Loading") {
+        self.label = .localized(label)
+    }
+
+    public init(_ label: LumenTextContent) {
         self.label = label
     }
 
     public var body: some View {
         ProgressView()
             .tint(theme.colors.brand)
-            .accessibilityLabel(label)
+            .accessibilityLabel(label.text)
     }
 }

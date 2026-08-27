@@ -21,8 +21,64 @@ A breaking change can enter Lumen 2 only when it has:
 5. passing production-shaped consumer and package validation.
 
 The machine-readable proposal is checked by `pnpm run check:lumen-2-contract`. A candidate becomes
-approved only after its migration and consumer evidence are present. Native Beta labels remain until
+approved only after its migration and consumer evidence are present. Version 2 publication remains blocked until
 every readiness gate passes; accepting a web change does not imply native graduation.
+
+The proposal remains `draft` during the stability iterations. Before the coordinated `2.0.0`
+revision, the release owner changes it to `approved` and records an `approval` object with the
+approver, approval date, full 40-character reviewed candidate revision, and immutable HTTPS
+evidence. Approval is invalid while any breaking change remains a candidate or any investigation
+remains deferred.
+
+Prepare and commit the complete versioned release candidate before approval. The publication commit
+may differ from `approval.reviewedRevision` only by `registry/lumen-2-contract.json` changing from
+the draft proposal to its approval record. Both npm and Compose publication verify that ancestry and
+changed-file boundary, so any later source, generated artifact, dependency, documentation, or
+release-metadata change requires a new review and approval revision.
+
+```json
+{
+  "status": "approved",
+  "approval": {
+    "approver": "RELEASE_OWNER",
+    "date": "YYYY-MM-DD",
+    "reviewedRevision": "FULL_40_CHARACTER_GIT_REVISION",
+    "evidence": ["IMMUTABLE_HTTPS_APPROVAL_RECORD"]
+  }
+}
+```
+
+`pnpm run check:native-stable-readiness` enforces that approved state in addition to the consumer,
+physical-device, and stability-soak ledgers.
+
+The contract's `releaseMigration` object is also the source of truth for the version 2 codemod,
+removed exports, and runtime instructions. The release-manifest generator copies that metadata into
+both published manifests for major version 2, and stable readiness rejects an initial `2.0.0`
+manifest that does not match it exactly. Removed exports use package-qualified
+`@scope/package#Export` records; the contract check verifies that each package is part of the
+reviewed breaking-change set, each export is absent from the authoritative root API baseline, and
+the migration utility recognizes the export name.
+
+After every `2.0.0` artifact and the immutable repository tag are verified, add a `graduation`
+record with the verifier, verification date, exact release revision, version, and immutable HTTPS
+evidence. Until that record exists, the stable-readiness gate rejects versions newer than `2.0.0`;
+this prevents skipping the coordinated milestone. Publication also peels the immutable `v2.0.0`
+tag and requires it to match `graduation.releaseRevision`; a merely well-formed record cannot unlock
+later releases. Once that identity check passes, later 2.x releases may follow normal semantic
+versioning without package-family lockstep. The Lumen 2 gate rejects a later stable major; that
+major must define and approve its own release contract rather than inherit Lumen 2 evidence.
+
+```json
+{
+  "graduation": {
+    "verifiedBy": "RELEASE_VERIFIER",
+    "date": "YYYY-MM-DD",
+    "version": "2.0.0",
+    "releaseRevision": "FULL_40_CHARACTER_GIT_REVISION",
+    "evidence": ["IMMUTABLE_HTTPS_RELEASE_RECORD"]
+  }
+}
+```
 
 ## Approved breaking changes
 
@@ -98,11 +154,11 @@ datetime picker, and `@react-native-community/datetimepicker` becomes an optiona
 only by consumers of the subpath.
 
 ```tsx
-import { LumenButton } from '@santi020k/lumen-react-native'
+import { LumenButton } from "@santi020k/lumen-react-native";
 import {
   LumenDateField,
-  type LumenDateFieldProps
-} from '@santi020k/lumen-react-native/datetime'
+  type LumenDateFieldProps,
+} from "@santi020k/lumen-react-native/datetime";
 ```
 
 The v2 migrator splits mixed named imports, preserves aliases and type-only imports, and is
@@ -132,10 +188,13 @@ risk creating duplicate local bindings.
 
 ## Foundations and approval gates
 
-- **Established:** `registry/web-api-baseline.json` now guards package export maps and public root
-  symbols across Astro, Core, Elements, the umbrella package, and React. The next schema revision
-  must add component props, Elements attributes and events, styling hooks, runtime requirements,
-  and deprecation state before any candidate is approved.
+- **Established:** schema 2 of `registry/web-api-baseline.json` guards package export maps, maturity
+  classifications, and 1,329 public root symbols across eight web packages. It also fingerprints
+  the documented props, Elements attributes, runtime behavior and events, dependencies, and stable
+  styling hooks for all 161 catalog components. Contract drift requires an explicit baseline update
+  and review before stable readiness can pass. The baseline checker first verifies that the
+  generated MCP component catalog matches current source, so stale generated data cannot preserve
+  an obsolete fingerprint.
 - A versioned registry contract that generates documentation, MCP data, diagnostics, and release
   migration metadata without contradictory hand-maintained copies.
 - `lumen migrate v2 --dry-run`, with idempotence tests and production-shaped Astro and Elements

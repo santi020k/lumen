@@ -100,6 +100,10 @@
     "lumenNavigationBarScrollBehavior",
     "LumenNavigationBarScrollState",
     "LumenNavigationItem",
+    "LumenPhoneCountries",
+    "LumenPhoneCountry",
+    "LumenPhoneInput",
+    "LumenPhoneNumber",
     "LumenPicker",
     "LumenPickerOption",
     "LumenPieChart",
@@ -144,17 +148,11 @@
     "LumenToggle",
     "LumenTypography",
     "rememberLumenNavigationBarScrollState",
+    "resolveLumenPhoneNumber",
     "resolveLumenSkeletonHeight",
     "toLumenColorPalette",
     "toMaterialColorScheme"
   ],
-  "experimental": [
-    "ExperimentalLumenPhoneApi",
-    "LumenPhoneCountries",
-    "LumenPhoneCountry",
-    "LumenPhoneInput",
-    "LumenPhoneNumber",
-    "resolveLumenPhoneNumber"
-  ],
+  "experimental": [],
   "deprecated": []
 }

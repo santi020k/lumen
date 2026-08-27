@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,20 +36,11 @@ import androidx.compose.ui.unit.dp
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import java.util.Locale
-import kotlin.RequiresOptIn
 
 private const val REGIONAL_INDICATOR_A = 0x1F1E6
 
-@RequiresOptIn(
-    level = RequiresOptIn.Level.WARNING,
-    message = "LumenPhoneInput is experimental while its native cross-adapter contract is evaluated."
-)
-@Retention(AnnotationRetention.BINARY)
-annotation class ExperimentalLumenPhoneApi
-
 /** Localized metadata for one ISO region in the phone-country picker. */
 @Immutable
-@ExperimentalLumenPhoneApi
 data class LumenPhoneCountry(
     val regionCode: String,
     val callingCode: String,
@@ -77,7 +70,6 @@ data class LumenPhoneCountry(
 
 /** Controlled phone input state. [e164] is present only when [isValid] is true. */
 @Immutable
-@ExperimentalLumenPhoneApi
 data class LumenPhoneNumber(
     val country: LumenPhoneCountry,
     val nationalNumber: String,
@@ -95,7 +87,6 @@ data class LumenPhoneNumber(
 }
 
 /** Generates phone countries from the libphonenumber metadata bundled with Lumen Compose. */
-@ExperimentalLumenPhoneApi
 object LumenPhoneCountries {
     fun all(locale: Locale = Locale.getDefault()): List<LumenPhoneCountry> =
         PhoneNumberUtil.getInstance().supportedRegions
@@ -121,7 +112,6 @@ object LumenPhoneCountries {
 }
 
 /** Formats and validates [input] for [country], returning E.164 only when valid. */
-@ExperimentalLumenPhoneApi
 fun resolveLumenPhoneNumber(
     country: LumenPhoneCountry,
     input: String,
@@ -159,7 +149,6 @@ fun resolveLumenPhoneNumber(
     }
 }
 
-@OptIn(ExperimentalLumenPhoneApi::class)
 internal fun resolveLumenPhoneInputValue(
     countries: List<LumenPhoneCountry>,
     country: LumenPhoneCountry,
@@ -178,7 +167,6 @@ internal fun resolveLumenPhoneInputValue(
     return resolveLumenPhoneNumber(country, resolved.nationalNumber, locale)
 }
 
-@OptIn(ExperimentalLumenPhoneApi::class)
 internal fun constrainLumenPhoneInputValue(
     countries: List<LumenPhoneCountry>,
     value: LumenPhoneNumber,
@@ -192,7 +180,6 @@ internal fun constrainLumenPhoneInputValue(
     return resolveLumenPhoneNumber(country, value.nationalNumber, locale)
 }
 
-@OptIn(ExperimentalLumenPhoneApi::class)
 private fun formatLumenPhoneInput(
     country: LumenPhoneCountry,
     input: String,
@@ -213,7 +200,6 @@ private fun formatLumenPhoneInput(
  * Presents a controlled phone editor with a searchable country sheet and metadata-backed
  * formatting and validation.
  */
-@ExperimentalLumenPhoneApi
 @Composable
 fun LumenPhoneInput(
     value: LumenPhoneNumber,
@@ -237,6 +223,7 @@ fun LumenPhoneInput(
     var pickerVisible by rememberSaveable { mutableStateOf(false) }
     var countryQuery by rememberSaveable { mutableStateOf("") }
     val availableCountries = countries ?: remember(locale) { LumenPhoneCountries.all(locale) }
+    val pickerEnabled = enabled && availableCountries.isNotEmpty()
     val displayValue = remember(availableCountries, locale, value) {
         constrainLumenPhoneInputValue(availableCountries, value, locale)
     }
@@ -254,6 +241,13 @@ fun LumenPhoneInput(
                     country.regionCode.contains(query, ignoreCase = true) ||
                     country.callingCode.contains(query)
             }
+        }
+    }
+
+    LaunchedEffect(pickerEnabled) {
+        if (!pickerEnabled) {
+            pickerVisible = false
+            countryQuery = ""
         }
     }
 
@@ -278,7 +272,7 @@ fun LumenPhoneInput(
                             displayValue.country.callingCode
                     },
                 intent = LumenButtonIntent.Secondary,
-                enabled = enabled && availableCountries.isNotEmpty()
+                enabled = pickerEnabled
             ) {
                 Text("${displayValue.country.flag} ${displayValue.country.callingCode}")
             }
@@ -294,7 +288,11 @@ fun LumenPhoneInput(
                         )
                     )
                 },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics {
+                        if (effectiveError != null) error(effectiveError)
+                    },
                 enabled = enabled,
                 isError = effectiveError != null,
                 singleLine = true,
@@ -317,7 +315,7 @@ fun LumenPhoneInput(
     }
 
     LumenSheet(
-        visible = pickerVisible,
+        visible = pickerVisible && pickerEnabled,
         onDismiss = {
             pickerVisible = false
             countryQuery = ""
@@ -328,7 +326,8 @@ fun LumenPhoneInput(
             LumenSearchField(
                 value = countryQuery,
                 onValueChange = { countryQuery = it },
-                prompt = countrySearchLabel
+                prompt = countrySearchLabel,
+                enabled = pickerEnabled
             )
             LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 440.dp)) {
                 items(filteredCountries, key = LumenPhoneCountry::regionCode) { country ->
@@ -337,7 +336,7 @@ fun LumenPhoneInput(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(
-                                enabled = enabled,
+                                enabled = pickerEnabled,
                                 role = Role.RadioButton,
                                 onClick = {
                                     onValueChange(

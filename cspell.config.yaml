@@ -2,10 +2,29 @@ version: "0.2"
 language: en
 words:
   - SAMEORIGIN
+  - SLSA
   - swiftui
   - aaronmgz
   - activedescendant
   - actool
+  - accentable
+  - visionos
+  - xros
+  - xrsimulator
+  - actualiza
+  - aplicación
+  - cambió
+  - esta
+  - estado
+  - está
+  - idioma
+  - lista
+  - Localización
+  - obligatoria
+  - recrearla
+  - usuarios
+  - Validar
+  - versión
   - aeiou
   - affordances
   - browsable
@@ -220,6 +239,7 @@ words:
   - workscene
   - watchos
   - watchsimulator
+  - widgetkit
   - xmark
   - xcrun
   - xcodegen
@@ -255,6 +275,7 @@ ignorePaths:
   - packages/compose/api/**
   - packages/compose/wear/api/**
   - registry/swift-api-baseline.json
+  - registry/swift-widget-api-baseline.json
   - packages/compose/gradle.properties
   - packages/compose/gradle/wrapper/**
   - packages/compose/gradlew

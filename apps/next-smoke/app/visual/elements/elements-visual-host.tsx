@@ -116,8 +116,8 @@ export const ElementsVisualHost = () => {
           <div className="ui-card-content">
             <LumenElement
               as="lumen-calendar"
-              max="2026-08-31"
-              min="2026-08-01"
+              max="2026-09-30"
+              min="2026-07-01"
               month="2026-08"
               name="releaseDate"
               value="2026-08-25"

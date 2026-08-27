@@ -7,6 +7,26 @@
     "nativeGraduation": "Every public package and native adapter graduates together only after the readiness ledger is complete.",
     "nonGoal": "Do not manufacture web breakage to justify the coordinated major release."
   },
+  "releaseMigration": {
+    "codemod": "lumen migrate v2 --dry-run",
+    "deprecatedExports": [],
+    "removedExports": [
+      "@santi020k/lumen-astro#Sonner",
+      "@santi020k/lumen-astro#UIPrimitives",
+      "@santi020k/lumen-react#Sonner",
+      "@santi020k/lumen-react#SonnerProps",
+      "@santi020k/lumen-react-native#LumenDateField",
+      "@santi020k/lumen-react-native#LumenDateFieldProps",
+      "@santi020k/lumen-react-native#LumenDateRangeField",
+      "@santi020k/lumen-react-native#LumenDateRangeFieldProps",
+      "@santi020k/lumen-react-native#LumenDateRangeValue"
+    ],
+    "runtime": {
+      "astro": "Import UIPrimitives from @santi020k/lumen-astro/runtime and mount it once when an imported component declares the ui-primitives runtime.",
+      "elements": "Call defineLumenElements once before rendering lumen-* elements.",
+      "react": "Use the public React behavior hooks for behavior-heavy primitives."
+    }
+  },
   "changes": [
     {
       "id": "astro-runtime-subpath",

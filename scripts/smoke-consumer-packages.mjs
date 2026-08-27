@@ -107,7 +107,7 @@ import { lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
-import { Badge as ServerBadge } from '@santi020k/lumen-react/server'
+import { Badge as ServerBadge, Card as ServerCard } from '@santi020k/lumen-react/server'
 import {
   getLumenManagedFieldState,
   LumenSelectController
@@ -133,6 +133,10 @@ assert.match(html, /ui-badge/)
 assert.equal(
   renderToStaticMarkup(createElement(ServerBadge, null, 'Server ready')),
   '<span class="ui-badge ui-badge--default" data-variant="default">Server ready</span>'
+)
+assert.match(
+  renderToStaticMarkup(createElement(ServerCard, { as: 'article' }, 'Server card')),
+  /<article class="ui-card"/
 )
 
 const HookFormFixture = () => {
@@ -209,6 +213,7 @@ const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
 const { defineLumenBadge } = await import('@santi020k/lumen-elements/components/badge')
 const { defineLumenButton } = await import('@santi020k/lumen-elements/components/button')
 const { defineLumenCard } = await import('@santi020k/lumen-elements/components/card')
+const { defineLumenFoundations } = await import('@santi020k/lumen-elements/components/foundations')
 
 defineLumenElements(dom.window.customElements)
 
@@ -240,6 +245,17 @@ assert.deepEqual(
   [...granularConstructors.keys()],
   ['lumen-badge', 'lumen-button', 'lumen-card']
 )
+
+const foundationConstructors = new Map()
+const foundationRegistry = {
+  define: (name, constructor) => foundationConstructors.set(name, constructor),
+  get: name => foundationConstructors.get(name)
+}
+
+defineLumenFoundations(foundationRegistry)
+
+assert.ok(foundationConstructors.has('lumen-grid'))
+assert.ok(foundationConstructors.has('lumen-visually-hidden'))
 `
   )
 
@@ -261,14 +277,20 @@ import '@santi020k/lumen-elements/styles.css'
   <lumen-button>Continue</lumen-button>
 </lumen-card>
 
+<lumen-grid columns="2">
+  <lumen-card-content>Foundation bundle ready</lumen-card-content>
+</lumen-grid>
+
 <script>
   import { defineLumenBadge } from '@santi020k/lumen-elements/components/badge'
   import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
   import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenFoundations } from '@santi020k/lumen-elements/components/foundations'
 
   defineLumenBadge()
   defineLumenButton()
   defineLumenCard()
+  defineLumenFoundations()
 </script>
 `
   )
@@ -353,6 +375,8 @@ export default function Page() {
   assert.match(astroHtml, /<lumen-card>/)
 
   assert.match(astroHtml, /Granular elements ready/)
+
+  assert.match(astroHtml, /Foundation bundle ready/)
 
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'

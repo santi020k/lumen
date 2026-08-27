@@ -44,6 +44,30 @@ describe('platform documentation', () => {
     }
   })
 
+  test('documents complete React Native peer installation and only working playground paths', () => {
+    const guide = getPlatformGuide('react-native')
+    const examples = guide.codeExamples.map(example => example.code).join('\n')
+
+    expect(examples).toContain('@santi020k/lumen-react-native react-native-svg')
+    expect(examples).toContain('@react-native-community/datetimepicker')
+    expect(guide.playgroundLaunch).toBeUndefined()
+    expect(guide.playgroundCommands?.[0]?.value).toBe('web')
+    expect(guide.prerequisites).toEqual(expect.arrayContaining([
+      expect.stringContaining('22.12'),
+      expect.stringContaining('22.19')
+    ]))
+  })
+
+  test('keeps the Wear OS artifact separate from phone and tablet Compose', () => {
+    const guide = getPlatformGuide('android')
+    const examples = guide.codeExamples.map(example => example.code).join('\n')
+
+    expect(examples).toContain('com.santi020k:lumen-compose:0.5.0')
+    expect(examples).toContain('com.santi020k:lumen-compose-wear:0.5.0')
+    expect(guide.installNote).toContain('only to a Wear OS module')
+    expect(guide.prerequisites).toContain('Android Studio with JDK 21 or newer')
+  })
+
   test('links every native guide to both searchable icon-name catalogs', () => {
     for (const guide of productPlatformGuides.filter(
       candidate => candidate.id !== 'web'
@@ -94,7 +118,60 @@ describe('platform documentation', () => {
 
     expect(getPlatformGuide('react-native').components).toHaveLength(61)
     expect(getPlatformGuide('android').components).toHaveLength(67)
-    expect(getPlatformGuide('apple').components).toHaveLength(68)
+    expect(getPlatformGuide('apple').components).toHaveLength(72)
+  })
+
+  test('documents accurate Apple ecosystem availability and Swift products', () => {
+    const appleComponents = getNativeComponentsForPlatform('apple')
+
+    for (const component of appleComponents) {
+      const implementation = component.implementations.apple
+      const targetIds = implementation?.appleAvailability?.map(target => target.id) ?? []
+
+      expect(implementation?.maturity).toBe('Supported')
+      expect(implementation?.packageName).toMatch(/^Lumen(?:Widget)?UI$/)
+      expect(targetIds.length).toBeGreaterThan(0)
+      expect(new Set(targetIds).size).toBe(targetIds.length)
+    }
+
+    const availabilityFor = (slug: string) => (
+      appleComponents
+        .find(component => component.slug === slug)
+        ?.implementations.apple
+        ?.appleAvailability
+        ?.map(target => `${target.label} · ${target.minimumVersion}`)
+    )
+
+    expect(availabilityFor('button')).toEqual([
+      'iPhone · iOS 16+',
+      'iPad · iPadOS 16+',
+      'Mac · macOS 13+',
+      'Apple TV · tvOS 16+',
+      'Apple Vision · visionOS 1+',
+      'Apple Watch · watchOS 9+'
+    ])
+    expect(availabilityFor('phone-input')).toEqual([
+      'iPhone · iOS 16+',
+      'iPad · iPadOS 16+',
+      'Mac · macOS 13+',
+      'Apple Vision · visionOS 1+'
+    ])
+    expect(availabilityFor('tab-accessory')).toEqual([
+      'iPhone · iOS 16+',
+      'iPad · iPadOS 16+'
+    ])
+    expect(availabilityFor('shortcut-recorder')).toEqual(['Mac · macOS 13+'])
+    expect(availabilityFor('wearable-action')).toEqual(['Apple Watch · watchOS 9+'])
+    expect(availabilityFor('menu')).toContain('Apple TV · tvOS 17+')
+
+    const widgetText = appleComponents.find(component => component.slug === 'widget-text')
+    expect(widgetText?.implementations.apple?.packageName).toBe('LumenWidgetUI')
+    expect(availabilityFor('widget-text')).toEqual([
+      'iPhone · iOS 16+',
+      'iPad · iPadOS 16+',
+      'Mac · macOS 13+',
+      'Apple Watch · watchOS 9+'
+    ])
   })
 
   test('maps new and legacy web routes to the correct contextual navigation', () => {

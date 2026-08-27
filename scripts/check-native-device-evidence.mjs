@@ -52,14 +52,34 @@ const expectedAdapters = {
     minimumOperatingSystem: 'macOS 13',
     platform: 'macOS'
   },
+  'swiftui-visionos': {
+    adapter: 'SwiftUI',
+    minimumOperatingSystem: 'visionOS 1',
+    platform: 'visionOS'
+  },
   'swiftui-watchos': {
     adapter: 'SwiftUI',
+    minimumOperatingSystem: 'watchOS 9',
+    platform: 'watchOS'
+  },
+  'swift-widget-ios': {
+    adapter: 'WidgetKit',
+    minimumOperatingSystem: 'iOS 16',
+    platform: 'iOS'
+  },
+  'swift-widget-macos': {
+    adapter: 'WidgetKit',
+    minimumOperatingSystem: 'macOS 13',
+    platform: 'macOS'
+  },
+  'swift-widget-watchos': {
+    adapter: 'WidgetKit',
     minimumOperatingSystem: 'watchOS 9',
     platform: 'watchOS'
   }
 }
 
-const expectedAdapterIds = Object.keys(expectedAdapters)
+const expectedAdapterIds = Object.keys(expectedAdapters).sort()
 
 const expectedChecks = [
   'alternateInput',

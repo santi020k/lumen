@@ -86,7 +86,7 @@ export const ReactVisualHost = () => {
             <CardDescription>Keyboard-ready calendar behavior from the React package.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Calendar defaultValue="2026-08-25" month="2026-08" name="releaseDate" />
+            <Calendar defaultValue="2026-08-25" name="releaseDate" />
           </CardContent>
         </Card>
       </section>

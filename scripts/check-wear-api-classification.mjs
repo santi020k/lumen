@@ -69,11 +69,19 @@ assert.deepEqual(
   'Wear public ABI and Supported/Experimental classifications differ'
 )
 
-assert.match(
-  source,
-  /@RequiresOptIn\([\s\S]*?annotation class ExperimentalLumenWearApi/,
-  'ExperimentalLumenWearApi must require an explicit consumer opt-in'
-)
+if (classification.experimental.length > 0) {
+  assert.match(
+    source,
+    /@RequiresOptIn\([\s\S]*?annotation class ExperimentalLumenWearApi/,
+    'ExperimentalLumenWearApi must require an explicit consumer opt-in'
+  )
+} else {
+  assert.doesNotMatch(
+    source,
+    /ExperimentalLumenWearApi/,
+    'The obsolete experimental Wear opt-in must be removed once every Wear API is Supported'
+  )
+}
 
 for (const identifier of classification.experimental) {
   if (identifier === 'ExperimentalLumenWearApi') continue

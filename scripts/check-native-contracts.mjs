@@ -180,7 +180,14 @@ for (const component of registry.components) {
   }
 }
 
-const nativePlatforms = new Set(['Android', 'iOS', 'macOS'])
+const nativePlatforms = new Set([
+  'Android',
+  'iOS',
+  'macOS',
+  'tvOS',
+  'visionOS',
+  'watchOS'
+])
 
 for (const component of registry.platformComponents) {
   assert.equal(typeof component.id, 'string')

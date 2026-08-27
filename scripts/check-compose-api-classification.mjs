@@ -129,11 +129,19 @@ assert.deepEqual(
   'Compose public ABI and maturity classifications differ'
 )
 
-assert.match(
-  phoneSource,
-  /@RequiresOptIn\([\s\S]*?annotation class ExperimentalLumenPhoneApi/u,
-  'ExperimentalLumenPhoneApi must require an explicit consumer opt-in'
-)
+if (classification.experimental.length > 0) {
+  assert.match(
+    phoneSource,
+    /@RequiresOptIn\([\s\S]*?annotation class ExperimentalLumenPhoneApi/u,
+    'ExperimentalLumenPhoneApi must require an explicit consumer opt-in'
+  )
+} else {
+  assert.doesNotMatch(
+    phoneSource,
+    /ExperimentalLumenPhoneApi/u,
+    'The obsolete experimental phone opt-in must be removed once every phone API is Supported'
+  )
+}
 
 const isAnnotationNameCharacter = character =>
   character !== undefined && /[A-Za-z\d_.:]/u.test(character)
@@ -232,9 +240,13 @@ const extractExperimentalDeclarations = source => {
 
 const annotatedDeclarations = extractExperimentalDeclarations(phoneSource)
 
+const expectedExperimentalDeclarations = classification.experimental.length > 0
+  ? [...annotatedDeclarations, 'ExperimentalLumenPhoneApi']
+    .sort((left, right) => left.localeCompare(right))
+  : annotatedDeclarations
+
 assert.deepEqual(
-  [...annotatedDeclarations, 'ExperimentalLumenPhoneApi']
-    .sort((left, right) => left.localeCompare(right)),
+  expectedExperimentalDeclarations,
   classification.experimental,
   'Every Experimental Compose declaration must be visibly annotated in source'
 )

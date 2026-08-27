@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import com.santi020k.lumen.ExperimentalLumenPhoneApi
 import com.santi020k.lumen.LumenAlert
 import com.santi020k.lumen.LumenAlertDialog
 import com.santi020k.lumen.LumenAdaptiveNavigationScaffold
@@ -688,7 +687,6 @@ private fun ActionsExample() {
     }
 }
 
-@OptIn(ExperimentalLumenPhoneApi::class)
 @Composable
 private fun FormsExample(
     email: String,

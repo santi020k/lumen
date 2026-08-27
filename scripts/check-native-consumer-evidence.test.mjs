@@ -36,6 +36,10 @@ const runLedger = async (mutate, checkerArguments = []) => {
     const soakLedger = JSON.parse(await readFile(sourceSoakLedgerPath, 'utf8'))
     const adapters = Object.fromEntries(ledger.adapters.map(entry => [entry.id, entry]))
 
+    adapters['swift-widget'].upgrade = {
+      ...adapters.swiftui.upgrade
+    }
+
     soakLedger.iterations = ['fromVersion', 'toVersion'].map(versionField => ({
       versions: {
         compose: adapters.compose.upgrade[versionField],
@@ -72,7 +76,7 @@ test('accepts a complete real-consumer matrix in readiness mode', async () => {
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /4 native real-consumer records; 0 remain incomplete/)
+  assert.match(result.stdout, /5 native real-consumer records; 0 remain incomplete/)
 })
 
 test('reports the checked-in partial matrix as incomplete in readiness mode', () => {
@@ -104,6 +108,29 @@ test('rejects a prerelease as upgrade evidence', async () => {
   assert.equal(result.status, 1)
 
   assert.match(result.stderr, /must be an ordinary semantic version/)
+})
+
+test('allows a pending consumer without fabricated upgrade evidence', () => {
+  const result = spawnSync(process.execPath, [checkerPath], {
+    cwd: repositoryRoot,
+    encoding: 'utf8'
+  })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  assert.match(result.stdout, /5 native real-consumer records/)
+})
+
+test('rejects complete WidgetKit evidence without an upgrade', async () => {
+  const result = await runLedger(ledger => {
+    const widget = ledger.adapters.find(entry => entry.id === 'swift-widget')
+
+    widget.upgrade = null
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /swift-widget\.upgrade must be an object/)
 })
 
 test('rejects complete evidence without an owner', async () => {

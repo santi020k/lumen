@@ -23,6 +23,10 @@ Load the shared stylesheet once from your app entry or global CSS.
 @import "@santi020k/lumen-elements/styles.css";
 ```
 
+Pair granular registrations with `@santi020k/lumen-elements/styles/critical.css` when the product
+uses only the essential forms, feedback, tabs, dialogs, calendar, and data-table surface. Use the
+complete stylesheet for the full element catalog.
+
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
@@ -77,6 +81,18 @@ Each function accepts an optional custom-element registry, is idempotent, and re
 constructor used by the complete catalog. Other components still use `defineLumenElements`; do not
 replace the full entrypoint when the application needs behavior-backed elements that do not yet
 have a granular module.
+
+Foundation-only pages can register fifteen layout, composition, and accessibility elements as one
+small implementation-level bundle:
+
+```ts
+import { defineLumenFoundations } from '@santi020k/lumen-elements/components/foundations'
+
+defineLumenFoundations()
+```
+
+This bundle contains the Card compound parts, Container, Direction, Grid, Label, Separator,
+Skeleton, Spinner, Stack, Typography, and VisuallyHidden. It does not import the complete catalog.
 
 `lumen-phone-input` can generate its complete country and telephone controls. It exposes `value`,
 `valid`, and `e164`, and emits `ui:phone-change` with the normalized phone model. Country names and

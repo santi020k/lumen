@@ -1,0 +1,1915 @@
+{
+  "schemaVersion": 1,
+  "module": "LumenWidgetUI",
+  "maturity": "stable",
+  "platforms": {
+    "macOS": {
+      "minimumVersion": "13",
+      "supported": [
+        {
+          "declaration": "@MainActor struct LumenWidgetCompactStat",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetCompactStat"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetCompactStat",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: LumenWidgetTextContent, value: LumenWidgetTextContent, iconSystemName: String? = nil, tone: LumenWidgetTone = .accent)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetCompactStat",
+            "init(label:value:iconSystemName:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV5label5value14iconSystemName4toneAcA0aB11TextContentO_AISSSgAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "enum LumenWidgetTextContent",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTextContent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO"
+        },
+        {
+          "declaration": "case localizedKey(LocalizedStringKey)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "localizedKey(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO12localizedKeyyAC05SwiftC0015LocalizedStringG0VcACmF"
+        },
+        {
+          "declaration": "case localizedResource(LocalizedStringResource)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "localizedResource(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO17localizedResourceyAC10Foundation015LocalizedStringG0VcACmF"
+        },
+        {
+          "declaration": "case verbatim(String)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "verbatim(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO8verbatimyACSScACmF"
+        },
+        {
+          "declaration": "static func localized(_ key: LocalizedStringKey) -> LumenWidgetTextContent",
+          "kind": "swift.type.method",
+          "path": [
+            "LumenWidgetTextContent",
+            "localized(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO9localizedyAC05SwiftC018LocalizedStringKeyVFZ"
+        },
+        {
+          "declaration": "static func localized(_ resource: LocalizedStringResource) -> LumenWidgetTextContent",
+          "kind": "swift.type.method",
+          "path": [
+            "LumenWidgetTextContent",
+            "localized(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO9localizedyAC10Foundation23LocalizedStringResourceVFZ"
+        },
+        {
+          "declaration": "struct LumenWidgetColorPalette",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetColorPalette"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV"
+        },
+        {
+          "declaration": "let brandSolid: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brandSolid"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV10brandSolid05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surfaceMuted: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surfaceMuted"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV12surfaceMuted05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surfaceStrong: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surfaceStrong"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV13surfaceStrong05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let ink: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "ink"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV3ink05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let line: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "line"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV4line05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let brand: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brand"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV5brand05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let accent: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "accent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6accent05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let canvas: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "canvas"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6canvas05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "init(canvas: Color, surface: Color, surfaceMuted: Color, surfaceStrong: Color, line: Color, ink: Color, inkSoft: Color, inkMuted: Color, brand: Color, brandSolid: Color, brandSoft: Color, onBrand: Color, accent: Color, success: Color, warning: Color, danger: Color, onDanger: Color)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetColorPalette",
+            "init(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftC00D0V_A16Wtcfc"
+        },
+        {
+          "declaration": "let danger: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "danger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6danger05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let inkSoft: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "inkSoft"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7inkSoft05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let onBrand: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "onBrand"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7onBrand05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let success: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "success"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7success05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surface: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surface"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7surface05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let warning: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "warning"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7warning05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let inkMuted: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "inkMuted"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV8inkMuted05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let onDanger: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "onDanger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV8onDanger05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let brandSoft: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brandSoft"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV9brandSoft05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetIcon",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetIcon"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV"
+        },
+        {
+          "declaration": "@MainActor init(systemName: String, label: LumenWidgetTextContent? = nil, tone: LumenWidgetTone = .accent, size: CGFloat = 18)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetIcon",
+            "init(systemName:label:tone:size:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV10systemName5label4tone4sizeACSS_AA0aB11TextContentOSgAA0aB4ToneO14CoreFoundation7CGFloatVtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetIcon",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetText",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetText"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV"
+        },
+        {
+          "declaration": "@MainActor init(_ content: LocalizedStringKey, style: LumenWidgetTextStyle = .body, tone: LumenWidgetTone = .primary)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetText",
+            "init(_:style:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV_5style4toneAC05SwiftC018LocalizedStringKeyV_AA0abD5StyleOAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ content: LumenWidgetTextContent, style: LumenWidgetTextStyle = .body, tone: LumenWidgetTone = .primary)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetText",
+            "init(_:style:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV_5style4toneAcA0abD7ContentO_AA0abD5StyleOAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetText",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV4bodyQrvp"
+        },
+        {
+          "declaration": "enum LumenWidgetTone",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTone"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO"
+        },
+        {
+          "declaration": "case accent",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "accent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO6accentyA2CmF"
+        },
+        {
+          "declaration": "case danger",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "danger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO6dangeryA2CmF"
+        },
+        {
+          "declaration": "case primary",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "primary"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7primaryyA2CmF"
+        },
+        {
+          "declaration": "case success",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "success"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7successyA2CmF"
+        },
+        {
+          "declaration": "case warning",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "warning"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7warningyA2CmF"
+        },
+        {
+          "declaration": "case secondary",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "secondary"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO9secondaryyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetBadge",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetBadge"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LumenWidgetTextContent, iconSystemName: String? = nil, tone: LumenWidgetTone = .accent)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetBadge",
+            "init(_:iconSystemName:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV_14iconSystemName4toneAcA0aB11TextContentO_SSSgAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetBadge",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV4bodyQrvp"
+        },
+        {
+          "declaration": "enum LumenWidgetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetColors"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO"
+        },
+        {
+          "declaration": "static let dark: LumenWidgetColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetColors",
+            "dark"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO4darkAA0aB12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let light: LumenWidgetColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetColors",
+            "light"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO5lightAA0aB12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetRadius",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetRadius"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO"
+        },
+        {
+          "declaration": "static let lg: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "lg"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2lg14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let md: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "md"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2md14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let sm: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "sm"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let full: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "full"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "size2xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "size3xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetSpacing",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetSpacing"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO"
+        },
+        {
+          "declaration": "static let lg: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "lg"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2lg14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let md: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "md"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2md14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let sm: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "sm"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2sm14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xs: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "xs"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2xs14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let zero: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "zero"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO4zero14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "size2xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "size3xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetTextStyle",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTextStyle"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO"
+        },
+        {
+          "declaration": "case body",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO4bodyyA2CmF"
+        },
+        {
+          "declaration": "case label",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "label"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO5labelyA2CmF"
+        },
+        {
+          "declaration": "case title",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "title"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO5titleyA2CmF"
+        },
+        {
+          "declaration": "case metric",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "metric"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO6metricyA2CmF"
+        },
+        {
+          "declaration": "case caption",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "caption"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO7captionyA2CmF"
+        }
+      ],
+      "experimental": [],
+      "deprecated": [],
+      "unclassified": []
+    },
+    "iOS": {
+      "minimumVersion": "16",
+      "supported": [
+        {
+          "declaration": "@MainActor struct LumenWidgetCompactStat",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetCompactStat"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetCompactStat",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: LumenWidgetTextContent, value: LumenWidgetTextContent, iconSystemName: String? = nil, tone: LumenWidgetTone = .accent)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetCompactStat",
+            "init(label:value:iconSystemName:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV5label5value14iconSystemName4toneAcA0aB11TextContentO_AISSSgAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "enum LumenWidgetTextContent",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTextContent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO"
+        },
+        {
+          "declaration": "case localizedKey(LocalizedStringKey)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "localizedKey(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO12localizedKeyyAC05SwiftC0015LocalizedStringG0VcACmF"
+        },
+        {
+          "declaration": "case localizedResource(LocalizedStringResource)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "localizedResource(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO17localizedResourceyAC10Foundation015LocalizedStringG0VcACmF"
+        },
+        {
+          "declaration": "case verbatim(String)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "verbatim(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO8verbatimyACSScACmF"
+        },
+        {
+          "declaration": "static func localized(_ key: LocalizedStringKey) -> LumenWidgetTextContent",
+          "kind": "swift.type.method",
+          "path": [
+            "LumenWidgetTextContent",
+            "localized(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO9localizedyAC05SwiftC018LocalizedStringKeyVFZ"
+        },
+        {
+          "declaration": "static func localized(_ resource: LocalizedStringResource) -> LumenWidgetTextContent",
+          "kind": "swift.type.method",
+          "path": [
+            "LumenWidgetTextContent",
+            "localized(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO9localizedyAC10Foundation23LocalizedStringResourceVFZ"
+        },
+        {
+          "declaration": "struct LumenWidgetColorPalette",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetColorPalette"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV"
+        },
+        {
+          "declaration": "let brandSolid: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brandSolid"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV10brandSolid05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surfaceMuted: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surfaceMuted"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV12surfaceMuted05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surfaceStrong: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surfaceStrong"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV13surfaceStrong05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let ink: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "ink"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV3ink05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let line: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "line"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV4line05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let brand: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brand"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV5brand05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let accent: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "accent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6accent05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let canvas: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "canvas"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6canvas05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "init(canvas: Color, surface: Color, surfaceMuted: Color, surfaceStrong: Color, line: Color, ink: Color, inkSoft: Color, inkMuted: Color, brand: Color, brandSolid: Color, brandSoft: Color, onBrand: Color, accent: Color, success: Color, warning: Color, danger: Color, onDanger: Color)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetColorPalette",
+            "init(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftC00D0V_A16Wtcfc"
+        },
+        {
+          "declaration": "let danger: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "danger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6danger05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let inkSoft: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "inkSoft"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7inkSoft05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let onBrand: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "onBrand"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7onBrand05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let success: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "success"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7success05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surface: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surface"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7surface05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let warning: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "warning"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7warning05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let inkMuted: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "inkMuted"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV8inkMuted05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let onDanger: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "onDanger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV8onDanger05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let brandSoft: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brandSoft"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV9brandSoft05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetIcon",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetIcon"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV"
+        },
+        {
+          "declaration": "@MainActor init(systemName: String, label: LumenWidgetTextContent? = nil, tone: LumenWidgetTone = .accent, size: CGFloat = 18)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetIcon",
+            "init(systemName:label:tone:size:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV10systemName5label4tone4sizeACSS_AA0aB11TextContentOSgAA0aB4ToneO14CoreFoundation7CGFloatVtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetIcon",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetText",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetText"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV"
+        },
+        {
+          "declaration": "@MainActor init(_ content: LocalizedStringKey, style: LumenWidgetTextStyle = .body, tone: LumenWidgetTone = .primary)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetText",
+            "init(_:style:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV_5style4toneAC05SwiftC018LocalizedStringKeyV_AA0abD5StyleOAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ content: LumenWidgetTextContent, style: LumenWidgetTextStyle = .body, tone: LumenWidgetTone = .primary)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetText",
+            "init(_:style:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV_5style4toneAcA0abD7ContentO_AA0abD5StyleOAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetText",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV4bodyQrvp"
+        },
+        {
+          "declaration": "enum LumenWidgetTone",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTone"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO"
+        },
+        {
+          "declaration": "case accent",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "accent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO6accentyA2CmF"
+        },
+        {
+          "declaration": "case danger",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "danger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO6dangeryA2CmF"
+        },
+        {
+          "declaration": "case primary",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "primary"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7primaryyA2CmF"
+        },
+        {
+          "declaration": "case success",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "success"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7successyA2CmF"
+        },
+        {
+          "declaration": "case warning",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "warning"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7warningyA2CmF"
+        },
+        {
+          "declaration": "case secondary",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "secondary"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO9secondaryyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetBadge",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetBadge"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LumenWidgetTextContent, iconSystemName: String? = nil, tone: LumenWidgetTone = .accent)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetBadge",
+            "init(_:iconSystemName:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV_14iconSystemName4toneAcA0aB11TextContentO_SSSgAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetBadge",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV4bodyQrvp"
+        },
+        {
+          "declaration": "enum LumenWidgetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetColors"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO"
+        },
+        {
+          "declaration": "static let dark: LumenWidgetColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetColors",
+            "dark"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO4darkAA0aB12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let light: LumenWidgetColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetColors",
+            "light"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO5lightAA0aB12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetRadius",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetRadius"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO"
+        },
+        {
+          "declaration": "static let lg: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "lg"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2lg14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let md: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "md"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2md14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let sm: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "sm"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let full: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "full"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "size2xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "size3xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetSpacing",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetSpacing"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO"
+        },
+        {
+          "declaration": "static let lg: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "lg"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2lg14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let md: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "md"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2md14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let sm: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "sm"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2sm14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xs: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "xs"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2xs14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let zero: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "zero"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO4zero14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "size2xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "size3xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetTextStyle",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTextStyle"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO"
+        },
+        {
+          "declaration": "case body",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO4bodyyA2CmF"
+        },
+        {
+          "declaration": "case label",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "label"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO5labelyA2CmF"
+        },
+        {
+          "declaration": "case title",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "title"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO5titleyA2CmF"
+        },
+        {
+          "declaration": "case metric",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "metric"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO6metricyA2CmF"
+        },
+        {
+          "declaration": "case caption",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "caption"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO7captionyA2CmF"
+        }
+      ],
+      "experimental": [],
+      "deprecated": [],
+      "unclassified": []
+    },
+    "watchOS": {
+      "minimumVersion": "9",
+      "supported": [
+        {
+          "declaration": "@MainActor struct LumenWidgetCompactStat",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetCompactStat"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetCompactStat",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: LumenWidgetTextContent, value: LumenWidgetTextContent, iconSystemName: String? = nil, tone: LumenWidgetTone = .accent)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetCompactStat",
+            "init(label:value:iconSystemName:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11CompactStatV5label5value14iconSystemName4toneAcA0aB11TextContentO_AISSSgAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "enum LumenWidgetTextContent",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTextContent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO"
+        },
+        {
+          "declaration": "case localizedKey(LocalizedStringKey)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "localizedKey(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO12localizedKeyyAC05SwiftC0015LocalizedStringG0VcACmF"
+        },
+        {
+          "declaration": "case localizedResource(LocalizedStringResource)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "localizedResource(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO17localizedResourceyAC10Foundation015LocalizedStringG0VcACmF"
+        },
+        {
+          "declaration": "case verbatim(String)",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextContent",
+            "verbatim(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO8verbatimyACSScACmF"
+        },
+        {
+          "declaration": "static func localized(_ key: LocalizedStringKey) -> LumenWidgetTextContent",
+          "kind": "swift.type.method",
+          "path": [
+            "LumenWidgetTextContent",
+            "localized(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO9localizedyAC05SwiftC018LocalizedStringKeyVFZ"
+        },
+        {
+          "declaration": "static func localized(_ resource: LocalizedStringResource) -> LumenWidgetTextContent",
+          "kind": "swift.type.method",
+          "path": [
+            "LumenWidgetTextContent",
+            "localized(_:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB11TextContentO9localizedyAC10Foundation23LocalizedStringResourceVFZ"
+        },
+        {
+          "declaration": "struct LumenWidgetColorPalette",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetColorPalette"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV"
+        },
+        {
+          "declaration": "let brandSolid: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brandSolid"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV10brandSolid05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surfaceMuted: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surfaceMuted"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV12surfaceMuted05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surfaceStrong: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surfaceStrong"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV13surfaceStrong05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let ink: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "ink"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV3ink05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let line: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "line"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV4line05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let brand: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brand"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV5brand05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let accent: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "accent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6accent05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let canvas: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "canvas"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6canvas05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "init(canvas: Color, surface: Color, surfaceMuted: Color, surfaceStrong: Color, line: Color, ink: Color, inkSoft: Color, inkMuted: Color, brand: Color, brandSolid: Color, brandSoft: Color, onBrand: Color, accent: Color, success: Color, warning: Color, danger: Color, onDanger: Color)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetColorPalette",
+            "init(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftC00D0V_A16Wtcfc"
+        },
+        {
+          "declaration": "let danger: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "danger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV6danger05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let inkSoft: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "inkSoft"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7inkSoft05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let onBrand: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "onBrand"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7onBrand05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let success: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "success"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7success05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let surface: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "surface"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7surface05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let warning: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "warning"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV7warning05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let inkMuted: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "inkMuted"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV8inkMuted05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let onDanger: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "onDanger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV8onDanger05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "let brandSoft: Color",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetColorPalette",
+            "brandSoft"
+          ],
+          "precise": "s:13LumenWidgetUI0aB12ColorPaletteV9brandSoft05SwiftC00D0Vvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetIcon",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetIcon"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV"
+        },
+        {
+          "declaration": "@MainActor init(systemName: String, label: LumenWidgetTextContent? = nil, tone: LumenWidgetTone = .accent, size: CGFloat = 18)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetIcon",
+            "init(systemName:label:tone:size:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV10systemName5label4tone4sizeACSS_AA0aB11TextContentOSgAA0aB4ToneO14CoreFoundation7CGFloatVtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetIcon",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4IconV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetText",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetText"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV"
+        },
+        {
+          "declaration": "@MainActor init(_ content: LocalizedStringKey, style: LumenWidgetTextStyle = .body, tone: LumenWidgetTone = .primary)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetText",
+            "init(_:style:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV_5style4toneAC05SwiftC018LocalizedStringKeyV_AA0abD5StyleOAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ content: LumenWidgetTextContent, style: LumenWidgetTextStyle = .body, tone: LumenWidgetTone = .primary)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetText",
+            "init(_:style:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV_5style4toneAcA0abD7ContentO_AA0abD5StyleOAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetText",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4TextV4bodyQrvp"
+        },
+        {
+          "declaration": "enum LumenWidgetTone",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTone"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO"
+        },
+        {
+          "declaration": "case accent",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "accent"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO6accentyA2CmF"
+        },
+        {
+          "declaration": "case danger",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "danger"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO6dangeryA2CmF"
+        },
+        {
+          "declaration": "case primary",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "primary"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7primaryyA2CmF"
+        },
+        {
+          "declaration": "case success",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "success"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7successyA2CmF"
+        },
+        {
+          "declaration": "case warning",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "warning"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO7warningyA2CmF"
+        },
+        {
+          "declaration": "case secondary",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTone",
+            "secondary"
+          ],
+          "precise": "s:13LumenWidgetUI0aB4ToneO9secondaryyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWidgetBadge",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWidgetBadge"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LumenWidgetTextContent, iconSystemName: String? = nil, tone: LumenWidgetTone = .accent)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWidgetBadge",
+            "init(_:iconSystemName:tone:)"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV_14iconSystemName4toneAcA0aB11TextContentO_SSSgAA0aB4ToneOtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWidgetBadge",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB5BadgeV4bodyQrvp"
+        },
+        {
+          "declaration": "enum LumenWidgetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetColors"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO"
+        },
+        {
+          "declaration": "static let dark: LumenWidgetColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetColors",
+            "dark"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO4darkAA0aB12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let light: LumenWidgetColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetColors",
+            "light"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6ColorsO5lightAA0aB12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetRadius",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetRadius"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO"
+        },
+        {
+          "declaration": "static let lg: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "lg"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2lg14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let md: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "md"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2md14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let sm: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "sm"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let full: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "full"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "size2xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetRadius",
+            "size3xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetSpacing",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetSpacing"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO"
+        },
+        {
+          "declaration": "static let lg: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "lg"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2lg14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let md: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "md"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2md14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let sm: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "sm"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2sm14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let xs: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "xs"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO2xs14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let zero: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "zero"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO4zero14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "size2xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenWidgetSpacing",
+            "size3xl"
+          ],
+          "precise": "s:13LumenWidgetUI0aB7SpacingO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "enum LumenWidgetTextStyle",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWidgetTextStyle"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO"
+        },
+        {
+          "declaration": "case body",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "body"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO4bodyyA2CmF"
+        },
+        {
+          "declaration": "case label",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "label"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO5labelyA2CmF"
+        },
+        {
+          "declaration": "case title",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "title"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO5titleyA2CmF"
+        },
+        {
+          "declaration": "case metric",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "metric"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO6metricyA2CmF"
+        },
+        {
+          "declaration": "case caption",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWidgetTextStyle",
+            "caption"
+          ],
+          "precise": "s:13LumenWidgetUI0aB9TextStyleO7captionyA2CmF"
+        }
+      ],
+      "experimental": [],
+      "deprecated": [],
+      "unclassified": []
+    }
+  }
+}

@@ -4,20 +4,21 @@ Lumen 2 is the program for making the Lumen package family a production-supporte
 design system. It is not permission to manufacture breaking web changes or to declare native
 stability from component count alone.
 
-Lumen 2 is one coordinated graduation milestone. Continue publishing the existing web and Swift
-`1.x` lines and the independently versioned native `0.x` lines while native remains Beta. When all
-readiness gates pass, publish every public npm package, React Native, Compose, and Wear at `2.0.0`,
-create the Swift-compatible `v2.0.0` repository tag from the same revision, and remove every native
-Beta label together. No separate native release-candidate version train is required.
+Lumen 2 is one coordinated publication milestone. Continue publishing the existing web and Swift
+`1.x` lines and the independently versioned native `0.x` lines while the supported Lumen 2 contract
+completes its release-candidate evidence. When all readiness gates pass, publish every public npm
+package, React Native, Compose, and Wear at `2.0.0`, and create the Swift-compatible `v2.0.0`
+repository tag from the same revision.
 
 ## Current baseline
 
-| Surface | Version source | Current maturity | Principal remaining evidence |
-| --- | --- | --- | --- |
-| Astro, React, and Elements | npm package manifests | Stable 1.x | Coordinated Lumen 2 contract and migration approval |
-| React Native | `packages/react-native/package.json` | Beta 0.x | Real-app adoption and physical iOS and Android validation |
-| SwiftUI | Repository release tag and `Package.swift` | Beta at the umbrella version | Real-app adoption and physical Apple-platform validation |
-| Compose and Wear OS | `packages/compose/gradle.properties` | Beta 0.x | Real-app adoption and physical Android and Wear OS validation |
+| Surface                    | Version source                             | Current maturity                                       | Principal remaining evidence                                                               |
+| -------------------------- | ------------------------------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| Astro, React, and Elements | npm package manifests                      | Stable 1.x                                             | Coordinated Lumen 2 contract and migration approval                                        |
+| React Native               | `packages/react-native/package.json`       | Supported v2 contract; pre-2 artifact                  | Real-app adoption and physical iOS and Android validation                                  |
+| SwiftUI                    | Repository release tag and `Package.swift` | Supported v2 contract; pre-2 tag                       | Real-app adoption and physical Apple-platform validation                                   |
+| WidgetKit                  | `LumenWidgetUI` product in `Package.swift` | Supported v2 contract; no ordinary published iteration | Real-widget adoption, two tagged upgrades, and physical iOS, macOS, and watchOS validation |
+| Compose and Wear OS        | `packages/compose/gradle.properties`       | Supported v2 contract; pre-2 artifacts                 | Real-app adoption and physical Android and Wear OS validation                              |
 
 The exact versions are recorded in `registry/release-manifest.json`. The compatibility baselines
 are recorded in [Native compatibility](native-compatibility.md), and the incomplete hardware
@@ -46,8 +47,8 @@ Evidence:
 
 ### 1. Freeze the Lumen 2 native contracts
 
-Audit the public React Native, SwiftUI, Compose, and Wear OS APIs before their stable release. Make
-necessary breaking corrections while the adapters are Beta, then hold the supported contracts
+Audit the public React Native, SwiftUI, WidgetKit, Compose, and Wear OS APIs before their stable release. Make
+necessary pre-2 breaking corrections, then hold the supported contracts
 stable through at least two consecutive ordinary published-release iterations.
 
 The audit must:
@@ -59,7 +60,7 @@ The audit must:
 - confirm that applications own navigation, lifecycle, persistence, permissions, and other
   product behavior documented as outside Lumen;
 - record every intentional platform-specific API in `docs/native-components.md`;
-- add migration notes for every breaking Beta correction; and
+- add migration notes for every breaking pre-2 correction; and
 - leave `pnpm run check:native-contracts` enforcing the frozen shared contract.
 
 The declaration-level classifications and enforcement progress are recorded in the
@@ -116,12 +117,13 @@ Compose publication workflows.
 
 Test the artifacts that consumers actually install, not only workspace source builds.
 
-| Adapter | Required published-artifact proof |
-| --- | --- |
-| React Native | Pack the npm tarball, install it into a clean supported Expo/React Native application, build iOS and Android, and verify the declared peer range |
-| SwiftUI | Resolve an immutable semantic repository tag in a clean Xcode and Swift Package Manager consumer, build every declared platform, and verify resources and license notices |
-| Compose | Resolve signed published artifacts through the intended Maven workflow in a clean Android consumer and verify phone, tablet, and publication metadata |
-| Wear OS | Resolve the separate Wear artifact in a clean watch consumer and verify that phone applications do not acquire wearable-only dependencies |
+| Adapter      | Required published-artifact proof                                                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| React Native | Pack the npm tarball, install it into a clean supported Expo/React Native application, build iOS and Android, and verify the declared peer range                          |
+| SwiftUI      | Resolve an immutable semantic repository tag in a clean Xcode and Swift Package Manager consumer, build every declared platform, and verify resources and license notices |
+| WidgetKit    | Resolve `LumenWidgetUI` from the same immutable tag in a clean consumer and build its focused macOS, iOS, and watchOS targets without linking `LumenUI` or PhoneNumberKit |
+| Compose      | Resolve signed published artifacts through the intended Maven workflow in a clean Android consumer and verify phone, tablet, and publication metadata                     |
+| Wear OS      | Resolve the separate Wear artifact in a clean watch consumer and verify that phone applications do not acquire wearable-only dependencies                                 |
 
 The exact release under validation must also pass:
 
@@ -143,10 +145,15 @@ When gates 1 through 4 are complete:
 
 - publish every public npm package, including `@santi020k/lumen-react-native`, at `2.0.0`;
 - publish `lumen-compose` and `lumen-compose-wear` at `2.0.0`;
-- create the immutable `v2.0.0` repository tag and remove the SwiftUI Beta label;
+- create the immutable `v2.0.0` repository tag, then create `compose-v2.0.0` on that same commit;
 - update the README, platform guides, native reference, compatibility matrix, release manifest, and
   package changelogs together; and
-- publish concise migration notes from the last Beta release.
+- publish concise migration notes from the last pre-2 release.
+
+The stable-readiness gate compares the initial `2.0.0` release manifest with the complete public
+workspace package inventory, so an omitted or lagging npm package cannot silently bypass the
+coordinated launch. It continues requiring that exact milestone until the contract records
+immutable graduation evidence; only then may later 2.x releases version independently.
 
 The pre-2.0 version differences remain part of the immutable release history. Version 2 deliberately
 aligns the public package family and platform adapters under one production-support milestone.
@@ -174,6 +181,8 @@ in version 1.
 
 Version 2 is approved only when:
 
+- the machine-readable contract is marked `approved` with an attributable approval record tied to
+  the reviewed release candidate revision and immutable HTTPS evidence;
 - every breaking change solves an observed consumer, accessibility, performance, or maintainability
   problem;
 - affected in-repository and recorded external consumers have a tested migration;
@@ -190,15 +199,15 @@ contract is the release reason; any actual breaking change still needs evidence 
 This ledger is the release decision record. Change a gate to Complete only when its linked evidence
 proves every exit condition above.
 
-| Gate | Status | Required record |
-| --- | --- | --- |
-| Clean release baseline | Complete (2026-08-24) | [Release 1.6 baseline evidence](#release-16-baseline-evidence) |
-| Native contract freeze | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger |
-| Real consumer validation | 4/4 technical records Partial | [Native consumer validation](native-consumer-validation.md) and `registry/native-consumer-evidence.json`: active-product confirmation, signed artifacts, accessibility evidence, and immutable qualifying records remain |
-| Physical-device validation | Incomplete | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced |
-| Distribution validation | Complete (2026-08-27) | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks |
-| Coordinated Lumen 2 release | Blocked by prior gates | Every public package and platform at `2.0.0`, documentation, and migration notes |
-| Version 2 contract approval | Draft; 3/3 investigations resolved | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage |
+| Gate                        | Status                                                   | Required record                                                                                                                                                                                                                                  |
+| --------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Clean release baseline      | Complete (2026-08-24)                                    | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                                                   |
+| Native contract freeze      | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                                                 |
+| Real consumer validation    | Native partial; web pending                              | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required                                                    |
+| Physical-device validation  | Incomplete                                               | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                                                    |
+| Distribution validation     | Complete (2026-08-27)                                    | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks                                                               |
+| Coordinated Lumen 2 release | Blocked by prior gates                                   | Every public package and platform at `2.0.0`, documentation, and migration notes                                                                                                                                                                 |
+| Version 2 contract approval | Draft; 3/3 investigations resolved                       | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage                                                                                                                                         |
 
 ### Release 1.6 baseline evidence
 

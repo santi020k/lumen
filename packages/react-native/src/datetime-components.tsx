@@ -3,6 +3,7 @@ import {
   type ComponentType,
   createElement,
   type ReactElement,
+  useEffect,
   useState
 } from 'react'
 import {
@@ -76,6 +77,14 @@ const resolveDateLabelColor = (
   ink: string,
   errorMessage?: string
 ): string => errorMessage ? danger : ink
+
+const resolveDatePickerExpanded = (enabled: boolean, expanded: boolean): boolean => (
+  enabled && expanded
+)
+
+const dismissAndroidDatePicker = (): void => {
+  if (Platform.OS === 'android') void DateTimePickerAndroid.dismiss('date')
+}
 
 const DateSupportingText = ({ description, errorMessage }: DateSupportingTextProps): ReactElement | null => {
   const theme = useLumenTheme()
@@ -153,7 +162,7 @@ export interface LumenDateFieldProps extends Omit<ViewProps, 'children'> {
   value: Date | null
 }
 
-export const LumenDateField = ({
+const LumenDateFieldControl = ({
   description,
   enabled = true,
   errorMessage,
@@ -169,6 +178,7 @@ export const LumenDateField = ({
 }: LumenDateFieldProps): ReactElement => {
   const theme = useLumenTheme()
   const [expanded, setExpanded] = useState(false)
+  const pickerExpanded = resolveDatePickerExpanded(enabled, expanded)
   const validValue = isValidLumenDate(value) ? value : null
   const pickerValue = resolveLumenDatePickerValue(value, minimumDate, maximumDate)
 
@@ -179,6 +189,8 @@ export const LumenDateField = ({
   )
 
   const pickerBounds = resolveLumenDateBounds(minimumDate, maximumDate)
+
+  useEffect(() => dismissAndroidDatePicker, [])
 
   const commitValue = (_event: DateTimePickerChangeEvent, selectedDate?: Date): void => {
     if (!selectedDate) return
@@ -218,7 +230,7 @@ export const LumenDateField = ({
         accessibilityHint={resolveLumenValidationHint(errorMessage, description)}
         accessibilityLabel={`${label}, ${displayValue}`}
         accessibilityRole="button"
-        accessibilityState={{ disabled: !enabled, expanded }}
+        accessibilityState={{ disabled: !enabled, expanded: pickerExpanded }}
         aria-invalid={resolveLumenAriaInvalid(errorMessage)}
         disabled={!enabled}
         onPress={openPicker}
@@ -256,7 +268,7 @@ export const LumenDateField = ({
         accentColor={theme.colors.brandSolid}
         disabled={!enabled}
         display={Platform.OS === 'ios' ? 'inline' : 'default'}
-        expanded={expanded}
+        expanded={pickerExpanded}
         label={label}
         mode="date"
         onDateChange={selectedDate => {
@@ -274,6 +286,10 @@ export const LumenDateField = ({
     </View>
   )
 }
+
+export const LumenDateField = (props: LumenDateFieldProps): ReactElement => (
+  <LumenDateFieldControl key={String(props.enabled ?? true)} {...props} />
+)
 
 export interface LumenDateRangeFieldProps extends Omit<ViewProps, 'children'> {
   description?: string

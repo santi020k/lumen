@@ -61,7 +61,6 @@ const nativeGuideLinks = hasNativeCatalog ?
       <div class="platform-hero__eyebrow">
         <Badge variant="outline">{guide.eyebrow}</Badge>
         <Marker variant="success">{guide.status}</Marker>
-        {guide.maturity && <Marker variant="warning">{guide.maturity}</Marker>}
       </div>
       <h1 id="platform-title">{guide.title}</h1>
       <p>{guide.summary}</p>
@@ -79,16 +78,6 @@ const nativeGuideLinks = hasNativeCatalog ?
       <p>{guide.installNote}</p>
     </Card>
   </section>
-
-  {guide.maturity && guide.maturityNote && (
-    <Card as="section" class="platform-maturity" variant="muted" aria-labelledby="platform-maturity-title">
-      <Badge variant="warning">{guide.maturity}</Badge>
-      <div>
-        <h2 id="platform-maturity-title">Ready for feedback-driven adoption</h2>
-        <p>{guide.maturityNote}</p>
-      </div>
-    </Card>
-  )}
 
   {hasNativeCatalog && (
     <nav class="platform-guide-map" aria-labelledby="platform-guide-map-title">
@@ -438,22 +427,12 @@ const nativeGuideLinks = hasNativeCatalog ?
   }
 
   .platform-hero__package p,
-  .platform-maturity p,
   .platform-principle p {
     color: hsl(var(--ink-soft));
     font-size: 0.875rem;
     line-height: 1.65;
   }
 
-  :global(.platform-maturity) {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-top: 1rem;
-    padding: 1.25rem;
-  }
-
-  .platform-maturity > div,
   .platform-theme-note > div {
     display: grid;
     gap: 0.35rem;
@@ -583,12 +562,6 @@ const nativeGuideLinks = hasNativeCatalog ?
     gap: 0.5rem;
     margin: 0;
     padding-left: 1.25rem;
-  }
-
-  .platform-maturity h2 {
-    color: hsl(var(--ink));
-    font-size: 1rem;
-    font-weight: 800;
   }
 
   .platform-components {

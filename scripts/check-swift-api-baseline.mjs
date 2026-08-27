@@ -13,9 +13,27 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
-const baselinePath = resolve(repositoryRoot, 'registry/swift-api-baseline.json')
+const moduleIndex = process.argv.indexOf('--module')
+const moduleName = moduleIndex >= 0 ? process.argv[moduleIndex + 1] : 'LumenUI'
+const supportedModules = new Set(['LumenUI', 'LumenWidgetUI'])
+
+assert.ok(moduleName && supportedModules.has(moduleName), 'Use --module LumenUI or --module LumenWidgetUI')
+
+const baselinePath = resolve(
+  repositoryRoot,
+  moduleName === 'LumenUI' ? 'registry/swift-api-baseline.json' : 'registry/swift-widget-api-baseline.json'
+)
+
 const shouldUpdate = process.argv.includes('--update')
+const expectedMaturity = 'stable'
 const classificationNames = ['supported', 'experimental', 'deprecated', 'unclassified']
+const classifyNewIndex = process.argv.indexOf('--classify-new')
+const classifyNew = classifyNewIndex >= 0 ? process.argv[classifyNewIndex + 1] : undefined
+
+assert.ok(
+  classifyNew === undefined || classificationNames.includes(classifyNew),
+  `Use --classify-new with one of: ${classificationNames.join(', ')}`
+)
 
 const platforms = [
   {
@@ -40,6 +58,13 @@ const platforms = [
     targetPlatform: 'tvos'
   },
   {
+    destination: 'generic/platform=visionOS Simulator',
+    key: 'visionOS',
+    minimumVersion: '1',
+    sdk: 'xrsimulator',
+    targetPlatform: 'xros'
+  },
+  {
     destination: 'generic/platform=watchOS Simulator',
     key: 'watchOS',
     minimumVersion: '9',
@@ -47,6 +72,10 @@ const platforms = [
     targetPlatform: 'watchos'
   }
 ]
+
+const activePlatforms = moduleName === 'LumenWidgetUI' ?
+  platforms.filter(platform => platform.key !== 'tvOS' && platform.key !== 'visionOS') :
+  platforms
 
 const execute = (command, arguments_, options = {}) =>
   execFileSync(command, arguments_, {
@@ -96,7 +125,7 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
   execute('xcodebuild', [
     '-quiet',
     '-scheme',
-    'LumenUI',
+    moduleName,
     '-destination',
     platform.destination,
     '-derivedDataPath',
@@ -106,9 +135,9 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
   ])
 
   const productsDirectory = join(derivedData, 'Build/Products')
-  const moduleDirectories = findDirectories(productsDirectory, 'LumenUI.swiftmodule')
+  const moduleDirectories = findDirectories(productsDirectory, `${moduleName}.swiftmodule`)
 
-  assert.equal(moduleDirectories.length, 1, `Expected one ${platform.key} LumenUI.swiftmodule`)
+  assert.equal(moduleDirectories.length, 1, `Expected one ${platform.key} ${moduleName}.swiftmodule`)
 
   const sdkPath = getSdkValue(platform.sdk, '--show-sdk-path')
   const sdkVersion = getSdkValue(platform.sdk, '--show-sdk-version')
@@ -118,7 +147,7 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
   execute('xcrun', [
     'swift-symbolgraph-extract',
     '-module-name',
-    'LumenUI',
+    moduleName,
     '-I',
     dirname(moduleDirectories[0]),
     '-target',
@@ -229,26 +258,52 @@ const compareSymbols = (platformName, expected, actual) => {
   )
 }
 
+const getClassificationsByIdentifier = existingPlatform => {
+  const classificationsByIdentifier = new Map()
+
+  if (!existingPlatform) return classificationsByIdentifier
+
+  for (const classification of classificationNames) {
+    for (const symbol of existingPlatform[classification]) {
+      classificationsByIdentifier.set(symbol.precise, classification)
+    }
+  }
+
+  return classificationsByIdentifier
+}
+
+const getUpdatedClassification = (
+  classificationsByIdentifier,
+  symbol,
+  hasExistingBaseline
+) => {
+  const existingClassification = classificationsByIdentifier.get(symbol.precise)
+
+  if (existingClassification && existingClassification !== 'unclassified') {
+    return existingClassification
+  }
+
+  if (existingClassification === 'unclassified' && classifyNew) return classifyNew
+
+  if (!hasExistingBaseline) return 'supported'
+
+  return classifyNew ?? 'unclassified'
+}
+
 const createUpdatedBaseline = (extracted, existingBaseline) => {
   const updatedPlatforms = {}
 
-  for (const platform of platforms) {
+  for (const platform of activePlatforms) {
     const existingPlatform = existingBaseline?.platforms?.[platform.key]
-    const classificationsByIdentifier = new Map()
-
-    if (existingPlatform) {
-      for (const classification of classificationNames) {
-        for (const symbol of existingPlatform[classification]) {
-          classificationsByIdentifier.set(symbol.precise, classification)
-        }
-      }
-    }
-
+    const classificationsByIdentifier = getClassificationsByIdentifier(existingPlatform)
     const classified = Object.fromEntries(classificationNames.map(name => [name, []]))
 
     for (const symbol of extracted[platform.key]) {
-      const classification =
-        classificationsByIdentifier.get(symbol.precise) ?? (existingBaseline ? 'unclassified' : 'supported')
+      const classification = getUpdatedClassification(
+        classificationsByIdentifier,
+        symbol,
+        existingBaseline !== undefined
+      )
 
       classified[classification].push(symbol)
     }
@@ -261,8 +316,8 @@ const createUpdatedBaseline = (extracted, existingBaseline) => {
 
   return {
     schemaVersion: 1,
-    module: 'LumenUI',
-    maturity: 'beta',
+    module: moduleName,
+    maturity: expectedMaturity,
     platforms: updatedPlatforms
   }
 }
@@ -275,7 +330,7 @@ const temporaryRoot = mkdtempSync(join(tmpdir(), 'lumen-swift-api-'))
 
 try {
   const extracted = Object.fromEntries(
-    platforms.map(platform => [platform.key, extractPlatformSymbols(platform, temporaryRoot)])
+    activePlatforms.map(platform => [platform.key, extractPlatformSymbols(platform, temporaryRoot)])
   )
 
   if (shouldUpdate) {
@@ -291,7 +346,7 @@ try {
 
     writeFileSync(baselinePath, `${JSON.stringify(updatedBaseline, null, 2)}\n`)
 
-    for (const platform of platforms) {
+    for (const platform of activePlatforms) {
       const baseline = updatedBaseline.platforms[platform.key]
 
       process.stdout.write(
@@ -305,18 +360,28 @@ try {
 
     assert.equal(baseline.schemaVersion, 1, 'Unsupported Swift API baseline schema version')
 
-    assert.equal(baseline.module, 'LumenUI', 'Unexpected Swift API baseline module')
+    assert.equal(baseline.module, moduleName, 'Unexpected Swift API baseline module')
 
-    assert.equal(baseline.maturity, 'beta', 'Unexpected Swift API baseline maturity')
+    assert.equal(
+      baseline.maturity,
+      expectedMaturity,
+      'Unexpected Swift API baseline maturity'
+    )
 
     assert.deepEqual(
       Object.keys(baseline.platforms),
-      platforms.map(platform => platform.key),
+      activePlatforms.map(platform => platform.key),
       'Swift API baseline platforms changed'
     )
 
-    for (const platform of platforms) {
+    for (const platform of activePlatforms) {
       const platformBaseline = baseline.platforms[platform.key]
+
+      assert.equal(
+        platformBaseline.experimental.length,
+        0,
+        `${platform.key} stable baseline contains experimental public symbols`
+      )
 
       assert.equal(
         platformBaseline.minimumVersion,

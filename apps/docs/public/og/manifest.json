@@ -2449,6 +2449,70 @@
       "pathname": "/docs/apple/components/date-range-field",
       "title": "Date range field"
     },
+    "/docs/apple/components/widget-text": {
+      "alt": "Widget text — Lumen UI",
+      "description": "Render focused WidgetKit text with native scaling and semantic rendering-mode color.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-text.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-text.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-text",
+      "title": "Widget text"
+    },
+    "/docs/apple/components/widget-icon": {
+      "alt": "Widget icon — Lumen UI",
+      "description": "Render a labeled or decorative WidgetKit SF Symbol with semantic tone.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-icon",
+      "title": "Widget icon"
+    },
+    "/docs/apple/components/widget-badge": {
+      "alt": "Widget badge — Lumen UI",
+      "description": "Present a compact rendering-mode-aware WidgetKit status badge.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-badge",
+      "title": "Widget badge"
+    },
+    "/docs/apple/components/widget-compact-stat": {
+      "alt": "Widget compact stat — Lumen UI",
+      "description": "Compose a compact WidgetKit label and value with optional semantic icon.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-compact-stat.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-compact-stat.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-compact-stat",
+      "title": "Widget compact stat"
+    },
     "/docs/apple/components/link": {
       "alt": "Link — Lumen UI",
       "description": "Open an Apple URL using native SwiftUI behavior and Lumen semantic styling.",

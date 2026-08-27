@@ -33,15 +33,29 @@ public struct LumenFieldGroup<Content: View>: View {
     @Environment(\.lumenTheme) private var theme
 
     private let content: Content
-    private let description: LocalizedStringKey?
-    private let errorMessage: LocalizedStringKey?
+    private let description: LumenTextContent?
+    private let errorMessage: LumenTextContent?
     private let required: Bool
-    private let title: LocalizedStringKey
+    private let title: LumenTextContent
 
     public init(
         _ title: LocalizedStringKey,
         description: LocalizedStringKey? = nil,
         errorMessage: LocalizedStringKey? = nil,
+        required: Bool = false,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = .localized(title)
+        self.description = description.map(LumenTextContent.localized)
+        self.errorMessage = errorMessage.map(LumenTextContent.localized)
+        self.required = required
+        self.content = content()
+    }
+
+    public init(
+        _ title: LumenTextContent,
+        description: LumenTextContent? = nil,
+        errorMessage: LumenTextContent? = nil,
         required: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
@@ -55,7 +69,7 @@ public struct LumenFieldGroup<Content: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             HStack(spacing: LumenSpacing.xs) {
-                Text(title)
+                title.text
                     .font(.callout.weight(.semibold))
                     .foregroundStyle(theme.colors.ink)
                 if required {
@@ -63,13 +77,13 @@ public struct LumenFieldGroup<Content: View>: View {
                 }
             }
             if let description {
-                Text(description)
+                description.text
                     .font(.caption)
                     .foregroundStyle(theme.colors.inkMuted)
             }
             content
             if let errorMessage {
-                Text(errorMessage)
+                errorMessage.text
                     .font(.caption)
                     .foregroundStyle(theme.colors.danger)
             }
@@ -84,16 +98,30 @@ public struct LumenTextarea: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.lumenTheme) private var theme
 
-    private let description: LocalizedStringKey?
-    private let errorMessage: LocalizedStringKey?
+    private let description: LumenTextContent?
+    private let errorMessage: LumenTextContent?
     private let minHeight: CGFloat
-    private let title: LocalizedStringKey
+    private let title: LumenTextContent
 
     public init(
         _ title: LocalizedStringKey,
         text: Binding<String>,
         description: LocalizedStringKey? = nil,
         errorMessage: LocalizedStringKey? = nil,
+        minHeight: CGFloat = 112
+    ) {
+        self.title = .localized(title)
+        _text = text
+        self.description = description.map(LumenTextContent.localized)
+        self.errorMessage = errorMessage.map(LumenTextContent.localized)
+        self.minHeight = minHeight
+    }
+
+    public init(
+        _ title: LumenTextContent,
+        text: Binding<String>,
+        description: LumenTextContent? = nil,
+        errorMessage: LumenTextContent? = nil,
         minHeight: CGFloat = 112
     ) {
         self.title = title
@@ -105,7 +133,7 @@ public struct LumenTextarea: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.xs) {
-            Text(title)
+            title.text
                 .font(.callout.weight(.semibold))
                 .foregroundStyle(theme.colors.ink)
             TextEditor(text: $text)
@@ -122,12 +150,12 @@ public struct LumenTextarea: View {
                 .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
                 .opacity(isEnabled ? 1 : 0.52)
                 .lumenAccessibilityHint(errorMessage ?? description)
-                .accessibilityLabel(title)
+                .accessibilityLabel(title.text)
                 .accessibilityValue(Text(verbatim: text))
             if let errorMessage {
-                Text(errorMessage).font(.caption).foregroundStyle(theme.colors.danger)
+                errorMessage.text.font(.caption).foregroundStyle(theme.colors.danger)
             } else if let description {
-                Text(description).font(.caption).foregroundStyle(theme.colors.inkMuted)
+                description.text.font(.caption).foregroundStyle(theme.colors.inkMuted)
             }
         }
     }

@@ -8,7 +8,7 @@ const repositoryRoot = resolve(import.meta.dirname, '..')
 const baselinePath = resolve(repositoryRoot, 'registry/native-api-baseline.json')
 const baseline = JSON.parse(await readFile(baselinePath, 'utf8'))
 const classifications = ['supported', 'experimental', 'deprecated']
-const maturities = new Set(['beta', 'stable'])
+const maturities = new Set(['stable'])
 const nativeApiAuditPath = resolve(repositoryRoot, 'docs/native-api-audit.md')
 const nativeApiAudit = await readFile(nativeApiAuditPath, 'utf8')
 

@@ -25,6 +25,11 @@ enhances all matching Lumen markup on the page.
 @import "@santi020k/lumen-astro/styles.css";
 ```
 
+Applications using the essential forms, feedback, tabs, dialogs, calendar, and data-table surface
+can instead load `@santi020k/lumen-astro/styles/critical.css`. The generated entry is about 50 KiB
+raw versus 170 KiB for the complete catalog; switch to `styles.css` when using components outside
+that documented critical set.
+
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
@@ -70,6 +75,9 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 `countries` are not provided. Mount `UIPrimitives` once to enable as-you-type formatting,
 metadata-backed validation, automatic country detection for pasted international numbers, and the
 `ui:phone-change` event with a `LumenPhoneNumber` detail.
+
+The phone metadata and normalization controller are selector-loaded only when a rendered page
+contains `PhoneInput`; pages without the component do not evaluate or download that controller.
 
 ```astro
 <PhoneInput countryValue="CO" locale="en-US" name="hospitalPhone" />
