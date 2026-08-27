@@ -31,10 +31,28 @@ export interface LumenDataViewServerRequest {
   url: string
 }
 
+const defaultDataViewPage = 1
+const defaultDataViewPageSize = 25
+
+const normalizePositiveInteger = (
+  value: number,
+  fallback: number
+): number => {
+  if (!Number.isFinite(value)) return fallback
+
+  const normalized = Math.trunc(value)
+
+  return Number.isSafeInteger(normalized) && normalized > 0 ?
+    normalized :
+    fallback
+}
+
 export const createDataViewState = (state: Partial<LumenDataViewState> = {}): LumenDataViewState => ({
   filters: state.filters ?? {},
-  page: state.page ?? 1,
-  pageSize: state.pageSize ?? 25,
+  page: normalizePositiveInteger(state.page ?? defaultDataViewPage, defaultDataViewPage),
+  pageSize: normalizePositiveInteger(
+    state.pageSize ?? defaultDataViewPageSize, defaultDataViewPageSize
+  ),
   pinnedColumns: state.pinnedColumns ?? [],
   query: state.query ?? '',
   selectedIds: state.selectedIds ?? [],
@@ -44,9 +62,13 @@ export const createDataViewState = (state: Partial<LumenDataViewState> = {}): Lu
 export const serializeDataViewState = (state: LumenDataViewState): string => {
   const params = new URLSearchParams()
 
-  params.set('page', String(state.page))
+  params.set('page', String(
+    normalizePositiveInteger(state.page, defaultDataViewPage)
+  ))
 
-  params.set('pageSize', String(state.pageSize))
+  params.set('pageSize', String(
+    normalizePositiveInteger(state.pageSize, defaultDataViewPageSize)
+  ))
 
   if (state.query) params.set('q', state.query)
 
@@ -78,9 +100,22 @@ const parseDataViewFilters = (params: URLSearchParams): Record<string, string> =
 const parseDataViewSort = (sort: null | string): LumenDataViewState['sort'] => {
   if (!sort) return undefined
 
+  const direction = sort.endsWith(':desc') ? 'desc' : 'asc'
+  let suffix = ''
+
+  if (sort.endsWith(':desc')) {
+    suffix = ':desc'
+  } else if (sort.endsWith(':asc')) {
+    suffix = ':asc'
+  }
+
+  const key = suffix ? sort.slice(0, -suffix.length) : sort
+
+  if (!key) return undefined
+
   return {
-    direction: sort.endsWith(':desc') ? 'desc' : 'asc',
-    key: sort.split(':')[0] ?? ''
+    direction,
+    key
   }
 }
 
@@ -161,13 +196,18 @@ export const paginateDataRecords = <T>(
   page: number,
   pageSize: number
 ) => {
-  const safePage = Math.max(1, page)
-  const start = (safePage - 1) * pageSize
+  const safePage = normalizePositiveInteger(page, defaultDataViewPage)
+
+  const safePageSize = normalizePositiveInteger(
+    pageSize, defaultDataViewPageSize
+  )
+
+  const start = (safePage - 1) * safePageSize
 
   return {
-    items: records.slice(start, start + pageSize),
+    items: records.slice(start, start + safePageSize),
     page: safePage,
-    pageCount: Math.max(1, Math.ceil(records.length / pageSize)),
+    pageCount: Math.max(1, Math.ceil(records.length / safePageSize)),
     total: records.length
   }
 }

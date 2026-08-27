@@ -60,6 +60,7 @@ import {
   moveScheduleEvent,
   normalizeLumenCode,
   normalizeThemeBuilderHex,
+  paginateDataRecords,
   parseDataViewState,
   parseScheduleEvents,
   parseThemeCss,
@@ -492,6 +493,32 @@ describe('lumen product helpers', () => {
       { id: '1', name: 'Docs', status: 'ready', updated: 2 },
       { id: '2', name: 'API', status: 'draft', updated: 1 }
     ], state).items).toEqual([{ id: '1', name: 'Docs', status: 'ready', updated: 2 }])
+  })
+
+  test('preserves structured sort keys and normalizes invalid pagination input', () => {
+    const state = createDataViewState({
+      page: Number.NaN,
+      pageSize: 0,
+      sort: { direction: 'desc', key: 'metadata:updatedAt' }
+    })
+    const parsed = parseDataViewState(
+      'page=1e309&pageSize=-10&sort=metadata:updatedAt:desc'
+    )
+
+    expect(state).toMatchObject({ page: 1, pageSize: 25 })
+    expect(parsed).toMatchObject({
+      page: 1,
+      pageSize: 25,
+      sort: { direction: 'desc', key: 'metadata:updatedAt' }
+    })
+    expect(
+      parseDataViewState(serializeDataViewState({
+        ...state,
+        sort: { direction: 'asc', key: 'metadata:updatedAt' }
+      })).sort
+    ).toEqual({ direction: 'asc', key: 'metadata:updatedAt' })
+    expect(paginateDataRecords(['one', 'two'], Number.POSITIVE_INFINITY, 0))
+      .toEqual({ items: ['one', 'two'], page: 1, pageCount: 1, total: 2 })
   })
 
   test('persists data view state through storage-like adapters', () => {
