@@ -1517,6 +1517,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -2161,6 +2170,15 @@
           "precise": "s:7LumenUI0A13SurfaceRadiusO2smyA2CmF"
         },
         {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO2xlyA2CmF"
+        },
+        {
           "declaration": "case none",
           "kind": "swift.enum.case",
           "path": [
@@ -2168,6 +2186,24 @@
             "none"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO4noneyA2CmF"
+        },
+        {
+          "declaration": "case size2xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size2xlyA2CmF"
+        },
+        {
+          "declaration": "case size3xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -2440,6 +2476,15 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO2smyA2CmF"
+        },
+        {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfacePadding",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A14SurfacePaddingO2xlyA2CmF"
         },
         {
           "declaration": "case none",
@@ -3392,13 +3437,13 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:padding:radius:action:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -4100,6 +4145,15 @@
           "precise": "s:7LumenUI0A6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
           "declaration": "static let full: CGFloat",
           "kind": "swift.type.property",
           "path": [
@@ -4107,6 +4161,24 @@
             "full"
           ],
           "precise": "s:7LumenUI0A6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenSlider",
@@ -26416,13 +26488,13 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:trailing:)"
+            "init(_:tone:systemName:trailing:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
+          "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -26434,13 +26506,13 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:)"
+            "init(_:tone:systemName:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -26576,13 +26648,13 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenTheme(_:enforceColorScheme:)"
+            "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
@@ -28332,6 +28404,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -28888,6 +28969,15 @@
           "precise": "s:7LumenUI0A13SurfaceRadiusO2smyA2CmF"
         },
         {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO2xlyA2CmF"
+        },
+        {
           "declaration": "case none",
           "kind": "swift.enum.case",
           "path": [
@@ -28895,6 +28985,24 @@
             "none"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO4noneyA2CmF"
+        },
+        {
+          "declaration": "case size2xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size2xlyA2CmF"
+        },
+        {
+          "declaration": "case size3xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -29167,6 +29275,15 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO2smyA2CmF"
+        },
+        {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfacePadding",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A14SurfacePaddingO2xlyA2CmF"
         },
         {
           "declaration": "case none",
@@ -30067,13 +30184,13 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:padding:radius:action:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -30775,6 +30892,15 @@
           "precise": "s:7LumenUI0A6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
           "declaration": "static let full: CGFloat",
           "kind": "swift.type.property",
           "path": [
@@ -30782,6 +30908,24 @@
             "full"
           ],
           "precise": "s:7LumenUI0A6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenSlider",
@@ -53029,13 +53173,13 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:trailing:)"
+            "init(_:tone:systemName:trailing:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
+          "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -53047,13 +53191,13 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:)"
+            "init(_:tone:systemName:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -53189,13 +53333,13 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenTheme(_:enforceColorScheme:)"
+            "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
@@ -54606,6 +54750,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -55101,6 +55254,15 @@
           "precise": "s:7LumenUI0A13SurfaceRadiusO2smyA2CmF"
         },
         {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO2xlyA2CmF"
+        },
+        {
           "declaration": "case none",
           "kind": "swift.enum.case",
           "path": [
@@ -55108,6 +55270,24 @@
             "none"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO4noneyA2CmF"
+        },
+        {
+          "declaration": "case size2xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size2xlyA2CmF"
+        },
+        {
+          "declaration": "case size3xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -55319,6 +55499,15 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO2smyA2CmF"
+        },
+        {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfacePadding",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A14SurfacePaddingO2xlyA2CmF"
         },
         {
           "declaration": "case none",
@@ -55815,13 +56004,13 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:padding:radius:action:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -56436,6 +56625,15 @@
           "precise": "s:7LumenUI0A6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
           "declaration": "static let full: CGFloat",
           "kind": "swift.type.property",
           "path": [
@@ -56443,6 +56641,24 @@
             "full"
           ],
           "precise": "s:7LumenUI0A6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenDivider",
@@ -78473,13 +78689,13 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:trailing:)"
+            "init(_:tone:systemName:trailing:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
+          "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -78491,13 +78707,13 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:)"
+            "init(_:tone:systemName:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -78633,13 +78849,13 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenTheme(_:enforceColorScheme:)"
+            "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
@@ -79968,6 +80184,15 @@
           "precise": "s:7LumenUI0A12ColorPaletteV10brandSolid05SwiftB00C0Vvp"
         },
         {
+          "declaration": "func overriding(canvas: Color? = nil, surface: Color? = nil, surfaceMuted: Color? = nil, surfaceStrong: Color? = nil, line: Color? = nil, ink: Color? = nil, inkSoft: Color? = nil, inkMuted: Color? = nil, brand: Color? = nil, brandSolid: Color? = nil, brandSoft: Color? = nil, onBrand: Color? = nil, accent: Color? = nil, success: Color? = nil, warning: Color? = nil, danger: Color? = nil, onDanger: Color? = nil) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenColorPalette",
+            "overriding(canvas:surface:surfaceMuted:surfaceStrong:line:ink:inkSoft:inkMuted:brand:brandSolid:brandSoft:onBrand:accent:success:warning:danger:onDanger:)"
+          ],
+          "precise": "s:7LumenUI0A12ColorPaletteV10overriding6canvas7surface0G5Muted0G6Strong4line3ink0K4Soft0kH05brand0M5Solid0mL07onBrand6accent7success7warning6danger0O6DangerAC05SwiftB00C0VSg_A16YtF"
+        },
+        {
           "declaration": "let surfaceMuted: Color",
           "kind": "swift.property",
           "path": [
@@ -80498,6 +80723,15 @@
           "precise": "s:7LumenUI0A13SurfaceRadiusO2smyA2CmF"
         },
         {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO2xlyA2CmF"
+        },
+        {
           "declaration": "case none",
           "kind": "swift.enum.case",
           "path": [
@@ -80505,6 +80739,24 @@
             "none"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO4noneyA2CmF"
+        },
+        {
+          "declaration": "case size2xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size2xlyA2CmF"
+        },
+        {
+          "declaration": "case size3xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -80716,6 +80968,15 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO2smyA2CmF"
+        },
+        {
+          "declaration": "case xl",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfacePadding",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A14SurfacePaddingO2xlyA2CmF"
         },
         {
           "declaration": "case none",
@@ -81264,13 +81525,13 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:padding:radius:action:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -81832,6 +82093,15 @@
           "precise": "s:7LumenUI0A6RadiusO2sm14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "static let xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
           "declaration": "static let full: CGFloat",
           "kind": "swift.type.property",
           "path": [
@@ -81839,6 +82109,24 @@
             "full"
           ],
           "precise": "s:7LumenUI0A6RadiusO4full14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size2xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size2xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size2xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "static let size3xl: CGFloat",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenRadius",
+            "size3xl"
+          ],
+          "precise": "s:7LumenUI0A6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenDivider",
@@ -103869,13 +104157,13 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:trailing:)"
+            "init(_:tone:systemName:trailing:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
+          "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -103887,13 +104175,13 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
-            "init(_:tone:)"
+            "init(_:tone:systemName:)"
           ],
-          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -104029,13 +104317,13 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenTheme(_:enforceColorScheme:)"
+            "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
