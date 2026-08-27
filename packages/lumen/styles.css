@@ -9,37 +9,38 @@
 
 @layer lumen.tokens {
 :root,
-:root[data-theme="light"] {
+[data-theme="light"],
+[data-theme="lumen-light"] {
   color-scheme: light;
-  --canvas: 0 0% 100%;
+  --canvas: 210 24% 98%;
   --surface: 0 0% 100%;
-  --surface-muted: 220 14% 96%;
-  --surface-strong: 220 13% 91%;
-  --line: 220 13% 86%;
-  --ink: 222 47% 11%;
-  --ink-soft: 215 16% 32%;
-  --ink-muted: 215 12% 48%;
-  --brand: 221 83% 53%;
-  --brand-solid: 221 83% 46%;
-  --brand-soft: 218 100% 97%;
+  --surface-muted: 210 22% 95%;
+  --surface-strong: 213 18% 88%;
+  --line: 214 17% 84%;
+  --ink: 216 28% 12%;
+  --ink-soft: 215 14% 35%;
+  --ink-muted: 215 10% 50%;
+  --brand: 201 96% 32%;
+  --brand-solid: 201 96% 28%;
+  --brand-soft: 198 64% 92%;
   --on-brand: 0 0% 100%;
-  --accent: 168 76% 36%;
-  --success: 142 71% 36%;
+  --accent: 169 78% 33%;
+  --success: 142 76% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
   --on-danger: 0 0% 0%;
   --chart-axis: var(--ink-muted);
-  --chart-diverging-mid: 220 13% 91%;
+  --chart-diverging-mid: 213 18% 88%;
   --chart-diverging-negative: 0 84% 60%;
-  --chart-diverging-positive: 221 83% 53%;
+  --chart-diverging-positive: 201 96% 32%;
   --chart-grid: var(--line);
   --chart-reference: var(--ink-soft);
   --chart-selection: var(--brand);
-  --chart-sequential-high: 221 83% 40%;
-  --chart-sequential-low: 218 100% 97%;
-  --chart-sequential-mid: 221 83% 67%;
-  --chart-series-1: 221 83% 53%;
-  --chart-series-2: 168 76% 36%;
+  --chart-sequential-high: 201 96% 24%;
+  --chart-sequential-low: 198 64% 92%;
+  --chart-sequential-mid: 201 80% 58%;
+  --chart-series-1: 201 96% 32%;
+  --chart-series-2: 169 78% 33%;
   --chart-series-3: 280 72% 56%;
   --chart-series-4: 25 95% 53%;
   --chart-series-5: 340 82% 55%;
@@ -66,7 +67,7 @@
   --glass-edge: 0 0% 100% / 0.9;
   --glass-edge-soft: 0 0% 100% / 0.34;
   --glass-shade: 222 47% 11% / 0.07;
-  --glass-refraction: 221 83% 53% / 0.08;
+  --glass-refraction: 201 96% 32% / 0.08;
   --glass-shadow:
     0 1px 2px hsl(222 47% 11% / 0.08),
     0 12px 32px hsl(222 47% 11% / 0.12),
@@ -79,8 +80,8 @@
   --ui-ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:root[data-theme="dark"],
-:root[data-theme="lumen-dark"] {
+[data-theme="dark"],
+[data-theme="lumen-dark"] {
   color-scheme: dark;
   --canvas: 224 24% 8%;
   --surface: 224 18% 11%;
@@ -139,7 +140,7 @@
     0 40px 96px hsl(0 0% 0% / 0.38);
 }
 
-:root[data-theme$="-dark"] {
+[data-theme$="-dark"] {
   --on-danger: var(--canvas);
   --ui-on-danger: var(--canvas);
 }

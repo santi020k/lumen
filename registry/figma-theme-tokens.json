@@ -2,14 +2,14 @@
   "collection": "Color",
   "sources": {
     "Light": {
-      "file": "apps/docs/src/styles/global.css",
-      "selector": ":root[data-theme=\"lumen-light\"]",
-      "role": "product-theme-override"
+      "file": "packages/lumen/styles.css",
+      "selector": "[data-theme=\"lumen-light\"]",
+      "role": "canonical-theme"
     },
     "Dark": {
-      "file": "apps/docs/src/styles/global.css",
-      "selector": ":root[data-theme=\"lumen-dark\"]",
-      "role": "product-theme-override"
+      "file": "packages/lumen/styles.css",
+      "selector": "[data-theme=\"lumen-dark\"]",
+      "role": "canonical-theme"
     },
     "santi020k Light": {
       "file": "apps/docs/src/styles/global.css",
@@ -28,11 +28,6 @@
       "anchors": {
         "brand": "201 96% 32%",
         "accent": "169 78% 33%"
-      },
-      "mustDifferFrom": {
-        "file": "packages/lumen/styles.css",
-        "selector": ":root[data-theme=\"light\"]",
-        "reason": "The package palette is a reusable fallback, not the Lumen product theme."
       }
     }
   },

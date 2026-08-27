@@ -29,20 +29,20 @@ data class LumenColorPalette(
 
 object LumenColors {
     val Light = LumenColorPalette(
-        canvas = Color(0xFFFFFFFF),
+        canvas = Color(0xFFF9FAFB),
         surface = Color(0xFFFFFFFF),
-        surfaceMuted = Color(0xFFF3F4F6),
-        surfaceStrong = Color(0xFFE5E7EB),
-        line = Color(0xFFD7DAE0),
-        ink = Color(0xFF0F1729),
-        inkSoft = Color(0xFF454F5F),
-        inkMuted = Color(0xFF6C7889),
-        brand = Color(0xFF2463EB),
-        brandSolid = Color(0xFF1452D7),
-        brandSoft = Color(0xFFF0F5FF),
+        surfaceMuted = Color(0xFFEFF2F5),
+        surfaceStrong = Color(0xFFDBE0E6),
+        line = Color(0xFFCFD5DD),
+        ink = Color(0xFF161D27),
+        inkSoft = Color(0xFF4D5766),
+        inkMuted = Color(0xFF737D8C),
+        brand = Color(0xFF0369A0),
+        brandSolid = Color(0xFF035C8C),
+        brandSoft = Color(0xFFDEF0F8),
         onBrand = Color(0xFFFFFFFF),
-        accent = Color(0xFF16A286),
-        success = Color(0xFF1B9D4A),
+        accent = Color(0xFF13967E),
+        success = Color(0xFF16A249),
         warning = Color(0xFFF59F0A),
         danger = Color(0xFFEF4343),
         onDanger = Color(0xFF000000)
@@ -95,20 +95,20 @@ data class LumenChartColorPalette(
 
 object LumenChartColors {
     val Light = LumenChartColorPalette(
-        axis = Color(0xFF6C7889),
-        grid = Color(0xFFD7DAE0),
-        reference = Color(0xFF454F5F),
-        selection = Color(0xFF2463EB),
-        tooltipBackground = Color(0xFF0F1729),
+        axis = Color(0xFF737D8C),
+        grid = Color(0xFFCFD5DD),
+        reference = Color(0xFF4D5766),
+        selection = Color(0xFF0369A0),
+        tooltipBackground = Color(0xFF161D27),
         tooltipForeground = Color(0xFFFFFFFF),
-        sequentialLow = Color(0xFFF0F5FF),
-        sequentialMid = Color(0xFF6590F1),
-        sequentialHigh = Color(0xFF114BBA),
+        sequentialLow = Color(0xFFDEF0F8),
+        sequentialMid = Color(0xFF3EAEEA),
+        sequentialHigh = Color(0xFF024F78),
         divergingNegative = Color(0xFFEF4343),
-        divergingMid = Color(0xFFE5E7EB),
-        divergingPositive = Color(0xFF2463EB),
-        series1 = Color(0xFF2463EB),
-        series2 = Color(0xFF16A286),
+        divergingMid = Color(0xFFDBE0E6),
+        divergingPositive = Color(0xFF0369A0),
+        series1 = Color(0xFF0369A0),
+        series2 = Color(0xFF13967E),
         series3 = Color(0xFFA43FDF),
         series4 = Color(0xFFFA6A14),
         series5 = Color(0xFFE73270),
@@ -166,6 +166,9 @@ object LumenRadius {
     val Sm = 6f.dp
     val Md = 10f.dp
     val Lg = 12f.dp
+    val Xl = 16f.dp
+    val Size2xl = 20f.dp
+    val Size3xl = 24f.dp
     val Full = 9999f.dp
 }
 

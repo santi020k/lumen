@@ -433,7 +433,7 @@ ${tokens.spacing.map(token => `    public static let ${toNativeCamelCase(token.n
 }
 
 public enum LumenRadius {
-${tokens.radii.map(token => `    public static let ${toCamelCase(token.name)}: CGFloat = ${token.value}`).join('\n')}
+${tokens.radii.map(token => `    public static let ${toNativeCamelCase(token.name)}: CGFloat = ${token.value}`).join('\n')}
 }
 
 public enum LumenTypography {
@@ -541,7 +541,7 @@ ${tokens.spacing.map(token => `    val ${toNativePascalCase(token.name)} = ${kot
 }
 
 object LumenRadius {
-${tokens.radii.map(token => `    val ${toPascalCase(token.name)} = ${kotlinFloat(token.value)}.dp`).join('\n')}
+${tokens.radii.map(token => `    val ${toNativePascalCase(token.name)} = ${kotlinFloat(token.value)}.dp`).join('\n')}
 }
 
 object LumenTypography {
@@ -578,8 +578,8 @@ const assertStylesMatch = async tokens => {
   const styles = await readFile(join(repoRoot, 'packages/lumen/styles.css'), 'utf8')
 
   const blocks = [
-    ['light', ':root[data-theme="light"] {', tokens.light],
-    ['dark', ':root[data-theme="lumen-dark"] {', tokens.dark]
+    ['light', '[data-theme="lumen-light"] {', tokens.light],
+    ['dark', '[data-theme="lumen-dark"] {', tokens.dark]
   ]
 
   for (const [scheme, marker, colors] of blocks) {

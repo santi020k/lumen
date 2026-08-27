@@ -61,20 +61,20 @@ public struct LumenColorPalette: Sendable {
 
 public enum LumenColors {
     public static let light = LumenColorPalette(
-        canvas: Color(red: 1.000000, green: 1.000000, blue: 1.000000),
+        canvas: Color(red: 0.976471, green: 0.980392, blue: 0.984314),
         surface: Color(red: 1.000000, green: 1.000000, blue: 1.000000),
-        surfaceMuted: Color(red: 0.952941, green: 0.956863, blue: 0.964706),
-        surfaceStrong: Color(red: 0.898039, green: 0.905882, blue: 0.921569),
-        line: Color(red: 0.843137, green: 0.854902, blue: 0.878431),
-        ink: Color(red: 0.058824, green: 0.090196, blue: 0.160784),
-        inkSoft: Color(red: 0.270588, green: 0.309804, blue: 0.372549),
-        inkMuted: Color(red: 0.423529, green: 0.470588, blue: 0.537255),
-        brand: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
-        brandSolid: Color(red: 0.078431, green: 0.321569, blue: 0.843137),
-        brandSoft: Color(red: 0.941176, green: 0.960784, blue: 1.000000),
+        surfaceMuted: Color(red: 0.937255, green: 0.949020, blue: 0.960784),
+        surfaceStrong: Color(red: 0.858824, green: 0.878431, blue: 0.901961),
+        line: Color(red: 0.811765, green: 0.835294, blue: 0.866667),
+        ink: Color(red: 0.086275, green: 0.113725, blue: 0.152941),
+        inkSoft: Color(red: 0.301961, green: 0.341176, blue: 0.400000),
+        inkMuted: Color(red: 0.450980, green: 0.490196, blue: 0.549020),
+        brand: Color(red: 0.011765, green: 0.411765, blue: 0.627451),
+        brandSolid: Color(red: 0.011765, green: 0.360784, blue: 0.549020),
+        brandSoft: Color(red: 0.870588, green: 0.941176, blue: 0.972549),
         onBrand: Color(red: 1.000000, green: 1.000000, blue: 1.000000),
-        accent: Color(red: 0.086275, green: 0.635294, blue: 0.525490),
-        success: Color(red: 0.105882, green: 0.615686, blue: 0.290196),
+        accent: Color(red: 0.074510, green: 0.588235, blue: 0.494118),
+        success: Color(red: 0.086275, green: 0.635294, blue: 0.286275),
         warning: Color(red: 0.960784, green: 0.623529, blue: 0.039216),
         danger: Color(red: 0.937255, green: 0.262745, blue: 0.262745),
         onDanger: Color(red: 0.000000, green: 0.000000, blue: 0.000000)
@@ -170,20 +170,20 @@ public struct LumenChartColorPalette: Sendable {
 
 public enum LumenChartColors {
     public static let light = LumenChartColorPalette(
-        axis: Color(red: 0.423529, green: 0.470588, blue: 0.537255),
-        grid: Color(red: 0.843137, green: 0.854902, blue: 0.878431),
-        reference: Color(red: 0.270588, green: 0.309804, blue: 0.372549),
-        selection: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
-        tooltipBackground: Color(red: 0.058824, green: 0.090196, blue: 0.160784),
+        axis: Color(red: 0.450980, green: 0.490196, blue: 0.549020),
+        grid: Color(red: 0.811765, green: 0.835294, blue: 0.866667),
+        reference: Color(red: 0.301961, green: 0.341176, blue: 0.400000),
+        selection: Color(red: 0.011765, green: 0.411765, blue: 0.627451),
+        tooltipBackground: Color(red: 0.086275, green: 0.113725, blue: 0.152941),
         tooltipForeground: Color(red: 1.000000, green: 1.000000, blue: 1.000000),
-        sequentialLow: Color(red: 0.941176, green: 0.960784, blue: 1.000000),
-        sequentialMid: Color(red: 0.396078, green: 0.564706, blue: 0.945098),
-        sequentialHigh: Color(red: 0.066667, green: 0.294118, blue: 0.729412),
+        sequentialLow: Color(red: 0.870588, green: 0.941176, blue: 0.972549),
+        sequentialMid: Color(red: 0.243137, green: 0.682353, blue: 0.917647),
+        sequentialHigh: Color(red: 0.007843, green: 0.309804, blue: 0.470588),
         divergingNegative: Color(red: 0.937255, green: 0.262745, blue: 0.262745),
-        divergingMid: Color(red: 0.898039, green: 0.905882, blue: 0.921569),
-        divergingPositive: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
-        series1: Color(red: 0.141176, green: 0.388235, blue: 0.921569),
-        series2: Color(red: 0.086275, green: 0.635294, blue: 0.525490),
+        divergingMid: Color(red: 0.858824, green: 0.878431, blue: 0.901961),
+        divergingPositive: Color(red: 0.011765, green: 0.411765, blue: 0.627451),
+        series1: Color(red: 0.011765, green: 0.411765, blue: 0.627451),
+        series2: Color(red: 0.074510, green: 0.588235, blue: 0.494118),
         series3: Color(red: 0.643137, green: 0.247059, blue: 0.874510),
         series4: Color(red: 0.980392, green: 0.415686, blue: 0.078431),
         series5: Color(red: 0.905882, green: 0.196078, blue: 0.439216),
@@ -241,6 +241,9 @@ public enum LumenRadius {
     public static let sm: CGFloat = 6
     public static let md: CGFloat = 10
     public static let lg: CGFloat = 12
+    public static let xl: CGFloat = 16
+    public static let size2xl: CGFloat = 20
+    public static let size3xl: CGFloat = 24
     public static let full: CGFloat = 9999
 }
 

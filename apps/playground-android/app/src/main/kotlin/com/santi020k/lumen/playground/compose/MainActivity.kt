@@ -170,17 +170,12 @@ internal enum class PlaygroundThemePreset(val label: String) {
             this == Santi020k && darkTheme -> santi020kDark
             this == Santi020k -> santi020kLight
             darkTheme -> com.santi020k.lumen.LumenColors.Dark
-            else -> lumenLight
+            else -> com.santi020k.lumen.LumenColors.Light
         },
         isDark = darkTheme
     )
 
     private companion object {
-        val lumenLight = palette(
-            0xFFF9FAFB, 0xFFFFFFFF, 0xFFEFF2F5, 0xFFDBE0E6, 0xFFCFD5DD,
-            0xFF161D27, 0xFF4D5766, 0xFF737D8C, 0xFF0369A0, 0xFF035C8C,
-            0xFFDEF0F8, 0xFF13967E, 0xFF16A249, 0xFFF59F0A, 0xFFEF4343, 0xFF000000
-        )
         val santi020kLight = palette(
             0xFFFAF9FB, 0xFFFFFFFF, 0xFFF5F3F7, 0xFFE5E2E9, 0xFFD6D0DC,
             0xFF332E38, 0xFF5B5463, 0xFF47434C, 0xFF620AE6, 0xFF5709CE,
