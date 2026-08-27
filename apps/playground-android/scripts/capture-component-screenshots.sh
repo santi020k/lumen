@@ -136,7 +136,7 @@ for component in "${components[@]}"; do
     esac
 
     $adb shell am force-stop com.santi020k.lumen.playground.compose
-    $adb shell am start -W -n "$phone_activity" --es component "$component" >/dev/null
+    $adb shell am start -W -n "$phone_activity" --es component "\"$component\"" >/dev/null
     for ((index = 0; index < scroll_count; index += 1)); do
         $adb shell input swipe 540 1500 540 650 250
         sleep 0.3
