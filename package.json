@@ -89,7 +89,7 @@
     "test:coordinated-release-revision": "node --test scripts/check-coordinated-release-revision.test.mjs",
     "check:graduated-release-revision": "node scripts/check-graduated-release-revision.mjs",
     "test:graduated-release-revision": "node --test scripts/check-graduated-release-revision.test.mjs",
-    "test:maven-release-artifacts": "node --test scripts/check-maven-release-artifacts.test.mjs",
+    "test:maven-release-artifacts": "node --test scripts/check-maven-pom-metadata.test.mjs scripts/check-maven-release-artifacts.test.mjs",
     "check:npm-release-provenance": "node scripts/check-npm-release-provenance.mjs",
     "test:npm-release-provenance": "node --test scripts/check-npm-release-provenance.test.mjs",
     "test:v2-release-workflows": "node --test scripts/check-v2-release-workflows.test.mjs",

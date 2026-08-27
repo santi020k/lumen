@@ -30,7 +30,25 @@ const pomFor = (artifactId, tag = "compose-v2.0.0") => `<?xml version="1.0"?>
   <groupId>com.santi020k</groupId>
   <artifactId>${artifactId}</artifactId>
   <version>${version}</version>
+  <name>${artifactId === "lumen-compose" ? "Lumen UI for Jetpack Compose" : "Lumen UI for Wear OS"}</name>
+  <description>${artifactId === "lumen-compose" ? "Accessible Jetpack Compose foundations and primitives for Lumen UI." : "At-a-glance, accessible wearable primitives for Lumen UI."}</description>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/license/mit</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>santi020k</id>
+      <name>Santiago Molina</name>
+      <url>https://santi020k.com</url>
+    </developer>
+  </developers>
   <scm>
+    <connection>scm:git:https://github.com/santi020k/lumen.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/santi020k/lumen.git</developerConnection>
     <tag>${tag}</tag>
     <url>https://github.com/santi020k/lumen/tree/${tag}</url>
   </scm>

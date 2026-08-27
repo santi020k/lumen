@@ -192,11 +192,45 @@ if (signingKey.isPresent && signingPassword.isPresent) {
     }
 }
 
+val verifyMavenPomMetadata = tasks.register<Exec>("verifyMavenPomMetadata") {
+    group = "verification"
+    description = "Verifies direct Maven coordinates and immutable SCM metadata for Compose and Wear."
+    dependsOn("publishReleasePublicationToCentralStagingRepository")
+    dependsOn(":wear:publishReleasePublicationToCentralStagingRepository")
+
+    val composePom = layout.buildDirectory.file(
+        "central-staging/com/santi020k/lumen-compose/$lumenComposeVersion/" +
+            "lumen-compose-$lumenComposeVersion.pom"
+    )
+    val wearPom = layout.buildDirectory.file(
+        "central-staging/com/santi020k/lumen-compose-wear/$lumenComposeVersion/" +
+            "lumen-compose-wear-$lumenComposeVersion.pom"
+    )
+
+    inputs.files(composePom, wearPom)
+
+    commandLine(
+        "node",
+        rootProject.file("../../scripts/check-maven-pom-metadata.mjs"),
+        "--version",
+        lumenComposeVersion,
+        "--artifact-id",
+        "lumen-compose",
+        "--pom",
+        composePom.get().asFile,
+        "--artifact-id",
+        "lumen-compose-wear",
+        "--pom",
+        wearPom.get().asFile
+    )
+}
+
 tasks.register("verifyMavenPublication") {
     group = "verification"
     description = "Verifies the unsigned local publication shape and required Maven Central metadata."
     dependsOn("publishReleasePublicationToCentralStagingRepository")
     dependsOn(":wear:publishReleasePublicationToCentralStagingRepository")
+    dependsOn(verifyMavenPomMetadata)
 
     doLast {
         val coordinateDirectory = layout.buildDirectory
@@ -217,19 +251,6 @@ tasks.register("verifyMavenPublication") {
             "Maven publication is missing: ${missingArtifacts.joinToString()}"
         }
 
-        val pom = coordinateDirectory.resolve("$prefix.pom").readText()
-        listOf("<name>", "<description>", "<licenses>", "<developers>", "<scm>").forEach { element ->
-            require(element in pom) { "Maven publication POM is missing $element metadata." }
-        }
-        val expectedScmTag = "compose-v$lumenComposeVersion"
-
-        require("<tag>$expectedScmTag</tag>" in pom) {
-            "Maven publication POM is not bound to $expectedScmTag."
-        }
-        require("<url>https://github.com/santi020k/lumen/tree/$expectedScmTag</url>" in pom) {
-            "Maven publication POM does not browse the immutable release tag."
-        }
-
         val wearPrefix = "lumen-compose-wear-$lumenComposeVersion"
         val wearDirectory = layout.buildDirectory
             .dir("central-staging/com/santi020k/lumen-compose-wear/$lumenComposeVersion")
@@ -247,14 +268,6 @@ tasks.register("verifyMavenPublication") {
             "Lumen Wear publication is missing: ${missingWearArtifacts.joinToString()}"
         }
 
-        val wearPom = wearDirectory.resolve("$wearPrefix.pom").readText()
-
-        require("<tag>$expectedScmTag</tag>" in wearPom) {
-            "Lumen Wear publication POM is not bound to $expectedScmTag."
-        }
-        require("<url>https://github.com/santi020k/lumen/tree/$expectedScmTag</url>" in wearPom) {
-            "Lumen Wear publication POM does not browse the immutable release tag."
-        }
     }
 }
 
@@ -263,6 +276,7 @@ tasks.register<Zip>("centralPortalBundle") {
     description = "Builds the signed deployment bundle accepted by the Maven Central Portal."
     dependsOn("publishReleasePublicationToCentralStagingRepository")
     dependsOn(":wear:publishReleasePublicationToCentralStagingRepository")
+    dependsOn("verifyMavenPublication")
     archiveFileName.set("lumen-compose-$lumenComposeVersion-central.zip")
     destinationDirectory.set(layout.buildDirectory.dir("central-bundle"))
 

@@ -36,6 +36,11 @@ const [nativeSmokeSource, npmProvenanceSource] = await Promise.all([
   ),
 ]);
 
+const composeBuildSource = await readFile(
+  resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
+  "utf8",
+);
+
 const classifiers = [...canaryWorkflow.matchAll(/if grep -Eq '([^']+)'/gu)];
 
 assert.equal(
@@ -80,6 +85,9 @@ const v2Inputs = [
   "scripts/check-lumen-2-contract.test.mjs",
   "scripts/check-maven-release-artifacts.mjs",
   "scripts/check-maven-release-artifacts.test.mjs",
+  "scripts/check-maven-pom-metadata.mjs",
+  "scripts/check-maven-pom-metadata.test.mjs",
+  "scripts/maven-pom-metadata.mjs",
   "scripts/check-npm-release-provenance.mjs",
   "scripts/check-npm-release-provenance.test.mjs",
   "scripts/check-published-package-family.mjs",
@@ -375,5 +383,16 @@ test("published Compose artifacts bind checksums and POM metadata to the release
   assert.ok(
     publishedNativeWorkflow.includes('--version "$COMPOSE_VERSION"'),
     "the Maven verifier must use the requested Compose version",
+  );
+
+  assert.match(
+    composeBuildSource,
+    /tasks\.register<Zip>\("centralPortalBundle"\)[\s\S]*dependsOn\("verifyMavenPublication"\)/u,
+    "the Central bundle must run local publication verification before upload",
+  );
+
+  assert.ok(
+    composeBuildSource.includes("check-maven-pom-metadata.mjs"),
+    "the local publication gate must use the structural POM metadata checker",
   );
 });
