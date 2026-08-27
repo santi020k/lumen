@@ -543,7 +543,7 @@ export const LumenPieChart = ({
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
-            series={[series]}
+            series={[renderedSeries]}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
             {...(selectedX === undefined ? {} : { selectedX })}

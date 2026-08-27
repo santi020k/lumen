@@ -190,5 +190,6 @@ class ChartComponentsTest {
         assertTrue(lumenPieSummary(pie).contains("1 point"))
         assertEquals("1 range.", lumenRangeSummary(ranges))
         assertEquals("No chart data available.", lumenRangeSummary(ranges.drop(1)))
+        assertEquals(listOf(2.0, 8.0), lumenRangeDomainValues(ranges))
     }
 }

@@ -11,6 +11,7 @@ invalid controlled dates from reaching formatters, and ignore invalid optional d
 restricted phone inputs within their
 configured country allow-list across native adapters, including externally supplied values, and
 exclude invalid scatter coordinates, non-finite numeric categories, and negative bubble sizes from
-rendered charts and disclosures.
+rendered charts and disclosures. Keep pie disclosures aligned with positive rendered slices and
+exclude incomplete ranges from Compose chart domains.
 Preserve typed range categories in React fallback keys, and generate Swift-safe illustration case
 identifiers from kebab-case catalog names.

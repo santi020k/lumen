@@ -222,6 +222,9 @@ internal fun lumenRangeValueSegments(data: List<LumenRangeDatum>): List<List<Lum
     return segments
 }
 
+internal fun lumenRangeDomainValues(data: List<LumenRangeDatum>): List<Double> =
+    lumenRangeValueSegments(data).flatten().flatMap { value -> listOf(value.low, value.high) }
+
 internal fun lumenAvailableHeatmapData(data: List<LumenHeatmapDatum>): List<LumenHeatmapDatum> =
     data.filter { datum -> datum.value?.isFinite() == true }
 
@@ -714,7 +717,8 @@ fun LumenPieChart(
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
 ) {
     val theme = LocalLumenTheme.current
-    val available = lumenAvailablePieData(series.data).map { datum -> datum to (datum.y ?: 0.0) }
+    val availableData = lumenAvailablePieData(series.data)
+    val available = availableData.map { datum -> datum to (datum.y ?: 0.0) }
     val total = available.sumOf { it.second }
 
     LumenChartFrame(label, summary, modifier) {
@@ -761,7 +765,13 @@ fun LumenPieChart(
             }
         }
 
-        if (showData) LumenChartDataList(listOf(series), selection, onSelectionChange)
+        if (showData) {
+            LumenChartDataList(
+                listOf(series.copy(data = availableData)),
+                selection,
+                onSelectionChange
+            )
+        }
     }
 }
 
@@ -821,8 +831,8 @@ fun LumenRangeChart(
     showData: Boolean = true
 ) {
     val theme = LocalLumenTheme.current
-    val domain = lumenChartDomain(data.flatMap { listOf(it.low, it.high) })
     val segments = lumenRangeValueSegments(data)
+    val domain = lumenChartDomain(lumenRangeDomainValues(data))
 
     LumenChartFrame(label, summary, modifier) {
         if (segments.isEmpty()) {
