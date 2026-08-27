@@ -43,3 +43,13 @@ generate_icon "AppIcon-76.png" 76
 generate_icon "AppIcon-76@2x.png" 152
 generate_icon "AppIcon-83.5@2x.png" 167
 generate_icon "AppIcon-1024.png" 1024
+generate_icon "AppIcon-Mac-16.png" 16
+generate_icon "AppIcon-Mac-16@2x.png" 32
+generate_icon "AppIcon-Mac-32.png" 32
+generate_icon "AppIcon-Mac-32@2x.png" 64
+generate_icon "AppIcon-Mac-128.png" 128
+generate_icon "AppIcon-Mac-128@2x.png" 256
+generate_icon "AppIcon-Mac-256.png" 256
+generate_icon "AppIcon-Mac-256@2x.png" 512
+generate_icon "AppIcon-Mac-512.png" 512
+generate_icon "AppIcon-Mac-512@2x.png" 1024

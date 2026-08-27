@@ -18,24 +18,29 @@ primary destinations are Home, Examples, Components, and Settings:
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press
 `Command-R`. Simulator builds do not require an Apple Developer account.
 
-Run the macOS gallery from the repository root:
+Run the macOS gallery from the repository root as a Swift Package executable:
 
 ```bash
 pnpm playground:apple:build
 swift run --package-path apps/playground-apple LumenApplePlayground
 ```
 
+For the distributable macOS application, open `LumenApplePlayground.xcodeproj`, select the shared
+`LumenMacPlayground` scheme, and run on **My Mac**. The target reuses the same gallery sources while
+adding the App Sandbox, hardened runtime, application metadata, and complete Mac icon set required
+for Mac App Store distribution.
+
 Select a development team in Signing & Capabilities only when installing on a physical device or
 archiving for TestFlight. Update `project.yml` and regenerate the Xcode project with XcodeGen when
 project structure changes.
 
-App Store archives are built and signed by Xcode Cloud. Run the local preflight with
+App Store archives for iOS and macOS are built and signed by Xcode Cloud. Run the local preflight with
 `pnpm playground:apple:release-preflight`; it checks the release metadata, runs the playground's
-Swift tests, and produces an unsigned Release build for the iOS Simulator. Then launch a build from
-the GitHub Actions workflow
-**Launch Apple playground release**. The workflow creates a `playground-ios-v<version>-r<run>` tag;
-the tag starts Xcode Cloud, which assigns its build number and uploads the archive to App Store
-Connect without exposing Apple signing credentials to GitHub.
+Swift tests, and produces an unsigned iOS Simulator build plus a universal macOS archive. Then launch a
+build from **Launch Apple playground release** or **Launch Mac playground release** in GitHub
+Actions. The workflows create platform-specific immutable tags; each tag starts its matching Xcode
+Cloud workflow, which assigns the build number and uploads the archive to App Store Connect without
+exposing Apple signing credentials to GitHub.
 
 See [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites and the complete Xcode,
 device, signing, and TestFlight workflow.
@@ -88,7 +93,7 @@ After iPhone, macOS, and watchOS evidence is current, run `pnpm run sync:native-
 repository root to update the optimized documentation gallery.
 
 Pass `--dark` to launch either gallery in its deterministic dark appearance. Public App Store copy,
-review notes, and phone and tablet screenshot candidates live in `Store`; the opaque application
+review notes, and phone, tablet, and Mac screenshot candidates live in `Store`; the opaque application
 icon is generated from the shared Lumen mark with `scripts/generate-app-icons.sh`. Follow
 [`docs/playground-publication.md`](../../docs/playground-publication.md) before building a signed
 TestFlight or App Store archive.
