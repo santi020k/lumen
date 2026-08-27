@@ -9,7 +9,9 @@ on:
       - "apps/playground-apple/**"
       - "apps/docs/src/data/platforms.ts"
       - "docs/ai-usage.md"
+      - "docs/native-compatibility.md"
       - "docs/native-components.md"
+      - "docs/native-device-validation.md"
       - "docs/playgrounds.md"
       - "packages/**"
       - "registry/native-device-evidence.json"
@@ -26,6 +28,8 @@ on:
       - "scripts/check-native-consumer-evidence.mjs"
       - "scripts/check-native-stability-soak.mjs"
       - "scripts/check-native-stable-readiness.mjs"
+      - "scripts/check-react-native-peer-docs.mjs"
+      - "scripts/check-react-native-peer-docs.test.mjs"
       - "scripts/generate-release-manifest.mjs"
       - "scripts/sync-swift-version.mjs"
       - "scripts/sync-swift-version.test.mjs"
@@ -66,7 +70,7 @@ jobs:
           fi
 
           changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
-          if grep -Eq '^(packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|apps/(docs|next-smoke|playground-react-native|templates)/|registry/release-manifest\.json$|scripts/(generate-release-manifest|smoke-consumer-packages|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|apps/(docs|next-smoke|playground-react-native|templates)/|docs/(native-compatibility|native-device-validation)\.md$|registry/release-manifest\.json$|scripts/(check-react-native-peer-docs(\.test)?|generate-release-manifest|smoke-consumer-packages|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
             echo "web=true" >> "$GITHUB_OUTPUT"
           else
             echo "web=false" >> "$GITHUB_OUTPUT"
@@ -97,6 +101,7 @@ jobs:
           node-version: 22.x
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check:release-manifest
+      - run: pnpm run check:react-native-peer-docs && pnpm run test:react-native-peer-docs
       - run: pnpm run build
       - run: pnpm run check:consumer-packages
       - run: pnpm run check:react-native-package
