@@ -38,6 +38,17 @@ public enum LumenDateFieldBounds: Equatable, Sendable {
     }
 }
 
+func resolveLumenDateRange(
+    start: Date,
+    end: Date,
+    bounds: LumenDateFieldBounds
+) -> (start: Date, end: Date) {
+    let clampedStart = bounds.clamped(start)
+    let clampedEnd = bounds.clamped(end)
+
+    return (clampedStart, max(clampedEnd, clampedStart))
+}
+
 /// A token-aware Apple date input with native picker behavior and Lumen validation messaging.
 public struct LumenDateField: View {
     @Binding private var selection: Date
@@ -122,6 +133,119 @@ public struct LumenDateField: View {
         Binding(
             get: { bounds.clamped(selection) },
             set: { selection = bounds.clamped($0) }
+        )
+    }
+}
+
+/// A coordinated pair of native Apple date inputs that preserves a valid inclusive range.
+public struct LumenDateRangeField: View {
+    @Binding private var end: Date
+    @Binding private var start: Date
+    @Environment(\.lumenTheme) private var theme
+
+    private let bounds: LumenDateFieldBounds
+    private let components: LumenDateFieldComponents
+    private let description: LocalizedStringKey?
+    private let endLabel: LocalizedStringKey
+    private let errorMessage: LocalizedStringKey?
+    private let startLabel: LocalizedStringKey
+    private let title: LocalizedStringKey
+
+    public init(
+        _ title: LocalizedStringKey,
+        start: Binding<Date>,
+        end: Binding<Date>,
+        components: LumenDateFieldComponents = .date,
+        bounds: LumenDateFieldBounds = .unbounded,
+        startLabel: LocalizedStringKey = "Start date",
+        endLabel: LocalizedStringKey = "End date",
+        description: LocalizedStringKey? = nil,
+        errorMessage: LocalizedStringKey? = nil
+    ) {
+        self.title = title
+        _start = start
+        _end = end
+        self.components = components
+        self.bounds = bounds
+        self.startLabel = startLabel
+        self.endLabel = endLabel
+        self.description = description
+        self.errorMessage = errorMessage
+    }
+
+    public var body: some View {
+        VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(theme.colors.ink)
+
+            LumenDateField(
+                startLabel,
+                selection: startSelection,
+                components: components,
+                bounds: bounds
+            )
+
+            LumenDateField(
+                endLabel,
+                selection: endSelection,
+                components: components,
+                bounds: endBounds
+            )
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.caption)
+                    .foregroundStyle(theme.colors.danger)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else if let description {
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(theme.colors.inkMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    private var clampedStart: Date {
+        bounds.clamped(start)
+    }
+
+    private var endBounds: LumenDateFieldBounds {
+        switch bounds {
+        case let .closed(range):
+            .closed(max(range.lowerBound, clampedStart)...range.upperBound)
+        case let .from(lowerBound):
+            .from(max(lowerBound, clampedStart))
+        case let .through(upperBound):
+            .closed(clampedStart...upperBound)
+        case .unbounded:
+            .from(clampedStart)
+        }
+    }
+
+    private var startSelection: Binding<Date> {
+        Binding(
+            get: { resolveLumenDateRange(start: start, end: end, bounds: bounds).start },
+            set: { value in
+                let range = resolveLumenDateRange(start: value, end: end, bounds: bounds)
+
+                start = range.start
+                end = range.end
+            }
+        )
+    }
+
+    private var endSelection: Binding<Date> {
+        Binding(
+            get: { resolveLumenDateRange(start: start, end: end, bounds: bounds).end },
+            set: { value in
+                let range = resolveLumenDateRange(start: start, end: value, bounds: bounds)
+
+                start = range.start
+                end = range.end
+            }
         )
     }
 }

@@ -11,9 +11,15 @@ import {
   StyleSheet,
   View
 } from 'react-native'
+import {
+  SafeAreaProvider,
+  SafeAreaView
+} from 'react-native-safe-area-context'
 
 import {
+  createEmptyLumenPhoneNumber,
   getLumenIconGraphic,
+  getLumenPhoneCountry,
   LumenAlert,
   LumenAlertDescription,
   LumenAlertDialog,
@@ -22,28 +28,41 @@ import {
   LumenBackdrop,
   LumenBadge,
   LumenBanner,
+  LumenBarChart,
   LumenButton,
   LumenButtonGroup,
   LumenCard,
   LumenCheckbox,
   LumenChip,
   LumenCollapsibleNavigationBar,
+  LumenComboChart,
+  LumenDateField,
+  LumenDateRangeField,
+  type LumenDateRangeValue,
   LumenDisclosure,
   LumenDivider,
   LumenEmptyState,
   LumenFieldGroup,
   LumenGraphic,
+  LumenHeatmap,
   LumenIcon,
   LumenIconButton,
   LumenIllustration,
+  LumenImage,
+  LumenLineChart,
   LumenListRow,
   LumenMenu,
   LumenNavigationAccessory,
   LumenNavigationBar,
+  LumenPhoneInput,
+  type LumenPhoneNumber,
+  LumenPieChart,
   LumenProgress,
   LumenProvider,
   LumenRadioGroup,
+  LumenRangeChart,
   LumenRefreshControl,
+  LumenScatterChart,
   LumenSearchField,
   LumenSectionHeader,
   LumenSegmentedControl,
@@ -51,6 +70,7 @@ import {
   LumenShareButton,
   LumenSheet,
   LumenSkeleton,
+  LumenSparkline,
   LumenSpinner,
   LumenStat,
   LumenStatusBar,
@@ -63,11 +83,14 @@ import {
   LumenToggle,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
-type ColorScheme = 'dark' | 'light'
+type AppDestination = 'about' | 'components' | 'home'
+
+type ColorScheme = 'dark' | 'light' | 'system'
 
 interface ComponentSectionProps {
-  children: ReactElement | ReactElement[]
+  children: ReactNode
   description: string
   title: string
 }
@@ -86,6 +109,9 @@ const componentNames = [
   'Toggle',
   'Settings row',
   'Search field',
+  'Date field',
+  'Date range field',
+  'Phone input',
   'Checkbox',
   'Radio group',
   'Segmented control',
@@ -103,6 +129,15 @@ const componentNames = [
   'Graphic',
   'Backdrop',
   'Illustration',
+  'Image',
+  'Sparkline',
+  'Line chart',
+  'Bar chart',
+  'Pie chart',
+  'Scatter chart',
+  'Heatmap',
+  'Range chart',
+  'Combo chart',
   'Disclosure',
   'Avatar',
   'Empty state',
@@ -121,10 +156,24 @@ const componentNames = [
 ]
 
 const componentIcon = getLumenIconGraphic('blocks')
+const homeIcon = getLumenIconGraphic('house')
 const settingsIcon = getLumenIconGraphic('settings')
 const updatesIcon = getLumenIconGraphic('bell')
+const defaultPhoneCountry = getLumenPhoneCountry('CO', { locale: 'en-US' })
 
-const navigationItems = [
+if (!defaultPhoneCountry) throw new Error('Expected Colombia phone metadata')
+
+const sampleImage = {
+  uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFUlEQVR42mNUSX7NgA0wMeAAg1MCACR8AYLZ4VNSAAAAAElFTkSuQmCC'
+}
+
+const appNavigationItems = [
+  { icon: homeIcon, label: 'Home', value: 'home' },
+  { icon: componentIcon, label: 'Components', value: 'components' },
+  { icon: settingsIcon, label: 'About', value: 'about' }
+] as const
+
+const demoNavigationItems = [
   { badge: 3, icon: componentIcon, label: 'Components', value: 'components' },
   { badge: true, icon: updatesIcon, label: 'Updates', value: 'updates' },
   { disabled: true, icon: settingsIcon, label: 'Settings', value: 'settings' }
@@ -141,6 +190,15 @@ const openExternalURL = (url: string): void => {
 }
 
 const styles = StyleSheet.create({
+  app: {
+    flex: 1
+  },
+  appBody: {
+    flex: 1
+  },
+  appNavigation: {
+    flexShrink: 0
+  },
   catalogMeta: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -168,6 +226,19 @@ const styles = StyleSheet.create({
   heroCopy: {
     flex: 1,
     gap: 8
+  },
+  homeHero: {
+    alignItems: 'flex-start'
+  },
+  homeHeroGraphic: {
+    marginBottom: 4
+  },
+  linkActions: {
+    alignItems: 'stretch',
+    gap: 10
+  },
+  safeArea: {
+    flex: 1
   },
   progressLabel: {
     flexDirection: 'row',
@@ -208,6 +279,9 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     gap: 4
+  },
+  stack: {
+    gap: 12
   }
 })
 
@@ -234,50 +308,6 @@ const ComponentSection = ({
   )
 }
 
-const AboutPlayground = (): ReactElement => {
-  const theme = useLumenTheme()
-
-  return (
-    <ComponentSection
-      description="A living catalog for evaluating Lumen's React Native components on native devices and the web."
-      title="About Lumen Playground"
-    >
-      <View style={{ alignItems: 'flex-start', gap: theme.spacing.sm }}>
-        <LumenBadge tone="success">No data collection</LumenBadge>
-        <LumenText tone="soft">
-          Search the complete catalog, exercise interactive states, and compare light and dark
-          {' '}
-          themes without creating an account.
-        </LumenText>
-        <LumenButton
-          intent="secondary"
-          onPress={() => {
-            openExternalURL('https://lumen.santi020k.com/docs/react-native')
-          }}
-        >
-          Documentation
-        </LumenButton>
-        <LumenButton
-          intent="secondary"
-          onPress={() => {
-            openExternalURL('https://lumen.santi020k.com/support')
-          }}
-        >
-          Support
-        </LumenButton>
-        <LumenButton
-          intent="secondary"
-          onPress={() => {
-            openExternalURL('https://lumen.santi020k.com/privacy')
-          }}
-        >
-          Privacy
-        </LumenButton>
-      </View>
-    </ComponentSection>
-  )
-}
-
 const getThemeToggleState = (scheme: ColorScheme): {
   icon: 'moon' | 'sun'
   label: string
@@ -292,18 +322,315 @@ const getThemeToggleState = (scheme: ColorScheme): {
   }
 }
 
-const Playground = ({
+const isAppDestination = (value: string): value is AppDestination => (
+  value === 'about' || value === 'components' || value === 'home'
+)
+
+const isColorScheme = (value: string): value is ColorScheme => (
+  value === 'dark' || value === 'light' || value === 'system'
+)
+
+const HomeScreen = ({
+  onBrowse,
+  onOpenAbout
+}: {
+  onBrowse: () => void
+  onOpenAbout: () => void
+}): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
+      <ScrollView contentContainerStyle={styles.content}>
+        <LumenCard style={styles.homeHero} variant="accent">
+          <LumenGraphic
+            label="Lumen package graphic"
+            size="sm"
+            style={styles.homeHeroGraphic}
+            tone="brand"
+            variant="orbit"
+          >
+            <LumenIcon decorative name="package-open" size="lg" />
+          </LumenGraphic>
+          <View style={styles.row}>
+            <LumenBadge tone="accent">Expo preview</LumenBadge>
+            <LumenBadge tone="success">No account required</LumenBadge>
+          </View>
+          <View style={styles.sectionHeading}>
+            <LumenText variant="title">Explore Lumen on a real device</LumenText>
+            <LumenText tone="soft">
+              Test accessible React Native primitives, responsive layouts, themes, forms, charts,
+              and native interaction patterns in one focused playground.
+            </LumenText>
+          </View>
+          <View style={styles.linkActions}>
+            <LumenButton onPress={onBrowse}>Browse all components</LumenButton>
+            <LumenButton intent="secondary" onPress={onOpenAbout}>About this preview</LumenButton>
+          </View>
+        </LumenCard>
+
+        <View style={styles.statGrid}>
+          <LumenStat
+            detail="Searchable examples"
+            label="Components"
+            style={styles.statItem}
+            tone="accent"
+            value={String(componentNames.length)}
+          />
+          <LumenStat
+            detail="Light, dark, and system"
+            label="Appearance"
+            style={styles.statItem}
+            tone="success"
+            value="3 modes"
+          />
+        </View>
+
+        <LumenCard>
+          <LumenSectionHeader
+            subtitle="Everything stays local to this playground."
+            title="Made for hands-on evaluation"
+          />
+          <View style={[styles.stack, { gap: theme.spacing.xs }]}>
+            <LumenListRow leading={<LumenIcon decorative name="search" size="md" />}>
+              <LumenText variant="label">Find any component quickly</LumenText>
+              <LumenText tone="muted">Search the complete native catalog by name.</LumenText>
+            </LumenListRow>
+            <LumenDivider />
+            <LumenListRow leading={<LumenIcon decorative name="pointer" size="md" />}>
+              <LumenText variant="label">Exercise real behavior</LumenText>
+              <LumenText tone="muted">Press, edit, dismiss, select, refresh, and share.</LumenText>
+            </LumenListRow>
+            <LumenDivider />
+            <LumenListRow leading={<LumenIcon decorative name="accessibility" size="md" />}>
+              <LumenText variant="label">Review native accessibility</LumenText>
+              <LumenText tone="muted">Inspect labels, states, touch targets, and contrast.</LumenText>
+            </LumenListRow>
+          </View>
+        </LumenCard>
+
+        <LumenStatusBar
+          message="Built with @santi020k/lumen-react-native"
+          tone="success"
+          trailing={<LumenText tone="muted" variant="caption">Public preview</LumenText>}
+        />
+      </ScrollView>
+    </LumenSurface>
+  )
+}
+
+const AboutScreen = ({
   onSchemeChange,
   scheme
 }: {
   onSchemeChange: (scheme: ColorScheme) => void
   scheme: ColorScheme
+}): ReactElement => (
+  <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
+    <ScrollView contentContainerStyle={styles.content}>
+      <View style={styles.heroCopy}>
+        <LumenBadge tone="accent">Lumen Playground</LumenBadge>
+        <LumenText variant="title">About this preview</LumenText>
+        <LumenText tone="soft">
+          A public, account-free gallery for evaluating the real Lumen React Native package.
+        </LumenText>
+      </View>
+
+      <LumenCard>
+        <LumenSectionHeader
+          subtitle="Follow the device or choose a fixed playground theme."
+          title="Appearance"
+        />
+        <LumenSegmentedControl
+          label="Playground appearance"
+          onValueChange={value => {
+            if (isColorScheme(value)) onSchemeChange(value)
+          }}
+          options={[
+            { label: 'System', value: 'system' },
+            { label: 'Light', value: 'light' },
+            { label: 'Dark', value: 'dark' }
+          ]}
+          value={scheme}
+        />
+      </LumenCard>
+
+      <LumenAlert variant="success">
+        <LumenAlertTitle>Private by design</LumenAlertTitle>
+        <LumenAlertDescription>
+          The playground requires no account and does not collect, retain, or share personal data.
+          Interactive examples remain on your device.
+        </LumenAlertDescription>
+      </LumenAlert>
+
+      <LumenCard>
+        <LumenSectionHeader
+          subtitle="Documentation, source, support, and policies."
+          title="Learn more"
+        />
+        <View style={styles.linkActions}>
+          <LumenButton
+            onPress={() => {
+              openExternalURL('https://lumen.santi020k.com/docs/react-native')
+            }}
+          >
+            React Native documentation
+          </LumenButton>
+          <LumenButton
+            intent="secondary"
+            onPress={() => {
+              openExternalURL('https://github.com/santi020k/lumen')
+            }}
+          >
+            View source on GitHub
+          </LumenButton>
+          <LumenButton
+            intent="secondary"
+            onPress={() => {
+              openExternalURL('https://lumen.santi020k.com/support')
+            }}
+          >
+            Support
+          </LumenButton>
+          <LumenButton
+            intent="quiet"
+            onPress={() => {
+              openExternalURL('https://lumen.santi020k.com/privacy')
+            }}
+          >
+            Privacy policy
+          </LumenButton>
+        </View>
+      </LumenCard>
+
+      <LumenText tone="muted" variant="caption">
+        Lumen UI · React Native playground 1.0.0 · Created by Santiago Molina
+      </LumenText>
+    </ScrollView>
+  </LumenSurface>
+)
+
+const ChartExamples = ({
+  isVisible
+}: {
+  isVisible: (name: string) => boolean
+}): ReactElement => (
+  <>
+    {isVisible('Sparkline') && (
+      <LumenSparkline label="Weekly adoption trend" values={[12, 18, 16, 27, 35]} />
+    )}
+    {isVisible('Line chart') && (
+      <LumenLineChart
+        area
+        heading="Weekly adoption"
+        label="Weekly adoption chart"
+        series={[{
+          data: [
+            { x: 'Mon', y: 18 },
+            { x: 'Tue', y: 26 },
+            { x: 'Wed', y: null },
+            { x: 'Thu', y: 41 },
+            { x: 'Fri', y: 53 }
+          ],
+          id: 'adoption',
+          label: 'Projects'
+        }]}
+      />
+    )}
+    {isVisible('Bar chart') && (
+      <LumenBarChart
+        label="Components by platform"
+        series={[{
+          data: [{ x: 'Web', y: 82 }, { x: 'iOS', y: 61 }, { x: 'Android', y: 58 }],
+          id: 'components',
+          label: 'Components'
+        }]}
+      />
+    )}
+    {isVisible('Pie chart') && (
+      <LumenPieChart
+        label="Issue status distribution"
+        series={{
+          data: [{ x: 'Complete', y: 68 }, { x: 'Active', y: 22 }, { x: 'Blocked', y: 10 }],
+          id: 'issues',
+          label: 'Issues'
+        }}
+      />
+    )}
+    {isVisible('Scatter chart') && (
+      <LumenScatterChart
+        label="Bundle size and render time"
+        series={[{
+          data: [{ x: 12, y: 28, size: 12 }, { x: 20, y: 41, size: 20 }, { x: 31, y: 54, size: 28 }],
+          id: 'releases',
+          label: 'Releases'
+        }]}
+      />
+    )}
+    {isVisible('Heatmap') && (
+      <LumenHeatmap
+        data={[
+          { value: 18, x: 'Mon', y: 'Morning' },
+          { value: 32, x: 'Tue', y: 'Morning' },
+          { value: 47, x: 'Mon', y: 'Evening' },
+          { value: null, x: 'Tue', y: 'Evening' }
+        ]}
+        label="Activity by day and period"
+      />
+    )}
+    {isVisible('Range chart') && (
+      <LumenRangeChart
+        data={[
+          { high: 28, low: 16, x: 'Mon' },
+          { high: 35, low: 21, x: 'Tue' },
+          { high: 42, low: 27, x: 'Wed' }
+        ]}
+        label="Daily forecast range"
+      />
+    )}
+    {isVisible('Combo chart') && (
+      <LumenComboChart
+        label="Deployments and reliability"
+        series={[
+          {
+            data: [{ x: 'Apr', y: 24 }, { x: 'May', y: 31 }, { x: 'Jun', y: 38 }],
+            id: 'deployments',
+            label: 'Deployments',
+            mark: 'bar'
+          },
+          {
+            data: [{ x: 'Apr', y: 94 }, { x: 'May', y: 97 }, { x: 'Jun', y: 99 }],
+            id: 'reliability',
+            label: 'Reliability',
+            mark: 'line'
+          }
+        ]}
+      />
+    )}
+  </>
+)
+
+const Playground = ({
+  onSchemeChange
+}: {
+  onSchemeChange: (scheme: ColorScheme) => void
 }): ReactElement => {
   const theme = useLumenTheme()
-  const themeToggle = getThemeToggleState(scheme)
+  const themeToggle = getThemeToggleState(theme.scheme)
   const initialComponent = getInitialComponentQuery()
   const [email, setEmail] = useState('hello@lumen.dev')
   const [notes, setNotes] = useState('Native components now share one documented contract.')
+  const [releaseDate, setReleaseDate] = useState<Date | null>(() => new Date(2026, 8, 15))
+
+  const [reportingRange, setReportingRange] = useState<LumenDateRangeValue>(() => ({
+    end: new Date(2026, 8, 30),
+    start: new Date(2026, 8, 15)
+  }))
+
+  const [phoneNumber, setPhoneNumber] = useState<LumenPhoneNumber>(() => (
+    createEmptyLumenPhoneNumber(defaultPhoneCountry)
+  ))
+
   const [query, setQuery] = useState(initialComponent)
   const [saved, setSaved] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
@@ -450,6 +777,15 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
+        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Heatmap', 'Range chart', 'Combo chart')}>
+          <ComponentSection
+            description="Tokenized plots include a factual accessibility summary and readable fallback data."
+            title="Data visualization"
+          >
+            <ChartExamples isVisible={isVisible} />
+          </ComponentSection>
+        </Visibility>
+
         <Visibility
           visible={isAnyVisible(
             'Text field',
@@ -458,6 +794,9 @@ const Playground = ({
             'Toggle',
             'Settings row',
             'Search field',
+            'Date field',
+            'Date range field',
+            'Phone input',
             'Checkbox',
             'Radio group',
             'Segmented control',
@@ -483,6 +822,27 @@ const Playground = ({
               label="Release notes"
               onChangeText={setNotes}
               value={notes}
+            />
+            <LumenDateField
+              description="Choose the planned native release date."
+              label="Release date"
+              minimumDate={new Date(2026, 8, 1)}
+              onValueChange={setReleaseDate}
+              value={releaseDate}
+            />
+            <LumenDateRangeField
+              description="The end date cannot precede the start date."
+              label="Reporting period"
+              minimumDate={new Date(2026, 8, 1)}
+              onValueChange={setReportingRange}
+              value={reportingRange}
+            />
+            <LumenPhoneInput
+              description={phoneNumber.e164 ?? 'Add the full hospital or OB number.'}
+              label="Hospital or OB phone number"
+              locale="en-US"
+              onValueChange={setPhoneNumber}
+              value={phoneNumber}
             />
             <LumenFieldGroup
               description="These controls retain independent focus and labels."
@@ -662,7 +1022,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Graphic', 'Backdrop', 'Illustration')}>
+        <Visibility visible={isAnyVisible('Graphic', 'Backdrop', 'Illustration', 'Image')}>
           <ComponentSection
             description="Token-aware decorative foundations and semantic empty, success, error, and offline artwork."
             title="Visual content"
@@ -689,6 +1049,13 @@ const Playground = ({
               <LumenIllustration label="Operation failed" size="sm" variant="error" />
               <LumenIllustration label="Device is offline" size="sm" variant="offline" />
             </View>
+            <LumenImage
+              aspectRatio={16 / 9}
+              fit="cover"
+              label="Blue Lumen sample artwork"
+              radius="md"
+              source={sampleImage}
+            />
           </ComponentSection>
         </Visibility>
 
@@ -873,7 +1240,7 @@ const Playground = ({
             title="Native navigation"
           >
             <LumenNavigationBar
-              items={navigationItems}
+              items={demoNavigationItems}
               onReselect={value => {
                 setLastAction(`Reselected ${value}`)
               }}
@@ -885,7 +1252,7 @@ const Playground = ({
             </LumenNavigationAccessory>
             <LumenCollapsibleNavigationBar
               accessory={<LumenText variant="caption">Gallery sync complete</LumenText>}
-              items={navigationItems}
+              items={demoNavigationItems}
               onReselect={value => {
                 setLastAction(`Reselected ${value}`)
               }}
@@ -905,10 +1272,6 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={query.trim().length === 0}>
-          <AboutPlayground />
-        </Visibility>
-
         <LumenStatusBar
           message={`Built with @santi020k/lumen-react-native · ${theme.scheme} theme`}
           tone="success"
@@ -925,13 +1288,69 @@ const Playground = ({
   )
 }
 
-const App = (): ReactElement => {
-  const [scheme, setScheme] = useState<ColorScheme>('light')
+const AppShell = ({
+  onSchemeChange,
+  scheme
+}: {
+  onSchemeChange: (scheme: ColorScheme) => void
+  scheme: ColorScheme
+}): ReactElement => {
+  const theme = useLumenTheme()
+
+  const [destination, setDestination] = useState<AppDestination>(() => (
+    getInitialComponentQuery() ? 'components' : 'home'
+  ))
 
   return (
-    <LumenProvider scheme={scheme}>
-      <Playground onSchemeChange={setScheme} scheme={scheme} />
-    </LumenProvider>
+    <>
+      <ExpoStatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
+      <SafeAreaView
+        edges={['top', 'right', 'bottom', 'left']}
+        style={[styles.safeArea, { backgroundColor: theme.colors.canvas }]}
+      >
+        <LumenSurface padding="none" radius="none" style={styles.app} tone="canvas">
+          <View style={styles.appBody}>
+            {destination === 'home' && (
+              <HomeScreen
+                onBrowse={() => {
+                  setDestination('components')
+                }}
+                onOpenAbout={() => {
+                  setDestination('about')
+                }}
+              />
+            )}
+            {destination === 'components' && (
+              <Playground onSchemeChange={onSchemeChange} />
+            )}
+            {destination === 'about' && (
+              <AboutScreen onSchemeChange={onSchemeChange} scheme={scheme} />
+            )}
+          </View>
+          <LumenNavigationBar
+            accessibilityLabel="Playground navigation"
+            items={appNavigationItems}
+            onValueChange={value => {
+              if (isAppDestination(value)) setDestination(value)
+            }}
+            style={styles.appNavigation}
+            value={destination}
+          />
+        </LumenSurface>
+      </SafeAreaView>
+    </>
+  )
+}
+
+const App = (): ReactElement => {
+  const [scheme, setScheme] = useState<ColorScheme>('system')
+
+  return (
+    <SafeAreaProvider>
+      <LumenProvider scheme={scheme}>
+        <AppShell onSchemeChange={setScheme} scheme={scheme} />
+      </LumenProvider>
+    </SafeAreaProvider>
   )
 }
 

@@ -6,23 +6,32 @@ import SwiftUI
 struct LumenApplePlaygroundApp: App {
     var body: some Scene {
         WindowGroup {
-            ApplePlaygroundView()
+            PlaygroundRootView()
                 .frame(minWidth: 420, minHeight: 620)
         }
     }
 }
 
-private struct ApplePlaygroundView: View {
+struct ComponentsCatalogView: View {
     @State private var email = "hello@lumen.dev"
     @State private var accessibilityReviewed = false
     @State private var componentSearch = ""
     @State private var disclosureExpanded = true
-    @State private var isDark = false
+    @Binding private var themePreference: PlaygroundThemePreference
     @State private var notificationsEnabled = true
     @State private var notes = "Native components now share one documented contract."
+    @State private var phoneNumber = LumenPhoneNumber.empty(
+        country: LumenPhoneCountries.forRegion("CO") ?? LumenPhoneCountry(
+            regionCode: "CO",
+            callingCode: "+57",
+            displayName: "Colombia"
+        )
+    )
     @State private var progress = 76.0
     @State private var query = ""
     @State private var releaseDate = Date()
+    @State private var releaseEndDate = Date().addingTimeInterval(86_400)
+    @State private var selectedCategory: PlaygroundComponentCategory = .all
     @State private var selectedDensity = "Comfortable"
     @State private var selectedProfile = "balanced"
     @State private var selectedLayout = "comfortable"
@@ -38,54 +47,57 @@ private struct ApplePlaygroundView: View {
     @State private var designSelected = true
     @State private var selectedDestination = "home"
 
-    private let componentNames = [
-        "Theme", "Text", "Surface", "Icon", "Icon button", "Button", "Button group", "Text field",
-        "Textarea", "Field group", "Chip", "Badge", "Link",
-        "Divider", "Spinner", "Card", "Alert", "Alert dialog", "Progress", "Skeleton", "Disclosure", "Avatar",
-        "Toggle", "Settings row", "Checkbox", "Radio group", "Segmented control", "Tabs",
-        "Picker", "Slider", "Date field", "Search field", "Empty state", "List row", "Banner", "Toast", "Stat", "Gauge",
-        "Section header", "Status bar", "Graphic", "Backdrop", "Illustration", "Navigation bar",
-        "Sheet", "Menu", "Share button", "Tab bar minimization", "Tab accessory",
-        "Shortcut recorder", "Symbol picker"
-    ]
+    private let isDeterministicFilter: Bool
+    private let componentNames = PlaygroundCatalog.componentNames
 
-    init() {
-        _isDark = State(initialValue: ProcessInfo.processInfo.arguments.contains("--dark"))
-
-        if let index = ProcessInfo.processInfo.arguments.firstIndex(of: "--component"),
-           ProcessInfo.processInfo.arguments.indices.contains(index + 1) {
-            let component = ProcessInfo.processInfo.arguments[index + 1]
-            _query = State(initialValue: component)
-            _showAlertDialog = State(initialValue: component == "Alert dialog")
-            _showSheet = State(initialValue: component == "Sheet")
-        }
+    init(themePreference: Binding<PlaygroundThemePreference>, componentFilter: String? = nil) {
+        _themePreference = themePreference
+        _query = State(initialValue: componentFilter ?? "")
+        _showAlertDialog = State(initialValue: componentFilter == "Alert dialog")
+        _showSheet = State(initialValue: componentFilter == "Sheet")
+        isDeterministicFilter = componentFilter != nil
     }
 
     var body: some View {
         LumenSurface(tone: .canvas, padding: .none, radius: .none) {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: LumenSpacing.lg) {
-                hero
-                LumenSearchField("Search components", text: $query)
-
-                HStack {
-                    LumenText("\(visibleCount) components", variant: .label)
-                    Spacer()
-                    LumenText("iOS · iPadOS · macOS", variant: .caption, tone: .muted)
+                if isDeterministicFilter {
+                    hero
+                    LumenSearchField("Search components", text: $query)
+                    catalogCountRow
+                } else {
+                    catalogHeader
                 }
 
-                foundationsSection
-                visualSection
-                actionsSection
-                formsSection
-                feedbackSection
-                contentStatesSection
-                dataSection
-                navigationSection
-                presentationSection
+                AdaptiveColumns {
+                    foundationsSection
+                } secondary: {
+                    visualSection
+                }
+                AdaptiveColumns {
+                    actionsSection
+                } secondary: {
+                    formsSection
+                }
+                AdaptiveColumns {
+                    feedbackSection
+                } secondary: {
+                    contentStatesSection
+                }
+                AdaptiveColumns {
+                    dataSection
+                } secondary: {
+                    chartSection
+                }
+                AdaptiveColumns {
+                    navigationSection
+                } secondary: {
+                    presentationSection
+                }
                 emptyStateSection
 
-                if query.isEmpty {
+                if query.isEmpty, selectedCategory == .all {
                     aboutSection
                 }
 
@@ -105,17 +117,73 @@ private struct ApplePlaygroundView: View {
                     LumenText("\(componentNames.count) components", variant: .caption, tone: .muted)
                 }
             }
-                .frame(maxWidth: 820)
-                .padding(LumenSpacing.xl)
+                .frame(maxWidth: 1040)
+                .padding(isDeterministicFilter ? LumenSpacing.xl : LumenSpacing.lg)
                 .frame(maxWidth: .infinity)
             }
         }
-        .lumenTheme(isDark ? .dark : .light)
+    }
+
+    private var catalogHeader: some View {
+        PlaygroundSection(
+            "SwiftUI component library",
+            description: "Search every public playground entry or narrow the catalog by product intent."
+        ) {
+            VStack(alignment: .leading, spacing: LumenSpacing.md) {
+                HStack(alignment: .center) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: LumenSpacing.sm) {
+                            LumenBadge("\(componentNames.count) components", tone: .accent)
+                            LumenBadge("6 categories", tone: .neutral)
+                            LumenBadge("3 platforms", tone: .success)
+                        }
+                    }
+                    Spacer(minLength: LumenSpacing.sm)
+                    themeButton
+                }
+                LumenSearchField("Search components", text: $query)
+                LumenText("Browse by category", variant: .label)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: LumenSpacing.sm) {
+                        ForEach(PlaygroundComponentCategory.allCases) { category in
+                            LumenChip(
+                                LocalizedStringKey(category.title),
+                                selected: selectedCategory == category,
+                                onPress: { selectedCategory = category }
+                            )
+                        }
+                    }
+                    .padding(.vertical, 1)
+                }
+                catalogCountRow
+            }
+        }
+    }
+
+    private var catalogCountRow: some View {
+        HStack {
+            LumenText("\(visibleCount) components", variant: .label)
+            Spacer()
+            LumenText(
+                selectedCategory == .all ? "iOS · iPadOS · macOS" : LocalizedStringKey(selectedCategory.title),
+                variant: .caption,
+                tone: .muted
+            )
+        }
+    }
+
+    private var themeButton: some View {
+        LumenIconButton(
+            name: themePreference == .dark ? .sun : .moon,
+            label: themePreference == .dark ? "Use light theme" : "Use dark theme"
+        ) {
+            themePreference = themePreference == .dark ? .light : .dark
+        }
     }
 
     @ViewBuilder
     private var visualSection: some View {
-        if matches("Graphic", "Backdrop", "Illustration") {
+        if matches("Graphic", "Backdrop", "Illustration", "Image") {
             PlaygroundSection(
                 "Visual composition",
                 description: "Decorative primitives use semantic color and keep meaningful artwork labeled."
@@ -131,6 +199,17 @@ private struct ApplePlaygroundView: View {
                             size: .sm,
                             label: "Successful native build"
                         )
+                        LumenImage(
+                            aspectRatio: 1,
+                            fit: .contain,
+                            radius: .md,
+                            label: "Photo placeholder"
+                        ) {
+                            Image(systemName: "photo.on.rectangle.angled")
+                                .resizable()
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                        .frame(width: 96)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(LumenSpacing.lg)
@@ -153,12 +232,7 @@ private struct ApplePlaygroundView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            LumenIconButton(
-                name: isDark ? .sun : .moon,
-                label: isDark ? "Use light theme" : "Use dark theme"
-            ) {
-                isDark.toggle()
-            }
+            themeButton
         }
     }
 
@@ -387,11 +461,13 @@ private struct ApplePlaygroundView: View {
             "Text field",
             "Textarea",
             "Field group",
+            "Phone input",
             "Toggle",
             "Settings row",
             "Picker",
             "Slider",
             "Date field",
+            "Date range field",
             "Search field",
             "Checkbox",
             "Radio group",
@@ -421,6 +497,14 @@ private struct ApplePlaygroundView: View {
                                 isChecked: $accessibilityReviewed
                             )
                         }
+                    }
+                    if matches("Phone input") {
+                        LumenPhoneInput(
+                            "Hospital or OB phone number",
+                            value: $phoneNumber,
+                            locale: Locale(identifier: "en_US"),
+                            description: phoneNumber.e164 ?? "Add the full hospital or OB number."
+                        )
                     }
                     if matches("Settings row") {
                         LumenSettingsRow(
@@ -516,6 +600,14 @@ private struct ApplePlaygroundView: View {
                             description: "Choose when this component becomes available."
                         )
                     }
+                    if matches("Date range field") {
+                        LumenDateRangeField(
+                            "Release window",
+                            start: $releaseDate,
+                            end: $releaseEndDate,
+                            description: "Choose the inclusive availability window."
+                        )
+                    }
                     if matches("Search field") {
                         LumenSearchField("Search workspaces", text: $componentSearch)
                     }
@@ -606,6 +698,133 @@ private struct ApplePlaygroundView: View {
                             onDismiss: { showToast = false }
                         )
                     }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var chartSection: some View {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart") {
+            PlaygroundSection(
+                "Data visualization",
+                description: "Tokenized plots include a factual accessibility summary and readable fallback data."
+            ) {
+                if isVisible("Sparkline") {
+                    LumenSparkline(label: "Weekly adoption trend", values: [12, 18, 16, 27, 35])
+                }
+                if isVisible("Line chart") {
+                    LumenLineChart(
+                        label: "Weekly adoption chart",
+                        series: [
+                            LumenChartSeries(
+                                id: "adoption",
+                                label: "Projects",
+                                data: [
+                                    LumenChartDatum(id: "mon", x: .category("Mon"), y: 18),
+                                    LumenChartDatum(id: "tue", x: .category("Tue"), y: 26),
+                                    LumenChartDatum(id: "wed", x: .category("Wed"), y: nil),
+                                    LumenChartDatum(id: "thu", x: .category("Thu"), y: 41),
+                                    LumenChartDatum(id: "fri", x: .category("Fri"), y: 53)
+                                ]
+                            )
+                        ],
+                        heading: "Weekly adoption",
+                        area: true
+                    )
+                }
+                if isVisible("Bar chart") {
+                    LumenBarChart(
+                        label: "Components by platform",
+                        series: [
+                            LumenChartSeries(
+                                id: "components",
+                                label: "Components",
+                                data: [
+                                    LumenChartDatum(id: "web", x: .category("Web"), y: 82),
+                                    LumenChartDatum(id: "ios", x: .category("iOS"), y: 61),
+                                    LumenChartDatum(id: "android", x: .category("Android"), y: 58)
+                                ]
+                            )
+                        ]
+                    )
+                }
+                if isVisible("Pie chart") {
+                    LumenPieChart(
+                        label: "Issue status distribution",
+                        series: LumenChartSeries(
+                            id: "issues",
+                            label: "Issues",
+                            data: [
+                                LumenChartDatum(id: "complete", x: .category("Complete"), y: 68),
+                                LumenChartDatum(id: "active", x: .category("Active"), y: 22),
+                                LumenChartDatum(id: "blocked", x: .category("Blocked"), y: 10)
+                            ]
+                        )
+                    )
+                }
+                if isVisible("Scatter chart") {
+                    LumenScatterChart(
+                        label: "Bundle size and render time",
+                        series: [
+                            LumenChartSeries(
+                                id: "releases",
+                                label: "Releases",
+                                data: [
+                                    LumenChartDatum(id: "one", x: .number(12), y: 28, size: 12),
+                                    LumenChartDatum(id: "two", x: .number(20), y: 41, size: 20),
+                                    LumenChartDatum(id: "three", x: .number(31), y: 54, size: 28)
+                                ]
+                            )
+                        ]
+                    )
+                }
+                if isVisible("Heatmap") {
+                    LumenHeatmap(
+                        label: "Activity by day and period",
+                        data: [
+                            LumenHeatmapDatum(id: "mon-am", column: "Mon", row: "Morning", value: 18),
+                            LumenHeatmapDatum(id: "tue-am", column: "Tue", row: "Morning", value: 32),
+                            LumenHeatmapDatum(id: "mon-pm", column: "Mon", row: "Evening", value: 47),
+                            LumenHeatmapDatum(id: "tue-pm", column: "Tue", row: "Evening", value: nil)
+                        ]
+                    )
+                }
+                if isVisible("Range chart") {
+                    LumenRangeChart(
+                        label: "Daily forecast range",
+                        data: [
+                            LumenRangeDatum(id: "mon", x: .category("Mon"), low: 16, high: 28),
+                            LumenRangeDatum(id: "tue", x: .category("Tue"), low: 21, high: 35),
+                            LumenRangeDatum(id: "wed", x: .category("Wed"), low: 27, high: 42)
+                        ]
+                    )
+                }
+                if isVisible("Combo chart") {
+                    LumenComboChart(
+                        label: "Deployments and reliability",
+                        series: [
+                            LumenChartSeries(
+                                id: "deployments",
+                                label: "Deployments",
+                                data: [
+                                    LumenChartDatum(id: "dep-apr", x: .category("Apr"), y: 24),
+                                    LumenChartDatum(id: "dep-may", x: .category("May"), y: 31),
+                                    LumenChartDatum(id: "dep-jun", x: .category("Jun"), y: 38)
+                                ],
+                                mark: .bar
+                            ),
+                            LumenChartSeries(
+                                id: "reliability",
+                                label: "Reliability",
+                                data: [
+                                    LumenChartDatum(id: "rel-apr", x: .category("Apr"), y: 94),
+                                    LumenChartDatum(id: "rel-may", x: .category("May"), y: 97),
+                                    LumenChartDatum(id: "rel-jun", x: .category("Jun"), y: 99)
+                                ]
+                            )
+                        ]
+                    )
                 }
             }
         }
@@ -719,16 +938,21 @@ private struct ApplePlaygroundView: View {
 
     private var visibleCount: Int {
         componentNames.filter { name in
-            query.isEmpty || name.localizedCaseInsensitiveContains(query)
+            isVisible(name)
         }.count
     }
 
     private func matches(_ names: String...) -> Bool {
-        query.isEmpty || names.contains { $0.localizedCaseInsensitiveContains(query) }
+        names.contains(where: isVisible)
+    }
+
+    private func isVisible(_ name: String) -> Bool {
+        let matchesQuery = query.isEmpty || name.localizedCaseInsensitiveContains(query)
+        return matchesQuery && selectedCategory.contains(name)
     }
 }
 
-private struct PlaygroundSection<Content: View>: View {
+struct PlaygroundSection<Content: View>: View {
     private let content: Content
     private let description: LocalizedStringKey
     private let title: LocalizedStringKey
@@ -757,7 +981,7 @@ private struct PlaygroundSection<Content: View>: View {
     }
 }
 
-private struct FlowLayout<Content: View>: View {
+struct FlowLayout<Content: View>: View {
     private let content: Content
 
     init(@ViewBuilder content: () -> Content) {

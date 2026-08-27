@@ -37,6 +37,18 @@ export function SubscribeForm() {
 }
 ```
 
+`PhoneInput` supports a controlled international phone model while preserving the legacy custom
+country-option API:
+
+```tsx
+const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
+if (!colombia) throw new Error('Missing Colombia metadata')
+
+const [phone, setPhone] = useState(() => createEmptyLumenPhoneNumber(colombia))
+
+<PhoneInput value={phone} onValueChange={setPhone} locale="en-US" />
+```
+
 ## Dropdown menus
 
 Compose dropdown menus from the public trigger, content, item, and separator parts. Items close the
@@ -136,9 +148,14 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 
 ## Data visualization
 
-`Sparkline`, `BarChart`, `LineChart`, and `PieChart` use the shared `LumenChartSeries` contract and
+`Sparkline`, `BarChart`, `LineChart`, `PieChart`, `ScatterChart`, `Heatmap`, `RangeChart`, and
+`ComboChart` use the shared chart contracts and
 render without an external charting dependency. Data charts expose a revealable semantic table by
 default. `PieChart` accepts one series and defaults to a donut presentation.
+
+Every chart includes a factual screen-reader summary by default and accepts `summary` for more
+useful domain context. See [data visualization](../../docs/data-visualization.md) for selection,
+missing-data, live-data, and accessibility guidance.
 
 ```tsx
 import { LineChart } from '@santi020k/lumen-react'

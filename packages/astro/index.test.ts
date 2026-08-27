@@ -120,6 +120,67 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
   })
 
+  test('bases scatter empty state on projected geometry', async () => {
+    const scatter = await readFile(
+      new URL('./components/ScatterChart.astro', packageRoot), 'utf8'
+    )
+
+    expect(scatter).toContain('const hasData = geometry.points.length > 0')
+    expect(scatter).toContain('formatLumenChartSummary(projectedSeries, formatValue)')
+    expect(scatter).toContain('data: geometry.points.filter(point => point.seriesId === item.id)')
+    expect(scatter).toContain('filter(item => item.data.length > 0)')
+    expect(scatter).not.toContain('hasLumenChartData')
+  })
+
+  test('bases range summaries on available chart geometry', async () => {
+    const range = await readFile(
+      new URL('./components/RangeChart.astro', packageRoot), 'utf8'
+    )
+
+    expect(range).toContain('`${geometry.points.length} available ranges.`')
+    expect(range).not.toContain('data.filter(item => item.low !== null')
+  })
+
+  test('keeps chart disclosures within finite rendered value domains', async () => {
+    const [bars, combo, line, scatter] = await Promise.all([
+      readFile(new URL('./components/BarChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ComboChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/LineChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ScatterChart.astro', packageRoot), 'utf8')
+    ])
+
+    expect(bars).toContain('value === null || !Number.isFinite(value) ? \'Not available\'')
+
+    for (const chart of [combo, line]) {
+      expect(chart).toContain(
+        'datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y)'
+      )
+    }
+
+    expect(scatter).toContain(
+      'point.size === undefined || point.size === null || !Number.isFinite(point.size)'
+    )
+  })
+
+  test('aligns pie summaries and phone defaults with rendered options', async () => {
+    const [phoneInput, pie, runtime] = await Promise.all([
+      readFile(new URL('./components/PhoneInput.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(pie).toContain('data: series.data.filter(datum => datum.y !== null')
+    expect(pie).toContain('formatLumenChartSummary([renderedSeries]')
+    expect(phoneInput).toContain(')) ?? metadataCountries[0] ?? getLumenPhoneCountry')
+    expect(phoneInput).toContain('const detectedCountryIsAllowed = metadataCountries.some')
+    expect(phoneInput).toContain('if (detectedCountryIsAllowed) return detectedValue')
+    expect(runtime).toContain('const detectedCountryIsAllowed = Array.from(countrySelect.options)')
+    expect(runtime).toContain('detectedCountryIsAllowed ?')
+    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?')
+    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.slice(1)')
+    expect(runtime).not.toContain('resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)\n\n      const hasInput')
+  })
+
   test('normalizes Astro Action field errors for fields and summaries', () => {
     expect(
       normalizeAstroActionErrors(

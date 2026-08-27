@@ -131,6 +131,22 @@ const parsePlatformColors = source => {
   )
 }
 
+const parseVisualizationColors = source => {
+  if (!source) return {}
+
+  const parsed = JSON.parse(source)
+  const light = parsed.visualization?.color?.light ?? {}
+
+  return Object.fromEntries(
+    Object.entries(light)
+      .filter(([name]) => !name.startsWith('$'))
+      .map(([name, token]) => [
+        toCamel(name),
+        token.$extensions?.['com.santi020k.lumen']?.cssValue ?? token.$value
+      ])
+  )
+}
+
 // Pull the `interface Props { ... }` body out of Astro frontmatter and turn it
 // into a compact list of { name, optional, type } records.
 const extractInterfaceBody = source => {
@@ -1035,7 +1051,7 @@ const main = async () => {
     nativeRegistry
   )
 
-  const chart = parseTokenBlock(tokensSource, 'lumenChart')
+  const chart = parseVisualizationColors(platformTokensSource)
   const colors = parsePlatformColors(platformTokensSource)
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
 

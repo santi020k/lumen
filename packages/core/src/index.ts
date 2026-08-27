@@ -1,10 +1,17 @@
 export {
   alignLumenChartSeries,
+  appendLumenChartDatum,
   createLumenBarGeometry,
+  createLumenHeatmapGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeGeometry,
+  createLumenScatterGeometry,
+  downsampleLumenChartData,
+  formatLumenChartSummary,
   getLumenChartCategories,
   getLumenChartDomain,
+  getLumenChartNumericX,
   getLumenChartTicks,
   getLumenChartToneClassName,
   getLumenChartValueRatio,
@@ -16,21 +23,41 @@ export {
   type LumenBarGeometryCategory,
   type LumenBarGeometryMark,
   type LumenBarGeometryOptions,
+  type LumenChartAnnotation,
+  type LumenChartAxis,
+  type LumenChartAxisPosition,
   type LumenChartDatum,
   type LumenChartDomain,
   type LumenChartGeometryPoint,
   type LumenChartOrientation,
+  type LumenChartScaleType,
+  type LumenChartSelection,
   type LumenChartSeries,
+  type LumenChartSummary,
   type LumenChartTone,
   lumenChartTones,
+  type LumenChartValidationIssue,
+  type LumenComboMark,
+  type LumenComboSeries,
+  type LumenHeatmapDatum,
+  type LumenHeatmapGeometry,
+  type LumenHeatmapGeometryCell,
   type LumenLineGeometry,
   type LumenLineGeometryOptions,
   type LumenPieChartVariant,
   type LumenPieGeometry,
   type LumenPieGeometryOptions,
   type LumenPieGeometrySlice,
+  type LumenRangeDatum,
+  type LumenRangeGeometry,
+  type LumenRangeGeometryPoint,
+  type LumenScatterGeometry,
+  type LumenScatterGeometryOptions,
+  type LumenScatterGeometryPoint,
   resolveLumenChartTone,
-  scaleLumenChartValue
+  scaleLumenChartValue,
+  summarizeLumenChart,
+  validateLumenChartSeries
 } from './charts.js'
 export {
   type LumenCodeToken,
@@ -124,6 +151,14 @@ export {
   resolveLumenIconName
 } from './icons.js'
 export {
+  type LumenIllustrationElement,
+  type LumenIllustrationName,
+  lumenIllustrationNames,
+  lumenIllustrations,
+  type LumenIllustrationToneRole,
+  renderLumenIllustrationSvg
+} from './illustrations.generated.js'
+export {
   createLumenKanbanMoveDetail,
   getAdjacentKanbanColumn,
   type LumenKanbanMoveDetail,
@@ -136,6 +171,17 @@ export {
   type LumenLocaleOption,
   normalizeLumenLocales
 } from './language.js'
+export {
+  createEmptyLumenPhoneNumber,
+  getLumenPhoneCountries,
+  getLumenPhoneCountry,
+  getLumenPhoneFlag,
+  type LumenPhoneCountry,
+  type LumenPhoneCountryOptions,
+  type LumenPhoneNumber,
+  resolveLumenPhoneNumber,
+  sanitizeLumenPhoneInput
+} from './phone.js'
 export {
   type LumenAstroPropsResult,
   type LumenClassValue,
@@ -245,6 +291,10 @@ export {
   lumenFontSizes,
   lumenFontWeights,
   lumenGlass,
+  lumenGraphicFrameSizes,
+  lumenGraphicOpacities,
+  lumenGraphicStrokeWidths,
+  lumenIllustrationSizes,
   lumenLightTheme,
   lumenMotion,
   lumenRadii,

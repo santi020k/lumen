@@ -1,6 +1,16 @@
 import { describe, expect, test } from 'vitest'
 
-import { resolveLumenSearchFieldState } from './form-recipes.js'
+import {
+  clampLumenDate,
+  formatLumenDateDisplayValue,
+  formatLumenDateInputValue,
+  parseLumenDateInputValue,
+  resolveLumenDateBounds,
+  resolveLumenDatePickerValue,
+  resolveLumenDateRangeEndChange,
+  resolveLumenDateRangeStartChange,
+  resolveLumenSearchFieldState
+} from './form-recipes.js'
 
 describe('Lumen React Native form component recipes', () => {
   test('shows the clear action only for editable non-empty queries', () => {
@@ -13,5 +23,49 @@ describe('Lumen React Native form component recipes', () => {
       opacity: 0.52,
       showClearAction: false
     })
+  })
+
+  test('normalizes and clamps picker dates to inclusive bounds', () => {
+    const minimum = new Date(2026, 7, 10)
+    const maximum = new Date(2026, 7, 20)
+
+    expect(clampLumenDate(new Date(2026, 7, 5, 18), minimum, maximum)).toEqual(minimum)
+    expect(clampLumenDate(new Date(2026, 7, 15, 18), minimum, maximum)).toEqual(new Date(2026, 7, 15))
+    expect(resolveLumenDatePickerValue(null, minimum, maximum, new Date(2026, 7, 25))).toEqual(maximum)
+    expect(resolveLumenDateBounds(maximum, minimum)).toEqual({
+      maximumDate: maximum,
+      minimumDate: maximum
+    })
+    expect(resolveLumenDateBounds(new Date(Number.NaN), maximum)).toEqual({ maximumDate: maximum })
+    expect(resolveLumenDateBounds(minimum, new Date(Number.NaN))).toEqual({ minimumDate: minimum })
+    expect(resolveLumenDatePickerValue(new Date(Number.NaN), minimum, maximum, minimum)).toEqual(minimum)
+  })
+
+  test('uses the placeholder without formatting an invalid controlled date', () => {
+    const formatter = (date: Date): string => date.toISOString()
+
+    expect(formatLumenDateDisplayValue(new Date(Number.NaN), 'Select a date', formatter))
+      .toBe('Select a date')
+  })
+
+  test('keeps a controlled date range ordered as either boundary changes', () => {
+    const initial = {
+      end: new Date(2026, 7, 12),
+      start: new Date(2026, 7, 10)
+    }
+    const movedStart = resolveLumenDateRangeStartChange(initial, new Date(2026, 7, 15))
+
+    expect(movedStart).toEqual({
+      end: new Date(2026, 7, 15),
+      start: new Date(2026, 7, 15)
+    })
+    expect(resolveLumenDateRangeEndChange(movedStart, new Date(2026, 7, 8))).toEqual(movedStart)
+  })
+
+  test('round-trips valid browser date input without timezone conversion', () => {
+    expect(formatLumenDateInputValue(new Date(2026, 7, 26, 23, 45))).toBe('2026-08-26')
+    expect(parseLumenDateInputValue('2026-08-26')).toEqual(new Date(2026, 7, 26))
+    expect(parseLumenDateInputValue('2026-02-30')).toBeNull()
+    expect(parseLumenDateInputValue('08/26/2026')).toBeNull()
   })
 })

@@ -11,6 +11,7 @@ interface Props extends HTMLAttributes<'figure'> {
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
   presentation?: 'bare' | 'default'
+  summary?: string
   value?: string
 }
 
@@ -22,6 +23,7 @@ const {
   glass = false,
   heading,
   presentation = 'default',
+  summary,
   value,
   ...rest
 } = Astro.props
@@ -53,6 +55,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
       </header>
     )
   }
+  {summary && <p class="ui-sr-only" data-ui-chart-summary>{summary}</p>}
   <slot />
   {caption && <figcaption>{caption}</figcaption>}
 </figure>

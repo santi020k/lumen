@@ -1,4 +1,5 @@
 import {
+  lumenChartCssColorTokens,
   lumenCssColorTokens,
   lumenDurations,
   lumenEasings,
@@ -7,6 +8,11 @@ import {
 } from './foundations.generated.js'
 
 export {
+  type LumenChartColor,
+  lumenChartColorTokens,
+  lumenChartCssColorTokens,
+  lumenChartOpacities,
+  lumenChartStrokeWidths,
   type LumenColorScheme,
   lumenColorTokens,
   lumenCssColorTokens,
@@ -16,6 +22,10 @@ export {
   lumenFontFamilies,
   lumenFontSizes,
   lumenFontWeights,
+  lumenGraphicFrameSizes,
+  lumenGraphicOpacities,
+  lumenGraphicStrokeWidths,
+  lumenIllustrationSizes,
   lumenRadii,
   type LumenSemanticColor,
   lumenSpacing } from './foundations.generated.js'
@@ -27,24 +37,8 @@ export const lumenLightTheme = 'light'
 export const lumenColors = lumenCssColorTokens.light
 export const lumenDarkColors = lumenCssColorTokens.dark
 
-export const lumenChart = {
-  axis: 'var(--ink-muted)',
-  divergingMid: '220 13% 91%',
-  divergingNegative: '0 84% 60%',
-  divergingPositive: '221 83% 53%',
-  grid: 'var(--line)',
-  sequentialHigh: '221 83% 40%',
-  sequentialLow: '218 100% 97%',
-  sequentialMid: '221 83% 67%',
-  series1: '221 83% 53%',
-  series2: '168 76% 36%',
-  series3: '280 72% 56%',
-  series4: '25 95% 53%',
-  series5: '340 82% 55%',
-  series6: '190 82% 42%',
-  series7: '52 92% 45%',
-  series8: '215 16% 47%'
-} as const
+export const lumenChart = lumenChartCssColorTokens.light
+export const lumenDarkChart = lumenChartCssColorTokens.dark
 
 export const lumenGlass = {
   bg: '0 0% 100% / 0.55',

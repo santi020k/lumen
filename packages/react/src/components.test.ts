@@ -1,6 +1,7 @@
 import type {
   ComponentPropsWithoutRef,
-  ReactElement
+  ReactElement,
+  ReactNode
 } from 'react'
 import { isValidElement } from 'react'
 
@@ -36,6 +37,7 @@ import {
   Checkbox,
   Collapsible,
   ColorPicker,
+  ComboChart,
   Command,
   ContextMenu,
   ContextNavigation,
@@ -43,6 +45,7 @@ import {
   Drawer,
   Empty,
   Graphic,
+  Heatmap,
   HoverCard,
   Icon,
   Illustration,
@@ -65,6 +68,8 @@ import {
   Pill,
   Progress,
   RadioGroup,
+  RangeChart,
+  ScatterChart,
   ScrollArea,
   SearchField,
   Separator,
@@ -95,6 +100,14 @@ import {
 type Props = Record<string, unknown>
 
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
+const descendantsOf = (node: ReactNode): ReactElement[] => {
+  if (Array.isArray(node)) return node.flatMap(descendantsOf)
+  if (!isValidElement(node)) return []
+
+  const element = node as ReactElement
+
+  return [element, ...descendantsOf(propsOf(element).children as ReactNode)]
+}
 const OptimizedImage = (_props: ComponentPropsWithoutRef<'img'> & { preload?: boolean }) => null
 
 describe('@santi020k/lumen-react components', () => {
@@ -189,11 +202,25 @@ describe('@santi020k/lumen-react components', () => {
 
     expect(nativeImage.type).toBe('img')
     expect(propsOf(nativeImage).loading).toBe('lazy')
-    expect(propsOf(nativeImage).className).toBe('ui-image ui-image--invert-dark')
+    expect(propsOf(nativeImage).className).toBe(
+      'ui-image ui-image--invert-dark ui-image--fit-cover ui-image--radius-lg'
+    )
     expect(optimizedImage.type).toBe(OptimizedImage)
-    expect(propsOf(optimizedImage).className).toBe('ui-image')
+    expect(propsOf(optimizedImage).className).toBe(
+      'ui-image ui-image--fit-cover ui-image--radius-lg'
+    )
     expect(propsOf(optimizedImage).loading).toBeUndefined()
     expect(propsOf(optimizedImage).preload).toBe(true)
+
+    const contained = Image({
+      alt: 'Diagram',
+      fit: 'contain',
+      radius: 'sm',
+      src: '/diagram.svg'
+    }) as ReactElement
+
+    expect(propsOf(contained).className).toContain('ui-image--fit-contain')
+    expect(propsOf(contained).className).toContain('ui-image--radius-sm')
   })
 
   test('wraps arbitrary logo artwork without imposing SVG content', () => {
@@ -600,6 +627,18 @@ describe('@santi020k/lumen-react components', () => {
       label: 'Downloads increased from 4 to 8',
       values: [4, 8]
     }) as ReactElement
+    const scatter = ScatterChart({
+      series: [{ data: [{ size: 12, x: 1, y: 4 }, { size: 20, x: 2, y: 8 }], id: 'downloads', label: 'Downloads' }]
+    }) as ReactElement
+    const heatmap = Heatmap({
+      data: [{ value: 8, x: 'Mon', y: 'Morning' }]
+    }) as ReactElement
+    const range = RangeChart({
+      data: [{ high: 12, low: 4, x: 'Mon' }]
+    }) as ReactElement
+    const combo = ComboChart({
+      series: [{ data: series[0]?.data ?? [], id: 'downloads', label: 'Downloads', mark: 'line' }]
+    }) as ReactElement
 
     expect(bars.type).toBe(Chart)
     expect(propsOf(bars).className).toBe('ui-bar-chart')
@@ -612,6 +651,166 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(sparkline).role).toBe('img')
     expect(propsOf(sparkline)['aria-label']).toBe('Downloads increased from 4 to 8')
     expect(propsOf(sparkline).className).toBe('ui-sparkline ui-chart-tone--series-1')
+    expect(propsOf(scatter).className).toBe('ui-scatter-chart')
+    expect(propsOf(heatmap).className).toBe('ui-heatmap')
+    expect(propsOf(range).className).toBe('ui-range-chart ui-chart-tone--series-1')
+    expect(propsOf(combo).className).toBe('ui-combo-chart')
+  })
+
+  test('omits unavailable heatmap cells from the SVG while preserving table gaps', () => {
+    const heatmap = Heatmap({
+      data: [
+        { value: 8, x: 'Mon', y: 'Morning' },
+        { value: null, x: 'Tue', y: 'Morning' },
+        { value: Number.POSITIVE_INFINITY, x: 'Wed', y: 'Morning' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(heatmap)
+    const cells = descendants.filter(element => element.type === 'rect')
+    const tableValues = descendants
+      .filter(element => element.type === 'td')
+      .map(element => propsOf(element).children)
+
+    expect(cells).toHaveLength(1)
+    expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
+  })
+
+  test('preserves heatmap coordinate types in fallback keys', () => {
+    const heatmap = Heatmap({
+      data: [
+        { value: 4, x: 1, y: 'row' },
+        { value: 8, x: '1', y: 'row' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(heatmap)
+    const cellKeys = descendants.filter(element => element.type === 'rect').map(element => element.key)
+    const rowKeys = descendants
+      .filter(element => element.type === 'tr' && element.key !== null)
+      .map(element => element.key)
+
+    expect(new Set(cellKeys).size).toBe(2)
+    expect(new Set(rowKeys).size).toBe(2)
+  })
+
+  test('treats non-finite range bounds as unavailable in the disclosure table', () => {
+    const range = RangeChart({
+      data: [{ high: Number.POSITIVE_INFINITY, low: Number.NaN, x: 'Mon' }],
+      formatValue: value => {
+        if (!Number.isFinite(value)) throw new Error('Expected only finite range values')
+
+        return String(value)
+      }
+    }) as ReactElement
+    const tableValues = descendantsOf(range)
+      .filter(element => element.type === 'td')
+      .map(element => propsOf(element).children)
+
+    expect(tableValues).toEqual(['Not available', 'Not available'])
+  })
+
+  test('preserves range coordinate types in fallback keys', () => {
+    const range = RangeChart({
+      data: [
+        { high: 4, low: 1, x: 1 },
+        { high: 8, low: 2, x: '1' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(range)
+    const intervalKeys = descendants
+      .filter(element => propsOf(element).className === 'ui-range-chart__interval')
+      .map(element => element.key)
+    const rowKeys = descendants
+      .filter(element => element.type === 'tr' && element.key !== null)
+      .map(element => element.key)
+
+    expect(new Set(intervalKeys).size).toBe(2)
+    expect(new Set(rowKeys).size).toBe(2)
+  })
+
+  test('treats non-finite scatter sizes as unavailable in the disclosure table', () => {
+    const scatter = ScatterChart({
+      formatValue: value => {
+        if (!Number.isFinite(value)) throw new Error('Expected only finite scatter values')
+
+        return String(value)
+      },
+      series: [{
+        data: [
+          { size: Number.NaN, x: 1, y: 4 },
+          { size: Number.POSITIVE_INFINITY, x: 2, y: 8 }
+        ],
+        id: 'downloads',
+        label: 'Downloads'
+      }]
+    }) as ReactElement
+    const tableValues = descendantsOf(scatter)
+      .filter(element => element.type === 'td')
+      .map(element => propsOf(element).children)
+
+    expect(tableValues).toEqual([
+      'Downloads',
+      '4',
+      'Not available',
+      'Downloads',
+      '8',
+      'Not available'
+    ])
+  })
+
+  test('keeps repeated scatter coordinates as distinct marks and rows', () => {
+    const scatter = ScatterChart({
+      series: [{
+        data: [{ x: 1, y: 4 }, { x: 1, y: 8 }],
+        id: 'downloads',
+        label: 'Downloads'
+      }]
+    }) as ReactElement
+    const descendants = descendantsOf(scatter)
+    const circleKeys = descendants
+      .filter(element => element.type === 'circle')
+      .map(element => element.key)
+    const rowKeys = descendants
+      .filter(element => element.type === 'tr' && element.key !== null)
+      .map(element => element.key)
+
+    expect(new Set(circleKeys).size).toBe(2)
+    expect(new Set(rowKeys).size).toBe(2)
+  })
+
+  test('summarizes only scatter points that can be drawn', () => {
+    const scatter = ScatterChart({
+      series: [{
+        data: [{ x: 0, y: 1 }, { x: 'invalid', y: 1000 }],
+        id: 'downloads',
+        label: 'Downloads'
+      }]
+    }) as ReactElement
+
+    expect(propsOf(scatter).summary).toBe('1 series, 1 point. Values range from 1 to 1.')
+  })
+
+  test('aligns combo line points with bar category centers', () => {
+    const data = [
+      { x: 'Mon', y: 4 },
+      { x: 'Tue', y: 8 },
+      { x: 'Wed', y: 6 }
+    ]
+    const combo = ComboChart({
+      series: [
+        { data, id: 'bars', label: 'Bars', mark: 'bar' },
+        { data, id: 'line', label: 'Line', mark: 'line' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(combo)
+    const categoryCenters = descendants
+      .filter(element => element.type === 'rect')
+      .map(element => Number((Number(propsOf(element).x) + Number(propsOf(element).width) / 2).toFixed(3)))
+    const line = descendants.find(element => propsOf(element).className === 'ui-line-chart__line')
+    const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+      .map(match => Number(match[1]))
+
+    expect(categoryCenters).toHaveLength(3)
+    expect(lineXCoordinates).toEqual(categoryCenters)
   })
 
   test('renders the empty state when chart series contain no usable data', () => {
@@ -636,6 +835,19 @@ describe('@santi020k/lumen-react components', () => {
       expect(propsOf(plot).hidden).toBe(true)
       expect(elements.some(child => propsOf(child).className === 'ui-chart__data')).toBe(false)
     }
+  })
+
+  test('summarizes only rendered pie slices', () => {
+    const pie = PieChart({
+      series: {
+        data: [{ x: 'Available', y: 8 }, { x: 'Zero', y: 0 }, { x: 'Negative', y: -2 }],
+        id: 'share',
+        label: 'Share'
+      }
+    }) as ReactElement
+
+    expect(propsOf(pie).summary).toContain('1 point')
+    expect(propsOf(pie).summary).toContain('8 to 8')
   })
 
   test('sets text direction default', () => {

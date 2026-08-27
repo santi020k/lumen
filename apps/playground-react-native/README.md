@@ -2,8 +2,9 @@
 
 <!-- cspell:words screencap simctl -->
 
-An Expo gallery for every public component in `@santi020k/lumen-react-native`. It runs on web, iOS,
-and Android with search, light and dark themes, and interactive component states.
+An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
+web, iOS, and Android with a focused Home, searchable Components, and About experience; system,
+light, and dark themes; and interactive component states.
 
 Install the repository dependencies once from the repository root:
 
@@ -22,6 +23,42 @@ pnpm playground:react-native:web
 Scan the Expo QR code, or press `i`, `a`, or `w` to choose iOS, Android, or web. See
 [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites, EAS setup, APK generation, and
 store distribution profiles.
+
+## Open the published playground
+
+The public React Native playground runs in Expo Go rather than using an App Store or Google Play
+listing. Open the stable link below on a device with Expo Go installed; it always resolves to the
+latest update on the `expo-go` branch:
+
+```text
+exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357
+```
+
+The current app targets Expo SDK 57 and therefore requires an Expo Go client that supports SDK 57.
+As of August 2026, the public App Store and Google Play Expo Go client targets SDK 54. Do not present
+this link as a general-public installation path until Expo Go supports SDK 57 or Lumen intentionally
+maintains a separately tested SDK 54 compatibility build.
+
+Publish a new version from an authenticated Expo session with:
+
+```bash
+pnpm --filter @santi020k/lumen-playground-react-native run publish:expo-go -- --message "Describe the update"
+```
+
+This command changes the public playground. Run the app checks and native exports before publishing.
+
+## App branding
+
+Expo uses the canonical Lumen playground artwork for its project icon, iOS icon, Android legacy and
+adaptive icons, splash screen, and web favicon. Regenerate those PNG assets after changing the
+shared SVG sources:
+
+```bash
+pnpm --filter @santi020k/lumen-playground-react-native run generate:assets
+```
+
+The adaptive and splash artwork stays transparent over the configured Lumen background. The main
+1024-pixel icon stays opaque for iOS and Expo project surfaces.
 
 ## Component coverage
 

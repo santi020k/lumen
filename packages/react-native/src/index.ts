@@ -12,6 +12,32 @@ export {
   type LumenToastProps
 } from './additional-components.js'
 export {
+  LumenBarChart,
+  type LumenBarChartProps,
+  type LumenChartDatum,
+  type LumenChartScaleType,
+  type LumenChartSelection,
+  type LumenChartSeries,
+  type LumenChartTone,
+  LumenComboChart,
+  type LumenComboChartProps,
+  type LumenComboSeries,
+  LumenHeatmap,
+  type LumenHeatmapDatum,
+  type LumenHeatmapProps,
+  LumenLineChart,
+  type LumenLineChartProps,
+  LumenPieChart,
+  type LumenPieChartProps,
+  LumenRangeChart,
+  type LumenRangeChartProps,
+  type LumenRangeDatum,
+  LumenScatterChart,
+  type LumenScatterChartProps,
+  LumenSparkline,
+  type LumenSparklineProps
+} from './chart-components.js'
+export {
   LumenBackdrop,
   type LumenBackdropProps,
   type LumenBackdropTone,
@@ -36,6 +62,10 @@ export {
   type LumenIllustrationSize
 } from './content-recipes.js'
 export {
+  LumenDateField,
+  type LumenDateFieldProps,
+  LumenDateRangeField,
+  type LumenDateRangeFieldProps,
   LumenSearchField,
   type LumenSearchFieldProps,
   LumenSettingsRow,
@@ -43,12 +73,19 @@ export {
   LumenToggle,
   type LumenToggleProps
 } from './form-components.js'
+export { type LumenDateRangeValue } from './form-recipes.js'
 export {
   getLumenIconGraphic,
   type LumenIconName,
   lumenIconNames,
   lumenIcons
 } from './icons.generated.js'
+export {
+  LumenImage,
+  type LumenImageFit,
+  type LumenImageProps,
+  type LumenImageRadius
+} from './media-components.js'
 export {
   LumenAlertDialog,
   type LumenAlertDialogProps,
@@ -65,6 +102,10 @@ export {
   type LumenMenuPositionInput,
   resolveLumenMenuPosition
 } from './overlay-recipes.js'
+export {
+  LumenPhoneInput,
+  type LumenPhoneInputProps
+} from './phone-components.js'
 export {
   LumenCollapsibleNavigationBar,
   type LumenCollapsibleNavigationBarProps,
@@ -175,6 +216,11 @@ export {
 } from './theme.js'
 export { useLumenTheme } from './theme-context.js'
 export {
+  type LumenChartColor,
+  lumenChartColorTokens,
+  lumenChartCssColorTokens,
+  lumenChartOpacities,
+  lumenChartStrokeWidths,
   type LumenColorScheme,
   lumenColorTokens,
   lumenDurations,
@@ -183,7 +229,20 @@ export {
   lumenFontFamilies,
   lumenFontSizes,
   lumenFontWeights,
+  lumenGraphicFrameSizes,
+  lumenGraphicOpacities,
+  lumenGraphicStrokeWidths,
+  lumenIllustrationSizes,
   lumenRadii,
   type LumenSemanticColor,
   lumenSpacing
 } from './tokens.generated.js'
+export {
+  createEmptyLumenPhoneNumber,
+  getLumenPhoneCountries,
+  getLumenPhoneCountry,
+  type LumenPhoneCountry,
+  type LumenPhoneCountryOptions,
+  type LumenPhoneNumber,
+  resolveLumenPhoneNumber
+} from '@santi020k/lumen-core'

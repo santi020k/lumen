@@ -40,6 +40,14 @@ independently from the document registry.
 </lumen-card>
 ```
 
+`lumen-phone-input` can generate its complete country and telephone controls. It exposes `value`,
+`valid`, and `e164`, and emits `ui:phone-change` with the normalized phone model. Country names and
+calling codes remain visible so the flag is never the only identifier.
+
+```html
+<lumen-phone-input country="CO" locale="en-US" name="hospitalPhone"></lumen-phone-input>
+```
+
 ## Language selection
 
 `lumen-language-toggle` cycles through an ordered JSON `locales` list and generates visible
@@ -169,8 +177,8 @@ attribute form is useful for static HTML and server output.
 ></lumen-line-chart>
 ```
 
-`lumen-sparkline` also accepts comma-separated or JSON `values`. Bar, line, and pie charts include
-a revealable semantic table unless `show-table="false"` is set. `lumen-pie-chart` uses the first
+`lumen-sparkline` also accepts comma-separated or JSON `values`. Every data chart includes a
+revealable semantic table unless `show-table="false"` is set. `lumen-pie-chart` uses the first
 serialized series and defaults to `variant="donut"`.
 
 ## Optimized images

@@ -43,6 +43,10 @@
       "types": "./dist/icons.d.ts",
       "import": "./dist/icons.js"
     },
+    "./phone": {
+      "types": "./dist/phone.d.ts",
+      "import": "./dist/phone.js"
+    },
     "./rich-text": {
       "types": "./dist/rich-text.d.ts",
       "import": "./dist/rich-text.js"
@@ -74,7 +78,8 @@
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {
-    "@lucide/icons": "catalog:"
+    "@lucide/icons": "catalog:",
+    "libphonenumber-js": "catalog:"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",

@@ -193,17 +193,19 @@ struct SwiftTaggedConsumer: App {
     await readFile(join(consumerDirectory, 'Package.resolved'), 'utf8')
   )
 
-  assert.equal(resolved.pins.length, 1, 'Expected one resolved Swift package')
+  const candidatePins = resolved.pins.filter(pin => pin.identity === 'lumen')
 
-  assert.equal(resolved.pins[0].identity, 'lumen')
+  assert.equal(candidatePins.length, 1, 'Expected one resolved Lumen package')
 
-  assert.equal(resolved.pins[0].state.version, candidateVersion)
+  const [candidatePin] = candidatePins
 
-  assert.equal(resolved.pins[0].state.revision, candidateRevision)
+  assert.equal(candidatePin.state.version, candidateVersion)
+
+  assert.equal(candidatePin.state.revision, candidateRevision)
 
   const checkouts = await readdir(join(consumerDirectory, '.build', 'checkouts'))
 
-  assert.deepEqual(checkouts, ['lumen'])
+  assert.ok(checkouts.includes('lumen'), 'Expected the Lumen checkout')
 
   const checkoutDirectory = join(consumerDirectory, '.build', 'checkouts', 'lumen')
 

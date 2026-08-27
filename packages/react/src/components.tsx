@@ -3,6 +3,7 @@
 /* eslint-disable @eslint-react/no-children-only, @eslint-react/no-context-provider, @eslint-react/no-use-context */
 /* React 19 ref props and context providers stay explicit; polymorphic composition clones one child. */
 import type {
+  ChangeEvent,
   ComponentPropsWithoutRef,
   ComponentPropsWithRef,
   CSSProperties,
@@ -33,36 +34,53 @@ import {
   alignLumenChartSeries,
   composeClassName,
   createLumenBarGeometry,
+  createLumenHeatmapGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeGeometry,
+  createLumenScatterGeometry,
+  formatLumenChartSummary,
   formatLumenLanguageLabel,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenChartToneClassName,
   getLumenIcon,
+  getLumenPhoneCountries,
   getLumenPieChartVariantClassName,
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
+  type LumenChartDatum,
   type LumenChartOrientation,
+  type LumenChartScaleType,
   type LumenChartSeries,
   type LumenChartTone,
   type LumenCodeToken,
   lumenCodeTokenClassNames,
+  type LumenComboSeries,
   type LumenFormErrorInput,
   type LumenFormStatus,
+  type LumenHeatmapDatum,
   type LumenIconData,
   type LumenIconName,
   type LumenIconNode,
+  type LumenIllustrationElement,
+  lumenIllustrations,
+  type LumenPhoneCountry,
+  type LumenPhoneCountryOptions,
+  type LumenPhoneNumber,
   type LumenPieChartVariant,
+  type LumenRangeDatum,
   normalizeLumenFormErrors,
   resolveLumenChartTone,
+  resolveLumenPhoneNumber,
   scaleLumenChartValue,
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
 
+import { formatReactChartTableValue } from './chart-recipes.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -87,6 +105,10 @@ import {
   useTabs,
   useTooltip
 } from './hooks.js'
+import {
+  resolveReactPhoneInputCountry,
+  resolveReactPhoneInputValue
+} from './phone-recipes.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
@@ -106,6 +128,8 @@ type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 type CodeVariant = 'block' | 'inline'
 
 type IconSize = 'default' | 'lg' | 'sm' | 'xl'
+
+const getChartCategoryKey = (value: number | string): string => `${typeof value}:${String(value)}`
 
 export type DataTableCell =
   | boolean |
@@ -175,6 +199,9 @@ const emptyStringOptions: string[] = []
 const emptyDataTableColumns: DataTableColumn[] = []
 const emptyDataTableRows: DataTableRow[] = []
 const emptyChartSeries: LumenChartSeries[] = []
+const emptyHeatmapData: LumenHeatmapDatum[] = []
+const emptyRangeData: LumenRangeDatum[] = []
+const emptyComboSeries: LumenComboSeries[] = []
 
 const emptyPieSeries: LumenChartSeries = {
   data: [],
@@ -883,6 +910,7 @@ export interface ChartProps extends ComponentPropsWithoutRef<'figure'> {
   glass?: LumenGlassProp
   heading?: ReactNode
   presentation?: 'bare' | 'default'
+  summary?: ReactNode
   value?: ReactNode
 }
 
@@ -912,6 +940,7 @@ export const Chart = ({
   glass = false,
   heading,
   presentation = 'default',
+  summary,
   value,
   ...props
 }: ChartProps) => (
@@ -922,6 +951,7 @@ export const Chart = ({
     {...props}
   >
     <ChartHeader description={description} heading={heading} value={value} />
+    {summary && <p className="ui-sr-only" data-ui-chart-summary>{summary}</p>}
     {children}
     {caption && <figcaption>{caption}</figcaption>}
   </figure>
@@ -974,7 +1004,7 @@ const ChartDataTable = ({
         </thead>
         <tbody>
           {categories.map(category => (
-            <tr key={`${typeof category}:${String(category)}`}>
+            <tr key={getChartCategoryKey(category)}>
               <th scope="row">
                 {series
                   .flatMap(item => item.data)
@@ -988,10 +1018,7 @@ const ChartDataTable = ({
 
                 return (
                   <td key={item.id}>
-                    {datum?.label ??
-                      (datum?.y === null || datum === undefined ?
-                        'Not available' :
-                        formatValue(datum.y))}
+                    {datum?.label ?? formatReactChartTableValue(datum?.y, formatValue)}
                   </td>
                 )
               })}
@@ -1088,6 +1115,7 @@ export const BarChart = ({
   series = emptyChartSeries,
   showLegend = series.length > 1,
   showTable = true,
+  summary,
   ...props
 }: BarChartProps) => {
   const geometry = createLumenBarGeometry(series, {
@@ -1111,7 +1139,11 @@ export const BarChart = ({
       { bottom: 52, left: 52, right: 16, top: 16 }
 
   return (
-    <Chart className={composeClassName('ui-bar-chart', className)} {...props}>
+    <Chart
+      className={composeClassName('ui-bar-chart', className)}
+      summary={summary ?? formatLumenChartSummary(series, formatValue)}
+      {...props}
+    >
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
@@ -1162,7 +1194,7 @@ export const BarChart = ({
                 dominantBaseline={
                   orientation === 'horizontal' ? 'middle' : undefined
                 }
-                key={`${typeof category.label}:${String(category.label)}`}
+                key={getChartCategoryKey(category.label)}
                 textAnchor={orientation === 'horizontal' ? 'end' : 'middle'}
                 x={category.x}
                 y={category.y}
@@ -1176,7 +1208,7 @@ export const BarChart = ({
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
                 height={mark.height}
-                key={`${mark.seriesId}:${String(mark.category)}`}
+                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
                 rx="4"
                 width={mark.width}
                 x={mark.x}
@@ -1243,6 +1275,7 @@ export const LineChart = ({
   series = emptyChartSeries,
   showLegend = series.length > 1,
   showTable = true,
+  summary,
   ...props
 }: LineChartProps) => {
   const width = 640
@@ -1250,7 +1283,11 @@ export const LineChart = ({
   const padding = 44
   const categories = getLumenChartCategories(series)
   const hasData = hasLumenChartData(series)
-  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+  const alignedSeries = series.map(item => ({
+    ...item,
+    data: alignLumenChartSeries(item, categories).data
+  }))
 
   const domain = getLumenChartDomain(
     [
@@ -1277,7 +1314,11 @@ export const LineChart = ({
       scaleLumenChartValue(referenceValue, domain, height - padding, padding)
 
   return (
-    <Chart className={composeClassName('ui-line-chart', className)} {...props}>
+    <Chart
+      className={composeClassName('ui-line-chart', className)}
+      summary={summary ?? formatLumenChartSummary(series, formatValue)}
+      {...props}
+    >
       {showLegend && hasData && <ChartLegend series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
@@ -1316,7 +1357,7 @@ export const LineChart = ({
 
               return (
                 <text
-                  key={`${typeof category}:${String(category)}`}
+                  key={getChartCategoryKey(category)}
                   textAnchor="middle"
                   x={x}
                   y={height - 14}
@@ -1364,7 +1405,7 @@ export const LineChart = ({
                         className="ui-line-chart__point"
                         cx={point.xCoordinate}
                         cy={point.yCoordinate}
-                        key={`${typeof point.x}:${String(point.x)}`}
+                        key={getChartCategoryKey(point.x)}
                         r="3"
                       >
                         <title>
@@ -1407,12 +1448,19 @@ export const PieChart = ({
   series = emptyPieSeries,
   showLegend = true,
   showTable = true,
+  summary,
   valueFormatter = String,
   variant = 'donut',
   ...props
 }: PieChartProps) => {
   const geometry = createLumenPieGeometry(series.data, { variant })
   const hasData = hasLumenPieData(series.data)
+
+  const renderedSeries = {
+    ...series,
+    data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
+  }
+
   const hasCenterLabel = centerLabel !== null && centerLabel !== undefined
   const hasCenterValue = centerValue !== null && centerValue !== undefined
 
@@ -1421,6 +1469,7 @@ export const PieChart = ({
       className={composeClassName(
         'ui-pie-chart', getLumenPieChartVariantClassName(variant), className
       )}
+      summary={summary ?? formatLumenChartSummary([renderedSeries], valueFormatter)}
       {...props}
     >
       {showLegend && hasData && (
@@ -1501,6 +1550,311 @@ export const PieChart = ({
           </div>
         </details>
       )}
+    </Chart>
+  )
+}
+
+export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
+  formatValue?: (value: number) => string
+  series?: readonly LumenChartSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+  xScale?: Exclude<LumenChartScaleType, 'categorical'>
+}
+
+export const ScatterChart = ({
+  className,
+  formatValue = String,
+  series = emptyChartSeries,
+  showLegend = series.length > 1,
+  showTable = true,
+  summary,
+  xScale = 'linear',
+  ...props
+}: ScatterChartProps) => {
+  const geometry = createLumenScatterGeometry(series, { xScale })
+
+  const renderedSeries = series.map(item => ({
+    ...item,
+    data: geometry.points.filter(point => point.seriesId === item.id)
+  })).filter(item => item.data.length > 0)
+
+  const hasData = geometry.points.length > 0
+
+  return (
+    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue)} {...props}>
+      {showLegend && hasData && <ChartLegend series={series} />}
+      {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+      <div className="ui-chart__plot" hidden={!hasData}>
+        <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
+          <g className="ui-scatter-chart__marks">
+            {geometry.points.map((point, pointIndex) => (
+              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
+                <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>
+              </circle>
+            ))}
+          </g>
+        </svg>
+      </div>
+      {showTable && hasData && (
+        <details className="ui-chart__data">
+          <summary>View chart data</summary>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">X</th>
+                  <th scope="col">Series</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {geometry.points.map((point, pointIndex) => (
+                  <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>
+                    <th scope="row">{point.xLabel ?? point.x}</th>
+                    <td>{point.seriesLabel}</td>
+                    <td>{point.label ?? formatValue(point.y ?? 0)}</td>
+                    <td>
+                      {formatReactChartTableValue(point.size, formatValue)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      )}
+    </Chart>
+  )
+}
+
+export interface HeatmapProps extends Omit<ChartProps, 'children'> {
+  data?: readonly LumenHeatmapDatum[]
+  formatValue?: (value: number) => string
+  showTable?: boolean
+}
+
+export const Heatmap = ({
+  className,
+  data = emptyHeatmapData,
+  formatValue = String,
+  showTable = true,
+  summary,
+  ...props
+}: HeatmapProps) => {
+  const geometry = createLumenHeatmapGeometry(data)
+  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
+  const hasData = availableCells.length > 0
+
+  return (
+    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? `${availableCells.length} available heatmap cells.`} {...props}>
+      {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+      <div className="ui-chart__plot" hidden={!hasData}>
+        <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
+          <g className="ui-heatmap__cells">
+            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
+          </g>
+        </svg>
+      </div>
+      {showTable && (
+        <details className="ui-chart__data">
+          <summary>View chart data</summary>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Column</th>
+                  <th scope="col">Row</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map(cell => (
+                  <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>
+                    <th scope="row">{cell.xLabel ?? cell.x}</th>
+                    <td>{cell.yLabel ?? cell.y}</td>
+                    <td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? 'Not available' : formatValue(cell.value))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      )}
+    </Chart>
+  )
+}
+
+export interface RangeChartProps extends Omit<ChartProps, 'children'> {
+  data?: readonly LumenRangeDatum[]
+  formatValue?: (value: number) => string
+  showTable?: boolean
+  tone?: LumenChartTone
+}
+
+export const RangeChart = ({
+  className,
+  data = emptyRangeData,
+  formatValue = String,
+  showTable = true,
+  summary,
+  tone = 'series-1',
+  ...props
+}: RangeChartProps) => {
+  const width = 640
+  const height = 320
+  const padding = 44
+  const geometry = createLumenRangeGeometry(data, { height, padding, width })
+
+  return (
+    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? (geometry.points.length === 0 ? 'No chart data available.' : `${geometry.points.length} available ranges.`)} {...props}>
+      {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+      <div className="ui-chart__plot" hidden={geometry.points.length === 0}>
+        <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
+          <path className="ui-range-chart__area" d={geometry.areaPath} />
+          {geometry.points.map(point => (
+            <line
+              className="ui-range-chart__interval"
+              key={point.id ?? getChartCategoryKey(point.x)}
+              x1={point.xCoordinate}
+              x2={point.xCoordinate}
+              y1={point.highCoordinate}
+              y2={point.lowCoordinate}
+            >
+              <title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title>
+            </line>
+          ))}
+        </svg>
+      </div>
+      {showTable && (
+        <details className="ui-chart__data">
+          <summary>View chart data</summary>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Low</th>
+                  <th scope="col">High</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map(item => (
+                  <tr key={item.id ?? getChartCategoryKey(item.x)}>
+                    <th scope="row">{item.xLabel ?? item.x}</th>
+                    <td>{item.low === null || !Number.isFinite(item.low) ? 'Not available' : formatValue(item.low)}</td>
+                    <td>{item.high === null || !Number.isFinite(item.high) ? 'Not available' : formatValue(item.high)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      )}
+    </Chart>
+  )
+}
+
+export interface ComboChartProps extends Omit<ChartProps, 'children'> {
+  formatValue?: (value: number) => string
+  series?: readonly LumenComboSeries[]
+  showLegend?: boolean
+  showTable?: boolean
+}
+
+export const ComboChart = ({
+  className,
+  formatValue = String,
+  series = emptyComboSeries,
+  showLegend = true,
+  showTable = true,
+  summary,
+  ...props
+}: ComboChartProps) => {
+  const width = 640
+  const height = 320
+  const padding = 44
+  const categories = getLumenChartCategories(series)
+
+  const alignedSeries = series.map(item => ({
+    ...item,
+    data: alignLumenChartSeries(item, categories).data
+  }))
+
+  const domain = getLumenChartDomain(alignedSeries.flatMap(item => item.data.map(datum => datum.y)))
+  const barSeries = alignedSeries.filter(item => item.mark === 'bar')
+  const lineSeries = alignedSeries.filter(item => item.mark !== 'bar')
+  const bars = createLumenBarGeometry(barSeries, { domain, height, width })
+
+  const categoryPositions = new Map(
+    bars.categories.map(category => [getChartCategoryKey(category.category), category.x])
+  )
+
+  const drawableWidth = width - padding * 2
+
+  const alignComboLineDatum = (datum: LumenChartDatum): LumenChartDatum => {
+    if (barSeries.length === 0) return datum
+
+    return {
+      ...datum,
+      x: ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) / drawableWidth
+    }
+  }
+
+  const lineGeometryOptions = {
+    domain,
+    height,
+    padding,
+    width,
+    ...(barSeries.length === 0 ?
+      {} :
+      {
+        xDomain: { max: 1, min: 0 },
+        xScale: 'linear' as const
+      })
+  }
+
+  const lines = lineSeries.map(item => createLumenLineGeometry(
+    item.data.map(alignComboLineDatum),
+    lineGeometryOptions
+  ))
+
+  const hasData = hasLumenChartData(series)
+
+  return (
+    <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue)} {...props}>
+      {showLegend && hasData && <ChartLegend series={series} />}
+      {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+      <div className="ui-chart__plot" hidden={!hasData}>
+        <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
+          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
+          {lines.map((geometry, index) => {
+            const item = lineSeries[index]
+
+            if (!item) return null
+
+            const tone = resolveLumenChartTone(item.tone, index + barSeries.length)
+
+            return (
+              <g className={composeClassName('ui-line-chart__series', getLumenChartToneClassName(tone))} key={item.id}>
+                {item.mark === 'area' && geometry.areaPaths.map(path => (
+                  <path
+                    className="ui-line-chart__area"
+                    d={path}
+                    key={path}
+                  />
+                ))}
+                <path
+                  className="ui-line-chart__line"
+                  d={geometry.path}
+                />
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+      {showTable && hasData && <ChartDataTable categories={categories} formatValue={formatValue} series={series} />}
     </Chart>
   )
 }
@@ -3332,13 +3686,19 @@ export interface PhoneInputProps extends Omit<
   'defaultValue'
 > {
   countries?: SelectOption[]
+  countryOptions?: readonly LumenPhoneCountry[]
   countryLabel?: string
   countryName?: string
   defaultCountryValue?: string
   defaultValue?: string
+  invalidNumberMessage?: string
+  locale?: LumenPhoneCountryOptions['locale']
   name?: string
+  onValueChange?: (value: LumenPhoneNumber) => void
   placeholder?: string
+  showValidationError?: boolean
   size?: 'default' | 'lg' | 'sm'
+  value?: LumenPhoneNumber
 }
 
 const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
@@ -3353,23 +3713,135 @@ const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
   return { inputClass: undefined, selectClass: undefined }
 }
 
-export const PhoneInput = ({
+interface ResolvedMetadataPhoneInputProps extends Omit<PhoneInputProps, 'countries'> {
+  countryLabel: string
+  countryName: string
+  defaultCountryValue: string
+  invalidNumberMessage: string
+  name: string
+  placeholder: string
+  showValidationError: boolean
+  size: 'default' | 'lg' | 'sm'
+}
+
+const getPhoneInputOptions = (
+  locale: LumenPhoneCountryOptions['locale']
+): LumenPhoneCountryOptions => locale === undefined ? {} : { locale }
+
+const getBooleanAttribute = (value: boolean): true | undefined => value ? true : undefined
+
+const getPhoneErrorId = (invalid: boolean, name: string): string | undefined => (
+  invalid ? `${name}-error` : undefined
+)
+
+const PhoneInputError = ({
+  invalid,
+  message,
+  name
+}: {
+  invalid: boolean
+  message: string
+  name: string
+}) => invalid ?
+  (
+    <span className="ui-visually-hidden" id={`${name}-error`} role="alert">
+      {message}
+    </span>
+  ) :
+  null
+
+const MetadataPhoneInput = ({
   className,
-  countries = emptyOptions,
-  countryLabel = 'Country code',
-  countryName = 'country',
+  countryOptions,
+  countryLabel,
+  countryName,
   defaultCountryValue,
   defaultValue,
-  name = 'phone',
-  placeholder = 'Phone number',
-  size = 'default',
+  invalidNumberMessage,
+  locale,
+  name,
+  onValueChange,
+  placeholder,
+  showValidationError,
+  size,
+  value,
   ...props
-}: PhoneInputProps) => {
+}: ResolvedMetadataPhoneInputProps) => {
   const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+  const phoneOptions = useMemo(() => getPhoneInputOptions(locale), [locale])
+
+  const metadataCountries = useMemo(
+    () => countryOptions ?? getLumenPhoneCountries(phoneOptions),
+    [countryOptions, phoneOptions]
+  )
+
+  const initialCountry = useMemo(
+    () => resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, value),
+    [defaultCountryValue, locale, metadataCountries, value]
+  )
+
+  const [internalValue, setInternalValue] = useState<LumenPhoneNumber>(() => (
+    defaultValue ?
+      resolveReactPhoneInputValue(
+        metadataCountries,
+        initialCountry,
+        defaultValue,
+        phoneOptions
+      ) :
+      { country: initialCountry, e164: null, isValid: false, nationalNumber: '' }
+  ))
+
+  const phoneValue = value === undefined || value.country.regionCode === initialCountry.regionCode ?
+    value ?? internalValue :
+    resolveReactPhoneInputValue(
+      metadataCountries,
+      initialCountry,
+      value.nationalNumber,
+      phoneOptions
+    )
+
+  const resolvedOptions = metadataCountries.map(country => ({
+    disabled: false,
+    label: country.pickerLabel,
+    value: country.regionCode
+  }))
+
+  const commitValue = (nextValue: LumenPhoneNumber): void => {
+    if (value === undefined) setInternalValue(nextValue)
+
+    onValueChange?.(nextValue)
+  }
+
+  const handleCountryChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    const selectedCountry = metadataCountries.find(country => (
+      country.regionCode === event.currentTarget.value ||
+      country.callingCode === event.currentTarget.value
+    ))
+
+    if (selectedCountry) {
+      commitValue(resolveLumenPhoneNumber(
+        selectedCountry,
+        phoneValue.nationalNumber,
+        phoneOptions
+      ))
+    }
+  }
+
+  const handleNumberChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    commitValue(resolveReactPhoneInputValue(
+      metadataCountries,
+      phoneValue.country,
+      event.currentTarget.value,
+      phoneOptions
+    ))
+  }
+
+  const invalid = showValidationError && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid
 
   return (
     <div
       className={composeClassName('ui-phone-input ui-input-group', className)}
+      data-invalid={getBooleanAttribute(invalid)}
       {...props}
     >
       <select
@@ -3377,10 +3849,11 @@ export const PhoneInput = ({
         className={composeClassName(
           'ui-select ui-phone-input__country', selectClass
         )}
-        defaultValue={defaultCountryValue}
         name={countryName}
+        onChange={handleCountryChange}
+        value={phoneValue.country.regionCode}
       >
-        {countries.map(normalizeOption).map(option => (
+        {resolvedOptions.map(option => (
           <option
             disabled={option.disabled}
             key={option.value}
@@ -3392,9 +3865,63 @@ export const PhoneInput = ({
       </select>
       <input
         autoComplete="tel"
+        aria-errormessage={getPhoneErrorId(invalid, name)}
+        aria-invalid={getBooleanAttribute(invalid)}
         className={composeClassName(
           'ui-input ui-phone-input__number', inputClass
         )}
+        inputMode="tel"
+        name={name}
+        onChange={handleNumberChange}
+        placeholder={placeholder}
+        type="tel"
+        value={phoneValue.nationalNumber}
+      />
+      <PhoneInputError invalid={invalid} message={invalidNumberMessage} name={name} />
+    </div>
+  )
+}
+
+const LegacyPhoneInput = ({
+  className,
+  countries,
+  countryOptions: _countryOptions,
+  countryLabel = 'Country code',
+  countryName = 'country',
+  defaultCountryValue,
+  defaultValue,
+  invalidNumberMessage: _invalidNumberMessage,
+  locale: _locale,
+  name = 'phone',
+  onValueChange: _onValueChange,
+  placeholder = 'Phone number',
+  showValidationError: _showValidationError,
+  size = 'default',
+  value: _value,
+  ...props
+}: PhoneInputProps & { countries: SelectOption[] }) => {
+  const { inputClass, selectClass } = phoneInputSizeModifiers(size)
+
+  return (
+    <div
+      className={composeClassName('ui-phone-input ui-input-group', className)}
+      {...props}
+    >
+      <select
+        aria-label={countryLabel}
+        className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+        defaultValue={defaultCountryValue}
+        name={countryName}
+      >
+        {countries.map(normalizeOption).map(option => (
+          <option disabled={option.disabled} key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <input
+        autoComplete="tel"
+        className={composeClassName('ui-input ui-phone-input__number', inputClass)}
         defaultValue={defaultValue}
         inputMode="tel"
         name={name}
@@ -3402,6 +3929,26 @@ export const PhoneInput = ({
         type="tel"
       />
     </div>
+  )
+}
+
+export const PhoneInput = (props: PhoneInputProps) => {
+  if (props.countries) {
+    return <LegacyPhoneInput {...props} countries={props.countries} />
+  }
+
+  return (
+    <MetadataPhoneInput
+      {...props}
+      countryLabel={props.countryLabel ?? 'Country code'}
+      countryName={props.countryName ?? 'country'}
+      defaultCountryValue={props.defaultCountryValue ?? 'US'}
+      invalidNumberMessage={props.invalidNumberMessage ?? 'Enter a complete phone number.'}
+      name={props.name ?? 'phone'}
+      placeholder={props.placeholder ?? 'Phone number'}
+      showValidationError={props.showValidationError ?? true}
+      size={props.size ?? 'default'}
+    />
   )
 }
 
@@ -4973,15 +5520,19 @@ export const FormattedDate = ({ className, ...props }: FormattedDateProps) => (
 export type ImageProps<T extends ElementType = 'img'> = {
   as?: T
   className?: string
+  fit?: 'contain' | 'cover'
   invertOnDark?: boolean
   loading?: 'eager' | 'lazy'
-} & Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'loading'>
+  radius?: 'full' | 'lg' | 'md' | 'none' | 'sm'
+} & Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'fit' | 'loading' | 'radius'>
 
 export const Image = <T extends ElementType = 'img'>({
   as,
   className,
+  fit = 'cover',
   invertOnDark = false,
   loading,
+  radius = 'lg',
   ...props
 }: ImageProps<T>) => {
   const Component = as ?? 'img'
@@ -4990,7 +5541,11 @@ export const Image = <T extends ElementType = 'img'>({
   return createElement(Component, {
     ...props,
     className: composeClassName(
-      'ui-image', invertOnDark && 'ui-image--invert-dark', className
+      'ui-image',
+      invertOnDark && 'ui-image--invert-dark',
+      `ui-image--fit-${fit}`,
+      `ui-image--radius-${radius}`,
+      className
     ),
     ...(resolvedLoading ? { loading: resolvedLoading } : {})
   })
@@ -5815,6 +6370,41 @@ export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
   variant?: 'empty' | 'error' | 'offline' | 'success'
 }
 
+const renderIllustrationElement = (
+  element: LumenIllustrationElement,
+  index: number
+): ReactNode => {
+  if (element.kind === 'circle') {
+    return <circle key={index} cx={element.cx} cy={element.cy} r={element.r} />
+  }
+
+  if (element.kind === 'rounded-rect') {
+    return (
+      <rect
+        key={index}
+        height={element.height}
+        rx={element.radius}
+        width={element.width}
+        x={element.x}
+        y={element.y}
+      />
+    )
+  }
+
+  const pointPairs: string[] = []
+
+  for (let index = 0; index < element.points.length; index += 2) {
+    const x = element.points[index]
+    const y = element.points[index + 1]
+
+    if (x === undefined || y === undefined) break
+
+    pointPairs.push(`${x},${y}`)
+  }
+
+  return createElement(element.kind, { key: index, points: pointPairs.join(' ') })
+}
+
 export const Illustration = ({
   className,
   label,
@@ -5838,29 +6428,8 @@ export const Illustration = ({
   >
     <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
       <circle className="ui-illustration__wash" cx="60" cy="60" r="48" />
-      {variant === 'empty' && (
-        <g>
-          <path d="M32 48h56l-7 35H39l-7-35Z" />
-          <path d="M43 48 49 36h22l6 12M47 66h26" />
-        </g>
-      )}
-      {variant === 'success' && (
-        <g>
-          <circle cx="60" cy="60" r="28" />
-          <path d="m45 60 10 10 21-23" />
-        </g>
-      )}
-      {variant === 'error' && (
-        <g>
-          <circle cx="60" cy="60" r="28" />
-          <path d="m49 49 22 22m0-22L49 71" />
-        </g>
-      )}
-      {variant === 'offline' && (
-        <g>
-          <path d="M37 74h44a14 14 0 0 0 1-28 23 23 0 0 0-42-4 16 16 0 0 0-3 32Z" />
-          <path d="m38 34 44 52" />
-        </g>
+      {lumenIllustrations[variant].elements.map(
+        renderIllustrationElement
       )}
     </svg>
   </span>

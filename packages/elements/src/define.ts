@@ -7,16 +7,22 @@ import {
   coerceThemeBuilderScheme,
   composeClassName,
   createLumenBarGeometry,
+  createLumenHeatmapGeometry,
   createLumenKanbanMoveDetail,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeGeometry,
+  createLumenScatterGeometry,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  formatLumenChartSummary,
   formatLumenLanguageLabel,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenLocalePair,
+  getLumenPhoneCountries,
+  getLumenPhoneCountry,
   getLumenRichTextShortcut,
   getVirtualRange,
   hasLumenChartData,
@@ -25,13 +31,18 @@ import {
   type LumenChartSeries,
   type LumenChartTone,
   lumenChartTones,
+  type LumenComboSeries,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenHeatmapDatum,
+  type LumenIllustrationName,
   type LumenKanbanMoveDetail,
   type LumenLocaleOption,
   type LumenPieGeometrySlice,
+  type LumenRangeDatum,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
+  type LumenScatterGeometryPoint,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
@@ -39,7 +50,9 @@ import {
   normalizeThemeBuilderHex,
   parseThemeCss,
   renderLumenIconSvg,
+  renderLumenIllustrationSvg,
   resolveLumenChartTone,
+  resolveLumenPhoneNumber,
   scaleLumenChartValue,
   scoreThemeContrast,
   tuneThemeContrast
@@ -403,6 +416,11 @@ const elementConfigs = {
     baseClassName: 'ui-chart',
     tagName: 'lumen-chart'
   },
+  ComboChart: {
+    baseClassName: 'ui-chart ui-combo-chart',
+    role: 'figure',
+    tagName: 'lumen-combo-chart'
+  },
   Checkbox: {
     baseClassName: 'ui-checkbox',
     defaults: { type: 'checkbox' },
@@ -644,6 +662,11 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
+  Heatmap: {
+    baseClassName: 'ui-chart ui-heatmap',
+    role: 'figure',
+    tagName: 'lumen-heatmap'
+  },
   Icon: {
     attributeClasses: {
       size: {
@@ -658,9 +681,21 @@ const elementConfigs = {
   },
   Image: {
     attributeClasses: {
+      fit: {
+        contain: 'ui-image--fit-contain',
+        cover: 'ui-image--fit-cover'
+      },
+      radius: {
+        full: 'ui-image--radius-full',
+        lg: 'ui-image--radius-lg',
+        md: 'ui-image--radius-md',
+        none: 'ui-image--radius-none',
+        sm: 'ui-image--radius-sm'
+      },
       'invert-on-dark': { true: 'ui-image--invert-dark' }
     },
     baseClassName: 'ui-image',
+    defaults: { fit: 'cover', radius: 'lg' },
     tagName: 'lumen-image'
   },
   Input: {
@@ -856,6 +891,11 @@ const elementConfigs = {
     baseClassName: 'ui-radio-group',
     defaults: { 'data-ui-radio-group': '' },
     tagName: 'lumen-radio-group'
+  },
+  RangeChart: {
+    baseClassName: 'ui-chart ui-range-chart',
+    role: 'figure',
+    tagName: 'lumen-range-chart'
   },
   Resizable: {
     attributeClasses: {
@@ -1125,6 +1165,11 @@ const elementConfigs = {
       threshold: '0.15'
     },
     tagName: 'lumen-scroll-reveal'
+  },
+  ScatterChart: {
+    baseClassName: 'ui-chart ui-scatter-chart',
+    role: 'figure',
+    tagName: 'lumen-scatter-chart'
   },
   Stat: {
     attributeClasses: {
@@ -1414,7 +1459,10 @@ const observedAttributeNames = [
   'center-value',
   'checked',
   'columns',
+  'country',
+  'country-name',
   'decimals',
+  'data',
   'default-value',
   'delay',
   'decorative',
@@ -1458,6 +1506,7 @@ const observedAttributeNames = [
   'size',
   'surface',
   'stagger',
+  'summary',
   'step',
   'storage-key',
   'suffix',
@@ -5221,6 +5270,70 @@ const chartBooleanAttribute = (
   return element.getAttribute(name) !== 'false'
 }
 
+const parseChartSeriesCandidate = (
+  candidate: unknown,
+  seriesIndex: number
+): LumenChartSeries | undefined => {
+  if (typeof candidate !== 'object' || candidate === null) return undefined
+
+  const record = candidate as Record<string, unknown>
+
+  if (!Array.isArray(record.data)) return undefined
+
+  const data = record.data.flatMap(datum => {
+    if (
+      typeof datum !== 'object' ||
+      datum === null ||
+      !('x' in datum) ||
+      !('y' in datum)
+    ) return []
+
+    const point = datum as Record<string, unknown>
+
+    if (
+      (typeof point.x !== 'string' && typeof point.x !== 'number') ||
+      (point.y !== null &&
+        (typeof point.y !== 'number' || !Number.isFinite(point.y)))
+    ) return []
+
+    return [
+      {
+        ...(typeof point.id === 'string' ? { id: point.id } : {}),
+        ...(typeof point.label === 'string' ? { label: point.label } : {}),
+        ...(typeof point.size === 'number' && Number.isFinite(point.size) ?
+          { size: point.size } :
+          {}),
+        ...(typeof point.tone === 'string' &&
+          lumenChartTones.includes(point.tone as LumenChartTone) ?
+          { tone: point.tone as LumenChartTone } :
+          {}),
+        x: point.x,
+        ...(typeof point.xLabel === 'string' ? { xLabel: point.xLabel } : {}),
+        y: point.y
+      }
+    ]
+  })
+
+  const tone =
+    typeof record.tone === 'string' &&
+    lumenChartTones.includes(record.tone as LumenChartTone) ?
+      (record.tone as LumenChartTone) :
+      undefined
+
+  return {
+    data,
+    id:
+      typeof record.id === 'string' ?
+        record.id :
+        `series-${seriesIndex + 1}`,
+    label:
+      typeof record.label === 'string' ?
+        record.label :
+        `Series ${seriesIndex + 1}`,
+    ...(tone ? { tone } : {})
+  }
+}
+
 const parseChartSeries = (value: string | null): LumenChartSeries[] => {
   if (!value) return []
 
@@ -5229,66 +5342,104 @@ const parseChartSeries = (value: string | null): LumenChartSeries[] => {
 
     if (!Array.isArray(parsed)) return []
 
-    return parsed.flatMap((candidate, seriesIndex) => {
+    return parsed.flatMap((candidate: unknown, seriesIndex) => {
+      const series = parseChartSeriesCandidate(candidate, seriesIndex)
+
+      return series ? [series] : []
+    })
+  } catch {
+    return []
+  }
+}
+
+const parseComboChartSeries = (value: string | null): LumenComboSeries[] => {
+  if (!value) return []
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.flatMap((candidate: unknown, seriesIndex) => {
+      const item = parseChartSeriesCandidate(candidate, seriesIndex)
+
+      if (!item) return []
+
+      const mark = typeof candidate === 'object' && candidate !== null && 'mark' in candidate &&
+        (candidate.mark === 'area' || candidate.mark === 'bar' || candidate.mark === 'line') ?
+        candidate.mark :
+        'line'
+
+      return { ...item, mark }
+    })
+  } catch {
+    return []
+  }
+}
+
+const parseHeatmapData = (value: string | null): LumenHeatmapDatum[] => {
+  if (!value) return []
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.flatMap(candidate => {
       if (typeof candidate !== 'object' || candidate === null) return []
 
       const record = candidate as Record<string, unknown>
 
-      if (!Array.isArray(record.data)) return []
+      if (
+        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
+        (typeof record.y !== 'string' && typeof record.y !== 'number') ||
+        (record.value !== null &&
+          (typeof record.value !== 'number' || !Number.isFinite(record.value)))
+      ) return []
 
-      const candidateData = record.data as unknown[]
+      return [{
+        ...(typeof record.id === 'string' ? { id: record.id } : {}),
+        ...(typeof record.label === 'string' ? { label: record.label } : {}),
+        value: record.value,
+        x: record.x,
+        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {}),
+        y: record.y,
+        ...(typeof record.yLabel === 'string' ? { yLabel: record.yLabel } : {})
+      }]
+    })
+  } catch {
+    return []
+  }
+}
 
-      const data = candidateData.flatMap(datum => {
-        if (
-          typeof datum !== 'object' ||
-          datum === null ||
-          !('x' in datum) ||
-          !('y' in datum)
-        )
-          return []
+const parseRangeData = (value: string | null): LumenRangeDatum[] => {
+  if (!value) return []
 
-        const point = datum as Record<string, unknown>
+  try {
+    const parsed: unknown = JSON.parse(value)
 
-        if (
-          (typeof point.x !== 'string' && typeof point.x !== 'number') ||
-          (point.y !== null &&
-            (typeof point.y !== 'number' || !Number.isFinite(point.y)))
-        )
-          return []
+    if (!Array.isArray(parsed)) return []
 
-        return [
-          {
-            ...(typeof point.label === 'string' ? { label: point.label } : {}),
-            ...(typeof point.tone === 'string' &&
-              lumenChartTones.includes(point.tone as LumenChartTone) ?
-              { tone: point.tone as LumenChartTone } :
-              {}),
-            x: point.x,
-            y: point.y
-          }
-        ]
-      })
+    return parsed.flatMap(candidate => {
+      if (typeof candidate !== 'object' || candidate === null) return []
 
-      const tone =
-        typeof record.tone === 'string' &&
-        lumenChartTones.includes(record.tone as LumenChartTone) ?
-          (record.tone as LumenChartTone) :
-          undefined
+      const record = candidate as Record<string, unknown>
+      const validBound = (bound: unknown): bound is number | null => bound === null || (typeof bound === 'number' && Number.isFinite(bound))
 
-      return [
-        {
-          data,
-          id:
-            typeof record.id === 'string' ?
-              record.id :
-              `series-${seriesIndex + 1}`,
-          label:
-            typeof record.label === 'string' ?
-              record.label :
-              `Series ${seriesIndex + 1}`,
-          ...(tone ? { tone } : {})
-        }
-      ]
+      if (
+        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
+        !validBound(record.low) ||
+        !validBound(record.high)
+      ) return []
+
+      return [{
+        high: record.high,
+        ...(typeof record.id === 'string' ? { id: record.id } : {}),
+        ...(typeof record.label === 'string' ? { label: record.label } : {}),
+        low: record.low,
+        x: record.x,
+        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {})
+      }]
     })
   } catch {
     return []
@@ -5311,6 +5462,15 @@ const chartCaptionHtml = (element: HTMLElement): string => {
   return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
 }
 
+const chartSummaryHtml = (
+  element: HTMLElement,
+  series: readonly LumenChartSeries[]
+): string => {
+  const summary = element.getAttribute('summary') ?? formatLumenChartSummary(series)
+
+  return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>`
+}
+
 const chartLegendHtml = (series: readonly LumenChartSeries[]): string => `<ul class="ui-chart__legend" aria-label="Chart legend">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
 
 const chartDataTableHtml = (
@@ -5331,7 +5491,7 @@ const chartDataTableHtml = (
 
           const value =
             datum?.label ??
-            (datum?.y === null || datum === undefined ?
+            (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
               'Not available' :
               formatValue(datum.y))
 
@@ -5356,16 +5516,82 @@ const chartDataTableHtml = (
   ].join('')
 }
 
+const scatterDataTableHtml = (
+  points: readonly LumenScatterGeometryPoint[],
+  formatCategory: (category: number | string) => string = String,
+  formatValue: (value: number) => string = String
+): string => {
+  const rows = points
+    .map(point => [
+      `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
+      `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
+      `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
+      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? 'Not available' : formatValue(point.size))}</td></tr>`
+    ].join(''))
+    .join('')
+
+  return [
+    '<details class="ui-chart__data"><summary>View chart data</summary>',
+    '<div><table><thead><tr><th scope="col">X</th>',
+    '<th scope="col">Series</th><th scope="col">Value</th>',
+    '<th scope="col">Size</th></tr></thead>',
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+const heatmapDataTableHtml = (data: readonly LumenHeatmapDatum[]): string => {
+  const rows = data
+    .map(cell => {
+      const value =
+        cell.label ??
+        (cell.value === null || !Number.isFinite(cell.value) ?
+          'Not available' :
+          String(cell.value))
+
+      return [
+        `<tr><th scope="row">${escapeChartHtml(cell.xLabel ?? cell.x)}</th>`,
+        `<td>${escapeChartHtml(cell.yLabel ?? cell.y)}</td>`,
+        `<td>${escapeChartHtml(value)}</td></tr>`
+      ].join('')
+    })
+    .join('')
+
+  return [
+    '<details class="ui-chart__data"><summary>View chart data</summary>',
+    '<div><table><thead><tr><th scope="col">Column</th>',
+    '<th scope="col">Row</th><th scope="col">Value</th></tr></thead>',
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+const rangeDataTableHtml = (data: readonly LumenRangeDatum[]): string => {
+  const rows = data
+    .map(item => [
+      `<tr><th scope="row">${escapeChartHtml(item.xLabel ?? item.x)}</th>`,
+      `<td>${escapeChartHtml(item.low ?? 'Not available')}</td>`,
+      `<td>${escapeChartHtml(item.high ?? 'Not available')}</td></tr>`
+    ].join(''))
+    .join('')
+
+  return [
+    '<details class="ui-chart__data"><summary>View chart data</summary>',
+    '<div><table><thead><tr><th scope="col">Category</th>',
+    '<th scope="col">Low</th><th scope="col">High</th></tr></thead>',
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
 const chartPercentage = (percentage: number): string => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
   style: 'percent'
 }).format(percentage)
 
 const chartEmptyStateHtml = (
-  element: LumenDataChartBehaviorElement,
+  element: HTMLElement,
   label: string
 ): string => [
   chartHeaderHtml(element),
+  `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(element.getAttribute('summary') ?? label)}</p>`,
   `<p class="ui-chart__empty" role="status">${escapeChartHtml(label)}</p>`,
   chartCaptionHtml(element)
 ].join('')
@@ -5386,7 +5612,7 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
   }
 
   get series(): readonly LumenChartSeries[] {
-    return this.#series ?? parseChartSeries(this.getAttribute('series'))
+    return this.#series ?? this.parseSeriesAttribute(this.getAttribute('series'))
   }
 
   set series(value: readonly LumenChartSeries[]) {
@@ -5415,6 +5641,10 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
     super.attributeChangedCallback()
 
     if (this.isConnected) this.renderChart()
+  }
+
+  protected parseSeriesAttribute(value: string | null): readonly LumenChartSeries[] {
+    return parseChartSeries(value)
   }
 
   protected abstract renderChart(): void
@@ -5618,7 +5848,7 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
     const showTable = chartBooleanAttribute(this, 'show-table', true)
     const categories = geometry.categories.map(category => category.category)
 
-    this.innerHTML = `${chartHeaderHtml(this)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${chartSummaryHtml(this, series)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
   }
 }
 
@@ -5771,6 +6001,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     this.innerHTML = [
       chartHeaderHtml(this),
+      chartSummaryHtml(this, series),
       showLegend ? chartLegendHtml(series) : '',
       '<div class="ui-chart__plot"><svg aria-hidden="true"',
       ` preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}">`,
@@ -5797,6 +6028,12 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const variant = this.getAttribute('variant') === 'pie' ? 'pie' : 'donut'
     const geometry = createLumenPieGeometry(series.data, { variant })
+
+    const renderedSeries = {
+      ...series,
+      data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
+    }
+
     const showLegend = chartBooleanAttribute(this, 'show-legend', true)
     const showTable = chartBooleanAttribute(this, 'show-table', true)
 
@@ -5835,6 +6072,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     this.innerHTML = [
       chartHeaderHtml(this),
+      chartSummaryHtml(this, [renderedSeries]),
       legend,
       '<div class="ui-chart__plot ui-pie-chart__plot">',
       '<svg aria-hidden="true" preserveAspectRatio="xMidYMid meet"',
@@ -5860,6 +6098,230 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
       '<th scope="col">Value</th><th scope="col">Share</th></tr></thead>',
       `<tbody>${rows}</tbody></table></div></details>`
     ].join('')
+  }
+}
+
+class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
+  protected renderChart() {
+    const series = this.series
+    const geometry = createLumenScatterGeometry(series)
+
+    const renderedSeries = series.map(item => ({
+      ...item,
+      data: geometry.points.filter(point => point.seriesId === item.id)
+    })).filter(item => item.data.length > 0)
+
+    if (geometry.points.length === 0) {
+      this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
+
+      return
+    }
+
+    const marks = geometry.points.map(point => [
+      `<circle class="ui-chart-tone--${point.tone}" cx="${point.xCoordinate}"`,
+      ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
+      `${escapeChartHtml(point.xLabel ?? point.x)} · ${escapeChartHtml(point.seriesLabel)}: `,
+      `${escapeChartHtml(point.label ?? this.valueFormatter(point.y ?? 0))}</title></circle>`
+    ].join('')).join('')
+
+    this.innerHTML = [
+      chartHeaderHtml(this),
+      chartSummaryHtml(this, renderedSeries),
+      chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series) : '',
+      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
+      `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
+      chartBooleanAttribute(this, 'show-table', true) ?
+        scatterDataTableHtml(
+          geometry.points, this.categoryFormatter, this.valueFormatter
+        ) :
+        '',
+      chartCaptionHtml(this)
+    ].join('')
+  }
+}
+
+class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
+  protected renderChart() {
+    const series = this.series.map(item => {
+      const mark =
+        'mark' in item &&
+        (item.mark === 'area' || item.mark === 'bar' || item.mark === 'line') ?
+          item.mark :
+          'line'
+
+      return { ...item, mark }
+    })
+
+    if (!hasLumenChartData(series)) {
+      this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
+
+      return
+    }
+
+    const width = 640
+    const height = 320
+    const padding = 44
+    const categories = getLumenChartCategories(series)
+
+    const aligned = series.map(item => ({
+      ...item,
+      data: alignLumenChartSeries(item, categories).data
+    }))
+
+    const domain = getLumenChartDomain(
+      aligned.flatMap(item => item.data.map(datum => datum.y))
+    )
+
+    const bars = aligned.filter(item => item.mark === 'bar')
+    const lines = aligned.filter(item => item.mark !== 'bar')
+    const barGeometry = createLumenBarGeometry(bars, { domain, height, width })
+
+    const categoryPositions = new Map(
+      barGeometry.categories.map(category => [
+        `${typeof category.category}:${String(category.category)}`,
+        category.x
+      ])
+    )
+
+    const drawableWidth = width - padding * 2
+
+    const alignComboLineDatum = (datum: LumenChartSeries['data'][number]) => {
+      if (bars.length === 0) return datum
+
+      return {
+        ...datum,
+        x:
+          ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) /
+          drawableWidth
+      }
+    }
+
+    const lineGeometryOptions = {
+      domain,
+      height,
+      padding,
+      width,
+      ...(bars.length === 0 ?
+        {} :
+        {
+          xDomain: { max: 1, min: 0 },
+          xScale: 'linear' as const
+        })
+    }
+
+    const barMarks = barGeometry.marks.map(mark => [
+      `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}"`,
+      ` rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}">`,
+      `<title>${escapeChartHtml(mark.seriesLabel)}: `,
+      `${escapeChartHtml(this.valueFormatter(mark.value))}</title></rect>`
+    ].join('')).join('')
+
+    const lineMarks = lines.map((item, index) => {
+      const geometry = createLumenLineGeometry(
+        item.data.map(alignComboLineDatum), lineGeometryOptions
+      )
+
+      const tone = resolveLumenChartTone(item.tone, index + bars.length)
+
+      const areas = item.mark === 'area' ?
+        geometry.areaPaths.map(
+          path => `<path class="ui-line-chart__area" d="${path}"></path>`
+        ).join('') :
+        ''
+
+      return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areas}<path class="ui-line-chart__line" d="${geometry.path}"></path></g>`
+    }).join('')
+
+    this.innerHTML = [
+      chartHeaderHtml(this),
+      chartSummaryHtml(this, series),
+      chartBooleanAttribute(this, 'show-legend', true) ? chartLegendHtml(series) : '',
+      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
+      `<g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
+      chartBooleanAttribute(this, 'show-table', true) ?
+        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) :
+        '',
+      chartCaptionHtml(this)
+    ].join('')
+  }
+
+  protected override parseSeriesAttribute(value: string | null): readonly LumenComboSeries[] {
+    return parseComboChartSeries(value)
+  }
+}
+
+abstract class LumenStructuredChartBehaviorElement extends LumenElement {
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderChart()
+  }
+
+  override attributeChangedCallback() {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected abstract renderChart(): void
+}
+
+class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
+  protected renderChart() {
+    const data = parseHeatmapData(this.getAttribute('data'))
+    const geometry = createLumenHeatmapGeometry(data)
+
+    const availableCells = geometry.cells.filter(
+      cell => cell.value !== null && Number.isFinite(cell.value)
+    )
+
+    const cells = availableCells.map(cell => [
+      `<rect height="${Math.max(0, cell.height - 2)}" opacity="${Math.max(0.12, cell.ratio)}"`,
+      ` width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}"`,
+      ` y="${cell.yCoordinate + 1}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · `,
+      `${escapeChartHtml(cell.yLabel ?? cell.y)}: `,
+      `${escapeChartHtml(cell.label ?? cell.value ?? 'Not available')}</title></rect>`
+    ].join('')).join('')
+
+    const summary =
+      this.getAttribute('summary') ??
+      `${availableCells.length} available heatmap cells.`
+
+    const plot = availableCells.length === 0 ?
+      '<p class="ui-chart__empty" role="status">No chart data available.</p>' :
+      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+
+    const table = chartBooleanAttribute(this, 'show-table', true) ?
+      heatmapDataTableHtml(data) :
+      ''
+
+    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
+  }
+}
+
+class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement {
+  protected renderChart() {
+    const data = parseRangeData(this.getAttribute('data'))
+    const geometry = createLumenRangeGeometry(data)
+
+    const intervals = geometry.points.map(point => [
+      `<line class="ui-range-chart__interval" x1="${point.xCoordinate}"`,
+      ` x2="${point.xCoordinate}" y1="${point.highCoordinate}" y2="${point.lowCoordinate}">`,
+      `<title>${escapeChartHtml(point.xLabel ?? point.x)}: `,
+      `${escapeChartHtml(point.label ?? `${point.low ?? 0}–${point.high ?? 0}`)}</title></line>`
+    ].join('')).join('')
+
+    const summary = this.getAttribute('summary') ?? `${geometry.points.length} available ranges.`
+
+    const plot = geometry.points.length === 0 ?
+      '<p class="ui-chart__empty" role="status">No chart data available.</p>' :
+      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
+
+    const table = chartBooleanAttribute(this, 'show-table', true) ?
+      rangeDataTableHtml(data) :
+      ''
+
+    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
   }
 }
 
@@ -5937,13 +6399,6 @@ class LumenGraphicBehaviorElement extends LumenElement {
   }
 }
 
-const illustrationArtwork: Readonly<Record<string, string>> = {
-  empty: '<path d="M32 48h56l-7 35H39l-7-35Z"/><path d="M43 48 49 36h22l6 12M47 66h26"/>',
-  error: '<circle cx="60" cy="60" r="28"/><path d="m49 49 22 22m0-22L49 71"/>',
-  offline: '<path d="M37 74h44a14 14 0 0 0 1-28 23 23 0 0 0-42-4 16 16 0 0 0-3 32Z"/><path d="m38 34 44 52"/>',
-  success: '<circle cx="60" cy="60" r="28"/><path d="m45 60 10 10 21-23"/>'
-}
-
 class LumenIllustrationBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
@@ -5959,11 +6414,12 @@ class LumenIllustrationBehaviorElement extends LumenElement {
 
   private renderIllustration() {
     const label = this.getAttribute('label')
+    const variant = this.getAttribute('variant')
 
-    const artwork = illustrationArtwork[this.getAttribute('variant') ?? 'empty'] ??
-      illustrationArtwork.empty ?? ''
+    const name: LumenIllustrationName =
+      variant === 'error' || variant === 'offline' || variant === 'success' ? variant : 'empty'
 
-    const markup = `<svg aria-hidden="true" fill="none" viewBox="0 0 120 120"><circle class="ui-illustration__wash" cx="60" cy="60" r="48"/><g>${artwork}</g></svg>`
+    const markup = renderLumenIllustrationSvg(name)
 
     if (this.innerHTML !== markup) this.innerHTML = markup
 
@@ -9934,6 +10390,193 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
   }
 }
 
+class LumenPhoneInputBehaviorElement extends LumenElement {
+  private countrySelect: HTMLSelectElement | undefined
+  private eventController: AbortController | undefined
+  private numberInput: HTMLInputElement | undefined
+
+  get e164(): string | null {
+    return this.dataset.e164 || null
+  }
+
+  get valid(): boolean {
+    return this.dataset.valid === 'true'
+  }
+
+  get value(): string {
+    return this.numberInput?.value ?? this.getAttribute('value') ?? ''
+  }
+
+  set value(value: string) {
+    this.setAttribute('value', value)
+  }
+
+  override attributeChangedCallback(
+    name: string,
+    previousValue: string | null,
+    value: string | null
+  ) {
+    super.attributeChangedCallback(name, previousValue, value)
+
+    if (previousValue === value || !this.numberInput || !this.countrySelect) return
+
+    if (name === 'value') {
+      this.numberInput.value = value ?? ''
+
+      this.commit()
+    }
+
+    if (name === 'country' && value) {
+      const countryOption = [...this.countrySelect.options].find(option => (
+        option.value === value || option.textContent.includes(`(${value})`)
+      ))
+
+      if (countryOption) {
+        this.countrySelect.value = countryOption.value
+
+        this.commit()
+      }
+    }
+  }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    if (!hasDocument()) return
+
+    this.ensureControls()
+
+    this.bindControls()
+
+    if (this.numberInput?.value) this.commit()
+  }
+
+  override disconnectedCallback() {
+    this.eventController?.abort()
+
+    this.eventController = undefined
+  }
+
+  private bindControls() {
+    if (!this.countrySelect || !this.numberInput) return
+
+    this.eventController?.abort()
+
+    this.eventController = new AbortController()
+
+    const options = { signal: this.eventController.signal }
+
+    this.countrySelect.addEventListener('change', () => {
+      this.commit()
+    }, options)
+
+    this.numberInput.addEventListener('input', () => {
+      this.commit()
+    }, options)
+  }
+
+  private commit() {
+    if (!this.countrySelect || !this.numberInput) return
+
+    const selectedOption = this.countrySelect.selectedOptions[0]
+    const regionCode = selectedOption?.dataset.region ?? this.countrySelect.value
+    const country = getLumenPhoneCountry(regionCode, this.phoneOptions)
+
+    if (!country) return
+
+    const phoneNumber = resolveLumenPhoneNumber(country, this.numberInput.value, this.phoneOptions)
+    const hasInput = phoneNumber.nationalNumber.length > 0
+
+    const invalidMessage = this.getAttribute('invalid-number-message') ??
+      'Enter a complete phone number.'
+
+    this.numberInput.value = phoneNumber.nationalNumber
+
+    this.countrySelect.value = phoneNumber.country.regionCode
+
+    this.numberInput.setCustomValidity(hasInput && !phoneNumber.isValid ? invalidMessage : '')
+
+    this.numberInput.setAttribute('aria-invalid', String(hasInput && !phoneNumber.isValid))
+
+    this.dataset.e164 = phoneNumber.e164 ?? ''
+
+    this.dataset.valid = String(phoneNumber.isValid)
+
+    this.dispatchEvent(new CustomEvent('ui:phone-change', {
+      bubbles: true,
+      detail: phoneNumber
+    }))
+  }
+
+  private ensureControls() {
+    this.countrySelect = this.querySelector<HTMLSelectElement>('.ui-phone-input__country') ?? undefined
+
+    this.numberInput = this.querySelector<HTMLInputElement>('.ui-phone-input__number') ?? undefined
+
+    if (!this.countrySelect) {
+      this.countrySelect = document.createElement('select')
+
+      this.countrySelect.className = 'ui-select ui-phone-input__country'
+
+      this.append(this.countrySelect)
+    }
+
+    if (!this.numberInput) {
+      this.numberInput = document.createElement('input')
+
+      this.numberInput.className = 'ui-input ui-phone-input__number'
+
+      this.append(this.numberInput)
+    }
+
+    this.populateCountries()
+
+    this.countrySelect.setAttribute('aria-label', this.getAttribute('country-label') ?? 'Country code')
+
+    this.countrySelect.name = this.getAttribute('country-name') ?? 'country'
+
+    this.numberInput.autocomplete = 'tel'
+
+    this.numberInput.inputMode = 'tel'
+
+    this.numberInput.name = this.getAttribute('name') ?? 'phone'
+
+    this.numberInput.placeholder = this.getAttribute('placeholder') ?? 'Phone number'
+
+    this.numberInput.type = 'tel'
+
+    this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
+  }
+
+  private get phoneOptions() {
+    const locale = (this.getAttribute('locale') ?? this.lang) || document.documentElement.lang
+
+    return locale ? { locale } : {}
+  }
+
+  private populateCountries() {
+    if (!this.countrySelect || this.countrySelect.options.length > 0) return
+
+    const countries = getLumenPhoneCountries(this.phoneOptions)
+    const requestedCountry = this.getAttribute('country') ?? 'US'
+
+    for (const country of countries) {
+      const option = document.createElement('option')
+
+      option.dataset.region = country.regionCode
+
+      option.textContent = country.pickerLabel
+
+      option.value = country.regionCode
+
+      option.selected = country.regionCode === requestedCountry ||
+        country.callingCode === requestedCountry
+
+      this.countrySelect.append(option)
+    }
+  }
+}
+
 const createLumenElementClass = (config: LumenElementConfig) => class extends LumenElement {
   static override config = config
 }
@@ -9957,12 +10600,14 @@ const behaviorElementClasses: Partial<
   Checkbox: LumenScalarFormControlElement,
   CodeTabs: LumenTabsBehaviorElement,
   ColorPicker: LumenScalarFormControlElement,
+  ComboChart: LumenComboChartBehaviorElement,
   CopyButton: LumenCopyButtonBehaviorElement,
   DataTable: LumenDataTableBehaviorElement,
   Dialog: LumenDialogBehaviorElement,
   DropdownMenu: LumenDisclosureBehaviorElement,
   FileUpload: LumenFileUploadBehaviorElement,
   Graphic: LumenGraphicBehaviorElement,
+  Heatmap: LumenHeatmapBehaviorElement,
   Illustration: LumenIllustrationBehaviorElement,
   Icon: LumenIconBehaviorElement,
   Input: LumenScalarFormControlElement,
@@ -9975,13 +10620,16 @@ const behaviorElementClasses: Partial<
   NumberField: LumenScalarFormControlElement,
   Particles: LumenParticlesBehaviorElement,
   PieChart: LumenPieChartBehaviorElement,
+  PhoneInput: LumenPhoneInputBehaviorElement,
   Popover: LumenDisclosureBehaviorElement,
   Progress: LumenProgressBehaviorElement,
   PasswordField: LumenPasswordFieldBehaviorElement,
   Rating: LumenRatingBehaviorElement,
+  RangeChart: LumenRangeChartBehaviorElement,
   RevealGroup: LumenRevealGroupBehaviorElement,
   ScrollProgress: LumenScrollProgressBehaviorElement,
   ScrollReveal: LumenScrollRevealBehaviorElement,
+  ScatterChart: LumenScatterChartBehaviorElement,
   SearchField: LumenScalarFormControlElement,
   Select: LumenSelectBehaviorElement,
   Slider: LumenScalarFormControlElement,
@@ -10114,6 +10762,7 @@ export const LumenCarouselElement = elementClasses.Carousel
 export const LumenChartElement = elementClasses.Chart
 export const LumenCheckboxElement = elementClasses.Checkbox
 export const LumenCollapsibleElement = elementClasses.Collapsible
+export const LumenComboChartElement = elementClasses.ComboChart
 export const LumenCodeElement = elementClasses.Code
 export const LumenCodeTabsElement = elementClasses.CodeTabs
 export const LumenComboboxElement = elementClasses.Combobox
@@ -10132,6 +10781,7 @@ export const LumenEmptyElement = elementClasses.Empty
 export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
 export const LumenIconElement = elementClasses.Icon
+export const LumenHeatmapElement = elementClasses.Heatmap
 export const LumenInputElement = elementClasses.Input
 export const LumenInputGroupElement = elementClasses.InputGroup
 export const LumenInputOTPElement = elementClasses.InputOTP
@@ -10153,11 +10803,13 @@ export const LumenPhoneInputElement = elementClasses.PhoneInput
 export const LumenPieChartElement = elementClasses.PieChart
 export const LumenPopoverElement = elementClasses.Popover
 export const LumenProgressElement = elementClasses.Progress
+export const LumenRangeChartElement = elementClasses.RangeChart
 export const LumenRadioGroupElement = elementClasses.RadioGroup
 export const LumenResizableElement = elementClasses.Resizable
 export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
 export const LumenScrollProgressElement = elementClasses.ScrollProgress
+export const LumenScatterChartElement = elementClasses.ScatterChart
 export const LumenScheduleElement = elementClasses.Schedule
 export const LumenSearchFieldElement = elementClasses.SearchField
 export const LumenSelectElement = elementClasses.Select

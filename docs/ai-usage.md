@@ -289,12 +289,15 @@ The shared catalog includes:
   shared template stylesheet, then replace sample data and routes while preserving public Lumen
   components, semantic tokens, accessible names, focus paths, and responsive navigation.
 - Use `Sparkline` for a compact trend beside a labelled metric, `BarChart` for categorical
-  comparison, `LineChart` for ordered or time-series data, and `PieChart` for a small
+  comparison, `LineChart` for ordered or time-series data, `PieChart` for a small
   part-to-whole breakdown. Pass already-aggregated `LumenChartSeries` data; keep statistics,
   resampling, model evaluation, and domain calculations in application code. Keep `showTable`
   enabled unless the same values are already available in a nearby semantic table. Prefer a bar
   chart when precise slice comparison matters or the pie would exceed roughly seven categories.
-  Use `Chart` as the custom SVG/canvas escape hatch.
+  Use `ScatterChart` for numeric relationships, `Heatmap` for a labeled matrix, `RangeChart` for
+  low-to-high intervals, and `ComboChart` only when mixed marks share a meaningful domain. Use
+  `Chart` as the custom SVG/canvas escape hatch. Preserve `null` gaps and the default accessible
+  summary and fallback data. See `docs/data-visualization.md` for the full contract.
   Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`
   and `formatValue` for localized axes, SVG titles, and data tables. Choose
   `presentation="bare"` inside an existing Card, `categoryWidth` for long horizontal labels,

@@ -48,7 +48,8 @@ and reveal behavior.
 
 The data-visualization family includes the general `Chart` asset plus dedicated `Sparkline`,
 `BarChart`, `LineChart`, and `PieChart` assets. `ScrollProgress` lives on the Utilities page. These
-assets use the 16 `color/chart/*` variables for categorical, sequential, diverging, axis, and grid
+assets use the 20 `color/chart/*` variables for categorical, sequential, diverging, axis, grid,
+reference, selection, and tooltip
 roles and have been checked in all four Color modes.
 
 ## Theme Tokens

@@ -6,31 +6,36 @@
   "scripts": {
     "android": "expo start --android",
     "build": "expo export --platform web",
-    "build:android:apk": "eas build --platform android --profile preview",
-    "build:android:store": "eas build --platform android --profile production",
-    "build:ios": "eas build --platform ios --profile production",
+    "build:android:apk": "pnpm dlx eas-cli@22.4.0 build --platform android --profile preview",
+    "build:android:store": "pnpm dlx eas-cli@22.4.0 build --platform android --profile production",
+    "build:ios": "pnpm dlx eas-cli@22.4.0 build --platform ios --profile production",
     "capture:components": "node --experimental-strip-types scripts/capture-component-screenshots.mjs",
     "dev": "expo start",
+    "generate:assets": "./scripts/generate-app-assets.sh",
     "ios": "expo start --ios",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "publish:expo-go": "pnpm dlx eas-cli@22.4.0 update --branch expo-go --environment production --platform all",
     "typecheck": "tsc --noEmit",
     "web": "expo start --web"
   },
   "dependencies": {
     "@expo/metro-runtime": "catalog:",
+    "@react-native-community/datetimepicker": "catalog:",
     "@santi020k/lumen-react-native": "workspace:*",
     "expo": "catalog:",
+    "expo-splash-screen": "catalog:",
+    "expo-status-bar": "catalog:",
     "expo-system-ui": "catalog:",
     "expo-updates": "catalog:",
     "react": "catalog:expo",
     "react-dom": "catalog:expo",
     "react-native": "catalog:expo",
+    "react-native-safe-area-context": "catalog:",
     "react-native-svg": "catalog:expo",
     "react-native-web": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",
-    "eas-cli": "catalog:",
     "typescript": "catalog:"
   }
 }

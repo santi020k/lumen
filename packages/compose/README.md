@@ -102,9 +102,10 @@ remain distinct from its primary and secondary colors. Applications with complet
 can pass `LumenThemeValues` instead.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker,
-Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
-Illustration, Disclosure, Gauge, and Avatar.
+FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField, PhoneInput, Checkbox, RadioGroup,
+SegmentedControl, Tabs, Chip, Picker, Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress,
+Skeleton, Graphic, Backdrop,
+Illustration, Image, Disclosure, Gauge, and Avatar.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` add Material-native controlled
 presentation and Android share-sheet integration while application state remains host-owned.
 `LumenNavigationBar` provides Material-native destination selection while the application retains
@@ -118,6 +119,11 @@ and `onReselect` for application-owned scroll-to-top or nested-stack behavior.
 a bottom bar and navigation rail. The Android-specific tier also includes
 `LumenFloatingActionButton`, with Material-native geometry, semantic intents, and optional hide or
 follow-navigation behavior.
+
+`LumenPhoneInput` is experimental and uses Google libphonenumber metadata to provide a searchable,
+localized country picker, calling codes, as-you-type formatting, validation, and normalized E.164
+output. Country flags supplement the visible country name and calling code; they are never the only
+country identifier.
 The module intentionally uses
 Material 3/Compose APIs and TalkBack semantics rather than translating DOM behavior. `LumenIconName`
 provides all canonical Lucide interface icons and namespaced Font Awesome Free brands used by web,
@@ -210,6 +216,13 @@ See the [native component reference](../../docs/native-components.md) for instal
 API matrix, native image mapping, and accessibility requirements.
 Use the [native device validation matrix](../../docs/native-device-validation.md) when verifying
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
+
+## Data visualization
+
+`LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
+`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use Compose Canvas with generated chart
+tokens and TalkBack semantics. Data charts include a factual summary and a readable fallback list.
+See the shared [data-visualization guide](../../docs/data-visualization.md).
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Android,
 JDK, Gradle, Kotlin, and Compose baselines.
 

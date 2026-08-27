@@ -1,0 +1,66 @@
+{
+  "$description": "Cross-platform fixtures for Lumen chart domains, scales, gaps, and stacking.",
+  "schemaVersion": 1,
+  "line": {
+    "categorical": {
+      "data": [
+        { "x": "Mon", "y": 4 },
+        { "x": "Tue", "y": null },
+        { "x": "Wed", "y": 8 }
+      ],
+      "expected": {
+        "domain": { "min": 4, "max": 8 },
+        "pointCount": 2,
+        "segmentCount": 2
+      }
+    },
+    "linear": {
+      "data": [
+        { "x": 0, "y": 2 },
+        { "x": 10, "y": 4 },
+        { "x": 100, "y": 8 }
+      ],
+      "expected": {
+        "xDomain": { "min": 0, "max": 100 },
+        "xCoordinates": [0, 10, 100]
+      }
+    }
+  },
+  "stackedBar": {
+    "series": [
+      {
+        "id": "revenue",
+        "label": "Revenue",
+        "data": [
+          { "x": "A", "y": 12 },
+          { "x": "B", "y": -3 }
+        ]
+      },
+      {
+        "id": "cost",
+        "label": "Cost",
+        "data": [
+          { "x": "A", "y": 8 },
+          { "x": "B", "y": -7 }
+        ]
+      }
+    ],
+    "expected": {
+      "domain": { "min": -10, "max": 20 },
+      "markCount": 4
+    }
+  },
+  "heatmap": {
+    "data": [
+      { "x": "Mon", "y": "AM", "value": 1 },
+      { "x": "Tue", "y": "AM", "value": 3 },
+      { "x": "Mon", "y": "PM", "value": 2 },
+      { "x": "Tue", "y": "PM", "value": null }
+    ],
+    "expected": {
+      "cellCount": 4,
+      "xCategoryCount": 2,
+      "yCategoryCount": 2
+    }
+  }
+}

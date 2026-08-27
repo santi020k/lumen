@@ -50,9 +50,10 @@ After Xcode resolves the package, import `LumenUI` in the SwiftUI view that owns
 surface and apply one theme near the root:
 
 ```swift
+import SwiftUI
 import LumenUI
 
-struct AppRoot: View {
+struct AppContent: View {
     var body: some View {
         LumenSurface {
             LumenText("Welcome", variant: .title)
@@ -63,6 +64,12 @@ struct AppRoot: View {
                 action: openSearch
             )
         }
+    }
+}
+
+struct AppRoot: View {
+    var body: some View {
+        AppContent()
             .lumenTheme(.dark)
     }
 }
@@ -73,18 +80,57 @@ product palettes. If a stored System/Light/Dark preference is application-owned,
 semantic values without forcing SwiftUI's appearance:
 
 ```swift
-AppRoot()
-    .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
+enum AppAppearance {
+    case system, light, dark
+}
+
+struct ThemedAppRoot: View {
+    @Environment(\.colorScheme) private var systemColorScheme
+
+    let selectedAppearance: AppAppearance
+
+    private var baseTheme: LumenTheme {
+        switch selectedAppearance {
+        case .system:
+            systemColorScheme == .dark ? .dark : .light
+        case .light:
+            .light
+        case .dark:
+            .dark
+        }
+    }
+
+    private var productTheme: LumenTheme {
+        LumenTheme(
+            colors: baseTheme.colors.overriding(
+                brand: Color("BrandAccent"),
+                brandSoft: Color("BrandAccentSoft"),
+                accent: Color("BrandAccent")
+            ),
+            scheme: baseTheme.scheme
+        )
+    }
+
+    var body: some View {
+        AppContent()
+            .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
+    }
+}
 ```
+
+Use `overriding(...)` for additive product customization: omitted semantic colors continue to use
+the selected Lumen light or dark palette. Construct `LumenColorPalette` directly only when the
+application intentionally owns every semantic color.
 
 Apply the modifier to every independent scene that presents Lumen content, including macOS window,
 settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`, system appearance
 changes remain application-owned while Lumen components read the supplied palette.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker, Slider, DateField, Link,
+FieldGroup, Toggle, SettingsRow, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Picker, Slider,
+DateField, DateRangeField, PhoneInput, Link,
 SearchField, Badge, Divider, Spinner, Card, Alert, Toast, Banner, Progress, Skeleton, Graphic,
-Backdrop, Illustration, Disclosure, EmptyState,
+Backdrop, Illustration, Image, Disclosure, EmptyState,
 ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally includes a keyboard
 ShortcutRecorder and searchable SF Symbols picker.
 Native presentation is available through `.lumenAlertDialog`, `.lumenSheet`, `LumenMenu`, and
@@ -111,6 +157,10 @@ boundary.
 controlled or presentation-local expansion state. `LumenLink` applies semantic link treatment while
 delegating URL opening, focus, disabled state, and accessibility behavior to SwiftUI.
 
+`LumenImage` applies the shared fit, aspect-ratio, semantic-radius, and accessibility contract to
+application-provided SwiftUI image content, so the application retains control of asset catalogs,
+`AsyncImage`, caching, and retry behavior.
+
 watchOS targets use a focused at-a-glance tier instead of the full phone catalog:
 `LumenWatchActionButton`, `LumenWatchProgressRing`, `LumenWatchStatus`, `LumenWatchMetric`, and
 `LumenWatchListRow`. Apply `.lumenTheme(...)` at the watch app root. Keep Digital Crown behavior,
@@ -120,6 +170,17 @@ health or safety decisions in the application.
 The same component APIs work in iOS and macOS targets. Lumen automatically uses touch-friendly
 control dimensions on iPhone and iPad, and compact pointer-friendly dimensions on Mac. Shared views
 normally need no platform checks:
+
+```swift
+@State private var phone = LumenPhoneNumber.empty(
+    country: LumenPhoneCountry(regionCode: "CO", callingCode: "+57", displayName: "Colombia")
+)
+
+LumenPhoneInput("Hospital or OB phone number", value: $phone)
+```
+
+The phone component uses localized country metadata, as-you-type formatting, and exposes E.164 only
+for valid numbers. It is available on iOS and macOS, not watchOS or tvOS.
 
 ```swift
 struct AccountActions: View {
@@ -159,6 +220,13 @@ LumenDateField(
     bounds: .from(.now),
     description: "Choose when this version becomes available."
 )
+
+LumenDateRangeField(
+    "Release window",
+    start: $releaseStart,
+    end: $releaseEnd,
+    bounds: .from(.now)
+)
 ```
 
 On macOS, shortcut validation remains application-owned while Lumen handles capture and presentation:
@@ -174,6 +242,14 @@ state contracts, native image mapping, and accessibility requirements.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Apple OS,
 Swift, and Xcode baselines, and use the
 [native device validation matrix](../../docs/native-device-validation.md) for VoiceOver evidence.
+
+## Data visualization
+
+`LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
+`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use Swift Charts or a tokenized Canvas while
+preserving the iOS 16 baseline. Data charts provide native mark accessibility, a factual summary,
+and a readable disclosure list. See the shared
+[data-visualization guide](../../docs/data-visualization.md).
 
 From the repository root, check the reviewed public API for every declared Apple platform with:
 
