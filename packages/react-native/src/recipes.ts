@@ -130,6 +130,16 @@ export const resolveLumenButtonOpacity = (
   return 1
 }
 
+export const resolveLumenAriaInvalid = (
+  error: boolean | string | undefined
+): true | undefined => error ? true : undefined
+
+export const resolveLumenValidationHint = (
+  errorMessage: string | undefined,
+  description: string | undefined,
+  consumerHint?: string
+): string | undefined => errorMessage ?? consumerHint ?? description
+
 export const resolveLumenControlMinHeight = (size: LumenControlSize): number => {
   if (size === 'sm') return 36
 

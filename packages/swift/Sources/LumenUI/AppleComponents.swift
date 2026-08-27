@@ -80,6 +80,7 @@ public struct LumenDateField: View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             datePicker
                 .tint(theme.colors.brandSolid)
+                .lumenAccessibilityHint(errorMessage ?? description)
 
             if let errorMessage {
                 Text(errorMessage)

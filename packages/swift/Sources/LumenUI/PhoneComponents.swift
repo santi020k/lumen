@@ -365,6 +365,7 @@ public struct LumenPhoneInput: View {
                 .stroke(borderColor, lineWidth: 1)
         }
         .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+        .lumenAccessibilityHint(localizedError ?? localizedDescription)
         .accessibilityLabel(numberLabel)
 
         #if os(iOS)

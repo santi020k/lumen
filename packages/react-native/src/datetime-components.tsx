@@ -33,7 +33,11 @@ import {
   resolveLumenDateRangeEndMinimum,
   resolveLumenDateRangeStartChange
 } from './form-recipes.js'
-import { resolveLumenButtonOpacity } from './recipes.js'
+import {
+  resolveLumenAriaInvalid,
+  resolveLumenButtonOpacity,
+  resolveLumenValidationHint
+} from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
 const defaultDateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' })
@@ -211,9 +215,11 @@ export const LumenDateField = ({
         {label}
       </Text>
       <Pressable
+        accessibilityHint={resolveLumenValidationHint(errorMessage, description)}
         accessibilityLabel={`${label}, ${displayValue}`}
         accessibilityRole="button"
         accessibilityState={{ disabled: !enabled, expanded }}
+        aria-invalid={resolveLumenAriaInvalid(errorMessage)}
         disabled={!enabled}
         onPress={openPicker}
         style={({ pressed }) => ({

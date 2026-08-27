@@ -28,7 +28,11 @@ import {
   resolveLumenPhoneInputValue
 } from './phone-recipes.js'
 import { LumenIcon } from './primitives.js'
-import { resolveLumenButtonOpacity } from './recipes.js'
+import {
+  resolveLumenAriaInvalid,
+  resolveLumenButtonOpacity,
+  resolveLumenValidationHint
+} from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
 export interface LumenPhoneInputProps extends Omit<ViewProps, 'children'> {
@@ -193,6 +197,8 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
     [phoneOptions, props.countries]
   )
 
+  const countrySelectorDisabled = !enabled || availableCountries.length === 0
+
   const filteredCountries = useMemo(
     () => filterPhoneCountries(availableCountries, countryQuery),
     [availableCountries, countryQuery]
@@ -259,8 +265,8 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
           <Pressable
             accessibilityLabel={`${labels.countrySelectorLabel}, ${value.country.displayName}, ${value.country.callingCode}`}
             accessibilityRole="button"
-            accessibilityState={{ disabled: !enabled, expanded: pickerVisible }}
-            disabled={!enabled || availableCountries.length === 0}
+            accessibilityState={{ disabled: countrySelectorDisabled, expanded: pickerVisible }}
+            disabled={countrySelectorDisabled}
             onPress={() => {
               setPickerVisible(true)
             }}
@@ -273,7 +279,7 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
               flexDirection: 'row',
               gap: theme.spacing.xs,
               minHeight: 44,
-              opacity: enabled ? resolveLumenButtonOpacity(false, pressed) : 0.52,
+              opacity: countrySelectorDisabled ? 0.52 : resolveLumenButtonOpacity(false, pressed),
               paddingHorizontal: theme.spacing.md
             })}
           >
@@ -284,7 +290,10 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
             </Text>
           </Pressable>
           <TextInput
+            accessibilityHint={resolveLumenValidationHint(effectiveError, description)}
             accessibilityLabel={labels.numberLabel}
+            accessibilityState={{ disabled: !enabled }}
+            aria-invalid={resolveLumenAriaInvalid(effectiveError)}
             autoComplete="tel"
             editable={enabled}
             keyboardType="phone-pad"

@@ -152,6 +152,7 @@ export interface LumenSearchFieldProps extends Omit<TextInputProps, 'onChangeTex
 }
 
 export const LumenSearchField = ({
+  accessibilityState,
   clearLabel = 'Clear search',
   editable = true,
   graphic,
@@ -189,6 +190,7 @@ export const LumenSearchField = ({
         ref={ref}
         {...props}
         accessibilityLabel={resolveSearchValue(props.accessibilityLabel, prompt)}
+        accessibilityState={{ ...accessibilityState, disabled: !editable }}
         editable={editable}
         onChangeText={onChangeText}
         placeholder={resolveSearchValue(placeholder, prompt)}

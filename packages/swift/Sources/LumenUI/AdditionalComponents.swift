@@ -121,8 +121,9 @@ public struct LumenTextarea: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
                 .opacity(isEnabled ? 1 : 0.52)
+                .lumenAccessibilityHint(errorMessage ?? description)
                 .accessibilityLabel(title)
-                .accessibilityValue(errorMessage ?? LocalizedStringKey(text))
+                .accessibilityValue(Text(verbatim: text))
             if let errorMessage {
                 Text(errorMessage).font(.caption).foregroundStyle(theme.colors.danger)
             } else if let description {
