@@ -317,6 +317,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Regenerate and compare React Native component captures
         run: |
           pnpm --filter @santi020k/lumen-react-native... run build
