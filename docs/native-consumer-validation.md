@@ -30,8 +30,8 @@ was changed during discovery.
 | React Native | Roadscore mobile | Expo 57 and React Native 0.86.2 application upgraded from `@santi020k/lumen-react-native@0.3.0` to `0.4.0`; frozen install, direct lint/typecheck, and iOS/Android/web Expo export pass; a disposable 0.5.0 upgrade passes the same checks | Technical upgrade validation complete through 0.5.0; active-product confirmation and a native EAS build remain |
 | SwiftUI | ContracTrack | Exact Lumen upgrade from 1.4.0 to 1.5.0 across iOS, macOS, and watchOS; all three application schemes build against the resolved tag | Technical multi-platform validation complete for 1.5.0; active-product and physical-device confirmation remain |
 | SwiftUI | Workscene | Exact Lumen 1.5.0 dependency in a macOS application with multiple Lumen-backed feature and settings views | Candidate; build, active-product confirmation, findings, and upgrade evidence remain |
-| SwiftUI | Coolstead | Exact Lumen 1.5.0 dependency in a macOS application | Candidate; build, active-product confirmation, findings, and upgrade evidence remain |
-| SwiftUI | PostLens | Exact Lumen 1.5.0 dependency in an iOS application with multiple Lumen-backed product flows | Candidate; build, active-product confirmation, findings, and upgrade evidence remain |
+| SwiftUI | Coolstead | Pending exact 1.4.0 to 1.5.0 upgrade in a macOS application; strict formatting, warning-as-error builds, release-metadata validation, and 42 tests pass | Technical build and upgrade validation complete for the pending 1.5.0 integration; active-product confirmation and physical-product evidence remain |
+| SwiftUI | PostLens | Exact Lumen 1.5.0 dependency in an iOS application with multiple Lumen-backed product flows; simulator build, standalone type-check, smoke checks, and 434 tests pass | Technical build validation complete for 1.5.0; upgrade, active-product confirmation, and physical-device evidence remain |
 | Compose | ContracTrack Android | Published `com.santi020k:lumen-compose:0.4.0` integrated into the phone application; unit tests and debug APK build pass; a disposable 0.5.0 upgrade passes unchanged source | Technical upgrade validation complete through 0.5.0; active-product and physical-device confirmation remain |
 | Wear OS | ContracTrack Wear | Published `com.santi020k:lumen-compose-wear:0.4.0` integrated into the separate watch application; unit tests and debug APK build pass; a disposable 0.5.0 upgrade passes unchanged source | Technical upgrade validation complete through 0.5.0; active-product and physical-watch confirmation remain |
 
@@ -146,6 +146,60 @@ Evidence:
   clean assembleDebug :app:verifyLumenArtifactIsolation
 ```
 
+### Coolstead macOS consumer
+
+Validated on 2026-08-26 at repository revision
+`fb16359719d033c96ace6c879706bb84caf9cca4`, preserving the application's existing uncommitted
+Lumen migration. The reviewed diff upgrades the exact Swift package dependency from 1.4.0 to 1.5.0
+and resolves revision `d5f120deb1402aa53fac903566e06b28c35dd830`.
+
+The pending integration uses a product-specific `LumenTheme`, `LumenButton`, `LumenIconButton`,
+`LumenLink`, `LumenPicker`, and `LumenSlider` in real dashboard, menu-bar, history, process-control,
+manual fan-control, update, diagnostic, and settings flows. Strict Swift formatting passed. Two
+direct warning-as-error builds passed, release metadata remained valid, and all 42 Swift tests
+passed. No Lumen compatibility wrapper or consumer-side workaround was required.
+
+Evidence:
+
+```bash
+corepack pnpm --filter @santi020k/coolstead-desktop run lint
+corepack pnpm --filter @santi020k/coolstead-desktop run build
+corepack pnpm --filter @santi020k/coolstead-desktop run test
+corepack pnpm --filter @santi020k/coolstead-desktop run typecheck
+```
+
+This is independent technical consumer evidence for the 1.4.0 to 1.5.0 upgrade. Because the
+migration remains uncommitted in the application repository, it is not yet immutable release
+evidence. Active-product status and installed application behavior on representative Mac hardware
+still require owner confirmation and a separate record.
+
+### PostLens iOS consumer
+
+Validated on 2026-08-26 at repository revision
+`3147656e2708ce58ce6a06b3cc56f7541f3978f4`, preserving unrelated existing website and workspace
+changes. The Xcode project and resolved package file both select exact Lumen 1.5.0 at revision
+`d5f120deb1402aa53fac903566e06b28c35dd830`.
+
+PostLens exercises Lumen in real gallery, permission, loading, score, publishing, editor, settings,
+support, disclosure, and navigation flows. Its public usage includes buttons and button groups,
+pickers, toggles, progress and progress-value helpers, skeletons, graphics, icons, links, dividers,
+disclosures, spacing tokens, and theming.
+
+Evidence:
+
+```bash
+corepack pnpm --filter @santi020k/postlens-ios run lint
+corepack pnpm --filter @santi020k/postlens-ios run build
+corepack pnpm --filter @santi020k/postlens-ios run test
+corepack pnpm --filter @santi020k/postlens-ios run typecheck
+```
+
+Strict Swift formatting, a generic iOS Simulator build, five native smoke checks, the 434-test
+simulator suite, and the standalone Swift type-check all passed. Xcode resolved Lumen directly from
+the public 1.5.0 tag. Simulator framework diagnostics were noisy but did not produce a build or test
+failure, and no Lumen-specific integration finding required a workaround. This establishes
+technical consumer compatibility, not a 1.4.0 to 1.5.0 upgrade or physical-device qualification.
+
 ### Swift package candidate distribution
 
 The current Swift source passes a clean semantic-tag simulation independent of the workspace build.
@@ -176,4 +230,6 @@ pnpm run check:swift-package-release -- --version <version>
 4. Publish the target-availability patch under a new immutable semantic tag, then resolve that tag
    in clean Swift Package Manager and Xcode consumers for every declared Apple platform. Do not
    reuse or move `v1.6.0`.
-5. Use Workscene or Coolstead as an independent macOS SwiftUI consumer.
+5. Convert the successful Coolstead technical upgrade into immutable consumer evidence and record
+   its installed behavior on representative Mac hardware; use Workscene if a second independent
+   macOS consumer is needed.
