@@ -61,24 +61,27 @@ for its documented stateless primitives in React Server Components, while keepin
 hooks, and interactive primitives behind the root Client Component boundary. Build duration is
 recorded for reproducibility but remains environment-sensitive.
 
-## August 26, 2026 Elements registration baseline
+## August 27, 2026 Elements registration baseline
 
 The additive component-set API limits which constructors enter a custom element registry, but the
-`define` entry remains a monolithic implementation module. Badge, Button, and Card now also expose
-implementation-level entrypoints. The repeatable measurement compares the same three constructors:
+`define` entry remains a monolithic implementation module. Badge, Button, Card, and Combobox now
+also expose implementation-level entrypoints. The repeatable measurement covers both stateless and
+behavior-backed granular registration:
 
 | Scenario | Minified bundle | Gzip |
 | --- | ---: | ---: |
-| Complete catalog | 1,035,967 B | 247,893 B |
-| Badge, Button, and Card through `define` | 1,035,992 B | 247,907 B |
-| Badge, Button, and Card granular entrypoints | 4,769 B | 1,788 B |
+| Complete catalog | 1,039,784 B | 248,372 B |
+| Badge, Button, and Card through `define` | 1,039,809 B | 248,384 B |
+| Badge, Button, and Card granular entrypoints | 4,793 B | 1,835 B |
+| Combobox granular entrypoint | 5,966 B | 2,384 B |
 
 The selected `define` scenario still includes the full catalog and adds 25 raw bytes for its
-component-name arguments. The granular path is 1,031,223 raw bytes and 246,119 gzip bytes smaller
-for the same components in this fixture. A clean application built from the packed npm tarball also
-imports these entrypoints through Astro and renders all three tags. Keep complete-catalog
-registration supported for the rest of the catalog and expand granular coverage only with the same
-constructor-identity, package-consumer, and measurement evidence.
+component-name arguments. The stateless granular path is 1,034,991 raw bytes and 246,537 gzip bytes
+smaller for the same components in this fixture. The behavior-backed Combobox entrypoint is
+1,033,818 raw bytes and 245,988 gzip bytes smaller than complete-catalog registration. A clean
+application built from the packed npm tarball imports each granular entrypoint and verifies all four
+tags. Keep complete-catalog registration supported for the rest of the catalog and expand granular
+coverage only with the same constructor-identity, package-consumer, and measurement evidence.
 
 ## August 27, 2026 foundation delivery expansion
 
@@ -89,12 +92,15 @@ the server-entry scenario, versus 1,500,057 bytes for the complete client root i
 
 Elements now exposes a grouped `components/foundations` implementation entrypoint for fifteen
 stateless components. The repeatable registration measurement reports 6,050 minified bytes and
-2,209 gzip bytes for the complete foundation group, while complete-catalog registration remains
-1,037,391 minified bytes and 247,678 gzip bytes.
+2,209 gzip bytes for the complete foundation group, while complete-catalog registration is
+1,039,784 minified bytes and 248,372 gzip bytes in the current run.
 
-Astro now selector-loads phone normalization separately from the shared runtime. The base
-`UIPrimitives` source decreased from 163.2 KiB raw and 32.3 KiB gzip to 161.1 KiB raw and 31.8 KiB
-gzip; pages without PhoneInput do not load its controller chunk.
+Astro now selector-loads phone normalization; dialog, alert-dialog, drawer, and sheet behavior; and
+Anchor and ScrollProgress document-navigation behavior separately from the shared runtime. The base
+`UIPrimitives` source decreased from 163.2 KiB raw and 32.3 KiB gzip to 155.9 KiB raw and 30.8 KiB
+gzip. Pages without those component contracts do not load their controller chunks; the overlay
+controller is 3.0 KiB raw and 0.9 KiB gzip, while document navigation is 3.5 KiB raw and 1.1 KiB
+gzip.
 
 The generated critical CSS entry is 50,116 raw bytes versus 170,526 bytes for the full standalone
 catalog, a 70.6% reduction. It retains the canonical token/base layers plus the essential forms,

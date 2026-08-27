@@ -5,7 +5,7 @@ design system. It is not permission to manufacture breaking web changes or to de
 stability from component count alone.
 
 Lumen 2 is one coordinated publication milestone. Continue publishing the existing web and Swift
-`1.x` lines and the independently versioned native `0.x` lines while the supported Lumen 2 contract
+`1.x` lines and the independently versioned native pre-2 lines while the supported Lumen 2 contract
 completes its release-candidate evidence. When all readiness gates pass, publish every public npm
 package, React Native, Compose, and Wear at `2.0.0`, and create the Swift-compatible `v2.0.0`
 repository tag from the same revision.
@@ -97,7 +97,10 @@ Complete every required entry in the [native device validation
 matrix](native-device-validation.md). Simulator, emulator, snapshot, unit, and accessibility-tree
 checks remain required automated evidence, but they do not replace physical-device results.
 
-Every matrix entry must identify the tested revision and include:
+Every matrix entry must identify the tested revision. For the initial coordinated launch, every
+complete physical-device pass and the web consumer candidate must reference the contract's exact
+`approval.reviewedRevision`; changing that candidate invalidates the prior approval and evidence.
+Each matrix entry must also include:
 
 - minimum-baseline and current-device coverage where the matrix requires both;
 - VoiceOver or TalkBack navigation and announcements;
@@ -107,11 +110,11 @@ Every matrix entry must identify the tested revision and include:
 - rotation, compact layouts, and round-screen clipping where applicable; and
 - an evidence link plus resolved issues for every blocking failure.
 
-The adapter cannot graduate while any required matrix entry is Pending or Partial.
+No adapter can graduate while any web consumer or required native matrix entry is Pending or Partial.
 `pnpm run check:native-device-readiness` enforces that condition against the machine-readable
 physical-device evidence ledger. `pnpm run check:native-stable-readiness` combines the device and
-stability-soak gates, rejects an uncoordinated native version 2 launch, and is run by the npm and
-Compose publication workflows.
+stability-soak gates with complete Astro, React, and Elements consumer qualification, rejects an
+uncoordinated version 2 launch, and is run by the npm and Compose publication workflows.
 
 ### 4. Prove distribution and upgrade paths
 
@@ -183,6 +186,8 @@ Version 2 is approved only when:
 
 - the machine-readable contract is marked `approved` with an attributable approval record tied to
   the reviewed release candidate revision and immutable HTTPS evidence;
+- complete web-consumer and physical-device evidence references that same reviewed candidate
+  revision;
 - every breaking change solves an observed consumer, accessibility, performance, or maintainability
   problem;
 - affected in-repository and recorded external consumers have a tested migration;
@@ -199,15 +204,15 @@ contract is the release reason; any actual breaking change still needs evidence 
 This ledger is the release decision record. Change a gate to Complete only when its linked evidence
 proves every exit condition above.
 
-| Gate                        | Status                                                   | Required record                                                                                                                                                                                                                                  |
-| --------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Clean release baseline      | Complete (2026-08-24)                                    | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                                                   |
-| Native contract freeze      | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                                                 |
-| Real consumer validation    | Native partial; web pending                              | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required                                                    |
-| Physical-device validation  | Incomplete                                               | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                                                    |
-| Distribution validation     | Complete (2026-08-27)                                    | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks                                                               |
-| Coordinated Lumen 2 release | Blocked by prior gates                                   | Every public package and platform at `2.0.0`, documentation, and migration notes                                                                                                                                                                 |
-| Version 2 contract approval | Draft; 3/3 investigations resolved                       | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage                                                                                                                                         |
+| Gate                        | Status                                                   | Required record                                                                                                                                                                                                  |
+| --------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Clean release baseline      | Complete (2026-08-24)                                    | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                   |
+| Native contract freeze      | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                 |
+| Real consumer validation    | Native partial; web pending                              | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required |
+| Physical-device validation  | Incomplete                                               | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                    |
+| Distribution validation     | Complete (2026-08-27)                                    | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks                               |
+| Coordinated Lumen 2 release | Blocked by prior gates                                   | Every public package and platform at `2.0.0`, documentation, and migration notes                                                                                                                                 |
+| Version 2 contract approval | Draft; 3/3 investigations resolved                       | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage                                                                                                         |
 
 ### Release 1.6 baseline evidence
 

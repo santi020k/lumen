@@ -6,6 +6,7 @@ test('React host renders and updates real framework primitives', async ({ page }
   const host = page.locator('[data-framework="react"]')
 
   await expect(host.getByRole('heading', { name: 'Real React rendering' })).toBeVisible()
+  await expect(host.getByRole('button', { name: 'Review release details' })).toBeVisible()
   await expect(host).toHaveScreenshot('react-visual-host.png', { animations: 'disabled' })
 
   await host.getByRole('button', { name: 'Advance release' }).click()
@@ -23,6 +24,7 @@ test('Elements host registers and updates real custom elements', async ({ page }
 
   await expect(host.getByRole('heading', { name: 'Real Web Component rendering' })).toBeVisible()
   await expect(advance).toBeVisible()
+  await expect(host.getByRole('button', { name: 'Review release details' })).toBeVisible()
   await expect(host).toHaveScreenshot('elements-visual-host.png', { animations: 'disabled' })
 
   await advance.click()

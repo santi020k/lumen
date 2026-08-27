@@ -269,11 +269,12 @@ select form participation, and the same toast controller events as the Astro run
 </lumen-card>
 ```
 
-For a surface that uses only Badge, Button, and Card, import
-`@santi020k/lumen-elements/components/badge`, `/button`, and `/card` and call their corresponding
-`defineLumenBadge`, `defineLumenButton`, and `defineLumenCard` functions. Those implementation-level
-entrypoints avoid the complete catalog bundle. Continue using `defineLumenElements` for any
-component without a granular entrypoint.
+For a surface that uses only Badge, Button, Card, and Combobox, import
+`@santi020k/lumen-elements/components/badge`, `/button`, `/card`, and `/combobox` and call their
+corresponding `defineLumenBadge`, `defineLumenButton`, `defineLumenCard`, and `defineLumenCombobox`
+functions. Those implementation-level entrypoints avoid the complete catalog bundle; the Combobox
+entrypoint includes its filtering and keyboard behavior. Continue using `defineLumenElements` for
+any component without a granular entrypoint.
 
 For a foundation-only custom-element surface, import `defineLumenFoundations` from
 `@santi020k/lumen-elements/components/foundations`. It registers Card compound parts, Container,

@@ -213,6 +213,7 @@ const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
 const { defineLumenBadge } = await import('@santi020k/lumen-elements/components/badge')
 const { defineLumenButton } = await import('@santi020k/lumen-elements/components/button')
 const { defineLumenCard } = await import('@santi020k/lumen-elements/components/card')
+const { defineLumenCombobox } = await import('@santi020k/lumen-elements/components/combobox')
 const { defineLumenFoundations } = await import('@santi020k/lumen-elements/components/foundations')
 
 defineLumenElements(dom.window.customElements)
@@ -240,10 +241,11 @@ const granularRegistry = {
 defineLumenBadge(granularRegistry)
 defineLumenButton(granularRegistry)
 defineLumenCard(granularRegistry)
+defineLumenCombobox(granularRegistry)
 
 assert.deepEqual(
   [...granularConstructors.keys()],
-  ['lumen-badge', 'lumen-button', 'lumen-card']
+  ['lumen-badge', 'lumen-button', 'lumen-card', 'lumen-combobox']
 )
 
 const foundationConstructors = new Map()
@@ -285,11 +287,13 @@ import '@santi020k/lumen-elements/styles.css'
   import { defineLumenBadge } from '@santi020k/lumen-elements/components/badge'
   import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
   import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenCombobox } from '@santi020k/lumen-elements/components/combobox'
   import { defineLumenFoundations } from '@santi020k/lumen-elements/components/foundations'
 
   defineLumenBadge()
   defineLumenButton()
   defineLumenCard()
+  defineLumenCombobox()
   defineLumenFoundations()
 </script>
 `

@@ -863,7 +863,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/badge.ts')),
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
-    await readIfExists(p('packages/elements/src/components/foundations.ts'))
+    await readIfExists(p('packages/elements/src/components/combobox.ts'))
   ].join('\n'),
   reactSource: [
     await readIfExists(p('packages/react/src/components.tsx')),

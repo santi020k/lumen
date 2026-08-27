@@ -58,6 +58,61 @@ const validateStringArray = (value, label) => {
   }
 }
 
+const parseHttpsUrl = (value, label) => {
+  assert.equal(typeof value, 'string', `${label} must be a string`)
+
+  let parsed
+
+  try {
+    parsed = new URL(value)
+  } catch {
+    assert.fail(`${label} must be a valid HTTPS URL`)
+  }
+
+  assert.equal(parsed.protocol, 'https:', `${label} must be a valid HTTPS URL`)
+
+  assert.equal(parsed.username, '', `${label} must not embed credentials`)
+
+  assert.equal(parsed.password, '', `${label} must not embed credentials`)
+
+  assert.equal(parsed.search, '', `${label} must not use a query string`)
+
+  assert.equal(parsed.hash, '', `${label} must not use a fragment`)
+
+  return parsed
+}
+
+const normalizeRepositoryIdentity = repositoryUrl => (
+  `${repositoryUrl.hostname}${repositoryUrl.pathname}`
+    .replace(/\/+$/u, '')
+    .replace(/\.git$/u, '')
+    .toLowerCase()
+)
+
+const repositoryPath = repositoryUrl => (
+  repositoryUrl.pathname
+    .replace(/\/+$/u, '')
+    .replace(/\.git$/u, '')
+    .toLowerCase()
+)
+
+const belongsToRepository = (url, repositoryUrl) => (
+  url.hostname.toLowerCase() === repositoryUrl.hostname.toLowerCase()
+  && url.pathname.toLowerCase().startsWith(`${repositoryPath(repositoryUrl)}/`)
+)
+
+const isImmutableRunUrl = url => (
+  /\/(?:actions\/runs|builds|jobs|pipelines|runs)\/[\w-]+(?:\/|$)/u.test(url.pathname)
+)
+
+const isImmutableRevisionUrl = url => (
+  /\/(?:blob|commit|commits)\/[\da-f]{40}(?:\/|$)/iu.test(url.pathname)
+)
+
+const isExactRevisionUrl = (url, revision) => (
+  new RegExp(`/(?:blob|commit|commits)/${revision}(?:/|$)`, 'u').test(url.pathname)
+)
+
 const parseOrdinaryVersion = (value, label) => {
   assert.equal(typeof value, 'string', `${label} must be a string`)
 
@@ -91,7 +146,11 @@ const validateUpgrade = (entry, label) => {
 
   assert.ok(isNewerVersion(toVersion, fromVersion), `${label} must record a real version upgrade`)
 
-  assert.match(entry.upgrade.revision, /^[\da-f]{40}$/i, `${label} requires a full consumer revision`)
+  assert.match(
+    entry.upgrade.revision,
+    /^[\da-f]{40}$/,
+    `${label} requires a full lowercase consumer revision`
+  )
 }
 
 const validateConsumer = (entry) => {
@@ -176,6 +235,8 @@ const validateConsumer = (entry) => {
 
   if (entry.status === 'pending') {
     assert.equal(completedChecks, 0, `${label} pending checks must be false`)
+
+    assert.equal(entry.evidence.length, 0, `${label} pending evidence must be empty`)
   } else {
     assert.ok(completedChecks > 0, `${label} partial or complete evidence requires a completed check`)
 
@@ -193,15 +254,44 @@ const validateConsumer = (entry) => {
 
     assert.ok(entry.consumer.owner.trim().length > 0, `${label} complete evidence requires an owner`)
 
-    assert.match(
+    const repositoryUrl = parseHttpsUrl(
       entry.consumer.repository,
-      /^https:\/\/\S+$/,
-      `${label} complete evidence requires an HTTPS consumer repository`
+      `${label} complete consumer repository`
     )
 
-    for (const evidence of entry.evidence) {
-      assert.match(evidence, /^https:\/\/\S+$/, `${label} complete evidence must use immutable HTTPS records`)
-    }
+    assert.notEqual(
+      normalizeRepositoryIdentity(repositoryUrl),
+      'github.com/santi020k/lumen',
+      `${label} cannot qualify with a Lumen-owned fixture`
+    )
+
+    assert.ok(entry.evidence.length >= 2, `${label} requires revision and workflow evidence`)
+
+    const evidenceUrls = entry.evidence.map((evidence, index) => (
+      parseHttpsUrl(evidence, `${label} complete evidence ${index + 1}`)
+    ))
+
+    assert.ok(
+      evidenceUrls.every(evidence => belongsToRepository(evidence, repositoryUrl)),
+      `${label} complete evidence must belong to the declared consumer repository`
+    )
+
+    assert.ok(
+      evidenceUrls.every(evidence => (
+        isImmutableRevisionUrl(evidence) || isImmutableRunUrl(evidence)
+      )),
+      `${label} complete evidence must use immutable workflow or revision URLs`
+    )
+
+    assert.ok(
+      evidenceUrls.some(evidence => isExactRevisionUrl(evidence, entry.upgrade.revision)),
+      `${label} complete evidence must include the exact consumer revision`
+    )
+
+    assert.ok(
+      evidenceUrls.some(isImmutableRunUrl),
+      `${label} complete evidence must include an immutable workflow or build URL`
+    )
   } else {
     incompleteAdapters.push(label)
   }

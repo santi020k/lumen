@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 
 const runGit = args => {
   const result = spawnSync('git', args, {
@@ -72,7 +73,7 @@ const getAffectedFiles = () => {
     }
   }
 
-  return [...files].sort()
+  return [...files].filter(existsSync).sort()
 }
 
 const run = (command, args) => {

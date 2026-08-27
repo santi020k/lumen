@@ -80,6 +80,17 @@ const runGit = (arguments_, label) => {
   return result.stdout.trim();
 };
 
+const workingTreeStatus = runGit(
+  ["status", "--porcelain=v1", "--untracked-files=all"],
+  "Could not inspect the publication working tree",
+);
+
+assert.equal(
+  workingTreeStatus,
+  "",
+  "Initial Lumen 2 publication requires a clean working tree with no tracked or untracked changes",
+);
+
 const resolveCommit = (reference, label) => {
   const revision = runGit(
     ["rev-parse", "--verify", `${reference}^{commit}`],

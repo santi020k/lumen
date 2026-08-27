@@ -4,23 +4,38 @@ import { join } from 'node:path'
 
 import { describe, expect, test } from 'vitest'
 
-import {
-  migrateLumenV2,
-  migrateLumenV2Source
-} from './v2-migration.js'
+import { migrateLumenV2, migrateLumenV2Source } from './v2-migration.js'
+
+const readMigrationFixture = async (
+  framework: 'astro' | 'elements',
+  name: 'expected' | 'source'
+): Promise<string> => readFile(
+  new URL(
+    `./fixtures/v2-migration/${framework}/${name}.${framework === 'astro' ? 'astro' : 'html'}`,
+    import.meta.url
+  ),
+  'utf8'
+)
 
 describe('Lumen v2 migration', () => {
   test('splits UIPrimitives from mixed Astro imports and preserves aliases', () => {
-    const result = migrateLumenV2Source(`---
+    const result = migrateLumenV2Source(
+      `---
 import { Button, UIPrimitives as Runtime, Input as TextInput } from '@santi020k/lumen-astro'
 ---
 <TextInput size="sm" />
 <Button>Save</Button>
 <Runtime />
-`, 'src/layout.astro')
+`,
+      'src/layout.astro'
+    )
 
-    expect(result.source).toContain('import { Button, Input as TextInput } from \'@santi020k/lumen-astro\'')
-    expect(result.source).toContain('import Runtime from \'@santi020k/lumen-astro/runtime\'')
+    expect(result.source).toContain(
+      'import { Button, Input as TextInput } from \'@santi020k/lumen-astro\''
+    )
+    expect(result.source).toContain(
+      'import Runtime from \'@santi020k/lumen-astro/runtime\''
+    )
     expect(result.source).toContain('<TextInput visualSize="sm" />')
     expect(result.changes.map(change => change.kind)).toEqual([
       'astro-runtime-subpath',
@@ -38,13 +53,20 @@ import { UIPrimitives } from "@santi020k/lumen-astro";
     const first = migrateLumenV2Source(source, 'src/layout.astro')
     const second = migrateLumenV2Source(first.source, 'src/layout.astro')
 
-    expect(first.source).toContain('import UIPrimitives from "@santi020k/lumen-astro/runtime";')
+    expect(first.source).toContain(
+      'import UIPrimitives from "@santi020k/lumen-astro/runtime";'
+    )
     expect(first.source).not.toContain('import { UIPrimitives }')
-    expect(second).toEqual({ changes: [], manualReview: [], source: first.source })
+    expect(second).toEqual({
+      changes: [],
+      manualReview: [],
+      source: first.source
+    })
   })
 
   test('rewrites only Lumen Astro component aliases and Elements visual aliases', () => {
-    const result = migrateLumenV2Source(`---
+    const result = migrateLumenV2Source(
+      `---
 import { Input as LumenInput, NativeSelect } from '@santi020k/lumen-astro'
 import Input from './Input.astro'
 ---
@@ -53,7 +75,9 @@ import Input from './Input.astro'
 <Input size="sm" />
 <lumen-input size="sm"></lumen-input>
 <lumen-native-select size=lg></lumen-native-select>
-`, 'src/form.astro')
+`,
+      'src/form.astro'
+    )
 
     expect(result.source).toContain('<LumenInput visualSize=\'default\' />')
     expect(result.source).toContain('<NativeSelect visualSize="lg" />')
@@ -64,7 +88,8 @@ import Input from './Input.astro'
   })
 
   test('preserves numeric native sizes and reports dynamic or ambiguous values', () => {
-    const result = migrateLumenV2Source(`---
+    const result = migrateLumenV2Source(
+      `---
 import { Input, NativeSelect } from '@santi020k/lumen-astro'
 const fieldSize = 'sm'
 ---
@@ -74,7 +99,9 @@ const fieldSize = 'sm'
 <NativeSelect {size} />
 <Input size="sm" visualSize="lg" />
 <lumen-input size="wide"></lumen-input>
-`, 'src/form.astro')
+`,
+      'src/form.astro'
+    )
 
     expect(result.source).toContain('<Input size="24" />')
     expect(result.source).toContain('<NativeSelect size={12} />')
@@ -83,7 +110,11 @@ const fieldSize = 'sm'
     expect(result.source).toContain('<Input size="sm" visualSize="lg" />')
     expect(result.changes).toEqual([])
     expect(result.manualReview).toHaveLength(4)
-    expect(result.manualReview.every(finding => finding.kind === 'visual-size-alias-removal')).toBe(true)
+    expect(
+      result.manualReview.every(
+        finding => finding.kind === 'visual-size-alias-removal'
+      )
+    ).toBe(true)
   })
 
   test('reports conflicting runtime imports without changing the root import', () => {
@@ -111,26 +142,35 @@ import { type UIPrimitives } from '@santi020k/lumen-astro'
 ---
 `
 
-    expect(migrateLumenV2Source(commented, 'src/commented.astro')).toMatchObject({
+    expect(
+      migrateLumenV2Source(commented, 'src/commented.astro')
+    ).toMatchObject({
       changes: [],
-      manualReview: [expect.objectContaining({ kind: 'astro-runtime-subpath' })],
+      manualReview: [
+        expect.objectContaining({ kind: 'astro-runtime-subpath' })
+      ],
       source: commented
     })
     expect(migrateLumenV2Source(typeOnly, 'src/types.astro')).toMatchObject({
       changes: [],
-      manualReview: [expect.objectContaining({ kind: 'astro-runtime-subpath' })],
+      manualReview: [
+        expect.objectContaining({ kind: 'astro-runtime-subpath' })
+      ],
       source: typeOnly
     })
   })
 
   test('does not rewrite examples in Astro frontmatter or HTML comments', () => {
-    const result = migrateLumenV2Source(`---
+    const result = migrateLumenV2Source(
+      `---
 import { Input } from '@santi020k/lumen-astro'
 const example = '<Input size="sm" />'
 ---
 <!-- <Input size="sm" /> -->
 <Input size="lg" />
-`, 'src/form.astro')
+`,
+      'src/form.astro'
+    )
 
     expect(result.source).toContain('const example = \'<Input size="sm" />\'')
     expect(result.source).toContain('<!-- <Input size="sm" /> -->')
@@ -152,32 +192,42 @@ const sonnerExample = "import { Sonner } from '@santi020k/lumen-react'"
   })
 
   test('migrates Astro and React Sonner imports without changing local component names', () => {
-    const astro = migrateLumenV2Source(`---
+    const astro = migrateLumenV2Source(
+      `---
 import { Sonner, type SonnerProps, Toast } from '@santi020k/lumen-astro'
 ---
 <Sonner placement="top-right" maxCount={5}>
   <Toast>Saved</Toast>
 </Sonner>
-`, 'src/layout.astro')
-    const react = migrateLumenV2Source(`import {
+`,
+      'src/layout.astro'
+    )
+    const react = migrateLumenV2Source(
+      `import {
   Sonner as Notifications,
   type SonnerProps,
   Toast
 } from '@santi020k/lumen-react'
 
 export const App = (props: SonnerProps) => <Notifications {...props}><Toast>Saved</Toast></Notifications>
-`, 'src/app.tsx')
+`,
+      'src/app.tsx'
+    )
 
     expect(astro.source).toContain(
-      'import { ToastViewport as Sonner, type ToastViewportProps as SonnerProps, Toast } from \'@santi020k/lumen-astro\''
+      'import { Toast, ToastViewport as Sonner, type ToastViewportProps as SonnerProps } from \'@santi020k/lumen-astro\''
     )
-    expect(astro.source).toContain('<Sonner placement="top-right" maxCount={5}>')
+    expect(astro.source).toContain(
+      '<Sonner placement="top-right" maxCount={5}>'
+    )
     expect(react.source).toContain('ToastViewport as Notifications')
     expect(react.source).toContain('type ToastViewportProps as SonnerProps')
     expect(react.source).toContain('<Notifications {...props}>')
-    expect([...astro.changes, ...react.changes].every(
-      change => change.kind === 'sonner-alias-removal'
-    )).toBe(true)
+    expect(
+      [...astro.changes, ...react.changes].every(
+        change => change.kind === 'sonner-alias-removal'
+      )
+    ).toBe(true)
     expect(migrateLumenV2Source(react.source, 'src/app.tsx')).toEqual({
       changes: [],
       manualReview: [],
@@ -186,19 +236,24 @@ export const App = (props: SonnerProps) => <Notifications {...props}><Toast>Save
   })
 
   test('renames Sonner custom elements while preserving viewport configuration and children', () => {
-    const result = migrateLumenV2Source(`<lumen-sonner data-placement="top-right" data-ui-toast-max="5">
+    const result = migrateLumenV2Source(
+      `<lumen-sonner data-placement="top-right" data-ui-toast-max="5">
   <lumen-toast>Saved</lumen-toast>
 </lumen-sonner>
 <!-- <lumen-sonner></lumen-sonner> -->
 <script>const example = '<lumen-sonner></lumen-sonner>'</script>
-`, 'index.html')
+`,
+      'index.html'
+    )
 
     expect(result.source).toContain(
       '<lumen-toast-viewport data-placement="top-right" data-ui-toast-max="5">'
     )
     expect(result.source).toContain('</lumen-toast-viewport>')
     expect(result.source).toContain('<!-- <lumen-sonner></lumen-sonner> -->')
-    expect(result.source).toContain('const example = \'<lumen-sonner></lumen-sonner>\'')
+    expect(result.source).toContain(
+      'const example = \'<lumen-sonner></lumen-sonner>\''
+    )
     expect(result.changes).toHaveLength(2)
     expect(result.manualReview).toEqual([])
   })
@@ -231,14 +286,24 @@ void DateField
     const first = migrateLumenV2Source(source, 'src/app.tsx')
     const second = migrateLumenV2Source(first.source, 'src/app.tsx')
 
-    expect(first.source).toContain('import { Button } from \'@santi020k/lumen-react-native\'')
+    expect(first.source).toContain(
+      'import { Button } from \'@santi020k/lumen-react-native\''
+    )
     expect(first.source).toContain(
       'import { LumenDateField as DateField, type LumenDateRangeValue } from \'@santi020k/lumen-react-native/datetime\''
     )
     expect(first.changes).toHaveLength(2)
-    expect(first.changes.every(change => change.kind === 'react-native-datetime-subpath')).toBe(true)
+    expect(
+      first.changes.every(
+        change => change.kind === 'react-native-datetime-subpath'
+      )
+    ).toBe(true)
     expect(first.manualReview).toEqual([])
-    expect(second).toEqual({ changes: [], manualReview: [], source: first.source })
+    expect(second).toEqual({
+      changes: [],
+      manualReview: [],
+      source: first.source
+    })
   })
 
   test('preserves type-only React Native datetime imports', () => {
@@ -293,13 +358,72 @@ import { Input } from '@santi020k/lumen-astro'
       const applied = await migrateLumenV2({ apply: true, cwd: root })
 
       expect(applied.applied).toBe(true)
-      await expect(readFile(nestedFile, 'utf8')).resolves.toContain('<Input visualSize="sm" />')
+      await expect(readFile(nestedFile, 'utf8')).resolves.toContain(
+        '<Input visualSize="sm" />'
+      )
       await expect(readFile(ignoredFile, 'utf8')).resolves.toBe(source)
 
       const repeated = await migrateLumenV2({ apply: true, cwd: root })
 
       expect(repeated.changedFiles).toEqual([])
       expect(repeated.changes).toEqual([])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('migrates production-shaped Astro and Elements fixtures exactly on repeated runs', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-v2-fixtures-'))
+    const astroFile = join(root, 'src', 'layouts', 'AccountSettings.astro')
+    const elementsFile = join(root, 'public', 'account-settings.html')
+    const [astroSource, astroExpected, elementsSource, elementsExpected] =
+      await Promise.all([
+        readMigrationFixture('astro', 'source'),
+        readMigrationFixture('astro', 'expected'),
+        readMigrationFixture('elements', 'source'),
+        readMigrationFixture('elements', 'expected')
+      ])
+
+    try {
+      await mkdir(join(root, 'src', 'layouts'), { recursive: true })
+      await mkdir(join(root, 'public'), { recursive: true })
+      await writeFile(astroFile, astroSource)
+      await writeFile(elementsFile, elementsSource)
+
+      const dryRun = await migrateLumenV2({ cwd: root })
+
+      expect(dryRun).toMatchObject({
+        applied: false,
+        changedFiles: [
+          'public/account-settings.html',
+          'src/layouts/AccountSettings.astro'
+        ],
+        filesScanned: 2,
+        manualReview: []
+      })
+      await expect(readFile(astroFile, 'utf8')).resolves.toBe(astroSource)
+      await expect(readFile(elementsFile, 'utf8')).resolves.toBe(
+        elementsSource
+      )
+
+      const applied = await migrateLumenV2({ apply: true, cwd: root })
+
+      expect(applied.changedFiles).toEqual(dryRun.changedFiles)
+      expect(applied.changes).toHaveLength(dryRun.changes.length)
+      await expect(readFile(astroFile, 'utf8')).resolves.toBe(astroExpected)
+      await expect(readFile(elementsFile, 'utf8')).resolves.toBe(
+        elementsExpected
+      )
+
+      const repeated = await migrateLumenV2({ apply: true, cwd: root })
+
+      expect(repeated).toMatchObject({
+        applied: true,
+        changedFiles: [],
+        changes: [],
+        filesScanned: 2,
+        manualReview: []
+      })
     } finally {
       await rm(root, { force: true, recursive: true })
     }

@@ -95,7 +95,40 @@ test("accepts an annotated v2.0.0 tag on the candidate commit", async () => {
 
     assert.match(
       result.stdout,
-      /Initial Compose 2\.0\.0 is coordinated with v2\.0\.0/,
+      /Initial Lumen 2\.0\.0 publication is coordinated with v2\.0\.0/,
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test("accepts an existing remote annotated tag on the candidate commit", async () => {
+  const directory = await createRepository();
+
+  try {
+    assert.equal(
+      run("git", ["tag", "-a", "v2.0.0", "-m", "Release v2.0.0"], directory)
+        .status,
+      0,
+    );
+
+    const result = runChecker(
+      [
+        "--version",
+        "2.0.0",
+        "--repository",
+        directory,
+        "--release-remote",
+        directory,
+      ],
+      directory,
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+
+    assert.match(
+      result.stdout,
+      /Initial Lumen 2\.0\.0 publication is coordinated with v2\.0\.0/,
     );
   } finally {
     await rm(directory, { force: true, recursive: true });
@@ -143,6 +176,45 @@ test("rejects Compose 2.0.0 from a different commit than v2.0.0", async () => {
 
     const result = runChecker(
       ["--version", "2.0.0", "--repository", directory],
+      directory,
+    );
+
+    assert.equal(result.status, 1);
+
+    assert.match(result.stderr, /must resolve to the same Git commit/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test("rejects an existing remote tag at a different publication commit", async () => {
+  const directory = await createRepository();
+
+  try {
+    assert.equal(run("git", ["tag", "v2.0.0"], directory).status, 0);
+
+    await writeFile(resolve(directory, "release.txt"), "later publication\n");
+
+    assert.equal(run("git", ["add", "release.txt"], directory).status, 0);
+
+    assert.equal(
+      run(
+        "git",
+        ["commit", "--message", "test: create later publication"],
+        directory,
+      ).status,
+      0,
+    );
+
+    const result = runChecker(
+      [
+        "--version",
+        "2.0.0",
+        "--repository",
+        directory,
+        "--release-remote",
+        directory,
+      ],
       directory,
     );
 

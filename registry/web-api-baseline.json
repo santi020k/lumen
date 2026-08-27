@@ -1200,6 +1200,10 @@
           "import": "./dist/components/card.js",
           "types": "./dist/components/card.d.ts"
         },
+        "./components/combobox": {
+          "import": "./dist/components/combobox.js",
+          "types": "./dist/components/combobox.d.ts"
+        },
         "./components/foundations": {
           "import": "./dist/components/foundations.js",
           "types": "./dist/components/foundations.d.ts"

@@ -122,14 +122,9 @@ export const canPlaceScheduleEvent = (
 
 const clampTime = (
   value: number,
-  min?: string,
-  max?: string
-): number => {
-  const minTime = min ? new Date(min).getTime() : undefined
-  const maxTime = max ? new Date(max).getTime() : undefined
-
-  return Math.min(maxTime ?? value, Math.max(minTime ?? value, value))
-}
+  min: number,
+  max: number
+): number => Math.min(max, Math.max(min, value))
 
 const snapTime = (
   value: number,
@@ -140,6 +135,8 @@ const snapTime = (
   return Math.round(value / snapMs) * snapMs
 }
 
+const minScheduleEventDurationMs = 60_000
+
 export const resizeScheduleEvent = (
   event: LumenScheduleEvent,
   nextDateTime: string,
@@ -148,18 +145,28 @@ export const resizeScheduleEvent = (
   const edge = options.edge ?? 'end'
   const start = new Date(event.start).getTime()
   const end = new Date(event.end).getTime()
+  const minBound = options.min ? new Date(options.min).getTime() : -Infinity
+  const maxBound = options.max ? new Date(options.max).getTime() : Infinity
+  const snapped = snapTime(new Date(nextDateTime).getTime(), options.snapMinutes)
 
-  const next = clampTime(
-    snapTime(new Date(nextDateTime).getTime(), options.snapMinutes), options.min, options.max
-  )
+  // The explicit min/max bound is a hard caller contract (for example a visible
+  // drag range) and must never be exceeded; the minimum duration is only a
+  // best-effort safety net and yields to that bound when the two conflict
+  // (for example when the event's fixed edge already sits outside the bound).
+  if (edge === 'start') {
+    const upperBound = Math.max(minBound, Math.min(maxBound, end - minScheduleEventDurationMs))
 
-  const nextStart = edge === 'start' ? Math.min(next, end - 60_000) : start
-  const nextEnd = edge === 'end' ? Math.max(next, start + 60_000) : end
+    return {
+      ...event,
+      start: new Date(clampTime(snapped, minBound, upperBound)).toISOString()
+    }
+  }
+
+  const lowerBound = Math.min(maxBound, Math.max(minBound, start + minScheduleEventDurationMs))
 
   return {
     ...event,
-    end: new Date(nextEnd).toISOString(),
-    start: new Date(nextStart).toISOString()
+    end: new Date(clampTime(snapped, lowerBound, maxBound)).toISOString()
   }
 }
 

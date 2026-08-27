@@ -56,7 +56,23 @@ const webApiBaselinePath = resolve(
   "web-api-baseline.json",
 );
 
+const webConsumerLedgerPath = resolve(
+  repositoryRoot,
+  "registry",
+  "web-consumer-evidence.json",
+);
+
 const contractTemplate = JSON.parse(await readFile(contractPath, "utf8"));
+const approvedCandidateRevision = "a".repeat(40);
+
+const pre2VersionArguments = [
+  "--compose-version",
+  "0.5.0",
+  "--react-native-version",
+  "0.5.0",
+  "--swift-version",
+  "1.7.0",
+];
 
 const synchronizeSoakBaselines = async (ledger) => {
   for (const baseline of Object.values(ledger.baselines)) {
@@ -83,9 +99,12 @@ const approveContract = (contract) => {
 
   contract.approval = {
     approver: "Lumen release owner",
-    date: "2026-09-04",
-    evidence: ["https://github.com/santi020k/lumen/issues/200"],
-    reviewedRevision: "a".repeat(40),
+    date: "2026-08-24",
+    evidence: [
+      `https://github.com/santi020k/lumen/commit/${approvedCandidateRevision}`,
+      "https://github.com/santi020k/lumen/pull/200",
+    ],
+    reviewedRevision: approvedCandidateRevision,
   };
 };
 
@@ -93,8 +112,11 @@ const graduateContract = (contract) => {
   approveContract(contract);
 
   contract.graduation = {
-    date: "2026-09-05",
-    evidence: ["https://github.com/santi020k/lumen/releases/tag/v2.0.0"],
+    date: "2026-08-25",
+    evidence: [
+      `https://github.com/santi020k/lumen/commit/${"b".repeat(40)}`,
+      "https://github.com/santi020k/lumen/releases/tag/v2.0.0",
+    ],
     releaseRevision: "b".repeat(40),
     verifiedBy: "Lumen release owner",
     version: "2.0.0",
@@ -196,33 +218,68 @@ const withTemporaryWebApiBaseline = async (mutate, callback) => {
   }
 };
 
-const createSoakIteration = (ledger, index) => ({
-  id: `native-soak.${index}`,
-  date: `2026-09-0${index + 1}`,
-  revision: `${index + 1}`.repeat(40),
-  versions: {
-    compose: `0.${index + 5}.0`,
-    reactNative: `0.${index + 5}.0`,
-    swift: `1.${index + 6}.0`,
-    wear: `0.${index + 5}.0`,
-  },
-  baselines: Object.fromEntries(
-    Object.entries(ledger.baselines).map(([adapter, baseline]) => [
-      adapter,
-      baseline.sha256,
-    ]),
-  ),
-  evidence: {
-    releaseVerificationUrl: `https://github.com/santi020k/lumen/actions/runs/${index + 1}`,
-    consumerValidation: {
-      compose: `https://github.com/example/compose/releases/${index + 1}`,
-      reactNative: `https://github.com/example/react-native/releases/${index + 1}`,
-      swiftUI: `https://github.com/example/swift/releases/${index + 1}`,
-      swiftWidget: `https://github.com/example/swift-widget/releases/${index + 1}`,
-      wear: `https://github.com/example/wear/releases/${index + 1}`,
-    },
-  },
+const createSoakEvidenceRecord = (repository, revision, runId) => ({
+  repository,
+  revision,
+  revisionUrl: `${repository}/commit/${revision}`,
+  verificationUrl: `${repository}/actions/runs/${runId}`,
 });
+
+const createSoakIteration = (ledger, index) => {
+  const revision = `${index + 1}`.repeat(40);
+
+  return {
+    id: `native-soak.${index}`,
+    date: `2026-08-2${index}`,
+    revision,
+    versions: {
+      compose: `0.${index + 5}.0`,
+      reactNative: `0.${index + 5}.0`,
+      swift: `1.${index + 6}.0`,
+      wear: `0.${index + 5}.0`,
+    },
+    baselines: Object.fromEntries(
+      Object.entries(ledger.baselines).map(([adapter, baseline]) => [
+        adapter,
+        baseline.sha256,
+      ]),
+    ),
+    evidence: {
+      release: createSoakEvidenceRecord(
+        "https://github.com/santi020k/lumen",
+        revision,
+        index + 1,
+      ),
+      consumerValidation: {
+        compose: createSoakEvidenceRecord(
+          "https://github.com/example/compose",
+          "4".repeat(40),
+          `${index + 1}-1`,
+        ),
+        reactNative: createSoakEvidenceRecord(
+          "https://github.com/example/react-native",
+          "5".repeat(40),
+          `${index + 1}-2`,
+        ),
+        swiftUI: createSoakEvidenceRecord(
+          "https://github.com/example/swift",
+          "6".repeat(40),
+          `${index + 1}-3`,
+        ),
+        swiftWidget: createSoakEvidenceRecord(
+          "https://github.com/example/swift-widget",
+          "7".repeat(40),
+          `${index + 1}-4`,
+        ),
+        wear: createSoakEvidenceRecord(
+          "https://github.com/example/wear",
+          "8".repeat(40),
+          `${index + 1}-5`,
+        ),
+      },
+    },
+  };
+};
 
 const completeDevicePass = (pass, index) => {
   pass.status = "complete";
@@ -232,13 +289,16 @@ const completeDevicePass = (pass, index) => {
     osVersion: `Platform ${index}.0`,
   };
 
-  pass.date = "2026-09-03";
+  pass.date = "2026-08-23";
 
-  pass.revision = `${(index % 9) + 1}`.repeat(40);
+  pass.revision = approvedCandidateRevision;
 
   pass.tester = "Native release tester";
 
-  pass.evidence = [`https://github.com/santi020k/lumen/issues/${index + 1}`];
+  pass.evidence = [
+    `https://github.com/santi020k/lumen/commit/${pass.revision}`,
+    `https://github.com/santi020k/lumen/actions/runs/${index + 1}`,
+  ];
 
   pass.checks = Object.fromEntries(
     Object.keys(pass.checks).map((check) => [check, true]),
@@ -264,12 +324,48 @@ const completeConsumer = (consumer, index) => {
 
   consumer.evidence = [
     `https://github.com/example/consumer-${index}/commit/${consumer.upgrade.revision}`,
+    `https://github.com/example/consumer-${index}/actions/runs/${index + 1}`,
   ];
 
   consumer.blockingIssues = [];
 };
 
-const withCompleteLedgers = async (callback) => {
+const completeWebConsumer = (consumer, index, candidateVersion) => {
+  const revision = `${index + 4}`.repeat(40);
+
+  consumer.status = "complete";
+
+  consumer.consumer.name ??= `Web consumer ${index}`;
+
+  consumer.consumer.repository ??= `https://github.com/example/web-consumer-${index}`;
+
+  consumer.consumer.workflow ??= ".github/workflows/lumen-canary.yml";
+
+  consumer.upgrade ??= {
+    fromVersion: "1.0.0",
+    revision: "",
+    toVersion: candidateVersion,
+  };
+
+  consumer.upgrade.revision = revision;
+
+  consumer.upgrade.toVersion = candidateVersion;
+
+  consumer.checks = Object.fromEntries(
+    Object.keys(consumer.checks).map((check) => [check, true]),
+  );
+
+  const repositoryUrl = consumer.consumer.repository.replace(/\.git$/u, "");
+
+  consumer.evidence = [
+    `${repositoryUrl}/commit/${revision}`,
+    `${repositoryUrl}/actions/runs/${index + 1}`,
+  ];
+
+  consumer.blockingIssues = [];
+};
+
+const withCompleteLedgers = async (callback, mutate = () => {}) => {
   const temporaryDirectory = await mkdtemp(
     resolve(tmpdir(), "lumen-native-stable-"),
   );
@@ -282,6 +378,11 @@ const withCompleteLedgers = async (callback) => {
     );
 
     const deviceLedger = JSON.parse(await readFile(deviceLedgerPath, "utf8"));
+
+    const webConsumerLedger = JSON.parse(
+      await readFile(webConsumerLedgerPath, "utf8"),
+    );
+
     let passIndex = 0;
 
     await synchronizeSoakBaselines(soakLedger);
@@ -327,9 +428,26 @@ const withCompleteLedgers = async (callback) => {
       passIndex += 1;
     }
 
+    const candidateRevision = approvedCandidateRevision;
+
+    webConsumerLedger.candidate.revision = candidateRevision;
+
+    webConsumerLedger.candidate.releaseManifestUrl = `https://raw.githubusercontent.com/santi020k/lumen/${candidateRevision}/registry/release-manifest.json`;
+
+    for (const [index, consumer] of webConsumerLedger.adapters.entries()) {
+      completeWebConsumer(consumer, index, webConsumerLedger.candidate.version);
+    }
+
+    mutate({ consumerLedger, deviceLedger, soakLedger, webConsumerLedger });
+
     const temporarySoakPath = resolve(temporaryDirectory, "soak.json");
     const temporaryConsumerPath = resolve(temporaryDirectory, "consumers.json");
     const temporaryDevicePath = resolve(temporaryDirectory, "devices.json");
+
+    const temporaryWebConsumerPath = resolve(
+      temporaryDirectory,
+      "web-consumers.json",
+    );
 
     await Promise.all([
       writeFile(temporarySoakPath, `${JSON.stringify(soakLedger, null, 2)}\n`),
@@ -341,12 +459,17 @@ const withCompleteLedgers = async (callback) => {
         temporaryDevicePath,
         `${JSON.stringify(deviceLedger, null, 2)}\n`,
       ),
+      writeFile(
+        temporaryWebConsumerPath,
+        `${JSON.stringify(webConsumerLedger, null, 2)}\n`,
+      ),
     ]);
 
     const result = await callback({
       consumerLedger: temporaryConsumerPath,
       deviceLedger: temporaryDevicePath,
       soakLedger: temporarySoakPath,
+      webConsumerLedger: temporaryWebConsumerPath,
     });
 
     return result;
@@ -382,8 +505,40 @@ const withValidEmptySoakLedger = async (callback) => {
   }
 };
 
-test("does not require final launch evidence for current pre-2 artifacts", () => {
-  const result = runChecker([]);
+const runCompleteStableRelease = (mutateLedgers = () => {}) =>
+  withTemporaryContract(approveContract, (temporaryContractPath) =>
+    withTemporaryReleaseManifest(
+      () => {},
+      (temporaryManifestPath) =>
+        withCompleteLedgers(
+          (ledgers) =>
+            runChecker([
+              "--compose-version",
+              "2.0.0",
+              "--react-native-version",
+              "2.0.0",
+              "--swift-version",
+              "2.0.0",
+              "--contract",
+              temporaryContractPath,
+              "--release-manifest",
+              temporaryManifestPath,
+              "--consumer-ledger",
+              ledgers.consumerLedger,
+              "--soak-ledger",
+              ledgers.soakLedger,
+              "--device-ledger",
+              ledgers.deviceLedger,
+              "--web-consumer-ledger",
+              ledgers.webConsumerLedger,
+            ]),
+          mutateLedgers,
+        ),
+    ),
+  );
+
+test("does not require final launch evidence for pre-2 artifacts", () => {
+  const result = runChecker(pre2VersionArguments);
 
   assert.equal(result.status, 0, result.stderr);
 
@@ -429,12 +584,16 @@ test("rejects a stable launch with the legacy root-export-only web baseline", as
 });
 
 for (const release of [
-  { adapter: "Compose", arguments: ["--compose-version", "2.0.0"] },
-  { adapter: "React Native", arguments: ["--react-native-version", "2.0.0"] },
-  { adapter: "SwiftUI", arguments: ["--swift-version", "2.0.0"] },
+  { adapter: "Compose", versionArgumentIndex: 1 },
+  { adapter: "React Native", versionArgumentIndex: 3 },
+  { adapter: "SwiftUI", versionArgumentIndex: 5 },
 ]) {
   test(`rejects an uncoordinated ${release.adapter} version 2 launch`, () => {
-    const result = runChecker(release.arguments);
+    const arguments_ = [...pre2VersionArguments];
+
+    arguments_[release.versionArgumentIndex] = "2.0.0";
+
+    const result = runChecker(arguments_);
 
     assert.equal(result.status, 1);
 
@@ -735,7 +894,7 @@ test("blocks an approved coordinated version 2 launch while evidence is incomple
   assert.match(result.stderr, /Native stability soak is incomplete/);
 });
 
-test("allows a coordinated stable release after every evidence ledger is complete", async () => {
+test("blocks a coordinated version 2 launch while web consumer evidence is incomplete", async () => {
   const result = await withTemporaryContract(
     approveContract,
     (temporaryContractPath) =>
@@ -765,6 +924,17 @@ test("allows a coordinated stable release after every evidence ledger is complet
       ),
   );
 
+  assert.equal(result.status, 1);
+
+  assert.match(
+    result.stderr,
+    /Complete web evidence requires the full lowercase Lumen candidate revision|Every web adapter requires complete consumer evidence/,
+  );
+});
+
+test("allows a coordinated stable release after every evidence ledger is complete", async () => {
+  const result = await runCompleteStableRelease();
+
   assert.equal(result.status, 0, result.stderr);
 
   assert.match(
@@ -784,12 +954,52 @@ test("allows a coordinated stable release after every evidence ledger is complet
 
   assert.match(result.stdout, /Lumen 2 approved contract check passed/);
 
+  assert.match(result.stdout, /Web consumer evidence is valid and complete/);
+
   assert.match(
     result.stdout,
     /All 10 public npm packages are coordinated at 2\.0\.0/,
   );
 
-  assert.match(result.stdout, /Native stable release gates are complete/);
+  assert.match(result.stdout, /Coordinated stable release gates are complete/);
+});
+
+test("rejects web consumers tested against a different approved candidate", async () => {
+  const result = await runCompleteStableRelease(({ webConsumerLedger }) => {
+    const unrelatedRevision = "c".repeat(40);
+
+    webConsumerLedger.candidate.revision = unrelatedRevision;
+
+    webConsumerLedger.candidate.releaseManifestUrl = `https://raw.githubusercontent.com/santi020k/lumen/${unrelatedRevision}/registry/release-manifest.json`;
+  });
+
+  assert.equal(result.status, 1);
+
+  assert.match(
+    result.stderr,
+    /Web consumers must test the approved Lumen 2 candidate revision/,
+  );
+});
+
+test("rejects physical-device evidence for a different approved candidate", async () => {
+  const result = await runCompleteStableRelease(({ deviceLedger }) => {
+    const firstAdapter = deviceLedger.adapters[0];
+    const unrelatedRevision = "c".repeat(40);
+
+    firstAdapter.minimum.revision = unrelatedRevision;
+
+    firstAdapter.minimum.evidence = [
+      `https://github.com/santi020k/lumen/commit/${unrelatedRevision}`,
+      "https://github.com/santi020k/lumen/actions/runs/999",
+    ];
+  });
+
+  assert.equal(result.status, 1);
+
+  assert.match(
+    result.stderr,
+    /must test the approved Lumen 2 candidate revision/,
+  );
 });
 
 test("does not force post-graduation 2.x releases into package-family lockstep", async () => {
@@ -812,6 +1022,8 @@ test("does not force post-graduation 2.x releases into package-family lockstep",
           ledgers.soakLedger,
           "--device-ledger",
           ledgers.deviceLedger,
+          "--web-consumer-ledger",
+          ledgers.webConsumerLedger,
         ]),
       ),
   );

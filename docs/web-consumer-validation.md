@@ -22,7 +22,22 @@ That completion gate requires an immutable Lumen candidate revision and release-
 one active external consumer for Astro, React, and Elements. Every consumer must install the exact
 candidate, run the v2 migrator (including a second idempotence pass), typecheck, lint, test, build,
 exercise a production browser path, and record an accessibility pass. Evidence links must be
-immutable HTTPS workflow or revision URLs.
+immutable HTTPS workflow or revision URLs. For the initial coordinated Lumen 2 launch, the
+candidate revision must equal the contract's `approval.reviewedRevision`; changing the candidate
+requires a new approval and consumer qualification against that revision.
+
+The version-sensitive `pnpm run check:native-stable-readiness` command invokes this completion
+check for every stable Lumen 2 release. Despite its historical name, it is the coordinated web and
+native publication gate, so npm and Compose publication cannot proceed while any web adapter is
+pending or partial.
+
+The completion checker rejects mutable evidence even when it uses HTTPS. The release-manifest URL
+must use the canonical `raw.githubusercontent.com/santi020k/lumen` origin, include the full lowercase
+candidate revision, and end in `registry/release-manifest.json`. Each complete consumer must name
+its repository-relative workflow, include a revision URL for the exact 40-character consumer commit,
+and include a permanent workflow-run, pipeline, build, or job URL from that same declared consumer
+repository. Evidence from unrelated repositories, branch URLs, workflow-definition pages, query
+strings, fragments, and Lumen's own fixtures do not qualify.
 
 ## Maintained canaries
 

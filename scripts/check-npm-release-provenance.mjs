@@ -29,6 +29,8 @@ const repositoryUrl =
 const workflowPath =
   readArgument("--workflow-path") ?? ".github/workflows/release.yml";
 
+const workflowRef = readArgument("--workflow-ref") ?? "refs/heads/main";
+
 assert.match(
   packageName ?? "",
   /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u,
@@ -52,6 +54,12 @@ assert.ok(lockfileArgument, "--lockfile is required");
 assert.match(repositoryUrl, /^https:\/\/github\.com\/[^/]+\/[^/]+$/u);
 
 assert.match(workflowPath, /^\.github\/workflows\/[\w.-]+\.ya?ml$/u);
+
+assert.match(
+  workflowRef,
+  /^refs\/heads\/(?!.*(?:^|\/)\.\.(?:\/|$))[\w./-]+$/u,
+  "--workflow-ref must be a branch ref",
+);
 
 if (testAttestationsArgument) {
   assert.equal(
@@ -163,6 +171,12 @@ assert.equal(workflow?.repository, repositoryUrl);
 
 assert.equal(workflow?.path, workflowPath);
 
+assert.equal(
+  workflow?.ref,
+  workflowRef,
+  `npm provenance must use the release branch ${workflowRef}`,
+);
+
 const source = buildDefinition?.resolvedDependencies?.find(
   (dependency) => dependency.digest?.gitCommit === revision,
 );
@@ -172,9 +186,10 @@ assert.ok(
   `npm provenance must resolve the release revision ${revision}`,
 );
 
-assert.ok(
-  source.uri?.startsWith(`git+${repositoryUrl}@`),
-  "npm provenance source must use the Lumen repository",
+assert.equal(
+  source.uri,
+  `git+${repositoryUrl}@${workflowRef}`,
+  "npm provenance source must use the exact Lumen release branch",
 );
 
 assert.equal(

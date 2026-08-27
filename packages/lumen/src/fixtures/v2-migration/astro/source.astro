@@ -1,0 +1,22 @@
+---
+import {
+  Button,
+  Input as AccountInput,
+  Sonner as Notifications,
+  Toast,
+  UIPrimitives as LumenRuntime
+} from '@santi020k/lumen-astro'
+
+const accountName = 'Santiago'
+---
+
+<main>
+  <h1>Account settings</h1>
+  <AccountInput name="displayName" size="lg" value={accountName} />
+  <Button type="submit">Save changes</Button>
+  <Notifications placement="top-right" maxCount={3}>
+    <Toast>Profile saved.</Toast>
+  </Notifications>
+</main>
+
+<LumenRuntime />

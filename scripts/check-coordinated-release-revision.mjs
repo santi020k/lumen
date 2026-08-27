@@ -35,6 +35,7 @@ if (version !== "2.0.0") {
 const repository = resolve(readArgument("--repository") ?? repositoryRoot);
 const candidateRef = readArgument("--candidate-ref") ?? "HEAD";
 const releaseRef = readArgument("--release-ref") ?? "v2.0.0";
+const releaseRemote = readArgument("--release-remote");
 
 const resolveCommit = (reference, label) => {
   const result = spawnSync(
@@ -61,14 +62,57 @@ const resolveCommit = (reference, label) => {
 };
 
 const candidateRevision = resolveCommit(candidateRef, "candidate");
-const releaseRevision = resolveCommit(releaseRef, "release");
+
+const resolveRemoteTag = (remote, tag) => {
+  const directReference = `refs/tags/${tag}`;
+  const peeledReference = `${directReference}^{}`;
+
+  const result = spawnSync(
+    "git",
+    ["ls-remote", "--tags", remote, directReference, peeledReference],
+    { cwd: repository, encoding: "utf8" },
+  );
+
+  assert.equal(
+    result.status,
+    0,
+    `Could not inspect coordinated release tag ${tag} on ${remote}`,
+  );
+
+  const references = new Map(
+    result.stdout
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [revision, reference] = line.split(/\s+/u);
+
+        return [reference, revision];
+      }),
+  );
+
+  const revision =
+    references.get(peeledReference) ?? references.get(directReference) ?? "";
+
+  assert.match(
+    revision,
+    /^[\da-f]{40}$/i,
+    `Could not resolve coordinated release tag ${tag} on ${remote}`,
+  );
+
+  return revision.toLowerCase();
+};
+
+const releaseRevision = releaseRemote
+  ? resolveRemoteTag(releaseRemote, releaseRef)
+  : resolveCommit(releaseRef, "release");
 
 assert.equal(
   candidateRevision,
   releaseRevision,
-  `Initial Compose 2.0.0 and ${releaseRef} must resolve to the same Git commit`,
+  `Initial Lumen 2.0.0 publication and ${releaseRef} must resolve to the same Git commit`,
 );
 
 process.stdout.write(
-  `Initial Compose 2.0.0 is coordinated with ${releaseRef} at ${releaseRevision}.\n`,
+  `Initial Lumen 2.0.0 publication is coordinated with ${releaseRef} at ${releaseRevision}.\n`,
 );

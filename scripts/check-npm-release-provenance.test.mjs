@@ -220,3 +220,29 @@ test("rejects provenance produced by a different workflow", async () => {
     assert.match(result.stderr, /release\.yml/);
   });
 });
+
+test("rejects provenance produced from a different workflow ref", async () => {
+  const statement = createStatement();
+
+  statement.predicate.buildDefinition.externalParameters.workflow.ref =
+    "refs/heads/release/v2.0.0";
+
+  await withFixture(statement, (result) => {
+    assert.equal(result.status, 1);
+
+    assert.match(result.stderr, /must use the release branch refs\/heads\/main/);
+  });
+});
+
+test("rejects provenance whose source URI names a different ref", async () => {
+  const statement = createStatement();
+
+  statement.predicate.buildDefinition.resolvedDependencies[0].uri =
+    "git+https://github.com/santi020k/lumen@refs/heads/release/v2.0.0";
+
+  await withFixture(statement, (result) => {
+    assert.equal(result.status, 1);
+
+    assert.match(result.stderr, /must use the exact Lumen release branch/);
+  });
+});

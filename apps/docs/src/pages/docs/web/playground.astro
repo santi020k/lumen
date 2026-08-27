@@ -68,7 +68,7 @@ const playgrounds = [
   <section class="web-framework-playground" aria-labelledby="framework-playground-title">
     <div class="web-framework-playground__heading">
       <div>
-        <Badge variant="secondary">Runtime comparison</Badge>
+        <Badge class="web-framework-playground__badge" variant="secondary">Runtime comparison</Badge>
         <h2 id="framework-playground-title">Switch the real framework, not only the snippet</h2>
         <p>
           The same product scenario is rendered by the public Astro, React, and Web Component
@@ -82,8 +82,8 @@ const playgrounds = [
       </ButtonGroup>
     </div>
 
-    <p class="web-framework-playground__status" aria-live="polite">
-      Rendering with <strong data-framework-status>Astro</strong>
+    <p class="web-framework-playground__status" aria-live="polite" data-framework-status>
+      Rendering with Astro
     </p>
 
     <div class="web-framework-playground__viewport">
@@ -155,7 +155,8 @@ const playgrounds = [
               Keyboard navigation and focus run through the registered element controller.
             </section>
             <section aria-labelledby="elements-delivery-tab" hidden id="elements-delivery" role="tabpanel">
-              Register a granular bundle or the complete catalog for the application.
+              This preview registers only its ten tags; implementation-level entrypoints reduce
+              download size further when the required components expose them.
             </section>
           </lumen-tabs>
         </div>
@@ -229,7 +230,18 @@ const playgrounds = [
         if (framework === 'elements') {
           const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
 
-          defineLumenElements()
+          defineLumenElements([
+            'Alert',
+            'Badge',
+            'Button',
+            'Card',
+            'CardContent',
+            'CardDescription',
+            'CardHeader',
+            'CardTitle',
+            'Progress',
+            'Tabs'
+          ])
         }
 
         initializedFrameworks.add(framework)
@@ -254,10 +266,14 @@ const playgrounds = [
 
         selector.setAttribute('aria-pressed', String(selected))
 
+        selector.dataset.variant = selected ? 'default' : 'ghost'
+
+        selector.classList.toggle('ui-button--default', selected)
+
         selector.classList.toggle('ui-button--ghost', !selected)
       }
 
-      updateFrameworkStatus(frameworkLabels[framework])
+      updateFrameworkStatus(`Rendering with ${frameworkLabels[framework]}`)
     }
 
     const selectFramework = async (framework: FrameworkId) => {
@@ -351,6 +367,10 @@ const playgrounds = [
     display: grid;
     gap: 0.6rem;
     max-width: 48rem;
+  }
+
+  .web-framework-playground__badge {
+    justify-self: start;
   }
 
   .web-framework-playground__heading h2,

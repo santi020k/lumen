@@ -13,6 +13,10 @@ import {
   LumenCardElement
 } from './components/card.js'
 import {
+  defineLumenCombobox,
+  LumenComboboxElement
+} from './components/combobox.js'
+import {
   defineLumenFoundations,
   LumenCardContentElement,
   LumenContainerElement,
@@ -25,6 +29,7 @@ import {
   LumenButtonElement as CatalogButtonElement,
   LumenCardContentElement as CatalogCardContentElement,
   LumenCardElement as CatalogCardElement,
+  LumenComboboxElement as CatalogComboboxElement,
   LumenContainerElement as CatalogContainerElement,
   LumenElement,
   LumenGridElement as CatalogGridElement,
@@ -36,6 +41,7 @@ beforeAll(() => {
   defineLumenBadge()
   defineLumenButton()
   defineLumenCard()
+  defineLumenCombobox()
   defineLumenFoundations()
 })
 
@@ -44,6 +50,7 @@ describe('granular element entrypoints', () => {
     expect(LumenBadgeElement).toBe(CatalogBadgeElement)
     expect(LumenButtonElement).toBe(CatalogButtonElement)
     expect(LumenCardElement).toBe(CatalogCardElement)
+    expect(LumenComboboxElement).toBe(CatalogComboboxElement)
     expect(LumenCardContentElement).toBe(CatalogCardContentElement)
     expect(LumenContainerElement).toBe(CatalogContainerElement)
     expect(LumenGridElement).toBe(CatalogGridElement)
@@ -64,12 +71,14 @@ describe('granular element entrypoints', () => {
     defineLumenButton(registry)
     defineLumenCard(registry)
     defineLumenCard(registry)
+    defineLumenCombobox(registry)
     defineLumenFoundations(registry)
 
     expect([...constructors.keys()]).toEqual([
       'lumen-badge',
       'lumen-button',
       'lumen-card',
+      'lumen-combobox',
       'lumen-card-content',
       'lumen-card-description',
       'lumen-card-footer',
@@ -86,7 +95,7 @@ describe('granular element entrypoints', () => {
       'lumen-typography',
       'lumen-visually-hidden'
     ])
-    expect(registry.define).toHaveBeenCalledTimes(18)
+    expect(registry.define).toHaveBeenCalledTimes(19)
   })
 
   test('applies defaults and responds to styling attributes', () => {

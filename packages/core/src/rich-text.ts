@@ -24,6 +24,7 @@ export interface LumenRichTextChangeDetail {
 
 export interface LumenRichTextShortcutEvent {
   altKey: boolean
+  code?: string
   ctrlKey: boolean
   key: string
   metaKey: boolean
@@ -39,11 +40,17 @@ const shortcuts: Readonly<Record<string, string>> = {
   z: 'undo'
 }
 
-const shiftedShortcuts: Readonly<Record<string, string>> = {
-  7: 'insertOrderedList',
-  8: 'insertUnorderedList',
+const shiftedKeyShortcuts: Readonly<Record<string, string>> = {
   x: 'strikeThrough',
   z: 'redo'
+}
+
+// Shift changes the character a digit key produces (e.g. "&" or "*" on a US
+// layout), so the list shortcuts must match the physical key via `code`
+// rather than the layout-dependent shifted glyph in `key`.
+const shiftedCodeShortcuts: Readonly<Record<string, string>> = {
+  Digit7: 'insertOrderedList',
+  Digit8: 'insertUnorderedList'
 }
 
 export const isLumenRichTextToggleCommand = (
@@ -57,5 +64,7 @@ export const getLumenRichTextShortcut = (
 
   const key = event.key.toLowerCase()
 
-  return event.shiftKey ? shiftedShortcuts[key] : shortcuts[key]
+  if (!event.shiftKey) return shortcuts[key]
+
+  return (event.code ? shiftedCodeShortcuts[event.code] : undefined) ?? shiftedKeyShortcuts[key]
 }

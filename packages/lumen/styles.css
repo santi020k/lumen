@@ -2204,6 +2204,7 @@
 .ui-dialog,
 .ui-alert-dialog {
   position: fixed;
+  z-index: 50;
   top: 50%;
   left: 50%;
   max-height: calc(100dvh - 2rem);

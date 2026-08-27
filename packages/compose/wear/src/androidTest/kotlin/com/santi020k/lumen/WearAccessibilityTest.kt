@@ -16,6 +16,7 @@ import androidx.compose.ui.test.junit4.accessibility.enableAccessibilityChecks
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.tryPerformAccessibilityChecks
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -62,12 +63,14 @@ class WearAccessibilityTest {
 
     @Test
     fun disabledActionButtonRemainsDiscoverableButUnavailable() {
+        var callbackCount = 0
+
         composeRule.setContent {
             LumenWearTheme {
                 LumenWearActionButton(
                     accessibilityLabel = "Start timer",
                     enabled = false,
-                    onClick = {}
+                    onClick = { callbackCount += 1 }
                 ) {
                     BasicText("Start")
                 }
@@ -77,6 +80,11 @@ class WearAccessibilityTest {
         composeRule.onNodeWithContentDescription("Start timer")
             .assertHasClickAction()
             .assertIsNotEnabled()
+            .performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(0, callbackCount)
+        }
     }
 
     @Test

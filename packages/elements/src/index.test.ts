@@ -771,6 +771,67 @@ describe('@santi020k/lumen-elements', () => {
     expect(first?.getAttribute('aria-selected')).toBe('true')
   })
 
+  test('combobox filters, traverses, commits, and dismisses options', () => {
+    document.body.innerHTML = `
+      <lumen-combobox>
+        <input aria-label="Framework" role="combobox" />
+        <div role="listbox">
+          <button data-value="astro" role="option">Astro</button>
+          <button data-value="react" role="option">React</button>
+          <button data-value="elements" role="option">Web Components</button>
+        </div>
+      </lumen-combobox>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-combobox')!
+    const input = root.querySelector<HTMLInputElement>('input')!
+    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')!
+    const options = [...root.querySelectorAll<HTMLButtonElement>('[role="option"]')]
+    const changes: string[] = []
+
+    input.addEventListener('change', () => changes.push(input.value))
+
+    expect(input.getAttribute('aria-controls')).toBe(listbox.id)
+    expect(input.getAttribute('aria-expanded')).toBe('false')
+    expect(listbox.hidden).toBe(true)
+    expect(options.map(option => option.tabIndex)).toEqual([-1, -1, -1])
+
+    input.focus()
+
+    expect(input.getAttribute('aria-expanded')).toBe('true')
+    expect(listbox.hidden).toBe(false)
+
+    input.value = 'rea'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+
+    expect(options.map(option => option.hidden)).toEqual([true, false, true])
+
+    press(input, 'ArrowDown')
+
+    expect(document.activeElement).toBe(options[1])
+
+    press(options[1]!, 'Enter')
+
+    expect(input.value).toBe('react')
+    expect(changes).toEqual(['react'])
+    expect(input.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(input)
+
+    input.value = ''
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    press(input, 'ArrowUp')
+
+    expect(document.activeElement).toBe(options[2])
+
+    press(options[2]!, 'Home')
+
+    expect(document.activeElement).toBe(options[0])
+
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+    expect(listbox.hidden).toBe(true)
+  })
+
   test('select enhances native select markup with listbox keyboard interaction', () => {
     const changes: string[] = []
 

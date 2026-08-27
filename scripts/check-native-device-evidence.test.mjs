@@ -17,13 +17,16 @@ const completePass = (pass, index) => {
     osVersion: `Platform ${index}.0`
   }
 
-  pass.date = '2026-09-01'
+  pass.date = '2026-08-20'
 
   pass.revision = `${(index % 9) + 1}`.repeat(40)
 
   pass.tester = 'Native release tester'
 
-  pass.evidence = [`https://github.com/santi020k/lumen/issues/${index + 1}`]
+  pass.evidence = [
+    `https://github.com/santi020k/lumen/commit/${pass.revision}`,
+    `https://github.com/santi020k/lumen/actions/runs/${index + 1}`
+  ]
 
   pass.checks = Object.fromEntries(Object.keys(pass.checks).map(check => [check, true]))
 
@@ -90,6 +93,16 @@ test('rejects an invalid calendar date', async () => {
   assert.match(result.stderr, /requires a valid calendar date/)
 })
 
+test('rejects a physical-device pass dated in the future', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.date = '9999-12-31'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /date must not be in the future/)
+})
+
 test('rejects a shortened revision for a complete pass', async () => {
   const result = await runLedger(ledger => {
     ledger.adapters[0].minimum.revision = 'abcdef0'
@@ -97,17 +110,120 @@ test('rejects a shortened revision for a complete pass', async () => {
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /complete pass requires a full revision/)
+  assert.match(result.stderr, /complete pass requires a full lowercase revision/)
 })
 
 test('rejects complete evidence that is not an immutable HTTPS URL', async () => {
   const result = await runLedger(ledger => {
-    ledger.adapters[0].minimum.evidence = ['manual test passed']
+    ledger.adapters[0].minimum.evidence[0] = 'manual test passed'
   })
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /complete evidence must be an HTTPS URL/)
+  assert.match(result.stderr, /must be a valid HTTPS URL/)
+})
+
+test('rejects complete evidence on a mutable workflow definition', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.evidence[1] =
+      'https://github.com/santi020k/lumen/actions/workflows/native-release.yml'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must use immutable revision or permanent run URLs/)
+})
+
+test('rejects complete evidence for a different tested revision', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.evidence[0] =
+      `https://github.com/santi020k/lumen/commit/${'f'.repeat(40)}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include the exact tested revision/)
+})
+
+test('rejects a workflow URL that merely contains the tested revision', async () => {
+  const result = await runLedger(ledger => {
+    const pass = ledger.adapters[0].minimum
+
+    pass.evidence = [
+      `https://github.com/santi020k/lumen/actions/runs/1/${pass.revision}`,
+      'https://github.com/santi020k/lumen/actions/runs/2'
+    ]
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include the exact tested revision/)
+})
+
+test('rejects revision evidence from a repository other than Lumen', async () => {
+  const result = await runLedger(ledger => {
+    const pass = ledger.adapters[0].minimum
+
+    pass.evidence = [
+      `https://github.com/example/native-tests/commit/${pass.revision}`,
+      'https://github.com/example/native-tests/actions/runs/1'
+    ]
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include the exact tested revision/)
+})
+
+test('rejects complete evidence without a permanent physical-test record', async () => {
+  const result = await runLedger(ledger => {
+    const pass = ledger.adapters[0].minimum
+
+    pass.evidence = [
+      `https://github.com/santi020k/lumen/commit/${pass.revision}`,
+      `https://github.com/santi020k/lumen/commits/${pass.revision}`
+    ]
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include a permanent physical-test record/)
+})
+
+test('rejects complete evidence with query state', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.evidence[1] =
+      'https://github.com/santi020k/lumen/actions/runs/1?attempt=1'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must not use a query string/)
+})
+
+test('rejects complete evidence with fragment state', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].minimum.evidence[1] =
+      'https://github.com/santi020k/lumen/actions/runs/1#physical-test'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must not use a fragment/)
+})
+
+test('rejects uppercase complete revisions', async () => {
+  const result = await runLedger(ledger => {
+    const pass = ledger.adapters[0].minimum
+
+    pass.revision = 'A'.repeat(40)
+
+    pass.evidence[0] = `https://github.com/santi020k/lumen/commit/${pass.revision}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /requires a full lowercase revision/)
 })
 
 test('rejects a minimum operating system that differs from the supported package baseline', async () => {

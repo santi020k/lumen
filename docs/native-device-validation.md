@@ -7,11 +7,17 @@ reduced-motion behavior on hardware.
 
 The machine-readable source of truth is `registry/native-device-evidence.json`. Every partial or
 complete pass records the actual device model, exact OS version, date, tester, and revision. A
-complete pass additionally requires a full 40-character revision and an immutable HTTPS issue,
-pull request, or recording URL; local notes alone cannot satisfy release readiness. Run
+complete pass additionally requires the exact lowercase 40-character revision, an immutable HTTPS
+URL for that revision in the Lumen repository, and a separate permanent workflow, pipeline, job,
+signed-build, artifact, or Lumen revision-pinned test record. Mutable branch and
+workflow-definition pages, query strings, fragments, unrelated repositories or revisions, and
+local notes cannot satisfy release readiness. Completed passes cannot be dated in the future. Run
 `pnpm run check:native-device-evidence` to validate its structure. Release readiness additionally
 requires `pnpm run check:native-device-readiness`, which fails until both minimum and current passes
-are complete for every adapter and platform.
+are complete for every adapter and platform. For the initial coordinated Lumen 2 launch, every
+complete minimum and current pass must test the exact revision recorded in the contract's
+`approval.reviewedRevision`; changing the candidate requires a new approval and fresh device
+evidence for that revision.
 
 Each adapter also records its exact minimum operating system. The validator freezes these values to
 the package support declarations: React Native 0.86.2 uses iOS 15.1 and Android API 24, SwiftUI uses

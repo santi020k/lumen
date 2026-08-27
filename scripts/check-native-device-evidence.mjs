@@ -19,6 +19,7 @@ const evidence = JSON.parse(
   await readFile(ledgerPath, 'utf8')
 )
 
+const currentDate = new Date().toISOString().slice(0, 10)
 const requireComplete = process.argv.includes('--require-complete')
 
 const expectedAdapters = {
@@ -107,6 +108,47 @@ const validateStringArray = (value, label) => {
   }
 }
 
+const parseHttpsUrl = (value, label) => {
+  let parsed
+
+  try {
+    parsed = new URL(value)
+  } catch {
+    assert.fail(`${label} must be a valid HTTPS URL`)
+  }
+
+  assert.equal(parsed.protocol, 'https:', `${label} must be a valid HTTPS URL`)
+
+  assert.equal(parsed.username, '', `${label} must not embed credentials`)
+
+  assert.equal(parsed.password, '', `${label} must not embed credentials`)
+
+  assert.equal(parsed.search, '', `${label} must not use a query string`)
+
+  assert.equal(parsed.hash, '', `${label} must not use a fragment`)
+
+  return parsed
+}
+
+const isImmutableRevisionUrl = url => (
+  /\/(?:blob|commit|commits)\/[\da-f]{40}(?:\/|$)/iu.test(url.pathname)
+)
+
+const isExactLumenRevisionUrl = (url, revision) => (
+  new RegExp(`^/santi020k/lumen/(?:blob|commit|commits)/${revision}(?:/|$)`, 'u')
+    .test(url.pathname.toLowerCase())
+  && url.hostname.toLowerCase() === 'github.com'
+)
+
+const isPermanentRunUrl = url => (
+  /\/(?:actions\/runs|artifacts|builds|jobs|pipelines|runs)\/[\w-]+(?:\/|$)/u.test(url.pathname)
+)
+
+const isRevisionPinnedTestRecord = (url, revision) => (
+  isExactLumenRevisionUrl(url, revision)
+  && new RegExp(`/blob/${revision}/.+`, 'u').test(url.pathname.toLowerCase())
+)
+
 const validatePass = (pass, label) => {
   assert.ok(isRecord(pass), `${label} must be an object`)
 
@@ -163,6 +205,8 @@ const validatePass = (pass, label) => {
       `${label} requires a valid calendar date`
     )
 
+    assert.ok(pass.date <= currentDate, `${label} date must not be in the future`)
+
     assert.match(pass.revision, /^[\da-f]{7,40}$/i, `${label} requires a Git revision`)
 
     assert.equal(typeof pass.tester, 'string', `${label} requires a tester`)
@@ -189,11 +233,34 @@ const validatePass = (pass, label) => {
   }
 
   if (pass.status === 'complete') {
-    assert.match(pass.revision, /^[\da-f]{40}$/i, `${label} complete pass requires a full revision`)
+    assert.match(
+      pass.revision,
+      /^[\da-f]{40}$/,
+      `${label} complete pass requires a full lowercase revision`
+    )
 
-    for (const entry of pass.evidence) {
-      assert.match(entry, /^https:\/\/\S+$/, `${label} complete evidence must be an HTTPS URL`)
-    }
+    assert.ok(pass.evidence.length >= 2, `${label} requires revision and test evidence`)
+
+    const evidenceUrls = pass.evidence.map((entry, index) => (
+      parseHttpsUrl(entry, `${label} complete evidence ${index + 1}`)
+    ))
+
+    assert.ok(
+      evidenceUrls.every(entry => isImmutableRevisionUrl(entry) || isPermanentRunUrl(entry)),
+      `${label} complete evidence must use immutable revision or permanent run URLs`
+    )
+
+    assert.ok(
+      evidenceUrls.some(entry => isExactLumenRevisionUrl(entry, pass.revision)),
+      `${label} complete evidence must include the exact tested revision`
+    )
+
+    assert.ok(
+      evidenceUrls.some(entry => (
+        isPermanentRunUrl(entry) || isRevisionPinnedTestRecord(entry, pass.revision)
+      )),
+      `${label} complete evidence must include a permanent physical-test record`
+    )
 
     assert.equal(completedChecks, expectedChecks.length, `${label} complete pass has unchecked items`)
 

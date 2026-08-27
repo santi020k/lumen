@@ -48,6 +48,7 @@ const consumerLedger = readArgument("--consumer-ledger");
 const contractArgument = readArgument("--contract");
 const releaseManifestPath = readArgument("--release-manifest");
 const webApiBaseline = readArgument("--web-api-baseline");
+const webConsumerLedger = readArgument("--web-consumer-ledger");
 
 const composeVersion =
   readArgument("--compose-version") ??
@@ -302,4 +303,48 @@ for (const check of [
   runCheck(check);
 }
 
-process.stdout.write("Native stable release gates are complete.\n");
+runCheck({
+  arguments: [
+    "--require-complete",
+    ...(webConsumerLedger ? [`--ledger=${webConsumerLedger}`] : []),
+  ],
+  script: "check-web-consumer-evidence.mjs",
+});
+
+if (!graduationVerified) {
+  const approvedRevision = contract.approval.reviewedRevision;
+
+  const resolvedDeviceLedgerPath = deviceLedger
+    ? resolve(repositoryRoot, deviceLedger)
+    : resolve(repositoryRoot, "registry", "native-device-evidence.json");
+
+  const deviceEvidence = JSON.parse(
+    await readFile(resolvedDeviceLedgerPath, "utf8"),
+  );
+
+  for (const adapter of deviceEvidence.adapters) {
+    for (const passName of ["minimum", "current"]) {
+      assert.equal(
+        adapter[passName].revision,
+        approvedRevision,
+        `${adapter.id}.${passName} must test the approved Lumen 2 candidate revision`,
+      );
+    }
+  }
+
+  const resolvedWebConsumerLedgerPath = webConsumerLedger
+    ? resolve(repositoryRoot, webConsumerLedger)
+    : resolve(repositoryRoot, "registry", "web-consumer-evidence.json");
+
+  const webConsumerEvidence = JSON.parse(
+    await readFile(resolvedWebConsumerLedgerPath, "utf8"),
+  );
+
+  assert.equal(
+    webConsumerEvidence.candidate.revision,
+    approvedRevision,
+    "Web consumers must test the approved Lumen 2 candidate revision",
+  );
+}
+
+process.stdout.write("Coordinated stable release gates are complete.\n");

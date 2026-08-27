@@ -26,9 +26,11 @@ every readiness gate passes; accepting a web change does not imply native gradua
 
 The proposal remains `draft` during the stability iterations. Before the coordinated `2.0.0`
 revision, the release owner changes it to `approved` and records an `approval` object with the
-approver, approval date, full 40-character reviewed candidate revision, and immutable HTTPS
-evidence. Approval is invalid while any breaking change remains a candidate or any investigation
-remains deferred.
+approver, approval date, full lowercase 40-character reviewed candidate revision, and evidence that
+includes both the exact Lumen commit URL and a permanent Lumen pull request, issue, discussion, or
+verification-run record. Mutable branches, query strings, fragments, and unrelated revisions do
+not qualify, and the approval date cannot be in the future. Approval is invalid while any breaking
+change remains a candidate or any investigation remains deferred.
 
 Prepare and commit the complete versioned release candidate before approval. The publication commit
 may differ from `approval.reviewedRevision` only by `registry/lumen-2-contract.json` changing from
@@ -43,7 +45,10 @@ release-metadata change requires a new review and approval revision.
     "approver": "RELEASE_OWNER",
     "date": "YYYY-MM-DD",
     "reviewedRevision": "FULL_40_CHARACTER_GIT_REVISION",
-    "evidence": ["IMMUTABLE_HTTPS_APPROVAL_RECORD"]
+    "evidence": [
+      "https://github.com/santi020k/lumen/commit/FULL_40_CHARACTER_GIT_REVISION",
+      "PERMANENT_LUMEN_APPROVAL_RECORD"
+    ]
   }
 }
 ```
@@ -60,8 +65,10 @@ reviewed breaking-change set, each export is absent from the authoritative root 
 the migration utility recognizes the export name.
 
 After every `2.0.0` artifact and the immutable repository tag are verified, add a `graduation`
-record with the verifier, verification date, exact release revision, version, and immutable HTTPS
-evidence. Until that record exists, the stable-readiness gate rejects versions newer than `2.0.0`;
+record with the verifier, verification date, exact lowercase release revision, version, the exact
+Lumen commit URL, and a permanent `v2.0.0` release-tag or verification-run URL. Until that record
+exists, and unless its verification date has already occurred, the stable-readiness gate rejects
+versions newer than `2.0.0`;
 this prevents skipping the coordinated milestone. Publication also peels the immutable `v2.0.0`
 tag and requires it to match `graduation.releaseRevision`; a merely well-formed record cannot unlock
 later releases. Once that identity check passes, later 2.x releases may follow normal semantic
@@ -75,7 +82,10 @@ major must define and approve its own release contract rather than inherit Lumen
     "date": "YYYY-MM-DD",
     "version": "2.0.0",
     "releaseRevision": "FULL_40_CHARACTER_GIT_REVISION",
-    "evidence": ["IMMUTABLE_HTTPS_RELEASE_RECORD"]
+    "evidence": [
+      "https://github.com/santi020k/lumen/commit/FULL_40_CHARACTER_GIT_REVISION",
+      "https://github.com/santi020k/lumen/releases/tag/v2.0.0"
+    ]
   }
 }
 ```

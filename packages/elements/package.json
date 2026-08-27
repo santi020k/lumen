@@ -36,6 +36,10 @@
       "types": "./dist/components/card.d.ts",
       "import": "./dist/components/card.js"
     },
+    "./components/combobox": {
+      "types": "./dist/components/combobox.d.ts",
+      "import": "./dist/components/combobox.js"
+    },
     "./components/foundations": {
       "types": "./dist/components/foundations.d.ts",
       "import": "./dist/components/foundations.js"

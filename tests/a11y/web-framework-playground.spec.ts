@@ -13,7 +13,9 @@ const frameworks: FrameworkScenario[] = [
 ]
 
 const exerciseFramework = async (root: Locator, scenario: FrameworkScenario) => {
-  await root.getByRole('button', { exact: true, name: scenario.label }).click()
+  const selector = root.getByRole('button', { exact: true, name: scenario.label })
+
+  await selector.click()
 
   const panel = root.locator(`[data-framework-panel="${scenario.id}"]`)
   const progress = panel.getByRole('progressbar', { name: scenario.progressName })
@@ -22,6 +24,17 @@ const exerciseFramework = async (root: Locator, scenario: FrameworkScenario) => 
   const readiness = panel.locator('.ui-alert')
 
   await expect(panel).toBeVisible()
+  await expect(selector).toHaveAttribute('aria-pressed', 'true')
+  await expect(selector).toHaveAttribute('data-variant', 'default')
+  await expect(selector).toHaveClass(/ui-button--default/)
+  await expect(selector).not.toHaveClass(/ui-button--ghost/)
+
+  const unselectedSelectors = root.locator('[data-framework-select][aria-pressed="false"]')
+
+  await expect(unselectedSelectors).toHaveCount(2)
+  await expect.poll(async () => unselectedSelectors.evaluateAll(nodes => (
+    nodes.every(node => node.getAttribute('data-variant') === 'ghost')
+  ))).toBe(true)
   await advance.click()
   await expect.poll(async () => Number(await progress.getAttribute('aria-valuenow')))
     .toBeGreaterThan(initialProgress)
@@ -71,6 +84,7 @@ test('web playground loads optional framework runtimes only when selected', asyn
   const status = playground.locator('[data-framework-status]')
   const viewport = playground.locator('.web-framework-playground__viewport')
 
+  await expect(status).toHaveText('Rendering with Astro')
   await expect(reactPanel.locator('[data-framework-runtime="react"]')).toHaveCount(0)
   await expect.poll(async () => page.evaluate(() => customElements.get('lumen-alert') !== undefined))
     .toBe(false)
@@ -79,7 +93,7 @@ test('web playground loads optional framework runtimes only when selected', asyn
   await expect(status).toHaveText('Loading React preview…')
   await expect(viewport).toHaveAttribute('aria-busy', 'true')
   await expect(reactPanel.locator('[data-framework-runtime="react"]')).toBeVisible()
-  await expect(status).toHaveText('React')
+  await expect(status).toHaveText('Rendering with React')
   await expect(viewport).not.toHaveAttribute('aria-busy', 'true')
   await expect.poll(async () => page.evaluate(() => customElements.get('lumen-alert') !== undefined))
     .toBe(false)
@@ -88,6 +102,8 @@ test('web playground loads optional framework runtimes only when selected', asyn
   await expect(playground.locator('[data-framework-panel="elements"]')).toBeVisible()
   await expect.poll(async () => page.evaluate(() => customElements.get('lumen-alert') !== undefined))
     .toBe(true)
+  await expect.poll(async () => page.evaluate(() => customElements.get('lumen-dialog') !== undefined))
+    .toBe(false)
 })
 
 test('web playground keeps the framework chooser usable on a phone viewport', async ({ page }) => {

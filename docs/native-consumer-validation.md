@@ -28,6 +28,12 @@ usage, installation and theming review, accessibility and integration checks, a 
 artifact, immutable HTTPS evidence, and no blocking findings. Prose in this document cannot bypass
 that gate.
 
+For a Complete record, the checker requires an external HTTPS repository, an immutable revision
+URL containing the exact lowercase 40-character consumer upgrade commit, and a permanent workflow,
+pipeline, job, or signed-build URL from that same declared consumer repository. Evidence from an
+unrelated repository, mutable branch pages, workflow definitions, query strings, fragments, and
+Lumen's own fixtures cannot qualify an adapter.
+
 ## Discovered candidates
 
 The local sibling-project scan on 2026-08-24 found the following candidates. No external repository

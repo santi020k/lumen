@@ -72,6 +72,10 @@ import {
   lumenCardElementConfig
 } from './components/card.js'
 import {
+  LumenComboboxElement as GranularLumenComboboxElement,
+  lumenComboboxElementConfig
+} from './components/combobox.js'
+import {
   LumenCardContentElement as GranularLumenCardContentElement,
   lumenCardContentElementConfig,
   LumenCardDescriptionElement as GranularLumenCardDescriptionElement,
@@ -425,11 +429,7 @@ const elementConfigs = {
     defaults: { 'data-slot': 'code-tabs', 'data-ui-tabs': '' },
     tagName: 'lumen-code-tabs'
   },
-  Combobox: {
-    baseClassName: 'ui-combobox',
-    defaults: { 'data-ui-combobox': '' },
-    tagName: 'lumen-combobox'
-  },
+  Combobox: lumenComboboxElementConfig,
   Container: lumenContainerElementConfig,
   CopyButton: {
     baseClassName: 'ui-button ui-button--outline ui-copy-button',
@@ -10522,6 +10522,7 @@ const granularElementClasses: Partial<
   CardFooter: GranularLumenCardFooterElement,
   CardHeader: GranularLumenCardHeaderElement,
   CardTitle: GranularLumenCardTitleElement,
+  Combobox: GranularLumenComboboxElement,
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,

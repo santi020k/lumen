@@ -175,6 +175,84 @@ test("rejects a POM that points at a different source tag", async () => {
   );
 });
 
+test("rejects expected metadata hidden in an XML comment", async () => {
+  await withRepository(
+    async (directory) => {
+      const artifactId = "lumen-compose";
+
+      const pomPath = resolve(
+        directory,
+        `com/santi020k/${artifactId}/2.0.0/${artifactId}-2.0.0.pom`,
+      );
+
+      await writeSignedArtifact(
+        pomPath,
+        `<?xml version="1.0"?>
+<project>
+  <!--
+  <groupId>com.santi020k</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+  <tag>compose-v2.0.0</tag>
+  <url>https://github.com/santi020k/lumen/tree/compose-v2.0.0</url>
+  -->
+  <groupId>com.example</groupId>
+  <artifactId>unrelated</artifactId>
+  <version>9.0.0</version>
+  <scm>
+    <tag>unrelated-v9.0.0</tag>
+    <url>https://github.com/example/unrelated</url>
+  </scm>
+</project>
+`,
+      );
+    },
+    (result) => {
+      assert.equal(result.status, 1);
+
+      assert.match(result.stderr, /must identify the Lumen Maven group/);
+    },
+  );
+});
+
+test("rejects coordinates found only in a nested dependency", async () => {
+  await withRepository(
+    async (directory) => {
+      const artifactId = "lumen-compose";
+
+      const pomPath = resolve(
+        directory,
+        `com/santi020k/${artifactId}/2.0.0/${artifactId}-2.0.0.pom`,
+      );
+
+      await writeSignedArtifact(
+        pomPath,
+        `<?xml version="1.0"?>
+<project>
+  <groupId>com.santi020k</groupId>
+  <artifactId>unrelated</artifactId>
+  <version>${version}</version>
+  <scm>
+    <tag>compose-v2.0.0</tag>
+    <url>https://github.com/santi020k/lumen/tree/compose-v2.0.0</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <artifactId>${artifactId}</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+`,
+      );
+    },
+    (result) => {
+      assert.equal(result.status, 1);
+
+      assert.match(result.stderr, /must identify its published artifact/);
+    },
+  );
+});
+
 test("does not allow fixture repositories outside the test environment", async () => {
   const directory = await createRepository();
 

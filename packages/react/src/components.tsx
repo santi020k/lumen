@@ -2141,6 +2141,7 @@ export const Combobox = ({
   ...props
 }: ComboboxProps) => {
   const inputId = id ?? `${list}-input`
+  const rootRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState(() => String(defaultValue ?? ''))
   const renderedValue = valueProp ?? value
@@ -2160,6 +2161,33 @@ export const Combobox = ({
     setOpen(false)
   }
 
+  const getVisibleOptions = (): HTMLButtonElement[] => [
+    ...(rootRef.current?.querySelectorAll<HTMLButtonElement>(
+      '[data-ui-combobox-option]:not([hidden]):not([disabled])'
+    ) ?? [])
+  ]
+
+  const focusInputEdgeOption = (key: 'ArrowDown' | 'ArrowUp') => {
+    const options = getVisibleOptions()
+
+    options[key === 'ArrowUp' ? options.length - 1 : 0]?.focus()
+  }
+
+  const focusOption = (option: HTMLButtonElement, key: string) => {
+    const options = getVisibleOptions()
+
+    if (!options.length) return
+
+    const currentIndex = Math.max(0, options.indexOf(option))
+    let nextIndex = (currentIndex - 1 + options.length) % options.length
+
+    if (key === 'Home') nextIndex = 0
+    else if (key === 'End') nextIndex = options.length - 1
+    else if (key === 'ArrowDown') nextIndex = (currentIndex + 1) % options.length
+
+    options[nextIndex]?.focus()
+  }
+
   return (
     <div
       className={composeClassName('ui-combobox', wrapperClassName)}
@@ -2171,6 +2199,7 @@ export const Combobox = ({
           setOpen(false)
         }
       }}
+      ref={rootRef}
     >
       {label && (
         <label className="ui-label" htmlFor={inputId}>
@@ -2206,6 +2235,18 @@ export const Combobox = ({
             setOpen(false)
           }
 
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            const key = event.key
+
+            event.preventDefault()
+
+            setOpen(true)
+
+            globalThis.queueMicrotask(() => {
+              focusInputEdgeOption(key)
+            })
+          }
+
           if (event.key === 'Enter' && visibleOptions[0]) {
             event.preventDefault()
 
@@ -2228,9 +2269,39 @@ export const Combobox = ({
             data-value={option}
             key={option}
             role="option"
+            tabIndex={-1}
             type="button"
             onClick={() => {
               selectOption(option)
+            }}
+            onKeyDown={event => {
+              if (event.key === 'Escape') {
+                setOpen(false)
+
+                rootRef.current?.querySelector<HTMLInputElement>(
+                  'input[role="combobox"]'
+                )?.focus()
+
+                return
+              }
+
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+
+                rootRef.current?.querySelector<HTMLInputElement>(
+                  'input[role="combobox"]'
+                )?.focus()
+
+                selectOption(option)
+
+                return
+              }
+
+              if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+
+              event.preventDefault()
+
+              focusOption(event.currentTarget, event.key)
             }}
             onMouseDown={event => {
               event.preventDefault()

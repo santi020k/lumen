@@ -386,92 +386,6 @@ const initGlassTracking = (scope: ParentNode): void => {
   }
 }
 
-const initDialogs = (scope: ParentNode): void => {
-  const dialogSelector =
-    '[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet]'
-
-  for (const dialog of scope.querySelectorAll<HTMLDialogElement>(dialogSelector)) {
-    if (dialog.dataset.uiBound === 'true') continue
-
-    dialog.dataset.uiBound = 'true'
-
-    dialog.setAttribute('aria-modal', 'true')
-
-    dialog.setAttribute('role', dialog.hasAttribute('data-ui-alert-dialog') ? 'alertdialog' : 'dialog')
-
-    dialog.addEventListener('click', event => {
-      if (event.target === dialog && !dialog.hasAttribute('data-ui-alert-dialog')) {
-        dialog.close()
-      }
-    })
-
-    dialog.addEventListener('close', () => {
-      const triggerId = dialog.dataset.uiLastTrigger
-      const trigger = triggerId ? document.getElementById(triggerId) : null
-
-      if (trigger instanceof HTMLElement) {
-        trigger.focus({ preventScroll: true })
-      }
-    })
-  }
-
-  const triggerSelector = [
-    '[data-ui-dialog-trigger]',
-    '[data-ui-alert-dialog-trigger]',
-    '[data-ui-drawer-trigger]',
-    '[data-ui-sheet-trigger]'
-  ].join(', ')
-
-  for (const trigger of scope.querySelectorAll<HTMLElement>(triggerSelector)) {
-    if (trigger.dataset.uiBound === 'true') continue
-
-    trigger.dataset.uiBound = 'true'
-
-    trigger.setAttribute('aria-haspopup', 'dialog')
-
-    trigger.addEventListener('click', () => {
-      const targetId =
-        trigger.dataset.uiDialogTrigger ??
-        trigger.dataset.uiAlertDialogTrigger ??
-        trigger.dataset.uiDrawerTrigger ??
-        trigger.dataset.uiSheetTrigger
-
-      if (!targetId) return
-
-      const dialog = document.getElementById(targetId)
-
-      if (!(dialog instanceof HTMLDialogElement)) return
-
-      if (!trigger.id) {
-        trigger.id = `ui-trigger-${crypto.randomUUID()}`
-      }
-
-      dialog.dataset.uiLastTrigger = trigger.id
-
-      dialog.showModal()
-
-      getFocusable(dialog)[0]?.focus({ preventScroll: true })
-    })
-  }
-
-  const closeSelector = [
-    '[data-ui-dialog-close]',
-    '[data-ui-alert-dialog-close]',
-    '[data-ui-drawer-close]',
-    '[data-ui-sheet-close]'
-  ].join(', ')
-
-  for (const closeButton of scope.querySelectorAll<HTMLElement>(closeSelector)) {
-    if (closeButton.dataset.uiBound === 'true') continue
-
-    closeButton.dataset.uiBound = 'true'
-
-    closeButton.addEventListener('click', () => {
-      closeButton.closest<HTMLDialogElement>('dialog')?.close()
-    })
-  }
-}
-
 const getFieldControl = (root: HTMLElement): HTMLElement | null => {
   const controlId = root.dataset.uiFieldControl
 
@@ -4935,127 +4849,6 @@ const initFileUploads = (scope: ParentNode): void => {
   }
 }
 
-const initAnchors = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
-    if (root.dataset.uiBound === 'true') continue
-
-    root.dataset.uiBound = 'true'
-
-    const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-    const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
-
-    for (const link of links) {
-      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
-
-      if (target) {
-        targets.push({ link, target })
-      }
-    }
-
-    if (!targets.length) continue
-
-    const setActive = (active: HTMLAnchorElement): void => {
-      for (const link of links) {
-        const isActive = link === active
-
-        link.dataset.active = String(isActive)
-
-        if (isActive) {
-          link.setAttribute('aria-current', 'location')
-        } else {
-          link.removeAttribute('aria-current')
-        }
-      }
-    }
-
-    const update = (): void => {
-      const scrollingElement = document.scrollingElement ?? document.documentElement
-
-      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
-        scrollingElement.scrollHeight - 1
-
-      const offset = Number(root.dataset.uiAnchorOffset) || 0
-      let active = targets[0]?.link
-
-      if (atEnd) {
-        active = targets.at(-1)?.link
-      } else {
-        for (const item of targets) {
-          if (item.target.getBoundingClientRect().top > offset) break
-
-          active = item.link
-        }
-      }
-
-      if (active) setActive(active)
-    }
-
-    let frame = 0
-
-    const requestUpdate = (): void => {
-      if (frame) return
-
-      frame = requestAnimationFrame(() => {
-        frame = 0
-
-        update()
-      })
-    }
-
-    for (const { link } of targets) {
-      link.addEventListener('click', () => setActive(link))
-    }
-
-    window.addEventListener('resize', requestUpdate, { passive: true })
-
-    window.addEventListener('scroll', requestUpdate, { passive: true })
-
-    update()
-  }
-}
-
-let scrollProgressFrame = 0
-
-const updateScrollProgress = (): void => {
-  scrollProgressFrame = 0
-
-  const scrollingElement = document.scrollingElement ?? document.documentElement
-  const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
-
-  const percentage = maximum > 0 ?
-    Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)) :
-    0
-
-  for (const root of document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')) {
-    const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
-
-    root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
-
-    if (bar) bar.style.transform = `scaleX(${percentage / 100})`
-  }
-}
-
-const requestScrollProgressUpdate = (): void => {
-  if (scrollProgressFrame) return
-
-  scrollProgressFrame = requestAnimationFrame(updateScrollProgress)
-}
-
-const initScrollProgress = (scope: ParentNode): void => {
-  if (!scope.querySelector('[data-ui-scroll-progress]')) return
-
-  requestScrollProgressUpdate()
-
-  if (document.documentElement.dataset.uiScrollProgressBound === 'true') return
-
-  document.documentElement.dataset.uiScrollProgressBound = 'true'
-
-  window.addEventListener('resize', requestScrollProgressUpdate, { passive: true })
-
-  window.addEventListener('scroll', requestScrollProgressUpdate, { passive: true })
-}
-
 const initTours = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tour]')) {
     if (root.dataset.uiBound === 'true') continue
@@ -5588,11 +5381,25 @@ const initOptionalControllers = (scope: ParentNode): void => {
       .then(({ initPhoneInputControllers }) => initPhoneInputControllers(scope))
       .catch(reportError)
   }
+
+  if (scope.querySelector(
+    '[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet], ' +
+    '[data-ui-dialog-trigger], [data-ui-alert-dialog-trigger], ' +
+    '[data-ui-drawer-trigger], [data-ui-sheet-trigger]'
+  )) {
+    import('./controllers/dialogs.js')
+      .then(({ initDialogControllers }) => initDialogControllers(scope))
+      .catch(reportError)
+  }
+
+  if (scope.querySelector('[data-ui-anchor], [data-ui-scroll-progress]')) {
+    import('./controllers/document-navigation.js')
+      .then(({ initDocumentNavigationControllers }) => initDocumentNavigationControllers(scope))
+      .catch(reportError)
+  }
 }
 
 const initUiPrimitives = (scope: ParentNode = document): void => {
-  initDialogs(scope)
-
   initFields(scope)
 
   initForms(scope)
@@ -5660,10 +5467,6 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initGlassTracking(scope)
 
   initFileUploads(scope)
-
-  initAnchors(scope)
-
-  initScrollProgress(scope)
 
   initTours(scope)
 

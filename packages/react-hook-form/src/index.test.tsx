@@ -9,6 +9,8 @@ import * as yup from 'yup'
 import * as z from 'zod'
 
 import {
+  LumenDatePickerController,
+  LumenInputOTPController,
   LumenListBoxController,
   LumenSelectController
 } from './components.js'
@@ -44,15 +46,19 @@ describe('getLumenManagedFieldState', () => {
 })
 
 interface AdapterValues {
+  code: string
   members: string[]
   role: string
+  startDate: string
 }
 
 const AdapterFixture = () => {
   const { control } = useForm<AdapterValues>({
     defaultValues: {
+      code: '123456',
       members: ['amina'],
-      role: 'engineer'
+      role: 'engineer',
+      startDate: '2026-08-27'
     }
   })
 
@@ -75,6 +81,8 @@ const AdapterFixture = () => {
           { label: 'Theo', value: 'theo' }
         ]}
       />
+      <LumenDatePickerController control={control} name="startDate" />
+      <LumenInputOTPController control={control} length={6} name="code" />
     </form>
   )
 }
@@ -87,6 +95,10 @@ describe('React Hook Form adapters', () => {
     expect(markup).toContain('<option value="engineer" selected="">Engineer</option>')
     expect(markup).toContain('name="members"')
     expect(markup).toContain('<option value="amina" selected="">Amina</option>')
+    expect(markup).toContain('name="startDate"')
+    expect(markup).toContain('value="2026-08-27"')
+    expect(markup).toContain('name="code"')
+    expect(markup).toContain('value="123456"')
   })
 
   test('maps Zod resolver errors into Lumen field state', async () => {

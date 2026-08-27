@@ -2,8 +2,10 @@ import { readFile } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
 const budgets = [
-  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 34_000, raw: 168_000 },
+  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, raw: 162_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, raw: 5_000 },
+  { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, raw: 6_000 },
+  { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, raw: 5_000 },
   { file: 'packages/lumen/styles.css', gzip: 28_000, raw: 172_000 },
   { file: 'packages/react/dist/components.js', gzip: 33_000, raw: 158_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, raw: 100_000 },

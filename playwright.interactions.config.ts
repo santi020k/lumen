@@ -10,14 +10,16 @@ const requestedBrowsers = process.env.LUMEN_INTERACTION_BROWSERS
 
 const browserNames = requestedBrowsers ?? (
   process.platform === 'darwin' && !process.env.CI
-    ? ['chromium', 'webkit']
-    : ['chromium', 'firefox', 'webkit']
+    ? ['chromium', 'webkit', 'mobile-chromium', 'mobile-webkit']
+    : ['chromium', 'firefox', 'webkit', 'mobile-chromium', 'mobile-webkit']
 )
 
 const browserDevices = {
   chromium: devices['Desktop Chrome'],
   firefox: devices['Desktop Firefox'],
-  webkit: devices['Desktop Safari']
+  webkit: devices['Desktop Safari'],
+  'mobile-chromium': devices['Pixel 7'],
+  'mobile-webkit': devices['iPhone 15']
 } as const
 
 const projects = browserNames.map(name => {

@@ -154,6 +154,54 @@ test("accepts a publish commit whose only delta is the approval record", async (
   }
 });
 
+test("rejects an uncommitted tracked change in the publication working tree", async () => {
+  const { directory, reviewedRevision } = await createCandidate();
+
+  try {
+    await approveCandidate(directory, reviewedRevision);
+
+    await writeFile(
+      resolve(directory, "source.txt"),
+      "uncommitted publication bytes\n",
+    );
+
+    const result = runChecker(directory);
+
+    assert.equal(result.status, 1);
+
+    assert.match(
+      result.stderr,
+      /requires a clean working tree with no tracked or untracked changes/,
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test("rejects an untracked file in the publication working tree", async () => {
+  const { directory, reviewedRevision } = await createCandidate();
+
+  try {
+    await approveCandidate(directory, reviewedRevision);
+
+    await writeFile(
+      resolve(directory, "untracked-package-file.txt"),
+      "unreviewed\n",
+    );
+
+    const result = runChecker(directory);
+
+    assert.equal(result.status, 1);
+
+    assert.match(
+      result.stderr,
+      /requires a clean working tree with no tracked or untracked changes/,
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
 test("rejects source changes after the reviewed candidate", async () => {
   const { directory, reviewedRevision } = await createCandidate();
 

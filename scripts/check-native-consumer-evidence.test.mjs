@@ -23,7 +23,10 @@ const completeEntry = (entry, index) => {
 
   entry.checks = Object.fromEntries(Object.keys(entry.checks).map(check => [check, true]))
 
-  entry.evidence = [`https://github.com/example/consumer-${index}/commit/${entry.upgrade.revision}`]
+  entry.evidence = [
+    `https://github.com/example/consumer-${index}/commit/${entry.upgrade.revision}`,
+    `https://github.com/example/consumer-${index}/actions/runs/${index + 1}`
+  ]
 
   entry.blockingIssues = []
 }
@@ -169,12 +172,101 @@ test('rejects built partial evidence without an exact toolchain', async () => {
 
 test('rejects complete evidence that is not an HTTPS record', async () => {
   const result = await runLedger(ledger => {
-    ledger.adapters[0].evidence = ['local build passed']
+    ledger.adapters[0].evidence[0] = 'local build passed'
   })
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /must use immutable HTTPS records/)
+  assert.match(result.stderr, /must be a valid HTTPS URL/)
+})
+
+test('rejects complete evidence backed by a disguised Lumen fixture', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].consumer.repository = 'https://github.com/santi020k/lumen.git/'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /cannot qualify with a Lumen-owned fixture/)
+})
+
+test('rejects evidence from a repository other than the declared consumer', async () => {
+  const result = await runLedger(ledger => {
+    const entry = ledger.adapters[0]
+
+    entry.evidence = [
+      `https://github.com/example/unrelated-consumer/commit/${entry.upgrade.revision}`,
+      'https://github.com/example/unrelated-consumer/actions/runs/1'
+    ]
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must belong to the declared consumer repository/)
+})
+
+test('rejects arbitrary HTTPS pages as mutable evidence', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].evidence[1] = 'https://github.com/example/consumer-0/actions/workflows/lumen-canary.yml'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must use immutable workflow or revision URLs/)
+})
+
+test('rejects evidence for a different consumer revision', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].evidence[0] = `https://github.com/example/consumer-0/commit/${'f'.repeat(40)}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include the exact consumer revision/)
+})
+
+test('rejects a workflow URL that merely contains the consumer revision', async () => {
+  const result = await runLedger(ledger => {
+    const entry = ledger.adapters[0]
+
+    entry.evidence = [
+      `https://github.com/example/consumer-0/actions/runs/1/${entry.upgrade.revision}`,
+      'https://github.com/example/consumer-0/actions/runs/2'
+    ]
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include the exact consumer revision/)
+})
+
+test('rejects complete evidence without an immutable workflow or build', async () => {
+  const result = await runLedger(ledger => {
+    ledger.adapters[0].evidence = [
+      `https://github.com/example/consumer-0/commit/${ledger.adapters[0].upgrade.revision}`,
+      `https://github.com/example/consumer-0/blob/${ledger.adapters[0].upgrade.revision}/README.md`
+    ]
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must include an immutable workflow or build URL/)
+})
+
+test('rejects pending evidence that claims a record', async () => {
+  const result = await runLedger(ledger => {
+    const entry = ledger.adapters[0]
+
+    entry.status = 'pending'
+
+    entry.checks = Object.fromEntries(Object.keys(entry.checks).map(check => [check, false]))
+
+    entry.blockingIssues = ['Qualification is pending.']
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /pending evidence must be empty/)
 })
 
 test('rejects an upgrade outside the two stability iterations', async () => {

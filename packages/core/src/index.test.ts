@@ -227,6 +227,23 @@ describe('lumen code helpers', () => {
     `)).toBe('const theme = "lumen";\nconst accent = "hsl(var(--accent))";')
   })
 
+  test('normalizes adversarially long code without overflowing the call stack', () => {
+    // A spread-based `Math.min(...indentation)` throws RangeError once the
+    // argument count exceeds the engine's call-stack limit (around 100k),
+    // so this must stay well past that to guard against a regression.
+    const lineCount = 150_000
+    const source = Array.from(
+      { length: lineCount }, (_, index) => `  line${index}`
+    ).join('\n')
+
+    const normalized = normalizeLumenCode(source)
+    const normalizedLines = normalized.split('\n')
+
+    expect(normalizedLines).toHaveLength(lineCount)
+    expect(normalizedLines[0]).toBe('line0')
+    expect(normalizedLines.at(-1)).toBe(`line${lineCount - 1}`)
+  })
+
   test('tokenizes and escapes lightweight JavaScript code', () => {
     const html = renderLumenCodeHtml('const label = "<lumen>";', 'ts')
 
@@ -381,6 +398,57 @@ describe('lumen product helpers', () => {
     expect(resizedStart.start).toBe('2026-07-04T10:15:00.000Z')
     expect(resizedPastEnd.start).toBe('2026-07-04T10:59:00.000Z')
     expect(resizeScheduleEvents([event], 'planning', '2026-07-04T11:30:00.000Z')[0]?.end).toBe('2026-07-04T11:30:00.000Z')
+  })
+
+  test('enforces a resize min bound when no max is set', () => {
+    const event = {
+      end: '2026-07-04T11:00:00.000Z',
+      id: 'planning',
+      start: '2026-07-04T09:00:00.000Z',
+      title: 'Planning'
+    }
+    const resizedStart = resizeScheduleEvent(event, '2026-07-04T09:00:00.000Z', {
+      edge: 'start',
+      min: '2026-07-04T10:30:00.000Z',
+      snapMinutes: 15
+    })
+
+    expect(resizedStart.start).toBe('2026-07-04T10:30:00.000Z')
+  })
+
+  test('never resizes an end past max even when the event already starts beyond it', () => {
+    // The event's own start already sits after `max`, so the >=1 minute
+    // duration floor and the explicit `max` bound are in direct conflict.
+    // The explicit caller bound must win: `end` should never exceed `max`.
+    const event = {
+      end: '2026-07-04T11:00:00.000Z',
+      id: 'planning',
+      start: '2026-07-04T09:35:00.000Z',
+      title: 'Planning'
+    }
+    const resizedEnd = resizeScheduleEvent(event, '2026-07-04T09:00:00.000Z', {
+      edge: 'end',
+      max: '2026-07-04T09:30:00.000Z',
+      snapMinutes: 15
+    })
+
+    expect(resizedEnd.end).toBe('2026-07-04T09:30:00.000Z')
+  })
+
+  test('never resizes a start before min even when the event already ends before it', () => {
+    const event = {
+      end: '2026-07-04T09:35:00.000Z',
+      id: 'planning',
+      start: '2026-07-04T09:00:00.000Z',
+      title: 'Planning'
+    }
+    const resizedStart = resizeScheduleEvent(event, '2026-07-04T10:00:00.000Z', {
+      edge: 'start',
+      min: '2026-07-04T09:45:00.000Z',
+      snapMinutes: 15
+    })
+
+    expect(resizedStart.start).toBe('2026-07-04T09:45:00.000Z')
   })
 
   test('persists schedule events through storage-like adapters', () => {

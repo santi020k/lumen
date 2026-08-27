@@ -205,6 +205,40 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).not.toContain('resolveLumenPhoneNumber')
   })
 
+  test('loads dialog behavior only when an overlay contract is present', async () => {
+    const [dialogController, runtime] = await Promise.all([
+      readFile(new URL('./runtime/controllers/dialogs.ts', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(runtime).toContain('import(\'./controllers/dialogs.js\')')
+    expect(runtime).not.toContain('const initDialogs =')
+    expect(dialogController).toContain(
+      'export const initDialogControllers = (scope: ParentNode): void =>'
+    )
+    expect(dialogController).toContain('dialog.showModal()')
+    expect(dialogController).toContain('trigger.focus({ preventScroll: true })')
+    expect(dialogController).toContain('dialog.hasAttribute(\'data-ui-alert-dialog\')')
+  })
+
+  test('loads document navigation only when its selectors are present', async () => {
+    const [documentNavigationController, runtime] = await Promise.all([
+      readFile(
+        new URL('./runtime/controllers/document-navigation.ts', packageRoot), 'utf8'
+      ),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(runtime).toContain('import(\'./controllers/document-navigation.js\')')
+    expect(runtime).not.toContain('const initAnchors =')
+    expect(runtime).not.toContain('const initScrollProgress =')
+    expect(documentNavigationController).toContain(
+      'export const initDocumentNavigationControllers = (scope: ParentNode): void =>'
+    )
+    expect(documentNavigationController).toContain('\'[data-ui-anchor]\'')
+    expect(documentNavigationController).toContain('\'[data-ui-scroll-progress]\'')
+  })
+
   test('normalizes Astro Action field errors for fields and summaries', () => {
     expect(
       normalizeAstroActionErrors(
@@ -295,12 +329,14 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships hierarchical anchors and document scroll progress', async () => {
-    const [anchor, scrollProgress, runtime, css] = await Promise.all([
+    const [anchor, documentNavigationController, scrollProgress, css] = await Promise.all([
       readFile(new URL('./components/Anchor.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./runtime/controllers/document-navigation.ts', packageRoot), 'utf8'
+      ),
       readFile(
         new URL('./components/ScrollProgress.astro', packageRoot), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -308,8 +344,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(anchor).toContain('data-depth={item.depth}')
     expect(scrollProgress).toContain('data-ui-scroll-progress')
     expect(scrollProgress).toContain('role="progressbar"')
-    expect(runtime).toContain('initScrollProgress(scope)')
-    expect(runtime).toContain('root.setAttribute(\'aria-valuenow\'')
+    expect(documentNavigationController).toContain('initScrollProgress(scope)')
+    expect(documentNavigationController).toContain('root.setAttribute(\'aria-valuenow\'')
     expect(css).toContain('.ui-scroll-progress')
     expect(css).toContain('.ui-scroll-progress--bottom')
     expect(css).toContain('.ui-anchor a[data-depth="3"]')

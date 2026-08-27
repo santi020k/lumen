@@ -9,30 +9,58 @@ const repositoryRoot = resolve(import.meta.dirname, '..')
 const checkerPath = resolve(repositoryRoot, 'scripts', 'check-native-stability-soak.mjs')
 const sourceLedgerPath = resolve(repositoryRoot, 'registry', 'native-stability-soak.json')
 
-const createIteration = (ledger, index) => ({
-  id: `native-soak.${index}`,
-  date: `2026-09-0${index + 1}`,
-  revision: `${index + 1}`.repeat(40),
-  versions: {
-    compose: `0.${index + 5}.0`,
-    reactNative: `0.${index + 5}.0`,
-    swift: `1.${index + 6}.0`,
-    wear: `0.${index + 5}.0`
-  },
-  baselines: Object.fromEntries(
-    Object.entries(ledger.baselines).map(([adapter, baseline]) => [adapter, baseline.sha256])
-  ),
-  evidence: {
-    releaseVerificationUrl: `https://github.com/santi020k/lumen/actions/runs/${index + 1}`,
-    consumerValidation: {
-      compose: `https://github.com/example/compose/releases/${index + 1}`,
-      reactNative: `https://github.com/example/react-native/releases/${index + 1}`,
-      swiftUI: `https://github.com/example/swift/releases/${index + 1}`,
-      swiftWidget: `https://github.com/example/swift-widget/releases/${index + 1}`,
-      wear: `https://github.com/example/wear/releases/${index + 1}`
+const createEvidenceRecord = (repository, revision, runId) => ({
+  repository,
+  revision,
+  revisionUrl: `${repository}/commit/${revision}`,
+  verificationUrl: `${repository}/actions/runs/${runId}`
+})
+
+const createIteration = (ledger, index) => {
+  const revision = `${index + 1}`.repeat(40)
+
+  return {
+    id: `native-soak.${index}`,
+    date: `2026-08-2${index}`,
+    revision,
+    versions: {
+      compose: `0.${index + 5}.0`,
+      reactNative: `0.${index + 5}.0`,
+      swift: `1.${index + 6}.0`,
+      wear: `0.${index + 5}.0`
+    },
+    baselines: Object.fromEntries(
+      Object.entries(ledger.baselines).map(([adapter, baseline]) => [adapter, baseline.sha256])
+    ),
+    evidence: {
+      release: createEvidenceRecord(
+        'https://github.com/santi020k/lumen',
+        revision,
+        index + 1
+      ),
+      consumerValidation: Object.fromEntries(
+        [
+          ['compose', 'compose'],
+          ['reactNative', 'react-native'],
+          ['swiftUI', 'swift'],
+          ['swiftWidget', 'swift-widget'],
+          ['wear', 'wear']
+        ].map(([adapter, consumer], consumerIndex) => {
+          const consumerRevision = `${consumerIndex + 4}`.repeat(40)
+
+          return [
+            adapter,
+            createEvidenceRecord(
+              `https://github.com/example/${consumer}`,
+              consumerRevision,
+              `${index + 1}-${consumerIndex + 1}`
+            )
+          ]
+        })
+      )
     }
   }
-})
+}
 
 const runLedger = async (mutate, checkerArguments = []) => {
   const temporaryDirectory = await mkdtemp(resolve(tmpdir(), 'lumen-native-soak-'))
@@ -65,6 +93,16 @@ test('accepts two chronological ordinary-release stability iterations', async ()
   assert.match(result.stdout, /Validated 2\/2 native stability soak iterations/)
 })
 
+test('rejects a stability iteration dated in the future', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[1].date = '9999-12-31'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /date must not be in the future/)
+})
+
 test('requires both iterations in readiness mode', async () => {
   const result = await runLedger(ledger => {
     ledger.iterations.pop()
@@ -77,12 +115,12 @@ test('requires both iterations in readiness mode', async () => {
 
 test('rejects a consumer record without an immutable HTTPS URL', async () => {
   const result = await runLedger(ledger => {
-    ledger.iterations[0].evidence.consumerValidation.wear = 'local playground passed'
+    ledger.iterations[0].evidence.consumerValidation.wear.revisionUrl = 'local playground passed'
   })
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /requires an immutable HTTPS consumer evidence URL/)
+  assert.match(result.stderr, /must be a valid HTTPS URL/)
 })
 
 test('rejects a soak ledger that omits the WidgetKit API baseline', async () => {
@@ -107,12 +145,100 @@ test('rejects an iteration without WidgetKit consumer evidence', async () => {
 
 test('rejects a release verification URL outside the repository workflow', async () => {
   const result = await runLedger(ledger => {
-    ledger.iterations[0].evidence.releaseVerificationUrl = 'https://example.com/run/1'
+    ledger.iterations[0].evidence.release.verificationUrl = 'https://example.com/runs/1'
   })
 
   assert.equal(result.status, 1)
 
-  assert.match(result.stderr, /successful published-native verification workflow URL/)
+  assert.match(result.stderr, /must be a permanent workflow, pipeline, job, or build URL/)
+})
+
+test('rejects release evidence for a different soak revision', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[0].evidence.release.revision = 'f'.repeat(40)
+
+    ledger.iterations[0].evidence.release.revisionUrl =
+      `https://github.com/santi020k/lumen/commit/${'f'.repeat(40)}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /revision must match the soak iteration revision/)
+})
+
+test('rejects a mutable consumer workflow definition', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[0].evidence.consumerValidation.compose.verificationUrl =
+      'https://github.com/example/compose/actions/workflows/lumen-canary.yml'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must be a permanent workflow, pipeline, job, or build URL/)
+})
+
+test('rejects a consumer revision URL for a different revision', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[0].evidence.consumerValidation.compose.revisionUrl =
+      `https://github.com/example/compose/commit/${'f'.repeat(40)}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must bind the exact repository revision/)
+})
+
+test('rejects a disguised Lumen fixture as consumer evidence', async () => {
+  const result = await runLedger(ledger => {
+    const evidence = ledger.iterations[0].evidence.consumerValidation.compose
+
+    evidence.repository = 'https://github.com/santi020k/lumen.git/'
+
+    evidence.revisionUrl = `https://github.com/santi020k/lumen/commit/${evidence.revision}`
+
+    evidence.verificationUrl = 'https://github.com/santi020k/lumen/actions/runs/1'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must target an external consumer repository/)
+})
+
+test('rejects consumer evidence with URL query state', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[0].evidence.consumerValidation.compose.verificationUrl += '?attempt=1'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must not use a query string/)
+})
+
+test('rejects consumer evidence with URL fragment state', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[0].evidence.consumerValidation.compose.verificationUrl += '#attempt-1'
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must not use a fragment/)
+})
+
+test('rejects an uppercase soak iteration revision', async () => {
+  const result = await runLedger(ledger => {
+    const iteration = ledger.iterations[0]
+
+    iteration.revision = 'A'.repeat(40)
+
+    iteration.evidence.release.revision = iteration.revision
+
+    iteration.evidence.release.revisionUrl =
+      `https://github.com/santi020k/lumen/commit/${iteration.revision}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /requires a full lowercase Git revision/)
 })
 
 test('rejects an iteration that does not upgrade every adapter', async () => {

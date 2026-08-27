@@ -6,7 +6,16 @@ const ASTRO_RUNTIME_PACKAGE = '@santi020k/lumen-astro/runtime'
 const REACT_PACKAGE = '@santi020k/lumen-react'
 const REACT_NATIVE_PACKAGE = '@santi020k/lumen-react-native'
 const REACT_NATIVE_DATETIME_PACKAGE = '@santi020k/lumen-react-native/datetime'
-const SOURCE_EXTENSIONS = new Set(['.astro', '.htm', '.html', '.js', '.jsx', '.ts', '.tsx'])
+
+const SOURCE_EXTENSIONS = new Set([
+  '.astro',
+  '.htm',
+  '.html',
+  '.js',
+  '.jsx',
+  '.ts',
+  '.tsx'
+])
 
 const IGNORED_DIRECTORIES = new Set([
   '.astro',
@@ -100,20 +109,26 @@ interface ParsedMarkupAttribute {
 }
 
 const isIdentifierCharacter = (value: string | undefined): boolean => Boolean(value && /[\w$]/u.test(value))
+const isQuote = (value: string | undefined): value is '\'' | '"' | '`' => value === '\'' || value === '"' || value === '`'
 
-const isQuote = (value: string | undefined): value is '\'' | '"' | '`' => (
-  value === '\'' || value === '"' || value === '`'
-)
+const hasKeywordBoundary = (
+  source: string,
+  start: number,
+  keyword: string
+): boolean => !isIdentifierCharacter(source[start - 1]) &&
+  !isIdentifierCharacter(source[start + keyword.length])
 
-const hasKeywordBoundary = (source: string, start: number, keyword: string): boolean => (
-  !isIdentifierCharacter(source[start - 1]) && !isIdentifierCharacter(source[start + keyword.length])
-)
+const isSafeImportClause = (clause: string): boolean => !clause.includes(';') &&
+  !clause.includes('\'') &&
+  !clause.includes('"') &&
+  !/\bexport\b/u.test(clause)
 
-const isSafeImportClause = (clause: string): boolean => (
-  !clause.includes(';') && !clause.includes('\'') && !clause.includes('"') && !/\bexport\b/u.test(clause)
-)
-
-const isImportContext = (source: string, importStart: number, fromStart: number, moduleStart: number): boolean => {
+const isImportContext = (
+  source: string,
+  importStart: number,
+  fromStart: number,
+  moduleStart: number
+): boolean => {
   if (fromStart < 0 || importStart < 0) return false
 
   if (!hasKeywordBoundary(source, importStart, 'import')) return false
@@ -131,7 +146,10 @@ const isImportContext = (source: string, importStart: number, fromStart: number,
   return source.slice(fromStart + 'from'.length, moduleStart).trim() === ''
 }
 
-const getLocation = (source: string, index: number): Pick<LumenV2MigrationFinding, 'column' | 'line'> => {
+const getLocation = (
+  source: string,
+  index: number
+): Pick<LumenV2MigrationFinding, 'column' | 'line'> => {
   let line = 1
   let lineStart = 0
 
@@ -159,7 +177,10 @@ const createFinding = (
   message
 })
 
-const findImportStatements = (source: string, module: string): ImportStatement[] => {
+const findImportStatements = (
+  source: string,
+  module: string
+): ImportStatement[] => {
   const statements: ImportStatement[] = []
 
   for (const quote of ['\'', '"'] as const) {
@@ -168,7 +189,9 @@ const findImportStatements = (source: string, module: string): ImportStatement[]
 
     while (moduleStart >= 0) {
       const fromStart = source.lastIndexOf('from', moduleStart)
-      const importStart = fromStart >= 0 ? source.lastIndexOf('import', fromStart) : -1
+
+      const importStart =
+        fromStart >= 0 ? source.lastIndexOf('import', fromStart) : -1
 
       if (isImportContext(source, importStart, fromStart, moduleStart)) {
         const afterModule = moduleStart + needle.length
@@ -197,21 +220,27 @@ const parseNamedImports = (clause: string): ParsedNamedImports | undefined => {
 
   if (open < 0 || close <= open) return undefined
 
-  const sources = clause.slice(open + 1, close)
+  const sources = clause
+    .slice(open + 1, close)
     .split(',')
     .map(source => source.trim())
     .filter(Boolean)
 
   const imports = sources.flatMap(source => {
-    const match = /^(type\s+)?([A-Za-z_$][\w$]*)(?:\s+as\s+([A-Za-z_$][\w$]*))?$/u.exec(source)
+    const match =
+      /^(type\s+)?([A-Za-z_$][\w$]*)(?:\s+as\s+([A-Za-z_$][\w$]*))?$/u.exec(
+        source
+      )
 
     return match?.[2] ?
-      [{
-        imported: match[2],
-        local: match[3] ?? match[2],
-        source,
-        typeOnly: Boolean(match[1])
-      }] :
+      [
+        {
+          imported: match[2],
+          local: match[3] ?? match[2],
+          source,
+          typeOnly: Boolean(match[1])
+        }
+      ] :
       []
   })
 
@@ -221,18 +250,26 @@ const parseNamedImports = (clause: string): ParsedNamedImports | undefined => {
 const getDefaultImport = (clause: string): string | undefined => {
   const beforeNamed = clause.split('{', 1)[0]?.trim().replace(/,$/u, '').trim()
 
-  return beforeNamed && /^[A-Za-z_$][\w$]*$/u.test(beforeNamed) ? beforeNamed : undefined
+  return beforeNamed && /^[A-Za-z_$][\w$]*$/u.test(beforeNamed) ?
+    beforeNamed :
+    undefined
 }
 
-const formatImport = (clause: string, statement: ImportStatement): string => (
-  `import ${clause} from ${statement.quote}${statement.module}${statement.quote}${statement.semicolon ? ';' : ''}`
-)
+const formatImport = (clause: string, statement: ImportStatement): string => `import ${clause} from ${statement.quote}${statement.module}${statement.quote}${statement.semicolon ? ';' : ''}`
 
 const applyEdits = (source: string, edits: SourceEdit[]): string => edits
   .sort((left, right) => right.start - left.start)
-  .reduce((result, edit) => `${result.slice(0, edit.start)}${edit.replacement}${result.slice(edit.end)}`, source)
+  .reduce(
+    (result, edit) => `${result.slice(0, edit.start)}${edit.replacement}${result.slice(edit.end)}`,
+    source
+  )
 
-const findBalancedEnd = (source: string, start: number, opening: string, closing: string): number => {
+const findBalancedEnd = (
+  source: string,
+  start: number,
+  opening: string,
+  closing: string
+): number => {
   let depth = 0
   let quote: '\'' | '"' | '`' | undefined
 
@@ -271,10 +308,16 @@ const skipWhitespace = (source: string, start: number, end: number): number => {
   return cursor
 }
 
-const findQuotedEnd = (source: string, start: number, end: number, quote: '\'' | '"'): number => {
+const findQuotedEnd = (
+  source: string,
+  start: number,
+  end: number,
+  quote: '\'' | '"'
+): number => {
   let cursor = start
 
-  while (cursor < end && source[cursor] !== quote) cursor += source[cursor] === '\\' ? 2 : 1
+  while (cursor < end && source[cursor] !== quote)
+    cursor += source[cursor] === '\\' ? 2 : 1
 
   return cursor
 }
@@ -286,7 +329,15 @@ const createAttribute = (
   end: number,
   value: string | undefined,
   valueKind: MarkupAttribute['valueKind']
-): MarkupAttribute => ({ end, name, nameEnd, nameStart: start, start, value, valueKind })
+): MarkupAttribute => ({
+  end,
+  name,
+  nameEnd,
+  nameStart: start,
+  start,
+  value,
+  valueKind
+})
 
 const parseMarkupAttributeValue = (
   source: string,
@@ -304,7 +355,14 @@ const parseMarkupAttributeValue = (
     const cursor = Math.min(contentEnd + 1, end)
 
     return {
-      attribute: createAttribute(attributeStart, nameEnd, name, cursor, source.slice(contentStart, contentEnd), 'literal'),
+      attribute: createAttribute(
+        attributeStart,
+        nameEnd,
+        name,
+        cursor,
+        source.slice(contentStart, contentEnd),
+        'literal'
+      ),
       cursor
     }
   }
@@ -330,19 +388,37 @@ const parseMarkupAttributeValue = (
   while (cursor < end && /[^\s>]/u.test(source[cursor] ?? '')) cursor += 1
 
   return {
-    attribute: createAttribute(attributeStart, nameEnd, name, cursor, source.slice(valueStart, cursor), 'literal'),
+    attribute: createAttribute(
+      attributeStart,
+      nameEnd,
+      name,
+      cursor,
+      source.slice(valueStart, cursor),
+      'literal'
+    ),
     cursor
   }
 }
 
-const parseMarkupAttribute = (source: string, start: number, end: number): ParsedMarkupAttribute => {
+const parseMarkupAttribute = (
+  source: string,
+  start: number,
+  end: number
+): ParsedMarkupAttribute => {
   if (source[start] === '{') {
     const cursor = findBalancedEnd(source, start, '{', '}')
     const expression = source.slice(start + 1, cursor - 1).trim()
 
     return expression === 'size' ?
       {
-        attribute: createAttribute(start, start + 1, 'size', cursor, expression, 'expression'),
+        attribute: createAttribute(
+          start,
+          start + 1,
+          'size',
+          cursor,
+          expression,
+          'expression'
+        ),
         cursor
       } :
       { cursor }
@@ -356,22 +432,44 @@ const parseMarkupAttribute = (source: string, start: number, end: number): Parse
   const equalsStart = skipWhitespace(source, nameEnd, end)
 
   if (source[equalsStart] !== '=') {
-    return { attribute: createAttribute(start, nameEnd, name, equalsStart, undefined, 'boolean'), cursor: equalsStart }
+    return {
+      attribute: createAttribute(
+        start,
+        nameEnd,
+        name,
+        equalsStart,
+        undefined,
+        'boolean'
+      ),
+      cursor: equalsStart
+    }
   }
 
   const valueStart = skipWhitespace(source, equalsStart + 1, end)
 
-  return parseMarkupAttributeValue(source, start, nameEnd, name, valueStart, end)
+  return parseMarkupAttributeValue(
+    source,
+    start,
+    nameEnd,
+    name,
+    valueStart,
+    end
+  )
 }
 
-const parseMarkupAttributes = (source: string, start: number, end: number): MarkupAttribute[] => {
+const parseMarkupAttributes = (
+  source: string,
+  start: number,
+  end: number
+): MarkupAttribute[] => {
   const attributes: MarkupAttribute[] = []
   let cursor = start
 
   while (cursor < end) {
     cursor = skipWhitespace(source, cursor, end)
 
-    if (cursor >= end || source[cursor] === '/' || source[cursor] === '>') break
+    if (cursor >= end || source[cursor] === '/' || source[cursor] === '>')
+      break
 
     const parsed = parseMarkupAttribute(source, cursor, end)
 
@@ -383,9 +481,10 @@ const parseMarkupAttributes = (source: string, start: number, end: number): Mark
   return attributes
 }
 
-const isMarkupQuoteStart = (character: string | undefined, braceDepth: number): character is '\'' | '"' | '`' => (
-  isQuote(character) && (character !== '`' || braceDepth > 0)
-)
+const isMarkupQuoteStart = (
+  character: string | undefined,
+  braceDepth: number
+): character is '\'' | '"' | '`' => isQuote(character) && (character !== '`' || braceDepth > 0)
 
 const advanceQuotedSource = (
   character: string | undefined,
@@ -421,14 +520,19 @@ const findMarkupTagEnd = (source: string, start: number): number => {
   return source.length
 }
 
-const collectAstroComponentNames = (source: string): Map<string, 'Input' | 'NativeSelect'> => {
+const collectAstroComponentNames = (
+  source: string
+): Map<string, 'Input' | 'NativeSelect'> => {
   const componentNames = new Map<string, 'Input' | 'NativeSelect'>()
 
   for (const statement of findImportStatements(source, ASTRO_PACKAGE)) {
     const named = parseNamedImports(statement.clause)
 
     for (const imported of named?.imports ?? []) {
-      if (imported.imported === 'Input' || imported.imported === 'NativeSelect') {
+      if (
+        imported.imported === 'Input' ||
+        imported.imported === 'NativeSelect'
+      ) {
         componentNames.set(imported.local, imported.imported)
       }
     }
@@ -443,22 +547,36 @@ const createRuntimeReplacement = (
   runtimeSpecifier: NamedImport,
   runtimeAlreadyImported: boolean
 ): string => {
-  const remaining = named.imports.filter(item => item.imported !== 'UIPrimitives')
-  const prefix = statement.clause.slice(0, named.open).trim().replace(/,$/u, '').trim()
+  const remaining = named.imports.filter(
+    item => item.imported !== 'UIPrimitives'
+  )
+
+  const prefix = statement.clause
+    .slice(0, named.open)
+    .trim()
+    .replace(/,$/u, '')
+    .trim()
+
   const suffix = statement.clause.slice(named.close + 1).trim()
   const separator = prefix && remaining.length ? ', ' : ' '
 
   const remainingClause = [
     prefix,
-    remaining.length ? `{ ${remaining.map(item => item.source).join(', ')} }` : '',
+    remaining.length ?
+      `{ ${remaining.map(item => item.source).join(', ')} }` :
+      '',
     suffix
-  ].filter(Boolean).join(separator)
+  ]
+    .filter(Boolean)
+    .join(separator)
 
   const runtimeStatement = runtimeAlreadyImported ?
     '' :
     `import ${runtimeSpecifier.local} from ${statement.quote}${ASTRO_RUNTIME_PACKAGE}${statement.quote}${statement.semicolon ? ';' : ''}`
 
-  const rootStatement = remainingClause ? formatImport(remainingClause, statement) : ''
+  const rootStatement = remainingClause ?
+    formatImport(remainingClause, statement) :
+    ''
 
   return [rootStatement, runtimeStatement].filter(Boolean).join('\n')
 }
@@ -468,7 +586,13 @@ const createRuntimeReview = (
   file: string,
   statement: ImportStatement,
   message: string
-): LumenV2MigrationFinding => createFinding(source, file, statement.start, 'astro-runtime-subpath', message)
+): LumenV2MigrationFinding => createFinding(
+  source,
+  file,
+  statement.start,
+  'astro-runtime-subpath',
+  message
+)
 
 const migrateRuntimeImports = (
   source: string,
@@ -478,72 +602,96 @@ const migrateRuntimeImports = (
   const manualReview: LumenV2MigrationFinding[] = []
   const edits: SourceEdit[] = []
   const runtimeImports = findImportStatements(source, ASTRO_RUNTIME_PACKAGE)
-  let runtimeLocal = runtimeImports.map(statement => getDefaultImport(statement.clause)).find(Boolean)
+
+  let runtimeLocal = runtimeImports
+    .map(statement => getDefaultImport(statement.clause))
+    .find(Boolean)
 
   for (const statement of findImportStatements(source, ASTRO_PACKAGE)) {
     const named = parseNamedImports(statement.clause)
 
     if (!named) {
       if (statement.clause.includes('UIPrimitives')) {
-        manualReview.push(createRuntimeReview(
-          source,
-          file,
-          statement,
-          'UIPrimitives is part of an import that cannot be rewritten safely.'
-        ))
+        manualReview.push(
+          createRuntimeReview(
+            source,
+            file,
+            statement,
+            'UIPrimitives is part of an import that cannot be rewritten safely.'
+          )
+        )
       }
 
       continue
     }
 
-    const runtimeSpecifier = named.imports.find(item => item.imported === 'UIPrimitives')
+    const runtimeSpecifier = named.imports.find(
+      item => item.imported === 'UIPrimitives'
+    )
 
     if (!runtimeSpecifier) {
-      if (statement.clause.slice(named.open + 1, named.close).includes('UIPrimitives')) {
-        manualReview.push(createRuntimeReview(
-          source,
-          file,
-          statement,
-          'UIPrimitives is part of an import that cannot be rewritten safely.'
-        ))
+      if (
+        statement.clause
+          .slice(named.open + 1, named.close)
+          .includes('UIPrimitives')
+      ) {
+        manualReview.push(
+          createRuntimeReview(
+            source,
+            file,
+            statement,
+            'UIPrimitives is part of an import that cannot be rewritten safely.'
+          )
+        )
       }
 
       continue
     }
 
     if (!named.complete || runtimeSpecifier.typeOnly) {
-      manualReview.push(createRuntimeReview(
-        source,
-        file,
-        statement,
-        'UIPrimitives is part of an import that cannot be rewritten safely.'
-      ))
+      manualReview.push(
+        createRuntimeReview(
+          source,
+          file,
+          statement,
+          'UIPrimitives is part of an import that cannot be rewritten safely.'
+        )
+      )
 
       continue
     }
 
     if (runtimeLocal && runtimeLocal !== runtimeSpecifier.local) {
-      manualReview.push(createRuntimeReview(
-        source,
-        file,
-        statement,
-        `UIPrimitives uses the local name ${runtimeSpecifier.local}, but the runtime subpath is already imported as ${runtimeLocal}.`
-      ))
+      manualReview.push(
+        createRuntimeReview(
+          source,
+          file,
+          statement,
+          `UIPrimitives uses the local name ${runtimeSpecifier.local}, but the runtime subpath is already imported as ${runtimeLocal}.`
+        )
+      )
 
       continue
     }
 
-    const replacement = createRuntimeReplacement(statement, named, runtimeSpecifier, Boolean(runtimeLocal))
+    const replacement = createRuntimeReplacement(
+      statement,
+      named,
+      runtimeSpecifier,
+      Boolean(runtimeLocal)
+    )
 
     edits.push({ end: statement.end, replacement, start: statement.start })
 
-    changes.push(createFinding(
-      source,
-      file,
-      statement.start,
-      'astro-runtime-subpath',
-      `Move ${runtimeSpecifier.local} to the @santi020k/lumen-astro/runtime default import.`
-    ))
+    changes.push(
+      createFinding(
+        source,
+        file,
+        statement.start,
+        'astro-runtime-subpath',
+        `Move ${runtimeSpecifier.local} to the @santi020k/lumen-astro/runtime default import.`
+      )
+    )
 
     runtimeLocal = runtimeSpecifier.local
   }
@@ -565,7 +713,8 @@ const getVisualSizeAttributeName = (
 ): 'visual-size' | 'visualSize' | undefined => {
   if (astroComponents.has(tagName)) return 'visualSize'
 
-  if (tagName === 'lumen-input' || tagName === 'lumen-native-select') return 'visual-size'
+  if (tagName === 'lumen-input' || tagName === 'lumen-native-select')
+    return 'visual-size'
 
   return undefined
 }
@@ -576,13 +725,24 @@ const inspectVisualSize = (
   tagName: string,
   replacementName: 'visual-size' | 'visualSize',
   attributes: MarkupAttribute[]
-): { change?: LumenV2MigrationFinding, edit?: SourceEdit, review?: LumenV2MigrationFinding } => {
+): {
+  change?: LumenV2MigrationFinding
+  edit?: SourceEdit
+  review?: LumenV2MigrationFinding
+} => {
   const size = attributes.find(attribute => attribute.name === 'size')
 
   if (!size) return {}
 
-  const existingReplacement = attributes.some(attribute => attribute.name === replacementName)
-  const literalAlias = size.valueKind === 'literal' && size.value !== undefined && VISUAL_SIZE_ALIASES.has(size.value)
+  const existingReplacement = attributes.some(
+    attribute => attribute.name === replacementName
+  )
+
+  const literalAlias =
+    size.valueKind === 'literal' &&
+    size.value !== undefined &&
+    VISUAL_SIZE_ALIASES.has(size.value)
+
   const numericValue = size.value !== undefined && /^\d+$/u.test(size.value)
 
   if (literalAlias && !existingReplacement) {
@@ -594,7 +754,11 @@ const inspectVisualSize = (
         'visual-size-alias-removal',
         `Rename ${tagName} size=${JSON.stringify(size.value)} to ${replacementName}.`
       ),
-      edit: { end: size.nameEnd, replacement: replacementName, start: size.nameStart }
+      edit: {
+        end: size.nameEnd,
+        replacement: replacementName,
+        start: size.nameStart
+      }
     }
   }
 
@@ -605,7 +769,13 @@ const inspectVisualSize = (
     `${tagName} has a non-numeric, non-migratable size value; review it manually.`
 
   return {
-    review: createFinding(source, file, size.start, 'visual-size-alias-removal', message)
+    review: createFinding(
+      source,
+      file,
+      size.start,
+      'visual-size-alias-removal',
+      message
+    )
   }
 }
 
@@ -667,7 +837,11 @@ const migrateVisualSizes = (
 
     const nameEnd = getTagNameEnd(source, nameStart)
     const tagName = source.slice(nameStart, nameEnd)
-    const replacementName = getVisualSizeAttributeName(tagName, astroComponents)
+
+    const replacementName = getVisualSizeAttributeName(
+      tagName,
+      astroComponents
+    )
 
     if (!replacementName) {
       cursor = nameEnd || nameStart
@@ -677,7 +851,14 @@ const migrateVisualSizes = (
 
     const tagEnd = findMarkupTagEnd(source, nameEnd)
     const attributes = parseMarkupAttributes(source, nameEnd, tagEnd)
-    const inspection = inspectVisualSize(source, file, tagName, replacementName, attributes)
+
+    const inspection = inspectVisualSize(
+      source,
+      file,
+      tagName,
+      replacementName,
+      attributes
+    )
 
     appendVisualInspection(inspection, edits, changes, manualReview)
 
@@ -706,16 +887,26 @@ const createNamedImportReplacement = (
   statement: ImportStatement,
   named: ParsedNamedImports
 ): string => {
-  const prefix = statement.clause.slice(0, named.open).trim().replace(/,$/u, '').trim()
+  const prefix = statement.clause
+    .slice(0, named.open)
+    .trim()
+    .replace(/,$/u, '')
+    .trim()
+
   const suffix = statement.clause.slice(named.close + 1).trim()
 
-  const imports = named.imports.map(item => formatNamedImport(
-    item,
-    getSonnerReplacement(item.imported) ?? item.imported
-  ))
+  const imports = named.imports
+    .map(item => formatNamedImport(
+      item,
+      getSonnerReplacement(item.imported) ?? item.imported
+    ))
+    .sort((left, right) => left.localeCompare(right))
 
   const separator = prefix && imports.length ? ', ' : ' '
-  const clause = [prefix, `{ ${imports.join(', ')} }`, suffix].filter(Boolean).join(separator)
+
+  const clause = [prefix, `{ ${imports.join(', ')} }`, suffix]
+    .filter(Boolean)
+    .join(separator)
 
   return formatImport(clause, statement)
 }
@@ -735,20 +926,23 @@ const migrateSonnerImports = (
 
       if (!mentionsSonner) continue
 
-      const replacements = named?.imports.flatMap(item => {
-        const replacement = getSonnerReplacement(item.imported)
+      const replacements =
+        named?.imports.flatMap(item => {
+          const replacement = getSonnerReplacement(item.imported)
 
-        return replacement ? [{ item, replacement }] : []
-      }) ?? []
+          return replacement ? [{ item, replacement }] : []
+        }) ?? []
 
       if (!named?.complete) {
-        manualReview.push(createFinding(
-          source,
-          file,
-          statement.start,
-          'sonner-alias-removal',
-          'Sonner is part of an import that cannot be rewritten safely.'
-        ))
+        manualReview.push(
+          createFinding(
+            source,
+            file,
+            statement.start,
+            'sonner-alias-removal',
+            'Sonner is part of an import that cannot be rewritten safely.'
+          )
+        )
 
         continue
       }
@@ -762,13 +956,15 @@ const migrateSonnerImports = (
       })
 
       for (const { item, replacement } of replacements) {
-        changes.push(createFinding(
-          source,
-          file,
-          statement.start,
-          'sonner-alias-removal',
-          `Replace ${item.imported} with ${replacement} while preserving the local name ${item.local}.`
-        ))
+        changes.push(
+          createFinding(
+            source,
+            file,
+            statement.start,
+            'sonner-alias-removal',
+            `Replace ${item.imported} with ${replacement} while preserving the local name ${item.local}.`
+          )
+        )
       }
     }
   }
@@ -815,17 +1011,25 @@ const isSafeReactNativeDatetimeClause = (
   named?.complete && (prefix === '' || prefix === 'type') && suffix === ''
 )
 
-const planReactNativeDatetimeImport = (statement: ImportStatement): ReactNativeDatetimeImportPlan => {
-  const mentionsDatetime = [...REACT_NATIVE_DATETIME_EXPORTS]
-    .some(exportName => statement.clause.includes(exportName))
+const planReactNativeDatetimeImport = (
+  statement: ImportStatement
+): ReactNativeDatetimeImportPlan => {
+  const mentionsDatetime = [...REACT_NATIVE_DATETIME_EXPORTS].some(
+    exportName => statement.clause.includes(exportName)
+  )
 
   if (!mentionsDatetime) return { kind: 'irrelevant' }
 
   const named = parseNamedImports(statement.clause)
-  const prefix = named ? statement.clause.slice(0, named.open).trim().replace(/,$/u, '').trim() : ''
+
+  const prefix = named ?
+    statement.clause.slice(0, named.open).trim().replace(/,$/u, '').trim() :
+    ''
+
   const suffix = named ? statement.clause.slice(named.close + 1).trim() : ''
 
-  if (!isSafeReactNativeDatetimeClause(named, prefix, suffix)) return { kind: 'unsafe' }
+  if (!isSafeReactNativeDatetimeClause(named, prefix, suffix))
+    return { kind: 'unsafe' }
 
   const datetimeImports = named.imports.filter(item => REACT_NATIVE_DATETIME_EXPORTS.has(item.imported))
 
@@ -834,7 +1038,9 @@ const planReactNativeDatetimeImport = (statement: ImportStatement): ReactNativeD
   return {
     datetimeImports,
     kind: 'migrate',
-    remaining: named.imports.filter(item => !REACT_NATIVE_DATETIME_EXPORTS.has(item.imported)),
+    remaining: named.imports.filter(
+      item => !REACT_NATIVE_DATETIME_EXPORTS.has(item.imported)
+    ),
     typePrefix: prefix === 'type' ? 'type ' : ''
   }
 }
@@ -844,7 +1050,11 @@ const migrateReactNativeDatetimeStatement = (
   file: string,
   statement: ImportStatement,
   datetimeSubpathImported: boolean
-): { changes: LumenV2MigrationFinding[], edit?: SourceEdit, review?: LumenV2MigrationFinding } => {
+): {
+  changes: LumenV2MigrationFinding[]
+  edit?: SourceEdit
+  review?: LumenV2MigrationFinding
+} => {
   const plan = planReactNativeDatetimeImport(statement)
 
   if (plan.kind === 'irrelevant') return { changes: [] }
@@ -873,9 +1083,10 @@ const migrateReactNativeDatetimeStatement = (
     }
   }
 
-  const rootStatement = plan.remaining.length > 0 ?
-    `import ${plan.typePrefix}{ ${plan.remaining.map(item => item.source).join(', ')} } from ${statement.quote}${REACT_NATIVE_PACKAGE}${statement.quote}${statement.semicolon ? ';' : ''}` :
-    ''
+  const rootStatement =
+    plan.remaining.length > 0 ?
+      `import ${plan.typePrefix}{ ${plan.remaining.map(item => item.source).join(', ')} } from ${statement.quote}${REACT_NATIVE_PACKAGE}${statement.quote}${statement.semicolon ? ';' : ''}` :
+      ''
 
   const datetimeStatement = `import ${plan.typePrefix}{ ${plan.datetimeImports.map(item => item.source).join(', ')} } from ${statement.quote}${REACT_NATIVE_DATETIME_PACKAGE}${statement.quote}${statement.semicolon ? ';' : ''}`
 
@@ -889,7 +1100,9 @@ const migrateReactNativeDatetimeStatement = (
     )),
     edit: {
       end: statement.end,
-      replacement: [rootStatement, datetimeStatement].filter(Boolean).join('\n'),
+      replacement: [rootStatement, datetimeStatement]
+        .filter(Boolean)
+        .join('\n'),
       start: statement.start
     }
   }
@@ -902,7 +1115,11 @@ const migrateReactNativeDatetimeImports = (
   const changes: LumenV2MigrationFinding[] = []
   const manualReview: LumenV2MigrationFinding[] = []
   const edits: SourceEdit[] = []
-  const existingDatetimeImports = findImportStatements(source, REACT_NATIVE_DATETIME_PACKAGE)
+
+  const existingDatetimeImports = findImportStatements(
+    source,
+    REACT_NATIVE_DATETIME_PACKAGE
+  )
 
   for (const statement of findImportStatements(source, REACT_NATIVE_PACKAGE)) {
     const result = migrateReactNativeDatetimeStatement(
@@ -922,7 +1139,11 @@ const migrateReactNativeDatetimeImports = (
   return { changes, manualReview, source: applyEdits(source, edits) }
 }
 
-const getRawElementEnd = (source: string, tagName: string, start: number): number => {
+const getRawElementEnd = (
+  source: string,
+  tagName: string,
+  start: number
+): number => {
   if (tagName !== 'script' && tagName !== 'style') return start
 
   const closing = source.toLowerCase().indexOf(`</${tagName}`, start)
@@ -956,7 +1177,10 @@ const migrateSonnerElements = (
 
     const nameEnd = getTagNameEnd(source, nameStart)
     const tagName = source.slice(nameStart, nameEnd)
-    const rawElementEnd = closing ? nameEnd : getRawElementEnd(source, tagName.toLowerCase(), nameEnd)
+
+    const rawElementEnd = closing ?
+      nameEnd :
+      getRawElementEnd(source, tagName.toLowerCase(), nameEnd)
 
     if (rawElementEnd !== nameEnd) {
       cursor = rawElementEnd
@@ -965,15 +1189,21 @@ const migrateSonnerElements = (
     }
 
     if (tagName === 'lumen-sonner') {
-      edits.push({ end: nameEnd, replacement: 'lumen-toast-viewport', start: nameStart })
+      edits.push({
+        end: nameEnd,
+        replacement: 'lumen-toast-viewport',
+        start: nameStart
+      })
 
-      changes.push(createFinding(
-        source,
-        file,
-        nameStart,
-        'sonner-alias-removal',
-        'Rename lumen-sonner to lumen-toast-viewport.'
-      ))
+      changes.push(
+        createFinding(
+          source,
+          file,
+          nameStart,
+          'sonner-alias-removal',
+          'Rename lumen-sonner to lumen-toast-viewport.'
+        )
+      )
     }
 
     cursor = nameEnd || nameStart
@@ -982,23 +1212,50 @@ const migrateSonnerElements = (
   return { changes, manualReview: [], source: applyEdits(source, edits) }
 }
 
-export const migrateLumenV2Source = (source: string, file = '<source>'): LumenV2SourceMigration => {
+export const migrateLumenV2Source = (
+  source: string,
+  file = '<source>'
+): LumenV2SourceMigration => {
   const astro = file.endsWith('.astro')
   const markup = astro || file.endsWith('.htm') || file.endsWith('.html')
-  const astroComponents = astro ? collectAstroComponentNames(source) : new Map<string, 'Input' | 'NativeSelect'>()
-  const runtime = astro ? migrateRuntimeImports(source, file) : { changes: [], manualReview: [], source }
+
+  const astroComponents = astro ?
+    collectAstroComponentNames(source) :
+    new Map<string, 'Input' | 'NativeSelect'>()
+
+  const runtime = astro ?
+    migrateRuntimeImports(source, file) :
+    { changes: [], manualReview: [], source }
+
   const sonnerImports = migrateSonnerImports(runtime.source, file)
-  const reactNativeDatetime = migrateReactNativeDatetimeImports(sonnerImports.source, file)
+
+  const reactNativeDatetime = migrateReactNativeDatetimeImports(
+    sonnerImports.source,
+    file
+  )
 
   if (!markup) {
     return {
-      changes: [...runtime.changes, ...sonnerImports.changes, ...reactNativeDatetime.changes],
-      manualReview: [...runtime.manualReview, ...sonnerImports.manualReview, ...reactNativeDatetime.manualReview],
+      changes: [
+        ...runtime.changes,
+        ...sonnerImports.changes,
+        ...reactNativeDatetime.changes
+      ],
+      manualReview: [
+        ...runtime.manualReview,
+        ...sonnerImports.manualReview,
+        ...reactNativeDatetime.manualReview
+      ],
       source: reactNativeDatetime.source
     }
   }
 
-  const visualSizes = migrateVisualSizes(reactNativeDatetime.source, file, astroComponents)
+  const visualSizes = migrateVisualSizes(
+    reactNativeDatetime.source,
+    file,
+    astroComponents
+  )
+
   const sonnerElements = migrateSonnerElements(visualSizes.source, file)
 
   return {
@@ -1023,18 +1280,25 @@ export const migrateLumenV2Source = (source: string, file = '<source>'): LumenV2
 const discoverSourceFiles = async (path: string): Promise<string[]> => {
   const details = await stat(path)
 
-  if (details.isFile()) return SOURCE_EXTENSIONS.has(extname(path)) ? [path] : []
+  if (details.isFile())
+    return SOURCE_EXTENSIONS.has(extname(path)) ? [path] : []
 
   const entries = await readdir(path, { withFileTypes: true })
 
-  const nested = await Promise.all(entries
-    .filter(entry => !entry.isDirectory() || !IGNORED_DIRECTORIES.has(entry.name))
-    .map(entry => discoverSourceFiles(resolve(path, entry.name))))
+  const nested = await Promise.all(
+    entries
+      .filter(
+        entry => !entry.isDirectory() || !IGNORED_DIRECTORIES.has(entry.name)
+      )
+      .map(entry => discoverSourceFiles(resolve(path, entry.name)))
+  )
 
   return nested.flat().sort()
 }
 
-export const migrateLumenV2 = async (options: LumenV2MigrationOptions = {}): Promise<LumenV2MigrationReport> => {
+export const migrateLumenV2 = async (
+  options: LumenV2MigrationOptions = {}
+): Promise<LumenV2MigrationReport> => {
   const root = resolve(options.cwd ?? process.cwd())
   const files = await discoverSourceFiles(root)
   const changedFiles: string[] = []
@@ -1053,7 +1317,8 @@ export const migrateLumenV2 = async (options: LumenV2MigrationOptions = {}): Pro
     if (migration.source !== source) {
       changedFiles.push(file)
 
-      if (options.apply) await writeFile(absoluteFile, migration.source, 'utf8')
+      if (options.apply)
+        await writeFile(absoluteFile, migration.source, 'utf8')
     }
   }
 
@@ -1067,29 +1332,32 @@ export const migrateLumenV2 = async (options: LumenV2MigrationOptions = {}): Pro
   }
 }
 
-export const formatLumenV2Migration = (report: LumenV2MigrationReport): string => {
+export const formatLumenV2Migration = (
+  report: LumenV2MigrationReport
+): string => {
   const action = report.applied ? 'Applied' : 'Would apply'
 
   const lines = [
     `Lumen v2 migration ${report.applied ? 'apply' : 'dry run'}: ${report.root}`,
     `Scanned ${report.filesScanned} source file${report.filesScanned === 1 ? '' : 's'}.`,
     `${action} ${report.changes.length} change${report.changes.length === 1 ? '' : 's'} in ${report.changedFiles.length} file${report.changedFiles.length === 1 ? '' : 's'}.`,
-    ...report.changes.map(finding => (
-      `- ${finding.file}:${finding.line}:${finding.column} [${finding.kind}] ${finding.message}`
-    ))
+    ...report.changes.map(
+      finding => `- ${finding.file}:${finding.line}:${finding.column} [${finding.kind}] ${finding.message}`
+    )
   ]
 
   if (report.manualReview.length) {
     lines.push(
       '',
       `Manual review required for ${report.manualReview.length} finding${report.manualReview.length === 1 ? '' : 's'}:`,
-      ...report.manualReview.map(finding => (
-        `- ${finding.file}:${finding.line}:${finding.column} [${finding.kind}] ${finding.message}`
-      ))
+      ...report.manualReview.map(
+        finding => `- ${finding.file}:${finding.line}:${finding.column} [${finding.kind}] ${finding.message}`
+      )
     )
   }
 
-  if (!report.applied && report.changes.length) lines.push('', 'Run lumen migrate v2 --apply to write these changes.')
+  if (!report.applied && report.changes.length)
+    lines.push('', 'Run lumen migrate v2 --apply to write these changes.')
 
   return lines.join('\n')
 }

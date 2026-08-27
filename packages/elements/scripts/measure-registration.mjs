@@ -13,6 +13,9 @@ defineLumenBadge()
 defineLumenButton()
 defineLumenCard()
 `,
+  'granular-combobox': `import { defineLumenCombobox } from './dist/components/combobox.js'
+defineLumenCombobox()
+`,
   foundations: `import { defineLumenFoundations } from './dist/components/foundations.js'
 defineLumenFoundations()
 `,

@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
+// cspell:words mktemp
+
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const workflowDirectory = resolve(repositoryRoot, ".github", "workflows");
 
@@ -60,8 +62,11 @@ const v2Inputs = [
   "registry/swift-widget-api-baseline.json",
   "registry/wear-api-classification.json",
   "registry/web-api-baseline.json",
+  "registry/web-consumer-evidence.json",
   "scripts/check-web-api-baseline.mjs",
   "scripts/check-web-api-baseline.test.mjs",
+  "scripts/check-web-consumer-evidence.mjs",
+  "scripts/check-web-consumer-evidence.test.mjs",
   "scripts/check-approved-release-revision.mjs",
   "scripts/check-approved-release-revision.test.mjs",
   "scripts/check-coordinated-release-revision.mjs",
@@ -69,11 +74,16 @@ const v2Inputs = [
   "scripts/check-graduated-release-revision.mjs",
   "scripts/check-graduated-release-revision.test.mjs",
   "scripts/generate-release-manifest.test.mjs",
+  "scripts/sync-coordinated-v2-versions.mjs",
+  "scripts/sync-coordinated-v2-versions.test.mjs",
   "scripts/check-lumen-2-contract.mjs",
+  "scripts/check-lumen-2-contract.test.mjs",
   "scripts/check-maven-release-artifacts.mjs",
   "scripts/check-maven-release-artifacts.test.mjs",
   "scripts/check-npm-release-provenance.mjs",
   "scripts/check-npm-release-provenance.test.mjs",
+  "scripts/check-published-package-family.mjs",
+  "scripts/check-published-package-family.test.mjs",
   "scripts/check-native-consumer-evidence.mjs",
   "scripts/check-native-consumer-evidence.test.mjs",
   "scripts/check-native-device-evidence.mjs",
@@ -124,7 +134,10 @@ test("the web canary executes every v2 release gate", () => {
     "node --test scripts/generate-release-manifest.test.mjs",
     "pnpm run check:web-api-baseline",
     "pnpm run test:web-api-baseline",
+    "pnpm run check:web-consumer-evidence",
+    "pnpm run test:web-consumer-evidence",
     "pnpm run check:lumen-2-contract",
+    "pnpm run test:lumen-2-contract",
     "pnpm run check:native-stability-soak",
     "pnpm run test:native-stability-soak",
     "pnpm run check:native-consumer-evidence",
@@ -139,7 +152,12 @@ test("the web canary executes every v2 release gate", () => {
     "pnpm run test:graduated-release-revision",
     "pnpm run test:maven-release-artifacts",
     "pnpm run test:npm-release-provenance",
+    "pnpm run test:published-package-family",
     "pnpm run test:v2-release-workflows",
+    "pnpm exec playwright install --with-deps chromium",
+    "pnpm run test:a11y",
+    "LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium",
+    "pnpm run test:framework-conformance",
   ]);
 });
 
@@ -153,6 +171,27 @@ test("coordinated revision checks select both release decision canaries", () => 
     "scripts/check-graduated-release-revision.test.mjs",
   ]) {
     assert.match(input, webClassifier, `${input} must select the web canary`);
+
+    assert.match(
+      input,
+      composeClassifier,
+      `${input} must select the Compose canary`,
+    );
+  }
+});
+
+test("coordinated version preparation selects every release canary", () => {
+  for (const input of [
+    "scripts/sync-coordinated-v2-versions.mjs",
+    "scripts/sync-coordinated-v2-versions.test.mjs",
+  ]) {
+    assert.match(input, webClassifier, `${input} must select the web canary`);
+
+    assert.match(
+      input,
+      swiftClassifier,
+      `${input} must select the Swift canary`,
+    );
 
     assert.match(
       input,
@@ -190,11 +229,39 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
 });
 
 test("npm publication validates the contract before stable readiness", () => {
+  assert.ok(
+    npmWorkflow.includes("if: github.ref == 'refs/heads/main'"),
+    "npm publication must refuse manual dispatches outside main",
+  );
+
   assertOrderedCommands(npmWorkflow, "npm publication", [
     "node scripts/check-approved-release-revision.mjs",
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
+    "pnpm run check:web-consumer-evidence",
     "pnpm run check:native-stable-readiness",
+  ]);
+});
+
+test("initial npm publication verifies the complete family before tagging", () => {
+  assertOrderedCommands(npmWorkflow, "npm publication", [
+    "name: Verify published npm package family",
+    "node scripts/check-published-package-family.mjs",
+    'release_audit_directory="$(mktemp -d)"',
+    'cd "$release_audit_directory"',
+    "npm init --yes",
+    "npm install \\",
+    "pnpm run check:npm-release-provenance",
+    '--revision "$GITHUB_SHA"',
+    "name: Create repository version tag",
+  ]);
+
+  assertOrderedCommands(npmWorkflow, "existing npm release tag", [
+    'git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}"',
+    "node scripts/check-coordinated-release-revision.mjs",
+    '--release-ref "v${VERSION}"',
+    "--release-remote origin",
+    "already exists at the publication commit; skipping",
   ]);
 });
 
@@ -231,13 +298,33 @@ test("canonical package commands enforce graduation identity before publication"
     "pnpm run test:graduated-release-revision",
     "pnpm run test:maven-release-artifacts",
     "pnpm run test:npm-release-provenance",
+    "pnpm run test:published-package-family",
     "pnpm run test:v2-release-workflows",
   ]);
+
+  assertOrderedCommands(packageManifest.scripts.release, "direct release", [
+    "pnpm run validate",
+    "node scripts/check-approved-release-revision.mjs",
+    "changeset publish",
+  ]);
+
+  assertOrderedCommands(
+    packageManifest.scripts["version-packages"],
+    "npm version preparation",
+    [
+      "changeset version",
+      "pnpm run sync:coordinated-v2-versions",
+      "pnpm run sync:compose-version",
+      "pnpm install --lockfile-only",
+      "pnpm run generate:release-manifest",
+    ],
+  );
 
   assertOrderedCommands(
     packageManifest.scripts["publish-packages"],
     "direct npm publication",
     [
+      "node scripts/check-approved-release-revision.mjs",
       "pnpm run check:graduated-release-revision",
       "pnpm run check:native-stable-readiness",
       "changeset publish",

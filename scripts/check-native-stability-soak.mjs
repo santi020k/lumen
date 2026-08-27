@@ -20,6 +20,7 @@ const ledger = JSON.parse(
   await readFile(ledgerPath, 'utf8')
 )
 
+const currentDate = new Date().toISOString().slice(0, 10)
 const requireComplete = process.argv.includes('--require-complete')
 
 const expectedBaselines = {
@@ -32,13 +33,123 @@ const expectedBaselines = {
   wearClassification: 'registry/wear-api-classification.json'
 }
 
+const lumenRepository = 'https://github.com/santi020k/lumen'
+
+const isRecord = value => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
+const parseHttpsUrl = (value, label) => {
+  assert.equal(typeof value, 'string', `${label} must be a string`)
+
+  let parsed
+
+  try {
+    parsed = new URL(value)
+  } catch {
+    assert.fail(`${label} must be a valid HTTPS URL`)
+  }
+
+  assert.equal(parsed.protocol, 'https:', `${label} must be a valid HTTPS URL`)
+
+  assert.equal(parsed.username, '', `${label} must not embed credentials`)
+
+  assert.equal(parsed.password, '', `${label} must not embed credentials`)
+
+  assert.equal(parsed.search, '', `${label} must not use a query string`)
+
+  assert.equal(parsed.hash, '', `${label} must not use a fragment`)
+
+  return parsed
+}
+
+const repositoryIdentity = url => (
+  `${url.hostname}${url.pathname}`
+    .replace(/\/+$/u, '')
+    .replace(/\.git$/u, '')
+    .toLowerCase()
+)
+
+const repositoryPath = url => (
+  url.pathname.replace(/\/+$/u, '').replace(/\.git$/u, '')
+)
+
+const belongsToRepository = (url, repositoryUrl) => (
+  url.hostname.toLowerCase() === repositoryUrl.hostname.toLowerCase()
+  && url.pathname.startsWith(`${repositoryPath(repositoryUrl)}/`)
+)
+
+const isExactRevisionUrl = (url, repositoryUrl, revision) => (
+  belongsToRepository(url, repositoryUrl)
+  && new RegExp(`/(?:blob|commit|commits)/${revision}(?:/|$)`, 'u').test(url.pathname)
+)
+
+const isPermanentRunUrl = (url, repositoryUrl) => (
+  belongsToRepository(url, repositoryUrl)
+  && /\/(?:actions\/runs|artifacts|builds|jobs|pipelines|runs)\/[\w-]+(?:\/|$)/u.test(url.pathname)
+)
+
+const validateEvidenceRecord = (record, label, options = {}) => {
+  assert.ok(isRecord(record), `${label} must be an object`)
+
+  assert.deepEqual(
+    Object.keys(record).sort(),
+    ['repository', 'revision', 'revisionUrl', 'verificationUrl'],
+    `${label} must record repository, revision, revision URL, and verification URL`
+  )
+
+  const repositoryUrl = parseHttpsUrl(record.repository, `${label}.repository`)
+
+  assert.equal(typeof record.revision, 'string', `${label}.revision must be a string`)
+
+  assert.match(record.revision, /^[\da-f]{40}$/, `${label} requires a full lowercase revision`)
+
+  if (options.expectedRepository) {
+    assert.equal(
+      repositoryIdentity(repositoryUrl),
+      repositoryIdentity(parseHttpsUrl(options.expectedRepository, `${label} expected repository`)),
+      `${label} must target the Lumen repository`
+    )
+  }
+
+  if (options.external) {
+    assert.notEqual(
+      repositoryIdentity(repositoryUrl),
+      repositoryIdentity(parseHttpsUrl(lumenRepository, `${label} Lumen repository`)),
+      `${label} must target an external consumer repository`
+    )
+  }
+
+  if (options.expectedRevision) {
+    assert.equal(
+      record.revision,
+      options.expectedRevision,
+      `${label} revision must match the soak iteration revision`
+    )
+  }
+
+  const revisionUrl = parseHttpsUrl(record.revisionUrl, `${label}.revisionUrl`)
+
+  assert.ok(
+    isExactRevisionUrl(revisionUrl, repositoryUrl, record.revision),
+    `${label}.revisionUrl must bind the exact repository revision`
+  )
+
+  const verificationUrl = parseHttpsUrl(record.verificationUrl, `${label}.verificationUrl`)
+
+  assert.ok(
+    isPermanentRunUrl(verificationUrl, repositoryUrl),
+    `${label}.verificationUrl must be a permanent workflow, pipeline, job, or build URL`
+  )
+}
+
 const hashFile = async path => {
   const contents = await readFile(resolve(repositoryRoot, path))
 
   return createHash('sha256').update(contents).digest('hex')
 }
 
-assert.equal(ledger.schemaVersion, 1, 'Unsupported native stability soak schema')
+assert.equal(ledger.schemaVersion, 2, 'Unsupported native stability soak schema')
 
 assert.equal(ledger.requiredIterations, 2, 'Native stability requires exactly two soak iterations')
 
@@ -127,11 +238,17 @@ for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
     `${iteration.id} requires a valid calendar date`
   )
 
+  assert.ok(iteration.date <= currentDate, `${iteration.id} date must not be in the future`)
+
   assert.ok(iteration.date >= previousDate, 'Soak iterations must be chronological')
 
   previousDate = iteration.date
 
-  assert.match(iteration.revision, /^[\da-f]{40}$/i, `${iteration.id} requires a full Git revision`)
+  assert.match(
+    iteration.revision,
+    /^[\da-f]{40}$/,
+    `${iteration.id} requires a full lowercase Git revision`
+  )
 
   assert.deepEqual(
     Object.keys(iteration.versions).sort(),
@@ -161,29 +278,22 @@ for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
     `${iteration.id} was not validated against the current reviewed baselines`
   )
 
-  assert.equal(
-    typeof iteration.evidence,
-    'object',
-    `${iteration.id} requires structured release evidence`
+  assert.ok(isRecord(iteration.evidence), `${iteration.id} requires structured release evidence`)
+
+  assert.deepEqual(
+    Object.keys(iteration.evidence).sort(),
+    ['consumerValidation', 'release'],
+    `${iteration.id} evidence must record release and consumer validation`
   )
 
-  assert.ok(iteration.evidence, `${iteration.id} release evidence must not be null`)
-
-  assert.match(
-    iteration.evidence.releaseVerificationUrl,
-    /^https:\/\/github\.com\/santi020k\/lumen\/actions\/runs\/\d+$/,
-    `${iteration.id} requires its successful published-native verification workflow URL`
-  )
-
-  assert.equal(
-    typeof iteration.evidence.consumerValidation,
-    'object',
-    `${iteration.id} requires structured real-consumer validation evidence`
-  )
+  validateEvidenceRecord(iteration.evidence.release, `${iteration.id}.release`, {
+    expectedRepository: lumenRepository,
+    expectedRevision: iteration.revision
+  })
 
   assert.ok(
-    iteration.evidence.consumerValidation,
-    `${iteration.id} real-consumer validation evidence must not be null`
+    isRecord(iteration.evidence.consumerValidation),
+    `${iteration.id} requires structured real-consumer validation evidence`
   )
 
   assert.deepEqual(
@@ -193,17 +303,7 @@ for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
   )
 
   for (const [adapter, evidence] of Object.entries(iteration.evidence.consumerValidation)) {
-    assert.equal(
-      typeof evidence,
-      'string',
-      `${iteration.id}.${adapter} consumer validation evidence must be a string`
-    )
-
-    assert.match(
-      evidence,
-      /^https:\/\/\S+$/,
-      `${iteration.id}.${adapter} requires an immutable HTTPS consumer evidence URL`
-    )
+    validateEvidenceRecord(evidence, `${iteration.id}.${adapter}`, { external: true })
   }
 }
 

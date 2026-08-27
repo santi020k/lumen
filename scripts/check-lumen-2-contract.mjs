@@ -27,6 +27,7 @@ const contractPath = contractArgument
   : path.join(root, 'registry/lumen-2-contract.json')
 
 const contract = JSON.parse(await readFile(contractPath, 'utf8'))
+const currentDate = new Date().toISOString().slice(0, 10)
 
 const nativeApiBaseline = JSON.parse(
   await readFile(path.join(root, 'registry/native-api-baseline.json'), 'utf8')
@@ -63,15 +64,72 @@ const isCalendarDate = value => {
   return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value
 }
 
-const validateHttpsEvidence = (entries, label) => {
-  for (const evidence of entries ?? []) {
-    try {
-      const url = new URL(evidence)
+const parseEvidenceUrl = (evidence, label) => {
+  let url
 
-      if (url.protocol !== 'https:') failures.push(`${label} evidence must use HTTPS: ${evidence}`)
-    } catch {
-      failures.push(`${label} evidence must be an absolute URL: ${evidence}`)
-    }
+  try {
+    url = new URL(evidence)
+  } catch {
+    failures.push(`${label} must be a valid HTTPS URL: ${evidence}`)
+
+    return undefined
+  }
+
+  if (url.protocol !== 'https:') failures.push(`${label} must use HTTPS: ${evidence}`)
+
+  if (url.username || url.password) failures.push(`${label} must not embed credentials: ${evidence}`)
+
+  if (url.search) failures.push(`${label} must not use a query string: ${evidence}`)
+
+  if (url.hash) failures.push(`${label} must not use a fragment: ${evidence}`)
+
+  return url
+}
+
+const isLumenRepositoryUrl = url => (
+  url.hostname.toLowerCase() === 'github.com'
+  && url.pathname.toLowerCase().startsWith('/santi020k/lumen/')
+)
+
+const isExactRevisionUrl = (url, revision) => (
+  isLumenRepositoryUrl(url)
+  && /\/(?:blob|commit|commits)\/([\da-f]{40})(?:\/|$)/u.exec(url.pathname)?.[1] === revision
+)
+
+const isApprovalRecordUrl = url => (
+  isLumenRepositoryUrl(url)
+  && /\/(?:actions\/runs|discussions|issues|pull)\/[\w-]+(?:\/|$)/u.test(url.pathname)
+)
+
+const isGraduationRecordUrl = url => (
+  isLumenRepositoryUrl(url)
+  && (
+    /\/actions\/runs\/[\w-]+(?:\/|$)/u.test(url.pathname)
+    || /\/releases\/tag\/v2\.0\.0(?:\/|$)/u.test(url.pathname)
+  )
+)
+
+const validateDecisionEvidence = (entries, label, revision, isDecisionRecord) => {
+  if (!Array.isArray(entries)) return
+
+  if (entries.length < 2) {
+    failures.push(`${label} evidence must include exact revision and decision records.`)
+  }
+
+  const urls = entries
+    .map((evidence, index) => parseEvidenceUrl(evidence, `${label} evidence ${index + 1}`))
+    .filter(Boolean)
+
+  if (urls.some(url => !isExactRevisionUrl(url, revision) && !isDecisionRecord(url))) {
+    failures.push(`${label} evidence must use immutable Lumen revision or permanent decision URLs.`)
+  }
+
+  if (!urls.some(url => isExactRevisionUrl(url, revision))) {
+    failures.push(`${label} evidence must include the exact recorded revision.`)
+  }
+
+  if (!urls.some(isDecisionRecord)) {
+    failures.push(`${label} evidence must include a permanent decision record.`)
   }
 }
 
@@ -266,6 +324,8 @@ if (contract.status === 'approved') {
 
   if (!isCalendarDate(contract.approval?.date)) {
     failures.push('approval.date must be a valid YYYY-MM-DD calendar date.')
+  } else if (contract.approval.date > currentDate) {
+    failures.push('approval.date must not be in the future.')
   }
 
   requireString(contract.approval?.reviewedRevision, 'approval.reviewedRevision')
@@ -276,7 +336,12 @@ if (contract.status === 'approved') {
 
   requireStringArray(contract.approval?.evidence, 'approval.evidence')
 
-  validateHttpsEvidence(contract.approval?.evidence, 'Approval')
+  validateDecisionEvidence(
+    contract.approval?.evidence,
+    'Approval',
+    contract.approval?.reviewedRevision,
+    isApprovalRecordUrl
+  )
 
   const unresolvedChanges = changes.filter(change => change.status === 'candidate')
 
@@ -301,6 +366,8 @@ if (contract.status === 'approved') {
 
     if (!isCalendarDate(contract.graduation?.date)) {
       failures.push('graduation.date must be a valid YYYY-MM-DD calendar date.')
+    } else if (contract.graduation.date > currentDate) {
+      failures.push('graduation.date must not be in the future.')
     }
 
     if (contract.graduation?.version !== contract.targetVersion) {
@@ -315,7 +382,12 @@ if (contract.status === 'approved') {
 
     requireStringArray(contract.graduation?.evidence, 'graduation.evidence')
 
-    validateHttpsEvidence(contract.graduation?.evidence, 'Graduation')
+    validateDecisionEvidence(
+      contract.graduation?.evidence,
+      'Graduation',
+      contract.graduation?.releaseRevision,
+      isGraduationRecordUrl
+    )
   }
 } else if (contract.approval !== undefined) {
   failures.push('Draft contract must not contain an approval record.')

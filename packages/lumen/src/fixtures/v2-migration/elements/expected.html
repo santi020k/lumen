@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Account settings</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <h1>Account settings</h1>
+      <lumen-input name="displayName" visual-size="default"></lumen-input>
+      <lumen-native-select name="timezone" visual-size="lg">
+        <option value="America/Bogota">Bogota</option>
+      </lumen-native-select>
+      <lumen-toast-viewport data-placement="top-right" data-ui-toast-max="3">
+        <lumen-toast>Profile saved.</lumen-toast>
+      </lumen-toast-viewport>
+    </main>
+    <script type="module">
+      import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+      defineLumenElements()
+    </script>
+  </body>
+</html>

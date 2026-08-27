@@ -97,6 +97,45 @@ class AccessibilityTest {
     }
 
     @Test
+    fun disabledAndLoadingButtonsDoNotInvokeCallbacks() {
+        var disabledCallbackCount = 0
+        var loadingCallbackCount = 0
+
+        composeRule.setContent {
+            LumenTheme {
+                Column {
+                    LumenButton(
+                        onClick = { disabledCallbackCount += 1 },
+                        enabled = false
+                    ) {
+                        Text("Disabled action")
+                    }
+                    LumenButton(
+                        onClick = { loadingCallbackCount += 1 },
+                        loading = true
+                    ) {
+                        Text("Loading action")
+                    }
+                }
+            }
+        }
+
+        composeRule.onNodeWithText("Disabled action")
+            .assertHasClickAction()
+            .assertIsNotEnabled()
+            .performClick()
+        composeRule.onNodeWithText("Loading action")
+            .assertHasClickAction()
+            .assertIsNotEnabled()
+            .performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(0, disabledCallbackCount)
+            assertEquals(0, loadingCallbackCount)
+        }
+    }
+
+    @Test
     fun textFieldErrorMessageExposesInvalidSemantics() {
         composeRule.setContent {
             LumenTheme {
