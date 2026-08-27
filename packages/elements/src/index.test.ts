@@ -182,6 +182,43 @@ describe('@santi020k/lumen-elements', () => {
     }
   })
 
+  test('registers only an explicit component set in a supplied registry', () => {
+    const constructors = new Map<string, CustomElementConstructor>()
+    const registry = {
+      define: (name: string, constructor: CustomElementConstructor) => {
+        constructors.set(name, constructor)
+      },
+      get: (name: string) => constructors.get(name)
+    }
+
+    defineLumenElements(['Button', 'Card', 'Button'], registry)
+
+    expect([...constructors.keys()]).toEqual(['lumen-button', 'lumen-card'])
+    expect(registry.get('lumen-button')).toBe(LumenButtonElement)
+    expect(registry.get('lumen-card')).toBe(LumenCardElement)
+    expect(registry.get('lumen-dialog')).toBeUndefined()
+
+    defineLumenElements(['Button', 'Card'], registry)
+
+    expect(constructors).toHaveLength(2)
+  })
+
+  test('rejects an unknown component name in the granular registration path', () => {
+    const registry = {
+      define: vi.fn(),
+      get: vi.fn()
+    }
+
+    expect(() => {
+      defineLumenElements(
+        ['NotAComponent' as unknown as (typeof lumenComponentNames)[number]],
+        registry
+      )
+    }).toThrow('Unknown Lumen component name: NotAComponent')
+
+    expect(registry.define).not.toHaveBeenCalled()
+  })
+
   test('keeps graphics decorative until they receive a label', () => {
     const graphic = document.createElement('lumen-graphic')
 

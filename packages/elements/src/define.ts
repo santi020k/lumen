@@ -10675,6 +10675,20 @@ const elementDefinitions = lumenComponentNames.map(componentName => {
   return [config.tagName, elementClasses[componentName]] as const
 })
 
+type LumenCustomElementRegistry = Pick<CustomElementRegistry, 'define' | 'get'>
+
+const resolveCustomElementRegistry = (
+  registry: LumenCustomElementRegistry | undefined
+): LumenCustomElementRegistry | undefined => registry ?? (
+  typeof customElements === 'undefined' ?
+    undefined :
+    customElements
+)
+
+const isComponentNameList = (
+  value: LumenCustomElementRegistry | readonly LumenComponentName[] | undefined
+): value is readonly LumenComponentName[] => Array.isArray(value)
+
 export const enhanceLumenElements = (scope: ParentNode = document): void => {
   enhanceLumenDateRangePickers(scope)
 
@@ -10692,17 +10706,37 @@ export const enhanceLumenElements = (scope: ParentNode = document): void => {
 }
 
 export const defineLumenElements = (
-  customElementsRegistry:
-    Pick<CustomElementRegistry, 'define' | 'get'> | undefined =
-      typeof customElements === 'undefined' ?
-        undefined :
-        customElements
-) => {
+  componentNamesOrRegistry?:
+    LumenCustomElementRegistry | readonly LumenComponentName[],
+  suppliedRegistry?: LumenCustomElementRegistry
+): void => {
+  const componentNames = isComponentNameList(componentNamesOrRegistry) ?
+    componentNamesOrRegistry :
+    lumenComponentNames
+
+  const customElementsRegistry = resolveCustomElementRegistry(
+    isComponentNameList(componentNamesOrRegistry) ?
+      suppliedRegistry :
+      componentNamesOrRegistry
+  )
+
   if (!customElementsRegistry) return
 
-  for (const [name, element] of elementDefinitions) {
-    if (!customElementsRegistry.get(name)) {
-      customElementsRegistry.define(name, element)
+  for (const componentName of new Set(componentNames)) {
+    const config = (
+      elementConfigs as Readonly<Record<string, LumenElementConfig>>
+    )[componentName]
+
+    const element = (
+      elementClasses as Readonly<Record<string, typeof LumenElement>>
+    )[componentName]
+
+    if (!config || !element) {
+      throw new TypeError(`Unknown Lumen component name: ${componentName}`)
+    }
+
+    if (!customElementsRegistry.get(config.tagName)) {
+      customElementsRegistry.define(config.tagName, element)
     }
   }
 

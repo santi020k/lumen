@@ -42,6 +42,7 @@
     "test:coverage": "vitest run --config ../../vitest.config.ts --project elements --coverage",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
+    "measure:registration": "pnpm run build && node scripts/measure-registration.mjs",
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {

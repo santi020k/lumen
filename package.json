@@ -25,6 +25,7 @@
     "check:web-api-baseline": "node scripts/check-web-api-baseline.mjs",
     "test:web-api-baseline": "node --test scripts/check-web-api-baseline.test.mjs",
     "measure:imports": "node scripts/measure-import-performance.mjs",
+    "measure:elements-registration": "pnpm --filter @santi020k/lumen-elements run measure:registration",
     "measure:react-icons": "node scripts/measure-react-icon-performance.mjs",
     "check:figma-tokens": "node scripts/check-figma-theme-tokens.mjs",
     "generate:platform-graphics": "node scripts/generate-platform-graphics.mjs",

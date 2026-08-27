@@ -98,12 +98,12 @@
     {
       "id": "react-server-client-boundaries",
       "status": "deferred",
-      "decisionGate": "Measure React Server Component and bundle behavior, add a compatible server-safe entrypoint in 1.x, and validate both production-shaped Next.js consumers before deciding whether the v2 root changes."
+      "decisionGate": "The workspace and clean packed-package Next.js consumers validate direct Server Component imports and interactive Client Component usage through the current root client boundary. Measure a genuinely server-safe implementation split before deciding whether the v2 root changes; do not add a cosmetic entrypoint that reexports the same client module."
     },
     {
       "id": "elements-granular-registration",
       "status": "deferred",
-      "decisionGate": "Add granular registration compatibly, measure output, and gather a real Elements consumer before deprecating full-catalog registration."
+      "decisionGate": "The compatible component-set registration API now limits registry scope, but measurement proves the monolithic define entry produces no bundle reduction. Add implementation-level entrypoints and gather a real Elements consumer before considering any full-catalog registration deprecation."
     },
     {
       "id": "umbrella-core-reexports",

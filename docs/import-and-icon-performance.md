@@ -6,10 +6,13 @@ subsets:
 ```bash
 pnpm run measure:imports
 pnpm run measure:react-icons
+pnpm run measure:elements-registration
 ```
 
-Both commands default to three builds per scenario and report median wall time, output bytes, and
-their raw samples as JSON. Set `LUMEN_BENCHMARK_ITERATIONS` to increase the sample count.
+The Astro and React commands default to three builds per scenario and report median wall time,
+output bytes, and their raw samples as JSON. Set `LUMEN_BENCHMARK_ITERATIONS` to increase the sample
+count. The Elements command builds the package once and compares complete-catalog registration with
+an explicit Card, Input, and Button set through the same minified browser bundler.
 
 ## July 30, 2026 baseline
 
@@ -38,3 +41,19 @@ bundle budget and rerun the benchmark after icon-registry changes.
 
 These are local regression measurements, not universal performance claims. Keep the JSON output in
 release evidence when an import or icon change is proposed.
+
+## August 26, 2026 Elements registration baseline
+
+The additive component-set API limits which constructors enter a custom element registry, but the
+current `define` entry remains a monolithic implementation module. The repeatable measurement
+confirms that an explicit Card, Input, and Button set does not yet reduce emitted JavaScript:
+
+| Scenario | Minified bundle | Gzip |
+| --- | ---: | ---: |
+| Complete catalog | 1,035,711 B | 247,701 B |
+| Card, Input, and Button | 1,035,736 B | 247,715 B |
+
+The 25 raw bytes and 14 gzip bytes added by the selected scenario are its component-name arguments,
+not a meaningful regression. Keep complete-catalog registration supported and do not advertise the
+new overload as bundle splitting. Granular output requires implementation-level entrypoints or a
+generated module split plus validation in a real Elements application.

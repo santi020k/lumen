@@ -40,6 +40,20 @@ independently from the document registry.
 </lumen-card>
 ```
 
+To limit registration to the tags a scoped surface owns, pass their catalog names before an
+optional custom registry:
+
+```ts
+import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+defineLumenElements(['Card', 'Input', 'Button'])
+```
+
+The component-name list is typed, duplicate names are ignored, already-registered tags are
+preserved, and omitting it retains complete-catalog registration. This controls which constructors
+enter the registry; the current `define` module still contains the complete implementation, so use
+it for registry isolation rather than claiming a smaller JavaScript bundle.
+
 `lumen-phone-input` can generate its complete country and telephone controls. It exposes `value`,
 `valid`, and `e164`, and emits `ui:phone-change` with the normalized phone model. Country names and
 calling codes remain visible so the flag is never the only identifier.
