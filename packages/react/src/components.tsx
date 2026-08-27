@@ -1716,7 +1716,7 @@ export const RangeChart = ({
           {geometry.points.map(point => (
             <line
               className="ui-range-chart__interval"
-              key={point.id ?? String(point.x)}
+              key={point.id ?? getChartCategoryKey(point.x)}
               x1={point.xCoordinate}
               x2={point.xCoordinate}
               y1={point.highCoordinate}
@@ -1741,7 +1741,7 @@ export const RangeChart = ({
               </thead>
               <tbody>
                 {data.map(item => (
-                  <tr key={item.id ?? String(item.x)}>
+                  <tr key={item.id ?? getChartCategoryKey(item.x)}>
                     <th scope="row">{item.xLabel ?? item.x}</th>
                     <td>{item.low === null || !Number.isFinite(item.low) ? 'Not available' : formatValue(item.low)}</td>
                     <td>{item.high === null || !Number.isFinite(item.high) ? 'Not available' : formatValue(item.high)}</td>

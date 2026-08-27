@@ -1,6 +1,8 @@
 import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 
+import { swiftCaseIdentifier } from './platform-identifiers.mjs'
+
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const catalogPath = join(repositoryRoot, 'graphics/lumen.graphics.json')
 const checkOnly = process.argv.includes('--check')
@@ -194,7 +196,7 @@ enum LumenIllustrationElement: Sendable {
 
 func lumenIllustrationArtwork(for variant: LumenIllustrationVariant) -> [LumenIllustrationElement] {
     switch variant {
-${illustrations.map(illustration => `    case .${illustration.name}:
+${illustrations.map(illustration => `    case .${swiftCaseIdentifier(illustration.name)}:
         [
 ${illustration.elements.map(element => `        ${swiftElement(element)}`).join(',\n')}
         ]`).join('\n')}

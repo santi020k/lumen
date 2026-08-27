@@ -247,6 +247,26 @@ internal fun lumenHeatmapSummary(data: List<LumenHeatmapDatum>): String {
     }
 }
 
+internal fun lumenAvailableScatterSeries(series: List<LumenChartSeries>): List<LumenChartSeries> =
+    series.map { item ->
+        item.copy(
+            data = item.data.filter { datum ->
+                (datum.x as? LumenChartX.Number)?.value?.isFinite() == true &&
+                    datum.y?.isFinite() == true
+            }
+        )
+    }
+
+internal fun lumenScatterSizeValues(series: List<LumenChartSeries>): List<Double> =
+    series.flatMap { item ->
+        item.data.mapNotNull { datum ->
+            datum.size?.takeIf { size -> size.isFinite() && size >= 0 }
+        }
+    }
+
+internal fun lumenScatterSummary(series: List<LumenChartSeries>): String =
+    LumenChartSummary.resolve(lumenAvailableScatterSeries(series)).spokenDescription
+
 internal fun lumenChartCategoryPosition(
     categoryIndex: Int,
     categoryCount: Int,
@@ -421,7 +441,7 @@ internal fun lumenChartDataLabel(
 ): String {
     val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: "Not available"
     val base = "${datum.x.label}, ${series.label}: ${datum.label ?: value}"
-    val size = datum.size?.takeIf(Double::isFinite)?.toString() ?: "Not available"
+    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.toString() ?: "Not available"
 
     return if (includeSize) "$base, Size: $size" else base
 }
@@ -750,27 +770,28 @@ fun LumenScatterChart(
     series: List<LumenChartSeries>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = LumenChartSummary.resolve(series).spokenDescription,
+    summary: String = lumenScatterSummary(series),
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
 ) {
     val theme = LocalLumenTheme.current
-    val points = series.flatMap { it.data }
-    val xDomain = lumenChartDomain(points.map { (it.x as? LumenChartX.Number)?.value })
+    val availableSeries = lumenAvailableScatterSeries(series)
+    val points = availableSeries.flatMap { it.data }
+    val xDomain = lumenChartDomain(points.map { (it.x as LumenChartX.Number).value })
     val yDomain = lumenChartDomain(points.map { it.y })
-    val sizeDomain = lumenChartDomain(points.map { it.size })
+    val sizeDomain = lumenChartDomain(lumenScatterSizeValues(availableSeries))
 
     LumenChartFrame(label, summary, modifier) {
         Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
 
             drawLumenChartGrid(yDomain, padding, theme.chartColors.grid)
-            series.forEachIndexed { index, item ->
+            availableSeries.forEachIndexed { index, item ->
                 item.data.forEach { datum ->
-                    val x = (datum.x as? LumenChartX.Number)?.value ?: return@forEach
-                    val y = datum.y?.takeIf(Double::isFinite) ?: return@forEach
-                    val radius = datum.size?.takeIf(Double::isFinite)?.let {
+                    val x = (datum.x as LumenChartX.Number).value
+                    val y = requireNotNull(datum.y)
+                    val radius = datum.size?.takeIf { it.isFinite() && it >= 0 }?.let {
                         lumenChartScale(it, sizeDomain, 4.dp.toPx(), 18.dp.toPx())
                     } ?: 4.dp.toPx()
 
@@ -786,7 +807,7 @@ fun LumenScatterChart(
             }
         }
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange, includeSize = true)
+        if (showData) LumenChartDataList(availableSeries, selection, onSelectionChange, includeSize = true)
     }
 }
 

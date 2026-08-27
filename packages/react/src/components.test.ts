@@ -708,6 +708,25 @@ describe('@santi020k/lumen-react components', () => {
     expect(tableValues).toEqual(['Not available', 'Not available'])
   })
 
+  test('preserves range coordinate types in fallback keys', () => {
+    const range = RangeChart({
+      data: [
+        { high: 4, low: 1, x: 1 },
+        { high: 8, low: 2, x: '1' }
+      ]
+    }) as ReactElement
+    const descendants = descendantsOf(range)
+    const intervalKeys = descendants
+      .filter(element => propsOf(element).className === 'ui-range-chart__interval')
+      .map(element => element.key)
+    const rowKeys = descendants
+      .filter(element => element.type === 'tr' && element.key !== null)
+      .map(element => element.key)
+
+    expect(new Set(intervalKeys).size).toBe(2)
+    expect(new Set(rowKeys).size).toBe(2)
+  })
+
   test('treats non-finite scatter sizes as unavailable in the disclosure table', () => {
     const scatter = ScatterChart({
       formatValue: value => {
