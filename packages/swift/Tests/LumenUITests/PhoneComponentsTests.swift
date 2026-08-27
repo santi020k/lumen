@@ -59,6 +59,21 @@ struct PhoneComponentsTests {
         #expect(number.e164 == "+12125550123")
     }
 
+    @Test("Restricted inputs preserve their configured country allow-list")
+    func restrictedInternationalNumber() throws {
+        let colombia = try colombia()
+        let number = resolveLumenPhoneInputValue(
+            countries: [colombia],
+            country: colombia,
+            input: "+1 212 555 0123",
+            locale: Locale(identifier: "en_US")
+        )
+
+        #expect(number.country.regionCode == "CO")
+        #expect(number.e164 == nil)
+        #expect(number.nationalNumber.filter(\.isNumber) == "2125550123")
+    }
+
     @Test("Unsupported regions and noisy input are handled safely")
     func unsupportedAndNoisyInput() {
         #expect(LumenPhoneCountries.forRegion("ZZ") == nil)

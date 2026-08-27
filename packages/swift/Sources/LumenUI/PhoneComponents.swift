@@ -161,6 +161,27 @@ public func resolveLumenPhoneNumber(
     )
 }
 
+func resolveLumenPhoneInputValue(
+    countries: [LumenPhoneCountry],
+    country: LumenPhoneCountry,
+    input: String,
+    locale: Locale = .current
+) -> LumenPhoneNumber {
+    let resolved = resolveLumenPhoneNumber(country: country, input: input, locale: locale)
+    let allowedRegionCodes = Set(countries.map(\.regionCode))
+
+    guard sanitizeLumenPhoneInput(input).hasPrefix("+"),
+          !allowedRegionCodes.contains(resolved.country.regionCode) else {
+        return resolved
+    }
+
+    return resolveLumenPhoneNumber(
+        country: country,
+        input: resolved.nationalNumber,
+        locale: locale
+    )
+}
+
 /// A controlled international phone editor with searchable country metadata and E.164 output.
 public struct LumenPhoneInput: View {
     @Binding private var value: LumenPhoneNumber
@@ -305,7 +326,8 @@ public struct LumenPhoneInput: View {
         let field = TextField(numberLabel, text: Binding(
             get: { value.nationalNumber },
             set: { input in
-                value = resolveLumenPhoneNumber(
+                value = resolveLumenPhoneInputValue(
+                    countries: countries,
                     country: value.country,
                     input: input,
                     locale: locale
