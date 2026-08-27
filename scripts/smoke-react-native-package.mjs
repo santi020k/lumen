@@ -5,10 +5,13 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
+const corePackageDirectory = join(repositoryRoot, 'packages', 'core')
 const packageDirectory = join(repositoryRoot, 'packages', 'react-native')
+const coreManifest = JSON.parse(await readFile(join(corePackageDirectory, 'package.json'), 'utf8'))
 const sourceManifest = JSON.parse(await readFile(join(packageDirectory, 'package.json'), 'utf8'))
 const temporaryRoot = await mkdtemp(join(tmpdir(), 'lumen-react-native-consumer-'))
-const archiveDirectory = join(temporaryRoot, 'archive')
+const coreArchiveDirectory = join(temporaryRoot, 'core-archive')
+const packageArchiveDirectory = join(temporaryRoot, 'package-archive')
 const consumerDirectory = join(temporaryRoot, 'consumer')
 
 const run = (command, arguments_, cwd = repositoryRoot) => {
@@ -31,15 +34,21 @@ const run = (command, arguments_, cwd = repositoryRoot) => {
 
 try {
   await Promise.all([
-    mkdir(archiveDirectory, { recursive: true }),
+    mkdir(coreArchiveDirectory, { recursive: true }),
+    mkdir(packageArchiveDirectory, { recursive: true }),
     mkdir(consumerDirectory, { recursive: true })
   ])
 
-  run('pnpm', ['pack', '--pack-destination', archiveDirectory], packageDirectory)
+  run('pnpm', ['pack', '--pack-destination', coreArchiveDirectory], corePackageDirectory)
 
-  const archives = (await readdir(archiveDirectory)).filter(name => name.endsWith('.tgz'))
+  run('pnpm', ['pack', '--pack-destination', packageArchiveDirectory], packageDirectory)
 
-  assert.equal(archives.length, 1, 'Expected one React Native package archive')
+  const coreArchives = (await readdir(coreArchiveDirectory)).filter(name => name.endsWith('.tgz'))
+  const packageArchives = (await readdir(packageArchiveDirectory)).filter(name => name.endsWith('.tgz'))
+
+  assert.equal(coreArchives.length, 1, 'Expected one Core package archive')
+
+  assert.equal(packageArchives.length, 1, 'Expected one React Native package archive')
 
   await writeFile(
     join(consumerDirectory, 'package.json'),
@@ -57,7 +66,8 @@ try {
       '--ignore-scripts',
       '--no-audit',
       '--no-fund',
-      join(archiveDirectory, archives[0]),
+      join(coreArchiveDirectory, coreArchives[0]),
+      join(packageArchiveDirectory, packageArchives[0]),
       '@types/react@19.2.18',
       'react@19.2.3',
       'react-native@0.86.2',
@@ -74,11 +84,19 @@ try {
     'lumen-react-native'
   )
 
+  const installedCoreDirectory = join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-core')
+
   const installedManifest = JSON.parse(
     await readFile(join(installedPackageDirectory, 'package.json'), 'utf8')
   )
 
+  const installedCoreManifest = JSON.parse(
+    await readFile(join(installedCoreDirectory, 'package.json'), 'utf8')
+  )
+
   assert.equal(installedManifest.version, sourceManifest.version)
+
+  assert.equal(installedCoreManifest.version, coreManifest.version)
 
   assert.deepEqual(installedManifest.peerDependencies, sourceManifest.peerDependencies)
 
