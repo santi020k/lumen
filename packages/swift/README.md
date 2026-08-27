@@ -50,6 +50,7 @@ After Xcode resolves the package, import `LumenUI` in the SwiftUI view that owns
 surface and apply one theme near the root:
 
 ```swift
+import SwiftUI
 import LumenUI
 
 struct AppRoot: View {
@@ -73,16 +74,42 @@ product palettes. If a stored System/Light/Dark preference is application-owned,
 semantic values without forcing SwiftUI's appearance:
 
 ```swift
-let baseTheme = LumenTheme.light
-let productPalette = baseTheme.colors.overriding(
-    brand: Color("BrandAccent"),
-    brandSoft: Color("BrandAccentSoft"),
-    accent: Color("BrandAccent")
-)
-let productTheme = LumenTheme(colors: productPalette, scheme: baseTheme.scheme)
+enum AppAppearance {
+    case system, light, dark
+}
 
-AppRoot()
-    .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
+struct ThemedAppRoot: View {
+    @Environment(\.colorScheme) private var systemColorScheme
+
+    let selectedAppearance: AppAppearance
+
+    private var baseTheme: LumenTheme {
+        switch selectedAppearance {
+        case .system:
+            systemColorScheme == .dark ? .dark : .light
+        case .light:
+            .light
+        case .dark:
+            .dark
+        }
+    }
+
+    private var productTheme: LumenTheme {
+        LumenTheme(
+            colors: baseTheme.colors.overriding(
+                brand: Color("BrandAccent"),
+                brandSoft: Color("BrandAccentSoft"),
+                accent: Color("BrandAccent")
+            ),
+            scheme: baseTheme.scheme
+        )
+    }
+
+    var body: some View {
+        AppRoot()
+            .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
+    }
+}
 ```
 
 Use `overriding(...)` for additive product customization: omitted semantic colors continue to use
