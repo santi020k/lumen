@@ -175,6 +175,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(pie).toContain('data: series.data.filter(datum => datum.y !== null')
     expect(pie).toContain('formatLumenChartSummary([renderedSeries]')
     expect(phoneInput).toContain(')) ?? metadataCountries[0] ?? getLumenPhoneCountry')
+    expect(phoneInput).toContain('const detectedCountryIsAllowed = metadataCountries.some')
+    expect(phoneInput).toContain('if (detectedCountryIsAllowed) return detectedValue')
     expect(runtime).toContain('const detectedCountryIsAllowed = Array.from(countrySelect.options)')
     expect(runtime).toContain('detectedCountryIsAllowed ?')
     expect(runtime).toContain('detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?')
