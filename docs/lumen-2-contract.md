@@ -74,11 +74,13 @@ manual review.
 
 ## Contract investigations
 
-- **React server/client boundaries:** the workspace fixture and a clean packed-package Next app now
-  validate direct Server Component imports plus interactive Client Component usage through the
-  current root boundary. A server-safe alternative still requires a real implementation split and
-  measurement; do not add a cosmetic entrypoint that re-exports the same client module or move the
-  v2 root contract on theory.
+- **React server/client boundaries — resolved, retain:** keep the package root as the complete
+  client catalog and provide `@santi020k/lumen-react/server` for the seven stateless primitives it
+  implements directly. The workspace and clean packed-package Next consumers validate both
+  boundaries, and the [repeatable measurement](import-and-icon-performance.md#august-26-2026-react-server-boundary-baseline)
+  shows the implementation-level server entrypoint materially reduces emitted static output. The
+  root reuses the same primitive implementations, so this additive path does not fork behavior or
+  require a breaking v2 root change.
 - **Granular Elements registration:** an additive typed component-set overload now limits registry
   scope, while the [repeatable bundle measurement](import-and-icon-performance.md#august-26-2026-elements-registration-baseline)
   proves the monolithic `define` module produces no output reduction. Keep complete-catalog

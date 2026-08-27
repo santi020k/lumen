@@ -202,6 +202,10 @@ The React package entry is a client boundary. In Next.js, it can be imported by 
 without evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen
 subtree becomes a Client Component boundary. Vite and other client-rendered React applications use
 the same entry without additional setup.
+For stateless `Badge`, `Input`, `Label`, `Progress`, `Skeleton`, `Spinner`, and `Textarea` usage in
+a React Server Component, import from `@santi020k/lumen-react/server`. That entrypoint contains the
+implementations directly and avoids creating a client boundary. Keep event handlers, hooks, and
+interactive primitives on the package root inside a Client Component.
 `Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.
 `Button asChild` composes the button contract onto one child element. Across adapters, native
 numeric `size` remains available on `Input` and `NativeSelect`; use `visualSize` in Astro and React,

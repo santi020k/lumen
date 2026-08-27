@@ -97,8 +97,17 @@
   "investigations": [
     {
       "id": "react-server-client-boundaries",
-      "status": "deferred",
-      "decisionGate": "The workspace and clean packed-package Next.js consumers validate direct Server Component imports and interactive Client Component usage through the current root client boundary. Measure a genuinely server-safe implementation split before deciding whether the v2 root changes; do not add a cosmetic entrypoint that reexports the same client module."
+      "status": "resolved",
+      "decision": "retain",
+      "resolution": "Retain the React package root as the complete client catalog and add a server-safe entrypoint for stateless primitives. The root reuses the same implementations, while repeatable Next.js measurements and clean packed-package consumers prove the additive boundary without requiring a breaking v2 root change.",
+      "evidence": [
+        "packages/react/src/server-components.tsx",
+        "packages/react/package.json",
+        "apps/next-smoke/app/page.tsx",
+        "scripts/smoke-consumer-packages.mjs",
+        "scripts/measure-react-server-boundary.mjs",
+        "docs/import-and-icon-performance.md"
+      ]
     },
     {
       "id": "elements-granular-registration",

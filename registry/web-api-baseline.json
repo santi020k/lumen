@@ -1814,6 +1814,10 @@
         },
         "./layers.css": "./layers.css",
         "./package.json": "./package.json",
+        "./server": {
+          "import": "./dist/server.js",
+          "types": "./dist/server.d.ts"
+        },
         "./styles.css": "./styles.css"
       },
       "packageJson": "packages/react/package.json",

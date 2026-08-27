@@ -800,7 +800,10 @@ const loadWorkspaceFiles = async p => ({
   docsSource: await readIfExists(p('apps/docs/src/data/docs.ts')),
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
   elementsSource: await readIfExists(p('packages/elements/src/define.ts')),
-  reactSource: await readIfExists(p('packages/react/src/components.tsx')),
+  reactSource: [
+    await readIfExists(p('packages/react/src/components.tsx')),
+    await readIfExists(p('packages/react/src/server-components.tsx'))
+  ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
   platformTokensSource: await readIfExists(p('tokens/lumen.tokens.json')),

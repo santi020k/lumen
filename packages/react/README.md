@@ -193,6 +193,28 @@ export default function Page() {
 This boundary is specific to React environments that recognize the `"use client"` directive.
 Other React applications continue to consume the same package and exports normally.
 
+For stateless primitives that should execute directly in a React Server Component, use the
+server-safe entrypoint:
+
+```tsx
+import { Badge, Progress, Skeleton } from '@santi020k/lumen-react/server'
+
+export default function Status() {
+  return (
+    <section>
+      <Badge variant="success">Ready</Badge>
+      <Progress aria-label="Migration progress" value={72} />
+      <Skeleton aria-label="Loading activity" />
+    </section>
+  )
+}
+```
+
+The server entrypoint contains Badge, Input, Label, Progress, Skeleton, Spinner, and Textarea plus
+the component-name metadata. The package root reuses those exact implementations and remains the
+full client catalog. Import interactive primitives, hooks, or stateless primitives that receive
+event handlers from the root entrypoint inside a Client Component.
+
 ## Compatibility wrappers
 
 The common wrapper primitives preserve their underlying DOM handles with React 19's ref-as-prop

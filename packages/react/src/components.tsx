@@ -109,12 +109,32 @@ import {
   resolveReactPhoneInputCountry,
   resolveReactPhoneInputValue
 } from './phone-recipes.js'
+import {
+  Input,
+  type InputProps,
+  Label
+} from './server-components.js'
+
+export {
+  Badge,
+  type BadgeProps,
+  Input,
+  type InputProps,
+  Label,
+  type LabelProps,
+  Progress,
+  type ProgressProps,
+  Skeleton,
+  type SkeletonProps,
+  Spinner,
+  type SpinnerProps,
+  Textarea,
+  type TextareaProps
+} from './server-components.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
 type AccordionVariant = 'default' | 'flush'
-
-type BadgeVariant = AlertVariant | 'outline' | 'secondary'
 
 type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
 
@@ -578,22 +598,6 @@ export const Avatar = ({
     {src ? <img alt={alt} src={src} /> : <span>{fallback}</span>}
     {children}
   </span>
-)
-
-export interface BadgeProps extends ComponentPropsWithRef<'span'> {
-  variant?: BadgeVariant
-}
-
-export const Badge = ({
-  className,
-  variant = 'default',
-  ...props
-}: BadgeProps) => (
-  <span
-    className={composeClassName('ui-badge', `ui-badge--${variant}`, className)}
-    data-variant={variant}
-    {...props}
-  />
 )
 
 export type BreadcrumbProps = ComponentPropsWithoutRef<'nav'>
@@ -3240,31 +3244,6 @@ export const Icon = ({
   )
 }
 
-export interface InputProps extends ComponentPropsWithRef<'input'> {
-  visualSize?: 'default' | 'lg' | 'sm'
-}
-export const Input = ({
-  className,
-  ref,
-  type = 'text',
-  visualSize = 'default',
-  ...props
-}: InputProps) => (
-  <input
-    className={composeClassName(
-      'ui-input', visualSize === 'sm' && 'ui-input--sm', visualSize === 'lg' && 'ui-input--lg', className
-    )}
-    ref={ref}
-    type={type}
-    {...props}
-  />
-)
-
-export type LabelProps = ComponentPropsWithRef<'label'>
-export const Label = ({ className, ...props }: LabelProps) => (
-  <label className={composeClassName('ui-label', className)} {...props} />
-)
-
 export interface PasswordFieldProps extends Omit<
   InputProps,
   'type' | 'visualSize'
@@ -4084,39 +4063,6 @@ export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
       {...props}
       onKeyDown={composeHandlers(onKeyDown, popover.panelProps.onKeyDown)}
     />
-  )
-}
-
-export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {
-  max?: number
-  value?: number
-}
-
-export const Progress = ({
-  className,
-  max = 100,
-  value = 0,
-  ...props
-}: ProgressProps) => {
-  const safeMax = max > 0 ? max : 100
-  const safeValue = Math.min(safeMax, Math.max(0, value))
-  const percentage = (safeValue / safeMax) * 100
-
-  return (
-    <div
-      aria-valuemax={safeMax}
-      aria-valuemin={0}
-      aria-valuenow={safeValue}
-      className={composeClassName('ui-progress', className)}
-      role="progressbar"
-      {...props}
-    >
-      <span
-        className="ui-progress__bar"
-        data-slot="progress-indicator"
-        style={{ width: `${percentage}%` }}
-      />
-    </div>
   )
 }
 
@@ -4987,11 +4933,6 @@ export const Sidebar = ({
   />
 )
 
-export type SkeletonProps = ComponentPropsWithRef<'div'>
-export const Skeleton = ({ className, ...props }: SkeletonProps) => (
-  <div className={composeClassName('ui-skeleton', className)} {...props} />
-)
-
 export type SliderProps = ComponentPropsWithRef<'input'>
 export const Slider = ({
   className,
@@ -5015,29 +4956,6 @@ export const Sonner = ({ className, ...props }: SonnerProps) => (
     {...props}
   />
 )
-
-export type SpinnerProps = ComponentPropsWithoutRef<'span'>
-export const Spinner = ({
-  'aria-hidden': ariaHidden,
-  'aria-label': ariaLabel,
-  'aria-labelledby': ariaLabelledby,
-  className,
-  role,
-  ...props
-}: SpinnerProps) => {
-  const isAccessible = Boolean(ariaLabel || ariaLabelledby)
-
-  return (
-    <span
-      aria-hidden={ariaHidden ?? (isAccessible ? undefined : true)}
-      aria-label={ariaLabel}
-      aria-labelledby={ariaLabelledby}
-      className={composeClassName('ui-spinner', className)}
-      role={role ?? (isAccessible ? 'status' : undefined)}
-      {...props}
-    />
-  )
-}
 
 export type SwitchProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
 export const Switch = ({
@@ -5263,21 +5181,6 @@ export const TagGroup = ({
   <div
     className={composeClassName('ui-tag-group', className)}
     role={role}
-    {...props}
-  />
-)
-
-export type TextareaProps = ComponentPropsWithRef<'textarea'>
-export const Textarea = ({
-  className,
-  ref,
-  rows = 4,
-  ...props
-}: TextareaProps) => (
-  <textarea
-    className={composeClassName('ui-textarea', className)}
-    ref={ref}
-    rows={rows}
     {...props}
   />
 )

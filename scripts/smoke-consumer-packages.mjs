@@ -107,6 +107,7 @@ import { lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
+import { Badge as ServerBadge } from '@santi020k/lumen-react/server'
 import {
   getLumenManagedFieldState,
   LumenSelectController
@@ -129,6 +130,10 @@ const html = renderToStaticMarkup(
 
 assert.match(html, /ui-card/)
 assert.match(html, /ui-badge/)
+assert.equal(
+  renderToStaticMarkup(createElement(ServerBadge, null, 'Server ready')),
+  '<span class="ui-badge ui-badge--default" data-variant="default">Server ready</span>'
+)
 
 const HookFormFixture = () => {
   const { control } = useForm({ defaultValues: { role: 'engineer' } })
@@ -266,7 +271,8 @@ export function ClientPanel() {
 
   await writeFile(
     join(consumerDirectory, 'src', 'app', 'page.tsx'),
-    `import { Badge, Card } from '@santi020k/lumen-react'
+    `import { Card } from '@santi020k/lumen-react'
+import { Badge, Skeleton } from '@santi020k/lumen-react/server'
 
 import { ClientPanel } from './client-panel'
 
@@ -276,6 +282,7 @@ export default function Page() {
       <Card>
         <Badge>Ready</Badge>
         <p>Packed React package imported by a Server Component.</p>
+        <Skeleton aria-label="Server-rendered placeholder" />
         <ClientPanel />
       </Card>
     </main>

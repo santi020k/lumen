@@ -6,6 +6,7 @@ subsets:
 ```bash
 pnpm run measure:imports
 pnpm run measure:react-icons
+pnpm run measure:react-server
 pnpm run measure:elements-registration
 ```
 
@@ -41,6 +42,24 @@ bundle budget and rerun the benchmark after icon-registry changes.
 
 These are local regression measurements, not universal performance claims. Keep the JSON output in
 release evidence when an import or icon change is proposed.
+
+## August 26, 2026 React server-boundary baseline
+
+The Next.js fixture renders the same stateless `Badge`, `Progress`, and `Skeleton` primitives from
+the client package root and the implementation-level `@santi020k/lumen-react/server` entrypoint.
+Each scenario was built three times with Next.js 16.3.2:
+
+| Scenario | Median build | `.next/static` |
+| --- | ---: | ---: |
+| Client package root | 3,682 ms | 1,497,737 B |
+| Server-safe entrypoint | 2,379 ms | 566,254 B |
+
+The server-safe entrypoint reduced emitted static output by 931,483 bytes in this fixture. It owns
+the stateless implementations directly and contains no `"use client"` directive; the client root
+reuses those exact implementations and keeps the complete interactive catalog. Prefer `/server`
+for its documented stateless primitives in React Server Components, while keeping event handlers,
+hooks, and interactive primitives behind the root Client Component boundary. Build duration is
+recorded for reproducibility but remains environment-sensitive.
 
 ## August 26, 2026 Elements registration baseline
 
