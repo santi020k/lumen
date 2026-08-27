@@ -6,8 +6,15 @@ const scenarios = {
   all: `import { defineLumenElements } from './dist/define.js'
 defineLumenElements()
 `,
+  granular: `import { defineLumenBadge } from './dist/components/badge.js'
+import { defineLumenButton } from './dist/components/button.js'
+import { defineLumenCard } from './dist/components/card.js'
+defineLumenBadge()
+defineLumenButton()
+defineLumenCard()
+`,
   selected: `import { defineLumenElements } from './dist/define.js'
-defineLumenElements(['Card', 'Input', 'Button'])
+defineLumenElements(['Badge', 'Button', 'Card'])
 `
 }
 

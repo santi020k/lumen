@@ -64,15 +64,18 @@ recorded for reproducibility but remains environment-sensitive.
 ## August 26, 2026 Elements registration baseline
 
 The additive component-set API limits which constructors enter a custom element registry, but the
-current `define` entry remains a monolithic implementation module. The repeatable measurement
-confirms that an explicit Card, Input, and Button set does not yet reduce emitted JavaScript:
+`define` entry remains a monolithic implementation module. Badge, Button, and Card now also expose
+implementation-level entrypoints. The repeatable measurement compares the same three constructors:
 
 | Scenario | Minified bundle | Gzip |
 | --- | ---: | ---: |
-| Complete catalog | 1,035,711 B | 247,701 B |
-| Card, Input, and Button | 1,035,736 B | 247,715 B |
+| Complete catalog | 1,035,967 B | 247,893 B |
+| Badge, Button, and Card through `define` | 1,035,992 B | 247,907 B |
+| Badge, Button, and Card granular entrypoints | 4,769 B | 1,788 B |
 
-The 25 raw bytes and 14 gzip bytes added by the selected scenario are its component-name arguments,
-not a meaningful regression. Keep complete-catalog registration supported and do not advertise the
-new overload as bundle splitting. Granular output requires implementation-level entrypoints or a
-generated module split plus validation in a real Elements application.
+The selected `define` scenario still includes the full catalog and adds 25 raw bytes for its
+component-name arguments. The granular path is 1,031,223 raw bytes and 246,119 gzip bytes smaller
+for the same components in this fixture. A clean application built from the packed npm tarball also
+imports these entrypoints through Astro and renders all three tags. Keep complete-catalog
+registration supported for the rest of the catalog and expand granular coverage only with the same
+constructor-identity, package-consumer, and measurement evidence.

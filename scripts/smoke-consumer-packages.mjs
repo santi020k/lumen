@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { access, mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
+import { access, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -206,6 +206,9 @@ Object.defineProperties(globalThis, {
 })
 
 const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
+const { defineLumenBadge } = await import('@santi020k/lumen-elements/components/badge')
+const { defineLumenButton } = await import('@santi020k/lumen-elements/components/button')
+const { defineLumenCard } = await import('@santi020k/lumen-elements/components/card')
 
 defineLumenElements(dom.window.customElements)
 
@@ -222,6 +225,21 @@ defineLumenElements(['Card', 'Button'], selectedRegistry)
 
 assert.deepEqual([...selectedConstructors.keys()], ['lumen-card', 'lumen-button'])
 assert.equal(selectedRegistry.get('lumen-dialog'), undefined)
+
+const granularConstructors = new Map()
+const granularRegistry = {
+  define: (name, constructor) => granularConstructors.set(name, constructor),
+  get: name => granularConstructors.get(name)
+}
+
+defineLumenBadge(granularRegistry)
+defineLumenButton(granularRegistry)
+defineLumenCard(granularRegistry)
+
+assert.deepEqual(
+  [...granularConstructors.keys()],
+  ['lumen-badge', 'lumen-button', 'lumen-card']
+)
 `
   )
 
@@ -230,12 +248,28 @@ assert.equal(selectedRegistry.get('lumen-dialog'), undefined)
     `---
 import { Badge, Card } from '@santi020k/lumen-astro'
 import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen-elements/styles.css'
 ---
 
 <Card>
   <Badge>Ready</Badge>
   <p>Packed Astro consumer</p>
 </Card>
+
+<lumen-card>
+  <lumen-badge variant="success">Granular elements ready</lumen-badge>
+  <lumen-button>Continue</lumen-button>
+</lumen-card>
+
+<script>
+  import { defineLumenBadge } from '@santi020k/lumen-elements/components/badge'
+  import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
+  import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+
+  defineLumenBadge()
+  defineLumenButton()
+  defineLumenCard()
+</script>
 `
   )
 
@@ -313,6 +347,12 @@ export default function Page() {
     access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-elements', 'styles.css')),
     access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-react', 'styles.css'))
   ])
+
+  const astroHtml = await readFile(join(consumerDirectory, 'dist', 'index.html'), 'utf8')
+
+  assert.match(astroHtml, /<lumen-card>/)
+
+  assert.match(astroHtml, /Granular elements ready/)
 
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'

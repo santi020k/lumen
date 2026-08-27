@@ -701,6 +701,7 @@ export function Actions() {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
       'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, calendar grids, OTP segmentation, date range syncing, rich text commands, context menu triggers, schedule drag/drop and file drag/drop, tours, anchor scroll spy, transfer, mentions, cascader and tree selection, resizable pane sizing, ThemeBuilder export, VirtualList range events, overlays, tabs, tooltip, and toast.',
+      'For Badge, Button, and Card-only surfaces, use their @santi020k/lumen-elements/components/* entrypoints to avoid bundling the complete catalog.',
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">

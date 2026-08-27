@@ -361,12 +361,8 @@ const unwrapExpression = expression => {
   return current
 }
 
-const processElementConfigProperty = (property, sourceFile) => {
-  if (!ts.isPropertyAssignment(property) || !ts.isObjectLiteralExpression(property.initializer))
-    return null
-
-  const name = propertyName(property, sourceFile)
-  const config = property.initializer
+const processElementConfig = (name, config, sourceNode, sourceFile) => {
+  if (!name || !ts.isObjectLiteralExpression(config)) return null
 
   const tagNameProperty = config.properties.find(
     entry => ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName'
@@ -395,10 +391,50 @@ const processElementConfigProperty = (property, sourceFile) => {
   return {
     config: {
       attributes: [...new Set(attributes)].sort(),
-      source: property.getText(sourceFile),
+      source: sourceNode.getText(sourceFile),
       tagName
     },
     name
+  }
+}
+
+const processGranularElementDeclaration = (
+  declaration,
+  initializer,
+  sourceFile
+) => {
+  if (!ts.isIdentifier(declaration.name) || !initializer) return null
+
+  const name = /^lumen(.+)ElementConfig$/.exec(declaration.name.text)?.[1]
+
+  return processElementConfig(name, initializer, declaration, sourceFile)
+}
+
+const processElementConfigCollection = (
+  declaration,
+  initializer,
+  entries,
+  sourceFile
+) => {
+  if (
+    !ts.isIdentifier(declaration.name) ||
+    declaration.name.text !== 'elementConfigs' ||
+    !initializer ||
+    !ts.isObjectLiteralExpression(initializer)
+  )
+    return
+
+  for (const property of initializer.properties) {
+    if (!ts.isPropertyAssignment(property)) continue
+
+    const result = processElementConfig(
+      propertyName(property, sourceFile),
+      property.initializer,
+      property,
+      sourceFile
+    )
+
+    if (result) entries.set(result.name, result.config)
   }
 }
 
@@ -408,19 +444,24 @@ const processElementStatement = (statement, entries, sourceFile) => {
   for (const declaration of statement.declarationList.declarations) {
     const initializer = declaration.initializer && unwrapExpression(declaration.initializer)
 
-    if (
-      !ts.isIdentifier(declaration.name) ||
-      declaration.name.text !== 'elementConfigs' ||
-      !initializer ||
-      !ts.isObjectLiteralExpression(initializer)
+    const granularResult = processGranularElementDeclaration(
+      declaration,
+      initializer,
+      sourceFile
     )
+
+    if (granularResult) {
+      entries.set(granularResult.name, granularResult.config)
+
       continue
-
-    for (const property of initializer.properties) {
-      const result = processElementConfigProperty(property, sourceFile)
-
-      if (result) entries.set(result.name, result.config)
     }
+
+    processElementConfigCollection(
+      declaration,
+      initializer,
+      entries,
+      sourceFile
+    )
   }
 }
 
@@ -799,7 +840,12 @@ const loadWorkspaceFiles = async p => ({
   componentsSource: await readIfExists(p('packages/core/src/components.ts')),
   docsSource: await readIfExists(p('apps/docs/src/data/docs.ts')),
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
-  elementsSource: await readIfExists(p('packages/elements/src/define.ts')),
+  elementsSource: [
+    await readIfExists(p('packages/elements/src/define.ts')),
+    await readIfExists(p('packages/elements/src/components/badge.ts')),
+    await readIfExists(p('packages/elements/src/components/button.ts')),
+    await readIfExists(p('packages/elements/src/components/card.ts'))
+  ].join('\n'),
   reactSource: [
     await readIfExists(p('packages/react/src/components.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx'))

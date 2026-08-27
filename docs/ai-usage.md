@@ -262,6 +262,12 @@ select form participation, and the same toast controller events as the Astro run
 </lumen-card>
 ```
 
+For a surface that uses only Badge, Button, and Card, import
+`@santi020k/lumen-elements/components/badge`, `/button`, and `/card` and call their corresponding
+`defineLumenBadge`, `defineLumenButton`, and `defineLumenCard` functions. Those implementation-level
+entrypoints avoid the complete catalog bundle. Continue using `defineLumenElements` for any
+component without a granular entrypoint.
+
 Put input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in
 `FormData`, validity, disabled state, focus, and reset through form-associated custom-element
 behavior with a native-control fallback. Do not generate `<lumen-form>` as the submission

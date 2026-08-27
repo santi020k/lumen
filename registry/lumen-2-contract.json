@@ -111,8 +111,18 @@
     },
     {
       "id": "elements-granular-registration",
-      "status": "deferred",
-      "decisionGate": "The compatible component-set registration API now limits registry scope, but measurement proves the monolithic define entry produces no bundle reduction. Add implementation-level entrypoints and gather a real Elements consumer before considering any full-catalog registration deprecation."
+      "status": "resolved",
+      "decision": "retain",
+      "resolution": "Retain complete-catalog Elements registration and its typed component-set overload, while adding implementation-level Badge, Button, and Card entrypoints. The full catalog reuses the same constructors, and packed Astro consumer plus bundle evidence proves the additive granular path without requiring a breaking deprecation.",
+      "evidence": [
+        "packages/elements/src/components/badge.ts",
+        "packages/elements/src/components/button.ts",
+        "packages/elements/src/components/card.ts",
+        "packages/elements/package.json",
+        "packages/elements/scripts/measure-registration.mjs",
+        "scripts/smoke-consumer-packages.mjs",
+        "docs/import-and-icon-performance.md"
+      ]
     },
     {
       "id": "umbrella-core-reexports",

@@ -5,7 +5,6 @@ import {
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
-  composeClassName,
   createLumenBarGeometry,
   createLumenHeatmapGeometry,
   createLumenKanbanMoveDetail,
@@ -58,7 +57,26 @@ import {
   tuneThemeContrast
 } from '@santi020k/lumen-core'
 
-type AttributeClassMap = Record<string, Record<string, string>>
+import {
+  LumenBadgeElement as GranularLumenBadgeElement,
+  lumenBadgeElementConfig
+} from './components/badge.js'
+import {
+  LumenButtonElement as GranularLumenButtonElement,
+  lumenButtonElementConfig
+} from './components/button.js'
+import {
+  LumenCardElement as GranularLumenCardElement,
+  lumenCardElementConfig
+} from './components/card.js'
+import {
+  createLumenElementClass as createStandaloneLumenElementClass,
+  LumenElement,
+  type LumenElementConfig,
+  type LumenElementConstructor
+} from './element-base.js'
+
+export { LumenElement } from './element-base.js'
 
 type ToastPlacement =
   | 'bottom-center' |
@@ -104,16 +122,6 @@ export interface ToastApi {
   dismiss: (id?: string) => void
   update: (id: string, detail: ToastDetail) => void
 }
-
-interface LumenElementConfig {
-  attributeClasses?: AttributeClassMap
-  baseClassName: string
-  defaults?: Record<string, string>
-  role?: string
-  tagName: string
-}
-
-const appliedClassNames = new WeakMap<HTMLElement, string[]>()
 
 const focusableSelector = [
   'a[href]',
@@ -206,12 +214,6 @@ const toastTimers = new WeakMap<
   }
 >()
 
-const mergeClassNames = (
-  ...classNames: (boolean | string | null | undefined)[]
-) => composeClassName(...classNames)
-  .split(/\s+/)
-  .filter(Boolean)
-
 const glassAttributeClasses = (className: string) => ({
   glass: {
     strong: `${className} ui-glass-strong`,
@@ -279,21 +281,7 @@ const elementConfigs = {
   },
   Avatar: { baseClassName: 'ui-avatar', tagName: 'lumen-avatar' },
   BackToTop: { baseClassName: 'ui-back-to-top', tagName: 'lumen-back-to-top' },
-  Badge: {
-    attributeClasses: {
-      variant: {
-        default: 'ui-badge--default',
-        destructive: 'ui-badge--destructive',
-        outline: 'ui-badge--outline',
-        secondary: 'ui-badge--secondary',
-        success: 'ui-badge--success',
-        warning: 'ui-badge--warning'
-      }
-    },
-    baseClassName: 'ui-badge',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-badge'
-  },
+  Badge: lumenBadgeElementConfig,
   BarChart: {
     attributeClasses: {
       ...glassAttributeClasses('ui-chart--glass'),
@@ -318,36 +306,7 @@ const elementConfigs = {
     defaults: { from: 'assistant' },
     tagName: 'lumen-bubble'
   },
-  Button: {
-    attributeClasses: {
-      variant: {
-        default: 'ui-button--default',
-        destructive: 'ui-button--destructive',
-        ghost: 'ui-button--ghost',
-        link: 'ui-button--link',
-        outline: 'ui-button--outline',
-        secondary: 'ui-button--secondary'
-      },
-      size: {
-        default: 'ui-button--default-size',
-        icon: 'ui-button--icon',
-        lg: 'ui-button--lg',
-        sm: 'ui-button--sm'
-      },
-      disabled: { true: 'ui-button--disabled' },
-      loading: { true: 'ui-button--loading' }
-    },
-    baseClassName: 'ui-button',
-    defaults: {
-      'data-slot': 'button',
-      role: 'button',
-      size: 'default',
-      tabindex: '0',
-      variant: 'default'
-    },
-    role: 'button',
-    tagName: 'lumen-button'
-  },
+  Button: lumenButtonElementConfig,
   ButtonGroup: {
     baseClassName: 'ui-button-group',
     tagName: 'lumen-button-group'
@@ -359,24 +318,7 @@ const elementConfigs = {
     tagName: 'lumen-calendar'
   },
   Callout: { baseClassName: 'ui-callout', tagName: 'lumen-callout' },
-  Card: {
-    attributeClasses: {
-      glass: {
-        strong: 'ui-card--glass ui-glass-strong',
-        subtle: 'ui-card--glass ui-glass-subtle',
-        true: 'ui-card--glass'
-      },
-      variant: {
-        glass: 'ui-card--glass',
-        interactive: 'ui-card--interactive',
-        muted: 'ui-card--muted',
-        unstyled: 'ui-card--unstyled'
-      }
-    },
-    baseClassName: 'ui-card',
-    defaults: { 'data-slot': 'card', variant: 'default' },
-    tagName: 'lumen-card'
-  },
+  Card: lumenCardElementConfig,
   CardContent: {
     baseClassName: 'ui-card__content',
     defaults: { 'data-slot': 'card-content' },
@@ -4766,76 +4708,6 @@ const installToastController = (): void => {
 
     LumenToast.dismiss(detail.id)
   })
-}
-
-export class LumenElement extends HTMLElement {
-  static config: LumenElementConfig
-
-  static get observedAttributes() {
-    return observedAttributeNames
-  }
-
-  connectedCallback() {
-    this.applyDefaults()
-
-    this.applyClassNames()
-  }
-
-  disconnectedCallback() {
-    /* Subclasses clean up behavior listeners when needed. */
-  }
-
-  attributeChangedCallback(
-    _name?: string,
-    _previousValue?: string | null,
-    _value?: string | null
-  ) {
-    this.applyClassNames()
-  }
-
-  protected get config() {
-    return (this.constructor as typeof LumenElement).config
-  }
-
-  private applyDefaults() {
-    for (const [name, value] of Object.entries(this.config.defaults ?? {})) {
-      if (!this.hasAttribute(name)) {
-        this.setAttribute(name, value)
-      }
-    }
-
-    if (this.config.role && !this.hasAttribute('role')) {
-      this.setAttribute('role', this.config.role)
-    }
-  }
-
-  private applyClassNames() {
-    const previousClassNames = appliedClassNames.get(this) ?? []
-
-    for (const className of previousClassNames) {
-      this.classList.remove(className)
-    }
-
-    const classNames = mergeClassNames(this.config.baseClassName)
-
-    for (const [attributeName, classMap] of Object.entries(
-      this.config.attributeClasses ?? {}
-    )) {
-      const attributeValue = this.hasAttribute(attributeName) ?
-        this.getAttribute(attributeName) || 'true' :
-        this.config.defaults?.[attributeName]
-
-      const className = attributeValue ? classMap[attributeValue] : undefined
-
-      if (className) {
-        classNames.push(...mergeClassNames(className))
-      }
-    }
-
-    this.classList.add(...classNames)
-
-    appliedClassNames.set(this, classNames)
-  }
 }
 
 type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -10577,15 +10449,21 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
   }
 }
 
-const createLumenElementClass = (config: LumenElementConfig) => class extends LumenElement {
-  static override config = config
-}
+const withObservedAttributes = (
+  config: LumenElementConfig
+): LumenElementConfig => ({ ...config, observedAttributes: observedAttributeNames })
+
+const createLumenElementClass = (
+  config: LumenElementConfig
+): LumenElementConstructor => createStandaloneLumenElementClass(
+  withObservedAttributes(config)
+)
 
 const createLumenBehaviorElementClass = (
   BaseElement: typeof LumenElement,
   config: LumenElementConfig
 ) => class extends BaseElement {
-  static override config = config
+  static override config = withObservedAttributes(config)
 }
 
 const behaviorElementClasses: Partial<
@@ -10649,8 +10527,20 @@ const behaviorElementClasses: Partial<
   VirtualList: LumenVirtualListBehaviorElement
 }
 
+const granularElementClasses: Partial<
+  Record<LumenComponentName, LumenElementConstructor>
+> = {
+  Badge: GranularLumenBadgeElement,
+  Button: GranularLumenButtonElement,
+  Card: GranularLumenCardElement
+}
+
 const elementClasses = Object.fromEntries(
   lumenComponentNames.map(componentName => {
+    const granularClass = granularElementClasses[componentName]
+
+    if (granularClass) return [componentName, granularClass]
+
     const behaviorClass = behaviorElementClasses[componentName]
 
     if (behaviorClass) {
@@ -10667,7 +10557,7 @@ const elementClasses = Object.fromEntries(
       createLumenElementClass(elementConfigs[componentName])
     ]
   })
-) as Record<LumenComponentName, typeof LumenElement>
+) as Record<LumenComponentName, LumenElementConstructor>
 
 const elementDefinitions = lumenComponentNames.map(componentName => {
   const config = elementConfigs[componentName]
@@ -10728,7 +10618,7 @@ export const defineLumenElements = (
     )[componentName]
 
     const element = (
-      elementClasses as Readonly<Record<string, typeof LumenElement>>
+      elementClasses as Readonly<Record<string, LumenElementConstructor>>
     )[componentName]
 
     if (!config || !element) {

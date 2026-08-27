@@ -13,17 +13,27 @@ const componentNames = [...componentCatalogSource.matchAll(/^ {2}'([^']+)',?$/gm
   .map(match => match[1])
 
 const [
-  elementsSource,
+  elementsDefineSource,
+  elementsGranularSource,
   reactComponentsSource,
   reactHooksSource,
   reactServerComponentsSource
 ] = await Promise.all([
   readFile(new URL('../packages/elements/src/define.ts', import.meta.url), 'utf8'),
+  Promise.all([
+    'badge',
+    'button',
+    'card'
+  ].map(name => readFile(
+    new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
+    'utf8'
+  ))).then(sources => sources.join('\n')),
   readFile(new URL('../packages/react/src/components.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../packages/react/src/hooks.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../packages/react/src/server-components.tsx', import.meta.url), 'utf8')
 ])
 
+const elementsSource = `${elementsDefineSource}\n${elementsGranularSource}`
 const reactSource = `${reactComponentsSource}\n${reactHooksSource}\n${reactServerComponentsSource}`
 
 const exceptions = {

@@ -996,6 +996,18 @@
           "import": "./dist/index.js",
           "types": "./dist/index.d.ts"
         },
+        "./components/badge": {
+          "import": "./dist/components/badge.js",
+          "types": "./dist/components/badge.d.ts"
+        },
+        "./components/button": {
+          "import": "./dist/components/button.js",
+          "types": "./dist/components/button.d.ts"
+        },
+        "./components/card": {
+          "import": "./dist/components/card.js",
+          "types": "./dist/components/card.d.ts"
+        },
         "./define": {
           "import": "./dist/define.js",
           "types": "./dist/define.d.ts"

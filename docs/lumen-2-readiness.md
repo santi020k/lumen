@@ -198,7 +198,7 @@ proves every exit condition above.
 | Physical-device validation | Incomplete | Completed native device matrix with evidence links |
 | Distribution validation | Partial | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and a disposable tagged Swift candidate across every Apple platform pass; the corrected public immutable Swift tag remains |
 | Coordinated Lumen 2 release | Blocked by prior gates | Every public package and platform at `2.0.0`, documentation, and migration notes |
-| Version 2 contract approval | Draft; 2/3 investigations resolved | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage |
+| Version 2 contract approval | Draft; 3/3 investigations resolved | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage |
 
 ### Release 1.6 baseline evidence
 

@@ -81,11 +81,13 @@ manual review.
   shows the implementation-level server entrypoint materially reduces emitted static output. The
   root reuses the same primitive implementations, so this additive path does not fork behavior or
   require a breaking v2 root change.
-- **Granular Elements registration:** an additive typed component-set overload now limits registry
-  scope, while the [repeatable bundle measurement](import-and-icon-performance.md#august-26-2026-elements-registration-baseline)
-  proves the monolithic `define` module produces no output reduction. Keep complete-catalog
-  registration supported until implementation-level entrypoints and a real consumer prove a safe
-  replacement.
+- **Granular Elements registration — resolved, retain:** keep complete-catalog registration and its
+  typed component-set overload, while providing implementation-level Badge, Button, and Card
+  entrypoints for small surfaces. The full catalog reuses those exact constructors, a clean Astro
+  application consumes them from the packed package, and the
+  [repeatable bundle measurement](import-and-icon-performance.md#august-26-2026-elements-registration-baseline)
+  proves material output reduction. This additive path avoids a breaking full-catalog deprecation;
+  expand it component by component as equivalent evidence becomes available.
 - **Umbrella Core re-exports — resolved, retain:** the web API baseline protects 202 umbrella
   symbols, the clean consumer already demonstrates explicit Core usage, and the
   [consumer import audit](lumen-2-consumer-import-audit.md) found no observed problem that justifies
