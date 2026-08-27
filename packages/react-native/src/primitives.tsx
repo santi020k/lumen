@@ -77,8 +77,8 @@ export const LumenText = ({
   )
 }
 
-export type LumenSurfacePadding = 'lg' | 'md' | 'none' | 'sm'
-export type LumenSurfaceRadius = 'lg' | 'md' | 'none' | 'sm'
+export type LumenSurfacePadding = 'lg' | 'md' | 'none' | 'sm' | 'xl'
+export type LumenSurfaceRadius = '2xl' | '3xl' | 'lg' | 'md' | 'none' | 'sm' | 'xl'
 export type LumenSurfaceTone = 'canvas' | 'muted' | 'strong' | 'surface'
 
 export interface LumenSurfaceProps extends ViewProps {
